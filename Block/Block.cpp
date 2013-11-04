@@ -12,7 +12,7 @@ Block::Block(unsigned BlockSize)
 :BlockSize(BlockSize)
 {
 	start=memalign(cacheline_size,BlockSize);
-}
+}  //cdcd
 //zhanglei
 Block::~Block() {
 	free(start);
