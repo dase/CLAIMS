@@ -1,0 +1,120 @@
+/*
+ * table.h
+ *
+ *  Created on: 2013-9-22
+ *      Author: liyongfeng
+ *      Modified by wangli on 2013-10-12
+ */
+
+#ifndef TABLE_H_
+#define TABLE_H_
+
+#include <vector>
+#include <set>
+#include <string>
+#include <map>
+#include "../data_type.h"
+#include "Partitioner.h"
+#include "Attribute.h"
+using namespace std;
+
+typedef size_t ColumnID;
+typedef unsigned TableID;
+//typedef struct{
+//	TableID table_id;
+//	size_t local_projection_id;
+//} ProjectionID;
+typedef unsigned ProjectionID;
+
+
+
+#define TEST
+
+/**
+ * Attribute describes a column in type, name, position in the table.
+ */
+
+/**
+ * A projection is a combination of columns that belong to a single table and will be horizontally
+ * partitioned among storage instances.
+ * ProjectionDescriptor mainly contains two kinds of important information:
+ *
+ * 1). how many attributes there are in a projection and what are they.
+ *
+ * 2). how the projection is partitioned (e.g., hash partition, range partition). How many storage
+ * 		instances are involved.
+ *
+ */
+class ProjectionDescriptor
+{
+public:
+	friend class TableDescriptor;
+	ProjectionDescriptor();
+	ProjectionDescriptor(const string& name);
+	virtual ~ProjectionDescriptor();
+	void addAttribute(Attribute attr);
+	bool isExist(const string& name) const;
+	inline void setProjectionID(const ProjectionID& pid) {projection_id_ = pid;}
+	inline map<string, set<string> > getFileLocations() const {return fileLocations;}
+	Partitioner* getPartitoiner() const{return partitioner;}
+private:
+	ProjectionID projection_id_;
+
+	vector<Attribute> attribute_list_;
+
+	Partitioner* partitioner;
+
+
+	/* The following is considered to be deleted, as the catalog module only has a logically view
+	 * of a table rather than detailed physical view such as filename, etc.
+	 */
+	map<string, set<string> > fileLocations;
+	string hdfsFilePath;
+	map<string, string> blkMemoryLocations;
+
+	/* The following is deleted from version 1.2*/
+	string Projection_name_;	//projection does not need a string name.
+};
+
+
+class TableDescriptor {
+
+public:
+	TableDescriptor(const string& name, const TableID table_id);
+	virtual ~TableDescriptor();
+
+	void addAttribute(Attribute attr);
+	bool addAttribute(string attname,data_type dt,unsigned max_length=0);
+
+	void addProjection(vector<ColumnID> id_list);
+	bool createHashPartitionedProjection(vector<ColumnID> column_list,ColumnID partition_key_index,unsigned number_of_partitions);
+
+	bool isExist(const string& name) const;
+	inline string getTableName() const {return tableName;}
+	ColumnID getColumnID(const string& attrName) const;
+	map<string, set<string> > getColumnLocations(const string& attrName) const;
+
+	vector<Attribute> getAttributes(){
+		return attributes;
+	}
+	/* the following methods are considered to be deleted.*/
+	void addColumn(ProjectionDescriptor* column);
+	inline string get_table_name()const{return tableName;}
+	inline TableID get_table_id()const{return table_id_;}
+	ProjectionDescriptor* getProjectoin(ProjectionID) const;
+protected:
+	string tableName;
+	vector<Attribute> attributes;
+	TableID table_id_;
+	vector<ProjectionDescriptor> projection_list_;
+	// delete for debugging
+//	hashmap<ColumnID, ColumnDescriptor*> columns;
+
+};
+
+
+
+
+
+
+#endif /* TABLE_H_ */
