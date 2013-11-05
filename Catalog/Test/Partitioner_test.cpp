@@ -42,11 +42,11 @@ int BindingTest(){
 	rmms->RegisterNewSlave("192.168.1.3");
 	rmms->RegisterNewSlave("192.168.1.4");
 	rmms->RegisterNewSlave("192.168.1.5");
-	rmms->RegisterDiskBuget(0,1000);
-	rmms->RegisterDiskBuget(0,3000);
-	rmms->RegisterDiskBuget(0,10030);
-	rmms->RegisterDiskBuget(0,10001);
-	rmms->RegisterDiskBuget(0,1020);
+	rmms->RegisterDiskBuget(0,0);
+	rmms->RegisterDiskBuget(1,1000);
+	rmms->RegisterDiskBuget(2,0);
+	rmms->RegisterDiskBuget(3,10000);
+	rmms->RegisterDiskBuget(4,0);
 
 	///////////////////////////////////////
 	/* the following codes should be triggered by DDL module*/
@@ -62,12 +62,14 @@ int BindingTest(){
 	index.push_back(3);
 	const int partition_key_index=3;
 	table->createHashPartitionedProjection(index,partition_key_index,4);
+	Catalog* catalog=Environment::getInstance()->getCatalog();
+	catalog->add_table(table);
 	///////////////////////////////////////
 
 
 	////////////////////////////////////////
 	/* the following codes should be triggered by Load module*/
-	Catalog* catalog=Environment::getInstance()->getCatalog();
+
 	for(unsigned i=0;i<table->getProjectoin(0)->getPartitoiner()->getNumberOfPartitions();i++){
 		catalog->getTable(0)->getProjectoin(0)->getPartitoiner()->RegisterPartition(i,"Partition_"+i,12);
 	}
