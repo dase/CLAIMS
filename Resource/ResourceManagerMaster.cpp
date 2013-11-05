@@ -28,10 +28,9 @@ bool ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 //		/*The slaveId has already existed.*/
 //		return false;
 //	}
-
 	node_to_resourceinfo_[new_node_id]=new ResourceInfo();
 
-	logging_->log("[ip+%s, id=%d] is successfully registered.",new_slave_ip_,new_node_id);
+	logging_->log("[ip+%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
 
 	return true;
 }
@@ -40,6 +39,7 @@ std::vector<NodeID> ResourceManagerMaster::getSlaveIDList(){
 	hashmap<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
 	while(it!=node_to_resourceinfo_.end()){
 		ret.push_back(it->first);
+		it++;
 	}
 	return ret;
 }
