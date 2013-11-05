@@ -56,6 +56,8 @@ private:
 	static void initialize_L();
 	static std::map<Pair,comFun> funs_GEQ;
 	static void initialize_GEQ();
+	static std::map<Pair,comFun> funs_EQ;
+	static void initialize_EQ();
 	void iniatilize();
 private:
 	friend class boost::serialization::access;

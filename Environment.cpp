@@ -35,7 +35,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	This is done in Aug.18 by Li :)
  */
-//	InitializeStorage(ismaster);
+	InitializeStorage(ismaster);
 
 	InitializeResourceManager();
 
@@ -86,21 +86,21 @@ void Environment::InitializeEndPoint(){
 void Environment::InitializeCoordinator(){
 	coordinator=new Coordinator();
 }
-//void Environment::InitializeStorage(bool ismaster){
-//	Theron::Framework *framework_storage=new Theron::Framework(*endpoint);
-//	if(ismaster){
-//		BlockManagerMaster::BlockManagerMasterActor *blockManagerMasterActor=new BlockManagerMaster::BlockManagerMasterActor(endpoint,framework_storage,"blockManagerMasterActor");
-//		BlockManagerMaster* blockManagerMaster=BlockManagerMaster::getInstance(blockManagerMasterActor);
-//		blockManagerMaster->initialize();
-//	}else{
-//		BlockManagerId *bmid=new BlockManagerId();
-//		string actorname="blockManagerWorkerActor_"+bmid->blockManagerId;
-//		cout<<actorname.c_str()<<endl;
-//		BlockManager::BlockManagerWorkerActor *blockManagerWorkerActor=new BlockManager::BlockManagerWorkerActor(endpoint,framework_storage,actorname.c_str());
-//		BlockManager *blockManager=BlockManager::getInstance(blockManagerWorkerActor);
-//		blockManager->initialize();
-//	}
-//}
+void Environment::InitializeStorage(bool ismaster){
+	Theron::Framework *framework_storage=new Theron::Framework(*endpoint);
+	if(ismaster){
+		BlockManagerMaster::BlockManagerMasterActor *blockManagerMasterActor=new BlockManagerMaster::BlockManagerMasterActor(endpoint,framework_storage,"blockManagerMasterActor");
+		BlockManagerMaster* blockManagerMaster=BlockManagerMaster::getInstance(blockManagerMasterActor);
+		blockManagerMaster->initialize();
+	}else{
+		BlockManagerId *bmid=new BlockManagerId();
+		string actorname="blockManagerWorkerActor_"+bmid->blockManagerId;
+		cout<<actorname.c_str()<<endl;
+		BlockManager::BlockManagerWorkerActor *blockManagerWorkerActor=new BlockManager::BlockManagerWorkerActor(endpoint,framework_storage,actorname.c_str());
+		BlockManager *blockManager=BlockManager::getInstance(blockManagerWorkerActor);
+		blockManager->initialize();
+	}
+}
 
 void Environment::InitializeResourceManager(){
 	if(ismaster_){

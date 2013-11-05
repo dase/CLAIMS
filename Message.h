@@ -85,6 +85,27 @@ struct BlockStatusRespond{
 };
 THERON_DECLARE_REGISTERED_MESSAGE(BlockStatusRespond)
 
+struct MatcherMessage{
+	explicit MatcherMessage(const char * const filename,const char *const bmi){
+		filenameText[0]='\0';
+		memcpy(filenameText,filename,MATCHER_MESSAGE_FILENAME_LEN);
+		bmiText[0]='\0';
+		memcpy(bmiText,bmi,MATCHER_MESSAGE_BMI_LEN);
+	}
+	char filenameText[MATCHER_MESSAGE_FILENAME_LEN];
+	char bmiText[MATCHER_MESSAGE_BMI_LEN];
+};
+THERON_DECLARE_REGISTERED_MESSAGE(MatcherMessage)
+
+struct MatcherRespond{
+	explicit MatcherRespond(const char * const text){
+		mText[0]='\0';
+		memcpy(mText,text,MATCHER_MESSAGE_PROJECT_LEN);
+	}
+	char mText[MATCHER_MESSAGE_PROJECT_LEN];
+};
+THERON_DECLARE_REGISTERED_MESSAGE(MatcherRespond)
+
 struct Message256
 {
 	unsigned length;

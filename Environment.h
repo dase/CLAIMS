@@ -14,10 +14,10 @@
 #include "Executor/ExchangeTracker.h"
 #include "PortManager.h"
 #include "Logging.h"
+#include "storage/BlockManager.h"
+#include "storage/BlockManagerMaster.h"
 #include "Resource/ResourceManagerMaster.h"
 #include "Catalog/Catalog.h"
-//#include "storage/BlockManager.h"
-//#include "storage/BlockManagerMaster.h"
 
 class Environment {
 public:
@@ -33,7 +33,7 @@ private:
 	void Initialize();
 	void InitializeEndPoint();
 	void InitializeCoordinator();
-//	void InitializeStorage(bool);
+	void InitializeStorage(bool);
 	void InitializeResourceManager();
 private:
 	static Environment* _instance;

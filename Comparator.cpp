@@ -15,6 +15,12 @@ bool less(const void* x,const  void* y)
 	return *(X*)x<*(Y*)y;
 }
 
+// =
+template<typename X,typename Y>
+bool equal(const void *x,const void *y){
+	return (*(X*)x)==(*(Y*)y);
+}
+
 template<>
 bool less<int,char*>(const void* x,const  void* y)
 {
@@ -52,9 +58,11 @@ inline bool greatEqual(const void* x,const void* y)
 {
 	return !less<X,Y>(x,y);
 }
+
 ////////////////////
 std::map<Comparator::Pair,comFun> Comparator::funs_L;
 std::map<Comparator::Pair,comFun> Comparator::funs_GEQ;
+std::map<Comparator::Pair,comFun> Comparator::funs_EQ;
 void Comparator::initialize_L()
 {
 	funs_L[Comparator::Pair(t_int,t_int)]=less<int,int>;
@@ -83,6 +91,20 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_string,t_float)]=greatEqual<char*,float>;
 	funs_GEQ[Comparator::Pair(t_string,t_string)]=greatEqual<char*,char*>;
 }
+void Comparator::initialize_EQ()
+{
+	funs_EQ[Comparator::Pair(t_int,t_int)]=equal<int,int>;
+	funs_EQ[Comparator::Pair(t_int,t_float)]=equal<int,float>;
+//	funs_EQ[Comparator::Pair(t_int,t_string)]=equal<int,char*>;
+
+	funs_EQ[Comparator::Pair(t_float,t_int)]=equal<float,int>;
+	funs_EQ[Comparator::Pair(t_float,t_float)]=equal<float,float>;
+//	funs_EQ[Comparator::Pair(t_float,t_string)]=equal<float,char*>;
+
+//	funs_EQ[Comparator::Pair(t_string,t_int)]=equal<char*,int>;
+//	funs_EQ[Comparator::Pair(t_string,t_float)]=equal<char*,float>;
+	funs_EQ[Comparator::Pair(t_string,t_string)]=equal<char*,char*>;
+}
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
 	// TODO Auto-generated constructor stub
 	iniatilize();
@@ -102,7 +124,10 @@ void Comparator::iniatilize()
 	{
 		Comparator::initialize_GEQ();
 	}
-
+	if(funs_EQ.empty())
+	{
+		Comparator::initialize_EQ();
+	}
 	switch(compareType)
 	{
 		case Comparator::L:
@@ -121,6 +146,13 @@ void Comparator::iniatilize()
 			if(funs_GEQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_GEQ.end())
 			{
 			compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+			}
+		}
+		case Comparator::EQ:
+		{
+			if(funs_EQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_EQ.end())
+			{
+			compare=funs_EQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
 			}
 		}
 		default:

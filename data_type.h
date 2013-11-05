@@ -15,7 +15,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-enum data_type{t_int,t_float,t_string,t_double};
+enum data_type{t_int,t_float,t_string,t_double,t_u_long};
 typedef void (*fun)(void*,void*);
 
 
@@ -173,46 +173,6 @@ public:
 	}
 };
 
-class OperateString:public Operate
-{
-public:
-	OperateString(){};
-	inline void assignment(const void *src,void* &desc)const
-	{
-		assert(desc!=0&&src!=0);
-		strcpy((char*)desc,(char*)src);
-	};
-	inline std::string toString(void* value)
-	{
-		return std::string((char*)value);
-	};
-	inline bool equal(void* a, void* b)
-	{
-		return strcmp((char*)a,(char*)b)==0;
-	}
-	inline void add(void* target, void* increment)
-	{
-		//TODO: throw exception or implement the add for string.
-		printf("The sum for String is not current supported!\n");
-	}
-	inline fun GetADDFunction()
-	{
-		return ADD<char*>;
-	}
-	inline fun GetMINFunction()
-	{
-		return MIN<char*>;
-	}
-	inline fun GetMAXFunction()
-	{
-		return MAX<char*>;
-	}
-	inline fun GetIncreateByOneFunction()
-	{
-		return IncreaseByOne<char*>;
-	}
-};
-
 class OperateDouble:public Operate
 {
 public:
@@ -254,6 +214,87 @@ public:
 	}
 };
 
+class OperateULong:public Operate
+{
+public:
+	OperateULong(){};
+	inline void assignment(const void* src,void* &desc)const
+	{
+		*(unsigned long*)desc=*(unsigned long*)src;
+	};
+	inline std::string toString(void* value)
+	{
+		std::ostringstream ss;
+		ss<<*(unsigned long*)value;
+		std::string ret=ss.str();
+		return ret;
+	};
+	inline bool equal(void* a, void* b)
+	{
+		return *(unsigned long*)a==*(unsigned long*)b;
+	}
+	inline void add(void* target, void* increment)
+	{
+		ADD<unsigned long>(target, increment);
+	}
+	inline fun GetADDFunction()
+	{
+		return ADD<unsigned long>;
+	}
+	inline fun GetMINFunction()
+	{
+		return MIN<unsigned long>;
+	}
+	inline fun GetMAXFunction()
+	{
+		return MAX<unsigned long>;
+	}
+	inline fun GetIncreateByOneFunction()
+	{
+		return IncreaseByOne<unsigned long>;
+	}
+};
+
+class OperateString:public Operate
+{
+public:
+	OperateString(){};
+	inline void assignment(const void *src,void* &desc)const
+	{
+		assert(desc!=0&&src!=0);
+		strcpy((char*)desc,(char*)src);
+	};
+	inline std::string toString(void* value)
+	{
+		return std::string((char*)value);
+	};
+	inline bool equal(void* a, void* b)
+	{
+		return strcmp((char*)a,(char*)b)==0;
+	}
+	inline void add(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
+	inline fun GetADDFunction()
+	{
+		return ADD<char*>;
+	}
+	inline fun GetMINFunction()
+	{
+		return MIN<char*>;
+	}
+	inline fun GetMAXFunction()
+	{
+		return MAX<char*>;
+	}
+	inline fun GetIncreateByOneFunction()
+	{
+		return IncreaseByOne<char*>;
+	}
+};
+
 class column_type
 {
 public:
@@ -264,31 +305,20 @@ public:
 			case t_float:operate=new OperateFloat();break;
 			case t_string:operate=new OperateString();break;
 			case t_double:operate=new OperateDouble();break;
+			case t_u_long:operate=new OperateULong();break;
 			default:operate=0;break;
 		}
 	};
-
 	column_type():operate(0){};
-	column_type(const column_type& c){
-		this->type=c.type;
-		this->size=c.size;
-		switch(c.type)
-			{
-				case t_int:this->operate=new OperateInt();break;
-				case t_float:this->operate=new OperateFloat();break;
-				case t_string:this->operate=new OperateString();break;
-				case t_double:this->operate=new OperateDouble();break;
-				default:this->operate=0;break;
-			}
-	}
 	inline unsigned get_length() const
 	{
 		switch(type)
 		{
 			case t_int: return sizeof(int);
 			case t_float:return sizeof(float);
+			case t_double:return sizeof(double);
+			case t_u_long:return sizeof(unsigned long);
 			case t_string:return size;
-			case t_double: return sizeof(double);
 			default: return 0;
 
 		}
@@ -325,8 +355,9 @@ private:
 		{
 			case t_int:operate=new OperateInt();break;
 			case t_float:operate=new OperateFloat();break;
-			case t_string:operate=new OperateString();break;
 			case t_double:operate=new OperateDouble();break;
+			case t_string:operate=new OperateString();break;
+			case t_u_long:operate=new OperateULong();break;
 			default:operate=0;break;
 		}
 	}
