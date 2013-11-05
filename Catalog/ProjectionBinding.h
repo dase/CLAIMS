@@ -8,6 +8,7 @@
 #ifndef PROJECTIONBINDING_H_
 #define PROJECTIONBINDING_H_
 #include "Partitioner.h"
+
 class ProjectionBinding {
 public:
 	ProjectionBinding();

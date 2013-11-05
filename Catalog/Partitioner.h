@@ -13,8 +13,9 @@
 #include "../hashmap.hpp"
 #include "Attribute.h"
 #include "../hash.h"
-#include "../Resource/NodeTracker.h"
+
 #include "Partitioner.h"
+#include "../Resource/NodeTracker.h"
 /**Partitioner describes how the data is partitioned and what nodes are
  * involved in the partition. *
  */
@@ -48,6 +49,7 @@ class PartitionInfo{
 public:
 
 	friend class Partitioner;
+	explicit PartitionInfo():number_of_blocks(-1){};
 	explicit PartitionInfo(string file_name)
 	:hdfs_file_name(file_name),number_of_blocks(0){}
 
@@ -70,8 +72,9 @@ protected:
 
 class OneToOnePartitionInfo:public PartitionInfo{
 public:
-	OneToOnePartitionInfo(string file_name):PartitionInfo(file_name),binding_node_id_(0){};
-	OneToOnePartitionInfo(string file_name,unsigned number_of_blocks):PartitionInfo(file_name,number_of_blocks),binding_node_id_(0){};
+	OneToOnePartitionInfo():PartitionInfo(),binding_node_id_(-1){};
+	OneToOnePartitionInfo(string file_name):PartitionInfo(file_name),binding_node_id_(-1){};
+	OneToOnePartitionInfo(string file_name,unsigned number_of_blocks):PartitionInfo(file_name,number_of_blocks),binding_node_id_(-1){};
 	binding_mode get_mode(){
 		return OneToOne;
 	}

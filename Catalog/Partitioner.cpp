@@ -17,6 +17,9 @@ Partitioner::Partitioner(unsigned number_of_partitions,PartitionFunction* partit
 Partitioner::Partitioner(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partitioning_function)
 :number_of_partitions_(number_of_partitions),partition_functin_(partitioning_function),mode_(OneToOne){
 	partition_key_=new Attribute(partition_key);
+	for(unsigned i=0;i<number_of_partitions;i++){
+		partition_info_list.push_back(new OneToOnePartitionInfo());
+	}
 }
 
 Partitioner::~Partitioner() {
@@ -58,9 +61,10 @@ void Partitioner::unbindPartitionToNode(PartitionID partition_id){
 
 }
 
-void Partitioner::RegisterPartition(unsigned partitoin_key,std::string file_name,unsigned number_of_chunks){
-	assert(partitoin_key<partition_functin_->getNumberOfPartitions());
-//	partitionid_to_filename_[partitoin_key]=file_name;
+void Partitioner::RegisterPartition(unsigned partition_key,std::string file_name,unsigned number_of_chunks){
+	assert(partition_key<partition_functin_->getNumberOfPartitions());
+	partition_info_list[partition_key]->hdfs_file_name=file_name;
+	partition_info_list[partition_key]->number_of_blocks=number_of_chunks;
 
 }
 

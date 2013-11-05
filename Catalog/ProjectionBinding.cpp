@@ -44,6 +44,7 @@ bool ProjectionBinding::BindingEntireProjection(Partitioner* part){
 					 * 		 2.The partiitoner may need to consider OneToMany mode so
 					 * 		  that a single partition can be bound to multiple nodes.
 					 * */
+					printf("binding fails! not enough resource!\n");
 					return false;
 				}
 			}

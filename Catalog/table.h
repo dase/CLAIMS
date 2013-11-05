@@ -106,7 +106,7 @@ protected:
 	string tableName;
 	vector<Attribute> attributes;
 	TableID table_id_;
-	vector<ProjectionDescriptor> projection_list_;
+	vector<ProjectionDescriptor*> projection_list_;
 	// delete for debugging
 //	hashmap<ColumnID, ColumnDescriptor*> columns;
 

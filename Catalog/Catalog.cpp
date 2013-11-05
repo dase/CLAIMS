@@ -40,7 +40,8 @@ bool Catalog::add_table(TableDescriptor* const &table){
 TableDescriptor* Catalog::getTable(const TableID &target)const{
 	if(!tableid_to_table.contains(target))
 		return NULL;
-	tableid_to_table.
-	return tableid_to_table[target];
+
+	/* at could retain const while [] doesn't.*/
+	return tableid_to_table.at(target);
 
 }

@@ -71,14 +71,16 @@ void TableDescriptor::addProjection(vector<ColumnID> id_list){
 }
 
 bool TableDescriptor::createHashPartitionedProjection(vector<ColumnID> column_list,ColumnID partition_key_index,unsigned number_of_partitions){
-	ProjectionDescriptor projection;
-	projection.projection_id_=projection_list_.size();
+	ProjectionDescriptor *projection=new ProjectionDescriptor();
+	projection->projection_id_=projection_list_.size();
 	for(unsigned i=0;i<column_list.size();i++){
-		projection.addAttribute(attributes[column_list[i]]);
+		projection->addAttribute(attributes[column_list[i]]);
 	}
 
 	PartitionFunction* hash_function=PartitionFunctionFactory::createModuloFunction(number_of_partitions);
-	projection.partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+	projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+
+
 
 	projection_list_.push_back(projection);
 
