@@ -8,7 +8,7 @@
 
 
 #include "TableManagerSlave.h"
-
+#include "TimeOutReceiver.h"
 TableManagerSlave::TableManagerSlave(std::string ip,std::string port)
 :TableManager(),port(port),ip(ip)
 
@@ -45,14 +45,14 @@ TableManagerSlave::TableManagerSlave(std::string ip,std::string port)
 
 	sleep(1);
 
-	Theron::Receiver receiver(*endpoint,"RegisterReplyReceiver");
+	TimeOutReceiver receiver(endpoint,"RegisterReplyReceiver");
 	Theron::Catcher<int> resultCatcher;
 	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
 
 
 
 
-	while(receiver.Wait(1,1000)==0)
+	while(receiver.TimeOutWait(1,1000)==0)
 	{
 		framework->Send(RegisterSlaveMessage::serialize(RegisterSlaveMessage(slave_ip, slave_port)),receiver.GetAddress(),Theron::Address("RegisterSlaveActor"));
 	}

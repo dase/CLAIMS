@@ -6,7 +6,7 @@
  */
 
 #include "TableManagerMaster.h"
-
+#include "TimeOutReceiver.h"
 TableManagerMaster::TableManagerMaster():table_cursor(0) {
 	// TODO Auto-generated constructor stub
 	_instance=this;
@@ -51,7 +51,7 @@ void TableManagerMaster::create_table_on_all_slaves(std::string table_name,std::
 	Message256 str= CreateTableMessage::serializae(CTM);
 
 
-	Theron::Receiver receiver(*endpoint,"asdfasdfasf");
+	TimeOutReceiver receiver(endpoint,"asdfasdfasf");
 
 
 
@@ -65,7 +65,7 @@ void TableManagerMaster::create_table_on_all_slaves(std::string table_name,std::
 			 	 	 receiver.GetAddress(),
 		            Theron::Address(("CreateTableActor:"+slave_id_list[0]).c_str()));
 	 uint timeout=10;
-	 if(receiver.Wait(1,1000)==0)
+	 if(receiver.TimeOutWait(1,1000)==0)
 		 printf("Time out!\n");
 	 else
 	 {
