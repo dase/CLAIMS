@@ -40,7 +40,7 @@ bool IteratorExecutorMaster::ExecuteIteratorsOnSites(Iterator* it, std::vector<s
 
 	Message4K str= IteratorMessage::serialize4K(im);
 
-	Theron::Receiver receiver(*endpoint);
+	TimeOutReceiver receiver(endpoint);
 	Theron::Catcher<int> resultCatcher;
 	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
 	for(int slave_filter_id=0;slave_filter_id<ip_list.size();slave_filter_id++){
@@ -49,7 +49,7 @@ bool IteratorExecutorMaster::ExecuteIteratorsOnSites(Iterator* it, std::vector<s
 		cout<<"actname: "<<ip_port.str()<<endl;
 		framework->Send(str,receiver.GetAddress(),Theron::Address(ip_port.str().c_str()));
 	}
-	if(receiver.Wait(ip_list.size(),5000)<ip_list.size()){
+	if(receiver.TimeOutWait(ip_list.size(),5000)<ip_list.size()){
 		logging_->elog("Time out!\n");
 		return true;
 	}

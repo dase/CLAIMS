@@ -10,6 +10,7 @@
 #include <sstream>
 #include "../Logging.h"
 #include "../Environment.h"
+#include "../TimeOutReceiver.h"
 ExchangeTracker::ExchangeTracker() {
 	endpoint=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint);
@@ -41,13 +42,13 @@ void ExchangeTracker::LogoutExchange(const unsigned long long int &id){
 }
 
 int ExchangeTracker::AskForSocketConnectionInfo(unsigned long long int exchange_id,std::string target_ip){
-	Theron::Receiver receiver(*endpoint);
+	TimeOutReceiver* receiver=new TimeOutReceiver(endpoint);
 	Theron::Catcher<Message256> ResultCatcher;
-	receiver.RegisterHandler(&ResultCatcher,&Theron::Catcher<Message256>::Push);
-	bool send_result=framework->Send(exchange_id,receiver.GetAddress(),Theron::Address(("ExchangeTrackerActor://"+target_ip).c_str()));
-	const unsigned Timeout=3000;	//timeout in millisecond
+	receiver->RegisterHandler(&ResultCatcher,&Theron::Catcher<Message256>::Push);
+	bool send_result=framework->Send(exchange_id,receiver->GetAddress(),Theron::Address(("ExchangeTrackerActor://"+target_ip).c_str()));
+	unsigned Timeout=3000;	//timeout in millisecond
 
-	if(receiver.Wait(1,Timeout)==0){
+	if(receiver->TimeOutWait(1,Timeout)==0){
 		/**
 		 * TODO: In current version, the request is only tried once. In the future,
 		 * the request should be sent repeatedly until the reply is received or the

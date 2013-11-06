@@ -17,6 +17,7 @@
 #include "../Debug.h"
 #include "../Message.h"
 #include "../Environment.h"
+#include "../TimeOutReceiver.h"
 Coordinator::Coordinator() {
 	logging=new CoordinatorLogging();
 	/** swap the order of SetupTheTheron and PreparetheSocket to provide more time
@@ -180,9 +181,9 @@ void* Coordinator::ListeningNewNode(void *arg){
 
 
 
-		Theron::Receiver receiver(*Cthis->endpoint);
+		TimeOutReceiver *receiver = new TimeOutReceiver(Cthis->endpoint);
 		Theron::Catcher<int> resultCatcher;
-		receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
+		receiver->RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
 		const int TimeOut=1000;//ms
 
 		/**
@@ -196,24 +197,24 @@ void* Coordinator::ListeningNewNode(void *arg){
 		for(unsigned i=0;i<Cthis->PeersIpPort.size();i++){
 			NodeConnectionMessage new_NCM(new_node_ip,new_node_port);
 			NodeConnectionMessage old_NCM(Cthis->PeersIpPort[i].first,Cthis->PeersIpPort[i].second);
-			receiver.Reset();
+			receiver->Reset();
 			Cthis->framework->Send(NodeConnectionMessage::serialize(new_NCM),
-									receiver.GetAddress(),
+									receiver->GetAddress(),
 									Theron::Address(("ConnectionActor://"+old_NCM.ip+":"+old_NCM.port).c_str()));
-			while(receiver.Wait(1,TimeOut)!=1){
+			while(receiver->TimeOutWait(1,TimeOut)!=1){
 			Cthis->framework->Send(NodeConnectionMessage::serialize(new_NCM),
-									receiver.GetAddress(),
+									receiver->GetAddress(),
 									Theron::Address(("ConnectionActor://"+old_NCM.ip+":"+old_NCM.port).c_str()));
 			}
 
-			receiver.Reset();
+			receiver->Reset();
 
 			Cthis->framework->Send(NodeConnectionMessage::serialize(old_NCM),
-									receiver.GetAddress(),
+									receiver->GetAddress(),
 									Theron::Address(("ConnectionActor://"+new_NCM.ip+":"+new_NCM.port).c_str()));
-			while(receiver.Wait(1,TimeOut)!=1){
+			while(receiver->TimeOutWait(1,TimeOut)!=1){
 				Cthis->framework->Send(NodeConnectionMessage::serialize(old_NCM),
-										receiver.GetAddress(),
+										receiver->GetAddress(),
 										Theron::Address(("ConnectionActor://"+new_NCM.ip+":"+new_NCM.port).c_str()));
 			}
 		}
