@@ -4,7 +4,7 @@
  *  Created on: 2013-10-15
  *      Author: casa
  */
-
+/* consider to be merged with Catalog.binding*/
 #ifndef BLOCKMANAGERMASTER_H_
 #define BLOCKMANAGERMASTER_H_
 /*

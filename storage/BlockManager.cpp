@@ -6,7 +6,7 @@
  */
 
 #include "BlockManager.h"
-
+#include "../Environment.h"
 BlockManager *BlockManager::blockmanager_=0;
 
 BlockManager *BlockManager::getInstance(BlockManagerWorkerActor *worker){
@@ -25,11 +25,18 @@ void BlockManager::initialize(){
 	// 1，建两个存储，一个是内存的，一个磁盘的
 	diskstore_=new DiskStore(DISKDIR);
 	memstore_=new MemoryStore();
+
+	///the version written by zhanglei/////////////////////////////////
 	blockManagerId_=new BlockManagerId();
 	// 2，注册
 	registerToMaster(blockManagerId_);
 	// 3，开启心跳监听
 	heartBeat();
+	///////////////////////////////////////////////////////////////////
+//	Environment::getInstance()->getResourceManagerSlave()->
+
+	//////////////the version written by Li////////////////////////////
+
 }
 
 void BlockManager::registerToMaster(BlockManagerId *blockManagerId){

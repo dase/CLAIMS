@@ -86,26 +86,28 @@ void Environment::InitializeEndPoint(){
 void Environment::InitializeCoordinator(){
 	coordinator=new Coordinator();
 }
-void Environment::InitializeStorage(bool ismaster){
+void Environment::InitializeStorage(){
 	Theron::Framework *framework_storage=new Theron::Framework(*endpoint);
-	if(ismaster){
+	if(ismaster_){
 		BlockManagerMaster::BlockManagerMasterActor *blockManagerMasterActor=new BlockManagerMaster::BlockManagerMasterActor(endpoint,framework_storage,"blockManagerMasterActor");
 		BlockManagerMaster* blockManagerMaster=BlockManagerMaster::getInstance(blockManagerMasterActor);
 		blockManagerMaster->initialize();
-	}else{
+	}
+		/*both master and slave node run the BlockManager.*/
 		BlockManagerId *bmid=new BlockManagerId();
 		string actorname="blockManagerWorkerActor_"+bmid->blockManagerId;
 		cout<<actorname.c_str()<<endl;
 		BlockManager::BlockManagerWorkerActor *blockManagerWorkerActor=new BlockManager::BlockManagerWorkerActor(endpoint,framework_storage,actorname.c_str());
 		BlockManager *blockManager=BlockManager::getInstance(blockManagerWorkerActor);
 		blockManager->initialize();
-	}
+
 }
 
 void Environment::InitializeResourceManager(){
 	if(ismaster_){
 		resourceManagerMaster_=new ResourceManagerMaster();
 	}
+	resourceManagerSlave_=new ResourceManagerSlave();
 }
 
 AdaptiveEndPoint* Environment::getEndPoint(){
@@ -116,6 +118,9 @@ ExchangeTracker* Environment::getExchangeTracker(){
 }
 ResourceManagerMaster* Environment::getResourceManagerMaster(){
 	return resourceManagerMaster_;
+}
+ResourceManagerSlave* Environment::getResourceManagerSlave(){
+	return resourceManagerSlave_;
 }
 Catalog* Environment::getCatalog()const{
 	return catalog_;

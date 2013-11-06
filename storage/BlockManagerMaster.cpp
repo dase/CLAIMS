@@ -5,6 +5,8 @@
  *      Author: casa
  */
 
+
+
 #include "BlockManagerMaster.h"
 
 BlockManagerMaster *BlockManagerMaster::master_=0;
@@ -52,7 +54,7 @@ BlockManagerMaster::BlockManagerMasterActor::~BlockManagerMasterActor() {
 void BlockManagerMaster::BlockManagerMasterActor::workerRegister(const RegisterStorageMessage &message,const Theron::Address from){
 	cout<<"I am in the workerRegister!"<<endl;
 	// 加到blockInfo中
-	cout<<"I receive message: "<<message.mText<<" : "<<from.AsString()<<endl;
+	cout<<"I receive message: nodeid"<<message.nodeid<<" and other information "<<from.AsString()<<endl;
 	string respond="ok";
 	RegisterStorageRespond rsr(respond.c_str());
 	Send(rsr,from);

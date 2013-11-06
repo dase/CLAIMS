@@ -17,6 +17,7 @@
 #include "storage/BlockManager.h"
 #include "storage/BlockManagerMaster.h"
 #include "Resource/ResourceManagerMaster.h"
+#include "Resource/ResourceManagerSlave.h"
 #include "Catalog/Catalog.h"
 
 class Environment {
@@ -27,13 +28,14 @@ public:
 	AdaptiveEndPoint* getEndPoint();
 	ExchangeTracker* getExchangeTracker();
 	ResourceManagerMaster* getResourceManagerMaster();
+	ResourceManagerSlave* getResourceManagerSlave();
 	Catalog* getCatalog()const;
 	Environment(bool ismaster=false);
 private:
 	void Initialize();
 	void InitializeEndPoint();
 	void InitializeCoordinator();
-	void InitializeStorage(bool);
+	void InitializeStorage();
 	void InitializeResourceManager();
 private:
 	static Environment* _instance;
@@ -47,6 +49,7 @@ private:
 	Logging* logging_;
 	bool ismaster_;
 	ResourceManagerMaster* resourceManagerMaster_;
+	ResourceManagerSlave* resourceManagerSlave_;
 	Catalog* catalog_;
 };
 

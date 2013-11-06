@@ -16,7 +16,7 @@
  *
  *      This header defines all kinds of messages that are transformed by Theron.
  */
-
+#include<arpa/inet.h>
 #include <vector>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -31,12 +31,20 @@
 #include "BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "Debug.h"
 
+//It's better to use fixed length information for implementation concern.
 struct RegisterStorageMessage{
-	explicit RegisterStorageMessage(const char * const text){
-		mText[0]='\0';
-		memcpy(mText,text,REGISTER_MESSAGE_LEN);
+//	explicit RegisterStorageMessage(const char * const text){
+//		mText[0]='\0';
+//		memcpy(mText,text,REGISTER_MESSAGE_LEN);
+//	}
+//	char mText[REGISTER_MESSAGE_LEN];
+	explicit RegisterStorageMessage(const int &disk_budget,const int & memory_budget,const int & nodeid)
+	:disk_budget(disk_budget),memory_budget(memory_budget),nodeid(nodeid){
 	}
-	char mText[REGISTER_MESSAGE_LEN];
+	int disk_budget;
+	int memory_budget;
+	int nodeid;
+
 };
 THERON_DECLARE_REGISTERED_MESSAGE(RegisterStorageMessage)
 
@@ -106,6 +114,26 @@ struct MatcherRespond{
 };
 THERON_DECLARE_REGISTERED_MESSAGE(MatcherRespond)
 
+/* NodeRegisterMessage has the same function compared with NodeConnectionMessage except for that
+ * NodeRegisterMessage is fixed-length.*/
+struct NodeRegisterMessage{
+	explicit NodeRegisterMessage(std::string node_ip,unsigned node_port){
+		port=node_port;
+		ip=inet_addr(node_ip.c_str());
+	}
+	std::string get_ip()const{
+		in_addr add;
+		add.s_addr=port;
+		ostringstream str;
+		str<<inet_ntoa(add);
+		std::string ret;
+		ret=str.str();
+		return ret;
+	}
+	unsigned ip;
+	unsigned port;
+};
+THERON_DECLARE_REGISTERED_MESSAGE(NodeRegisterMessage)
 struct Message256
 {
 	unsigned length;
