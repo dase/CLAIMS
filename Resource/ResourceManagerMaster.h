@@ -17,6 +17,15 @@
 #include "../Message.h"
 class ResourceManagerMaster {
 public:
+	class ResourceManagerMasterActor:public Theron::Actor{
+	public:
+		ResourceManagerMasterActor(Theron::Framework* framework,ResourceManagerMaster* rmm);
+		~ResourceManagerMasterActor(){};
+	private:
+		void ReceiveStorageBudgetReport(const StorageBudgetMessage &message,const Theron::Address from);
+		void ReceiveNewNodeRegister(const NodeRegisterMessage &message,const Theron::Address from);
+		ResourceManagerMaster* rmm_;
+	};
 	ResourceManagerMaster();
 	virtual ~ResourceManagerMaster();
 	NodeID RegisterNewSlave(NodeIP);
@@ -30,17 +39,10 @@ private:
 	Logging* logging_;
 	Theron::EndPoint *endpoint_;
 	Theron::Framework *framework;
-
+	ResourceManagerMasterActor* acter_;
 	/*Actor*/
 
-	class ResourceManagerMasterActor:public Theron::Actor{
-	public:
-		ResourceManagerMasterActor(Theron::Framework* framework,ResourceManagerMaster* rmm);
-	private:
-		void ReceiveStorageBudgetReport(const RegisterStorageMessage &message,const Theron::Address from);
-		void ReceiveNewNodeRegister(const NodeRegisterMessage &message,const Theron::Address from);
-		ResourceManagerMaster* rmm_;
-	};
+
 
 };
 

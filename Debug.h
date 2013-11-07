@@ -54,6 +54,6 @@
 //#define DEBUG_ExpandableBlockStreamExchangeLM
 
 #define DEBUG_ResourceManagerMaster
-
+#define DEBUG_ResourceManagerSlave
 #define DEBUG_Catalog
 #endif /* DEBUG_H_ */

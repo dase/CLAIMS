@@ -37,16 +37,16 @@ int TableDescriptor_test(){
 int BindingTest(){
 	Environment::getInstance(true);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
-	rmms->RegisterNewSlave("192.168.1.1");
-	rmms->RegisterNewSlave("192.168.1.2");
-	rmms->RegisterNewSlave("192.168.1.3");
-	rmms->RegisterNewSlave("192.168.1.4");
-	rmms->RegisterNewSlave("192.168.1.5");
-	rmms->RegisterDiskBuget(0,0);
-	rmms->RegisterDiskBuget(1,1000);
-	rmms->RegisterDiskBuget(2,0);
-	rmms->RegisterDiskBuget(3,10000);
-	rmms->RegisterDiskBuget(4,0);
+//	rmms->RegisterNewSlave("192.168.1.1");
+//	rmms->RegisterNewSlave("192.168.1.2");
+//	rmms->RegisterNewSlave("192.168.1.3");
+//	rmms->RegisterNewSlave("192.168.1.4");
+//	rmms->RegisterNewSlave("192.168.1.5");
+//	rmms->RegisterDiskBuget(0,0);
+//	rmms->RegisterDiskBuget(1,1000);
+//	rmms->RegisterDiskBuget(2,0);
+//	rmms->RegisterDiskBuget(3,10000);
+//	rmms->RegisterDiskBuget(4,0);
 
 	///////////////////////////////////////
 	/* the following codes should be triggered by DDL module*/
@@ -91,7 +91,10 @@ int Theron_test(){
 
 }
 
-int main(){
+int main234234(){
+
+
+
 	BindingTest();
 
 	cout<<"Waiting~"<<endl;

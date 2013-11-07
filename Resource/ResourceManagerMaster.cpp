@@ -13,10 +13,11 @@ ResourceManagerMaster::ResourceManagerMaster() {
 
 	endpoint_=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint_);
+	acter_=new ResourceManagerMasterActor(framework,this);
 }
 
 ResourceManagerMaster::~ResourceManagerMaster() {
-	// TODO Auto-generated destructor stub
+	acter_->~ResourceManagerMasterActor();
 }
 NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 	NodeID new_node_id=node_tracker_->RegisterNode(new_slave_ip_);
@@ -33,7 +34,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 //	}
 	node_to_resourceinfo_[new_node_id]=new ResourceInfo();
 
-	logging_->log("[ip+%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
+	logging_->log("[ip=%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
 
 	return new_node_id;
 }
@@ -69,14 +70,17 @@ bool ResourceManagerMaster::RegisterDiskBuget(NodeID report_node_id, unsigned si
 ResourceManagerMaster::ResourceManagerMasterActor::ResourceManagerMasterActor(Theron::Framework* framework,ResourceManagerMaster* rmm)
 :Theron::Actor(*framework,"ResourceManagerMaster"),rmm_(rmm){
 	RegisterHandler(this,&ResourceManagerMasterActor::ReceiveStorageBudgetReport);
+	RegisterHandler(this,&ResourceManagerMasterActor::ReceiveNewNodeRegister);
 }
-void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetReport(const RegisterStorageMessage &message,const Theron::Address from){
+
+void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetReport(const StorageBudgetMessage &message,const Theron::Address from){
 	rmm_->RegisterDiskBuget(message.nodeid,message.disk_budget);
-	logging_->log("The storage of Slave[%d] has been registered, the disk budget is [%d]MB",message.nodeid,message.disk_budget);
+	rmm_->logging_->log("The storage of Slave[%d] has been registered, the disk budget is [%d]MB",message.nodeid,message.disk_budget);
 //	Send(0,from);
 }
 void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveNewNodeRegister(const NodeRegisterMessage &message,const Theron::Address from){
 
 	NodeID assigned_node_id=rmm_->RegisterNewSlave(message.get_ip());
+	rmm_->logging_->log("Received register request from %s:%d, the allocated NodeID=%d",message.get_ip().c_str(),message.port,assigned_node_id);
 	Send(assigned_node_id,from);
 }

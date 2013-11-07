@@ -36,7 +36,7 @@ bool ExpandableBlockStreamHdfsScan::open(){
 //		vector<HdfsBlock> hdfsblock_array=ms->getFromMem(state_.partition_file_name_);
 //		cout<<hdfsblock_array.size()<<endl;
 		BlockManager::BlockManagerWorkerActor *bmk=0;
-		BlockManager *bm=BlockManager::getInstance(bmk);
+		BlockManager *bm=BlockManager::getInstance();
 /*		vector<ChunkInfo> vci=bm->loadFromHdfs(state_.partition_file_name_.c_str());*/
 		// 在此将所有的指针都存进去，非空即存
 		int offset=0;

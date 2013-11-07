@@ -8,15 +8,18 @@
 
 
 #include "BlockManagerMaster.h"
-
+#include "../Environment.h"
 BlockManagerMaster *BlockManagerMaster::master_=0;
 
-BlockManagerMaster::BlockManagerMaster(BlockManagerMasterActor *driverActor) {
-	driverActor_=driverActor;
+BlockManagerMaster::BlockManagerMaster() {
+
+	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
+	actor_=new BlockManagerMasterActor(framework_,"blockManagerMasterActor");
 }
 
 BlockManagerMaster::~BlockManagerMaster() {
-
+	actor_->~Actor();
+	framework_->~Framework();
 }
 
 void BlockManagerMaster::initialize(){
@@ -38,8 +41,8 @@ void BlockManagerMaster::testForPoc(){
 	bm_->projectsInput(file_name.c_str(),projs);
 }
 
-BlockManagerMaster::BlockManagerMasterActor::BlockManagerMasterActor(Theron::EndPoint *endpoint,Theron::Framework* framework,const char *name)
-:Actor(*(framework),name),endpoint_(endpoint),framework_(framework){
+BlockManagerMaster::BlockManagerMasterActor::BlockManagerMasterActor(Theron::Framework* framework,const char *name)
+:Actor(*(framework),name){
 	RegisterHandler(this,&BlockManagerMasterActor::workerRegister);
 	RegisterHandler(this,&BlockManagerMasterActor::heartbeatReceiver);
 	RegisterHandler(this,&BlockManagerMasterActor::blockStatusReceiver);
@@ -51,7 +54,7 @@ BlockManagerMaster::BlockManagerMasterActor::~BlockManagerMasterActor() {
 
 }
 
-void BlockManagerMaster::BlockManagerMasterActor::workerRegister(const RegisterStorageMessage &message,const Theron::Address from){
+void BlockManagerMaster::BlockManagerMasterActor::workerRegister(const StorageBudgetMessage &message,const Theron::Address from){
 	cout<<"I am in the workerRegister!"<<endl;
 	// 加到blockInfo中
 	cout<<"I receive message: nodeid"<<message.nodeid<<" and other information "<<from.AsString()<<endl;

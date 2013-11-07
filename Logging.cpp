@@ -165,7 +165,7 @@ void CatalogLogging::elog(const char* format,...){
 
 void ResourceManagerMasterLogging::log(const char* format,...){
 #ifdef DEBUG_ResourceManagerMaster
-	printf("Catalog: ");
+	printf("ResourceManagerMaster: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
@@ -174,6 +174,25 @@ void ResourceManagerMasterLogging::log(const char* format,...){
 #endif
 }
 void ResourceManagerMasterLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[ResourceManagerMaster]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void ResourceManagerSlaveLogging::log(const char* format,...){
+#ifdef DEBUG_ResourceManagerSlave
+	printf("Catalog: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ResourceManagerSlaveLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[Catalog]: ");
 	va_list arg;
 	va_start (arg, format);
@@ -181,3 +200,4 @@ void ResourceManagerMasterLogging::elog(const char* format,...){
 	printf("\n");
 	va_end (arg);
 }
+

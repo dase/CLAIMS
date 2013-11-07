@@ -35,9 +35,11 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	This is done in Aug.18 by Li :)
  */
-	InitializeStorage(ismaster);
 
+	/*Before initializing Resource Manager, the instance ip and port should be decided.*/
 	InitializeResourceManager();
+
+	InitializeStorage();
 
 	logging_->log("Initializing the ExecutorMaster...");
 	iteratorExecutorMaster=new IteratorExecutorMaster();
@@ -60,6 +62,9 @@ Environment* Environment::getInstance(bool ismaster){
 std::string Environment::getIp(){
 	return ip;
 }
+unsigned Environment::getPort(){
+	return port;
+}
 void Environment::Initialize(){
 	libconfig::Config cfg;
 	cfg.readFile(CONFIG);
@@ -75,7 +80,7 @@ void Environment::InitializeEndPoint(){
 	if((endpoint_port=portManager->applyPort())==0){
 		logging_->elog("The ports in the PortManager is exhausted!");
 	}
-
+	port=endpoint_port;
 	logging_->log("Initializing the AdaptiveEndPoint as EndPoint://%s:%d.",endpoint_ip.c_str(),endpoint_port);
 	std::ostringstream name,port;
 	port<<endpoint_port;
@@ -87,19 +92,19 @@ void Environment::InitializeCoordinator(){
 	coordinator=new Coordinator();
 }
 void Environment::InitializeStorage(){
-	Theron::Framework *framework_storage=new Theron::Framework(*endpoint);
+
 	if(ismaster_){
-		BlockManagerMaster::BlockManagerMasterActor *blockManagerMasterActor=new BlockManagerMaster::BlockManagerMasterActor(endpoint,framework_storage,"blockManagerMasterActor");
-		BlockManagerMaster* blockManagerMaster=BlockManagerMaster::getInstance(blockManagerMasterActor);
-		blockManagerMaster->initialize();
+		blockManagerMaster_=BlockManagerMaster::getInstance();
+		blockManagerMaster_->initialize();
 	}
 		/*both master and slave node run the BlockManager.*/
-		BlockManagerId *bmid=new BlockManagerId();
-		string actorname="blockManagerWorkerActor_"+bmid->blockManagerId;
-		cout<<actorname.c_str()<<endl;
-		BlockManager::BlockManagerWorkerActor *blockManagerWorkerActor=new BlockManager::BlockManagerWorkerActor(endpoint,framework_storage,actorname.c_str());
-		BlockManager *blockManager=BlockManager::getInstance(blockManagerWorkerActor);
-		blockManager->initialize();
+//		BlockManagerId *bmid=new BlockManagerId();
+//		string actorname="blockManagerWorkerActor_"+bmid->blockManagerId;
+//		cout<<actorname.c_str()<<endl;
+//		BlockManager::BlockManagerWorkerActor *blockManagerWorkerActor=new BlockManager::BlockManagerWorkerActor(endpoint,framework_storage,actorname.c_str());
+
+		blockManager_=BlockManager::getInstance();
+		blockManager_->initialize();
 
 }
 
@@ -108,6 +113,8 @@ void Environment::InitializeResourceManager(){
 		resourceManagerMaster_=new ResourceManagerMaster();
 	}
 	resourceManagerSlave_=new ResourceManagerSlave();
+	nodeid=resourceManagerSlave_->Register();
+
 }
 
 AdaptiveEndPoint* Environment::getEndPoint(){
@@ -121,6 +128,9 @@ ResourceManagerMaster* Environment::getResourceManagerMaster(){
 }
 ResourceManagerSlave* Environment::getResourceManagerSlave(){
 	return resourceManagerSlave_;
+}
+NodeID Environment::getNodeID()const{
+	return nodeid;
 }
 Catalog* Environment::getCatalog()const{
 	return catalog_;

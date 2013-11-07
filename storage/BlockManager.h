@@ -50,11 +50,11 @@ public:
 			level_=level;
 		}
 	};
-
+	friend class BlockManagerWorkerActor;
 	class BlockManagerWorkerActor:public Theron::Actor{
 		friend class BlockManager;
 	public:
-		BlockManagerWorkerActor(Theron::EndPoint *endpoint,Theron::Framework *framework,const char *name);
+		BlockManagerWorkerActor(Theron::Framework *framework,const char *name,BlockManager* bm);
 		virtual ~BlockManagerWorkerActor();
 
 		bool _reigisterToMaster(BlockManagerId *bMId);
@@ -66,13 +66,12 @@ public:
 		void putBlock(const Message256 &message,const Theron::Address from){};
 
 	private:
-		Theron::Framework *framework_;
-		Theron::EndPoint *endpoint_;
 		TimeOutReceiver *tor_;
 		string receiverId_;
+		BlockManager* bm_;
 	};
 
-	static BlockManager *getInstance(BlockManagerWorkerActor *worker);
+	static BlockManager *getInstance();
 
 	virtual ~BlockManager();
 
@@ -107,9 +106,7 @@ public:
 	BlockManagerId *getId();
 	string askForMatch(string filename, BlockManagerId bmi);
 private:
-	BlockManager(BlockManagerWorkerActor *worker)
-	:worker_(worker){
-	}
+	BlockManager();
 
 private:
 	static BlockManager *blockmanager_;
@@ -131,6 +128,9 @@ private:
 
 	/* poc测试 filename和projectid的映射*/
 	map<string, string> file_proj_;
+
+	Theron::Framework *framework_;
+	Theron::Actor *actor_;
 };
 
 #endif /* BLOCKMANAGER_H_ */

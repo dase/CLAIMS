@@ -29,25 +29,27 @@ public:
 		string blockId_;
 		storageLevel level_;
 	};
-
 	class BlockManagerMasterActor:public Theron::Actor{
 		friend class BlockManagerMaster;
 	public:
-		BlockManagerMasterActor(Theron::EndPoint *endpoint,Theron::Framework *framework,const char *name);
+		BlockManagerMasterActor(Theron::Framework *framework,const char *name);
 		virtual ~BlockManagerMasterActor();
 
-		void workerRegister(const RegisterStorageMessage &message,const Theron::Address from);
+		void workerRegister(const StorageBudgetMessage &message,const Theron::Address from);
 		void heartbeatReceiver(const HeartBeatMessage &message,const Theron::Address from);
 		void blockStatusReceiver(const BlockStatusMessage &message,const Theron::Address from);
 		void matcherReceiver(const MatcherMessage &message,const Theron::Address from);
 	private:
-		Theron::Framework *framework_;
-		Theron::EndPoint *endpoint_;
+
+
 	};
 
-	static BlockManagerMaster* getInstance(BlockManagerMasterActor *actor){
+
+	static BlockManagerMaster* getInstance(){
 		if(master_==0){
-			master_=new BlockManagerMaster(actor);
+
+			master_=new BlockManagerMaster();
+
 		}
 		return master_;
 	}
@@ -62,13 +64,15 @@ public:
 //	BlockManagerId getLocations(string blockId){};
 
 private:
-	BlockManagerMaster(BlockManagerMasterActor *driverActor);
+	BlockManagerMaster();
 private:
 	static BlockManagerMaster *master_;
 	// 将blockMessage收到之后，首先看他是什么消息，然后传给BlockManagerMasterActor处理
-	BlockManagerMasterActor *driverActor_;
 	AllBlockInfo *abi_;
 	BlanceMatcher *bm_;
+	Theron::Framework *framework_;
+	BlockManagerMasterActor* actor_;
+
 };
 
 

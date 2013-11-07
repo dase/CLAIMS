@@ -9,16 +9,19 @@
 #define RESOURCEMANAGERSLAVE_H_
 #include <Theron/Theron.h>
 #include "../Message.h"
+#include "../Logging.h"
+typedef int NodeID;
 class ResourceManagerSlave {
 public:
 	ResourceManagerSlave();
 	virtual ~ResourceManagerSlave();
-	NodeID Register(std::string ip,unsigned port);
+	NodeID Register();
 	void RegisterStorageSlave();
-	void ReportStorageBudget(RegisterStorageMessage&);
+	void ReportStorageBudget(StorageBudgetMessage&);
 
 private:
 	Theron::Framework *framework_;
+	Logging* logging_;
 };
 
 #endif /* RESOURCEMANAGERSLAVE_H_ */

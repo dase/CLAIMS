@@ -32,13 +32,13 @@
 #include "Debug.h"
 
 //It's better to use fixed length information for implementation concern.
-struct RegisterStorageMessage{
+struct StorageBudgetMessage{
 //	explicit RegisterStorageMessage(const char * const text){
 //		mText[0]='\0';
 //		memcpy(mText,text,REGISTER_MESSAGE_LEN);
 //	}
 //	char mText[REGISTER_MESSAGE_LEN];
-	explicit RegisterStorageMessage(const int &disk_budget,const int & memory_budget,const int & nodeid)
+	explicit StorageBudgetMessage(const int &disk_budget,const int & memory_budget,const int & nodeid)
 	:disk_budget(disk_budget),memory_budget(memory_budget),nodeid(nodeid){
 	}
 	int disk_budget;
@@ -46,7 +46,7 @@ struct RegisterStorageMessage{
 	int nodeid;
 
 };
-THERON_DECLARE_REGISTERED_MESSAGE(RegisterStorageMessage)
+THERON_DECLARE_REGISTERED_MESSAGE(StorageBudgetMessage)
 
 struct RegisterStorageRespond{
 	explicit RegisterStorageRespond(const char * const text){
@@ -123,7 +123,7 @@ struct NodeRegisterMessage{
 	}
 	std::string get_ip()const{
 		in_addr add;
-		add.s_addr=port;
+		add.s_addr=ip;
 		ostringstream str;
 		str<<inet_ntoa(add);
 		std::string ret;

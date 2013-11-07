@@ -4,18 +4,25 @@
  *  Created on: 2013-10-11
  *      Author: casa
  */
-
+#include <sstream>
 #include "BlockManager.h"
 #include "../Environment.h"
+#include "../Message.h"
 BlockManager *BlockManager::blockmanager_=0;
 
-BlockManager *BlockManager::getInstance(BlockManagerWorkerActor *worker){
+BlockManager *BlockManager::getInstance(){
 	if(blockmanager_==0){
-		blockmanager_=new BlockManager(worker);
+		blockmanager_=new BlockManager();
 	}
 	return blockmanager_;
 }
+BlockManager::BlockManager() {
+	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
+	std::ostringstream actor_name;
+	actor_name<<"blockManagerWorkerActor://"<<Environment::getInstance()->getIp()<<Environment::getInstance()->getPort();
 
+	actor_=new BlockManagerWorkerActor(framework_,actor_name.str().c_str(),this);
+}
 BlockManager::~BlockManager() {
 
 }
@@ -33,9 +40,17 @@ void BlockManager::initialize(){
 	// 3，开启心跳监听
 	heartBeat();
 	///////////////////////////////////////////////////////////////////
-//	Environment::getInstance()->getResourceManagerSlave()->
 
 	//////////////the version written by Li////////////////////////////
+	//the following values should be read from configure file.
+	const int memory=10000;
+	const int disk=1000000;
+	const NodeID NodeID=Environment::getInstance()->getNodeID();
+	//
+
+	StorageBudgetMessage message(disk,memory,NodeID);
+
+	Environment::getInstance()->getResourceManagerSlave()->ReportStorageBudget(message);
 
 }
 
@@ -227,8 +242,8 @@ string BlockManager::askForMatch(string filename, BlockManagerId bmi){
 	return file_proj_[filename.c_str()];
 }
 
-BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor(Theron::EndPoint *endpoint,Theron::Framework *framework,const char * name)
-:Actor(*framework,name),endpoint_(endpoint),framework_(framework){
+BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor(Theron::Framework *framework,const char * name,BlockManager* bm)
+:Actor(*framework,name),bm_(bm){
 	RegisterHandler(this,&BlockManagerWorkerActor::getBlock);
 	RegisterHandler(this,&BlockManagerWorkerActor::putBlock);
 }
@@ -238,71 +253,76 @@ BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor() {
 }
 
 bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster(BlockManagerId *bMId){
-	cout<<"in the worker actor to register"<<endl;
-	// 在注册的时候，就有receiverId的构造，也就是用这个string来作为所有的stroage node的标志，
-	// 不会出现冲突，是因为传输的message是不一样的，
-	receiverId_=bMId->blockManagerId;
-	RegisterStorageMessage rsm(receiverId_.c_str());
-	tor_=new TimeOutReceiver(endpoint_,receiverId_.c_str());
-	Theron::Catcher<RegisterStorageRespond> resultCatcher;
-	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<RegisterStorageRespond>::Push);
-	framework_->Send(rsm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-	if(tor_->TimeOutWait(1,1000)==1){
-		cout<<"register respond"<<endl;
-		return true;
-	}else{
-		cout<<"not receive the register respond"<<endl;
-		return false;
-	}
+//	cout<<"in the worker actor to register"<<endl;
+//	// 在注册的时候，就有receiverId的构造，也就是用这个string来作为所有的stroage node的标志，
+//	// 不会出现冲突，是因为传输的message是不一样的，
+//	receiverId_=bMId->blockManagerId;
+//	StorageBudgetMessage rsm(receiverId_.c_str());
+//
+//	tor_=new TimeOutReceiver(endpoint_,receiverId_.c_str());
+//	Theron::Catcher<RegisterStorageRespond> resultCatcher;
+//	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<RegisterStorageRespond>::Push);
+//	framework_->Send(rsm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
+//	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
+//	if(tor_->TimeOutWait(1,1000)==1){
+//		cout<<"register respond"<<endl;
+//		return true;
+//	}else{
+//		cout<<"not receive the register respond"<<endl;
+//		return false;
+//	}
+	return true;
 }
 
 bool BlockManager::BlockManagerWorkerActor::_sendHeartBeat(){
-	string alive="I am ok";
-	HeartBeatMessage hbm(alive.c_str());
-	Theron::Catcher<HeartBeatRespond> resultCatcher;
-	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<HeartBeatRespond>::Push);
-	framework_->Send(hbm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-	if(tor_->TimeOutWait(1,1000)==1){
-		cout<<"heartbeat respond"<<endl;
-		return true;
-	}else{
-		cout<<"not receive heartbeat respond"<<endl;
-		return false;
-	}
+//	string alive="I am ok";
+//	HeartBeatMessage hbm(alive.c_str());
+//	Theron::Catcher<HeartBeatRespond> resultCatcher;
+//	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<HeartBeatRespond>::Push);
+//	framework_->Send(hbm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
+//	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
+//	if(tor_->TimeOutWait(1,1000)==1){
+//		cout<<"heartbeat respond"<<endl;
+//		return true;
+//	}else{
+//		cout<<"not receive heartbeat respond"<<endl;
+//		return false;
+//	}
+	return true;
 }
 
 bool BlockManager::BlockManagerWorkerActor::_reportBlockStatus(string blockId){
-	BlockStatusMessage bsm(blockId.c_str());
-	Theron::Catcher<BlockStatusRespond> resultCatcher;
-	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<BlockStatusRespond>::Push);
-	framework_->Send(bsm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-	if(tor_->TimeOutWait(1,1000)==1){
-		cout<<"block status respond"<<endl;
-		return true;
-	}else{
-		cout<<"not receive block status respond"<<endl;
-		return false;
-	}
+//	BlockStatusMessage bsm(blockId.c_str());
+//	Theron::Catcher<BlockStatusRespond> resultCatcher;
+//	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<BlockStatusRespond>::Push);
+//	framework_->Send(bsm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
+//	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
+//	if(tor_->TimeOutWait(1,1000)==1){
+//		cout<<"block status respond"<<endl;
+//		return true;
+//	}else{
+//		cout<<"not receive block status respond"<<endl;
+//		return false;
+//	}
+	return true;
 }
 
 string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,BlockManagerId bmi){
-	MatcherMessage mm(filename.c_str(),bmi.blockManagerId.c_str());
-	Theron::Catcher<MatcherRespond> resultCatcher;
-	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<MatcherRespond>::Push);
-	framework_->Send(mm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-	cout<<"already send the message of matcher out"<<endl;
-	if(tor_->TimeOutWait(1,1000)==1){
-		cout<<"matcher respond"<<endl;
-		MatcherRespond mr("");
-		Theron::Address addr("blockManagerMasterActor");
-		resultCatcher.Pop(mr,addr);
-		cout<<"the receiver string is: "<<mr.mText<<endl;
-		return mr.mText;
-	}else{
-		cout<<"not receive matcher respond"<<endl;
-	}
+//	MatcherMessage mm(filename.c_str(),bmi.blockManagerId.c_str());
+//	Theron::Catcher<MatcherRespond> resultCatcher;
+//	tor_->RegisterHandler(&resultCatcher, &Theron::Catcher<MatcherRespond>::Push);
+//	framework_->Send(mm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
+//	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
+//	cout<<"already send the message of matcher out"<<endl;
+//	if(tor_->TimeOutWait(1,1000)==1){
+//		cout<<"matcher respond"<<endl;
+//		MatcherRespond mr("");
+//		Theron::Address addr("blockManagerMasterActor");
+//		resultCatcher.Pop(mr,addr);
+//		cout<<"the receiver string is: "<<mr.mText<<endl;
+//		return mr.mText;
+//	}else{
+//		cout<<"not receive matcher respond"<<endl;
+//	}
+	return string("Hello~");
 }

@@ -76,7 +76,10 @@ class ResourceManagerMasterLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
 };
-
+class ResourceManagerSlaveLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
 static void Logging_ExchangeIteratorLowerWithWideDependency(const char* format,...){
 #ifdef DEBUG_ExchangeIteratorWithWideDependency
 	printf("[EILWWD]: ");
