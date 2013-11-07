@@ -52,7 +52,7 @@ bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_leng
 		if(attributes[i].attrName==attname)
 			return false;
 	}
-	Attribute att(attributes.size(),attname,dt,max_length);
+	Attribute att(table_id_,attributes.size(),attname,dt,max_length);
 	attributes.push_back(att);
 	return true;
 }

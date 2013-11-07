@@ -7,7 +7,7 @@
 #include <iostream>
 #include "../Environment.h"
 
-int main(){
+int main234234(){
 	std::cout<<"Master(0) or Slave(1)?"<<std::endl;
 	int ismaster;
 	std::cin>>ismaster;
