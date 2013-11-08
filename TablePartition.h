@@ -7,7 +7,7 @@
 
 #ifndef TABLEPARTITION_H_
 #define TABLEPARTITION_H_
-#include "Column.h"
+#include "Column_to_be_removed.h"
 #include "HeapColumn.h"
 #include "ColumnAppenderBase.h"
 #include <vector>
@@ -45,7 +45,7 @@ public:
 public:
 	unsigned record_count;
 	unsigned table_id;
-	vector<Column*> column_list;
+	vector<Column_TOBEREMOVED*> column_list;
 };
 
 #endif /* TABLEPARTITION_H_ */

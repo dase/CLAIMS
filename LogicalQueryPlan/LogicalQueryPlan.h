@@ -12,6 +12,7 @@ class LogicalQueryPlan {
 public:
 	LogicalQueryPlan();
 	virtual ~LogicalQueryPlan();
+
 };
 
 #endif /* LOGICALQUERYPLAN_H_ */

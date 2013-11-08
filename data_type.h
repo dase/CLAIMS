@@ -75,7 +75,7 @@ class Operate
 {
 public:
 	Operate(){};
-	virtual ~Operate(){};
+//	virtual ~Operate(){};
 	inline void ass(void* src, void* desc){
 		*(int*)desc=*(int*)src;
 	}
@@ -94,6 +94,7 @@ class OperateInt:public Operate
 {
 public:
 	OperateInt(){assign=assigns<int>;};
+//	~OperateInt(){};
 	inline void assignment(const void* src,void* &desc)const
 	{
 		*(int*)desc=*(int*)src;
@@ -136,6 +137,7 @@ class OperateFloat:public Operate
 {
 public:
 	OperateFloat(){};
+//	~OperateFloat(){};
 	inline void assignment(const void* src,void* &desc)const
 	{
 		*(float*)desc=*(float*)src;
@@ -177,6 +179,7 @@ class OperateDouble:public Operate
 {
 public:
 	OperateDouble(){};
+//	~OperateDouble(){};
 	inline void assignment(const void* src,void* &desc)const
 	{
 		*(double*)desc=*(double*)src;
@@ -218,6 +221,7 @@ class OperateULong:public Operate
 {
 public:
 	OperateULong(){};
+//	~OperateULong(){};
 	inline void assignment(const void* src,void* &desc)const
 	{
 		*(unsigned long*)desc=*(unsigned long*)src;
@@ -259,6 +263,7 @@ class OperateString:public Operate
 {
 public:
 	OperateString(){};
+//	~OperateString(){};
 	inline void assignment(const void *src,void* &desc)const
 	{
 		assert(desc!=0&&src!=0);
@@ -310,6 +315,7 @@ public:
 		}
 	};
 	column_type():operate(0){};
+//	~column_type(){};
 	inline unsigned get_length() const
 	{
 		switch(type)

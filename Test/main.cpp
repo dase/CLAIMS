@@ -165,7 +165,7 @@ int mainfasbxcv(){
 		tm.create_table_partition(4,dt);
 
 
-		printf("\n sizof of TableManager is %d\n",sizeof(Column));
+		printf("\n sizof of TableManager is %d\n",sizeof(Column_TOBEREMOVED));
 
 
 		unsigned long long t1;

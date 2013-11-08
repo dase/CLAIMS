@@ -9,10 +9,10 @@
 #define ATTRIBUTE_H_
 #include <string>
 #include "../data_type.h"
-typedef unsigned TableID;
+#include "../ids.h"
 struct Attribute
 {
-	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0)
+	Attribute(TableOffset tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0)
 	{
 		table_id_=tableid;
 		index=pos;
@@ -27,11 +27,14 @@ struct Attribute
 		index=att.index;
 
 	}
+	~Attribute(){
+		attrType->~column_type();
+	}
 	std::string attrName;
 	column_type* attrType;
 	/*the position in the table*/
 	unsigned index;
-	TableID table_id_;
+	TableOffset table_id_;
 };
 
 #endif /* ATTRIBUTE_H_ */

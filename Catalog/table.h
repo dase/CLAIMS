@@ -16,15 +16,18 @@
 #include "../data_type.h"
 #include "Partitioner.h"
 #include "Attribute.h"
+#include "../ids.h"
+#include "Column.h"
+
 using namespace std;
 
-typedef size_t ColumnID;
-typedef unsigned TableID;
-//typedef struct{
+
+
+//typedef struct{ls
 //	TableID table_id;
 //	size_t local_projection_id;
 //} ProjectionID;
-typedef unsigned ProjectionID;
+
 
 
 
@@ -49,18 +52,19 @@ class ProjectionDescriptor
 {
 public:
 	friend class TableDescriptor;
-	ProjectionDescriptor();
+	ProjectionDescriptor(ProjectionID);
 	ProjectionDescriptor(const string& name);
 	virtual ~ProjectionDescriptor();
 	void addAttribute(Attribute attr);
+	void DefinePartitonier(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
 	bool isExist(const string& name) const;
 	inline void setProjectionID(const ProjectionID& pid) {projection_id_ = pid;}
 	inline map<string, set<string> > getFileLocations() const {return fileLocations;}
 	Partitioner* getPartitoiner() const{return partitioner;}
 private:
+//	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;
-
-	vector<Attribute> attribute_list_;
+	vector<Column> column_list_;
 
 	Partitioner* partitioner;
 
@@ -80,18 +84,18 @@ private:
 class TableDescriptor {
 
 public:
-	TableDescriptor(const string& name, const TableID table_id);
+	TableDescriptor(const string& name, const TableOffset table_id);
 	virtual ~TableDescriptor();
 
 	void addAttribute(Attribute attr);
 	bool addAttribute(string attname,data_type dt,unsigned max_length=0);
 
-	void addProjection(vector<ColumnID> id_list);
-	bool createHashPartitionedProjection(vector<ColumnID> column_list,ColumnID partition_key_index,unsigned number_of_partitions);
+//	void addProjection(vector<ColumnOffset> id_list);
+	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions);
 
 	bool isExist(const string& name) const;
 	inline string getTableName() const {return tableName;}
-	ColumnID getColumnID(const string& attrName) const;
+	ColumnOffset getColumnID(const string& attrName) const;
 	map<string, set<string> > getColumnLocations(const string& attrName) const;
 
 	vector<Attribute> getAttributes(){
@@ -100,12 +104,12 @@ public:
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);
 	inline string get_table_name()const{return tableName;}
-	inline TableID get_table_id()const{return table_id_;}
-	ProjectionDescriptor* getProjectoin(ProjectionID) const;
+	inline TableOffset get_table_id()const{return table_id_;}
+	ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
 protected:
 	string tableName;
 	vector<Attribute> attributes;
-	TableID table_id_;
+	TableOffset table_id_;
 	vector<ProjectionDescriptor*> projection_list_;
 	// delete for debugging
 //	hashmap<ColumnID, ColumnDescriptor*> columns;

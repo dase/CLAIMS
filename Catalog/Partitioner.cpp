@@ -9,16 +9,17 @@
 #include "Partitioner.h"
 #define CHUNKSIZE_IN_MB 64
 
-Partitioner::Partitioner(unsigned number_of_partitions,PartitionFunction* partitioning_functin)
-:number_of_partitions_(number_of_partitions),partition_key_(0),partition_functin_(partitioning_functin),mode_(OneToOne)
+Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,PartitionFunction* partitioning_functin)
+:projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_key_(0),partition_functin_(partitioning_functin),mode_(OneToOne)
 {
 
 }
-Partitioner::Partitioner(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partitioning_function)
-:number_of_partitions_(number_of_partitions),partition_functin_(partitioning_function),mode_(OneToOne){
+Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partitioning_function)
+:projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_functin_(partitioning_function),mode_(OneToOne){
 	partition_key_=new Attribute(partition_key);
 	for(unsigned i=0;i<number_of_partitions;i++){
-		partition_info_list.push_back(new OneToOnePartitionInfo());
+		PartitionID pid(projection_id_,i);
+		partition_info_list.push_back(new OneToOnePartitionInfo(pid));
 	}
 }
 
@@ -29,7 +30,7 @@ unsigned Partitioner::getNumberOfPartitions(){
 	return partition_functin_->getNumberOfPartitions();
 }
 
-bool Partitioner::bindPartitionToNode(PartitionID partition_id,NodeID target_node){
+bool Partitioner::bindPartitionToNode(PartitionOffset partition_id,NodeID target_node){
 //	if(partitionid_to_nodeid_.find(partition_id)!=partitionid_to_nodeid_.end()){
 //		/* the partition has already been bind to a node.*/
 //		return false;
@@ -52,7 +53,7 @@ bool Partitioner::bindPartitionToNode(PartitionID partition_id,NodeID target_nod
 	return partition_info_list[partition_id]->bind_all_blocks(target_node);
 }
 
-void Partitioner::unbindPartitionToNode(PartitionID partition_id){
+void Partitioner::unbindPartitionToNode(PartitionOffset partition_id){
 //	std::map<PartitionID,NodeID>::iterator target;
 //	if(partitionid_to_nodeid_.find(partition_id)!=partitionid_to_nodeid_.end())
 //		return false;

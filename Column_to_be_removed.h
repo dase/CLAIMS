@@ -5,16 +5,16 @@
  *      Author: wangli
  */
 
-#ifndef COLUMN_H_
-#define COLUMN_H_
+#ifndef COLUMN_TOBEREMOVED_H_
+#define COLUMN_TOBEREMOVED_H_
 #include "ColumnAppenderBase.h"
 
 
 #define oid_t unsigned
-class Column {
+class Column_TOBEREMOVED {
 public:
-	Column(unsigned _table_id,unsigned column_id, unsigned type_length);
-	virtual ~Column();
+	Column_TOBEREMOVED(unsigned _table_id,unsigned column_id, unsigned type_length);
+	virtual ~Column_TOBEREMOVED();
 	virtual unsigned get_type_length();
 
 

@@ -7,12 +7,15 @@
 
 #include "Scan.h"
 
-Scan::Scan() {
+LogicalScan::LogicalScan() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Scan::~Scan() {
+LogicalScan::~LogicalScan() {
 	// TODO Auto-generated destructor stub
 }
 
+LogicalProjection LogicalScan::getLogcialProjection()const{
+	return logical_projection_;
+}

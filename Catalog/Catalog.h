@@ -28,11 +28,11 @@ public:
 	virtual ~Catalog();
 	unsigned allocate_unique_table_id();
 	bool add_table(TableDescriptor* const &table);
-	TableDescriptor* getTable(const TableID&) const;
+	TableDescriptor* getTable(const TableOffset&) const;
 private:
 	TableIDAllocator table_id_allocator;
 	hashmap<std::string,TableDescriptor*> name_to_table;
-	hashmap<TableID,TableDescriptor*> tableid_to_table;
+	hashmap<TableOffset,TableDescriptor*> tableid_to_table;
 	Logging* logging;
 };
 

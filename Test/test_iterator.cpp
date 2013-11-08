@@ -57,7 +57,7 @@ int main2()		//generate data
 	tm.create_table_partition(1,dt);
 
 
-	printf("\n sizof of TableManager is %ld\n",sizeof(Column));
+	printf("\n sizof of TableManager is %ld\n",sizeof(Column_TOBEREMOVED));
 
 
 	unsigned long long t1;

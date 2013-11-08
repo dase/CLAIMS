@@ -28,7 +28,7 @@ using namespace std;
 //		return table_id==r.table_id&&local_projection_id==r.local_projection_id;
 //	}
 //} ;
-typedef unsigned ProjectionID;
+typedef unsigned ProjectionOffset;
 typedef unsigned BlockID;
 //typedef struct PartitionID{
 //	ProjectionID projection_id;
@@ -37,7 +37,7 @@ typedef unsigned BlockID;
 //		return projection_id<r.projection_id||partition_key<r.partition_key;
 //	}
 //};
-typedef unsigned PartitionID;
+typedef unsigned PartitionOffset;
 
 
 typedef struct BlockInfo{
@@ -49,12 +49,12 @@ class PartitionInfo{
 public:
 
 	friend class Partitioner;
-	explicit PartitionInfo():number_of_blocks(-1){};
-	explicit PartitionInfo(string file_name)
-	:hdfs_file_name(file_name),number_of_blocks(0){}
+	explicit PartitionInfo(PartitionID partition_id):partition_id_(partition_id),number_of_blocks(-1){};
+	explicit PartitionInfo(PartitionID partition_id,string file_name)
+	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(0){}
 
-	explicit PartitionInfo(string file_name,int number_of_blocks)
-	:hdfs_file_name(file_name),number_of_blocks(number_of_blocks){}
+	explicit PartitionInfo(PartitionID partition_id,string file_name,int number_of_blocks)
+	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(number_of_blocks){}
 
 	virtual binding_mode get_mode()=0;
 	virtual void add_one_block()=0;
@@ -67,14 +67,15 @@ public:
 protected:
 	string hdfs_file_name;
 	int number_of_blocks;
+	PartitionID partition_id_;
 
 };
 
 class OneToOnePartitionInfo:public PartitionInfo{
 public:
-	OneToOnePartitionInfo():PartitionInfo(),binding_node_id_(-1){};
-	OneToOnePartitionInfo(string file_name):PartitionInfo(file_name),binding_node_id_(-1){};
-	OneToOnePartitionInfo(string file_name,unsigned number_of_blocks):PartitionInfo(file_name,number_of_blocks),binding_node_id_(-1){};
+	OneToOnePartitionInfo(PartitionID pid):PartitionInfo(pid),binding_node_id_(-1){};
+	OneToOnePartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name),binding_node_id_(-1){};
+	OneToOnePartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks),binding_node_id_(-1){};
 	binding_mode get_mode(){
 		return OneToOne;
 	}
@@ -119,8 +120,8 @@ private:
 
 class OneToManyPartitionInfo:public PartitionInfo{
 public:
-	OneToManyPartitionInfo(string file_name):PartitionInfo(file_name){};
-	OneToManyPartitionInfo(string file_name,unsigned number_of_blocks):PartitionInfo(file_name,number_of_blocks){
+	OneToManyPartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name){};
+	OneToManyPartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks){
 		for(int i=0;i<number_of_blocks;i++){
 			block_to_node[i]=-1;
 		}
@@ -177,16 +178,16 @@ private:
 
 class Partitioner {
 public:
-	Partitioner(unsigned number_of_partitions,PartitionFunction* partition_functin);
-	Partitioner(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
 	virtual ~Partitioner();
 	unsigned getNumberOfPartitions();
 
 	/* bind a partition to a specific node*/
-	bool bindPartitionToNode(PartitionID partition_id,NodeID target_node);
+	bool bindPartitionToNode(PartitionOffset partition_id,NodeID target_node);
 
 	/* unbind a partition from a pre-assigned node*/
-	void unbindPartitionToNode(PartitionID partition_id);
+	void unbindPartitionToNode(PartitionOffset partition_id);
 
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,std::string file_name,unsigned number_of_chunks);
@@ -205,6 +206,7 @@ private:
 	unsigned number_of_partitions_;
 	vector<PartitionInfo*> partition_info_list;
 	binding_mode mode_;
+	ProjectionID projection_id_;
 //	hashmap<PartitionID,std::string> partitionid_to_filename_;
 //	hashmap<PartitionID,pair<NodeID,vector<BlockInfo> > > partition_node_blockinfo_;
 //

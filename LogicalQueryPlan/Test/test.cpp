@@ -7,7 +7,6 @@
 
 #include "../LogicalOperator.h"
 int main(){
-	tryit it;
-	it.doit();
+
 }
 

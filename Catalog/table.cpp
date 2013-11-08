@@ -7,7 +7,7 @@
 
 #include "table.h"
 // ColumnDescriptor
-ProjectionDescriptor::ProjectionDescriptor():projection_id_(){
+ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid){
 }
 
 ProjectionDescriptor::ProjectionDescriptor(const string& name)
@@ -21,19 +21,25 @@ ProjectionDescriptor::~ProjectionDescriptor(){
 }
 void ProjectionDescriptor::addAttribute(Attribute attr)
 {
-	attribute_list_.push_back(attr);
+	const ColumnID cid(projection_id_,column_list_.size());
+	const Column col(attr,cid);
+	column_list_.push_back(col);
+}
+
+void ProjectionDescriptor::DefinePartitonier(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin){
+	partitioner=new Partitioner(projection_id_,number_of_partitions,partition_key,partition_functin);
 }
 
 bool ProjectionDescriptor::isExist(const string& name) const
 {
-	for(unsigned i=0;i<attribute_list_.size();i++){
-		if(attribute_list_[i].attrName==name) return true;
+	for(unsigned i=0;i<column_list_.size();i++){
+		if(column_list_[i].attrName==name) return true;
 	}
 	return false;
 }
 
 // TableDescritptor
-TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
+TableDescriptor::TableDescriptor(const string& name, const TableOffset table_id)
 : tableName(name),table_id_(table_id){
 
 }
@@ -63,23 +69,25 @@ void TableDescriptor::addColumn(ProjectionDescriptor* column)
 //	column->setColumnID(current);
 //	columns[current] = column;
 }
-void TableDescriptor::addProjection(vector<ColumnID> id_list){
-	ProjectionDescriptor* projection=new ProjectionDescriptor();
-	for(unsigned i=0;i<id_list.size();i++){
-		projection->addAttribute(attributes[id_list[i]]);
-	}
-}
+//void TableDescriptor::addProjection(vector<ColumnID> id_list){
+//	ProjectionDescriptor* projection=new ProjectionDescriptor();
+//	for(unsigned i=0;i<id_list.size();i++){
+//		projection->addAttribute(attributes[id_list[i]]);
+//	}
+//}
 
-bool TableDescriptor::createHashPartitionedProjection(vector<ColumnID> column_list,ColumnID partition_key_index,unsigned number_of_partitions){
-	ProjectionDescriptor *projection=new ProjectionDescriptor();
-	projection->projection_id_=projection_list_.size();
+bool TableDescriptor::createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions){
+	ProjectionID projection_id(table_id_,projection_list_.size());
+	ProjectionDescriptor *projection=new ProjectionDescriptor(projection_id);
+
+//	projection->projection_offset_=projection_list_.size();
 	for(unsigned i=0;i<column_list.size();i++){
 		projection->addAttribute(attributes[column_list[i]]);
 	}
 
 	PartitionFunction* hash_function=PartitionFunctionFactory::createModuloFunction(number_of_partitions);
-	projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
-
+//	projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+	projection->DefinePartitonier(number_of_partitions,attributes[partition_key_index],hash_function);
 
 
 	projection_list_.push_back(projection);
@@ -109,7 +117,7 @@ map<string, set<string> > TableDescriptor::getColumnLocations(const string& attr
 //	return result;
 }
 
-ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionID pid)const{
+ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionOffset pid)const{
 	if(pid>=0||pid<projection_list_.size()){
 		return projection_list_[pid];
 	}

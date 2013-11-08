@@ -7,12 +7,12 @@
 
 #include "LogicalOperator.h"
 
-LogicalOperator::LogicalOperator() {
-	// TODO Auto-generated constructor stub
-
-}
-
-LogicalOperator::~LogicalOperator() {
-	// TODO Auto-generated destructor stub
-}
-
+//LogicalOperator::LogicalOperator() {
+//	// TODO Auto-generated constructor stub
+//
+//}
+//
+//LogicalOperator::~LogicalOperator() {
+//	// TODO Auto-generated destructor stub
+//}
+//

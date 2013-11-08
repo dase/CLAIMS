@@ -24,7 +24,7 @@ int TableDescriptor_test(){
 	table->addAttribute("Gender",data_type(t_int));
 	table->addAttribute("Score",data_type(t_float));
 
-	vector<ColumnID> index;
+	vector<ColumnOffset> index;
 	index.push_back(0);
 	index.push_back(1);
 	index.push_back(3);
@@ -56,7 +56,7 @@ int BindingTest(){
 	table->addAttribute("Gender",data_type(t_int));
 	table->addAttribute("Score",data_type(t_float));
 
-	vector<ColumnID> index;
+	vector<ColumnOffset> index;
 	index.push_back(0);
 	index.push_back(1);
 	index.push_back(3);

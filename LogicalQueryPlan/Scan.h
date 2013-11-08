@@ -8,10 +8,14 @@
 #ifndef SCAN_H_
 #define SCAN_H_
 #include "LogicalOperator.h"
-class Scan {
+#include "../Schema/LogicalProjection.h"
+class LogicalScan:public LogicalOperator {
 public:
-	Scan();
-	virtual ~Scan();
+	LogicalScan();
+	virtual ~LogicalScan();
+	LogicalProjection getLogcialProjection()const;
+private:
+	LogicalProjection logical_projection_;
 };
 
 #endif /* SCAN_H_ */

@@ -18,18 +18,18 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <iostream>
-#include "Column.h"
+#include "Column_to_be_removed.h"
 #include "ColumnAppenderBase.h"
 
 using std::string;
 using namespace std;
 template<typename T>
-class HeapColumn:public Column{
+class HeapColumn:public Column_TOBEREMOVED{
 public:
 
 
 	 HeapColumn(unsigned table_id,unsigned column_id)
-	:Column(table_id,column_id,sizeof(T))
+	:Column_TOBEREMOVED(table_id,column_id,sizeof(T))
 	{
 		 char name[256];
 		 sprintf(name,"/home/imdb/temp/%d_%d.column",table_id,column_id);
