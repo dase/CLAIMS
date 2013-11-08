@@ -12,7 +12,7 @@
 #include "../ids.h"
 struct Attribute
 {
-	Attribute(TableOffset tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0)
+	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0)
 	{
 		table_id_=tableid;
 		index=pos;
@@ -30,11 +30,14 @@ struct Attribute
 	~Attribute(){
 		attrType->~column_type();
 	}
+	bool operator==(const Attribute& r)const{
+		return table_id_==r.table_id_&&index==r.index;
+	}
 	std::string attrName;
 	column_type* attrType;
 	/*the position in the table*/
 	unsigned index;
-	TableOffset table_id_;
+	TableID table_id_;
 };
 
 #endif /* ATTRIBUTE_H_ */

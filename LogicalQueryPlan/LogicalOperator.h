@@ -9,10 +9,15 @@
 #define LOGICALOPERATOR_H_
 #include <stdio.h>
 #include "../Schema/LogicalProjection.h"
-
+#include "../Scheduler/Dataflow.h"
 
 class LogicalOperator{
-	virtual LogicalProjection getLogicalProjection()=0;
+public:
+//	virtual LogicalProjection getLogicalProjection()=0;
+
+	/*get the data flow which is optimal in the local view.*
+	 * TODO: leverage recursive search for the global optimal. */
+	virtual Dataflow getDataflow()=0;
 };
 
 //class Operator{

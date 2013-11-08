@@ -11,7 +11,7 @@
 #include <boost/unordered_map.hpp>
 
 
-typedef unsigned TableOffset;
+typedef unsigned TableID;
 typedef unsigned AttributeOffset;
 typedef unsigned ProjectionOffset;
 typedef unsigned ColumnOffset;
@@ -23,8 +23,8 @@ typedef unsigned PartitionOffset;
 /**
  * AttributeID: an attribute in a table has an unique AttributeID*/
 struct AttributeID{
-	AttributeID(TableOffset tid,AttributeOffset off):table_id(tid),offset(off){};
-	TableOffset table_id;
+	AttributeID(TableID tid,AttributeOffset off):table_id(tid),offset(off){};
+	TableID table_id;
 	AttributeOffset offset;
 	bool operator==(const AttributeID& r)const{
 		return table_id==r.table_id&&offset==r.offset;
@@ -44,8 +44,8 @@ struct AttributeID{
  */
 struct ProjectionID{
 	ProjectionID(){};
-	ProjectionID(TableOffset tid,ProjectionOffset off):table_id(tid),projection_off(off){};
-	TableOffset table_id;
+	ProjectionID(TableID tid,ProjectionOffset off):table_id(tid),projection_off(off){};
+	TableID table_id;
 	ProjectionOffset projection_off;
 	bool operator==(const ProjectionID& r)const{
 		return table_id==r.table_id&& projection_off==r.projection_off;

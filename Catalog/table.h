@@ -56,11 +56,12 @@ public:
 	ProjectionDescriptor(const string& name);
 	virtual ~ProjectionDescriptor();
 	void addAttribute(Attribute attr);
+	bool hasAttribute(const Attribute &attr)const;
 	void DefinePartitonier(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
+	Partitioner* getPartitioner()const;
 	bool isExist(const string& name) const;
 	inline void setProjectionID(const ProjectionID& pid) {projection_id_ = pid;}
 	inline map<string, set<string> > getFileLocations() const {return fileLocations;}
-	Partitioner* getPartitoiner() const{return partitioner;}
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;
@@ -84,7 +85,7 @@ private:
 class TableDescriptor {
 
 public:
-	TableDescriptor(const string& name, const TableOffset table_id);
+	TableDescriptor(const string& name, const TableID table_id);
 	virtual ~TableDescriptor();
 
 	void addAttribute(Attribute attr);
@@ -104,12 +105,13 @@ public:
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);
 	inline string get_table_name()const{return tableName;}
-	inline TableOffset get_table_id()const{return table_id_;}
+	inline TableID get_table_id()const{return table_id_;}
 	ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
+	unsigned getNumberOfProjection()const;
 protected:
 	string tableName;
 	vector<Attribute> attributes;
-	TableOffset table_id_;
+	TableID table_id_;
 	vector<ProjectionDescriptor*> projection_list_;
 	// delete for debugging
 //	hashmap<ColumnID, ColumnDescriptor*> columns;

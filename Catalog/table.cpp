@@ -25,11 +25,20 @@ void ProjectionDescriptor::addAttribute(Attribute attr)
 	const Column col(attr,cid);
 	column_list_.push_back(col);
 }
+bool ProjectionDescriptor::hasAttribute(const Attribute &attr)const{
+	for(unsigned i=0;i<column_list_.size;i++){
+		if(column_list_[i].index==attr.index)
+			return true;
+	}
+	return false;
+}
 
 void ProjectionDescriptor::DefinePartitonier(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin){
 	partitioner=new Partitioner(projection_id_,number_of_partitions,partition_key,partition_functin);
 }
-
+Partitioner* ProjectionDescriptor::getPartitioner()const{
+	return partitioner;
+}
 bool ProjectionDescriptor::isExist(const string& name) const
 {
 	for(unsigned i=0;i<column_list_.size();i++){
@@ -39,7 +48,7 @@ bool ProjectionDescriptor::isExist(const string& name) const
 }
 
 // TableDescritptor
-TableDescriptor::TableDescriptor(const string& name, const TableOffset table_id)
+TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 : tableName(name),table_id_(table_id){
 
 }
@@ -122,4 +131,7 @@ ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionOffset pid)const{
 		return projection_list_[pid];
 	}
 	return NULL;
+}
+unsigned TableDescriptor::getNumberOfProjection()const{
+	return projection_list_.size();
 }

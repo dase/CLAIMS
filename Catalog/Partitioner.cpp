@@ -79,3 +79,9 @@ void Partitioner::print(){
 unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index){
 	return partition_info_list[partitoin_index]->number_of_blocks*CHUNKSIZE_IN_MB;
 }
+PartitionFunction::partition_fashion Partitioner::getPartitionFashion()const{
+	return partition_functin_->getPartitionFashion();
+}
+Attribute* Partitioner::getPartitionKey()const{
+	return partition_key_;
+}

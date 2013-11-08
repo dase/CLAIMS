@@ -199,6 +199,8 @@ public:
 	binding_mode get_bing_mode_(){
 		return mode_;
 	}
+	PartitionFunction::partition_fashion getPartitionFashion()const;
+	Attribute* getPartitionKey()const;
 
 private:
 	Attribute* partition_key_;

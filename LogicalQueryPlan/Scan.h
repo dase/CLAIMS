@@ -9,13 +9,18 @@
 #define SCAN_H_
 #include "LogicalOperator.h"
 #include "../Schema/LogicalProjection.h"
-class LogicalScan:public LogicalOperator {
+class LogicalScan: public LogicalOperator {
 public:
-	LogicalScan();
+	LogicalScan(std::vector<Attribute> attribute_list);
 	virtual ~LogicalScan();
 	LogicalProjection getLogcialProjection()const;
+	Dataflow getDataflow();
+
 private:
 	LogicalProjection logical_projection_;
+//	Partitioner* partition_info_;
+//	Dataflow* dataflow_;
+	std::vector<Attribute> scan_attribute_list_;
 };
 
 #endif /* SCAN_H_ */

@@ -74,5 +74,5 @@ PartitionFunction* PartitionFunctionFactory::createGeneralModuloFunction(const i
 
 
 PartitionFunction::partition_fashion GeneralModuloFunction::getPartitionFashion(){
-	return hash_general_f;
+	return hash_f;
 }

@@ -21,12 +21,12 @@ unsigned Catalog::allocate_unique_table_id(){
 }
 bool Catalog::add_table(TableDescriptor* const &table){
 	std::string new_table_name=table->getTableName();
-	TableOffset new_table_id=table->get_table_id();
+	TableID new_table_id=table->get_table_id();
 	hashmap<std::string,TableDescriptor*>::iterator it_name_to_table=name_to_table.find(new_table_name);
 	if(it_name_to_table!=name_to_table.end()){
 		return false;
 	}
-	hashmap<TableOffset,TableDescriptor*>::iterator it_tableid_to_table=tableid_to_table.find(new_table_id);
+	hashmap<TableID,TableDescriptor*>::iterator it_tableid_to_table=tableid_to_table.find(new_table_id);
 	if(it_tableid_to_table!=tableid_to_table.find(new_table_id)){
 		return false;
 	}
@@ -37,7 +37,7 @@ bool Catalog::add_table(TableDescriptor* const &table){
 
 	return true;
 }
-TableDescriptor* Catalog::getTable(const TableOffset &target)const{
+TableDescriptor* Catalog::getTable(const TableID &target)const{
 	if(!tableid_to_table.contains(target))
 		return NULL;
 
