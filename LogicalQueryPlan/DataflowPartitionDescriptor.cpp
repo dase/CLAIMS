@@ -43,3 +43,6 @@ unsigned DataflowPartitionDescriptor::getAggregatedDatasize()const{
 	}
 	return ret;
 }
+PartitionFunction::partition_fashion DataflowPartitionDescriptor::getPartitionFashion()const{
+	return partition_function_->getPartitionFashion();
+}

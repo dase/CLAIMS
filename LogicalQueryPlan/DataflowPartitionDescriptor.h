@@ -21,6 +21,7 @@ public:
 	Attribute getPartitionKey()const;
 	bool hasSamePartitionLocation(const DataflowPartitionDescriptor& target)const;
 	unsigned getAggregatedDatasize()const;
+	PartitionFunction::partition_fashion getPartitionFashion()const;
 private:
 	std::vector<DataflowPartition> partition_list_;
 	PartitionFunction* partition_function_;
