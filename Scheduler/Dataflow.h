@@ -10,15 +10,22 @@
 #include <vector>
 #include "../Catalog/Column.h"
 #include "../Catalog/Partitioner.h"
+#include "DataflowPartitionDescriptor.h"
 class Dataflow {
 	/* describe the properties of the data flow*/
 	struct property{
-		Partitioner* partitoiner;
+		DataflowPartitionDescriptor partitioner;
 		unsigned commnication_cost;
+		property(const property& r){
+			partitioner=r.partitioner;
+			commnication_cost=r.commnication_cost;
+		}
 	};
 public:
 	Dataflow();
+	Dataflow(const Dataflow& r);
 	virtual ~Dataflow();
+	unsigned getAggregatedDatasize()const;
 private:
 	std::vector<Attribute> attribute_list_;
 	property property_;

@@ -45,6 +45,7 @@ typedef struct BlockInfo{
 	int tuple_count;
 };
 enum binding_mode{OneToOne,OneToMany};
+// class StoragePartitoinInfo: public PartitionInfo
 class PartitionInfo{
 public:
 
@@ -56,17 +57,18 @@ public:
 	explicit PartitionInfo(PartitionID partition_id,string file_name,int number_of_blocks)
 	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(number_of_blocks){}
 
-	virtual binding_mode get_mode()=0;
-	virtual void add_one_block()=0;
-	virtual void add_mutiple_block(unsigned number_of_new_blocks)=0;
-	virtual bool bind_one_block(BlockID blockid,NodeID target)=0;
-	virtual bool bind_all_blocks(NodeID target)=0;
-	virtual void unbind_all_blocks()=0;
-	virtual bool is_all_blocks_bound()=0;
-	int get_number_of_blocks()const{	return number_of_blocks;}
+	virtual binding_mode get_mode()const=0;
+	virtual void add_one_block()=0;//p
+	virtual void add_mutiple_block(unsigned number_of_new_blocks)=0;//p
+	virtual bool bind_one_block(BlockID blockid,NodeID target)=0;//p
+	virtual bool bind_all_blocks(NodeID target)=0;//p
+	virtual void unbind_all_blocks()=0;//p
+	virtual bool is_all_blocks_bound()=0;//p
+	virtual bool is_colocated(const PartitionInfo &)const=0;
+	int get_number_of_blocks()const{	return number_of_blocks;}//p
 protected:
-	string hdfs_file_name;
-	int number_of_blocks;
+	string hdfs_file_name;//p
+	int number_of_blocks;//p
 	PartitionID partition_id_;
 
 };
@@ -76,7 +78,7 @@ public:
 	OneToOnePartitionInfo(PartitionID pid):PartitionInfo(pid),binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name),binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks),binding_node_id_(-1){};
-	binding_mode get_mode(){
+	binding_mode get_mode()const{
 		return OneToOne;
 	}
 	void add_one_block(){
@@ -113,6 +115,8 @@ public:
 	void unbind_all_blocks(){
 		binding_node_id_=-1;
 	}
+	bool is_colocated(const PartitionInfo &)const;
+	NodeID get_location() const{return binding_node_id_;}
 	virtual ~OneToOnePartitionInfo(){};
 private:
 	NodeID binding_node_id_;
@@ -126,7 +130,7 @@ public:
 			block_to_node[i]=-1;
 		}
 	};
-	binding_mode get_mode(){
+	binding_mode get_mode()const{
 		return OneToMany;
 	}
 	void add_one_block(){
@@ -166,6 +170,7 @@ public:
 			it++;
 		}
 	}
+	bool is_colocated(const PartitionInfo &)const;
 	virtual ~OneToManyPartitionInfo(){};
 private:
 	/*
@@ -181,7 +186,7 @@ public:
 	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
 	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
 	virtual ~Partitioner();
-	unsigned getNumberOfPartitions();
+	unsigned getNumberOfPartitions()const;
 
 	/* bind a partition to a specific node*/
 	bool bindPartitionToNode(PartitionOffset partition_id,NodeID target_node);
@@ -192,15 +197,19 @@ public:
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,std::string file_name,unsigned number_of_chunks);
 
-	unsigned getPartitionDataSize(unsigned partitoin_index);
+	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 
+	NodeID getPartitionLocation(unsigned partition_index)const;
 	void print();
 
-	binding_mode get_bing_mode_(){
+	bool hasSamePartitionLocation(const Partitioner & target_partition )const;
+
+	binding_mode get_bing_mode_()const{
 		return mode_;
 	}
 	PartitionFunction::partition_fashion getPartitionFashion()const;
 	Attribute* getPartitionKey()const;
+	PartitionFunction* getPartitionFunction()const;
 
 private:
 	Attribute* partition_key_;

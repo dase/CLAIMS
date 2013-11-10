@@ -53,7 +53,7 @@ Dataflow LogicalScan::getDataflow(){
 
 	dataflow.attribute_list_=scan_attribute_list_; /*attribute_list*/
 
-	dataflow.property_.partitoiner=target_projection->getPartitioner();
+	dataflow.property_.partitioner=DataflowPartitionDescriptor(target_projection->getPartitioner());
 	dataflow.property_.commnication_cost=0;
 	return dataflow;
 

@@ -26,7 +26,7 @@ Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partition
 Partitioner::~Partitioner() {
 	// TODO Auto-generated destructor stub
 }
-unsigned Partitioner::getNumberOfPartitions(){
+unsigned Partitioner::getNumberOfPartitions()const{
 	return partition_functin_->getNumberOfPartitions();
 }
 
@@ -76,12 +76,50 @@ void Partitioner::print(){
 //		it++;
 //	}
 }
-unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index){
+bool Partitioner::hasSamePartitionLocation(const Partitioner & target_partition )const{
+	if(mode_==OneToMany||target_partition.get_bing_mode_()==OneToMany){
+		/** in the current version, any the location detection in OneToMany mode is ommited.*/
+		return false;
+	}
+	if(getNumberOfPartitions()!=target_partition.getNumberOfPartitions())
+		return false;
+	for(unsigned i=0;i<getNumberOfPartitions();i++){
+		if(!partition_info_list[i]->is_colocated(*target_partition.partition_info_list[i])){
+			return false;
+		}
+	}
+	return true;
+}
+unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks*CHUNKSIZE_IN_MB;
 }
+NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
+	if(partition_info_list[partition_index]->get_mode()==OneToOne){
+		return ((OneToOnePartitionInfo)partition_info_list[partition_index]).get_location();
+	}
+	else{
+		return -1;
+	}
+}
+
 PartitionFunction::partition_fashion Partitioner::getPartitionFashion()const{
 	return partition_functin_->getPartitionFashion();
 }
 Attribute* Partitioner::getPartitionKey()const{
 	return partition_key_;
+}
+PartitionFunction* Partitioner::getPartitionFunction()const{
+	return partition_functin_;
+}
+
+bool OneToOnePartitionInfo::is_colocated(const PartitionInfo & target)const{
+	if(target.get_mode()==OneToMany)
+		return false;
+	if(binding_node_id_==-1||((OneToOnePartitionInfo)target).binding_node_id_==-1)
+		return false;
+	return binding_node_id_==((OneToOnePartitionInfo)target).binding_node_id_;
+
+}
+bool OneToManyPartitionInfo::is_colocated(const PartitionInfo & target)const{
+	return false;
 }
