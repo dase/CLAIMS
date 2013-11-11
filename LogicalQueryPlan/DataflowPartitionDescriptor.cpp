@@ -9,7 +9,7 @@
 
 DataflowPartitionDescriptor::DataflowPartitionDescriptor(const Partitioner& partitioner){
 	partition_function_=partitioner.getPartitionFunction();
-	partition_key_=*partitioner.getPartitionKey();
+	partition_key_=partitioner.getPartitionKey();
 	for(unsigned i=0;i<partitioner.getNumberOfPartitions();i++){
 		DataflowPartition dataflow_partition;
 		dataflow_partition.datasize_=partitioner.getPartitionDataSize(i);
@@ -23,7 +23,7 @@ DataflowPartitionDescriptor::~DataflowPartitionDescriptor() {
 
 }
 Attribute DataflowPartitionDescriptor::getPartitionKey()const{
-	return partition_key_;
+	return *partition_key_;
 }
 
 bool DataflowPartitionDescriptor::hasSamePartitionLocation(const DataflowPartitionDescriptor& target)const{

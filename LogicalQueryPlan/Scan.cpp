@@ -22,7 +22,7 @@ LogicalProjection LogicalScan::getLogcialProjection()const{
 
 Dataflow LogicalScan::getDataflow(){
 	TableID table_id=scan_attribute_list_[0].table_id_;
-	TableDescriptor* table=Environment::getInstance()->catalog_->getTable(table_id);
+	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable(table_id);
 	ProjectionDescriptor* target_projection;
 	ProjectionOffset target_projection_off=-1;
 	for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
@@ -53,7 +53,7 @@ Dataflow LogicalScan::getDataflow(){
 
 	dataflow.attribute_list_=scan_attribute_list_; /*attribute_list*/
 
-	dataflow.property_.partitioner=DataflowPartitionDescriptor(target_projection->getPartitioner());
+	dataflow.property_.partitioner=DataflowPartitionDescriptor(*target_projection->getPartitioner());
 	dataflow.property_.commnication_cost=0;
 	return dataflow;
 

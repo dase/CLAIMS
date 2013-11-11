@@ -26,7 +26,7 @@ void ProjectionDescriptor::addAttribute(Attribute attr)
 	column_list_.push_back(col);
 }
 bool ProjectionDescriptor::hasAttribute(const Attribute &attr)const{
-	for(unsigned i=0;i<column_list_.size;i++){
+	for(unsigned i=0;i<column_list_.size();i++){
 		if(column_list_[i].index==attr.index)
 			return true;
 	}

@@ -69,9 +69,10 @@ int BindingTest(){
 
 	////////////////////////////////////////
 	/* the following codes should be triggered by Load module*/
+	;
+	for(unsigned i=0;i<table->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-	for(unsigned i=0;i<table->getProjectoin(0)->getPartitoiner()->getNumberOfPartitions();i++){
-		catalog->getTable(0)->getProjectoin(0)->getPartitoiner()->RegisterPartition(i,"Partition_"+i,12);
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,12);
 	}
 	////////////////////////////////////////
 
@@ -81,7 +82,8 @@ int BindingTest(){
 
 
 	ProjectionBinding *pb=new ProjectionBinding();
-	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitoiner());
+	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner());
+//	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitoiner());
 
 }
 

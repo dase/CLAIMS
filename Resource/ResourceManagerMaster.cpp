@@ -36,6 +36,13 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 
 	logging_->log("[ip=%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
 
+	hashmap<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
+	while(it!=node_to_resourceinfo_.end()){
+		printf("%d-->  ",it->first);
+		it++;
+	}
+	printf("\n");
+
 	return new_node_id;
 }
 std::vector<NodeID> ResourceManagerMaster::getSlaveIDList(){

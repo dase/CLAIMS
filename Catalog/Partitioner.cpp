@@ -64,6 +64,7 @@ void Partitioner::unbindPartitionToNode(PartitionOffset partition_id){
 
 void Partitioner::RegisterPartition(unsigned partition_key,std::string file_name,unsigned number_of_chunks){
 	assert(partition_key<partition_functin_->getNumberOfPartitions());
+
 	partition_info_list[partition_key]->hdfs_file_name=file_name;
 	partition_info_list[partition_key]->number_of_blocks=number_of_chunks;
 
@@ -95,7 +96,7 @@ unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
 }
 NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 	if(partition_info_list[partition_index]->get_mode()==OneToOne){
-		return ((OneToOnePartitionInfo)partition_info_list[partition_index]).get_location();
+		return (*(OneToOnePartitionInfo*)&partition_info_list[partition_index]).get_location();
 	}
 	else{
 		return -1;
@@ -115,9 +116,9 @@ PartitionFunction* Partitioner::getPartitionFunction()const{
 bool OneToOnePartitionInfo::is_colocated(const PartitionInfo & target)const{
 	if(target.get_mode()==OneToMany)
 		return false;
-	if(binding_node_id_==-1||((OneToOnePartitionInfo)target).binding_node_id_==-1)
+	if(binding_node_id_==-1||((OneToOnePartitionInfo*)&target)->binding_node_id_==-1)
 		return false;
-	return binding_node_id_==((OneToOnePartitionInfo)target).binding_node_id_;
+	return binding_node_id_==((OneToOnePartitionInfo*)&target)->binding_node_id_;
 
 }
 bool OneToManyPartitionInfo::is_colocated(const PartitionInfo & target)const{

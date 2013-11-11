@@ -10,13 +10,16 @@
 #include <vector>
 #include "../Catalog/Column.h"
 #include "../Catalog/Partitioner.h"
-#include "DataflowPartitionDescriptor.h"
+#include "../LogicalQueryPlan/DataflowPartitionDescriptor.h"
 class Dataflow {
 	/* describe the properties of the data flow*/
 	friend class LogcalOperator;
 	struct property{
 		DataflowPartitionDescriptor partitioner;
 		unsigned commnication_cost;
+		property():commnication_cost(0){
+
+		}
 		property(const property& r){
 			partitioner=r.partitioner;
 			commnication_cost=r.commnication_cost;
@@ -28,7 +31,7 @@ public:
 	virtual ~Dataflow();
 	unsigned getAggregatedDatasize()const;
 	bool isHashPartitioned()const;
-protected:
+public:
 	std::vector<Attribute> attribute_list_;
 	property property_;
 

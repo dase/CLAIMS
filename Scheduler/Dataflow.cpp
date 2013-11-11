@@ -9,15 +9,14 @@
 
 Dataflow::Dataflow() {
 	// TODO Auto-generated constructor stub
-
 }
 
 Dataflow::~Dataflow() {
 	// TODO Auto-generated destructor stub
 }
 Dataflow::Dataflow(const Dataflow& r){
-	this->attribute_list_=r.attribute_list_;
-	this->property_=r.property_;
+	attribute_list_=r.attribute_list_;
+	property_=r.property_;
 }
 unsigned Dataflow::getAggregatedDatasize()const{
 	return property_.partitioner.getAggregatedDatasize();

@@ -13,6 +13,7 @@
 class DataflowPartition {
 public:
 	friend class DataflowPartitionDescriptor;
+	DataflowPartition(){};
 	DataflowPartition(unsigned partitoin_id,int datasize,NodeID location);
 	DataflowPartition(const DataflowPartition& part);
 

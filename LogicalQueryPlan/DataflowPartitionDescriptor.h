@@ -15,7 +15,7 @@
  */
 class DataflowPartitionDescriptor {
 public:
-	DataflowPartitionDescriptor():partition_function_(0){};
+	DataflowPartitionDescriptor():partition_function_(0),partition_key_(0){};
 	DataflowPartitionDescriptor(const Partitioner& partitoiner);
 	virtual ~DataflowPartitionDescriptor();
 	Attribute getPartitionKey()const;
@@ -25,7 +25,7 @@ public:
 private:
 	std::vector<DataflowPartition> partition_list_;
 	PartitionFunction* partition_function_;
-	Attribute partition_key_;
+	Attribute* partition_key_;
 };
 
 #endif /* DATAFLOWPARTITIONER_H_ */
