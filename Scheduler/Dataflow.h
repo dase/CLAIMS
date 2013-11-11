@@ -13,6 +13,7 @@
 #include "DataflowPartitionDescriptor.h"
 class Dataflow {
 	/* describe the properties of the data flow*/
+	friend class LogcalOperator;
 	struct property{
 		DataflowPartitionDescriptor partitioner;
 		unsigned commnication_cost;
@@ -26,7 +27,8 @@ public:
 	Dataflow(const Dataflow& r);
 	virtual ~Dataflow();
 	unsigned getAggregatedDatasize()const;
-private:
+	bool isHashPartitioned()const;
+protected:
 	std::vector<Attribute> attribute_list_;
 	property property_;
 

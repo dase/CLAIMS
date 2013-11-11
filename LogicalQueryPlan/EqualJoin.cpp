@@ -8,7 +8,7 @@
 #include "EqualJoin.h"
 
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
-:joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na){
+:joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
 		left_join_key_list_.push_back(joinpair_list[i].first);
 		right_join_key_list_.push_back(joinpair_list[i].second);
@@ -20,6 +20,12 @@ EqualJoin::~EqualJoin() {
 }
 
 Dataflow EqualJoin::getDataflow(){
+	if(dataflow_!=0){
+		/* the data flow has been computed*/
+		return *dataflow_;
+	}
+
+
 	/** in the current implementation, only the hash join is considered**/
 	Dataflow left_dataflow=left_child_->getDataflow();
 	Dataflow right_dataflow=right_child_->getDataflow();
@@ -35,10 +41,7 @@ Dataflow EqualJoin::getDataflow(){
 			/** the best situation**/
 			if(left_dataflow.property_.partitioner.hasSamePartitionLocation(right_dataflow.property_.partitioner)){
 				join_police_=no_repartition;
-				ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
-				ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 
-				return ret;
 			}
 			else{
 				join_police_=decideLeftOrRightRepartition(left_dataflow,right_dataflow);
@@ -63,23 +66,57 @@ Dataflow EqualJoin::getDataflow(){
 	/**finally, construct the output data flow according to the join police**/
 	switch(join_police_){
 		case no_repartition:{
-
+			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
+			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+			/*use the left partitioner as the output dataflow partitioner.
+			 * TODO: in fact, the output dataflow partitioner should contains both
+			 * left partitioner and right partitioner.
+			 */
+			ret.property_.partitioner=left_dataflow.property_.partitioner;
+			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			break;
 		}
 		case left_repartition:{
+			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
+			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+			ret.property_.partitioner=right_dataflow.property_.partitioner;
+			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
+			ret.property_.commnication_cost+=left_dataflow.property_.partitioner.getAggregatedDatasize();
 			break;
 		}
 		case right_repartition:{
+			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
+			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+			ret.property_.partitioner=left_dataflow.property_.partitioner;
+			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
+			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();
 			break;
 		}
 		case complete_repartition:{
+			/** the repartition strategy (e.g., the degree of parallelism and the partition function) in such case is not decided by
+			 * any child data flow. Additional optimization can be made by adopting the partition strategy which benefits the remaining
+			 * work.TODO.
+			 */
+			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
+			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
+			ret.property_.commnication_cost+=left_dataflow.property_.partitioner.getAggregatedDatasize();
+			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();
+			printf("This is not implemented, as I'm very lazy. -_- \n");
+			assert(false);
+			break;
+		}
+		default:{
+			printf("The join police has not been decided!\n");
+			assert(false);
 			break;
 		}
 	}
 
+	dataflow_=new Dataflow();
+	*dataflow_=ret;
 
-
-	return left_dataflow;
+	return ret;
 }
 
 bool EqualJoin::isHashOnLeftKey(const Partitioner& part,const Attribute& key)const{

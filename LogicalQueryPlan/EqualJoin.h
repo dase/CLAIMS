@@ -40,6 +40,7 @@ private:
 	LogicalOperator* left_child_;
 	LogicalOperator* right_child_;
 	JoinPolice join_police_;
+	Dataflow* dataflow_;
 
 };
 

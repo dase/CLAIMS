@@ -23,3 +23,6 @@ unsigned Dataflow::getAggregatedDatasize()const{
 	return property_.partitioner.getAggregatedDatasize();
 }
 
+bool Dataflow::isHashPartitioned()const{
+	return property_.partitioner.getPartitionFashion()==PartitionFunction::hash_f;
+}
