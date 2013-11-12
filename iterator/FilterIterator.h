@@ -37,6 +37,9 @@ public:
 		inline unsigned get_index()const{
 			return index;
 		}
+		void* get_value()const{
+			return value;
+		}
 	protected:
 		void* value;
 		unsigned index;

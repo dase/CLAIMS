@@ -48,6 +48,9 @@ public:
 	Comparator():compare(0){};
 	virtual ~Comparator();
 	bool (*compare)(const void*,const void*) ;
+	comparison getCompareType()const{
+		return compareType;
+	}
 protected:
 	Pair pair;
 	comparison compareType;

@@ -56,5 +56,6 @@ unsigned DataflowPartitionDescriptor::getNumberOfPartitions()const{
 }
 DataflowPartition* DataflowPartitionDescriptor::getPartition(unsigned index)const{
 	assert(index<partition_list_.size());
-	return &partition_list_[index];
+	DataflowPartition* ret=(DataflowPartition*)&partition_list_[index];
+	return ret;
 }

@@ -21,7 +21,7 @@
 
 #ifndef __MYHASHFUNCTION__
 #define __MYHASHFUNCTION__
-
+#include <stdlib.h>
 class PartitionFunction {
 	
 	public:
@@ -43,9 +43,11 @@ class PartitionFunction {
 		 * @param value Value to hash. Must be within bounds.
 		 * @return Bucket number.
 		 */
-		virtual unsigned int get_partition_value(int value) = 0;
+		virtual unsigned int get_partition_value(const int& value) const= 0;
 
-		virtual unsigned int get_partition_value(double value)=0;
+		virtual unsigned int get_partition_value(const double& value)const=0;
+
+		virtual unsigned int get_partition_value(const unsigned long&)const=0;
 
 		virtual unsigned int getNumberOfPartitions()const=0;
 
@@ -64,11 +66,14 @@ public:
 		:PartitionFunction(0,0,0),range_(range),cur_(0){}
 	~RoundRobinPartitionFunction(){};
 	/*return the id of partition in round robin*/
-	inline unsigned int get_partition_value(int value){
-		return cur_++%range_;
+	inline unsigned int get_partition_value(const int& value)const{
+		return rand()%range_;
 	}
-	inline unsigned int get_partition_value(double value){
-		return cur_++%range_;
+	inline unsigned int get_partition_value(const double& value)const{
+		return rand()%range_;
+	}
+	inline unsigned int get_partition_value(const unsigned long& value)const{
+		return rand()%range_;
 	}
 	inline unsigned int getNumberOfPartitions()const{
 		return range_;
@@ -88,12 +93,17 @@ class UniformRangePartitionFunction : public PartitionFunction {
 		UniformRangePartitionFunction(int min, int max, unsigned int k)
 			: PartitionFunction(min, max, k) { }
 		~UniformRangePartitionFunction(){};
-		inline unsigned int get_partition_value(int value) {
+		inline unsigned int get_partition_value(const int &value)const {
 			unsigned long long val = (value-min_);
 			val <<= k_;
 			return val / (max_-min_+1);
 		}
-		inline unsigned int get_partition_value(double value) {
+		inline unsigned int get_partition_value(const unsigned long &value)const {
+			unsigned long long val = (value-min_);
+			val <<= k_;
+			return val / (max_-min_+1);
+		}
+		inline unsigned int get_partition_value(const double& value)const {
 			unsigned long long val = (value-min_);
 			val <<= k_;
 			return val / (max_-min_+1);
@@ -117,10 +127,13 @@ class ModuloHashFunction : public PartitionFunction {
 		}
 		~ModuloHashFunction(){};
 		/** Return h(x) = x mod k. */
-		inline unsigned int get_partition_value(int value) {
+		inline unsigned int get_partition_value(const int& value)const {
 			return ((value-min_) & k_) >> skipbits_;
 		}
-		inline unsigned int get_partition_value(double value) {
+		inline unsigned int get_partition_value(const double& value)const {
+			return ((*(long*)&value-min_) & k_) >> skipbits_;
+		}
+		inline unsigned int get_partition_value(const unsigned long& value)const {
 			return ((*(long*)&value-min_) & k_) >> skipbits_;
 		}
 		partition_fashion getPartitionFashion()const;
@@ -140,13 +153,17 @@ public:
 
 	}
 	~GeneralModuloFunction(){};
-	inline unsigned int get_partition_value(int value){
+	inline unsigned int get_partition_value(const int& value)const{
 		return (((value-min_) & k_) >> skipbits_)%range_;
 	}
-	inline unsigned int get_partition_value(double value){
+	inline unsigned int get_partition_value(const unsigned long& value)const{
+		return (((value-min_) & k_) >> skipbits_)%range_;
+	}
+	inline unsigned int get_partition_value(const double& value)const{
 		const long tmp=*(long*)&value;
 		return ((tmp*16807)%2836+(tmp*19))%range_;
 	}
+
 	partition_fashion getPartitionFashion()const;
 	unsigned getNumberOfPartitions()const{
 		return range_;

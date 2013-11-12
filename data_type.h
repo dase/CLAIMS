@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-
+#include "hash.h"
 enum data_type{t_int,t_float,t_string,t_double,t_u_long};
 typedef void (*fun)(void*,void*);
 
@@ -80,6 +80,7 @@ public:
 		*(int*)desc=*(int*)src;
 	}
 	inline virtual void assignment(const void* src,void* &desc) const =0;
+	virtual unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const=0;
 	virtual std::string toString(void* value)=0;
 	virtual bool equal(void* a, void* b)=0;
 	virtual void add(void* target, void* increment)=0;
@@ -130,6 +131,9 @@ public:
 	{
 		return IncreaseByOne<int>;
 	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(int*)key);
+	}
 
 };
 
@@ -173,6 +177,9 @@ public:
 	{
 		return IncreaseByOne<float>;
 	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(float*)key);
+	}
 };
 
 class OperateDouble:public Operate
@@ -214,6 +221,9 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<double>;
+	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(double*)key);
 	}
 };
 
@@ -257,6 +267,9 @@ public:
 	{
 		return IncreaseByOne<unsigned long>;
 	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(unsigned long*)key);
+	}
 };
 
 class OperateString:public Operate
@@ -297,6 +310,12 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<char*>;
+	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		printf("The hash function for char[] type is not implemented yet!\n");
+		assert(false);
+
+		return 0;
 	}
 };
 

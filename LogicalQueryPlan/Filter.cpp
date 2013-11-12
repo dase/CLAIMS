@@ -34,8 +34,15 @@ Dataflow Filter::getDataflow(){
 	return child_->getDataflow();
 }
 
-bool Filter::couldHashPruned(unsigned partition_id,Partitioner* part){
+bool Filter::couldHashPruned(unsigned partition_id,Partitioner* part,const Dataflow& dataflow){
 	for(unsigned i=0;i<comparator_list_.size();i++){
-		if(*part->getPartitionKey()==comparator_list_[i].)
+		const unsigned comparator_attribute_index=comparator_list_[i].get_index();
+		if(*part->getPartitionKey()==dataflow.attribute_list_[comparator_attribute_index]){
+			if(comparator_list_[i].getCompareType()==Comparator::EQ){
+				part->getPartitionKey()->attrType->operate->getPartitionValue(comparator_list_[i].get_value(),part->getPartitionFunction());
+
+			}
+
+		}
 	}
 }
