@@ -44,17 +44,17 @@ PartitionFunction::PartitionFunction(int min, int max, unsigned int k) : min_(mi
 		k_ = getlogarithm(k);
 }
 
-unsigned int PartitionFunction::getNumberOfPartitions() {
-	return 1 << k_;
-}
+//unsigned int PartitionFunction::getNumberOfPartitions()const {
+//	return 1 << k_;
+//}
 
-PartitionFunction::partition_fashion ModuloHashFunction::getPartitionFashion(){
+PartitionFunction::partition_fashion ModuloHashFunction::getPartitionFashion()const{
 	return hash_f;
 }
-PartitionFunction::partition_fashion RoundRobinPartitionFunction::getPartitionFashion(){
+PartitionFunction::partition_fashion RoundRobinPartitionFunction::getPartitionFashion()const{
 	return round_robin_f;
 }
-PartitionFunction::partition_fashion UniformRangePartitionFunction::getPartitionFashion(){
+PartitionFunction::partition_fashion UniformRangePartitionFunction::getPartitionFashion()const{
 	return range_f;
 }
 
@@ -73,6 +73,6 @@ PartitionFunction* PartitionFunctionFactory::createGeneralModuloFunction(const i
 }
 
 
-PartitionFunction::partition_fashion GeneralModuloFunction::getPartitionFashion(){
+PartitionFunction::partition_fashion GeneralModuloFunction::getPartitionFashion()const{
 	return hash_f;
 }

@@ -47,7 +47,7 @@ class PartitionFunction {
 
 		virtual unsigned int get_partition_value(double value)=0;
 
-		virtual unsigned int getNumberOfPartitions();
+		virtual unsigned int getNumberOfPartitions()const=0;
 
 	protected:
 		int min_, max_;
@@ -70,7 +70,7 @@ public:
 	inline unsigned int get_partition_value(double value){
 		return cur_++%range_;
 	}
-	inline unsigned int getNumberOfPartitions(){
+	inline unsigned int getNumberOfPartitions()const{
 		return range_;
 	}
 	partition_fashion getPartitionFashion()const;
@@ -99,6 +99,9 @@ class UniformRangePartitionFunction : public PartitionFunction {
 			return val / (max_-min_+1);
 		}
 		partition_fashion getPartitionFashion()const;
+		unsigned getNumberOfPartitions()const{
+			return 1<<k_;
+		}
 };
 
 class ModuloHashFunction : public PartitionFunction {
@@ -121,7 +124,7 @@ class ModuloHashFunction : public PartitionFunction {
 			return ((*(long*)&value-min_) & k_) >> skipbits_;
 		}
 		partition_fashion getPartitionFashion()const;
-		inline unsigned int getNumberOfPartitions() {
+		inline unsigned int getNumberOfPartitions()const {
 			return (k_ >> skipbits_) + 1;
 		}
 
@@ -145,6 +148,9 @@ public:
 		return ((tmp*16807)%2836+(tmp*19))%range_;
 	}
 	partition_fashion getPartitionFashion()const;
+	unsigned getNumberOfPartitions()const{
+		return range_;
+	}
 private:
 	unsigned long range_;
 	unsigned skipbits_;

@@ -10,6 +10,7 @@
 #define IDS_H_
 #include <boost/unordered_map.hpp>
 
+typedef int NodeID;
 
 typedef unsigned TableID;
 typedef unsigned AttributeOffset;
