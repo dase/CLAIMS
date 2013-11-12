@@ -13,15 +13,18 @@
 class DataflowPartition {
 public:
 	friend class DataflowPartitionDescriptor;
-	DataflowPartition(){};
+	DataflowPartition():filtered_(false){};
 	DataflowPartition(unsigned partitoin_id,int datasize,NodeID location);
 	DataflowPartition(const DataflowPartition& part);
-
+	unsigned getDataSize()const;
+	bool isAvaliable()const;
+	void setFiltered();
 	virtual ~DataflowPartition();
 protected:
 	unsigned partition_id_;
 	int datasize_;
 	NodeID location_;
+	bool filtered_;
 
 };
 

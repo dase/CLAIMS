@@ -28,7 +28,7 @@ Dataflow LogicalScan::getDataflow(){
 	for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
 		ProjectionDescriptor* projection=table->getProjectoin(projection_off);
 		bool fail=false;
-		for(std::vector<Attribute>::iterator it;it!=scan_attribute_list_.end();it++){
+		for(std::vector<Attribute>::iterator it=scan_attribute_list_.begin();it!=scan_attribute_list_.end();it++){
 			if(!projection->hasAttribute(*it)){
 				/*the attribute *it does not in the projection*/
 				fail=true;

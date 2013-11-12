@@ -99,8 +99,20 @@ public:
 	ColumnOffset getColumnID(const string& attrName) const;
 	map<string, set<string> > getColumnLocations(const string& attrName) const;
 
-	vector<Attribute> getAttributes(){
+	vector<Attribute> getAttributes()const{
 		return attributes;
+	}
+	vector<Attribute> getAttributes(vector<unsigned> index_list)const{
+		vector<Attribute> attribute_list;
+		for(unsigned i=0;i<index_list.size();i++){
+			assert(index_list[i]<attributes.size());
+			attribute_list.push_back(attributes[index_list[i]]);
+		}
+		return attribute_list;
+	}
+	Attribute getAttribute(unsigned index)const{
+		assert(index<attributes.size());
+		return attributes[index];
 	}
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);

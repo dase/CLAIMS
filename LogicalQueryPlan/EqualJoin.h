@@ -11,8 +11,9 @@
 #include "LogicalOperator.h"
 #include "../Catalog/Attribute.h"
 class EqualJoin:public LogicalOperator {
+public:
 	struct JoinPair{
-		JoinPair(Attribute &a,Attribute & b):first(a),second(b){};
+		JoinPair(const Attribute &a,const Attribute & b):first(a),second(b){};
 		Attribute first;
 		Attribute second;
 	};
@@ -29,6 +30,8 @@ private:
 	 * is enabled.
 	 */
 	bool canLeverageHashPartition(const std::vector<Attribute> &partition_key_list,const DataflowPartitionDescriptor& partitoiner)const;
+
+	bool isEqualCondition(const Attribute& a1,const Attribute& a2)const;
 
 	/** current version only consider the data size for simplicity.
 	 * TODO: consider not only data size but also other factors, such as parallelism, resource, etc.**/

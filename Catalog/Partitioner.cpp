@@ -96,7 +96,8 @@ unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
 }
 NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 	if(partition_info_list[partition_index]->get_mode()==OneToOne){
-		return (*(OneToOnePartitionInfo*)&partition_info_list[partition_index]).get_location();
+//		return (*(OneToOnePartitionInfo*)&partition_info_list[partition_index]).get_location();
+		return partition_info_list[partition_index]->get_location();
 	}
 	else{
 		return -1;

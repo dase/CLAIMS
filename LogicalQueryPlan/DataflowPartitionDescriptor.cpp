@@ -30,8 +30,13 @@ bool DataflowPartitionDescriptor::hasSamePartitionLocation(const DataflowPartiti
 	if(partition_list_.size()!=target.partition_list_.size())
 		return false;
 	for(unsigned i=0;i<partition_list_.size();i++){
-		if(partition_list_[i].location_!=target.partition_list_[i].location_)
-			return false;
+		if(partition_list_[i].isAvaliable()&&target.partition_list_[i].isAvaliable()){
+		/**
+		 * if no party is filtered.
+		 */
+			if(partition_list_[i].location_!=target.partition_list_[i].location_)
+				return false;
+		}
 	}
 	return true;
 }
@@ -45,4 +50,11 @@ unsigned DataflowPartitionDescriptor::getAggregatedDatasize()const{
 }
 PartitionFunction::partition_fashion DataflowPartitionDescriptor::getPartitionFashion()const{
 	return partition_function_->getPartitionFashion();
+}
+unsigned DataflowPartitionDescriptor::getNumberOfPartitions()const{
+	return partition_list_.size();
+}
+DataflowPartition* DataflowPartitionDescriptor::getPartition(unsigned index)const{
+	assert(index<partition_list_.size());
+	return &partition_list_[index];
 }

@@ -16,6 +16,8 @@ public:
 	virtual ~Filter();
 	Dataflow getDataflow();
 private:
+	bool couldHashPruned(unsigned partition_id,Partitioner* part);
+private:
 	LogicalOperator* child_;
 	vector<FilterIterator::AttributeComparator> comparator_list_;
 

@@ -8,10 +8,13 @@
 #include "../LogicalOperator.h"
 #include "../../Environment.h"
 #include "../../Catalog/ProjectionBinding.h"
+#include "../Scan.h"
+#include "../EqualJoin.h"
 int main(){
 	Environment::getInstance(true);
 
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+	Catalog* catalog=Environment::getInstance()->getCatalog();
 	rmms->RegisterNewSlave("192.168.1.1");
 	rmms->RegisterNewSlave("192.168.1.2");
 	rmms->RegisterNewSlave("192.168.1.3");
@@ -23,39 +26,97 @@ int main(){
 	rmms->RegisterDiskBuget(3,10000);
 	rmms->RegisterDiskBuget(4,10000);
 
-	TableDescriptor* table=new TableDescriptor("Student",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-	table->addAttribute("Name",data_type(t_string),10);
-	table->addAttribute("Age",data_type(t_int));
-	table->addAttribute("Gender",data_type(t_int));
-	table->addAttribute("Score",data_type(t_float));
 
-	vector<ColumnOffset> index;
-	index.push_back(0);
-	index.push_back(1);
-	index.push_back(3);
-	const int partition_key_index=3;
-	table->createHashPartitionedProjection(index,partition_key_index,4);
-	Catalog* catalog=Environment::getInstance()->getCatalog();
-	catalog->add_table(table);
+	/////////////////////////////////////Create table left/////////////////////
+	TableDescriptor* table_1=new TableDescriptor("Left",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+	table_1->addAttribute("Name",data_type(t_string),10);
+	table_1->addAttribute("Age",data_type(t_int));
+	table_1->addAttribute("Gender",data_type(t_int));
+	table_1->addAttribute("Score",data_type(t_float));
+
+	vector<ColumnOffset> index_1;
+	index_1.push_back(0);
+	index_1.push_back(1);
+	index_1.push_back(3);
+	const int partition_key_index_1=3;
+	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,7);
+	catalog->add_table(table_1);
+
+	////////////////////////////////////Create table right//////////////////////////
+	TableDescriptor* table_2=new TableDescriptor("right",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+	table_2->addAttribute("Name",data_type(t_string),10);
+	table_2->addAttribute("Age",data_type(t_int));
+	table_2->addAttribute("Gender",data_type(t_int));
+	table_2->addAttribute("Score",data_type(t_float));
+
+	vector<ColumnOffset> index_2;
+	index_2.push_back(0);
+	index_2.push_back(1);
+	index_2.push_back(3);
+	const int partition_key_index_2=3;
+	table_2->createHashPartitionedProjection(index_2,partition_key_index_2,4);
+	catalog->add_table(table_2);
+	///////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 	///////////////////////////////////////
 
 
 	////////////////////////////////////////
 	/* the following codes should be triggered by Load module*/
 
-	for(unsigned i=0;i<table->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
 		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,12);
 	}
+
+
+	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,10);
+	}
+
 	////////////////////////////////////////
-
-
-
 
 
 
 	ProjectionBinding *pb=new ProjectionBinding();
 	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner());
+	pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(0)->getPartitioner());
+
+	////scan////////
+	std::vector<unsigned> index_list_1;
+	index_list_1.push_back(0);
+	index_list_1.push_back(1);
+	index_list_1.push_back(3);
+	LogicalOperator* scan_1=new LogicalScan(table_1->getAttributes(index_list_1));
+
+
+	////scan/////////
+	std::vector<unsigned> index_list_2;
+	index_list_2.push_back(0);
+	index_list_2.push_back(1);
+	index_list_2.push_back(3);
+	LogicalOperator* scan_2=new LogicalScan(table_2->getAttributes(index_list_2));
+	//////////////////
+
+
+	////Join////////
+	EqualJoin::JoinPair joinpair(table_1->getAttribute(3),table_2->getAttribute(3));
+	std::vector<EqualJoin::JoinPair> pair_list;
+	pair_list.push_back(joinpair);
+
+	LogicalOperator* join=new EqualJoin(pair_list,scan_1,scan_2);
+
+
+	Dataflow final_dataflow=join->getDataflow();
+	printf("Total communication cost: %d\n",final_dataflow.property_.commnication_cost);
 
 
 

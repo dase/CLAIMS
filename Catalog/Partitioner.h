@@ -66,6 +66,7 @@ public:
 	virtual bool is_all_blocks_bound()=0;//p
 	virtual bool is_colocated(const PartitionInfo &)const=0;
 	int get_number_of_blocks()const{	return number_of_blocks;}//p
+	virtual NodeID get_location() const=0;
 protected:
 	string hdfs_file_name;//p
 	int number_of_blocks;//p
@@ -171,6 +172,16 @@ public:
 		}
 	}
 	bool is_colocated(const PartitionInfo &)const;
+	NodeID get_location() const{
+		if(block_to_node.size()==0)
+			return -1;
+		const NodeID ret=block_to_node.at(0);
+		for(unsigned i=1;i<block_to_node.size();i++){
+			if(block_to_node.at(i)==-1||block_to_node.at(i)!=ret)
+				return -1;
+		}
+		return ret;
+	}
 	virtual ~OneToManyPartitionInfo(){};
 private:
 	/*

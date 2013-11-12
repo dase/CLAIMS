@@ -37,7 +37,7 @@ Dataflow EqualJoin::getDataflow(){
 	const Attribute left_partition_key=left_dataflow.property_.partitioner.getPartitionKey();
 	const Attribute right_partition_key=right_dataflow.property_.partitioner.getPartitionKey();
 	if(left_dataflow_key_partitioned&&right_dataflow_key_partitioned){
-		if(left_partition_key==right_partition_key){
+		if(isEqualCondition(left_partition_key,right_partition_key)){// this line should be fucked!
 			/** the best situation**/
 			if(left_dataflow.property_.partitioner.hasSamePartitionLocation(right_dataflow.property_.partitioner)){
 				join_police_=no_repartition;
@@ -66,6 +66,7 @@ Dataflow EqualJoin::getDataflow(){
 	/**finally, construct the output data flow according to the join police**/
 	switch(join_police_){
 		case no_repartition:{
+			printf("no_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			/*use the left partitioner as the output dataflow partitioner.
@@ -77,6 +78,7 @@ Dataflow EqualJoin::getDataflow(){
 			break;
 		}
 		case left_repartition:{
+			printf("left_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.partitioner=right_dataflow.property_.partitioner;
@@ -85,6 +87,7 @@ Dataflow EqualJoin::getDataflow(){
 			break;
 		}
 		case right_repartition:{
+			printf("right_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.partitioner=left_dataflow.property_.partitioner;
@@ -97,6 +100,7 @@ Dataflow EqualJoin::getDataflow(){
 			 * any child data flow. Additional optimization can be made by adopting the partition strategy which benefits the remaining
 			 * work.TODO.
 			 */
+			printf("complete_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
@@ -132,6 +136,15 @@ bool EqualJoin::canLeverageHashPartition(const std::vector<Attribute> &partition
 	for(unsigned i=0;i<partition_key_list.size();i++){
 		if(attribute==partition_key_list[i])
 			return true;
+	}
+	return false;
+}
+
+bool EqualJoin::isEqualCondition(const Attribute& a1,const Attribute& a2)const{
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		if(a1==joinkey_pair_list_[i].first&&a2==joinkey_pair_list_[i].second){
+			return true;
+		}
 	}
 	return false;
 }

@@ -94,7 +94,7 @@ bool TableDescriptor::createHashPartitionedProjection(vector<ColumnOffset> colum
 		projection->addAttribute(attributes[column_list[i]]);
 	}
 
-	PartitionFunction* hash_function=PartitionFunctionFactory::createModuloFunction(number_of_partitions);
+	PartitionFunction* hash_function=PartitionFunctionFactory::createGeneralModuloFunction(number_of_partitions);
 //	projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
 	projection->DefinePartitonier(number_of_partitions,attributes[partition_key_index],hash_function);
 

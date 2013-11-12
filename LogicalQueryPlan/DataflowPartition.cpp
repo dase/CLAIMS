@@ -8,7 +8,7 @@
 #include "DataflowPartition.h"
 
 DataflowPartition::DataflowPartition(unsigned partition_id,int datasize,NodeID location)
-:partition_id_(partition_id),datasize_(datasize),location_(location){
+:partition_id_(partition_id),datasize_(datasize),location_(location),filtered_(false){
 
 }
 
@@ -19,5 +19,18 @@ DataflowPartition::DataflowPartition(const DataflowPartition& part){
 	this->partition_id_=part.partition_id_;
 	this->location_=part.location_;
 	this->datasize_=part.datasize_;
+	this->filtered_=part.filtered_;
+}
+unsigned DataflowPartition::getDataSize()const{
+	if(filtered_)
+		return 0;
+	return datasize_;
 }
 
+bool DataflowPartition::isAvaliable()const{
+	return !filtered_;
+}
+void DataflowPartition::setFiltered(){
+	filtered_=true;
+	datasize_=0;
+}
