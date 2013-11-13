@@ -6,7 +6,8 @@
  */
 
 #include "EqualJoin.h"
-
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -156,5 +157,34 @@ EqualJoin::JoinPolice EqualJoin::decideLeftOrRightRepartition(const Dataflow& le
 	}
 	else{
 		return left_repartition;
+	}
+}
+
+BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& blocksize){
+	BlockStreamIteratorBase* child_iterator_left=left_child_->getIteratorTree(blocksize);
+	BlockStreamIteratorBase* child_iterator_right=right_child_->getIteratorTree(blocksize);
+	Dataflow dataflow_left=left_child_->getDataflow();
+	Dataflow dataflow_right=right_child_->getDataflow();
+
+	switch(join_police_){
+	case no_repartition:{
+		BlockStreamJoinIterator::State state;
+		state.block_size_=blocksize;
+		state.child_left=child_iterator_left;
+		state.child_right=child_iterator_right;
+
+		state.ht_nbuckets=1024*1024;
+		state.input_schema_left=getSchema(dataflow_left.attribute_list_);
+		state.input_schema_right=getSchema(dataflow_right.attribute_list_);
+		/* the bucket size is lager than one tuple and is 64-byte-aligned */
+		state.ht_bucketsize=((state.input_schema_left->getTupleMaxSize()-1)/64+1)*64;
+		state.output_schema=getSchema(dataflow_->attribute_list_);
+		//state.//
+
+		break;
+	}
+	default:{
+		break;
+	}
 	}
 }

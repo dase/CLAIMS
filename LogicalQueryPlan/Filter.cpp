@@ -6,7 +6,7 @@
  */
 
 #include "Filter.h"
-
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
 Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
 
@@ -21,17 +21,28 @@ Dataflow Filter::getDataflow(){
 	 * between each AttributeComparator is "AND".
 	 */
 
-	Dataflow child_dataflow=child_->getDataflow();
-	if(child_dataflow.isHashPartitioned()){
-		for(unsigned i=0;i<child_dataflow.property_.partitioner.getNumberOfPartitions();i++){
-			if(couldHashPruned(i,child_dataflow.property_.partitioner,child_dataflow))//is filtered
+	Dataflow dataflow=child_->getDataflow();
+	if(dataflow.isHashPartitioned()){
+		for(unsigned i=0;i<dataflow.property_.partitioner.getNumberOfPartitions();i++){
+			if(couldHashPruned(i,dataflow.property_.partitioner,dataflow))//is filtered
 			{
-				child_dataflow.property_.partitioner.getPartition(i)->setFiltered();
+				dataflow.property_.partitioner.getPartition(i)->setFiltered();
 			}
 		}
 	}
 
-	return child_dataflow;
+	return dataflow;
+}
+BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
+	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(blocksize);
+	ExpandableBlockStreamFilter::State state;
+	state.block_size_=blocksize;
+	state.child_=child_iterator;
+	state.comparator_list_=comparator_list_;
+	Dataflow dataflow=getDataflow();
+	state.schema_=getSchema(dataflow.attribute_list_);
+	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
+	return filter;
 }
 
 bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitionDescriptor& part,const Dataflow& dataflow){

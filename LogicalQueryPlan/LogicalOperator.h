@@ -8,9 +8,10 @@
 #ifndef LOGICALOPERATOR_H_
 #define LOGICALOPERATOR_H_
 #include <stdio.h>
+#include <vector>
 #include "../Schema/LogicalProjection.h"
 #include "../Scheduler/Dataflow.h"
-
+#include "../Schema/SchemaFix.h"
 class LogicalOperator{
 public:
 //	virtual LogicalProjection getLogicalProjection()=0;
@@ -18,6 +19,10 @@ public:
 	/*get the data flow which is optimal in the local view.*
 	 * TODO: leverage recursive search for the global optimal. */
 	virtual Dataflow getDataflow()=0;
+	virtual BlockStreamIteratorBase* getIteratorTree(const unsigned &)=0;
+protected:
+	Schema* getSchema(std::vector<Attribute>&)const;
+	std::vector<NodeID> getInvolvedNodeID(DataflowPartitionDescriptor&)const;
 };
 
 //class Operator{

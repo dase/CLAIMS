@@ -6,11 +6,18 @@
  */
 
 #include "NodeTracker.h"
-
+NodeTracker* instance_=0;
 NodeTracker::NodeTracker():allocate_cur_(0) {
 
 }
-
+NodeTracker* getInstance(){
+	if(instance_==0){
+		return new NodeTracker();
+	}
+	else{
+		return instance_;
+	}
+}
 NodeTracker::~NodeTracker() {
 	// TODO Auto-generated destructor stub
 }
@@ -25,3 +32,11 @@ int NodeTracker::RegisterNode(std::string node_name){
 	return allocated_id;
 }
 
+std::string NodeTracker::getNodeIP(NodeID target)const{
+	hashmap<NodeIP,NodeID>::iterator it=ip_to_id_.cbegin();
+	while(it!=ip_to_id_.cend()){
+		if(it->second==target)
+			return it->first;
+	}
+	return NULL;
+}

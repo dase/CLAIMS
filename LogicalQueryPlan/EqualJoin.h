@@ -22,7 +22,7 @@ public:
 	EqualJoin(std::vector<JoinPair>,LogicalOperator* left_input,LogicalOperator* right_input);
 	virtual ~EqualJoin();
 	Dataflow getDataflow();
-
+	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
 private:
 	bool isHashOnLeftKey(const Partitioner& part,const Attribute& key)const;
 

@@ -19,6 +19,7 @@ public:
 	unsigned getDataSize()const;
 	bool isAvaliable()const;
 	void setFiltered();
+	NodeID getLocation()const;
 	virtual ~DataflowPartition();
 protected:
 	unsigned partition_id_;

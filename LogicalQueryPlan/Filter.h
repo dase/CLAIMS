@@ -15,6 +15,7 @@ public:
 	Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child );
 	virtual ~Filter();
 	Dataflow getDataflow();
+	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
 private:
 	bool couldHashPruned(unsigned partition_id,const DataflowPartitionDescriptor&,const Dataflow& dataflow);
 private:

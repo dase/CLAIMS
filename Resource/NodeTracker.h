@@ -15,13 +15,16 @@ typedef std::string NodeIP;//TODO: may use ip + port to support multiple instanc
 typedef int NodeID;
 class NodeTracker {
 public:
-	NodeTracker();
+
+	static NodeTracker* getInstance();
 	virtual ~NodeTracker();
 	int RegisterNode(std::string node_name);
+	std::string getNodeIP(NodeID)const;
 private:
+	NodeTracker();
 	hashmap<NodeIP,NodeID> ip_to_id_;
 	unsigned allocate_cur_;
-
+	static NodeTracker* instance_;
 };
 
 #endif /* NODETRACKER_H_ */

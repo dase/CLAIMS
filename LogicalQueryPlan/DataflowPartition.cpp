@@ -34,3 +34,6 @@ void DataflowPartition::setFiltered(){
 	filtered_=true;
 	datasize_=0;
 }
+NodeID DataflowPartition::getLocation()const{
+	return location_;
+}
