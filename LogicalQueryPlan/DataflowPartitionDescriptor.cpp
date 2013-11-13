@@ -59,3 +59,6 @@ DataflowPartition* DataflowPartitionDescriptor::getPartition(unsigned index)cons
 	DataflowPartition* ret=(DataflowPartition*)&partition_list_[index];
 	return ret;
 }
+PartitionFunction* DataflowPartitionDescriptor::getPartitionFunction()const{
+	return partition_function_;
+}

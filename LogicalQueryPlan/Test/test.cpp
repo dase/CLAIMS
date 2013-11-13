@@ -10,6 +10,7 @@
 #include "../../Catalog/ProjectionBinding.h"
 #include "../Scan.h"
 #include "../EqualJoin.h"
+#include "../Filter.h"
 int main(){
 	Environment::getInstance(true);
 
@@ -29,17 +30,17 @@ int main(){
 
 	/////////////////////////////////////Create table left/////////////////////
 	TableDescriptor* table_1=new TableDescriptor("Left",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-	table_1->addAttribute("Name",data_type(t_string),10);
+	table_1->addAttribute("Name",data_type(t_string),3);
 	table_1->addAttribute("Age",data_type(t_int));
 	table_1->addAttribute("Gender",data_type(t_int));
-	table_1->addAttribute("Score",data_type(t_float));
+	table_1->addAttribute("Score",data_type(t_int));
 
 	vector<ColumnOffset> index_1;
 	index_1.push_back(0);
 	index_1.push_back(1);
 	index_1.push_back(3);
 	const int partition_key_index_1=3;
-	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,7);
+	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,2);
 	catalog->add_table(table_1);
 
 	////////////////////////////////////Create table right//////////////////////////
@@ -47,14 +48,14 @@ int main(){
 	table_2->addAttribute("Name",data_type(t_string),10);
 	table_2->addAttribute("Age",data_type(t_int));
 	table_2->addAttribute("Gender",data_type(t_int));
-	table_2->addAttribute("Score",data_type(t_float));
+	table_2->addAttribute("Score",data_type(t_int));
 
 	vector<ColumnOffset> index_2;
 	index_2.push_back(0);
 	index_2.push_back(1);
 	index_2.push_back(3);
 	const int partition_key_index_2=3;
-	table_2->createHashPartitionedProjection(index_2,partition_key_index_2,4);
+	table_2->createHashPartitionedProjection(index_2,partition_key_index_2,3);
 	catalog->add_table(table_2);
 	///////////////////////////////////////////////////////////
 
@@ -73,13 +74,13 @@ int main(){
 
 	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,12);
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,5);
 	}
 
 
 	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,10);
+		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,4);
 	}
 
 	////////////////////////////////////////
@@ -97,6 +98,12 @@ int main(){
 	index_list_1.push_back(3);
 	LogicalOperator* scan_1=new LogicalScan(table_1->getAttributes(index_list_1));
 
+	////////filter////////
+	int f=0;
+	FilterIterator::AttributeComparator filter1(column_type(t_int),Comparator::EQ,2,&f);
+	std::vector<FilterIterator::AttributeComparator> ComparatorList;
+	ComparatorList.push_back(filter1);
+	LogicalOperator* filter=new Filter(ComparatorList,scan_1);
 
 	////scan/////////
 	std::vector<unsigned> index_list_2;
@@ -112,7 +119,7 @@ int main(){
 	std::vector<EqualJoin::JoinPair> pair_list;
 	pair_list.push_back(joinpair);
 
-	LogicalOperator* join=new EqualJoin(pair_list,scan_1,scan_2);
+	LogicalOperator* join=new EqualJoin(pair_list,filter,scan_2);
 
 
 	Dataflow final_dataflow=join->getDataflow();

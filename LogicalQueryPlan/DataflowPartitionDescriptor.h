@@ -24,6 +24,7 @@ public:
 	PartitionFunction::partition_fashion getPartitionFashion()const;
 	unsigned getNumberOfPartitions()const;
 	 DataflowPartition* getPartition(unsigned index)const;
+	PartitionFunction* getPartitionFunction()const;
 private:
 	std::vector<DataflowPartition> partition_list_;
 	PartitionFunction* partition_function_;
