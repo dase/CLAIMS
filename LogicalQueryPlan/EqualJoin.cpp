@@ -8,6 +8,8 @@
 #include "EqualJoin.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../IDsGenerator.h"
+
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -160,31 +162,189 @@ EqualJoin::JoinPolice EqualJoin::decideLeftOrRightRepartition(const Dataflow& le
 	}
 }
 
-BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& blocksize){
-	BlockStreamIteratorBase* child_iterator_left=left_child_->getIteratorTree(blocksize);
-	BlockStreamIteratorBase* child_iterator_right=right_child_->getIteratorTree(blocksize);
+BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
+	BlockStreamJoinIterator* join_iterator;
+	BlockStreamIteratorBase* child_iterator_left=left_child_->getIteratorTree(block_size);
+	BlockStreamIteratorBase* child_iterator_right=right_child_->getIteratorTree(block_size);
 	Dataflow dataflow_left=left_child_->getDataflow();
 	Dataflow dataflow_right=right_child_->getDataflow();
+	BlockStreamJoinIterator::State state;
+	state.block_size_=block_size;
+//	state.child_left=child_iterator_left;
+//	state.child_right=child_iterator_right;
+
+	state.ht_nbuckets=1024*1024;
+	state.input_schema_left=getSchema(dataflow_left.attribute_list_);
+	state.input_schema_right=getSchema(dataflow_right.attribute_list_);
+	/* the bucket size is lager than one tuple and is 64-byte-aligned */
+	state.ht_bucketsize=((state.input_schema_left->getTupleMaxSize()-1)/64+1)*64;
+	state.output_schema=getSchema(dataflow_->attribute_list_);
+
+	state.joinIndex_left=getLeftJoinKeyIndexList();
+	state.joinIndex_right=getRightJoinKeyIndexList();
+
+	state.payload_left=getLeftPayloadIndexList();
+	state.payload_right=getRightPayloadIndexList();
+
+
 
 	switch(join_police_){
 	case no_repartition:{
-		BlockStreamJoinIterator::State state;
-		state.block_size_=blocksize;
 		state.child_left=child_iterator_left;
 		state.child_right=child_iterator_right;
 
-		state.ht_nbuckets=1024*1024;
-		state.input_schema_left=getSchema(dataflow_left.attribute_list_);
-		state.input_schema_right=getSchema(dataflow_right.attribute_list_);
-		/* the bucket size is lager than one tuple and is 64-byte-aligned */
-		state.ht_bucketsize=((state.input_schema_left->getTupleMaxSize()-1)/64+1)*64;
-		state.output_schema=getSchema(dataflow_->attribute_list_);
-		//state.//
+		join_iterator=new BlockStreamJoinIterator(state);
+		break;
+	}
+	case left_repartition:{
+//		state.child_left
+		NodeTracker* node_tracker=NodeTracker::getInstance();
+		ExpandableBlockStreamExchangeEpoll::State exchange_state;
+		exchange_state.block_size=block_size;
+		exchange_state.child=child_iterator_left;
+		exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
+		std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
+		exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+
+		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
+		exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+
+//		state.partition_index=
+		const Attribute right_partition_key=dataflow_->property_.partitioner.getPartitionKey();
+
+		/* get the left attribute that is corresponding to the partition key.*/
+		Attribute left_partition_key=joinkey_pair_list_[getIndexInRightJoinKeyList(right_partition_key)].first;
+
+		exchange_state.partition_index=getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key);
+
+
+		exchange_state.schema=getSchema(dataflow_left.attribute_list_,dataflow_right.attribute_list_);
+		BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
+		state.child_left=exchange;
+		state.child_right=child_iterator_right;
+		join_iterator=new BlockStreamJoinIterator(state);
+
+		break;
+	}
+	case right_repartition:{
+		NodeTracker* node_tracker=NodeTracker::getInstance();
+		ExpandableBlockStreamExchangeEpoll::State exchange_state;
+		exchange_state.block_size=block_size;
+		exchange_state.child=child_iterator_left;
+		exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+
+		std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
+		exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+
+		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
+		exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+
+//		state.partition_index=
+		const Attribute left_partition_key=dataflow_->property_.partitioner.getPartitionKey();
+
+		/* get the right attribute that is corresponding to the partition key.*/
+		Attribute right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
+
+		exchange_state.partition_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key);
+
+
+		exchange_state.schema=getSchema(dataflow_right.attribute_list_,dataflow_left.attribute_list_);
+		BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
+		state.child_left=exchange;
+		state.child_right=child_iterator_right;
+		join_iterator=new BlockStreamJoinIterator(state);
+		break;
+	}
+	case complete_repartition:{
+		printf("the join partiotin that needs to repartition each input data flow is NOT implemented yet!\n");
+		assert(false);
 		break;
 	}
 	default:{
 		break;
 	}
 	}
+}
+std::vector<unsigned> EqualJoin::getLeftJoinKeyIndexList()const{
+	std::vector<unsigned> ret;
+	const Dataflow dataflow=left_child_->getDataflow();
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
+			if(joinkey_pair_list_[i].first==dataflow.attribute_list_[j]){
+				ret.push_back(j);
+			}
+		}
+	}
+	return ret;
+}
+
+std::vector<unsigned> EqualJoin::getRightJoinKeyIndexList()const{
+	std::vector<unsigned> ret;
+	const Dataflow dataflow=right_child_->getDataflow();
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
+			if(joinkey_pair_list_[i].second==dataflow.attribute_list_[j]){
+				ret.push_back(j);
+			}
+		}
+	}
+	return ret;
+}
+std::vector<unsigned> EqualJoin::getLeftPayloadIndexList()const{
+	std::vector<unsigned> ret;
+	const Dataflow dataflow=left_child_->getDataflow();
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
+			if(joinkey_pair_list_[i].first==dataflow.attribute_list_[j]){
+				break;
+			}
+			else{
+				ret.push_back(j);
+			}
+		}
+	}
+	return ret;
+
+}
+
+std::vector<unsigned> EqualJoin::getRightPayloadIndexList()const{
+	std::vector<unsigned> ret;
+	const Dataflow dataflow=right_child_->getDataflow();
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
+			if(joinkey_pair_list_[i].second==dataflow.attribute_list_[j]){
+				break;
+			}
+			else{
+				ret.push_back(j);
+			}
+		}
+	}
+	return ret;
+
+}
+int EqualJoin::getIndexInLeftJoinKeyList(const Attribute& attribute)const{
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		if(joinkey_pair_list_[i].first==attribute){
+			return i;
+		}
+	}
+	return -1;
+}
+int EqualJoin::getIndexInRightJoinKeyList(const Attribute& attribute)const{
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		if(joinkey_pair_list_[i].second==attribute){
+			return i;
+		}
+	}
+	return -1;
+}
+int EqualJoin::getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const{
+	for(unsigned i=0;i<attributes.size();i++){
+		if(attributes[i]==attribute){
+			return i;
+		}
+	}
+	return -1;
 }

@@ -32,7 +32,7 @@ int NodeTracker::RegisterNode(std::string node_name){
 	return allocated_id;
 }
 
-std::string NodeTracker::getNodeIP(NodeID target)const{
+std::string NodeTracker::getNodeIP(const NodeID& target)const{
 	hashmap<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
 	while(it!=ip_to_id_.cend()){
 		if(it->second==target)

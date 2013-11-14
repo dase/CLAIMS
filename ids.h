@@ -32,12 +32,12 @@ struct AttributeID{
 	}
 };
 /* for boost::unordered_map*/
-//size_t hash_value(const AttributeID& key){
-//	size_t seed=0;
-//	boost::hash_combine(seed,boost::hash_value(key.offset));
-//	boost::hash_combine(seed,boost::hash_value(key.table_id));
-//	return seed;
-//}
+static size_t hash_value(const AttributeID& key){
+	size_t seed=0;
+	boost::hash_combine(seed,boost::hash_value(key.offset));
+	boost::hash_combine(seed,boost::hash_value(key.table_id));
+	return seed;
+}
 
 
 /**
@@ -46,6 +46,7 @@ struct AttributeID{
 struct ProjectionID{
 	ProjectionID(){};
 	ProjectionID(TableID tid,ProjectionOffset off):table_id(tid),projection_off(off){};
+//	ProjectionID(const ProjectionID& r):table_id(r.table_id),projection_off(r.projection_off){};
 	TableID table_id;
 	ProjectionOffset projection_off;
 	bool operator==(const ProjectionID& r)const{
@@ -53,12 +54,12 @@ struct ProjectionID{
 	}
 };
 /* for boost::unordered_map*/
-//size_t hash_value(const ProjectionID& key){
-//	size_t seed=0;
-//	boost::hash_combine(seed,boost::hash_value(key.table_id));
-//	boost::hash_combine(seed,boost::hash_value(key.projection_off));
-//	return seed;
-//}
+static size_t hash_value(const ProjectionID& key){
+	size_t seed=0;
+	boost::hash_combine(seed,boost::hash_value(key.table_id));
+	boost::hash_combine(seed,boost::hash_value(key.projection_off));
+	return seed;
+}
 
 
 /**
@@ -74,12 +75,12 @@ struct ColumnID{
 	}
 };
 /* for boost::unordered_map*/
-//size_t hash_value(const ColumnID& key){
-//	size_t seed=0;
-//	boost::hash_combine(seed,hash_value(key.projection_id));
-//	boost::hash_combine(seed,boost::hash_value(key.column_off));
-//	return seed;
-//}
+static size_t hash_value(const ColumnID& key){
+	size_t seed=0;
+	boost::hash_combine(seed,hash_value(key.projection_id));
+	boost::hash_combine(seed,boost::hash_value(key.column_off));
+	return seed;
+}
 
 /**
  * PartitionID: a partition corresponds to one projection.
@@ -93,11 +94,11 @@ struct PartitionID{
 	}
 };
 /* for boost::unordered_map*/
-//size_t hash_value(const PartitionID& key){
-//	size_t seed=0;
-//	boost::hash_combine(seed,hash_value(key.projection_id));
-//	boost::hash_combine(seed,boost::hash_value(key.partition_off));
-//	return seed;
-//}
+static size_t hash_value(const PartitionID& key){
+	size_t seed=0;
+	boost::hash_combine(seed,hash_value(key.projection_id));
+	boost::hash_combine(seed,boost::hash_value(key.partition_off));
+	return seed;
+}
 
 #endif /* IDS_H_ */

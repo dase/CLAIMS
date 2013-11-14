@@ -81,6 +81,7 @@ public:
 	}
 	inline virtual void assignment(const void* src,void* &desc) const =0;
 	virtual unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const=0;
+	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
 	virtual bool equal(void* a, void* b)=0;
 	virtual void add(void* target, void* increment)=0;
@@ -134,7 +135,9 @@ public:
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(int*)key);
 	}
-
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(int*)key);
+	}
 };
 
 class OperateFloat:public Operate
@@ -179,6 +182,9 @@ public:
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(float*)key);
+	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(float*)key);
 	}
 };
 
@@ -225,6 +231,9 @@ public:
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(double*)key);
 	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(double*)key);
+	}
 };
 
 class OperateULong:public Operate
@@ -269,6 +278,9 @@ public:
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(unsigned long*)key);
+	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(unsigned long*)key);
 	}
 };
 
@@ -316,6 +328,9 @@ public:
 		assert(false);
 
 		return 0;
+	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(char*)key);
 	}
 };
 

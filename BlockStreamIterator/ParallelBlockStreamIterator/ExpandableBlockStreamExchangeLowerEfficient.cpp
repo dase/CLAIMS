@@ -31,7 +31,7 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 bool ExpandableBlockStreamExchangeLowerEfficient::open(){
 	state.child->open();
 	nuppers=state.upper_ip_list.size();
-
+	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
 	socket_fd_upper_list=new int[nuppers];
 	block_stream_for_asking_=BlockStreamBase::createBlock(state.schema,state.block_size);
 //	block_for_sending=new BlockContainer(block_stream_for_asking_->getSerializedBlockSize());
@@ -146,7 +146,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 }
 
 unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
-	return *(int*)value%nuppers;
+	state.schema->getcolumn(state.partition_index).operate->getPartitionValue(value,partition_function_);
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){
@@ -171,6 +171,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	delete [] cur_block_stream_list_;
 	delete [] socket_fd_upper_list;
 
+	partition_function_->~PartitionFunction();
 	return true;
 }
 

@@ -62,6 +62,7 @@ public:
 	bool isExist(const string& name) const;
 	inline void setProjectionID(const ProjectionID& pid) {projection_id_ = pid;}
 	inline map<string, set<string> > getFileLocations() const {return fileLocations;}
+	inline ProjectionID getProjectionID()const{return projection_id_;}
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;

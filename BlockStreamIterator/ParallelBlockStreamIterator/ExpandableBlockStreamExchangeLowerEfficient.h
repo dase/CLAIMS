@@ -36,6 +36,7 @@
 #include "../../Block/BlockStream.h"
 #include "../../Block/BlockStreamBuffer.h"
 #include "../../Block/PartitionedBlockContainer.h"
+#include "../../hash.h"
 class ExpandableBlockStreamExchangeLowerEfficient:public BlockStreamIteratorBase {
 public:
 	struct State{
@@ -46,15 +47,16 @@ public:
 		//TODO: support ip vector provided by scheduler
 		std::vector<std::string> upper_ip_list;
 		unsigned block_size;
+		unsigned partition_index;
 		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<std::string> upper_ip_list, unsigned block_size,
-						unsigned long long int exchange_id=0)
-		:schema(schema),child(child),upper_ip_list(upper_ip_list),block_size(block_size),exchange_id(exchange_id)
+						unsigned long long int exchange_id=0,unsigned partition_index=0)
+		:schema(schema),child(child),upper_ip_list(upper_ip_list),block_size(block_size),exchange_id(exchange_id),partition_index(partition_index)
 		{}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema & child & exchange_id & upper_ip_list &block_size;
+			ar & schema & child & exchange_id & upper_ip_list &block_size& partition_index;
 		}
 	};
 	ExpandableBlockStreamExchangeLowerEfficient(State state);
@@ -91,6 +93,7 @@ private:
 	BlockStreamBase* block_stream_for_asking_;
 	pthread_t sender_tid;
 	pthread_t debug_tid;
+	PartitionFunction* partition_function_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

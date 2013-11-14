@@ -24,6 +24,13 @@ public:
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
 private:
+	std::vector<unsigned> getLeftJoinKeyIndexList()const;
+	std::vector<unsigned> getRightJoinKeyIndexList()const;
+	std::vector<unsigned> getLeftPayloadIndexList()const;
+	std::vector<unsigned> getRightPayloadIndexList()const;
+	int getIndexInLeftJoinKeyList(const Attribute& )const;
+	int getIndexInRightJoinKeyList(const Attribute& )const;
+	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute&)const;
 	bool isHashOnLeftKey(const Partitioner& part,const Attribute& key)const;
 
 	/*check whether the partitioning is based on hash and the hash key is a subset of the join keys such that hash join

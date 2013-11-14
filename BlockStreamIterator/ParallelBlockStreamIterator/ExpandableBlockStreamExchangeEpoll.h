@@ -38,13 +38,14 @@ public:
 		unsigned long long int exchange_id;
 		std::vector<std::string> lower_ip_list;
 		std::vector<std::string> upper_ip_list;
-		State(Schema* schema, BlockStreamIteratorBase* child,unsigned block_size,std::vector<std::string> lower_ip_list,std::vector<std::string> upper_ip_list,unsigned long long int exchange_id)
-		:schema(schema),child(child),block_size(block_size),exchange_id(exchange_id),lower_ip_list(lower_ip_list),upper_ip_list(upper_ip_list){}
+		unsigned partition_index;
+		State(Schema* schema, BlockStreamIteratorBase* child,unsigned block_size,std::vector<std::string> lower_ip_list,std::vector<std::string> upper_ip_list,unsigned long long int exchange_id,unsigned partition_index=0)
+		:schema(schema),child(child),block_size(block_size),exchange_id(exchange_id),lower_ip_list(lower_ip_list),upper_ip_list(upper_ip_list),partition_index(partition_index){}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema & child & block_size & exchange_id & lower_ip_list & upper_ip_list;
+			ar & schema & child & block_size & exchange_id & lower_ip_list & upper_ip_list & partition_index;
 		}
 
 	};

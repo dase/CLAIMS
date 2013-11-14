@@ -181,9 +181,13 @@ public:
 
 	}
 	~BoostHashFunctin(){};
-
-	template<typename T>
-	inline unsigned int get_partition_value(const T& value)const{
+	inline unsigned int get_partition_value(const int& value)const{
+		return boost::hash_value(value);
+	}
+	inline unsigned int get_partition_value(const unsigned long& value)const{
+		return boost::hash_value(value);
+	}
+	inline unsigned int get_partition_value(const double& value)const{
 		return boost::hash_value(value);
 	}
 
@@ -210,6 +214,9 @@ class PartitionFunctionFactory {
 	static PartitionFunction* createModuloFunction(const int &range, const int &min=0, const int &skipbits=0);
 	static PartitionFunction* createUniformRangeHashFunction(const int &range, const int &min, const int &max);
 	static PartitionFunction* createRoundRobinPartitionHashFunction(int range);
+	static PartitionFunction* createBoostHashFunction(const int &range){
+		return new BoostHashFunctin(range);
+	}
 };
 
 #endif

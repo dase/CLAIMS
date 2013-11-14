@@ -15,13 +15,19 @@ public:
 	virtual ~LogicalScan();
 	LogicalProjection getLogcialProjection()const;
 	Dataflow getDataflow();
-	BlockStreamIteratorBase* getIteratorTree(const unsigned &){}
+	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
 
+private:
+	/**check whether all the involved attributes are in the same projection.*/
+	bool checkInASingleProjection()const;
 private:
 	LogicalProjection logical_projection_;
 //	Partitioner* partition_info_;
 //	Dataflow* dataflow_;
 	std::vector<Attribute> scan_attribute_list_;
+	ProjectionDescriptor* target_projection_;
+	Dataflow dataflow_;
+
 };
 
 #endif /* SCAN_H_ */

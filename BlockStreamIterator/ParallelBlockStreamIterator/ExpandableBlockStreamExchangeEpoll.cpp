@@ -244,7 +244,7 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
-	ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id);
+	ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_index);
 	BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
 
 	if(IEM->ExecuteBlockStreamIteratorsOnSites(EIEL,state.lower_ip_list)==false){

@@ -37,9 +37,11 @@ struct ChunkInfo{
 // 所以blockmanager代表的就是worker节点其中有个类叫BlockManagerWorkerActor
 // 为什么要写为blockmanager呢？而不是column的manager呢？因为如果block为粒度更小一点
 // 但是我们在交换的时候要以column的存储文件为粒度来交换，找到最近最久未使用的column而不是block
+
+/* A better name may be StorageManager, as this module manages projections, chunks, and blocks.*/
 class BlockManager{
 public:
-	enum storageLevel{memory,disk};
+	enum storageLevel{memory,disk,offline};
 
 	struct BlockInfo{
 		// 现在blockinfo还只有一个属性

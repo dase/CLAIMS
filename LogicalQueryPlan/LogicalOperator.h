@@ -22,8 +22,10 @@ public:
 	virtual Dataflow getDataflow()=0;
 	virtual BlockStreamIteratorBase* getIteratorTree(const unsigned &)=0;
 protected:
-	Schema* getSchema(std::vector<Attribute>&)const;
-	std::vector<NodeID> getInvolvedNodeID(DataflowPartitionDescriptor&)const;
+	Schema* getSchema(const std::vector<Attribute>&)const;
+	Schema* getSchema(const std::vector<Attribute>&,const std::vector<Attribute>&)const;
+	std::vector<NodeID> getInvolvedNodeID(const DataflowPartitionDescriptor&)const;
+	std::vector<NodeIP> convertNodeIDListToNodeIPList(const std::vector<NodeID>&)const;
 };
 
 //class Operator{
