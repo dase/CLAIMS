@@ -6,7 +6,7 @@
  */
 
 #include "IDsGenerator.h"
-IDsGenerator* instance_=0;
+IDsGenerator* IDsGenerator::instance_=0;
 IDsGenerator::IDsGenerator() {
 	exchange_id_cursor_=0;
 
@@ -20,7 +20,7 @@ unsigned long long int IDsGenerator::generateUniqueExchangeID(){
 	return exchange_id_cursor_++;
 }
 
-static IDsGenerator* IDsGenerator::getInstance(){
+IDsGenerator* IDsGenerator::getInstance(){
 	if(instance_==0){
 		return new IDsGenerator();
 	}

@@ -15,6 +15,7 @@ public:
 	virtual ~LogicalScan();
 	LogicalProjection getLogcialProjection()const;
 	Dataflow getDataflow();
+	BlockStreamIteratorBase* getIteratorTree(const unsigned &){}
 
 private:
 	LogicalProjection logical_projection_;

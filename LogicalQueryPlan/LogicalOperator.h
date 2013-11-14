@@ -12,6 +12,7 @@
 #include "../Schema/LogicalProjection.h"
 #include "../Scheduler/Dataflow.h"
 #include "../Schema/SchemaFix.h"
+#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 class LogicalOperator{
 public:
 //	virtual LogicalProjection getLogicalProjection()=0;

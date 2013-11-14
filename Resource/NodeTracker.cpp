@@ -6,11 +6,11 @@
  */
 
 #include "NodeTracker.h"
-NodeTracker* instance_=0;
+NodeTracker* NodeTracker::instance_=0;
 NodeTracker::NodeTracker():allocate_cur_(0) {
 
 }
-NodeTracker* getInstance(){
+NodeTracker* NodeTracker::getInstance(){
 	if(instance_==0){
 		return new NodeTracker();
 	}
@@ -33,10 +33,10 @@ int NodeTracker::RegisterNode(std::string node_name){
 }
 
 std::string NodeTracker::getNodeIP(NodeID target)const{
-	hashmap<NodeIP,NodeID>::iterator it=ip_to_id_.cbegin();
+	hashmap<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
 	while(it!=ip_to_id_.cend()){
 		if(it->second==target)
 			return it->first;
 	}
-	return NULL;
+//	return NULL;
 }

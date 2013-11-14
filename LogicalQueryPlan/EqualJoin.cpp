@@ -38,7 +38,7 @@ Dataflow EqualJoin::getDataflow(){
 	const Attribute left_partition_key=left_dataflow.property_.partitioner.getPartitionKey();
 	const Attribute right_partition_key=right_dataflow.property_.partitioner.getPartitionKey();
 	if(left_dataflow_key_partitioned&&right_dataflow_key_partitioned){
-		if(isEqualCondition(left_partition_key,right_partition_key)){// this line should be fucked!
+		if(isEqualCondition(left_partition_key,right_partition_key)){
 			/** the best situation**/
 			if(left_dataflow.property_.partitioner.hasSamePartitionLocation(right_dataflow.property_.partitioner)){
 				join_police_=no_repartition;
@@ -69,7 +69,7 @@ Dataflow EqualJoin::getDataflow(){
 		case no_repartition:{
 			printf("no_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
-			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+//			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			/*use the left partitioner as the output dataflow partitioner.
 			 * TODO: in fact, the output dataflow partitioner should contains both
 			 * left partitioner and right partitioner.
@@ -80,7 +80,7 @@ Dataflow EqualJoin::getDataflow(){
 		}
 		case left_repartition:{
 			printf("left_repartition\n");
-			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
+//			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.partitioner=right_dataflow.property_.partitioner;
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
@@ -90,7 +90,7 @@ Dataflow EqualJoin::getDataflow(){
 		case right_repartition:{
 			printf("right_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
-			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+//			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.partitioner=left_dataflow.property_.partitioner;
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();
@@ -103,7 +103,7 @@ Dataflow EqualJoin::getDataflow(){
 			 */
 			printf("complete_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
-			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+//			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			ret.property_.commnication_cost+=left_dataflow.property_.partitioner.getAggregatedDatasize();
 			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();

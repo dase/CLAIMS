@@ -33,7 +33,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
 	for(unsigned i=0;i<lower_id_list.size();i++){
 		const std::string ip=node_tracker->getNodeIP(lower_id_list[i]);
-		assert(ip!=NULL);
+		assert(ip!="");
 		state.lower_ip_list.push_back(ip);
 	}
 

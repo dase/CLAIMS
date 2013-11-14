@@ -32,7 +32,7 @@ public:
 		friend class ExpandableBlockStreamFilter;
 		State(Schema* s, BlockStreamIteratorBase* child,std::vector<FilterIterator::AttributeComparator> comparator_list,unsigned block_size );
 		State(){};
-	private:
+	public:
 		Schema* schema_;
 		std::vector<FilterIterator::AttributeComparator> comparator_list_;
 		BlockStreamIteratorBase* child_;

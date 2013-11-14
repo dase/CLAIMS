@@ -54,7 +54,7 @@ public:
 			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema & joinIndex_left & joinIndex_right & payload_left & payload_right
 			& ht_nbuckets & ht_bucketsize & block_size_;
 		}
-	private:
+	public:
 		//input and output
 		BlockStreamIteratorBase *child_left,*child_right;
 		Schema *input_schema_left,*input_schema_right;

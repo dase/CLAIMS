@@ -24,7 +24,7 @@ Schema* LogicalOperator::getSchema(std::vector<Attribute> &attributes)const{
 	return new SchemaFix(columns);
 
 }
-std::vector<NodeID> getInvolvedNodeID(DataflowPartitionDescriptor& part)const{
+std::vector<NodeID> LogicalOperator::getInvolvedNodeID(DataflowPartitionDescriptor& part)const{
 	std::vector<NodeID> ret;
 	for(unsigned i=0;i<part.getNumberOfPartitions();i++){
 		ret.push_back(part.getPartition(i)->getLocation());

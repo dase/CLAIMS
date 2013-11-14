@@ -8,7 +8,7 @@
 #include "ResourceManagerMaster.h"
 #include "../Environment.h"
 ResourceManagerMaster::ResourceManagerMaster() {
-	node_tracker_=new NodeTracker();
+	node_tracker_=NodeTracker::getInstance();
 	logging_=new ResourceManagerMasterLogging();
 
 	endpoint_=Environment::getInstance()->getEndPoint();

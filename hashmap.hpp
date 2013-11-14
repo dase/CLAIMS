@@ -31,6 +31,7 @@ public:
 		}
 		return false;
 	}
+
 };
 
 #endif /* HASHMAP_HPP_ */

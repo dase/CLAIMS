@@ -22,6 +22,7 @@
 #ifndef __MYHASHFUNCTION__
 #define __MYHASHFUNCTION__
 #include <stdlib.h>
+#include <boost/functional/hash.hpp>
 class PartitionFunction {
 	
 	public:
@@ -173,7 +174,29 @@ private:
 	unsigned skipbits_;
 };
 
+class BoostHashFunctin:public PartitionFunction{
+public:
+	BoostHashFunctin(const int &range)
+	: PartitionFunction(0,0,1),range_(range){
 
+	}
+	~BoostHashFunctin(){};
+
+	template<typename T>
+	inline unsigned int get_partition_value(const T& value)const{
+		return boost::hash_value(value);
+	}
+
+
+	partition_fashion getPartitionFashion()const{
+		return hash_f;
+	}
+	unsigned getNumberOfPartitions()const{
+		return range_;
+	}
+private:
+	unsigned long range_;
+};
 
 
 
