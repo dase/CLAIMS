@@ -182,15 +182,17 @@ public:
 	}
 	~BoostHashFunctin(){};
 	inline unsigned int get_partition_value(const int& value)const{
-		return boost::hash_value(value);
+		return boost::hash_value(value)%range_;
 	}
 	inline unsigned int get_partition_value(const unsigned long& value)const{
-		return boost::hash_value(value);
+		return boost::hash_value(value)%range_;
 	}
 	inline unsigned int get_partition_value(const double& value)const{
-		return boost::hash_value(value);
+		return boost::hash_value(value)%range_;
 	}
-
+	inline unsigned int get_partition_value(const long& value)const{
+		return boost::hash_value(value)%range_;
+	}
 
 	partition_fashion getPartitionFashion()const{
 		return hash_f;

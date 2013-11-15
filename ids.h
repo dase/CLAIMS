@@ -9,7 +9,7 @@
 #ifndef IDS_H_
 #define IDS_H_
 #include <boost/unordered_map.hpp>
-
+#include <sstream>
 typedef int NodeID;
 
 typedef unsigned TableID;
@@ -52,6 +52,7 @@ struct ProjectionID{
 	bool operator==(const ProjectionID& r)const{
 		return table_id==r.table_id&& projection_off==r.projection_off;
 	}
+
 };
 /* for boost::unordered_map*/
 static size_t hash_value(const ProjectionID& key){
@@ -91,6 +92,11 @@ struct PartitionID{
 	PartitionOffset partition_off;
 	bool operator==(const PartitionID& r)const{
 		return projection_id==r.projection_id&&partition_off==r.partition_off;
+	}
+	std::string getName()const{
+		std::ostringstream str;
+		str<<"T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+		return str.str();
 	}
 };
 /* for boost::unordered_map*/
