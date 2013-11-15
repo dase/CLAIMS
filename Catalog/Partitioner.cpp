@@ -94,6 +94,9 @@ bool Partitioner::hasSamePartitionLocation(const Partitioner & target_partition 
 unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks*CHUNKSIZE_IN_MB;
 }
+unsigned Partitioner::getPartitionChunks(unsigned partitoin_index)const{
+	return partition_info_list[partitoin_index]->number_of_blocks;
+}
 NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 	if(partition_info_list[partition_index]->get_mode()==OneToOne){
 //		return (*(OneToOnePartitionInfo*)&partition_info_list[partition_index]).get_location();
@@ -113,7 +116,9 @@ Attribute* Partitioner::getPartitionKey()const{
 PartitionFunction* Partitioner::getPartitionFunction()const{
 	return partition_functin_;
 }
-
+ProjectionID Partitioner::getProejctionID()const{
+	return projection_id_;
+}
 bool OneToOnePartitionInfo::is_colocated(const PartitionInfo & target)const{
 	if(target.get_mode()==OneToMany)
 		return false;

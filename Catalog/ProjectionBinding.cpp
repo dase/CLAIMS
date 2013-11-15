@@ -7,6 +7,7 @@
 #include <vector>
 #include "ProjectionBinding.h"
 #include "../Environment.h"
+
 ProjectionBinding::ProjectionBinding() {
 	// TODO Auto-generated constructor stub
 
@@ -52,7 +53,11 @@ bool ProjectionBinding::BindingEntireProjection(Partitioner* part){
 			/*bind*/
 			part->bindPartitionToNode(i,node_id_list[allocate_cur]);
 			allocate_cur=(allocate_cur+1)%node_id_list.size();
-		}
+
+			PartitionID partition_id(part->getProejctionID(),i);
+			const unsigned number_of_chunks=part->getPartitionChunks(i);
+
+			BlockManagerMaster::getInstance()->SendBindingMessage(partition_id,number_of_chunks,MEMORY,target);		}
 	}
 	return true;
 	/**

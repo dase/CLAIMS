@@ -210,6 +210,8 @@ public:
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 
+	unsigned getPartitionChunks(unsigned partitoin_index)const;
+
 	NodeID getPartitionLocation(unsigned partition_index)const;
 	void print();
 
@@ -221,7 +223,7 @@ public:
 	PartitionFunction::partition_fashion getPartitionFashion()const;
 	Attribute* getPartitionKey()const;
 	PartitionFunction* getPartitionFunction()const;
-
+	ProjectionID getProejctionID()const;
 private:
 	Attribute* partition_key_;
 	PartitionFunction* partition_functin_;

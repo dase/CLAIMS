@@ -9,7 +9,7 @@
 #define BLOCKSTREAM_H_
 #include "../Schema/Schema.h"
 #include "Block.h"
-class BlockStreamBase{
+class BlockStreamBase:public Block{
 public:
 
 	class BlockStreamTraverseIterator{
@@ -51,12 +51,14 @@ public:
 	virtual void setEmpty()=0;
 	virtual bool Empty() const =0;
 	virtual void* getBlockDataAddress()=0;
-	virtual void setBlockDataAddress(void* addr)=0;
+//	virtual void setBlockDataAddress(void* addr)=0;
 	virtual unsigned getTuplesInBlock()const=0;
 	/* copy a block in the storage layer into the BlockStream, the member variables (e.g., _free) are
 	 * also updated according the new data.
 	 */
 	virtual void copyBlock(void* addr, unsigned length)=0;
+
+	virtual void constructFromBlock(const Block block)=0;
 
 	virtual bool switchBlock(BlockStreamBase &block)=0;
 
@@ -72,6 +74,7 @@ public:
 	BlockStreamTraverseIterator* createIterator(){
 		return new BlockStreamTraverseIterator(this);
 	};
+	BlockStreamBase(unsigned block_size):Block(block_size){};
 	static BlockStreamBase* createBlock(Schema* schema,unsigned block_size);
 protected:
 	virtual void* getTuple(unsigned offset) const =0;
@@ -84,7 +87,7 @@ public:
 	virtual ~BlockStreamFix();
 public:
 	inline void* allocateTuple(unsigned bytes){
-		if(free_+bytes<=data_+block_size_){
+		if(free_+bytes<=start+BlockSize){
 			void* ret=free_;
 			free_+=bytes;
 			return ret;
@@ -95,7 +98,7 @@ public:
 
 	/* get [offset]-th tuple of the block */
 	inline void* getTuple(unsigned offset) const {
-		void* ret=data_+offset*tuple_size_;
+		void* ret=start+offset*tuple_size_;
 		if(ret>=free_){
 			return 0;
 		}
@@ -103,16 +106,20 @@ public:
 	}
 	bool Empty() const;
 	void* getBlockDataAddress();
-	void setBlockDataAddress(void* addr);
+//	void setBlockDataAddress(void* addr);
 	bool switchBlock(BlockStreamBase& block);
 	void copyBlock(void* addr, unsigned length);
 	bool serialize(Block & block) const;
 	bool deserialize(Block * block);
 	unsigned getSerializedBlockSize()const;
 	unsigned getTuplesInBlock()const;
+
+	/* construct the BlockStream from a storage level block,
+	 * which last four bytes indicate the number of tuples in the block.*/
+	void constructFromBlock(const Block block);
 protected:
-	char* data_;
-	unsigned block_size_;
+//	char* data_;
+//	unsigned block_size_;
 	char* free_;
 	unsigned tuple_size_;
 public:

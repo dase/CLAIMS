@@ -12,13 +12,20 @@ class Block {
 public:
 	Block(unsigned BlockSize);
 	Block(const Block &block);
+	Block(const unsigned& size,const void* start);
 	virtual ~Block();
-	void* getBlock();
+	void* getBlock()const;
 	void setBlock(void*);
 	unsigned getsize() const;
+	unsigned setsize(const unsigned& size) ;
 protected:
 	unsigned BlockSize;
-	void* start;
+	char* start;
+private:
+	/* true, if it references to others, which means that the block does not need
+	 * to free the memory reference in destructor.
+	 */
+	bool isReference_;
 };
 
 #endif /* BLOCK_H_ */

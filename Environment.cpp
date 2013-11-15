@@ -41,6 +41,9 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	InitializeStorage();
 
+	InitializeBufferManager();
+
+
 	logging_->log("Initializing the ExecutorMaster...");
 	iteratorExecutorMaster=new IteratorExecutorMaster();
 
@@ -115,6 +118,9 @@ void Environment::InitializeResourceManager(){
 	resourceManagerSlave_=new ResourceManagerSlave();
 	nodeid=resourceManagerSlave_->Register();
 
+}
+void Environment::InitializeBufferManager(){
+	bufferManager_=BufferManager::getInstance();
 }
 
 AdaptiveEndPoint* Environment::getEndPoint(){

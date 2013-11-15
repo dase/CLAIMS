@@ -19,6 +19,7 @@
 /*
  * block in hdfs and sublock in block
  * */
+#define BLOCK_SIZE 64*1024
 #define SUCHUNK_SIZE 64*1024
 #define CHUNK_SIZE 64*1024*1024
 #define CHUNK_SIZE_IN_MB 64
@@ -56,4 +57,5 @@
 #define DEBUG_ResourceManagerMaster
 #define DEBUG_ResourceManagerSlave
 #define DEBUG_Catalog
+#define DEBUG_BufferManager
 #endif /* DEBUG_H_ */

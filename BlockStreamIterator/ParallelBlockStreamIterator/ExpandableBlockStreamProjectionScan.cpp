@@ -10,16 +10,16 @@
 #include <errno.h>
 #include "../../rename.h"
 #include "ExpandableBlockStreamProjectionScan.h"
+#include "../../storage/BlockManager.h"
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan(State state)
-:state_(state), fd_(-1), file_length_(0), base_(0), data_(0), cursor_(0),
- open_finished_(false) {
+:state_(state), open_finished_(false),partition_reader_iterator_(0) {
 	sema_open_.set_value(1);
 	sema_open_finished_.set_value(0);
 }
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan()
-:fd_(-1), file_length_(0), base_(0), data_(0), cursor_(0),open_finished_(false){
+:open_finished_(false),partition_reader_iterator_(0){
 	sema_open_.set_value(1);
 	sema_open_finished_.set_value(0);
 	}
@@ -35,113 +35,74 @@ ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,Sch
 
 
 bool ExpandableBlockStreamProjectionScan::open() {
+	PartitionStorage* partition_handle_;
 	if (sema_open_.try_wait()) {
-		printf("Scan open!\n");
-
-		/* the winning thread does the read job in the open function*/
-//		fd_ = FileOpen(state_.filename_.c_str(), O_RDONLY);
-//		if (fd_ == -1) {
-//			printf("Cannot open file %s! Reason: %s\n",
-//					state_.filename_.c_str(), strerror(errno));
-//			return false;
-//		}
-		file_length_ = lseek(fd_, 0, SEEK_END);
-
-
-		base_ = (char*) mmap(0, file_length_, PROT_READ, MAP_PRIVATE, fd_, 0);
-
-		if (base_ == 0) {
-			printf("mmap errors!\n");
-			return false;
+		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset_)))==0){
+			printf("The partition[%s] does not exists!",PartitionID(state_.projection_id_,partition_offset_).getName().c_str());
 		}
+		partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 
-		data_=base_;
-//		data_ = (char*) malloc(file_length_);
-//
-//		if (data_ == 0) {
-//			printf("malloc errors!\n");
-//			return false;
-//		}
-//		memcpy(data_, base_, file_length_);
-		if (data_ != 0) {
-			cursor_ = (char*) data_;
-			printf("Open is successful!\n");
-			/* Set a value that is much lager than the number of parallel threads even in an extreme case.*/
-//			sema_open_finished_.set_value(10000);
-			open_finished_ = true;
+		open_finished_ = true;
 
-			return true;
-		} else
-			return false;
+
 	} else {
 		while (!open_finished_) {
 			usleep(1);
 		}
-//		sema_open_finished_.wait();
-		return true;
 	}
+	return partition_handle_!=0;
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 	allocated_block allo_block_temp;
-
-	if (file_length_ == 0)
-	{
-		cout << "scan iterator return false!\n";
+	ChunkReaderIterator* chunk_reader_iterator;
+	if(atomicPopChunkReaderIterator(chunk_reader_iterator)){
+		/* there is unused ChunkReaderIterator*/
+		if(chunk_reader_iterator->nextBlock(block)){
+			/* there is still unread block*/
+			atomicPushChunkReaderIterator(chunk_reader_iterator);
+			return true;
+		}
+		else{
+			/* the ChunkReaderIterator is exhausted, so we destructe it.*/
+			chunk_reader_iterator->~ChunkReaderIterator();
+		}
+	}
+	/* there isn't any unused ChunkReaderIterator or the ChunkReaderIterator is exhausted,
+	 * so we create new one*/
+	if((chunk_reader_iterator=partition_reader_iterator_->nextChunk())!=0){
+		atomicPushChunkReaderIterator(chunk_reader_iterator);
+		return next(block);
+	}
+	else{
 		return false;
 	}
-
-//	if (cursor_ + state_.block_size_ <= data_ + file_length_) {
-//		cout << "full!\n";
-//	}
-//	else if (cursor_ == data_ + file_length_)
-//		cout << "nothing!\n";
-//	else if (cursor_ <= data_ + file_length_)
-//		cout << "part!\n";
-
-	if (atomicIncreaseCursor(state_.block_size_, allo_block_temp)) {
-		block->copyBlock(allo_block_temp.start, allo_block_temp.length);
-		return true;
-	}
-	cout << "scan iterator return false!\n";
-	return false;
 }
 
 bool ExpandableBlockStreamProjectionScan::close() {
 	sema_open_.post();
 
 	open_finished_ = false;
-//	free(data_);
-	data_ = 0;
-	munmap(base_, file_length_);
-	if (FileClose(fd_) == 0)
-		return true;
-	else
-		return false;
+	return true;
 }
 
-bool ExpandableBlockStreamProjectionScan::atomicIncreaseCursor(unsigned bytes,
-		allocated_block &allo_block) {
+
+void ExpandableBlockStreamProjectionScan::atomicPushChunkReaderIterator(ChunkReaderIterator* item){
+	chunk_reader_container_lock_.acquire();
+	remaining_chunk_reader_iterator_list_.push_back(item);
+	chunk_reader_container_lock_.release();
+}
+bool ExpandableBlockStreamProjectionScan::atomicPopChunkReaderIterator(ChunkReaderIterator*& target){
 	bool ret;
-	cursor_lock_.acquire();
-	if (cursor_ + bytes <= data_ + file_length_) {
-		allo_block.start = cursor_;
-		allo_block.length = bytes;
-		cursor_ += allo_block.length;
-//		cout << "a full block returned!\n";
-		ret = true;
+	chunk_reader_container_lock_.acquire();
+	if(remaining_chunk_reader_iterator_list_.size()==0){
+		ret=false;
 	}
-	/* there some data remaining, but the data is smaller than the expected bytes.*/
-	else if (cursor_ < data_ + file_length_) {
-		allo_block.start = cursor_;
-		allo_block.length = data_ + file_length_ - cursor_;
-		cursor_ += allo_block.length;
-//		cout << "rest data returned!\n";
-		ret = true;
-	} else {
-//		cout << "no block remained!\n";
-		ret = false;
+	else{
+		target=remaining_chunk_reader_iterator_list_.front();
+		remaining_chunk_reader_iterator_list_.pop_front();
+		ret=true;
 	}
-	cursor_lock_.release();
+	chunk_reader_container_lock_.release();
 	return ret;
 }

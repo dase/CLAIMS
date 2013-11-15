@@ -11,12 +11,15 @@
 #ifndef EXPANDABLEBLOCKSTREAMPROJECTIONSCAN_H_
 #define EXPANDABLEBLOCKSTREAMPROJECTIONSCAN_H_
 #include <string>
+#include <list>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "../BlockStreamIteratorBase.h"
 #include "../../Schema/Schema.h"
 #include "../../Block/synch.h"
 #include "../../ids.h"
+#include "../../storage/ChunkStorage.h"
+#include "../../storage/PartitionStorage.h"
 class ExpandableBlockStreamProjectionScan:public BlockStreamIteratorBase {
 public:
 	struct allocated_block{
@@ -45,10 +48,9 @@ public:
 	bool next(BlockStreamBase* block);
 	bool close();
 private:
-	/* allocate a block from the underling storage, return false if the underly
-	 * data is exhausted.
-	 */
-	bool atomicIncreaseCursor(unsigned bytes, allocated_block &allo_block);
+
+	void atomicPushChunkReaderIterator(ChunkReaderIterator*);
+	bool atomicPopChunkReaderIterator(ChunkReaderIterator*&);
 private:
 
 	State state_;
@@ -60,13 +62,13 @@ private:
 
 	volatile bool open_finished_;
 	semaphore sema_open_finished_;
-	int fd_;
-	unsigned long file_length_;
-	char* base_;
-	char* data_;
-	char *cursor_;
-	Lock cursor_lock_;
 
+	Lock cursor_lock_;
+	unsigned partition_offset_;
+
+	PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
+	std::list<ChunkReaderIterator*> remaining_chunk_reader_iterator_list_;
+	Lock chunk_reader_container_lock_;
 	/*
 	 * The following code is for boost serialization.
 	 */
