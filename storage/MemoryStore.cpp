@@ -27,9 +27,14 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, HdfsInMemoryChunk& chunk_inf
 	if(!BufferManager::getInstance()->applyStorageDedget(chunk_info.length)){
 		return false;
 	}
-	chunk_info.hook=memalign(cacheline_size,chunk_info.length);
-	chunk_list_[chunk_id]=chunk_info;
-	return true;
+	if((chunk_info.hook=memalign(cacheline_size,chunk_info.length))!=0){
+		chunk_list_[chunk_id]=chunk_info;
+		return true;
+	}
+	else{
+		printf("Error occurs when memalign!\n");
+		return false;
+	}
 }
 
 bool MemoryChunkStore::getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info)const{
@@ -39,6 +44,16 @@ bool MemoryChunkStore::getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk
 		return true;
 	}
 	return false;
+}
+bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info){
+	boost::unordered_map<ChunkID,HdfsInMemoryChunk>::const_iterator it=chunk_list_.find(chunk_id);
+	if(it!=chunk_list_.cend()){
+		printf("The memory chunk is already existed!\n");
+		return false;
+	}
+	printf("[MemoryChunkStore]: Chunk[%s,%d] is added!\n",chunk_id.partition_id.getName().c_str(),chunk_id.chunk_off);
+	chunk_list_[chunk_id]=chunk_info;
+	return true;
 }
 MemoryChunkStore* MemoryChunkStore::getInstance(){
 	if(instance_==0){

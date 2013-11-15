@@ -41,8 +41,8 @@ public:
 	PartitionStorage(const PartitionID &partition_id,const unsigned &number_of_chunks,const StorageLevel&);
 	virtual ~PartitionStorage();
 	void addNewChunk();
-	PartitionReaderItetaor* createReaderIterator()const;
-	PartitionReaderItetaor* createAtomicReaderIterator()const;
+	PartitionReaderItetaor* createReaderIterator();
+	PartitionReaderItetaor* createAtomicReaderIterator();
 protected:
 	PartitionID partition_id_;
 	unsigned number_of_chunks_;

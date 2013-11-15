@@ -24,11 +24,11 @@ PartitionStorage::~PartitionStorage() {
 void PartitionStorage::addNewChunk(){
 	number_of_chunks_++;
 }
-PartitionStorage::PartitionReaderItetaor* PartitionStorage::createReaderIterator()const{
-	return new PartitionReaderItetaor();
+PartitionStorage::PartitionReaderItetaor* PartitionStorage::createReaderIterator(){
+	return new PartitionReaderItetaor(this);
 }
-PartitionStorage::PartitionReaderItetaor* PartitionStorage::createAtomicReaderIterator()const{
-	return new AtomicPartitionReaderIterator();
+PartitionStorage::PartitionReaderItetaor* PartitionStorage::createAtomicReaderIterator(){
+	return new AtomicPartitionReaderIterator(this);
 }
 
 
@@ -37,6 +37,7 @@ PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor(PartitionStorag
 :ps(partition_storage),chunk_cur_(0){
 
 }
+
 PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor():chunk_cur_(0){
 
 }

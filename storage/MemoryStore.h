@@ -77,6 +77,8 @@ public:
 	};
 	bool getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info)const;
 
+	bool putChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info);
+
 	bool remove(string blockId){
 		return true;
 	};
