@@ -80,6 +80,19 @@ class ResourceManagerSlaveLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
 };
+class StorageManagerLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
+class StorageManagerMasterLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
+class BufferManagerLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
+
 static void Logging_ExchangeIteratorLowerWithWideDependency(const char* format,...){
 #ifdef DEBUG_ExchangeIteratorWithWideDependency
 	printf("[EILWWD]: ");

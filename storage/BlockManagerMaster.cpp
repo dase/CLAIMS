@@ -5,7 +5,7 @@
  *      Author: casa
  */
 
-
+#include <sstream>
 
 #include "BlockManagerMaster.h"
 #include "../Environment.h"
@@ -15,11 +15,13 @@ BlockManagerMaster::BlockManagerMaster() {
 
 	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
 	actor_=new BlockManagerMasterActor(framework_,"blockManagerMasterActor");
+	logging_=new StorageManagerMasterLogging();
 }
 
 BlockManagerMaster::~BlockManagerMaster() {
 	actor_->~Actor();
 	framework_->~Framework();
+	logging_->~Logging();
 }
 
 void BlockManagerMaster::initialize(){
@@ -84,4 +86,15 @@ void BlockManagerMaster::BlockManagerMasterActor::matcherReceiver(const MatcherM
 	MatcherRespond resp(res.c_str());
 	cout<<"I will send the proj "<<res.c_str()<<" to "<<from.AsString()<<endl;
 	Send(resp,from);
+}
+std::string BlockManagerMaster::generateSlaveActorName(const NodeID & node_id)const{
+	std::ostringstream str;
+	str<<"blockManagerWorkerActor://"<<NodeTracker::getInstance()->getNodeIP(node_id);
+	return str.str();
+}
+bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, const unsigned& number_of_chunks, const StorageLevel& desirable_storage_level,const NodeID& target)const{
+	PartitionBindingMessage message(partition_id,number_of_chunks,desirable_storage_level);
+	logging_->log("Sending the binding message to [%s]",generateSlaveActorName(target).c_str());
+	framework_->Send(message,Theron::Address(),Theron::Address(generateSlaveActorName(target).c_str()));
+	return true;
 }

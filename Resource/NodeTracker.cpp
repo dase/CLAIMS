@@ -12,11 +12,9 @@ NodeTracker::NodeTracker():allocate_cur_(0) {
 }
 NodeTracker* NodeTracker::getInstance(){
 	if(instance_==0){
-		return new NodeTracker();
+		instance_=new NodeTracker();
 	}
-	else{
 		return instance_;
-	}
 }
 NodeTracker::~NodeTracker() {
 	// TODO Auto-generated destructor stub
@@ -37,6 +35,8 @@ std::string NodeTracker::getNodeIP(const NodeID& target)const{
 	while(it!=ip_to_id_.cend()){
 		if(it->second==target)
 			return it->first;
+		it++;
 	}
+	return NULL;//TODO avoid return NULL in case of no matching target by changing the return type to be boolean.*/
 //	return NULL;
 }

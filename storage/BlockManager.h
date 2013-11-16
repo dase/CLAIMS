@@ -10,7 +10,7 @@
 
 #include <Theron/Theron.h>
 #include <Theron/Defines.h>
-
+#include <boost/unordered_map.hpp>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -27,9 +27,11 @@ using namespace std;
 #include "MemoryStore.h"
 #include "DiskStore.h"
 #include "BlockManagerId.h"
-
+#include "../ids.h"
+#include "PartitionStorage.h"
+#include "../Logging.h"
 struct ChunkInfo{
-	string chunkId;
+	ChunkID chunkId;
 	void * hook;
 };
 
@@ -66,15 +68,15 @@ public:
 	private:
 		void getBlock(const Message256 &message,const Theron::Address from){};
 		void putBlock(const Message256 &message,const Theron::Address from){};
-
+		void BindingPartition(const PartitionBindingMessage& message,const Theron::Address from);
 	private:
 		TimeOutReceiver *tor_;
 		string receiverId_;
 		BlockManager* bm_;
 	};
-
+public:
 	static BlockManager *getInstance();
-
+	MemoryChunkStore* getMemoryChunkStore()const;
 	virtual ~BlockManager();
 
 
@@ -101,12 +103,18 @@ public:
 	// 应该是scan的state中输入文件名，然后将这个文件名组成blockId,然后在open当中调用，见hdfsscan
 	void* getLocal(string blockId);
 	ChunkInfo loadFromHdfs(string file_name);
+
+	bool loadFromHdfs(const ChunkID&, void* const &desc,const unsigned&)const;
+
 	// 将这个blockId所代表的数据存进内存或者磁盘，所以其中有个参数肯定是storagelevel
 	bool put(string blockId,storageLevel level, void *value);
 
 	/* poc测试 */
 	BlockManagerId *getId();
 	string askForMatch(string filename, BlockManagerId bmi);
+	bool containsPartition(const PartitionID& part)const;
+	bool addPartition(const PartitionID&, const unsigned & number_of_chunks,const StorageLevel& desirable_storage_level);
+	PartitionStorage* getPartitionHandle(const PartitionID& partition_id)const;
 private:
 	BlockManager();
 
@@ -119,20 +127,24 @@ private:
 	BlockManagerWorkerActor *worker_;
 	BlockManagerId *blockManagerId_;
 
-	MemoryStore *memstore_;
+	MemoryChunkStore *memstore_;
 	DiskStore *diskstore_;
 
 	// 要采用Serializer但是到底采用哪个serializer
 	// Serializer serializer;
 
 	// 在memorystore中要在构造函数中写出
-	unsigned maxMemory_;
+//	unsigned maxMemory_;
 
 	/* poc测试 filename和projectid的映射*/
 	map<string, string> file_proj_;
 
 	Theron::Framework *framework_;
 	Theron::Actor *actor_;
+
+	boost::unordered_map<PartitionID,PartitionStorage*> partition_id_to_storage_;
+	Logging* logging_;
+
 };
 
 #endif /* BLOCKMANAGER_H_ */

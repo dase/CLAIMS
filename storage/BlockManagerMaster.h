@@ -12,14 +12,15 @@
  * */
 #include <Theron/Theron.h>
 #include <Theron/Defines.h>
+#include <string>
+#include <iostream>
 
 #include "../Message.h"
 #include "BlockManagerId.h"
 #include "AllBlockInfo.h"
 #include "BlanceMatcher.h"
-
-#include <string>
-#include <iostream>
+#include "../Message.h"
+#include "../Logging.h"
 using namespace std;
 
 class BlockManagerMaster {
@@ -62,9 +63,10 @@ public:
 
 	// 这个函数返回的是blockmanagerId
 //	BlockManagerId getLocations(string blockId){};
-
+	bool SendBindingMessage(const PartitionID&, const unsigned& number_of_chunks, const StorageLevel&,const NodeID&)const;
 private:
 	BlockManagerMaster();
+	std::string generateSlaveActorName(const NodeID &)const;
 private:
 	static BlockManagerMaster *master_;
 	// 将blockMessage收到之后，首先看他是什么消息，然后传给BlockManagerMasterActor处理
@@ -72,6 +74,7 @@ private:
 	BlanceMatcher *bm_;
 	Theron::Framework *framework_;
 	BlockManagerMasterActor* actor_;
+	Logging* logging_;
 
 };
 

@@ -7,10 +7,10 @@
 
 #include "BlockStore.h"
 
-BlockStore::BlockStore() {
+ChunkStore::ChunkStore() {
 
 }
 
-BlockStore::~BlockStore() {
+ChunkStore::~ChunkStore() {
 
 }

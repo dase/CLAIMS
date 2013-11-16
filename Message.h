@@ -30,7 +30,8 @@
 #include "Serialization/RegisterDerivedClass.h"
 #include "BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "Debug.h"
-
+#include "storage/StorageLevel.h"
+#include "ids.h"
 //It's better to use fixed length information for implementation concern.
 struct StorageBudgetMessage{
 //	explicit RegisterStorageMessage(const char * const text){
@@ -48,6 +49,14 @@ struct StorageBudgetMessage{
 };
 THERON_DECLARE_REGISTERED_MESSAGE(StorageBudgetMessage)
 
+struct PartitionBindingMessage{
+	PartitionBindingMessage(const PartitionID& pid,const unsigned& num,const StorageLevel& level)
+	:partition_id(pid),number_of_chunks(num),storage_level(level){};
+	PartitionID partition_id;
+	unsigned number_of_chunks;
+	StorageLevel storage_level;
+};
+THERON_DECLARE_REGISTERED_MESSAGE(PartitionBindingMessage)
 struct RegisterStorageRespond{
 	explicit RegisterStorageRespond(const char * const text){
 		mText[0]='\0';

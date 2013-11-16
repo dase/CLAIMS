@@ -16,16 +16,16 @@ int main(){
 
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
-	rmms->RegisterNewSlave("192.168.1.1");
-	rmms->RegisterNewSlave("192.168.1.2");
-	rmms->RegisterNewSlave("192.168.1.3");
-	rmms->RegisterNewSlave("192.168.1.4");
-	rmms->RegisterNewSlave("192.168.1.5");
-	rmms->RegisterDiskBuget(0,10000);
-	rmms->RegisterDiskBuget(1,10000);
-	rmms->RegisterDiskBuget(2,10000);
-	rmms->RegisterDiskBuget(3,10000);
-	rmms->RegisterDiskBuget(4,10000);
+//	rmms->RegisterNewSlave("192.168.1.1");
+//	rmms->RegisterNewSlave("192.168.1.2");
+//	rmms->RegisterNewSlave("192.168.1.3");
+//	rmms->RegisterNewSlave("192.168.1.4");
+//	rmms->RegisterNewSlave("192.168.1.5");
+//	rmms->RegisterDiskBuget(0,10000);
+//	rmms->RegisterDiskBuget(1,10000);
+//	rmms->RegisterDiskBuget(2,10000);
+//	rmms->RegisterDiskBuget(3,10000);
+//	rmms->RegisterDiskBuget(4,10000);
 
 
 	/////////////////////////////////////Create table left/////////////////////
@@ -40,7 +40,7 @@ int main(){
 	index_1.push_back(1);
 	index_1.push_back(3);
 	const int partition_key_index_1=3;
-	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,2);
+	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,3);
 	catalog->add_table(table_1);
 
 	////////////////////////////////////Create table right//////////////////////////

@@ -8,6 +8,7 @@
 #include "BlockManager.h"
 #include "../Environment.h"
 #include "../Message.h"
+#include "../BufferManager/BufferManager.h"
 BlockManager *BlockManager::blockmanager_=0;
 
 BlockManager *BlockManager::getInstance(){
@@ -19,19 +20,25 @@ BlockManager *BlockManager::getInstance(){
 BlockManager::BlockManager() {
 	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
 	std::ostringstream actor_name;
-	actor_name<<"blockManagerWorkerActor://"<<Environment::getInstance()->getIp()<<Environment::getInstance()->getPort();
+	actor_name<<"blockManagerWorkerActor://"<<Environment::getInstance()->getIp();
 
 	actor_=new BlockManagerWorkerActor(framework_,actor_name.str().c_str(),this);
+	logging_=new StorageManagerLogging();
+	logging_->log("BlockManagerSlave is initialized. The ActorName=%s",actor_name.str().c_str());
+	memstore_=MemoryChunkStore::getInstance();
 }
 BlockManager::~BlockManager() {
 
+}
+MemoryChunkStore* BlockManager::getMemoryChunkStore()const{
+	return memstore_;
 }
 
 void BlockManager::initialize(){
 	// 读配置文件中的配置，然后根据是否是master注册
 	// 1，建两个存储，一个是内存的，一个磁盘的
 	diskstore_=new DiskStore(DISKDIR);
-	memstore_=new MemoryStore();
+	memstore_=new MemoryChunkStore();
 
 	///the version written by zhanglei/////////////////////////////////
 	blockManagerId_=new BlockManagerId();
@@ -43,7 +50,7 @@ void BlockManager::initialize(){
 
 	//////////////the version written by Li////////////////////////////
 	//the following values should be read from configure file.
-	const int memory=10000;
+	const int memory=BufferManager::getInstance()->getStorageMemoryBudegeInMilibyte();
 	const int disk=1000000;
 	const NodeID NodeID=Environment::getInstance()->getNodeID();
 	//
@@ -116,7 +123,7 @@ void* BlockManager::getLocal(string blockId){
 			// spark中的storageLevel是磁盘和内存中都有的，在storageLevel.scala中
 			// 我们有那样的应用吗？todo: 在此预留的序列化和反序列化接口，序列化与否也是
 			// 在storageLevel中的，是否备份也是在storageLevel中
-			rt=memstore_->getValue(blockId);
+			rt=memstore_->getChunk(blockId);
 			return rt;
 			// 这里不需要再判断是否在内存中了
 		}
@@ -217,17 +224,46 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name){
 		tSize bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
 		ostringstream chunkid;
 		chunkid<<file_name.c_str()<<"$"<<offset;
-		ci.chunkId=chunkid.str().c_str();
+//		ci.chunkId=chunkid.gestr().c_str();
 		ci.hook=rt;
 	}else{
 		ostringstream chunkid;
 		chunkid<<file_name.c_str()<<"$"<<offset;
-		ci.chunkId=chunkid.str().c_str();
+//		ci.chunkId=chunkid.str().c_str();
 		ci.hook=0;
 	}
 	hdfsCloseFile(fs,readFile);
 	hdfsDisconnect(fs);
 	return ci;
+}
+bool BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const unsigned & length)const{
+
+	int offset=chunk_id.chunk_off;
+	hdfsFS fs=hdfsConnect(HDFS_N,9000);
+	hdfsFile readFile=hdfsOpenFile(fs,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);
+	hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,"/imdb/");// to be refined after communicating with Zhang Lei
+	if(!readFile){
+		cout<<"open file error"<<endl;
+		hdfsDisconnect(fs);
+		return false;
+	}
+	unsigned start_pos=start_pos+CHUNK_SIZE*offset;
+	bool ret;
+	if(start_pos+length<hdfsfile->mSize){
+		void *rt=malloc(CHUNK_SIZE);
+		tSize bytes_num=hdfsPread(fs,readFile,start_pos,desc,length);
+		if(bytes_num==length){
+			ret= true;
+		}
+		else{
+			ret= false;
+		}
+	}else{
+		ret= false;
+	}
+	hdfsCloseFile(fs,readFile);
+	hdfsDisconnect(fs);
+	return ret;
 }
 
 BlockManagerId *BlockManager::getId(){
@@ -241,11 +277,32 @@ string BlockManager::askForMatch(string filename, BlockManagerId bmi){
 	}
 	return file_proj_[filename.c_str()];
 }
-
+bool BlockManager::containsPartition(const PartitionID& part)const{
+	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(part);
+	return !(it==partition_id_to_storage_.cend());
+}
+bool BlockManager::addPartition(const PartitionID& partition_id, const unsigned & number_of_chunks,const StorageLevel& desirable_storage_level){
+	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(partition_id);
+	if(it!=partition_id_to_storage_.cend()){
+		logging_->elog("Failed to add partition[%s], as it is already existed!",partition_id.getName().c_str());
+		return false;
+	}
+	partition_id_to_storage_[partition_id]=new PartitionStorage(partition_id,number_of_chunks,desirable_storage_level);
+	logging_->log("Successfully added partition[%s]!",partition_id.getName().c_str());
+	return true;
+}
+PartitionStorage* BlockManager::getPartitionHandle(const PartitionID& partition_id)const{
+	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(partition_id);
+	if(it==partition_id_to_storage_.cend()){
+		return 0;
+	}
+	return it->second;
+}
 BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor(Theron::Framework *framework,const char * name,BlockManager* bm)
 :Actor(*framework,name),bm_(bm){
 	RegisterHandler(this,&BlockManagerWorkerActor::getBlock);
 	RegisterHandler(this,&BlockManagerWorkerActor::putBlock);
+	RegisterHandler(this,&BlockManagerWorkerActor::BindingPartition);
 }
 
 BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor() {
@@ -325,4 +382,8 @@ string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,Block
 //		cout<<"not receive matcher respond"<<endl;
 //	}
 	return string("Hello~");
+}
+void BlockManager::BlockManagerWorkerActor::BindingPartition(const PartitionBindingMessage& message,const Theron::Address from){
+	bm_->addPartition(message.partition_id,message.number_of_chunks,message.storage_level);
+
 }

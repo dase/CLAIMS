@@ -184,7 +184,7 @@ void ResourceManagerMasterLogging::elog(const char* format,...){
 
 void ResourceManagerSlaveLogging::log(const char* format,...){
 #ifdef DEBUG_ResourceManagerSlave
-	printf("Catalog: ");
+	printf("ResourceManagerSlave: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
@@ -193,7 +193,7 @@ void ResourceManagerSlaveLogging::log(const char* format,...){
 #endif
 }
 void ResourceManagerSlaveLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[Catalog]: ");
+	fprintf(stderr,"Error[ResourceManagerSlave]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
@@ -201,3 +201,58 @@ void ResourceManagerSlaveLogging::elog(const char* format,...){
 	va_end (arg);
 }
 
+void StorageManagerLogging::log(const char* format,...){
+//#ifdef DEBUG_StorageManager
+	printf("StorageManager: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+//#endif
+}
+void StorageManagerLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[StorageManager]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+void StorageManagerMasterLogging::log(const char* format,...){
+//#ifdef DEBUG_StorageManager
+	printf("StorageManagerMaster: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+//#endif
+}
+void StorageManagerMasterLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[StorageManagerMaster]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void BufferManagerLogging::log(const char* format,...){
+#ifdef DEBUG_BufferManager
+	printf("BufferManager: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void BufferManagerLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[BufferManager]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}

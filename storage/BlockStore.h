@@ -14,20 +14,21 @@
  * */
 #include <string>
 using namespace std;
-
-class BlockStore{
+#include "../ids.h"
+#include "../Debug.h"
+class ChunkStore{
 public:
-	BlockStore();
-	virtual ~BlockStore();
+	ChunkStore();
+	virtual ~ChunkStore();
 
 	// 在会有序列化和反序列化的存取操作，但是这是以后测试之后的工作，
 	// 首先不考虑序列化的情况，直接存储的是二进制
-	virtual bool putValue(string blockId,void *value)=0;
-	virtual void* getValue(string blockId)=0;
+	virtual bool storeChunk(ChunkID chunk_id,void *value,unsigned length=CHUNK_SIZE)=0;
+	virtual void* getChunk(ChunkID chunk_id)=0;
 
-	virtual bool remove(string blockId)=0;
-	virtual bool contains(string blockId)=0;
-	virtual unsigned getSize(string blockId)=0;
+	virtual bool remove(ChunkID chunk_id)=0;
+	virtual bool contains(ChunkID chunk_id)=0;
+	virtual unsigned getSize(ChunkID chunk_id)=0;
 
 };
 
