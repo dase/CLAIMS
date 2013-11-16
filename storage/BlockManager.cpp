@@ -9,6 +9,7 @@
 #include "../Environment.h"
 #include "../Message.h"
 #include "../BufferManager/BufferManager.h"
+#include "../rename.h"
 BlockManager *BlockManager::blockmanager_=0;
 
 BlockManager *BlockManager::getInstance(){
@@ -236,8 +237,8 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name){
 	hdfsDisconnect(fs);
 	return ci;
 }
-bool BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const unsigned & length)const{
-
+int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const unsigned & length)const{
+	int ret;
 	int offset=chunk_id.chunk_off;
 	hdfsFS fs=hdfsConnect(HDFS_N,9000);
 	hdfsFile readFile=hdfsOpenFile(fs,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);
@@ -245,24 +246,39 @@ bool BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const
 	if(!readFile){
 		cout<<"open file error"<<endl;
 		hdfsDisconnect(fs);
-		return false;
+		return -1;
 	}
-	unsigned start_pos=start_pos+CHUNK_SIZE*offset;
-	bool ret;
-	if(start_pos+length<hdfsfile->mSize){
-		void *rt=malloc(CHUNK_SIZE);
-		tSize bytes_num=hdfsPread(fs,readFile,start_pos,desc,length);
-		if(bytes_num==length){
-			ret= true;
-		}
-		else{
-			ret= false;
-		}
+	unsigned start_pos=CHUNK_SIZE*offset;
+	if(start_pos<hdfsfile->mSize){
+		ret=hdfsPread(fs,readFile,start_pos,desc,length);
 	}else{
-		ret= false;
+		ret= -1;
 	}
 	hdfsCloseFile(fs,readFile);
 	hdfsDisconnect(fs);
+	return ret;
+}
+int BlockManager::loadFromDisk(const ChunkID& chunk_id,void* const &desc,const unsigned & length)const{
+	int ret;
+	unsigned offset=chunk_id.chunk_off;
+	int fd=FileOpen(chunk_id.partition_id.getPathAndName().c_str(),O_RDONLY);
+	if(fd==-1){
+		logging_->elog("Fail to open file [%s].Reason:%s",chunk_id.partition_id.getPathAndName().c_str(),strerror(errno));
+		return -1;
+	}
+	int file_length=lseek(fd,0,SEEK_END);
+
+	unsigned start_pos=CHUNK_SIZE*offset;
+	printf("start_pos=%d**********\n",start_pos);
+	sleep(1);
+	lseek(fd,start_pos,SEEK_SET);
+	if(start_pos<file_length){
+		ret=read(fd,desc,length);
+	}
+	else{
+		ret=-1;
+	}
+	FileClose(fd);
 	return ret;
 }
 
@@ -288,7 +304,7 @@ bool BlockManager::addPartition(const PartitionID& partition_id, const unsigned 
 		return false;
 	}
 	partition_id_to_storage_[partition_id]=new PartitionStorage(partition_id,number_of_chunks,desirable_storage_level);
-	logging_->log("Successfully added partition[%s]!",partition_id.getName().c_str());
+	logging_->log("Successfully added partition[%s](desriable_storage_level=%d)!",partition_id.getName().c_str(),desirable_storage_level);
 	return true;
 }
 PartitionStorage* BlockManager::getPartitionHandle(const PartitionID& partition_id)const{

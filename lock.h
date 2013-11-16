@@ -21,9 +21,9 @@
 /**
  * Non-recursive spinlock. Using `xchg` and `ldstub` as in PostgresSQL.
  */
-class LockLock {
+class SpineLock {
 	public:
-	LockLock() : _l(0) { }
+	SpineLock() : _l(0) { }
 
 		/** Call blocks and retunrs only when it has the lock. */
 		inline void lock() 

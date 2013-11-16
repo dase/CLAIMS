@@ -32,6 +32,25 @@ private:
 
 
 };
+
+class DiskChunkReaderIteraror:public ChunkReaderIterator{
+public:
+	DiskChunkReaderIteraror(const ChunkID& chunk_id,unsigned& chunk_size,const unsigned& block_size);
+	virtual ~DiskChunkReaderIteraror();
+	bool nextBlock(BlockStreamBase*& block);
+private:
+	ChunkID chunk_id_;
+	unsigned chunk_size_;
+	unsigned number_of_blocks_;
+	unsigned block_size_;
+	unsigned cur_block_;
+	/*the iterator creates a buffer and allocates its memory such that the query processing
+	 * can just use the Block without the concern the memory allocation and deallocation.
+	 */
+	Block* block_buffer_;
+	int fd_;
+};
+
 class HDFSChunkReaderIterator:public ChunkReaderIterator{
 public:
 	HDFSChunkReaderIterator(const ChunkID& chunk_id, unsigned& chunk_size,const unsigned& block_size);
@@ -58,9 +77,10 @@ public:
 	/* considering that how block size effects the performance is to be tested, here we leave
 	 * a parameter block_size for the performance test concern.
 	 */
-	ChunkStorage(const ChunkID& chunk_id,const unsigned& block_size, StorageLevel desirable_level);
+	ChunkStorage(const ChunkID& chunk_id,const unsigned& block_size, const StorageLevel& desirable_level);
 	virtual ~ChunkStorage();
 	ChunkReaderIterator* createChunkReaderIterator();
+	std::string printCurrentStorageLevel()const;
 private:
 	unsigned block_size_;
 	unsigned chunk_size_;

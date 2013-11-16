@@ -135,7 +135,7 @@ void FIFOScheduler::GenerateTree(OperateNode *tree_root){
 			}
 			current_join=current_join->next;
 		}
-		BlockStreamJoinIterator::State join_state(left->bsib,right->bsib,join_left_schema,join_right_schema,join_output_schema,left_index,right_index,left_payload,right_payload,N_BUCKETS,BUCKET_SIZE,BLOCK_SIZE);
+		BlockStreamJoinIterator::State join_state;//(left->bsib,right->bsib,join_left_schema,join_right_schema,join_output_schema,left_index,right_index,left_payload,right_payload,N_BUCKETS,BUCKET_SIZE,BLOCK_SIZE);
 		BlockStreamJoinIterator *bsji=new BlockStreamJoinIterator(join_state);
 		temporary_join->name="broadcastjoin";
 		temporary_join->bsib=bsji;

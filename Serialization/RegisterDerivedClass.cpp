@@ -36,14 +36,16 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamHdfsScan.h"
 #include "../BlockStreamIterator/BlockStreamExchangeLowerBase.h"
 #include "../BlockStreamIterator/BlockStreamExchangeBase.h"
-
+#include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../iterator/RowScanIterator.h"
 #include "../iterator/RandomDiskAccessIterator.h"
 #include "../iterator/SequencialDiskAccessIterator.h"
 #include "../iterator/RandomMemAccessIterator.h"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
-
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+#include "../BlockStreamIterator/BlockStreamPrint.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -89,5 +91,8 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<ExpandableBlockStreamExchangeMaterialized*>(NULL));
 
 	ar.register_type(static_cast<ExpandableBlockStreamRandomMemAccess*>(NULL));
+	ar.register_type(static_cast<ExpandableBlockStreamProjectionScan*>(NULL));
+	ar.register_type(static_cast<BlockStreamPerformanceMonitorTop*>(NULL));
+	ar.register_type(static_cast<BlockStreamPrint*>(NULL));
 
 }

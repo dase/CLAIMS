@@ -104,8 +104,9 @@ public:
 	void* getLocal(string blockId);
 	ChunkInfo loadFromHdfs(string file_name);
 
-	bool loadFromHdfs(const ChunkID&, void* const &desc,const unsigned&)const;
+	int loadFromHdfs(const ChunkID&, void* const &desc,const unsigned&)const;
 
+	int loadFromDisk(const ChunkID&, void* const &desc,const unsigned&)const;
 	// 将这个blockId所代表的数据存进内存或者磁盘，所以其中有个参数肯定是storagelevel
 	bool put(string blockId,storageLevel level, void *value);
 

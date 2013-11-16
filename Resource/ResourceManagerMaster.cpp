@@ -55,11 +55,20 @@ std::vector<NodeID> ResourceManagerMaster::getSlaveIDList(){
 	return ret;
 }
 bool ResourceManagerMaster::ApplyDiskBuget(NodeID target, unsigned size_in_mb){
-	if(node_to_resourceinfo_.find(target)==node_to_resourceinfo_.end()){
+	if(node_to_resourceinfo_.find(target)==node_to_resourceinfo_.cend()){
 		/* target slave does not exist.*/
 		return false;
 	}
 	if(node_to_resourceinfo_[target]->disk.take(size_in_mb))
+		return true;
+	return false;
+}
+bool ResourceManagerMaster::ApplyMemoryBuget(NodeID target, unsigned size_in_mb){
+	if(node_to_resourceinfo_.find(target)==node_to_resourceinfo_.cend()){
+		/* target slave does not exist.*/
+		return false;
+	}
+	if(node_to_resourceinfo_[target]->memory.take(size_in_mb))
 		return true;
 	return false;
 }
@@ -72,6 +81,15 @@ bool ResourceManagerMaster::RegisterDiskBuget(NodeID report_node_id, unsigned si
 	logging_->log("Node(id=%d) reports its disk capacity=%d",report_node_id,size_in_mb);
 	return true;
 }
+bool ResourceManagerMaster::RegisterMemoryBuget(NodeID report_node_id, unsigned size_in_mb){
+	if(node_to_resourceinfo_.find(report_node_id)==node_to_resourceinfo_.end()){
+		/* target slave does not exists*/
+		return false;
+	}
+	node_to_resourceinfo_[report_node_id]->memory.initialize(size_in_mb);
+	logging_->log("Node(id=%d) reports its memory capacity=%d",report_node_id,size_in_mb);
+	return true;
+}
 
 
 ResourceManagerMaster::ResourceManagerMasterActor::ResourceManagerMasterActor(Theron::Framework* framework,ResourceManagerMaster* rmm)
@@ -82,6 +100,7 @@ ResourceManagerMaster::ResourceManagerMasterActor::ResourceManagerMasterActor(Th
 
 void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetReport(const StorageBudgetMessage &message,const Theron::Address from){
 	rmm_->RegisterDiskBuget(message.nodeid,message.disk_budget);
+	rmm_->RegisterMemoryBuget(message.nodeid,message.memory_budget);
 	rmm_->logging_->log("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB",message.nodeid,message.disk_budget,message.memory_budget);
 //	Send(0,from);
 }

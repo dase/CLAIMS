@@ -267,7 +267,7 @@ bool ExchangeIteratorWithWideDependency::isMaster(){
 }
 
 bool ExchangeIteratorWithWideDependency::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	ExchangeIteratorLowerWithWideDependency::State EILWWDstate(state.schema,state.child,state.upper_ip_port_array,state.block_size,state.exchange_id);
 	ExchangeIteratorLowerWithWideDependency *EILWWD=new ExchangeIteratorLowerWithWideDependency(EILWWDstate);
 

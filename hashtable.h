@@ -25,7 +25,7 @@
 #include "atomics.h"
 #include "lock.h"
 #include "configure.h"
-
+#include "lock.h"
 typedef void (*fun)(void*, void*);
 
 using namespace std;
@@ -33,7 +33,7 @@ using namespace std;
 #ifndef __HASHTABLE__
 #define __HASHTABLE__
 
-inline unsigned get_aligned_space(unsigned bucksize)
+inline int get_aligned_space(const unsigned& bucksize)
 {
 	return ((bucksize+2*sizeof(void*)-1)/cacheline_size+1)*cacheline_size;
 }
@@ -42,47 +42,50 @@ class BasicHashTable
 public:
 	BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize);
 	~BasicHashTable();
-	inline void* allocate(unsigned offset)
+	inline void* allocate(const unsigned& offset)
 	{
-		assert(0 <= offset && offset<nbuckets);
-		void* data = (char*)t_start+get_aligned_space(bucksize)*offset;
+		assert(offset<nbuckets_);
 
-		void** freeloc = (void**)((char*)data + bucksize);
+		void* data=bucket_[offset];
+
+		void** freeloc = (void**)((char*)data + buck_actual_size_);
 		void* ret;
-		if ((*freeloc) <= ((char*)data + bucksize - tuplesize))
+		if ((*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
 		{
 			ret = *freeloc;
-			*freeloc = ((char*)(*freeloc)) + tuplesize;
+			*freeloc = ((char*)(*freeloc)) + tuplesize_;
+			assert(ret!=0);
 			return ret;
 		}
-		char* cur_mother_page=mother_page_list.at(mother_page_list.size()-1);
-		if(get_aligned_space(bucksize)>(pagesize-(cur_MP+1)) )// the current mother page doesn't have enough space for the new buckets
+		char* cur_mother_page=mother_page_list_.back();
+		if(bucksize_+cur_MP_>=pagesize_ )// the current mother page doesn't have enough space for the new buckets
 		{
-			cur_mother_page=(char*)malloc(pagesize);
-			if(cur_mother_page==0)
-				cout<<"Hash table allocation error!"<<endl;
-			cur_MP=0;
-			memset(cur_mother_page,0,pagesize);
-			mother_page_list.push_back(cur_mother_page);
+			cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
+			assert(cur_mother_page);
+			cur_MP_=0;
+			mother_page_list_.push_back(cur_mother_page);
 		}
 
-		ret=cur_mother_page+cur_MP;
-		cur_MP+=get_aligned_space(bucksize);
+		ret=cur_mother_page+cur_MP_;
+		cur_MP_+=bucksize_;
 
-		void** nextloc = (void**)(((char*)data) + bucksize + sizeof(void*));
-		*nextloc = ret;
-		freeloc = (void**)(((char*)ret) + bucksize);
-		*freeloc = (ret) ;
-		nextloc = (void**)(((char*)ret) + bucksize + sizeof(void*));
+		void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
+		void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
+		*new_buck_freeloc = (ret)+tuplesize_ ;
+		*new_buck_nextloc = data;
 
-		*nextloc=0;
-
+		bucket_[offset]=ret;
+		return ret;
+	}
+	inline void* atomicAllocate(const unsigned& offset){
+		void* ret;
+		lock_list_[offset].lock();
+		ret=allocate(offset);
+		lock_list_[offset].unlock();
 		return ret;
 	}
 	inline void UpdateTuple(unsigned int offset,void* loc,void* newvalue, fun func)
 	{
-		//TODO: make it support various aggregation functions and various data type.
-//		*((int *)(loc))+=*(int *)newvalue;
 		func(loc, newvalue);
 	}
 	class Iterator
@@ -90,7 +93,7 @@ public:
 		friend class BasicHashTable;
 		public:
 		Iterator();
-		Iterator(unsigned int bucksize, unsigned int tuplesize);
+		Iterator(const unsigned& buck_actual_size,const unsigned& tuplesize);
 		inline void* readnext()
 		{
 			void* ret;
@@ -104,9 +107,10 @@ public:
 				{
 					ret = next;
 					cur = ((char*)next) + tuplesize;
-					free = *(void**)((char*)next + bucksize);
-					next = *(void**)((char*)next + bucksize + sizeof(void*));
-					return ret < free ? ret : 0;
+					free = *(void**)((char*)next + buck_actual_size);
+					next = *(void**)((char*)next + buck_actual_size + sizeof(void*));
+//					return ret < free ? ret : 0;
+					return ret;
 				}
 				else
 				{
@@ -114,92 +118,66 @@ public:
 				}
 		}
 
-		inline void * readCurrent(){
+		inline void * readCurrent()const{
 			void *ret;
+
 			if(cur<free){
 				ret=cur;
 				return ret;
 			}
-			else if(next!=0){
-				ret = next;
-				ever_next=next;
-				free = *(void**)((char*)next + bucksize);
-				next = *(void**)((char*)next + bucksize + sizeof(void*));
-				return ret < free ? ret : 0;
-			}
 			else{
 				return 0;
 			}
 		}
 
-		inline void *increase_cur_(){
-			if (cur < free){
+		inline void increase_cur_(){
+			if (cur+tuplesize < free){
 				cur = ((char*)cur) + tuplesize;
 			}
 			else if (next != 0){
-				cout<<"****************"<<endl;
-				cur = ((char*)ever_next) + tuplesize;
+				cur=(char*)next;
+				free = *(void**)((char*)next + buck_actual_size);
+				next = *(void**)((char*)next + buck_actual_size + sizeof(void*));
 			}
 			else{
-				return 0;
+				cur =free;
 			}
 		}
 
-		inline void* nextPage()
-		{
-			void* ret;
-			ret=pagestart;
-			if(next!=0)
-			{
-				pagestart=next;
-				cur=pagestart;
-				free=*(void**)((char*)pagestart+bucksize);
-				next = *(void**)((char*)pagestart + bucksize + sizeof(void*));
-			}
-			else
-			{
-				pagestart=0;
-				cur=0;
-			}
-			return ret;
-		}
 		private:
 			void* cur;
 			void* free;
-			void* ever_next;
 			void* next;
-			void* pagestart;
-			unsigned int bucksize;
-			unsigned int tuplesize;
+//			void* pagestart;
+			int buck_actual_size;
+			int tuplesize;
 	};
-	BasicHashTable::Iterator CreateIterator();
-	inline bool placeIterator(Iterator& it, unsigned int offset) //__attribute__((always_inline))
+	BasicHashTable::Iterator CreateIterator()const;
+	inline bool placeIterator(Iterator& it, const unsigned& offset)
 	{
-		if(offset>=nbuckets)
+		if(offset>=nbuckets_)
 			return false;
-
-		void* start = (char*)t_start+offset*get_aligned_space(bucksize);
+		void* start=bucket_[offset];
 		it.cur = start;
+		it.free = *(void**)((char*)start + buck_actual_size_);
+		it.next = *(void**)((char*)start + buck_actual_size_ + sizeof(void*));
 
-		it.free = *(void**)((char*)start + bucksize);
-		it.next = *(void**)((char*)start + bucksize + sizeof(void*));
-
-		it.tuplesize=tuplesize;
-		it.pagestart=start;
 		return true;
 	}
 	unsigned getHashTableTupleSize(){
-		return tuplesize;
+		return tuplesize_;
 	}
 private:
-	unsigned nbuckets;
-	unsigned bucksize;
-	unsigned tuplesize;
-	void** bucket;
-	unsigned pagesize;
-	char* t_start;
-	unsigned cur_MP;
-	std::vector<char*> mother_page_list;
+	int nbuckets_;
+	int bucksize_;
+	int buck_actual_size_;
+	int tuplesize_;
+	void** bucket_;
+	int pagesize_;
+	char* t_start_;
+	int cur_MP_;
+	std::vector<char*> mother_page_list_;
+	SpineLock* lock_list_;
 };
 
 //

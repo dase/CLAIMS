@@ -9,6 +9,8 @@
 #ifndef IDS_H_
 #define IDS_H_
 #include <boost/unordered_map.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 typedef int NodeID;
 
@@ -54,6 +56,13 @@ struct ProjectionID{
 	bool operator==(const ProjectionID& r)const{
 		return table_id==r.table_id&& projection_off==r.projection_off;
 	}
+
+	/* for boost::serialization*/
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version){
+            ar & table_id & projection_off;
+    }
 
 };
 /* for boost::unordered_map*/
@@ -105,6 +114,11 @@ struct PartitionID{
 		str<<"T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		return str.str();
 	}
+	std::string getPathAndName()const{
+		std::ostringstream str;
+		str<<"/home/wangli/data/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+		return str.str();
+	}
 };
 /* for boost::unordered_map*/
 static size_t hash_value(const PartitionID& key){
@@ -116,7 +130,7 @@ static size_t hash_value(const PartitionID& key){
 
 struct ChunkID{
 	ChunkID(){};
-	ChunkID(PartitionID partition_id,ChunkOffset chunk_offset):partition_id(partition_id),chunk_off(chunk_off){};
+	ChunkID(PartitionID partition_id,ChunkOffset chunk_offset):partition_id(partition_id),chunk_off(chunk_offset){};
 	ChunkID(const ChunkID& r){
 		partition_id=r.partition_id;
 		chunk_off=r.chunk_off;

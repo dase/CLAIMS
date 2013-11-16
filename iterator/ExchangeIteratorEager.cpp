@@ -151,7 +151,7 @@ bool ExchangeIteratorEager::isMaster(){
 	return Environment::getInstance()->getIp()==state.upper_ip_list[0];
 }
 bool ExchangeIteratorEager::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	ExchangeIteratorEagerLower::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id);
 	ExchangeIteratorEagerLower *EIEL=new ExchangeIteratorEagerLower(EIELstate);
 

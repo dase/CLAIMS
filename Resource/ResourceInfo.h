@@ -13,6 +13,20 @@ struct memory_info{
 	/* the following volumes are in Mbytes*/
 	memory_info():allocated_capacity(-1),used_capacity(-1){};
 	memory_info(int allo,int used):allocated_capacity(allo),used_capacity(used){};
+	void initialize(int capacity){
+		allocated_capacity=capacity;
+		used_capacity=0;
+	}
+	bool take(int buget){
+		if(allocated_capacity>=used_capacity+buget){
+			used_capacity+=buget;
+			return true;
+		}
+		return false;
+	}
+	void put(int size){
+		used_capacity-=size;
+	}
 	int allocated_capacity;
 	int used_capacity;
 };

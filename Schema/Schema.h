@@ -25,7 +25,7 @@ public:
 
 	inline virtual unsigned getTupleActualSize(void* tuple) const=0;
 	virtual void getColumnValue(unsigned index,void* src, void* desc)=0;
-	inline virtual void* getColumnAddess(unsigned index,void* column_start) const __attribute__((always_inline)) =0;
+	inline virtual void* getColumnAddess(unsigned index,const void* const & column_start) const __attribute__((always_inline)) =0;
 	inline virtual unsigned copyTuple(void* src, void* desc) const =0;
 	unsigned getncolumns();
 	inline column_type getcolumn(const unsigned index) const {
@@ -33,6 +33,7 @@ public:
 		}
 	std::vector<column_type> columns;
 	virtual schema_type getSchemaType()=0;
+	virtual void displayTuple(const void* tuple_start_address,const char* spliter="|")const;
 protected:
 
 private:

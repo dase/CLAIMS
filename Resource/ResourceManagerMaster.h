@@ -31,8 +31,10 @@ public:
 	NodeID RegisterNewSlave(NodeIP);
 	/* notify the ResourceManager how large the budget is for a target node*/
 	bool RegisterDiskBuget(NodeID report_node_id, unsigned size_in_mb);
+	bool RegisterMemoryBuget(NodeID report_node_id, unsigned size_in_mb);
 	std::vector<NodeID> getSlaveIDList();
 	bool ApplyDiskBuget(NodeID target, unsigned size_in_mb);
+	bool ApplyMemoryBuget(NodeID target, unsigned size_in_mb);
 private:
 	hashmap<NodeID,ResourceInfo*> node_to_resourceinfo_;
 	NodeTracker *node_tracker_;
