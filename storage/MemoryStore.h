@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/unordered_map.hpp>
 #include <iostream>
 using namespace std;
 
@@ -43,15 +44,18 @@ struct HdfsBlock{
 	// 是否被序列化过
 };
 
+typedef HdfsBlock HdfsInMemoryChunk;
+
 /*
  * memorystore只是负责数据的存取，而和数据的管理和为什么存储是没有关系的，
  * 在负责数据存取的同时，put的时候还要看看内存够不够，如果不够就要开始内存
  * 空间的移除，在此有很多的策略选择，要将memstore写成单例模式
  * */
-class MemoryStore: public BlockStore{
+class MemoryChunkStore{
 public:
-	MemoryStore();
-	virtual ~MemoryStore();
+	static MemoryChunkStore* getInstance();
+	MemoryChunkStore();
+	virtual ~MemoryChunkStore();
 
 	/* todo:这里还有可能是直接存储对象或者存储将对象序列化之后的结果两种
 	 * 在spark中要估计结果，所以有一个hdfsBlock中的length变量，在此留接口
@@ -62,14 +66,16 @@ public:
 		tryToPut(chunkId,value);
 		return true;
 	};
+	bool applyChunk(ChunkID chunk_id,HdfsInMemoryChunk& chunk_info);
 
-	void *getValue(string blockId){
+	void *getChunk(string blockId){
 		map<string, HdfsBlock>::iterator it_;
 		it_=bufferpool_.find(blockId);
 		if(it_!=bufferpool_.end()){
 			return it_->second.hook;
 		}
 	};
+	bool getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info)const;
 
 	bool remove(string blockId){
 		return true;
@@ -120,12 +126,14 @@ public:
 
 private:
 	map<string, HdfsBlock> bufferpool_;
+	boost::unordered_map<ChunkID,HdfsInMemoryChunk> chunk_list_;
 	// 本节点能使用的最大的内存，以兆为单位
 	long maxMemory_;
 	// 现在使用了多少内存？以兆为单位
 	long currentMemory_;
 	// 在存储进去buffer pool的时候要枷锁
 	Lock lock_;
+	static MemoryChunkStore* instance_;
 };
 
 #endif /* MEMORYSTORE_H_ */

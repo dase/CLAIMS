@@ -21,7 +21,7 @@ using namespace std;
 #include <sys/stat.h>
 #include <sys/types.h>
 
-class DiskStore: public BlockStore{
+class DiskStore{
 public:
 	DiskStore(string rootDirs);
 	virtual ~DiskStore();
@@ -30,7 +30,7 @@ public:
 	bool putValue(string blockId,void *value){
 		return true;
 	}
-	void *getValue(string blockId){
+	void *getChunk(string blockId){
 		// todo: 将blockId对应的文件mmap到内存中，然后返回内存的指针
 	}
 

@@ -8,7 +8,7 @@
 #include "DiskStore.h"
 
 DiskStore::DiskStore(string rootDirs)
-:BlockStore(),rootDirs_(rootDirs){
+:rootDirs_(rootDirs){
 	createDirs(rootDirs_);
 }
 
