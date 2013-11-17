@@ -13,6 +13,7 @@
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
 #include "../../Catalog/ProjectionBinding.h"
+#include "../Filter.h"
 using namespace std;
 static int testGenerateIteratorTree(){
 	Environment::getInstance(true);
@@ -34,15 +35,15 @@ static int testGenerateIteratorTree(){
 	index_1.push_back(3);
 	index_1.push_back(4);
 	index_1.push_back(5);
-	const int partition_key_index_1=0;
-	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,2);
+	const int partition_key_index_1=2;
+	table_1->createHashPartitionedProjection(index_1,partition_key_index_1,4);
 	catalog->add_table(table_1);
 
 	////////////////////////////////////Create table right//////////////////////////
 	TableDescriptor* table_2=new TableDescriptor("right",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 	table_2->addAttribute("A1",data_type(t_u_long),3);
-	table_2->addAttribute("A2",data_type(t_int));
-	table_2->addAttribute("A3",data_type(t_u_long));
+	table_2->addAttribute("A2",data_type(t_u_long));
+	table_2->addAttribute("A3",data_type(t_int));
 	table_2->addAttribute("A4",data_type(t_int));
 	table_2->addAttribute("A5",data_type(t_int));
 	table_2->addAttribute("A6",data_type(t_int));
@@ -54,8 +55,8 @@ static int testGenerateIteratorTree(){
 	index_2.push_back(3);
 	index_2.push_back(4);
 	index_2.push_back(5);
-	const int partition_key_index_2=0;
-	table_2->createHashPartitionedProjection(index_2,partition_key_index_2,2);
+	const int partition_key_index_2=1;
+	table_2->createHashPartitionedProjection(index_2,partition_key_index_2,4);
 	catalog->add_table(table_2);
 	///////////////////////////////////////////////////////////
 
@@ -87,20 +88,43 @@ static int testGenerateIteratorTree(){
 
 
 
-	ProjectionBinding *pb=new ProjectionBinding();
-	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
+//	ProjectionBinding *pb=new ProjectionBinding();
+//	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
 //	pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(0)->getPartitioner());
 
 //	sleep(1);
+
+
 	const TableID table_id_1=0;
 	LogicalOperator* scan_1=new LogicalScan(table_id_1);
+
 
 	const TableID table_id_2=1;
 	LogicalOperator* scan_2=new LogicalScan(table_id_2);
 
+	Filter::Condition filter_condition_1;
+	const int trade_date=20101008;
+	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::EQ,&trade_date);
+	const int sec_code=600036;
+	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+	const int order_type=1;
+	filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,&order_type);
+	LogicalOperator* filter_1=new Filter(filter_condition_1,scan_1);
+
+	Filter::Condition filter_condition_2;
+	const int entry_date=20101008;
+	filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::EQ,&entry_date);
+	const int sec_code_=600036;
+	filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code_);
+	const int order_type_=1;
+	filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
+	LogicalOperator* filter_2=new Filter(filter_condition_2,scan_2);
+
 	std::vector<EqualJoin::JoinPair> join_pair_list;
-	join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute(0),table_2->getAttribute(0)));
-	LogicalOperator* join=new EqualJoin(join_pair_list,scan_1,scan_2);
+	join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute(2),table_2->getAttribute(1)));
+	join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute(1),table_2->getAttribute(2)));
+	join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute(4),table_2->getAttribute(5)));
+	LogicalOperator* join=new EqualJoin(join_pair_list,filter_1,filter_2);
 
 
 
