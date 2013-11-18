@@ -345,14 +345,29 @@ public:
 	IteratorMessage(BlockStreamIteratorBase* it)
 		:tuple_stream_iterator_root_(0),block_stream_iterator_root_(it)
 		{};
+	IteratorMessage(const IteratorMessage& r){
+		tuple_stream_iterator_root_=r.tuple_stream_iterator_root_;
+		block_stream_iterator_root_=r.block_stream_iterator_root_;
+	}
 
 	IteratorMessage():tuple_stream_iterator_root_(0),block_stream_iterator_root_(0){};
 	~IteratorMessage(){
+//		if(tuple_stream_iterator_root_>0)
+//			tuple_stream_iterator_root_->~Iterator();
+//		if(block_stream_iterator_root_>0)
+//			block_stream_iterator_root_->~BlockStreamIteratorBase();
+	};
+
+	/* the member varaibles' destrution code is implemented in this function to avoid
+	 * the undesirable destruction of iterator caused by the default destructor of
+	 * IteratorMessage
+	 */
+	void destory(){
 		if(tuple_stream_iterator_root_>0)
 			tuple_stream_iterator_root_->~Iterator();
 		if(block_stream_iterator_root_>0)
 			block_stream_iterator_root_->~BlockStreamIteratorBase();
-	};
+	}
 	void run()
 	{
 		if(tuple_stream_iterator_root_>0){
@@ -385,7 +400,7 @@ public:
 
 	static Message4K serialize4K(IteratorMessage& input)
 	{
-		std::cout<<"in the serialize4K func!"<<std::endl;
+//		std::cout<<"in the serialize4K func!"<<std::endl;
 		return Serialize4K<IteratorMessage>(input);
 	}
 private:

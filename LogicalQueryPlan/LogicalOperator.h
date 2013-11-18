@@ -15,11 +15,17 @@
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 class LogicalOperator{
 public:
-//	virtual LogicalProjection getLogicalProjection()=0;
+	LogicalOperator(){};
+	virtual ~LogicalOperator(){};
 
 	/*get the data flow which is optimal in the local view.*
 	 * TODO: leverage recursive search for the global optimal. */
 	virtual Dataflow getDataflow()=0;
+
+	/*
+	 * generate the iterator tree based on the computed dataflow. Hence,
+	 * this function can only be called after the calling of getDataflow()
+	 */
 	virtual BlockStreamIteratorBase* getIteratorTree(const unsigned &)=0;
 protected:
 	Schema* getSchema(const std::vector<Attribute>&)const;

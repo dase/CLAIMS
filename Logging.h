@@ -154,14 +154,14 @@ static void Logging_IteratorExecutorSlave(const char* format,...){
 }
 
 static void Logging_ExchangeIteratorEager(const char* format,...){
-#ifdef DEBUG_ExchangeIteratorEager
+//#ifdef DEBUG_ExchangeIteratorEager
 	printf("[ExchangeIteratorEager]: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf (format, arg);
 	printf("\n");
 	va_end (arg);
-#endif
+//#endif
 }
 
 static void Logging_BlockStreamExchangeBase(const char* format,...){

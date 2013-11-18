@@ -9,9 +9,12 @@
 #define SCAN_H_
 #include "LogicalOperator.h"
 #include "../Schema/LogicalProjection.h"
+#include "../ids.h"
 class LogicalScan: public LogicalOperator {
 public:
 	LogicalScan(std::vector<Attribute> attribute_list);
+	LogicalScan(const TableID&);
+	LogicalScan(const TableID&,const std::vector<unsigned>& selected_attribute_index_list);
 	virtual ~LogicalScan();
 	LogicalProjection getLogcialProjection()const;
 	Dataflow getDataflow();

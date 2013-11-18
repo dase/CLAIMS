@@ -18,7 +18,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	logging_=new EnvironmentLogging();
 	Initialize();
 	portManager=PortManager::getInstance();
-	catalog_=new Catalog();
+	catalog_=Catalog::getInstance();
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
 		InitializeCoordinator();

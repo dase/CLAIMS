@@ -17,8 +17,9 @@ IteratorExecutorSlave::IteratorExecutorSlave(){
 	endpoint=Environment::getInstance()->getEndPoint();
 
 	framework=new Theron::Framework(*endpoint);
-//	framework->SetMaxThreads(1);
-
+	framework->SetMaxThreads(10);
+	framework->SetMinThreads(5);
+	logging_->log("Minimum thread is set to be %d",framework->GetMinThreads());
 	execute_iterator_actor=new ExecuteIteratorActor(this,*framework,("IteratorExecutorActor://"+Environment::getInstance()->getIp()).c_str());
 	logging_->log("Actor created with name: IteratorExecutorActor://%s",Environment::getInstance()->getIp().c_str());
 
@@ -33,6 +34,7 @@ IteratorExecutorSlave::ExecuteIteratorActor::ExecuteIteratorActor(IteratorExecut
 {
 	RegisterHandler(this, &IteratorExecutorSlave::ExecuteIteratorActor::Handler256);
 	RegisterHandler(this, &IteratorExecutorSlave::ExecuteIteratorActor::Handler4K);
+	RegisterHandler(this, &IteratorExecutorSlave::ExecuteIteratorActor::progation);
 }
 
 void IteratorExecutorSlave::ExecuteIteratorActor::Handler256(const Message256 &message,const Theron::Address from)
@@ -50,14 +52,38 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler256(const Message256 &m
 }
 void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &message,const Theron::Address from)
 {
+//	ies->logging_->log("New iterator tree received!\n");
+//
+//	Send(int(0),from);
+//	ies->logging_->log("Sent the response message to the Receiver!");
+//	IteratorMessage im=IteratorMessage::deserialize4K(message);
+//
+//	im.run();
+//	ies->logging_->log("iterator tree is successfully executed!");
 	ies->logging_->log("New iterator tree received!\n");
-	Message256 msg;
+
 	Send(int(0),from);
-	std::cout<<"Sent the response message to the Receiver!"<<std::endl;
-	IteratorMessage im=IteratorMessage::deserialize4K(message);
-
-	im.run();
-	ies->logging_->log("iterator tree is successfully executed!");
-
+	ies->logging_->log("Sent the response message to the Receiver!");
+	IteratorMessage* runable_iterator_message=new IteratorMessage();
+	*runable_iterator_message=IteratorMessage::deserialize4K(message);
+	ies->createNewThreadAndRun(runable_iterator_message);
+	ies->logging_->log("iterator tree is added to the running queue");
+}
+void IteratorExecutorSlave::ExecuteIteratorActor::progation(const int &message,const Theron::Address from){
+	printf("Slave:%d\n",message);
+	sleep(1);
+	IteratorExecutorMaster::getInstance()->Propogation(message+1,"127.0.0.1");
 }
 
+
+void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
+
+	pthread_t thread;
+	pthread_create(&thread,NULL,run_iterator,it);
+	logging_->log("A new Running thread is created!");
+}
+void* IteratorExecutorSlave::run_iterator(void* arg){
+	IteratorMessage* it=(IteratorMessage*)arg;
+	it->run();
+	printf("A iterator tree is successfully executed!\n");
+}

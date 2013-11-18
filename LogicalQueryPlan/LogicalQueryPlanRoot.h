@@ -9,16 +9,18 @@
 #define LOGICALQUERYPLANROOT_H_
 #include "LogicalOperator.h"
 #include "../ids.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 class LogicalQueryPlanRoot: public LogicalOperator {
 public:
-	LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child);
+	enum outputFashion{PRINT,PERFORMANCE};
+	LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion=PERFORMANCE);
 	virtual ~LogicalQueryPlanRoot();
-	Dataflow getDataflow()=0;
+	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned&);
 private:
 	NodeID collecter_;
 	LogicalOperator* child_;
+	outputFashion fashion_;
 
 };
 

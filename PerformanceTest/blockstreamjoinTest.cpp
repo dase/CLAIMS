@@ -134,7 +134,7 @@ int main_join_success(int argc, const char** argv){
 		std::vector<unsigned> payload_right;
 		payload_right.push_back(0);
 
-		BlockStreamJoinIterator::State bsji_state(ebse,bsc2,output,output,output_join,joinIndex_left,joinIndex_right,payload_left,payload_right,10,1024000,4096);
+		BlockStreamJoinIterator::State bsji_state;//(ebse,bsc2,output,output,output_join,joinIndex_left,joinIndex_right,payload_left,payload_right,10,1024000,4096);
 		BlockStreamJoinIterator* bsji=new BlockStreamJoinIterator(bsji_state);
 
 		BlockStreamExpander::State bse_state_(output_join,bsji,thread_count,block_size,expander_buffer);

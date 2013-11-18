@@ -8,8 +8,11 @@
 #include "LogicalQueryPlanRoot.h"
 #include "../Resource/NodeTracker.h"
 #include "../IDsGenerator.h"
-LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child)
-:collecter_(collecter),child_(child){
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../BlockStreamIterator/BlockStreamPrint.h"
+#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
+:collecter_(collecter),child_(child),fashion_(fashion){
 	// TODO Auto-generated constructor stub
 
 }
@@ -27,9 +30,9 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	state.block_size=block_size;
 	state.child=child_iterator;
 	state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-
+	state.schema=schema;
 	state.upper_ip_list.push_back(node_tracker->getNodeIP(collecter_));
-
+	state.partition_key_index=0;
 	std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
 	for(unsigned i=0;i<lower_id_list.size();i++){
 		const std::string ip=node_tracker->getNodeIP(lower_id_list[i]);
@@ -37,6 +40,24 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		state.lower_ip_list.push_back(ip);
 	}
 
-	ExpandableBlockStreamExchangeEpoll* exchange=new ExpandableBlockStreamExchangeEpoll(state);
-	return exchange;
+	BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
+
+	BlockStreamIteratorBase* ret;
+	switch(fashion_){
+		case PRINT:{
+			BlockStreamPrint::State print_state(schema,exchange,block_size);
+			ret=new BlockStreamPrint(print_state);
+			break;
+		}
+		case PERFORMANCE:{
+			BlockStreamPerformanceMonitorTop::State performance_state(schema,exchange,block_size);
+			ret=new BlockStreamPerformanceMonitorTop(performance_state);
+			break;
+		}
+	}
+
+	return ret;
+}
+Dataflow LogicalQueryPlanRoot::getDataflow(){
+	return child_->getDataflow();
 }

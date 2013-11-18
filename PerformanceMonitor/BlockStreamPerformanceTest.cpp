@@ -21,9 +21,9 @@ BlockStreamPerformanceTest::~BlockStreamPerformanceTest() {
 	// TODO Auto-generated destructor stub
 }
 
-bool BlockStreamPerformanceTest::open(){
-	state_.child1_->open();
-	state_.child2_->open();
+bool BlockStreamPerformanceTest::open(const PartitionOffset& partition_offset){
+	state_.child1_->open(partition_offset);
+	state_.child2_->open(partition_offset);
 	block_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 	tuplecount_=0;
 	tuplecount1_ = 0;

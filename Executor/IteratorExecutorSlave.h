@@ -27,12 +27,18 @@ public:
 	private:
 		void Handler256(const Message256 &message,const Theron::Address from);
 		void Handler4K(const Message4K &message,const Theron::Address from);
+		void progation(const int &message,const Theron::Address from);
 	private:
 		IteratorExecutorSlave* ies;
 	};
 	IteratorExecutorSlave();
 
 	virtual ~IteratorExecutorSlave();
+protected:
+	void createNewThreadAndRun(IteratorMessage*);
+private:
+
+	static void* run_iterator(void*);
 protected:
 	Logging * logging_;
 private:

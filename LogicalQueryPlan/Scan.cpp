@@ -6,11 +6,29 @@
  */
 #include <stdio.h>
 #include "Scan.h"
-#include "../Environment.h"
+#include "../Catalog/Catalog.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-LogicalScan::LogicalScan(std::vector<Attribute> attribute_list):scan_attribute_list_(attribute_list) {
+LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
+:scan_attribute_list_(attribute_list),target_projection_(0) {
 	// TODO Auto-generated constructor stub
 
+}
+LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
+	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
+	if(table==0){
+		printf("Table[id=%d] does not exists!\n",table_id);
+	}
+	scan_attribute_list_=table->getAttributes();
+}
+LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& selected_attribute_index_list)
+:target_projection_(0) {
+	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
+	if(table==0){
+		printf("Table[id=%d] does not exists!\n",table_id);
+	}
+	for(unsigned i=0;i<selected_attribute_index_list.size();i++){
+		scan_attribute_list_.push_back(table->getAttribute(selected_attribute_index_list[i]));
+	}
 }
 
 LogicalScan::~LogicalScan() {
@@ -23,7 +41,7 @@ LogicalProjection LogicalScan::getLogcialProjection()const{
 
 Dataflow LogicalScan::getDataflow(){
 	TableID table_id=scan_attribute_list_[0].table_id_;
-	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable(table_id);
+	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
 
 	ProjectionOffset target_projection_off=-1;
 	for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
@@ -49,6 +67,11 @@ Dataflow LogicalScan::getDataflow(){
 		assert(false);
 	}
 	target_projection_=table->getProjectoin(target_projection_off);
+
+	if(!target_projection_->AllPartitionBound()){
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner());
+	}
+
 	/*build the data flow*/
 
 

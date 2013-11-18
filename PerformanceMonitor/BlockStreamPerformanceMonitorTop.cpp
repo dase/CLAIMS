@@ -18,8 +18,8 @@ BlockStreamPerformanceMonitorTop::~BlockStreamPerformanceMonitorTop() {
 	// TODO Auto-generated destructor stub
 }
 
-bool BlockStreamPerformanceMonitorTop::open(){
-	state_.child_->open();
+bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_offset){
+	state_.child_->open(partition_offset);
 	block_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 	tuplecount_=0;
 	int error;

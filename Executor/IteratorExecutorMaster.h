@@ -21,11 +21,12 @@ class IteratorExecutorMaster {
 public:
 	IteratorExecutorMaster();
 	virtual ~IteratorExecutorMaster();
-	static IteratorExecutorMaster* instance();
+	static IteratorExecutorMaster* getInstance();
 	bool ExecuteIteratorsOnSlave(Iterator* it);
 	bool ExecuteIteratorsOnSites(Iterator* it, std::vector<std::string> ip_list);
 	bool ExecuteBlockStreamIteratorsOnSites(BlockStreamIteratorBase* it,std::vector<std::string> ip_list);
-
+	bool ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,std::string target_ip);
+	bool Propogation(const int,std::string target);
 private:
 	static IteratorExecutorMaster* _instance;
 	Theron::EndPoint* endpoint;
