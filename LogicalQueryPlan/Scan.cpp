@@ -69,7 +69,7 @@ Dataflow LogicalScan::getDataflow(){
 	target_projection_=table->getProjectoin(target_projection_off);
 
 	if(!target_projection_->AllPartitionBound()){
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner());
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),HDFS);
 	}
 
 	/*build the data flow*/
