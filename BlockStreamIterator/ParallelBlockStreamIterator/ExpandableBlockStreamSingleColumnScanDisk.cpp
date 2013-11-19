@@ -39,7 +39,7 @@ ExpandableBlockStreamSingleColumnScanDisk::State::State(std::string file_name,
 	used_size_control_ = true;
 }
 
-bool ExpandableBlockStreamSingleColumnScanDisk::open() {
+bool ExpandableBlockStreamSingleColumnScanDisk::open(const PartitionOffset& part_off) {
 	block_for_reading_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 
 	if (sema_open_.try_wait()) {

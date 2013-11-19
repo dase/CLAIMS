@@ -62,10 +62,10 @@ void Partitioner::unbindPartitionToNode(PartitionOffset partition_id){
 
 }
 
-void Partitioner::RegisterPartition(unsigned partition_key,std::string file_name,unsigned number_of_chunks){
+void Partitioner::RegisterPartition(unsigned partition_key,unsigned number_of_chunks){
 	assert(partition_key<partition_functin_->getNumberOfPartitions());
 
-	partition_info_list[partition_key]->hdfs_file_name=file_name;
+	partition_info_list[partition_key]->hdfs_file_name=partition_info_list[partition_key]->partition_id_.getName();
 	partition_info_list[partition_key]->number_of_blocks=number_of_chunks;
 
 }
@@ -118,6 +118,14 @@ PartitionFunction* Partitioner::getPartitionFunction()const{
 }
 ProjectionID Partitioner::getProejctionID()const{
 	return projection_id_;
+}
+bool Partitioner::allPartitionBound()const{
+	for(unsigned i=0;i<number_of_partitions_;i++){
+		if(!partition_info_list[i]->is_all_blocks_bound()){
+			return false;
+		}
+	}
+	return true;
 }
 bool OneToOnePartitionInfo::is_colocated(const PartitionInfo & target)const{
 	if(target.get_mode()==OneToMany)

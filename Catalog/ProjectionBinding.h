@@ -8,14 +8,14 @@
 #ifndef PROJECTIONBINDING_H_
 #define PROJECTIONBINDING_H_
 #include "Partitioner.h"
-
+#include "../storage/StorageLevel.h"
 class ProjectionBinding {
 public:
 	ProjectionBinding();
 	virtual ~ProjectionBinding();
 
 	/*binding an entire projection independently*/
-	bool BindingEntireProjection(Partitioner*);
+	bool BindingEntireProjection(Partitioner*,const StorageLevel& desriable_storage_level=MEMORY);
 };
 
 #endif /* PROJECTIONBINDING_H_ */

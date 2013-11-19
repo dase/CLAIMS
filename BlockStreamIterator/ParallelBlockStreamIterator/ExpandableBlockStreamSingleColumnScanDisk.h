@@ -40,7 +40,7 @@ public:
 	ExpandableBlockStreamSingleColumnScanDisk(State state);
 	ExpandableBlockStreamSingleColumnScanDisk();
 	virtual ~ExpandableBlockStreamSingleColumnScanDisk();
-	bool open();
+	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 

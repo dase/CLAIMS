@@ -6,16 +6,21 @@
  */
 
 #include "Catalog.h"
-
+Catalog* Catalog::instance_=0;
 Catalog::Catalog() {
 	logging=new CatalogLogging();
-
+	binding_=new ProjectionBinding();
 }
 
 Catalog::~Catalog() {
 	// TODO Auto-generated destructor stub
 }
-
+Catalog* Catalog::getInstance(){
+	if(instance_==0){
+		instance_=new Catalog();
+	}
+	return instance_;
+}
 unsigned Catalog::allocate_unique_table_id(){
 	return table_id_allocator.allocate_unique_table_id();
 }
@@ -44,4 +49,7 @@ TableDescriptor* Catalog::getTable(const TableID &target)const{
 	/* at could retain const while [] doesn't.*/
 	return tableid_to_table.at(target);
 
+}
+ProjectionBinding* Catalog::getBindingModele()const{
+	return binding_;
 }

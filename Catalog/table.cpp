@@ -46,6 +46,9 @@ bool ProjectionDescriptor::isExist(const string& name) const
 	}
 	return false;
 }
+bool ProjectionDescriptor::AllPartitionBound()const{
+	return partitioner->allPartitionBound();
+}
 
 // TableDescritptor
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)

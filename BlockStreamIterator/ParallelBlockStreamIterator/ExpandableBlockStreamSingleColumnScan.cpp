@@ -40,7 +40,7 @@ ExpandableBlockStreamSingleColumnScan::State::State(std::string file_name,
 	used_size_control_ = true;
 }
 
-bool ExpandableBlockStreamSingleColumnScan::open() {
+bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off) {
 	if (sema_open_.try_wait()) {
 		printf("Scan open!\n");
 

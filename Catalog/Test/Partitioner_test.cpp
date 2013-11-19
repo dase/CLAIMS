@@ -15,10 +15,10 @@ using namespace std;
 
 int TableDescriptor_test(){
 
-	Catalog catalog;
+	Catalog* catalog=Catalog::getInstance();
 
 
-	TableDescriptor* table=new TableDescriptor("Student",catalog.allocate_unique_table_id());
+	TableDescriptor* table=new TableDescriptor("Student",catalog->allocate_unique_table_id());
 	table->addAttribute("Name",data_type(t_string),10);
 	table->addAttribute("Age",data_type(t_int));
 	table->addAttribute("Gender",data_type(t_int));
@@ -31,7 +31,7 @@ int TableDescriptor_test(){
 	const int partition_key_index=3;
 	table->createHashPartitionedProjection(index,partition_key_index,64);
 
-	catalog.add_table(table);
+	catalog->add_table(table);
 }
 
 int BindingTest(){
@@ -72,7 +72,7 @@ int BindingTest(){
 	;
 	for(unsigned i=0;i<table->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,12);
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,12);
 	}
 	////////////////////////////////////////
 

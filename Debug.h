@@ -15,7 +15,7 @@
 /*
  * needed by blockstreamjoiniterator
  * */
-#define BARRIER 3
+#define BARRIER 1
 /*
  * block in hdfs and sublock in block
  * */

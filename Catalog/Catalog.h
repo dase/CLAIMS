@@ -11,6 +11,7 @@
 #include "table.h"
 #include "../hashmap.hpp"
 #include "../Logging.h"
+#include "ProjectionBinding.h"
 struct TableIDAllocator{
 	TableIDAllocator(){
 		table_id_curosr=0;
@@ -24,16 +25,20 @@ struct TableIDAllocator{
 class Catalog {
 
 public:
-	Catalog();
+	static Catalog* getInstance();
 	virtual ~Catalog();
 	unsigned allocate_unique_table_id();
 	bool add_table(TableDescriptor* const &table);
 	TableDescriptor* getTable(const TableID&) const;
+	ProjectionBinding* getBindingModele()const;
 private:
+	Catalog();
 	TableIDAllocator table_id_allocator;
 	hashmap<std::string,TableDescriptor*> name_to_table;
 	hashmap<TableID,TableDescriptor*> tableid_to_table;
 	Logging* logging;
+	ProjectionBinding* binding_;
+	static Catalog* instance_;
 };
 
 #endif /* CATALOG_H_ */

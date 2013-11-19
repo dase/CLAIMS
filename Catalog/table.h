@@ -63,6 +63,7 @@ public:
 	inline void setProjectionID(const ProjectionID& pid) {projection_id_ = pid;}
 	inline map<string, set<string> > getFileLocations() const {return fileLocations;}
 	inline ProjectionID getProjectionID()const{return projection_id_;}
+	bool AllPartitionBound()const;
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;

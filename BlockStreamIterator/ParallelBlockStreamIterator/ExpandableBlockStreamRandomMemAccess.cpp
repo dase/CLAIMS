@@ -33,7 +33,7 @@ ExpandableBlockStreamRandomMemAccess::State::State(std::string file_name, BlockS
 
 }
 
-bool ExpandableBlockStreamRandomMemAccess::open() {
+bool ExpandableBlockStreamRandomMemAccess::open(const PartitionOffset& part_off) {
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.c_schema_,state_.block_size_));
 	printf("Free block stream list added!\n");
 

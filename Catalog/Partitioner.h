@@ -206,7 +206,7 @@ public:
 	void unbindPartitionToNode(PartitionOffset partition_id);
 
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
-	void RegisterPartition(unsigned partitoin_key,std::string file_name,unsigned number_of_chunks);
+	void RegisterPartition(unsigned partitoin_key,unsigned number_of_chunks);
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 
@@ -224,6 +224,7 @@ public:
 	Attribute* getPartitionKey()const;
 	PartitionFunction* getPartitionFunction()const;
 	ProjectionID getProejctionID()const;
+	bool allPartitionBound()const;
 private:
 	Attribute* partition_key_;
 	PartitionFunction* partition_functin_;

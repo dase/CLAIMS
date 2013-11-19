@@ -47,7 +47,7 @@ public:
 	ExpandableBlockStreamRandomDiskAccess(State state);
 	ExpandableBlockStreamRandomDiskAccess();
 	virtual ~ExpandableBlockStreamRandomDiskAccess();
-	bool open();
+	bool open(const PartitionOffset& part_off);
 	bool next(BlockStreamBase* block);
 	bool close();
 

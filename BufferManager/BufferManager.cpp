@@ -41,6 +41,7 @@ bool BufferManager::applyStorageDedget(unsigned long size){
 		storage_used_+=size;
 		ret=true;
 	}
+	logging_->log("%d MB applied, %d MB left!",size/1024/1024,storage_budget_max_/1024/1024);
 	lock_.release();
 	return ret;
 }

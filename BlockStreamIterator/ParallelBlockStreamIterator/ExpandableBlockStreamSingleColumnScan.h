@@ -43,7 +43,7 @@ public:
 	ExpandableBlockStreamSingleColumnScan(State state);
 	ExpandableBlockStreamSingleColumnScan();
 	virtual ~ExpandableBlockStreamSingleColumnScan();
-	bool open();
+	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 private:
