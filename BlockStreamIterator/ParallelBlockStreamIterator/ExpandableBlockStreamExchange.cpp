@@ -42,7 +42,7 @@ ExpandableBlockStreamExchange::~ExpandableBlockStreamExchange() {
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpandableBlockStreamExchange::open(){
+bool ExpandableBlockStreamExchange::open(const PartitionOffset& partition_off){
 	if(sem_open_.try_wait()){
 		nexhausted_lowers=0;
 		nlowers=state.lower_ip_list.size();
@@ -197,7 +197,7 @@ bool ExpandableBlockStreamExchange::isMaster(){
 	return Environment::getInstance()->getIp()==state.upper_ip_list[0];
 }
 bool ExpandableBlockStreamExchange::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	ExpandableBlockStreamExchangeLower::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id);
 	BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLower(EIELstate);
 

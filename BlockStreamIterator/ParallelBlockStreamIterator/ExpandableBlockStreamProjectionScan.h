@@ -44,7 +44,7 @@ public:
 	ExpandableBlockStreamProjectionScan(State state);
 	ExpandableBlockStreamProjectionScan();
 	virtual ~ExpandableBlockStreamProjectionScan();
-	bool open();
+	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 private:
@@ -64,7 +64,6 @@ private:
 	semaphore sema_open_finished_;
 
 	Lock cursor_lock_;
-	unsigned partition_offset_;
 
 	PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
 	std::list<ChunkReaderIterator*> remaining_chunk_reader_iterator_list_;
@@ -78,6 +77,7 @@ private:
 	void serialize(Archive & ar, const unsigned int version){
 		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state_;
 	}
+
 };
 
 #endif /* EXPANDABLEBLOCKSTREAMSINGLECOLUMNSCAN_H_ */

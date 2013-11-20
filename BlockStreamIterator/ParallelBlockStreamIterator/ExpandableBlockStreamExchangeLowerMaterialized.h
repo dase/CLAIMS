@@ -39,15 +39,16 @@ public:
 		//TODO: support ip vector provided by scheduler
 		std::vector<std::string> upper_ip_list_;
 		unsigned block_size_;
+		PartitionOffset partition_off_;
 		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<std::string> upper_ip_list, unsigned block_size,
 						unsigned long long int exchange_id=0)
-		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id)
+		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_off_(0)
 		{}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_;
+			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_&partition_off_;
 		}
 	};
 	ExpandableBlockStreamExchangeLowerMaterialized(State state);
@@ -55,7 +56,7 @@ public:
 
 	};
 	virtual ~ExpandableBlockStreamExchangeLowerMaterialized();
-	bool open();
+	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* );
 	bool close();
 private:

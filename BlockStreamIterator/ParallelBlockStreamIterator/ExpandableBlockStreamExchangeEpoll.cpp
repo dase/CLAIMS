@@ -47,7 +47,7 @@ ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpandableBlockStreamExchangeEpoll::open(){
+bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
 
 	if(sem_open_.try_wait()){
 
@@ -243,14 +243,20 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 	return Environment::getInstance()->getIp()==state.upper_ip_list[0];
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
-	ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_index);
-	BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
+	ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_key_index);
+	for(unsigned i=0;i<state.lower_ip_list.size();i++){
+		/* set the partition offset*/
+		EIELstate.partition_offset=i;
+		BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
 
-	if(IEM->ExecuteBlockStreamIteratorsOnSites(EIEL,state.lower_ip_list)==false){
-		logging_->elog("Cannot send the serialized iterator tree to the remote node!\n");
-		return false;
+		if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list[i])==false){
+			logging_->elog("Cannot send the serialized iterator tree to the remote node!\n");
+			return false;
+		}
+		EIEL->~BlockStreamIteratorBase();
 	}
+
 	return true;
 }
 
@@ -397,17 +403,16 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					Pthis->block_for_socket_[socket_fd_index]->IncreaseActualSize(byte_received);
 					if(Pthis->block_for_socket_[socket_fd_index]->GetRestSize()>0)
 						continue;
-//					Logging_ExchangeIteratorEager("The %d-th block is received from Lower[%s]",Pthis->received_block[socket_fd_index],Pthis->lower_ip_array[socket_fd_index].c_str());
+					Pthis->logging_->log("The %d-th block is received from Lower[%s]",Pthis->received_block[socket_fd_index],Pthis->lower_ip_array[socket_fd_index].c_str());
 					Pthis->received_block[socket_fd_index]++;
 					Pthis->received_block_stream_->deserialize((Block*)Pthis->block_for_socket_[socket_fd_index]);
 					Pthis->block_for_socket_[socket_fd_index]->reset();
 					const bool isLastBlock=Pthis->received_block_stream_->Empty();
 							//((BlockReadable*)Pthis->block_for_socket_[socket_fd_index])->IsLastBlock();
-
-					Pthis->buffer->insertBlock(Pthis->received_block_stream_);
-
-
-					if(isLastBlock){
+					if(!isLastBlock){
+						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
+					}
+					else{
 						Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
 						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>",Pthis->nexhausted_lowers);

@@ -29,7 +29,7 @@ ExpandableBlockStreamHdfsScan::State::State(string partition_file_name,Schema *p
 
 }
 
-bool ExpandableBlockStreamHdfsScan::open(){
+bool ExpandableBlockStreamHdfsScan::open(const PartitionOffset&){
 	if(sema_open_.try_wait()){
 		/*open every block of a certain partition*/
 //		MemoryStore *ms=new MemoryStore();

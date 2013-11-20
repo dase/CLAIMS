@@ -34,14 +34,21 @@ ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,Sch
 }
 
 
-bool ExpandableBlockStreamProjectionScan::open() {
+bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_offset) {
 	PartitionStorage* partition_handle_;
 	if (sema_open_.try_wait()) {
-		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset_)))==0){
-			printf("The partition[%s] does not exists!",PartitionID(state_.projection_id_,partition_offset_).getName().c_str());
+		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
+			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
 		}
+		else{
 		partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
-
+		if(partition_reader_iterator_!=0){
+			printf("-------partition reader iterator is successfully created!\n");
+		}
+		else{
+			printf("-------partition reader iterator error!!\n");
+		}
+		}
 		open_finished_ = true;
 
 
@@ -66,6 +73,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		else{
 			/* the ChunkReaderIterator is exhausted, so we destructe it.*/
 			chunk_reader_iterator->~ChunkReaderIterator();
+			printf("One Chunk is exhausted!\n");
 		}
 	}
 	/* there isn't any unused ChunkReaderIterator or the ChunkReaderIterator is exhausted,
@@ -81,7 +89,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 
 bool ExpandableBlockStreamProjectionScan::close() {
 	sema_open_.post();
-
+	partition_reader_iterator_->~PartitionReaderItetaor();
 	open_finished_ = false;
 	return true;
 }

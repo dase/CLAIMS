@@ -49,7 +49,7 @@ public:
 	ExpandableBlockStreamFilter(State state);
 	ExpandableBlockStreamFilter();
 	virtual ~ExpandableBlockStreamFilter();
-	bool open();
+	bool open(const PartitionOffset& part_off);
 	bool next(BlockStreamBase* block);
 	bool close();
 

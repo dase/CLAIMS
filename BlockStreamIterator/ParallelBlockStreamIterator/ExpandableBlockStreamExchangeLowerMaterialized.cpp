@@ -38,8 +38,8 @@ ExpandableBlockStreamExchangeLowerMaterialized::~ExpandableBlockStreamExchangeLo
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpandableBlockStreamExchangeLowerMaterialized::open(){
-	state_.child_->open();
+bool ExpandableBlockStreamExchangeLowerMaterialized::open(const PartitionOffset& ){
+	state_.child_->open(state_.partition_off_);
 	nuppers_=state_.upper_ip_list_.size();
 	child_exhausted_=false;
 	socket_fd_upper_list_=new int[nuppers_];

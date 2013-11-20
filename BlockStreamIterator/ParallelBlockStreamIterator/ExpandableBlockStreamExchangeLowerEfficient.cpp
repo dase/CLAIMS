@@ -28,8 +28,8 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpandableBlockStreamExchangeLowerEfficient::open(){
-	state.child->open();
+bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
+	state.child->open(state.partition_offset);
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
 	socket_fd_upper_list=new int[nuppers];
@@ -87,12 +87,15 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 	void* tuple_in_cur_block_stream;
 	block_stream_for_asking_->setEmpty();
 	if(state.child->next(block_stream_for_asking_)){
+//		printf("Lower next retured tuple count=%d\n",block_stream_for_asking_->getTuplesInBlock());
 		BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
 		while((tuple_from_child=traverse_iterator->nextTuple())>0){
 			const unsigned partition_id=hash(tuple_from_child);
 			const unsigned bytes=state.schema->getTupleActualSize(tuple_from_child);
 			while(!(tuple_in_cur_block_stream=cur_block_stream_list_[partition_id]->allocateTuple(bytes))){
+//				printf("cur_block_stream_list:%d",cur_block_stream_list_[partition_id]->getTuplesInBlock());
 				cur_block_stream_list_[partition_id]->serialize(*block_for_inserting_to_buffer_);
+//				printf("tuple count in [block_for_inserting_to_buffer_] =%d\n",*(int*)((char*)block_for_inserting_to_buffer_->getBlock()+65532));
 				buffer->insertBlockToPartitionedList(block_for_inserting_to_buffer_,partition_id);
 				cur_block_stream_list_[partition_id]->setEmpty();
 			}
@@ -146,7 +149,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 }
 
 unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
-	state.schema->getcolumn(state.partition_index).operate->getPartitionValue(value,partition_function_);
+	state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(value,partition_function_);
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){

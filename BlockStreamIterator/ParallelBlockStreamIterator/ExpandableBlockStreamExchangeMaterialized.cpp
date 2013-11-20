@@ -22,7 +22,7 @@ ExpandableBlockStreamExchangeMaterialized::~ExpandableBlockStreamExchangeMateria
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpandableBlockStreamExchangeMaterialized::open(){
+bool ExpandableBlockStreamExchangeMaterialized::open(const PartitionOffset& part_off){
 	if(sem_open_.try_wait()){
 		nexhausted_lowers_=0;
 		received_block_stream_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
@@ -89,8 +89,19 @@ bool ExpandableBlockStreamExchangeMaterialized::close(){
 	return true;
 }
 bool ExpandableBlockStreamExchangeMaterialized::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	ExpandableBlockStreamExchangeLowerMaterialized::State EIELstate(state_.schema_,state_.child_,state_.upper_ip_list_,state_.block_size_,state_.exchange_id_);
+	for(unsigned i=0;i<state_.lower_ip_list_.size();i++){
+		/* set the partition offset*/
+		EIELstate.partition_off_=i;
+		BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerMaterialized(EIELstate);
+		if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state_.lower_ip_list_[i])==false){
+			printf("Cannot send the serialized iterator tree to the remote node!\n");
+			return false;
+		}
+		EIEL->~BlockStreamIteratorBase();
+	}
+
 	BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerMaterialized(EIELstate);
 
 	if(IEM->ExecuteBlockStreamIteratorsOnSites(EIEL,state_.lower_ip_list_)==false){

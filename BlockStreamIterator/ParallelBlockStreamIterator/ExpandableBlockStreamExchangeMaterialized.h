@@ -35,7 +35,7 @@ public:
 	ExpandableBlockStreamExchangeMaterialized(State state);
 	ExpandableBlockStreamExchangeMaterialized(){};
 	virtual ~ExpandableBlockStreamExchangeMaterialized();
-	bool open();
+	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 private:

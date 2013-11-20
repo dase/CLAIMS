@@ -61,7 +61,7 @@ public:
 	/* 如果三个线程读一堆文件的话，
 	 * 怎样才算最快？先一个一个读吧
 	 * */
-	bool open();
+	bool open(const PartitionOffset& part_off);
 	bool next(BlockStreamBase *block);
 	bool close();
 
