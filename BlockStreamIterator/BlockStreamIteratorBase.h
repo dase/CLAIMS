@@ -10,7 +10,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "../Block/BlockStream.h"
-
+#include "../ids.h"
 #include <string>
 using namespace std;
 
@@ -24,7 +24,7 @@ public:
 
 	static BlockStreamIteratorBase * createIterator(const string &IteratorName);
 
-	virtual bool open()=0;
+	virtual bool open(const PartitionOffset& part_off=0)=0;
 	virtual bool next(BlockStreamBase*)=0;
 	virtual bool close()=0;
 

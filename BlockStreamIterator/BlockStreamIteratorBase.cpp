@@ -21,8 +21,8 @@ BlockStreamIteratorBase::~BlockStreamIteratorBase() {
 }
 
 BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(const string &IteratorName){
-	if(IteratorName=="scan"){
-		cout<<"scan iterator"<<endl;
-		return new ExpandableBlockStreamSingleColumnScan();
-	}
+//	if(IteratorName=="scan"){
+//		cout<<"scan iterator"<<endl;
+//		return new ExpandableBlockStreamSingleColumnScan();
+//	}
 }

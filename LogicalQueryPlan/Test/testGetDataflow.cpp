@@ -11,7 +11,7 @@
 #include "../Scan.h"
 #include "../EqualJoin.h"
 #include "../Filter.h"
-int main(){
+int main_asdfasdf(){
 	Environment::getInstance(true);
 
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -74,13 +74,13 @@ int main(){
 
 	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,5);
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,5);
 	}
 
 
 	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,"Partition_"+i,4);
+		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,4);
 	}
 
 	////////////////////////////////////////

@@ -22,7 +22,7 @@ BlockStreamCombinedIterator::~BlockStreamCombinedIterator() {
 
 }
 
-bool BlockStreamCombinedIterator::open(){
+bool BlockStreamCombinedIterator::open(const PartitionOffset& partition_offset){
 	//first
 	std::vector<BlockStreamBase *> v_b;
 	for(unsigned i=0;i<state_.children_.size();i++){
@@ -33,7 +33,7 @@ bool BlockStreamCombinedIterator::open(){
 	free_block_stream_list_.push_back(v_b);
 
 	for(unsigned i=0;i<state_.children_.size();i++){
-			if(!state_.children_[i]->open()){
+			if(!state_.children_[i]->open(partition_offset)){
 					//TODO: handle the failure
 					return false;
 			}

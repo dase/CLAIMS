@@ -58,7 +58,7 @@ public:
 	 */
 	virtual void copyBlock(void* addr, unsigned length)=0;
 
-	virtual void constructFromBlock(const Block block)=0;
+	virtual void constructFromBlock(const Block& block)=0;
 
 	virtual bool switchBlock(BlockStreamBase &block)=0;
 
@@ -116,7 +116,7 @@ public:
 
 	/* construct the BlockStream from a storage level block,
 	 * which last four bytes indicate the number of tuples in the block.*/
-	void constructFromBlock(const Block block);
+	void constructFromBlock(const Block& block);
 protected:
 //	char* data_;
 //	unsigned block_size_;

@@ -22,7 +22,7 @@ public:
 	};
 	BlockStreamSingleColumnScan(State state);
 	virtual ~BlockStreamSingleColumnScan();
-	bool open();
+	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase *block);
 	bool close();
 private:

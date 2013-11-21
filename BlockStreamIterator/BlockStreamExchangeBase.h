@@ -20,7 +20,7 @@ public:
 	BlockStreamExchangeBase(const std::vector<std::string> &upper_ip_list,const unsigned &nlowers);
 	BlockStreamExchangeBase(){};
 	virtual ~BlockStreamExchangeBase();
-	virtual bool open()=0;
+	virtual bool open(const PartitionOffset& part_off=0)=0;
 	virtual bool next(BlockStreamBase*)=0;
 	virtual bool close()=0;
 protected:

@@ -10,14 +10,11 @@
 #include "BlockWritable.h"
 #include <assert.h>
 BlockStreamFix::BlockStreamFix(unsigned block_size,unsigned tuple_size)
-:BlockStreamBase(block_size),tuple_size_(tuple_size),free_(0){
-//	data_=(char*)memalign(PAGE_SIZE,block_size_);
-//	free_=data_;
+:BlockStreamBase(block_size),tuple_size_(tuple_size){
+	free_=start;
 }
 
 BlockStreamFix::~BlockStreamFix() {
-//	free(data_);
-//	data_=0;
 }
 
 void BlockStreamFix::setEmpty(){
@@ -125,7 +122,7 @@ unsigned BlockStreamFix::getSerializedBlockSize()const {
 unsigned BlockStreamFix::getTuplesInBlock()const{
 	return (free_-start)/tuple_size_;
 }
-void BlockStreamFix::constructFromBlock(const Block block){
+void BlockStreamFix::constructFromBlock(const Block& block){
 	/*set block size*/
 	assert(BlockSize==block.getsize()-sizeof(unsigned));
 
@@ -133,7 +130,7 @@ void BlockStreamFix::constructFromBlock(const Block block){
 	memcpy(start,block.getBlock(),BlockSize);
 
 	/* the number of tuples*/
-	int* tuple_count=(int*)((char*)block.getBlock()+block.getsize()-sizeof(int)*2);
+	int* tuple_count=(int*)((char*)block.getBlock()+block.getsize()-sizeof(int));
 	free_=(char*)start+(*tuple_count)*tuple_size_;
 }
 

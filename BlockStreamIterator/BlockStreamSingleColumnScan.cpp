@@ -24,7 +24,7 @@ BlockStreamSingleColumnScan::State::State(std::string file_name,Schema* schema)
 
 }
 
-bool BlockStreamSingleColumnScan::open(){
+bool BlockStreamSingleColumnScan::open(const PartitionOffset& part_off){
 
 	fd_=FileOpen(state_.filename_.c_str(),O_RDONLY);
 	if(fd_==-1){

@@ -29,7 +29,7 @@ Block::Block(const Block &block)
 {
 	this->BlockSize=block.BlockSize;
 	this->start=block.start;
-	this->isReference_=isReference_;
+	this->isReference_=block.isReference_;
 }
 
 void* Block::getBlock()const

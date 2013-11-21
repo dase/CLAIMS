@@ -27,7 +27,7 @@ BlockStreamRandomMemAccess::State::State(std::string file_name, BlockStreamItera
 
 }
 
-bool BlockStreamRandomMemAccess::open()
+bool BlockStreamRandomMemAccess::open(const PartitionOffset& part_off)
 {
 	fd_=FileOpen(state_.filename_.c_str(),O_RDONLY);
 	if(fd_==-1){

@@ -41,7 +41,7 @@ public:
 public:
 	BlockStreamRandomMemAccess(State state);
 	virtual ~BlockStreamRandomMemAccess();
-	bool open();
+	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase *block);
 	bool close();
 private:

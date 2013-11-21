@@ -18,7 +18,7 @@ class BlockStreamExchangeLowerBase: public BlockStreamIteratorBase {
 public:
 	BlockStreamExchangeLowerBase();
 	virtual ~BlockStreamExchangeLowerBase();
-	virtual bool open()=0;
+	virtual bool open(const PartitionOffset& part_off=0)=0;
 	virtual bool next(BlockStreamBase* )=0;
 	virtual bool close()=0;
 protected:

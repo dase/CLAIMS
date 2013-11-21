@@ -48,7 +48,7 @@ public:
 	BlockStreamAggregationIterator();
 	virtual ~BlockStreamAggregationIterator();
 
-	bool open();
+	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase *block);
 	bool close();
 

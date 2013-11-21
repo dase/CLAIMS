@@ -47,7 +47,7 @@ BlockStreamAggregationIterator::State::State(
 
 	}
 
-bool BlockStreamAggregationIterator::open(){
+bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	cout<<"in the open of aggregation"<<endl;
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
 	if(sema_open_.try_wait()){
@@ -107,7 +107,7 @@ bool BlockStreamAggregationIterator::open(){
 
 	cout<<"............................................"<<endl;
 //	getchar();
-	state_.child->open();
+	state_.child->open(partition_offset);
 //	cout<<"aggr open hashtable finished!"<<endl;
 
 	void *cur=0;

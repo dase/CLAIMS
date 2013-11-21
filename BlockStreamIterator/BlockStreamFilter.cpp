@@ -24,12 +24,12 @@ BlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
 
 }
 
-bool BlockStreamFilter::open(){
+bool BlockStreamFilter::open(const PartitionOffset& part_off){
 
 	block_for_asking_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 	block_for_asking_iterator_=block_for_asking_->createIterator();
 
-	return state_.child_->open();
+	return state_.child_->open(part_off);
 }
 
 bool BlockStreamFilter::next(BlockStreamBase* block){
