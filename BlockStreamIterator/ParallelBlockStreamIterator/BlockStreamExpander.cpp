@@ -28,7 +28,8 @@ BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,
 
 }
 
-bool BlockStreamExpander::open(){
+bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
+	state_.partition_offset=partitoin_offset;
 	printf("Expander open!\n");
 	finished_thread_count_=0;
 	block_stream_buffer_=new BlockStreamBuffer(state_.block_size_,state_.block_count_in_buffer_,state_.schema_);
@@ -72,7 +73,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 
 
 	BlockStreamExpander* Pthis=(BlockStreamExpander*)arg;
-	Pthis->state_.child_->open();
+	Pthis->state_.child_->open(Pthis->state_.partition_offset);
 	BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
 
 	while(Pthis->state_.child_->next(block_for_asking)){

@@ -46,7 +46,7 @@ public:
 	BlockStreamExchangeBroadcast();
 	virtual ~BlockStreamExchangeBroadcast();
 
-	bool open();
+	bool open(const PartitionOffset& partition=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 

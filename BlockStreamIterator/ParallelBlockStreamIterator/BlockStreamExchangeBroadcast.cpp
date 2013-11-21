@@ -49,7 +49,7 @@ BlockStreamExchangeBroadcast::~BlockStreamExchangeBroadcast() {
 }
 
 
-bool BlockStreamExchangeBroadcast::open(){
+bool BlockStreamExchangeBroadcast::open(const PartitionOffset& partition){
 
 	if(sema_open_.try_wait()){
 		cout<<"----------------------------------------------------------------"<<endl;
@@ -136,7 +136,8 @@ bool BlockStreamExchangeBroadcast::close(){
 }
 
 bool BlockStreamExchangeBroadcast::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
+	//TODO: the support for partition_offset is not implemented yet!
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	BlockStreamExchangeLowerBroadcast::State EIELstate(state_.schema,state_.child,state_.upper_ip_list,state_.block_size,state_.exchange_id);
 	BlockStreamIteratorBase *EIEL=new BlockStreamExchangeLowerBroadcast(EIELstate);
 	for(unsigned i=0;i<state_.lower_ip_list.size();i++){

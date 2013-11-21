@@ -55,8 +55,8 @@ void* BlockStreamExchangeLowerBroadcast::sender(void* arg){
 	}
 }
 
-bool BlockStreamExchangeLowerBroadcast::open(){
-	state_.child->open();
+bool BlockStreamExchangeLowerBroadcast::open(const PartitionOffset& partition_offset){
+	state_.child->open(partition_offset);
 	//upper节点的个数
 	nuppers_=state_.upper_ip_list.size();
 	//upper节点的socket数组

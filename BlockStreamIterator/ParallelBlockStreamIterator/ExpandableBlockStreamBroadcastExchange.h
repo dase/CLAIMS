@@ -50,7 +50,7 @@ public:
 	ExpandableBlockStreamBroadcastExchange(State state);
 	ExpandableBlockStreamBroadcastExchange();
 	virtual ~ExpandableBlockStreamBroadcastExchange();
-	bool open();
+	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 private:

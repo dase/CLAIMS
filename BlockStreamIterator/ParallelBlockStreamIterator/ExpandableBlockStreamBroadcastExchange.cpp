@@ -49,7 +49,7 @@ ExpandableBlockStreamBroadcastExchange::~ExpandableBlockStreamBroadcastExchange(
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpandableBlockStreamBroadcastExchange::open(){
+bool ExpandableBlockStreamBroadcastExchange::open(const PartitionOffset& partition_offset){
 
 	if(sema_open_.try_wait()){
 		cout<<"----------------------------------------------------------------"<<endl;
@@ -206,14 +206,22 @@ bool ExpandableBlockStreamBroadcastExchange::isMaster(){
 	return Environment::getInstance()->getIp()==state.upper_ip_list[0];
 }
 bool ExpandableBlockStreamBroadcastExchange::SerializeAndSendToMulti(){
-	IteratorExecutorMaster* IEM=IteratorExecutorMaster::instance();
-	ExpandableBlockStreamBroadcastExchangeLower::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id);
-	BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamBroadcastExchangeLower(EIELstate);
 
-	if(IEM->ExecuteBlockStreamIteratorsOnSites(EIEL,state.lower_ip_list)==false){
-		printf("Cannot send the serialized iterator tree to the remote node!\n");
-		return false;
+
+	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
+	ExpandableBlockStreamBroadcastExchangeLower::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id);
+	for(unsigned i=0;i<state.lower_ip_list.size();i++){
+		/* set the partition offset*/
+		EIELstate.partition_offset=i;
+		BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamBroadcastExchangeLower(EIELstate);
+
+		if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list[i])==false){
+			printf("Cannot send the serialized iterator tree to the remote node!\n");
+			return false;
+		}
+		EIEL->~BlockStreamIteratorBase();
 	}
+
 	return true;
 }
 

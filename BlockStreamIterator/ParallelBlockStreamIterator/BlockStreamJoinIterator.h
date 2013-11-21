@@ -10,6 +10,7 @@
 
 #include "../BlockStreamIteratorBase.h"
 #include "../../Debug.h"
+#include "../../rdtsc.h"
 #include "../../hash.h"
 #include "../../hashtable.h"
 #include "../../Block/synch.h"
@@ -39,6 +40,7 @@ public:
 				       Schema *input_schema_left,
 				       Schema *input_schema_right,
 				       Schema *output_schema,
+				       Schema *ht_schema,
 				       std::vector<unsigned> joinIndex_left,
 				       std::vector<unsigned> joinIndex_right,
 				       std::vector<unsigned> payload_left,
@@ -51,14 +53,14 @@ public:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema & joinIndex_left & joinIndex_right & payload_left & payload_right
+			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema & ht_schema & joinIndex_left & joinIndex_right & payload_left & payload_right
 			& ht_nbuckets & ht_bucketsize & block_size_;
 		}
 	public:
 		//input and output
 		BlockStreamIteratorBase *child_left,*child_right;
 		Schema *input_schema_left,*input_schema_right;
-		Schema *output_schema;
+		Schema *output_schema,*ht_schema;
 
 		//how to join
 		std::vector<unsigned> joinIndex_left;
@@ -76,7 +78,7 @@ public:
 	BlockStreamJoinIterator();
 	virtual ~BlockStreamJoinIterator();
 
-	bool open();
+	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase *block);
 	bool close();
 private:
@@ -97,6 +99,7 @@ private:
 
 	PartitionFunction *hash;
 	BasicHashTable *hashtable;
+	Schema *ht_schema;
 
 	std::list<remaining_block> remaining_block_list_;
 	std::list<BlockStreamBase *> free_block_stream_list_;
@@ -110,6 +113,10 @@ private:
 
 	//debug
 	unsigned iii;
+
+#ifdef TIME
+	unsigned long long timer;
+#endif
 
     friend class boost::serialization::access;
     template<class Archive>

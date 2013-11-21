@@ -30,8 +30,8 @@ ExpandableBlockStreamBroadcastExchangeLower::~ExpandableBlockStreamBroadcastExch
 	// TODO 自动生成的析构函数存根
 }
 
-bool ExpandableBlockStreamBroadcastExchangeLower::open(){
-	state.child->open();
+bool ExpandableBlockStreamBroadcastExchangeLower::open(const PartitionOffset&){
+	state.child->open(state.partition_offset);
 	//upper节点的个数
 	nuppers=state.upper_ip_list.size();
 	//upper节点的socket数组

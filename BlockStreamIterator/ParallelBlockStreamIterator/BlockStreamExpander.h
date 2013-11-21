@@ -25,6 +25,7 @@ public:
 		unsigned thread_count_;
 		unsigned block_size_;
 		unsigned block_count_in_buffer_;
+		PartitionOffset partition_offset;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
@@ -35,7 +36,7 @@ public:
 	BlockStreamExpander(State state);
 	BlockStreamExpander();
 	virtual ~BlockStreamExpander();
-	bool open();
+	bool open(const PartitionOffset& partitoin_offset=0);
 	bool next(BlockStreamBase* block);
 	bool close();
 private:
