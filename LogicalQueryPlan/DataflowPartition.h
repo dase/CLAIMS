@@ -17,6 +17,7 @@ public:
 	DataflowPartition(unsigned partitoin_id,int datasize,NodeID location);
 	DataflowPartition(const DataflowPartition& part);
 	unsigned getDataSize()const;
+	void setDataSize(const unsigned&);
 	bool isAvaliable()const;
 	void setFiltered();
 	NodeID getLocation()const;
