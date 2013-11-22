@@ -26,7 +26,9 @@ unsigned DataflowPartition::getDataSize()const{
 		return 0;
 	return datasize_;
 }
-
+void DataflowPartition::setDataSize(const unsigned & size){
+	datasize_=size;
+}
 bool DataflowPartition::isAvaliable()const{
 	return !filtered_;
 }
