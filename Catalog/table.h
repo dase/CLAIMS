@@ -57,7 +57,7 @@ public:
 	virtual ~ProjectionDescriptor();
 	void addAttribute(Attribute attr);
 	bool hasAttribute(const Attribute &attr)const;
-	void DefinePartitonier(unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
+	void DefinePartitonier(const unsigned& number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
 	Partitioner* getPartitioner()const;
 	bool isExist(const string& name) const;
 	inline void setProjectionID(const ProjectionID& pid) {projection_id_ = pid;}
@@ -96,7 +96,7 @@ public:
 
 //	void addProjection(vector<ColumnOffset> id_list);
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions);
-
+	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,std::string partition_attribute_name,unsigned number_of_partitions);
 	bool isExist(const string& name) const;
 	inline string getTableName() const {return tableName;}
 	ColumnOffset getColumnID(const string& attrName) const;
@@ -123,6 +123,7 @@ public:
 				return attributes[i];
 		}
 		printf("The attribute name [%s] does not match any attribute!\n",name.c_str());
+		assert(false);
 	}
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);

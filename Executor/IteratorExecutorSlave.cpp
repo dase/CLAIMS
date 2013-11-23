@@ -17,8 +17,8 @@ IteratorExecutorSlave::IteratorExecutorSlave(){
 	endpoint=Environment::getInstance()->getEndPoint();
 
 	framework=new Theron::Framework(*endpoint);
-	framework->SetMaxThreads(10);
-	framework->SetMinThreads(5);
+	framework->SetMaxThreads(1);
+//	framework->SetMinThreads(5);
 	logging_->log("Minimum thread is set to be %d",framework->GetMinThreads());
 	execute_iterator_actor=new ExecuteIteratorActor(this,*framework,("IteratorExecutorActor://"+Environment::getInstance()->getIp()).c_str());
 	logging_->log("Actor created with name: IteratorExecutorActor://%s",Environment::getInstance()->getIp().c_str());
@@ -85,5 +85,6 @@ void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
 void* IteratorExecutorSlave::run_iterator(void* arg){
 	IteratorMessage* it=(IteratorMessage*)arg;
 	it->run();
+	it->~IteratorMessage();
 	printf("A iterator tree is successfully executed!\n");
 }

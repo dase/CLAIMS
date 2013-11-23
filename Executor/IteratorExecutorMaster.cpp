@@ -15,8 +15,8 @@ IteratorExecutorMaster::IteratorExecutorMaster(){
 	_instance=this;
 	endpoint=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint);
-	framework->SetMaxThreads(10);
-	framework->SetMinThreads(5);
+	framework->SetMaxThreads(1);
+//	framework->SetMinThreads(5);
 	logging_=new IteratorExecutorMasterLogging();
 }
 
