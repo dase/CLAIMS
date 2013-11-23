@@ -16,7 +16,7 @@ typedef int NodeID;
 
 typedef unsigned TableID;
 typedef unsigned AttributeOffset;
-typedef unsigned ProjectionOffset;
+typedef int ProjectionOffset;
 typedef unsigned ColumnOffset;
 typedef unsigned PartitionOffset;
 typedef unsigned ChunkOffset;

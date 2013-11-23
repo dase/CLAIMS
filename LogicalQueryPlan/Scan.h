@@ -14,6 +14,7 @@ class LogicalScan: public LogicalOperator {
 public:
 	LogicalScan(std::vector<Attribute> attribute_list);
 	LogicalScan(const TableID&);
+	LogicalScan(const ProjectionDescriptor* projection);
 	LogicalScan(const TableID&,const std::vector<unsigned>& selected_attribute_index_list);
 	virtual ~LogicalScan();
 	LogicalProjection getLogcialProjection()const;

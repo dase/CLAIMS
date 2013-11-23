@@ -30,7 +30,7 @@ public:
 	BlockStreamPrint();
 	BlockStreamPrint(State state);
 	virtual ~BlockStreamPrint();
-	bool open(const ProjectionOffset& offset);
+	bool open(const PartitionOffset& offset);
 	bool next(BlockStreamBase* block);
 	bool close();
 private:

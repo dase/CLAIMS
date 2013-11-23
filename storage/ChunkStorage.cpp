@@ -91,7 +91,7 @@ DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,unsigne
 	block_buffer_=new Block(block_size_);
 	fd_=FileOpen(chunk_id_.partition_id.getPathAndName().c_str(),O_RDONLY);
 	if(fd_==-1){
-		printf("Failed to open file [%c], reason:%s\n",chunk_id_.partition_id.getPathAndName().c_str(),strerror(errno));
+		printf("Failed to open file [%s], reason:%s\n",chunk_id_.partition_id.getPathAndName().c_str(),strerror(errno));
 		number_of_blocks_=0;
 	}
 	else{

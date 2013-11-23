@@ -49,7 +49,16 @@ bool ProjectionDescriptor::isExist(const string& name) const
 bool ProjectionDescriptor::AllPartitionBound()const{
 	return partitioner->allPartitionBound();
 }
+std::vector<Attribute> ProjectionDescriptor::getAttributeList()const{
+	std::vector<Attribute> ret;
+	for(unsigned i=0;i<this->column_list_.size();i++){
+		ret.push_back((Attribute)column_list_[i]);
+	}
 
+
+
+	return ret;
+}
 // TableDescritptor
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 : tableName(name),table_id_(table_id){

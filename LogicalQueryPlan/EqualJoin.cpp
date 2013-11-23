@@ -350,6 +350,7 @@ int EqualJoin::getIndexInLeftJoinKeyList(const Attribute& attribute)const{
 			return i;
 		}
 	}
+	assert(false);
 	return -1;
 }
 int EqualJoin::getIndexInRightJoinKeyList(const Attribute& attribute)const{
@@ -358,6 +359,7 @@ int EqualJoin::getIndexInRightJoinKeyList(const Attribute& attribute)const{
 			return i;
 		}
 	}
+	assert(false);
 	return -1;
 }
 int EqualJoin::getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const{

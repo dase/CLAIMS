@@ -64,6 +64,7 @@ public:
 	inline map<string, set<string> > getFileLocations() const {return fileLocations;}
 	inline ProjectionID getProjectionID()const{return projection_id_;}
 	bool AllPartitionBound()const;
+	std::vector<Attribute> getAttributeList()const;
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;
@@ -115,6 +116,13 @@ public:
 	Attribute getAttribute(unsigned index)const{
 		assert(index<attributes.size());
 		return attributes[index];
+	}
+	Attribute getAttribute(const std::string& name)const{
+		for(unsigned i=0;i<attributes.size();i++){
+			if(attributes[i].attrName==name)
+				return attributes[i];
+		}
+		printf("The attribute name [%s] does not match any attribute!\n",name.c_str());
 	}
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);

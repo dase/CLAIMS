@@ -75,9 +75,11 @@ bool ProjectionBinding::BindingEntireProjection(Partitioner* part,const StorageL
 
 			/* store the binding information in the list*/
 			partition_id_to_nodeid_list.push_back(std::pair<unsigned,NodeID>(i,target));
+
+			allocate_cur=(allocate_cur+1)%node_id_list.size();
 			/*bind*/
 //			part->bindPartitionToNode(i,node_id_list[allocate_cur]);
-//			allocate_cur=(allocate_cur+1)%node_id_list.size();
+//
 //
 //
 //

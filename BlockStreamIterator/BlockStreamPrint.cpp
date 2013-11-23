@@ -20,7 +20,7 @@ BlockStreamPrint::BlockStreamPrint(State state)
 BlockStreamPrint::~BlockStreamPrint() {
 	// TODO Auto-generated destructor stub
 }
-bool BlockStreamPrint::open(const ProjectionOffset& offset){
+bool BlockStreamPrint::open(const PartitionOffset& offset){
 	block_buffer_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 	return state_.child_->open(offset);
 

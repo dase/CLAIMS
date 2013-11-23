@@ -16,6 +16,7 @@
 
 #include "Partitioner.h"
 #include "../Resource/NodeTracker.h"
+#include "../ids.h"
 /**Partitioner describes how the data is partitioned and what nodes are
  * involved in the partition. *
  */
@@ -28,7 +29,7 @@ using namespace std;
 //		return table_id==r.table_id&&local_projection_id==r.local_projection_id;
 //	}
 //} ;
-typedef unsigned ProjectionOffset;
+
 typedef unsigned BlockID;
 //typedef struct PartitionID{
 //	ProjectionID projection_id;

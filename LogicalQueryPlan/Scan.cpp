@@ -20,6 +20,10 @@ LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
 	}
 	scan_attribute_list_=table->getAttributes();
 }
+LogicalScan::LogicalScan(const ProjectionDescriptor* projection){
+	scan_attribute_list_=projection->getAttributeList();
+
+}
 LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& selected_attribute_index_list)
 :target_projection_(0) {
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
@@ -69,7 +73,7 @@ Dataflow LogicalScan::getDataflow(){
 	target_projection_=table->getProjectoin(target_projection_off);
 
 	if(!target_projection_->AllPartitionBound()){
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),HDFS);
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),MEMORY);
 	}
 
 	/*build the data flow*/
