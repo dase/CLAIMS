@@ -22,9 +22,8 @@ unsigned long long int IDsGenerator::generateUniqueExchangeID(){
 
 IDsGenerator* IDsGenerator::getInstance(){
 	if(instance_==0){
-		return new IDsGenerator();
+		instance_= new IDsGenerator();
 	}
-	else{
 		return instance_;
-	}
+
 }

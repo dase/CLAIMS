@@ -202,14 +202,14 @@ void ResourceManagerSlaveLogging::elog(const char* format,...){
 }
 
 void StorageManagerLogging::log(const char* format,...){
-//#ifdef DEBUG_StorageManager
+#ifdef DEBUG_StorageManager
 	printf("StorageManager: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
 	printf("\n");
 	va_end (arg);
-//#endif
+#endif
 }
 void StorageManagerLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[StorageManager]: ");
@@ -220,14 +220,14 @@ void StorageManagerLogging::elog(const char* format,...){
 	va_end (arg);
 }
 void StorageManagerMasterLogging::log(const char* format,...){
-//#ifdef DEBUG_StorageManager
+#ifdef DEBUG_StorageManager
 	printf("StorageManagerMaster: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
 	printf("\n");
 	va_end (arg);
-//#endif
+#endif
 }
 void StorageManagerMasterLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[StorageManagerMaster]: ");

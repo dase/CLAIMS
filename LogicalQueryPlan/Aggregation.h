@@ -10,20 +10,25 @@
 #include <vector>
 #include "LogicalOperator.h"
 #include "../Catalog/Attribute.h"
-#include "../iterator/AggregationIterator.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 class Aggregation: public LogicalOperator {
 public:
-	Aggregation(std::vector<Attribute> group_by_attribute,std::vector<Attribute> aggregation_attribute,std::vector<AggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child);
+	enum fashion{no_repartition,repartition};
+	Aggregation(std::vector<Attribute> group_by_attribute,std::vector<Attribute> aggregation_attribute,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child);
 	virtual ~Aggregation();
 	Dataflow getDataflow();
+	BlockStreamIteratorBase* getIteratorTree(const unsigned & block_size);
+	std::vector<unsigned> getInvolvedIndexList(const std::vector<Attribute>& attribute_list,const Dataflow& dataflow )const;
 private:
 	bool canLeverageHashPartition(const Dataflow& child_dataflow)const;
+	float predictSelectivity()const;
 private:
 	LogicalOperator* child_;
 	std::vector<Attribute> group_by_attribute_list_;
 	std::vector<Attribute> aggregation_attribute_list_;
-	std::vector<AggregationIterator::State::aggregation> aggregation_list_;
+	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list_;
 	Dataflow* dataflow_;
+	fashion fashion_;
 };
 
 #endif /* AGGREGATION_H_ */
