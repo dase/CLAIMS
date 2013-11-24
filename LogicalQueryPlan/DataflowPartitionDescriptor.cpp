@@ -23,7 +23,7 @@ DataflowPartitionDescriptor::~DataflowPartitionDescriptor() {
 
 }
 Attribute DataflowPartitionDescriptor::getPartitionKey()const{
-	return *partition_key_;
+	return partition_key_;
 }
 
 bool DataflowPartitionDescriptor::hasSamePartitionLocation(const DataflowPartitionDescriptor& target)const{
@@ -61,4 +61,27 @@ DataflowPartition* DataflowPartitionDescriptor::getPartition(unsigned index)cons
 }
 PartitionFunction* DataflowPartitionDescriptor::getPartitionFunction()const{
 	return partition_function_;
+}
+void DataflowPartitionDescriptor::setPartitionKey(const Attribute& partitionkey){
+	partition_key_=partitionkey;
+}
+void DataflowPartitionDescriptor::addShadowPartitionKey(const Attribute& partitionkey){
+	shadow_partition_key_list_.push_back(partitionkey);
+}
+
+void DataflowPartitionDescriptor::setPartitionFunction(PartitionFunction* partition_function){
+	partition_function_=partition_function;
+}
+bool DataflowPartitionDescriptor::hasShadowPartitionKey()const{
+	return !shadow_partition_key_list_.empty();
+}
+std::vector<Attribute> DataflowPartitionDescriptor::getShadowAttributeList()const{
+	return shadow_partition_key_list_;
+}
+
+std::vector<DataflowPartition> DataflowPartitionDescriptor::getPartitionList()const{
+	return partition_list_;
+}
+void DataflowPartitionDescriptor::setPartitionList(const std::vector<DataflowPartition>& list){
+	partition_list_=list;
 }

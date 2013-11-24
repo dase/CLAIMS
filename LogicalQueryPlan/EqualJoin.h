@@ -29,7 +29,9 @@ private:
 	std::vector<unsigned> getLeftPayloadIndexList()const;
 	std::vector<unsigned> getRightPayloadIndexList()const;
 	int getIndexInLeftJoinKeyList(const Attribute& )const;
+	int getIndexInLeftJoinKeyList(const Attribute&,const std::vector<Attribute> shadow_attribute_list )const;
 	int getIndexInRightJoinKeyList(const Attribute& )const;
+	int getIndexInRightJoinKeyList(const Attribute&,const std::vector<Attribute> shadow_attribute_list )const;
 	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute&)const;
 	bool isHashOnLeftKey(const Partitioner& part,const Attribute& key)const;
 

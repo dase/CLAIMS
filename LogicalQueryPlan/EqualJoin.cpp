@@ -56,10 +56,10 @@ Dataflow EqualJoin::getDataflow(){
 	}
 	else{
 		if(left_dataflow_key_partitioned&&!right_dataflow_key_partitioned){
-			join_police_=left_repartition;
+			join_police_=right_repartition;
 		}
 		if(!left_dataflow_key_partitioned&&right_dataflow_key_partitioned){
-			join_police_=right_repartition;
+			join_police_=left_repartition;
 		}
 		if(!left_dataflow_key_partitioned&&!right_dataflow_key_partitioned)
 			join_police_=complete_repartition;
@@ -76,7 +76,22 @@ Dataflow EqualJoin::getDataflow(){
 			 * TODO: in fact, the output dataflow partitioner should contains both
 			 * left partitioner and right partitioner.
 			 */
-			ret.property_.partitioner=left_dataflow.property_.partitioner;
+//			ret.property_.partitioner=left_dataflow.property_.partitioner;
+			ret.property_.partitioner.setPartitionList(left_dataflow.property_.partitioner.getPartitionList());
+			ret.property_.partitioner.setPartitionFunction(left_dataflow.property_.partitioner.getPartitionFunction());
+			ret.property_.partitioner.setPartitionKey(left_partition_key);
+			ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+
+			/* set the generated data size.
+			 * Currently, we assume the generated data size is the sum of input data volumn.
+			 * TODO: some reasonable output size estimation is needed.
+			 */
+			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
+				const unsigned l_size=left_dataflow.property_.partitioner.getPartition(i)->getDataSize();
+				const unsigned r_size=right_dataflow.property_.partitioner.getPartition(i)->getDataSize();
+				ret.property_.partitioner.getPartition(i)->setDataSize(l_size+r_size);
+			}
+
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			break;
 		}
@@ -84,7 +99,20 @@ Dataflow EqualJoin::getDataflow(){
 			printf("left_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
-			ret.property_.partitioner=right_dataflow.property_.partitioner;
+//			ret.property_.partitioner=right_dataflow.property_.partitioner;
+
+			ret.property_.partitioner.setPartitionList(right_dataflow.property_.partitioner.getPartitionList());
+			ret.property_.partitioner.setPartitionFunction(right_dataflow.property_.partitioner.getPartitionFunction());
+			ret.property_.partitioner.setPartitionKey(right_dataflow.property_.partitioner.getPartitionKey());
+//			ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+			/* set the generated data size*/
+			const unsigned left_total_size=left_dataflow.property_.partitioner.getAggregatedDatasize();
+			const unsigned right_partition_count=right_dataflow.property_.partitioner.getNumberOfPartitions();
+			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
+				const unsigned r_size=right_dataflow.property_.partitioner.getPartition(i)->getDataSize();
+				ret.property_.partitioner.getPartition(i)->setDataSize(r_size+left_total_size/right_partition_count);
+			}
+
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			ret.property_.commnication_cost+=left_dataflow.property_.partitioner.getAggregatedDatasize();
 			break;
@@ -93,7 +121,19 @@ Dataflow EqualJoin::getDataflow(){
 			printf("right_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
-			ret.property_.partitioner=left_dataflow.property_.partitioner;
+//			ret.property_.partitioner=left_dataflow.property_.partitioner;
+
+			ret.property_.partitioner.setPartitionList(left_dataflow.property_.partitioner.getPartitionList());
+			ret.property_.partitioner.setPartitionFunction(left_dataflow.property_.partitioner.getPartitionFunction());
+			ret.property_.partitioner.setPartitionKey(left_dataflow.property_.partitioner.getPartitionKey());
+//			ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+			/* set the generated data size*/
+			const unsigned right_total_size=right_dataflow.property_.partitioner.getAggregatedDatasize();
+			const unsigned left_partition_count=left_dataflow.property_.partitioner.getNumberOfPartitions();
+			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
+				const unsigned l_size=left_dataflow.property_.partitioner.getPartition(i)->getDataSize();
+				ret.property_.partitioner.getPartition(i)->setDataSize(l_size+right_total_size/left_partition_count);
+			}
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();
 			break;
@@ -132,7 +172,7 @@ bool EqualJoin::isHashOnLeftKey(const Partitioner& part,const Attribute& key)con
 	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
 
 	}
-	return *(part.getPartitionKey())==key;
+	return part.getPartitionKey()==key;
 }
 bool EqualJoin::canLeverageHashPartition(const std::vector<Attribute> &partition_key_list,const DataflowPartitionDescriptor& partitoiner)const{
 	Attribute attribute=partitoiner.getPartitionKey();
@@ -217,7 +257,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
 			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
 
-	//		state.partition_index=
+
 			const Attribute right_partition_key=dataflow_->property_.partitioner.getPartitionKey();
 
 			/* get the left attribute that is corresponding to the partition key.*/
@@ -226,7 +266,8 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			exchange_state.partition_key_index=getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key);
 
 
-			exchange_state.schema=getSchema(dataflow_left.attribute_list_,dataflow_right.attribute_list_);
+//			exchange_state.schema=getSchema(dataflow_left.attribute_list_,dataflow_right.attribute_list_);
+			exchange_state.schema=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			state.child_left=exchange;
 			state.child_right=child_iterator_right;
@@ -247,16 +288,26 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
 			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
 
-	//		state.partition_index=
+
 			const Attribute left_partition_key=dataflow_->property_.partitioner.getPartitionKey();
 
+			if(exchange_state.exchange_id==0){
+				printf("0\n");
+			}
 			/* get the right attribute that is corresponding to the partition key.*/
-			Attribute right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
+			Attribute right_partition_key;
+			if(dataflow_->property_.partitioner.hasShadowPartitionKey()){
+				right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key,dataflow_->property_.partitioner.getShadowAttributeList())].second;
+			}
+			else{
+				right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
+			}
+
 
 			exchange_state.partition_key_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key);
 
 
-			exchange_state.schema=getSchema(dataflow_right.attribute_list_,dataflow_left.attribute_list_);
+			exchange_state.schema=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			state.child_left=exchange;
 			state.child_right=child_iterator_right;
@@ -353,12 +404,57 @@ int EqualJoin::getIndexInLeftJoinKeyList(const Attribute& attribute)const{
 	assert(false);
 	return -1;
 }
+int EqualJoin::getIndexInLeftJoinKeyList(const Attribute& attribute,const std::vector<Attribute> shadow_attribute_list )const{
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		if(joinkey_pair_list_[i].first==attribute){
+			return i;
+		}
+	}
+	/* the attribute fails to match any join key.
+	 * Now we try to match the shadow partition attribute(s)*/
+	for(unsigned s=0;s<shadow_attribute_list.size();s++){
+		for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+			if(joinkey_pair_list_[i].first==shadow_attribute_list[s]){
+				return i;
+			}
+		}
+	}
+
+	/*
+	 * neither the partition attribute nor the shadow partition attribute could match any join key.
+	 */
+	assert(false);
+	return -1;
+
+}
 int EqualJoin::getIndexInRightJoinKeyList(const Attribute& attribute)const{
 	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
 		if(joinkey_pair_list_[i].second==attribute){
 			return i;
 		}
 	}
+	assert(false);
+	return -1;
+}
+int EqualJoin::getIndexInRightJoinKeyList(const Attribute& attribute,const std::vector<Attribute> shadow_attribute_list )const{
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		if(joinkey_pair_list_[i].second==attribute){
+			return i;
+		}
+	}
+	/* the attribute fails to match any join key.
+	 * Now we try to match the shadow partition attribute(s)*/
+	for(unsigned s=0;s<shadow_attribute_list.size();s++){
+		for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+			if(joinkey_pair_list_[i].second==shadow_attribute_list[s]){
+				return i;
+			}
+		}
+	}
+
+	/*
+	 * neither the partition attribute nor the shadow partition attribute could match any join key.
+	 */
 	assert(false);
 	return -1;
 }

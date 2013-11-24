@@ -15,7 +15,7 @@
  */
 class DataflowPartitionDescriptor {
 public:
-	DataflowPartitionDescriptor():partition_function_(0),partition_key_(0){};
+	DataflowPartitionDescriptor():partition_function_(0){};
 	DataflowPartitionDescriptor(const Partitioner& partitoiner);
 	virtual ~DataflowPartitionDescriptor();
 	Attribute getPartitionKey()const;
@@ -23,12 +23,31 @@ public:
 	unsigned getAggregatedDatasize()const;
 	PartitionFunction::partition_fashion getPartitionFashion()const;
 	unsigned getNumberOfPartitions()const;
-	 DataflowPartition* getPartition(unsigned index)const;
+	DataflowPartition* getPartition(unsigned index)const;
+
+	std::vector<DataflowPartition> getPartitionList()const;
+	void setPartitionList(const std::vector<DataflowPartition>&);
+
+
+	void setPartitionFunction(PartitionFunction* partition_function);
 	PartitionFunction* getPartitionFunction()const;
+
+	void setPartitionKey(const Attribute& partitionkey);
+	void addShadowPartitionKey(const Attribute& partitionkey);
+	bool hasShadowPartitionKey()const;
+	std::vector<Attribute> getShadowAttributeList()const;
+
 private:
 	std::vector<DataflowPartition> partition_list_;
 	PartitionFunction* partition_function_;
-	Attribute* partition_key_;
+	Attribute partition_key_;
+
+	/*
+	 * After the no-partitioning EqualHashJoin where the left join input is partitioned on
+	 * A1 and the right join input is partitioned on A2, we can say that the generated
+	 * data flow is either partitioned on A1 or partitioned on A2. In such cases, each
+	 * attribute is a SHADOW PARTITION KEY to the other.*/
+	std::vector<Attribute> shadow_partition_key_list_;
 };
 
 #endif /* DATAFLOWPARTITIONER_H_ */
