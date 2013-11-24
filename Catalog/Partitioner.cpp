@@ -14,7 +14,7 @@ Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partition
 {
 
 }
-Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partitioning_function)
+Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partitioning_function)
 :projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_functin_(partitioning_function),mode_(OneToOne){
 	partition_key_=new Attribute(partition_key);
 	for(unsigned i=0;i<number_of_partitions;i++){
@@ -110,8 +110,8 @@ NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 PartitionFunction::partition_fashion Partitioner::getPartitionFashion()const{
 	return partition_functin_->getPartitionFashion();
 }
-Attribute* Partitioner::getPartitionKey()const{
-	return partition_key_;
+Attribute Partitioner::getPartitionKey()const{
+	return *partition_key_;
 }
 PartitionFunction* Partitioner::getPartitionFunction()const{
 	return partition_functin_;

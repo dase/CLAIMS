@@ -27,6 +27,9 @@ struct Attribute
 		index=att.index;
 
 	}
+	Attribute(){
+
+	}
 	~Attribute(){
 		attrType->~column_type();
 	}

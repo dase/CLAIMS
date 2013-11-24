@@ -196,7 +196,7 @@ private:
 class Partitioner {
 public:
 	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
-	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,Attribute &partition_key,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
 	virtual ~Partitioner();
 	unsigned getNumberOfPartitions()const;
 
@@ -222,7 +222,7 @@ public:
 		return mode_;
 	}
 	PartitionFunction::partition_fashion getPartitionFashion()const;
-	Attribute* getPartitionKey()const;
+	Attribute getPartitionKey()const;
 	PartitionFunction* getPartitionFunction()const;
 	ProjectionID getProejctionID()const;
 	bool allPartitionBound()const;

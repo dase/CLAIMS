@@ -28,7 +28,7 @@ public:
 	State(std::string file_name,Schema* schema,unsigned block_size);
 		State(std::string file_name,Schema* schema,unsigned block_size, unsigned long used_length);
 		State(){};
-	private:
+	public:
 		Schema* schema_;
 		std::string filename_;
 		unsigned block_size_;
