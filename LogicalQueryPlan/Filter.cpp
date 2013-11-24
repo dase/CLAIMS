@@ -97,10 +97,10 @@ float Filter::predictSelectivity()const{
 
 	/*
 	 * In the current version, due to the lack of statistic information, we only use a factor
-	 * 0.1 for each comparison. TODO: a more precious prediction is greatly needed.
+	 * 0.5 for each comparison. TODO: a more precious prediction is greatly needed.
 	 */
 	for(unsigned i=0;i<condition_.getCompaisonNumber();i++){
-		ret*=0.1;
+		ret*=0.5;
 	}
 	return ret;
 }
