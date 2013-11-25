@@ -8,6 +8,7 @@
 #include "Scan.h"
 #include "../Catalog/Catalog.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
 :scan_attribute_list_(attribute_list),target_projection_(0) {
 	// TODO Auto-generated constructor stub
@@ -73,7 +74,7 @@ Dataflow LogicalScan::getDataflow(){
 	target_projection_=table->getProjectoin(target_projection_off);
 
 	if(!target_projection_->AllPartitionBound()){
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),MEMORY);
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),HDFS);
 	}
 
 	/*build the data flow*/
@@ -97,4 +98,11 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 	state.projection_id_=target_projection_->getProjectionID();
 	state.schema_=getSchema(dataflow_.attribute_list_);
 	return new ExpandableBlockStreamProjectionScan(state);
+
+//
+//	ExpandableBlockStreamSingleColumnScan::State state;
+//	state.block_size_=block_size;
+//	state.filename_="/home/imdb/data/wangli/T0G0P0";
+//	state.schema_=getSchema(dataflow_.attribute_list_);
+//	return new ExpandableBlockStreamSingleColumnScan(state);
 }
