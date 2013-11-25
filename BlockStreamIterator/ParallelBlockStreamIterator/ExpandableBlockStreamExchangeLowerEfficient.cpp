@@ -21,13 +21,12 @@
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
 :state(state){
 	// TODO Auto-generated constructor stub
-
+	assert(state.partition_key_index<100);
 }
 
 ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
 	// TODO Auto-generated destructor stub
 }
-
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	state.child->open(state.partition_offset);
 	nuppers=state.upper_ip_list.size();
@@ -43,8 +42,15 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	for(unsigned i=0;i<nuppers;i++){
 		cur_block_stream_list_[i]=BlockStreamBase::createBlock(state.schema,state.block_size);
 	}
+
+
 	buffer=new PartitionedBlockBuffer(nuppers,block_stream_for_asking_->getSerializedBlockSize());
 
+//	buffer->~PartitionedBlockBuffer();
+//
+//	void* test=malloc(1024*1024*400);
+//	memset(test,0,1024*1024*400);
+//	free(test);
 
 	for(unsigned upper_id=0;upper_id<state.upper_ip_list.size();upper_id++){
 		struct hostent* host;
@@ -149,28 +155,36 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 }
 
 unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
-	state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(value,partition_function_);
+	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(value,partition_function_);
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 
+//	block_stream_for_asking_
+//	block_for_buffer_
+//	buffer_for_sending_
+//	block_for_inserting_to_buffer_
+//	cur_block_stream_list_
+//	buffer
 
 	Logging_ExchangeIteratorEagerLower("The sender thread is killed in the close() function!");
 	pthread_cancel(sender_tid);
 	pthread_cancel(debug_tid);
 	/* close the socket connections to the uppers */
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
-		FileClose(socket_fd_upper_list[i]);
+//		FileClose(socket_fd_upper_list[i]);
 	}
 	state.child->close();
+	buffer->~PartitionedBlockBuffer();
 	block_stream_for_asking_->~BlockStreamBase();
-//	block_for_sending->~BlockContainer();
+	block_for_sending->~BlockContainer();
 	block_for_inserting_to_buffer_->~BlockWritable();
 	buffer_for_sending_->~PartitionedBlockContainer();
+	block_for_buffer_->~BlockContainer();
 	for(unsigned i=0;i<nuppers;i++){
 		cur_block_stream_list_[i]->~BlockStreamBase();
 	}
-	buffer->~PartitionedBlockBuffer();
+
 	delete [] cur_block_stream_list_;
 	delete [] socket_fd_upper_list;
 
@@ -211,7 +225,7 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 		if((recvbytes=recv(socket_fd_upper_list[i],&byte,sizeof(char),0))==-1){
 			perror("recv error!\n");
 		}
-
+		FileClose(socket_fd_upper_list[i]);
 		Logging_ExchangeIteratorEagerLower("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
 

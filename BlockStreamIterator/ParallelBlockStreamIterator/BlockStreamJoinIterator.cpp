@@ -107,6 +107,9 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 		bsti->reset();
 		while(cur=bsti->nextTuple()){
+//
+//			if(state_.ht_schema->getncolumns()>20)
+//			state_.ht_schema->displayTuple(cur,"|B|"); ///for debug
 			/* Currently, the join index is [0]-th column, so the hash table is based on the hash value of [0]-th column*/
 //			bn=hash->get_partition_value(*(unsigned long*)(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur)));
 			bn=state_.input_schema_left->getcolumn(0).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash);
@@ -153,8 +156,10 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 	remaining_block rb;
 	if(atomicPopRemainingBlock(rb)){
 		while(tuple_from_right_child=rb.bsti_->currentTuple()){
-			int cao=0;
+//			state_.input_schema_right->displayTuple(tuple_from_right_child);
 			while(tuple_in_hashtable=rb.it_.readCurrent()){
+//				if(state_.ht_schema->getncolumns()>20)
+//				state_.ht_schema->displayTuple(tuple_in_hashtable,"|P|"); ///for debug
 				key_exit=true;
 				for(unsigned i=0;i<state_.joinIndex_right.size();i++){
 					key_in_input=state_.input_schema_right->getColumnAddess(state_.joinIndex_right[i],tuple_from_right_child);
@@ -249,7 +254,7 @@ bool BlockStreamJoinIterator::close(){
 	ht_free_block_stream_list_.clear();
 	remaining_block_list_.clear();
 //	hash->~PartitionFunction();
-//	hashtable->~BasicHashTable();
+	hashtable->~BasicHashTable();
 //	ht_schema->~Schema();
 	state_.child_left->close();
 	state_.child_right->close();

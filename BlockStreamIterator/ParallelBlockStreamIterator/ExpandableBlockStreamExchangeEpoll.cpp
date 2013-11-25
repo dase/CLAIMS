@@ -37,6 +37,7 @@ ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State sta
 	sem_open_.set_value(1);
 	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
+	assert(state.partition_key_index<100);
 }
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 	sem_open_.set_value(1);
@@ -61,7 +62,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		socket_fd_lower_list=new int[nlowers];
 //		lower_ip_array=new std::string[nlowers];
 
-		buffer=new BlockStreamBuffer(state.block_size,nlowers*2000,state.schema);
+		buffer=new BlockStreamBuffer(state.block_size,nlowers*10,state.schema);
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -130,7 +131,10 @@ bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 }
 
 bool ExpandableBlockStreamExchangeEpoll::close(){
-
+//	socket_fd_lower_list
+//	buffer
+//	received_block_stream_
+//	block_for_socket_
 	sem_open_.set_value(1);
 
 
@@ -428,6 +432,8 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 	                  /* Closing the descriptor will make epoll remove it
 	                     from the set of descriptors which are monitored. */
 	                  FileClose (events[i].data.fd);
+	                  printf("Closed connection on descriptor %d\n",
+	                          events[i].data.fd);
 				}
 			}
 		}
