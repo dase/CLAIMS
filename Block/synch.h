@@ -66,7 +66,7 @@ public:
     void destroy(){
     	sem_destroy(&sem);
     }
-    int get_value(){
+    int get_value() {
     	int ret;
     	sem_getvalue(&sem,&ret);
     	return ret;

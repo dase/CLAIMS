@@ -18,7 +18,7 @@ public:
 	PartitionedBlockBuffer(unsigned nPartitions,unsigned block_size);
 
 	virtual ~PartitionedBlockBuffer();
-	bool hasEmptyBlock();
+	bool hasEmptyBlock()const ;
 	bool isEmpty();
 	bool insertBlockToPartitionedList(Block* src, unsigned partition_id);
 
@@ -35,6 +35,7 @@ private:
 	/* this is not thread-safe */
 	bool getBlockInPartitionedBlockList(Block &desc,unsigned partition_id);
 	unsigned getBlockNumberOfPartitionInBuffer(unsigned partition_id);
+	void destoryEmptyBlocks();
 private:
 	unsigned nPartitions;
 	unsigned nBlocks;
