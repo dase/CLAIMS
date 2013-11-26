@@ -401,5 +401,5 @@ string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,Block
 }
 void BlockManager::BlockManagerWorkerActor::BindingPartition(const PartitionBindingMessage& message,const Theron::Address from){
 	bm_->addPartition(message.partition_id,message.number_of_chunks,message.storage_level);
-
+	Send(int(0),from);
 }

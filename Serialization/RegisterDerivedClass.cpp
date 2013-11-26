@@ -46,6 +46,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -94,5 +95,5 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<ExpandableBlockStreamProjectionScan*>(NULL));
 	ar.register_type(static_cast<BlockStreamPerformanceMonitorTop*>(NULL));
 	ar.register_type(static_cast<BlockStreamPrint*>(NULL));
-
+	ar.register_type(static_cast<BlockStreamAggregationIterator*>(NULL));
 }

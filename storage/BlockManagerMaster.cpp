@@ -9,6 +9,7 @@
 
 #include "BlockManagerMaster.h"
 #include "../Environment.h"
+#include "../TimeOutReceiver.h"
 BlockManagerMaster *BlockManagerMaster::master_=0;
 
 BlockManagerMaster::BlockManagerMaster() {
@@ -93,8 +94,17 @@ std::string BlockManagerMaster::generateSlaveActorName(const NodeID & node_id)co
 	return str.str();
 }
 bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, const unsigned& number_of_chunks, const StorageLevel& desirable_storage_level,const NodeID& target)const{
+	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
+
+	Theron::Catcher<int> resultCatcher;
+	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
+
 	PartitionBindingMessage message(partition_id,number_of_chunks,desirable_storage_level);
 	logging_->log("Sending the binding message to [%s]",generateSlaveActorName(target).c_str());
-	framework_->Send(message,Theron::Address(),Theron::Address(generateSlaveActorName(target).c_str()));
+	framework_->Send(message,receiver.GetAddress(),Theron::Address(generateSlaveActorName(target).c_str()));
+	if(receiver.TimeOutWait(1,2000)==0){
+		logging_->elog("The node[%s] fails to receiver the partition binding message!",NodeTracker::getInstance()->getNodeIP(target).c_str());
+	}
+
 	return true;
 }
