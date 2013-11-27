@@ -28,5 +28,5 @@ void Schema::displayTuple(const void* tuple_start_address,const char* spliter)co
 	cout<<endl;
 	cout<<"____________________________________"<<endl;
 	cout<<endl;
-	sleep(1);
+//	sleep(1);
 }

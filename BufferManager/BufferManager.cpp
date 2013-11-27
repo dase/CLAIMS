@@ -9,8 +9,8 @@
 BufferManager* BufferManager::instance_=0;
 BufferManager::BufferManager() {
 	totol_capacity_=1024*1024*1024;
-	storage_budget_max_=896*1024*1024;
-	storage_budget_min_=128*1024*1024;
+	storage_budget_max_=1024*1024*1024;
+	storage_budget_min_=1024*1024*1024;
 	storage_used_=0;
 	intermediate_buffer_budget_max_=896*1024*1024;
 	intermediate_buffer_budget_min_=896*1024*1024;

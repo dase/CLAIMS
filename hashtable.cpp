@@ -27,6 +27,9 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 
 	try
 	{
+		overflow_count_=new unsigned[nbuckets];
+		memset(overflow_count_,0,nbuckets*sizeof(unsigned));
+
 		/** create spinlocks, each of which corresponds to a single bucket*/
 		lock_list_=new SpineLock[nbuckets];
 //		for(unsigned i=0;i<nbuckets_;i++){

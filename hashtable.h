@@ -65,7 +65,7 @@ public:
 			cur_MP_=0;
 			mother_page_list_.push_back(cur_mother_page);
 		}
-
+		overflow_count_[offset]++;
 		ret=cur_mother_page+cur_MP_;
 		cur_MP_+=bucksize_;
 
@@ -178,6 +178,7 @@ private:
 	int cur_MP_;
 	std::vector<char*> mother_page_list_;
 	SpineLock* lock_list_;
+	unsigned * overflow_count_;
 };
 
 //

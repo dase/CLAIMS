@@ -101,12 +101,13 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	void *value_in_hashtable;
 	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
 	cout<<"in the hashtable build stage!"<<endl;
-
+	unsigned tuple_count=0;
 	while(state_.child_left->next(bsb)){
 		BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 
 		bsti->reset();
 		while(cur=bsti->nextTuple()){
+			tuple_count++;
 //
 //			if(state_.ht_schema->getncolumns()>20)
 //			state_.ht_schema->displayTuple(cur,"|B|"); ///for debug
@@ -135,6 +136,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		}
 		bsb->setEmpty();
 	}
+	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",tuple_count);
 //	cout<<"join open end"<<endl;
 	iii=0;
 	barrier_->Arrive();
@@ -180,6 +182,7 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 				}
 				if(key_exit){
 					if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0){
+						iii++;
 //						for(unsigned i=0;i<state_.joinIndex_left.size();i++){
 //							key_in_hashtable=state_.ht_schema->getColumnAddess(i,tuple_in_hashtable);
 //							column_in_joinedTuple=state_.output_schema->getColumnAddess(joinIndex_left_to_output[i],joinedTuple);
@@ -209,6 +212,7 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 				rb.it_.increase_cur_();
 			}
 			rb.bsti_->increase_cur_();
+
 			if((tuple_from_right_child=rb.bsti_->currentTuple())){
 				bn=hash->get_partition_value(*(double*)(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child)));
 				hashtable->placeIterator(rb.it_,bn);
@@ -223,6 +227,7 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 		if(block->Empty()==true){
 			AtomicPushFreeBlockStream(rb.bsb_right_);
 			free(joinedTuple);
+			printf("****join next produces %d tuples\n",iii);
 			return false;
 		}
 		else{

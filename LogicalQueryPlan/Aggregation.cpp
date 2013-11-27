@@ -26,6 +26,7 @@ Dataflow Aggregation::getDataflow(){
 	}
 	else{
 		fashion_=repartition;
+//		fashion_=hybrid;
 	}
 	switch(fashion_){
 		case no_repartition:{
@@ -40,7 +41,7 @@ Dataflow Aggregation::getDataflow(){
 
 			break;
 		}
-		case repartition:{
+		default:{// for hybrid and repartition
 			/**
 			 * repartition aggregation is currently simplified.
 			 * TODO: ideally, the partition properties (especially the the number of partitions and partition fashion) after repartition
@@ -106,7 +107,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			ret=new BlockStreamAggregationIterator(aggregation_state);
 			break;
 		}
-		case repartition:{
+		case hybrid:{
 			BlockStreamAggregationIterator* private_aggregation=new BlockStreamAggregationIterator(aggregation_state);
 
 
@@ -134,6 +135,25 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			global_aggregation_state.output=getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* global_aggregation=new BlockStreamAggregationIterator(global_aggregation_state);
 			ret=global_aggregation;
+			break;
+		}
+		case repartition:{
+
+
+
+
+			ExpandableBlockStreamExchangeEpoll::State exchange_state;
+			exchange_state.block_size=block_size;
+			exchange_state.child=child_->getIteratorTree(block_size);
+			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
+			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
+			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
+			exchange_state.schema=getSchema(child_dataflow.attribute_list_);
+			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
+
+			aggregation_state.child=exchange;
+			ret=new BlockStreamAggregationIterator(aggregation_state);
 			break;
 		}
 	}

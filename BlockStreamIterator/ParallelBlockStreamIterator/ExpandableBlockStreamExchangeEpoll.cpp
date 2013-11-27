@@ -76,7 +76,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		}
 
 		if(RegisterExchange()==false){
-			logging_->elog("Register Exchange with ID=%l fails!",state.exchange_id);
+			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id);
 		}
 
 		if(isMaster()){
@@ -482,7 +482,9 @@ bool ExpandableBlockStreamExchangeEpoll::SetSocketNonBlocking(int socket_fd){
 void* ExpandableBlockStreamExchangeEpoll::debug(void* arg){
 	ExpandableBlockStreamExchangeEpoll* Pthis=(ExpandableBlockStreamExchangeEpoll*)arg;
 	while(true){
+		if(Pthis->state.exchange_id==2){
 //		printf("Upper: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
 		usleep(100000);
+		}
 	}
 }

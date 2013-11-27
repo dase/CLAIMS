@@ -13,7 +13,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 class Aggregation: public LogicalOperator {
 public:
-	enum fashion{no_repartition,repartition};
+	enum fashion{no_repartition,repartition,hybrid};
 	Aggregation(std::vector<Attribute> group_by_attribute,std::vector<Attribute> aggregation_attribute,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child);
 	virtual ~Aggregation();
 	Dataflow getDataflow();

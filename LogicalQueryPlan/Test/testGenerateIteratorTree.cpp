@@ -62,7 +62,7 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -81,7 +81,7 @@ static int testGenerateIteratorTree(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);
 		catalog->add_table(table_1);
 
 		////////////////////////////////////Create table right//////////////////////////
@@ -135,7 +135,7 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
 
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",1);
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);
 //		catalog->add_table(table_2);
 
 		vector<ColumnOffset> sb_proj1_index;
@@ -160,7 +160,7 @@ static int testGenerateIteratorTree(){
 		sb_proj1_index.push_back(23);
 		sb_proj1_index.push_back(24);
 		sb_proj1_index.push_back(25);
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);
 		catalog->add_table(table_2);
 
 		///////////////////////////////////////////////////////////
@@ -277,14 +277,14 @@ static int testGenerateIteratorTree(){
 
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_payload_join,LogicalQueryPlanRoot::PERFORMANCE);
 		root->getDataflow();
 		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
 
 		int c=1;
 		while(c==1){
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");
 
 //						executable_query_plan->open();
 //			while(executable_query_plan->next(0));
@@ -295,7 +295,7 @@ static int testGenerateIteratorTree(){
 			printf("Terminate(0) or continue(others)?\n");
 //			sleep()
 			scanf("%d",&c);
-			sleep(10);
+//			sleep(10);
 //			getchar();
 //			cout<<"<<<<<<<<<<<<<<<<<<<<<You input ="<<c+1<<endl<<flush;
 			printf("you print=%d\n",c);

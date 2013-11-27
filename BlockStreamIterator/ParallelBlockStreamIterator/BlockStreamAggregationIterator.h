@@ -88,7 +88,7 @@ private:
         Lock ht_cur_lock_;
         unsigned bucket_cur_;
         BasicHashTable::Iterator it_;
-
+        unsigned allocated_tuples_in_hashtable;
 #ifdef TIME
         unsigned long long timer;
 #endif

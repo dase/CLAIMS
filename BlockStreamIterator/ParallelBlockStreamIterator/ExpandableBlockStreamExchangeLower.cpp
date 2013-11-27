@@ -250,7 +250,7 @@ void* ExpandableBlockStreamExchangeLower::sender(void* arg){
 void* ExpandableBlockStreamExchangeLower::debug(void* arg){
 	ExpandableBlockStreamExchangeLower* Pthis=(ExpandableBlockStreamExchangeLower*)arg;
 	while(true){
-		printf("Lower: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
+//		printf("Lower: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
 		usleep(100000);
 	}
 }
