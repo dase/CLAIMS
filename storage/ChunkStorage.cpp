@@ -23,8 +23,10 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 		case MEMORY:{
 			printf("current storage level: MEMORY\n");
 			HdfsInMemoryChunk chunk_info;
-			BlockManager::getInstance()->getMemoryChunkStore()->getChunk(chunk_id_,chunk_info);
-			return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
+			if(BlockManager::getInstance()->getMemoryChunkStore()->getChunk(chunk_id_,chunk_info))
+				return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
+			else
+				return 0;
 			break;
 		}
 		case DISK:{
@@ -37,7 +39,12 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 				chunk_info.length=CHUNK_SIZE;
 				if(BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(chunk_id_,chunk_info)){
 					/* there is enough memory storage space, so the storage level can be shifted.*/
-					BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
+//					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
+					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
+					if(chunk_info.length==-1){
+//						TODO:BlockManager::getInstance()->getMemoryChunkStore()->applyChunk()
+						return 0;
+					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
 					return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
@@ -105,7 +112,7 @@ DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,unsigne
 		else{
 			const unsigned offset=lseek(fd_,start_pos,SEEK_SET);
 			printf("The file is set to be %d\n",offset);
-			sleep(1);
+//			sleep(1);
 			if(start_pos+CHUNK_SIZE<length){
 				number_of_blocks_=CHUNK_SIZE/block_size_;
 			}
@@ -182,6 +189,7 @@ bool HDFSChunkReaderIterator::nextBlock(BlockStreamBase*& block){
 
 	tSize bytes_num=hdfsPread(fs_,hdfs_fd_,cur_block_*block_size_,block_buffer_->getBlock(),CHUNK_SIZE);
 	if(bytes_num==block_size_){
+		printf("cur block=%d\n",cur_block_);
 		cur_block_++;
 		block->constructFromBlock(*block_buffer_);
 		return true;

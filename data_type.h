@@ -53,12 +53,12 @@ inline void MAX<char*>(void* target, void* increment)
 }
 
 template<typename T>
-inline void IncreaseByOne(void* target, void* increment)
+inline void IncreaseByOne(void* target,void* increment)
 {
 	(*(T*)target)++;
 }
 template<>
-inline void IncreaseByOne<char*>(void* target, void* increment)
+inline void IncreaseByOne<char*>(void* target,void* increment)
 {
 
 }

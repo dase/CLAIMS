@@ -44,6 +44,7 @@ Dataflow EqualJoin::getDataflow(){
 			/** the best situation**/
 			if(left_dataflow.property_.partitioner.hasSamePartitionLocation(right_dataflow.property_.partitioner)){
 				join_police_=no_repartition;
+//				join_police_=left_repartition;
 
 			}
 			else{
@@ -360,8 +361,9 @@ std::vector<unsigned> EqualJoin::getLeftPayloadIndexList()const{
 			if(i==left_join_key_index_list[j]){
 				break;
 			}
-			ret.push_back(i);
+
 		}
+		ret.push_back(i);
 	}
 	return ret;
 
@@ -382,15 +384,16 @@ std::vector<unsigned> EqualJoin::getLeftPayloadIndexList()const{
 std::vector<unsigned> EqualJoin::getRightPayloadIndexList()const{
 	std::vector<unsigned> ret;
 	const Dataflow dataflow=right_child_->getDataflow();
-	const std::vector<unsigned> right_join_key_index_list=getLeftJoinKeyIndexList();
+	const std::vector<unsigned> right_join_key_index_list=getRightJoinKeyIndexList();
 
 	for(unsigned i=0;i<dataflow.attribute_list_.size();i++){
 		for(unsigned j=0;j<right_join_key_index_list.size();j++){
 			if(i==right_join_key_index_list[j]){
 				break;
 			}
-			ret.push_back(i);
+
 		}
+		ret.push_back(i);
 	}
 	return ret;
 

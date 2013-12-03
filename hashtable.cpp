@@ -99,4 +99,11 @@ BasicHashTable::Iterator BasicHashTable:: CreateIterator()const
 {
 	return BasicHashTable::Iterator(buck_actual_size_,tuplesize_);
 }
+BasicHashTable::Iterator::Iterator(const Iterator& r){
+	this->buck_actual_size=r.buck_actual_size;
+	this->cur=r.cur;
+	this->free=r.free;
+	this->next=r.next;
+	this->tuplesize=r.tuplesize;
+}
 

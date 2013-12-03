@@ -19,7 +19,7 @@
 #include "../rdtsc.h"
 #include "../Environment.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
-int main234234(int argc, const char** argv){
+int main__________c(int argc, const char** argv){
 
 	int master;
 	printf("Master(0) or Slave(others)?\n");
@@ -39,22 +39,22 @@ int main234234(int argc, const char** argv){
 		const unsigned expander_buffer=atoi(argv[4]);
 		const unsigned lowers=atoi(argv[5]);
 		std::vector<std::string> upper_ip_list;
-		upper_ip_list.push_back("10.11.1.208");
+		upper_ip_list.push_back("10.11.1.199");
 
 		std::vector<std::string> lower_ip_list;
 //		lower_ip_list.push_back("10.11.1.201");
-		lower_ip_list.push_back("10.11.1.214");
+		lower_ip_list.push_back("10.11.1.190");
 //		lower_ip_list.push_back("10.11.1.210");
-		lower_ip_list.push_back("10.11.1.202");
-		lower_ip_list.push_back("10.11.1.203");
-		lower_ip_list.push_back("10.11.1.204");
-		lower_ip_list.push_back("10.11.1.205");
-		lower_ip_list.push_back("10.11.1.206");
-		lower_ip_list.push_back("10.11.1.207");
-		lower_ip_list.push_back("10.11.1.211");
-		lower_ip_list.push_back("10.11.1.209");
+		lower_ip_list.push_back("10.11.1.191");
+//		lower_ip_list.push_back("10.11.1.192");
+		lower_ip_list.push_back("10.11.1.193");
+		lower_ip_list.push_back("10.11.1.194");
+		lower_ip_list.push_back("10.11.1.195");
+		lower_ip_list.push_back("10.11.1.196");
+		lower_ip_list.push_back("10.11.1.197");
+		lower_ip_list.push_back("10.11.1.198");
 
-		lower_ip_list.push_back("10.11.1.201");
+//		lower_ip_list.push_back("10.11.1.201");
 
 
 		std::vector<std::string> used_lowers;
@@ -97,13 +97,17 @@ int main234234(int argc, const char** argv){
 		printf("Continue(1) or Not(0) ?\n");
 		scanf("%d",&choice);
 		unsigned tuple_count=0;
+		float seconds=0;
+		unsigned times=100;
+		int i=0;
 		while(choice==1){
+//		while(i++<100){
 
 
 	//		bsf->open();
-
+			unsigned long long int start=curtick();
 			bspfm->open();
-//			unsigned long long int start=curtick();
+
 //			tuple_count=0;
 			while(bspfm->next(0)){
 //				BlockStreamBase::BlockStreamTraverseIterator *it=block->createIterator();
@@ -117,13 +121,13 @@ int main234234(int argc, const char** argv){
 //			printf("Total tupls:%d\n",tuple_count);
 //			printf("Time=%f Throughput=%f.\n",getSecond(start),1024/getSecond(start));
 			bspfm->close();
-
+//			seconds+=getSecond(start);
 			printf("Continue(0) or Not(1) ?\n");
-//			getchar();
 			scanf("%d",&choice);
 			printf("you input %d\n",choice);
 
 		}
+		printf("avg:%f\n",seconds/times);
 	}
 	else{
 		Environment::getInstance(false);

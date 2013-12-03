@@ -22,6 +22,7 @@ ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerE
 :state(state){
 	// TODO Auto-generated constructor stub
 	assert(state.partition_key_index<100);
+
 }
 
 ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
@@ -29,6 +30,7 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	state.child->open(state.partition_offset);
+	logging_=new ExchangeIteratorEagerLowerLogging();
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
 	socket_fd_upper_list=new int[nuppers];
@@ -67,7 +69,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
 		if((upper_port=et->AskForSocketConnectionInfo(state.exchange_id,state.upper_ip_list[upper_id]))==0){
-			Logging_ExchangeIteratorEagerLower("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
+			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
 		}
 
 		if(ConnectToUpperExchangeWithMulti(socket_fd_upper_list[upper_id],host,upper_port)==false)
@@ -77,18 +79,18 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	int error;
 	error=pthread_create(&sender_tid,NULL,sender,this);
 	if(error!=0){
-		Logging_ExchangeIteratorEagerLower("Failed to create the sender thread.");
+		logging_->elog("Failed to create the sender thread.");
 		return false;
 	}
 
 	pthread_create(&debug_tid,NULL,debug,this);
 /*debug*/
 	readsendedblocks=0;
-
+	hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
 	return true;
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
-
+	PartitionFunction* test_hash=PartitionFunctionFactory::createBoostHashFunction(4);
 	void* tuple_from_child;
 	void* tuple_in_cur_block_stream;
 	block_stream_for_asking_->setEmpty();
@@ -97,6 +99,12 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
 		while((tuple_from_child=traverse_iterator->nextTuple())>0){
 			const unsigned partition_id=hash(tuple_from_child);
+//			assert(partition_id==state.partition_offset);
+//			if(rand()%10000<3){
+//
+//				printf("key:%d\n",test_hash->get_partition_value(*(unsigned long*)state.schema->getColumnAddess(1,tuple_from_child)));
+//			}
+//			printf("Lower partition key:%d\n",partition_id);
 			const unsigned bytes=state.schema->getTupleActualSize(tuple_from_child);
 			while(!(tuple_in_cur_block_stream=cur_block_stream_list_[partition_id]->allocateTuple(bytes))){
 //				printf("cur_block_stream_list:%d",cur_block_stream_list_[partition_id]->getTuplesInBlock());
@@ -113,7 +121,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 	else{
 		/* the child iterator is exhausted. We add the cur block steram block into the buffer*/
 		for(unsigned i=0;i<nuppers;i++){
-			Logging_ExchangeIteratorEagerLower("||||||Fold the last||||||!");
+			logging_->log("||||||Fold the last||||||!");
 			cur_block_stream_list_[i]->serialize(*block_for_inserting_to_buffer_);
 
 
@@ -132,7 +140,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		/*
 		 * waiting until all the block in the buffer has been transformed to the uppers.
 		 */
-		Logging_ExchangeIteratorEagerLower("Waiting until all the blocks in the buffer is sent!");
+		logging_->log("Waiting until all the blocks in the buffer is sent!");
 
 		while(!buffer->isEmpty()){
 			usleep(1);
@@ -142,9 +150,9 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		 * waiting until all the uppers send the close notification which means that
 		 * blocks in the uppers' socket buffer have all been consumed.
 		 */
-		Logging_ExchangeIteratorEagerLower("Waiting for close notification!");
+		logging_->log("Waiting for close notification!");
 		WaitingForCloseNotification();
-		Logging_ExchangeIteratorEagerLower("....passed!");
+		logging_->log("....passed!");
 
 		return false;
 	}
@@ -155,7 +163,24 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 }
 
 unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
-	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(value,partition_function_);
+	const void* hash_key_address=state.schema->getColumnAddess(state.partition_key_index,value);
+//	if(state.exchange_id==0){
+//		const unsigned long v=*(unsigned long*)hash_key_address;
+//		const unsigned ret= ((v*16807)%2839+(v*19))%(unsigned long)nuppers;
+//
+//		const void* test_key=state.schema->getColumnAddess(2,value);
+//		const unsigned long vv=*(unsigned long*) test_key;
+//		if(rand()%100000<3000000){
+////			printf("key:%d\n",((vv*16807)%2839+(vv))%4);
+//			state.schema->displayTuple(value,"|");
+//			sleep(1);
+//			printf("key:%d\n",state.schema->getcolumn(2).operate->getPartitionValue(state.schema->getColumnAddess(2,value),hash_test));
+////			printf("key:%d\n",vv%4);
+//		}
+//		return ret;
+//	}
+
+	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,partition_function_);
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){
@@ -167,9 +192,10 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 //	cur_block_stream_list_
 //	buffer
 
-	Logging_ExchangeIteratorEagerLower("The sender thread is killed in the close() function!");
+	logging_->log("The sender thread is killed in the close() function!");
 	pthread_cancel(sender_tid);
 	pthread_cancel(debug_tid);
+
 	/* close the socket connections to the uppers */
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
 //		FileClose(socket_fd_upper_list[i]);
@@ -203,10 +229,10 @@ bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMult
 
 	if((returnvalue=connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
 	{
-		Logging_ExchangeIteratorEagerLower("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
+		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
 		return false;
 	}
-	Logging_ExchangeIteratorEagerLower("connected to the Master socket %s:%d\n",inet_ntoa(serv_add.sin_addr),port);
+	logging_->log("connected to the Master socket %s:%d\n",inet_ntoa(serv_add.sin_addr),port);
 	//printf("connected to the Master socket %d !\n",returnvalue);
 	return true;
 }
@@ -223,10 +249,12 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 		char byte;
 		int recvbytes;
 		if((recvbytes=recv(socket_fd_upper_list[i],&byte,sizeof(char),0))==-1){
+//		if((recvbytes=recv(socket_fd_upper_list[i],&byte,sizeof(char),0))==0){
 			perror("recv error!\n");
 		}
 		FileClose(socket_fd_upper_list[i]);
-		Logging_ExchangeIteratorEagerLower("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
+//		printf("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
+		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
 
 
@@ -237,18 +265,19 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 
 		Pthis->buffer_for_sending_->Initialized();
 
-
+		try{
 	while(true){
 		pthread_testcancel();
 		bool consumed=false;
 		int partition_id=Pthis->buffer_for_sending_->getBlockForSending(Pthis->block_for_sending);
 //		assert(partition_id>-1);
 		if(partition_id>=0){
+			pthread_testcancel();
 			if(Pthis->block_for_sending->GetRestSize()>0){
 				int recvbytes;
 				recvbytes=send(Pthis->socket_fd_upper_list[partition_id],(char*)Pthis->block_for_sending->getBlock()+Pthis->block_for_sending->GetCurSize(),Pthis->block_for_sending->GetRestSize(),MSG_DONTWAIT);
 				if(recvbytes==-1){
-					Logging_ExchangeIteratorEagerLower("Send fail~~~~!");
+//					Logging_ExchangeIteratorEagerLower("Send fail~~~~!");
 					if (errno == EAGAIN){
 						continue;
 					}
@@ -259,22 +288,25 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 				else{
 					if(recvbytes<Pthis->block_for_sending->GetRestSize()){
 						/* the block is not entirely sent. */
-						Logging_ExchangeIteratorEagerLower("**not entire sent! bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
+						Pthis->logging_->log("**not entire sent! bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
 						Pthis->block_for_sending->IncreaseActualSize(recvbytes);
 						continue;
 					}
 					else{
-						Logging_ExchangeIteratorEagerLower("A block is sent bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
+//						Pthis->block_for_sending->getBlock()
+						Pthis->logging_->log("A block is sent bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
 						Pthis->block_for_sending->IncreaseActualSize(recvbytes);
 						/* the block is sent completely.*/
-						Logging_ExchangeIteratorEagerLower("Send the new block to [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
+						Pthis->logging_->log("Send the new block to [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
 						Pthis->sendedblocks++;
 //						Logging_ExchangeIteratorEagerLower("Waiting the connection notification from [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
 						Pthis->readsendedblocks++;
 //						Logging_ExchangeIteratorEagerLower("The block is received the upper[%s].",Pthis->state.upper_ip_list[partition_id].c_str());
 
-						Logging_ExchangeIteratorEagerLower("sent blocks=%d",Pthis->readsendedblocks);
+						Pthis->logging_->log("sent blocks=%d",Pthis->readsendedblocks);
 						consumed=true;
+//						const int tuples=*(int*)((char*)Pthis->block_for_sending->getBlock()+Pthis->block_for_sending->getsize()-2*sizeof(int));
+//						printf("Send the new block to [%s,fd=%d], number of tuples=%d\n",Pthis->state.upper_ip_list[partition_id].c_str(),Pthis->socket_fd_upper_list[partition_id],tuples);
 					}
 
 				}
@@ -292,6 +324,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 			/* In the current loop, we have sent an entire to the receiver, so we should get a new block
 			 * into the block_for_sender_*/
 			//the if cause in version 1.2 is delete as getBlock will not retain until a block is successfully got.
+
 			if(Pthis->buffer->getBlock(*Pthis->block_for_buffer_,partition_id)){
 				Pthis->block_for_buffer_->reset();
 				Pthis->buffer_for_sending_->insert(partition_id,Pthis->block_for_buffer_);
@@ -300,6 +333,10 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 		}
 
 	}
+		}
+		catch(std::exception e){
+			pthread_testcancel();
+		}
 }
 void* ExpandableBlockStreamExchangeLowerEfficient::debug(void* arg){
 	ExpandableBlockStreamExchangeLowerEfficient* Pthis=(ExpandableBlockStreamExchangeLowerEfficient*)arg;

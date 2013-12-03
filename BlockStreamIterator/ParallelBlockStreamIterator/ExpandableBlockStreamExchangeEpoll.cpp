@@ -32,6 +32,7 @@
 #include "../../Executor/ExchangeTracker.h"
 #include "../../configure.h"
 #include "../../rename.h"
+#include "../../rdtsc.h"
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
 	sem_open_.set_value(1);
@@ -158,6 +159,8 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 	lower_sock_fd_to_index.clear();
 	lower_ip_array.clear();
 
+
+
 	Environment::getInstance()->getExchangeTracker()->LogoutExchange(state.exchange_id);
 
 	return true;
@@ -249,6 +252,10 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_key_index);
+//	unsigned times=1;
+//	int i=0;
+//	unsigned long long int start=curtick();
+//	while(i++<times)
 	for(unsigned i=0;i<state.lower_ip_list.size();i++){
 		/* set the partition offset*/
 		EIELstate.partition_offset=i;
@@ -260,7 +267,7 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 		}
 		EIEL->~BlockStreamIteratorBase();
 	}
-
+//	printf("AVG::%f\n",getSecond(start)/times);
 	return true;
 }
 
@@ -324,6 +331,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 	}
 
 	events=(epoll_event*)calloc(Pthis->nlowers,sizeof(epoll_event));
+	int fd_cur=0;
 
 	while(true){
 		const int event_count=epoll_wait(efd,events,Pthis->nlowers,-1);
@@ -358,10 +366,10 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					}
 					status=getnameinfo(&in_addr,in_len,hbuf,sizeof(hbuf),sbuf,sizeof(sbuf),NI_NUMERICHOST|NI_NUMERICSERV);
 					if(status==0){
+//						printf("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
 						Pthis->logging_->log("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
 						Pthis->lower_ip_array.push_back(hbuf);
-						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_sock_fd_to_index.size()-1;
-
+						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
 
 					}
 					/*Make the incoming socket non-blocking and add it to the list of fds to monitor.*/
@@ -407,6 +415,12 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					Pthis->block_for_socket_[socket_fd_index]->IncreaseActualSize(byte_received);
 					if(Pthis->block_for_socket_[socket_fd_index]->GetRestSize()>0)
 						continue;
+//					const int tuples=*(int*)((char*)Pthis->block_for_socket_[socket_fd_index]->getBlock()+Pthis->block_for_socket_[socket_fd_index]->GetMaxSize()-2*sizeof(int));
+//					if(tuples>65536){
+//						printf("The %d-th block is received from Lower[%s,fd=%d], tuples=%d\n",Pthis->received_block[socket_fd_index],Pthis->lower_ip_array[socket_fd_index].c_str(),events[i].data.fd,tuples);
+//						assert(false);
+//					}
+//					assert(*(int*)((char*)Pthis->block_for_socket_[socket_fd_index]->getBlock()+Pthis->block_for_socket_[socket_fd_index]->GetMaxSize()-2*sizeof(int))<65536);
 					Pthis->logging_->log("The %d-th block is received from Lower[%s]",Pthis->received_block[socket_fd_index],Pthis->lower_ip_array[socket_fd_index].c_str());
 					Pthis->received_block[socket_fd_index]++;
 					Pthis->received_block_stream_->deserialize((Block*)Pthis->block_for_socket_[socket_fd_index]);
@@ -417,7 +431,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
 					}
 					else{
-						Pthis->logging_->log("*****This block is the last one.");
+				Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
 						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>",Pthis->nexhausted_lowers);
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
@@ -426,14 +440,15 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					}
 				}
 				if(done){
-					Pthis->logging_->log ("Closed connection on descriptor %d\n",
-	                          events[i].data.fd);
-
+					Pthis->logging_->log ("Closed connection on descriptor %d[%s]\n",
+	                          events[i].data.fd,Pthis->lower_ip_array[Pthis->lower_sock_fd_to_index[events[i].data.fd]].c_str());
+//					Pthis->nexhausted_lowers++;
 	                  /* Closing the descriptor will make epoll remove it
 	                     from the set of descriptors which are monitored. */
 	                  FileClose (events[i].data.fd);
-	                  printf("Closed connection on descriptor %d\n",
-	                          events[i].data.fd);
+//	                  printf("Closed connection on descriptor %d[%s]\n",
+//	                          events[i].data.fd,Pthis->lower_ip_array[Pthis->lower_sock_fd_to_index[events[i].data.fd]].c_str());
+//	                  Pthis->lower_sock_fd_to_index.erase(Pthis->lower_sock_fd_to_index.find(events[i].data.fd));
 				}
 			}
 		}
@@ -450,6 +465,8 @@ void ExpandableBlockStreamExchangeEpoll::SendBlockBufferedNotification(int targe
 
 }
 void ExpandableBlockStreamExchangeEpoll::SendBlockAllConsumedNotification(int target_socket_fd){
+//	FileClose(target_socket_fd);
+//	return;
 	char content='e';
 	if(send(target_socket_fd,&content,sizeof(char),MSG_WAITALL)==-1){
 		logging_->log("Send error!\n");

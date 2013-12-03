@@ -94,6 +94,7 @@ public:
 		public:
 		Iterator();
 		Iterator(const unsigned& buck_actual_size,const unsigned& tuplesize);
+		Iterator(const Iterator& r);
 		inline void* readnext()
 		{
 			void* ret;
@@ -147,8 +148,8 @@ public:
 		private:
 			void* cur;
 			void* free;
-			void* next;
 //			void* pagestart;
+			void* next;
 			int buck_actual_size;
 			int tuplesize;
 	};

@@ -85,6 +85,12 @@ bool BlockStreamFix::serialize(Block & block) const{
 	int* tuple_count=(int*)((char*)block.getBlock()+block.getsize()-sizeof(int)*2);
 	*tuple_count=(free_-start)/tuple_size_;
 
+	if(*tuple_count*tuple_size_>BlockSize){
+		printf("tuple count=%d in serialize()\n",*tuple_count);
+		assert(false);
+	}
+
+
 	/* set last block bytes*/
 	int* last_block_bytes=(int*)((char*)block.getBlock()+block.getsize()-sizeof(int));
 	if(Empty()){
@@ -109,6 +115,12 @@ bool BlockStreamFix::deserialize(Block * block){
 
 	/* the number of tuples*/
 	int* tuple_count=(int*)((char*)block->getBlock()+block->getsize()-sizeof(int)*2);
+	if(*tuple_count*tuple_size_>BlockSize){
+		printf("tuple count:%d in deserialize()\n",*tuple_count);
+		assert(false);
+	}
+
+
 	free_=(char*)start+(*tuple_count)*tuple_size_;
 
 	return true;
@@ -131,6 +143,18 @@ void BlockStreamFix::constructFromBlock(const Block& block){
 
 	/* the number of tuples*/
 	int* tuple_count=(int*)((char*)block.getBlock()+block.getsize()-sizeof(int));
+
+	/** a remedy for the data loading bug...
+	 *
+	 */
+//	*tuple_count=BlockSize/tuple_size_;
+
+	if(*tuple_count*tuple_size_>BlockSize){
+		printf("tuple count=%d,tuple size=%d, BlockSize=%d in constructFromBlock()\n",*tuple_count,tuple_size_,BlockSize);
+		assert(false);
+	}
+
+
 	free_=(char*)start+(*tuple_count)*tuple_size_;
 }
 

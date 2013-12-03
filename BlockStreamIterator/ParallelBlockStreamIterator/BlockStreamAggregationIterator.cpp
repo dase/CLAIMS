@@ -128,10 +128,10 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 //        cout<<"KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"<<endl;
 		unsigned consumed_tuples=0;
 		unsigned matched_tuples=0;
-		allocated_tuples_in_hashtable=0;
+//		allocated_tuples_in_hashtable=0;
 		while(state_.child->next(bsb)){
-			printf("Aggregation open consumes one block from child!\n");
-			printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
+//			printf("Aggregation open consumes one block from child!\n");
+//			printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
 				BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 				bsti->reset();
 
@@ -139,17 +139,17 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 					consumed_tuples++;
 
 					bn=state_.input->getcolumn(state_.groupByIndex[0]).operate->getPartitionValue(state_.input->getColumnAddess(state_.groupByIndex[0],cur),hash_);
-					assert(bn==0);
+//					assert(bn==0);
 //					state_.input->displayTuple(cur,"|*|");
 
 //					printf("Aggregation hash key:%d\n",bn);
 //						bn=hash_->get_partition_value(*(double *)(state_.input->getColumnAddess(state_.groupByIndex[0],cur)));
 //                        bn=hash_->get_partition_value(*(int *)(state_.input->getColumnAddess(state_.groupByIndex[0],cur)));
 						hashtable_->placeIterator(tmp_it,bn);
-//						key_exist=false;
+						key_exist=false;
 						while((it_cur=tmp_it.readCurrent())!=0){
 
-							key_exist=false;
+//							key_exist=false;
 							for(unsigned i=0;i<state_.groupByIndex.size();i++){
 									key_in_input_tuple=state_.input->getColumnAddess(state_.groupByIndex[i],cur);
 									key_in_hash_table=state_.output->getColumnAddess(inputGroupByToOutput_[i],it_cur);
@@ -165,14 +165,14 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 								if(key_exist){
 //                                        getchar();
 									matched_tuples++;
-									break;
+//									break;
 										for(unsigned i=0;i<state_.aggregationIndex.size();i++){
 												value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
 												value_in_hash_table=state_.output->getColumnAddess(inputAggregationToOutput_[i],it_cur);
 
-												lock_.acquire();
+//												lock_.acquire();
 												hashtable_->UpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
-												lock_.release();
+//												lock_.release();
 //                                                cout<<"in the key_exist func value in the hash table is: "<<*reinterpret_cast<int *>(value_in_hash_table)<<endl;
 //                                                getchar();
 										}
@@ -192,7 +192,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 //                        lock_.acquire();
 						//if the key doesn't exist, so we can allocate a space for it, and init the func of the hashtable
 						new_tuple_in_hash_table=hashtable_->atomicAllocate(bn);
-						allocated_tuples_in_hashtable++;
+//						allocated_tuples_in_hashtable++;
 
 
 						for(unsigned i=0;i<state_.groupByIndex.size();i++){
@@ -224,7 +224,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 //				printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
 				bsb->setEmpty();
 		}
-		printf("Aggregation consumed %d tuples , %d allocation, %d matched!\n",consumed_tuples,allocated_tuples_in_hashtable,matched_tuples);
+//		printf("Aggregation consumed %d tuples , %d allocation, %d matched!\n",consumed_tuples,allocated_tuples_in_hashtable,matched_tuples);
 
 
 
@@ -250,18 +250,18 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	#endif
 		cout<<"reach the end of the open"<<endl;
 
-		BasicHashTable::Iterator it=hashtable_->CreateIterator();
-		unsigned tmp=0;
-		while(hashtable_->placeIterator(it,bucket_cur_)){
-			void* tuple;
-			while(tuple=it.readCurrent()){
-				state_.output->displayTuple(tuple);
-				printf("%d\n",tmp++);
-				it.increase_cur_();
-			}
-			bucket_cur_++;
-		}
-		bucket_cur_=0;
+//		BasicHashTable::Iterator it=hashtable_->CreateIterator();
+//		unsigned tmp=0;
+//		while(hashtable_->placeIterator(it,bucket_cur_)){
+//			void* tuple;
+//			while(tuple=it.readCurrent()){
+//				state_.output->displayTuple(tuple);
+////				printf("%d\n",tmp++);
+//				it.increase_cur_();
+//			}
+//			bucket_cur_++;
+//		}
+//		bucket_cur_=0;
 //		return true;
 }
 
@@ -284,7 +284,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
                         }
                         else{
                                 ht_cur_lock_.release();
-                                printf("Aggregation->next() returns %d tuples!\n",block->getTuplesInBlock());
+//                                printf("Aggregation->next() returns %d tuples!\n",block->getTuplesInBlock());
                                 return true;
                         }
                 }
@@ -292,14 +292,14 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 
         }
         ht_cur_lock_.release();
-        printf("Aggregation->next() returns %d tuples!\n",block->getTuplesInBlock());
-        usleep(1000);
+//        printf("Aggregation->next() returns %d tuples!\n",block->getTuplesInBlock());
+//        usleep(1000);
         if(block->Empty()){
-        	   printf("<<<<<<<<<<<<<<<<<<Aggregation next bucket_cur=%d\n",bucket_cur_);
+//        	   printf("<<<<<<<<<<<<<<<<<<Aggregation next bucket_cur=%d\n",bucket_cur_);
         	   return false;
         }
         else{
-        	printf("<<<<<<<<<<<<<<<<<<Aggregation next bucket_cur=%d\n",bucket_cur_);
+//        	printf("<<<<<<<<<<<<<<<<<<Aggregation next bucket_cur=%d\n",bucket_cur_);
 			return true;
         }
 }

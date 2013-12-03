@@ -8,6 +8,7 @@
 #include "IteratorExecutorMaster.h"
 #include "../Environment.h"
 #include "../TimeOutReceiver.h"
+#include "../rdtsc.h"
 IteratorExecutorMaster* IteratorExecutorMaster::_instance=0;
 
 
@@ -65,6 +66,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamItera
 	TimeOutReceiver receiver(endpoint);
 
 	Theron::Catcher<int> resultCatcher;
+
 	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
 	for(unsigned slave_filter_id=0;slave_filter_id<ip_list.size();slave_filter_id++){
 		ostringstream ip_port;
@@ -76,10 +78,12 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamItera
 	}
 	unsigned feedback_count=0;
 	feedback_count=receiver.TimeOutWait(ip_list.size(),5000);
+
 	if(feedback_count<ip_list.size()){
 		logging_->elog("Time out! only received %d feedbacks \n",feedback_count);
 		return true;
 	}
+
 	return true;
 }
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,std::string target_ip){

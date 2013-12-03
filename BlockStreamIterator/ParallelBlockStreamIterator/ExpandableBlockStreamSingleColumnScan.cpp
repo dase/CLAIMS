@@ -41,6 +41,7 @@ ExpandableBlockStreamSingleColumnScan::State::State(std::string file_name,
 }
 
 bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off) {
+	return true;
 	if (sema_open_.try_wait()) {
 		printf("Scan open!\n");
 
@@ -93,6 +94,7 @@ bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off
 }
 
 bool ExpandableBlockStreamSingleColumnScan::next(BlockStreamBase* block) {
+	return false;
 	allocated_block allo_block_temp;
 
 	if (file_length_ == 0)
@@ -118,6 +120,7 @@ bool ExpandableBlockStreamSingleColumnScan::next(BlockStreamBase* block) {
 }
 
 bool ExpandableBlockStreamSingleColumnScan::close() {
+	return true;
 	sema_open_.post();
 
 	open_finished_ = false;

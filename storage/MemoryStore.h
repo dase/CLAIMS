@@ -40,7 +40,7 @@ struct HdfsBlock{
 	/*是将block mmap操作之后返回的内存地址*/
 	void *hook;
 	/*记录每个block大小也就是文件长度*/
-	unsigned length;
+	int length;
 	// 是否被序列化过
 };
 

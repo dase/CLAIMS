@@ -62,11 +62,12 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 //	ies->logging_->log("iterator tree is successfully executed!");
 	ies->logging_->log("New iterator tree received!\n");
 
-	Send(int(0),from);
+
 	ies->logging_->log("Sent the response message to the Receiver!");
 	IteratorMessage* runable_iterator_message=new IteratorMessage();
 	*runable_iterator_message=IteratorMessage::deserialize4K(message);
 	ies->createNewThreadAndRun(runable_iterator_message);
+	Send(int(0),from);
 	ies->logging_->log("iterator tree is added to the running queue");
 }
 void IteratorExecutorSlave::ExecuteIteratorActor::progation(const int &message,const Theron::Address from){

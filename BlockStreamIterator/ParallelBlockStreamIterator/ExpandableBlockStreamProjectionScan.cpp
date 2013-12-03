@@ -42,12 +42,12 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		}
 		else{
 		partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
-		if(partition_reader_iterator_!=0){
-			printf("-------partition reader iterator is successfully created!\n");
-		}
-		else{
-			printf("-------partition reader iterator error!!\n");
-		}
+//		if(partition_reader_iterator_!=0){
+//			printf("-------partition reader iterator is successfully created!\n");
+//		}
+//		else{
+//			printf("-------partition reader iterator error!!\n");
+//		}
 		}
 		open_finished_ = true;
 

@@ -26,7 +26,7 @@ extern "C" {
 #warning No supported architecture found -- timers will return junk.
 #endif
 
-#define CPU_FRE 2130000000
+#define CPU_FRE 2000000000
 
 static __inline__ unsigned long long curtick() {
 	unsigned long long tick;

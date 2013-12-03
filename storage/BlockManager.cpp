@@ -241,14 +241,17 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const 
 	int ret;
 	int offset=chunk_id.chunk_off;
 	hdfsFS fs=hdfsConnect(HDFS_N,9000);
-	hdfsFile readFile=hdfsOpenFile(fs,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);
-	hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,"/imdb/");// to be refined after communicating with Zhang Lei
+	hdfsFile readFile=hdfsOpenFile(fs,chunk_id.partition_id.getPathAndName().c_str(),O_RDONLY,0,0,0);
+	hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,chunk_id.partition_id.getPathAndName().c_str());// to be refined after communicating with Zhang Lei
 	if(!readFile){
-		cout<<"open file error"<<endl;
+		logging_->elog("Fail to open file [%s].Reason:%s",chunk_id.partition_id.getPathAndName().c_str(),strerror(errno));
 		hdfsDisconnect(fs);
 		return -1;
 	}
-	unsigned start_pos=CHUNK_SIZE*offset;
+	else{
+		printf("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
+	}
+	 long int start_pos=CHUNK_SIZE*offset;
 	if(start_pos<hdfsfile->mSize){
 		ret=hdfsPread(fs,readFile,start_pos,desc,length);
 	}else{
@@ -266,11 +269,11 @@ int BlockManager::loadFromDisk(const ChunkID& chunk_id,void* const &desc,const u
 		logging_->elog("Fail to open file [%s].Reason:%s",chunk_id.partition_id.getPathAndName().c_str(),strerror(errno));
 		return -1;
 	}
-	int file_length=lseek(fd,0,SEEK_END);
+	long int file_length=lseek(fd,0,SEEK_END);
 
-	unsigned start_pos=CHUNK_SIZE*offset;
-	printf("start_pos=%d**********\n",start_pos);
-	sleep(1);
+	long start_pos=CHUNK_SIZE*offset;
+	printf("start_pos=%ld**********\n",start_pos);
+
 	lseek(fd,start_pos,SEEK_SET);
 	if(start_pos<file_length){
 		ret=read(fd,desc,length);

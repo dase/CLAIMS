@@ -25,11 +25,16 @@ class BlockStreamJoinIterator:public BlockStreamIteratorBase{
 public:
 	struct remaining_block{
 		remaining_block(BlockStreamBase *bsb_right,BlockStreamBase::BlockStreamTraverseIterator *bsti)
-		:bsb_right_(bsb_right),bsti_(bsti){};
-		remaining_block():bsb_right_(0),bsti_(0){};
+		:bsb_right_(bsb_right),blockstream_iterator(bsti){};
+		remaining_block():bsb_right_(0),blockstream_iterator(0){};
+		remaining_block(const remaining_block&r){
+			bsb_right_=r.bsb_right_;
+			blockstream_iterator=r.blockstream_iterator;
+			hashtable_iterator_=r.hashtable_iterator_;
+		}
 		BlockStreamBase *bsb_right_;
-		BlockStreamBase::BlockStreamTraverseIterator *bsti_;
-		BasicHashTable::Iterator it_;
+		BlockStreamBase::BlockStreamTraverseIterator *blockstream_iterator;
+		BasicHashTable::Iterator hashtable_iterator_;
 	};
 
 	class State{
@@ -112,7 +117,11 @@ private:
 	Barrier *barrier_;
 
 	//debug
-	unsigned iii;
+	unsigned produced_tuples;
+	unsigned consumed_tuples_from_right;
+	unsigned consumed_tuples_from_left;
+	unsigned tuples_in_hashtable;
+	unsigned water_mark;
 
 #ifdef TIME
 	unsigned long long timer;

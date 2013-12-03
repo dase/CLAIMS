@@ -6,6 +6,7 @@
  */
 
 #include "BlockStreamPerformanceMonitorTop.h"
+//#include "hash.h"
 #include "../rdtsc.h"
 
 BlockStreamPerformanceMonitorTop::BlockStreamPerformanceMonitorTop(State state)
@@ -32,13 +33,17 @@ bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_off
 }
 
 bool BlockStreamPerformanceMonitorTop::next(BlockStreamBase*){
-
+//	PartitionFunction* hash=PartitionFunctionFactory::createBoostHashFunction(4);
+//	const int partition_index=3;
 	block_->setEmpty();
 	if(state_.child_->next(block_)){
-//		BlockStreamBase::BlockStreamTraverseIterator* it=block_->createIterator();
-//		while(it->nextTuple()){
-//			tuplecount_++;
-//		}
+		BlockStreamBase::BlockStreamTraverseIterator* it=block_->createIterator();
+		while(it->nextTuple()){
+			tuplecount_++;
+//			if(rand()%10000<3){
+//				printf("partition value:%d",state_.schema_->getcolumn(partition_index).operate->ge)
+//			}
+		}
 		tuplecount_+=block_->getTuplesInBlock();
 		return true;
 	}

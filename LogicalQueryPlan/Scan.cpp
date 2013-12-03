@@ -21,9 +21,9 @@ LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
 	}
 	scan_attribute_list_=table->getAttributes();
 }
-LogicalScan::LogicalScan(const ProjectionDescriptor* projection){
+LogicalScan::LogicalScan(ProjectionDescriptor* projection){
 	scan_attribute_list_=projection->getAttributeList();
-
+	target_projection_=projection;
 }
 LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& selected_attribute_index_list)
 :target_projection_(0) {
@@ -47,32 +47,33 @@ LogicalProjection LogicalScan::getLogcialProjection()const{
 Dataflow LogicalScan::getDataflow(){
 	TableID table_id=scan_attribute_list_[0].table_id_;
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
-
-	ProjectionOffset target_projection_off=-1;
-	for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
-		ProjectionDescriptor* projection=table->getProjectoin(projection_off);
-		bool fail=false;
-		for(std::vector<Attribute>::iterator it=scan_attribute_list_.begin();it!=scan_attribute_list_.end();it++){
-			if(!projection->hasAttribute(*it)){
-				/*the attribute *it does not in the projection*/
-				fail=true;
-				break;
+	if(target_projection_==0){
+		ProjectionOffset target_projection_off=-1;
+		for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
+			ProjectionDescriptor* projection=table->getProjectoin(projection_off);
+			bool fail=false;
+			for(std::vector<Attribute>::iterator it=scan_attribute_list_.begin();it!=scan_attribute_list_.end();it++){
+				if(!projection->hasAttribute(*it)){
+					/*the attribute *it does not in the projection*/
+					fail=true;
+					break;
+				}
 			}
+			if(fail==true){
+				continue;
+			}
+			target_projection_off=projection_off;
+			break;
 		}
-		if(fail==true){
-			continue;
+
+		if(target_projection_off==-1){
+			/*fail to find a projection that contains all the scan attribute*/
+			printf("The current implementation does not support the scanning that involves more than one projection.\n");
+			assert(false);
 		}
-		target_projection_off=projection_off;
-		break;
-	}
+		target_projection_=table->getProjectoin(target_projection_off);
 
-	if(target_projection_off==-1){
-		/*fail to find a projection that contains all the scan attribute*/
-		printf("The current implementation does not support the scanning that involves more than one projection.\n");
-		assert(false);
 	}
-	target_projection_=table->getProjectoin(target_projection_off);
-
 	if(!target_projection_->AllPartitionBound()){
 		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),MEMORY);
 	}

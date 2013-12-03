@@ -156,10 +156,10 @@ THERON_DECLARE_REGISTERED_MESSAGE(Message256)
 struct Message4K
 {
 	unsigned length;
-	char message[4096*4-sizeof(unsigned)];
+	char message[4096*2-sizeof(unsigned)];
 	static unsigned Capacity()
 	{
-		return 4096*4-sizeof(unsigned);
+		return 4096*2-sizeof(unsigned);
 	}
 };
 THERON_DECLARE_REGISTERED_MESSAGE(Message4K)

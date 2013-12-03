@@ -22,6 +22,7 @@
 #ifndef __MYHASHFUNCTION__
 #define __MYHASHFUNCTION__
 #include <stdlib.h>
+#include <maths.h>
 #include <boost/functional/hash.hpp>
 class PartitionFunction {
 	
@@ -155,14 +156,14 @@ public:
 	}
 	~GeneralModuloFunction(){};
 	inline unsigned int get_partition_value(const int& value)const{
-		return (((value-min_) & k_) >> skipbits_)%range_;
+		return abs(value)%range_;
 	}
 	inline unsigned int get_partition_value(const unsigned long& value)const{
-		return (((value-min_) & k_) >> skipbits_)%range_;
+		return (value)%range_;
 	}
 	inline unsigned int get_partition_value(const double& value)const{
 		const long tmp=*(long*)&value;
-		return ((tmp*16807)%2836+(tmp*19))%range_;
+		return ((tmp*16807)%2839+(tmp*19))%range_;
 	}
 
 	partition_fashion getPartitionFashion()const;

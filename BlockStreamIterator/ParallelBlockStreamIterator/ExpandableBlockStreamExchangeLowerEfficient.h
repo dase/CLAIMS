@@ -37,8 +37,11 @@
 #include "../../Block/BlockStreamBuffer.h"
 #include "../../Block/PartitionedBlockContainer.h"
 #include "../../hash.h"
+#include "../../Logging.h"
+
 class ExpandableBlockStreamExchangeLowerEfficient:public BlockStreamIteratorBase {
 public:
+	friend class ExpandableBlockStreamExchangeEpoll;
 	struct State{
 		Schema* schema;
 		BlockStreamIteratorBase* child;
@@ -95,6 +98,8 @@ private:
 	pthread_t sender_tid;
 	pthread_t debug_tid;
 	PartitionFunction* partition_function_;
+	PartitionFunction* hash_test;
+	Logging* logging_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

@@ -144,6 +144,25 @@ void ExchangeIteratorEagerLogging::elog(const char* format,...){
 	va_end (arg);
 }
 
+void ExchangeIteratorEagerLowerLogging::log(const char* format,...){
+#ifdef DEBUG_ExchangeIteratorEager
+	printf("ExchangeEagerLower: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ExchangeIteratorEagerLowerLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[ExchangeEagerLowerr]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
 void CatalogLogging::log(const char* format,...){
 #ifdef DEBUG_Catalog
 	printf("Catalog: ");

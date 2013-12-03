@@ -30,7 +30,7 @@
 #define MATCHER_MESSAGE_BMI_LEN 256
 #define MATCHER_MESSAGE_PROJECT_LEN 256
 // 分布式文件系统的主节点
-#define HDFS_N "10.11.1.201"
+#define HDFS_N "10.11.1.190"
 // 磁盘目录
 #define DISKDIR "/home/imdb/diskdata"
 //#define DEBUG_Coordinator~/
