@@ -104,6 +104,7 @@ void Comparator::initialize_EQ()
 //	funs_EQ[Comparator::Pair(t_string,t_int)]=equal<char*,int>;
 //	funs_EQ[Comparator::Pair(t_string,t_float)]=equal<char*,float>;
 	funs_EQ[Comparator::Pair(t_string,t_string)]=equal<char*,char*>;
+	funs_EQ[Comparator::Pair(t_u_long,t_u_long)]=equal<unsigned long,unsigned long>;
 }
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
 	// TODO Auto-generated constructor stub

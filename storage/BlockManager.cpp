@@ -237,7 +237,8 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name){
 	hdfsDisconnect(fs);
 	return ci;
 }
-int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const unsigned & length)const{
+int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const unsigned & length){
+	lock.acquire();
 	int ret;
 	int offset=chunk_id.chunk_off;
 	hdfsFS fs=hdfsConnect(HDFS_N,9000);
@@ -246,6 +247,7 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const 
 	if(!readFile){
 		logging_->elog("Fail to open file [%s].Reason:%s",chunk_id.partition_id.getPathAndName().c_str(),strerror(errno));
 		hdfsDisconnect(fs);
+		lock.release();
 		return -1;
 	}
 	else{
@@ -255,10 +257,12 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const 
 	if(start_pos<hdfsfile->mSize){
 		ret=hdfsPread(fs,readFile,start_pos,desc,length);
 	}else{
+		lock.release();
 		ret= -1;
 	}
 	hdfsCloseFile(fs,readFile);
 	hdfsDisconnect(fs);
+	lock.release();
 	return ret;
 }
 int BlockManager::loadFromDisk(const ChunkID& chunk_id,void* const &desc,const unsigned & length)const{
@@ -268,6 +272,9 @@ int BlockManager::loadFromDisk(const ChunkID& chunk_id,void* const &desc,const u
 	if(fd==-1){
 		logging_->elog("Fail to open file [%s].Reason:%s",chunk_id.partition_id.getPathAndName().c_str(),strerror(errno));
 		return -1;
+	}
+	else{
+		printf("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
 	}
 	long int file_length=lseek(fd,0,SEEK_END);
 

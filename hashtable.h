@@ -88,6 +88,12 @@ public:
 	{
 		func(loc, newvalue);
 	}
+	inline void atomicUpdateTuple(unsigned int offset,void* loc,void* newvalue, fun func)
+	{
+		lock_list_[offset].lock();
+		func(loc, newvalue);
+		lock_list_[offset].unlock();
+	}
 	class Iterator
 	{
 		friend class BasicHashTable;

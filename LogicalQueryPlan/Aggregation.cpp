@@ -8,6 +8,7 @@
 #include "Aggregation.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vector<Attribute> aggregation_attribute_list,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child)
 :group_by_attribute_list_(group_by_attribute_list),aggregation_attribute_list_(aggregation_attribute_list),aggregation_list_(aggregation_list),dataflow_(0),child_(child){
 
@@ -23,10 +24,12 @@ Dataflow Aggregation::getDataflow(){
 	const Dataflow child_dataflow=child_->getDataflow();
 	if(canLeverageHashPartition(child_dataflow)){
 		fashion_=no_repartition;
+		printf("no_repartition\n");
 	}
 	else{
-		fashion_=repartition;
-//		fashion_=hybrid;
+//		fashion_=repartition;
+		fashion_=hybrid;
+		printf("hybrid\n");
 	}
 	switch(fashion_){
 		case no_repartition:{
@@ -110,15 +113,24 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 		case hybrid:{
 			BlockStreamAggregationIterator* private_aggregation=new BlockStreamAggregationIterator(aggregation_state);
 
+			BlockStreamExpander::State expander_state;
+			expander_state.block_count_in_buffer_=10;
+			expander_state.block_size_=block_size;
+			expander_state.thread_count_=3;
+			expander_state.child_=private_aggregation;
+			expander_state.schema_=getSchema(dataflow_->attribute_list_);
+			BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state);
 
 
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size=block_size;
-			exchange_state.child=private_aggregation;
+//			exchange_state.child=private_aggregation;
+			exchange_state.child=expander_lower;
 			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
 			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
-			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
+//			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
+			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,*dataflow_)[0];
 			exchange_state.schema=getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 
@@ -139,12 +151,20 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 		}
 		case repartition:{
 
+			BlockStreamExpander::State expander_state;
+			expander_state.block_count_in_buffer_=10;
+			expander_state.block_size_=block_size;
+			expander_state.thread_count_=3;
+			expander_state.child_=child_->getIteratorTree(block_size);;
+			expander_state.schema_=getSchema(child_dataflow.attribute_list_);
+			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
+
 
 
 
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size=block_size;
-			exchange_state.child=child_->getIteratorTree(block_size);
+			exchange_state.child=expander;//child_->getIteratorTree(block_size);
 			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
 			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));

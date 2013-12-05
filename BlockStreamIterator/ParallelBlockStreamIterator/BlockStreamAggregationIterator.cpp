@@ -13,14 +13,14 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(BARRIER);
+        barrier_=new Barrier(3);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 :open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(BARRIER);
+        barrier_=new Barrier(3);
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
@@ -171,7 +171,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 												value_in_hash_table=state_.output->getColumnAddess(inputAggregationToOutput_[i],it_cur);
 
 //												lock_.acquire();
-												hashtable_->UpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
+												hashtable_->atomicUpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
 //												lock_.release();
 //                                                cout<<"in the key_exist func value in the hash table is: "<<*reinterpret_cast<int *>(value_in_hash_table)<<endl;
 //                                                getchar();
