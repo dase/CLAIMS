@@ -9,7 +9,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
-
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -246,10 +246,19 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 		}
 		case left_repartition:{
 	//		state.child_left
+			BlockStreamExpander::State expander_state;
+			expander_state.block_count_in_buffer_=10;
+			expander_state.block_size_=block_size;
+			expander_state.thread_count_=3;
+			expander_state.child_=child_iterator_left;
+			expander_state.schema_=getSchema(dataflow_left.attribute_list_);
+			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
+
+
 			NodeTracker* node_tracker=NodeTracker::getInstance();
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size=block_size;
-			exchange_state.child=child_iterator_left;
+			exchange_state.child=expander;//child_iterator_left;
 			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
@@ -272,6 +281,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			state.child_left=exchange;
 			state.child_right=child_iterator_right;
+
 			join_iterator=new BlockStreamJoinIterator(state);
 
 			break;

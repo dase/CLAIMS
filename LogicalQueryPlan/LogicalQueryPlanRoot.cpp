@@ -9,6 +9,7 @@
 #include "../Resource/NodeTracker.h"
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
@@ -26,9 +27,19 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	Dataflow dataflow=child_->getDataflow();
 	Schema* schema=getSchema(dataflow.attribute_list_);
 	NodeTracker* node_tracker=NodeTracker::getInstance();
+
+	BlockStreamExpander::State expander_state;
+	expander_state.block_count_in_buffer_=10;
+	expander_state.block_size_=block_size;
+	expander_state.thread_count_=3;
+	expander_state.child_=child_iterator;
+	expander_state.schema_=getSchema(dataflow.attribute_list_);
+	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
+
+
 	ExpandableBlockStreamExchangeEpoll::State state;
 	state.block_size=block_size;
-	state.child=child_iterator;
+	state.child=expander;//child_iterator;
 	state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 	state.schema=schema;
 	state.upper_ip_list.push_back(node_tracker->getNodeIP(collecter_));

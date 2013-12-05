@@ -10,13 +10,13 @@
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(BARRIER);
+	barrier_=new Barrier(3);
 }
 
 BlockStreamJoinIterator::BlockStreamJoinIterator()
 :hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(BARRIER);
+	barrier_=new Barrier(3);
 }
 
 BlockStreamJoinIterator::~BlockStreamJoinIterator() {
@@ -87,9 +87,9 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	}
 
 	//hashtable createIterator的好处就是创建的都是可读的对象，不需要加锁
-	lock_.acquire();
+//	lock_.acquire();
 	BasicHashTable::Iterator tmp_it=hashtable->CreateIterator();
-	lock_.release();
+//	lock_.release();
 	void *cur;
 	void *tuple_in_hashtable;
 	unsigned bn;
@@ -164,7 +164,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	consumed_tuples_from_right=0;
 //	water_mark=0;
 	barrier_->Arrive();
-//	cout<<"pass the arrive of barrier!!!"<<endl;
+	cout<<"pass the arrive of barrier!!!"<<endl;
 	state_.child_right->open(partition_offset);
 //	cout<<"PartitionOffset:"<<partition_offset<<endl;
 //	sleep(1);
@@ -186,66 +186,66 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 
 	PartitionFunction* hash_tmp=PartitionFunctionFactory::createGeneralModuloFunction(4);
 	while(true){
-	if(atomicPopRemainingBlock(rb)){
-		while((tuple_from_right_child=rb.blockstream_iterator->currentTuple())>0){
-			unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash_tmp);
-			while((tuple_in_hashtable=rb.hashtable_iterator_.readCurrent())>0){
-				key_exit=true;
-				for(unsigned i=0;i<state_.joinIndex_right.size();i++){
-					key_in_input=state_.input_schema_right->getColumnAddess(state_.joinIndex_right[i],tuple_from_right_child);
-					key_in_hashtable=state_.ht_schema->getColumnAddess(state_.joinIndex_left[i],tuple_in_hashtable);
-					if(!state_.input_schema_right->getcolumn(state_.joinIndex_right[i]).operate->equal(key_in_input,key_in_hashtable)){
-						key_exit=false;
-						break;
+		if(atomicPopRemainingBlock(rb)){
+			while((tuple_from_right_child=rb.blockstream_iterator->currentTuple())>0){
+				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash_tmp);
+				while((tuple_in_hashtable=rb.hashtable_iterator_.readCurrent())>0){
+					key_exit=true;
+					for(unsigned i=0;i<state_.joinIndex_right.size();i++){
+						key_in_input=state_.input_schema_right->getColumnAddess(state_.joinIndex_right[i],tuple_from_right_child);
+						key_in_hashtable=state_.ht_schema->getColumnAddess(state_.joinIndex_left[i],tuple_in_hashtable);
+						if(!state_.input_schema_right->getcolumn(state_.joinIndex_right[i]).operate->equal(key_in_input,key_in_hashtable)){
+							key_exit=false;
+							break;
+						}
 					}
+					if(key_exit){
+						if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0){
+							produced_tuples++;
+							const unsigned copyed_bytes=state_.input_schema_left->copyTuple(tuple_in_hashtable,result_tuple);
+							state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
+						}
+						else{
+							atomicPushRemainingBlock(rb);
+							free(joinedTuple);
+							return true;
+						}
+					}
+					BasicHashTable::Iterator tmp=rb.hashtable_iterator_;
+					rb.hashtable_iterator_.increase_cur_();
 				}
-				if(key_exit){
-					if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0){
-						produced_tuples++;
-						const unsigned copyed_bytes=state_.input_schema_left->copyTuple(tuple_in_hashtable,result_tuple);
-						state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
-					}
-					else{
-						atomicPushRemainingBlock(rb);
-						free(joinedTuple);
-						return true;
-					}
-				}
-				BasicHashTable::Iterator tmp=rb.hashtable_iterator_;
-				rb.hashtable_iterator_.increase_cur_();
-			}
-			rb.blockstream_iterator->increase_cur_();
-			consumed_tuples_from_right++;
+				rb.blockstream_iterator->increase_cur_();
+				consumed_tuples_from_right++;
 
-			if((tuple_from_right_child=rb.blockstream_iterator->currentTuple())){
-				bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash);
-				hashtable->placeIterator(rb.hashtable_iterator_,bn);
+				if((tuple_from_right_child=rb.blockstream_iterator->currentTuple())){
+					bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash);
+					hashtable->placeIterator(rb.hashtable_iterator_,bn);
+				}
+			}
+			AtomicPushFreeBlockStream(rb.bsb_right_);
+		}
+		rb.bsb_right_=AtomicPopFreeBlockStream();//1 1 1
+		rb.bsb_right_->setEmpty();
+		rb.hashtable_iterator_=hashtable->CreateIterator();
+		if(state_.child_right->next(rb.bsb_right_)==false){
+			if(block->Empty()==true){
+				AtomicPushFreeBlockStream(rb.bsb_right_);
+				free(joinedTuple);
+				printf("****join next produces %d tuples while consumed %d tuples from right child and %d tuples from left, hash table has %d tuples\n",produced_tuples,consumed_tuples_from_right,consumed_tuples_from_left,tuples_in_hashtable);
+				return false;
+			}
+			else{
+				AtomicPushFreeBlockStream(rb.bsb_right_);
+				free(joinedTuple);
+				return true;
 			}
 		}
-		AtomicPushFreeBlockStream(rb.bsb_right_);
-	}
-	rb.bsb_right_=AtomicPopFreeBlockStream();//1 1 1
-	rb.bsb_right_->setEmpty();
-	rb.hashtable_iterator_=hashtable->CreateIterator();
-	if(state_.child_right->next(rb.bsb_right_)==false){
-		if(block->Empty()==true){
-			AtomicPushFreeBlockStream(rb.bsb_right_);
-			free(joinedTuple);
-			printf("****join next produces %d tuples while consumed %d tuples from right child and %d tuples from left, hash table has %d tuples\n",produced_tuples,consumed_tuples_from_right,consumed_tuples_from_left,tuples_in_hashtable);
-			return false;
+		rb.blockstream_iterator=rb.bsb_right_->createIterator();
+		if((tuple_from_right_child=rb.blockstream_iterator->currentTuple())){
+			bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash);
+			hashtable->placeIterator(rb.hashtable_iterator_,bn);
 		}
-		else{
-			AtomicPushFreeBlockStream(rb.bsb_right_);
-			free(joinedTuple);
-			return true;
-		}
-	}
-	rb.blockstream_iterator=rb.bsb_right_->createIterator();
-	if((tuple_from_right_child=rb.blockstream_iterator->currentTuple())){
-		bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash);
-		hashtable->placeIterator(rb.hashtable_iterator_,bn);
-	}
-	atomicPushRemainingBlock(rb);
+		atomicPushRemainingBlock(rb);
 	}
 	return next(block);
 }

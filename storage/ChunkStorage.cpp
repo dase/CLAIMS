@@ -72,9 +72,11 @@ InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(void* const &start,const 
 :start_(start),chunk_size_(chunk_size),number_of_blocks_(number_of_blocks),block_cur_(0),block_size_(block_size){
 }
 bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
-	if(block_cur_>=number_of_blocks_)
+	lock_.acquire();
+	if(block_cur_>=number_of_blocks_){
+		lock_.release();
 		return false;
-
+	}
 	/* calculate the block start address.*/
 	const char* block_start_address=(char*)start_+block_cur_*block_size_;
 
@@ -88,6 +90,7 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 	block->constructFromBlock(temp_block);
 
 	block_cur_++;
+	lock_.release();
 	return true;
 }
 InMemoryChunkReaderItetaor::~InMemoryChunkReaderItetaor(){
@@ -129,8 +132,11 @@ DiskChunkReaderIteraror::~DiskChunkReaderIteraror(){
 	FileClose(fd_);
 }
 bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block){
-	if(cur_block_>=number_of_blocks_)
+	lock_.acquire();
+	if(cur_block_>=number_of_blocks_){
+		lock_.release();
 		return false;
+	}
 	const unsigned posistion=lseek(fd_,0,SEEK_CUR);
 //	printf("***** the data is read from position:[ %d MB %d KB ]*******\n",posistion/1024/1024,(posistion/1024)%1024);
 //	sleep(1);
@@ -143,11 +149,13 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block){
 		cur_block_++;
 //		lseek(fd_,64*1024,SEEK_CUR);
 		block->constructFromBlock(*block_buffer_);
+		lock_.release();
 		return true;
 	}
 	else{
 		cur_block_++;
 		printf("failed to read one block, only %d bytes are read!,error=%s\n",bytes_num,strerror(errno));
+		lock_.release();
 		return false;
 	}
 
@@ -184,18 +192,21 @@ HDFSChunkReaderIterator::~HDFSChunkReaderIterator(){
 	hdfsDisconnect(fs_);
 }
 bool HDFSChunkReaderIterator::nextBlock(BlockStreamBase*& block){
-	if(cur_block_>=number_of_blocks_)
+	if(cur_block_>=number_of_blocks_){
+		lock_.acquire();
 		return false;
-
+	}
 	tSize bytes_num=hdfsPread(fs_,hdfs_fd_,cur_block_*block_size_,block_buffer_->getBlock(),CHUNK_SIZE);
 	if(bytes_num==block_size_){
 		printf("cur block=%d\n",cur_block_);
 		cur_block_++;
 		block->constructFromBlock(*block_buffer_);
+		lock_.release();
 		return true;
 	}
 	else{
 		cur_block_++;
+		lock_.release();
 		return false;
 	}
 

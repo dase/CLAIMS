@@ -10,6 +10,7 @@
 #include <string>
 #include <hdfs.h>
 #include "../Block/BlockStream.h"
+#include "../Block/synch.h"
 #include "StorageLevel.h"
 #include "../ids.h"
 class ChunkReaderIterator{
@@ -29,7 +30,7 @@ private:
 	unsigned number_of_blocks_;
 	unsigned block_size_;
 	unsigned block_cur_;
-
+	Lock lock_;
 
 };
 
@@ -49,6 +50,7 @@ private:
 	 */
 	Block* block_buffer_;
 	int fd_;
+	Lock lock_;
 };
 
 class HDFSChunkReaderIterator:public ChunkReaderIterator{
@@ -68,6 +70,7 @@ private:
 	Block* block_buffer_;
 	hdfsFS fs_;
 	hdfsFile hdfs_fd_;
+	Lock lock_;
 };
 
 class ChunkStorage {
