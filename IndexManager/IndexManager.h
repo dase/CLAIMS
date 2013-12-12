@@ -8,6 +8,7 @@
 #ifndef INDEXMANAGER_H_
 #define INDEXMANAGER_H_
 
+
 class IndexManager {
 public:
 	IndexManager();
