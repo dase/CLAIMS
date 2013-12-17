@@ -82,6 +82,9 @@ protected:
 };
 
 class BlockStreamFix:public BlockStreamBase {
+	struct tail_info{
+		unsigned tuple_count;
+	};
 public:
 	BlockStreamFix(unsigned block_size,unsigned tuple_size);
 	virtual ~BlockStreamFix();
@@ -117,9 +120,8 @@ public:
 	/* construct the BlockStream from a storage level block,
 	 * which last four bytes indicate the number of tuples in the block.*/
 	void constructFromBlock(const Block& block);
+
 protected:
-//	char* data_;
-//	unsigned block_size_;
 	char* free_;
 	unsigned tuple_size_;
 public:
