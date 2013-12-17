@@ -39,8 +39,8 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 				chunk_info.length=CHUNK_SIZE;
 				if(BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(chunk_id_,chunk_info)){
 					/* there is enough memory storage space, so the storage level can be shifted.*/
-//					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
-					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
+					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
+//					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
 					if(chunk_info.length==-1){
 //						TODO:BlockManager::getInstance()->getMemoryChunkStore()->applyChunk()
 						return 0;

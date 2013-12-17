@@ -62,7 +62,7 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -81,7 +81,7 @@ static int testGenerateIteratorTree(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
 
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -158,7 +158,7 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
 
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",1);	//G0
 
 
 
@@ -188,7 +188,7 @@ static int testGenerateIteratorTree(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -400,14 +400,14 @@ static int testGenerateIteratorTree(){
 //		cin>>input;
 
 
-		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(2));
-		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(2));
+		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
 
-		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(3));
+		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(1));
 
-		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(3));
+		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(1));
 
 		Filter::Condition filter_condition_1;
 		const int trade_date=20101008;
@@ -448,7 +448,7 @@ static int testGenerateIteratorTree(){
 		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
 //		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
 //		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
-		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 		std::vector<EqualJoin::JoinPair> cj_payload_join_pari_list;
 		cj_payload_join_pari_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_1->getAttribute("row_id")));
@@ -461,25 +461,25 @@ static int testGenerateIteratorTree(){
 
 
 		std::vector<Attribute> group_by_attributes;
-//		group_by_attributes.push_back(table_1->getAttribute("order_no"));
-//		group_by_attributes.push_back(table_2->getAttribute("entry_date"));
-//		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
-//		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
-//		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
+		group_by_attributes.push_back(table_1->getAttribute("order_no"));
+		group_by_attributes.push_back(table_2->getAttribute("entry_date"));
+		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
+		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
+		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 //		group_by_attributes.push_back(table_2->getAttribute("order_price"));
 //		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
 //		group_by_attributes.push_back(table_1->getAttribute("order_type"));
 //		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
 //		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
-		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
+//		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 		std::vector<Attribute> aggregation_attributes;
-//		aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
-		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
+		aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
+//		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
 
 //
 
@@ -491,7 +491,7 @@ static int testGenerateIteratorTree(){
 
 		int c=1;
 		while(c==1){
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 
 //						executable_query_plan->open();
 //			while(executable_query_plan->next(0));
