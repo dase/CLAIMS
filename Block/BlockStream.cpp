@@ -22,7 +22,7 @@ void BlockStreamFix::setEmpty(){
 }
 
 
-BlockStreamBase* BlockStreamBase::createBlock(Schema* schema,unsigned block_size){
+BlockStreamBase* BlockStreamBase::createBlock(Schema* schema,unsigned block_size) {
 	if(schema->getSchemaType()==Schema::fixed){
 		return new BlockStreamFix(block_size,schema->getTupleMaxSize());
 	}
@@ -67,6 +67,12 @@ void BlockStreamFix::copyBlock(void* addr, unsigned length){
 	assert(length<=BlockSize);
 	memcpy(start,addr,length);
 	free_=start+length;
+}
+void BlockStreamFix::deepCopy(const Block* block){
+	assert(this->BlockSize>=block->getsize());
+	memcpy(start,block->getBlock(),block->getsize());
+	this->tuple_size_=((BlockStreamFix*)block)->tuple_size_;
+	this->free_=start+tuple_size_*((BlockStreamFix*)block)->getTuplesInBlock();
 }
 
 bool BlockStreamFix::Empty() const{

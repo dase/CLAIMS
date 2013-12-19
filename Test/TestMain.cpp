@@ -7,11 +7,12 @@
 
 #include "../LogicalQueryPlan/Test/testGenerateIteratorTree.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/projectionScan.cpp"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/iterator_test.cpp"
 #include "../Executor/Test/Executor.cpp"
 //#include "hashtable_test.cpp"
 int main(){
-	return testGenerateIteratorTree();
-//	return testProjectionScan();
+//	return testGenerateIteratorTree();
+	return iterator_test();
 //	return testIteratorExecutor();
 //	return hashtable_test();
 }
