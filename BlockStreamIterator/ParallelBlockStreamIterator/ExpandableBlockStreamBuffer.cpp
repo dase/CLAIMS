@@ -65,6 +65,7 @@ bool ExpandableBlockStreamBuffer::close(){
 	while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
 		deallocateBlockStream(block_to_deallocate);
 	}
+	return true;
 }
 bool ExpandableBlockStreamBuffer::createBlockStream(BlockStreamBase*& target)const{
 	//TODO: the block allocation should apply for the memory budget from the buffer manager first.
