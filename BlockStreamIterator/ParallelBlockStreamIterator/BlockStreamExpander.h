@@ -17,7 +17,7 @@ public:
 	class State{
 	public:
 		friend class BlockStreamExpander;
-		State(Schema* schema,BlockStreamIteratorBase* child,unsigned thread_count,unsigned block_size, unsigned block_count_in_buffer);
+		State(Schema* schema,BlockStreamIteratorBase* child,unsigned thread_count,unsigned block_size, unsigned block_count_in_buffer=10);
 		State(){};
 	public:
 		Schema* schema_;

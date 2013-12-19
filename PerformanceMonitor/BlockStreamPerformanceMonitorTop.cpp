@@ -39,7 +39,7 @@ bool BlockStreamPerformanceMonitorTop::next(BlockStreamBase*){
 	if(state_.child_->next(block_)){
 		BlockStreamBase::BlockStreamTraverseIterator* it=block_->createIterator();
 		while(it->nextTuple()){
-			tuplecount_++;
+//			tuplecount_++;
 //			if(rand()%10000<3){
 //				printf("partition value:%d",state_.schema_->getcolumn(partition_index).operate->ge)
 //			}
