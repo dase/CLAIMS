@@ -15,11 +15,14 @@
 #include "../../Catalog/ProjectionBinding.h"
 #include "../Filter.h"
 #include "../Aggregation.h"
+#include "../Buffer.h"
+#include "../../utility/rdtsc.h"
 using namespace std;
 static int testGenerateIteratorTree(){
 	int master;
 //	cout<<"Master(0) or Slave(others)"<<endl;
 //	cin>>master;
+	printf("~!!!!!!\n");
 	printf("Master(0) or Slave(others)??\n");
 	scanf("%d",&master);
 	if(master!=0){
@@ -414,7 +417,7 @@ static int testGenerateIteratorTree(){
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,&trade_date);
 		const int sec_code=600036;
 		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
-		const int order_type=10;
+		const int order_type=1;
 		filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,&order_type);
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
@@ -439,7 +442,9 @@ static int testGenerateIteratorTree(){
 		LogicalOperator* filter_sb_payload=new Filter(filter_condition_sb_payload,sb_payload_scan);
 
 
-
+		LogicalOperator* buffer1=new Buffer(filter_1);
+		LogicalOperator* buffer2=new Buffer(filter_2);
+//		Buffer
 
 
 		std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
@@ -448,7 +453,7 @@ static int testGenerateIteratorTree(){
 		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
 //		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
 //		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
-		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,buffer1,buffer2);
 
 		std::vector<EqualJoin::JoinPair> cj_payload_join_pari_list;
 		cj_payload_join_pari_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_1->getAttribute("row_id")));
@@ -466,10 +471,10 @@ static int testGenerateIteratorTree(){
 		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
 		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
 		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
-//		group_by_attributes.push_back(table_2->getAttribute("order_price"));
-//		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
-//		group_by_attributes.push_back(table_1->getAttribute("order_type"));
-//		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
+		group_by_attributes.push_back(table_2->getAttribute("order_price"));
+		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
+		group_by_attributes.push_back(table_1->getAttribute("order_type"));
+		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
 //		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
@@ -485,10 +490,13 @@ static int testGenerateIteratorTree(){
 
 		const NodeID collector_node_id=0;
 		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+		unsigned long long int timer_start=curtick();
+
 		root->getDataflow();
 		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
 
+		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 		int c=1;
 		while(c==1){
 			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");

@@ -11,8 +11,8 @@
 #include "../Executor/Test/Executor.cpp"
 //#include "hashtable_test.cpp"
 int main(){
-//	return testGenerateIteratorTree();
-	return iterator_test();
+	return testGenerateIteratorTree();
+//	return iterator_test();
 //	return testIteratorExecutor();
 //	return hashtable_test();
 }
