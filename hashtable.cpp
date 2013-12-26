@@ -106,4 +106,12 @@ BasicHashTable::Iterator::Iterator(const Iterator& r){
 	this->next=r.next;
 	this->tuplesize=r.tuplesize;
 }
+BasicHashTable::Iterator::~Iterator(){
+	this->buck_actual_size=0;
+	this->cur=0;
+	this->free=0;
+	this->next=0;
+	this->tuplesize=0;
+
+}
 

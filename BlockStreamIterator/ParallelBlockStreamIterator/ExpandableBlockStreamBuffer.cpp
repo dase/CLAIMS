@@ -29,6 +29,8 @@ ExpandableBlockStreamBuffer::State::State(Schema* input,BlockStreamIteratorBase*
 }
 bool ExpandableBlockStreamBuffer::open(const PartitionOffset& part_off){
 	//TODO: expandable
+	state_.partition_offset_=part_off;
+
 	if (sema_open_.try_wait()) {
 		block_buffer_iterator_=block_buffer_.createIterator();
 		open_finished_ = true;
@@ -65,6 +67,7 @@ bool ExpandableBlockStreamBuffer::close(){
 	while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
 		deallocateBlockStream(block_to_deallocate);
 	}
+	state_.child_->close();
 	return true;
 }
 bool ExpandableBlockStreamBuffer::createBlockStream(BlockStreamBase*& target)const{
