@@ -65,7 +65,7 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -84,7 +84,7 @@ static int testGenerateIteratorTree(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);	//G1
 
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -161,7 +161,7 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
 
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",1);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
 
 
 
@@ -191,7 +191,7 @@ static int testGenerateIteratorTree(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -391,10 +391,6 @@ static int testGenerateIteratorTree(){
 		}
 		/////////////////////////////////////////
 
-//		ProjectionBinding *pb=new ProjectionBinding();
-//		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
-//		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(0)->getPartitioner(),MEMORY);
-
 	//	sleep(1);
 //		cout<<"ready(?)"<<endl;
 		printf("ready(?)\n");
@@ -402,15 +398,21 @@ static int testGenerateIteratorTree(){
 		scanf("%d",&input);
 //		cin>>input;
 
+		ProjectionBinding *pb=new ProjectionBinding();
+		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
+		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(0)->getPartitioner(),MEMORY);
 
-		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
-		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(1)->getPartitioner(),MEMORY);
+		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(1)->getPartitioner(),MEMORY);
+
+		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(2));
+		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(2));
 
 
 
-		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(1));
+		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(3));
 
-		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(1));
+		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(3));
 
 		Filter::Condition filter_condition_1;
 		const int trade_date=20101008;
@@ -452,8 +454,9 @@ static int testGenerateIteratorTree(){
 		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
 		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
 //		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
-//		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
-		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,buffer1,buffer2);
+		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+//		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+//		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,buffer1,buffer2);
 
 		std::vector<EqualJoin::JoinPair> cj_payload_join_pari_list;
 		cj_payload_join_pari_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_1->getAttribute("row_id")));
@@ -499,10 +502,7 @@ static int testGenerateIteratorTree(){
 		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 		int c=1;
 		while(c==1){
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
-
-//						executable_query_plan->open();
-//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;

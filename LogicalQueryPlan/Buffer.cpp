@@ -17,7 +17,8 @@ Buffer::~Buffer() {
 	// TODO Auto-generated destructor stub
 }
 Dataflow Buffer::getDataflow(){
-	return child_->getDataflow();
+	dataflow_=child_->getDataflow();
+	return dataflow_;
 }
 BlockStreamIteratorBase* Buffer::getIteratorTree(const unsigned & blocksize){
 	BlockStreamIteratorBase* child=child_->getIteratorTree(blocksize);

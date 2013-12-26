@@ -46,7 +46,7 @@ int ExchangeTracker::AskForSocketConnectionInfo(unsigned long long int exchange_
 	Theron::Catcher<Message256> ResultCatcher;
 	receiver->RegisterHandler(&ResultCatcher,&Theron::Catcher<Message256>::Push);
 	bool send_result=framework->Send(exchange_id,receiver->GetAddress(),Theron::Address(("ExchangeTrackerActor://"+target_ip).c_str()));
-	unsigned Timeout=3000;	//timeout in millisecond
+	unsigned Timeout=30000;	//timeout in millisecond
 
 	if(receiver->TimeOutWait(1,Timeout)==0){
 		/**

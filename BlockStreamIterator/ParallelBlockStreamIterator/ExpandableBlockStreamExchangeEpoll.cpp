@@ -39,11 +39,13 @@ ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State sta
 	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	assert(state.partition_key_index<100);
+	winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 	sem_open_.set_value(1);
 	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
+	winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 	// TODO Auto-generated destructor stub
@@ -52,7 +54,7 @@ ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
 
 	if(sem_open_.try_wait()){
-
+		winner_thread++;
 		nexhausted_lowers=0;
 		nlowers=state.lower_ip_list.size();
 
@@ -366,10 +368,11 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					}
 					status=getnameinfo(&in_addr,in_len,hbuf,sizeof(hbuf),sbuf,sizeof(sbuf),NI_NUMERICHOST|NI_NUMERICSERV);
 					if(status==0){
-//						printf("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
+						printf("Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n", infd, hbuf, sbuf,Pthis->state.exchange_id);
 						Pthis->logging_->log("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
+						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_ip_list.size());
 
 					}
 					/*Make the incoming socket non-blocking and add it to the list of fds to monitor.*/

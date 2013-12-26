@@ -102,6 +102,7 @@ private:
 	//debug
 	unsigned consumed_block[100];
 	unsigned received_block[100];
+	unsigned winner_thread;
 
 };
 

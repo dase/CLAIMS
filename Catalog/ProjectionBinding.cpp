@@ -32,11 +32,11 @@ bool ProjectionBinding::BindingEntireProjection(Partitioner* part,const StorageL
 			unsigned buget=part->getPartitionDataSize(i);
 			unsigned failures=0;
 			while(!check_passed){
-//				if(target==0){
-//					allocate_cur=(allocate_cur+1)%node_id_list.size();
-//					target=node_id_list[allocate_cur];
-//					continue;
-//				}
+				if(target==0){
+					allocate_cur=(allocate_cur+1)%node_id_list.size();
+					target=node_id_list[allocate_cur];
+					continue;
+				}
 				switch(desriable_storage_level){
 					case MEMORY:{
 						if(rmm->ApplyMemoryBuget(target,buget)==true){
