@@ -42,7 +42,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 			std::cout<<"cannot create thread!"<<std::endl;
 			return false;
 		}
-		expanded_thread_list_.push_back(tid);
+		expanded_thread_list_.insert(tid);
 	}
 	return true;
 }
@@ -81,8 +81,12 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		block_count++;
 	}
 	/*TODO: the following increment may need to use atomic add for the thread-safety.*/
+	Pthis->lock_.lock();
 	Pthis->finished_thread_count_++;
-	printf("Thread %d generated %d blocks.\n",thread_id,block_count);
+
+	printf("Thread %x generated %d blocks.\n",pthread_self(),block_count);
+	Pthis->expanded_thread_list_.erase(pthread_self());
+	Pthis->lock_.unlock();
 	return 0;
 
 }

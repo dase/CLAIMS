@@ -11,8 +11,10 @@
 #include <string>
 #include <libconfig.h++>
 #include <iostream>
+#include <set>
 #include "../Message.h"
 #include "../Logging.h"
+#include "../lock.h"
 using namespace std;
 
 
@@ -46,7 +48,8 @@ private:
 	Theron::Framework* framework;
 	Theron::EndPoint* endpoint;
 	std::string slave_id;
-
+	SpineLock lock_;
+	std::set<pthread_t> busy_thread_list_;
 };
 
 #endif /* ITERATOREXECUTORSLAVE_H_ */

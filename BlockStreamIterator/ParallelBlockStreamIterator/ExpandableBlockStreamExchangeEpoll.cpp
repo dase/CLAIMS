@@ -302,12 +302,16 @@ bool ExpandableBlockStreamExchangeEpoll::CreateReceiverThread(){
 		return false;
 	}
 
-	pthread_create(&debug_tid,NULL,debug,this);
+//	pthread_create(&debug_tid,NULL,debug,this);
 	return true;
 }
 void ExpandableBlockStreamExchangeEpoll::CancelReceiverThread(){
 	pthread_cancel(receiver_tid);
-	pthread_cancel(debug_tid);
+	void *res=0;
+	while(res!=PTHREAD_CANCELED){
+		pthread_join(receiver_tid,&res);
+	}
+//	pthread_cancel(debug_tid);
 }
 
 void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
