@@ -80,12 +80,25 @@ void IteratorExecutorSlave::ExecuteIteratorActor::progation(const int &message,c
 void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
 
 	pthread_t thread;
-	pthread_create(&thread,NULL,run_iterator,it);
+	void** arg=new void*[2];
+	arg[0]=it;
+	arg[1]=this;
+	pthread_create(&thread,NULL,run_iterator,arg);
+	lock_.lock();
+	busy_thread_list_.insert(thread);
+	lock_.unlock();
+
 	logging_->log("A new Running thread is created!");
 }
 void* IteratorExecutorSlave::run_iterator(void* arg){
-	IteratorMessage* it=(IteratorMessage*)arg;
+	IteratorMessage* it=(IteratorMessage*)(*(void**)arg);
+	IteratorExecutorSlave* Pthis=(IteratorExecutorSlave*)(*((void**)arg+1));
 	it->run();
 	it->~IteratorMessage();
 	printf("A iterator tree is successfully executed!\n");
+	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
+	Pthis->lock_.lock();
+	Pthis->busy_thread_list_.erase(pthread_self());
+	Pthis->lock_.unlock();
+	free((void**)arg);
 }

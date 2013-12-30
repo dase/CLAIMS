@@ -211,8 +211,15 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 //	cur_block_stream_list_
 //	buffer
 
-	printf("The sender thread is killed in the close() function!");
+	printf("The sender thread is killed in the close() function! state=%d\n",state.exchange_id);
 	pthread_cancel(sender_tid);
+
+	void* res;
+
+	pthread_join(sender_tid,&res);
+	if(res!=PTHREAD_CANCELED)
+		printf("thread is not canceled!\n");
+
 //	pthread_cancel(debug_tid);
 
 	/* close the socket connections to the uppers */

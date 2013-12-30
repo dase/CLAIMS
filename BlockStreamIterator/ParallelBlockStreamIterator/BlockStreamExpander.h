@@ -9,9 +9,11 @@
 #define BLOCKSTREAMEXPANDER_H_
 #include <pthread.h>
 #include <vector>
+#include <set>
 #include "../BlockStreamIteratorBase.h"
 #include "../../Schema/Schema.h"
 #include "../../Block/BlockStreamBuffer.h"
+#include "../../lock.h"
 class BlockStreamExpander:public BlockStreamIteratorBase {
 public:
 	class State{
@@ -45,9 +47,10 @@ private:
 
 private:
 	State state_;
-	std::vector<pthread_t> expanded_thread_list_;
+	std::set<pthread_t> expanded_thread_list_;
 	BlockStreamBuffer* block_stream_buffer_;
 	volatile unsigned finished_thread_count_;
+	SpineLock lock_;
 	/*
 	 * The following code is for boost serialization.
 	 */
