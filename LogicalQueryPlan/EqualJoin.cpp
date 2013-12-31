@@ -225,7 +225,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 	 * a relatively large bucket size could reduce the number of overflowing buckets and
 	 * avoid the random memory access caused by acceesing overflowing buckets.
 	 */
-	state.ht_bucketsize=64;
+	state.ht_bucketsize=128;
 	state.output_schema=getSchema(dataflow_->attribute_list_);
 
 	state.joinIndex_left=getLeftJoinKeyIndexList();
@@ -249,7 +249,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=10;
 			expander_state.block_size_=block_size;
-			expander_state.thread_count_=3;
+			expander_state.thread_count_=5;
 			expander_state.child_=child_iterator_left;
 			expander_state.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);

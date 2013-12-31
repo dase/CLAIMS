@@ -60,6 +60,20 @@ bool BlockStreamExpander::next(BlockStreamBase* block){
 }
 
 bool BlockStreamExpander::close(){
+
+	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
+		pthread_cancel(*it);
+		void* res;
+
+		pthread_join(*it,&res);
+		if(res!=PTHREAD_CANCELED)
+			assert(false);
+		printf("A expander thread is killed before close!\n");
+	}
+	while(!expanded_thread_list_.empty()){
+		expanded_thread_list_.begin();
+	}
+
 	block_stream_buffer_->~BlockStreamBuffer();
 
 	state_.child_->close();

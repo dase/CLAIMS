@@ -399,11 +399,11 @@ static int testGenerateIteratorTree(){
 //		cin>>input;
 
 		ProjectionBinding *pb=new ProjectionBinding();
-		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
-		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(0)->getPartitioner(),MEMORY);
+		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(2)->getPartitioner(),MEMORY);
+		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(2)->getPartitioner(),MEMORY);
 
-		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(1)->getPartitioner(),MEMORY);
-		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(1)->getPartitioner(),MEMORY);
+		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
+		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
 
 		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(2));
 		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(2));
@@ -415,21 +415,21 @@ static int testGenerateIteratorTree(){
 		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(3));
 
 		Filter::Condition filter_condition_1;
+		const int order_type=11;
+		filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,&order_type);
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,&trade_date);
 		const int sec_code=600036;
 		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
-		const int order_type=1;
-		filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,&order_type);
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 		Filter::Condition filter_condition_2;
+		const int order_type_=11;
+		filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,&entry_date);
 		const int sec_code_=600036;
 		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code_);
-		const int order_type_=1;
-		filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
 		LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
 
 
@@ -478,6 +478,9 @@ static int testGenerateIteratorTree(){
 		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
 		group_by_attributes.push_back(table_1->getAttribute("order_type"));
 		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
+
+
+
 //		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
@@ -486,22 +489,25 @@ static int testGenerateIteratorTree(){
 //		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
 		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 
-		root->getDataflow();
-		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//		root->getDataflow();
+
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
 
-		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
+			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+			printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
+
 		int c=1;
 		while(c==1){
+			timer_start=curtick();
 			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
