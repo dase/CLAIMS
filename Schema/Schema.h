@@ -25,7 +25,7 @@ public:
 
 	inline virtual unsigned getTupleActualSize(void* tuple) const=0;
 	virtual void getColumnValue(unsigned index,void* src, void* desc)=0;
-	inline virtual void* getColumnAddess(unsigned index,const void* const & column_start) const __attribute__((always_inline)) =0;
+	inline virtual void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline)) =0;
 	inline virtual unsigned copyTuple(void* src, void* desc) const =0;
 	unsigned getncolumns();
 	inline column_type getcolumn(const unsigned index) const {

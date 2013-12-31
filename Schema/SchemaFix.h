@@ -34,7 +34,7 @@ public:
 		return totalsize;
 	}
 	void getColumnValue(unsigned index, void* src, void* desc);
-	inline void* getColumnAddess(unsigned index,const void* const & column_start) const __attribute__((always_inline))
+	inline void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline))
 	{
 		return (char*)column_start+accum_offsets[index];
 	}

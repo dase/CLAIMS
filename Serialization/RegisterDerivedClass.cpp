@@ -48,6 +48,7 @@
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBuffer.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamTopN.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -99,4 +100,6 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamAggregationIterator*>(NULL));
 
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
+	ar.register_type(static_cast<BlockStreamTopN*>(NULL));
+
 }

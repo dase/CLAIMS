@@ -13,14 +13,14 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(3);
+        barrier_=new Barrier(5);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 :open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(3);
+        barrier_=new Barrier(5);
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
@@ -132,6 +132,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		while(state_.child->next(bsb)){
 //			printf("Aggregation open consumes one block from child!\n");
 //			printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
+//			bsb->setEmpty();
+//			continue;
 				BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 				bsti->reset();
 

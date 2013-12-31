@@ -7,9 +7,11 @@
 
 #include "projectionScan.cpp"
 #include "Buffer.cpp"
+#include "TopN_test.cpp"
 static int iterator_test(){
 //	return testProjectionScan();
-	return testBuffer();
+//	return testBuffer();
+	return test_TopN();
 }
 
 
