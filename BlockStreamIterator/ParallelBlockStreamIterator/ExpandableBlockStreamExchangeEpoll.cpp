@@ -56,6 +56,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 	if(sem_open_.try_wait()){
 		winner_thread++;
 		nexhausted_lowers=0;
+		this->partition_offset=partition_offset;
 		nlowers=state.lower_ip_list.size();
 
 		for(unsigned i=0;i<nlowers;i++){
@@ -82,7 +83,8 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id);
 		}
 
-		if(isMaster()){
+//		if(isMaster()){
+		if(partition_offset==0){
 			/*TODO: According to a bug reported by dsc, the master exchangeupper should check whether other
 			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fails to connection to the
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
@@ -163,7 +165,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 
 
-	Environment::getInstance()->getExchangeTracker()->LogoutExchange(state.exchange_id);
+	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state.exchange_id,partition_offset));
 
 	return true;
 }
@@ -233,7 +235,7 @@ bool ExpandableBlockStreamExchangeEpoll::RegisterExchange(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	std::ostringstream port_str;
 	port_str<<socket_port;
-	return et->RegisterExchange(state.exchange_id,port_str.str());
+	return et->RegisterExchange(ExchangeID(state.exchange_id,partition_offset),port_str.str());
 }
 bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();

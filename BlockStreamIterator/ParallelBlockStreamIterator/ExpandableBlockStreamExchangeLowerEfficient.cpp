@@ -19,6 +19,7 @@
 #include "../../Environment.h"
 #include "../../Logging.h"
 #include "../../utility/ThreadSafe.h"
+#include "../../ids.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
 :state(state){
 	// TODO Auto-generated constructor stub
@@ -76,7 +77,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
-		if((upper_port=et->AskForSocketConnectionInfo(state.exchange_id,state.upper_ip_list[upper_id]))==0){
+		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id]))==0){
 			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
 		}
 		connected_uppers++;
@@ -219,7 +220,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	pthread_join(sender_tid,&res);
 	if(res!=PTHREAD_CANCELED)
 		printf("thread is not canceled!\n");
-
+	sender_tid=0;
 //	pthread_cancel(debug_tid);
 
 	/* close the socket connections to the uppers */
@@ -313,8 +314,8 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 			perror("recv error!\n");
 		}
 		FileClose(socket_fd_upper_list[i]);
-//		printf("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
-		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
+		printf("Receive the close notifaction from the upper[%s], the byte='%c' state=%d\n",state.upper_ip_list[i].c_str(),byte,state.exchange_id);
+//		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
 
 

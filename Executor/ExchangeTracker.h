@@ -13,21 +13,23 @@
 #ifndef EXCHANGETRACKER_H_
 #define EXCHANGETRACKER_H_
 #include <map>
+#include <boost/unordered_map.hpp>
 #include "../AdaptiveEndPoint.h"
 #include "../Logging.h"
 #include "../Message.h"
+#include "../ids.h"
 class ExchangeTracker {
 public:
 	ExchangeTracker();
 	virtual ~ExchangeTracker();
-	bool RegisterExchange(unsigned long long int exchange_id, std::string port);
-	void LogoutExchange(const unsigned long long int &exchange_id);
-	int AskForSocketConnectionInfo(unsigned long long int exchange_id,std::string target_ip);
+	bool RegisterExchange(ExchangeID exchange_id, std::string port);
+	void LogoutExchange(const ExchangeID &exchange_id);
+	int AskForSocketConnectionInfo(ExchangeID exchange_id,std::string target_ip);
 private:
 	Theron::EndPoint* endpoint;
 	Theron::Framework* framework;
 	Theron::Actor* actor;
-	std::map<unsigned long long int,std::string> id_to_port;
+	boost::unordered_map<ExchangeID,std::string> id_to_port;
 	Logging* logging_;
 
 
@@ -40,7 +42,7 @@ private:
 	public:
 		ExchangeTrackerActor(ExchangeTracker* et,Theron::Framework* framework, const char* Name);
 	private:
-		void AskForConnectionInfo(const unsigned long long int &exchange_id, const Theron::Address from);
+		void AskForConnectionInfo(const ExchangeID &exchange_id, const Theron::Address from);
 
 	private:
 		ExchangeTracker* et;
