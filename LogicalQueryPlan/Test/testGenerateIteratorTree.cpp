@@ -22,7 +22,7 @@ static int testGenerateIteratorTree(){
 	int master;
 //	cout<<"Master(0) or Slave(others)"<<endl;
 //	cin>>master;
-	printf("~!!!!!!\n");
+	printf("~!OKOKO!!!!!\n");
 	printf("Master(0) or Slave(others)??\n");
 	scanf("%d",&master);
 	if(master!=0){
@@ -65,7 +65,7 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",2);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -84,7 +84,7 @@ static int testGenerateIteratorTree(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",2);	//G1
 
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -161,7 +161,7 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
 
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",2);	//G0
 
 
 
@@ -191,7 +191,7 @@ static int testGenerateIteratorTree(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",2);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -398,24 +398,24 @@ static int testGenerateIteratorTree(){
 		scanf("%d",&input);
 //		cin>>input;
 
-		ProjectionBinding *pb=new ProjectionBinding();
-		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(2)->getPartitioner(),MEMORY);
-		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(2)->getPartitioner(),MEMORY);
+//		ProjectionBinding *pb=new ProjectionBinding();
+//		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
+//		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(2)->getPartitioner(),MEMORY);
+//
+//		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
+//		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
 
-		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
-		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
-
-		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(2));
-		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(2));
+		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
 
-		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(3));
+		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(1));
 
-		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(3));
+		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(1));
 
 		Filter::Condition filter_condition_1;
-		const int order_type=11;
+		const int order_type=1;
 		filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,&order_type);
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,&trade_date);
@@ -424,7 +424,7 @@ static int testGenerateIteratorTree(){
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 		Filter::Condition filter_condition_2;
-		const int order_type_=11;
+		const int order_type_=1;
 		filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,&entry_date);
@@ -495,7 +495,7 @@ static int testGenerateIteratorTree(){
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_payload_join,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 
 //		root->getDataflow();
@@ -508,7 +508,7 @@ static int testGenerateIteratorTree(){
 		int c=1;
 		while(c==1){
 			timer_start=curtick();
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;

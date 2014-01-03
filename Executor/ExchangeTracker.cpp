@@ -27,21 +27,21 @@ ExchangeTracker::ExchangeTracker() {
 ExchangeTracker::~ExchangeTracker() {
 	// TODO Auto-generated destructor stub
 }
-bool ExchangeTracker::RegisterExchange(unsigned long long int id, std::string port){
+bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port){
 	if(id_to_port.find(id)!=id_to_port.end()){
 		logging_->log("RegisterExchange fails because the exchange id has already existed.");
 		return false;
 	}
 	id_to_port[id]=port;
-	logging_->log("New exchange with id=%d (port %s)is successfully registered!",id,port.c_str());
+	printf("New exchange with id=%d (port %s)is successfully registered!",id.exchange_id,port.c_str());
 	return true;
 }
-void ExchangeTracker::LogoutExchange(const unsigned long long int &id){
+void ExchangeTracker::LogoutExchange(const ExchangeID &id){
 	id_to_port.erase(id_to_port.find(id));
-	logging_->log("Exchange with id=%d is logged out!",id);
+	logging_->log("Exchange with id=(%d,%d) is logged out!",id.exchange_id,id.partition_offset);
 }
 
-int ExchangeTracker::AskForSocketConnectionInfo(unsigned long long int exchange_id,std::string target_ip){
+int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::string target_ip){
 	TimeOutReceiver* receiver=new TimeOutReceiver(endpoint);
 	Theron::Catcher<Message256> ResultCatcher;
 	receiver->RegisterHandler(&ResultCatcher,&Theron::Catcher<Message256>::Push);
@@ -73,7 +73,7 @@ ExchangeTracker::ExchangeTrackerActor::ExchangeTrackerActor(ExchangeTracker* et,
 	RegisterHandler(this,&ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo);
 }
 
-void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const unsigned long long int &exchange_id, const Theron::Address from){
+void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const ExchangeID &exchange_id, const Theron::Address from){
 	et->logging_->log("%s is asking for the socket connecton info!",from.AsString());
 
 	if(et->id_to_port.find(exchange_id)!=et->id_to_port.end()){
@@ -84,7 +84,7 @@ void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const unsigned 
 	}
 	else{
 		Send(NodeConnectionMessage::serialize(NodeConnectionMessage("0","0")),from);
-		et->logging_->elog("No exchange matched for %lld!",exchange_id);
+		et->logging_->elog("No exchange matched for %lld!",exchange_id.exchange_id);
 	}
 
 

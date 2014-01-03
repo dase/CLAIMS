@@ -177,7 +177,7 @@ public:
 			it.cur=0;
 			it.free=0;
 			it.next=0;
-			return false;
+			return true;
 		}
 		it.cur = start;
 		it.free = *(void**)((char*)start + buck_actual_size_);

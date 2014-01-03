@@ -13,7 +13,7 @@
 
 #include <boost/serialization/utility.hpp>
 #include "BlockStreamIteratorBase.h"
-
+#include "../ids.h"
 class BlockStreamExchangeLowerBase: public BlockStreamIteratorBase {
 public:
 	BlockStreamExchangeLowerBase();
@@ -22,7 +22,7 @@ public:
 	virtual bool next(BlockStreamBase* )=0;
 	virtual bool close()=0;
 protected:
-	bool ConnectToUpper(const int &exchange_id,const std::string &ip,int &sock_fd) const;
+	bool ConnectToUpper(const ExchangeID &exchange_id,const std::string &ip,int &sock_fd) const;
 	void WaitingForNotification(const int &target_socket_fd) const;
 	void WaitingForCloseNotification(const int & target_socket_fd) const;
 private:

@@ -86,7 +86,7 @@ private:
 	semaphore sem_open_;
 	bool open_finished_;
 	unsigned nexhausted_lowers;
-
+	unsigned partition_offset;
 	BlockStreamBuffer* buffer;
 
 	/*the lower socket fd to the index*/

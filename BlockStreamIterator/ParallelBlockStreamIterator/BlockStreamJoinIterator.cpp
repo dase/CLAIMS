@@ -10,13 +10,13 @@
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(5);
+	barrier_=new Barrier(1);
 }
 
 BlockStreamJoinIterator::BlockStreamJoinIterator()
 :hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(5);
+	barrier_=new Barrier(1);
 }
 
 BlockStreamJoinIterator::~BlockStreamJoinIterator() {
