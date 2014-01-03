@@ -31,7 +31,7 @@ bool ExpandableBlockStreamExchangeMaterialized::open(const PartitionOffset& part
 		if(PrepareTheSocket()==false)
 			return false;
 
-		if(RegisterExchange(state_.exchange_id_)==false){
+		if(RegisterExchange(ExchangeID(state_.exchange_id_,0))==false){
 			Logging_ExpandableBlockStreamExchangeMaterialized("Register Exchange with ID=%l fails!",state_.exchange_id_);
 		}
 
@@ -84,7 +84,7 @@ bool ExpandableBlockStreamExchangeMaterialized::close(){
 
 	CloseTheSocket();
 
-	Environment::getInstance()->getExchangeTracker()->LogoutExchange(state_.exchange_id_);
+	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state_.exchange_id_,0));
 
 	return true;
 }

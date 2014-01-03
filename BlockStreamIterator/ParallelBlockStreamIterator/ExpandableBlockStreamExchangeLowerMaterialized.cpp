@@ -58,7 +58,7 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::open(const PartitionOffset&
 
 
 	for(unsigned upper_id=0;upper_id<state_.upper_ip_list_.size();upper_id++){
-		if(!ConnectToUpper(state_.exchange_id_,state_.upper_ip_list_[upper_id],socket_fd_upper_list_[upper_id])){
+		if(!ConnectToUpper(ExchangeID(state_.exchange_id_,0),state_.upper_ip_list_[upper_id],socket_fd_upper_list_[upper_id])){
 			return false;
 		}
 	}

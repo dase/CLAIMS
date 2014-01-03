@@ -22,9 +22,11 @@ MemoryChunkStore::~MemoryChunkStore() {
 bool MemoryChunkStore::applyChunk(ChunkID chunk_id, HdfsInMemoryChunk& chunk_info){
 	boost::unordered_map<ChunkID,HdfsInMemoryChunk>::const_iterator it=chunk_list_.find(chunk_id);
 	if(it!=chunk_list_.cend()){
+		printf("chunk id already exists!\n");
 		return false;
 	}
 	if(!BufferManager::getInstance()->applyStorageDedget(chunk_info.length)){
+		printf("not enough memory!!\n");
 		return false;
 	}
 	if((chunk_info.hook=memalign(cacheline_size,chunk_info.length))!=0){

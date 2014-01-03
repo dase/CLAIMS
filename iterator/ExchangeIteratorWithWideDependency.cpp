@@ -393,5 +393,5 @@ bool ExchangeIteratorWithWideDependency::RegisterExchange(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	std::ostringstream port_str;
 	port_str<<port;
-	return et->RegisterExchange(state.exchange_id,port_str.str());
+	return et->RegisterExchange(ExchangeID(state.exchange_id,0),port_str.str());
 }

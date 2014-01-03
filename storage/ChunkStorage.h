@@ -15,13 +15,15 @@
 #include "../ids.h"
 class ChunkReaderIterator{
 public:
-	ChunkReaderIterator(){};
+	ChunkReaderIterator(const ChunkID& chunk_id):chunk_id_(chunk_id){};
 	virtual bool nextBlock(BlockStreamBase* & block)=0;
 	virtual ~ChunkReaderIterator(){};
+public:
+	ChunkID chunk_id_;
 };
 class InMemoryChunkReaderItetaor:public ChunkReaderIterator{
 public:
-	InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size);
+	InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size,const ChunkID& chunk_id);
 	virtual ~InMemoryChunkReaderItetaor();
 	bool nextBlock(BlockStreamBase*& block);
 private:
@@ -30,6 +32,7 @@ private:
 	unsigned number_of_blocks_;
 	unsigned block_size_;
 	unsigned block_cur_;
+
 	Lock lock_;
 
 };
@@ -40,7 +43,7 @@ public:
 	virtual ~DiskChunkReaderIteraror();
 	bool nextBlock(BlockStreamBase*& block);
 private:
-	ChunkID chunk_id_;
+
 	unsigned chunk_size_;
 	unsigned number_of_blocks_;
 	unsigned block_size_;
@@ -59,7 +62,7 @@ public:
 	virtual ~HDFSChunkReaderIterator();
 	bool nextBlock(BlockStreamBase*& block);
 private:
-	ChunkID chunk_id_;
+
 	unsigned chunk_size_;
 	unsigned number_of_blocks_;
 	unsigned block_size_;

@@ -152,7 +152,7 @@ static size_t hash_value(const ChunkID& key){
 
 struct ExchangeID{
 	ExchangeID():exchange_id(0),partition_offset(0){};
-	ExchangeID(unsigned long long int exchange_id,unsigned partition_offset=0)
+	ExchangeID(unsigned long long int exchange_id,unsigned partition_offset)
 	:exchange_id(exchange_id),partition_offset(partition_offset){};
 	bool operator==(const ExchangeID& r)const{
 		return exchange_id==r.exchange_id&&partition_offset==r.partition_offset;

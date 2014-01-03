@@ -243,10 +243,10 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 		std::string ip=state.upper_ip_list[i];
 		/* Repeatedly ask node with ip for port information untile the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
-		while(et->AskForSocketConnectionInfo(state.exchange_id,ip)==0){
+		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,i),ip)==0){
 			usleep(1);
 		}
-		logging_->log("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
+		printf("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
 	}
 }
 bool ExpandableBlockStreamExchangeEpoll::isMaster(){
@@ -269,6 +269,7 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 			logging_->elog("Cannot send the serialized iterator tree to the remote node!\n");
 			return false;
 		}
+//		printf("***************************** send iterator to %d,%d*********************************\n",state.exchange_id,i);
 		EIEL->~BlockStreamIteratorBase();
 	}
 //	printf("AVG::%f\n",getSecond(start)/times);
@@ -442,9 +443,9 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					else{
 				Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
-						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>",Pthis->nexhausted_lowers);
+						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",Pthis->nexhausted_lowers,Pthis->state.exchange_id,Pthis->partition_offset);
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
-						Pthis->logging_->log("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s].",Pthis->lower_ip_array[socket_fd_index].c_str());
+						Pthis->logging_->log("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s] exchange=(%d,%d).\n",Pthis->lower_ip_array[socket_fd_index].c_str(),Pthis->state.exchange_id,Pthis->partition_offset);
 
 					}
 				}

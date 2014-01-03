@@ -70,7 +70,7 @@ bool BlockStreamExchangeBroadcast::open(const PartitionOffset& partition){
 		if(PrepareTheSocket()==false)
 			return false;
 		cout<<"-----------------+++++++++++++++++++++++++-----------------------"<<endl;
-		if(RegisterExchange(state_.exchange_id)==false){
+		if(RegisterExchange(ExchangeID(state_.exchange_id,0))==false){
 			Logging_ExchangeIteratorEager("Register Exchange with ID=%l fails!",state_.exchange_id);
 		}
 		cout<<"-----------------+++++++++++++++++++++++++-----------------------"<<endl;
@@ -130,7 +130,7 @@ bool BlockStreamExchangeBroadcast::close(){
 	delete[] lower_ip_array_;
 	CloseTheSocket();
 
-	Environment::getInstance()->getExchangeTracker()->LogoutExchange(state_.exchange_id);
+	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state_.exchange_id,0));
 
 	return true;
 }
