@@ -24,7 +24,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 			printf("current storage level: MEMORY\n");
 			HdfsInMemoryChunk chunk_info;
 			if(BlockManager::getInstance()->getMemoryChunkStore()->getChunk(chunk_id_,chunk_info))
-				return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
+				return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 			else
 				return 0;
 			break;
@@ -47,7 +47,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
-					return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
+					return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 				}
 				else{
 					/*
@@ -55,6 +55,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					 * TODO: swap algorithm.
 					 */
 					printf("Failed to get memory chunk budege!\n");
+					assert(false);
 				}
 			}
 //			return new HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
@@ -68,8 +69,8 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 std::string ChunkStorage::printCurrentStorageLevel()const{
 	return "";
 }
-InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size)
-:start_(start),chunk_size_(chunk_size),number_of_blocks_(number_of_blocks),block_cur_(0),block_size_(block_size){
+InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size,const ChunkID& chunk_id)
+:start_(start),chunk_size_(chunk_size),number_of_blocks_(number_of_blocks),block_cur_(0),block_size_(block_size),ChunkReaderIterator(chunk_id){
 }
 bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 	lock_.acquire();
@@ -97,7 +98,7 @@ InMemoryChunkReaderItetaor::~InMemoryChunkReaderItetaor(){
 }
 
 DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,unsigned& chunk_size,const unsigned& block_size)
-:chunk_id_(chunk_id),chunk_size_(chunk_size),block_size_(block_size),cur_block_(0){
+:ChunkReaderIterator(chunk_id),chunk_size_(chunk_size),block_size_(block_size),cur_block_(0){
 	block_buffer_=new Block(block_size_);
 	fd_=FileOpen(chunk_id_.partition_id.getPathAndName().c_str(),O_RDONLY);
 	if(fd_==-1){
@@ -161,7 +162,7 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block){
 
 }
 HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id, unsigned& chunk_size,const unsigned& block_size)
-:chunk_id_(chunk_id),chunk_size_(chunk_size),block_size_(block_size),cur_block_(0){
+:ChunkReaderIterator(chunk_id),chunk_size_(chunk_size),block_size_(block_size),cur_block_(0){
 	block_buffer_=new Block(block_size_);
 	fs_=hdfsConnect(HDFS_N,9000);
 	hdfs_fd_=hdfsOpenFile(fs_,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);

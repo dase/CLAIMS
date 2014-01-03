@@ -72,8 +72,10 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		}
 		else{
 			/* the ChunkReaderIterator is exhausted, so we destructe it.*/
+
+//			printf("Chunk(%d,%d,%d,%d) is exhausted!\n",chunk_reader_iterator->chunk_id_.partition_id.projection_id.table_id,chunk_reader_iterator->chunk_id_.partition_id.projection_id.projection_off,chunk_reader_iterator->chunk_id_.partition_id.partition_off,chunk_reader_iterator->chunk_id_.chunk_off);
 			chunk_reader_iterator->~ChunkReaderIterator();
-			printf("One Chunk is exhausted!\n");
+
 		}
 	}
 	/* there isn't any unused ChunkReaderIterator or the ChunkReaderIterator is exhausted,

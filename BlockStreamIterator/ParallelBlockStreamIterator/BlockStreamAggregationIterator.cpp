@@ -131,7 +131,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		unsigned matched_tuples=0;
 //		allocated_tuples_in_hashtable=0;
 		while(state_.child->next(bsb)){
-			printf("Aggregation open consumes one block from child!\n");
+//			printf("Aggregation open consumes one block from child!\n");
 //			printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
 //			bsb->setEmpty();
 //			continue;
@@ -295,7 +295,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 
         }
         ht_cur_lock_.release();
-        printf("Aggregation->next() returns %d tuples!\n",block->getTuplesInBlock());
+//        printf("Aggregation->next() returns %d tuples!\n",block->getTuplesInBlock());
 //        usleep(1000);
         if(block->Empty()){
 //        	   printf("<<<<<<<<<<<<<<<<<<Aggregation next bucket_cur=%d\n",bucket_cur_);

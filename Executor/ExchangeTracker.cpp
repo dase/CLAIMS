@@ -55,6 +55,7 @@ int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::stri
 		 * times of timeouts exceeds some threshold.
 		 */
 		logging_->elog("Timeout when asking node[%s] for the connection info, the request Exchange ID is %u",target_ip.c_str(),exchange_id);
+		assert(false);
 		return 0;
 	}
 //	receiver.Wait(1);
@@ -83,6 +84,7 @@ void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const ExchangeI
 		et->logging_->log("The ask is answered!");
 	}
 	else{
+
 		Send(NodeConnectionMessage::serialize(NodeConnectionMessage("0","0")),from);
 		et->logging_->elog("No exchange matched for %lld!",exchange_id.exchange_id);
 	}

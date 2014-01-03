@@ -31,6 +31,7 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 	// TODO Auto-generated destructor stub
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
+	printf("<><><><><><><><><><><><><<<<<<<<<<<<<<><><><><><><><%d,%d is opened!<><><><><><><><><><>\n",state.exchange_id,state.partition_offset);
 	connected_uppers=0;
 	connected_uppers_in=0;
 	state.child->open(state.partition_offset);
@@ -79,7 +80,9 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 		int upper_port;
 		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id]))==0){
 			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
+			assert(false);
 		}
+
 		connected_uppers++;
 
 //		if(connected_uppers_list_.find(state.upper_ip_list[upper_id].c_str())!=connected_uppers_list_.end())
@@ -99,8 +102,11 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	int error;
 	error=pthread_create(&sender_tid,NULL,sender,this);
 	if(error!=0){
-		logging_->elog("Failed to create the sender thread.");
+		logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
 		return false;
+	}
+	else{
+//		printf("Exchange(%d,%d) create sender thread %x#################\n",state.exchange_id,state.partition_offset,sender_tid);
 	}
 
 //	pthread_create(&debug_tid,NULL,debug,this);
@@ -212,7 +218,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 //	cur_block_stream_list_
 //	buffer
 
-	printf("The sender thread is killed in the close() function! state=%d\n",state.exchange_id);
+	printf("The sender thread is killed in the close() function! state=%d,%d\n",state.exchange_id,state.partition_offset);
 	pthread_cancel(sender_tid);
 
 	void* res;

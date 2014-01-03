@@ -33,6 +33,7 @@
 #include "storage/StorageLevel.h"
 #include "ids.h"
 //It's better to use fixed length information for implementation concern.
+THERON_DECLARE_REGISTERED_MESSAGE(ExchangeID)
 struct StorageBudgetMessage{
 //	explicit RegisterStorageMessage(const char * const text){
 //		mText[0]='\0';
