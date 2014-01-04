@@ -150,8 +150,13 @@ Dataflow EqualJoin::getDataflow(){
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			ret.property_.commnication_cost+=left_dataflow.property_.partitioner.getAggregatedDatasize();
 			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();
-			printf("[Complete_repartition hash join] is not implemented, because I'm very lazy. -_- \n");
-			assert(false);
+
+			ret.property_.partitioner=decideOutputDataflowProperty(left_dataflow,right_dataflow);
+
+
+//
+//			printf("[Complete_repartition hash join] is not implemented, because I'm very lazy. -_- \n");
+//			assert(false);
 			break;
 		}
 		default:{
@@ -326,9 +331,48 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			break;
 		}
 		case complete_repartition:{
-			printf("the join partition that needs to repartition each input data flow is NOT implemented yet!\n");
-			assert(false);
+
+			/* build left input*/
+			ExpandableBlockStreamExchangeEpoll::State l_exchange_state;
+			l_exchange_state.block_size=block_size;
+			l_exchange_state.child=child_iterator_left;
+			l_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+
+			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
+			l_exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+
+			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
+			l_exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+
+			const Attribute left_partition_key=dataflow_->property_.partitioner.getPartitionKey();
+			l_exchange_state.partition_key_index=getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key);
+			l_exchange_state.schema=getSchema(dataflow_left.attribute_list_);
+			BlockStreamIteratorBase* l_exchange=new ExpandableBlockStreamExchangeEpoll(l_exchange_state);
+
+			/*build right input*/
+			ExpandableBlockStreamExchangeEpoll::State r_exchange_state;
+			r_exchange_state.block_size=block_size;
+			r_exchange_state.child=child_iterator_right;
+			r_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+
+			lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
+			r_exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+
+			upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
+			r_exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+
+			const Attribute right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
+			r_exchange_state.partition_key_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key);
+			r_exchange_state.schema=getSchema(dataflow_right.attribute_list_);
+			BlockStreamIteratorBase* r_exchange=new ExpandableBlockStreamExchangeEpoll(r_exchange_state);
+
+			/* finally  build the join iterator itself*/
+			state.child_left=l_exchange;
+			state.child_right=r_exchange;
+			join_iterator=new BlockStreamJoinIterator(state);
 			break;
+
+
 		}
 		default:{
 			break;
@@ -478,4 +522,33 @@ int EqualJoin::getIndexInAttributeList(const std::vector<Attribute>& attributes,
 		}
 	}
 	return -1;
+}
+DataflowPartitionDescriptor EqualJoin::decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
+	DataflowPartitionDescriptor ret;
+
+	const unsigned l_datasize=left_dataflow.getAggregatedDatasize();
+	const unsigned r_datasize=right_dataflow.getAggregatedDatasize();
+
+	std::vector<NodeID> all_node_id_list=NodeTracker::getInstance()->getNodeIDList();
+	/* In the current implementation, all the nodes are involved in the complete_repartition method.
+	 * TODO decide the degree of parallelism*/
+	const unsigned degree_of_parallelism=all_node_id_list.size();
+
+	std::vector<DataflowPartition> dataflow_partition_list;
+	for(unsigned i=0;i<degree_of_parallelism;i++){
+		const NodeID location=all_node_id_list[i];
+
+		/* Currently, the join output size cannot be predicted due to the absence of data statistics.
+		 * We just use the magic number as following */
+		const unsigned datasize=l_datasize/degree_of_parallelism+r_datasize/degree_of_parallelism;
+		DataflowPartition dfp(i,datasize,location);
+		dataflow_partition_list.push_back(dfp);
+	}
+	ret.setPartitionList(dataflow_partition_list);
+	ret.setPartitionKey(joinkey_pair_list_[0].first);
+	ret.addShadowPartitionKey(joinkey_pair_list_[0].second);
+	PartitionFunction* partition_function=PartitionFunctionFactory::createBoostHashFunction(degree_of_parallelism);
+	ret.setPartitionFunction(partition_function);
+	return ret;
+
 }

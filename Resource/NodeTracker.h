@@ -20,6 +20,7 @@ public:
 	virtual ~NodeTracker();
 	int RegisterNode(std::string node_name);
 	std::string getNodeIP(const NodeID&)const;
+	std::vector<NodeID> getNodeIDList()const;
 private:
 	NodeTracker();
 	hashmap<NodeIP,NodeID> ip_to_id_;
