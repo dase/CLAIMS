@@ -40,3 +40,12 @@ std::string NodeTracker::getNodeIP(const NodeID& target)const{
 	return NULL;//TODO avoid return NULL in case of no matching target by changing the return type to be boolean.*/
 //	return NULL;
 }
+std::vector<NodeID> NodeTracker::getNodeIDList()const{
+	std::vector<NodeID> ret;
+	hashmap<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
+	while(it!=ip_to_id_.cend()){
+		ret.push_back(it->second);
+		it++;
+	}
+	return ret;
+}
