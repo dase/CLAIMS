@@ -497,7 +497,7 @@ static int testGenerateIteratorTree(){
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_payload_join,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 
 //		root->getDataflow();
@@ -510,7 +510,7 @@ static int testGenerateIteratorTree(){
 		int c=1;
 		while(c==1){
 			timer_start=curtick();
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;
