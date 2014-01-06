@@ -66,7 +66,11 @@ public:
 		tryToPut(chunkId,value);
 		return true;
 	};
+
+
 	bool applyChunk(ChunkID chunk_id,HdfsInMemoryChunk& chunk_info);
+
+	void returnChunk(const ChunkID& chunk_id);
 
 	void *getChunk(string blockId){
 		map<string, HdfsBlock>::iterator it_;
