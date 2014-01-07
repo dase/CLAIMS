@@ -30,7 +30,7 @@ BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,
 
 bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	state_.partition_offset=partitoin_offset;
-	printf("Expander open!\n");
+//	printf("Expander open!\n");
 	finished_thread_count_=0;
 	block_stream_buffer_=new BlockStreamBuffer(state_.block_size_,state_.block_count_in_buffer_,state_.schema_);
 
