@@ -52,7 +52,7 @@ ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 }
 
 bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
-
+	unsigned long long int start=curtick();
 	if(sem_open_.try_wait()){
 		winner_thread++;
 		nexhausted_lowers=0;
@@ -66,7 +66,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		socket_fd_lower_list=new int[nlowers];
 //		lower_ip_array=new std::string[nlowers];
 
-		buffer=new BlockStreamBuffer(state.block_size,nlowers*10,state.schema);
+		buffer=new BlockStreamBuffer(state.block_size,nlowers,state.schema);
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -94,8 +94,10 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			checkOtherUpperRegistered();
 			logging_->log("Synchronized!");
 			logging_->log("This exchange is the master one, serialize the iterator subtree to the children...");
+
 			if(SerializeAndSendToMulti()==false)
 				return false;
+
 		}
 
 
@@ -111,7 +113,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 
 		open_finished_=true;
-
+		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
 		return true;
 	}
 	else{

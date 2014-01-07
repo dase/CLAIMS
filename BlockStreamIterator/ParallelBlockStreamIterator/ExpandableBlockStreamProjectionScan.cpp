@@ -61,7 +61,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
-	return false;
+//	return false;
 	allocated_block allo_block_temp;
 	ChunkReaderIterator* chunk_reader_iterator;
 	if(atomicPopChunkReaderIterator(chunk_reader_iterator)){

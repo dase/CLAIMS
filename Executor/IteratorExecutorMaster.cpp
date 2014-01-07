@@ -98,7 +98,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIterat
 	ostringstream ip_port;
 
 	ip_port<<"IteratorExecutorActor://"<<target_ip;
-	cout<<"actname: "<<ip_port.str()<<endl;
+//	cout<<"actname: "<<ip_port.str()<<endl;
 //	framework->Send(str,receiver.GetAddress(),Theron::Address(ip_port.str().c_str()));
 	framework->Send(str,Theron::Address(),Theron::Address(ip_port.str().c_str()));
 	logging_->log("The serialized iterator tree has been sent to %s.\n",ip_port.str().c_str());

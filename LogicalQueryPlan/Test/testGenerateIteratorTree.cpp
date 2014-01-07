@@ -109,6 +109,10 @@ static int testGenerateIteratorTree(){
 		// 5 days 8 partitions
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G12
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G13
+
+
+		// 1 day 4 partitions by row_id
+		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",4);	//G14
 		catalog->add_table(table_1);
 
 		////////////////////////////////////Create table right//////////////////////////
@@ -220,6 +224,10 @@ static int testGenerateIteratorTree(){
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G12
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G13
 
+		// 1 day 4 partitions by row_id
+		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G14
+
+
 		catalog->add_table(table_2);
 		///////////////////////////////////////////////////////////
 
@@ -237,7 +245,7 @@ static int testGenerateIteratorTree(){
 		/* the following codes should be triggered by Load module*/
 		//////////////////ONE DAY////////////////////////////////////////////////
 		//cj_table
-		// 4 partitions
+		// 4 partitions partitioned by order_no
 		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
 			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
@@ -247,6 +255,12 @@ static int testGenerateIteratorTree(){
 
 			catalog->getTable(0)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
 		}
+		//partitioned by row_id
+		for(unsigned i=0;i<table_1->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
+
+			catalog->getTable(0)->getProjectoin(14)->getPartitioner()->RegisterPartition(i,2);
+		}
+
 		// 8 partitions
 		for(unsigned i=0;i<table_1->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
 
@@ -276,6 +290,12 @@ static int testGenerateIteratorTree(){
 		for(unsigned i=0;i<table_2->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
 
 			catalog->getTable(1)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
+		}
+
+		//partitioned by row_id
+		for(unsigned i=0;i<table_2->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
+
+			catalog->getTable(1)->getProjectoin(14)->getPartitioner()->RegisterPartition(i,2);
 		}
 
 		////////////////////////////////////////
@@ -391,6 +411,8 @@ static int testGenerateIteratorTree(){
 
 			catalog->getTable(1)->getProjectoin(13)->getPartitioner()->RegisterPartition(i,23);
 		}
+
+
 		/////////////////////////////////////////
 
 	//	sleep(1);
@@ -497,7 +519,7 @@ static int testGenerateIteratorTree(){
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 
 //		root->getDataflow();
@@ -510,7 +532,7 @@ static int testGenerateIteratorTree(){
 		int c=1;
 		while(c==1){
 			timer_start=curtick();
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;
