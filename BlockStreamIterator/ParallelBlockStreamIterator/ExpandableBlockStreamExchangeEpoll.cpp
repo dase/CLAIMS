@@ -246,7 +246,7 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,i),ip)==0){
 			usleep(1);
 		}
-		printf("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
+//		printf("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
 	}
 }
 bool ExpandableBlockStreamExchangeEpoll::isMaster(){
@@ -375,7 +375,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					}
 					status=getnameinfo(&in_addr,in_len,hbuf,sizeof(hbuf),sbuf,sizeof(sbuf),NI_NUMERICHOST|NI_NUMERICSERV);
 					if(status==0){
-						printf("Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n", infd, hbuf, sbuf,Pthis->state.exchange_id);
+						Pthis->logging_->log("Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n", infd, hbuf, sbuf,Pthis->state.exchange_id);
 						Pthis->logging_->log("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
@@ -441,7 +441,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
 					}
 					else{
-				Pthis->logging_->log("*****This block is the last one.");
+						Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
 						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",Pthis->nexhausted_lowers,Pthis->state.exchange_id,Pthis->partition_offset);
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
