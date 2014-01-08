@@ -20,7 +20,12 @@
 #include <vector>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+
 #include <boost/serialization/vector.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/back_inserter.hpp>
 #include <sstream>
 #include <assert.h>
 #include "TablePartition.h"
@@ -169,76 +174,127 @@ THERON_DECLARE_REGISTERED_MESSAGE(unsigned long long int)
 template<typename T>
 static T Deserialize(Message256 input)
 {
-	ostringstream ostr;
-	ostr.write(input.message,input.length);
+	std::string received(input.message,input.length);
 
-	std::string tmp=ostr.str();
-	istringstream istr(tmp);
+	boost::iostreams::basic_array_source<char> device(received.data(),received.size());
+	boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
+	boost::archive::binary_iarchive ia(s);
 
 	T ret;
-	boost::archive::text_iarchive ia(istr);
 	ia>>ret;
 	return ret;
+
+//	ostringstream ostr;
+//	ostr.write(input.message,input.length);
+//
+//	std::string tmp=ostr.str();
+//	istringstream istr(tmp);
+//
+//	T ret;
+//	boost::archive::text_iarchive ia(istr);
+//	ia>>ret;
+//	return ret;
 }
 template<typename T>
 static Message256 Serialize(T object)
 {
-	ostringstream ostr;
-	boost::archive::text_oarchive oa(ostr);
+
+	std::string serial_str;
+
+	boost::iostreams::back_insert_device<std::string> inserter(serial_str);
+	boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > ostr(inserter);
+	boost::archive::binary_oarchive oa(ostr);
 	oa<<object;
-
-	//get the string
-	std::string str=ostr.str();
-	//in=str;
-	assert(Message4K::Capacity()>=str.length());
-
-
-	//copy the string into the message and set the length.
+	ostr.flush();
 	Message256 ret;
-	ret.length=str.length();
-	//memcpy(&ret.message,&str,ret.length);
-	str.copy(ret.message,ret.length);
+	assert(serial_str.size()<=Message256::Capacity());
+	memcpy(ret.message,serial_str.data(),serial_str.size());
+	ret.length=serial_str.size();
+
+//	ostringstream ostr;
+//	boost::archive::text_oarchive oa(ostr);
+//	oa<<object;
+//
+//	//get the string
+//	std::string str=ostr.str();
+//	//in=str;
+//	assert(Message4K::Capacity()>=str.length());
+//
+//
+//	//copy the string into the message and set the length.
+//	Message256 ret;
+//	ret.length=str.length();
+//	//memcpy(&ret.message,&str,ret.length);
+//	str.copy(ret.message,ret.length);
 
 	return ret;
 }
 template<typename T>
 static T Deserialize(Message4K input)
 {
-	ostringstream ostr;
-	ostr.write(input.message,input.length);
 
-	std::string tmp=ostr.str();
-	istringstream istr(tmp);
+	std::string received(input.message,input.length);
+
+	boost::iostreams::basic_array_source<char> device(received.data(),received.size());
+	boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
+	boost::archive::binary_iarchive ia(s);
 
 	T ret;
-	boost::archive::text_iarchive ia(istr);
 	ia>>ret;
 	return ret;
+
+//	ostringstream ostr;
+//	ostr.write(input.message,input.length);
+//
+//	std::string tmp=ostr.str();
+//	istringstream istr(tmp);
+//
+//	T ret;
+//	boost::archive::text_iarchive ia(istr);
+//	ia>>ret;
+//	return ret;
 }
 template<typename T>
 static Message4K Serialize4K(T &object)
 {
-//	std::cout<<"Serialize 1"<<std::endl;
-	ostringstream ostr;
-//	std::cout<<"Serialize 2"<<std::endl;
-	boost::archive::text_oarchive oa(ostr);
-//	std::cout<<"Serialize 3"<<std::endl;
+
+	std::string serial_str;
+
+	boost::iostreams::back_insert_device<std::string> inserter(serial_str);
+	boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > ostr(inserter);
+	boost::archive::binary_oarchive oa(ostr);
 	oa<<object;
-//	std::cout<<"wrong?"<<endl;
-	//get the string
-	std::string str=ostr.str();
-	//in=str;
-	assert(Message4K::Capacity()>=str.length());
-//	std::cout<<"Serialize 4"<<std::endl;
-	//copy the string into the message and set the length.
+	ostr.flush();
+
 	Message4K ret;
-//	std::cout<<"Serialize 5"<<std::endl;
-	ret.length=str.length();
-//	std::cout<<"Serialize 6"<<std::endl;
-	//memcpy(&ret.message,&str,ret.length);
-	str.copy(ret.message,ret.length);
+	assert(serial_str.size()<=Message4K::Capacity()&&serial_str.size()!=0);
+	memcpy(ret.message,serial_str.data(),serial_str.size());
+	ret.length=serial_str.size();
 
 	return ret;
+
+
+////	std::cout<<"Serialize 1"<<std::endl;
+//	ostringstream ostr;
+////	std::cout<<"Serialize 2"<<std::endl;
+//	boost::archive::text_oarchive oa(ostr);
+////	std::cout<<"Serialize 3"<<std::endl;
+//	oa<<object;
+////	std::cout<<"wrong?"<<endl;
+//	//get the string
+//	std::string str=ostr.str();
+//	//in=str;
+//	assert(Message4K::Capacity()>=str.length());
+////	std::cout<<"Serialize 4"<<std::endl;
+//	//copy the string into the message and set the length.
+//	Message4K ret;
+////	std::cout<<"Serialize 5"<<std::endl;
+//	ret.length=str.length();
+////	std::cout<<"Serialize 6"<<std::endl;
+//	//memcpy(&ret.message,&str,ret.length);
+//	str.copy(ret.message,ret.length);
+//
+//	return ret;
 }
 
 
