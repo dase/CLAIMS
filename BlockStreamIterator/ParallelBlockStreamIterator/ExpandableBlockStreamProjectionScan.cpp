@@ -8,6 +8,7 @@
 #include <malloc.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <limits.h>
 #include "../../rename.h"
 #include "ExpandableBlockStreamProjectionScan.h"
 #include "../../storage/BlockManager.h"
@@ -29,8 +30,8 @@ ExpandableBlockStreamProjectionScan::~ExpandableBlockStreamProjectionScan() {
 }
 
 
-ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,Schema* schema, unsigned block_size)
-:schema_(schema), projection_id_(projection_id), block_size_(block_size) {
+ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,Schema* schema, unsigned block_size, float sample_rate)
+:schema_(schema), projection_id_(projection_id), block_size_(block_size), sample_rate_(sample_rate) {
 }
 
 
@@ -66,7 +67,16 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 	ChunkReaderIterator* chunk_reader_iterator;
 	if(atomicPopChunkReaderIterator(chunk_reader_iterator)){
 		/* there is unused ChunkReaderIterator*/
-		if(chunk_reader_iterator->nextBlock(block)){
+//		if(chunk_reader_iterator->nextBlock(block)){
+
+		bool next;
+		if(passSample()){
+			next=chunk_reader_iterator->nextBlock(block);
+		}
+		else{
+			next=chunk_reader_iterator->nextBlock();
+		}
+		if(next){
 			/* there is still unread block*/
 			atomicPushChunkReaderIterator(chunk_reader_iterator);
 			return true;
@@ -116,4 +126,10 @@ bool ExpandableBlockStreamProjectionScan::atomicPopChunkReaderIterator(ChunkRead
 	}
 	chunk_reader_container_lock_.release();
 	return ret;
+}
+bool ExpandableBlockStreamProjectionScan::passSample()const{
+//	const float ram=(float)rand()/(float)RAND_MAX;
+	if((rand()/(float)RAND_MAX)<state_.sample_rate_)
+		return true;
+	return false;
 }

@@ -15,11 +15,17 @@
 #include "../ids.h"
 class ChunkReaderIterator{
 public:
-	ChunkReaderIterator(const ChunkID& chunk_id):chunk_id_(chunk_id){};
+	ChunkReaderIterator(const ChunkID& chunk_id,const unsigned& number_of_blocks=0):chunk_id_(chunk_id),number_of_blocks_(number_of_blocks),cur_block_(0){};
 	virtual bool nextBlock(BlockStreamBase* & block)=0;
+
+	bool nextBlock();
+
 	virtual ~ChunkReaderIterator(){};
 public:
 	ChunkID chunk_id_;
+	unsigned number_of_blocks_;
+	unsigned cur_block_;
+	Lock lock_;
 };
 class InMemoryChunkReaderItetaor:public ChunkReaderIterator{
 public:
@@ -29,11 +35,10 @@ public:
 private:
 	void* start_;
 	unsigned chunk_size_;
-	unsigned number_of_blocks_;
-	unsigned block_size_;
-	unsigned block_cur_;
 
-	Lock lock_;
+	unsigned block_size_;
+
+
 
 };
 
@@ -45,15 +50,15 @@ public:
 private:
 
 	unsigned chunk_size_;
-	unsigned number_of_blocks_;
 	unsigned block_size_;
-	unsigned cur_block_;
+//	unsigned number_of_blocks_;
+//	unsigned cur_block_;
 	/*the iterator creates a buffer and allocates its memory such that the query processing
 	 * can just use the Block without the concern the memory allocation and deallocation.
 	 */
 	Block* block_buffer_;
 	int fd_;
-	Lock lock_;
+
 };
 
 class HDFSChunkReaderIterator:public ChunkReaderIterator{
@@ -64,16 +69,16 @@ public:
 private:
 
 	unsigned chunk_size_;
-	unsigned number_of_blocks_;
 	unsigned block_size_;
-	unsigned cur_block_;
+//	unsigned number_of_blocks_;
+//	unsigned cur_block_;
 	/*the iterator creates a buffer and allocates its memory such that the query processing
 	 * can just use the Block without the concern the memory allocation and deallocation.
 	 */
 	Block* block_buffer_;
 	hdfsFS fs_;
 	hdfsFile hdfs_fd_;
-	Lock lock_;
+
 };
 
 class ChunkStorage {
