@@ -92,7 +92,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
 			assert(false);
 		}
-		printf("\n\n\n port=%d\n\n\n",upper_port);
+//		printf("\n\n\n port=%d\n\n\n",upper_port);
 		printf("_______________socket connect_if time:%4.4f\n",getSecond(connect_info));
 		connected_uppers++;
 

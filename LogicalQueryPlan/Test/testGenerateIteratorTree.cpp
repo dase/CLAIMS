@@ -429,8 +429,8 @@ static int testGenerateIteratorTree(){
 //		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
 //		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
 
-		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
-		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(8));
+		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(8));
 
 
 
@@ -444,7 +444,7 @@ static int testGenerateIteratorTree(){
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,&trade_date);
 		const int sec_code=600036;
-		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::GEQ,&sec_code);
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 		Filter::Condition filter_condition_2;
@@ -453,7 +453,7 @@ static int testGenerateIteratorTree(){
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,&entry_date);
 		const int sec_code_=600036;
-		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code_);
+		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::GEQ,&sec_code_);
 		LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
 
 

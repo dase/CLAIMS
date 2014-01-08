@@ -4,6 +4,8 @@
  *  Created on: Aug 7, 2013
  *      Author: wangli
  */
+#include <boost/iostreams/device/back_inserter.hpp>
+#include <boost/iostreams/stream.hpp>
 
 #include "RegisterDerivedClass.h"
 #include "../iterator/SingleColumnScanIterator.h"
@@ -103,3 +105,26 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamTopN*>(NULL));
 
 }
+void cheat_the_compiler(){
+    char buffer[4096*2-sizeof(unsigned)];
+    boost::iostreams::basic_array_sink<char> sr(buffer, sizeof(buffer));
+    boost::iostreams::stream< boost::iostreams::basic_array_sink<char> > ostr(sr);
+
+    boost::archive::binary_oarchive oa(ostr);
+    boost::archive::text_oarchive toa(ostr);
+    Register_Tuple_Stream_Iterators<boost::archive::binary_oarchive>(oa);
+    Register_Tuple_Stream_Iterators<boost::archive::text_oarchive>(toa);
+    Register_Block_Stream_Iterator<boost::archive::binary_oarchive>(oa);
+    Register_Block_Stream_Iterator<boost::archive::text_oarchive>(toa);
+    char a[2];
+    boost::iostreams::basic_array_source<char> device(a);
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
+    boost::archive::binary_iarchive ia(s);
+    boost::archive::text_iarchive tia(s);
+    Register_Tuple_Stream_Iterators<boost::archive::binary_iarchive>(ia);
+    Register_Tuple_Stream_Iterators<boost::archive::text_iarchive>(tia);
+    Register_Block_Stream_Iterator<boost::archive::binary_iarchive>(ia);
+    Register_Block_Stream_Iterator<boost::archive::text_iarchive>(tia);
+
+}
+
