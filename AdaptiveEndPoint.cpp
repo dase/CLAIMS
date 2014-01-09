@@ -13,6 +13,7 @@
 #include "AdaptiveEndPoint.h"
 #include "Debug.h"
 #include "Logging.h"
+#include "utility/ThreadSafe.h"
 AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::string port)
 :Theron::EndPoint(name, ("tcp://"+ip+":"+port).c_str()){
 	logging_=new AdaptiveEndPointLogging();
@@ -58,10 +59,10 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	std::string coord_port=(const char*)cfg.lookup("coordinator.port");
 	int recvbytes;
 
-	struct hostent* host;
+	struct hostent host;
 	struct sockaddr_in serv_addr;
 
-	if((host=gethostbyname(ip_coor.c_str()))==0)
+	if((ThreadSafe::gethostbyname_ts(host,ip_coor.c_str()))==0)
 	{
 		logging_->elog("gethostbyname errors!\n");
 		return false;
@@ -74,7 +75,7 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 
 	serv_addr.sin_family=AF_INET;
 	serv_addr.sin_port=htons(atoi(coord_port.c_str()));
-	serv_addr.sin_addr=*((struct in_addr*)host->h_addr);
+	serv_addr.sin_addr=*((struct in_addr*)host.h_addr);
 	bzero(&(serv_addr.sin_zero),8);
 	if(connect(socket_coor,(struct sockaddr *)&serv_addr, sizeof(struct sockaddr))==-1)
 	{

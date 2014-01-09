@@ -150,4 +150,23 @@ static size_t hash_value(const ChunkID& key){
 	return seed;
 }
 
+struct ExchangeID{
+	ExchangeID():exchange_id(0),partition_offset(0){};
+	ExchangeID(unsigned long long int exchange_id,unsigned partition_offset)
+	:exchange_id(exchange_id),partition_offset(partition_offset){};
+	bool operator==(const ExchangeID& r)const{
+		return exchange_id==r.exchange_id&&partition_offset==r.partition_offset;
+	}
+
+	unsigned long long int exchange_id;
+	unsigned partition_offset;
+};
+
+static size_t hash_value(const ExchangeID& key){
+	size_t seed=0;
+	boost::hash_combine(seed,boost::hash_value(key.exchange_id));
+	boost::hash_combine(seed,boost::hash_value(key.partition_offset));
+	return seed;
+}
+
 #endif /* IDS_H_ */

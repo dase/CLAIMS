@@ -22,7 +22,7 @@ public:
 		PartitionReaderItetaor();
 		PartitionReaderItetaor(PartitionStorage* partition_storage);
 		virtual ~PartitionReaderItetaor();
-		ChunkReaderIterator* nextChunk();
+		virtual ChunkReaderIterator* nextChunk();
 	protected:
 		PartitionStorage* ps;
 		unsigned chunk_cur_;

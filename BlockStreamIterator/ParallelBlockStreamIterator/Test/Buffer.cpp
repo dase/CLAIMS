@@ -4,16 +4,18 @@
  *  Created on: Nov 18, 2013
  *      Author: wangli
  */
-#ifndef __TEST_PROJECTIONSCAN__
-#define __TEST_PROJECTIONSCAN__
+#ifndef __TEST_BUFFER__
+#define __TEST_BUFFER__
 #include <iostream>
 #include "../ExpandableBlockStreamProjectionScan.h"
+#include "../ExpandableBlockStreamBuffer.h"
 #include "../../BlockStreamPrint.h"
 #include "../../../Environment.h"
 #include "../../../Catalog/ProjectionBinding.h"
-
+#include "../../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+#include "../BlockStreamExpander.h"
 using namespace std;
-static int testProjectionScan(){
+static int testBuffer(){
 	Environment::getInstance(true);
 
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -105,17 +107,33 @@ static int testProjectionScan(){
 
 	BlockStreamIteratorBase* scan=new ExpandableBlockStreamProjectionScan(scan_state);
 
+	////////Buffer////////
+	ExpandableBlockStreamBuffer::State b_state(scan_state.schema_,scan,scan_state.block_size_);
+	BlockStreamIteratorBase* buffer=new ExpandableBlockStreamBuffer(b_state);
 
-	/////////////////Print/////////////////////////////
-	BlockStreamPrint::State print_state;
-	print_state.block_size_=64*1024-sizeof(unsigned);
-	print_state.child_=scan;
-	print_state.schema_=scan_state.schema_;
-	print_state.spliter_="-|-";
+	//Expander//
+	BlockStreamExpander::State exp_state(scan_state.schema_,buffer,4,scan_state.block_size_);
+	BlockStreamIteratorBase* expander=new BlockStreamExpander(exp_state);
 
-	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
+	///Performance Monitor//
+	BlockStreamPerformanceMonitorTop::State p_state(scan_state.schema_,expander,scan_state.block_size_);
+	BlockStreamIteratorBase* perf_top=new BlockStreamPerformanceMonitorTop(p_state);
 
-	IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
+//	/////////////////Print/////////////////////////////
+//	BlockStreamPrint::State print_state;
+//	print_state.block_size_=64*1024-sizeof(unsigned);
+//	print_state.child_=scan;
+//	print_state.schema_=scan_state.schema_;
+//	print_state.spliter_="-|-";
+//
+//	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
+	int input=1;
+	while(input>0){
+		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(perf_top,"127.0.0.1");
+		printf("continue or not?\n");
+		scanf("%d",&input);
+	}
+
 
 	////////Run////////////
 //	sleep(1);

@@ -17,7 +17,7 @@ BlockStreamExchangeLowerBase::~BlockStreamExchangeLowerBase() {
 
 }
 
-bool BlockStreamExchangeLowerBase::ConnectToUpper(const int &exchange_id,const std::string &ip,int &sock_fd) const {
+bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,const std::string &ip,int &sock_fd) const {
 	struct hostent* host;
 	if((host=gethostbyname(ip.c_str()))==0){
 		perror("gethostbyname errors!\n");

@@ -53,7 +53,7 @@ bool ExchangeIteratorEagerLower::open(){
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
-		if((upper_port=et->AskForSocketConnectionInfo(state.exchange_id,state.upper_ip_list[upper_id]),upper_port)==0){
+		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id]),upper_port)==0){
 			Logging_ExchangeIteratorEagerLower("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
 		}
 

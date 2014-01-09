@@ -86,12 +86,12 @@ bool BlockStreamExchangeLowerBroadcast::open(const PartitionOffset& partition_of
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
-		if((upper_port=et->AskForSocketConnectionInfo(state_.exchange_id,state_.upper_ip_list[upper_id]),upper_port)==0){
+		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state_.exchange_id,upper_id),state_.upper_ip_list[upper_id]),upper_port)==0){
 			Logging_ExchangeIteratorEagerLower("Fails to ask %s for socket connection info, the exchange id=%d",state_.upper_ip_list[upper_id].c_str(),state_.exchange_id);
 		}
 
         for(unsigned upper_id=0;upper_id<state_.upper_ip_list.size();upper_id++){
-                if(!ConnectToUpper(state_.exchange_id,state_.upper_ip_list[upper_id],socket_fd_upper_list_[upper_id])){
+                if(!ConnectToUpper(ExchangeID(state_.exchange_id,upper_id),state_.upper_ip_list[upper_id],socket_fd_upper_list_[upper_id])){
                         return false;
                 }
         }

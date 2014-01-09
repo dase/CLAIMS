@@ -30,7 +30,7 @@ BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,
 
 bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	state_.partition_offset=partitoin_offset;
-	printf("Expander open!\n");
+//	printf("Expander open!\n");
 	finished_thread_count_=0;
 	block_stream_buffer_=new BlockStreamBuffer(state_.block_size_,state_.block_count_in_buffer_,state_.schema_);
 
@@ -42,7 +42,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 			std::cout<<"cannot create thread!"<<std::endl;
 			return false;
 		}
-		expanded_thread_list_.push_back(tid);
+		expanded_thread_list_.insert(tid);
 	}
 	return true;
 }
@@ -60,6 +60,20 @@ bool BlockStreamExpander::next(BlockStreamBase* block){
 }
 
 bool BlockStreamExpander::close(){
+
+	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
+		pthread_cancel(*it);
+		void* res;
+
+		pthread_join(*it,&res);
+		if(res!=PTHREAD_CANCELED)
+			assert(false);
+		printf("A expander thread is killed before close!\n");
+	}
+	while(!expanded_thread_list_.empty()){
+		expanded_thread_list_.begin();
+	}
+
 	block_stream_buffer_->~BlockStreamBuffer();
 
 	state_.child_->close();
@@ -81,8 +95,12 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		block_count++;
 	}
 	/*TODO: the following increment may need to use atomic add for the thread-safety.*/
+	Pthis->lock_.lock();
 	Pthis->finished_thread_count_++;
-	printf("Thread %d generated %d blocks.\n",thread_id,block_count);
+
+	printf("Thread %x generated %d blocks.\n",pthread_self(),block_count);
+	Pthis->expanded_thread_list_.erase(pthread_self());
+	Pthis->lock_.unlock();
 	return 0;
 
 }

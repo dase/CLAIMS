@@ -58,6 +58,13 @@ public:
 	 */
 	virtual void copyBlock(void* addr, unsigned length)=0;
 
+	/**
+	 * deep copy from block, including block content and member variables that maintain the block status.
+	 * the user should guarantee that rest block and desc block are of equal derived class type(e.g., both
+	 * are BlockStreamFix), otherwise the copy may be incomplete.
+	 */
+	virtual void deepCopy(const Block* block)=0;
+
 	virtual void constructFromBlock(const Block& block)=0;
 
 	virtual bool switchBlock(BlockStreamBase &block)=0;
@@ -82,6 +89,9 @@ protected:
 };
 
 class BlockStreamFix:public BlockStreamBase {
+	struct tail_info{
+		unsigned tuple_count;
+	};
 public:
 	BlockStreamFix(unsigned block_size,unsigned tuple_size);
 	virtual ~BlockStreamFix();
@@ -109,6 +119,7 @@ public:
 //	void setBlockDataAddress(void* addr);
 	bool switchBlock(BlockStreamBase& block);
 	void copyBlock(void* addr, unsigned length);
+	void deepCopy(const Block* block);
 	bool serialize(Block & block) const;
 	bool deserialize(Block * block);
 	unsigned getSerializedBlockSize()const;
@@ -117,9 +128,8 @@ public:
 	/* construct the BlockStream from a storage level block,
 	 * which last four bytes indicate the number of tuples in the block.*/
 	void constructFromBlock(const Block& block);
+
 protected:
-//	char* data_;
-//	unsigned block_size_;
 	char* free_;
 	unsigned tuple_size_;
 public:

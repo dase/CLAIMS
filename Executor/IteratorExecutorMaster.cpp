@@ -91,25 +91,26 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIterat
 
 	Message4K str= IteratorMessage::serialize4K(im);
 
-	TimeOutReceiver receiver(endpoint);
-
-	Theron::Catcher<Message256> resultCatcher;
-	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<Message256>::Push);
+//	TimeOutReceiver receiver(endpoint);
+//
+//	Theron::Catcher<Message256> resultCatcher;
+//	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<Message256>::Push);
 	ostringstream ip_port;
 
 	ip_port<<"IteratorExecutorActor://"<<target_ip;
-	cout<<"actname: "<<ip_port.str()<<endl;
-	framework->Send(str,receiver.GetAddress(),Theron::Address(ip_port.str().c_str()));
+//	cout<<"actname: "<<ip_port.str()<<endl;
+//	framework->Send(str,receiver.GetAddress(),Theron::Address(ip_port.str().c_str()));
+	framework->Send(str,Theron::Address(),Theron::Address(ip_port.str().c_str()));
 	logging_->log("The serialized iterator tree has been sent to %s.\n",ip_port.str().c_str());
-
-	unsigned feedback_count=0;
-	feedback_count=receiver.TimeOutWait(1,5000);
-
-	if(feedback_count!=1){
-		logging_->elog("Time out! no feedback received! \n");
-		return true;
-	}
-	logging_->log("Received the confirm feedback from %s",ip_port.str().c_str());
+//
+//	unsigned feedback_count=0;
+//	feedback_count=receiver.TimeOutWait(1,5000);
+//
+//	if(feedback_count!=1){
+//		logging_->elog("Time out! no feedback received! \n");
+//		return true;
+//	}
+//	logging_->log("Received the confirm feedback from %s",ip_port.str().c_str());
 	return true;
 }
 bool IteratorExecutorMaster::Propogation(const int count,std::string target){

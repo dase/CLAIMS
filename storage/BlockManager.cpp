@@ -286,7 +286,7 @@ int BlockManager::loadFromDisk(const ChunkID& chunk_id,void* const &desc,const u
 		ret=read(fd,desc,length);
 	}
 	else{
-		ret=-1;
+		ret=0;
 	}
 	FileClose(fd);
 	return ret;

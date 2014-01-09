@@ -14,7 +14,7 @@ class LogicalScan: public LogicalOperator {
 public:
 	LogicalScan(std::vector<Attribute> attribute_list);
 	LogicalScan(const TableID&);
-	LogicalScan(ProjectionDescriptor* projection);
+	LogicalScan(ProjectionDescriptor* projection,const float sample_rate_=1);
 	LogicalScan(const TableID&,const std::vector<unsigned>& selected_attribute_index_list);
 	virtual ~LogicalScan();
 	LogicalProjection getLogcialProjection()const;
@@ -31,6 +31,7 @@ private:
 	std::vector<Attribute> scan_attribute_list_;
 	ProjectionDescriptor* target_projection_;
 	Dataflow dataflow_;
+	float sample_rate_;
 
 };
 

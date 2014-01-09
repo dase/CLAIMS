@@ -18,6 +18,9 @@
 #include "../../Executor/ExchangeTracker.h"
 #include "../../Environment.h"
 #include "../../Logging.h"
+#include "../../utility/ThreadSafe.h"
+#include "../../ids.h"
+#include "../../rdtsc.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
 :state(state){
 	// TODO Auto-generated constructor stub
@@ -29,10 +32,20 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 	// TODO Auto-generated destructor stub
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
+
+	unsigned long long int start=curtick();
+	unsigned long long int step1,step2,step3;
+	step1=curtick();
+	step2=curtick();
+	step3=curtick();
+	connected_uppers=0;
+	connected_uppers_in=0;
 	state.child->open(state.partition_offset);
+
 	logging_=new ExchangeIteratorEagerLowerLogging();
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
+	printf("<><><><><><><> lower open time:%4.4f (step 1) \n",getSecond(step1));
 	socket_fd_upper_list=new int[nuppers];
 	block_stream_for_asking_=BlockStreamBase::createBlock(state.schema,state.block_size);
 //	block_for_sending=new BlockContainer(block_stream_for_asking_->getSerializedBlockSize());
@@ -54,12 +67,18 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 //	memset(test,0,1024*1024*400);
 //	free(test);
 
+//	printf(">>>--------Lower:: open %d\n",state.exchange_id);
+	printf("<><><><><><><> lower open time:%4.4f (step 2) \n",getSecond(step2));
 	for(unsigned upper_id=0;upper_id<state.upper_ip_list.size();upper_id++){
-		struct hostent* host;
-		if((host=gethostbyname(state.upper_ip_list[upper_id].c_str()))==0){
+
+//		printf("_______ this time connect target=%s (state=%d)\n",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
+		struct hostent host;
+		std::string tmp_before(state.upper_ip_list[upper_id].c_str());
+		if((ThreadSafe::gethostbyname_ts(host,state.upper_ip_list[upper_id].c_str()))==0){
 			perror("gethostbyname errors!\n");
 			return false;
 		}
+
 
 		if((socket_fd_upper_list[upper_id]=socket(AF_INET, SOCK_STREAM,0))==-1){
 			perror("socket creation errors!\n");
@@ -68,25 +87,47 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
-		if((upper_port=et->AskForSocketConnectionInfo(state.exchange_id,state.upper_ip_list[upper_id]))==0){
+		unsigned long long int connect_info=curtick();
+		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id]))==0){
 			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
+			assert(false);
 		}
+//		printf("\n\n\n port=%d\n\n\n",upper_port);
+		printf("_______________socket connect_if time:%4.4f\n",getSecond(connect_info));
+		connected_uppers++;
 
-		if(ConnectToUpperExchangeWithMulti(socket_fd_upper_list[upper_id],host,upper_port)==false)
+//		if(connected_uppers_list_.find(state.upper_ip_list[upper_id].c_str())!=connected_uppers_list_.end())
+//			assert(false);
+//		connected_uppers_list_[state.upper_ip_list[upper_id].c_str()]=upper_id;
+
+//		std::string tmp(inet_ntoa(*((struct in_addr*)host.h_addr)));
+		unsigned long long int connect=curtick();
+		if(ConnectToUpperExchangeWithMulti(socket_fd_upper_list[upper_id],state.upper_ip_list[upper_id],upper_port)==false)
 			return false;
+		printf("_______________socket connection time:%4.4f\n",getSecond(connect));
+
+//		assert(connected_uppers<=state.upper_ip_list.size());
+//		printf("<<<<<<<<<<<<state %d: connected:%d\n",state.exchange_id,connected_uppers);
+
+
 	}
 
+	printf("<><><><><><><> lower open time:%4.4f (step 3) \n",getSecond(step3));
 	int error;
 	error=pthread_create(&sender_tid,NULL,sender,this);
 	if(error!=0){
-		logging_->elog("Failed to create the sender thread.");
+		logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
 		return false;
 	}
+	else{
+//		printf("Exchange(%d,%d) create sender thread %x#################\n",state.exchange_id,state.partition_offset,sender_tid);
+	}
 
-	pthread_create(&debug_tid,NULL,debug,this);
+//	pthread_create(&debug_tid,NULL,debug,this);
 /*debug*/
 	readsendedblocks=0;
 	hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
+	printf("<><><><><><><> lower open time:%4.4f\n",getSecond(start));
 	return true;
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
@@ -192,9 +233,16 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 //	cur_block_stream_list_
 //	buffer
 
-	logging_->log("The sender thread is killed in the close() function!");
+//	printf("The sender thread is killed in the close() function! state=%d,%d\n",state.exchange_id,state.partition_offset);
 	pthread_cancel(sender_tid);
-	pthread_cancel(debug_tid);
+
+	void* res;
+
+	pthread_join(sender_tid,&res);
+	if(res!=PTHREAD_CANCELED)
+		printf("thread is not canceled!\n");
+	sender_tid=0;
+//	pthread_cancel(debug_tid);
 
 	/* close the socket connections to the uppers */
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
@@ -227,12 +275,46 @@ bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMult
 
 	int returnvalue;
 
+	std::string tmp(inet_ntoa(serv_add.sin_addr));
+//	printf("||||Lower(state=%d) try to connect to  %s:%d\n",state.exchange_id,inet_ntoa(serv_add.sin_addr),port);
+
+	if(connected_uppers_list_in.find(tmp)!=connected_uppers_list_in.end())
+		assert(false);
+	connected_uppers_list_in[tmp]=connected_uppers_in++;
+
+
 	if((returnvalue=connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
 	{
 		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
 		return false;
 	}
-	logging_->log("connected to the Master socket %s:%d\n",inet_ntoa(serv_add.sin_addr),port);
+//	printf("connected to the Master socket %s:%d\n",inet_ntoa(serv_add.sin_addr),port);
+	//printf("connected to the Master socket %d !\n",returnvalue);
+	return true;
+}
+bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMulti(int &sock_fd,const std::string ip,int port){
+	struct sockaddr_in serv_add;
+	serv_add.sin_family=AF_INET;
+	serv_add.sin_port=htons(port);
+	serv_add.sin_addr.s_addr=inet_addr(ip.c_str());
+	bzero(&(serv_add.sin_zero),8);
+//
+//	int returnvalue;
+//
+//	std::string tmp(inet_ntoa(serv_add.sin_addr));
+//	printf("||||Lower(state=%d) try to connect to  %s:%d\n",state.exchange_id,inet_ntoa(serv_add.sin_addr),port);
+//
+//	if(connected_uppers_list_in.find(tmp)!=connected_uppers_list_in.end())
+//		assert(false);
+//	connected_uppers_list_in[tmp]=connected_uppers_in++;
+
+
+	if((connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
+	{
+		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
+		return false;
+	}
+	printf("connected to the Master socket %s:%d\n",ip.c_str(),port);
 	//printf("connected to the Master socket %d !\n",returnvalue);
 	return true;
 }
@@ -253,7 +335,7 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 			perror("recv error!\n");
 		}
 		FileClose(socket_fd_upper_list[i]);
-//		printf("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
+//		printf("Receive the close notifaction from the upper[%s], the byte='%c' state=%d\n",state.upper_ip_list[i].c_str(),byte,state.exchange_id);
 		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
 
@@ -324,7 +406,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 			/* In the current loop, we have sent an entire to the receiver, so we should get a new block
 			 * into the block_for_sender_*/
 			//the if cause in version 1.2 is delete as getBlock will not retain until a block is successfully got.
-
+			pthread_testcancel();
 			if(Pthis->buffer->getBlock(*Pthis->block_for_buffer_,partition_id)){
 				Pthis->block_for_buffer_->reset();
 				Pthis->buffer_for_sending_->insert(partition_id,Pthis->block_for_buffer_);

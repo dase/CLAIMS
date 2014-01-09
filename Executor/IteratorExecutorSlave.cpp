@@ -60,6 +60,7 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 //
 //	im.run();
 //	ies->logging_->log("iterator tree is successfully executed!");
+	printf("serialized size:%d\n\n\n\n\n\n",message.length);
 	ies->logging_->log("New iterator tree received!\n");
 
 
@@ -67,7 +68,7 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 	IteratorMessage* runable_iterator_message=new IteratorMessage();
 	*runable_iterator_message=IteratorMessage::deserialize4K(message);
 	ies->createNewThreadAndRun(runable_iterator_message);
-	Send(int(0),from);
+//	Send(int(0),from);
 	ies->logging_->log("iterator tree is added to the running queue");
 }
 void IteratorExecutorSlave::ExecuteIteratorActor::progation(const int &message,const Theron::Address from){
@@ -80,12 +81,25 @@ void IteratorExecutorSlave::ExecuteIteratorActor::progation(const int &message,c
 void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
 
 	pthread_t thread;
-	pthread_create(&thread,NULL,run_iterator,it);
+	void** arg=new void*[2];
+	arg[0]=it;
+	arg[1]=this;
+	pthread_create(&thread,NULL,run_iterator,arg);
+	lock_.lock();
+	busy_thread_list_.insert(thread);
+	lock_.unlock();
+
 	logging_->log("A new Running thread is created!");
 }
 void* IteratorExecutorSlave::run_iterator(void* arg){
-	IteratorMessage* it=(IteratorMessage*)arg;
+	IteratorMessage* it=(IteratorMessage*)(*(void**)arg);
+	IteratorExecutorSlave* Pthis=(IteratorExecutorSlave*)(*((void**)arg+1));
 	it->run();
 	it->~IteratorMessage();
 	printf("A iterator tree is successfully executed!\n");
+	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
+	Pthis->lock_.lock();
+	Pthis->busy_thread_list_.erase(pthread_self());
+	Pthis->lock_.unlock();
+	free((void**)arg);
 }

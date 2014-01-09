@@ -25,7 +25,7 @@ public:
 	virtual bool close()=0;
 protected:
 	bool PrepareTheSocket();
-    bool RegisterExchange(unsigned long long int exchange_id);
+    bool RegisterExchange(ExchangeID exchange_id);
     bool isMaster();
     bool WaitForConnectionFromLowerExchanges();
     void CloseTheSocket();
