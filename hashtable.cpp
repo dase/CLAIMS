@@ -37,12 +37,13 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 //		}
 
 		bucket_ = (void**)new char[sizeof(void*) * nbuckets];
+		memset(bucket_,0,sizeof(void*) * nbuckets);
 		bucksize_=get_aligned_space(bucksize);
 		if(bucksize_<tuplesize+2*sizeof(void*)){
 			bucksize_=tuplesize+2*sizeof(void*);
 		}
 		buck_actual_size_=bucksize_-2*sizeof(void*);
-		pagesize_=nbuckets*bucksize_;
+		pagesize_=(unsigned long)nbuckets*bucksize_<16*1024*(unsigned long)1024?(unsigned long)nbuckets*bucksize_:16*1024*(unsigned long)1024;
 		char* cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
 		assert(cur_mother_page);
 		t_start_=cur_mother_page;
@@ -50,33 +51,35 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 		/*
 		 * It's beneficial in IBM X5 to reset the newly allocated memory.
 		 * TODO: check whether other servers benefit from this.
+		 * Finished TODO. --Dec 31th by li
+		 * memset should not be used in our new machines.
 		 */
-		memset(cur_mother_page,0,pagesize_);
+//		memset(cur_mother_page,0,pagesize_);
 		assert(cur_mother_page);
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);
 
-		for (unsigned i=0; i<nbuckets; i++)
-		{
-			if(bucksize_+cur_MP_>=pagesize_)// the current mother page doesn't have enough space for the new buckets
-			{
-				cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
-				assert(cur_mother_page);
-
-				//TODO: as mentioned above.
-				memset(cur_mother_page,0,pagesize_);
-
-				cur_MP_=0;
-				mother_page_list_.push_back(cur_mother_page);
-			}
-			bucket_[i]=(void*)(cur_mother_page+cur_MP_);
-			cur_MP_+=bucksize_;
-
-			void** free = (void**)(((char*)bucket_[i]) + buck_actual_size_);
-			void** next = (void**)(((char*)bucket_[i]) + buck_actual_size_ + sizeof(void*));
-			*next = 0;
-			*free = bucket_[i];
-		}
+//		for (unsigned i=0; i<nbuckets; i++)
+//		{
+//			if(bucksize_+cur_MP_>=pagesize_)// the current mother page doesn't have enough space for the new buckets
+//			{
+//				cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
+//				assert(cur_mother_page);
+//
+//				//TODO: as mentioned above.
+////				memset(cur_mother_page,0,pagesize_);
+//
+//				cur_MP_=0;
+//				mother_page_list_.push_back(cur_mother_page);
+//			}
+//			bucket_[i]=(void*)(cur_mother_page+cur_MP_);
+//			cur_MP_+=bucksize_;
+//
+//			void** free = (void**)(((char*)bucket_[i]) + buck_actual_size_);
+//			void** next = (void**)(((char*)bucket_[i]) + buck_actual_size_ + sizeof(void*));
+//			*next = 0;
+//			*free = bucket_[i];
+//		}
 	}
 	catch (exception& e) {
 		cout << "failed" << endl;
@@ -105,5 +108,13 @@ BasicHashTable::Iterator::Iterator(const Iterator& r){
 	this->free=r.free;
 	this->next=r.next;
 	this->tuplesize=r.tuplesize;
+}
+BasicHashTable::Iterator::~Iterator(){
+	this->buck_actual_size=0;
+	this->cur=0;
+	this->free=0;
+	this->next=0;
+	this->tuplesize=0;
+
 }
 

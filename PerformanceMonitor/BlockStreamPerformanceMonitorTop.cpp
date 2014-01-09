@@ -20,6 +20,7 @@ BlockStreamPerformanceMonitorTop::~BlockStreamPerformanceMonitorTop() {
 }
 
 bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_offset){
+	start_=curtick();
 	state_.child_->open(partition_offset);
 	block_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 	tuplecount_=0;
@@ -28,7 +29,7 @@ bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_off
 	if(error!=0){
 		std::cout<<"create threads error!"<<std::endl;
 	}
-	start_=curtick();
+
 	return true;
 }
 
@@ -39,7 +40,7 @@ bool BlockStreamPerformanceMonitorTop::next(BlockStreamBase*){
 	if(state_.child_->next(block_)){
 		BlockStreamBase::BlockStreamTraverseIterator* it=block_->createIterator();
 		while(it->nextTuple()){
-			tuplecount_++;
+//			tuplecount_++;
 //			if(rand()%10000<3){
 //				printf("partition value:%d",state_.schema_->getcolumn(partition_index).operate->ge)
 //			}

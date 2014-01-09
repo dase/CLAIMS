@@ -39,21 +39,24 @@ ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State sta
 	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	assert(state.partition_key_index<100);
+	winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 	sem_open_.set_value(1);
 	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
+	winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 	// TODO Auto-generated destructor stub
 }
 
 bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
-
+	unsigned long long int start=curtick();
 	if(sem_open_.try_wait()){
-
+		winner_thread++;
 		nexhausted_lowers=0;
+		this->partition_offset=partition_offset;
 		nlowers=state.lower_ip_list.size();
 
 		for(unsigned i=0;i<nlowers;i++){
@@ -63,7 +66,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		socket_fd_lower_list=new int[nlowers];
 //		lower_ip_array=new std::string[nlowers];
 
-		buffer=new BlockStreamBuffer(state.block_size,nlowers*10,state.schema);
+		buffer=new BlockStreamBuffer(state.block_size,nlowers,state.schema);
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -80,7 +83,8 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id);
 		}
 
-		if(isMaster()){
+//		if(isMaster()){
+		if(partition_offset==0){
 			/*TODO: According to a bug reported by dsc, the master exchangeupper should check whether other
 			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fails to connection to the
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
@@ -90,8 +94,10 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			checkOtherUpperRegistered();
 			logging_->log("Synchronized!");
 			logging_->log("This exchange is the master one, serialize the iterator subtree to the children...");
+
 			if(SerializeAndSendToMulti()==false)
 				return false;
+
 		}
 
 
@@ -107,7 +113,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 
 		open_finished_=true;
-
+		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
 		return true;
 	}
 	else{
@@ -161,7 +167,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 
 
-	Environment::getInstance()->getExchangeTracker()->LogoutExchange(state.exchange_id);
+	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state.exchange_id,partition_offset));
 
 	return true;
 }
@@ -231,7 +237,7 @@ bool ExpandableBlockStreamExchangeEpoll::RegisterExchange(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	std::ostringstream port_str;
 	port_str<<socket_port;
-	return et->RegisterExchange(state.exchange_id,port_str.str());
+	return et->RegisterExchange(ExchangeID(state.exchange_id,partition_offset),port_str.str());
 }
 bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
@@ -239,10 +245,10 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 		std::string ip=state.upper_ip_list[i];
 		/* Repeatedly ask node with ip for port information untile the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
-		while(et->AskForSocketConnectionInfo(state.exchange_id,ip)==0){
+		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,i),ip)==0){
 			usleep(1);
 		}
-		logging_->log("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
+//		printf("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
 	}
 }
 bool ExpandableBlockStreamExchangeEpoll::isMaster(){
@@ -265,6 +271,7 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 			logging_->elog("Cannot send the serialized iterator tree to the remote node!\n");
 			return false;
 		}
+//		printf("***************************** send iterator to %d,%d*********************************\n",state.exchange_id,i);
 		EIEL->~BlockStreamIteratorBase();
 	}
 //	printf("AVG::%f\n",getSecond(start)/times);
@@ -300,12 +307,16 @@ bool ExpandableBlockStreamExchangeEpoll::CreateReceiverThread(){
 		return false;
 	}
 
-	pthread_create(&debug_tid,NULL,debug,this);
+//	pthread_create(&debug_tid,NULL,debug,this);
 	return true;
 }
 void ExpandableBlockStreamExchangeEpoll::CancelReceiverThread(){
 	pthread_cancel(receiver_tid);
-	pthread_cancel(debug_tid);
+	void *res=0;
+	while(res!=PTHREAD_CANCELED){
+		pthread_join(receiver_tid,&res);
+	}
+//	pthread_cancel(debug_tid);
 }
 
 void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
@@ -366,10 +377,11 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					}
 					status=getnameinfo(&in_addr,in_len,hbuf,sizeof(hbuf),sbuf,sizeof(sbuf),NI_NUMERICHOST|NI_NUMERICSERV);
 					if(status==0){
-//						printf("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
+						Pthis->logging_->log("Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n", infd, hbuf, sbuf,Pthis->state.exchange_id);
 						Pthis->logging_->log("Accepted connection on descriptor %d (host=%s, port=%s)\n", infd, hbuf, sbuf);
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
+						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_ip_list.size());
 
 					}
 					/*Make the incoming socket non-blocking and add it to the list of fds to monitor.*/
@@ -431,11 +443,11 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
 					}
 					else{
-				Pthis->logging_->log("*****This block is the last one.");
+						Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
-						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>",Pthis->nexhausted_lowers);
+						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",Pthis->nexhausted_lowers,Pthis->state.exchange_id,Pthis->partition_offset);
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
-						Pthis->logging_->log("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s].",Pthis->lower_ip_array[socket_fd_index].c_str());
+						Pthis->logging_->log("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s] exchange=(%d,%d).\n",Pthis->lower_ip_array[socket_fd_index].c_str(),Pthis->state.exchange_id,Pthis->partition_offset);
 
 					}
 				}

@@ -8,6 +8,17 @@
 #include "ChunkStorage.h"
 #include "../Debug.h"
 #include "BlockManager.h"
+
+bool ChunkReaderIterator::nextBlock(){
+	lock_.acquire();
+	if(this->cur_block_>=this->number_of_blocks_){
+		lock_.release();
+		return false;
+	}
+	cur_block_++;
+	lock_.release();
+	return true;
+}
 ChunkStorage::ChunkStorage(const ChunkID& chunk_id,const unsigned& block_size,const StorageLevel& desirable_level)
 :chunk_id_(chunk_id),block_size_(block_size),desirable_storage_level_(desirable_level),current_storage_level_(HDFS),chunk_size_(CHUNK_SIZE){
 //printf("CHUNKSTORAGE****:level=%d\n",desirable_storage_level_);
@@ -24,7 +35,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 			printf("current storage level: MEMORY\n");
 			HdfsInMemoryChunk chunk_info;
 			if(BlockManager::getInstance()->getMemoryChunkStore()->getChunk(chunk_id_,chunk_info))
-				return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
+				return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 			else
 				return 0;
 			break;
@@ -41,13 +52,16 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					/* there is enough memory storage space, so the storage level can be shifted.*/
 //					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
 					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
-					if(chunk_info.length==-1){
-//						TODO:BlockManager::getInstance()->getMemoryChunkStore()->applyChunk()
+					if(chunk_info.length<=0){
+						/*chunk_info.length<=0 means that either the file does not exist or
+						 * the current chunk_id exceed the actual size of the file.						 *
+						 */
+						BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(chunk_id_);
 						return 0;
 					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
-					return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_);
+					return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 				}
 				else{
 					/*
@@ -55,6 +69,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					 * TODO: swap algorithm.
 					 */
 					printf("Failed to get memory chunk budege!\n");
+					assert(false);
 				}
 			}
 //			return new HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
@@ -68,17 +83,17 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 std::string ChunkStorage::printCurrentStorageLevel()const{
 	return "";
 }
-InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size)
-:start_(start),chunk_size_(chunk_size),number_of_blocks_(number_of_blocks),block_cur_(0),block_size_(block_size){
+InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size,const ChunkID& chunk_id)
+:start_(start),chunk_size_(chunk_size),block_size_(block_size),ChunkReaderIterator(chunk_id,number_of_blocks){
 }
 bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 	lock_.acquire();
-	if(block_cur_>=number_of_blocks_){
+	if(cur_block_>=number_of_blocks_){
 		lock_.release();
 		return false;
 	}
 	/* calculate the block start address.*/
-	const char* block_start_address=(char*)start_+block_cur_*block_size_;
+	const char* block_start_address=(char*)start_+cur_block_*block_size_;
 
 	/* Create a block, which will not free block_start_address when destructed.*/
 	Block temp_block(block_size_,block_start_address);
@@ -89,7 +104,7 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 	 */
 	block->constructFromBlock(temp_block);
 
-	block_cur_++;
+	cur_block_++;
 	lock_.release();
 	return true;
 }
@@ -97,7 +112,7 @@ InMemoryChunkReaderItetaor::~InMemoryChunkReaderItetaor(){
 }
 
 DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,unsigned& chunk_size,const unsigned& block_size)
-:chunk_id_(chunk_id),chunk_size_(chunk_size),block_size_(block_size),cur_block_(0){
+:ChunkReaderIterator(chunk_id),chunk_size_(chunk_size),block_size_(block_size){
 	block_buffer_=new Block(block_size_);
 	fd_=FileOpen(chunk_id_.partition_id.getPathAndName().c_str(),O_RDONLY);
 	if(fd_==-1){
@@ -161,7 +176,7 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block){
 
 }
 HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id, unsigned& chunk_size,const unsigned& block_size)
-:chunk_id_(chunk_id),chunk_size_(chunk_size),block_size_(block_size),cur_block_(0){
+:ChunkReaderIterator(chunk_id),chunk_size_(chunk_size),block_size_(block_size){
 	block_buffer_=new Block(block_size_);
 	fs_=hdfsConnect(HDFS_N,9000);
 	hdfs_fd_=hdfsOpenFile(fs_,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);

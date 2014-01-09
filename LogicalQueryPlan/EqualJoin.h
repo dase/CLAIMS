@@ -45,6 +45,8 @@ private:
 	/** current version only consider the data size for simplicity.
 	 * TODO: consider not only data size but also other factors, such as parallelism, resource, etc.**/
 	JoinPolice decideLeftOrRightRepartition(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const;
+
+	DataflowPartitionDescriptor decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const;
 private:
 	std::vector<JoinPair> joinkey_pair_list_;
 	std::vector<Attribute> left_join_key_list_;

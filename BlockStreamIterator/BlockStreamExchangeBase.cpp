@@ -72,7 +72,7 @@ bool BlockStreamExchangeBase::PrepareTheSocket()
 	return true;
 }
 
-bool BlockStreamExchangeBase::RegisterExchange(unsigned long long int exchange_id){
+bool BlockStreamExchangeBase::RegisterExchange(ExchangeID exchange_id){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	std::ostringstream port_str;
 	port_str<<socket_port_;

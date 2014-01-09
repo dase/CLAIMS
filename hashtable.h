@@ -47,20 +47,26 @@ public:
 		assert(offset<nbuckets_);
 
 		void* data=bucket_[offset];
-
-		void** freeloc = (void**)((char*)data + buck_actual_size_);
 		void* ret;
-		if ((*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
-		{
-			ret = *freeloc;
-			*freeloc = ((char*)(*freeloc)) + tuplesize_;
-			assert(ret!=0);
-			return ret;
+		if(data>0){
+			void** freeloc = (void**)((char*)data + buck_actual_size_);
+
+			if ((*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
+			{
+				ret = *freeloc;
+				*freeloc = ((char*)(*freeloc)) + tuplesize_;
+				assert(ret!=0);
+				return ret;
+			}
 		}
+
+		mother_page_lock_.lock();
 		char* cur_mother_page=mother_page_list_.back();
 		if(bucksize_+cur_MP_>=pagesize_ )// the current mother page doesn't have enough space for the new buckets
 		{
 			cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
+			//TODO: as mentioned in .cpp.
+//			memset(cur_mother_page,0,pagesize_);
 			assert(cur_mother_page);
 			cur_MP_=0;
 			mother_page_list_.push_back(cur_mother_page);
@@ -75,6 +81,7 @@ public:
 		*new_buck_nextloc = data;
 
 		bucket_[offset]=ret;
+		mother_page_lock_.unlock();
 		return ret;
 	}
 	inline void* atomicAllocate(const unsigned& offset){
@@ -101,6 +108,7 @@ public:
 		Iterator();
 		Iterator(const unsigned& buck_actual_size,const unsigned& tuplesize);
 		Iterator(const Iterator& r);
+		~Iterator();
 		inline void* readnext()
 		{
 			void* ret;
@@ -165,6 +173,12 @@ public:
 		if(offset>=nbuckets_)
 			return false;
 		void* start=bucket_[offset];
+		if(start==0){
+			it.cur=0;
+			it.free=0;
+			it.next=0;
+			return true;
+		}
 		it.cur = start;
 		it.free = *(void**)((char*)start + buck_actual_size_);
 		it.next = *(void**)((char*)start + buck_actual_size_ + sizeof(void*));
@@ -185,6 +199,7 @@ private:
 	int cur_MP_;
 	std::vector<char*> mother_page_list_;
 	SpineLock* lock_list_;
+	SpineLock mother_page_lock_;
 	unsigned * overflow_count_;
 };
 

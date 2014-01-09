@@ -10,13 +10,13 @@
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(3);
+	barrier_=new Barrier(1);
 }
 
 BlockStreamJoinIterator::BlockStreamJoinIterator()
 :hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(3);
+	barrier_=new Barrier(1);
 }
 
 BlockStreamJoinIterator::~BlockStreamJoinIterator() {
@@ -61,7 +61,11 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
 	cout<<"AtomicPushFreeBlockStream\n\n"<<endl;
 	cout<<"join open begin"<<endl;
+	unsigned long long int timer;
 	if(sema_open_.try_wait()){
+	timer=curtick();
+
+
 		unsigned output_index=0;
 		for(unsigned i=0;i<state_.joinIndex_left.size();i++){
 			joinIndex_left_to_output[i]=output_index;
@@ -116,9 +120,12 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //			bn=state_.input_schema_left->getcolumn(0).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash);
 
 			bn=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash);
+//			bn=boost::hash_value(*(unsigned long*)((char*)cur+sizeof(unsigned long )+sizeof(int)));
+
+
 //			const unsigned test_bn=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash_test);
 //			if(rand()%10000<3){
-//				printf("key:%d\n",test_bn);
+//				Print("key:%d\n",test_bn);
 //			}
 //			hashtable->placeIterator(tmp_it,bn);
 
@@ -165,6 +172,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //	water_mark=0;
 	barrier_->Arrive();
 	cout<<"pass the arrive of barrier!!!"<<endl;
+	cout<<"Build time"<<getSecond(timer)<<endl;
 	state_.child_right->open(partition_offset);
 //	cout<<"PartitionOffset:"<<partition_offset<<endl;
 //	sleep(1);

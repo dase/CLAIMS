@@ -9,7 +9,7 @@
 #ifndef EXPANDABLEBLOCKSTREAMEXCHANGELOWEREFFICIENT_H_
 #define EXPANDABLEBLOCKSTREAMEXCHANGELOWEREFFICIENT_H_
 
-
+#include <map>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
@@ -76,6 +76,7 @@ private:
 	static void* debug(void* arg);
 	unsigned hash(void*);
 	bool ConnectToUpperExchangeWithMulti(int &sock_fd,struct hostent* host,int port);
+	bool ConnectToUpperExchangeWithMulti(int &sock_fd,const std::string ip,int port);
 	void WaitingForNotification(int target_socket_fd);
 	void WaitingForCloseNotification();
 
@@ -112,6 +113,12 @@ private:
 	unsigned generated_blocks;
 	unsigned sendedblocks;
 	unsigned readsendedblocks;
+
+	unsigned connected_uppers;
+	std::map<std::string,int> connected_uppers_list_;
+
+	unsigned connected_uppers_in;
+	std::map<std::string,int> connected_uppers_list_in;
 };
 
 

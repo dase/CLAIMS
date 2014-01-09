@@ -13,14 +13,14 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(3);
+        barrier_=new Barrier(1);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 :open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(3);
+        barrier_=new Barrier(1);
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
@@ -119,6 +119,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		void *value_in_input_tuple;
 		void *value_in_hash_table;
 		void* new_tuple_in_hash_table;
+		unsigned allocated_tuples_in_hashtable=0;
 //        void *tuple=memalign(cacheline_size,state_.output->getTupleMaxSize());
 		BasicHashTable::Iterator tmp_it=hashtable_->CreateIterator();
 
@@ -132,6 +133,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		while(state_.child->next(bsb)){
 //			printf("Aggregation open consumes one block from child!\n");
 //			printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
+//			bsb->setEmpty();
+//			continue;
 				BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 				bsti->reset();
 
@@ -192,7 +195,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 //                        lock_.acquire();
 						//if the key doesn't exist, so we can allocate a space for it, and init the func of the hashtable
 						new_tuple_in_hash_table=hashtable_->atomicAllocate(bn);
-//						allocated_tuples_in_hashtable++;
+						allocated_tuples_in_hashtable++;
 
 
 						for(unsigned i=0;i<state_.groupByIndex.size();i++){
@@ -224,7 +227,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 //				printf("Aggregation open consumed tuples=%d\n",consumed_tuples);
 				bsb->setEmpty();
 		}
-//		printf("Aggregation consumed %d tuples , %d allocation, %d matched!\n",consumed_tuples,allocated_tuples_in_hashtable,matched_tuples);
+		printf("Aggregation consumed %d tuples , %d allocation, %d matched!\n",consumed_tuples,allocated_tuples_in_hashtable,matched_tuples);
 
 
 

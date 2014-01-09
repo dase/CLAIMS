@@ -21,7 +21,7 @@ LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
 	}
 	scan_attribute_list_=table->getAttributes();
 }
-LogicalScan::LogicalScan(ProjectionDescriptor* projection){
+LogicalScan::LogicalScan(ProjectionDescriptor* projection,const float sample_rate):sample_rate_(sample_rate){
 	scan_attribute_list_=projection->getAttributeList();
 	target_projection_=projection;
 }
@@ -98,6 +98,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 	state.block_size_=block_size;
 	state.projection_id_=target_projection_->getProjectionID();
 	state.schema_=getSchema(dataflow_.attribute_list_);
+	state.sample_rate_=sample_rate_;
 	return new ExpandableBlockStreamProjectionScan(state);
 
 //

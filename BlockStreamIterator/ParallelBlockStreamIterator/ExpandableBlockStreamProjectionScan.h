@@ -29,16 +29,17 @@ public:
 	class State{
 	friend class ExpandableBlockStreamProjectionScan;
 	public:
-		State(ProjectionID projection_id,Schema* schema,unsigned block_size);
+		State(ProjectionID projection_id,Schema* schema,unsigned block_size,float sample_rate=1);
 		State(){};
 	public:
 		Schema* schema_;
 		ProjectionID projection_id_;
 		unsigned block_size_;
+		float sample_rate_;
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & projection_id_ & block_size_;
+			ar & schema_ & projection_id_ & block_size_&sample_rate_;
 		}
 	};
 	ExpandableBlockStreamProjectionScan(State state);
@@ -51,6 +52,7 @@ private:
 
 	void atomicPushChunkReaderIterator(ChunkReaderIterator*);
 	bool atomicPopChunkReaderIterator(ChunkReaderIterator*&);
+	bool passSample()const;
 private:
 
 	State state_;
