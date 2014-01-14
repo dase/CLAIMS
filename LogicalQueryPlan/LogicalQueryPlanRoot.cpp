@@ -79,7 +79,7 @@ Dataflow LogicalQueryPlanRoot::getDataflow(){
 bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& final_physical_plan_desc, const unsigned & block_size){
 	std::vector<PhysicalPlanDescriptor> candidate_physical_plan;
 	Requirement current_req;
-	current_req.setRequiredLocations(std::vector<NodeID>(collecter_));
+	current_req.setRequiredLocations(std::vector<NodeID>(1,collecter_));
 
 	Requirement merged_req;
 	bool requirement_merged=current_req.tryMerge(requirement,merged_req);

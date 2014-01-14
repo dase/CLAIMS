@@ -27,7 +27,7 @@ public:
 	virtual bool open(const PartitionOffset& part_off=0)=0;
 	virtual bool next(BlockStreamBase*)=0;
 	virtual bool close()=0;
-
+	virtual void print(){printf("??\n");};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
