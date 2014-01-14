@@ -110,3 +110,65 @@ bool Requirement::passLimits(const unsigned long cost)const{
 bool Requirement::hasRequiredLocations()const{
 	return !location_list_.empty();
 }
+
+bool isLocationsCompatible(const std::vector<NodeID> l,const std::vector<NodeID> r){
+	if(l.size()!=r.size())
+		return false;
+	for(unsigned i=0;i<l.size();i++){
+		if(l[i]!=r[i])
+			return false;
+	}
+	return true;
+}
+
+bool Requirement::tryMerge(const Requirement req,Requirement& target)const{
+	if(!this->getPartitionKey().isNULL()&&!req.getPartitionKey().isNULL()){
+		if(this->getPartitionKey()!=req.getPartitionKey())
+			return false;
+		else
+			target.setRequiredPartitionkey(req.getPartitionKey());
+	}
+	else if(!this->getPartitionKey().isNULL()){
+		target.setRequiredPartitionkey(this->getPartitionKey());
+	}
+	else if(!req.getPartitionKey().isNULL()){
+		target.setRequiredPartitionkey(req.getPartitionKey());
+	}
+
+	/* if the code arrives here, the partition key is compatible.*
+	 * Then we need to check the number of partitions and locations
+	 */
+
+	/*test the number of partitions*/
+	if(this->hasRequiredPartitionFunction()&&req.hasRequiredPartitionFunction()){
+		if(!(this->getPartitionFunction()->equal(req.getPartitionFunction())))
+			return false;
+		else
+			target.setRequiredPartitionFucntion(req.getPartitionFunction());
+	}
+	else if(this->hasRequiredPartitionFunction()){
+		target.setRequiredPartitionFucntion(this->getPartitionFunction());
+	}
+	else if(req.hasRequiredPartitionFunction()){
+		target.setRequiredPartitionFucntion(req.getPartitionFunction());
+	}
+
+	/* test the locations*/
+	if(this->hasRequiredLocations()&&req.hasRequiredLocations()){
+		if(!isLocationsCompatible(this->getRequiredLocations(),req.getRequiredLocations()))
+			return false;
+		else
+			target.setRequiredLocations(this->getRequiredLocations());
+	}
+	else{
+		target.setRequiredLocations(
+			this->hasRequiredLocations()?this->getRequiredLocations():req.getRequiredLocations()
+		);
+	}
+
+	return true;
+
+
+
+
+}

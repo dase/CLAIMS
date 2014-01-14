@@ -524,7 +524,12 @@ static int getOptimalQueryPlan(){
 		unsigned long long int timer_start=curtick();
 		BlockStreamIteratorBase* executable_query_plan;
 		PhysicalPlanDescriptor physical_plan;
-		if(root->GetOptimalPhysicalPlan(Requirement(),physical_plan,1024*64-sizeof(unsigned))){
+		Requirement req;
+		req.setRequiredCost(0);
+
+		req.setRequiredPartitionkey(table_1->getAttribute("trade_dir"));
+
+		if(root->GetOptimalPhysicalPlan(req,physical_plan,1024*64-sizeof(unsigned))){
 			printf("Physical plan is generated(cost=%d)!\n",physical_plan.cost);
 			executable_query_plan=physical_plan.plan;
 		}
