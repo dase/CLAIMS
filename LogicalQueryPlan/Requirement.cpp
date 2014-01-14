@@ -1,0 +1,112 @@
+/*
+ * Requirement.cpp
+ *
+ *  Created on: Jan 14, 2014
+ *      Author: wangli
+ */
+#include <assert.h>
+#include "Requirement.h"
+
+Requirement::Requirement():partition_function_(0),cost_limit_(0) {
+	// TODO Auto-generated constructor stub
+
+}
+
+Requirement::~Requirement() {
+	// TODO Auto-generated destructor stub
+}
+
+void Requirement::setRequiredPartitionkey(const Attribute partition_key){
+	partition_key_=partition_key;
+}
+Attribute Requirement::getPartitionKey()const{
+	return partition_key_;
+}
+bool Requirement::hasReuiredPartitionKey()const{
+	return !partition_key_.isNULL();
+}
+
+
+
+void Requirement::setRequiredPartitionFucntion(PartitionFunction* partition){
+	partition_function_=partition;
+}
+PartitionFunction* Requirement::getPartitionFunction()const{
+	return partition_function_;
+}
+bool Requirement::hasRequiredPartitionFunction()const{
+	return partition_function_!=0;
+}
+
+
+void Requirement::setRequiredLocations(std::vector<NodeID> location_list){
+	location_list_=location_list;
+}
+std::vector<NodeID> Requirement::getRequiredLocations()const{
+	return location_list_;
+}
+void Requirement::setRequiredCost(const unsigned long cost){
+	cost_limit_=cost;
+}
+NetworkTransfer Requirement::requireNetworkTransfer(const Dataflow& dataflow)const{
+	NetworkTransfer ret;
+	/* whether the data flow is partitioned on desirable key*/
+	bool right_partition_key=true;
+	bool right_partition_function=true;
+	if(!partition_key_.isNULL()){
+		/**there is partition key requirement*/
+		if(partition_key_!=dataflow.property_.partitioner.getPartitionKey()){
+			/* the partition key is not match*/
+			right_partition_key=false;
+		}
+		else{
+			/* partition key matches and now test the partition numbers*/
+			if(partition_function_!=0){
+				if(!partition_function_->equal(dataflow.property_.partitioner.getPartitionFunction())){
+					right_partition_function=false;
+				}
+			}
+			else{
+
+			}
+		}
+	}
+
+	if(right_partition_key&&right_partition_function){
+		if(!location_list_.empty()){
+			/* there is requirememt for locations*/
+			bool same_locations=true;
+			for(unsigned i=0;i<location_list_.size();i++){
+				if(location_list_[i]!=dataflow.property_.partitioner.getPartition(i)->getLocation()){
+					same_locations=false;
+					break;
+				}
+			}
+			if(same_locations){
+				ret=NONE;
+			}
+			else{
+				ret=piped;
+			}
+		}
+		else{
+			ret=NONE;
+		}
+	}
+	else{
+		ret=Shuffle;
+	}
+
+	return ret;
+}
+
+bool Requirement::passLimits(const unsigned long cost)const{
+	if(cost_limit_==0)
+		return true;
+	else{
+		return cost_limit_>=cost;
+	}
+}
+bool Requirement::hasRequiredLocations()const{
+	return !location_list_.empty();
+}

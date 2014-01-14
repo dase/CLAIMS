@@ -50,8 +50,8 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 				chunk_info.length=CHUNK_SIZE;
 				if(BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(chunk_id_,chunk_info)){
 					/* there is enough memory storage space, so the storage level can be shifted.*/
-//					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
-					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
+					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
+//					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
 					if(chunk_info.length<=0){
 						/*chunk_info.length<=0 means that either the file does not exist or
 						 * the current chunk_id exceed the actual size of the file.						 *

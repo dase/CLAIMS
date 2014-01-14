@@ -8,6 +8,7 @@
 #ifndef ATTRIBUTE_H_
 #define ATTRIBUTE_H_
 #include <string>
+
 #include "../data_type.h"
 #include "../ids.h"
 struct Attribute
@@ -27,7 +28,7 @@ struct Attribute
 		index=att.index;
 
 	}
-	Attribute(){
+	Attribute():table_id_(-1){
 
 	}
 	~Attribute(){
@@ -35,6 +36,12 @@ struct Attribute
 	}
 	bool operator==(const Attribute& r)const{
 		return table_id_==r.table_id_&&index==r.index;
+	}
+	bool operator!=(const Attribute& r)const{
+		return !(table_id_==r.table_id_&&index==r.index);
+	}
+	bool isNULL()const{
+		return table_id_==TableID(-1);
 	}
 	std::string attrName;
 	column_type* attrType;

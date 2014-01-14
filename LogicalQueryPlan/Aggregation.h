@@ -18,6 +18,7 @@ public:
 	virtual ~Aggregation();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned & block_size);
+
 	std::vector<unsigned> getInvolvedIndexList(const std::vector<Attribute>& attribute_list,const Dataflow& dataflow )const;
 private:
 	bool canLeverageHashPartition(const Dataflow& child_dataflow)const;

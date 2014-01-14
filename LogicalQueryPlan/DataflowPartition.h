@@ -10,9 +10,11 @@
 #include "../ids.h"
 //#include "../Catalog"
 
+
+
 class DataflowPartition {
 public:
-	friend class DataflowPartitionDescriptor;
+	friend class DataflowPartitioningDescriptor;
 	DataflowPartition():filtered_(false){};
 	DataflowPartition(unsigned partitoin_id,int datasize,NodeID location);
 	DataflowPartition(const DataflowPartition& part);

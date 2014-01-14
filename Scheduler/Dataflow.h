@@ -15,7 +15,7 @@ class Dataflow {
 	/* describe the properties of the data flow*/
 	friend class LogcalOperator;
 	struct property{
-		DataflowPartitionDescriptor partitioner;
+		DataflowPartitioningDescriptor partitioner;
 		unsigned commnication_cost;
 		property():commnication_cost(0){
 

@@ -7,7 +7,7 @@
 
 #include "DataflowPartitionDescriptor.h"
 
-DataflowPartitionDescriptor::DataflowPartitionDescriptor(const Partitioner& partitioner){
+DataflowPartitioningDescriptor::DataflowPartitioningDescriptor(const Partitioner& partitioner){
 	partition_function_=partitioner.getPartitionFunction();
 	partition_key_=partitioner.getPartitionKey();
 	for(unsigned i=0;i<partitioner.getNumberOfPartitions();i++){
@@ -19,14 +19,14 @@ DataflowPartitionDescriptor::DataflowPartitionDescriptor(const Partitioner& part
 	}
 }
 
-DataflowPartitionDescriptor::~DataflowPartitionDescriptor() {
+DataflowPartitioningDescriptor::~DataflowPartitioningDescriptor() {
 
 }
-Attribute DataflowPartitionDescriptor::getPartitionKey()const{
+Attribute DataflowPartitioningDescriptor::getPartitionKey()const{
 	return partition_key_;
 }
 
-bool DataflowPartitionDescriptor::hasSamePartitionLocation(const DataflowPartitionDescriptor& target)const{
+bool DataflowPartitioningDescriptor::hasSamePartitionLocation(const DataflowPartitioningDescriptor& target)const{
 	if(partition_list_.size()!=target.partition_list_.size())
 		return false;
 	for(unsigned i=0;i<partition_list_.size();i++){
@@ -41,47 +41,47 @@ bool DataflowPartitionDescriptor::hasSamePartitionLocation(const DataflowPartiti
 	return true;
 }
 
-unsigned DataflowPartitionDescriptor::getAggregatedDatasize()const{
+unsigned DataflowPartitioningDescriptor::getAggregatedDatasize()const{
 	unsigned ret=0;
 	for(unsigned i=0;i<partition_list_.size();i++){
 		ret+=partition_list_[i].datasize_;
 	}
 	return ret;
 }
-PartitionFunction::partition_fashion DataflowPartitionDescriptor::getPartitionFashion()const{
+PartitionFunction::partition_fashion DataflowPartitioningDescriptor::getPartitionFashion()const{
 	return partition_function_->getPartitionFashion();
 }
-unsigned DataflowPartitionDescriptor::getNumberOfPartitions()const{
+unsigned DataflowPartitioningDescriptor::getNumberOfPartitions()const{
 	return partition_list_.size();
 }
-DataflowPartition* DataflowPartitionDescriptor::getPartition(unsigned index)const{
+DataflowPartition* DataflowPartitioningDescriptor::getPartition(unsigned index)const{
 	assert(index<partition_list_.size());
 	DataflowPartition* ret=(DataflowPartition*)&partition_list_[index];
 	return ret;
 }
-PartitionFunction* DataflowPartitionDescriptor::getPartitionFunction()const{
+PartitionFunction* DataflowPartitioningDescriptor::getPartitionFunction()const{
 	return partition_function_;
 }
-void DataflowPartitionDescriptor::setPartitionKey(const Attribute& partitionkey){
+void DataflowPartitioningDescriptor::setPartitionKey(const Attribute& partitionkey){
 	partition_key_=partitionkey;
 }
-void DataflowPartitionDescriptor::addShadowPartitionKey(const Attribute& partitionkey){
+void DataflowPartitioningDescriptor::addShadowPartitionKey(const Attribute& partitionkey){
 	shadow_partition_key_list_.push_back(partitionkey);
 }
 
-void DataflowPartitionDescriptor::setPartitionFunction(PartitionFunction* partition_function){
+void DataflowPartitioningDescriptor::setPartitionFunction(PartitionFunction* partition_function){
 	partition_function_=partition_function;
 }
-bool DataflowPartitionDescriptor::hasShadowPartitionKey()const{
+bool DataflowPartitioningDescriptor::hasShadowPartitionKey()const{
 	return !shadow_partition_key_list_.empty();
 }
-std::vector<Attribute> DataflowPartitionDescriptor::getShadowAttributeList()const{
+std::vector<Attribute> DataflowPartitioningDescriptor::getShadowAttributeList()const{
 	return shadow_partition_key_list_;
 }
 
-std::vector<DataflowPartition> DataflowPartitionDescriptor::getPartitionList()const{
+std::vector<DataflowPartition> DataflowPartitioningDescriptor::getPartitionList()const{
 	return partition_list_;
 }
-void DataflowPartitionDescriptor::setPartitionList(const std::vector<DataflowPartition>& list){
+void DataflowPartitioningDescriptor::setPartitionList(const std::vector<DataflowPartition>& list){
 	partition_list_=list;
 }

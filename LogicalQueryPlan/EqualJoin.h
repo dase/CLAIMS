@@ -23,6 +23,7 @@ public:
 	virtual ~EqualJoin();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
+
 private:
 	std::vector<unsigned> getLeftJoinKeyIndexList()const;
 	std::vector<unsigned> getRightJoinKeyIndexList()const;
@@ -38,7 +39,7 @@ private:
 	/*check whether the partitioning is based on hash and the hash key is a subset of the join keys such that hash join
 	 * is enabled.
 	 */
-	bool canLeverageHashPartition(const std::vector<Attribute> &partition_key_list,const DataflowPartitionDescriptor& partitoiner)const;
+	bool canLeverageHashPartition(const std::vector<Attribute> &partition_key_list,const DataflowPartitioningDescriptor& partitoiner)const;
 
 	bool isEqualCondition(const Attribute& a1,const Attribute& a2)const;
 
@@ -46,7 +47,7 @@ private:
 	 * TODO: consider not only data size but also other factors, such as parallelism, resource, etc.**/
 	JoinPolice decideLeftOrRightRepartition(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const;
 
-	DataflowPartitionDescriptor decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const;
+	DataflowPartitioningDescriptor decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const;
 private:
 	std::vector<JoinPair> joinkey_pair_list_;
 	std::vector<Attribute> left_join_key_list_;
