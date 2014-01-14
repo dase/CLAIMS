@@ -532,6 +532,8 @@ static int getOptimalQueryPlan(){
 		if(root->GetOptimalPhysicalPlan(req,physical_plan,1024*64-sizeof(unsigned))){
 			printf("Physical plan is generated(cost=%d)!\n",physical_plan.cost);
 			executable_query_plan=physical_plan.plan;
+			executable_query_plan->print();
+			sleep(3);
 		}
 		else{
 			printf("Failed to generated physical execution plan!\n");
