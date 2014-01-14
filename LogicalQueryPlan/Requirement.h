@@ -39,6 +39,11 @@ public:
 	bool passLimits(const unsigned long cost)const;
 	virtual ~Requirement();
 
+	/** try to merge the req if *this and req are compatible.
+	 *	return true if successful
+	 */
+	bool tryMerge(const Requirement req,Requirement& target)const;
+
 private:
 	/**
 	 * describe the desirable location for each partition.

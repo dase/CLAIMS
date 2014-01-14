@@ -78,14 +78,23 @@ Dataflow LogicalQueryPlanRoot::getDataflow(){
 
 bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& final_physical_plan_desc, const unsigned & block_size){
 	std::vector<PhysicalPlanDescriptor> candidate_physical_plan;
-	Requirement req;
-	req.setRequiredLocations(std::vector<NodeID>(collecter_));
+	Requirement current_req;
+	current_req.setRequiredLocations(std::vector<NodeID>(collecter_));
+
+	Requirement merged_req;
+	bool requirement_merged=current_req.tryMerge(requirement,merged_req);
+	if(requirement_merged){
+		current_req=merged_req;
+	}
+
+
 	PhysicalPlanDescriptor physical_plan;
 
 	/** no requirement**/
-	if(child_->GetOptimalPhysicalPlan(Requirement(),physical_plan)){
+	if(child_->GetOptimalPhysicalPlan(Requirement(),physical_plan,block_size)){
 
-		NetworkTransfer transfer=req.requireNetworkTransfer(physical_plan.dataflow);
+		NetworkTransfer transfer=current_req.requireNetworkTransfer(physical_plan.dataflow);
+
 		if(transfer==NONE){
 			candidate_physical_plan.push_back(physical_plan);
 		}
@@ -116,7 +125,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 	}
 
 	/** with requirement**/
-	if(child_->GetOptimalPhysicalPlan(req,physical_plan)){
+	if(child_->GetOptimalPhysicalPlan(current_req,physical_plan,block_size)){
 		candidate_physical_plan.push_back(physical_plan);
 	}
 
@@ -136,9 +145,68 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 	}
 
 
-	final_physical_plan_desc.cost=best_plan.cost;
-	final_physical_plan_desc.dataflow=best_plan.dataflow;
-	final_physical_plan_desc.plan=final_plan;
+	if(requirement_merged){
+		final_physical_plan_desc.cost=best_plan.cost;
+		final_physical_plan_desc.dataflow=best_plan.dataflow;
+		final_physical_plan_desc.plan=final_plan;
+	}
+	else{
+		NetworkTransfer transfer=current_req.requireNetworkTransfer(best_plan.dataflow);
+
+		if(transfer==NONE){
+			final_physical_plan_desc.cost=best_plan.cost;
+			final_physical_plan_desc.dataflow=best_plan.dataflow;
+			final_physical_plan_desc.plan=final_plan;
+		}
+		else if((transfer==OneToOne)||(transfer==Shuffle)){
+			/* the input data flow should be transfered in the network to meet the requirement
+			 * TODO: implement OneToOne Exchange
+			 * */
+
+			ExpandableBlockStreamExchangeEpoll::State state;
+			state.block_size=block_size;
+			state.child=best_plan.plan;//child_iterator;
+			state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			state.schema=getSchema(best_plan.dataflow.attribute_list_);
+			std::vector<NodeID> upper_id_list;
+			if(requirement.hasRequiredLocations()){
+				upper_id_list=requirement.getRequiredLocations();
+			}
+			else{
+				if(requirement.hasRequiredPartitionFunction()){
+					/* partition function contains the number of partitions*/
+					PartitionFunction* partitoin_function=requirement.getPartitionFunction();
+					upper_id_list=std::vector<NodeID>(NodeTracker::getInstance()->getNodeIDList().begin(),NodeTracker::getInstance()->getNodeIDList().begin()+partitoin_function->getNumberOfPartitions()-1);
+				}
+				else{
+					//TODO: decide the degree of parallelism
+					upper_id_list=NodeTracker::getInstance()->getNodeIDList();
+				}
+			}
+
+			state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+
+			assert(requirement.hasReuiredPartitionKey());
+
+			state.partition_key_index=this->getIndexInAttributeList(best_plan.dataflow.attribute_list_,requirement.getPartitionKey());
+			assert(state.partition_key_index>=0);
+
+			std::vector<NodeID> lower_id_list=getInvolvedNodeID(best_plan.dataflow.property_.partitioner);
+
+			state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+
+
+			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
+			best_plan.plan=exchange;
+			best_plan.cost+=best_plan.dataflow.getAggregatedDatasize();
+
+			final_physical_plan_desc.cost=best_plan.cost;
+			final_physical_plan_desc.dataflow=best_plan.dataflow;
+			final_physical_plan_desc.plan=exchange;
+
+		}
+	}
+
 
 	if(requirement.passLimits(final_physical_plan_desc.cost))
 		return true;
