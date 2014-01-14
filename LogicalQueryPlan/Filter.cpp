@@ -58,7 +58,7 @@ BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
 	return filter;
 }
 
-bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitionDescriptor& part)const{
+bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor& part)const{
 //	for(unsigned i=0;i<comparator_list_.size();i++){
 //		const unsigned comparator_attribute_index=comparator_list_[i].get_index();
 //		if(part.getPartitionKey()==dataflow.attribute_list_[comparator_attribute_index]){

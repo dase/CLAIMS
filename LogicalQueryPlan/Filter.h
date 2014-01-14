@@ -32,8 +32,9 @@ public:
 	virtual ~Filter();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
+
 private:
-	bool couldHashPruned(unsigned partition_id,const DataflowPartitionDescriptor&)const;
+	bool couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor&)const;
 	float predictSelectivity()const;
 	void generateComparatorList(const Dataflow&);
 private:

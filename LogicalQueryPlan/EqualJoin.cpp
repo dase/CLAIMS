@@ -180,7 +180,7 @@ bool EqualJoin::isHashOnLeftKey(const Partitioner& part,const Attribute& key)con
 	}
 	return part.getPartitionKey()==key;
 }
-bool EqualJoin::canLeverageHashPartition(const std::vector<Attribute> &partition_key_list,const DataflowPartitionDescriptor& partitoiner)const{
+bool EqualJoin::canLeverageHashPartition(const std::vector<Attribute> &partition_key_list,const DataflowPartitioningDescriptor& partitoiner)const{
 	Attribute attribute=partitoiner.getPartitionKey();
 	for(unsigned i=0;i<partition_key_list.size();i++){
 		if(attribute==partition_key_list[i])
@@ -523,8 +523,8 @@ int EqualJoin::getIndexInAttributeList(const std::vector<Attribute>& attributes,
 	}
 	return -1;
 }
-DataflowPartitionDescriptor EqualJoin::decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
-	DataflowPartitionDescriptor ret;
+DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
+	DataflowPartitioningDescriptor ret;
 
 	const unsigned l_datasize=left_dataflow.getAggregatedDatasize();
 	const unsigned r_datasize=right_dataflow.getAggregatedDatasize();

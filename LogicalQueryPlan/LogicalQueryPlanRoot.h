@@ -17,6 +17,7 @@ public:
 	virtual ~LogicalQueryPlanRoot();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned&);
+	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
 	NodeID collecter_;
 	LogicalOperator* child_;

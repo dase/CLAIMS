@@ -13,6 +13,14 @@
 #include "../Scheduler/Dataflow.h"
 #include "../Schema/SchemaFix.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "Requirement.h"
+
+typedef BlockStreamIteratorBase* PhysicalPlan;
+typedef struct PhysicalPlanDescriptor{
+	PhysicalPlan plan;
+	Dataflow dataflow;
+	unsigned cost;
+};
 class LogicalOperator{
 public:
 	LogicalOperator(){};
@@ -27,11 +35,22 @@ public:
 	 * this function can only be called after the calling of getDataflow()
 	 */
 	virtual BlockStreamIteratorBase* getIteratorTree(const unsigned &)=0;
+
+	/**
+	 * get the optimal Physical plan that meets the requirement.
+	 * @return true if find physical plan that meets the requirement and store the physical plan and
+	 * its corresponding information in physical_plan_descriptor.
+	 */
+	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
+
+
 protected:
 	Schema* getSchema(const std::vector<Attribute>&)const;
 	Schema* getSchema(const std::vector<Attribute>&,const std::vector<Attribute>&)const;
-	std::vector<NodeID> getInvolvedNodeID(const DataflowPartitionDescriptor&)const;
+	std::vector<NodeID> getInvolvedNodeID(const DataflowPartitioningDescriptor&)const;
 	std::vector<NodeIP> convertNodeIDListToNodeIPList(const std::vector<NodeID>&)const;
+	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;
+	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const;
 };
 
 //class Operator{

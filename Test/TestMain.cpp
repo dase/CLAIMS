@@ -9,10 +9,12 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/projectionScan.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/iterator_test.cpp"
 #include "../Executor/Test/Executor.cpp"
+#include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
 //#include "hashtable_test.cpp"
 int main(){
-	return testGenerateIteratorTree();
+//	return testGenerateIteratorTree();
 //	return iterator_test();
 //	return testIteratorExecutor();
 //	return hashtable_test();
+	return getOptimalQueryPlan();
 }

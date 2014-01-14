@@ -43,7 +43,11 @@ PartitionFunction::PartitionFunction(int min, int max, unsigned int k) : min_(mi
 	else
 		k_ = getlogarithm(k);
 }
-
+bool PartitionFunction::equal(PartitionFunction* function_)const{
+	return (getPartitionFashion()==function_->getPartitionFashion())
+			&&
+			(getNumberOfPartitions()==function_->getNumberOfPartitions());
+}
 //unsigned int PartitionFunction::getNumberOfPartitions()const {
 //	return 1 << k_;
 //}

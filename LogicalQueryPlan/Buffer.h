@@ -15,6 +15,7 @@ public:
 	Buffer(LogicalOperator* child);
 	virtual ~Buffer();
 	Dataflow getDataflow();
+
 	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
 private:
 	LogicalOperator* child_;
