@@ -145,7 +145,11 @@ bool ExpandableBlockStreamFilter::close(){
 	state_.child_->close();
 	return true;
 }
-
+void ExpandableBlockStreamFilter::print(){
+	printf("Filter\n");
+	printf("---------------\n");
+	state_.child_->print();
+}
 bool ExpandableBlockStreamFilter::atomicPopRemainingBlock(remaining_block & rb){
 	lock_.acquire();
 
