@@ -52,7 +52,7 @@ public:
 	bool open(const PartitionOffset& part_off);
 	bool next(BlockStreamBase* block);
 	bool close();
-
+    void print();
 private:
 	bool atomicPopRemainingBlock(remaining_block & rb);
 	void atomicPushRemainingBlock(remaining_block rb);

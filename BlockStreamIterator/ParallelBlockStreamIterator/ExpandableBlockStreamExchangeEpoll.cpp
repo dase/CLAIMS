@@ -181,7 +181,8 @@ void ExpandableBlockStreamExchangeEpoll::print(){
 	for(unsigned i=0;i<state.lower_ip_list.size();i++){
 		printf("%s ",state.lower_ip_list[i].c_str());
 	}
-	printf("---------\b");
+	printf("Partition key index:%d",state.partition_key_index);
+	printf("\n---------\n");
 	state.child->print();
 }
 bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
