@@ -13,10 +13,10 @@
 #include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
 //#include "hashtable_test.cpp"
 int main(){
-//	return testGenerateIteratorTree();
+	return testGenerateIteratorTree();
 //	return iterator_test();
 //	return testIteratorExecutor();
 //	return hashtable_test();
 //	return getOptimalQueryPlan();
-	return ResultCollect_test();
+//	return ResultCollect_test();
 }

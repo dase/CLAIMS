@@ -41,6 +41,7 @@ public:
 	bool open(const PartitionOffset& partitoin_offset=0);
 	bool next(BlockStreamBase* block);
 	bool close();
+	void print();
 private:
 	static void* expanded_work(void* arg);
 	bool ChildExhausted();

@@ -83,7 +83,7 @@ public:
 	virtual unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const=0;
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
-	virtual bool equal(void* a, void* b)=0;
+	virtual bool equal(void*& a,void*& b)const=0;
 	virtual bool less(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
 	virtual fun GetADDFunction()=0;
@@ -109,7 +109,7 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(void*& a,void*& b)const
 	{
 		return *(int*)a==*(int*)b;
 	}
@@ -160,7 +160,7 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(void*& a,void*& b)const
 	{
 		return *(float*)a==*(float*)b;
 	}
@@ -212,7 +212,7 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(void*& a,void*& b)const
 	{
 		return *(double*)a==*(double*)b;
 	}
@@ -263,7 +263,7 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(void*& a,void*& b)const
 	{
 		return *(unsigned long*)a==*(unsigned long*)b;
 	}
@@ -312,7 +312,7 @@ public:
 	{
 		return std::string((char*)value);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(void*& a,void*& b)const
 	{
 		return strcmp((char*)a,(char*)b)==0;
 	}

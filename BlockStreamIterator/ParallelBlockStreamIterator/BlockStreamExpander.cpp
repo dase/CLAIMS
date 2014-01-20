@@ -80,7 +80,12 @@ bool BlockStreamExpander::close(){
 	printf("<<<<<<<Expander closed!>>>>>>>>>>\n");
 	return true;
 }
+void BlockStreamExpander::print(){
+	printf("Expander: thread num:%d\n",state_.thread_count_);
+	printf("---------------------\n");
+	state_.child_->print();
 
+}
 void* BlockStreamExpander::expanded_work(void* arg){
 	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;

@@ -123,7 +123,10 @@ bool ExpandableBlockStreamHdfsScan::close(){
 	file_set_.clear();
 	return true;
 }
-
+void ExpandableBlockStreamHdfsScan::print(){
+	printf("Scan!\n");
+	printf("----------------\n");
+}
 bool ExpandableBlockStreamHdfsScan::atomicIncreaseCursor(unsigned bytes,allocated_block &allo_block) {
 	bool ret;
 	lock_.acquire();

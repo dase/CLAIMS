@@ -61,7 +61,7 @@ public:
         bool open(const PartitionOffset& partition_offset);
         bool next(BlockStreamBase *block);
         bool close();
-
+        void print();
         BlockStreamBase* AtomicPopFreeHtBlockStream();
         void AtomicPushFreeHtBlockStream(BlockStreamBase* block);
 
