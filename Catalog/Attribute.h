@@ -23,9 +23,11 @@ struct Attribute
 	}
 	Attribute(const Attribute& att){
 		table_id_=att.table_id_;
-		attrName=att.attrName;
-		attrType=new column_type(*att.attrType);
-		index=att.index;
+		if(att.table_id_!=-1){
+			attrName=att.attrName;
+			attrType=new column_type(*att.attrType);
+			index=att.index;
+		}
 
 	}
 	Attribute():table_id_(-1){
