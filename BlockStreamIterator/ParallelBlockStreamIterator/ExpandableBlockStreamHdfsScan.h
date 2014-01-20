@@ -64,7 +64,7 @@ public:
 	bool open(const PartitionOffset& part_off);
 	bool next(BlockStreamBase *block);
 	bool close();
-
+	void print();
 private:
 	bool atomicIncreaseCursor(unsigned bytes,allocated_block &allo_block);
 

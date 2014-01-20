@@ -86,6 +86,7 @@ public:
 	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase *block);
 	bool close();
+	void print();
 private:
 	bool atomicPopRemainingBlock(remaining_block & rb);
 	void atomicPushRemainingBlock(remaining_block rb);

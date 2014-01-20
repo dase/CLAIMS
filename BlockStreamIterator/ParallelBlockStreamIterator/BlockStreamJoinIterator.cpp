@@ -278,7 +278,12 @@ bool BlockStreamJoinIterator::close(){
 	state_.child_right->close();
 	return true;
 }
+void BlockStreamJoinIterator::print(){
+	printf("Join:\n");
+	printf("----------------\n");
+	state_.child_left->print();
 
+}
 bool BlockStreamJoinIterator::atomicPopRemainingBlock(remaining_block & rb){
 	lock_.acquire();
 	if(remaining_block_list_.size()>0){
