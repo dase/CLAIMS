@@ -114,9 +114,9 @@ public:
 		}
 		return attribute_list;
 	}
-	Attribute getAttribute(unsigned index)const{
-		assert(index<attributes.size());
-		return attributes[index];
+	Attribute getAttribute(unsigned offset)const{
+		assert(offset<attributes.size());
+		return attributes[offset];
 	}
 	Attribute getAttribute(const std::string& name)const{
 		for(unsigned i=0;i<attributes.size();i++){
