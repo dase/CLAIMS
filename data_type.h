@@ -84,6 +84,7 @@ public:
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
 	virtual bool equal(void* a, void* b)=0;
+	virtual bool less(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
 	virtual fun GetADDFunction()=0;
 	virtual fun GetMINFunction()=0;
@@ -111,6 +112,9 @@ public:
 	inline bool equal(void* a, void* b)
 	{
 		return *(int*)a==*(int*)b;
+	}
+	bool less(const void*& a, const void*& b)const{
+		return *(int*)a<*(int*)b;
 	}
 	inline void add(void* target, void* increment)
 	{
@@ -160,6 +164,10 @@ public:
 	{
 		return *(float*)a==*(float*)b;
 	}
+	bool less(const void*& a, const void*& b)const{
+		return *(float*)a<*(float*)b;
+	}
+
 	inline void add(void* target, void* increment)
 	{
 		ADD<float>(target, increment);
@@ -207,6 +215,9 @@ public:
 	inline bool equal(void* a, void* b)
 	{
 		return *(double*)a==*(double*)b;
+	}
+	bool less(const void*& a, const void*& b)const{
+		return *(double*)a<*(double*)b;
 	}
 	inline void add(void* target, void* increment)
 	{
@@ -256,6 +267,9 @@ public:
 	{
 		return *(unsigned long*)a==*(unsigned long*)b;
 	}
+	bool less(const void*& a, const void*& b)const{
+		return *(unsigned long*)a<*(unsigned long*)b;
+	}
 	inline void add(void* target, void* increment)
 	{
 		ADD<unsigned long>(target, increment);
@@ -301,6 +315,13 @@ public:
 	inline bool equal(void* a, void* b)
 	{
 		return strcmp((char*)a,(char*)b)==0;
+	}
+
+	/**
+	 * The following function may return a wrong value
+	 */
+	bool less(const void*& a, const void*& b)const{
+		return strcmp((char*)a,(char*)b)<0;
 	}
 	inline void add(void* target, void* increment)
 	{

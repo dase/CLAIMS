@@ -10,6 +10,7 @@
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
@@ -64,6 +65,11 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		case PERFORMANCE:{
 			BlockStreamPerformanceMonitorTop::State performance_state(schema,exchange,block_size);
 			ret=new BlockStreamPerformanceMonitorTop(performance_state);
+			break;
+		}
+		case RESULTCOLLECTOR:{
+			BlockStreamResultCollector::State result_state(schema,exchange,block_size);
+			ret=new BlockStreamResultCollector(result_state);
 			break;
 		}
 	}

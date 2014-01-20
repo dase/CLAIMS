@@ -7,6 +7,8 @@
 
 #include "Filter.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../IDsGenerator.h"
 Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
 
@@ -56,6 +58,103 @@ BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
 	state.schema_=getSchema(dataflow.attribute_list_);
 	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 	return filter;
+}
+
+bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
+	PhysicalPlanDescriptor physical_plan;
+	std::vector<PhysicalPlanDescriptor> candidate_physical_plans;
+
+	/* no requirement to the child*/
+	if(child_->GetOptimalPhysicalPlan(Requirement(),physical_plan)){
+		NetworkTransfer transfer=requirement.requireNetworkTransfer(physical_plan.dataflow);
+		if(transfer==NONE){
+			ExpandableBlockStreamFilter::State state;
+			state.block_size_=block_size;
+			state.child_=physical_plan.plan;
+			state.comparator_list_=comparator_list_;
+			Dataflow dataflow=getDataflow();
+			state.schema_=getSchema(dataflow.attribute_list_);
+			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
+			physical_plan.plan=filter;
+			candidate_physical_plans.push_back(physical_plan);
+		}
+		else if((transfer==OneToOne)||(transfer==Shuffle)){
+			/* the input data flow should be transfered in the network to meet the requirement
+			 * TODO: implement OneToOne Exchange
+			 * */
+			ExpandableBlockStreamFilter::State state_f;
+			state_f.block_size_=block_size;
+			state_f.child_=physical_plan.plan;
+			state_f.comparator_list_=comparator_list_;
+			Dataflow dataflow=getDataflow();
+			state_f.schema_=getSchema(dataflow.attribute_list_);
+			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state_f);
+			physical_plan.plan=filter;
+
+
+			physical_plan.cost+=physical_plan.dataflow.getAggregatedDatasize();
+
+			ExpandableBlockStreamExchangeEpoll::State state;
+			state.block_size=block_size;
+			state.child=physical_plan.plan;//child_iterator;
+			state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			state.schema=getSchema(physical_plan.dataflow.attribute_list_);
+
+			std::vector<NodeID> upper_id_list;
+			if(requirement.hasRequiredLocations()){
+				upper_id_list=requirement.getRequiredLocations();
+			}
+			else{
+				if(requirement.hasRequiredPartitionFunction()){
+					/* partition function contains the number of partitions*/
+					PartitionFunction* partitoin_function=requirement.getPartitionFunction();
+					upper_id_list=std::vector<NodeID>(NodeTracker::getInstance()->getNodeIDList().begin(),NodeTracker::getInstance()->getNodeIDList().begin()+partitoin_function->getNumberOfPartitions()-1);
+				}
+				else{
+					//TODO: decide the degree of parallelism
+					upper_id_list=NodeTracker::getInstance()->getNodeIDList();
+				}
+			}
+			state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+
+			assert(requirement.hasReuiredPartitionKey());
+
+			state.partition_key_index=this->getIndexInAttributeList(physical_plan.dataflow.attribute_list_,requirement.getPartitionKey());
+			assert(state.partition_key_index>=0);
+
+			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
+
+			state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+
+
+			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
+
+			physical_plan.plan=exchange;
+
+		}
+		candidate_physical_plans.push_back(physical_plan);
+	}
+
+
+	if(child_->GetOptimalPhysicalPlan(requirement,physical_plan)){
+		ExpandableBlockStreamFilter::State state;
+		state.block_size_=block_size;
+		state.child_=physical_plan.plan;
+		state.comparator_list_=comparator_list_;
+		Dataflow dataflow=getDataflow();
+		state.schema_=getSchema(dataflow.attribute_list_);
+		BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
+		physical_plan.plan=filter;
+		candidate_physical_plans.push_back(physical_plan);
+	}
+
+	physical_plan_descriptor=getBestPhysicalPlanDescriptor(candidate_physical_plans);
+
+	if(requirement.passLimits(physical_plan_descriptor.cost))
+		return true;
+	else
+		return false;
+
 }
 
 bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor& part)const{
