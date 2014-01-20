@@ -12,7 +12,7 @@
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 class LogicalQueryPlanRoot: public LogicalOperator {
 public:
-	enum outputFashion{PRINT,PERFORMANCE};
+	enum outputFashion{PRINT,PERFORMANCE,RESULTCOLLECTOR};
 	LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion=PERFORMANCE);
 	virtual ~LogicalQueryPlanRoot();
 	Dataflow getDataflow();

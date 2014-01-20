@@ -430,8 +430,8 @@ static int getOptimalQueryPlan(){
 //		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
 //		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
 
-		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
-		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(4));
+		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(4));
 
 
 
@@ -445,7 +445,7 @@ static int getOptimalQueryPlan(){
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,&trade_date);
 		const int sec_code=600036;
-		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::GEQ,&sec_code);
+		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 		Filter::Condition filter_condition_2;
@@ -514,13 +514,13 @@ static int getOptimalQueryPlan(){
 //		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,cj_join_key_scan,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 		BlockStreamIteratorBase* executable_query_plan;
 		PhysicalPlanDescriptor physical_plan;

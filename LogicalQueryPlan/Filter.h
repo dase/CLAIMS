@@ -32,7 +32,7 @@ public:
 	virtual ~Filter();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
-
+	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
 	bool couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor&)const;
 	float predictSelectivity()const;
