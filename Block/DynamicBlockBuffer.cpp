@@ -62,3 +62,17 @@ Block* DynamicBlockBuffer::Iterator::atomicNextBlock(){
 DynamicBlockBuffer::Iterator DynamicBlockBuffer::createIterator()const{
 	return Iterator(this);
 }
+void DynamicBlockBuffer::destory(){
+	DynamicBlockBuffer::Iterator it=this->createIterator();
+	Block* block_to_deallocate;
+	while(block_to_deallocate=it.nextBlock()){
+		block_to_deallocate->~Block();
+	}
+}
+unsigned DynamicBlockBuffer::getNumberOfBlocks(){
+	lock_.acquire();
+	unsigned ret;
+	ret= block_list_.size();
+	lock_.release();
+	return ret;
+}
