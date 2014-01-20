@@ -9,9 +9,13 @@
 #define BLOCKSTREAMITERATORBASE_H_
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <string>
+#include "../Block/ResultSet.h"
 #include "../Block/BlockStream.h"
 #include "../ids.h"
-#include <string>
+
+
+
 using namespace std;
 
 /**
@@ -28,6 +32,8 @@ public:
 	virtual bool next(BlockStreamBase*)=0;
 	virtual bool close()=0;
 	virtual void print(){printf("??\n");};
+	virtual ResultSet getResultSet();
+
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
