@@ -10,6 +10,7 @@
 #ifndef NODETRACKER_H_
 #define NODETRACKER_H_
 #include <string>
+#include <vector>
 #include "../hashmap.hpp"
 typedef std::string NodeIP;//TODO: may use ip + port to support multiple instances on a single node.
 typedef int NodeID;

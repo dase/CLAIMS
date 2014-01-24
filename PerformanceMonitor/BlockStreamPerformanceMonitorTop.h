@@ -35,6 +35,7 @@ public:
 	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase* block);
 	bool close();
+	void print();
 private:
 	static void* report(void* arg);
 private:

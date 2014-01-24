@@ -5,10 +5,11 @@
  *      Author: wangli
  */
 
+#include <iostream>
+#include <assert.h>
 #include "BlockStreamIteratorBase.h"
 #include "ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 
-#include <iostream>
 using namespace std;
 
 BlockStreamIteratorBase::BlockStreamIteratorBase() {
@@ -25,4 +26,9 @@ BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(const string &I
 //		cout<<"scan iterator"<<endl;
 //		return new ExpandableBlockStreamSingleColumnScan();
 //	}
+}
+ResultSet BlockStreamIteratorBase::getResultSet(){
+	printf("You can get ResultSet from Root operator!\n");
+	assert(false);
+	return ResultSet();
 }

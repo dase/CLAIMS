@@ -429,8 +429,8 @@ static int testGenerateIteratorTree(){
 //		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
 //		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
 
-		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(8));
-		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(8));
+		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(4));
+		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
 
@@ -493,15 +493,21 @@ static int testGenerateIteratorTree(){
 
 
 		std::vector<Attribute> group_by_attributes;
-		group_by_attributes.push_back(table_1->getAttribute("order_no"));
+//		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
+
+
+//		group_by_attributes.push_back(table_1->getAttribute("order_no"));
 		group_by_attributes.push_back(table_2->getAttribute("entry_date"));
-		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
-		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
-		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
-		group_by_attributes.push_back(table_2->getAttribute("order_price"));
-		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
-		group_by_attributes.push_back(table_1->getAttribute("order_type"));
-		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
+//		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
+//		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
+//		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
+//		group_by_attributes.push_back(table_2->getAttribute("order_price"));
+//		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
+//		group_by_attributes.push_back(table_1->getAttribute("order_type"));
+//		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
+
+
+
 
 
 
@@ -509,17 +515,21 @@ static int testGenerateIteratorTree(){
 //		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 		std::vector<Attribute> aggregation_attributes;
-		aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
-//		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
+
+		aggregation_attributes.push_back(table_1->getAttribute("trade_date"));
+
+//		aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
+//		aggregation_attributes.push_back(table_1->getAttribute("sec_code"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
-		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 
 //		root->getDataflow();
