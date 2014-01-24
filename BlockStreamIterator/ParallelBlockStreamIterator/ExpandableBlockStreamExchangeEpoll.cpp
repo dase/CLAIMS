@@ -172,7 +172,19 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 	return true;
 }
 
-
+void ExpandableBlockStreamExchangeEpoll::print(){
+	printf("Exchange upper:");
+	for(unsigned i=0;i<state.upper_ip_list.size();i++){
+		printf("%s ",state.upper_ip_list[i].c_str());
+	}
+	printf("\nlower:");
+	for(unsigned i=0;i<state.lower_ip_list.size();i++){
+		printf("%s ",state.lower_ip_list[i].c_str());
+	}
+	printf("Partition key index:%d",state.partition_key_index);
+	printf("\n---------\n");
+	state.child->print();
+}
 bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 {
 	struct sockaddr_in my_addr;

@@ -65,6 +65,13 @@ bool BlockStreamPerformanceMonitorTop::close(){
 
 }
 
+void BlockStreamPerformanceMonitorTop::print(){
+	printf("Top");
+	printf("-------------\n");
+	state_.child_->print();
+
+}
+
 void* BlockStreamPerformanceMonitorTop::report(void* arg){
 	BlockStreamPerformanceMonitorTop* Pthis=(BlockStreamPerformanceMonitorTop*)arg;
 

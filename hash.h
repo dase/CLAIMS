@@ -53,6 +53,8 @@ class PartitionFunction {
 
 		virtual unsigned int getNumberOfPartitions()const=0;
 
+		bool equal(PartitionFunction* function_)const;
+
 	protected:
 		int min_, max_;
 		unsigned long int k_;	/**< \f$ \_k=log_2(k) \f$, where \f$k\f$ is number of buckets */

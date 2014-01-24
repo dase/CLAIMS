@@ -9,18 +9,20 @@
 #include "../../Debug.h"
 #include "../../rdtsc.h"
 
+
+
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(1);
+        barrier_=new Barrier(5);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 :open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(1);
+        barrier_=new Barrier(5);
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {

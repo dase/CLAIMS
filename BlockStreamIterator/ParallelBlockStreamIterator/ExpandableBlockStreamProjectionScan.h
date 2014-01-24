@@ -48,6 +48,9 @@ public:
 	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase* block);
 	bool close();
+	void print(){
+		printf("Scan\n");
+	}
 private:
 
 	void atomicPushChunkReaderIterator(ChunkReaderIterator*);

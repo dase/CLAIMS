@@ -20,7 +20,7 @@ public:
 	LogicalProjection getLogcialProjection()const;
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
-
+	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
 	/**check whether all the involved attributes are in the same projection.*/
 	bool checkInASingleProjection()const;

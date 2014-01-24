@@ -4,7 +4,7 @@
  *  Created on: Nov 7, 2013
  *      Author: wangli
  */
-
+#include <limits.h>
 #include "LogicalOperator.h"
 #include "../Resource/NodeTracker.h"
 
@@ -35,7 +35,7 @@ Schema* LogicalOperator::getSchema(const std::vector<Attribute>& attributes_left
 	}
 	return new SchemaFix(columns);
 }
-std::vector<NodeID> LogicalOperator::getInvolvedNodeID(const DataflowPartitionDescriptor& part)const{
+std::vector<NodeID> LogicalOperator::getInvolvedNodeID(const DataflowPartitioningDescriptor& part)const{
 	std::vector<NodeID> ret;
 	for(unsigned i=0;i<part.getNumberOfPartitions();i++){
 		ret.push_back(part.getPartition(i)->getLocation());
@@ -50,3 +50,24 @@ std::vector<NodeIP> LogicalOperator::convertNodeIDListToNodeIPList(const std::ve
 	}
 	return ret;
 }
+PhysicalPlanDescriptor LogicalOperator::getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor> list)const{
+	PhysicalPlanDescriptor ret;
+	ret.cost=UINT_MAX;
+	for(unsigned i=0;i<list.size();i++){
+		if(list[i].cost<ret.cost)
+			ret=list[i];
+	}
+	return ret;
+}
+int LogicalOperator::getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const{
+	for(unsigned i=0;i<attributes.size();i++){
+		if(attributes[i]==attribute){
+			return i;
+		}
+	}
+	return -1;
+}
+
+//bool LogicalOperator::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor){
+//	assert(false);
+//}

@@ -14,6 +14,9 @@
  * A container which buffers serialized blocks. The number of blocks in the buffer is not known when constructing
  * and is growing dynamically on the fly.
  */
+
+
+
 class DynamicBlockBuffer {
 public:
 	class Iterator{
@@ -35,6 +38,14 @@ public:
 	bool atomicAppendNewBlock(Block* new_block);
 	Block* getBlock(unsigned index)const;
 	Iterator createIterator()const;
+
+
+	unsigned getNumberOfBlocks();
+	/* release the memory in block list.
+	 * NOTE: this function should be used carefully, as the block memory is not allocated by this class.
+	 */
+	void destory();
+	unsigned long getNumberOftuples()const;
 private:
 	std::vector<Block*> block_list_;
 	Lock lock_;
