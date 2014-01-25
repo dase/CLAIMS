@@ -28,8 +28,8 @@ Dataflow Aggregation::getDataflow(){
 		printf("no_repartition\n");
 	}
 	else{
-//		fashion_=repartition;
-		fashion_=hybrid;
+		fashion_=repartition;
+//		fashion_=hybrid;
 		printf("hybrid\n");
 	}
 	switch(fashion_){
@@ -138,7 +138,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 
 			BlockStreamAggregationIterator::State global_aggregation_state;
 			global_aggregation_state.aggregationIndex=getInvolvedIndexList(aggregation_attribute_list_,*dataflow_);
-			global_aggregation_state.aggregations=aggregation_list_;
+			global_aggregation_state.aggregations=convertionForHybrid(aggregation_list_);
 			global_aggregation_state.block_size=block_size;
 			global_aggregation_state.bucketsize=64;
 			global_aggregation_state.child=exchange;
@@ -207,3 +207,16 @@ std::vector<unsigned> Aggregation::getInvolvedIndexList(const std::vector<Attrib
 float Aggregation::predictSelectivity()const{
 	return 0.1;
 }
+std::vector<BlockStreamAggregationIterator::State::aggregation> Aggregation::convertionForHybrid(const std::vector<BlockStreamAggregationIterator::State::aggregation> list)const{
+	std::vector<BlockStreamAggregationIterator::State::aggregation> ret;
+	for(unsigned i=0;i<list.size();i++){
+		if(list[i]==BlockStreamAggregationIterator::State::count){
+			ret.push_back(BlockStreamAggregationIterator::State::sum);
+		}
+		else
+			ret.push_back(list[i]);
+	}
+	return ret;
+
+}
+

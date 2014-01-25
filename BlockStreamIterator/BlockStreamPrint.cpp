@@ -26,6 +26,14 @@ bool BlockStreamPrint::open(const PartitionOffset& offset){
 
 }
 bool BlockStreamPrint::next(BlockStreamBase*){
+
+	for(unsigned i=0;i<state_.attribute_name_list_.size();i++){
+		std::string format="%s"+state_.spliter_;
+		printf(format.c_str(),state_.attribute_name_list_[i].c_str());
+	}
+	printf("\n");
+
+
 	unsigned block_count(0);
 
 	while(state_.child_->next(block_buffer_)){
@@ -35,6 +43,7 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 		while((tuple=it->nextTuple())!=0){
 			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
 			tuple_in_block++;
+			sleep(1);
 		}
 //		printf("Tuples in Block[%d]=%d\n",block_count++,block_buffer_->getTuplesInBlock());
 		block_buffer_->setEmpty();

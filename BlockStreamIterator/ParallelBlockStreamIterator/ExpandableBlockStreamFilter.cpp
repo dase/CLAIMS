@@ -147,6 +147,9 @@ bool ExpandableBlockStreamFilter::close(){
 }
 void ExpandableBlockStreamFilter::print(){
 	printf("Filter\n");
+//	for(unsigned i=0;i<state_.comparator_list_.size();i++){
+//		state_.comparator_list_[i].pair.first.
+//	}
 	printf("---------------\n");
 	state_.child_->print();
 }

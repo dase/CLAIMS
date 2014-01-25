@@ -516,10 +516,10 @@ static int ResultCollect_test(){
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 		std::vector<Attribute> aggregation_attributes;
 
-//		aggregation_attributes.push_back(table_1->getAttribute("trade_date"));
+		aggregation_attributes.push_back(table_1->getAttribute("trade_date"));
 
 //		aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
-		aggregation_attributes.push_back(table_1->getAttribute("sec_code"));
+//		aggregation_attributes.push_back(table_1->getAttribute("sec_code"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
@@ -544,21 +544,21 @@ static int ResultCollect_test(){
 			collector->open();
 			collector->next(0);
 			collector->close();
-			ResultSet resultset=collector->getResultSet();
+			ResultSet* resultset=collector->getResultSet();
 
-			ResultSet::Iterator it=resultset.createIterator();
+			ResultSet::Iterator it=resultset->createIterator();
 			BlockStreamBase* block;
 			void* tuple;
 			BlockStreamBase::BlockStreamTraverseIterator *block_it;
-			while(block=(BlockStreamBase*)it.atomicNextBlock()){
+			while((block=(BlockStreamBase*)it.atomicNextBlock())!=0){
 				block_it=block->createIterator();
-				while(tuple=block_it->nextTuple()){
+				while((tuple=block_it->nextTuple())!=0){
 					printf("%d,%d\n",*(int*)tuple,*((int*)tuple+1));
 				}
 			}
 
 
-			printf("%d block received!\n~~~~~~~\n",resultset.getNumberOfBlocks());
+			printf("%d block received!\n~~~~~~~\n",resultset->getNumberOfBlocks());
 			printf("Terminate(0) or continue(others)?\n");
 //			sleep()
 			scanf("%d",&c);
@@ -566,7 +566,7 @@ static int ResultCollect_test(){
 //			getchar();
 //			cout<<"<<<<<<<<<<<<<<<<<<<<<You input ="<<c+1<<endl<<flush;
 			printf("you print=%d\n",c);
-
+			resultset->destory();
 
 		}
 	}

@@ -74,11 +74,11 @@ bool BlockStreamResultCollector::close(){
 	state_.child_->close();
 	return true;
 }
-ResultSet BlockStreamResultCollector::getResultSet(){
+ResultSet* BlockStreamResultCollector::getResultSet(){
 	while(!ChildExhausted()){
 		usleep(1);
 	}
-	return block_buffer_;
+	return &block_buffer_;
 }
 
 bool BlockStreamResultCollector::createBlockStream(BlockStreamBase*& target)const{

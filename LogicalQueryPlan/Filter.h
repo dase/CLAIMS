@@ -17,9 +17,11 @@ public:
 		friend class Filter;
 //		typedef FilterIterator::AttributeComparator::comparison comparison;
 		Condition(){}
+		Condition(const Condition& r);
 		~Condition();
 		void add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,const void*const& const_value);
-
+		void add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,std::string str_exp);
+		void print();
 	private:
 		unsigned getCompaisonNumber()const;
 	private:

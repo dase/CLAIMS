@@ -27,8 +27,8 @@ BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(const string &I
 //		return new ExpandableBlockStreamSingleColumnScan();
 //	}
 }
-ResultSet BlockStreamIteratorBase::getResultSet(){
+ResultSet* BlockStreamIteratorBase::getResultSet(){
 	printf("You can get ResultSet from Root operator!\n");
 	assert(false);
-	return ResultSet();
+	return 0;
 }

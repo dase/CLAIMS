@@ -10,35 +10,34 @@
 #include <vector>
 #include "Block.h"
 #include "synch.h"
+#include "BlockStream.h"
 /**
  * A container which buffers serialized blocks. The number of blocks in the buffer is not known when constructing
  * and is growing dynamically on the fly.
  */
 
-
-
 class DynamicBlockBuffer {
 public:
-	class Iterator{
+	class Iterator {
 	public:
 		Iterator(const DynamicBlockBuffer* dbb);
 		Iterator(const Iterator &);
 		Iterator();
-		Block* nextBlock();
-		Block* atomicNextBlock();
+		BlockStreamBase* nextBlock();
+		BlockStreamBase* atomicNextBlock();
 	private:
 		unsigned cur_;
 		const DynamicBlockBuffer* dbb_;
 		Lock lock_;
 	};
 	DynamicBlockBuffer();
+	DynamicBlockBuffer(const DynamicBlockBuffer& r);
 	virtual ~DynamicBlockBuffer();
 
-	bool appendNewBlock(Block* new_block);
-	bool atomicAppendNewBlock(Block* new_block);
-	Block* getBlock(unsigned index)const;
-	Iterator createIterator()const;
-
+	bool appendNewBlock(BlockStreamBase* new_block);
+	bool atomicAppendNewBlock(BlockStreamBase* new_block);
+	BlockStreamBase* getBlock(unsigned index) const;
+	Iterator createIterator() const;
 
 	unsigned getNumberOfBlocks();
 	/* release the memory in block list.
@@ -46,7 +45,7 @@ public:
 	 */
 	void destory();
 private:
-	std::vector<Block*> block_list_;
+	std::vector<BlockStreamBase*> block_list_;
 	Lock lock_;
 };
 

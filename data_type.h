@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "hash.h"
@@ -83,8 +84,8 @@ public:
 	virtual unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const=0;
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
-	virtual bool equal(void*& a,void*& b)const=0;
-	virtual bool less(const void*& a, const void*& b)const=0;
+	virtual void toValue(void* target, const char* string)=0;
+	virtual bool equal(void* a, void* b)=0;
 	virtual void add(void* target, void* increment)=0;
 	virtual fun GetADDFunction()=0;
 	virtual fun GetMINFunction()=0;
@@ -109,12 +110,12 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void*& a,void*& b)const
+	void toValue(void* target, const char* string){
+		*(int*)target=atoi(string);
+	};
+	inline bool equal(void* a, void* b)
 	{
 		return *(int*)a==*(int*)b;
-	}
-	bool less(const void*& a, const void*& b)const{
-		return *(int*)a<*(int*)b;
 	}
 	inline void add(void* target, void* increment)
 	{
@@ -160,14 +161,13 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void*& a,void*& b)const
+	void toValue(void* target, const char* string){
+		*(float*)target=atof(string);
+	};
+	inline bool equal(void* a, void* b)
 	{
 		return *(float*)a==*(float*)b;
 	}
-	bool less(const void*& a, const void*& b)const{
-		return *(float*)a<*(float*)b;
-	}
-
 	inline void add(void* target, void* increment)
 	{
 		ADD<float>(target, increment);
@@ -212,12 +212,12 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void*& a,void*& b)const
+	void toValue(void* target, const char* string){
+		*(double*)target=atof(string);
+	};
+	inline bool equal(void* a, void* b)
 	{
 		return *(double*)a==*(double*)b;
-	}
-	bool less(const void*& a, const void*& b)const{
-		return *(double*)a<*(double*)b;
 	}
 	inline void add(void* target, void* increment)
 	{
@@ -263,12 +263,12 @@ public:
 		std::string ret=ss.str();
 		return ret;
 	};
-	inline bool equal(void*& a,void*& b)const
+	void toValue(void* target, const char* string){
+		*(unsigned long*)target=strtoul(string,0,10);
+	};
+	inline bool equal(void* a, void* b)
 	{
 		return *(unsigned long*)a==*(unsigned long*)b;
-	}
-	bool less(const void*& a, const void*& b)const{
-		return *(unsigned long*)a<*(unsigned long*)b;
 	}
 	inline void add(void* target, void* increment)
 	{
@@ -312,16 +312,12 @@ public:
 	{
 		return std::string((char*)value);
 	};
-	inline bool equal(void*& a,void*& b)const
+	void toValue(void* target, const char* string){
+		strcpy((char*)target,string);
+	};
+	inline bool equal(void* a, void* b)
 	{
 		return strcmp((char*)a,(char*)b)==0;
-	}
-
-	/**
-	 * The following function may return a wrong value
-	 */
-	bool less(const void*& a, const void*& b)const{
-		return strcmp((char*)a,(char*)b)<0;
 	}
 	inline void add(void* target, void* increment)
 	{

@@ -23,6 +23,12 @@ public:
 private:
 	bool canLeverageHashPartition(const Dataflow& child_dataflow)const;
 	float predictSelectivity()const;
+
+	/* in the hybrid aggregation schema, local aggregation may be different from global aggregation.
+	 * For instance, to achieve count(*) aggregation, the local is count(*) while the global
+	 * one should be sum(*) to guarantee the correctness.
+	 */
+	std::vector<BlockStreamAggregationIterator::State::aggregation> convertionForHybrid(const std::vector<BlockStreamAggregationIterator::State::aggregation>)const;
 private:
 	LogicalOperator* child_;
 	std::vector<Attribute> group_by_attribute_list_;

@@ -18,13 +18,14 @@ public:
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 		std::string spliter_;
+		std::vector<std::string> attribute_name_list_;
 		State(){};
-		State( Schema* const & schema,BlockStreamIteratorBase*const& child,const unsigned& block_size,std::string spliter="|")
-		:schema_(schema),child_(child),block_size_(block_size),spliter_(spliter){};
+		State( Schema* const & schema,BlockStreamIteratorBase*const& child,const unsigned& block_size,std::vector<std::string> attribute_name,std::string spliter="\t")
+		:schema_(schema),child_(child),block_size_(block_size),spliter_(spliter),attribute_name_list_(attribute_name){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ &block_size_& spliter_;
+			ar & schema_ & child_ &block_size_& spliter_ & attribute_name_list_;
 		}
 	};
 	BlockStreamPrint();
