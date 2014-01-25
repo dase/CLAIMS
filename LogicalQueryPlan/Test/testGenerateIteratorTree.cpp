@@ -440,11 +440,11 @@ static int testGenerateIteratorTree(){
 
 		Filter::Condition filter_condition_1;
 		const int order_type=1;
-		filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,&order_type);
+		filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,"1");
 		const int trade_date=20101008;
-		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,&trade_date);
+		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,"20101008");
 		const int sec_code=600036;
-		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,"600036");
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 		Filter::Condition filter_condition_2;
@@ -529,7 +529,7 @@ static int testGenerateIteratorTree(){
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PRINT);
 		unsigned long long int timer_start=curtick();
 
 //		root->getDataflow();
@@ -544,7 +544,7 @@ static int testGenerateIteratorTree(){
 		int c=1;
 		while(c==1){
 			timer_start=curtick();
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"10.11.1.199");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;

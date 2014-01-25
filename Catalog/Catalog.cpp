@@ -50,6 +50,13 @@ TableDescriptor* Catalog::getTable(const TableID &target)const{
 	return tableid_to_table.at(target);
 
 }
+TableDescriptor* Catalog::getTable(const std::string& table_name) const{
+	if(!name_to_table.contains(table_name))
+		return NULL;
+
+	/* at could retain const while [] doesn't.*/
+	return name_to_table.at(table_name);
+}
 ProjectionBinding* Catalog::getBindingModele()const{
 	return binding_;
 }

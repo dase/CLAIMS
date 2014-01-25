@@ -203,6 +203,11 @@ float Filter::predictSelectivity()const{
 	}
 	return ret;
 }
+Filter::Condition::Condition(const Condition& r){
+	for(unsigned i=0;i<r.attribute_list_.size();i++){
+		add(r.attribute_list_[i],r.comparison_list_[i],r.const_value_list_[i]);
+	}
+}
 void Filter::Condition::add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,const void*const & const_value){
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
@@ -211,6 +216,50 @@ void Filter::Condition::add(const Attribute& attr,const FilterIterator::Attribut
 	attr.attrType->operate->assignment(const_value,value);
 	const_value_list_.push_back(value);
 }
+void Filter::Condition::add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,std::string str_exp){
+	attribute_list_.push_back(attr);
+	comparison_list_.push_back(com);
+	const unsigned value_length=attr.attrType->get_length();
+	void* value=malloc(value_length);
+	attr.attrType->operate->toValue(value,str_exp.c_str());
+	const_value_list_.push_back(value);
+}
+void Filter::Condition::print(){
+        for(unsigned i=0;i<attribute_list_.size();i++){
+                printf("%s",attribute_list_[i].attrName.c_str());
+                switch(comparison_list_[i]){
+                        case FilterIterator::AttributeComparator::L :{
+                                printf("<");
+                                break;
+                        }
+                        case FilterIterator::AttributeComparator::LEQ:{
+                                        printf("<=");
+                                        break;
+                                }
+                        case FilterIterator::AttributeComparator::EQ:{
+                                        printf("=");
+                                        break;
+                                }
+                        case FilterIterator::AttributeComparator::NEQ:{
+                                        printf("!=");
+                                        break;
+                                }
+                        case FilterIterator::AttributeComparator::G:{
+                                        printf(">");
+                                        break;
+                                }
+                        case FilterIterator::AttributeComparator::GEQ:{
+                                        printf(">=");
+                                        break;
+                                }
+                        default:{
+                                printf("?");
+                        }
+                }
+                printf("%s\n",attribute_list_[i].attrType->operate->toString(const_value_list_[i]).c_str());
+        }
+}
+
 unsigned Filter::Condition::getCompaisonNumber()const{
 	return attribute_list_.size();
 }
@@ -220,6 +269,9 @@ Filter::Condition::~Condition(){
 	}
 }
 Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(condition),child_(child){
+
+	condition_.print();
+
 
 }
 void Filter::generateComparatorList(const Dataflow& dataflow){

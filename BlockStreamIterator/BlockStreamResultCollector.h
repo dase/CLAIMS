@@ -37,7 +37,7 @@ public:
 	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* block);
 	bool close();
-	ResultSet getResultSet();
+	ResultSet* getResultSet();
 private:
 	bool createBlockStream(BlockStreamBase*&)const;
 	void deallocateBlockStream(BlockStreamBase*&)const;

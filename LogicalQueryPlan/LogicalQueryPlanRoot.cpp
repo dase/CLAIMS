@@ -58,7 +58,8 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamIteratorBase* ret;
 	switch(fashion_){
 		case PRINT:{
-			BlockStreamPrint::State print_state(schema,exchange,block_size);
+
+			BlockStreamPrint::State print_state(schema,exchange,block_size,getAttributeName(dataflow));
 			ret=new BlockStreamPrint(print_state);
 			break;
 		}
@@ -140,7 +141,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 	PhysicalPlan final_plan;
 	switch(fashion_){
 		case PRINT:{
-			BlockStreamPrint::State print_state(getSchema(best_plan.dataflow.attribute_list_),best_plan.plan,block_size);
+			BlockStreamPrint::State print_state(getSchema(best_plan.dataflow.attribute_list_),best_plan.plan,block_size,getAttributeName(physical_plan.dataflow));
 			final_plan=new BlockStreamPrint(print_state);
 			break;
 		}
@@ -218,4 +219,12 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 		return true;
 	else
 		return false;
+}
+
+std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(const Dataflow& dataflow)const{
+	std::vector<std::string> attribute_name_list;
+	for(unsigned i=0;i<dataflow.attribute_list_.size();i++){
+		attribute_name_list.push_back(dataflow.attribute_list_[i].attrName);
+	}
+	return attribute_name_list;
 }

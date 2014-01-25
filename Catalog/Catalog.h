@@ -30,6 +30,7 @@ public:
 	unsigned allocate_unique_table_id();
 	bool add_table(TableDescriptor* const &table);
 	TableDescriptor* getTable(const TableID&) const;
+	TableDescriptor* getTable(const std::string& table_name) const;
 	ProjectionBinding* getBindingModele()const;
 private:
 	Catalog();
