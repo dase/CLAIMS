@@ -68,7 +68,7 @@ bool BlockStreamExpander::close(){
 		pthread_join(*it,&res);
 		if(res!=PTHREAD_CANCELED)
 			assert(false);
-		printf("A expander thread is killed before close!\n");
+//		printf("A expander thread is killed before close!\n");
 	}
 	while(!expanded_thread_list_.empty()){
 		expanded_thread_list_.begin();
@@ -77,12 +77,12 @@ bool BlockStreamExpander::close(){
 	block_stream_buffer_->~BlockStreamBuffer();
 
 	state_.child_->close();
-	printf("<<<<<<<Expander closed!>>>>>>>>>>\n");
+//	printf("<<<<<<<Expander closed!>>>>>>>>>>\n");
 	return true;
 }
 void BlockStreamExpander::print(){
-	printf("Expander: thread num:%d\n",state_.thread_count_);
-	printf("---------------------\n");
+//	printf("Expander: thread num:%d\n",state_.thread_count_);
+//	printf("---------------------\n");
 	state_.child_->print();
 
 }
@@ -103,7 +103,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 	Pthis->lock_.lock();
 	Pthis->finished_thread_count_++;
 
-	printf("Thread %x generated %d blocks.\n",pthread_self(),block_count);
+//	printf("Thread %x generated %d blocks.\n",pthread_self(),block_count);
 	Pthis->expanded_thread_list_.erase(pthread_self());
 	Pthis->lock_.unlock();
 	return 0;
