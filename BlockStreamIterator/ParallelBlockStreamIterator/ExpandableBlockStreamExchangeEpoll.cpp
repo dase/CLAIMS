@@ -113,7 +113,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 
 		open_finished_=true;
-		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
+//		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
 		return true;
 	}
 	else{

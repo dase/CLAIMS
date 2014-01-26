@@ -57,5 +57,5 @@
 #define DEBUG_ResourceManagerMaster
 #define DEBUG_ResourceManagerSlave
 #define DEBUG_Catalog
-#define DEBUG_BufferManager
+//#define DEBUG_BufferManager
 #endif /* DEBUG_H_ */

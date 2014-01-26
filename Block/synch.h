@@ -97,15 +97,15 @@ public:
 	void Arrive(){
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nSyncCount++;
-		printf("cpu processor test: %d\n",m_nSyncCount);
+//		printf("cpu processor test: %d\n",m_nSyncCount);
 		if(m_nSyncCount == m_nThreads) {
-			printf("arrive the nthreads\n");
-			printf("arrive the broadcast\n");
+//			printf("arrive the nthreads\n");
+//			printf("arrive the broadcast\n");
 			pthread_cond_broadcast(&m_cv_SyncCV);
 			m_nSyncCount = 0;
 		}
 		else {
-			printf("arrive the wait\n");
+//			printf("arrive the wait\n");
 			pthread_cond_wait(&m_cv_SyncCV, &m_l_SyncLock);
 
 		}
