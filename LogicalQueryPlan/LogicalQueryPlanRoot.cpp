@@ -228,3 +228,8 @@ std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(const Dataflow& 
 	}
 	return attribute_name_list;
 }
+void LogicalQueryPlanRoot::print(int level)const{
+	printf("Root\n");
+	child_->print(level+1);
+
+}

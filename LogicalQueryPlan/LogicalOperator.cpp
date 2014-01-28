@@ -71,3 +71,8 @@ int LogicalOperator::getIndexInAttributeList(const std::vector<Attribute>& attri
 //bool LogicalOperator::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor){
 //	assert(false);
 //}
+void LogicalOperator::align(int space)const{
+	for(unsigned i=0;i<space;i++){
+		printf(" ");
+	}
+}

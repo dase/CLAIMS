@@ -17,6 +17,9 @@ public:
 	Dataflow getDataflow();
 
 	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
+	void print(int level=0)const{
+
+	}
 private:
 	LogicalOperator* child_;
 	Dataflow dataflow_;

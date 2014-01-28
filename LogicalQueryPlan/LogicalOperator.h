@@ -43,6 +43,8 @@ public:
 	 */
 	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
 
+	virtual void print(int level=0)const =0;
+
 
 protected:
 	Schema* getSchema(const std::vector<Attribute>&)const;
@@ -51,6 +53,7 @@ protected:
 	std::vector<NodeIP> convertNodeIDListToNodeIPList(const std::vector<NodeID>&)const;
 	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;
 	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const;
+	void align(int space)const;
 };
 
 //class Operator{

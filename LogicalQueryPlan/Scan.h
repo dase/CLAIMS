@@ -24,6 +24,8 @@ public:
 private:
 	/**check whether all the involved attributes are in the same projection.*/
 	bool checkInASingleProjection()const;
+	void print(int level=0)const;
+
 private:
 	LogicalProjection logical_projection_;
 //	Partitioner* partition_info_;

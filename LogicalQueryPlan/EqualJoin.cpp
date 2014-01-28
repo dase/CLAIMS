@@ -16,7 +16,7 @@ EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_i
 		left_join_key_list_.push_back(joinpair_list[i].first);
 		right_join_key_list_.push_back(joinpair_list[i].second);
 	}
-	print();
+//	print();
 }
 
 EqualJoin::~EqualJoin() {
@@ -558,10 +558,12 @@ DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dat
 	return ret;
 
 }
-void EqualJoin::print()const{
-	printf("Join--------------\n");
+void EqualJoin::print(int level)const{
+	printf("%*.sEqualJoin:\n",level*8," ");
 	for(unsigned i=0;i<this->joinkey_pair_list_.size();i++){
+		printf("%*.s",level*8," ");
 		printf("%s=%s\n",joinkey_pair_list_[i].first.attrName.c_str(),joinkey_pair_list_[i].second.attrName.c_str());
 	}
-	printf("-----------------\n");
+	left_child_->print(level+1);
+	right_child_->print(level+1);
 }

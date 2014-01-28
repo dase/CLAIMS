@@ -224,8 +224,10 @@ void Filter::Condition::add(const Attribute& attr,const FilterIterator::Attribut
 	attr.attrType->operate->toValue(value,str_exp.c_str());
 	const_value_list_.push_back(value);
 }
-void Filter::Condition::print(){
+void Filter::Condition::print(int level)const{
+	printf("%*.sFilter:\n",level*8," ");
         for(unsigned i=0;i<attribute_list_.size();i++){
+        	printf("%*.s",level*8,"    ");
                 printf("%s",attribute_list_[i].attrName.c_str());
                 switch(comparison_list_[i]){
                         case FilterIterator::AttributeComparator::L :{
@@ -258,6 +260,7 @@ void Filter::Condition::print(){
                 }
                 printf("%s\n",attribute_list_[i].attrType->operate->toString(const_value_list_[i]).c_str());
         }
+//        child_->print(level+1);
 }
 
 unsigned Filter::Condition::getCompaisonNumber()const{
@@ -270,7 +273,7 @@ Filter::Condition::~Condition(){
 }
 Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(condition),child_(child){
 
-	condition_.print();
+//	condition_.print();
 
 
 }
@@ -289,4 +292,8 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 		FilterIterator::AttributeComparator filter(*dataflow.attribute_list_[attribute_index].attrType,condition_.comparison_list_[i],attribute_index,condition_.const_value_list_[i]);
 		comparator_list_.push_back(filter);
 	}
+}
+void Filter::print(int level)const{
+	condition_.print(level);
+	child_->print(level+1);
 }
