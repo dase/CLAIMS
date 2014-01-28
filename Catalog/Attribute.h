@@ -30,6 +30,15 @@ struct Attribute
 		}
 
 	}
+	Attribute& operator=(const Attribute& att){
+		table_id_=att.table_id_;
+		if(att.table_id_!=-1){
+			attrName=att.attrName;
+			attrType=new column_type(*att.attrType);
+			index=att.index;
+		}
+		return *this;
+	}
 	Attribute():table_id_(-1){
 
 	}
