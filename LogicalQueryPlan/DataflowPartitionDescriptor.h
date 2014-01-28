@@ -17,6 +17,7 @@ class DataflowPartitioningDescriptor {
 public:
 	DataflowPartitioningDescriptor():partition_function_(0){};
 	DataflowPartitioningDescriptor(const Partitioner& partitoiner);
+	DataflowPartitioningDescriptor(const DataflowPartitioningDescriptor&);
 	virtual ~DataflowPartitioningDescriptor();
 	Attribute getPartitionKey()const;
 	bool hasSamePartitionLocation(const DataflowPartitioningDescriptor& target)const;

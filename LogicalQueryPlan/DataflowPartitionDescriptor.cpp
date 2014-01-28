@@ -18,7 +18,12 @@ DataflowPartitioningDescriptor::DataflowPartitioningDescriptor(const Partitioner
 		partition_list_.push_back(dataflow_partition);
 	}
 }
-
+DataflowPartitioningDescriptor::DataflowPartitioningDescriptor(const DataflowPartitioningDescriptor& r){
+	this->partition_function_=r.partition_function_;
+	this->partition_key_=r.partition_key_;
+	this->partition_list_=r.partition_list_;
+	this->shadow_partition_key_list_=r.shadow_partition_key_list_;
+}
 DataflowPartitioningDescriptor::~DataflowPartitioningDescriptor() {
 
 }
