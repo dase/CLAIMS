@@ -28,6 +28,7 @@ public:
 	inline virtual void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline)) =0;
 	inline virtual unsigned copyTuple(void* src, void* desc) const =0;
 	unsigned getncolumns();
+	virtual Schema* getSubSchema(std::vector<unsigned>)const=0;
 	inline column_type getcolumn(const unsigned index) const {
 			return columns[index];
 		}

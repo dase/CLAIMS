@@ -9,22 +9,21 @@
 #include "SchemaFix.h"
 
 
-SchemaFix::SchemaFix(std::vector<column_type> columns):Schema(columns) {
-	// TODO Auto-generated constructor stub
+SchemaFix::SchemaFix(std::vector<column_type> col):Schema(col) {
+
 //	accum_offsets=new unsigned[columns.size()];
 	totalsize=0;
 	unsigned accumu=0;
-	for(unsigned i=0;i<columns.size();i++)
+	for(unsigned i=0;i<col.size();i++)
 	{
-		totalsize+=columns[i].get_length();
+		totalsize+=col[i].get_length();
 		accum_offsets.push_back(accumu);
-		accumu+=columns[i].get_length();
+		accumu+=col[i].get_length();
 	}
 
 }
 
 SchemaFix::~SchemaFix() {
-	// TODO Auto-generated destructor stub
 }
 
 unsigned SchemaFix::getTupleMaxSize()
@@ -44,4 +43,10 @@ unsigned SchemaFix::getColumnOffset(unsigned index)
 {
 	return accum_offsets[index];
 }
-
+Schema* SchemaFix::getSubSchema(std::vector<unsigned> index)const{
+	std::vector<column_type> col;
+	for(unsigned i=0;i<index.size();i++){
+		col.push_back(columns[index[i]]);
+	}
+	return new SchemaFix(col);
+}

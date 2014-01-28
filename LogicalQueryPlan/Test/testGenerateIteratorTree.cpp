@@ -65,8 +65,8 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-//		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",4);	//G0
+//		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",4);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -166,8 +166,8 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
 
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-//		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
+//		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
 
 
 
@@ -531,6 +531,7 @@ static int testGenerateIteratorTree(){
 		const NodeID collector_node_id=0;
 		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
+		root->print();
 
 //		root->getDataflow();
 

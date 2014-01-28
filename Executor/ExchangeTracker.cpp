@@ -71,14 +71,14 @@ int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::stri
 	int port;
 	Theron::Address from;
 //	ResultCatcher.Pop(feedback,from);
-	printf("OOOOOOOOOOOO step 1:%4.4f\n",getSecond(step1));
+//	printf("OOOOOOOOOOOO step 1:%4.4f\n",getSecond(step1));
 	while(!ResultCatcher.Pop(port,from));
 //	ResultCatcher.Pop(port,from);
 //	NodeConnectionMessage NCM=NodeConnectionMessage::deserialize(feedback);
 //	logging_->log("Receive Socket connection info from <%s>, content: %s:%s",from.AsString(),NCM.ip.c_str(),NCM.port.c_str());
 //	receiver.~Receiver();
 //	return atoi(NCM.port.c_str());
-	printf("OOOOOOOOOOOO step 2:%4.4f\n",getSecond(step2));
+//	printf("OOOOOOOOOOOO step 2:%4.4f\n",getSecond(step2));
 	return port;
 }
 

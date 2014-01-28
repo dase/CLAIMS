@@ -12,6 +12,7 @@
 #include "../Executor/Test/Executor.cpp"
 #include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
 #include "../Parsetree/Test/parser_test.cpp"
+#include "../Schema/Test/SubTuple_test.cpp"
 //#include "hashtable_test.cpp"
 int main(){
 //	return testGenerateIteratorTree();
@@ -21,4 +22,5 @@ int main(){
 //	return getOptimalQueryPlan();
 //	return ResultCollect_test();
 	return parser_test();
+//	return sub_tuple_test();
 }

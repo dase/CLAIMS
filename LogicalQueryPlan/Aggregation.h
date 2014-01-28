@@ -29,6 +29,7 @@ private:
 	 * one should be sum(*) to guarantee the correctness.
 	 */
 	std::vector<BlockStreamAggregationIterator::State::aggregation> convertionForHybrid(const std::vector<BlockStreamAggregationIterator::State::aggregation>)const;
+	void print(int level=0)const{};
 private:
 	LogicalOperator* child_;
 	std::vector<Attribute> group_by_attribute_list_;

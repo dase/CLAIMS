@@ -85,7 +85,8 @@ Dataflow LogicalScan::getDataflow(){
 
 	dataflow_.attribute_list_=scan_attribute_list_; /*attribute_list*/
 
-	dataflow_.property_.partitioner=DataflowPartitioningDescriptor(*target_projection_->getPartitioner());
+	Partitioner* par=target_projection_->getPartitioner();
+	dataflow_.property_.partitioner=DataflowPartitioningDescriptor(*par);
 	dataflow_.property_.commnication_cost=0;
 	return dataflow_;
 
@@ -192,5 +193,11 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		return true;
 	else
 		return false;
+
+}
+
+void LogicalScan::print(int level)const{
+//	align(level);
+	printf("%*.sScan: %s\n",level*8," ",Catalog::getInstance()->getTable(target_projection_->getProjectionID().table_id)->getTableName().c_str());
 
 }
