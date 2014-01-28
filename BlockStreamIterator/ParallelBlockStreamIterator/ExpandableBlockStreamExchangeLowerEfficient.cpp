@@ -45,7 +45,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	logging_=new ExchangeIteratorEagerLowerLogging();
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
-	printf("<><><><><><><> lower open time:%4.4f (step 1) \n",getSecond(step1));
+//	printf("<><><><><><><> lower open time:%4.4f (step 1) \n",getSecond(step1));
 	socket_fd_upper_list=new int[nuppers];
 	block_stream_for_asking_=BlockStreamBase::createBlock(state.schema,state.block_size);
 //	block_for_sending=new BlockContainer(block_stream_for_asking_->getSerializedBlockSize());
@@ -68,7 +68,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 //	free(test);
 
 //	printf(">>>--------Lower:: open %d\n",state.exchange_id);
-	printf("<><><><><><><> lower open time:%4.4f (step 2) \n",getSecond(step2));
+//	printf("<><><><><><><> lower open time:%4.4f (step 2) \n",getSecond(step2));
 	for(unsigned upper_id=0;upper_id<state.upper_ip_list.size();upper_id++){
 
 //		printf("_______ this time connect target=%s (state=%d)\n",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
@@ -93,7 +93,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 			assert(false);
 		}
 //		printf("\n\n\n port=%d\n\n\n",upper_port);
-		printf("_______________socket connect_if time:%4.4f\n",getSecond(connect_info));
+//		printf("_______________socket connect_if time:%4.4f\n",getSecond(connect_info));
 		connected_uppers++;
 
 //		if(connected_uppers_list_.find(state.upper_ip_list[upper_id].c_str())!=connected_uppers_list_.end())
@@ -104,7 +104,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 		unsigned long long int connect=curtick();
 		if(ConnectToUpperExchangeWithMulti(socket_fd_upper_list[upper_id],state.upper_ip_list[upper_id],upper_port)==false)
 			return false;
-		printf("_______________socket connection time:%4.4f\n",getSecond(connect));
+//		printf("_______________socket connection time:%4.4f\n",getSecond(connect));
 
 //		assert(connected_uppers<=state.upper_ip_list.size());
 //		printf("<<<<<<<<<<<<state %d: connected:%d\n",state.exchange_id,connected_uppers);
@@ -112,7 +112,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 
 	}
 
-	printf("<><><><><><><> lower open time:%4.4f (step 3) \n",getSecond(step3));
+//	printf("<><><><><><><> lower open time:%4.4f (step 3) \n",getSecond(step3));
 	int error;
 	error=pthread_create(&sender_tid,NULL,sender,this);
 	if(error!=0){
@@ -127,7 +127,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 /*debug*/
 	readsendedblocks=0;
 	hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
-	printf("<><><><><><><> lower open time:%4.4f\n",getSecond(start));
+//	printf("<><><><><><><> lower open time:%4.4f\n",getSecond(start));
 	return true;
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
