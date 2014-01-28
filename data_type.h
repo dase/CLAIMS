@@ -19,6 +19,12 @@
 enum data_type{t_int,t_float,t_string,t_double,t_u_long};
 typedef void (*fun)(void*,void*);
 
+/**
+ * the number of bytes that are aligned between any two adjacent data types
+ */
+#define allign_bytes 4
+#define byte_align(size) (((size-1)/allign_bytes+1)*allign_bytes)
+
 
 template<typename T>
 inline void ADD(void* target, void* increment)
@@ -65,22 +71,22 @@ inline void IncreaseByOne<char*>(void* target,void* increment)
 }
 
 template<typename T>
-inline void assigns(const void* src, void* desc){
+inline void assigns(const void* const& src, void* const &desc){
 	*(T*)desc=*(T*)src;
 }
 template<>
-inline void assigns<char*>(const void* src,void* desc){
+inline void assigns<char*>(const void* const& src, void* const &desc){
 	strcpy((char*)desc,(char*)src);
 }
 class Operate
 {
 public:
 	Operate(){};
-//	virtual ~Operate(){};
+	virtual ~Operate(){};
 	inline void ass(void* src, void* desc){
 		*(int*)desc=*(int*)src;
 	}
-	inline virtual void assignment(const void* src,void* &desc) const =0;
+	inline virtual void assignment(const void* const& src, void* const &desc) const =0;
 	virtual unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const=0;
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
@@ -91,15 +97,16 @@ public:
 	virtual fun GetMINFunction()=0;
 	virtual fun GetMAXFunction()=0;
 	virtual fun GetIncreateByOneFunction()=0;
-	void (*assign)(const void*,void*);
+	void (*assign)(const void* const& src, void* const &desc);
+	virtual Operate* duplicateOperator()const=0;
 };
 
 class OperateInt:public Operate
 {
 public:
 	OperateInt(){assign=assigns<int>;};
-//	~OperateInt(){};
-	inline void assignment(const void* src,void* &desc)const
+	~OperateInt(){};
+	inline void assignment(const void* const& src, void* const &desc)const
 	{
 		*(int*)desc=*(int*)src;
 	};
@@ -143,14 +150,17 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(int*)key);
 	}
+	Operate* duplicateOperator()const{
+		return new OperateInt();
+	}
 };
 
 class OperateFloat:public Operate
 {
 public:
 	OperateFloat(){};
-//	~OperateFloat(){};
-	inline void assignment(const void* src,void* &desc)const
+	~OperateFloat(){};
+	inline void assignment(const void* const& src, void* const &desc)const
 	{
 		*(float*)desc=*(float*)src;
 	};
@@ -194,14 +204,17 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(float*)key);
 	}
+	Operate* duplicateOperator()const{
+		return new OperateFloat();
+	}
 };
 
 class OperateDouble:public Operate
 {
 public:
 	OperateDouble(){};
-//	~OperateDouble(){};
-	inline void assignment(const void* src,void* &desc)const
+	~OperateDouble(){};
+	inline void assignment(const void* const& src, void* const &desc)const
 	{
 		*(double*)desc=*(double*)src;
 	};
@@ -245,14 +258,17 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(double*)key);
 	}
+	Operate* duplicateOperator()const{
+		return new OperateDouble();
+	}
 };
 
 class OperateULong:public Operate
 {
 public:
 	OperateULong(){};
-//	~OperateULong(){};
-	inline void assignment(const void* src,void* &desc)const
+	~OperateULong(){};
+	inline void assignment(const void* const& src, void* const &desc)const
 	{
 		*(unsigned long*)desc=*(unsigned long*)src;
 	};
@@ -296,14 +312,17 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(unsigned long*)key);
 	}
+	Operate* duplicateOperator()const{
+		return new OperateULong();
+	}
 };
 
 class OperateString:public Operate
 {
 public:
 	OperateString(){};
-//	~OperateString(){};
-	inline void assignment(const void *src,void* &desc)const
+	~OperateString(){};
+	inline void assignment(const void* const& src, void* const &desc)const
 	{
 		assert(desc!=0&&src!=0);
 		strcpy((char*)desc,(char*)src);
@@ -349,12 +368,15 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(char*)key);
 	}
+	Operate* duplicateOperator()const{
+		return new OperateString();
+	}
 };
 
 class column_type
 {
 public:
-	 column_type(data_type type,unsigned _size=0):type(type),size(size){
+	 column_type(data_type type,unsigned _size=0):type(type),size(_size){
 		switch(type)
 		{
 			case t_int:operate=new OperateInt();break;
@@ -365,8 +387,17 @@ public:
 			default:operate=0;break;
 		}
 	};
+	 column_type(const column_type &r){
+		 this->type=r.type;
+		 this->size=r.size;
+		 this->operate=r.operate->duplicateOperator();
+		 assert(this->operate!=0);
+	 }
 	column_type():operate(0){};
-//	~column_type(){};
+	~column_type(){
+		operate->~Operate();
+		operate=0;
+	};
 	inline unsigned get_length() const
 	{
 		switch(type)
@@ -375,7 +406,7 @@ public:
 			case t_float:return sizeof(float);
 			case t_double:return sizeof(double);
 			case t_u_long:return sizeof(unsigned long);
-			case t_string:return size;
+			case t_string:return byte_align(size);
 			default: return 0;
 
 		}
