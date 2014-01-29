@@ -76,3 +76,4 @@ void LogicalOperator::align(int space)const{
 		printf(" ");
 	}
 }
+

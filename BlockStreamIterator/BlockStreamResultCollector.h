@@ -38,6 +38,7 @@ public:
 	bool next(BlockStreamBase* block);
 	bool close();
 	ResultSet* getResultSet();
+	unsigned long getNumberOftuples()const;
 private:
 	bool createBlockStream(BlockStreamBase*&)const;
 	void deallocateBlockStream(BlockStreamBase*&)const;

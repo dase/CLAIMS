@@ -195,7 +195,6 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		return false;
 
 }
-
 void LogicalScan::print(int level)const{
 //	align(level);
 	printf("%*.sScan: %s\n",level*8," ",Catalog::getInstance()->getTable(target_projection_->getProjectionID().table_id)->getTableName().c_str());

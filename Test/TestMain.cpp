@@ -20,7 +20,8 @@ int main(){
 //	return testIteratorExecutor();
 //	return hashtable_test();
 //	return getOptimalQueryPlan();
-//	return ResultCollect_test();
-	return parser_test();
+	return ResultCollect_test();
+//	return parser_test();
 //	return sub_tuple_test();
+
 }

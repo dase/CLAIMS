@@ -99,7 +99,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.aggregationIndex=getInvolvedIndexList(aggregation_attribute_list_,child_dataflow);
 	aggregation_state.aggregations=aggregation_list_;
 	aggregation_state.block_size=block_size;
-	aggregation_state.nbuckets=1024*1024;
+	aggregation_state.nbuckets=1024;
 	aggregation_state.bucketsize=64;
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);
 	aggregation_state.output=getSchema(dataflow_->attribute_list_);

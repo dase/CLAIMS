@@ -54,6 +54,7 @@ protected:
 	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;
 	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const;
 	void align(int space)const;
+
 };
 
 //class Operator{

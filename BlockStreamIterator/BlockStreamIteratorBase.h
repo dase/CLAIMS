@@ -32,6 +32,7 @@ public:
 	virtual bool next(BlockStreamBase*)=0;
 	virtual bool close()=0;
 	virtual void print(){printf("??\n");};
+
 	virtual ResultSet* getResultSet();
 
 private:
