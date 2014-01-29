@@ -49,6 +49,7 @@ private:
 
 	DataflowPartitioningDescriptor decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const;
 	void print(int level=0)const;
+
 private:
 	std::vector<JoinPair> joinkey_pair_list_;
 	std::vector<Attribute> left_join_key_list_;

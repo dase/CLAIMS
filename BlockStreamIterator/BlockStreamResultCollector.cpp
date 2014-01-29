@@ -114,3 +114,14 @@ bool BlockStreamResultCollector::ChildExhausted(){
 
 	return finished_thread_count_==registered_thread_count_;
 }
+
+
+unsigned long BlockStreamResultCollector::getNumberOftuples()const{
+	unsigned long ret=0;
+	ResultSet::Iterator it=block_buffer_.createIterator();
+	BlockStreamBase* block;
+	while(block=(BlockStreamBase*)it.nextBlock()){
+		ret+=block->getTuplesInBlock();
+	}
+	return ret;
+}

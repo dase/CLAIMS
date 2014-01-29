@@ -39,6 +39,7 @@ struct Attribute
 		}
 		return *this;
 	}
+
 	Attribute():table_id_(-1){
 
 	}

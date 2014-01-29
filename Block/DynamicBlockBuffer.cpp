@@ -4,8 +4,12 @@
  *  Created on: Dec 20, 2013
  *      Author: wangli
  */
-#include <assert.h>
+
 #include "DynamicBlockBuffer.h"
+
+//#include <assert.h>
+
+#include "BlockStream.h"
 
 DynamicBlockBuffer::DynamicBlockBuffer() {
 	// TODO Auto-generated constructor stub
@@ -79,5 +83,14 @@ unsigned DynamicBlockBuffer::getNumberOfBlocks(){
 	unsigned ret;
 	ret= block_list_.size();
 	lock_.release();
+	return ret;
+}
+unsigned long DynamicBlockBuffer::getNumberOftuples()const{
+	unsigned long ret=0;
+	DynamicBlockBuffer::Iterator it=this->createIterator();
+	BlockStreamBase* block;
+	while(block=(BlockStreamBase*)it.nextBlock()){
+		ret+=block->getTuplesInBlock();
+	}
 	return ret;
 }

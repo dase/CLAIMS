@@ -42,7 +42,7 @@ void BlockManager::initialize(){
 	memstore_=new MemoryChunkStore();
 
 	///the version written by zhanglei/////////////////////////////////
-	blockManagerId_=new BlockManagerId();
+//	blockManagerId_=new BlockManagerId();
 	// 2，注册
 	registerToMaster(blockManagerId_);
 	// 3，开启心跳监听
