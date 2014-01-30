@@ -37,9 +37,11 @@ unsigned long Estimation::estEqualOper(AttributeID attrID, void *para) {
 	valueList = stat->m_staValues2;
 	selList = stat->m_staNumbers2;
 
+	Attribute attr=Catalog::getInstance()->getTable(attrID.table_id)->getAttribute(
+			attrID.offset);
+
 	Operate *op =
-			Catalog::getInstance()->getTable(attrID.table_id)->getAttribute(
-					attrID.offset).attrType->operate;
+			attr.attrType->operate;
 
 	for (unsigned i = 0; i < stat->m_bucketCnt; ++i) {
 
