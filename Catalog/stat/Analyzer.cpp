@@ -108,7 +108,7 @@ void Analyzer::analyse(const AttributeID &attrID) {
 		}
 	}
 
-	int magicNumber = 10;
+	int magicNumber = 100;
 
 	StatisticOnTable *stat = new StatisticOnTable(magicNumber);
 

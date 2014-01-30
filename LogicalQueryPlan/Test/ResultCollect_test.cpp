@@ -507,7 +507,7 @@ static int ResultCollect_test(){
 		AttributeID attrID(table_1->get_table_id(), table_1->getAttribute("sec_code").index);
 		Analyzer::analyse(attrID);
 		StatManager::getInstance()->getStat(attrID)->print(*(table_1->getAttribute("sec_code").attrType));
-		column_type* type = table_1->getAttribute("sec_code").attrType;
+		column_type type = *table_1->getAttribute("sec_code").attrType;
 		int id;
 		unsigned long result;
 		unsigned long trResult;
@@ -516,8 +516,8 @@ static int ResultCollect_test(){
 
 			trResult = 0;
 			for (i = 0; i < valueCount; ++i) {
-				if (type->operate->equal(&id, list[i])) {
-					trResult = getFre(list[i], type);
+				if (type.operate->equal(&id, list[i])) {
+					trResult = getFre(list[i], &type);
 					break;
 				}
 			}
