@@ -29,7 +29,7 @@ typedef void (*fun)(void*,void*);
 template<typename T>
 inline void ADD(void* target, void* increment)
 {
-	*(T*)target=*(T*)increment;
+	*(T*)target+=*(T*)increment;
 }
 template<>
 inline void ADD<char*>(void* target, void* increment)
