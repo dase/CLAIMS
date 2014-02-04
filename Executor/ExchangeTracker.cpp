@@ -34,7 +34,7 @@ bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port){
 		return false;
 	}
 	id_to_port[id]=port;
-	printf("New exchange with id=%d (port %s)is successfully registered!",id.exchange_id,port.c_str());
+	logging_->log("New exchange with id=%d (port %s)is successfully registered!",id.exchange_id,port.c_str());
 	return true;
 }
 void ExchangeTracker::LogoutExchange(const ExchangeID &id){

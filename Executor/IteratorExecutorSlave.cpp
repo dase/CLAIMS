@@ -60,7 +60,7 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 //
 //	im.run();
 //	ies->logging_->log("iterator tree is successfully executed!");
-	printf("serialized size:%d\n\n\n\n\n\n",message.length);
+//	printf("serialized size:%d\n\n\n\n\n\n",message.length);
 	ies->logging_->log("New iterator tree received!\n");
 
 
@@ -96,7 +96,7 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 	IteratorExecutorSlave* Pthis=(IteratorExecutorSlave*)(*((void**)arg+1));
 	it->run();
 	it->~IteratorMessage();
-	printf("A iterator tree is successfully executed!\n");
+	Pthis->logging_->log("A iterator tree is successfully executed!\n");
 	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
 	Pthis->lock_.lock();
 	Pthis->busy_thread_list_.erase(pthread_self());
