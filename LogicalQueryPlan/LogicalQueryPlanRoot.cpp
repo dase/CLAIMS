@@ -20,7 +20,9 @@ LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* chi
 }
 
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
-	// TODO Auto-generated destructor stub
+	if(child_>0){
+		child_->~LogicalOperator();
+	}
 }
 
 BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& block_size){

@@ -14,7 +14,9 @@ Buffer::Buffer(LogicalOperator* child)
 }
 
 Buffer::~Buffer() {
-	// TODO Auto-generated destructor stub
+	if(child_>0){
+		child_->~LogicalOperator();
+	}
 }
 Dataflow Buffer::getDataflow(){
 	dataflow_=child_->getDataflow();
