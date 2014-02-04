@@ -16,6 +16,9 @@ Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,L
 
 Filter::~Filter() {
 	// TODO Auto-generated destructor stub
+	if(child_>0){
+		child_->~LogicalOperator();
+	}
 }
 
 Dataflow Filter::getDataflow(){
@@ -267,6 +270,7 @@ unsigned Filter::Condition::getCompaisonNumber()const{
 	return attribute_list_.size();
 }
 Filter::Condition::~Condition(){
+
 	for(unsigned i=0;i<const_value_list_.size();i++){
 		free(const_value_list_[i]);
 	}

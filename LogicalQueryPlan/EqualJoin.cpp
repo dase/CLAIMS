@@ -20,6 +20,13 @@ EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_i
 }
 
 EqualJoin::~EqualJoin() {
+	dataflow_->~Dataflow();
+	if(left_child_>0){
+		left_child_->~LogicalOperator();
+	}
+	if(right_child_>0){
+		right_child_->~LogicalOperator();
+	}
 	// TODO Auto-generated destructor stub
 }
 
