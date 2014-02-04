@@ -12,6 +12,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
+
+#define INTERMEIDATE_TABLEID 100000;
+
 typedef int NodeID;
 
 typedef unsigned TableID;
