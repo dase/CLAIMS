@@ -314,7 +314,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMult
 		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
 		return false;
 	}
-	printf("connected to the Master socket %s:%d\n",ip.c_str(),port);
+//	printf("connected to the Master socket %s:%d\n",ip.c_str(),port);
 	//printf("connected to the Master socket %d !\n",returnvalue);
 	return true;
 }
