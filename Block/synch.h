@@ -81,7 +81,7 @@ public:
 		ret = pthread_mutex_init(&m_l_SyncLock, NULL);
 		if(ret!=0)
 			printf("pthread_mutex_init failed at barrier creation.\n");
-		printf("the init of barrier\n");
+//		printf("the init of barrier\n");
 		ret = pthread_cond_init(&m_cv_SyncCV, NULL);
 		if(ret!=0)
 			printf("pthread_cond_init failed at barrier creation.\n");

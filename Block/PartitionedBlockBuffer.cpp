@@ -46,7 +46,7 @@ PartitionedBlockBuffer::~PartitionedBlockBuffer() {
 	}
 	delete [] blocks_in_partition_list;
 	unsigned free_count=0;
-	printf("in ~PartitionedBlockBuffer()\n");
+//	printf("in ~PartitionedBlockBuffer()\n");
 //	for(unsigned i=0;i<empty_block_list.size();i++){
 //		Block* block=empty_block_list.
 //		block->~Block();
