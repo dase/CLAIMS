@@ -28,7 +28,7 @@ Estimation::~Estimation() {
 unsigned long Estimation::estEqualOper(AttributeID attrID, void *para) {
 	unsigned long ret = 0;
 
-	const Statistic *stat = StatManager::getInstance()->getStat(attrID);
+	const Histogram *stat = StatManager::getInstance()->getStat(attrID);
 
 	//look up in the end-biased statistic
 	void **valueList;
@@ -144,7 +144,7 @@ unsigned long Estimation::estRangeOper(AttributeID attrID, void *lowPara,
 		void *upperPara) {
 	unsigned long ret = 0;
 
-	const Statistic *stat = StatManager::getInstance()->getStat(attrID);
+	const Histogram *stat = StatManager::getInstance()->getStat(attrID);
 	column_type* type =
 			Catalog::getInstance()->getTable(attrID.table_id)->getAttribute(
 					attrID.offset).attrType;

@@ -22,11 +22,11 @@ typedef void* ValuePtr;
 //};
 class Estimation;
 
-class Statistic {
+class Histogram {
 	friend class Estimation;
 public:
-	Statistic();
-	Statistic(unsigned bucketCnt);
+	Histogram();
+	Histogram(unsigned bucketCnt);
 	void setTupleCount(unsigned long tupleCount);
 	void setValueCount(unsigned long valueCount);
 	void setMostCommonValues(void **mcvList, double *seleList);
@@ -39,7 +39,7 @@ public:
 	void print(column_type type);
 
 	void destory();
-	virtual ~Statistic();
+	virtual ~Histogram();
 
 private:
 
@@ -58,17 +58,17 @@ private:
 
 };
 
-class StatisticOnTable : public Statistic{
+class StatisticOnTable : public Histogram{
 
 public:
 	StatisticOnTable();
 	StatisticOnTable(unsigned bucketCnt);
-	Statistic* getPartStat(const PartitionID partID);
+	Histogram* getPartStat(const PartitionID partID);
 	void destory();
 	virtual ~StatisticOnTable();
 
 private:
-	boost::unordered_map < PartitionID, Statistic* > m_partStat;
+	boost::unordered_map < PartitionID, Histogram* > m_partStat;
 
 };
 
