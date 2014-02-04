@@ -251,7 +251,7 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const 
 		return -1;
 	}
 	else{
-		printf("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
+		logging_->log("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
 	}
 	 long int start_pos=CHUNK_SIZE*offset;
 	if(start_pos<hdfsfile->mSize){
@@ -274,12 +274,12 @@ int BlockManager::loadFromDisk(const ChunkID& chunk_id,void* const &desc,const u
 		return -1;
 	}
 	else{
-		printf("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
+		logging_->log("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
 	}
 	long int file_length=lseek(fd,0,SEEK_END);
 
 	long start_pos=CHUNK_SIZE*offset;
-	printf("start_pos=%ld**********\n",start_pos);
+	logging_->log("start_pos=%ld**********\n",start_pos);
 
 	lseek(fd,start_pos,SEEK_SET);
 	if(start_pos<file_length){
