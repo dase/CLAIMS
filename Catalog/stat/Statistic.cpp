@@ -7,54 +7,54 @@
 
 #include "Statistic.h"
 
-Statistic::Statistic() {
+Histogram::Histogram() {
 
 	this->m_bucketCnt = 0;
 }
 
-Statistic::Statistic(unsigned bucketCnt) {
+Histogram::Histogram(unsigned bucketCnt) {
 
 	this->m_bucketCnt = bucketCnt;
 }
 
-Statistic::~Statistic() {
+Histogram::~Histogram() {
 
 }
 
-unsigned Statistic::getBucketCnt() const{
+unsigned Histogram::getBucketCnt() const{
 	return m_bucketCnt;
 }
 
-unsigned long Statistic::getTupleCount() const{
+unsigned long Histogram::getTupleCount() const{
 	return m_staCount;
 }
 
-unsigned long Statistic::getValueCount() const{
+unsigned long Histogram::getValueCount() const{
 	return m_staDistinct;
 }
 
-void Statistic::setValueCount(unsigned long valueCount) {
+void Histogram::setValueCount(unsigned long valueCount) {
 	m_staDistinct = valueCount;
 }
 
-void Statistic::setTupleCount(unsigned long tupleCount) {
+void Histogram::setTupleCount(unsigned long tupleCount) {
 	m_staCount = tupleCount;
 }
 
-void Statistic::setEquithDepthBound(void **boundList,
+void Histogram::setEquithDepthBound(void **boundList,
 		unsigned long* bucketValueCount) {
 
 	m_staValues1 = boundList;
 	m_staNumbers1 = bucketValueCount;
 }
 
-void Statistic::setMostCommonValues(void **mcvList, double *seleList) {
+void Histogram::setMostCommonValues(void **mcvList, double *seleList) {
 
 	m_staValues2 = mcvList;
 	m_staNumbers2 = seleList;
 }
 
-void Statistic::print(column_type type) {
+void Histogram::print(column_type type) {
 
 	printf("Tuple Count: %d\n\n", m_staCount);
 
@@ -80,7 +80,7 @@ void Statistic::print(column_type type) {
 	printf("\n");
 }
 
-void Statistic::destory() {
+void Histogram::destory() {
 
 	delete m_staNumbers1;
 	delete m_staNumbers2;
@@ -95,19 +95,19 @@ void Statistic::destory() {
 }
 
 StatisticOnTable::StatisticOnTable(unsigned bucketCnt) :
-		Statistic(bucketCnt) {
+		Histogram(bucketCnt) {
 
 }
 
-Statistic* StatisticOnTable::getPartStat(const PartitionID partID) {
+Histogram* StatisticOnTable::getPartStat(const PartitionID partID) {
 
 	return m_partStat[partID];
 }
 
 void StatisticOnTable::destory() {
 
-	Statistic::destory();
-	for (boost::unordered_map<PartitionID, Statistic*>::iterator it =
+	Histogram::destory();
+	for (boost::unordered_map<PartitionID, Histogram*>::iterator it =
 			m_partStat.begin(); it != m_partStat.end(); it++) {
 		it->second->destory();
 	}

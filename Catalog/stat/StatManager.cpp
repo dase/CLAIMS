@@ -21,22 +21,28 @@ StatManager* StatManager::getInstance() {
 	return m_singleton;
 }
 
-Statistic* StatManager::getStat(const AttributeID attID){
+Histogram* StatManager::getStat(const AttributeID attID){
 
 	return m_stat[attID];
 }
 
-Statistic* StatManager::getStat(const AttributeID attID, const PartitionID partID){
+Histogram* StatManager::getStat(const AttributeID attID, const PartitionID partID){
 
 	return m_stat[attID]->getPartStat(partID);
 }
 
-void StatManager::addStat(AttributeID attrID,  Statistic *stat){
+void StatManager::addStat(AttributeID attrID,  Histogram *stat){
 
 	m_stat[attrID] = (StatisticOnTable*)stat;
 }
 
-
+TableStatistic* StatManager::getTableStatistic(const TableID& table_id)const{
+	if(tab_stat_list_.find(table_id)==tab_stat_list_.cend())
+		return 0;
+	return tab_stat_list_.at(table_id);
+}
 StatManager::~StatManager() {
 }
-
+void StatManager::setTableStatistic(const TableID& table_id,TableStatistic* tab_stat){
+	tab_stat_list_[table_id]=tab_stat;
+}

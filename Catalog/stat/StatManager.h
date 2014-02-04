@@ -13,6 +13,7 @@
 #include <boost/unordered_map.hpp>
 #include "../../ids.h"
 #include "Statistic.h"
+#include "TableStatistic.h"
 
 class StatManager {
 public:
@@ -20,21 +21,24 @@ public:
 	static StatManager *getInstance();
 	virtual ~StatManager();
 
-	Statistic* getStat(const AttributeID attID);
-	Statistic* getStat(const AttributeID attID, const PartitionID partID);
+	Histogram* getStat(const AttributeID attID);
+	Histogram* getStat(const AttributeID attID, const PartitionID partID);
 
-	void addStat(const AttributeID attId, Statistic *stat);
+	void addStat(const AttributeID attId, Histogram *stat);
 	void addStat(const AttributeID attId, const PartitionID partId,
-			const Statistic *stat);
+			const Histogram *stat);
 
 	//TODO update method
-
+	TableStatistic* getTableStatistic(const TableID& table_id)const;
+	void setTableStatistic(const TableID& table_id,TableStatistic* tab_stat);
 private:
 
 	StatManager();
 
 	static StatManager *m_singleton;
 	boost::unordered_map<AttributeID, StatisticOnTable*> m_stat;
+
+	boost::unordered_map<TableID,TableStatistic*> tab_stat_list_;
 
 };
 

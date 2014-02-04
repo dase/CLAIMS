@@ -118,8 +118,8 @@ void Analyzer::analyse(const AttributeID &attrID) {
 	qsort_r(list, valueCount, sizeof(void *), compare,
 			(void *) (attr.attrType->operate));
 
-	mcvAnalyse(list, valueCount, attr, (Statistic *) stat);
-	equiDepthAnalyse(list, valueCount, attr, (Statistic *) stat);
+	mcvAnalyse(list, valueCount, attr, (Histogram *) stat);
+	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
 
 	StatManager::getInstance()->addStat(attrID, stat);
 
@@ -127,8 +127,50 @@ void Analyzer::analyse(const AttributeID &attrID) {
 	resultset->destory();
 }
 
+void Analyzer::analyses(TableID table_id){
+	TableStatistic* tab_stat=StatManager::getInstance()->getTableStatistic(table_id);
+	if(tab_stat>0){
+		//TODO: update the statistics if it exists.
+		printf("Table statistics already exists.\n");
+	}
+	LogicalOperator * scan=new LogicalScan(Catalog::getInstance()->getTable(table_id)->getProjectoin(0));
+	std::vector<Attribute> group_by_attributes;
+	std::vector<Attribute> aggregation_attributes;
+
+	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+
+	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	aggregation_function.push_back(
+			BlockStreamAggregationIterator::State::count);
+	LogicalOperator* agg=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
+	LogicalOperator* root = new LogicalQueryPlanRoot(0,
+			agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* collector = root->getIteratorTree(
+			1024 * 64 - sizeof(unsigned));
+	collector->open();
+	collector->next(0);
+	collector->close();
+	ResultSet* resultset = collector->getResultSet();
+	ResultSet::Iterator it = resultset->createIterator();
+	BlockStreamBase::BlockStreamTraverseIterator* b_it=it.nextBlock()->createIterator();
+	const unsigned long tuple_count=*(unsigned long*)b_it->nextTuple();
+	BlockStreamBase* block;
+	while(block=it.nextBlock()){
+		BlockStreamBase::BlockStreamTraverseIterator* b_it=block->createIterator();
+
+	}
+	tab_stat=new TableStatistic();
+	tab_stat->number_of_tuples_=tuple_count;
+	printf("Statistics for table %s is gathered!\n",Catalog::getInstance()->getTable(table_id)->getTableName().c_str());
+	tab_stat->print();
+	StatManager::getInstance()->setTableStatistic(table_id,tab_stat);
+	resultset->destory();
+	root->~LogicalOperator();
+}
+
 void Analyzer::mcvAnalyse(void **list, const unsigned long size,
-		const Attribute &attr, Statistic *stat) {
+		const Attribute &attr, Histogram *stat) {
 
 	unsigned magicNumber = stat->getBucketCnt();
 	unsigned i;
@@ -168,7 +210,7 @@ void Analyzer::mcvAnalyse(void **list, const unsigned long size,
 }
 
 void Analyzer::equiDepthAnalyse(void **list, const unsigned long size,
-		const Attribute &attr, Statistic *stat) {
+		const Attribute &attr, Histogram *stat) {
 
 	int magicNumber = stat->getBucketCnt();
 	int bucketCnt = -1;
