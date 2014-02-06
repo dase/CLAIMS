@@ -10,6 +10,8 @@
 Histogram::Histogram() {
 
 	this->m_bucketCnt = 0;
+	m_staNumbers1=0;
+	m_staNumbers2=0;
 }
 
 Histogram::Histogram(unsigned bucketCnt) {
@@ -60,15 +62,15 @@ void Histogram::print(column_type type) {
 
 	printf("Value Count: %d\n", m_staDistinct);
 
-	printf("Equi-Depth\n");
-	for (unsigned i = 0; i < m_bucketCnt; ++i) {
-		printf("%s ", type.operate->toString(m_staValues1[i]).c_str());
-	}
-	printf("\n");
-	for (unsigned i = 0; i < m_bucketCnt; ++i) {
-		printf("%d ", m_staNumbers1[i]);
-	}
-	printf("\n");
+//	printf("Equi-Depth\n");
+//	for (unsigned i = 0; i < m_bucketCnt; ++i) {
+//		printf("%s ", type.operate->toString(m_staValues1[i]).c_str());
+//	}
+//	printf("\n");
+//	for (unsigned i = 0; i < m_bucketCnt; ++i) {
+//		printf("%d ", m_staNumbers1[i]);
+//	}
+//	printf("\n");
 	printf("End-Baised\n");
 	for (unsigned i = 0; i < m_bucketCnt; ++i) {
 		printf("%s ", type.operate->toString(m_staValues2[i]).c_str());

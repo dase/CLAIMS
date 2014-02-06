@@ -37,6 +37,8 @@ unsigned long Estimation::estEqualOper(AttributeID attrID, void *para) {
 	valueList = stat->m_staValues2;
 	selList = stat->m_staNumbers2;
 
+	assert(valueList!=0&&selList!=0);
+
 	Attribute attr=Catalog::getInstance()->getTable(attrID.table_id)->getAttribute(
 			attrID.offset);
 

@@ -92,7 +92,7 @@ public:
 	virtual ~TableDescriptor();
 
 	void addAttribute(Attribute attr);
-	bool addAttribute(string attname,data_type dt,unsigned max_length=0);
+	bool addAttribute(string attname,data_type dt,unsigned max_length=0,bool unique=false);
 
 //	void addProjection(vector<ColumnOffset> id_list);
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions);

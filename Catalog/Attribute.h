@@ -16,17 +16,19 @@
 
 struct Attribute
 {
-	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0)
+	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0,bool unqiue=false)
 	{
 		table_id_=tableid;
 		index=pos;
 		attrName = name;
 		attrType = new column_type(type, size);
+		unique=unqiue;
 
 	}
 	Attribute(const Attribute& att){
 		table_id_=att.table_id_;
 		attrName=att.attrName;
+		unique=att.unique;
 		if(att.table_id_<ATTRIBUTE_ANY){
 			attrType=new column_type(*att.attrType);
 			index=att.index;
@@ -36,6 +38,7 @@ struct Attribute
 	Attribute& operator=(const Attribute& att){
 		table_id_=att.table_id_;
 		attrName=att.attrName;
+		unique=att.unique;
 		if(att.table_id_<ATTRIBUTE_ANY){
 			attrType=new column_type(*att.attrType);
 			index=att.index;
@@ -43,7 +46,7 @@ struct Attribute
 		return *this;
 	}
 
-	Attribute(unsigned symbol=ATTRIBUTE_NULL):table_id_(symbol),index(-1),attrType(0){
+	Attribute(unsigned symbol=ATTRIBUTE_NULL):table_id_(symbol),index(-1),attrType(0),unique(false){
 		switch(symbol){
 		case ATTRIBUTE_ANY:{
 			attrName="*";
@@ -76,14 +79,21 @@ struct Attribute
 	bool isANY()const{
 		return table_id_==TableID(ATTRIBUTE_ANY);
 	}
+	bool isUnique()const{
+		return unique;
+	}
 	std::string getName()const{
 		return attrName;
+	}
+	AttributeID getID()const{
+		return AttributeID(table_id_,index);
 	}
 	std::string attrName;
 	column_type* attrType;
 	/*the position in the table*/
 	unsigned index;
 	TableID table_id_;
+	bool unique;
 };
 
 #endif /* ATTRIBUTE_H_ */

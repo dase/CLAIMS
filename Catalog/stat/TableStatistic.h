@@ -1,6 +1,6 @@
 /*
  * TableStatistic.h
- * This class describe the statistic within a table.
+ * This class describes the statistic within a table.
  *  Created on: Feb 2, 2014
  *      Author: wangli
  */
@@ -14,7 +14,8 @@ public:
 	TableStatistic();
 
 	virtual ~TableStatistic();
-
+	void addAttributeStatistics(const AttributeID& attr_id,AttributeStatistics* stat);
+	AttributeStatistics* getAttributeStatistics(const AttributeID& attr_id)const;
 
 	unsigned long number_of_tuples_;
 	void print()const;

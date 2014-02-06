@@ -38,13 +38,13 @@ static int statistic_manager_test(){
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 
 		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-		table_1->addAttribute("row_id",data_type(t_u_long));  				//0
+		table_1->addAttribute("row_id",data_type(t_u_long),0,true);  				//0
 		table_1->addAttribute("trade_date",data_type(t_int));
-		table_1->addAttribute("order_no",data_type(t_u_long));
+		table_1->addAttribute("order_no",data_type(t_u_long),0,true);
 		table_1->addAttribute("sec_code",data_type(t_int));
 		table_1->addAttribute("trade_dir",data_type(t_int));
 		table_1->addAttribute("order_type",data_type(t_int));				//5
-		table_1->addAttribute("trade_no",data_type(t_int));
+		table_1->addAttribute("trade_no",data_type(t_int),0,true);
 		table_1->addAttribute("trade_time",data_type(t_int));
 		table_1->addAttribute("trade_time_dec",data_type(t_u_long));
 		table_1->addAttribute("order_time",data_type(t_int));
@@ -68,7 +68,7 @@ static int statistic_manager_test(){
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",4);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -87,7 +87,7 @@ static int statistic_manager_test(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
 
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 //		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -416,7 +416,7 @@ static int statistic_manager_test(){
 
 		TableID table_id=catalog->getTable("cj")->get_table_id();
 		Attribute att;
-		Analyzer::analyses(table_id);
+		Analyzer::analyse(table_id,Analyzer::a_l_attribute);
 
 		/////////////////////////////////////////
 

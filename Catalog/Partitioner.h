@@ -230,6 +230,11 @@ private:
 	Attribute* partition_key_;
 	PartitionFunction* partition_functin_;
 	unsigned number_of_partitions_;
+
+	/**
+	 * partition_info_list is a list, each element corresponds to a single partition and
+	 * maintains the number of blocks in the partition as well as the binding location.
+	 */
 	vector<PartitionInfo*> partition_info_list;
 	binding_mode mode_;
 	ProjectionID projection_id_;

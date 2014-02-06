@@ -13,8 +13,11 @@ class AttributeStatistics {
 public:
 	AttributeStatistics();
 	virtual ~AttributeStatistics();
+	void setDistinctCardinality(unsigned long int value);
+	void setHistogram(Histogram* his);
+	void print()const;
 private:
-	unsigned long distinct_values_;
+	unsigned long distinct_cardinality_;
 	void* max_;
 	void* min_;
 	Histogram* histogram_;

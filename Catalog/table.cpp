@@ -76,13 +76,13 @@ void TableDescriptor::addAttribute(Attribute attr)
 {
 	attributes.push_back(attr);
 }
-bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length){
+bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length,bool unique){
 	/*check for attribute rename*/
 	for(unsigned i=0;i<attributes.size();i++){
 		if(attributes[i].attrName==attname)
 			return false;
 	}
-	Attribute att(table_id_,attributes.size(),attname,dt,max_length);
+	Attribute att(table_id_,attributes.size(),attname,dt,max_length,unique);
 	attributes.push_back(att);
 	return true;
 }
