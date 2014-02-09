@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "Partitioner.h"
+#include "../Catalog/Catalog.h"
 #define CHUNKSIZE_IN_MB 64
 
 Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,PartitionFunction* partitioning_functin)
@@ -93,6 +94,11 @@ bool Partitioner::hasSamePartitionLocation(const Partitioner & target_partition 
 }
 unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks*CHUNKSIZE_IN_MB;
+}
+unsigned long Partitioner::getPartitionCardinality(unsigned partition_index)const{
+	unsigned tuple_bytes=Catalog::getInstance()->getProjection(projection_id_)->getSchema()->getTupleMaxSize();
+	const unsigned data_size_in_MB=getPartitionDataSize(partition_index);
+	return data_size_in_MB*(unsigned long)1024*1024/tuple_bytes;
 }
 unsigned Partitioner::getPartitionChunks(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks;

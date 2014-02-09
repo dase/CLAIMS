@@ -25,3 +25,9 @@ void AttributeStatistics::print()const{
 void AttributeStatistics::setHistogram(Histogram* his){
 	histogram_=his;
 }
+Histogram* AttributeStatistics::getHistogram()const{
+	return histogram_;
+}
+unsigned long AttributeStatistics::getDistinctCardinality()const{
+	return distinct_cardinality_;
+}

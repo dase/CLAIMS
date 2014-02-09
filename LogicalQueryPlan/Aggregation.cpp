@@ -44,8 +44,8 @@ Dataflow Aggregation::getDataflow(){
 			ret.property_.commnication_cost=child_dataflow.property_.commnication_cost;
 			ret.property_.partitioner=child_dataflow.property_.partitioner;
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
-				const unsigned size=ret.property_.partitioner.getPartition(i)->getDataSize();
-				ret.property_.partitioner.getPartition(i)->setDataSize(size*predictSelectivity());
+				const unsigned cardinality=ret.property_.partitioner.getPartition(i)->getDataCardinality();
+				ret.property_.partitioner.getPartition(i)->setDataCardinality(cardinality*predictSelectivity());
 			}
 
 			break;
@@ -59,7 +59,9 @@ Dataflow Aggregation::getDataflow(){
 			ret.attribute_list_=getAttributesListAfterAggregation();
 //			ret.attribute_list_.insert(ret.attribute_list_.end(),group_by_attribute_list_.begin(),group_by_attribute_list_.end());
 //			ret.attribute_list_.insert(ret.attribute_list_.end(),aggregation_attribute_list_.begin(),aggregation_attribute_list_.end());
-			ret.property_.commnication_cost=child_dataflow.property_.commnication_cost+child_dataflow.property_.partitioner.getAggregatedDatasize();
+//			unsigned tuple_size=getSchema(child_dataflow.attribute_list_)->getTupleMaxSize();
+			ret.property_.commnication_cost=child_dataflow.property_.commnication_cost+child_dataflow.getAggregatedDatasize();//.property_.partitioner.getAggregatedDataCardinality()*tuple_size;
+
 			ret.property_.partitioner.setPartitionFunction(child_dataflow.property_.partitioner.getPartitionFunction());
 			if(group_by_attribute_list_.empty())
 				ret.property_.partitioner.setPartitionKey(Attribute());
@@ -70,17 +72,15 @@ Dataflow Aggregation::getDataflow(){
 
 
 			NodeID location=0;
-			unsigned datasize=child_dataflow.getAggregatedDatasize()*predictSelectivity();
+//			unsigned long datasize=child_dataflow.getAggregatedDatasize()*predictSelectivity();
+			unsigned long data_cardinality=child_dataflow.getAggregatedDataCardinality()*predictSelectivity();
 			PartitionOffset offset=0;
-			DataflowPartition par(offset,datasize,location);
+			DataflowPartition par(offset,data_cardinality,location);
 
 			std::vector<DataflowPartition> partition_list;
 			partition_list.push_back(par);
 			ret.property_.partitioner.setPartitionList(partition_list);
-
-
 			break;
-
 		}
 	}
 	dataflow_=new Dataflow();

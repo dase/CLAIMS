@@ -19,6 +19,7 @@ class Schema {
 public:
 	enum schema_type{fixed,varaible};
 	Schema(std::vector<column_type> columns);
+	Schema(const Schema& r);
 	Schema(){};
 	virtual ~Schema();
 	virtual unsigned getTupleMaxSize()=0;

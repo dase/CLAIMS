@@ -15,7 +15,9 @@ public:
 	virtual ~AttributeStatistics();
 	void setDistinctCardinality(unsigned long int value);
 	void setHistogram(Histogram* his);
+	Histogram* getHistogram()const;
 	void print()const;
+	unsigned long getDistinctCardinality()const;
 private:
 	unsigned long distinct_cardinality_;
 	void* max_;

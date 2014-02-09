@@ -17,6 +17,7 @@
 class SchemaFix:public Schema {
 public:
 	SchemaFix(std::vector<column_type> columns);
+	SchemaFix(const SchemaFix& r);
 	SchemaFix(){};
 	virtual ~SchemaFix();
 	inline unsigned getTupleMaxSize();

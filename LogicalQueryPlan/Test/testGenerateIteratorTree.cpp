@@ -497,7 +497,7 @@ static int testGenerateIteratorTree(){
 
 
 		group_by_attributes.push_back(table_1->getAttribute("order_no"));
-		group_by_attributes.push_back(table_2->getAttribute("entry_date"));
+//		group_by_attributes.push_back(table_2->getAttribute("entry_date"));
 //		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
 //		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
@@ -528,7 +528,7 @@ static int testGenerateIteratorTree(){
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);

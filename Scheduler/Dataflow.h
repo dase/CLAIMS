@@ -11,12 +11,13 @@
 #include "../Catalog/Column.h"
 #include "../Catalog/Partitioner.h"
 #include "../LogicalQueryPlan/DataflowPartitionDescriptor.h"
+#include "../Schema/SchemaFix.h"
 class Dataflow {
 	/* describe the properties of the data flow*/
 	friend class LogcalOperator;
 	struct property{
 		DataflowPartitioningDescriptor partitioner;
-		unsigned commnication_cost;
+		unsigned long commnication_cost;
 		property():commnication_cost(0){
 
 		}
@@ -29,8 +30,11 @@ public:
 	Dataflow();
 	Dataflow(const Dataflow& r);
 	virtual ~Dataflow();
-	unsigned getAggregatedDatasize()const;
+	unsigned long getAggregatedDatasize()const;
+	unsigned long getAggregatedDataCardinality()const;
 	bool isHashPartitioned()const;
+	Schema* getSchema()const;
+	unsigned getTupleSize()const;
 public:
 	std::vector<Attribute> attribute_list_;
 	property property_;
