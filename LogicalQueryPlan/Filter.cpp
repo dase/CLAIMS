@@ -9,6 +9,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
+#include "../Catalog/stat/StatManager.h"
+#include "../Catalog/stat/Estimation.h"
 Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
 
@@ -42,9 +44,9 @@ Dataflow Filter::getDataflow(){
 				 * TODO: a precious prediction is needed based on the statistic of
 				 * the input data, which may be maintained in the catalog module.
 				 */
-				const unsigned before_filter_datasize=dataflow.property_.partitioner.getPartition(i)->getDataSize();
-				const unsigned after_filter_datasize=before_filter_datasize*predictSelectivity();
-				dataflow.property_.partitioner.getPartition(i)->setDataSize(after_filter_datasize);
+				const unsigned before_filter_cardinality=dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+				const unsigned after_filter_cardinality=before_filter_cardinality*predictSelectivity();
+				dataflow.property_.partitioner.getPartition(i)->setDataCardinality(after_filter_cardinality);
 			}
 		}
 	}
@@ -201,8 +203,67 @@ float Filter::predictSelectivity()const{
 	 * In the current version, due to the lack of statistic information, we only use a factor
 	 * 0.5 for each comparison. TODO: a more precious prediction is greatly needed.
 	 */
+
+
+	/**
+	 * TODO: Before predicting the selectivity, we should first check whether there exist contradicted
+	 * conditions (such as x=1 and x=4 is contradicted to each other).
+	 */
 	for(unsigned i=0;i<condition_.getCompaisonNumber();i++){
-		ret*=0.5;
+		float selectivity=1;
+		const Attribute attr=condition_.attribute_list_[i];
+		const TableStatistic* tab_stat=StatManager::getInstance()->getTableStatistic(attr.table_id_);
+		if(tab_stat>0){
+			/**
+			 * Table statistics is available.
+			 */
+			unsigned long cardinality=tab_stat->number_of_tuples_;
+			const AttributeStatistics* attr_stat=StatManager::getInstance()->getAttributeStatistic(attr);
+			if(attr_stat>0){
+				/**
+				 * Attribute statistics is available.
+				 */
+				if(attr_stat->getHistogram()){
+					/**
+					 * Histogram is available.
+					 * Selectivity prediction is based on the histogram
+					 */
+					const Histogram* histogram=attr_stat->getHistogram();
+					/**
+					 * In the current implementation, only point estimation is available, and hence we assume that the
+					 * comparator is equal.
+					 * TODO:
+					 */
+					unsigned long filtered_cardinality=Estimation::estEqualOper(attr.getID(),condition_.const_value_list_[i]);
+					selectivity=(float)filtered_cardinality/cardinality;
+				}
+				else{
+					/**
+					 * No histogram is available. We just use the attribute cardinality to predict the selectivity.
+					 * In such case, we assume each distinct value has the same frequency, i.e., cardinality/distinct_cardinality.
+					 */
+					const unsigned int distinct_card=attr_stat->getDistinctCardinality();
+					unsigned long filtered_cardinality=(double)cardinality/distinct_card;
+					selectivity=(double)filtered_cardinality/cardinality;
+				}
+			}
+			else{
+				/**
+				 * Only Table statistic is available. We have to use the matic number.
+				 */
+				selectivity=0.1;
+			}
+
+		}
+		else{
+			/**
+			 * No statistic is available, so we use the magic number.
+			 */
+			selectivity=0.1;
+		}
+
+
+		ret*=selectivity;
 	}
 	return ret;
 }

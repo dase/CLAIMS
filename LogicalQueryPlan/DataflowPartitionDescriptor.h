@@ -25,6 +25,7 @@ public:
 	Attribute getPartitionKey()const;
 	bool hasSamePartitionLocation(const DataflowPartitioningDescriptor& target)const;
 	unsigned getAggregatedDatasize()const;
+	unsigned long getAggregatedDataCardinality()const;
 	PartitionFunction::partition_fashion getPartitionFashion()const;
 	unsigned getNumberOfPartitions()const;
 	DataflowPartition* getPartition(unsigned index)const;

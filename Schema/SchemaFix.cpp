@@ -22,7 +22,10 @@ SchemaFix::SchemaFix(std::vector<column_type> col):Schema(col) {
 	}
 
 }
-
+SchemaFix::SchemaFix(const SchemaFix& r):Schema(r){
+	this->accum_offsets=r.accum_offsets;
+	this->totalsize=r.totalsize;
+}
 SchemaFix::~SchemaFix() {
 }
 

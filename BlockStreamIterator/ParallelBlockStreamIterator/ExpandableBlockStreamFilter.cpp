@@ -33,7 +33,7 @@ ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBas
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
-	printf("Free block stream list added!\n");
+//	printf("Free block stream list added!\n");
 	if(sem_open_.try_wait()){
 
 		open_finished_=true;

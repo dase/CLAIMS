@@ -96,9 +96,9 @@ Dataflow EqualJoin::getDataflow(){
 			 * TODO: some reasonable output size estimation is needed.
 			 */
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
-				const unsigned l_size=left_dataflow.property_.partitioner.getPartition(i)->getDataSize();
-				const unsigned r_size=right_dataflow.property_.partitioner.getPartition(i)->getDataSize();
-				ret.property_.partitioner.getPartition(i)->setDataSize(l_size+r_size);
+				const unsigned l_cardinality=left_dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+				const unsigned r_cardinality=right_dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+				ret.property_.partitioner.getPartition(i)->setDataCardinality(l_cardinality+r_cardinality);
 			}
 
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
@@ -118,8 +118,8 @@ Dataflow EqualJoin::getDataflow(){
 			const unsigned left_total_size=left_dataflow.property_.partitioner.getAggregatedDatasize();
 			const unsigned right_partition_count=right_dataflow.property_.partitioner.getNumberOfPartitions();
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
-				const unsigned r_size=right_dataflow.property_.partitioner.getPartition(i)->getDataSize();
-				ret.property_.partitioner.getPartition(i)->setDataSize(r_size+left_total_size/right_partition_count);
+				const unsigned r_size=right_dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+				ret.property_.partitioner.getPartition(i)->setDataCardinality(r_size+left_total_size/right_partition_count);
 			}
 
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
@@ -140,8 +140,8 @@ Dataflow EqualJoin::getDataflow(){
 			const unsigned right_total_size=right_dataflow.property_.partitioner.getAggregatedDatasize();
 			const unsigned left_partition_count=left_dataflow.property_.partitioner.getNumberOfPartitions();
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
-				const unsigned l_size=left_dataflow.property_.partitioner.getPartition(i)->getDataSize();
-				ret.property_.partitioner.getPartition(i)->setDataSize(l_size+right_total_size/left_partition_count);
+				const unsigned l_size=left_dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+				ret.property_.partitioner.getPartition(i)->setDataCardinality(l_size+right_total_size/left_partition_count);
 			}
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
 			ret.property_.commnication_cost+=right_dataflow.property_.partitioner.getAggregatedDatasize();

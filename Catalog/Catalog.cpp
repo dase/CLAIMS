@@ -57,6 +57,10 @@ TableDescriptor* Catalog::getTable(const std::string& table_name) const{
 	/* at could retain const while [] doesn't.*/
 	return name_to_table.at(table_name);
 }
+ProjectionDescriptor* Catalog::getProjection(const ProjectionID& pid) const{
+	const TableDescriptor* td=getTable(pid.table_id);
+	return td==0?0:td->getProjectoin(pid.projection_off);
+}
 ProjectionBinding* Catalog::getBindingModele()const{
 	return binding_;
 }

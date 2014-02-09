@@ -14,6 +14,7 @@
 #include "../../ids.h"
 #include "Statistic.h"
 #include "TableStatistic.h"
+#include "../Attribute.h"
 
 class StatManager {
 public:
@@ -30,6 +31,9 @@ public:
 
 	//TODO update method
 	TableStatistic* getTableStatistic(const TableID& table_id)const;
+
+	AttributeStatistics* getAttributeStatistic(const Attribute& attr)const;
+
 	void setTableStatistic(const TableID& table_id,TableStatistic* tab_stat);
 private:
 

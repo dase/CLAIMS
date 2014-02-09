@@ -211,6 +211,8 @@ public:
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 
+	unsigned long getPartitionCardinality(unsigned partitoin_index)const;
+
 	unsigned getPartitionChunks(unsigned partitoin_index)const;
 
 	NodeID getPartitionLocation(unsigned partition_index)const;

@@ -12,7 +12,7 @@ DataflowPartitioningDescriptor::DataflowPartitioningDescriptor(const Partitioner
 	partition_key_=partitioner.getPartitionKey();
 	for(unsigned i=0;i<partitioner.getNumberOfPartitions();i++){
 		DataflowPartition dataflow_partition;
-		dataflow_partition.datasize_=partitioner.getPartitionDataSize(i);
+		dataflow_partition.cardinality_=partitioner.getPartitionCardinality(i);
 		dataflow_partition.location_=partitioner.getPartitionLocation(i);
 		dataflow_partition.partition_id_=i;
 		partition_list_.push_back(dataflow_partition);
@@ -49,7 +49,14 @@ bool DataflowPartitioningDescriptor::hasSamePartitionLocation(const DataflowPart
 unsigned DataflowPartitioningDescriptor::getAggregatedDatasize()const{
 	unsigned ret=0;
 	for(unsigned i=0;i<partition_list_.size();i++){
-		ret+=partition_list_[i].datasize_;
+		ret+=partition_list_[i].cardinality_;
+	}
+	return ret;
+}
+unsigned long DataflowPartitioningDescriptor::getAggregatedDataCardinality()const{
+	unsigned long ret=0;
+	for(unsigned i=0;i<partition_list_.size();i++){
+		ret+=partition_list_[i].getDataCardinality();
 	}
 	return ret;
 }

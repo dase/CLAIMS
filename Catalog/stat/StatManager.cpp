@@ -41,6 +41,10 @@ TableStatistic* StatManager::getTableStatistic(const TableID& table_id)const{
 		return 0;
 	return tab_stat_list_.at(table_id);
 }
+AttributeStatistics* StatManager::getAttributeStatistic(const Attribute& attr)const{
+	TableStatistic* table_stat=getTableStatistic(attr.table_id_);
+	return table_stat==0?0:table_stat->getAttributeStatistics(attr.getID());
+}
 StatManager::~StatManager() {
 }
 void StatManager::setTableStatistic(const TableID& table_id,TableStatistic* tab_stat){

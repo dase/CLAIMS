@@ -6,6 +6,7 @@
  */
 
 #include "table.h"
+#include "../Schema/SchemaFix.h"
 // ColumnDescriptor
 ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid){
 }
@@ -54,11 +55,21 @@ std::vector<Attribute> ProjectionDescriptor::getAttributeList()const{
 	for(unsigned i=0;i<this->column_list_.size();i++){
 		ret.push_back((Attribute)column_list_[i]);
 	}
-
-
-
 	return ret;
 }
+Schema* ProjectionDescriptor::getSchema()const{
+	/**
+	 * Only fixed schema is supported now.
+	 * TODO: support other schema.
+	 */
+	const vector<Attribute> attributes=getAttributeList();
+	std::vector<column_type> columns;
+	for(unsigned i=0;i<attributes.size();i++){
+		columns.push_back(*attributes[i].attrType);
+	}
+	return new SchemaFix(columns);
+}
+
 // TableDescritptor
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 : tableName(name),table_id_(table_id){

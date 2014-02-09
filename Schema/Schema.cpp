@@ -11,7 +11,9 @@ Schema::Schema(std::vector<column_type> columns):columns(columns) {
 	// TODO Auto-generated constructor stub
 
 }
-
+Schema::Schema(const Schema& r){
+	this->columns=r.columns;
+}
 Schema::~Schema() {
 	// TODO Auto-generated destructor stub
 }

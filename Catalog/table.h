@@ -18,6 +18,7 @@
 #include "Attribute.h"
 #include "../ids.h"
 #include "Column.h"
+#include "../Schema/Schema.h"
 
 using namespace std;
 
@@ -65,6 +66,7 @@ public:
 	inline ProjectionID getProjectionID()const{return projection_id_;}
 	bool AllPartitionBound()const;
 	std::vector<Attribute> getAttributeList()const;
+	Schema* getSchema()const;
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;
