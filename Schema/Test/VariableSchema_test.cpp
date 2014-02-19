@@ -63,35 +63,35 @@ static int variable_schema_test(){
 	BlockStreamIteratorBase* scan=new ExpandableBlockStreamProjectionScan(scan_state);
 	//------------------------------------------------------------------
 
-//	/*******************filter******************/
-//	ExpandableBlockStreamFilter::State filter_state;
-//
-//	int f0=1;
-//	FilterIterator::AttributeComparator filter0(column_type(t_int),Comparator::L,0,&f0);
-//	char* str="string1";
-//	FilterIterator::AttributeComparator filter1(column_type(t_string),Comparator::EQ,0,str);
-//	std::vector<FilterIterator::AttributeComparator> ComparatorList;
-//	ComparatorList.push_back(filter0);
-//
-//	std::vector<column_type> svc;
-//	svc.push_back(data_type(t_int));
-//	svc.push_back(data_type(t_int));
-//	svc.push_back(data_type(t_string));
-//	Schema *sv=new SchemaVar(svc);
-//
-//	filter_state.block_size_=64*1024-sizeof(unsigned);
-//	filter_state.schema_=sv;
-//	filter_state.comparator_list_=ComparatorList;
-//	filter_state.child_=scan;
-//
-//	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(filter_state);
-//	//------------------------------------------------------------------
+	/*******************filter******************/
+	ExpandableBlockStreamFilter::State filter_state;
+
+	int f0=1;
+	FilterIterator::AttributeComparator filter0(column_type(t_int),Comparator::EQ,0,&f0);
+	char* str="string123";
+	FilterIterator::AttributeComparator filter1(column_type(t_string),Comparator::EQ,2,str);
+	std::vector<FilterIterator::AttributeComparator> ComparatorList;
+	ComparatorList.push_back(filter1);
+
+	std::vector<column_type> svc;
+	svc.push_back(data_type(t_int));
+	svc.push_back(data_type(t_double));
+	svc.push_back(data_type(t_string));
+	Schema *sv=new SchemaVar(svc);
+
+	filter_state.block_size_=64*1024-sizeof(unsigned);
+	filter_state.schema_=sv;
+	filter_state.comparator_list_=ComparatorList;
+	filter_state.child_=scan;
+
+	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(filter_state);
+	//------------------------------------------------------------------
 
 	/*******************print******************/
 	BlockStreamPrint::State print_state;
 	print_state.block_size_=64*1024-sizeof(unsigned);
-	print_state.child_=scan;
-	print_state.schema_=scan_state.schema_;
+	print_state.child_=filter;
+	print_state.schema_=filter_state.schema_;
 	print_state.spliter_="-|-";
 
 	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);

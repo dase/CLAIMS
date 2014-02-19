@@ -63,6 +63,7 @@ public:
 	 * also updated according the new data.
 	 */
 	virtual void copyBlock(void* addr, unsigned length)=0;
+	virtual bool insert(void *dest,void *src,unsigned bytes)=0;
 	/**
 	 * deep copy from block, including block content and member variables that maintain the block status.
 	 * the user should guarantee that rest block and desc block are of equal derived class type(e.g., both
@@ -124,6 +125,7 @@ public:
 //	void setBlockDataAddress(void* addr);
 	bool switchBlock(BlockStreamBase& block);
 	void copyBlock(void* addr, unsigned length);
+	bool insert(void *dest,void *src,unsigned bytes);
 	void deepCopy(const Block* block);
 	bool serialize(Block & block) const;
 	bool deserialize(Block * block);
@@ -205,9 +207,7 @@ public:
 	void copyBlock(void* addr, unsigned length){};
 	void deepCopy(const Block* block){};
 	unsigned getSerializedBlockSize()const{};
-	unsigned getTuplesInBlock()const{
-		return cur_tuple_size_;
-	};
+	unsigned getTuplesInBlock()const{};
 
 private:
 	Schema *schema_;
