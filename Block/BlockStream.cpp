@@ -65,6 +65,12 @@ void BlockStreamFix::copyBlock(void* addr, unsigned length){
 	memcpy(start,addr,length);
 	free_=start+length;
 }
+
+bool BlockStreamFix::insert(void *dest,void *src,unsigned bytes){
+	memcpy(dest,src,bytes);
+	return true;
+}
+
 void BlockStreamFix::deepCopy(const Block* block){
 	assert(this->BlockSize>=block->getsize());
 	memcpy(start,block->getBlock(),block->getsize());
@@ -209,7 +215,7 @@ void* BlockStreamVar::getTuple(unsigned offset) const {
 	//void *ret=start+start_of_tuple+var_attributes_*4;
 	void *ret=start+start_of_tuple;
 	cout<<"free_end_-free_front_= "<<free_end_-free_front_<<endl;
-	if(ret>=free_end_){
+	if(ret>free_front_){
 		return 0;
 	}
 	else{

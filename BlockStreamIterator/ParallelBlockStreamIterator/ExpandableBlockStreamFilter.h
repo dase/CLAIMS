@@ -65,6 +65,8 @@ private:
 	semaphore sem_open_;
 	volatile bool open_finished_;
 	Lock lock_;
+	/*for debug for the filter tuple numbers*/
+	unsigned tuple_after_filter_;
 	/* the following code is for boost serialization*/
 private:
 	friend class boost::serialization::access;

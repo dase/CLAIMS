@@ -46,6 +46,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 		}
 		return state_.child_->open(part_off);
 	}
+	tuple_after_filter_=0;
 }
 
 
@@ -73,7 +74,13 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 				if((tuple_in_block=block->allocateTuple(bytes))>0){
 					/* the block has space to hold this tuple*/
-					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
+//					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
+					/* the block has space to hold this tuple,
+					 * copyTuple can be used in the hashtable,
+					 * but here we must use the block insert
+					 * modified by zhanglei for the variable supported!*/
+					block->insert(tuple_in_block,tuple_from_child,bytes);
+					tuple_after_filter_++;
 					rb.iterator->increase_cur_();
 				}
 				else{
@@ -111,7 +118,13 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 				if((tuple_in_block=block->allocateTuple(bytes))>0){
 					/* the block has space to hold this tuple*/
-					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
+//					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
+					/* the block has space to hold this tuple,
+					 * copyTuple can be used in the hashtable,
+					 * but here we must use the block insert
+					 * modified by zhanglei for the variable supported!*/
+					block->insert(tuple_in_block,tuple_from_child,bytes);
+					tuple_after_filter_++;
 					traverse_iterator->increase_cur_();
 				}
 				else{
@@ -134,8 +147,10 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 	AtomicPushFreeBlockStream(block_for_asking);
 	if(!block->Empty())
 		return true;
-	else
-	return false;
+	else{
+		cout<<"tuple_after_filter_: "<<tuple_after_filter_<<endl;
+		return false;
+	}
 }
 
 bool ExpandableBlockStreamFilter::close(){
