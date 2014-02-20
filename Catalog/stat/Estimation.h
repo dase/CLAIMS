@@ -15,6 +15,7 @@ public:
 
 	static unsigned long estEqualOper(AttributeID attrID, void *para);
 	static unsigned long estRangeOper(AttributeID attrID, void *lowPara, void *upperPara);
+	static unsigned long estEqualJoin(AttributeID attrID1, AttributeID attrID2);
 
 };
 
