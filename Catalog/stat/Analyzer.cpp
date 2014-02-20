@@ -119,10 +119,10 @@ void Analyzer::analyse(const AttributeID &attrID) {
 			(void *) (attr.attrType->operate));
 
 	mcvAnalyse(list, valueCount, attr, (Histogram *) stat);
-//	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
+	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
 
-	StatManager::getInstance()->addStat(attrID, stat);
-//	StatManager::getInstance()->getTableStatistic(attrID.table_id)
+//	StatManager::getInstance()->addStat(attrID, stat);
+	StatManager::getInstance()->getTableStatistic(attrID.table_id);
 	delete list;
 	resultset->destory();
 }
@@ -259,7 +259,7 @@ void Analyzer::mcvAnalyse(void **list, const unsigned long size,
 void Analyzer::equiDepthAnalyse(void **list, const unsigned long size,
 		const Attribute &attr, Histogram *stat) {
 
-	int magicNumber = stat->getBucketCnt();
+	int magicNumber = stat->getBucketCnt() ;
 	int bucketCnt = -1;
 	unsigned long i;
 	TuplePtr *boundList = new TuplePtr[magicNumber];
@@ -416,7 +416,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,const unsigned 
 			(void *) (attr.attrType->operate));
 
 	mcvAnalyse(list, valueCount, attr, (Histogram *) stat);
-//	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
+	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
 
 //	StatManager::getInstance()->addStat(attrID, stat);
 //	StatManager::getInstance()->getTableStatistic(attrID.table_id)
@@ -425,5 +425,5 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,const unsigned 
 	return stat;
 }
 unsigned Analyzer::decideNumberOfBucketsForHistogram(const int distinct_cardinality, const int cardinality){
-	return distinct_cardinality/10<1000?distinct_cardinality/10+1:1000;
+	return 1 + (distinct_cardinality/10<1000?distinct_cardinality/10+1:1000);
 }

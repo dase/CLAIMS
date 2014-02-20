@@ -5,62 +5,75 @@
  *      Author: wangli
  */
 
-
-
-#include <vector>
+#include <unistd.h>
+#include <cstdio>
 #include <iostream>
-#include "../../Environment.h"
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../Catalog/ProjectionBinding.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/Buffer.h"
-#include "../../utility/rdtsc.h"
+#include <vector>
+
+#include "../../Catalog/Attribute.h"
+#include "../../Catalog/Catalog.h"
+#include "../../Catalog/Partitioner.h"
 #include "../../Catalog/stat/Analyzer.h"
-#include "../../Parsetree/sql_node_struct.h"
-#include "../../Parsetree/parsetree2logicalplan.cpp"
-#include "../../Parsetree/runparsetree.cpp"
+#include "../../Catalog/stat/Estimation.h"
+#include "../../Catalog/stat/Statistic.h"
+#include "../../Catalog/stat/StatManager.h"
+#include "../../Catalog/table.h"
+#include "../../data_type.h"
+#include "../../Environment.h"
+#include "../../ids.h"
+
+//#include "../../LogicalQueryPlan/Aggregation.h"
+//#include "../../LogicalQueryPlan/Buffer.h"
+//#include "../../LogicalQueryPlan/EqualJoin.h"
+//#include "../../LogicalQueryPlan/Filter.h"
+//#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+//#include "../../LogicalQueryPlan/Scan.h"
+//#include "../../Parsetree/parsetree2logicalplan.cpp"
+//#include "../../Parsetree/runparsetree.cpp"
+//#include "../../Parsetree/sql_node_struct.h"
+//#include "../../utility/rdtsc.h"
+
 using namespace std;
-static int query_optimization_based_on_statistics(){
+static int query_optimization_based_on_statistics() {
 	int master;
 //	cout<<"Master(0) or Slave(others)"<<endl;
 //	cin>>master;
 	printf("~!OKOKO!!!!!\n");
 	printf("Master(0) or Slave(others)??\n");
-	scanf("%d",&master);
-	if(master!=0){
+	scanf("%d", &master);
+	if (master != 0) {
 		Environment::getInstance(false);
-	}
-	else{
+	} else {
 
 		Environment::getInstance(true);
 
-		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
-		Catalog* catalog=Environment::getInstance()->getCatalog();
+		ResourceManagerMaster *rmms =
+				Environment::getInstance()->getResourceManagerMaster();
+		Catalog* catalog = Environment::getInstance()->getCatalog();
 
-		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-		table_1->addAttribute("row_id",data_type(t_u_long),0,true);  				//0
-		table_1->addAttribute("trade_date",data_type(t_int));
-		table_1->addAttribute("order_no",data_type(t_u_long),0,true);
-		table_1->addAttribute("sec_code",data_type(t_int));
-		table_1->addAttribute("trade_dir",data_type(t_int));
-		table_1->addAttribute("order_type",data_type(t_int));				//5
-		table_1->addAttribute("trade_no",data_type(t_int),0,true);
-		table_1->addAttribute("trade_time",data_type(t_int));
-		table_1->addAttribute("trade_time_dec",data_type(t_u_long));
-		table_1->addAttribute("order_time",data_type(t_int));
-		table_1->addAttribute("order_time_dec",data_type(t_u_long));		//10
-		table_1->addAttribute("trade_price",data_type(t_double));
-		table_1->addAttribute("trade_amt",data_type(t_double));
-		table_1->addAttribute("trade_vol",data_type(t_double));
-		table_1->addAttribute("pbu_id",data_type(t_int));
-		table_1->addAttribute("acct_id",data_type(t_int));					//15
-		table_1->addAttribute("order_prtfil_code",data_type(t_int));
-		table_1->addAttribute("tran_type",data_type(t_int));
-		table_1->addAttribute("trade_type",data_type(t_int));
-		table_1->addAttribute("proc_type",data_type(t_int));
+		TableDescriptor* table_1 =
+				new TableDescriptor("cj",
+						Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+		table_1->addAttribute("row_id", data_type(t_u_long), 0, true);  	//0
+		table_1->addAttribute("trade_date", data_type(t_int));
+		table_1->addAttribute("order_no", data_type(t_u_long), 0, true);
+		table_1->addAttribute("sec_code", data_type(t_int));
+		table_1->addAttribute("trade_dir", data_type(t_int));
+		table_1->addAttribute("order_type", data_type(t_int));				//5
+		table_1->addAttribute("trade_no", data_type(t_int), 0, true);
+		table_1->addAttribute("trade_time", data_type(t_int));
+		table_1->addAttribute("trade_time_dec", data_type(t_u_long));
+		table_1->addAttribute("order_time", data_type(t_int));
+		table_1->addAttribute("order_time_dec", data_type(t_u_long));		//10
+		table_1->addAttribute("trade_price", data_type(t_double));
+		table_1->addAttribute("trade_amt", data_type(t_double));
+		table_1->addAttribute("trade_vol", data_type(t_double));
+		table_1->addAttribute("pbu_id", data_type(t_int));
+		table_1->addAttribute("acct_id", data_type(t_int));					//15
+		table_1->addAttribute("order_prtfil_code", data_type(t_int));
+		table_1->addAttribute("tran_type", data_type(t_int));
+		table_1->addAttribute("trade_type", data_type(t_int));
+		table_1->addAttribute("proc_type", data_type(t_int));
 
 		vector<ColumnOffset> cj_proj0_index;
 		cj_proj0_index.push_back(0);
@@ -69,9 +82,9 @@ static int query_optimization_based_on_statistics(){
 		cj_proj0_index.push_back(3);
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
-		const int partition_key_index_1=2;
+		const int partition_key_index_1 = 2;
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",1);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index, "row_id", 1);//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -90,7 +103,7 @@ static int query_optimization_based_on_statistics(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index, "row_id", 1);//G1
 
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 //		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -121,47 +134,35 @@ static int query_optimization_based_on_statistics(){
 		catalog->add_table(table_1);
 
 		////////////////////////////////////Create table right//////////////////////////
-		TableDescriptor* table_2=new TableDescriptor("sb",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-		table_2->addAttribute("row_id",data_type(t_u_long));
-		table_2->addAttribute("order_no",data_type(t_u_long));
-		table_2->addAttribute("entry_date",data_type(t_int));
-		table_2->addAttribute("sec_code",data_type(t_int));
-		table_2->addAttribute("order_type",data_type(t_int));
-		table_2->addAttribute("entry_dir",data_type(t_int));			//5
-		table_2->addAttribute("tran_maint_code",data_type(t_int));
-		table_2->addAttribute("Last_upd_date",data_type(t_int));
-		table_2->addAttribute("Last_upd_time",data_type(t_int));
-		table_2->addAttribute("Last_upd_time_dec",data_type(t_u_long));
-		table_2->addAttribute("entry_time",data_type(t_int));			//10
-		table_2->addAttribute("entry_time_dec",data_type(t_double));
-		table_2->addAttribute("order_price",data_type(t_double));
-		table_2->addAttribute("order_exec_vol",data_type(t_double));
-		table_2->addAttribute("order_vol",data_type(t_double));
-		table_2->addAttribute("pbu_id",data_type(t_int));				//15
-		table_2->addAttribute("acct_id",data_type(t_int));
-		table_2->addAttribute("acct_attr",data_type(t_int));
-		table_2->addAttribute("branch_id",data_type(t_int));
-		table_2->addAttribute("pbu_inter_order_no",data_type(t_int));
-		table_2->addAttribute("pub_inter_txt",data_type(t_int));		//20
-		table_2->addAttribute("aud_type",data_type(t_int));
-		table_2->addAttribute("trade_restr_type",data_type(t_int));
-		table_2->addAttribute("order_star",data_type(t_int));
-		table_2->addAttribute("order_restr_type",data_type(t_int));
-		table_2->addAttribute("short_sell_flag",data_type(t_int));		//25
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		TableDescriptor* table_2 =
+				new TableDescriptor("sb",
+						Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+		table_2->addAttribute("row_id", data_type(t_u_long));
+		table_2->addAttribute("order_no", data_type(t_u_long));
+		table_2->addAttribute("entry_date", data_type(t_int));
+		table_2->addAttribute("sec_code", data_type(t_int));
+		table_2->addAttribute("order_type", data_type(t_int));
+		table_2->addAttribute("entry_dir", data_type(t_int));			//5
+		table_2->addAttribute("tran_maint_code", data_type(t_int));
+		table_2->addAttribute("Last_upd_date", data_type(t_int));
+		table_2->addAttribute("Last_upd_time", data_type(t_int));
+		table_2->addAttribute("Last_upd_time_dec", data_type(t_u_long));
+		table_2->addAttribute("entry_time", data_type(t_int));			//10
+		table_2->addAttribute("entry_time_dec", data_type(t_double));
+		table_2->addAttribute("order_price", data_type(t_double));
+		table_2->addAttribute("order_exec_vol", data_type(t_double));
+		table_2->addAttribute("order_vol", data_type(t_double));
+		table_2->addAttribute("pbu_id", data_type(t_int));				//15
+		table_2->addAttribute("acct_id", data_type(t_int));
+		table_2->addAttribute("acct_attr", data_type(t_int));
+		table_2->addAttribute("branch_id", data_type(t_int));
+		table_2->addAttribute("pbu_inter_order_no", data_type(t_int));
+		table_2->addAttribute("pub_inter_txt", data_type(t_int));		//20
+		table_2->addAttribute("aud_type", data_type(t_int));
+		table_2->addAttribute("trade_restr_type", data_type(t_int));
+		table_2->addAttribute("order_star", data_type(t_int));
+		table_2->addAttribute("order_restr_type", data_type(t_int));
+		table_2->addAttribute("short_sell_flag", data_type(t_int));		//25
 
 		vector<ColumnOffset> sb_proj0_index;
 		sb_proj0_index.push_back(0);
@@ -172,9 +173,7 @@ static int query_optimization_based_on_statistics(){
 		sb_proj0_index.push_back(5);
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
-
-
+		table_2->createHashPartitionedProjection(sb_proj0_index, "row_id", 4);//G0
 
 		vector<ColumnOffset> sb_proj1_index;
 		sb_proj1_index.push_back(0);
@@ -199,10 +198,7 @@ static int query_optimization_based_on_statistics(){
 		sb_proj1_index.push_back(24);
 		sb_proj1_index.push_back(25);
 
-
-
-
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index, "row_id", 4);//G1
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 //		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -232,33 +228,32 @@ static int query_optimization_based_on_statistics(){
 //		// 1 day 4 partitions by row_id
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G14
 
-
 		catalog->add_table(table_2);
 		///////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
 		///////////////////////////////////////
-
 
 		////////////////////////////////////////
 		/* the following codes should be triggered by Load module*/
 		//////////////////ONE DAY////////////////////////////////////////////////
 		//cj_table
 		// 4 partitions partitioned by order_no
-		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+		for (unsigned i = 0;
+				i
+						< table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();
+				i++) {
 
-			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(
+					i, 2);
 		}
 
-		for(unsigned i=0;i<table_1->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
+		for (unsigned i = 0;
+				i
+						< table_1->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();
+				i++) {
 
-			catalog->getTable(0)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
+			catalog->getTable(0)->getProjectoin(1)->getPartitioner()->RegisterPartition(
+					i, 6);
 		}
 		//partitioned by row_id
 //		for(unsigned i=0;i<table_1->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
@@ -278,14 +273,22 @@ static int query_optimization_based_on_statistics(){
 //		}
 
 		//sb_table
-		for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+		for (unsigned i = 0;
+				i
+						< table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();
+				i++) {
 
-			catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+			catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(
+					i, 2);
 		}
 
-		for(unsigned i=0;i<table_2->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
+		for (unsigned i = 0;
+				i
+						< table_2->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();
+				i++) {
 
-			catalog->getTable(1)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
+			catalog->getTable(1)->getProjectoin(1)->getPartitioner()->RegisterPartition(
+					i, 6);
 		}
 //		for(unsigned i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
 //
@@ -417,48 +420,70 @@ static int query_optimization_based_on_statistics(){
 //			catalog->getTable(1)->getProjectoin(13)->getPartitioner()->RegisterPartition(i,23);
 //		}
 
-		TableID table_id=catalog->getTable("cj")->get_table_id();
+		TableID table_id = catalog->getTable("cj")->get_table_id();
 		Attribute att;
-//		Analyzer::analyse(table_id,Analyzer::a_l_attribute);
+		Analyzer::analyse(table_id, Analyzer::a_l_attribute);
 
-		int cont=1;
-		while(cout){
-			printf("SQL:\n");
-			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
-			Node* node=getparsetreeroot();
-			output(node,0);
-			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
-			LogicalOperator* plan=parsetree2logicalplan(node);
+//		table_1->addAttribute("sec_code", data_type(t_int));
 
-	//			const NodeID collector_node_id=0;
-//			LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PERFORMANCE);
-//			unsigned long long int timer_start=curtick();
-//
-//			BlockStreamIteratorBase* please=root->getIteratorTree(64*1024-sizeof(unsigned));
-//			root->print();
-//
-//
-//			please->print();
-//
-//			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
+		AttributeID attrID = table_1->getAttribute("sec_code").getID();
 
-//			printf("Continue(1) or not (others)?\n");
-//			scanf("%d",&cout);
-		}
+		Histogram* hist = StatManager::getInstance()->getAttributeStatistic(table_1->getAttribute("sec_code"))->getHistogram();
+		hist->print(*table_1->getAttribute("sec_code").attrType);
+
+		int lowPara;
+		int upperPara;
+		unsigned long sel;
+		printf("Range Estimation, Input interval!\n");
+
+		sel = Estimation::estEqualJoin(attrID, attrID);
+		printf("%ld\n",sel);
+//		while ( cin>>lowPara>>upperPara ) {
+//
+////			sel = Estimation::estEqualOper(attrID, &lowPara);
+//			sel = Estimation::estRangeOper(attrID, &lowPara, &upperPara);
+//			printf("%ld\n", sel);
+//		}
+
+
+//		int cont=1;
+//		while(cout){
+//			printf("SQL:\n");
+//			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
+//			Node* node=getparsetreeroot();
+//			output(node,0);
+//			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
+//			LogicalOperator* plan=parsetree2logicalplan(node);
+//
+//	//			const NodeID collector_node_id=0;
+////			LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PERFORMANCE);
+////			unsigned long long int timer_start=curtick();
+////
+////			BlockStreamIteratorBase* please=root->getIteratorTree(64*1024-sizeof(unsigned));
+////			root->print();
+////
+////
+////			please->print();
+////
+////			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
+//
+////			printf("Continue(1) or not (others)?\n");
+////			scanf("%d",&cout);
+//		}
 		/////////////////////////////////////////
 
-	//	sleep(1);
+		//	sleep(1);
 //		cout<<"ready(?)"<<endl;
 		printf("ready(?)\n");
 		int input;
-		scanf("%d",&input);
+		scanf("%d", &input);
 //		cin>>input;
 
 //
-	cout<<"Waiting~~~!~"<<endl;
-	while(true){
-		sleep(1);
-	}
+		cout << "Waiting~~~!~" << endl;
+		while (true) {
+			sleep(1);
+		}
 	}
 
 }
