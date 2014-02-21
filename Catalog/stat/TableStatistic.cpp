@@ -30,3 +30,6 @@ AttributeStatistics* TableStatistic::getAttributeStatistics(const AttributeID& a
 	}
 	return att_stat_list_.at(attr_id);
 }
+unsigned long TableStatistic::getCardinality()const{
+	return number_of_tuples_;
+}

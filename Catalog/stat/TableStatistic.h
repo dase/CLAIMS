@@ -16,7 +16,7 @@ public:
 	virtual ~TableStatistic();
 	void addAttributeStatistics(const AttributeID& attr_id,AttributeStatistics* stat);
 	AttributeStatistics* getAttributeStatistics(const AttributeID& attr_id)const;
-
+	unsigned long getCardinality()const;
 	unsigned long number_of_tuples_;
 	void print()const;
 private:
