@@ -6,7 +6,7 @@
  */
 
 #include "BlockStreamResultCollector.h"
-
+#include "../rdtsc.h"
 BlockStreamResultCollector::BlockStreamResultCollector()
 :finished_thread_count_(0),registered_thread_count_(0){
 	// TODO Auto-generated constructor stub
@@ -23,8 +23,8 @@ BlockStreamResultCollector::~BlockStreamResultCollector() {
 	// TODO Auto-generated destructor stub
 }
 BlockStreamResultCollector::State::State():input_(0),child_(0),block_size_(0),partition_offset_(0){}
-BlockStreamResultCollector::State::State(Schema* input,BlockStreamIteratorBase* child,const unsigned block_size,const PartitionOffset partitoin_offset)
-:input_(input),child_(child),block_size_(block_size),partition_offset_(partitoin_offset){
+BlockStreamResultCollector::State::State(Schema* input,BlockStreamIteratorBase* child,const unsigned block_size,std::vector<std::string> column_header,const PartitionOffset partitoin_offset)
+:input_(input),child_(child),block_size_(block_size),partition_offset_(partitoin_offset),column_header_(column_header){
 
 }
 bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
@@ -75,6 +75,7 @@ bool BlockStreamResultCollector::close(){
 	return true;
 }
 ResultSet* BlockStreamResultCollector::getResultSet(){
+
 	while(!ChildExhausted()){
 		usleep(1);
 	}
@@ -99,12 +100,20 @@ void* BlockStreamResultCollector::worker(void* arg){
 	BlockStreamBase* block_for_asking;
 	if(Pthis->createBlockStream(block_for_asking)==false)
 		return 0;
+	Pthis->block_buffer_.column_header_list_=Pthis->state_.column_header_;
+
+	unsigned long long start = 0;
+	start = curtick();
 
 	while(Pthis->state_.child_->next(block_for_asking)){
 		Pthis->block_buffer_.atomicAppendNewBlock(block_for_asking);
 		if(Pthis->createBlockStream(block_for_asking)==false)
 			return 0;
 	}
+
+	double eclipsed_seconds = getSecond(start);
+	Pthis->block_buffer_.query_time_=eclipsed_seconds;
+	Pthis->block_buffer_.schema_=Pthis->state_.input_->duplicateSchema();
 	Pthis->finished_thread_count_++;
 
 	return 0;
