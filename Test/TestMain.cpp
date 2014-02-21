@@ -18,6 +18,9 @@
 #include "../LogicalQueryPlan/Test/query_optmization_based_on_statisitic_test.cpp"
 #include "../Daemon/Test/daemon_test.h"
 //#include "hashtable_test.cpp"
+
+#include "../Client/Test/TestSeverClient.cpp"
+
 int main(){
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -32,5 +35,6 @@ int main(){
 //	return query_optimization_based_on_statistics_aggregation();
 	return daemon_test();
 	testServerClient();
+
 
 }
