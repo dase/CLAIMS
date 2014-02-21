@@ -28,10 +28,7 @@ Estimation::~Estimation() {
 unsigned long Estimation::estEqualOper(AttributeID attrID, void *para) {
 	unsigned long ret = 0;
 
-//	const Histogram *stat = StatManager::getInstance()->getStat(attrID);
-
-	Histogram * stat=StatManager::getInstance()->getAttributeStatistic(Catalog::getInstance()->getTable(attrID.table_id)->getAttribute(attrID.offset))->getHistogram();
-	assert(stat);
+	const Histogram *stat = StatManager::getInstance()->getHistogram(attrID);
 
 	//look up in the end-biased statistic
 	void **valueList;
