@@ -16,6 +16,7 @@
 #include "../LogicalQueryPlan/Test/Aggregation_test.cpp"
 #include "../Catalog/Test/statistic_manager_test.cpp"
 #include "../LogicalQueryPlan/Test/query_optmization_based_on_statisitic_test.cpp"
+#include "../Daemon/Test/daemon_test.h"
 //#include "hashtable_test.cpp"
 int main(){
 //	return testGenerateIteratorTree();
@@ -28,6 +29,6 @@ int main(){
 //	return sub_tuple_test();
 //	return aggregation_test();
 //	return statistic_manager_test();
-	return query_optimization_based_on_statistics();
-
+//	return query_optimization_based_on_statistics_aggregation();
+	return daemon_test();
 }
