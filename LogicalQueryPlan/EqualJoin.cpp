@@ -10,6 +10,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../Catalog/stat/StatManager.h"
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -539,8 +540,10 @@ int EqualJoin::getIndexInAttributeList(const std::vector<Attribute>& attributes,
 DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
 	DataflowPartitioningDescriptor ret;
 
-	const unsigned l_datasize=left_dataflow.getAggregatedDatasize();
-	const unsigned r_datasize=right_dataflow.getAggregatedDatasize();
+//	const unsigned l_data_cardinality=left_dataflow.getAggregatedDatasize();
+//	const unsigned r_datasize=right_dataflow.getAggregatedDatasize();
+	const unsigned long  l_data_cardinality=left_dataflow.getAggregatedDataCardinality();
+	const unsigned long  r_data_cardinality=right_dataflow.getAggregatedDataCardinality();
 
 	std::vector<NodeID> all_node_id_list=NodeTracker::getInstance()->getNodeIDList();
 	/* In the current implementation, all the nodes are involved in the complete_repartition method.
@@ -553,8 +556,9 @@ DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dat
 
 		/* Currently, the join output size cannot be predicted due to the absence of data statistics.
 		 * We just use the magic number as following */
-		const unsigned datasize=l_datasize/degree_of_parallelism+r_datasize/degree_of_parallelism;
-		DataflowPartition dfp(i,datasize,location);
+//		const unsigned cardinality=l_data_cardinality/degree_of_parallelism+r_data_cardinality/degree_of_parallelism;
+		const unsigned long cardinality=l_data_cardinality*r_data_cardinality*predictEqualJoinSelectivity(left_dataflow,right_dataflow)/degree_of_parallelism;
+		DataflowPartition dfp(i,cardinality,location);
 		dataflow_partition_list.push_back(dfp);
 	}
 	ret.setPartitionList(dataflow_partition_list);
@@ -573,4 +577,78 @@ void EqualJoin::print(int level)const{
 	}
 	left_child_->print(level+1);
 	right_child_->print(level+1);
+}
+double EqualJoin::predictEqualJoinSelectivity(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
+	/**
+	 * Currently, we assume that we do not know the joint distribution of join attributes.
+	 * Consequently, we predict the selectivity for each join attribute pair and finally combine them.
+	 */
+	double ret=1;
+	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
+		ret*=predictEqualJoinSelectivityOnSingleJoinAttributePair(joinkey_pair_list_[i].first,joinkey_pair_list_[i].second);
+	}
+	return ret;
+}
+double EqualJoin::predictEqualJoinSelectivityOnSingleJoinAttributePair(const Attribute& a_l,const Attribute& a_r)const{
+	double ret;
+	TableStatistic* t_l_stat=StatManager::getInstance()->getTableStatistic(a_l.table_id_);
+	TableStatistic* t_r_stat=StatManager::getInstance()->getTableStatistic(a_r.table_id_);
+	if(t_r_stat&&t_l_stat){
+
+		unsigned long t_l_card=t_l_stat->getCardinality();
+		unsigned long t_r_card=t_r_stat->getCardinality();
+
+		AttributeStatistics* a_l_stat=StatManager::getInstance()->getAttributeStatistic(a_l);
+		AttributeStatistics* a_r_stat=StatManager::getInstance()->getAttributeStatistic(a_r);
+		if(a_l_stat&&a_r_stat){
+			/**
+			 * both tables have the attribute level statistics.
+			 */
+			Histogram* a_l_hist=a_l_stat->getHistogram();
+			Histogram* a_r_hist=a_r_stat->getHistogram();
+			if(a_l_hist&&a_r_hist){
+				/**
+				 * Both tables have histogram, so we predict the selectivity based on histogram.
+				 */
+				;//Waiting for Zhutao's implementation
+
+				const unsigned long a_l_dist_card=a_l_stat->getDistinctCardinality();
+				const unsigned long a_r_dist_card=a_r_stat->getDistinctCardinality();
+				double min_card=a_l_dist_card<a_r_dist_card?a_l_dist_card:a_r_dist_card;
+				min_card*=1;//0.8 is the magic number
+				const double output_card=min_card*t_l_card/(double)a_l_dist_card*t_r_card/(double)a_r_dist_card;
+				ret= output_card/t_l_card/t_r_card;
+				double max_card=a_l_dist_card>a_r_dist_card?a_l_dist_card:a_r_dist_card;
+				ret= 1/max_card;
+			}
+			else{
+				/**
+				 * predict based on the cardinality and distinct cardinality of the two attribute.
+				 */
+				const unsigned long a_l_dist_card=a_l_stat->getDistinctCardinality();
+				const unsigned long a_r_dist_card=a_r_stat->getDistinctCardinality();
+				double min_card=a_l_dist_card<a_r_dist_card?a_l_dist_card:a_r_dist_card;
+				min_card*=1;//0.8 is the magic number
+				const double output_card=min_card*t_l_card/(double)a_l_dist_card*t_r_card/(double)a_r_dist_card;
+
+				double max_card=a_l_dist_card>a_r_dist_card?a_l_dist_card:a_r_dist_card;
+				ret= 1/max_card;
+			}
+		}
+		else{
+			/**
+			 * Not both a_l and a_r have the attribute level statistics, so we predict the join size based
+			 * on magic number.
+			 */
+			ret= 0.1;
+		}
+	}
+	else{
+		/**
+		 * No table statistic is available, so we use the the magic number.
+		 */
+		ret= 0.1;
+	}
+	printf("Predicted selectivity for %s and %s is %f\n",a_l.attrName.c_str(),a_r.attrName.c_str(),ret);
+	return ret;
 }

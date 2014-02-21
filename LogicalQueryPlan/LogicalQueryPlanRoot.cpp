@@ -71,7 +71,11 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 			break;
 		}
 		case RESULTCOLLECTOR:{
-			BlockStreamResultCollector::State result_state(schema,exchange,block_size);
+			std::vector<std::string> column_header;
+			for(unsigned i=0;i<dataflow.attribute_list_.size();i++){
+				column_header.push_back(dataflow.attribute_list_[i].getName());
+			}
+			BlockStreamResultCollector::State result_state(schema,exchange,block_size,column_header);
 			ret=new BlockStreamResultCollector(result_state);
 			break;
 		}

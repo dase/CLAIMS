@@ -45,6 +45,9 @@ private:
 	std::vector<Attribute> getGroupByAttributeAfterAggregation()const;
 	std::vector<Attribute> getAggregationAttributeAfterAggregation()const;
 
+	unsigned long estimateGroupByCardinality(const Dataflow& dataflow)const;
+
+
 private:
 	LogicalOperator* child_;
 	std::vector<Attribute> group_by_attribute_list_;
