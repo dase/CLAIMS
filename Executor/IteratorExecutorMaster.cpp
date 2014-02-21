@@ -113,6 +113,10 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIterat
 //	logging_->log("Received the confirm feedback from %s",ip_port.str().c_str());
 	return true;
 }
+bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_id){
+	std::string node_ip=NodeTracker::getInstance()->getNodeIP(target_id);
+	ExecuteBlockStreamIteratorsOnSite(it,node_ip);
+}
 bool IteratorExecutorMaster::Propogation(const int count,std::string target){
 	printf("Master:%d\n",count);
 	ostringstream ip_port;
