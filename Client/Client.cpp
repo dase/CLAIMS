@@ -62,7 +62,14 @@ ClientResponse* Client::submitQuery(std::string args) {
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
-	if ((receivedBytesNum = recv(m_clientFd, buf, maxBytes, 0)) < 0) {
+
+	//compute the length of ClientResponse object
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL | MSG_PEEK);
+	int len = *((int*) buf + 1);
+
+	len += sizeof(int) + sizeof(int);
+
+	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
 		perror(
 				"Client: submit query error, has problem with the communication!\n");
 	}else {
@@ -87,7 +94,14 @@ ClientResponse* Client::receive() {
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
-	if ((receivedBytesNum = recv(m_clientFd, buf, maxBytes, 0)) < 0) {
+
+	//compute the length of the ClientResponse object
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL | MSG_PEEK);
+	int len = *((int*) buf + 1);
+
+	len += sizeof(int) + sizeof(int);
+
+	if ((receivedBytesNum = recv(m_clientFd, buf, len, 0)) < 0) {
 		perror(
 				"Client: receive result error, has problem with the communication!\n");
 	}else {
@@ -99,6 +113,6 @@ ClientResponse* Client::receive() {
 }
 
 void Client::shutdown() {
-
+//	::shutdown(m_clientFd, 2);
 	close(m_clientFd);
 }

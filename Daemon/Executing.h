@@ -13,7 +13,7 @@ class Executing {
 public:
 	Executing();
 	virtual ~Executing();
-	static ResultSet* run_sql(std::string sql);
+	static ResultSet* run_sql(std::string sql,std::string& error);
 };
 
 #endif /* EXECUTING_H_ */
