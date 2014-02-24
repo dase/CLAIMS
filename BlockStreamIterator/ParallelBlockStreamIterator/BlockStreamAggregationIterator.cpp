@@ -150,24 +150,24 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 			hashtable_->placeIterator(ht_it,bn);
 			key_exist=false;
 			while((tuple_in_hashtable=ht_it.readCurrent())!=0){
-	//							key_exist=false;
+	//			key_exist=false;
 				for(unsigned i=0;i<state_.groupByIndex.size();i++){
 					key_in_input_tuple=state_.input->getColumnAddess(state_.groupByIndex[i],cur);
 					key_in_hash_table=state_.output->getColumnAddess(inputGroupByToOutput_[i],tuple_in_hashtable);
-					for(unsigned i=0;i<state_.aggregationIndex.size();i++){
-								/**
-								 * use if-else here is a kind of ugly.
-								 * TODO: use a function which is initialized according to the aggregation function.
-								 */
-						if(state_.aggregations[i]==State::count){
-								value_in_input_tuple=&one;
-						}
-						else{
-								value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
-						}
-						value_in_hash_table=state_.output->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
-						state_.input->getcolumn(state_.aggregationIndex[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
-					}
+//					for(unsigned i=0;i<state_.aggregationIndex.size();i++){
+//						/**
+//						 * use if-else here is a kind of ugly.
+//						 * TODO: use a function which is initialized according to the aggregation function.
+//						 */
+//						if(state_.aggregations[i]==State::count){
+//								value_in_input_tuple=&one;
+//						}
+//						else{
+//								value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
+//						}
+//						value_in_hash_table=state_.output->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
+//						state_.input->getcolumn(state_.aggregationIndex[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
+//					}
 					if(state_.input->getcolumn(state_.groupByIndex[i]).operate->equal(key_in_input_tuple,key_in_hash_table)){
 						key_exist=true;
 					}

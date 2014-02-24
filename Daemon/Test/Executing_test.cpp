@@ -266,15 +266,15 @@ static int execting_test(){
 //		}
 //
 //		// 8 partitions
-		for(unsigned i=0;i<table_1->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
-		}
-
-		for(unsigned i=0;i<table_1->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
-		}
+//		for(unsigned i=0;i<table_1->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
+//		}
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
+//		}
 
 		//sb_table
 		for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
@@ -286,15 +286,15 @@ static int execting_test(){
 
 			catalog->getTable(1)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
 		}
-		for(unsigned i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(1)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
-		}
-
-		for(unsigned i=0;i<table_2->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(1)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
-		}
+//		for(unsigned i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
+//		}
+//
+//		for(unsigned i=0;i<table_2->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
+//		}
 //
 //		//partitioned by row_id
 //		for(unsigned i=0;i<table_2->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
@@ -307,15 +307,15 @@ static int execting_test(){
 //		///////////////////ONE MONTH/////////////////////////////////////////////////////////////
 //		//CJ
 //		// 4 partition
-		for(unsigned i=0;i<table_1->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,40);
-		}
-
-		for(unsigned i=0;i<table_1->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,104);
-		}
+//		for(unsigned i=0;i<table_1->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,40);
+//		}
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,104);
+//		}
 //		//8 partitions
 //		for(unsigned i=0;i<table_1->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
 //
@@ -326,28 +326,28 @@ static int execting_test(){
 //
 //			catalog->getTable(0)->getProjectoin(11)->getPartitioner()->RegisterPartition(i,52);
 //		}
-//		// 18 partitions
-		for(unsigned i=0;i<table_1->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
-		}
-
-		for(unsigned i=0;i<table_1->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,24);
-		}
+////		// 18 partitions
+//		for(unsigned i=0;i<table_1->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
+//		}
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,24);
+//		}
 //
 //		//SB
 //		// 4 partition
-		for(unsigned i=0;i<table_2->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(1)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,39);
-		}
-
-		for(unsigned i=0;i<table_2->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(1)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,131);
-		}
+//		for(unsigned i=0;i<table_2->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,39);
+//		}
+//
+//		for(unsigned i=0;i<table_2->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,131);
+//		}
 //		// 8 partitions
 //		for(unsigned i=0;i<table_2->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
 //
@@ -359,15 +359,15 @@ static int execting_test(){
 //			catalog->getTable(1)->getProjectoin(11)->getPartitioner()->RegisterPartition(i,66);
 //		}
 //		// 18 partitions
-		for(unsigned i=0;i<table_2->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(1)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
-		}
-
-		for(unsigned i=0;i<table_2->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(1)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,30);
-		}
+//		for(unsigned i=0;i<table_2->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
+//		}
+//
+//		for(unsigned i=0;i<table_2->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,30);
+//		}
 //		////////////////////////////////
 //
 //
@@ -434,8 +434,8 @@ static int execting_test(){
 		        }
 		    }
 
-
-			ResultSet* result_set=Executing::run_sql(std::string(sql));
+		    std::string error_info;
+			ResultSet* result_set=Executing::run_sql(std::string(sql),error_info);
 
 
 
