@@ -17,6 +17,26 @@ public:
 	Expression(std::vector<int> map);
 	virtual ~Expression();
 
+	void add_sys_func(int (*func)(int,int),int val){
+		this->func_=func;
+		this->val_=val;
+	}
+
+	/* func() is the function name and the arguments list
+	 * int (*)(int,int) is the return value which is a function point
+	 * */
+	int (*func())(int,int){
+		return func_;
+	}
+	int val_;
+private:
+	/*system func*/
+//	void sys_add();
+//	void sys_minus();
+//	void sys_mul();
+//	void sys_div();
+	int (*func_)(int,int);
+
 private:
 	std::vector<int> map_;
 private:
