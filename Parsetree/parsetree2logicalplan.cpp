@@ -74,7 +74,54 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 				{
 					case 1://"<"
 					{
+						char * attribute;
+						switch((node->lnext)->type)//获得左边的表名
+						{
+							case t_name:
+							{
+								Expr *expr=(Expr *)(node->lnext);
+								attribute=expr->data.string_val;
+							}break;
+							case t_name_name:
+							{
+								Columns *col=(Columns *)(node->lnext);
+								attribute=col->parameter2;
+							}break;
+							default:
+							{
 
+							}
+						};
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+								cout<<str.str()<<endl;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::L,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::L,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::L,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
 					}break;
 					case 2://">"
 					{
@@ -82,7 +129,54 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 					}break;
 					case 3://"<>"
 					{
+						char * attribute;
+						switch((node->lnext)->type)//获得左边的表名
+						{
+							case t_name:
+							{
+								Expr *expr=(Expr *)(node->lnext);
+								attribute=expr->data.string_val;
+							}break;
+							case t_name_name:
+							{
+								Columns *col=(Columns *)(node->lnext);
+								attribute=col->parameter2;
+							}break;
+							default:
+							{
 
+							}
+						};
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+								cout<<str.str()<<endl;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
 					}break;
 					case 4://"="
 					{
@@ -142,6 +236,54 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 					}break;
 					case 6://">="
 					{
+						char * attribute;
+						switch((node->lnext)->type)//获得左边的表名
+						{
+							case t_name:
+							{
+								Expr *expr=(Expr *)(node->lnext);
+								attribute=expr->data.string_val;
+							}break;
+							case t_name_name:
+							{
+								Columns *col=(Columns *)(node->lnext);
+								attribute=col->parameter2;
+							}break;
+							default:
+							{
+
+							}
+						};
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+								cout<<str.str()<<endl;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
 
 					}break;
 					default:

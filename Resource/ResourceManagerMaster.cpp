@@ -47,7 +47,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 }
 std::vector<NodeID> ResourceManagerMaster::getSlaveIDList(){
 	std::vector<NodeID> ret;
-	hashmap<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
+	boost::unordered_map<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
 	while(it!=node_to_resourceinfo_.end()){
 		ret.push_back(it->first);
 		it++;

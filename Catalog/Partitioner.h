@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "../hashmap.hpp"
+#include <boost/unordered_map.hpp>
 #include "Attribute.h"
 #include "../hash.h"
 
@@ -158,7 +158,7 @@ public:
 		return true;
 	}
 	bool is_all_blocks_bound(){
-		hashmap<BlockID,NodeID>::iterator it=block_to_node.begin();
+		boost::unordered_map<BlockID,NodeID>::iterator it=block_to_node.begin();
 		while(it!=block_to_node.end()){
 			if(it->second==-1)
 				return false;
@@ -166,7 +166,7 @@ public:
 		}
 	}
 	void unbind_all_blocks(){
-		hashmap<BlockID,NodeID>::iterator it=block_to_node.begin();
+		boost::unordered_map<BlockID,NodeID>::iterator it=block_to_node.begin();
 		while(it!=block_to_node.end()){
 			it->second=-1;
 			it++;
@@ -188,7 +188,7 @@ private:
 	/*
 	 * record which node is each block bound to. "NodeID=-1" means that the block has not been bound to any node.
 	 */
-	hashmap<BlockID,NodeID> block_to_node;
+	boost::unordered_map<BlockID,NodeID> block_to_node;
 
 };
 

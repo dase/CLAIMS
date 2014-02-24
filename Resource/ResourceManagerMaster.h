@@ -10,7 +10,6 @@
 #include <string>
 #include <vector>
 #include <Theron/Theron.h>
-#include "../hashmap.hpp"
 #include "ResourceInfo.h"
 #include "NodeTracker.h"
 #include "../Logging.h"
@@ -36,7 +35,7 @@ public:
 	bool ApplyDiskBuget(NodeID target, unsigned size_in_mb);
 	bool ApplyMemoryBuget(NodeID target, unsigned size_in_mb);
 private:
-	hashmap<NodeID,ResourceInfo*> node_to_resourceinfo_;
+	boost::unordered_map<NodeID,ResourceInfo*> node_to_resourceinfo_;
 	NodeTracker *node_tracker_;
 	Logging* logging_;
 	Theron::EndPoint *endpoint_;

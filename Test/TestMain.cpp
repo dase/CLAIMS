@@ -20,7 +20,7 @@
 //#include "hashtable_test.cpp"
 
 #include "../Client/Test/TestSeverClient.cpp"
-
+#include "../types/Test/data_type_test.cpp"
 int main(){
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -34,7 +34,8 @@ int main(){
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics_aggregation();
 //	return daemon_test();
-	testServerClient();
+//	testServerClient();
+	return test_data_type();
 
 
 }
