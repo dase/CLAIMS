@@ -90,7 +90,7 @@ void ClaimsServer::configure() {
 	sockaddr_in clientSocket;
 
 	serverSocket.sin_family = AF_INET;
-	serverSocket.sin_port = htons(8000);
+	serverSocket.sin_port = htons(8001);
 	serverSocket.sin_addr.s_addr = INADDR_ANY;
 
 	if ((serverSockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -98,11 +98,15 @@ void ClaimsServer::configure() {
 		return;
 	}
 
+	/* Enable address reuse */
+	int on=1;
+	setsockopt(serverSockFd, SOL_SOCKET,SO_REUSEADDR, &on, sizeof(on));
 	if (bind(serverSockFd, (sockaddr *) &serverSocket, sizeof(serverSocket))
 			< 0) {
 		perror("Server:: bind error!");
 		return;
 	}
+
 
 	int backLog = MAXCONN - 1;
 	if (listen(serverSockFd, backLog) == -1) {
@@ -124,6 +128,8 @@ void ClaimsServer::configure() {
 	if (error2 != 0) {
 		std::cout << "cannot create send thread!" << std::endl;
 	}
+
+	printf("sender thread id=%x\n",t_Sender);
 
 }
 
@@ -148,7 +154,7 @@ void* ClaimsServer::receiveHandler(void *para) {
 
 	bool stop = false;
 	while (!stop) {
-
+		usleep(1);
 		readFds = watchFds;
 		switch (select(nfds, &readFds, NULL, NULL, (timeval *) 0)) {
 		case -1:
@@ -184,7 +190,7 @@ void* ClaimsServer::receiveHandler(void *para) {
 
 				if (FD_ISSET(server->m_clientFds[i], &readFds)) {
 
-					ioctl(server->m_clientFds[i], FIONREAD, &nread);"Client: message from server!\n"
+					ioctl(server->m_clientFds[i], FIONREAD, &nread);
 					if (0 == nread) {
 						//TODO does here means a client close the connection with server?
 						printf("close connection on socket %d!\n", server->m_clientFds[i]);
@@ -226,7 +232,10 @@ void *ClaimsServer::sendHandler(void *para) {
 
 	ClientResponse cliRes;
 	while (true) {
+		usleep(1);
+		printf("-SendHandler: wait for result!\n");
 		executed_result result = Daemon::getInstance()->getExecutedResult();
+		printf("-SendHandler: get executed_result for %d\n", result.fd);
 		if (result.status == 0) {
 			//OK
 			cliRes.setOk("Yes Ok");
@@ -247,12 +256,15 @@ void *ClaimsServer::sendHandler(void *para) {
 			ResultSet::Iterator it = result.result->createIterator();
 			BlockStreamBase* block;
 
+			Block serialzed_block(64*1024);
+
 			while (block = (BlockStreamBase*) it.atomicNextBlock()) {
-				cliRes.setDataBlock(*(Block*) block);
+				block->serialize(serialzed_block);
+				cliRes.setDataBlock(serialzed_block);
 				server->write(result.fd, cliRes);
 			}
 
-			cliRes.setEnd("Yes Query finished!");
+			cliRes.setEnd(result.result->query_time_);
 			server->write(result.fd, cliRes);
 
 		} else {

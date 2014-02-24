@@ -18,10 +18,21 @@ Executing::~Executing() {
 	// TODO Auto-generated destructor stub
 }
 
-ResultSet* Executing::run_sql(std::string sql){
+ResultSet* Executing::run_sql(std::string sql,std::string& error){
 //	char * test="select row_id,count(*) from cj where cj.row_id=1 group by cj.row_id;";
+	ResultSet* resultset=0;
 	Node* node=getparsetreeroot(sql.c_str());
+	if(node==0){
+		error="sql parser error!";
+		return resultset;
+	}
 	LogicalOperator* plan=parsetree2logicalplan(node);
+	if(plan==0){
+		error="query optimization error!";
+		return resultset;
+	}
+
+
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 //	unsigned long long int timer_start=curtick();
@@ -32,8 +43,8 @@ ResultSet* Executing::run_sql(std::string sql){
 	collector->open();
 	collector->next(0);
 	collector->close();
-	ResultSet* resultset = collector->getResultSet();
+	resultset = collector->getResultSet();
 	resultset->print();
 	root->~LogicalOperator();;
-
+	return resultset;
 }

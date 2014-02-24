@@ -174,6 +174,177 @@ static int loadData() {
 
 	table_2->createHashPartitionedProjection(sb_proj1_index, "row_id", 4);	//G1
 
+	catalog->add_table(table_2);
+	////////////////////////////////////////
+	/* the following codes should be triggered by Load module*/
+	//////////////////ONE DAY////////////////////////////////////////////////
+	//cj_table
+	// 4 partitions partitioned by order_no
+	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+	}
+
+	for(unsigned i=0;i<table_1->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(0)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
+	}
+	//partitioned by row_id
+//		for(unsigned i=0;i<table_1->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(14)->getPartitioner()->RegisterPartition(i,2);
+//		}
+//
+//		// 8 partitions
+//	for(unsigned i=0;i<table_1->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(0)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
+//	}
+//
+//	for(unsigned i=0;i<table_1->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(0)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
+//	}
+
+	//sb_table
+	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+	}
+
+	for(unsigned i=0;i<table_2->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(1)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
+	}
+//	for(unsigned i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(1)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
+//	}
+
+//	for(unsigned i=0;i<table_2->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(1)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
+//	}
+//
+//		//partitioned by row_id
+//		for(unsigned i=0;i<table_2->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(14)->getPartitioner()->RegisterPartition(i,2);
+//		}
+//
+//		////////////////////////////////////////
+//
+//		///////////////////ONE MONTH/////////////////////////////////////////////////////////////
+//		//CJ
+//		// 4 partition
+//	for(unsigned i=0;i<table_1->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(0)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,40);
+//	}
+//
+//	for(unsigned i=0;i<table_1->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(0)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,104);
+//	}
+//		//8 partitions
+//		for(unsigned i=0;i<table_1->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(10)->getPartitioner()->RegisterPartition(i,20);
+//		}
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(11)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(11)->getPartitioner()->RegisterPartition(i,52);
+//		}
+//		// 18 partitions
+//	for(unsigned i=0;i<table_1->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(0)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
+//	}
+//
+//	for(unsigned i=0;i<table_1->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(0)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,24);
+//	}
+//
+//		//SB
+//		// 4 partition
+//	for(unsigned i=0;i<table_2->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(1)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,39);
+//	}
+//
+//	for(unsigned i=0;i<table_2->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(1)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,131);
+//	}
+//		// 8 partitions
+//		for(unsigned i=0;i<table_2->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(10)->getPartitioner()->RegisterPartition(i,20);
+//		}
+//
+//		for(unsigned i=0;i<table_2->getProjectoin(11)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(11)->getPartitioner()->RegisterPartition(i,66);
+//		}
+//		// 18 partitions
+//	for(unsigned i=0;i<table_2->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(1)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
+//	}
+//
+//	for(unsigned i=0;i<table_2->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//		catalog->getTable(1)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,30);
+//	}
+//		////////////////////////////////
+//
+//
+//		///////////// FIVE DAYS //////////////////
+//		//// cj////
+//		// 4 partitions
+//		for(unsigned i=0;i<table_1->getProjectoin(8)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(8)->getPartitioner()->RegisterPartition(i,14);
+//		}
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(9)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(9)->getPartitioner()->RegisterPartition(i,36);
+//		}
+//		// 8 partitions
+//		for(unsigned i=0;i<table_1->getProjectoin(12)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(12)->getPartitioner()->RegisterPartition(i,7);
+//		}
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(13)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(13)->getPartitioner()->RegisterPartition(i,19);
+//		}
+//
+//		//// sb ////
+//		// 4 partitions//
+//		for(unsigned i=0;i<table_2->getProjectoin(8)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(8)->getPartitioner()->RegisterPartition(i,14);
+//		}
+//
+//		for(unsigned i=0;i<table_2->getProjectoin(9)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(9)->getPartitioner()->RegisterPartition(i,131);
+//		}
+//		// 8 partitions//
+//		for(unsigned i=0;i<table_2->getProjectoin(12)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(12)->getPartitioner()->RegisterPartition(i,7);
+//		}
+//
+//		for(unsigned i=0;i<table_2->getProjectoin(13)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(1)->getProjectoin(13)->getPartitioner()->RegisterPartition(i,23);
+//		}
 }
 
 static int testServerClient() {
@@ -183,7 +354,7 @@ static int testServerClient() {
 	if (cmd == 'c') {
 
 		Client client;
-		client.connection("127.0.0.1", 8000);
+		client.connection("127.0.0.1", 8001);
 //		std::cout << "Please input the query cmd!" << std::endl;
 		while(1){
 			std::cout<<">";
@@ -204,14 +375,31 @@ static int testServerClient() {
 			}
 
 			if (response->status == OK) {
+				ResultSet rs;
 				printf("Client get server response ok: %s\n",
 						response->content.c_str());
 
 				while (response->status != END) {
 
+					switch(response->status){
+					case SCHEMA:
+						rs.schema_=response->getSchema();
+						break;
+					case HEADER:
+						rs.column_header_list_=response->getAttributeName().header_list;
+						break;
+					case DATA:
+						assert(rs.schema_!=0);
+						rs.appendNewBlock(response->getDataBlock(rs.schema_));
+						break;
+					}
+
 					response = client.receive();
+
 					printf("Message: %s\n", response->getMessage().c_str());
 				}
+				rs.query_time_=atof(response->content.c_str());
+				rs.print();
 
 			} else {
 				printf("Client does not get response: %s\n",

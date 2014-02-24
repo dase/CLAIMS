@@ -28,6 +28,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "../Block/BlockStream.h"
 #include "../Schema/SchemaFix.h"
@@ -92,10 +93,12 @@ struct ClientResponse {
 		assert(status==Error);
 		return content;
 	}
-	void setEnd(std::string info) {
+	void setEnd(double query_time) {
 		status = END;
-		length = info.length();
-		content = info;
+		std::ostringstream str;
+		str<<query_time;
+		length = str.str().size();
+		content =str.str();
 	}
 	std::string getEndInfo() const {
 		assert(status==END);
@@ -171,13 +174,13 @@ struct ClientResponse {
 	void setDataBlock(Block& block) {
 
 		content = std::string((const char *) block.getBlock(), block.getsize());
-		status = HEADER;
+		status = DATA;
 		length = content.length();
 	}
 	BlockStreamBase* getDataBlock(Schema* schema) const {
 		assert(status==DATA);
 		Block block(length, content.data());
-		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length);
+		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length-sizeof(int));
 		ret->constructFromBlock(block);
 		return ret;
 	}

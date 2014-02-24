@@ -9,7 +9,7 @@
 #include "../Parsetree/runparsetree.cpp"
 #include "Executing.h"
 #include <pthread.h>
-#define WORK_THREAD_COUNT 5
+#define WORK_THREAD_COUNT 1
 
 Daemon* Daemon::instance_ = 0;
 
@@ -46,18 +46,26 @@ void* Daemon::worker(void* para) {
 
 		//assume all commands are sql commands.
 		executed_result result;
+		std::string error_info;
 		Node* node;
-		if ((node = getparsetreeroot(rc.cmd.c_str())) == 0) {
-			result.error_info = "SQL Parser Error!";
+		ResultSet* result_set = Executing::run_sql(std::string(rc.cmd),error_info);
+
+		if(result_set==0){
+			printf("-Worker: add error result!\n");
+			result.error_info = error_info;
 			result.result = 0;
 			result.status = EXECUTED_RESULT_STATUS_ERROR;
 			result.fd = rc.socket_fd;
-		} else {
-			ResultSet* result_set = Executing::run_sql(std::string(rc.cmd));
+		}
+		else{
+			printf("-Worker: add ok result!\n");
 			result.status = EXECUTED_RESULT_STATUS_OK;
 			result.result = result_set;
 			result.fd = rc.socket_fd;
 		}
+
+
+		printf("-Worker add result into the queue!\n");
 		pthis->addExecutedResult(result);
 
 //		pthis->;
@@ -81,11 +89,14 @@ remote_command Daemon::getRemoteCommand() {
 
 executed_result Daemon::getExecutedResult() {
 	semaphore_result_queue_.wait();
+//	assert(false);
+	printf("-Worker: acquire the get semphore!\n");
 	executed_result ret;
 	lock_.acquire();
 	ret = executed_result_queue_.front();
 	executed_result_queue_.pop_front();
 	lock_.release();
+	printf("------ has been fucked!\n");
 	return ret;
 }
 void Daemon::addExecutedResult(const executed_result& item) {
@@ -93,4 +104,6 @@ void Daemon::addExecutedResult(const executed_result& item) {
 	executed_result_queue_.push_back(item);
 	lock_.release();
 	semaphore_result_queue_.post();
+	printf("-----------------------------------Added! current size:%d\n",executed_result_queue_.size());
+
 }
