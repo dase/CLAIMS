@@ -10,6 +10,7 @@
 
 #include "../BlockStreamIteratorBase.h"
 #include "../../utility/Expression.h"
+#include "../../configure.h"
 
 #include <iostream>
 #include <vector>
@@ -20,7 +21,7 @@ using namespace std;
 class BlockStreamProjectIterator:public BlockStreamIteratorBase {
 public:
 	struct remaining_block{
-		remaining_block(BlockStreamBase * bsb,BlockStreamBase::BlockStreamTraverseIterator * bsti_)
+		remaining_block(BlockStreamBase * bsb,BlockStreamBase::BlockStreamTraverseIterator * bsti)
 		:bsb_(bsb),bsti_(bsti){};
 		remaining_block():bsb_(0),bsti_(0){};
 //        void * combinedTuple_;

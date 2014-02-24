@@ -21,6 +21,10 @@
 #include "../../../LogicalQueryPlan/Aggregation.h"
 using namespace std;
 
+static int add_(int var,int val){
+	return var+val;
+}
+
 static int Project_test(){
 	cout<<"in the sort test!!!"<<endl;
 	Environment::getInstance(true);
@@ -71,6 +75,7 @@ static int Project_test(){
 	vi.push_back(1);
 	vi.push_back(0);
 	Expression *expr=new Expression(vi);
+	expr->add_sys_func(add_,200);
 	BlockStreamProjectIterator::State project_state(new SchemaFix(column_list),new SchemaFix(column_list_),scan,64*1024-sizeof(unsigned),expr);
 	BlockStreamIteratorBase *project=new BlockStreamProjectIterator(project_state);
 
