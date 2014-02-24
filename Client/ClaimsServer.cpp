@@ -407,7 +407,8 @@ int ClaimsServer::write(const int fd, const ClientResponse& res) const {
 	int ret = 0;
 	char *buffer;
 	int length = res.serialize(buffer);
-	ret = ::write(fd, buffer, length);
+//	ret = ::write(fd, buffer, length);
+	ret = send(fd,buffer,length,MSG_WAITALL);
 	printf("Server: %d bytes send!\n", ret);
 	free(buffer);
 	return ret;

@@ -32,6 +32,7 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 		return resultset;
 	}
 
+	plan->print();
 
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
@@ -44,7 +45,7 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	collector->next(0);
 	collector->close();
 	resultset = collector->getResultSet();
-	resultset->print();
+//	resultset->print();
 	root->~LogicalOperator();;
 	return resultset;
 }
