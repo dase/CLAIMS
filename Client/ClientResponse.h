@@ -32,12 +32,12 @@
 #include "../Block/BlockStream.h"
 #include "../Schema/SchemaFix.h"
 
-
 #define Error 	0
 #define OK 		1
 #define	SCHEMA	2
 #define HEADER 	3
 #define DATA	4
+#define END		5
 struct ColumnHeader {
 	std::vector<std::string> header_list;
 	void add_header(std::string name) {
@@ -58,6 +58,31 @@ struct ClientResponse {
 		assert(length == content.length());
 		return sizeof(status) + sizeof(length) + content.length();
 	}
+
+	std::string getMessage(){
+		switch(status){
+		case Error:
+			return "Error";
+			break;
+		case OK:
+			return "OK";
+			break;
+		case SCHEMA:
+			return "Schema";
+			break;
+		case HEADER:
+			return "Header";
+			break;
+		case DATA:
+			return "Data";
+			break;
+		case END:
+			return "End";
+			break;
+		}
+		return "Unknown";
+	}
+
 	void setError(std::string reason) {
 		status = Error;
 		length = reason.length();
@@ -65,6 +90,15 @@ struct ClientResponse {
 	}
 	std::string getError() const {
 		assert(status==Error);
+		return content;
+	}
+	void setEnd(std::string info) {
+		status = END;
+		length = info.length();
+		content = info;
+	}
+	std::string getEndInfo() const {
+		assert(status==END);
 		return content;
 	}
 
@@ -136,7 +170,7 @@ struct ClientResponse {
 
 	void setDataBlock(Block& block) {
 
-		content = std::string((const char *)block.getBlock(), block.getsize());
+		content = std::string((const char *) block.getBlock(), block.getsize());
 		status = HEADER;
 		length = content.length();
 	}
@@ -150,7 +184,7 @@ struct ClientResponse {
 
 	int serialize(char*& buffer) const {
 		int ret = sizeof(int) + sizeof(int) + content.length();
-		buffer = (char *)malloc(ret);
+		buffer = (char *) malloc(ret);
 		*(int*) buffer = status;
 		*((int*) buffer + 1) = length;
 		void* content_start = buffer + sizeof(int) + sizeof(int);
@@ -165,7 +199,7 @@ struct ClientResponse {
 		status = st;
 		length = len;
 		void* content_start_addr = (char*) received_buffer + sizeof(int) * 2;
-		content = std::string((const char *)content_start_addr, len);
+		content = std::string((const char *) content_start_addr, len);
 	}
 };
 
