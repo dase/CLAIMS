@@ -184,37 +184,51 @@ static int testServerClient() {
 
 		Client client;
 		client.connection("127.0.0.1", 8000);
-		std::cout << "Please input the query cmd!" << std::endl;
-		std::string query;
-		std::cin >> query;
-		ClientResponse* response = client.submitQuery(query);
-
-		if (response->status == 1) {
-			printf("Client get server response ok: %s\n",
-					response->content.c_str());
-			response = client.receive();
-			if(response->status == 2){
-				Schema* schema = response->getSchema();
+//		std::cout << "Please input the query cmd!" << std::endl;
+		while(1){
+			std::cout<<">";
+			std::string query;
+			char *args = new char[65535];
+			std::cin.getline(args, 65535);
+			query.append(args);
+			delete args;
+			if( query == "exit" ){
+				break;
+			}else if( query.empty() ){
+				continue;
 			}
-			response = client.receive();
-			if( response ->status == 3 ){
-				ColumnHeader ch = response->getAttributeName();
-				for(int i=0;i<ch.header_list.size();++i){
-					cout<<ch.header_list[i]<<" ";
+			ClientResponse* response = client.submitQuery(query);
+
+			if( query == "shutdown" ){
+				break;
+			}
+
+			if (response->status == OK) {
+				printf("Client get server response ok: %s\n",
+						response->content.c_str());
+
+				while (response->status != END) {
+
+					response = client.receive();
+					printf("Message: %s\n", response->getMessage().c_str());
 				}
-				cout<<endl;
+
+			} else {
+				printf("Client does not get response: %s\n",
+						response->content.c_str());
 			}
-
-		} else {
-			printf("Client does not get response: %s\n",
-					response->content.c_str());
 		}
-
 		client.shutdown();
 	} else if (cmd == 's') {
-		loadData();
-		ClaimsServer server(10);
-		server.startUp();
+		loadData();	//导致服务器退出是内存泄漏的原因
+		ClaimsServer server(8000);
+		server.configure();
+//		server.run();
+		while(true){
+			sleep(10);
+		}
+
+
 
 	}
 
