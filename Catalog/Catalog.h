@@ -9,7 +9,7 @@
 #define CATALOG_H_
 #include <string>
 #include "table.h"
-#include "../hashmap.hpp"
+#include <boost/unordered_map.hpp>
 #include "../Logging.h"
 #include "ProjectionBinding.h"
 struct TableIDAllocator{
@@ -36,8 +36,8 @@ public:
 private:
 	Catalog();
 	TableIDAllocator table_id_allocator;
-	hashmap<std::string,TableDescriptor*> name_to_table;
-	hashmap<TableID,TableDescriptor*> tableid_to_table;
+	boost::unordered_map<std::string,TableDescriptor*> name_to_table;
+	boost::unordered_map<TableID,TableDescriptor*> tableid_to_table;
 	Logging* logging;
 	ProjectionBinding* binding_;
 	static Catalog* instance_;

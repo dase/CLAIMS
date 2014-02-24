@@ -31,7 +31,7 @@ int NodeTracker::RegisterNode(std::string node_name){
 }
 
 std::string NodeTracker::getNodeIP(const NodeID& target)const{
-	hashmap<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
+	boost::unordered_map<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
 	while(it!=ip_to_id_.cend()){
 		if(it->second==target)
 			return it->first;
@@ -42,7 +42,7 @@ std::string NodeTracker::getNodeIP(const NodeID& target)const{
 }
 std::vector<NodeID> NodeTracker::getNodeIDList()const{
 	std::vector<NodeID> ret;
-	hashmap<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
+	boost::unordered_map<NodeIP,NodeID>::const_iterator it=ip_to_id_.cbegin();
 	while(it!=ip_to_id_.cend()){
 		ret.push_back(it->second);
 		it++;

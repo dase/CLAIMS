@@ -101,7 +101,7 @@ ClientResponse* Client::receive() {
 
 	len += sizeof(int) + sizeof(int);
 
-	if ((receivedBytesNum = recv(m_clientFd, buf, len, 0)) < 0) {
+	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
 		perror(
 				"Client: receive result error, has problem with the communication!\n");
 	}else {
