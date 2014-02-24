@@ -11,7 +11,7 @@
 #define NODETRACKER_H_
 #include <string>
 #include <vector>
-#include "../hashmap.hpp"
+#include <boost/unordered_map.hpp>
 typedef std::string NodeIP;//TODO: may use ip + port to support multiple instances on a single node.
 typedef int NodeID;
 class NodeTracker {
@@ -24,7 +24,7 @@ public:
 	std::vector<NodeID> getNodeIDList()const;
 private:
 	NodeTracker();
-	hashmap<NodeIP,NodeID> ip_to_id_;
+	boost::unordered_map<NodeIP,NodeID> ip_to_id_;
 	unsigned allocate_cur_;
 	static NodeTracker* instance_;
 };
