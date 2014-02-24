@@ -33,7 +33,7 @@ int main(){
 //	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics_aggregation();
-	return daemon_test();
+//	return daemon_test();
 	testServerClient();
 
 
