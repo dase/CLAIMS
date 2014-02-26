@@ -18,15 +18,15 @@
 #include "hash.h"
 
 #include <boost/date_time/gregorian/gregorian.hpp>
-using namespace boost::gregorian;
 #include <boost/date_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+using namespace boost::gregorian;
 using namespace boost::posix_time;
 
 #include "types/NValue.hpp"
 using namespace decimal;
-
-enum data_type{t_int,t_float,t_string,t_double,t_u_long, t_date, t_time, t_datetime, t_decimal, t_smallInt};
+#define DATA_TYPE_NUMBER 11
+enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string,t_double, t_date, t_time, t_datetime, t_decimal};
 typedef void (*fun)(void*,void*);
 
 /**
