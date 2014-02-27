@@ -27,7 +27,14 @@ void ExpressionCalculator::compute(ExpressionItem operator_item,ExpressionItemSt
 		break;
 	}
 	case op_com_L:{
-
+		compare_less(stack,result);
+		break;
+	}
+	case op_case:{
+		reverse_stack(stack);
+//		print_expression(stack);
+		do_case(stack,result);
+		break;
 	}
 	default:{
 		printf("The operator[%d] is not supported currently!\n",operator_item.content.op.op_);
