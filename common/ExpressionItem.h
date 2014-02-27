@@ -9,10 +9,10 @@
 #define EXPRESSIONITEM_H_
 #include <sstream>
 #include "../data_type.h"
-enum op_type{op_add,op_multiple,op_cast_int};
+enum op_type{op_add,op_multiple,op_cast_int,op_com_L};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
-std::string getReturnTypeName(data_type return_type)const{
+static std::string getReturnTypeName(data_type return_type){
 	//t_int,t_float,t_string,t_double,t_u_long, t_date, t_time, t_datetime, t_decimal, t_smallInt
 	switch(return_type){
 		case t_int:{
@@ -43,7 +43,8 @@ std::string getReturnTypeName(data_type return_type)const{
 			return std::string("t_smallInt");
 		}
 		default:{
-			assert(false);
+//			assert(false);
+			return std::string("Not given");
 		}
 	}
 	return std::string();
@@ -60,7 +61,7 @@ struct express_operator{
 	}
 	op_type op_;
 	unsigned num_of_parameter;
-	data_type return_type;
+//	data_type return_type;
 };
 struct data__{
 	union{
@@ -73,10 +74,10 @@ struct data__{
 	char _datatime[8];//datetime
 	char _decimal[16];//decimal
 	}value;
-	data_type return_type;
+
 };
 struct variable{
-	data_type return_type;
+//	data_type return_type;
 	std::string* table_name;
 	std::string* column_name;
 };
@@ -89,7 +90,7 @@ public:
 		printf("Item:%s  \n",getItemTypeName().c_str());
 		switch(type){
 		case const_type:{
-			printf("Return type: %s",getReturnTypeName(content.data.return_type).c_str());
+			printf("Return type: %s",getReturnTypeName(return_type).c_str());
 			printf("value:%s ",data_value_to_string().c_str());
 			printf("\n");
 			break;
@@ -98,7 +99,7 @@ public:
 			break;
 		}
 		case operator_type:{
-			printf("Return type: %s",getReturnTypeName(content.op.return_type).c_str());
+			printf("Return type: %s",getReturnTypeName(return_type).c_str());
 			printf("operator: %s ",getOperatorName().c_str());
 			printf("\n");
 			break;
@@ -115,6 +116,7 @@ public:
 	}content;
 	std::string str;
 	ItemType type;
+	data_type return_type;
 private:
 	std::string getItemTypeName()const{
 		switch(type){
@@ -139,7 +141,7 @@ private:
 		assert(type==const_type);
 		std::stringstream ss;
 
-		switch(content.data.return_type){
+		switch(return_type){
 			case t_int:{
 				ss<<content.data.value._int;
 				break;

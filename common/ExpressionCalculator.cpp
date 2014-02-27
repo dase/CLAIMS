@@ -24,6 +24,13 @@ void ExpressionCalculator::compute(ExpressionItem operator_item,ExpressionItemSt
 	switch(operator_item.content.op.op_){
 	case op_add:{
 		add(stack,result);
+		break;
+	}
+	case op_com_L:{
+
+	}
+	default:{
+		printf("The operator[%d] is not supported currently!\n",operator_item.content.op.op_);
 	}
 	}
 	stack.push(result);
