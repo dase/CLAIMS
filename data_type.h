@@ -26,7 +26,7 @@ using namespace boost::posix_time;
 #include "types/NValue.hpp"
 using namespace decimal;
 #define DATA_TYPE_NUMBER 11
-enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal};
+enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean};
 typedef void (*fun)(void*,void*);
 
 /**
