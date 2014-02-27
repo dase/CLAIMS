@@ -9,7 +9,7 @@
 #define EXPRESSIONITEM_H_
 #include <sstream>
 #include "../data_type.h"
-enum op_type{op_add,op_multiple,op_cast_int,op_com_L};
+enum op_type{op_add,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
@@ -42,6 +42,9 @@ static std::string getReturnTypeName(data_type return_type){
 		case t_smallInt:{
 			return std::string("t_smallInt");
 		}
+		case t_boolean:{
+			return std::string("t_boolean");
+		}
 		default:{
 //			assert(false);
 			return std::string("Not given");
@@ -69,11 +72,14 @@ struct data__{
 	float _float;
 	double _double;
 	unsigned long _ulong;
+	bool _bool;
 	char _date[4];//date
 	char _time[8];//time
 	char _datatime[8];//datetime
 	char _decimal[16];//decimal
 	}value;
+
+
 
 };
 struct variable{
@@ -106,6 +112,26 @@ public:
 		}
 		}
 	}
+	void print_value(){
+		switch(type){
+		case const_type:{
+
+			printf(" %s \n",data_value_to_string().c_str());
+
+			break;
+		}
+		case variable_type:{
+			printf(" variable \n");
+			break;
+		}
+		case operator_type:{
+
+			printf(" %s \n",getOperatorName().c_str());
+
+			break;
+		}
+		}
+	}
 	ExpressionItem();
 	virtual ~ExpressionItem();
 
@@ -114,8 +140,8 @@ public:
 		data__ 	data;
 		express_operator op;
 	}content;
-	std::string str;
 	ItemType type;
+	std::string _string;// string cannot be in unoin.
 	data_type return_type;
 private:
 	std::string getItemTypeName()const{
@@ -151,7 +177,7 @@ private:
 				break;
 			}
 			case t_string:{
-				ss<<str;
+				ss<<_string;
 				break;
 			}
 			case t_double:{
@@ -174,6 +200,10 @@ private:
 			case t_smallInt:{
 				return std::string("t_smallInt");
 			}
+			case t_boolean:{
+				ss<<content.data.value._bool;
+				break;
+			}
 			default:{
 				assert(false);
 			}
@@ -190,6 +220,21 @@ private:
 		}
 		case op_multiple:{
 			return std::string("*");
+		}
+		case op_com_L:{
+			return std::string("<");
+		}
+		case op_case:{
+			return std::string("CASE");
+		}
+		case op_case_when:{
+			return std::string("CASE_WHEN");
+		}
+		case op_case_then:{
+			return std::string("CASE_THEN");
+		}
+		case op_case_else:{
+			return std::string("CASE_ELSE");
 		}
 		default:{
 			assert(false);

@@ -8,6 +8,7 @@
 #ifndef TYPEPROMOTIONMAP_H_
 #define TYPEPROMOTIONMAP_H_
 #include "../data_type.h"
+#include <memory.h>
 class TypePromotion{
 public:
 	static data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
@@ -17,9 +18,15 @@ public:
 //enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal};
 
 /**
- *
+ * Note: This function must be called before computing any Expression
  */
 static void initialize_arithmetic_type_promotion_matrix(){
+
+	/*
+	 * all the element is set to DATA_TYPE_NUMBER such that the default value of each element is DATA_TYPE_NUMBER,
+	 * which means that the promotion is not supported for now.
+	 */
+	memset(TypePromotion::arith_type_promotion_map,DATA_TYPE_NUMBER,DATA_TYPE_NUMBER*DATA_TYPE_NUMBER);
 
 	//t_smallInt
 	TypePromotion::arith_type_promotion_map[t_smallInt][t_smallInt]=t_smallInt;
