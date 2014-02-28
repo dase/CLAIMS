@@ -134,7 +134,12 @@ public:
 	}
 	ExpressionItem();
 	virtual ~ExpressionItem();
-
+	bool setIntValue(const char*);
+	bool setIntValue(int);
+	bool setFloatValue(const char*);
+	bool setOperator(const char*);
+	bool setStringValue(std::string);
+public:
 	union {
 		variable var;
 		data__ 	data;
