@@ -105,6 +105,7 @@ private:
 
 	/**
 	 * Compose operator refers to a kind of operators, the number of input parameter of witch is decided by the semantic.
+	 * e.g., CASE WHEN ... THEN... [WHEN ... THEN...][N] ELSE ..... END
 	 */
 	static bool isComposeOperator(op_type tp ){
 		switch(tp){
