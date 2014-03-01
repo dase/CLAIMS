@@ -18,9 +18,11 @@ public:
 
 	static void analyse(const AttributeID &attrID);
 	static void analyse(TableID tableID,analysis_level level=a_l_table);
+	static void analyse_on_project(ProjectionID projection_id);
 
 	static void compute_histogram(const AttributeID& attr_id);
-	static void conpute_attribute_stat(const AttributeID& attr_id);
+	static void compute_attribute_stat(const AttributeID& attr_id);
+	static void compute_table_stat(const TableID& tab_id);
 //	static void print();
 
 	virtual ~Analyzer();

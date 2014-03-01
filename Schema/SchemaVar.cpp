@@ -47,3 +47,6 @@ unsigned SchemaVar::copyTuple(void* src, void* desc) const{
 Schema::schema_type SchemaVar::getSchemaType(){
 	return Schema::varaible;
 };
+Schema* SchemaVar::duplicateSchema()const{
+	return new SchemaVar(columns);
+}

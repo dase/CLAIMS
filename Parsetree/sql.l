@@ -8,25 +8,21 @@
  * Scanner for mysql subset, GLR version
  */
 
-%option  nodefault yylineno case-insensitive
+%option noyywrap nodefault yylineno case-insensitive
 
 %{
-
-#include "sql.tab.hpp"
 #include "sql_node_struct.h"
+#include "sql.tab.hpp"
+
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <malloc.h>
-extern char globalInputText[10000];
-extern "C"
-{
-	int yywrap();
- 	int yylex();
- 	void yyerror(char *s, ...);
- }
 
+extern "C" int yylex();
+extern char globalInputText[10000];
+extern int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 int oldstate;
 
 #undef YY_INPUT
@@ -263,16 +259,17 @@ XOR	{ return XOR; }
 YEAR	{ return YEAR; }
 YEAR_MONTH	{ return YEAR_MONTH; }
 ZEROFILL	{ return ZEROFILL; }
+BEGIN		{ return BEGINT; }
 
    /* numbers */
 
--?[0-9]+	        { yylval.intval = atoi(yytext); return INTNUM; } 
+"+"?[0-9]+	        { yylval.intval = atoi(yytext); return INTNUM; } 
 
--?[0-9]+"."[0-9]* |
--?"."[0-9]+	|
--?[0-9]+E[-+]?[0-9]+	|
--?[0-9]+"."[0-9]*E[-+]?[0-9]+ |
--?"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
+"+"?[0-9]+"."[0-9]* |
+"+"?"."[0-9]+	|
+"+"?[0-9]+E[-+]?[0-9]+	|
+"+"?[0-9]+"."[0-9]*E[-+]?[0-9]+ |
+"+"?"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
                                   return APPROXNUM; }
     /* booleans */
 TRUE	{ yylval.intval = 1; return BOOL; }
@@ -300,17 +297,17 @@ B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
    /* operators */
 [-+&~|^/%*(),.;!]   { return yytext[0]; }
 
-"&&"		{ return ANDOP; }
-"||"            { return OR; }
+"&&"	{ return ANDOP; }
+"||"	{ return OR; }
 
-"="	{ yylval.subtok = 4; return COMPARISON; }
-"<=>"	{ yylval.subtok = 12; return COMPARISON; }
-">="	{ yylval.subtok = 6; return COMPARISON; }
-">"	{ yylval.subtok = 2; return COMPARISON; }
-"<="	{ yylval.subtok = 5; return COMPARISON; }
-"<"	{ yylval.subtok = 1; return COMPARISON; }
+"<"		{ yylval.subtok = 1; return COMPARISON; }
+">"		{ yylval.subtok = 2; return COMPARISON; }
 "!="	|
 "<>"	{ yylval.subtok = 3; return COMPARISON; }
+"="		{ yylval.subtok = 4; return COMPARISON; }
+"<="	{ yylval.subtok = 5; return COMPARISON; }
+">="	{ yylval.subtok = 6; return COMPARISON; }
+"<=>"	{ yylval.subtok = 12; return COMPARISON; }
 
 "<<"	{ yylval.subtok = 1; return SHIFT; }
 ">>"	{ yylval.subtok = 2; return SHIFT; }
@@ -323,12 +320,29 @@ DATE_ADD/"(" { return FDATE_ADD; }
 DATE_SUB/"(" { return FDATE_SUB; }
 
 	/* 
-         * peek ahead and return function if name(
+        ---2.18 add aggrection functions
          */
 COUNT    { int c = yyinput(); unput(c);
            if(c == '(') return FCOUNT;
            yylval.strval = strdup(yytext);
            return NAME; }
+SUM    { int c = yyinput(); unput(c);
+           if(c == '(') return FSUM;
+           yylval.strval = strdup(yytext);
+           return NAME; }           
+AVG    { int c = yyinput(); unput(c);
+           if(c == '(') return FAVG;
+           yylval.strval = strdup(yytext);
+           return NAME; }
+MIN    { int c = yyinput(); unput(c);
+           if(c == '(') return FMIN;
+           yylval.strval = strdup(yytext);
+           return NAME; }
+MAX    { int c = yyinput(); unput(c);
+           if(c == '(') return FMAX;
+           yylval.strval = strdup(yytext);
+           return NAME; } 
+
 
 [A-Za-z][A-Za-z0-9_]*	{ yylval.strval = strdup(yytext);
                           return NAME; }
@@ -365,5 +379,4 @@ COUNT    { int c = yyinput(); unput(c);
 .               { yyerror("mystery character '%c'", *yytext); }
 
 %%
-
 

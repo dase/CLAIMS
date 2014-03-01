@@ -259,7 +259,7 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 }
 
 bool BlockStreamJoinIterator::close(){
-	cout<<"join finished!"<<endl;
+//	cout<<"join finished!"<<endl;
 
 #ifdef TIME
 	stopTimer(&timer);

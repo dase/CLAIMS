@@ -53,3 +53,6 @@ Schema* SchemaFix::getSubSchema(std::vector<unsigned> index)const{
 	}
 	return new SchemaFix(col);
 }
+Schema* SchemaFix::duplicateSchema()const{
+	return new SchemaFix(columns);
+}

@@ -40,7 +40,6 @@ void NValue::createDecimalFromString(const string &txt) {
      */
     for (int ii = (setSign ? 1 : 0); ii < static_cast<int>(txt.size()); ii++) {
         if ((txt[ii] < '0' || txt[ii] > '9') && txt[ii] != '.') {
-            char message[4096];
             cout << "Invalid characters in decimal string: " << txt.c_str() << endl;
             exit(-1);
         }
@@ -130,12 +129,12 @@ std::string NValue::createStringFromDecimal() const {
 }
 
 NValue NValue::opMultiplyDecimals(const NValue &lhs, const NValue &rhs) const {
-    if ((lhs.getValueType() != VALUE_TYPE_DECIMAL) ||
-        (rhs.getValueType() != VALUE_TYPE_DECIMAL))
-    {
-        cout << "Non-decimal NValue in decimal multiply\n";
-        exit(-1);
-    }
+//    if ((lhs.getValueType() != VALUE_TYPE_DECIMAL) ||
+//        (rhs.getValueType() != VALUE_TYPE_DECIMAL))
+//    {
+//        cout << "Non-decimal NValue in decimal multiply\n";
+//        exit(-1);
+//    }
 
     if (lhs.isNull() || rhs.isNull()) {
         TTInt retval;
@@ -155,12 +154,12 @@ NValue NValue::opMultiplyDecimals(const NValue &lhs, const NValue &rhs) const {
 }
 
 NValue NValue::opDivideDecimals(const NValue lhs, const NValue rhs) const {
-    if ((lhs.getValueType() != VALUE_TYPE_DECIMAL) ||
-        (rhs.getValueType() != VALUE_TYPE_DECIMAL))
-    {
-    	cout << "Non-decimal NValue in decimal divide\n";
-    	exit(-1);
-    }
+//    if ((lhs.getValueType() != VALUE_TYPE_DECIMAL) ||
+//        (rhs.getValueType() != VALUE_TYPE_DECIMAL))
+//    {
+//    	cout << "Non-decimal NValue in decimal divide\n";
+//    	exit(-1);
+//    }
 
     if (lhs.isNull() || rhs.isNull()) {
         TTInt retval;

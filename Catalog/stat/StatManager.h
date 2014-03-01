@@ -22,7 +22,7 @@ public:
 	static StatManager *getInstance();
 	virtual ~StatManager();
 
-	Histogram* getStat(const AttributeID attID);
+	Histogram* getHistogram(const AttributeID attID);
 	Histogram* getStat(const AttributeID attID, const PartitionID partID);
 
 	void addStat(const AttributeID attId, Histogram *stat);
@@ -32,6 +32,7 @@ public:
 	//TODO update method
 	TableStatistic* getTableStatistic(const TableID& table_id)const;
 
+	AttributeStatistics* getAttributeStatistic(const AttributeID &attrId) const;
 	AttributeStatistics* getAttributeStatistic(const Attribute& attr)const;
 
 	void setTableStatistic(const TableID& table_id,TableStatistic* tab_stat);
@@ -40,7 +41,7 @@ private:
 	StatManager();
 
 	static StatManager *m_singleton;
-	boost::unordered_map<AttributeID, StatisticOnTable*> m_stat;
+//	boost::unordered_map<AttributeID, StatisticOnTable*> m_stat;
 
 	boost::unordered_map<TableID,TableStatistic*> tab_stat_list_;
 

@@ -9,6 +9,9 @@
 #define BLOCKSTREAMPROJECTITERATOR_H_
 
 #include "../BlockStreamIteratorBase.h"
+#include "../../common/ExpressionCalculator.h"
+#include "../../common/ExpressionItem.h"
+#include "../../common/Mapping.h"
 #include "../../utility/Expression.h"
 #include "../../configure.h"
 
@@ -17,6 +20,8 @@
 #include <map>
 #include <list>
 using namespace std;
+
+typedef vector<ExpressionItem> ExpressItem_List;
 
 class BlockStreamProjectIterator:public BlockStreamIteratorBase {
 public:
@@ -32,7 +37,7 @@ public:
 	class State{
 		friend class BlockStreamProjectIterator;
 	public:
-		State(Schema *input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Expression *expr);
+		State(Schema *input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map,vector<ExpressItem_List> v_ei);
 		State(){};
 	public:
 		Schema *input_;
@@ -42,14 +47,15 @@ public:
 		 * is the result of the getIteratorTree to construct a schema. getDataflow() can generate a
 		 * schema by using the SQLExpression and Expression can be computed by SQLExpression
 		 * */
-		Expression *expr_;
+		vector<ExpressItem_List> v_ei_;
+		Mapping map_;
 		unsigned block_size_;
 		BlockStreamIteratorBase *children_;
 
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input_ & output_ & children_ & expr_ & block_size_;
+			ar & input_ & output_ & children_ & map_ & block_size_ & v_ei_;
 		}
 	};
 	BlockStreamProjectIterator(State state);

@@ -270,11 +270,88 @@
      YEAR = 487,
      YEAR_MONTH = 488,
      ZEROFILL = 489,
-     FSUBSTRING = 490,
-     FTRIM = 491,
-     FDATE_ADD = 492,
-     FDATE_SUB = 493,
-     FCOUNT = 494
+     DO = 490,
+     MAX_QUERIES_PER_HOUR = 491,
+     MAX_UPDATES_PER_HOUR = 492,
+     MAX_CONNECTIONS_PER_HOUR = 493,
+     MAX_USER_CONNECTIONS = 494,
+     USER = 495,
+     TRUNCATE = 496,
+     FAST = 497,
+     MEDIUM = 498,
+     EXTENDED = 499,
+     CHANGED = 500,
+     LEAVES = 501,
+     MASTER = 502,
+     QUERY = 503,
+     CACHE = 504,
+     SLAVE = 505,
+     BEGINT = 506,
+     COMMIT = 507,
+     START = 508,
+     TRANSACTION = 509,
+     NO = 510,
+     CHAIN = 511,
+     AUTOCOMMIT = 512,
+     SAVEPOINT = 513,
+     ROLLBACK = 514,
+     LOCAL = 515,
+     TABLES = 516,
+     ISOLATION = 517,
+     LEVEL = 518,
+     GLOBAL = 519,
+     SESSION = 520,
+     UNCOMMITTED = 521,
+     COMMITTED = 522,
+     REPEATABLE = 523,
+     SERIALIZABLE = 524,
+     IDENTIFIED = 525,
+     PASSWORD = 526,
+     PRIVILEGES = 527,
+     BACKUP = 528,
+     CHECKSUM = 529,
+     REPAIR = 530,
+     USE_FRM = 531,
+     RESTORE = 532,
+     CHARACTER = 533,
+     COLLATION = 534,
+     COLUMNS = 535,
+     ENGINE = 536,
+     LOGS = 537,
+     STATUS = 538,
+     STORAGE = 539,
+     ENGINES = 540,
+     ERRORS = 541,
+     GRANTS = 542,
+     INNODB = 543,
+     PROCESSLIST = 544,
+     TRIGGERS = 545,
+     VARIABLES = 546,
+     WARNINGS = 547,
+     FLUSH = 548,
+     HOSTS = 549,
+     DES_KEY_FILE = 550,
+     USER_RESOURCES = 551,
+     CONNECTION = 552,
+     RESET = 553,
+     PREPARE = 554,
+     DEALLOCATE = 555,
+     EXECUTE = 556,
+     WORK = 557,
+     BTREE = 558,
+     HASH = 559,
+     BDB = 560,
+     OPEN = 561,
+     FULL = 562,
+     FSUBSTRING = 563,
+     FTRIM = 564,
+     FDATE_ADD = 565,
+     FDATE_SUB = 566,
+     FCOUNT = 567,
+     FSUM = 568,
+     FAVG = 569,
+     FMIN = 570,
+     FMAX = 571
    };
 #endif
 
@@ -284,7 +361,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2638 of glr.c  */
-#line 44 "sql.ypp"
+#line 40 "sql.ypp"
 
 	int intval;
 	double floatval;
@@ -295,7 +372,7 @@ typedef union YYSTYPE
 
 
 /* Line 2638 of glr.c  */
-#line 299 "sql.tab.hpp"
+#line 376 "sql.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 #endif

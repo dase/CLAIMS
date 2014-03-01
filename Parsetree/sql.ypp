@@ -1,3 +1,9 @@
+/*
+ *
+ * 14.02.15 已有select语句和create语句，包括select语句连接系统所需的函数
+ *
+ */
+
 /* Companion source code for "flex & bison", published by O'Reilly
  * Media, ISBN 978-0-596-15597-1
  * Copyright (c) 2009, Taughannock Networks. All rights reserved.
@@ -8,14 +14,9 @@
  * Parser for mysql subset, GLR version
  */
  
-/*
- * 目前还需要编写 可以测试输出整棵树的函数，以及树使用完后 内存释放的问题，
- * 还有将节点实例化的过程编成函数调用的形式
- */
 
-%glr-parser
-%expect 2
-%expect-rr 59
+%glr-parser%expect 7
+%expect-rr 79
 
 %defines
 
@@ -26,18 +27,13 @@
 #include <iostream>
 #include <stdio.h>
 #include <malloc.h>
-#include<set>
-#include<algorithm>
 #include "sql_node_struct.h"
 using namespace std;
 
-extern "C" int yylex(); ////////////////////////
-extern "C" int yyparse();////////////////////
-extern "C" int yywrap();/////////
-extern "C" void yyerror(const char *s, ...);
-extern "C" void emit(char *s, ...);
 Node * parsetreeroot;
 char globalInputText[10000];
+int globalReadOffset;
+int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 %}
 
 
@@ -61,7 +57,7 @@ char globalInputText[10000];
 
 %token <strval> USERVAR
 
-       /* operators and precedence levels */
+	/* operators and precedence levels */
 
 %right ASSIGN
 %left OR
@@ -300,68 +296,149 @@ char globalInputText[10000];
 %token YEAR_MONTH
 %token ZEROFILL
 
+/** added by yukai **/
+%token DO
+%token MAX_QUERIES_PER_HOUR
+%token MAX_UPDATES_PER_HOUR
+%token MAX_CONNECTIONS_PER_HOUR
+%token MAX_USER_CONNECTIONS
+%token USER
+%token TRUNCATE
+%token FAST
+%token MEDIUM
+%token EXTENDED
+%token CHANGED
+%token LEAVES
+%token MASTER
+%token QUERY CACHE
+%token SLAVE
+%token BEGINT
+%token COMMIT
+%token START
+%token TRANSACTION
+%token NO
+%token CHAIN
+%token AUTOCOMMIT
+%token SAVEPOINT
+%token ROLLBACK
+%token LOCAL
+%token TABLES
+%token ISOLATION
+%token LEVEL
+%token GLOBAL
+%token SESSION
+%token UNCOMMITTED
+%token COMMITTED
+%token REPEATABLE
+%token SERIALIZABLE
+%token IDENTIFIED
+%token PASSWORD
+%token PRIVILEGES
+%token BACKUP
+%token CHECKSUM
+%token REPAIR
+%token USE_FRM
+%token RESTORE
+%token CHARACTER
+%token COLLATION
+%token COLUMNS
+%token ENGINE
+%token LOGS
+%token STATUS
+%token STORAGE 
+%token ENGINES
+%token ERRORS
+%token GRANTS
+%token INNODB
+%token PROCESSLIST
+%token TRIGGERS
+%token VARIABLES
+%token WARNINGS
+%token FLUSH
+%token HOSTS
+%token DES_KEY_FILE
+%token USER_RESOURCES
+%token CONNECTION
+%token RESET
+%token PREPARE
+%token DEALLOCATE
+%token EXECUTE
+%token WORK
+%token BTREE
+%token HASH
+%token BDB
+%token OPEN
+%token FULL
+
  /* functions with special syntax */
 %token FSUBSTRING
 %token FTRIM
 %token FDATE_ADD FDATE_SUB
 %token FCOUNT
+//---2.18 add aggrection function
+%token FSUM
+%token FAVG
+%token FMIN
+%token FMAX
+  
   
 /**********/
 
 
-%type <intval> select_opts opt_with_rollup opt_asc_desc opt_inner_cross left_or_right  opt_left_or_right_outer opt_outer data_type
+%type <intval> select_opts opt_with_rollup opt_asc_desc opt_inner_cross left_or_right 
+%type <intval> opt_left_or_right_outer opt_outer  insert_opts
 %type <strval>  opt_as_alias  
 %type <ast_node> stmt_list
-%type <ast_node>  select_expr_list opt_where select_stmt stmt opt_groupby select_expr
-%type <ast_node> val_list opt_val_list  case_list  opt_having opt_orderby expr
+%type <ast_node> select_expr_list opt_where select_stmt stmt opt_groupby select_expr
+%type <ast_node> expr_list opt_expr_list  case_list  opt_having opt_orderby expr
 %type <ast_node> groupby_list opt_limit table_reference table_factor
 %type <ast_node> table_references   opt_into_list opt_join_condition join_condition
-%type <ast_node>  column_list  table_subquery  join_table
+%type <ast_node> column_list  table_subquery  join_table
 %type <ast_node> index_list opt_for_join opt_col_names
 %type <ast_node> delete_opts delete_list 
-%type <ast_node> insert_opts insert_vals insert_vals_list
-%type <ast_node> insert_asgn_list opt_if_not_exists update_opts update_asgn_list
-%type <ast_node> opt_temporary opt_length opt_binary opt_uz enum_list
-%type <ast_node> column_atts  opt_ignore_replace create_col_list
+%type <ast_node> insert_vals insert_vals_list
+%type <ast_node> insert_asgn_list  update_opts update_asgn_list
+%type <ast_node>  opt_length  enum_list
+%type <ast_node> column_atts create_col_list
+
+/** add by yukai **/
+%type <ast_node> create_database_stmt create_table_stmt  create_select_statement
+%type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc
+%type <ast_node> alter_noduplicate_definition alter_definition data_type
+%type <ast_node> truncate_stmt
+%type <intval> table_list opt_rc  opt_ignore opt_if_exists
+%type <intval> opt_col index_att index_type rename_list
+%type <intval> opt_chain opt_release opt_read_write
+%type <intval> opt_trans_level trans_att priv_database_type priv_table_type
+%type <intval> analyze_opt check_opts checksum_opt repair_opts opt_full
+%type <intval> opt_index_key flush_opt flush_opt_list opt_connection_query
+%type <intval> reset_opt reset_opt_list opt_ignore_replace opt_if_not_exists
+%type <intval> opt_temporary  opt_binary opt_uz
 
 %start stmt_list
 
 %%
 
-stmt_list: stmt ';'		{ printf("> \n"); $$ = $1; /*output($$, 1);*/ }
-	| stmt_list stmt ';'{ printf("> \n"); $$ = $1; /*output($$, 1);*/ }
+stmt_list: stmt ';'		{ printf("> \n"); $$ = $1; parsetreeroot = $$; /*output($$, 1);*/ }
+	| stmt_list stmt ';'	{ printf("> \n");/* $$ = $1;*/ parsetreeroot = $$; /*output($$, 1);*/ }
   	;
 
    /* statements: select statement */
 
-stmt: select_stmt { $$=$1; parsetreeroot=$$; output(parsetreeroot,1); puts("This is a select statement"); }
+stmt: select_stmt { $$=$1; output($$, 1); puts("This is a select statement"); }
 	;
 
 select_stmt: 
 	SELECT select_opts select_expr_list
 	{
-		$$ = newQueryStmt(t_query_stmt, NULL, $2, $3,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+		$$ = newQueryStmt(t_query_stmt, NULL, $2, $3, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 		puts("select_stmt1");
 	}
-    | SELECT select_opts select_expr_list FROM table_references opt_where 
+	| SELECT select_opts select_expr_list FROM table_references opt_where 
     			opt_groupby opt_having opt_orderby opt_limit opt_into_list 
 		{
 			$$ = newQueryStmt(t_query_stmt, NULL, $2, $3, $5, $6, $7, $8, $9, $10, $11);
-		/*	output($$, 1);
-			puts("select_stmt2>>>>>>>>");
-			if($6!=NULL)
-			{
-			struct Where_list * curt=(struct Where_list *)$6;
-			struct Node *cur=(struct Node *)(curt->next);
-		//	output(cur,0);
-			departwc(cur,$5);
-				puts("partree complete!!!");
-				
-			}
-			puts("after>>>>>>>>>>>>>");
-			output($5, 1);
-			*/
+			puts("select_stmt2");
 		}		
 	;
 
@@ -433,11 +510,11 @@ opt_into_list: /* nil */ { $$=NULL; puts("opt_into_list is null"); }//no
    | INTO column_list {  }
    ;
 
-column_list: NAME { Columns * n=(Columns *)malloc(sizeof(struct Columns));n->type=t_column;n->parameter1=$1;$$=(Node*)n; }
-  | column_list ',' NAME { Columns * n=(Columns *)malloc(sizeof(struct Columns));n->type=t_column;n->parameter1=$3;n->next=$1;$$=(Node*)n; }
+column_list: NAME { $$ = newColumn(t_column, $1, NULL, NULL); }
+  | column_list ',' NAME { $$ = newColumn(t_column, $3, NULL, $1); }
   ;
 
-select_opts:                          { $$ = 0; }
+select_opts:                      { $$ = 0; }
 | select_opts ALL                 { if($$ & 1) yyerror("duplicate ALL option"); $$ = $1 | 1; }
 | select_opts DISTINCT            { if($$ & 2) yyerror("duplicate DISTINCT option"); $$ = $1 | 2; }
 | select_opts DISTINCTROW         { if($$ & 4) yyerror("duplicate DISTINCTROW option"); $$ = $1 | 4; }
@@ -448,45 +525,19 @@ select_opts:                          { $$ = 0; }
 | select_opts SQL_CALC_FOUND_ROWS { if($$ & 128) yyerror("duplicate SQL_CALC_FOUND_ROWS option"); $$ = $1 | 128; }
     ;
 
-select_expr_list: select_expr 
-		{
-			$$ = newSelectList(t_select_list, 0, $1, NULL);
-			puts("select_expr_list1"); 
-		}
-    | select_expr_list ',' select_expr 
-    	{
-    		$$ = newSelectList(t_select_list, 0, $3, $1);
-    		puts("select_expr_list2");
-    	}
-    | '*' 
-    	{
-			$$ = newSelectList(t_select_list, 1, NULL, NULL);
-			puts("select_expr_list3");
-		}
+select_expr_list: select_expr			{ $$ = newSelectList(t_select_list, 0, $1, NULL); puts("select_expr_list1"); }
+    | select_expr_list ',' select_expr	{ $$ = newSelectList(t_select_list, 0, $3, $1); puts("select_expr_list2"); }
+    | '*'	{ $$ = newSelectList(t_select_list, 1, NULL, NULL); puts("select_expr_list3"); }
     ;
 
-select_expr: expr opt_as_alias 
-		{
-			// newSelectExpr(nodetype type, char *ascolname, Node * colname) 
-			
-			$$ = newSelectExpr(t_select_expr, $2, $1);
-			puts("select_expr");
-		}
-;
+select_expr: expr opt_as_alias	{ $$ = newSelectExpr(t_select_expr, $2, $1); puts("select_expr"); }
+	;
 
-table_references: table_reference 
-	{
-		$$=newFromList(t_from_list, $1, NULL);
-		puts("table_references1");
-	}
-    | table_references ',' table_reference 
-    {
-   		$$=newFromList(t_from_list, $3, $1);
-    	puts("table_references2");
-    }
+table_references: table_reference			{ $$=newFromList(t_from_list, $1, NULL); puts("table_references1"); }
+    | table_references ',' table_reference	{ $$=newFromList(t_from_list, $3, $1); puts("table_references2"); }
     ;
 
-table_reference:  table_factor { $$=$1;puts("table_referen1");}
+table_reference:  table_factor { $$=$1;puts("table_referen1"); }
   	| join_table { $$=$1;puts("table_referen2");}
 	;
 
@@ -505,7 +556,7 @@ table_factor:
 		$$=newTable(t_table, NULL, NULL, $3, 1, $1);
 		puts("table_factor3");
 	}
-	| '(' table_references ')' {$$=$2;}
+	| '(' table_references ')' { $$=$2; }
   	;
 
 opt_as: /* nil */
@@ -602,11 +653,11 @@ opt_for_join: FOR JOIN { $$ = 1; }//no
    | /* nil */ { $$ = 0; }//no
    ;
 
-index_list: NAME  { emit("INDEX %s", $1); free($1); $$ = 1; }//no
-   | index_list ',' NAME { emit("INDEX %s", $3); free($3); $$ = $1 + 1; }//no
+index_list: NAME  { emit("INDEX %s", $1);  }////////////////////////////////////////////////////////////////////////////////
+   | index_list ',' NAME { emit("INDEX %s", $3); }//////////////////////////////////////////////////////////////////////////
    ;
 
-table_subquery: '(' select_stmt ')' { $$=$2; }
+table_subquery: '(' select_stmt ')' {  }
    ;
 
    /* statements: delete statement */
@@ -631,17 +682,16 @@ delete_stmt: DELETE delete_opts
             {  }
 ;
 delete_list: NAME opt_dot_star {  }
-   | delete_list ',' NAME opt_dot_star
-            {  }
+   | delete_list ',' NAME opt_dot_star {  }
    ;
 
-opt_dot_star: /* nil */ | '.' '*' ;
+opt_dot_star: /* nil */ 
+   | '.' '*' 
+   ;
 
-delete_stmt: DELETE delete_opts
-    FROM delete_list
-    USING table_references opt_where
-            { emit("DELETEMULTI %d %d %d", $2, $4, $6); }
-;
+delete_stmt: DELETE delete_opts FROM delete_list USING table_references opt_where
+   { emit("DELETEMULTI %d %d %d", $2, $4, $6); }
+   ;
 
    /* statements: insert statement */
 
@@ -658,22 +708,22 @@ opt_ondupupdate: /* nil */
    | ON DUPLICATE KEY UPDATE insert_asgn_list { emit("DUPUPDATE %d", $5); }
    ;
 
-insert_opts: /* nil */ //{ $$ = 0; }
-   | insert_opts LOW_PRIORITY //{ $$ = $1 | 01 ; }
-   | insert_opts DELAYED //{ $$ = $1 | 02 ; }
-   | insert_opts HIGH_PRIORITY //{ $$ = $1 | 04 ; }
-   | insert_opts IGNORE //{ $$ = $1 | 010 ; }
+insert_opts: /* nil */			{ $$ = 0; }
+   | insert_opts LOW_PRIORITY	{ $$ = $1 | 01 ; }
+   | insert_opts DELAYED 		{ $$ = $1 | 02 ; }
+   | insert_opts HIGH_PRIORITY  { $$ = $1 | 04 ; }
+   | insert_opts IGNORE			{ $$ = $1 | 010 ; }
    ;
 
 opt_into: INTO | /* nil */
-   ;
+	;
 
 opt_col_names: /* nil */
-   | '(' column_list ')' { $$=NULL; }
+   | '(' column_list ')' {  }
    ;
 
-insert_vals_list: '(' insert_vals ')' //{ emit("VALUES %d", $2); $$ = 1; }
-   | insert_vals_list ',' '(' insert_vals ')' //{ emit("VALUES %d", $4); $$ = $1 + 1; }
+insert_vals_list: '(' insert_vals ')' /*{ emit("VALUES %d", $2); }*/
+   | insert_vals_list ',' '(' insert_vals ')' /*{ emit("VALUES %d", $4);}*/
 ;
 insert_vals:
      expr //{ $$ = 1; }
@@ -746,162 +796,764 @@ update_opts: /* nil */ //{ $$ = 0; }
    ;
 
 update_asgn_list:
-     NAME COMPARISON expr 
-     //  { if ($2 != 4) yyerror("bad insert assignment to %s", $1);
-	 //emit("ASSIGN %s", $1); free($1); $$ = 1; }
-   | NAME '.' NAME COMPARISON expr 
-//       { if ($4 != 4) yyerror("bad insert assignment to %s", $1); 	 emit("ASSIGN %s.%s", $1, $3); free($1); free($3); $$ = 1; }
-   | update_asgn_list ',' NAME COMPARISON expr
-  //     { if ($4 != 4) yyerror("bad insert assignment to %s", $3);	 emit("ASSIGN %s.%s", $3); free($3); $$ = $1 + 1; }
-   | update_asgn_list ',' NAME '.' NAME COMPARISON expr
-  //     { if ($6 != 4) yyerror("bad insert assignment to %s.$s", $3, $5);	 emit("ASSIGN %s.%s", $3, $5); free($3); free($5); $$ = 1; }
-   ;
+	NAME COMPARISON expr 
+	{
+		/*
+		if ($2 != 4 || $3->data.string_val == NULL) 
+			yyerror("bad insert assignment to %s", $1);
+	 	emit("ASSIGN %s", $1); 
+	 	free($3); 
+	 	$$ = $3->data.string_val;
+	 	*/ 
+	}
+	| NAME '.' NAME COMPARISON expr 
+	{ 
+	/*
+		if ($4 != 4) 
+			yyerror("bad insert assignment to %s", $1); 
+		emit("ASSIGN %s.%s", $1, $3);
+		free($1); 
+		free($3); 
+		$$ = 1;
+	*/
+	}
+	| update_asgn_list ',' NAME COMPARISON expr
+	//     { if ($4 != 4) yyerror("bad insert assignment to %s", $3); emit("ASSIGN %s.%s", $3); free($3); $$ = $1 + 1; }
+	| update_asgn_list ',' NAME '.' NAME COMPARISON expr
+	//     { if ($6 != 4) yyerror("bad insert assignment to %s.$s", $3, $5); 
+	//		emit("ASSIGN %s.%s", $3, $5); free($3); free($5); $$ = 1;
+	//		}
+	;
 
 
    /** create database **/
 
-stmt: create_database_stmt { emit("STMT"); }
+stmt: create_database_stmt { $$=$1; output($$, 1); puts("This is a create_database statement"); }
    ;
 
 create_database_stmt: 
-     CREATE DATABASE opt_if_not_exists NAME { emit("CREATEDATABASE %d %s", $3, $4); free($4); }
-   | CREATE SCHEMA opt_if_not_exists NAME { emit("CREATEDATABASE %d %s", $3, $4); free($4); }
-   ;
+	CREATE DATABASE opt_if_not_exists NAME 
+		{ $$ =  newCreateDatabaseStmt(t_create_database_stmt, 1, $3, $4); }
+	| CREATE SCHEMA opt_if_not_exists NAME 
+		{ $$ =  newCreateDatabaseStmt(t_create_database_stmt, 2, $3, $4); }
+	;
 
-opt_if_not_exists:  /* nil */ //{ $$ = 0; } 
-   | IF NOT EXISTS            //{ $$ = 1; } 
+opt_if_not_exists:  /* nil */ { $$ = 0; } 
+   | IF NOT EXISTS            { $$ = 1; } 
    ;
 
    /** create table **/
-stmt: create_table_stmt { emit("STMT"); }
+   
+stmt: create_table_stmt { $$=$1; output($$, 1); puts("This is a create_table statement"); }
    ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
-   '(' create_col_list ')' { emit("CREATE %d %d %d %s", $2, $4, $7, $5); free($5); }
-   ;
+	'(' create_col_list ')'  { $$ = newCreateTableStmt(t_create_table_stmt, $2, $4, $5, NULL, $7, NULL); }
+	;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME
-   '(' create_col_list ')' { emit("CREATE %d %d %d %s.%s", $2, $4, $9, $5, $7);
-                          free($5); free($7); }
+   '(' create_col_list ')' { $$ = newCreateTableStmt(t_create_table_stmt, $2, $4, $5, $7, $9, NULL); }
    ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
-   '(' create_col_list ')'
-create_select_statement { emit("CREATESELECT %d %d %d %s", $2, $4, $7, $5); free($5); }
+   '(' create_col_list ')' create_select_statement 
+   { $$ = newCreateTableStmt(t_create_table_stmt, $2, $4, $5, NULL, $7, $9); }
     ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
-   create_select_statement { emit("CREATESELECT %d %d 0 %s", $2, $4, $5); free($5); }
+   create_select_statement { $$ = newCreateTableStmt(t_create_table_stmt, $2, $4, $5, NULL, NULL, $6); }
     ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME
-   '(' create_col_list ')'
-   create_select_statement  { emit("CREATESELECT %d %d 0 %s.%s", $2, $4, $5, $7);
-                              free($5); free($7); }
+   '(' create_col_list ')' create_select_statement  
+   { $$ = newCreateTableStmt(t_create_table_stmt, $2, $4, $5, $7, $9, $11); }
     ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME
-   create_select_statement { emit("CREATESELECT %d %d 0 %s.%s", $2, $4, $5, $7);
-                          free($5); free($7); }
+	create_select_statement 
+	{ $$ = newCreateTableStmt(t_create_table_stmt, $2, $4, $5, $7, NULL, $8); }
+	;
+
+	
+create_select_statement: opt_ignore_replace opt_as select_stmt 
+	{ $$ = newCreateSelectStmt(t_create_select_stmt, $1, 0, $3); }
+	;
+
+opt_ignore_replace: /* nil */	{ $$ = 0; }
+	| IGNORE		{ $$ = 1; }
+	| REPLACE 		{ $$ = 2; }
+	;
+
+opt_temporary: /* nil */{ $$ = 0; }
+	| TEMPORARY 		{ $$ = 1; }
+	;
+
+create_col_list: create_definition { $$ = newCreateColList(t_create_col_list, $1, NULL); }
+	| create_col_list ',' create_definition { $$ = newCreateColList(t_create_col_list, $3, $1); }
+	;
+
+create_definition: 
+    NAME data_type column_atts		{ $$ = newCreateDef( t_create_def, 1, $2, $3, NULL); }
+    | PRIMARY KEY '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 2, 0, NULL, $4); }
+    | KEY '(' column_list ')'		{ $$ = newCreateDef( t_create_def, 3, 0, NULL, $3); }
+    | INDEX '(' column_list ')'		{ $$ = newCreateDef( t_create_def, 4, 0, NULL, $3); }
+    | FULLTEXT INDEX '(' column_list ')'{ $$ = newCreateDef( t_create_def, 5, 0, NULL, $4); }
+    | FULLTEXT KEY '(' column_list ')'  { $$ = newCreateDef( t_create_def, 6, 0, NULL, $4); }
     ;
 
-create_col_list: create_definition { }
-    | create_col_list ',' create_definition { }
+column_atts: /* nil */				{ $$ = newColumnAtts(t_column_atts, 0, 0, 0, NULL, NULL); }
+    | column_atts NOT NULLX             	{ Column_atts *t = (Column_atts *)$1;t->datatype += 01; $$ = (Node *)t; }
+    | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1;t->datatype += 02; $$ = (Node *)t; }
+    | column_atts DEFAULT STRING        	{  Column_atts *t = (Column_atts *)$1;t->datatype += 04; t->s = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT INTNUM		{  Column_atts *t = (Column_atts *)$1;t->datatype += 010; t->num1 = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT APPROXNUM     	{  Column_atts *t = (Column_atts *)$1;t->datatype += 020; t->num2 = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT BOOL          	{  Column_atts *t = (Column_atts *)$1;t->datatype += 040; t->num1 = $3; $$ = (Node *)t; }
+    | column_atts AUTO_INCREMENT        	{  Column_atts *t = (Column_atts *)$1;t->datatype += 0100; $$ = (Node *)t; }
+    | column_atts UNIQUE KEY 			{  Column_atts *t = (Column_atts *)$1;t->datatype += 0200; $$ = (Node *)t; }
+    | column_atts PRIMARY KEY			{  Column_atts *t = (Column_atts *)$1;t->datatype += 0400; $$ = (Node *)t; }
+    | column_atts KEY 				{  Column_atts *t = (Column_atts *)$1;t->datatype += 01000; $$ = (Node *)t; }
+    | column_atts COMMENT STRING 		{  Column_atts *t = (Column_atts *)$1;t->datatype += 02000; $$ = (Node *)t; }
+    | column_atts UNIQUE '(' column_list ')'	{  Column_atts *t = (Column_atts *)$1;t->datatype += 04000; t->col_list = $4; $$ = (Node *)t; }	
+    ;
+    
+	
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/** do expr **/
+stmt: DO expr_list { $$ = newDoStmt(t_do_stmt,$2); puts("This is a do expr statement"); }
+    ;
+    
+	/** truncate stmt **/
+stmt: truncate_stmt { $$ = $1; puts("This is a truncate_stmt statement"); }
+    ;
+	
+truncate_stmt: TRUNCATE NAME	{ $$ = newTruncateStmt(t_truncate_stmt, $2); }
+    | TRUNCATE TABLE NAME	{ $$ = newTruncateStmt(t_truncate_stmt, $3); }
     ;
 
-create_definition: { emit("STARTCOL"); } NAME data_type column_atts
-                   { emit("COLUMNDEF %d %s", $3, $2); free($2); }
+   /** alter database **/
+stmt: alter_database_stmt { $$=$1; output($$, 1); puts("This is a alter_database statement"); }
+	;
 
-    | PRIMARY KEY '(' column_list ')'   // { emit("PRIKEY %d", $4); }
-    | KEY '(' column_list ')'           // { emit("KEY %d", $3); }
-    | INDEX '(' column_list ')'         // { emit("KEY %d", $3); }
-    | FULLTEXT INDEX '(' column_list ')'// { emit("TEXTINDEX %d", $4); }
-    | FULLTEXT KEY '(' column_list ')'  // { emit("TEXTINDEX %d", $4); }
+alter_database_stmt:
+	ALTER DATABASE NAME opt_csc 	{ $$ = newAlterDBStmt(t_alter_database_stmt, 1, $3, $4); }	
+   | ALTER SCHEMA NAME opt_csc		{ $$ = newAlterDBStmt(t_alter_database_stmt, 2, $3, $4); }
+   ;
+   
+   /** alter table **/
+stmt: alter_table_stmt { $$=$1; output($$, 1); puts("This is a alter_table statement"); }
+	;
+	
+/*MySQL可以在一个ALTER TABLE语句里写入多个ADD, ALTER, DROP和CHANGE子句，中间用逗号分开*/   
+alter_table_stmt: 
+	ALTER opt_ignore TABLE NAME alter_definition { $$ = newAlterTableStmt(t_alter_table_stmt, $2, $4, $5); }
+   | ALTER opt_ignore TABLE NAME alter_noduplicate_definition { $$ = newAlterTableStmt(t_alter_table_stmt, $2, $4, $5); }
+   ;
+   
+alter_definition:
+	alter_duplicate_definition
+   | alter_definition ',' alter_duplicate_definition
+   ;
+   
+alter_duplicate_definition: 
+	ADD opt_col create_col_list {}
+   | CHANGE opt_col NAME NAME data_type column_atts {}
+   | DROP opt_col NAME 
+   | DROP PRIMARY KEY
+   | DROP INDEX column_list
+   | DROP FOREIGN KEY column_list
+   ;
+   
+opt_col: /* nil */ { $$ = 0; }
+   | COLUMN { $$ = 1; }
+   ;
+   
+alter_noduplicate_definition:
+   | RENAME NAME {}
+   | RENAME TO NAME {}
+   | ORDER BY NAME
+   ;
+   
+opt_ignore: /* nil */ { $$ = 0; }
+   | IGNORE { $$ = 1; }
+   ;
+	
+    /** create index **/
+stmt: create_index_stmt { emit("STMT"); }
+	;
+	
+create_index_stmt:
+	CREATE index_att INDEX NAME opt_using_type ON NAME '(' index_col_list ')'
     ;
-
-column_atts: /* nil */ { $$ = 0; }
-    | column_atts NOT NULLX             { emit("ATTR NOTNULL"); $$ = $1 + 1; }
-    | column_atts NULLX
-    | column_atts DEFAULT STRING        { emit("ATTR DEFAULT STRING %s", $3); free($3); $$ = $1 + 1; }
-    | column_atts DEFAULT INTNUM        { emit("ATTR DEFAULT NUMBER %d", $3); $$ = $1 + 1; }
-    | column_atts DEFAULT APPROXNUM     { emit("ATTR DEFAULT FLOAT %g", $3); $$ = $1 + 1; }
-    | column_atts DEFAULT BOOL          { emit("ATTR DEFAULT BOOL %d", $3); $$ = $1 + 1; }
-    | column_atts AUTO_INCREMENT        { emit("ATTR AUTOINC"); $$ = $1 + 1; }
-    | column_atts UNIQUE '(' column_list ')' { emit("ATTR UNIQUEKEY %d", $4); $$ = $1 + 1; }
-    | column_atts UNIQUE KEY { emit("ATTR UNIQUEKEY"); $$ = $1 + 1; }
-    | column_atts PRIMARY KEY { emit("ATTR PRIKEY"); $$ = $1 + 1; }
-    | column_atts KEY { emit("ATTR PRIKEY"); $$ = $1 + 1; }
-    | column_atts COMMENT STRING { emit("ATTR COMMENT %s", $3); free($3); $$ = $1 + 1; }
+	
+index_att: /* nil */ { $$ = 0;} 
+   | UNIQUE 	{ $$ = 1; }
+   | FULLTEXT	{ $$ = 2; }
+   | SPATIAL	{ $$ = 3; }
+   ;
+   
+opt_using_type: 
+    | USING index_type
     ;
+	
+index_type: BTREE	{ $$ = 1; }
+    | HASH			{ $$ = 2; }
+	;
+	
+index_col_list: index_col_name
+    | index_col_list ',' index_col_name
+	;
 
-opt_length: /* nil */ //{ $$ = 0; }
-   | '(' INTNUM ')' //{ $$ = $2; }
-   | '(' INTNUM ',' INTNUM ')' //{ $$ = $2 + 1000*$4; }
+index_col_name: NAME opt_length opt_asc_desc
+    ;
+	
+	/** drop index **/
+stmt: drop_index_stmt { emit("STMT"); }
+    ;
+	
+drop_index_stmt: DROP INDEX NAME ON NAME
+    ;
+	
+	/**	drop database **/	
+stmt: drop_database_stmt { emit("STMT"); }
+	;
+	
+drop_database_stmt: 
+	DROP DATABASE opt_if_exists NAME	{ emit("DROPDATABASE %d %s", $3, $4); free($4); }
+   | DROP SCHEMA opt_if_exists NAME 	{ emit("DROPSCHEMA %d %s", $3, $4); free($4); }
+   ;
+   
+opt_if_exists: /* nil */	{ $$ = 0; }
+   | IF EXISTS				{ $$ = 1; }
+   ;
+   
+   /** drop table **/
+stmt: drop_table_stmt { emit("STMT"); }
+
+drop_table_stmt:
+	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	{ emit("DROP %d %d %d %d", $2, $4, $5, $6); }
+	;
+	
+table_list: NAME 					{ emit("TABLE %s", $1);}
+   | NAME'.' NAME					{ emit("TABLE %s.%s", $1, $3); }
+   | table_list ',' NAME			{ emit("TABLE %s", $1);}
+   | table_list ',' NAME '.' NAME	{ emit("TABLE %s.%s", $1, $3); }
    ;
 
-opt_binary: /* nil */ //{ $$ = 0; }
-   | BINARY //{ $$ = 4000; }
+opt_rc: /* nil */ 	{ $$ = 0; }
+   | RESTRICT	 	{ $$ = 1; }
+   | CASCADE 		{ $$ = 2; }
+   ;
+   
+   
+   /** rename table **/
+stmt: rename_table_stmt { emit("STMT"); }
+   ;
+   
+rename_table_stmt: RENAME TABLE rename_list {}
+   ;
+   
+rename_list: 
+   | NAME TO NAME{}
+   | NAME '.' NAME TO NAME '.' NAME {}
+   | rename_list ',' NAME TO NAME {}
+   | rename_list ',' NAME '.' NAME TO NAME '.' NAME {}
    ;
 
-opt_uz: /* nil */ //{ $$ = 0; }
-   | opt_uz UNSIGNED //{ $$ = $1 | 1000; }
-   | opt_uz ZEROFILL //{ $$ = $1 | 2000; }
+     /** describe name **/
+stmt: describe_stmt { emit("STMT"); }
+   ;
+   
+describe_stmt: DESCRIBE NAME {}
+   | DESC NAME {}
+   ;
+   
+   /** use database **/
+stmt: use_stmt { emit("STMT"); }
+   ;
+   
+use_stmt: USE NAME {}
+   ;
+   
+   /** start transaction, commit, rollback **/
+stmt: start_transaction_stmt { emit("STMT"); }
+   | commit_stmt { emit("STMT"); }
+   | rollback_stmt { emit("STMT"); }
+   ;
+   
+start_transaction_stmt: START TRANSACTION 
+   | BEGINT opt_work
+   ;
+   
+opt_work: /* nil */
+   | WORK
+   ;
+   
+commit_stmt: COMMIT opt_work opt_chain opt_release { emit("STMT"); }
+   ;
+   
+ opt_chain: /* nil */	{ $$ = 0; }
+   | AND NO CHAIN	{ $$ = 1; }
+   | AND CHAIN	{ $$ = 2; }
+   ;
+   
+opt_release: /* nil */	{ $$ = 0; }
+   | NO RELEASE	{ $$ = 1; }
+   | RELEASE	{ $$ = 2; }
+   ;
+   
+rollback_stmt: ROLLBACK opt_work opt_chain opt_release { emit("STMT"); }
+   ;
+   
+   /** set autocommit **/
+stmt: set_autocommit_stmt { emit("STMT"); }
+   ;
+   
+set_autocommit_stmt: SET AUTOCOMMIT COMPARISON expr
+   ;
+   
+   /** savepoint,rollback savepoint, release savepoint **/
+stmt: savepoint_stmt
+   | rollback_to_savepoint_stmt
+   | release_savepoint
+   ;
+   
+   
+savepoint_stmt: SAVEPOINT NAME	/* SAVEPOINT identifier */
+   ;
+   
+rollback_to_savepoint_stmt: ROLLBACK opt_work TO SAVEPOINT NAME
+   ;
+   
+release_savepoint: RELEASE SAVEPOINT NAME
+   ;
+   
+   /** lock tables **/
+stmt: lock_table_stmt  { emit("STMT"); }
+   ;
+   
+lock_table_stmt: LOCK TABLES lock_table_list
+   ;
+   
+lock_table_list: lock_table
+   | lock_table_list ',' lock_table
+   ;
+   
+lock_table: NAME opt_as_alias opt_read_write
+   ;
+   
+opt_read_write: READ	{ $$ = 1; }
+   | READ LOCAL			{ $$ = 2; }
+   | LOW_PRIORITY WRITE { $$ = 3; }
+   | WRITE				{ $$ = 4; }
+   ;
+   
+   /** unlock tables **/
+stmt: unlock_tables
+   ;
+   
+unlock_tables: UNLOCK TABLES
+   ;
+   
+   /** set transaction **/
+stmt: set_transaction_stmt
+   ;
+   
+set_transaction_stmt:
+	SET opt_trans_level TRANSACTION ISOLATION LEVEL trans_att
+   ;
+	
+opt_trans_level: /* nil */	{ $$ = 0; }
+   | GLOBAL					{ $$ = 1; }
+   | SESSION				{ $$ = 2; }
+   ;
+   
+trans_att:
+	READ UNCOMMITTED	{ $$ = 1; }
+	| READ COMMITTED	{ $$ = 2; }
+	| REPEATABLE READ	{ $$ = 3; }
+	| SERIALIZABLE		{ $$ = 4; }
+	;
+   
+   	/** create user **/
+stmt: create_user_stmt { emit("STMT"); }
+   ;
+   
+create_user_stmt: CREATE USER create_user_list
    ;
 
-opt_csc: /* nil */
-   | opt_csc CHAR SET STRING { emit("COLCHARSET %s", $4); free($4); }
-   | opt_csc COLLATE STRING { emit("COLCOLLATE %s", $3); free($3); }
+create_user_list: create_user
+   | create_user_list ',' create_user
+   ;
+   
+create_user: USERVAR
+   | USERVAR IDENTIFIED BY STRING
+   | USERVAR IDENTIFIED BY PASSWORD STRING
+   ;
+   
+   /** drop user **/
+stmt: drop_user_stmt { emit("STMT"); }
    ;
 
-data_type:
- /*    BIT opt_length// { $$ = 10000 + $2; }
-   | TINYINT opt_length opt_uz //{ $$ = 10000 + $2; }
-   | SMALLINT opt_length opt_uz //{ $$ = 20000 + $2 + $3; }
-   | MEDIUMINT opt_length opt_uz //{ $$ = 30000 + $2 + $3; }
-   | INT opt_length opt_uz //{ $$ = 40000 + $2 + $3; }
-   | INTEGER opt_length opt_uz //{ $$ = 50000 + $2 + $3; }
-   | BIGINT opt_length opt_uz //{ $$ = 60000 + $2 + $3; }
-   | REAL opt_length opt_uz //{ $$ = 70000 + $2 + $3; }
-   | DOUBLE opt_length opt_uz //{ $$ = 80000 + $2 + $3; }
-   | FLOAT opt_length opt_uz { $$ = 90000 + $2 + $3; }
-   | DECIMAL opt_length opt_uz //{ $$ = 110000 + $2 + $3; }
-   | DATE //{ $$ = 100001; }
-   | TIME// { $$ = 100002; }
-   | TIMESTAMP { $$ = 100003; }
-   | DATETIME { $$ = 100004; }
-   | YEAR { $$ = 100005; }
-   | CHAR opt_length opt_csc { $$ = 120000 + $2; }
-   | VARCHAR '(' INTNUM ')' opt_csc { $$ = 130000 + $3; }
-   | BINARY opt_length { $$ = 140000 + $2; }
-   | VARBINARY '(' INTNUM ')' { $$ = 150000 + $3; }
-   | TINYBLOB { $$ = 160001; }
-   | BLOB { $$ = 160002; }
-   | MEDIUMBLOB { $$ = 160003; }
-   | LONGBLOB { $$ = 160004; }
-   | TINYTEXT opt_binary opt_csc { $$ = 170000 + $2; }
-   | TEXT opt_binary opt_csc { $$ = 171000 + $2; }
-   | MEDIUMTEXT opt_binary opt_csc { $$ = 172000 + $2; }
-   | LONGTEXT opt_binary opt_csc { $$ = 173000 + $2; }
-   | ENUM '(' enum_list ')' opt_csc { $$ = 200000 + $3; }
-   | SET '(' enum_list ')' opt_csc { $$ = 210000 + $3; }*/
+drop_user_stmt: DROP USER user_list
+   ;
+   
+user_list: USERVAR
+   | user_list ',' USERVAR
+   ;
+   
+   /** grant all **/
+stmt: grant_all_stmt { emit("STMT"); }
+   ;
+   
+grant_all_stmt: GRANT priv_database_list ON '*' '.' '*' TO create_user_list opt_with_opt
+	;
+	
+priv_database_list: priv_database_type
+   | priv_database_list ',' priv_database_type
+   ;
+   
+priv_database_type: 
+	ALL		{ $$ = 01; }
+   | ALL PRIVILEGES	{ $$ = 02; }
+   | SELECT	{ $$ = 04; }
+   | UPDATE { $$ = 010; }
+   | INSERT	{ $$ = 020; }
+   | DELETE	{ $$ = 040; }
+   | CREATE	{ $$ = 0100; }
+   | DROP	{ $$ = 0200; }
+   | INDEX	{ $$ = 0400; }
+   | ALTER	{ $$ = 01000; }
+   | GRANT OPTION	{ $$ = 02000; }
+   | REFERENCES		{ $$ = 04000; }
+   ;
+   
+opt_with_opt: /* nil */
+   | WITH with_opt
+   ;
+   
+with_opt: 
+	GRANT OPTION
+   | MAX_QUERIES_PER_HOUR expr
+   | MAX_UPDATES_PER_HOUR expr
+   | MAX_CONNECTIONS_PER_HOUR expr
+   | MAX_USER_CONNECTIONS expr
+   ;
+	
+   /** grant database **/
+stmt: grant_database_stmt { emit("STMT"); }
+   ;
+   
+grant_database_stmt: GRANT priv_database_list ON NAME '.' '*' TO create_user_list opt_with_opt
    ;
 
-enum_list: STRING //{ emit("ENUMVAL %s", $1); free($1); $$ = 1; }
-   | enum_list ',' STRING //{ emit("ENUMVAL %s", $3); free($3); $$ = $1 + 1; }
+   /** grant table **/
+stmt: grant_table_stmt { emit("STMT"); }
+   ;
+   
+grant_table_stmt: GRANT priv_table_list ON NAME '.' NAME TO create_user_list opt_with_opt
+   ;
+   
+priv_table_list: priv_table_type
+   | priv_table_list ',' priv_table_type
+   ;
+	
+priv_table_type: 
+	SELECT opt_col_names
+   | UPDATE opt_col_names
+   | INSERT opt_col_names
+   | DELETE 
+   | CREATE
+   | DROP
+   | INDEX
+   | ALTER
+   | GRANT OPTION
+   ;
+	/* 
+	对于一个表，您可以指定的priv_type值只能是
+	SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, GRANT OPTION, INDEX和ALTER。
+	对于一个列（也就是，当您使用一个column_list子句时），
+	您可以指定的priv_type值只能是SELECT, INSERT和UPDATE。
+	*/
+
+	/** revoke all **/
+stmt: revoke_all_stmt { emit("STMT"); }
+   ;
+   
+revoke_all_stmt: REVOKE priv_database_list ON '*' '.' '*' FROM user_list
+	;
+   /** revoke database **/
+stmt: revoke_database_stmt  { emit("STMT"); }
    ;
 
-create_select_statement: opt_ignore_replace opt_as select_stmt { emit("CREATESELECT %d", $1) }
+revoke_database_stmt: REVOKE priv_database_list ON NAME '.' '*' FROM user_list opt_with_opt
+   ;
+   
+stmt: revoke_table_stmt  { emit("STMT"); }
    ;
 
-opt_ignore_replace: /* nil */// { $$ = 0; }
-   | IGNORE// { $$ = 1; }
-   | REPLACE //{ $$ = 2; }
+revoke_table_stmt: REVOKE priv_table_list ON NAME '.' NAME FROM user_list opt_with_opt
+   ;
+   
+   /** rename user **/
+stmt: rename_user_stmt { emit("STMT"); }
+   ;
+   
+rename_user_stmt: RENAME USER utou_list
+   ;
+   
+utou_list: 
+	USERVAR TO USERVAR
+   | utou_list ',' USERVAR TO USERVAR
+   ;
+   
+   /** set password **/
+stmt: set_password_stmt { emit("STMT"); }
+   ;
+   
+set_password_stmt: SET PASSWORD opt_for_user COMPARISON PASSWORD '(' STRING ')'
+   ;
+   
+opt_for_user: /* nil */
+   | FOR USERVAR
+   ;
+   
+   /** analyze table**/
+stmt: analyze_table_stmt { emit("STMT"); }
+   ;
+   
+analyze_table_stmt: ANALYZE analyze_opt TABLE table_list
+   ;
+   
+analyze_opt: /* nil */	{ $$ = 0; }
+   | LOCAL	{ $$ = 1; }
+   | NO_WRITE_TO_BINLOG	{ $$ = 2; }
+   ;
+   
+   /** backup table **/
+stmt: backup_table_stmt { emit("STMT"); }
+   ;
+   
+backup_table_stmt: BACKUP TABLE table_list TO STRING
+   ;
+   
+   /** check table **/
+stmt: check_table_stmt { emit("STMT"); }
+   ;
+   
+check_table_stmt: CHECK TABLE table_list check_opts
+   ;
+   
+check_opts: /* nil */	{ $$ = 0; }
+   | QUICK	{ $$ = 1; }
+   | FAST	{ $$ = 2; }
+   | MEDIUM	{ $$ = 3; }
+   | EXTENDED	{ $$ = 4; }
+   | CHANGED	{ $$ = 5; }
+   ;
+   
+   /** checksum table **/
+stmt: checksum_table_stmt { emit("STMT"); }
+   ;
+   
+checksum_table_stmt: CHECKSUM TABLE table_list checksum_opt
+   ;
+   
+checksum_opt: /* nil */	{ $$ = 0; }
+   | QUICK	{ $$ = 1; }
+   | EXTENDED	{ $$ = 2; }
+   ;
+   
+   /** optimize table **/
+stmt: optimize_table_stmt { emit("STMT"); }
+   ;
+   
+optimize_table_stmt: OPTIMIZE analyze_opt TABLE table_list
+   ;
+    
+	/** repair table **/
+stmt: repair_table_stmt { emit("STMT"); }
+   ;
+   
+repair_table_stmt: REPAIR analyze_opt TABLE table_list repair_opts
+   ;
+   
+repair_opts: /* nil */
+   | repair_opts QUICK
+   | repair_opts EXTENDED
+   | repair_opts USE_FRM
+   ;
+   
+	/** restore table **/
+stmt: restore_table_stmt { emit("STMT"); }
+   ;
+   
+restore_table_stmt: RESTORE TABLE table_list FROM STRING
+   ;
+   
+   /** show statement **/
+stmt: show_stmt
+   ;
+   
+show_stmt: SHOW CHARACTER SET opt_like_string
+   | SHOW COLLATION opt_like_string
+   | SHOW opt_full COLUMNS FROM NAME opt_from opt_like_string
+   | SHOW CREATE DATABASE NAME
+   | SHOW CREATE SCHEMA NAME
+   | SHOW CREATE TABLE NAME
+   | SHOW DATABASE NAME
+   | SHOW SCHEMA NAME 
+   | SHOW ENGINE NAME LOGS
+   | SHOW ENGINE NAME STATUS
+   | SHOW STORAGE ENGINES
+   | SHOW ERRORS opt_limit
+   | SHOW expr ERRORS  /* expr = COUNT(*) */
+   | SHOW GRANTS FOR USERVAR
+   | SHOW INDEX FROM NAME opt_from
+   | SHOW INNODB STATUS
+   | SHOW opt_bdb LOGS
+   | SHOW OPEN TABLES opt_from opt_like_string
+   | SHOW PRIVILEGES
+   | SHOW opt_full PROCESSLIST
+   | SHOW opt_trans_level STATUS opt_like_string
+   | SHOW TABLE STATUS opt_from opt_like_string
+   | SHOW opt_full TABLES opt_from opt_like_string
+   | SHOW TRIGGERS opt_from opt_like_expr
+   | SHOW opt_trans_level VARIABLES opt_like_string
+   | SHOW WARNINGS opt_limit
+   | SHOW expr WARNINGS /* expr = COUNT(*) */
+   ;
+   
+opt_full: /* nil */	{ $$ = 0; }
+   | FULL	{ $$ = 1; }
+   ;
+   
+opt_from: /* nil */
+   | FROM NAME
+   ;
+   
+opt_like_string: /* nil */
+   | LIKE STRING
+   ;
+   
+opt_like_expr: /* nil */
+   | LIKE expr
+   ;
+   
+opt_bdb: /* nil */
+   | BDB
+   ;
+   
+   /* cache index */
+stmt: cache_index_stmt
+   ;
+   
+cache_index_stmt: CACHE INDEX  table_index_list IN NAME
+   ;
+   
+table_index_list: table_index
+   | table_index_list ',' table_index
+   ;
+   
+table_index: NAME
+   | NAME opt_index_key index_list
+   ;
+   
+opt_index_key: /* nil */	{ $$ = 0; }
+   | INDEX	{ $$ = 1; }
+   | KEY	{ $$ = 2; }
+   ;
+   
+   /* flush statement */
+stmt: flush_stmt
+   ;
+   
+flush_stmt: FLUSH analyze_opt flush_opt_list
+   ;
+   
+flush_opt_list: flush_opt
+   | flush_opt_list ',' flush_opt
+   ;
+   
+flush_opt: HOSTS	{ $$ = 1; }
+   | DES_KEY_FILE	{ $$ = 2; }
+   | LOGS			{ $$ = 04; }
+   | PRIVILEGES		{ $$ = 010; }
+   | QUERY CACHE	{ $$ = 020; }
+   | STATUS			{ $$ = 040; }
+   | TABLE NAME		{ $$ = 0100; }
+   | TABLES table_list		{ $$ = 0200; }
+   | TABLES WITH READ LOCK	{ $$ = 0400; }
+   | USER_RESOURCES			{ $$ = 01000; }
+   ;
+   
+   /* kill statement */
+stmt: kill_stmt
+   ;
+   
+kill_stmt: KILL opt_connection_query expr
+   ;
+   
+opt_connection_query: /* nil */	{ $$ = 0; }
+   | CONNECTION	{ $$ = 1; }
+   | QUERY		{ $$ = 2; }
+   ;
+   
+   /** load index into cache **/
+stmt: load_index_stmt
+   ;
+   
+load_index_stmt: LOAD INDEX INTO CACHE table_index_list
+   ;
+   
+table_index_list: NAME opt_index_key_list opt_ignore_leaves
+   ;
+   
+opt_index_key_list: opt_index_key '(' index_list ')'
+   ;
+   
+opt_ignore_leaves: /* nil */
+   | IGNORE LEAVES
+   ;
+   
+   /** reset statement **/
+stmt: reset_stmt
+   ;
+   
+reset_stmt: RESET reset_opt_list
+   ;
+   
+reset_opt_list: reset_opt
+   | reset_opt_list ',' reset_opt
+   ;
+   
+reset_opt: MASTER	{ $$ = 1; }
+   | QUERY CACHE	{ $$ = 2; }
+   | SLAVE			{ $$ = 3; }
+   ;
+   
+   /** prepare statement **/
+stmt: prepare_stmt
+   ;
+   
+prepare_stmt: PREPARE NAME FROM stmt
+   | EXECUTE NAME opt_use_name
+   | DEALLOCATE PREPARE NAME
+   | DROP PREPARE NAME
    ;
 
-opt_temporary:   /* nil */ //{ $$ = 0; }
-   | TEMPORARY //{ $$ = 1;}
+opt_use_name: /* nil */
+   | USING user_list
    ;
 
+expr: '?'
+   ;
+   
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
    /**** set user variables ****/
 
 stmt: set_stmt { emit("STMT"); }
@@ -912,10 +1564,78 @@ set_stmt: SET set_list ;
 set_list: set_expr | set_list ',' set_expr ;
 
 set_expr:
-      USERVAR COMPARISON expr { if ($2 != 4) yyerror("bad set to @%s", $1);
-		 emit("SET %s", $1); free($1); }
-    | USERVAR ASSIGN expr { emit("SET %s", $1); free($1); }
+	USERVAR COMPARISON expr 
+	{ if ($2 != 4) yyerror("bad set to @%s", $1);
+		emit("SET %s", $1); free($1);
+	}
+    | USERVAR ASSIGN expr 
+    {
+    	emit("SET %s", $1); 
+    	free($1); 
+    }
     ;
+    
+
+opt_length: /* nil */		{ $$ = NULL; }
+   | '(' INTNUM ')' 		{ $$ = newLength (t_length, $2, 0); }
+   | '(' INTNUM ',' INTNUM ')'	{ $$ = newLength (t_length, $2, $4); }
+   ;
+
+opt_binary: /* nil */	{ $$ = 0; }
+   | BINARY		{ $$ = 1; }
+   ;
+
+opt_uz: /* nil */ 	{ $$ = 0; }
+   | opt_uz UNSIGNED	{ $$ = $1 | 01; }
+   | opt_uz ZEROFILL	{ $$ = $1 | 02; }
+   ;
+
+opt_csc: /* nil */		{ $$ =newOptCsc(t_opt_csc, 0, NULL, NULL);}
+   | opt_csc CHAR SET NAME	/* 最先是char set string，后改为name */
+		{ Opt_csc * t = (Opt_csc *)$1; t->datatype = t->datatype | 01; t->s1 = $4; $$ = (Node *)t; }
+   | opt_csc COLLATE NAME	
+		{ Opt_csc * t = (Opt_csc *)$1; t->datatype = t->datatype | 02; t->s2 = $3; $$ = (Node *)t; }
+   ;
+
+data_type:
+   BIT opt_length			{ $$ = newDatatype (t_datatype, 01, $2, 0, NULL, 0, NULL); }
+   | TINYINT opt_length opt_uz 		{ $$ = newDatatype (t_datatype, 02, $2, $3, NULL, 0, NULL); }
+   | SMALLINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 04, $2, $3, NULL, 0, NULL); }
+   | MEDIUMINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 010, $2, $3, NULL, 0, NULL); }
+   | INT opt_length opt_uz		{ $$ = newDatatype (t_datatype, 020, $2, $3, NULL, 0, NULL); }
+   | INTEGER opt_length opt_uz		{ $$ = newDatatype (t_datatype, 040, $2, $3, NULL, 0, NULL); }
+   | BIGINT opt_length opt_uz	{ $$ = newDatatype (t_datatype, 0100, $2, $3, NULL, 0, NULL); }
+   | REAL opt_length opt_uz	{ $$ = newDatatype (t_datatype, 0200, $2, $3, NULL, 0, NULL); }
+   | DOUBLE opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 0400, $2, $3, NULL, 0, NULL); }
+   | FLOAT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 01000, $2, $3, NULL, 0, NULL); }
+   | DECIMAL opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 02000, $2, $3, NULL, 0, NULL); }
+   | DATE 			{ $$ = newDatatype (t_datatype, 04000, NULL, 0, NULL, 0, NULL); }
+   | TIME			{ $$ = newDatatype (t_datatype, 010000, NULL, 0, NULL, 0, NULL); }
+   | TIMESTAMP			{ $$ = newDatatype (t_datatype, 020000, NULL, 0, NULL, 0, NULL); }
+   | DATETIME 			{ $$ = newDatatype (t_datatype, 040000, NULL, 0, NULL, 0, NULL); }
+   | YEAR 			{ $$ = newDatatype (t_datatype, 0100000, NULL, 0, NULL, 0, NULL); }
+   | CHAR opt_length opt_csc 	{ $$ = newDatatype (t_datatype, 0200000, $2, 0, $3, 0, NULL); }
+   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, $3, NULL);
+					$$ = newDatatype (t_datatype, 0400000, t, 0, $5, 0, NULL); }
+   | BINARY opt_length 		{ $$ = newDatatype (t_datatype, 01000000, $2, 0, NULL, 0, NULL); }
+   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, $3, NULL);
+				$$ = newDatatype (t_datatype, 02000000, NULL, 0, NULL, 0, NULL); }
+   | TINYBLOB 			{ $$ = newDatatype (t_datatype, 04000000, NULL, 0, NULL, 0, NULL); }
+   | BLOB 			{ $$ = newDatatype (t_datatype, 010000000, NULL, 0, NULL, 0, NULL); }
+   | MEDIUMBLOB			{ $$ = newDatatype (t_datatype, 020000000, NULL, 0, NULL, 0, NULL); }
+   | LONGBLOB			{ $$ = newDatatype (t_datatype, 040000000, NULL, 0, NULL, 0, NULL); }
+   | TINYTEXT opt_binary opt_csc{ $$ = newDatatype (t_datatype, 0100000000, NULL, 0, $3, $2, NULL); }
+   | TEXT opt_binary opt_csc 	{ $$ = newDatatype (t_datatype, 0200000000, NULL, 0, $3, $2, NULL); }
+   | MEDIUMTEXT opt_binary opt_csc{ $$ = newDatatype (t_datatype, 0400000000, NULL,0, $3, $2, NULL); }
+   | LONGTEXT opt_binary opt_csc  { $$ = newDatatype (t_datatype, 01000000000,NULL,0, $3, $2, NULL); }
+   | ENUM '(' enum_list ')' opt_csc{ $$ = newDatatype (t_datatype, 02000000000, NULL, 0, $5, 0, $3); }
+   | SET '(' enum_list ')' opt_csc { $$ = newDatatype (t_datatype, 04000000000, NULL, 0, $5, 0, $3); }
+   ;
+
+enum_list: STRING 		{ $$ = newEnumList( t_enum_list, $1, NULL); }
+   | enum_list ',' STRING	{ $$ = newEnumList( t_enum_list, $3, $1); }
+   ;
+
 
    /**** expressions ****/
 
@@ -928,69 +1648,77 @@ expr: NAME         { dataval d; d.string_val = $1; $$ = newExpr(t_name, d);  put
    | BOOL          { dataval d; d.bool_val = $1; $$ = newExpr(t_bool, d); }
    ;
 
-expr: expr '+' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal));n->type=t_expr_cal;n->lnext=$1;n->sign="+";n->rnext=$3;$$=(Node*)n;}
-   | expr '-' expr  {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="-";n->rnext=$3;$$=(Node*)n;}
-   | expr '*' expr  {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="*";n->rnext=$3;$$=(Node*)n;}
-   | expr '/' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="/";n->rnext=$3;$$=(Node*)n;}
-   | expr '%' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal) );n->type=t_expr_cal;n->lnext=$1;n->sign="%";n->rnext=$3;$$=(Node*)n;}
-   | expr MOD expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct  Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="MOD";n->rnext=$3;$$=(Node*)n;}
-   | '-' expr %prec UMINUS {Expr_cal *n=(Expr_cal *)malloc(sizeof (struct Expr_cal ));n->type=t_expr_cal;    n->sign="--";n->rnext=$2;$$=(Node*)n;}
-   | expr ANDOP expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal) );n->type=t_expr_cal;n->lnext=$1;n->sign="ANDOP";n->rnext=$3;$$=(Node*)n;}
-   | expr OR expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="OR";n->rnext=$3;$$=(Node*)n;}
-   | expr XOR expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="XOR";n->rnext=$3;$$=(Node*)n;}
-   | expr COMPARISON expr { $$ = newExpr_cal(t_expr_cal, "CMP", NULL, $2, $1, $3); puts("="); }
-   | expr COMPARISON '(' select_stmt ')' {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->cmp=$2;n->sign="CMP";n->rnext=$4;$$=(Node*)n;}
-   | expr COMPARISON ANY '(' select_stmt ')' {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->cmp=$2;n->sign="CMP";n->parameter="ANY";n->rnext=$5;$$=(Node*)n;}
-   | expr COMPARISON SOME '(' select_stmt ')'{Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->cmp=$2;n->sign="CMP";n->parameter="SOME";n->rnext=$5;$$=(Node*)n;}
-   | expr COMPARISON ALL '(' select_stmt ')' {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->cmp=$2;n->sign="CMP";n->parameter="ALL";n->rnext=$5;$$=(Node*)n;}
-   | expr '|' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="|";n->rnext=$3;$$=(Node*)n;}
-   | expr '&' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="&";n->rnext=$3;$$=(Node*)n;}
-   | expr '^' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="^";n->rnext=$3;$$=(Node*)n;}
-   | expr SHIFT expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign=(SHIFT==1?"LS":"RS");n->rnext=$3;$$=(Node*)n;}
-   | NOT expr /*{ emit("NOT"); }*/  %dprec 1 {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="NOT";n->rnext=$2;$$=(Node*)n;}
-   | '!' expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="!";n->rnext=$2;$$=(Node*)n;}
-   | USERVAR ASSIGN expr { $$=NULL; }
-   | '(' expr ')' { $$ = $2; }
+expr: expr '+' expr { $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }
+   | expr '-' expr  { $$=newExprCal(t_expr_cal, "-", NULL, 0, $1, $3); }
+   | expr '*' expr  { $$=newExprCal(t_expr_cal, "*", NULL, 0, $1, $3); }
+   | expr '/' expr 	{ $$=newExprCal(t_expr_cal, "/", NULL, 0, $1, $3); }
+   | expr '%' expr 	{ $$=newExprCal(t_expr_cal, "%", NULL, 0, $1, $3); }
+   | expr MOD expr 	{ $$=newExprCal(t_expr_cal, "MOD", NULL, 0, $1, $3); }
+   | '-' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "--", NULL, 0, NULL, $2); }
+   | expr ANDOP expr	{ $$=newExprCal(t_expr_cal, "ANDOP", NULL, 0, $1, $3); }
+   | expr OR expr	{ $$=newExprCal(t_expr_cal, "OR", NULL, 0, $1, $3); }
+   | expr XOR expr	{ $$=newExprCal(t_expr_cal, "XOR", NULL, 0, $1, $3); }
+   | expr COMPARISON expr	{ $$ = newExprCal(t_expr_cal, "CMP", NULL, $2, $1, $3);/* puts("=");*/ }
+   | expr COMPARISON '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", NULL, $2, $1, $4); }
+   | expr COMPARISON ANY '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", "ANY", $2, $1, $5); }
+   | expr COMPARISON SOME '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", "SOME", $2, $1, $5); }
+   | expr COMPARISON ALL '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", "ALL", $2, $1, $5); }
+   | expr '|' expr	{ $$=newExprCal(t_expr_cal, "|", NULL, 0, $1, $3); }
+   | expr '&' expr	{ $$=newExprCal(t_expr_cal, "&", NULL, 0, $1, $3); }
+   | expr '^' expr	{ $$=newExprCal(t_expr_cal, "^", NULL, 0, $1, $3); }
+   | expr SHIFT expr	{ $$=newExprCal(t_expr_cal, (SHIFT==1?"LS":"RS"), NULL, 0, $1, $3); }
+   | NOT expr %dprec 1	{ $$=newExprCal(t_expr_cal, "NOT", NULL, 0, NULL, $2); }
+   | '!' expr	{ $$=newExprCal(t_expr_cal, "!", NULL, 0, NULL, $2); }
+   | USERVAR ASSIGN expr	{ $$=NULL; }////////////////////////////////////////////////////////////////////////////////////
+   | '(' expr ')'	{ $$ = $2; }
    ;    
 
-expr:  expr IS NULLX     {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="ISN";n->args=$1;$$=(Node*)n;}
-   |   expr IS NOT NULLX {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="ISNN";n->args=$1;$$=(Node*)n;}
-   |   expr IS BOOL      {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="ISB";n->args=$1;$$=(Node*)n;}
-   |   expr IS NOT BOOL  {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="ISNB";n->args=$1;$$=(Node*)n;}
+expr:  expr IS NULLX     { $$=newExprFunc(t_expr_func, "ISN", $1, NULL, NULL, NULL); }
+   |   expr IS NOT NULLX { $$=newExprFunc(t_expr_func, "ISNN", $1, NULL, NULL, NULL); }
+   |   expr IS BOOL      { $$=newExprFunc(t_expr_func, "ISB", $1, NULL, NULL, NULL); }
+   |   expr IS NOT BOOL  { $$=newExprFunc(t_expr_func, "ISNB", $1, NULL, NULL, NULL); }
    ;
 
-expr: expr BETWEEN expr AND expr %prec BETWEEN {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="BA";n->args=$1;n->parameter1=$3;n->parameter2=$5;$$=(Node*)n;}
+expr: expr BETWEEN expr AND expr %prec BETWEEN { $$=newExprFunc(t_expr_func, "BA", $1, $3, $5, NULL); }
    ;
 
 
-val_list: expr { Expr_list *n=(Expr_list *)malloc(sizeof(struct Expr_list ));n->type=t_expr_list;n->data=$1;n->next= NULL;$$=(Node*)n;}
-   | expr ',' val_list { Expr_list *n=(Expr_list *)malloc(sizeof(struct Expr_list ));n->type=t_expr_list;n->data=$1;n->next=$3;$$=(Node*)n;}
+expr_list: expr	{ $$ = newExprList(t_expr_list, $1, NULL); }
+   | expr ',' expr_list { $$ = newExprList(t_expr_list, $1, $3); }
    ;
 
-opt_val_list: /* nil */
-   | val_list {$$=$1;}
+opt_expr_list: /* nil */
+   | expr_list {$$=$1;}
    ;
 
-expr: expr IN '(' val_list ')'     {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="INV";n->lnext=$1;n->rnext=$4;$$=(Node*)n;}
-   | expr NOT IN '(' val_list ')'  {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal) );n->type=t_expr_cal;n->sign="NIN";n->lnext=$1;n->rnext=$5;$$=(Node*)n;}
-   | expr IN '(' select_stmt ')'    {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="INS";n->lnext=$1;n->rnext=$4;$$=(Node*)n;}
-   | expr NOT IN '(' select_stmt ')'  {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="NINS";n->lnext=$1;n->rnext=$5;$$=(Node*)n;}
-   | EXISTS '(' select_stmt ')'      {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="EX";n->rnext=$3;$$=(Node*)n;}         
-   | NOT EXISTS '(' select_stmt ')'   {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="NEX";n->rnext=$4;$$=(Node*)n;} %dprec 2
+expr: expr IN '(' expr_list ')'		{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
+   | expr NOT IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $1, $5); }
+   | expr IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4); }
+   | expr NOT IN '(' select_stmt ')'{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
+   | EXISTS '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3); }         
+   | NOT EXISTS '(' select_stmt ')'	%dprec 2	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, NULL, $4); } 
    ;
 
-expr: NAME '(' opt_val_list ')'  {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->sign="NAME";n->parameter=$1;n->rnext=$3;$$=(Node*)n;}   
+expr: NAME '(' opt_expr_list ')'	{ $$=newExprCal(t_expr_cal, "NAME", $1, 0, NULL, $3); }   
    ;
 
   /* functions with special syntax */
-expr: FCOUNT '(' '*' ')' {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="FCOUNTALL";$$=(Node*)n;}
-   | FCOUNT '(' expr ')' {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="FCOUNT";n->parameter1=$3;$$=(Node*)n;}
-    ;
-expr: FSUBSTRING '(' val_list ')' {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="FSUBSTRING";n->parameter1=$3;$$=(Node*)n;}
-   | FSUBSTRING '(' expr FROM expr ')' {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="FSUBSTRING";n->parameter1=$3;n->parameter2=$5;$$=(Node*)n;}
-   | FSUBSTRING '(' expr FROM expr FOR expr ')' {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="FSUBSTRING3";n->parameter1=$3;n->parameter2=$5;n->args=$7;$$=(Node*)n;}
-   | FTRIM '(' val_list ')' {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="FTRIM";n->parameter1=$3;$$=(Node*)n;}
-   | FTRIM '(' trim_ltb expr FROM val_list ')' {  }
+expr: FCOUNT '(' '*' ')'	{ $$=newExprFunc(t_expr_func, "FCOUNTALL", NULL, NULL, NULL, NULL); }
+   | FCOUNT '(' expr ')'	{ $$=newExprFunc(t_expr_func, "FCOUNT", NULL, $3, NULL, NULL); }
+//---2.18 add aggrection function
+	|FSUM '(' expr ')' { $$=newExprFunc(t_expr_func, "FSUM", NULL, $3, NULL, NULL); }
+	|FAVG '(' expr ')' { $$=newExprFunc(t_expr_func, "FAVG", NULL, $3, NULL, NULL); }
+	|FMIN '(' expr ')' { $$=newExprFunc(t_expr_func, "FMIN", NULL, $3, NULL, NULL); }
+	|FMAX '(' expr ')' { $$=newExprFunc(t_expr_func, "FMAX", NULL, $3, NULL, NULL); }
+	   
+   
+   ;
+   
+expr: FSUBSTRING '(' expr_list ')'	{ $$=newExprFunc(t_expr_func, "FSUBSTRING", NULL, $3, NULL, NULL); }
+   | FSUBSTRING '(' expr FROM expr ')'	{ $$=newExprFunc(t_expr_func, "FSUBSTRING2", NULL, $3, $5, NULL);}
+   | FSUBSTRING '(' expr FROM expr FOR expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING3", $7, $3, $5, NULL); }
+   | FTRIM '(' expr_list ')' { $$=newExprFunc(t_expr_func, "FTRIM", NULL, $3, NULL, NULL); }
+   | FTRIM '(' trim_ltb expr FROM expr_list ')'	{ }//////////////////////////////////////////////////////////////////////////////
    ;
 
 trim_ltb: LEADING  { emit("INT 1"); }
@@ -1013,22 +1741,22 @@ interval_exp: INTERVAL expr DAY_HOUR { emit("NUMBER 1"); }
    | INTERVAL expr HOUR_SECOND { emit("NUMBER 9"); }
    ;
 	
-expr: CASE expr case_list END			{Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="CASE1";n->parameter1=$3;n->args=$2;$$=(Node*)n;}
-   |  CASE expr case_list ELSE expr END {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="CASE2";n->parameter1=$3;n->args=$2;$$=(Node*)n;}
-   |  CASE case_list END                {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="CASE3";n->parameter1=$2;$$=(Node*)n;}
-   |  CASE case_list ELSE expr END      {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="CASE4";n->parameter1=$2;n->parameter2=$4;$$=(Node*)n;}
+expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE3", $2, $3, NULL, NULL); }
+   |  CASE expr case_list ELSE expr END	{ $$=newExprFunc(t_expr_func, "CASE2", $2, $3, $5, NULL); }
+   |  CASE case_list END                { $$=newExprFunc(t_expr_func, "CASE3", NULL, $2, NULL, NULL); }
+   |  CASE case_list ELSE expr END      { $$=newExprFunc(t_expr_func, "CASE4", NULL, $2, $4, NULL); }
    ;
 
-case_list: WHEN expr THEN expr      {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="WHEN";n->parameter1=$2;n->parameter2=$4;$$=(Node*)n;}
-   | case_list WHEN expr THEN expr  {Expr_func *n=(Expr_func *)malloc(sizeof(struct Expr_func));n->type=t_expr_func;n->funname="WHEN";n->parameter1=$3;n->parameter2=$5;n->next=$1;$$=(Node*)n;}
+case_list: WHEN expr THEN expr		{ $$=newExprFunc(t_expr_func, "WHEN1", NULL, $2, $4, NULL); }
+   | case_list WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN2", NULL, $3, $5, $1); }
    ;
 
-expr: expr LIKE expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="LIKE";n->rnext=$3;$$=(Node*)n;}
-   | expr NOT LIKE expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal ));n->type=t_expr_cal;n->lnext=$1;n->sign="NLIKE";n->rnext=$4;$$=(Node*)n;}
+expr: expr LIKE expr	{ $$=newExprCal(t_expr_cal, "LIKE", NULL, 0, $1, $3); }
+   | expr NOT LIKE expr { $$=newExprCal(t_expr_cal, "NLIKE", NULL, 0, NULL, $4); }
    ;
 
-expr: expr REGEXP expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal) );n->type=t_expr_cal;n->lnext=$1;n->sign="REGEXP";n->rnext=$3;$$=(Node*)n;}
-   | expr NOT REGEXP expr {Expr_cal *n=(Expr_cal *)malloc(sizeof(struct Expr_cal) );n->type=t_expr_cal;n->lnext=$1;n->sign="NREGEXP";n->rnext=$4;$$=(Node*)n;}
+expr: expr REGEXP expr		{ $$=newExprCal(t_expr_cal, "REGEXP", NULL, 0, $1, $3); }
+   | expr NOT REGEXP expr	{ $$=newExprCal(t_expr_cal, "NREGEXP", NULL, 0, $1, $4); }
    ;
 
 expr: CURRENT_TIMESTAMP //85{ emit("NOW") };
@@ -1040,749 +1768,6 @@ expr: BINARY expr %prec UMINUS //88{ emit("STRTOBIN"); }
    ;
 
 %%
-
-/* 	t_none, t_name,t_uservar,t_name_name,t_stringval,t_intnum,t_approxnum,t_bool, t_table,
-	t_column,t_join,t_subquery,t_condition, t_query_stmt, t_select_list,
-	t_select_opts,t_select_expr, t_expr,t_expr_list,t_expr_cal,t_expr_func,t_expr_relation,
- 	t_from_list,t_from_expr,t_from_table, t_where_list, t_groupby_list,t_groupby_expr, 
-	t_having_list, t_orderby_list,t_orderby_expr, t_limit_list,t_limit_expr
- */
-
-struct Node * newExpr(nodetype t, dataval d)
-{
-	struct Expr * a= (struct Expr *)malloc(sizeof(struct Expr));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = t;
-	a->data = d;
-	//cout<<"newExpr is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newExprList(nodetype t, Node * data, Node * next)
-{
-	struct Expr_list * a= (struct Expr_list *)malloc(sizeof(struct Expr_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = t;
-	a->data = data;
-	a->next = next;
-	//cout<<"newExpr is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * next)
-{
-	struct Columns * a= (struct Columns *)malloc(sizeof(struct Columns));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = t;
-	a->parameter1 = parameter1;
-	a->parameter2 = parameter2;
-	a->next = next;
-	//cout<<"newExpr is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newExpr_cal(nodetype type, char * sign, char *parameter,
-	int cmp, Node *lnext, Node *rnext)
-{
-	struct Expr_cal * a= (struct Expr_cal *)malloc(sizeof(struct Expr_cal));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = type;
-	a->sign = sign;
-	a->parameter = parameter;
-	a->cmp = cmp;
-	a->lnext = lnext;
-	a->rnext = rnext;
-	//cout<<"newExpr is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newExpr_func(nodetype type, char * funname, Node *args,
-	Node * parameter1, Node *parameter2, Node *next)
-{
-	struct Expr_func * a= (struct Expr_func *)malloc(sizeof(struct Expr_func));
-	if(!a) {
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = type;
-	a->funname = funname;
-	a->args = args;
-	a->parameter1 = parameter1;
-	a->parameter2 = parameter2;
-	a->next = next;
-	//cout<<"newExpr is created"<<endl;
-	return (struct Node *)a;
-}
-struct Node *newExprlistheader(nodetype type,Node * header,Node * tail)
-{
-	struct Expr_list_header *node=(struct Expr_list_header *)malloc(sizeof(struct Expr_list_header));
-	node->type=t_expr_list_header;
-	node->header=header;
-	node->tail=tail;
-	return (struct Node *)node;
-}
-
-struct Node * newTable(nodetype type, char * dbname, char *tablename,
-	char *astablename, int issubquery, Node *subquery)
-{
-	struct Table * a= (struct Table *)malloc(sizeof(struct Table)+10);
-	if(!a) {
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = type;
-	a->dbname = dbname;
-	a->tablename = tablename;
-	a->astablename = astablename;
-	a->issubquery = issubquery;
-	a->subquery = subquery;
-
-	a->whcdn=newExprlistheader(t_expr_list_header,NULL,NULL);
-	
-	return (struct Node *)a;
-}
-
-struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node *condition)
-{
-	struct Join * a= (struct Join *)malloc(sizeof(struct Join));
-	if(!a) {
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = type;
-	a->jointype = jointype;
-	a->lnext = lnext;
-	a->rnext = rnext;
-	a->condition = condition;
-	//cout<<"Join is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newCondition(nodetype type, int conditiontype, Node * args)
-{
-	struct Condition * a= (struct Condition *)malloc(sizeof(struct Condition));
-	if(!a) {
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = type;
-	a->conditiontype = conditiontype;
-	a->args = args;
-	//cout<<"Condition is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newSubquery(nodetype type, char * querystring, Node *next)
-{
-	struct Subquery * a= (struct Subquery *)malloc(sizeof(struct Subquery));
-	if(!a) {
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = type;
-	a->querystring = querystring;
-	a->next = next;
-	//cout<<"Subquery is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newQueryStmt(nodetype t, char * querystring, int select_opts,
-	Node *select_list, Node *from_list, Node *where_list, Node *groupby_list, 
-	Node *having_list, Node *orderby_list, Node *limit_list, Node *into_list)
-{
-	struct Query_stmt * a= (struct Query_stmt *)malloc(sizeof(struct Query_stmt));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	
-	a->type = t;
-	a->querystring = querystring;
-	a->select_opts = select_opts;
-	a->select_list = select_list;
-	a->from_list = from_list;
-	a->where_list = where_list;
-	a->groupby_list = groupby_list;
-	a->having_list = having_list;
-	a->orderby_list = orderby_list;
-	a->limit_list = limit_list;
-	a->into_list = into_list;
-	
-	//cout<<"Query_stmt is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newSelectList(nodetype type,int isall,Node * args,Node *next)
-{
-	struct Select_list * a= (struct Select_list *)malloc(sizeof(struct Select_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->isall = isall;
-	a->args = args;
-	a->next = next;
-	
-	//cout<<"Select_list is created"<<endl;
-	return (struct Node *)a;
-}
-
-struct Node * newSelectExpr(nodetype type, char *ascolname, Node * colname) 
-{
-	struct Select_expr * a= (struct Select_expr *)malloc(sizeof(struct Select_expr));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->ascolname = ascolname;
-	a->colname = colname;
-	
-	//cout<<"Select_expr is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node *  newFromList(nodetype type, Node * args, Node *next)
-{
-	struct From_list * a= (struct From_list *)malloc(sizeof(struct From_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->args = args;
-	a->next = next;
-//	a->condition.clear();
-	//a->wcondition.clear();
-	a->whcdn=newExprlistheader(t_expr_list_header,NULL,NULL);
-	//cout<<"From_list is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newFromExpr( nodetype type, char * astablename, Node *next)
-{
-	struct From_expr * a= (struct From_expr *)malloc(sizeof(struct From_expr));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->astablename = astablename;
-	a->next = next;
-	
-	//cout<<"From_expr is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newWhereList(nodetype type, char * wherestring, Node *next)
-{
-	struct Where_list * a= (struct Where_list *)malloc(sizeof(struct Where_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->wherestring = wherestring;
-	a->next = next;
-	
-	//cout<<"Where_list is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, int with_rollup)
-{
-	struct Groupby_list * a= (struct Groupby_list *)malloc(sizeof(struct Groupby_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->groupbystring = groupbystring;
-	a->next = next;
-	a->with_rollup = with_rollup;
-	
-	//cout<<"Groupby_list is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next)
-{
-	struct Groupby_expr * a= (struct Groupby_expr *)malloc(sizeof(struct Groupby_expr));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->args = args;
-	a->sorttype = sorttype;
-	a->next = next;
-	
-	//cout<<"Groupby_expr is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newHavingList(nodetype type, char * havingstring, Node *next)
-{
-	struct Having_list * a= (struct Having_list *)malloc(sizeof(struct Having_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->havingstring = havingstring;
-	a->next = next;
-	
-	//cout<<"Having_list is created"<<endl;
-	return (struct Node *)a;
-};
-
-
-struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next)
-{
-	struct Orderby_list * a= (struct Orderby_list *)malloc(sizeof(struct Orderby_list));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->orderbystring = orderbystring;
-	a->next = next;
-	
-	//cout<<"Orderby_list is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *next)
-{
-	struct Orderby_expr * a= (struct Orderby_expr *)malloc(sizeof(struct Orderby_expr));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->args = args;
-	a->sorttype = sorttype;
-	a->next = next;
-	
-	//cout<<"Orderby_expr is created"<<endl;
-	return (struct Node *)a;
-};
-
-struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
-{
-	struct Limit_expr * a= (struct Limit_expr *)malloc(sizeof(struct Limit_expr));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-	a->type = type;
-	a->offset = offset;
-	a->row_count = row_count;
-	
-	//cout<<"Limit_expr is created"<<endl;
-	return (struct Node *)a;
-};
-
-void outputSpace(int f)
-{
-	while(f--)
-		cout<<"  ";
-}
-
-void output(Node * oldnode, int floor)
-{
-	//puts("there is output()");
-	if(oldnode == NULL)
-	{
-		//cout<<"This is Nothing!"<<endl;
-		return;
-	}
-	nodetype type = oldnode->type;
-	switch(type)
-	{
-		
-		case t_name_name:
-		{
-			Columns * node = (Columns *) oldnode;
-			outputSpace(floor);
-			cout<<"Columns: "<< node->parameter1<< "  "<< node->parameter2<<endl;
-			break;
-		}
-		case t_name:
-		case t_stringval:
-		{
-			Expr * node = (Expr *) oldnode;
-			outputSpace(floor);
-			cout<<"name: "<<node->data.string_val<<endl;
-			break;
-		}
-		case t_intnum:
-		{
-			Expr * node = (Expr *) oldnode;
-			outputSpace(floor);
-			cout<<"name: "<<node->data.int_val<<endl;
-			break;
-		}
-		case t_approxnum:
-		{
-			Expr * node = (Expr *) oldnode;
-			outputSpace(floor);
-			cout<<"name: "<<node->data.double_val<<endl;
-			break;
-		}
-		case t_bool:
-		{
-			Expr * node = (Expr *) oldnode;
-			outputSpace(floor);
-			cout<<"name: "<<node->data.bool_val<<endl;
-			break;
-		}	
-		
-		case t_expr_list:
-		{
-			Expr_list * node = (Expr_list *) oldnode;
-			outputSpace(floor);
-			cout<<"Expr_list: ";cout<<endl;
-			
-			if(node->data!=NULL) output(node->data,floor+1);
-			//if(node->next!=NULL) output(node->next);
-			
-			
-			
-			break;
-		}
-		case t_column:
-		/* nodetype type;char * parameter1;char *parameter2;Node * next; */
-		{
-			Columns * node = (Columns *) oldnode;
-			outputSpace(floor);
-			cout<<"Columns: ";
-			if (node->parameter1)
-				cout<<node->parameter1<<" ";
-			if (node->parameter2)
-				cout<<node->parameter2<<" ";
-				
-			cout<<endl;
-			if (node->next)
-				output(node->next, floor + 1);
-			
-			break;
-		}
-		/*
-		struct Expr_cal//计算表达式,二元表达式
-		{
-			nodetype type;
-			char * sign,*parameter;
-			int cmp;
-			Node *lnext,*rnext;
-		};
-		*/
-		case t_expr_cal: 
-		{
-			Expr_cal * node = (Expr_cal *) oldnode;
-			outputSpace(floor);
-			cout<<"Expr_cal: ";
-			if (node->sign)
-				cout<<node->sign<<" ";
-			if (node->parameter)
-				cout<<node->parameter<<" ";
-			if (node->cmp)
-				cout<<node->cmp<<" ";
-				
-			cout<<endl;
-			output(node->lnext, floor + 1);
-			output(node->rnext, floor + 1);
-			break;
-		}
-		
-		/*
-		struct Expr_func //函数表达式，将is null/exist等判断抽象成函数
-		{
-			nodetype type;
-			char * funname;
-			Node *args;
-			Node * parameter1,*parameter2;//函数中的参数列表，处理between...and.../case...when...then...end等
-			Node *next;
-		}; 
-		*/
-		case t_expr_func:
-		{
-			Expr_func * node = (Expr_func *) oldnode;
-			outputSpace(floor);
-			cout<<"Expr_func: ";
-			if (node->funname)
-				cout<<node->funname<<" ";
-				
-			cout<<endl;
-			output(node->args, floor + 1);
-			output(node->parameter1, floor + 1);
-			output(node->parameter2, floor + 1);
-			output(node->next, floor + 1);
-			break;
-		}
-		
-		case t_table://///////////////////////////////////////////////////
-		/* nodetype type;	char * dbname,*tablename,*astablename;	
-			int issubquery;	Node *subquery; Node * condition */
-		{
-			Table * node = (Table *) oldnode;
-			
-			outputSpace(floor);
-			cout<<"Table: ";
-			if (node->dbname)
-				cout<<node->dbname<<" ";
-			if (node->tablename)
-				cout<<node->tablename<<" ";
-			if (node->astablename)
-				cout<<node->astablename<<" ";
-			if (node->issubquery)
-				cout<<node->issubquery<<" ";
-				
-			cout<<endl;
-			output(node->subquery, floor + 1);
-			//output(node->condition, floor + 1);
-		//	set<Node*>::iterator it;
-		//	vector<Node*>::iterator it;
-		//	for(it=node->wcondition.begin();it!=node->wcondition.end();it++)
-		//	{
-		//		output((Node *)*it,floor+1);
-		//	}
-			Node * p;
-			Expr_list_header * lists=(Expr_list_header *)node->whcdn;
-			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->next)
-			{
-				
-				output(p,floor+1);
-			}
-			
-			break;
-			
-		}
-		
-		/*************************************************/
-		
-		case t_query_stmt:
-		/* nodetype type;char * querystring;int select_opts;Node *select_list;
-			 Node *from_list; Node *where_list; Node *groupby_list;
-			Node *having_list; Node *orderby_list; Node *limit_list; Node *into_list; */
-		{
-			Query_stmt * node = (Query_stmt *) oldnode;
-			outputSpace(floor);
-			cout<<"Query_stmt: ";
-			if(node->querystring)
-				cout<<node->querystring<<" ";
-			if(node->select_opts)
-				cout<<node->select_opts<<" "; 
-				
-			cout<<endl;
-			output(node->select_list, floor + 1);
-			output(node->from_list, floor + 1);
-			output(node->where_list, floor + 1);
-			output(node->groupby_list, floor + 1);
-			output(node->having_list, floor + 1);
-			output(node->orderby_list, floor + 1);
-			output(node->limit_list, floor + 1);
-			output(node->into_list, floor + 1);
-			
-			/* 可继续添加 */
-			break;
-		}
-		case t_select_list:
-		/* nodetype type; int isall; Node * args; Node *next; */
-		{
-			Select_list * node = (Select_list *) oldnode;
-			outputSpace(floor);
-			cout<<"select_list: ";
-			if (node->isall) cout<<"is all ";
-			
-			cout<<endl;
-			output(node->args, floor + 1);
-			output(node->next, floor + 1);
-			
-			break;
-		}
-		case t_select_expr:
-		/* nodetype type;	char *ascolname;	Node * colname; */
-		{
-			Select_expr * node = (Select_expr *) oldnode;
-			outputSpace(floor);
-			cout<<"Select_expr: ";
-			if (node->ascolname)
-				cout<<node->ascolname<< " ";
-				
-			cout<<endl;
-			output(node->colname, floor + 1);
-			
-			break;
-		}
-		
-		case t_from_list:
-		/* nodetype type;	Node * args;	Node *next;  Node * condition */
-		{
-			From_list * node = (From_list *) oldnode;
-			outputSpace(floor);
-			cout<<"From_list: ";
-			
-			cout<<endl;
-			//output(node->condition, floor + 1);////////////////////////////////
-			Node * p;
-			Expr_list_header * lists=(Expr_list_header *)node->whcdn;
-			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->next)
-			{
-				output(p,floor+1);
-			}
-			output(node->args, floor + 1);
-			output(node->next, floor + 1);
-			
-			break;
-		}
-		case t_from_expr:
-		/* nodetype type;	char * astablename;	Node *next; */
-		{
-			From_expr * node = (From_expr *) oldnode;
-			outputSpace(floor);
-			cout<<"From_expr: ";
-			if(node->astablename)
-				cout<<node->astablename;
-			cout<<endl;
-			output(node->next, floor+1);
-			break;
-		}
-		case t_where_list:
-		/* nodetype type;	char * wherestring;	Node *next; */
-		{
-			Where_list * node = (Where_list *) oldnode;
-			outputSpace(floor);
-			cout<<"Where_list: ";
-			if(node->wherestring)
-				cout<<node->wherestring;
-			cout<<endl;
-			output(node->next, floor+1);
-			break;
-		}
-		case t_groupby_list:
-		/* nodetype type;char * groupbystring;Node *next;int with_rollup; */
-		{
-			Groupby_list * node = (Groupby_list *) oldnode;
-			outputSpace(floor);
-			cout<<"Groupby_list: ";
-			if(node->groupbystring)
-				cout<<node->groupbystring<<" ";
-			if (node->with_rollup)
-				cout<<node->with_rollup<<" ";
-			cout<<endl;
-			output(node->next, floor+1);
-			break;
-		}
-		case t_groupby_expr:
-		/* nodetype type;	Node *args;	int sorttype;	Node *next; */
-		{
-			Groupby_expr * node = (Groupby_expr *) oldnode;
-			outputSpace(floor);
-			cout<<"Groupby_expr: ";
-			
-			if(node->sorttype)
-				cout<<node->sorttype<<" ";
-			cout<<endl;
-			output(node->args, floor+1);
-			output(node->next, floor+1);
-			break;
-		}
-		
-		case t_having_list:
-		/* nodetype type;	char * havingstring;	Node *next; */
-		{
-			Having_list * node = (Having_list *) oldnode;
-			outputSpace(floor);
-			cout<<"Having_list: ";
-			if(node->havingstring)
-				cout<<node->havingstring<<" ";
-				
-			cout<<endl;
-			output(node->next, floor+1);
-			break;
-		}
-		case t_orderby_list:
-		/* nodetype type;	char * orderbystring;	Node *next; */
-		{
-			Orderby_list * node = (Orderby_list *) oldnode;
-			outputSpace(floor);
-			cout<<"Orderby_list: ";
-			if(node->orderbystring)
-				cout<<node->orderbystring<<" ";
-				
-			cout<<endl;
-			output(node->next, floor+1);
-			break;
-		}
-		
-		case t_orderby_expr:
-		/* nodetype type;	Node *args;	char * sorttype;	Node *next; */
-		{
-			Orderby_expr * node = (Orderby_expr *) oldnode;
-			outputSpace(floor);
-			cout<<"Orderby_expr: ";
-			if(node->sorttype)
-				cout<<node->sorttype<<" ";
-				
-			cout<<endl;
-			output(node->args, floor+1);
-			output(node->next, floor+1);
-			break;
-		}
-		
-		case t_limit_expr:
-		/* nodetype type;	Node * offset;	Node *row_count; */
-		{
-			Limit_expr * node = (Limit_expr *) oldnode;
-			outputSpace(floor);
-			cout<<"Limit_expr: ";
-			
-			cout<<endl;
-			output(node->offset, floor+1);
-			output(node->row_count, floor+1);
-			break;
-		}
-	}
-}
 
 void
 emit(char *s, ...)
@@ -1809,34 +1794,27 @@ yyerror(const char *s, ...)
   vfprintf(stderr, s, ap);
   fprintf(stderr, "\n");
 }
-int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead ) {
-    int numBytesToRead = maxBytesToRead;
-    int bytesRemaining = strlen(globalInputText)-globalReadOffset;
-    int i;
-    if ( numBytesToRead > bytesRemaining ) { numBytesToRead = bytesRemaining; }
-    for ( i = 0; i < numBytesToRead; i++ ) {
-        buffer[i] = globalInputText[globalReadOffset+i];
-    }
-    *numBytesRead = numBytesToRead;
-    globalReadOffset += numBytesToRead;
-    return 0;
-}
 
-/*int main()
+
+int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead ) {
+	int numBytesToRead = maxBytesToRead;
+	int bytesRemaining = strlen(globalInputText)-globalReadOffset;
+	int i;
+	if ( numBytesToRead > bytesRemaining ) { numBytesToRead = bytesRemaining; }
+	for ( i = 0; i < numBytesToRead; i++ ) {
+		buffer[i] = globalInputText[globalReadOffset+i];
+	}
+	*numBytesRead = numBytesToRead;
+	globalReadOffset += numBytesToRead;
+	return 0;
+}
+/*
+
+main(int ac, char **av)
 {
-	globalReadOffset = 0;
-	char str[1000];
-	gets(str);	
-	strcpy(globalInputText,str);
+	
   if(!yyparse())
     printf("SQL parse worked\n");
   else
     printf("SQL parse failed\n");
-    return 0;
-} *//* main */
-
-int yywrap()
-{
-	return -1;
-}
-
+} */
