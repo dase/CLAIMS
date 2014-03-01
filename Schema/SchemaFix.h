@@ -47,6 +47,7 @@ public:
 		return Schema::fixed;
 	}
 	Schema* getSubSchema(std::vector<unsigned>)const;
+	Schema* duplicateSchema()const;
 //	void displayTuple(const void* tuple_start_address,const char* spliter)const;
 private:
 	unsigned getColumnOffset(unsigned index);

@@ -119,10 +119,10 @@ void Analyzer::analyse(const AttributeID &attrID) {
 			(void *) (attr.attrType->operate));
 
 	mcvAnalyse(list, valueCount, attr, (Histogram *) stat);
-//	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
+	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
 
-	StatManager::getInstance()->addStat(attrID, stat);
-//	StatManager::getInstance()->getTableStatistic(attrID.table_id)
+//	StatManager::getInstance()->addStat(attrID, stat);
+	StatManager::getInstance()->getTableStatistic(attrID.table_id);
 	delete list;
 	resultset->destory();
 }
@@ -132,54 +132,74 @@ void Analyzer::analyse(TableID table_id,analysis_level level){
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
 	if(tab_stat==0){
 
-		LogicalOperator * scan=new LogicalScan(table->getProjectoin(0));
-		std::vector<Attribute> group_by_attributes;
-		std::vector<Attribute> aggregation_attributes;
-
-		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-
-		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
-		aggregation_function.push_back(
-				BlockStreamAggregationIterator::State::count);
-		LogicalOperator* agg=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
-		LogicalOperator* root = new LogicalQueryPlanRoot(0,
-				agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
-
-		BlockStreamIteratorBase* collector = root->getIteratorTree(
-				1024 * 64 - sizeof(unsigned));
-		collector->open();
-		collector->next(0);
-		collector->close();
-		ResultSet* resultset = collector->getResultSet();
-		ResultSet::Iterator it = resultset->createIterator();
-		BlockStreamBase::BlockStreamTraverseIterator* b_it=it.nextBlock()->createIterator();
-		const unsigned long tuple_count=*(unsigned long*)b_it->nextTuple();
-		BlockStreamBase* block;
-		while(block=it.nextBlock()){
-			BlockStreamBase::BlockStreamTraverseIterator* b_it=block->createIterator();
-
-		}
-		tab_stat=new TableStatistic();
-		tab_stat->number_of_tuples_=tuple_count;
-		printf("Statistics for table %s is gathered!\n",Catalog::getInstance()->getTable(table_id)->getTableName().c_str());
-		tab_stat->print();
-		StatManager::getInstance()->setTableStatistic(table_id,tab_stat);
-		resultset->destory();
-		root->~LogicalOperator();
+//		LogicalOperator * scan=new LogicalScan(table->getProjectoin(0));
+//		std::vector<Attribute> group_by_attributes;
+//		std::vector<Attribute> aggregation_attributes;
+//
+//		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+//
+//		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+//		aggregation_function.push_back(
+//				BlockStreamAggregationIterator::State::count);
+//		LogicalOperator* agg=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
+//		LogicalOperator* root = new LogicalQueryPlanRoot(0,
+//				agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+//
+//		BlockStreamIteratorBase* collector = root->getIteratorTree(
+//				1024 * 64 - sizeof(unsigned));
+//		collector->open();
+//		collector->next(0);
+//		collector->close();
+//		ResultSet* resultset = collector->getResultSet();
+//		ResultSet::Iterator it = resultset->createIterator();
+//		BlockStreamBase::BlockStreamTraverseIterator* b_it=it.nextBlock()->createIterator();
+//		const unsigned long tuple_count=*(unsigned long*)b_it->nextTuple();
+//		BlockStreamBase* block;
+//		while(block=it.nextBlock()){
+//			BlockStreamBase::BlockStreamTraverseIterator* b_it=block->createIterator();
+//
+//		}
+//		tab_stat=new TableStatistic();
+//		tab_stat->number_of_tuples_=tuple_count;
+//		printf("Statistics for table %s is gathered!\n",Catalog::getInstance()->getTable(table_id)->getTableName().c_str());
+//		tab_stat->print();
+//		StatManager::getInstance()->setTableStatistic(table_id,tab_stat);
+//		resultset->destory();
+//		root->~LogicalOperator();
+		compute_table_stat(table_id);
 	}
 
 	if(level==a_l_attribute){
 		std::vector<Attribute> attribute_list=table->getAttributes();
 		for(unsigned i=0;i<attribute_list.size();i++){
-			conpute_attribute_stat(attribute_list[i].getID());
+			compute_attribute_stat(attribute_list[i].getID());
 		}
 	}
 
 }
+
+void Analyzer::analyse_on_project(ProjectionID projection_id){
+	/**
+	 * First make sure that the table statistic is available, and then
+	 * make attribute-level-analyze on each attribute within this projection.
+	 */
+	TableStatistic* tab_stat=StatManager::getInstance()->getTableStatistic(projection_id.table_id);
+	if(tab_stat==0){
+		analyse(projection_id.table_id);
+	}
+
+	ProjectionDescriptor* p_des=Catalog::getInstance()->getProjection(projection_id);
+	assert(p_des);
+	std::vector<Attribute> attri_list=p_des->getAttributeList();
+	for(unsigned i=0;i<attri_list.size();i++){
+		compute_attribute_stat(attri_list[i].getID());
+	}
+}
+
 void Analyzer::compute_histogram(const AttributeID& attr_id){
 
 }
-void Analyzer::conpute_attribute_stat(const AttributeID& attr_id){
+void Analyzer::compute_attribute_stat(const AttributeID& attr_id){
 	TableStatistic* tab_stat=StatManager::getInstance()->getTableStatistic(attr_id.table_id);
 	assert(tab_stat!=0);
 	if(tab_stat->getAttributeStatistics(attr_id)){
@@ -216,6 +236,46 @@ void Analyzer::conpute_attribute_stat(const AttributeID& attr_id){
 
 
 }
+
+void Analyzer::compute_table_stat(const TableID& tab_id){
+	TableDescriptor* table=Catalog::getInstance()->getTable(tab_id);
+
+	LogicalOperator * scan=new LogicalScan(table->getProjectoin(0));
+	std::vector<Attribute> group_by_attributes;
+	std::vector<Attribute> aggregation_attributes;
+
+	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+
+	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	aggregation_function.push_back(
+			BlockStreamAggregationIterator::State::count);
+	LogicalOperator* agg=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
+	LogicalOperator* root = new LogicalQueryPlanRoot(0,
+			agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* collector = root->getIteratorTree(
+			1024 * 64 - sizeof(unsigned));
+	collector->open();
+	collector->next(0);
+	collector->close();
+	ResultSet* resultset = collector->getResultSet();
+	ResultSet::Iterator it = resultset->createIterator();
+	BlockStreamBase::BlockStreamTraverseIterator* b_it=it.nextBlock()->createIterator();
+	const unsigned long tuple_count=*(unsigned long*)b_it->nextTuple();
+	BlockStreamBase* block;
+	while(block=it.nextBlock()){
+		BlockStreamBase::BlockStreamTraverseIterator* b_it=block->createIterator();
+
+	}
+	TableStatistic* tab_stat=new TableStatistic();
+	tab_stat->number_of_tuples_=tuple_count;
+	printf("Statistics for table %s is gathered!\n",Catalog::getInstance()->getTable(tab_id)->getTableName().c_str());
+	tab_stat->print();
+	StatManager::getInstance()->setTableStatistic(tab_id,tab_stat);
+	resultset->destory();
+	root->~LogicalOperator();
+}
+
 void Analyzer::mcvAnalyse(void **list, const unsigned long size,
 		const Attribute &attr, Histogram *stat) {
 
@@ -259,13 +319,14 @@ void Analyzer::mcvAnalyse(void **list, const unsigned long size,
 void Analyzer::equiDepthAnalyse(void **list, const unsigned long size,
 		const Attribute &attr, Histogram *stat) {
 
-	int magicNumber = stat->getBucketCnt();
+	int magicNumber = stat->getBucketCnt() ;
 	int bucketCnt = -1;
 	unsigned long i;
 	TuplePtr *boundList = new TuplePtr[magicNumber];
 	unsigned long *boundCnt = new unsigned long[magicNumber];
 	unsigned long cumFre = 0;
-	unsigned long depth = stat->getTupleCount() / (magicNumber - 1);
+//	unsigned long depth = stat->getTupleCount() / (magicNumber - 1);
+	unsigned long depth = stat->getTupleCount() / (magicNumber);
 
 	cumFre = depth;
 	for (i = 0; i < size; ++i) {
@@ -416,7 +477,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,const unsigned 
 			(void *) (attr.attrType->operate));
 
 	mcvAnalyse(list, valueCount, attr, (Histogram *) stat);
-//	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
+	equiDepthAnalyse(list, valueCount, attr, (Histogram *) stat);
 
 //	StatManager::getInstance()->addStat(attrID, stat);
 //	StatManager::getInstance()->getTableStatistic(attrID.table_id)
@@ -425,5 +486,5 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,const unsigned 
 	return stat;
 }
 unsigned Analyzer::decideNumberOfBucketsForHistogram(const int distinct_cardinality, const int cardinality){
-	return distinct_cardinality/10<1000?distinct_cardinality/10+1:1000;
+	return 1 + (distinct_cardinality/10<1000?distinct_cardinality/10+1:1000);
 }

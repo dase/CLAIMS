@@ -17,18 +17,19 @@ public:
 	struct State{
 		friend class BlockStreamResultCollector;
 	public:
-		State(Schema* input,BlockStreamIteratorBase* child,const unsigned block_size,const PartitionOffset partitoin_offset=0);
+		State(Schema* input,BlockStreamIteratorBase* child,const unsigned block_size,std::vector<std::string> column_header=std::vector<std::string>(),const PartitionOffset partitoin_offset=0);
 		State();
 	private:
 		Schema* input_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 		PartitionOffset partition_offset_;
+		std::vector<std::string> column_header_;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input_ & child_ & block_size_ & partition_offset_;
+			ar & input_ & child_ & block_size_ & partition_offset_ & column_header_;
 		}
 	};
 	BlockStreamResultCollector();
@@ -46,8 +47,10 @@ private:
 	static void* worker(void* arg);
 private:
 	State state_;
-	DynamicBlockBuffer block_buffer_;
-	DynamicBlockBuffer::Iterator block_buffer_iterator_;
+//	DynamicBlockBuffer block_buffer_;
+//	DynamicBlockBuffer::Iterator block_buffer_iterator_;
+	ResultSet block_buffer_;
+	ResultSet::Iterator block_buffer_iterator_;
 	unsigned finished_thread_count_;
 	unsigned registered_thread_count_;
 	semaphore sema_open_;

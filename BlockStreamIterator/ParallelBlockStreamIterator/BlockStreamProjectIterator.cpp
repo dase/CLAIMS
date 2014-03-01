@@ -21,8 +21,8 @@ BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 
 }
 
-BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Expression *expr)
-:input_(input),output_(output),children_(children),block_size_(blocksize),expr_(expr){
+BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei)
+:input_(input),output_(output),children_(children),block_size_(blocksize),map_(map),v_ei_(v_ei){
 
 }
 
@@ -64,8 +64,24 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 				cur=rb.bsti_->currentTuple();
 			}
 			if((tuple=block->allocateTuple(total_length_))>0){
-				int cur_now=state_.expr_->func()(*(int *)cur,state_.expr_->val_);
-				memcpy(tuple,&cur_now,total_length_);
+				for(unsigned i=0;i<state_.v_ei_.size();i++){
+					ExpressionItem result;
+					ExpressItem_List toCalc;
+					int variable_=0;
+					for(unsigned j=0;j<state_.v_ei_[i].size();j++){
+						ExpressionItem ei;
+						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type){
+							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
+							int m=*(int*)state_.input_->getColumnAddess(nth,cur);
+							//put the nth column of the tuple into the Expression and turn it to a const
+							state_.v_ei_[i][j].setIntValue(m);
+							variable_++;
+						}
+					}
+					ExpressionCalculator::calcuate(state_.v_ei_[i],result);
+					result.print_value();
+					memcpy(tuple,&result.content.data.value._int,4);
+				}
 				/* Recently, we can use choosing the first column
 				 * TODO:here we can do some mapping by using the func pointer in Expression*/
 				rb.bsti_->increase_cur_();

@@ -30,6 +30,7 @@ public:
 	/*get the pointer of the tuple and get the value of the tuple offset*/
 	virtual void getColumnValue(unsigned index,void* src, void* desc){};
 	virtual Schema* getSubSchema(std::vector<unsigned>)const{};
+	Schema* duplicateSchema()const;
 	virtual void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline)){
 		unsigned ofs=0;
 		unsigned column_off=0;

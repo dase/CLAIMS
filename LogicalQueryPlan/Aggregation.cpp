@@ -9,6 +9,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../Catalog/stat/StatManager.h"
 #define THREAD_COUNT 5
 Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vector<Attribute> aggregation_attribute_list,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child)
 :group_by_attribute_list_(group_by_attribute_list),aggregation_attribute_list_(aggregation_attribute_list),aggregation_list_(aggregation_list),dataflow_(0),child_(child){
@@ -45,7 +46,9 @@ Dataflow Aggregation::getDataflow(){
 			ret.property_.partitioner=child_dataflow.property_.partitioner;
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
 				const unsigned cardinality=ret.property_.partitioner.getPartition(i)->getDataCardinality();
-				ret.property_.partitioner.getPartition(i)->setDataCardinality(cardinality*predictSelectivity());
+//				ret.property_.partitioner.getPartition(i)->setDataCardinality(cardinality*predictSelectivity());
+				ret.property_.partitioner.getPartition(i)->setDataCardinality(estimateGroupByCardinality(child_dataflow)/ret.property_.partitioner.getNumberOfPartitions());
+
 			}
 
 			break;
@@ -72,8 +75,10 @@ Dataflow Aggregation::getDataflow(){
 
 
 			NodeID location=0;
-//			unsigned long datasize=child_dataflow.getAggregatedDatasize()*predictSelectivity();
-			unsigned long data_cardinality=child_dataflow.getAggregatedDataCardinality()*predictSelectivity();
+
+
+//			unsigned long data_cardinality=child_dataflow.getAggregatedDataCardinality()*predictSelectivity();
+			unsigned long data_cardinality=estimateGroupByCardinality(child_dataflow);
 			PartitionOffset offset=0;
 			DataflowPartition par(offset,data_cardinality,location);
 
@@ -109,7 +114,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.aggregationIndex=getInvolvedIndexList(aggregation_attribute_list_,child_dataflow);
 	aggregation_state.aggregations=aggregation_list_;
 	aggregation_state.block_size=block_size;
-	aggregation_state.nbuckets=1024;
+//	aggregation_state.nbuckets=1024;
+	aggregation_state.nbuckets=estimateGroupByCardinality(child_dataflow);
 	aggregation_state.bucketsize=64;
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);
 	aggregation_state.output=getSchema(dataflow_->attribute_list_);
@@ -306,7 +312,32 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 		}
 		return ret;
 }
+unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
+	unsigned long data_card=dataflow.getAggregatedDataCardinality();
+	unsigned long ret;
+	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
+		if(group_by_attribute_list_[i].isUnique()){
+			return ret=data_card;
+		}
+	}
+	unsigned long group_by_domain_size=1;
+	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
+		AttributeStatistics* attr_stat=StatManager::getInstance()->getAttributeStatistic(group_by_attribute_list_[i]);
+		if(attr_stat==0){
+			group_by_domain_size*=100;
+		}
+		else{
+			group_by_domain_size*=attr_stat->getDistinctCardinality();
+		}
+	}
+	ret=group_by_domain_size;//TODO: This is only the upper bound of group_by domain size;
 
+	const unsigned long limits=1024*1024;
+	ret=ret<limits?ret:limits;
+
+	return ret;
+
+}
 void Aggregation::print(int level)const{
 	printf("%*.sAggregation:\n",level*8," ");
 	printf("%*.sgroup-by attributes:\n",level*8," ");

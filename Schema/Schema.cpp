@@ -28,7 +28,7 @@ void Schema::displayTuple(const void* tuple_start_address,const char* spliter)co
 		cout<<columns[i].operate->toString(getColumnAddess(i,tuple_start_address))<<spliter;
 	}
 	cout<<endl;
-	cout<<"____________________________________"<<endl;
-	cout<<endl;
+//	cout<<"____________________________________"<<endl;
+//	cout<<endl;
 //	sleep(1);
 }

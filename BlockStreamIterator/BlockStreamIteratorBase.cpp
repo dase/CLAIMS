@@ -28,7 +28,7 @@ BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(const string &I
 //	}
 }
 ResultSet* BlockStreamIteratorBase::getResultSet(){
-	printf("You can get ResultSet from Root operator!\n");
+	printf("You cannot get ResultSet from Root operator!\n");
 	assert(false);
 	return 0;
 }

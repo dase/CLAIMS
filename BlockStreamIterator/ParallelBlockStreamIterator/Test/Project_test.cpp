@@ -12,6 +12,12 @@
 #include "../ExpandableBlockStreamProjectionScan.h"
 #include "../../../ids.h"
 #include "../../../Environment.h"
+#include "../../../common/Mapping.h"
+#include "../../../common/ExpressionItem.h"
+#include "../../../common/ExpressionCalculator.h"
+#include "../../../common/TypeCast.h"
+#include "../../../common/TypePromotionMap.h"
+#include "../../../utility/test_tool.h"
 #include "../../../Block/BlockStream.h"
 #include "../../../LogicalQueryPlan/Scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
@@ -21,11 +27,9 @@
 #include "../../../LogicalQueryPlan/Aggregation.h"
 using namespace std;
 
-static int add_(int var,int val){
-	return var+val;
-}
-
 static int Project_test(){
+	initialize_arithmetic_type_promotion_matrix();
+	initialize_type_cast_functions();
 	cout<<"in the sort test!!!"<<endl;
 	Environment::getInstance(true);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -71,12 +75,68 @@ static int Project_test(){
 	/****************Projection***************/
 	vector<column_type> column_list_;
 	column_list_.push_back(column_type(t_int));
-	vector<int> vi;
-	vi.push_back(1);
-	vi.push_back(0);
-	Expression *expr=new Expression(vi);
-	expr->add_sys_func(add_,200);
-	BlockStreamProjectIterator::State project_state(new SchemaFix(column_list),new SchemaFix(column_list_),scan,64*1024-sizeof(unsigned),expr);
+//	column_list_.push_back(column_type(t_int));
+//	vector<int> vi;
+//	vi.push_back(1);
+//	vi.push_back(0);
+//	Expression *expr=new Expression(vi);
+//	expr->add_sys_func(add_,200);
+	std::vector<ExpressionItem> express_item_list1;
+	ExpressionItem ei1;
+	ei1.setVariable("x");
+	express_item_list1.push_back(ei1);
+
+	ExpressionItem ei3;
+	ei3.setVariable("y");
+	express_item_list1.push_back(ei3);
+
+	ExpressionItem ei2;
+	ei2.setOperator("+");
+	express_item_list1.push_back(ei2);
+
+	ExpressionItem ei22;
+	ei22.setIntValue("1");
+	express_item_list1.push_back(ei22);
+
+	ExpressionItem ei23;
+	ei23.setOperator("+");
+	express_item_list1.push_back(ei23);
+
+//	std::vector<ExpressionItem> express_item_list2;
+//	ExpressionItem ei4;
+//	ei4.setVariable("x");
+//	express_item_list2.push_back(ei4);
+//
+//	ExpressionItem ei6;
+//	ei6.setVariable("y");
+//	express_item_list2.push_back(ei6);
+//
+//	ExpressionItem ei5;
+//	ei5.setOperator("-");
+//	express_item_list2.push_back(ei5);
+//
+//	ExpressionItem ei221;
+//	ei221.setIntValue("1");
+//	express_item_list2.push_back(ei221);
+//
+//	ExpressionItem ei231;
+//	ei231.setOperator("-");
+//	express_item_list2.push_back(ei231);
+
+	Mapping *map=new Mapping();
+	ExpressionMapping v1;
+	v1.push_back(0);
+	v1.push_back(1);
+//	ExpressionMapping v2;
+//	v2.push_back(0);
+//	v2.push_back(1);
+	map->atomicPushExpressionMapping(v1);
+//	map->atomicPushExpressionMapping(v2);
+
+	std::vector<std::vector<ExpressionItem> > express_item_list;
+	express_item_list.push_back(express_item_list1);
+//	express_item_list.push_back(express_item_list2);
+	BlockStreamProjectIterator::State project_state(new SchemaFix(column_list),new SchemaFix(column_list_),scan,64*1024-sizeof(unsigned),*map,express_item_list);
 	BlockStreamIteratorBase *project=new BlockStreamProjectIterator(project_state);
 
 	/*******************print******************/
