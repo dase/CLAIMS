@@ -188,5 +188,6 @@ static int test_expression_item(){
 	test_add();
 	test_com_less();
 	test_case_exp();
+	return 0;
 }
 
