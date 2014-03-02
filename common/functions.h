@@ -35,24 +35,26 @@ bool check_data_type_for_add(data_type dt){
 	}
 	}
 }
+
 static void add_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
 	assert(left.return_type==right.return_type);
 	switch(left.return_type){
-	case t_int:{
-		target.return_type=t_int;
-		target.content.data.value._int=left.content.data.value._int+right.content.data.value._int;
-		break;
-	}
-	case t_float:{
-		target.return_type=t_float;
-		target.content.data.value._float=left.content.data.value._float+right.content.data.value._float;
-		break;
-	}
-	defalut:{
-		printf("add type not supproted!\n");
-	}
+		case t_int:{
+			target.return_type=t_int;
+			target.content.data.value._int=left.content.data.value._int+right.content.data.value._int;
+			break;
+		}
+		case t_float:{
+			target.return_type=t_float;
+			target.content.data.value._float=left.content.data.value._float+right.content.data.value._float;
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
 	}
 }
+
 static void add(ExpressionItemStack& stack, ExpressionItem& target){
 	//assuming all types are int.
 	assert(stack.size()>=2);
@@ -80,6 +82,7 @@ static void add(ExpressionItemStack& stack, ExpressionItem& target){
 	add_in_same_type(left,right,target);
 
 }
+
 static void compare_less_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
 	assert(left.return_type==right.return_type);
 	target.return_type=t_boolean;
@@ -98,6 +101,7 @@ static void compare_less_in_same_type(const ExpressionItem& left,const Expressio
 	}
 	}
 }
+
 static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=2);
 	ExpressionItem left,right;
@@ -126,6 +130,7 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 
 
 }
+
 inline bool search_for_and_construct_else_exp(ExpressionItemStack& stack,Expression& case_exp){
 	bool finished=false;
 	while((!stack.empty())){
@@ -175,6 +180,7 @@ inline bool search_for_and_construct_else_exp(ExpressionItemStack& stack,Express
 	}
 	return true;
 }
+
 inline bool search_for_and_construct_then_exp(ExpressionItemStack& stack,Expression& then_exp){
 	bool finished=false;
 	while((!stack.empty())){

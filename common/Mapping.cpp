@@ -8,12 +8,11 @@
 #include "Mapping.h"
 
 Mapping::Mapping() {
-	// TODO 自动生成的构造函数存根
 
 }
 
 Mapping::~Mapping() {
-	// TODO 自动生成的析构函数存根
+
 }
 
 bool Mapping::atomicPushExpressionMapping(ExpressionMapping &expressiong_mapping){

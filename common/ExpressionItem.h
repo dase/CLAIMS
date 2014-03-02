@@ -66,6 +66,7 @@ struct express_operator{
 	unsigned num_of_parameter;
 //	data_type return_type;
 };
+
 struct data__{
 	union{
 	int _int;
@@ -82,11 +83,12 @@ struct data__{
 
 
 };
+
 struct variable{
 //	data_type return_type;
-//	std::string* table_name;
-//	std::string* column_name;
-	const char* variable_name;
+	std::string* table_name;
+	std::string* column_name;
+//	const char* variable_name;
 };
 
 class ExpressionItem {
