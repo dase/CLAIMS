@@ -9,7 +9,6 @@
 #include "functions.h"
 ExpressionCalculator::ExpressionCalculator() {
 	// TODO Auto-generated constructor stub
-
 }
 
 ExpressionCalculator::~ExpressionCalculator() {

@@ -86,8 +86,10 @@ struct data__{
 
 struct variable{
 //	data_type return_type;
-	std::string* table_name;
-	std::string* column_name;
+	const char* table_name;
+	const char* column_name;
+//	string table_name;
+//	string column_name;
 //	const char* variable_name;
 };
 
@@ -142,7 +144,7 @@ public:
 	bool setFloatValue(const char*);
 	bool setOperator(const char*);
 	bool setStringValue(std::string);
-	bool setVariable(const char *);
+	bool setVariable(const char *,const char *);
 public:
 	union {
 		variable var;

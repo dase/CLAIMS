@@ -83,24 +83,32 @@ static int Project_test(){
 //	expr->add_sys_func(add_,200);
 	std::vector<ExpressionItem> express_item_list1;
 	ExpressionItem ei1;
-	ei1.setVariable("x");
+	ei1.setVariable("T","x");
 	express_item_list1.push_back(ei1);
 
 	ExpressionItem ei3;
-	ei3.setVariable("y");
+	ei3.setVariable("T","y");
 	express_item_list1.push_back(ei3);
 
 	ExpressionItem ei2;
 	ei2.setOperator("+");
 	express_item_list1.push_back(ei2);
 
-	ExpressionItem ei22;
-	ei22.setIntValue("1");
-	express_item_list1.push_back(ei22);
-
-	ExpressionItem ei23;
-	ei23.setOperator("+");
-	express_item_list1.push_back(ei23);
+//	ExpressionItem ei22;
+//	ei22.setIntValue("1");
+//	express_item_list1.push_back(ei22);
+//
+//	ExpressionItem ei23;
+//	ei23.setOperator("+");
+//	express_item_list1.push_back(ei23);
+//
+//	ExpressionItem ei24;
+//	ei24.setIntValue("100");
+//	express_item_list1.push_back(ei24);
+//
+//	ExpressionItem ei25;
+//	ei25.setOperator("+");
+//	express_item_list1.push_back(ei25);
 
 //	std::vector<ExpressionItem> express_item_list2;
 //	ExpressionItem ei4;
