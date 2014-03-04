@@ -78,6 +78,9 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 							variable_++;
 						}
 					}
+					for(unsigned k=0;k<state_.v_ei_[i].size();k++){
+						state_.v_ei_[i][k].print_value();
+					}
 					ExpressionCalculator::calcuate(state_.v_ei_[i],result);
 					result.print_value();
 					memcpy(tuple,&result.content.data.value._int,4);

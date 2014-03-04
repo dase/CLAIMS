@@ -73,8 +73,27 @@ bool ExpressionItem::setStringValue(std::string str){
 	return true;
 }
 
-bool ExpressionItem::setVariable(const char * variable){
+bool ExpressionItem::setVariable(const char * table,const char * column){
 	type=variable_type;
-//	content.var.variable_name=variable;
+//	string s(variable);
+//	int position=s.find(".");
+////	string tablename(s.substr(0,position).c_str());
+////	string columnname(s.substr(position+1,s.length()).c_str());
+////	content.var.table_name=s.substr(0,position);
+////	content.var.column_name=s.substr(position+1,s.length());
+//	char *t_c=new char(s.substr(0,position).length()+1);
+//	strcpy(t_c,s.substr(0,position).c_str());
+//	char *c_c=new char(s.substr(position+1,s.length()).length()+1);
+//	strcpy(c_c,s.substr(position+1,s.length()).c_str());
+	content.var.table_name=table;//).assign(tablename);
+	string table_(table);
+	string table_1(content.var.table_name);
+	cout<<"table_: "<<table_<<endl;
+	cout<<"table_1: "<<table_1<<endl;
+	content.var.column_name=column;
+	string column_(column);
+	string column_1(content.var.column_name);
+	cout<<"column_: "<<column_<<endl;
+	cout<<"column_1: "<<column_1<<endl;
 	return true;
 }

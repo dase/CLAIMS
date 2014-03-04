@@ -12,6 +12,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Project_test.cpp"
 #include "../Executor/Test/Executor.cpp"
 #include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
+#include "../LogicalQueryPlan/Test/testProject.cpp"
 #include "../Parsetree/Test/parser_test.cpp"
 #include "../Schema/Test/SubTuple_test.cpp"
 #include "../Schema/Test/VariableSchema_test.cpp"
@@ -47,6 +48,7 @@ int main(){
 //	testServerClient();
 //	return test_data_type();
 //	return test_expression_item();
-	return Project_test();
+	return testProject();
+//	return Project_test();
 
 }
