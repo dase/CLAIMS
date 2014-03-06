@@ -34,9 +34,10 @@ private:
 	int getColumnSeq(ExpressionItem &ei);
 
 private:
+	Mapping mappings_;
 	Dataflow dataflow_;
 	LogicalOperator *child_;
-	std::vector<std::vector<ExpressionItem> > exprArray_;
+	std::vector<Expression> exprArray_;
 };
 
 #endif /* LOGICALPROJECT_H_ */

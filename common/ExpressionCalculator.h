@@ -13,6 +13,7 @@
 #include "ExpressionItem.h"
 
 typedef std::stack<ExpressionItem> ExpressionItemStack;
+typedef std::stack<schema_type> SchemaTypeStack;
 typedef std::vector<ExpressionItem> Expression;
 
 /**
@@ -39,57 +40,6 @@ inline void print_expression(ExpressionItemStack& stack){
 	stack=tmp;
 	printf("_____\n");
 }
-
-class ExpressionSchema {
-public:
-	ExpressionSchema();
-	virtual ~ExpressionSchema();
-	static void calcuates(Expression &exp,ExpressionItem& result){
-		ExpressionItemStack stack;
-		calcualtes(exp,stack);
-		assert(stack.size()==1);
-		result=stack.top();
-	}
-
-	static void calcualtes(Expression &exp,ExpressionItemStack& stack){
-		for(unsigned i=0;i<exp.size();i++){
-			if(exp[i].type!=ExpressionItem::operator_type){
-				stack.push(exp[i]);
-			}
-			else{
-				if(isComposeOperator(exp[i].content.op.op_)){
-					op_type compose_op=exp[i].content.op.op_;
-					stack.push(exp[i++]);
-					unsigned j=i;
-					bool processed_compose_op=false;
-					for(;j<exp.size();j++){
-						if(exp[j].type==ExpressionItem::operator_type&&exp[j].content.op.op_==compose_op)
-						{
-							unsigned before = stack.size();
-							assert(stack.size()==before);
-							compute(exp[j],stack);
-							i=j+1;
-							processed_compose_op=true;
-							break;
-						}
-						else{
-							stack.push(exp[j]);
-						}
-					}
-					if(!processed_compose_op){
-						printf("No end operator for operator[%d] is found!\n",compose_op);
-						assert(false);
-					}
-				}
-				else{
-					compute(exp[i],stack);
-				}
-			}
-		}
-	}
-private:
-
-};
 
 class ExpressionCalculator {
 public:
@@ -152,6 +102,8 @@ public:
 		}
 	}
 	static void compute(ExpressionItem operator_item,ExpressionItemStack& stack);
+	static void computes(schema_type operator_item,SchemaTypeStack& stack);
+	static data_type getOutputType(vector<schema_type> &exp);
 private:
 
 	/**
@@ -170,6 +122,14 @@ private:
 	}
 	static void reverse_stack(ExpressionItemStack& stack){
 		ExpressionItemStack tmp;
+		while(!stack.empty()){
+			tmp.push(stack.top());
+			stack.pop();
+		}
+		stack=tmp;
+	}
+	static void reverse_stack(SchemaTypeStack& stack){
+		SchemaTypeStack tmp;
 		while(!stack.empty()){
 			tmp.push(stack.top());
 			stack.pop();

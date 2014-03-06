@@ -44,6 +44,9 @@ bool ExpressionItem::setOperator(const char* op_str){
 	if(tmp=="+"){
 		content.op.op_=op_add;
 	}
+	if(tmp=="-"){
+		content.op.op_=op_mins;
+	}
 	else if(tmp=="<"){
 		content.op.op_=op_com_L;
 	}

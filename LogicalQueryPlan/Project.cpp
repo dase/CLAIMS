@@ -24,28 +24,50 @@ Dataflow LogicalProject::getDataflow(){
 
 BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksize){
 	getDataflow();
+	mappings_=getMapping();
 	BlockStreamIteratorBase *child=child_->getIteratorTree(blocksize);
 	BlockStreamProjectIterator::State state;
 	state.block_size_=blocksize;
 	state.children_=child;
 	state.v_ei_=exprArray_;
 	state.input_=getSchema(dataflow_.attribute_list_);
-	vector<column_type> column_list;
-	column_list.push_back(column_type(t_int));
-	state.output_=new SchemaFix(column_list);
+	state.map_=mappings_;
+//	vector<column_type> column_list;
+//	column_list.push_back(column_type(t_int));
+//	state.output_=new SchemaFix(column_list);
 	state.output_=getOutputSchema();
-	state.map_=getMapping();
 	return new BlockStreamProjectIterator(state);
 }
 
 Schema *LogicalProject::getOutputSchema(){
 	//must scan the expression and get the output schema
 	vector<column_type> column_list;
+	Schema *input_=getSchema(dataflow_.attribute_list_);
 	for(unsigned i=0;i<exprArray_.size();i++){
-
-		column_list.push_back();
+		vector<schema_type> types;
+		for(unsigned j=0;j<exprArray_[i].size();j++){
+			schema_type tp;
+			if(exprArray_[i][j].type==ExpressionItem::variable_type){
+				tp.type=ExpressionItem::variable_type;
+				tp.type_union.datatype_=input_->getcolumn(mappings_.ExpressionMappingArray_[i][j]).type;
+				types.push_back(tp);
+			}
+			else if(exprArray_[i][j].type==ExpressionItem::operator_type){
+				tp.type=ExpressionItem::operator_type;
+				tp.type_union.operator_.set(exprArray_[i][j].content.op.op_);
+				types.push_back(tp);
+			}
+			else{
+				tp.type=ExpressionItem::const_type;
+				tp.type_union.datatype_=exprArray_[i][j].return_type;
+				types.push_back(tp);
+			}
+		}
+		data_type rt_type_per_expression=ExpressionCalculator::getOutputType(types);
+		column_type column_schema(rt_type_per_expression);
+		column_list.push_back(column_schema);
 	}
-	Schema *rt_schema=new SchemaFix();
+	Schema *rt_schema=new SchemaFix(column_list);
 	return rt_schema;
 }
 

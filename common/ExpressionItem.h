@@ -9,7 +9,7 @@
 #define EXPRESSIONITEM_H_
 #include <sstream>
 #include "../data_type.h"
-enum op_type{op_add,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
+enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
@@ -79,9 +79,6 @@ struct data__{
 	char _datatime[8];//datetime
 	char _decimal[16];//decimal
 	}value;
-
-
-
 };
 
 struct variable{
@@ -254,5 +251,13 @@ private:
 		}
 	}
 };
+
+typedef struct schema_type{
+	union{
+		data_type datatype_;
+		express_operator operator_;
+	}type_union;
+	ExpressionItem::ItemType type;
+}schema_type_;
 
 #endif /* EXPRESSIONITEM_H_ */
