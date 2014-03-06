@@ -32,9 +32,6 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 	state.v_ei_=exprArray_;
 	state.input_=getSchema(dataflow_.attribute_list_);
 	state.map_=mappings_;
-//	vector<column_type> column_list;
-//	column_list.push_back(column_type(t_int));
-//	state.output_=new SchemaFix(column_list);
 	state.output_=getOutputSchema();
 	return new BlockStreamProjectIterator(state);
 }
@@ -44,26 +41,12 @@ Schema *LogicalProject::getOutputSchema(){
 	vector<column_type> column_list;
 	Schema *input_=getSchema(dataflow_.attribute_list_);
 	for(unsigned i=0;i<exprArray_.size();i++){
-		vector<schema_type> types;
 		for(unsigned j=0;j<exprArray_[i].size();j++){
-			schema_type tp;
 			if(exprArray_[i][j].type==ExpressionItem::variable_type){
-				tp.type=ExpressionItem::variable_type;
-				tp.type_union.datatype_=input_->getcolumn(mappings_.ExpressionMappingArray_[i][j]).type;
-				types.push_back(tp);
-			}
-			else if(exprArray_[i][j].type==ExpressionItem::operator_type){
-				tp.type=ExpressionItem::operator_type;
-				tp.type_union.operator_.set(exprArray_[i][j].content.op.op_);
-				types.push_back(tp);
-			}
-			else{
-				tp.type=ExpressionItem::const_type;
-				tp.type_union.datatype_=exprArray_[i][j].return_type;
-				types.push_back(tp);
+				exprArray_[i][j].return_type=input_->getcolumn(mappings_.getMapping()[i][j]).type;
 			}
 		}
-		data_type rt_type_per_expression=ExpressionCalculator::getOutputType(types);
+		data_type rt_type_per_expression=ExpressionCalculator::getOutputType(exprArray_[i]);
 		column_type column_schema(rt_type_per_expression);
 		column_list.push_back(column_schema);
 	}

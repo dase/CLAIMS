@@ -22,7 +22,9 @@ public:
 	bool atomicPushExpressionMapping(ExpressionMapping &expression_mapping);
 	ExpressionMapping atomicPopExpressionMapping(int i);
 
-//private:
+	std::vector<ExpressionMapping> getMapping();
+
+private:
 	std::vector<ExpressionMapping> ExpressionMappingArray_;
 };
 

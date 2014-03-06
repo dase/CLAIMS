@@ -13,7 +13,6 @@
 #include "ExpressionItem.h"
 
 typedef std::stack<ExpressionItem> ExpressionItemStack;
-typedef std::stack<schema_type> SchemaTypeStack;
 typedef std::vector<ExpressionItem> Expression;
 
 /**
@@ -102,8 +101,8 @@ public:
 		}
 	}
 	static void compute(ExpressionItem operator_item,ExpressionItemStack& stack);
-	static void computes(schema_type operator_item,SchemaTypeStack& stack);
-	static data_type getOutputType(vector<schema_type> &exp);
+	static void computes(ExpressionItem operator_item,ExpressionItemStack& stack);
+	static data_type getOutputType(vector<ExpressionItem> &exp);
 private:
 
 	/**
@@ -122,14 +121,6 @@ private:
 	}
 	static void reverse_stack(ExpressionItemStack& stack){
 		ExpressionItemStack tmp;
-		while(!stack.empty()){
-			tmp.push(stack.top());
-			stack.pop();
-		}
-		stack=tmp;
-	}
-	static void reverse_stack(SchemaTypeStack& stack){
-		SchemaTypeStack tmp;
 		while(!stack.empty()){
 			tmp.push(stack.top());
 			stack.pop();

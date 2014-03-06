@@ -27,12 +27,20 @@ inline bool int_to_float(ExpressionItem& in){
 	in.content.data.value._float=new_value;
 	return true;
 }
+inline bool int_to_double(ExpressionItem& in){
+	assert(in.return_type==t_int);
+	float new_value=(double)in.content.data.value._int;
+	in.return_type=t_double;
+	in.content.data.value._double=new_value;
+	return true;
+}
 /**
  * Note: This function must be called before computing any Expression
  */
 inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_functions[t_int][t_int]=int_to_int;
 	TypeCast::type_cast_functions[t_int][t_float]=int_to_float;
+	TypeCast::type_cast_functions[t_int][t_double]=int_to_double;
 
 }
 
