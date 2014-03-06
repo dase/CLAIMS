@@ -74,8 +74,7 @@ static void mins_in_same_type(const ExpressionItem& left,const ExpressionItem& r
 	}
 }
 
-static void add(ExpressionItemStack& stack, ExpressionItem& target){
-	//assuming all types are int.
+static void adds(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=2);
 	ExpressionItem right=stack.top();
 	stack.pop();
@@ -89,6 +88,25 @@ static void add(ExpressionItemStack& stack, ExpressionItem& target){
 	}
 //	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
 	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+}
+
+static void add(ExpressionItemStack& stack, ExpressionItem& target){
+	//assuming all types are int.
+	assert(stack.size()>=2);
+	ExpressionItem right=stack.top();
+	stack.pop();
+	ExpressionItem left=stack.top();
+	stack.pop();
+
+	if(!check_data_type_for_add(right.return_type)){
+		printf("%s is not supported for +!\n",getReturnTypeName(right.return_type).c_str());
+	}
+	if(!check_data_type_for_add(left.return_type)){
+		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
+	}
+
+//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
+	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 
 	if(target.return_type!=left.return_type){
 		//left should be converted into target.return_type if two types are different
@@ -99,7 +117,22 @@ static void add(ExpressionItemStack& stack, ExpressionItem& target){
 	}
 
 	add_in_same_type(left,right,target);
+}
 
+static void minss(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem right=stack.top();
+	stack.pop();
+	if(!check_data_type_for_add(right.return_type)){
+		printf("%s is not supported for +!\n",getReturnTypeName(right.return_type).c_str());
+	}
+	ExpressionItem left=stack.top();
+	stack.pop();
+	if(!check_data_type_for_add(left.return_type)){
+		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
+	}
+//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
+	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 }
 
 static void mins(ExpressionItemStack& stack, ExpressionItem& target){
@@ -127,38 +160,6 @@ static void mins(ExpressionItemStack& stack, ExpressionItem& target){
 	}
 
 	mins_in_same_type(left,right,target);
-}
-
-static void adds(SchemaTypeStack& stack, schema_type& target){
-	assert(stack.size()>=2);
-	schema_type right=stack.top();
-	stack.pop();
-	if(!check_data_type_for_add(right.type_union.datatype_)){
-		printf("%s is not supported for +!\n",getReturnTypeName(right.type_union.datatype_).c_str());
-	}
-	schema_type left=stack.top();
-	stack.pop();
-	if(!check_data_type_for_add(left.type_union.datatype_)){
-		printf("%s is not supported for +!\n",getReturnTypeName(left.type_union.datatype_).c_str());
-	}
-//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
-	target.type_union.datatype_=TypePromotion::arith_type_promotion_map[left.type_union.datatype_][right.type_union.datatype_];
-}
-
-static void mins(SchemaTypeStack& stack, schema_type& target){
-	assert(stack.size()>=2);
-	schema_type right=stack.top();
-	stack.pop();
-	if(!check_data_type_for_add(right.type_union.datatype_)){
-		printf("%s is not supported for +!\n",getReturnTypeName(right.type_union.datatype_).c_str());
-	}
-	schema_type left=stack.top();
-	stack.pop();
-	if(!check_data_type_for_add(left.type_union.datatype_)){
-		printf("%s is not supported for +!\n",getReturnTypeName(left.type_union.datatype_).c_str());
-	}
-//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
-	target.type_union.datatype_=TypePromotion::arith_type_promotion_map[left.type_union.datatype_][right.type_union.datatype_];
 }
 
 static void compare_less_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){

@@ -23,3 +23,7 @@ bool Mapping::atomicPushExpressionMapping(ExpressionMapping &expressiong_mapping
 ExpressionMapping Mapping::atomicPopExpressionMapping(int i){
 	return ExpressionMappingArray_.at(i);
 }
+
+std::vector<ExpressionMapping> Mapping::getMapping(){
+	return ExpressionMappingArray_;
+}

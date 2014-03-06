@@ -69,6 +69,8 @@ public:
 private:
 	bool atomicPopRemainingBlock(remaining_block & rb);
 	void atomicPushRemainingBlock(remaining_block rb);
+
+	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
 private:
 	State state_;
 

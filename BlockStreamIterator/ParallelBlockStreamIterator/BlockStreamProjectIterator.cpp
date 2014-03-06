@@ -72,19 +72,23 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 						ExpressionItem ei;
 						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type){
 							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
-							int m=*(int*)state_.input_->getColumnAddess(nth,cur);
+//							int m=*(int*)state_.input_->getColumnAddess(nth,cur);
 							//put the nth column of the tuple into the Expression and turn it to a const
-							state_.v_ei_[i][j].setIntValue(m);
+							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(j).type);
 							variable_++;
 						}
+						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type){
+							ei.setData(state_.v_ei_[i][j].content.data);
+						}
+						else{
+							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
+						}
+						toCalc.push_back(ei);
 					}
-//					for(unsigned k=0;k<state_.v_ei_[i].size();k++){
-//						state_.v_ei_[i][k].print_value();
-//					}
-					ExpressionCalculator::calcuate(state_.v_ei_[i],result);
-					result.print_value();
-					memcpy(tuple,&result.content.data.value._int,4);
-					tuple=(char *)tuple+4;
+					ExpressionCalculator::calcuate(toCalc,result);
+//					result.print_value();
+					copyColumn(tuple,result,state_.output_->getcolumn(i).get_length());
+					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
 				}
 				/* Recently, we can use choosing the first column
 				 * TODO:here we can do some mapping by using the func pointer in Expression*/
@@ -141,4 +145,21 @@ void BlockStreamProjectIterator::atomicPushRemainingBlock(remaining_block rb){
 	lock_.acquire();
 	remaining_block_list_.push_back(rb);
 	lock_.release();
+}
+
+bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,int length){
+	switch(result.return_type){
+		case t_int:{
+			memcpy(tuple,&result.content.data.value._int,length);
+			break;
+		}
+		case t_float:{
+			memcpy(tuple,&result.content.data.value._float,length);
+			break;
+		}
+		default:{
+			cout<<"missing the operator!!!"<<endl;
+			break;
+		}
+	}
 }

@@ -16,6 +16,35 @@ ExpressionItem::~ExpressionItem() {
 	// TODO Auto-generated destructor stub
 }
 
+bool ExpressionItem::setValue(void* value_str,data_type data){
+	switch(data){
+		case t_int:{
+			setIntValue(*(int *)value_str);
+			break;
+		}
+		case t_float:{
+			setFloatValue(*(float *)value_str);
+			break;
+		}
+		case t_double:{
+			setDoubleValue(*(double *)value_str);
+			break;
+		}
+		default:{
+			cout<<"no matching operator exists!!!"<<endl;
+			break;
+		}
+	}
+	return true;
+}
+
+bool ExpressionItem::setData(data__& data){
+	this->type=const_type;
+	/*return type not need!!!*/
+	this->content.data=data;
+	return true;
+}
+
 bool ExpressionItem::setIntValue(const char* int_str){
 	this->type=const_type;
 	this->return_type=t_int;
@@ -37,6 +66,34 @@ bool ExpressionItem::setFloatValue(const char* float_str){
 	return true;
 }
 
+bool ExpressionItem::setFloatValue(float &float_){
+	type=const_type;
+	return_type=t_float;
+	content.data.value._float=float_;
+	return true;
+}
+
+bool ExpressionItem::setDoubleValue(const char* double_str){
+	type=const_type;
+	return_type=t_double;
+	content.data.value._double=atof(double_str);
+	return true;
+}
+
+bool ExpressionItem::setDoubleValue(double &double_){
+	type=const_type;
+	return_type=t_double;
+	content.data.value._double=double_;
+	return true;
+}
+
+bool ExpressionItem::setStringValue(std::string str){
+	type=const_type;
+	return_type=t_string;
+	_string=str;
+	return true;
+}
+
 bool ExpressionItem::setOperator(const char* op_str){
 //	enum op_type{op_add,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
 	type=operator_type;
@@ -44,7 +101,7 @@ bool ExpressionItem::setOperator(const char* op_str){
 	if(tmp=="+"){
 		content.op.op_=op_add;
 	}
-	if(tmp=="-"){
+	else if(tmp=="-"){
 		content.op.op_=op_mins;
 	}
 	else if(tmp=="<"){
@@ -69,34 +126,13 @@ bool ExpressionItem::setOperator(const char* op_str){
 	return true;
 }
 
-bool ExpressionItem::setStringValue(std::string str){
-	type=const_type;
-	return_type=t_string;
-	_string=str;
-	return true;
-}
-
 bool ExpressionItem::setVariable(const char * table,const char * column){
 	type=variable_type;
-//	string s(variable);
-//	int position=s.find(".");
-////	string tablename(s.substr(0,position).c_str());
-////	string columnname(s.substr(position+1,s.length()).c_str());
-////	content.var.table_name=s.substr(0,position);
-////	content.var.column_name=s.substr(position+1,s.length());
-//	char *t_c=new char(s.substr(0,position).length()+1);
-//	strcpy(t_c,s.substr(0,position).c_str());
-//	char *c_c=new char(s.substr(position+1,s.length()).length()+1);
-//	strcpy(c_c,s.substr(position+1,s.length()).c_str());
-	content.var.table_name=table;//).assign(tablename);
+	content.var.table_name=table;
 	string table_(table);
 	string table_1(content.var.table_name);
-	cout<<"table_: "<<table_<<endl;
-	cout<<"table_1: "<<table_1<<endl;
 	content.var.column_name=column;
 	string column_(column);
 	string column_1(content.var.column_name);
-	cout<<"column_: "<<column_<<endl;
-	cout<<"column_1: "<<column_1<<endl;
 	return true;
 }

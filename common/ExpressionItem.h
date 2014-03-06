@@ -21,11 +21,11 @@ static std::string getReturnTypeName(data_type return_type){
 		case t_float:{
 			return std::string("t_float");
 		}
-		case t_string:{
-			return std::string("t_string");
-		}
 		case t_double:{
 			return std::string("t_double");
+		}
+		case t_string:{
+			return std::string("t_string");
 		}
 		case t_u_long:{
 			return std::string("t_u_long");
@@ -82,12 +82,8 @@ struct data__{
 };
 
 struct variable{
-//	data_type return_type;
 	const char* table_name;
 	const char* column_name;
-//	string table_name;
-//	string column_name;
-//	const char* variable_name;
 };
 
 class ExpressionItem {
@@ -136,9 +132,14 @@ public:
 	}
 	ExpressionItem();
 	virtual ~ExpressionItem();
-	bool setIntValue(const char*);
+	bool setValue(void*,data_type);
+	bool setData(data__&);
+	bool setIntValue(const char *);
 	bool setIntValue(int);
 	bool setFloatValue(const char*);
+	bool setFloatValue(float&);
+	bool setDoubleValue(const char*);
+	bool setDoubleValue(double&);
 	bool setOperator(const char*);
 	bool setStringValue(std::string);
 	bool setVariable(const char *,const char *);
@@ -184,12 +185,12 @@ private:
 				ss<<content.data.value._float;
 				break;
 			}
-			case t_string:{
-				ss<<_string;
-				break;
-			}
 			case t_double:{
 				ss<<content.data.value._double;
+				break;
+			}
+			case t_string:{
+				ss<<_string;
 				break;
 			}
 			case t_u_long:{
@@ -218,10 +219,15 @@ private:
 		}
 		return ss.str();
 	}
+
+public:
 	std::string getOperatorName()const{
 		switch(content.op.op_){
 		case op_add:{
 			return std::string("+");
+		}
+		case op_mins:{
+			return std::string("-");
 		}
 		case op_cast_int:{
 			return std::string("(int)");
@@ -251,13 +257,5 @@ private:
 		}
 	}
 };
-
-typedef struct schema_type{
-	union{
-		data_type datatype_;
-		express_operator operator_;
-	}type_union;
-	ExpressionItem::ItemType type;
-}schema_type_;
 
 #endif /* EXPRESSIONITEM_H_ */
