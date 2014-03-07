@@ -33,6 +33,17 @@ BlockStreamBase* BlockStreamBase::createBlock(Schema* schema,unsigned block_size
 		return 0;
 	}
 }
+static BlockStreamBase* BlockStreamBase::createBlockWithDesirableSerilaizedSize(Schema* schema,unsigned block_size){
+	if(schema->getSchemaType()==Schema::fixed){
+		return new BlockStreamFix(block_size-sizeof(BlockStreamFix::tail_info),schema->getTupleMaxSize());
+	}
+	else{
+		/*
+		 * TODO: support variable-length BlockStream
+		 */
+		return 0;
+	}
+}
 
 void* BlockStreamFix::getBlockDataAddress(){
 	return start;
