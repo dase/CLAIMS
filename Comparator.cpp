@@ -95,6 +95,8 @@ void Comparator::initialize_L()
 	funs_L[Comparator::Pair(t_time,t_time)]=LESS<time_duration,time_duration>;
 	funs_L[Comparator::Pair(t_datetime,t_datetime)]=LESS<ptime,ptime>;
 	funs_L[Comparator::Pair(t_datetime,t_decimal)]=LESS<NValue*,NValue*>;
+
+	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
 }
 void Comparator::initialize_GEQ()
 {
@@ -189,6 +191,7 @@ void Comparator::iniatilize()
 		{
 			//TODO: Handle the exception.
 			printf("Undefined Comparator type!\n");
+			assert(false);
 		}
 	}
 }

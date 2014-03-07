@@ -55,7 +55,7 @@ static void test_com_less(){
 		express_item_list.push_back(ei2);
 
 		ExpressionItem ei3;
-		ei3.setOperator("+");
+		ei3.setOperator("-");
 		express_item_list.push_back(ei3);
 
 		ExpressionItem ei4;
@@ -88,14 +88,14 @@ inline void test_case_exp(){
 	 *
 	 * 			CASE-end
 	 * 			X
-	 * 			<
 	 * 			60
+	 * 			<
 	 * 			WHEN
 	 * 			"FAIL"
 	 * 			THEN
 	 * 			X
-	 * 			<
 	 * 			80
+	 * 			<
 	 * 			WHEN
 	 * 			"GOOD"
 	 * 			THEN
@@ -188,5 +188,6 @@ static int test_expression_item(){
 	test_add();
 	test_com_less();
 	test_case_exp();
+	return 0;
 }
 

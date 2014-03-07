@@ -8,8 +8,11 @@
 #ifndef EXPRESSIONITEM_H_
 #define EXPRESSIONITEM_H_
 #include <sstream>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/binary_object.hpp>
 #include "../data_type.h"
-enum op_type{op_add,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
+enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
@@ -21,11 +24,11 @@ static std::string getReturnTypeName(data_type return_type){
 		case t_float:{
 			return std::string("t_float");
 		}
-		case t_string:{
-			return std::string("t_string");
-		}
 		case t_double:{
 			return std::string("t_double");
+		}
+		case t_string:{
+			return std::string("t_string");
 		}
 		case t_u_long:{
 			return std::string("t_u_long");
@@ -66,6 +69,7 @@ struct express_operator{
 	unsigned num_of_parameter;
 //	data_type return_type;
 };
+
 struct data__{
 	union{
 	int _int;
@@ -78,14 +82,11 @@ struct data__{
 	char _datatime[8];//datetime
 	char _decimal[16];//decimal
 	}value;
-
-
-
 };
+
 struct variable{
-//	data_type return_type;
-	std::string* table_name;
-	std::string* column_name;
+	const char* table_name;
+	const char* column_name;
 };
 
 class ExpressionItem {
@@ -134,11 +135,19 @@ public:
 	}
 	ExpressionItem();
 	virtual ~ExpressionItem();
-	bool setIntValue(const char*);
+	bool setValue(void*,data_type);
+	bool setData(data__&);
+	bool setIntValue(const char *);
 	bool setIntValue(int);
 	bool setFloatValue(const char*);
+	bool setFloatValue(float&);
+	bool setDoubleValue(const char*);
+	bool setDoubleValue(double&);
+	bool setULongValue(const char*);
+	bool setULongValue(unsigned long&);
 	bool setOperator(const char*);
 	bool setStringValue(std::string);
+	bool setVariable(const char *,const char *);
 public:
 	union {
 		variable var;
@@ -148,6 +157,19 @@ public:
 	ItemType type;
 	std::string _string;// string cannot be in unoin.
 	data_type return_type;
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version){
+		char* start_of_union=(char*)(&content.data.value._int);
+		ar & return_type & _string & type;
+		for(unsigned i=0;i<sizeof(content);i++){
+			ar& *start_of_union;
+			start_of_union++;
+		}
+
+
+	}
 private:
 	std::string getItemTypeName()const{
 		switch(type){
@@ -181,12 +203,12 @@ private:
 				ss<<content.data.value._float;
 				break;
 			}
-			case t_string:{
-				ss<<_string;
-				break;
-			}
 			case t_double:{
 				ss<<content.data.value._double;
+				break;
+			}
+			case t_string:{
+				ss<<_string;
 				break;
 			}
 			case t_u_long:{
@@ -215,10 +237,15 @@ private:
 		}
 		return ss.str();
 	}
+
+public:
 	std::string getOperatorName()const{
 		switch(content.op.op_){
 		case op_add:{
 			return std::string("+");
+		}
+		case op_mins:{
+			return std::string("-");
 		}
 		case op_cast_int:{
 			return std::string("(int)");
