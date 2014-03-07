@@ -83,6 +83,7 @@ public:
 	};
 	BlockStreamBase(unsigned block_size):Block(block_size){};
 	static BlockStreamBase* createBlock(Schema* schema,unsigned block_size);
+	static BlockStreamBase* createBlockWithDesirableSerilaizedSize(Schema* schema,unsigned block_size);
 protected:
 	virtual void* getTuple(unsigned offset) const =0;
 

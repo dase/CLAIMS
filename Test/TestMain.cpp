@@ -37,7 +37,21 @@ int main(){
 //	return daemon_test();
 //	testServerClient();
 //	return test_data_type();
-	return test_expression_item();
+//	return test_expression_item();
+	std::vector<std::vector<int> > father;
+	for(unsigned i=0;i<3;i++){
+		std::vector<int> inner;
+		for(unsigned j=0;j<3;j++){
+			inner.push_back(i*10+j);
+		}
+		father.push_back(inner);
+	}
+
+	for(unsigned i=0;i<father.size();i++){
+		for(unsigned j=0;j<father[i].size();j++){
+			printf("%d\n",father[i][j]);
+		}
+	}
 
 
 }
