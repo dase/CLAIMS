@@ -8,6 +8,38 @@ using namespace std;
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
+extern Node *NodePointer[10000];		// 2014-3-7---指向每个节点的指针数组---by余楷
+extern int NodePointerNum;		// 2014-3-7---指向每个节点的指针数组中元素个数---by余楷
+
+inline void insertNodePointer(Node *a)	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
+{
+	NodePointer[NodePointerNum++] = a;
+}
+
+struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加新建语句列表函数---by余楷
+{
+	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+
+	a->type = t;
+	a->data = newNode;
+	a->next = NULL;
+	a->last = (Node *)a;
+
+	if (list != NULL)
+	{
+		((Stmt *)(((Stmt *)list)->last))->next = (Node *)a;
+		((Stmt *)list)->last = (Node *)a;
+		return (Node *)list;
+	}
+	//cout<<"newStmt is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
 
 struct Node * newExpr(nodetype t, dataval d)
 {
@@ -21,6 +53,7 @@ struct Node * newExpr(nodetype t, dataval d)
 	a->type = t;
 	a->data = d;
 	//cout<<"newExpr is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -37,6 +70,7 @@ struct Node * newExprList(nodetype t, Node * data, Node * next)
 	a->data = data;
 	a->next = next;
 	//cout<<"newExpr is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -54,6 +88,8 @@ struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * 
 	a->parameter2 = parameter2;
 	a->next = next;
 	//cout<<"newExpr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -74,6 +110,8 @@ struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 	a->lnext = lnext;
 	a->rnext = rnext;
 	//cout<<"newExpr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -93,6 +131,8 @@ struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 	a->parameter2 = parameter2;
 	a->next = next;
 	//cout<<"newExpr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -123,6 +163,9 @@ struct Node * newTable(nodetype type, char * dbname, char *tablename,
 
 	a->whcdn=newExprlistheader(t_expr_list_header,NULL,NULL);
 	
+
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node *condition)
@@ -139,6 +182,8 @@ struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node
 	a->rnext = rnext;
 	a->condition = condition;
 	//cout<<"Join is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -154,6 +199,8 @@ struct Node * newCondition(nodetype type, int conditiontype, Node * args)
 	a->conditiontype = conditiontype;
 	a->args = args;
 	//cout<<"Condition is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -169,6 +216,8 @@ struct Node * newSubquery(nodetype type, char * querystring, Node *next)
 	a->querystring = querystring;
 	a->next = next;
 	//cout<<"Subquery is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -196,6 +245,8 @@ struct Node * newQueryStmt(nodetype t, char * querystring, int select_opts,
 	a->into_list = into_list;
 
 	//cout<<"Query_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -213,6 +264,8 @@ struct Node * newSelectList(nodetype type,int isall,Node * args,Node *next)
 	a->next = next;
 
 	//cout<<"Select_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -229,6 +282,8 @@ struct Node * newSelectExpr(nodetype type, char *ascolname, Node * colname)
 	a->colname = colname;
 
 	//cout<<"Select_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -248,6 +303,8 @@ struct Node *  newFromList(nodetype type, Node * args, Node *next)
 	//a->wcondition.clear();
 	a->whcdn=newExprlistheader(t_expr_list_header,NULL,NULL);
 	//cout<<"From_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -264,6 +321,8 @@ struct Node * newFromExpr( nodetype type, char * astablename, Node *next)
 	a->next = next;
 
 	//cout<<"From_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -280,6 +339,8 @@ struct Node * newWhereList(nodetype type, char * wherestring, Node *next)
 	a->next = next;
 
 	//cout<<"Where_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -297,6 +358,8 @@ struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, in
 	a->with_rollup = with_rollup;
 
 	//cout<<"Groupby_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -314,6 +377,8 @@ struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next
 	a->next = next;
 
 	//cout<<"Groupby_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -330,6 +395,8 @@ struct Node * newHavingList(nodetype type, char * havingstring, Node *next)
 	a->next = next;
 
 	//cout<<"Having_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -347,6 +414,8 @@ struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next)
 	a->next = next;
 
 	//cout<<"Orderby_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -364,6 +433,8 @@ struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *n
 	a->next = next;
 
 	//cout<<"Orderby_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -380,6 +451,8 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
 	a->row_count = row_count;
 
 	//cout<<"Limit_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -400,6 +473,8 @@ struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, c
 	a->name = name;
 
 	//cout<<"Create_database_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -421,6 +496,8 @@ struct Node * newCreateTableStmt
 	a->select_stmt = select_stmt;
 
 	//cout<<"Create_table_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -437,11 +514,13 @@ struct Node * newCreateColList(nodetype type, Node * data, Node * next)
 	a->next = next;
 
 	//cout<<"Create_col_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
-struct Node * newCreateDef(nodetype type, int deftype, Node * datatype,  Node * col_atts, Node * col_list)
-{
+struct Node * newCreateDef(nodetype type, int deftype, char * name, Node * datatype,  Node * col_atts, Node * col_list)
+{	// 2-18---增加name属性---by余楷
 	struct Create_def * a= (struct Create_def *)malloc(sizeof(struct Create_def));
 	if(!a)
 	{
@@ -450,11 +529,14 @@ struct Node * newCreateDef(nodetype type, int deftype, Node * datatype,  Node * 
 	}
 	a->type = type;
 	a->deftype = deftype;
+	a->name = name;		// 2-18---增加name属性---by余楷
 	a->datatype = datatype;
 	a->col_atts = col_atts;
 	a->col_list = col_list;
 
 	//cout<<"Create_def is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -474,6 +556,8 @@ struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, 
 	a->col_list = col_list;
 
 	//cout<<"Column_atts is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -491,9 +575,32 @@ struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int tempora
 	a->select_stmt = select_stmt;
 
 	//cout<<"Create_select_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
-	
+
+// 2014-2-24---增加该结构体---by余楷
+struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list, int partition_num, char *partition_attribute_name)
+{
+	Create_projection_stmt * a= (Create_projection_stmt *)malloc(sizeof(Create_projection_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->tablename = tablename;
+	a->column_list = column_list;
+	a->partition_num = partition_num;
+	a->partition_attribute_name = partition_attribute_name;
+
+	//cout<<"Create_projection_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+};
+
 	/*** 		do 语句				***/
 struct Node * newDoStmt(nodetype type, Node * data)
 {
@@ -507,6 +614,8 @@ struct Node * newDoStmt(nodetype type, Node * data)
 	a->data = data;
 
 	//cout<<"Do_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -523,12 +632,14 @@ struct Node * newTruncateStmt(nodetype type, char * name)
 	a->name = name;
 
 	//cout<<"Truncate_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 	/*** 		alter 语句			***/
 	
-struct Node * newAlterDBStmt(nodetype type, int createtype, char * name, Node* opt)
+struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt)	// 2-19---把函数名改为newAlterDatabaseStmt---by余楷
 {
 	Alterdatabase_stmt * a= (Alterdatabase_stmt *)malloc(sizeof( Alterdatabase_stmt));
 	if(!a)
@@ -542,6 +653,8 @@ struct Node * newAlterDBStmt(nodetype type, int createtype, char * name, Node* o
 	a->opt = opt;
 
 	//cout<<"Alterdatabase_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -559,6 +672,8 @@ struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2)
 	a->s2 = s2;
 
 	//cout<<"Opt_csc is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -576,6 +691,8 @@ struct Node * newAlterTableStmt(nodetype type, int isignore, char * name, Node *
 	a->parameter = parameter;
 
 	//cout<<"Altertable_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -598,6 +715,8 @@ struct Node * newAlterDef (nodetype type, int altertype, char * name1, char * na
 	a->next = next;
 
 	//cout<<"Alter_def is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -619,6 +738,8 @@ struct Node * newDatatype (nodetype type, int datatype, Node* length, int opt_uz
 	a->enum_list = enum_list;
 
 	//cout<<"Datatype is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -635,6 +756,8 @@ struct Node * newLength (nodetype type, int data1, int data2)
 	a->data2 = data2;
 
 	//cout<<"Length is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -651,6 +774,8 @@ struct Node * newEnumList (nodetype type, char * s, Node * next)
 	a->next = next;
 
 	//cout<<"enum_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 	
@@ -679,7 +804,13 @@ void output(Node * oldnode, int floor)
 			cout<<"Columns: "<< node->parameter1<< "  "<< node->parameter2<<endl;
 			break;
 		}
-		case t_name:
+		case t_name:	// ---3.5---
+		{
+					Columns * node = (Columns *) oldnode;
+					outputSpace(floor);
+					cout<<"Columns: "<< node->parameter2<<endl;
+					break;
+		}
 		case t_stringval:
 		{
 			Expr * node = (Expr *) oldnode;
@@ -793,8 +924,7 @@ void output(Node * oldnode, int floor)
 		}
 		
 		case t_table://///////////////////////////////////////////////////
-		/* nodetype type;	char * dbname,*tablename,*astablename;	
-			int issubquery;	Node *subquery; Node * condition */
+		/* nodetype type;	char * dbname,*tablename,*astablename; int issubquery;	Node *subquery; Node * condition */
 		{
 			Table * node = (Table *) oldnode;
 			
@@ -1015,6 +1145,18 @@ void output(Node * oldnode, int floor)
 			break;
 		}
 	}
+}
+
+void FreeAllNode()	// 2014-3-6---增加释放所有节点的函数---by余楷
+{
+	int i;
+	for (i = 0; i < NodePointerNum; ++i)
+	{
+		free(NodePointer[i]);
+		NodePointer[i] = NULL;
+	}
+	cout<<"All "<<NodePointerNum<<" node freed successfully"<<endl;
+	NodePointerNum = 0;
 }
 
 

@@ -19,6 +19,10 @@ Executing::~Executing() {
 }
 
 ResultSet* Executing::run_sql(std::string sql,std::string& error){
+	/*
+	 *  should call ExecuteLogicalQueryPlan. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! by yukai
+	 * */
+
 //	char * test="select row_id,count(*) from cj where cj.row_id=1 group by cj.row_id;";
 	ResultSet* resultset=0;
 	Node* node=getparsetreeroot(sql.c_str());

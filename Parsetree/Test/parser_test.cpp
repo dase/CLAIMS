@@ -459,8 +459,7 @@ static int parser_test(){
 
 			printf("SQL:fuck\n");
 			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
-			char* test;
-			Node* node=getparsetreeroot(test);
+			Node* node=getparsetreeroot();
 			output(node,0);
 			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
 			LogicalOperator* plan=parsetree2logicalplan(node);
@@ -559,11 +558,9 @@ static int parser_test(){
 //	//		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
 //	//		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
 //	//		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
-
 //			std::vector<Attribute> aggregation_attributes;
 //			aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
 //	//		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
-//			push_back(Attribute(ATTRIBUTE_ANY))
 //			std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 //			aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //			LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);

@@ -34,10 +34,11 @@ int main(){
 //	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics_aggregation();
+	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	testServerClient();
 //	return test_data_type();
-	return test_expression_item();
+//	return test_expression_item();
 
 
 }
