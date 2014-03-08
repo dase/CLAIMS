@@ -33,6 +33,10 @@ public:
 	TableDescriptor* getTable(const std::string& table_name) const;
 	ProjectionDescriptor* getProjection(const ProjectionID&) const;
 	ProjectionBinding* getBindingModele()const;
+
+	/* whether given attribute specified by table_name and attribute_name exists*/
+	bool isAttributeExist(const std::string& table_name,const std::string& attribute_name )const;
+
 private:
 	Catalog();
 	TableIDAllocator table_id_allocator;

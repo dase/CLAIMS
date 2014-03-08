@@ -64,3 +64,12 @@ ProjectionDescriptor* Catalog::getProjection(const ProjectionID& pid) const{
 ProjectionBinding* Catalog::getBindingModele()const{
 	return binding_;
 }
+
+bool Catalog::isAttributeExist(const std::string& table_name,const std::string& attribute_name )const{
+	TableDescriptor* td=getTable(table_name);
+	if(td==0){
+		return false;
+	}
+	else
+		return td->isExist(attribute_name);
+}

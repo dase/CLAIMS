@@ -38,7 +38,7 @@ enum nodetype
 	t_having_list,
 	t_orderby_list,t_orderby_expr,
 	t_limit_list,t_limit_expr,
-	t_create_database_stmt, t_create_table_stmt, t_create_col_list, t_create_def, t_create_projection_stmt,// 2014-2-24---新增t_create_projection_stmt类型---by余楷
+	t_create_database_stmt, t_create_table_stmt, t_create_col_list, t_create_def,
 	t_alter_database_stmt, t_alter_table_stmt, t_alter_def,
 	t_create_select_stmt,t_column_atts, t_opt_csc,
 	t_datatype,t_length,t_enum_list
@@ -56,15 +56,6 @@ struct Node//基本节点
 {
 	nodetype type;
 };
-
-struct Stmt	//语句列表 2014-3-4---增加语句列表结构体---by余楷
-{
-	nodetype type;
-	Node *data;
-	Node *next;
-	Node *last;	//指向列表的最后一个节点，即最后一个语句
-};
-
 struct Expr//常量表达式
 {
 	nodetype type;
@@ -349,16 +340,6 @@ struct Create_select_stmt
 	Node * select_stmt;
 };
 
-// 2014-2-24---增加该结构体---by余楷
-struct Create_projection_stmt
-{
-	nodetype type;
-	char *tablename;
-	Node *column_list;
-	int partition_num;
-	char *partition_attribute_name;
-};
-
 struct Do_stmt
 {
 	nodetype type;
@@ -549,20 +530,13 @@ struct enum_list
 /******************函数声明***********************************************
 *************************************************************************/
 
-inline void insertNodePointer(Node * a);	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
-
-void FreeAllNode();		// 2014-3-6---增加释放所有节点函数---by余楷
-
 void output(Node * n, int floor);
 
 void outputSpace(int f);
 
-struct Node *newStmt(nodetype t, Node *list, Node *newNode);	// 2014-3-4---增加新建语句列表函数---by余楷
-
 struct Node* newExpr(nodetype t, dataval d);
 
 struct Node * newExprList(nodetype t, Node * data, Node * next);
-
 struct Node *newExprlistheader(nodetype type,Node * header,Node * tail);
 
 struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * next);
@@ -619,10 +593,7 @@ struct Node * newCreateDef(nodetype type, int deftype, char * name, Node * datat
 
 struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, char *s, Node * col_list);
 
-// 2014-2-24---增加该结构体---by余楷
-struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list, int partition_num, char *partition_attribute_name);
-
-struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt);
+struct Node * newAlterDataBaseStmt(nodetype type, int createtype, char * name, Node* opt);
 
 struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2);
 
@@ -654,8 +625,6 @@ void getwctable(struct Node *cur,set<string>*st);
 void solvewc(struct Node * wcexpr,struct Node *fromlist);
 
 void departwc(struct Node *  wherecondition,struct Node * fromlist);
-
-bool semantic_analysis(Node *parsetree);
 
 
 #endif /* NODES_H_ */
