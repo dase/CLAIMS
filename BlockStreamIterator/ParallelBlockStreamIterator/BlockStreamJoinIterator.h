@@ -115,7 +115,7 @@ private:
 	volatile bool open_finished_;
 	unsigned reached_end;
 	Lock lock_;
-	Barrier *barrier_;
+	Barrier barrier_;
 
 	//debug
 	unsigned produced_tuples;

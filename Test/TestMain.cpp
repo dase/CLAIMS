@@ -29,7 +29,7 @@
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
 int main(){
-//	return testGenerateIteratorTree();
+	return testGenerateIteratorTree();
 //	return iterator_test();
 //	return testIteratorExecutor();
 //	return hashtable_test();
@@ -48,7 +48,7 @@ int main(){
 //	testServerClient();
 //	return test_data_type();
 //	return test_expression_item();
-	return testProject();
+//	return testProject();
 //	return Project_test();
 
 
