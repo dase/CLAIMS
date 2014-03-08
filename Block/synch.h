@@ -75,7 +75,7 @@ public:
 
 class Barrier {
 public:
-	Barrier(int nThreads){
+	Barrier(int nThreads=0){
 		m_nThreads = nThreads;
 		int ret;
 		ret = pthread_mutex_init(&m_l_SyncLock, NULL);
@@ -88,12 +88,18 @@ public:
 
 		m_nSyncCount = 0;
 	}
+	void RegisterOneThread(){
+		m_nThreads++;
+//		printf("Barrier:: new thread registered!\n\n\n");
+	}
 
 	virtual ~Barrier() {
 		pthread_mutex_destroy(&m_l_SyncLock);
 		pthread_cond_destroy(&m_cv_SyncCV);
 	}
-
+	void setEmpty(){
+		m_nThreads=0;
+	}
 	void Arrive(){
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nSyncCount++;
