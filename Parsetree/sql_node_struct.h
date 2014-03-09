@@ -44,7 +44,7 @@ enum nodetype
 	t_datatype,t_length,t_enum_list
 };
 
-union dataval
+union dataval	// 2014-3-8---不支持更长的整数，需改用long或其他类型---by余楷
 {
 	int int_val;
 	char * string_val;
