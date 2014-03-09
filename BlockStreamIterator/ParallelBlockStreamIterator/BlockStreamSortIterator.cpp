@@ -44,20 +44,21 @@ void BlockStreamSortIterator::cqsort(int left,int right){
 	int front=left+1;
 	int end=right;
 	//TODO:	orderby key can be any one of the column
-	int key_int=*(int *)secondaryArray[left];
+	void * key=secondaryArray[left];
+
 	if(left>=right)
 		return;
 	while(1){
-		while(*(int *)secondaryArray[end]>key_int)
+		while(state_.input_->getcolumn(state_.orderbyKey_).operate->greate((const void *&)secondaryArray[end],(const void *&)key))
 			end--;
-		while(*(int *)secondaryArray[front]<key_int&&front<end)
+		while(state_.input_->getcolumn(state_.orderbyKey_).operate->less((const void *&)secondaryArray[front],(const void *&)key)&&front<end)
 			front++;
 		if(front>=end)
 			break;
 		void * &x=secondaryArray[front];
 		void * &y=secondaryArray[end];
 		swap(x,y);
-		if(*(int *)secondaryArray[front]==key_int)
+		if(state_.input_->getcolumn(state_.orderbyKey_).operate->equal(secondaryArray[front],key))
 			end--;
 		else
 			front++;
@@ -69,6 +70,35 @@ void BlockStreamSortIterator::cqsort(int left,int right){
 		cqsort(left,front-1);
 	if(end+1<right)
 		cqsort(end+1,right);
+
+//		int front=left+1;
+//	int end=right;
+//	//TODO: orderby key can be any one of the column
+//	int key_int=*(int *)secondaryArray[left];
+//	if(left>=right)
+//	return;
+//	while(1){
+//	while(*(int *)secondaryArray[end]>key_int)
+//	end--;
+//	while(*(int *)secondaryArray[front]<key_int&&front<end)
+//	front++;
+//	if(front>=end)
+//	break;
+//	void * &x=secondaryArray[front];
+//	void * &y=secondaryArray[end];
+//	swap(x,y);
+//	if(*(int *)secondaryArray[front]==key_int)
+//	end--;
+//	else
+//	front++;
+//	}
+//	void *&m=secondaryArray[left];
+//	void *&n=secondaryArray[end];
+//	swap(m,n);
+//	if(left<front-1)
+//	cqsort(left,front-1);
+//	if(end+1<right)
+//	cqsort(end+1,right);
 
 }
 
