@@ -36,6 +36,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 
 	expanded_thread_list_.clear();
 	for(unsigned i=0;i<state_.thread_count_;i++){
+//		sleep(1);//test for the random startup properties
 		pthread_t tid;
 		const int error=pthread_create(&tid,NULL,expanded_work,this);
 		if(error!=0){
@@ -81,7 +82,7 @@ bool BlockStreamExpander::close(){
 	return true;
 }
 void BlockStreamExpander::print(){
-//	printf("Expander: thread num:%d\n",state_.thread_count_);
+	printf("Expander: thread num:%d\n",state_.thread_count_);
 //	printf("---------------------\n");
 	state_.child_->print();
 
