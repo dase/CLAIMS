@@ -39,6 +39,7 @@
 #include "../BlockStreamIterator/BlockStreamExchangeLowerBase.h"
 #include "../BlockStreamIterator/BlockStreamExchangeBase.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
+#include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
 #include "../iterator/RowScanIterator.h"
 #include "../iterator/RandomDiskAccessIterator.h"
 #include "../iterator/SequencialDiskAccessIterator.h"
@@ -105,6 +106,8 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
 	ar.register_type(static_cast<BlockStreamTopN*>(NULL));
 	ar.register_type(static_cast<BlockStreamProjectIterator*>(NULL));
+	ar.register_type(static_cast<ExpandableBlockStreamIteratorBase*>(NULL));
+
 }
 void cheat_the_compiler(){
     char buffer[4096*2-sizeof(unsigned)];
