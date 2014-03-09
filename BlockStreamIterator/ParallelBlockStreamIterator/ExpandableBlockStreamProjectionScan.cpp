@@ -14,15 +14,17 @@
 #include "../../storage/BlockManager.h"
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan(State state)
-:state_(state), open_finished_(false),partition_reader_iterator_(0) {
-	sema_open_.set_value(1);
-	sema_open_finished_.set_value(0);
+:state_(state), partition_reader_iterator_(0) {
+//	sema_open_.set_value(1);
+//	sema_open_finished_.set_value(0);
+	initialize_expanded_status();
 }
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan()
-:open_finished_(false),partition_reader_iterator_(0){
-	sema_open_.set_value(1);
-	sema_open_finished_.set_value(0);
+:partition_reader_iterator_(0){
+//	sema_open_.set_value(1);
+//	sema_open_finished_.set_value(0);
+	initialize_expanded_status();
 	}
 
 ExpandableBlockStreamProjectionScan::~ExpandableBlockStreamProjectionScan() {
@@ -36,29 +38,43 @@ ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,Sch
 
 
 bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_offset) {
-	PartitionStorage* partition_handle_;
-	if (sema_open_.try_wait()) {
-		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
-			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
-		}
-		else{
-		partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
-//		if(partition_reader_iterator_!=0){
-//			printf("-------partition reader iterator is successfully created!\n");
+////////////////////THE VERSION BEFORE USING ExpandableBlockStrreamIteratorBase ///////////////////////////
+//	if (sema_open_.try_wait()) {
+//		PartitionStorage* partition_handle_;
+//		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
+//			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
+//			open_ret_=false;
 //		}
 //		else{
-//			printf("-------partition reader iterator error!!\n");
+//			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 //		}
+//		open_ret_=true;
+//		open_finished_ = true;
+//
+//	} else {
+//		while (!open_finished_) {
+//			usleep(1);
+//		}
+//	}
+//	return open_ret_;
+///////////////////////////////////////////// END ////////////////////////////////////////////////
+	if(completeForInitializationJob()){
+		/* this is the first expanded thread*/
+		PartitionStorage* partition_handle_;
+		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
+			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
+			open_ret_=false;
 		}
-		open_finished_ = true;
-
-
-	} else {
-		while (!open_finished_) {
-			usleep(1);
+		else{
+			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 		}
+		open_ret_=true;
+		broadcaseOpenFinishedSignal();
 	}
-	return partition_handle_!=0;
+	else{
+		/* this is not the first thread, so it will wait for the first thread finishing initialization*/
+		waitForOpenFinished();
+	}
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
@@ -101,9 +117,13 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 }
 
 bool ExpandableBlockStreamProjectionScan::close() {
-	sema_open_.post();
+//	sema_open_.post();
 	partition_reader_iterator_->~PartitionReaderItetaor();
 	open_finished_ = false;
+
+	/* reset the expanded status in that open and next will be re-invoked.*/
+	initialize_expanded_status();
+
 	return true;
 }
 
