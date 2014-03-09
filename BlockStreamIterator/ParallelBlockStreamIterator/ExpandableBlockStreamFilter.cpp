@@ -31,22 +31,35 @@ ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBas
 
 
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
+////////////////// BEOFRE USING ExpandableBlockStreamIteratorBase////////////
+//	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
+//	if(sem_open_.try_wait()){
+//
+//		open_finished_=true;
+//		return state_.child_->open(part_off);
+//	}
+//	else
+//	{
+//		while(!open_finished_){
+//			usleep(1);
+//		}
+//		return state_.child_->open(part_off);
+//	}
+//	tuple_after_filter_=0;
+///////////////////////////////// END ////////////////////////////////////
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
-//	printf("Free block stream list added!\n");
-	if(sem_open_.try_wait()){
-
-		open_finished_=true;
-		return state_.child_->open(part_off);
+	if(completeForInitializationJob()){
+		tuple_after_filter_=0;
+		const bool child_open_return=state_.child_->open(part_off);
+		setOpenReturnValue(child_open_return);
+		broadcaseOpenFinishedSignal();
 	}
 	else
 	{
-		while(!open_finished_){
-			usleep(1);
-		}
-		return state_.child_->open(part_off);
+		waitForOpenFinished();
 	}
-	tuple_after_filter_=0;
+	return getOpenReturnValue();
 }
 
 
