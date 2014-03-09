@@ -43,9 +43,6 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 		BlockStreamBase::BlockStreamTraverseIterator* it=block_buffer_->createIterator();
 		void* tuple;
 		while((tuple=it->nextTuple())!=0){
-			cout<<"int: "<<*(int*)tuple<<endl;
-			cout<<"float: "<<*(float*)((char*)tuple+4)<<endl;
-			cout<<"int: "<<*(int*)((char*)tuple+8)<<endl;
 			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
 			tuple_in_block++;
 		}

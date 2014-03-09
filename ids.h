@@ -1,7 +1,7 @@
 /*
  * ids.h
  *	Suggested by Liyongfeng and Zhanglei, all the ids are defined in
- *	this file for better code organization purposes.
+ *	this file or better code organization purposes.
  *  Created on: Nov 8, 2013
  *      Author: wangli
  */
@@ -119,8 +119,8 @@ struct PartitionID{
 	}
 	std::string getPathAndName()const{
 		std::ostringstream str;
-//		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-		str<<"/home/imdb/data/wangli/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+//		str<<"/home/imdb/data/wangli/T"<<partition_off;
 		return str.str();
 	}
 };

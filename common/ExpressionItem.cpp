@@ -19,6 +19,7 @@ ExpressionItem::~ExpressionItem() {
 bool ExpressionItem::setValue(void* value_str,data_type data){
 	switch(data){
 		case t_int:{
+//			cout<<"the value in the expressionitem is: "<<*(int *)value_str<<endl;
 			setIntValue(*(int *)value_str);
 			break;
 		}
