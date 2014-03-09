@@ -171,17 +171,6 @@ static int query_optimization_based_on_statistics_join(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 		vector<ColumnOffset> sb_proj0_index;
 		sb_proj0_index.push_back(0);
 		sb_proj0_index.push_back(1);

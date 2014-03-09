@@ -16,7 +16,7 @@
  */
  
 
-%glr-parser%expect 7
+%glr-parser%expect 6
 %expect-rr 79
 
 %defines
@@ -504,9 +504,9 @@ groupby_list: expr opt_asc_desc
 		$$=newGroupbyExpr(t_groupby_expr, $1, $2, NULL);
 		/*puts("groupby_list1");*/
 	}
-	| groupby_list ',' expr opt_asc_desc
+	| expr opt_asc_desc ',' groupby_list
     {
-     	$$=newGroupbyExpr(t_groupby_expr, $3, $4, $1);
+     	$$=newGroupbyExpr(t_groupby_expr, $1, $2, $4);
      	/*puts("groupby_list2");*/
     }
 	;
@@ -546,7 +546,7 @@ opt_into_list: /* nil */ { $$=NULL; /*puts("opt_into_list is null");*/ }//no
    ;
 
 column_list: NAME { $$ = newColumn(t_column, $1, NULL, NULL); }
-  | column_list ',' NAME { $$ = newColumn(t_column, $3, NULL, $1); }
+  | NAME ',' column_list { $$ = newColumn(t_column, $1, NULL, $3); }
   ;
 
 select_opts:                      { $$ = 0; }
@@ -561,16 +561,16 @@ select_opts:                      { $$ = 0; }
     ;
 
 select_expr_list: select_expr			{ $$ = newSelectList(t_select_list, 0, $1, NULL); /*puts("select_expr_list1");*/ }
-    | select_expr_list ',' select_expr	{ $$ = newSelectList(t_select_list, 0, $3, $1); /*puts("select_expr_list2");*/ }
+    | select_expr ',' select_expr_list	{ $$ = newSelectList(t_select_list, 0, $1, $3); /*puts("select_expr_list2");*/ }
     | '*'						{ $$ = newSelectList(t_select_list, 1, NULL, NULL); /*puts("select_expr_list3");*/ }
-    | select_expr_list ',' '*' 		{ $$ = newSelectList(t_select_list, 1, NULL, $1); /*puts("select_expr_list4");*/ }	//---3.6fzh---
+    | '*' ',' select_expr_list		{ $$ = newSelectList(t_select_list, 1, NULL, $3); /*puts("select_expr_list4");*/ }	//---3.6fzh---
     ;
 
 select_expr: expr opt_as_alias	{ $$ = newSelectExpr(t_select_expr, $2, $1); /*puts("select_expr");*/ }
 	;
 
 table_references: table_reference			{ $$=newFromList(t_from_list, $1, NULL); /*puts("table_references1");*/ }
-    | table_references ',' table_reference	{ $$=newFromList(t_from_list, $3, $1); /*puts("table_references2");*/ }
+    | table_reference ',' table_references	{ $$=newFromList(t_from_list, $1, $3); /*puts("table_references2");*/ }
     ;
 
 table_reference:  table_factor { $$=$1; /*puts("table_referen1");*/ }
@@ -631,9 +631,9 @@ join_table:// 枚举不同的制约参数
 		$$=newJoin(t_join, -1, $1, $3, m);
 	}
   	| table_reference left_or_right opt_outer JOIN table_factor join_condition
-    {
+    	{
 		$$=newJoin(t_join, $2+$3, $1, $5, $6);
-    }
+    	}
   	| table_reference NATURAL opt_left_or_right_outer JOIN table_factor
 	{
 		$$=newJoin(t_join, 32 + $3, $1, $5, NULL);
