@@ -22,6 +22,7 @@
 #include "../LogicalQueryPlan/Test/query_optmization_based_on_statisitic_test.cpp"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Sort_test.cpp"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Expanded_iterators_test.cpp"
 #include "../Daemon/Test/daemon_test.h"
 //#include "hashtable_test.cpp"
 
@@ -29,7 +30,7 @@
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
 int main(){
-	return testGenerateIteratorTree();
+//	return testGenerateIteratorTree();
 //	return iterator_test();
 //	return testIteratorExecutor();
 //	return hashtable_test();
@@ -50,6 +51,6 @@ int main(){
 //	return test_expression_item();
 //	return testProject();
 //	return Project_test();
-
+	return expanded_iterators_test();
 
 }
