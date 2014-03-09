@@ -58,7 +58,7 @@ static int testSort(){
 		cj_proj0.push_back(3);
 		cj_proj0.push_back(4);
 		cj_proj0.push_back(5);
-		const int partition_key_index_1=2;
+		const int partition_key_index_1=0;
 		table_1->createHashPartitionedProjection(cj_proj0,"row_id",1);	//G0
 		catalog->add_table(table_1);
 
@@ -69,14 +69,14 @@ static int testSort(){
 
 		LogicalOperator* scan=new LogicalScan(table_1->getProjectoin(0));
 
-//		Filter::Condition filter_condition_1;
-//
-//		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("1000"));
-//
-//
-//		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
+		Filter::Condition filter_condition_1;
 
-		LogicalOperator* sort=new LogicalSort(scan,1);
+		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("1000"));
+
+
+		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
+
+		LogicalOperator* sort=new LogicalSort(filter_1,1);
 
 		BlockStreamIteratorBase *sort_=sort->getIteratorTree(64*1024-sizeof(unsigned));
 
