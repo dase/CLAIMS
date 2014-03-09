@@ -266,7 +266,7 @@ BEGIN		{ return BEGINT; }
 
    /* numbers */
 
-[0-9]+	        { yylval.intval = atoi(yytext); return INTNUM; } 
+[0-9]+	{ yylval.intval = atoi(yytext); return INTNUM; } 
 
 [0-9]+"."[0-9]* |
 "."[0-9]+	|
@@ -303,11 +303,11 @@ B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
 "&&"	{ return ANDOP; }
 "||"	{ return OR; }
 
-"<"		{ yylval.subtok = 1; return COMPARISON; }
-">"		{ yylval.subtok = 2; return COMPARISON; }
+"<"	{ yylval.subtok = 1; return COMPARISON; }
+">"	{ yylval.subtok = 2; return COMPARISON; }
 "!="	|
 "<>"	{ yylval.subtok = 3; return COMPARISON; }
-"="		{ yylval.subtok = 4; return COMPARISON; }
+"="	{ yylval.subtok = 4; return COMPARISON; }
 "<="	{ yylval.subtok = 5; return COMPARISON; }
 ">="	{ yylval.subtok = 6; return COMPARISON; }
 "<=>"	{ yylval.subtok = 12; return COMPARISON; }
