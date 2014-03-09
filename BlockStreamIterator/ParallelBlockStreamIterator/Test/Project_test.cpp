@@ -38,8 +38,8 @@ static int Project_test(){
 
 	TableDescriptor* table_1=new TableDescriptor("1",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 	cout<<"thread in the sort test!!!"<<endl;
-	table_1->addAttribute("x",data_type(t_int));  				//0
-	table_1->addAttribute("y",data_type(t_int));
+	table_1->addAttribute("1",data_type(t_int));  				//0
+	table_1->addAttribute("2",data_type(t_int));
 	//首先要定好table中的属性的信息，然后将每个属性加到table中，这样方便等会在下面的projection中定义
 	cout<<"in the sort test!!!"<<endl;
 

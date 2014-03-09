@@ -73,7 +73,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
 //							int m=*(int*)state_.input_->getColumnAddess(nth,cur);
 							//put the nth column of the tuple into the Expression and turn it to a const
-							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(j).type);
+							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(nth).type);
 							variable_++;
 						}
 						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type){
@@ -82,6 +82,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 						else{
 							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
 						}
+						ei.print_value();
 						toCalc.push_back(ei);
 					}
 					ExpressionCalculator::calcuate(toCalc,result);
