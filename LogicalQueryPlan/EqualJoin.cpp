@@ -219,6 +219,10 @@ EqualJoin::JoinPolice EqualJoin::decideLeftOrRightRepartition(const Dataflow& le
 }
 
 BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
+	if(dataflow_==0){
+		getDataflow();
+
+	}
 	BlockStreamJoinIterator* join_iterator;
 	BlockStreamIteratorBase* child_iterator_left=left_child_->getIteratorTree(block_size);
 	BlockStreamIteratorBase* child_iterator_right=right_child_->getIteratorTree(block_size);

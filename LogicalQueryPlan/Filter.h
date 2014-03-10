@@ -45,6 +45,7 @@ private:
 	Condition condition_;
 	vector<FilterIterator::AttributeComparator> comparator_list_;
 
+
 };
 
 #endif /* FILTER_H_ */
