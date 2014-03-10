@@ -40,7 +40,6 @@ private:
 	BlockStreamBase* block_buffer_;
 
 	unsigned long tuple_count_;
-
 	/* for boost::serializtion*/
 	friend class boost::serialization::access;
 	template<class Archive>
