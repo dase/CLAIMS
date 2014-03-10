@@ -9,12 +9,13 @@
 #define EXPANDABLEBLOCKSTREAMFILTER_H_
 #include <list>
 #include "../BlockStreamIteratorBase.h"
+#include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../Schema/Schema.h"
 #include "../../Comparator.h"
 #include "../../iterator/FilterIterator.h"
 #include "../../Block/BlockStream.h"
 #include "../../Block/synch.h"
-class ExpandableBlockStreamFilter:public BlockStreamIteratorBase {
+class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
 
 	/* struct to hold the remaining data when the next is returned but the block from the child
@@ -65,12 +66,14 @@ private:
 	semaphore sem_open_;
 	volatile bool open_finished_;
 	Lock lock_;
+	/*for debug for the filter tuple numbers*/
+	unsigned tuple_after_filter_;
 	/* the following code is for boost serialization*/
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) &state_;
+		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) &state_;
 	}
 };
 
