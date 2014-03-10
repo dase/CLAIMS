@@ -29,7 +29,7 @@ static int in_iterator_test ()
 
 	unsigned block_size = 64*1024-sizeof(unsigned);
 
-	ExpandableBlockStreamSingleColumnScan::State ebsscs1_state("/home/imdb/data/T0G0P0",input, block_size);
+	ExpandableBlockStreamSingleColumnScan::State ebsscs1_state("/home/imdb/data/wangli/T0G0P0",input, block_size);
 	BlockStreamIteratorBase* ebssc1=new ExpandableBlockStreamSingleColumnScan(ebsscs1_state);
 
 	unsigned long f = 20000;
@@ -40,7 +40,7 @@ static int in_iterator_test ()
 	BlockStreamIteratorBase* ebfs = new ExpandableBlockStreamFilter(ebsf_state);
 
 
-	ExpandableBlockStreamSingleColumnScan::State ebsscs2_state("/home/imdb/data/T0G0P0",input, block_size);
+	ExpandableBlockStreamSingleColumnScan::State ebsscs2_state("/home/imdb/data/wangli/T0G0P0",input, block_size);
 	BlockStreamIteratorBase* ebssc2=new ExpandableBlockStreamSingleColumnScan(ebsscs1_state);
 
 
@@ -58,6 +58,7 @@ static int in_iterator_test ()
 	BlockStreamPrint::State bsp1_state(input, ebfs, block_size, attr_name, "\t");
 	BlockStreamIteratorBase* bsp1 = new BlockStreamPrint(bsp1_state);
 
+	bsp1->print();
 	bsp1->open(0);
 	BlockStreamBase* block = BlockStreamBase::createBlock(input, block_size);
 	while(bsp1->next(block));

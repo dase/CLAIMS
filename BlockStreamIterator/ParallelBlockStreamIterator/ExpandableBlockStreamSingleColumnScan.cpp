@@ -42,7 +42,7 @@ ExpandableBlockStreamSingleColumnScan::State::State(std::string file_name,
 
 bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off) {
 	if (sema_open_.try_wait()) {
-		printf("Scan open!\n");
+//		printf("Scan open!\n");
 
 		/* the winning thread does the read job in the open function*/
 		fd_ = FileOpen(state_.filename_.c_str(), O_RDONLY);
@@ -75,7 +75,7 @@ bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off
 //		memcpy(data_, base_, file_length_);
 		if (data_ != 0) {
 			cursor_ = (char*) data_;
-			printf("Open is successful!\n");
+//			printf("Open is successful!\n");
 			/* Set a value that is much lager than the number of parallel threads even in an extreme case.*/
 //			sema_open_finished_.set_value(10000);
 			open_finished_ = true;
@@ -94,7 +94,6 @@ bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off
 
 bool ExpandableBlockStreamSingleColumnScan::next(BlockStreamBase* block) {
 	allocated_block allo_block_temp;
-
 	if (file_length_ == 0)
 	{
 		cout << "scan iterator return false!\n";
@@ -109,11 +108,14 @@ bool ExpandableBlockStreamSingleColumnScan::next(BlockStreamBase* block) {
 //	else if (cursor_ <= data_ + file_length_)
 //		cout << "part!\n";
 
-	if (atomicIncreaseCursor(state_.block_size_, allo_block_temp)) {
-		block->copyBlock(allo_block_temp.start, allo_block_temp.length);
+//	if (atomicIncreaseCursor(state_.block_size_, allo_block_temp)) {
+	if (atomicIncreaseCursor(block->getSerializedBlockSize(), allo_block_temp)) {
+//		block->copyBlock(allo_block_temp.start, allo_block_temp.length);
+		Block fake_block(allo_block_temp.length,allo_block_temp.start);
+		block->constructFromBlock(fake_block);
 		return true;
 	}
-	cout << "scan iterator return false!\n";
+//	cout << "scan iterator return false!\n";
 	return false;
 }
 

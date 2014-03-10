@@ -20,7 +20,7 @@
 #include "../Environment.h"
 #include "../Schema/TupleConvertor.h"
 #include "../Catalog/ProjectionBinding.h"
-#include "/home/NewHadoop/java/hadoop-1.0.3/src/c++/libhdfs/hdfs.h"
+#include <hdfs.h>
 
 using namespace std;
 
