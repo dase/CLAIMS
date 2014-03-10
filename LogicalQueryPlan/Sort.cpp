@@ -7,20 +7,20 @@
 
 #include "Sort.h"
 
-Sort::Sort(LogicalOperator *child, int sortByKey)
+LogicalSort::LogicalSort(LogicalOperator *child, int sortByKey)
 :child_(child),sortByKey_(sortByKey){
 
 }
 
-Sort::~Sort() {
+LogicalSort::~LogicalSort() {
 
 }
 
-Dataflow Sort::getDataflow(){
+Dataflow LogicalSort::getDataflow(){
 	return child_->getDataflow();
 }
 
-BlockStreamIteratorBase *Sort::getIteratorTree(const unsigned& blocksize){
+BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize){
 	BlockStreamIteratorBase *child=child_->getIteratorTree(blocksize);
 	BlockStreamSortIterator::State state;
 	state.block_size_=blocksize;

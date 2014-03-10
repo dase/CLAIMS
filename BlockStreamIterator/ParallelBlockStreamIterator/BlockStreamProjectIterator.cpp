@@ -82,6 +82,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 						else{
 							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
 						}
+						ei.print_value();
 						toCalc.push_back(ei);
 					}
 					ExpressionCalculator::calcuate(toCalc,result);
