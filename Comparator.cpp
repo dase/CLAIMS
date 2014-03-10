@@ -175,7 +175,7 @@ void Comparator::iniatilize()
 			if(funs_L.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_L.end())
 			{
 //			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
-			funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));break;
+				compare=funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));break;
 			}
 			else
 			{
@@ -212,4 +212,5 @@ void Comparator::iniatilize()
 			assert(false);
 		}
 	}
+	assert(compare!=0);
 }

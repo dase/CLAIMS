@@ -22,6 +22,7 @@ BlockStreamPrint::~BlockStreamPrint() {
 }
 bool BlockStreamPrint::open(const PartitionOffset& offset){
 	block_buffer_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
+	tuple_count_=0;
 	return state_.child_->open(offset);
 
 }
@@ -43,11 +44,14 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 		BlockStreamBase::BlockStreamTraverseIterator* it=block_buffer_->createIterator();
 		void* tuple;
 		while((tuple=it->nextTuple())!=0){
-			cout<<"int: "<<*(int*)tuple<<endl;
-			cout<<"float: "<<*(float*)((char*)tuple+4)<<endl;
-			cout<<"int: "<<*(int*)((char*)tuple+8)<<endl;
-			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
+//			cout<<"int: "<<*(int*)tuple<<endl;
+			assert(*(int*)(tuple+8)==20101008);
+//			cout<<"float: "<<*(float*)((char*)tuple+4)<<endl;
+//			cout<<"int: "<<*(int*)((char*)tuple+8)<<endl;
+//			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
+//			sleep(1);
 			tuple_in_block++;
+			tuple_count_++;
 		}
 //		printf("Tuples in Block[%d]=%d\n",block_count++,block_buffer_->getTuplesInBlock());
 		block_buffer_->setEmpty();
@@ -56,6 +60,11 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 	return false;
 }
 bool BlockStreamPrint::close(){
+	printf("tuple count:%d\n",tuple_count_);
 	block_buffer_->~BlockStreamBase();
 	return state_.child_->close();
+}
+void BlockStreamPrint::print(){
+	printf("Print:\n");
+	state_.child_->print();
 }
