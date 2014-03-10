@@ -1,2 +1,5 @@
 /Default
-.project
+/.gitignore
+/.cproject
+/.project
+/.settings
