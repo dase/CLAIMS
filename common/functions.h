@@ -210,6 +210,34 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 
 }
 
+static void compare_lesss(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem left,right;
+
+	right=stack.top();
+	stack.pop();
+
+	left=stack.top();
+	stack.pop();
+
+	/**In the current implementation, arithmetic type promotion map is used.
+	 * TODO: Use specific mapping for compare function if needed.
+	 */
+	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+
+	if(promoted_type!=left.return_type){
+		//left should be converted into tpromoted_type if two types are different
+		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
+	}
+	if(promoted_type!=right.return_type){
+		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
+	}
+
+	target.type=ExpressionItem::const_type;
+
+
+}
+
 inline bool search_for_and_construct_else_exp(ExpressionItemStack& stack,Expression& case_exp){
 	bool finished=false;
 	while((!stack.empty())){
@@ -238,7 +266,9 @@ inline bool search_for_and_construct_else_exp(ExpressionItemStack& stack,Express
 			break;
 		}
 		case ExpressionItem::variable_type:{
-
+			case_exp.push_back(stack.top());
+			stack.pop();
+			break;
 		}
 		defalut:{
 			assert(false);
@@ -288,7 +318,9 @@ inline bool search_for_and_construct_then_exp(ExpressionItemStack& stack,Express
 			break;
 		}
 		case ExpressionItem::variable_type:{
-
+			then_exp.push_back(stack.top());
+			stack.pop();
+			break;
 		}
 		defalut:{
 			assert(false);
@@ -339,7 +371,9 @@ inline bool search_for_and_construct_when_exp(ExpressionItemStack& stack, Expres
 			break;
 		}
 		case ExpressionItem::variable_type:{
-
+			when_exp.push_back(stack.top());
+			stack.pop();
+			break;
 		}
 		defalut:{
 			assert(false);
@@ -460,4 +494,5 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 
 
 }
+
 #endif /* FUNCTIONS_H_ */
