@@ -471,7 +471,7 @@ public:
 		return to_simple_string(*(date*)value);
 	};
 	void toValue(void* target, const char* string){
-		*(date*)target = from_string(string);
+		*(date*)target = from_undelimited_string(string);
 	};
 	inline bool equal(void* a, void* b)
 	{
@@ -726,7 +726,7 @@ public:
 class OperateDecimal:public Operate
 {
 public:
-	OperateDecimal(){assign=assigns<int>;};
+	OperateDecimal(unsigned number_of_decimal_digits = 12):number_of_decimal_digits_(number_of_decimal_digits){assign=assigns<int>;};
 //	~OperateDecimal(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -736,7 +736,7 @@ public:
 	{
 		char buf[39] = {"\0"};
 		ExportSerializeOutput out(buf, 39);
-		((NValue*)value)->serializeToExport(out);
+		((NValue*)value)->serializeToExport(out,&number_of_decimal_digits_);
 		return std::string(buf+4);
 	};
 	void toValue(void* target, const char* string){
@@ -804,8 +804,9 @@ public:
 		return 0;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateDecimal();
+		return new OperateDecimal(number_of_decimal_digits_);
 	}
+	unsigned number_of_decimal_digits_;
 };
 
 class column_type
@@ -822,8 +823,8 @@ public:
 			case t_date: operate = new OperateDate();break;
 			case t_time: operate = new OperateTime();break;
 			case t_datetime: operate = new OperateDatetime();break;
-			case t_decimal: operate = new OperateDecimal;break;
-			case t_smallInt: operate = new OperateSmallInt;break;
+			case t_decimal: operate = new OperateDecimal(size);break;
+			case t_smallInt: operate = new OperateSmallInt();break;
 			default:operate=0;break;
 		}
 	};
@@ -894,8 +895,8 @@ private:
 			case t_date: operate = new OperateDate();break;
 			case t_time: operate = new OperateTime();break;
 			case t_datetime: operate = new OperateDatetime();break;
-			case t_decimal: operate = new OperateDecimal;break;
-			case t_smallInt: operate = new OperateSmallInt;break;
+			case t_decimal: operate = new OperateDecimal(size);break;
+			case t_smallInt: operate = new OperateSmallInt();break;
 			default:operate=0;break;
 		}
 	}
