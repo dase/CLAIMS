@@ -8,14 +8,13 @@
 #include "ExpandableBlockStreamFilter.h"
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
-:state_(state),open_finished_(false){
-	sem_open_.set_value(1);
-
+:state_(state){
+	initialize_expanded_status();
 }
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter()
-:open_finished_(false){
-	sem_open_.set_value(1);
+{
+	initialize_expanded_status();
 }
 
 ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {
@@ -167,17 +166,15 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 }
 
 bool ExpandableBlockStreamFilter::close(){
-	sem_open_.post();
+	initialize_expanded_status();
 	open_finished_=false;
 	free_block_stream_list_.clear();
 	state_.child_->close();
 	return true;
 }
 void ExpandableBlockStreamFilter::print(){
-	printf("Filter\n");
-//	for(unsigned i=0;i<state_.comparator_list_.size();i++){
-//		state_.comparator_list_[i].pair.first.
-//	}
+	printf("Filter size=%d\n",state_.comparator_list_.size());
+
 	printf("---------------\n");
 	state_.child_->print();
 }

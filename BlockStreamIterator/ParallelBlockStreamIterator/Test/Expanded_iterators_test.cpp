@@ -68,7 +68,7 @@ static int expanded_iterators_test(){
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",2);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -87,7 +87,7 @@ static int expanded_iterators_test(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",2);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
 
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -169,7 +169,7 @@ static int expanded_iterators_test(){
 		sb_proj0_index.push_back(5);
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",2);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",1);	//G0
 
 
 
@@ -199,7 +199,7 @@ static int expanded_iterators_test(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",2);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -448,6 +448,9 @@ static int expanded_iterators_test(){
 		const int sec_code=600036;
 		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+		std::vector<FilterIterator::AttributeComparator> tmp;
+
+
 
 		Filter::Condition filter_condition_2;
 		const int order_type_=1;
@@ -537,9 +540,9 @@ static int expanded_iterators_test(){
 
 //
 
-		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,cj_join_key_scan,LogicalQueryPlanRoot::PERFORMANCE);
-		unsigned long long int timer_start=curtick();
+//		const NodeID collector_node_id=0;
+//		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,cj_join_key_scan,LogicalQueryPlanRoot::PERFORMANCE);
+//		unsigned long long int timer_start=curtick();
 //		root->print();
 
 //		root->getDataflow();
@@ -550,21 +553,25 @@ static int expanded_iterators_test(){
 //		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 
 
+//		filter_1->getDataflow();
+		executable_query_plan=sb_cj_join->getIteratorTree((1024*64-sizeof(unsigned)));
 
-		executable_query_plan=cj_join_key_scan->getIteratorTree((1024*64-sizeof(unsigned)));
-
-		BlockStreamExpander::State expander_state(cj_join_key_scan->getDataflow().getSchema(),executable_query_plan,5,1024*64-sizeof(unsigned));
+		BlockStreamExpander::State expander_state(sb_cj_join->getDataflow().getSchema(),executable_query_plan,5,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-//		executable_query_plan->print();
-		BlockStreamPerformanceMonitorTop::State perf_state(cj_join_key_scan->getDataflow().getSchema(),expander,1024*64-sizeof(unsigned));
+		BlockStreamPerformanceMonitorTop::State perf_state(sb_cj_join->getDataflow().getSchema(),expander,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* top=new BlockStreamPerformanceMonitorTop(perf_state);
+
 		top->print();
+
+		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(sb_cj_join->getDataflow().getSchema(),1024*64);
 		int c=1;
 		while(c==1){
-			timer_start=curtick();
+//			timer_start=curtick();
 			top->open();
-			while(top->next(0));
+			while(top->next(block)){
+//				block->setEmpty();
+			}
 			top->close();
 			printf("Terminate(0) or continue(others)?\n");
 //			sleep()

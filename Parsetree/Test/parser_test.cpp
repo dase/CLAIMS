@@ -459,7 +459,7 @@ static int parser_test(){
 
 			printf("SQL:fuck\n");
 			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
-			char* test;
+			char* test="select row_id from cj where cj.row_id=10;";
 			Node* node=getparsetreeroot(test);
 			output(node,0);
 			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");

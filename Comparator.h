@@ -35,7 +35,8 @@ public:
 		bool operator<(const struct Comparator::Pair &p) const
 		{
 
-			return this->first<p.first||this->second<p.second;
+//			return this->first<p.first||this->second<p.second; //This is a bug.
+			return (int)this->first.type*DATA_TYPE_NUMBER+(int)this->second.type<(int)p.first.type*DATA_TYPE_NUMBER+(int)p.second.type;
 		}
 		friend class boost::serialization::access;
 		template<class Archive>
@@ -46,6 +47,7 @@ public:
 	};
 	Comparator(column_type x, column_type b, Comparator::comparison c);
 	Comparator():compare(0){};
+	Comparator(const Comparator & r);
 	virtual ~Comparator();
 	bool (*compare)(const void*,const void*) ;
 	comparison getCompareType()const{

@@ -140,6 +140,12 @@ void Comparator::initialize_EQ()
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
 	// TODO Auto-generated constructor stub
 	iniatilize();
+	assert(compare!=0);
+}
+Comparator::Comparator(const Comparator & r){
+	this->pair=r.pair;
+	this->compareType=r.compareType;
+	iniatilize();
 }
 
 Comparator::~Comparator() {
@@ -166,12 +172,14 @@ void Comparator::iniatilize()
 		{
 			if(funs_L.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_L.end())
 			{
-			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
+//			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
+			funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));break;
 			}
 			else
 			{
 				printf("Error!\n");
 			}
+
 		}
 		case Comparator::GEQ:
 		{
@@ -179,13 +187,21 @@ void Comparator::iniatilize()
 			{
 			compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
 			}
+
 		}
 		case Comparator::EQ:
 		{
 			if(funs_EQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_EQ.end())
 			{
-			compare=funs_EQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+//			compare=funs_EQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+				compare=funs_EQ.at(Comparator::Pair(pair.first.type,pair.second.type));
+				if(compare==0){
+					printf("value:::---->>> %x\n",funs_EQ.at(Comparator::Pair(pair.first.type,pair.second.type)));
+					assert(false);
+				}
+				break;
 			}
+
 		}
 		default:
 		{
