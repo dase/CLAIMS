@@ -116,6 +116,8 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_time,t_time)]=greatEqual<time_duration,time_duration>;
 	funs_GEQ[Comparator::Pair(t_datetime,t_datetime)]=greatEqual<ptime,ptime>;
 	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<NValue*,NValue*>;
+
+	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
 }
 void Comparator::initialize_EQ()
 {
@@ -139,6 +141,12 @@ void Comparator::initialize_EQ()
 }
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
 	// TODO Auto-generated constructor stub
+	iniatilize();
+	assert(compare!=0);
+}
+Comparator::Comparator(const Comparator & r){
+	this->pair=r.pair;
+	this->compareType=r.compareType;
 	iniatilize();
 }
 
@@ -166,12 +174,14 @@ void Comparator::iniatilize()
 		{
 			if(funs_L.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_L.end())
 			{
-			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
+//			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
+				compare=funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));break;
 			}
 			else
 			{
 				printf("Error!\n");
 			}
+
 		}
 		case Comparator::GEQ:
 		{
@@ -179,13 +189,21 @@ void Comparator::iniatilize()
 			{
 			compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
 			}
+
 		}
 		case Comparator::EQ:
 		{
 			if(funs_EQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_EQ.end())
 			{
-			compare=funs_EQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+//			compare=funs_EQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+				compare=funs_EQ.at(Comparator::Pair(pair.first.type,pair.second.type));
+				if(compare==0){
+					printf("value:::---->>> %x\n",funs_EQ.at(Comparator::Pair(pair.first.type,pair.second.type)));
+					assert(false);
+				}
+				break;
 			}
+
 		}
 		default:
 		{
@@ -194,4 +212,5 @@ void Comparator::iniatilize()
 			assert(false);
 		}
 	}
+	assert(compare!=0);
 }

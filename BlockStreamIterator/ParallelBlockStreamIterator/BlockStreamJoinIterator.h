@@ -9,6 +9,7 @@
 #define BLOCKSTREAMJOINITERATOR_H_
 
 #include "../BlockStreamIteratorBase.h"
+#include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../Debug.h"
 #include "../../rdtsc.h"
 #include "../../hash.h"
@@ -21,7 +22,7 @@
 #include <list>
 using namespace std;
 
-class BlockStreamJoinIterator:public BlockStreamIteratorBase{
+class BlockStreamJoinIterator:public ExpandableBlockStreamIteratorBase{
 public:
 	struct remaining_block{
 		remaining_block(BlockStreamBase *bsb_right,BlockStreamBase::BlockStreamTraverseIterator *bsti)
@@ -115,7 +116,7 @@ private:
 	volatile bool open_finished_;
 	unsigned reached_end;
 	Lock lock_;
-	Barrier *barrier_;
+	Barrier barrier_;
 
 	//debug
 	unsigned produced_tuples;
@@ -131,7 +132,7 @@ private:
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version){
-            ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state_;
+            ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state_;
     }
 };
 

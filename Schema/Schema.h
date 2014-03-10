@@ -37,6 +37,7 @@ public:
 	std::vector<column_type> columns;
 	virtual schema_type getSchemaType()=0;
 	virtual void displayTuple(const void* tuple_start_address,const char* spliter="|")const;
+	virtual void toValue(std::string text_tuple, void* binary_tuple, const char attr_separator){};
 protected:
 
 private:

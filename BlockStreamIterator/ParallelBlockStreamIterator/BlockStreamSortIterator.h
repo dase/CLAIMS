@@ -48,7 +48,7 @@ public:
 private:
 	void swap(void *& desc,void *& src);
 	//TODO:	just quick sort, and maybe other sort algorithms
-	void cqsort(int front,int end);
+	void cqsort(int front,int end,Operate *);
 	void order(unsigned column,unsigned tuple_count);
 	bool createBlockStream(BlockStreamBase*&)const;
 
