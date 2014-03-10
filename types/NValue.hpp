@@ -52,14 +52,14 @@ public:
 
     // Function declarations for NValue.cpp definitions.
     void createDecimalFromString(const std::string &txt);
-    std::string createStringFromDecimal() const;
+    std::string createStringFromDecimal(unsigned number_of_fractinal_digits=12) const;
     NValue opMultiplyDecimals(const NValue &lhs, const NValue &rhs) const;
     NValue opDivideDecimals(const NValue lhs, const NValue rhs) const;
 
     /* Check if the value represents SQL NULL */
     bool isNull() const;
     /* Serialize this NValue to an Export stream */
-    void serializeToExport(ExportSerializeOutput&) const;
+    void serializeToExport(ExportSerializeOutput&,void* para=0) const;
 
     //computing
     NValue op_add(const NValue rhs) const;
@@ -200,12 +200,12 @@ inline bool NValue::isNull() const {
     return m_data[13] == OBJECT_NULL_BIT;
 }
 
-inline void NValue::serializeToExport(ExportSerializeOutput &io) const
+inline void NValue::serializeToExport(ExportSerializeOutput &io,void* para) const
 {
 //    switch (getValueType()) {
 //    case VALUE_TYPE_DECIMAL:
 //    {
-    	std::string decstr = createStringFromDecimal();
+    	std::string decstr = createStringFromDecimal(*(unsigned*)para);
     	int32_t objectLength = (int32_t)decstr.length();
     	io.writeBinaryString(decstr.data(), objectLength);
     	return;
