@@ -20,7 +20,8 @@
 #include "../../ids.h"
 #include "../../storage/ChunkStorage.h"
 #include "../../storage/PartitionStorage.h"
-class ExpandableBlockStreamProjectionScan:public BlockStreamIteratorBase {
+#include "../ExpandableBlockStreamIteratorBase.h"
+class ExpandableBlockStreamProjectionScan:public ExpandableBlockStreamIteratorBase {
 public:
 	struct allocated_block{
 		char* start;
@@ -60,13 +61,13 @@ private:
 
 	State state_;
 
-	/* the semaphore used to guarantee that only one thread does the real work
-	 * in the open function the open function
-	 */
-	semaphore sema_open_;
-
-	volatile bool open_finished_;
-	semaphore sema_open_finished_;
+//	/* the semaphore used to guarantee that only one thread does the real work
+//	 * in the open function the open function
+//	 */
+//	semaphore sema_open_;
+//
+//	volatile bool open_finished_;
+//	semaphore sema_open_finished_;
 
 	Lock cursor_lock_;
 
@@ -80,7 +81,7 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state_;
+		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state_;
 	}
 
 };

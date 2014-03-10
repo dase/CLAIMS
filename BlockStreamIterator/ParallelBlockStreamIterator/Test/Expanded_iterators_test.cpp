@@ -1,24 +1,26 @@
 /*
- * testGenerateIteratorTree.cpp
+ * Expanded_iterators_test.cpp
  *
- *  Created on: Nov 19, 2013
+ *  Created on: Mar 9, 2014
  *      Author: wangli
  */
-#ifndef __TESTGENERATEITERATORTREE__
-#define __TESTGENERATEITERATORTREE__
+#ifndef __EXPANDED_ITERATORS_TEST__
+#define __EXPANDED_ITERATORS_TEST__
 #include <vector>
 #include <iostream>
-#include "../../Environment.h"
-#include "../Scan.h"
-#include "../LogicalQueryPlanRoot.h"
-#include "../EqualJoin.h"
-#include "../../Catalog/ProjectionBinding.h"
-#include "../Filter.h"
-#include "../Aggregation.h"
-#include "../Buffer.h"
-#include "../../utility/rdtsc.h"
+#include "../../../Environment.h"
+#include "../../../LogicalQueryPlan/Scan.h"
+#include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../../../LogicalQueryPlan/EqualJoin.h"
+#include "../../../Catalog/ProjectionBinding.h"
+#include "../../../LogicalQueryPlan/Filter.h"
+#include "../../../LogicalQueryPlan/Aggregation.h"
+#include "../../../LogicalQueryPlan/Buffer.h"
+#include "../../../utility/rdtsc.h"
+#include "../../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+#include "../BlockStreamExpander.h"
 using namespace std;
-static int testGenerateIteratorTree(){
+static int expanded_iterators_test(){
 	int master;
 //	cout<<"Master(0) or Slave(others)"<<endl;
 //	cin>>master;
@@ -66,7 +68,7 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",2);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -85,7 +87,7 @@ static int testGenerateIteratorTree(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",2);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
 
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -167,7 +169,7 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(5);
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",2);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",1);	//G0
 
 
 
@@ -197,7 +199,7 @@ static int testGenerateIteratorTree(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",2);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -446,6 +448,9 @@ static int testGenerateIteratorTree(){
 		const int sec_code=600036;
 		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+		std::vector<FilterIterator::AttributeComparator> tmp;
+
+
 
 		Filter::Condition filter_condition_2;
 		const int order_type_=1;
@@ -535,27 +540,39 @@ static int testGenerateIteratorTree(){
 
 //
 
-		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
-		unsigned long long int timer_start=curtick();
-		root->print();
+//		const NodeID collector_node_id=0;
+//		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,cj_join_key_scan,LogicalQueryPlanRoot::PERFORMANCE);
+//		unsigned long long int timer_start=curtick();
+//		root->print();
 
 //		root->getDataflow();
 
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
-		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
-		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
+		BlockStreamIteratorBase* executable_query_plan;
+//		executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 
-		executable_query_plan->print();
 
+//		filter_1->getDataflow();
+		executable_query_plan=sb_cj_join->getIteratorTree((1024*64-sizeof(unsigned)));
+
+		BlockStreamExpander::State expander_state(sb_cj_join->getDataflow().getSchema(),executable_query_plan,5,1024*64-sizeof(unsigned));
+		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
+
+		BlockStreamPerformanceMonitorTop::State perf_state(sb_cj_join->getDataflow().getSchema(),expander,1024*64-sizeof(unsigned));
+		BlockStreamIteratorBase* top=new BlockStreamPerformanceMonitorTop(perf_state);
+
+		top->print();
+
+		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(sb_cj_join->getDataflow().getSchema(),1024*64);
 		int c=1;
 		while(c==1){
-			timer_start=curtick();
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
-//			executable_query_plan->close();
-//
-//			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;
-//			cin>>c;
+//			timer_start=curtick();
+			top->open();
+			while(top->next(block)){
+//				block->setEmpty();
+			}
+			top->close();
 			printf("Terminate(0) or continue(others)?\n");
 //			sleep()
 			scanf("%d",&c);
@@ -573,56 +590,5 @@ static int testGenerateIteratorTree(){
 
 }
 
+
 #endif
-static int save_me_please(){
-TableDescriptor* table_1;
-TableDescriptor* table_2;
-table_1->addAttribute("row_id",data_type(t_u_long));  				//0
-table_1->addAttribute("trade_date",data_type(t_int));
-table_1->addAttribute("order_no",data_type(t_u_long));
-table_1->addAttribute("sec_code",data_type(t_int));
-table_1->addAttribute("trade_dir",data_type(t_int));
-table_1->addAttribute("order_type",data_type(t_int));				//5
-table_2->addAttribute("row_id",data_type(t_u_long));
-table_2->addAttribute("order_no",data_type(t_u_long));
-table_2->addAttribute("entry_date",data_type(t_int));
-table_2->addAttribute("sec_code",data_type(t_int));
-table_2->addAttribute("order_type",data_type(t_int));				//10
-table_2->addAttribute("entry_dir",data_type(t_int));
-table_1->addAttribute("row_id",data_type(t_u_long));
-table_1->addAttribute("trade_no",data_type(t_int));
-table_1->addAttribute("trade_time",data_type(t_int));
-table_1->addAttribute("trade_time_dec",data_type(t_u_long));		//15
-table_1->addAttribute("order_time",data_type(t_int));
-table_1->addAttribute("order_time_dec",data_type(t_u_long));
-table_1->addAttribute("trade_price",data_type(t_double));
-table_1->addAttribute("trade_amt",data_type(t_double));
-table_1->addAttribute("trade_vol",data_type(t_double));				//20
-table_1->addAttribute("pbu_id",data_type(t_int));
-table_1->addAttribute("acct_id",data_type(t_int));
-table_1->addAttribute("order_prtfil_code",data_type(t_int));
-table_1->addAttribute("tran_type",data_type(t_int));
-table_1->addAttribute("trade_type",data_type(t_int));				//25
-table_1->addAttribute("proc_type",data_type(t_int));
-table_2->addAttribute("row_id",data_type(t_u_long));
-table_2->addAttribute("tran_maint_code",data_type(t_int));
-table_2->addAttribute("Last_upd_date",data_type(t_int));
-table_2->addAttribute("Last_upd_time",data_type(t_int));			//30
-table_2->addAttribute("Last_upd_time_dec",data_type(t_u_long));
-table_2->addAttribute("entry_time",data_type(t_int));
-table_2->addAttribute("entry_time_dec",data_type(t_double));
-table_2->addAttribute("order_price",data_type(t_double));
-table_2->addAttribute("order_exec_vol",data_type(t_double));		//35
-table_2->addAttribute("order_vol",data_type(t_double));
-table_2->addAttribute("pbu_id",data_type(t_int));
-table_2->addAttribute("acct_id",data_type(t_int));
-table_2->addAttribute("acct_attr",data_type(t_int));
-table_2->addAttribute("branch_id",data_type(t_int));				//40
-table_2->addAttribute("pbu_inter_order_no",data_type(t_int));
-table_2->addAttribute("pub_inter_txt",data_type(t_int));
-table_2->addAttribute("aud_type",data_type(t_int));
-table_2->addAttribute("trade_restr_type",data_type(t_int));
-table_2->addAttribute("order_star",data_type(t_int));				//45
-table_2->addAttribute("order_restr_type",data_type(t_int));
-table_2->addAttribute("short_sell_flag",data_type(t_int));
-}

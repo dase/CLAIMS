@@ -13,6 +13,7 @@
 #include "../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+#define Thread_Count 5
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
 :collecter_(collecter),child_(child),fashion_(fashion){
 	// TODO Auto-generated constructor stub
@@ -35,7 +36,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamExpander::State expander_state;
 	expander_state.block_count_in_buffer_=10;
 	expander_state.block_size_=block_size;
-	expander_state.thread_count_=5;
+	expander_state.thread_count_=Thread_Count;
 	expander_state.child_=child_iterator;
 	expander_state.schema_=getSchema(dataflow.attribute_list_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);

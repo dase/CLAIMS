@@ -13,6 +13,8 @@
 #include "../Executor/Test/Executor.cpp"
 #include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
 #include "../LogicalQueryPlan/Test/testProject.cpp"
+#include "../LogicalQueryPlan/Test/testSort.cpp"
+#include "../LogicalQueryPlan/Test/testProject_wl.cpp"
 #include "../Parsetree/Test/parser_test.cpp"
 #include "../Schema/Test/SubTuple_test.cpp"
 #include "../Schema/Test/VariableSchema_test.cpp"
@@ -22,12 +24,17 @@
 #include "../LogicalQueryPlan/Test/query_optmization_based_on_statisitic_test.cpp"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Sort_test.cpp"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Expanded_iterators_test.cpp"
 #include "../Daemon/Test/daemon_test.h"
 //#include "hashtable_test.cpp"
 
 #include "../Client/Test/TestSeverClient.cpp"
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
+
+#include "../Loader/test_load.cpp"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
+
 int main(){
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -49,7 +56,12 @@ int main(){
 //	return test_data_type();
 //	return test_expression_item();
 //	return testProject();
+	return testSort();
+//	return testProject_wl();
 //	return Project_test();
+//	return expanded_iterators_test();
 
+	return load_test();
+//	return in_iterator_test();
 
 }

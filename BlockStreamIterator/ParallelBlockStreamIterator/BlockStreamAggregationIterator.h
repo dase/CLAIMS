@@ -82,7 +82,7 @@ private:
         bool open_finished_;
         bool open_finished_end_;
         Lock lock_;
-        Barrier *barrier_;
+        Barrier barrier_;
 
         //hashtable traverse and in the next func
         Lock ht_cur_lock_;

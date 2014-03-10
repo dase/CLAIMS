@@ -8,14 +8,13 @@
 #include "ExpandableBlockStreamFilter.h"
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
-:state_(state),open_finished_(false){
-	sem_open_.set_value(1);
-
+:state_(state){
+	initialize_expanded_status();
 }
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter()
-:open_finished_(false){
-	sem_open_.set_value(1);
+{
+	initialize_expanded_status();
 }
 
 ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {
@@ -31,22 +30,35 @@ ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBas
 
 
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
+////////////////// BEOFRE USING ExpandableBlockStreamIteratorBase////////////
+//	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
+//	if(sem_open_.try_wait()){
+//
+//		open_finished_=true;
+//		return state_.child_->open(part_off);
+//	}
+//	else
+//	{
+//		while(!open_finished_){
+//			usleep(1);
+//		}
+//		return state_.child_->open(part_off);
+//	}
+//	tuple_after_filter_=0;
+///////////////////////////////// END ////////////////////////////////////
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
-//	printf("Free block stream list added!\n");
-	if(sem_open_.try_wait()){
-
-		open_finished_=true;
-		return state_.child_->open(part_off);
+	if(completeForInitializationJob()){
+		tuple_after_filter_=0;
+		const bool child_open_return=state_.child_->open(part_off);
+		setOpenReturnValue(child_open_return);
+		broadcaseOpenFinishedSignal();
 	}
 	else
 	{
-		while(!open_finished_){
-			usleep(1);
-		}
-		return state_.child_->open(part_off);
+		waitForOpenFinished();
 	}
-	tuple_after_filter_=0;
+	return getOpenReturnValue();
 }
 
 
@@ -154,17 +166,15 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 }
 
 bool ExpandableBlockStreamFilter::close(){
-	sem_open_.post();
+	initialize_expanded_status();
 	open_finished_=false;
 	free_block_stream_list_.clear();
 	state_.child_->close();
 	return true;
 }
 void ExpandableBlockStreamFilter::print(){
-	printf("Filter\n");
-//	for(unsigned i=0;i<state_.comparator_list_.size();i++){
-//		state_.comparator_list_[i].pair.first.
-//	}
+	printf("Filter size=%d\n",state_.comparator_list_.size());
+
 	printf("---------------\n");
 	state_.child_->print();
 }

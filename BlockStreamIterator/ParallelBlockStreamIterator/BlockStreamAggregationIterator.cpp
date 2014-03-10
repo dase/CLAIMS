@@ -9,24 +9,22 @@
 #include "../../Debug.h"
 #include "../../rdtsc.h"
 
-#define Expand_count 5
+//#define Expand_count 5
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(Expand_count);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 :open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
-        barrier_=new Barrier(Expand_count);
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
-        // TODO 自动生成的析构函数存根
+
 }
 
 BlockStreamAggregationIterator::State::State(
@@ -52,6 +50,7 @@ BlockStreamAggregationIterator::State::State(
         }
 
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
+	barrier_.RegisterOneThread();
 	state_.child->open(partition_offset);
 //	cout<<"in the open of aggregation"<<endl;
 #ifdef TIME
@@ -325,7 +324,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 
 
-		barrier_->Arrive();
+		barrier_.Arrive();
 
 		if(sema_open_end_.try_wait()){
 //                cout<<"================================================"<<endl;
@@ -364,7 +363,6 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
         //内存有可能不连续，所以，不能复制整个块
         void *cur_in_ht;
         void *tuple;
-//        cout<<"cao!!!!!!!!!!!!!!!!!!!!!"<<endl;
         ht_cur_lock_.acquire();
         while(it_.readCurrent()!=0||(hashtable_->placeIterator(it_,bucket_cur_))!=false){
                 while((cur_in_ht=it_.readCurrent())!=0){

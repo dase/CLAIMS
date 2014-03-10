@@ -11,6 +11,7 @@
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
+#define NUM_OF_EXPANDED_THREADS 5
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -218,6 +219,10 @@ EqualJoin::JoinPolice EqualJoin::decideLeftOrRightRepartition(const Dataflow& le
 }
 
 BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
+	if(dataflow_==0){
+		getDataflow();
+
+	}
 	BlockStreamJoinIterator* join_iterator;
 	BlockStreamIteratorBase* child_iterator_left=left_child_->getIteratorTree(block_size);
 	BlockStreamIteratorBase* child_iterator_right=right_child_->getIteratorTree(block_size);
@@ -263,7 +268,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=10;
 			expander_state.block_size_=block_size;
-			expander_state.thread_count_=1;
+			expander_state.thread_count_=NUM_OF_EXPANDED_THREADS;
 			expander_state.child_=child_iterator_left;
 			expander_state.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
