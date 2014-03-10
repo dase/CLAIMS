@@ -122,7 +122,7 @@ public:
 			break;
 		}
 		case variable_type:{
-			printf(" variable \n");
+			printf(" variable %s,%s\n",this->content.var.table_name,this->content.var.column_name);
 			break;
 		}
 		case operator_type:{
@@ -257,16 +257,16 @@ public:
 			return std::string("<");
 		}
 		case op_case:{
-			return std::string("CASE");
+			return std::string("case");
 		}
 		case op_case_when:{
-			return std::string("CASE_WHEN");
+			return std::string("when");
 		}
 		case op_case_then:{
-			return std::string("CASE_THEN");
+			return std::string("then");
 		}
 		case op_case_else:{
-			return std::string("CASE_ELSE");
+			return std::string("else");
 		}
 		default:{
 			assert(false);
