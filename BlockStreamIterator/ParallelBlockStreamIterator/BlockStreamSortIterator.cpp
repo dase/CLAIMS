@@ -34,31 +34,37 @@ BlockStreamSortIterator::State::State(Schema* input,unsigned orderbyKey,BlockStr
 
 void BlockStreamSortIterator::swap(void *&desc,void *&src){
 	swap_num++;
-	void *temp;
+	void *temp=0;
 	temp=desc;
 	desc=src;
 	src=temp;
 }
 
-void BlockStreamSortIterator::cqsort(int left,int right){
+void BlockStreamSortIterator::cqsort(int left,int right,Operate* op){
 	int front=left+1;
 	int end=right;
 	//TODO:	orderby key can be any one of the column
-	void * key=secondaryArray[left];
-
+	void * key=state_.input_->getColumnAddess(state_.orderbyKey_,secondaryArray[left]);
 	if(left>=right)
 		return;
 	while(1){
-		while(state_.input_->getcolumn(state_.orderbyKey_).operate->greate((const void *&)secondaryArray[end],(const void *&)key))
-			end--;
-		while(state_.input_->getcolumn(state_.orderbyKey_).operate->less((const void *&)secondaryArray[front],(const void *&)key)&&front<end)
-			front++;
+		const void *lg=state_.input_->getColumnAddess(state_.orderbyKey_,secondaryArray[end]);
+		const void *rg=key;
+		while(op->greate(lg,rg)){
+//			while(state_.input_->getcolumn(state_.orderbyKey_).operate->greate((const void *&)secondaryArray[end],(const void *&)key))
+			end--;lg=state_.input_->getColumnAddess(state_.orderbyKey_,secondaryArray[end]);
+		}
+		const void *ll=state_.input_->getColumnAddess(state_.orderbyKey_,secondaryArray[front]);
+		const void *rl=key;
+		while(op->less(ll,rl)&&front<end){
+			front++;ll=state_.input_->getColumnAddess(state_.orderbyKey_,secondaryArray[front]);
+		}
 		if(front>=end)
 			break;
 		void * &x=secondaryArray[front];
 		void * &y=secondaryArray[end];
 		swap(x,y);
-		if(state_.input_->getcolumn(state_.orderbyKey_).operate->equal(secondaryArray[front],key))
+		if(op->equal(state_.input_->getColumnAddess(state_.orderbyKey_,secondaryArray[front]),key))
 			end--;
 		else
 			front++;
@@ -67,44 +73,16 @@ void BlockStreamSortIterator::cqsort(int left,int right){
 	void *&n=secondaryArray[end];
 	swap(m,n);
 	if(left<front-1)
-		cqsort(left,front-1);
+		cqsort(left,front-1,op);
 	if(end+1<right)
-		cqsort(end+1,right);
-
-//		int front=left+1;
-//	int end=right;
-//	//TODO: orderby key can be any one of the column
-//	int key_int=*(int *)secondaryArray[left];
-//	if(left>=right)
-//	return;
-//	while(1){
-//	while(*(int *)secondaryArray[end]>key_int)
-//	end--;
-//	while(*(int *)secondaryArray[front]<key_int&&front<end)
-//	front++;
-//	if(front>=end)
-//	break;
-//	void * &x=secondaryArray[front];
-//	void * &y=secondaryArray[end];
-//	swap(x,y);
-//	if(*(int *)secondaryArray[front]==key_int)
-//	end--;
-//	else
-//	front++;
-//	}
-//	void *&m=secondaryArray[left];
-//	void *&n=secondaryArray[end];
-//	swap(m,n);
-//	if(left<front-1)
-//	cqsort(left,front-1);
-//	if(end+1<right)
-//	cqsort(end+1,right);
+		cqsort(end+1,right,op);
 
 }
 
 void BlockStreamSortIterator::order(unsigned column,unsigned tuple_count){
 	/* tranverse the buffer and apply the space to store the secondaryArray*/
-	cqsort(0,tuple_count-1);
+    Operate *op_=state_.input_->getcolumn(state_.orderbyKey_).operate->duplicateOperator();
+	cqsort(0,tuple_count-1,op_);
 }
 
 bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
@@ -134,7 +112,8 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 		}
 	}
 
-    if(createBlockStream(block_for_asking)==false)
+
+	if(createBlockStream(block_for_asking)==false)
     	;
     /* phase 1: store the data in the buffer!
      *          by using multi-threads to speed up
@@ -161,14 +140,16 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
      *          by using multi-threads to speed up?
      * TODO: whether to store the sorted data into the blockmanager
      * */
+    cout<<"check the memory usage!!!"<<endl;
     unsigned long long int time=curtick();
     order(state_.orderbyKey_,tuple_count_sum);
+
 	cout<<"the tuple_count is: "<<tuple_count_sum<<"Total time: "<<getSecond(time)<<" seconds, the swap num is: "<<swap_num<<endl;
     return true;
 }
 
 bool BlockStreamSortIterator::next(BlockStreamBase* block){
-	/* multi-threads to send the block out*/
+		/* multi-threads to send the block out*/
 	unsigned tuple_size=state_.input_->getTupleMaxSize();
 	while(temp_cur<secondaryArray.size()){
 		void *desc=0;
@@ -178,7 +159,8 @@ bool BlockStreamSortIterator::next(BlockStreamBase* block){
 		}
 		return true;
 	}
-    return false;
+		return false;
+
 }
 
 bool BlockStreamSortIterator::close(){
