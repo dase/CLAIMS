@@ -69,6 +69,15 @@ Schema* ProjectionDescriptor::getSchema()const{
 	}
 	return new SchemaFix(columns);
 }
+int ProjectionDescriptor::getAttributeIndex(const Attribute& att)const{
+	const vector<Attribute> attributes=getAttributeList();
+	for(unsigned i=0;i<attributes.size();i++){
+		if(attributes[i]==att){
+			return i;
+		}
+	}
+	return -1;
+}
 
 // TableDescritptor
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
@@ -201,4 +210,14 @@ ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionOffset pid)const{
 }
 unsigned TableDescriptor::getNumberOfProjection()const{
 	return projection_list_.size();
+}
+
+Schema* TableDescriptor::getSchema()const
+{
+	const vector<Attribute> attributes=getAttributes();
+	std::vector<column_type> columns;
+	for(unsigned i=0;i<attributes.size();i++){
+		columns.push_back(*attributes[i].attrType);
+	}
+	return new SchemaFix(columns);
 }
