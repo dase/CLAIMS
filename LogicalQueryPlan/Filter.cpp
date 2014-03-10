@@ -13,9 +13,15 @@
 #include "../Catalog/stat/Estimation.h"
 Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
-
+	assert(!comparator_list_.empty());
 }
 
+Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(condition),child_(child){
+
+//	condition_.print();
+
+
+}
 Filter::~Filter() {
 	// TODO Auto-generated destructor stub
 	if(child_>0){
@@ -29,7 +35,8 @@ Dataflow Filter::getDataflow(){
 	 */
 
 	Dataflow dataflow=child_->getDataflow();
-	generateComparatorList(dataflow);
+	if(comparator_list_.size()==0)
+		generateComparatorList(dataflow);
 
 
 	if(dataflow.isHashPartitioned()){
@@ -54,12 +61,14 @@ Dataflow Filter::getDataflow(){
 	return dataflow;
 }
 BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
+	Dataflow dataflow=getDataflow();
 	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(blocksize);
 	ExpandableBlockStreamFilter::State state;
 	state.block_size_=blocksize;
 	state.child_=child_iterator;
+	assert(!comparator_list_.empty());
 	state.comparator_list_=comparator_list_;
-	Dataflow dataflow=getDataflow();
+	assert(!state.comparator_list_.empty());
 	state.schema_=getSchema(dataflow.attribute_list_);
 	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 	return filter;
@@ -336,12 +345,6 @@ Filter::Condition::~Condition(){
 		free(const_value_list_[i]);
 	}
 }
-Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(condition),child_(child){
-
-//	condition_.print();
-
-
-}
 void Filter::generateComparatorList(const Dataflow& dataflow){
 	for(unsigned i=0;i<condition_.getCompaisonNumber();i++){
 		int attribute_index=0;
@@ -356,7 +359,10 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 		}
 		FilterIterator::AttributeComparator filter(*dataflow.attribute_list_[attribute_index].attrType,condition_.comparison_list_[i],attribute_index,condition_.const_value_list_[i]);
 		comparator_list_.push_back(filter);
+		printf("************** pushed ***************\n");
 	}
+	printf("comparator size=%d\n",comparator_list_.size());
+	assert(condition_.comparison_list_.size()==comparator_list_.size());
 }
 void Filter::print(int level)const{
 	condition_.print(level);

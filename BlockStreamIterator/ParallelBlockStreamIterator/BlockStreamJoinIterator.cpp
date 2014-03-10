@@ -10,13 +10,11 @@
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(1);
 }
 
 BlockStreamJoinIterator::BlockStreamJoinIterator()
 :hash(0),hashtable(0),open_finished_(false),reached_end(0){
 	sema_open_.set_value(1);
-	barrier_=new Barrier(1);
 }
 
 BlockStreamJoinIterator::~BlockStreamJoinIterator() {
@@ -56,11 +54,11 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 #ifdef TIME
 	startTimer(&timer);
 #endif
+	barrier_.RegisterOneThread();
 	state_.child_left->open(partition_offset);
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
-//	cout<<"AtomicPushFreeBlockStream\n\n"<<endl;
-//	cout<<"join open begin"<<endl;
+
 	unsigned long long int timer;
 	if(sema_open_.try_wait()){
 	timer=curtick();
@@ -79,10 +77,10 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 			payload_right_to_output[i]=output_index;
 			output_index++;
 		}
-		/* Currently, the block is 4096, and the table in build phase is left one*/
+
 		hash=PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets);
 		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
-//		cout<<"in the open master "<<endl;
+
 		open_finished_=true;
 	}else{
 		while (!open_finished_) {
@@ -90,10 +88,8 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		}
 	}
 
-	//hashtable createIterator的好处就是创建的都是可读的对象，不需要加锁
-//	lock_.acquire();
 	BasicHashTable::Iterator tmp_it=hashtable->CreateIterator();
-//	lock_.release();
+
 	void *cur;
 	void *tuple_in_hashtable;
 	unsigned bn;
@@ -103,8 +99,8 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	void *value_in_input;
 	void *value_in_hashtable;
 	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
-	PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
-//	cout<<"in the hashtable build stage!"<<endl;
+//	PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
+
 //	consumed_tuples_from_left=0;
 	while(state_.child_left->next(bsb)){
 		BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
@@ -170,7 +166,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	produced_tuples=0;
 	consumed_tuples_from_right=0;
 //	water_mark=0;
-	barrier_->Arrive();
+	barrier_.Arrive();
 //	cout<<"pass the arrive of barrier!!!"<<endl;
 //	cout<<"Build time"<<getSecond(timer)<<endl;
 	state_.child_right->open(partition_offset);
@@ -267,7 +263,7 @@ bool BlockStreamJoinIterator::close(){
 #endif
 	sema_open_.post();
 	open_finished_=false;
-//	barrier_->~Barrier();
+	barrier_.setEmpty();
 	free_block_stream_list_.clear();
 	ht_free_block_stream_list_.clear();
 	remaining_block_list_.clear();
