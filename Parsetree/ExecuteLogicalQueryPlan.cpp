@@ -240,11 +240,16 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 //				please->print();
 //
 //				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
-
+				plan->print();
 				BlockStreamPrint::State print_state;
 				print_state.block_size_=64*1024-sizeof(unsigned);
 				print_state.child_=plan->getIteratorTree(64*1024-sizeof(unsigned));
 				vector<column_type> column_list;
+				column_list.push_back(column_type(t_u_long));
+				column_list.push_back(column_type(t_int));
+				column_list.push_back(column_type(t_u_long));
+				column_list.push_back(column_type(t_int));
+				column_list.push_back(column_type(t_int));
 				column_list.push_back(column_type(t_int));
 				print_state.schema_=new SchemaFix(column_list);
 				print_state.spliter_="-|-";
@@ -261,7 +266,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				cout<<node->type<<endl;
 				puts("nothing matched!\n");
 			}
-			}
+		}
 
 			// freeAST();	---尚未完成对节点的释放 ！！！！！！！！！！！！！！
 			stmtList = (Stmt *)stmtList->next;

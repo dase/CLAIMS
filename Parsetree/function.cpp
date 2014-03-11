@@ -736,28 +736,28 @@ void output(Node * oldnode, int floor)
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.string_val<<endl;
+			cout<<"t_stringval: "<<node->data.string_val<<endl;
 			break;
 		}
 		case t_intnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.int_val<<endl;
+			cout<<"t_intnum: "<<node->data.int_val<<endl;
 			break;
 		}
 		case t_approxnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.double_val<<endl;
+			cout<<"t_approxnum: "<<node->data.double_val<<endl;
 			break;
 		}
 		case t_bool:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.bool_val<<endl;
+			cout<<"t_bool: "<<node->data.bool_val<<endl;
 			break;
 		}	
 		

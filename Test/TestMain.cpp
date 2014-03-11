@@ -56,12 +56,12 @@ int main(){
 //	return test_data_type();
 //	return test_expression_item();
 //	return testProject();
-	return testSort();
+	//return testSort();
 //	return testProject_wl();
 //	return Project_test();
 //	return expanded_iterators_test();
-
-	return load_test();
+//	return testSort();
+//	return load_test();
 //	return in_iterator_test();
 
 }

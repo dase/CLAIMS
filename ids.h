@@ -121,9 +121,9 @@ struct PartitionID{
 		std::ostringstream str;
 
 //		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-		str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+	//	str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 
-		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+	//	str<<"/home/imdb/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		str<<"/home/imdb/data/wangli/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 //		str<<"/home/imdb/data/wangli/T"<<partition_off;
 		return str.str();
