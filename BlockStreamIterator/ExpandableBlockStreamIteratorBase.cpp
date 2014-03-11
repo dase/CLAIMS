@@ -11,7 +11,7 @@ ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned nu
 :number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section){
 	// TODO Auto-generated constructor stub
 	barrier_=new Barrier[number_of_barrier_];
-	sema_compete_open_=new semaphore[number_of_seriliazed_section_];
+	seriliazed_section_entry_key_=new semaphore[number_of_seriliazed_section_];
 }
 
 ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
@@ -21,8 +21,10 @@ ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
 		barrier_[i].~Barrier();
 	}
 	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
-		sema_compete_open_[i].destroy();
+		seriliazed_section_entry_key_[i].destroy();
 	}
+	delete[] barrier_;
+	delete[] seriliazed_section_entry_key_;
 }
 void ExpandableBlockStreamIteratorBase::waitForOpenFinished(){
 	pthread_mutex_lock(&sync_lock_);
@@ -49,7 +51,7 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 	}
 
 	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
-		sema_compete_open_[i].set_value(1);
+		seriliazed_section_entry_key_[i].set_value(1);
 	}
 }
 void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
@@ -61,9 +63,9 @@ void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
 
 	pthread_mutex_unlock(&sync_lock_);
 }
-bool ExpandableBlockStreamIteratorBase::completeForInitializationJob(unsigned phase_id){
+bool ExpandableBlockStreamIteratorBase::tryEntryIntoSerializedSection(unsigned phase_id){
 	assert(phase_id<number_of_seriliazed_section_);
-	return sema_compete_open_[phase_id].try_wait();
+	return seriliazed_section_entry_key_[phase_id].try_wait();
 }
 void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
 	open_ret_=value;
@@ -71,7 +73,7 @@ void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
 bool ExpandableBlockStreamIteratorBase::getOpenReturnValue()const{
 	return open_ret_;
 }
-void ExpandableBlockStreamIteratorBase::RegisterNewThreadToBarrier(){
+void ExpandableBlockStreamIteratorBase::RegisterNewThreadToAllBarriers(){
 //	assert(barrier_index<number_of_barrier_);
 	for(unsigned i=0;i<number_of_barrier_;i++){
 		barrier_[i].RegisterOneThread();

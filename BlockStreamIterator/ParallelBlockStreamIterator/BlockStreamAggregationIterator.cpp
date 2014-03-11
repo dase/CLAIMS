@@ -58,11 +58,9 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 #ifdef TIME
 		startTimer(&timer);
 #endif
-	RegisterNewThreadToBarrier();
-//	RegisterNewThreadToBarrier(1);
-//	RegisterNewThreadToBarrier(2);
+	RegisterNewThreadToAllBarriers();
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
-	if(completeForInitializationJob(0)){
+	if(tryEntryIntoSerializedSection(0)){
 		printf("Winning threads!\n");
 		unsigned outputindex=0;
 		for(unsigned i=0;i<state_.groupByIndex.size();i++)
@@ -336,7 +334,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		barrierArrive(1);
 //		barrier_.Arrive();
 //		cout<<"Aggregation hash table is built!\n"<<endl;
-		if(completeForInitializationJob(1)){
+		if(tryEntryIntoSerializedSection(1)){
 //                cout<<"================================================"<<endl;
 				it_=hashtable_->CreateIterator();
 				bucket_cur_=0;

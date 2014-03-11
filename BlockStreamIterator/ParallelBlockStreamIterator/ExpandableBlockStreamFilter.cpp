@@ -48,7 +48,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 ///////////////////////////////// END ////////////////////////////////////
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
-	if(completeForInitializationJob()){
+	if(tryEntryIntoSerializedSection()){
 		tuple_after_filter_=0;
 		const bool child_open_return=state_.child_->open(part_off);
 		setOpenReturnValue(child_open_return);
@@ -74,9 +74,6 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 			pass_filter=true;
 			for(unsigned i=0;i<state_.comparator_list_.size();i++){
 
-//				state_.comparator_list_[0].in
-
-//				if(!state_.comparator_list_[i].filter(tuple_from_child)){
 				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
 					pass_filter=false;
 					break;

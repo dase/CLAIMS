@@ -10,7 +10,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
-#define THREAD_COUNT 4
+#define THREAD_COUNT 1
 Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vector<Attribute> aggregation_attribute_list,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child)
 :group_by_attribute_list_(group_by_attribute_list),aggregation_attribute_list_(aggregation_attribute_list),aggregation_list_(aggregation_list),dataflow_(0),child_(child){
 	assert(aggregation_attribute_list_.size()==aggregation_list_.size());
@@ -44,6 +44,9 @@ Dataflow Aggregation::getDataflow(){
 //			ret.attribute_list_.insert(ret.attribute_list_.end(),aggregation_attribute_list_.begin(),aggregation_attribute_list_.end());
 			ret.property_.commnication_cost=child_dataflow.property_.commnication_cost;
 			ret.property_.partitioner=child_dataflow.property_.partitioner;
+			Attribute att=child_dataflow.property_.partitioner.getPartitionKey();
+			att.table_id_=INTERMEIDATE_TABLEID;
+			ret.property_.partitioner.setPartitionKey(att);
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
 				const unsigned cardinality=ret.property_.partitioner.getPartition(i)->getDataCardinality();
 //				ret.property_.partitioner.getPartition(i)->setDataCardinality(cardinality*predictSelectivity());
@@ -345,7 +348,24 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 
 }
 void Aggregation::print(int level)const{
-	printf("%*.sAggregation:\n",level*8," ");
+	printf("%*.sAggregation:",level*8," ");
+	switch(fashion_){
+	case no_repartition:{
+		printf("no_repartition\n");
+		break;
+	}
+	case repartition:{
+		printf("repartition\n");
+		break;
+	}
+	case hybrid:{
+		printf("hybrid!\n");
+		break;
+	}
+	default:{
+		printf("not given!\n");
+	}
+	}
 	printf("%*.sgroup-by attributes:\n",level*8," ");
 	for(unsigned i=0;i<this->group_by_attribute_list_.size();i++){
 		printf("%*.s",level*8," ");

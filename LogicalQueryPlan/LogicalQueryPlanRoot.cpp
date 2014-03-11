@@ -13,7 +13,7 @@
 #include "../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
-#define Thread_Count 5
+#define Thread_Count 1
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
 :collecter_(collecter),child_(child),fashion_(fashion){
 	// TODO Auto-generated constructor stub

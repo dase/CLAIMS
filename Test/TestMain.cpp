@@ -32,7 +32,7 @@
 
 #include "../Loader/test_load.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
-
+#include "../LogicalQueryPlan/Test/testIn.cpp"
 int main(){
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -55,28 +55,11 @@ int main(){
 //	return test_expression_item();
 //	return testProject();
 //	return Project_test();
-	return expanded_iterators_test();
+//	return expanded_iterators_test();
 
 //	return load_test();
 //	return in_iterator_test();
 
-//	std::vector<column_type> column_list;
-//	std::cout<<COUNTER::count<<std::endl;
-//	column_list.push_back(column_type(t_int));
-//
-//	std::cout<<COUNTER::count<<std::endl;
-//	Schema* i_schema = new SchemaFix(column_list);
-//
-//	for(unsigned i=0;i<100000000;i++){
-//		i_schema->getcolumn(0);
-//	}
-//	i_schema->~Schema();
-//	column_list.clear();
-//
-//	std::cout<<"finished! count:"<<COUNTER::count<<std::endl;
-//	while(true){
-//		sleep(1);
-//	}
-
+	in_test();
 
 }
