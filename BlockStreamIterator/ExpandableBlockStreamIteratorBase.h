@@ -45,6 +45,9 @@ protected:
 
 	void setOpenReturnValue(bool value);
 	bool getOpenReturnValue()const;
+
+	void RegisterNewThreadToBarrier();
+	void barrierArrive();
 protected:
 	/* the return value of open() */
 	volatile bool open_ret_;
@@ -57,6 +60,8 @@ protected:
 
 	/* the semaphore used to guarantee that only the first thread does the real initialization work.*/
 	semaphore sema_compete_open_;
+
+	Barrier barrier_;
 
 
 private:

@@ -31,7 +31,7 @@ public:
 	unsigned getncolumns();
 	virtual Schema* getSubSchema(std::vector<unsigned>)const=0;
 	virtual Schema* duplicateSchema()const=0;
-	inline column_type getcolumn(const unsigned index) const {
+	inline const column_type& getcolumn(const unsigned index) const {
 			return columns[index];
 		}
 	std::vector<column_type> columns;

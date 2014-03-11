@@ -103,7 +103,12 @@ public:
 	}
 	void setEmpty(){
 		m_nThreads=0;
+		m_nSyncCount=0;
 	}
+
+	/*
+	 * One must call setEmpty() before the second's calling of Arrive()
+	 */
 	void Arrive(){
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nSyncCount++;
@@ -112,7 +117,6 @@ public:
 //			printf("arrive the nthreads\n");
 //			printf("arrive the broadcast\n");
 			pthread_cond_broadcast(&m_cv_SyncCV);
-			m_nSyncCount = 0;
 		}
 		else {
 //			printf("arrive the wait\n");

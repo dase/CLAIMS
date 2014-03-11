@@ -105,6 +105,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				rb.iterator->increase_cur_();
 			}
 		}
+		rb.iterator->~BlockStreamTraverseIterator();
 		AtomicPushFreeBlockStream(rb.block);
 
 	}
@@ -168,6 +169,12 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 bool ExpandableBlockStreamFilter::close(){
 	initialize_expanded_status();
 	open_finished_=false;
+
+	for(unsigned i=0;i<free_block_stream_list_.size();i++){
+		free_block_stream_list_.front()->~BlockStreamBase();
+		free_block_stream_list_.pop_front();
+	}
+
 	free_block_stream_list_.clear();
 	state_.child_->close();
 	return true;
