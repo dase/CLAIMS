@@ -56,14 +56,15 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 #ifdef TIME
 	startTimer(&timer);
 #endif
-//	barrier_.RegisterOneThread();
+
 	RegisterNewThreadToBarrier();
+
 	state_.child_left->open(partition_offset);
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
 
 	unsigned long long int timer;
-	if(completeForInitializationJob()){
+	if(completeForInitializationJob(0)){
 	timer=curtick();
 
 
@@ -87,7 +88,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	}else{
 		waitForOpenFinished();
 	}
-
+//	barrierArrive(0);
 	BasicHashTable::Iterator tmp_it=hashtable->CreateIterator();
 
 	void *cur;
@@ -261,7 +262,7 @@ bool BlockStreamJoinIterator::close(){
 //	sema_open_.post();
 	initialize_expanded_status();
 	open_finished_=false;
-	barrier_.setEmpty();
+//	barrier_.setEmpty();
 	free_block_stream_list_.clear();
 	ht_free_block_stream_list_.clear();
 	remaining_block_list_.clear();
