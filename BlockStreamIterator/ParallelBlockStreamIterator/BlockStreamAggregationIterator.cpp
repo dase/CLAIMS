@@ -15,12 +15,14 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
+        initialize_expanded_status();
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 :open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
+        initialize_expanded_status();
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
@@ -56,8 +58,9 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 #ifdef TIME
 		startTimer(&timer);
 #endif
+	RegisterNewThreadToBarrier();
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
-	if(sema_open_.try_wait()){
+	if(completeForInitializationJob()){
 		unsigned outputindex=0;
 		for(unsigned i=0;i<state_.groupByIndex.size();i++)
 		{
@@ -101,11 +104,13 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		hash_=PartitionFunctionFactory::createGeneralModuloFunction(state_.nbuckets);
 		hashtable_=new BasicHashTable(state_.nbuckets,state_.bucketsize,state_.output->getTupleMaxSize());
 		open_finished_=true;
+		broadcaseOpenFinishedSignal();
 	}
 	else{
-		while (!open_finished_) {
-			usleep(1);
-		}
+//		while (!open_finished_) {
+//			usleep(1);
+//		}
+		waitForOpenFinished();
 	}
 //		cout<<"............................................"<<endl;
 
@@ -323,8 +328,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 
 
-
-		barrier_.Arrive();
+		barrierArrive();
+//		barrier_.Arrive();
 		cout<<"Aggregation hash table is built!\n"<<endl;
 		if(sema_open_end_.try_wait()){
 //                cout<<"================================================"<<endl;
@@ -399,6 +404,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 
 bool BlockStreamAggregationIterator::close(){
 //        cout<<"aggregation finished!"<<endl;
+    initialize_expanded_status();
         sema_open_.post();
         sema_open_end_.post();
 //        lock_.~Lock();
