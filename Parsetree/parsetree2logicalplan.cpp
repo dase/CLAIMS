@@ -24,6 +24,7 @@
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../common/ExpressionItem.h"
 #include "../LogicalQueryPlan/Project.h"
+#include "../LogicalQueryPlan/Sort.h"
 static void p2l_print_error(char *str1,char *str2,char *str3)
 {
 	printf("parsetree2logicalplan >> %s  %s   %s",str1,str2,str3);
@@ -591,17 +592,96 @@ static LogicalOperator* select_groupby_where_from2logicalplan(Node *parsetree)
 	LogicalOperator* proj=new LogicalProject(groupby_where_from_logicalplan,allexpr);
 	return proj;
 }
-
+static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector<LogicalSort::OrderByAttr *>&obcol)
+{
+	Orderby_list * gblist=(Orderby_list *)(olnode);
+	for(Node *p=(Node *)(gblist->next);p!=NULL;)
+	{
+		Groupby_expr *gbexpr=(Groupby_expr *)p;
+		switch(gbexpr->args->type)
+		{
+			case t_name:
+			case t_column:
+			case t_name_name:
+			{
+				Columns *col=(Columns *)(gbexpr->args);
+				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter1,col->parameter2));
+			}break;
+			case t_intnum:
+			{
+				Expr * exprval=(Expr *)(gbexpr->args);
+				int num=0;
+				Node * q=slnode;
+				for(;q!=NULL;)
+				{
+					Select_list *selectlist=(Select_list *)q;
+					if(num==exprval->data.int_val)
+						break;
+					num++;
+					q=selectlist->next;
+				}
+				cout<<"```````````````````````````````"<<endl;
+				if(q==NULL)
+				{
+					//string str=(exprval->data.int_val);
+					p2l_print_error("get_orderby_column_from_selectlist order by attribute num ","","is beyond");
+				}
+				else
+				{
+					Select_list *selectlist=(Select_list *)q;
+					Select_expr *sexpr=(Select_expr *)selectlist->args;
+					switch(sexpr->colname->type)
+					{
+						case t_name:
+						case t_name_name:
+						case t_column:
+						{
+							Columns * col=(Columns *)sexpr->colname;
+							cout<<"order by attribute  "<<col->parameter1<<"  "<<col->parameter2<<endl;
+							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter1,col->parameter2));
+						}break;
+						default:
+						{
+							p2l_print_error("get_orderby_column_from_selectlist","gbexpr->colname->type ","not exist");
+						}
+					}
+				}
+			}break;
+			default:
+			{
+				p2l_print_error("get_orderby_column_from_selectlist","gbexpr->args->type ","not exist");
+			}
+		}
+		p=gbexpr->next;
+	}
+}
+static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *parsetree)
+{
+	LogicalOperator* select__logicalplan= select_groupby_where_from2logicalplan(parsetree);
+	Query_stmt *node=(Query_stmt *)parsetree;
+	if(node->orderby_list==NULL)
+	{
+		return select__logicalplan;
+	}
+	else
+	{
+		vector<LogicalSort::OrderByAttr *>obcol;
+		get_orderby_column_from_selectlist(node->orderby_list,node->select_list,obcol);
+		LogicalOperator* orderby__logicalplan=new LogicalSort(select__logicalplan,obcol[0]);
+		return orderby__logicalplan;
+	}
+}
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
 	switch(parsetree->type)
 	{
 		case t_query_stmt:
 		{
-			return select_groupby_where_from2logicalplan(parsetree);
+			return orderby_select_groupby_where_from2logicalplan(parsetree);
 		}break;
 		default:
 		{
+			puts("parsetree type is null");
 			return NULL;
 		}
 	}
