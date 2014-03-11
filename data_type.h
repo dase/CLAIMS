@@ -238,6 +238,9 @@ public:
 	bool less(const void*& a, const void*& b)const{
 		return *(float*)a<*(float*)b;
 	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(float*)a>*(float*)b;
+	}
 	int compare(const void* a,const void* b)const{
 		return *(float*)a-*(float*)b;
 	}
@@ -297,6 +300,9 @@ public:
 	}
 	bool less(const void*& a, const void*& b)const{
 		return *(double*)a<*(double*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(double*)a>*(double*)b;
 	}
 	int compare(const void* a,const void* b)const{
 		return *(double*)a-*(double*)b;
