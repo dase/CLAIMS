@@ -13,6 +13,8 @@
 #include "../Executor/Test/Executor.cpp"
 #include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
 #include "../LogicalQueryPlan/Test/testProject.cpp"
+#include "../LogicalQueryPlan/Test/testSort.cpp"
+#include "../LogicalQueryPlan/Test/testProject_wl.cpp"
 #include "../Parsetree/Test/parser_test.cpp"
 #include "../Schema/Test/SubTuple_test.cpp"
 #include "../Schema/Test/VariableSchema_test.cpp"
@@ -54,6 +56,8 @@ int main(){
 //	return test_data_type();
 //	return test_expression_item();
 //	return testProject();
+	return testSort();
+//	return testProject_wl();
 //	return Project_test();
 //	return expanded_iterators_test();
 
@@ -61,5 +65,6 @@ int main(){
 //	return in_iterator_test();
 
 	in_test();
+
 
 }
