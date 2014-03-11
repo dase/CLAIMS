@@ -18,6 +18,11 @@ using namespace std;
 #include "ExportSerializeIo.h"
 #include "value_defs.h"
 
+class COUNTER{
+public:
+	static int count;
+};
+
 namespace decimal {
 
 #define OBJECT_NULL_BIT static_cast<char>(1 << 6)

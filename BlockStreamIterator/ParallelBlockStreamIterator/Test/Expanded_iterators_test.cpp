@@ -40,7 +40,7 @@ static int expanded_iterators_test(){
 		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 		table_1->addAttribute("row_id",data_type(t_u_long));  				//0
 		table_1->addAttribute("trade_date",data_type(t_int));
-		table_1->addAttribute("order_no",data_type(t_u_long));
+		table_1->addAttribute("order_no",data_type(t_u_long),0,true);
 		table_1->addAttribute("sec_code",data_type(t_int));
 		table_1->addAttribute("trade_dir",data_type(t_int));
 		table_1->addAttribute("order_type",data_type(t_int));				//5
@@ -120,7 +120,7 @@ static int expanded_iterators_test(){
 		////////////////////////////////////Create table right//////////////////////////
 		TableDescriptor* table_2=new TableDescriptor("sb",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 		table_2->addAttribute("row_id",data_type(t_u_long));
-		table_2->addAttribute("order_no",data_type(t_u_long));
+		table_2->addAttribute("order_no",data_type(t_u_long),0,true);
 		table_2->addAttribute("entry_date",data_type(t_int));
 		table_2->addAttribute("sec_code",data_type(t_int));
 		table_2->addAttribute("order_type",data_type(t_int));
@@ -199,7 +199,7 @@ static int expanded_iterators_test(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"order_no",1);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -422,14 +422,7 @@ static int expanded_iterators_test(){
 		printf("ready(?)\n");
 		int input;
 		scanf("%d",&input);
-//		cin>>input;
 
-//		ProjectionBinding *pb=new ProjectionBinding();
-//		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
-//		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(2)->getPartitioner(),MEMORY);
-//
-//		pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(3)->getPartitioner(),MEMORY);
-//		pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(3)->getPartitioner(),MEMORY);
 
 		LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 		LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
@@ -446,7 +439,7 @@ static int expanded_iterators_test(){
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
 		const int sec_code=600036;
-		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+//		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::L,std::string("600036"));
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 		std::vector<FilterIterator::AttributeComparator> tmp;
 
@@ -458,7 +451,7 @@ static int expanded_iterators_test(){
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
 		const int sec_code_=600036;
-		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+//		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::L,std::string("600036"));
 		LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
 
 
@@ -473,10 +466,6 @@ static int expanded_iterators_test(){
 		LogicalOperator* filter_sb_payload=new Filter(filter_condition_sb_payload,sb_payload_scan);
 
 
-		LogicalOperator* buffer1=new Buffer(filter_1);
-		LogicalOperator* buffer2=new Buffer(filter_2);
-//		Buffer
-
 
 		std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
 		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
@@ -487,56 +476,26 @@ static int expanded_iterators_test(){
 //		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 //		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,buffer1,buffer2);
 
-		std::vector<EqualJoin::JoinPair> cj_payload_join_pari_list;
-		cj_payload_join_pari_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_1->getAttribute("row_id")));
-		LogicalOperator* cj_payload_join=new EqualJoin(cj_payload_join_pari_list,sb_cj_join,cj_payload_scan);
-
-
-		std::vector<EqualJoin::JoinPair> sb_payload_join_pari_list;
-		sb_payload_join_pari_list.push_back(EqualJoin::JoinPair(table_2->getAttribute("row_id"),table_2->getAttribute("row_id")));
-		LogicalOperator* sb_payload_join=new EqualJoin(sb_payload_join_pari_list,cj_payload_join,sb_payload_scan);
-
-
 		std::vector<Attribute> group_by_attributes;
-//		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
-
-
 		group_by_attributes.push_back(table_1->getAttribute("order_no"));
-//		group_by_attributes.push_back(table_2->getAttribute("entry_date"));
-//		group_by_attributes.push_back(table_2->getAttribute("entry_time"));
-//		group_by_attributes.push_back(table_2->getAttribute("acct_id"));
-//		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
-//		group_by_attributes.push_back(table_2->getAttribute("order_price"));
-//		group_by_attributes.push_back(table_2->getAttribute("order_vol"));
-//		group_by_attributes.push_back(table_1->getAttribute("order_type"));
-//		group_by_attributes.push_back(table_1->getAttribute("pbu_id"));
 
 
-
-
-
-
-
-
-
-//		group_by_attributes.push_back(table_1->getAttribute("sec_code"));
-//		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
-//		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 		std::vector<Attribute> aggregation_attributes;
 
 
 //		aggregation_attributes.push_back(table_1->getAttribute("trade_date"));
 
-		aggregation_attributes.push_back(table_1->getAttribute("trade_vol"));
-
+		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
+		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 //		aggregation_attributes.push_back(table_1->getAttribute("sec_code"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
+		aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 //
 
@@ -554,25 +513,30 @@ static int expanded_iterators_test(){
 
 
 //		filter_1->getDataflow();
-		executable_query_plan=sb_cj_join->getIteratorTree((1024*64-sizeof(unsigned)));
+		executable_query_plan=aggregation->getIteratorTree((1024*64-sizeof(unsigned)));
 
-		BlockStreamExpander::State expander_state(sb_cj_join->getDataflow().getSchema(),executable_query_plan,5,1024*64-sizeof(unsigned));
+		BlockStreamExpander::State expander_state(aggregation->getDataflow().getSchema(),executable_query_plan,5,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-		BlockStreamPerformanceMonitorTop::State perf_state(sb_cj_join->getDataflow().getSchema(),expander,1024*64-sizeof(unsigned));
+		BlockStreamPerformanceMonitorTop::State perf_state(aggregation->getDataflow().getSchema(),expander,1024*64-
+				sizeof(unsigned));
 		BlockStreamIteratorBase* top=new BlockStreamPerformanceMonitorTop(perf_state);
 
 		top->print();
 
-		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(sb_cj_join->getDataflow().getSchema(),1024*64);
+		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(aggregation->getDataflow().getSchema(),1024*64);
 		int c=1;
 		while(c==1){
 //			timer_start=curtick();
-			top->open();
+			for (int i = 0; i < 1; i++)
+			{
+				top->open();
 			while(top->next(block)){
-//				block->setEmpty();
+				block->setEmpty();
 			}
 			top->close();
+			cout << "filter test: " << i << endl;
+			}
 			printf("Terminate(0) or continue(others)?\n");
 //			sleep()
 			scanf("%d",&c);
@@ -583,10 +547,10 @@ static int expanded_iterators_test(){
 //			sleep(5);
 		}
 	}
-	cout<<"Waiting~~~!~"<<endl;
-	while(true){
-		sleep(1);
-	}
+//	cout<<"Waiting~~~!~"<<endl;
+//	while(true){
+//		sleep(1);
+//	}
 
 }
 

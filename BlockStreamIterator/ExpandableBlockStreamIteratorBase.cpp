@@ -15,6 +15,8 @@ ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase() {
 ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
 	pthread_mutex_destroy(&sync_lock_);
 	pthread_cond_destroy(&sync_cv_);
+	barrier_.~Barrier();
+	sema_compete_open_.destroy();
 }
 void ExpandableBlockStreamIteratorBase::waitForOpenFinished(){
 	pthread_mutex_lock(&sync_lock_);
@@ -35,6 +37,7 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 	open_finished_=false;
 	/* only one thread wins when complete for the job of initialization*/
 	sema_compete_open_.set_value(1);
+	barrier_.setEmpty();
 }
 void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
 	pthread_mutex_lock(&sync_lock_);
@@ -53,4 +56,10 @@ void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
 }
 bool ExpandableBlockStreamIteratorBase::getOpenReturnValue()const{
 	return open_ret_;
+}
+void ExpandableBlockStreamIteratorBase::RegisterNewThreadToBarrier(){
+	barrier_.RegisterOneThread();
+}
+void ExpandableBlockStreamIteratorBase::barrierArrive(){
+	barrier_.Arrive();
 }

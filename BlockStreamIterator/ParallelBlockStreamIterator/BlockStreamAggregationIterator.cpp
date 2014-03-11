@@ -52,7 +52,7 @@ BlockStreamAggregationIterator::State::State(
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	barrier_.RegisterOneThread();
 	state_.child->open(partition_offset);
-//	cout<<"in the open of aggregation"<<endl;
+	cout<<"in the open of aggregation"<<endl;
 #ifdef TIME
 		startTimer(&timer);
 #endif
@@ -325,7 +325,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 
 		barrier_.Arrive();
-
+		cout<<"Aggregation hash table is built!\n"<<endl;
 		if(sema_open_end_.try_wait()){
 //                cout<<"================================================"<<endl;
 				it_=hashtable_->CreateIterator();

@@ -107,6 +107,9 @@ bool Aggregation::canLeverageHashPartition(const Dataflow& child_dataflow)const{
 	return false;
 }
 BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size){
+	if(dataflow_==0){
+		getDataflow();
+	}
 	BlockStreamIteratorBase* ret;
 	Dataflow child_dataflow=child_->getDataflow();
 	BlockStreamAggregationIterator::State aggregation_state;
@@ -116,6 +119,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.block_size=block_size;
 //	aggregation_state.nbuckets=1024;
 	aggregation_state.nbuckets=estimateGroupByCardinality(child_dataflow);
+	printf("# of hash buckets:%d\n",aggregation_state.nbuckets);
+
 	aggregation_state.bucketsize=64;
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);
 	aggregation_state.output=getSchema(dataflow_->attribute_list_);
@@ -334,6 +339,7 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 
 	const unsigned long limits=1024*1024;
 	ret=ret<limits?ret:limits;
+
 
 	return ret;
 
