@@ -141,6 +141,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		while((tuple_from_child=traverse_iterator->nextTuple())>0){
 			const unsigned partition_id=hash(tuple_from_child);
 //			assert(partition_id==state.partition_offset);
+//			assert(partition_id==state.partition_offset);
 //			if(rand()%10000<3){
 //
 //				printf("key:%d\n",test_hash->get_partition_value(*(unsigned long*)state.schema->getColumnAddess(1,tuple_from_child)));

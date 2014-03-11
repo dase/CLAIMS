@@ -40,14 +40,21 @@ protected:
 	 */
 	void initialize_expanded_status();
 
-	/* Return true, if the current thread call this method first; otherwise, return false*/
-	bool completeForInitializationJob(unsigned phase_id=0);
+	/* Return true, if not any thread has obtain the entry into the serialized section
+	 * with id=tserialized_section_id; otherwise, return false*/
+	bool tryEntryIntoSerializedSection(unsigned serialized_section_id=0);
 
 	void setOpenReturnValue(bool value);
 	bool getOpenReturnValue()const;
 
-	void RegisterNewThreadToBarrier();
+	/*
+	 * Register to all the barriers that a new thread has been registered. Accordingly, barriers
+	 * could increase the expected number of threads by 1.
+	 */
+	void RegisterNewThreadToAllBarriers();
+
 	void barrierArrive(unsigned barrier_index=0);
+
 protected:
 	/* the return value of open() */
 	volatile bool open_ret_;
@@ -58,7 +65,7 @@ protected:
 	pthread_mutex_t sync_lock_;
 	pthread_cond_t  sync_cv_;
 	/* the semaphore used to guarantee that only the first thread does the real initialization work.*/
-	semaphore* sema_compete_open_;
+	semaphore* seriliazed_section_entry_key_;
 
 	Barrier* barrier_;
 

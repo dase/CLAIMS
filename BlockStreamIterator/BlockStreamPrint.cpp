@@ -45,10 +45,10 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 		void* tuple;
 		while((tuple=it->nextTuple())!=0){
 //			cout<<"int: "<<*(int*)tuple<<endl;
-			assert(*(int*)(tuple+8)==20101008);
+//			assert(*(int*)(tuple+8)==20101008);
 //			cout<<"float: "<<*(float*)((char*)tuple+4)<<endl;
 //			cout<<"int: "<<*(int*)((char*)tuple+8)<<endl;
-//			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
+			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
 //			sleep(1);
 			tuple_in_block++;
 			tuple_count_++;

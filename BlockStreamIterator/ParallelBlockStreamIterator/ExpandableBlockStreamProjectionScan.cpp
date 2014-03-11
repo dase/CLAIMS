@@ -58,7 +58,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 //	}
 //	return open_ret_;
 ///////////////////////////////////////////// END ////////////////////////////////////////////////
-	if(completeForInitializationJob()){
+	if(tryEntryIntoSerializedSection()){
 		/* this is the first expanded thread*/
 		PartitionStorage* partition_handle_;
 		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
