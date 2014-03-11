@@ -142,6 +142,7 @@ public:
 	virtual void toValue(void* target, const char* string)=0;
 	virtual bool equal(void* a, void* b)=0;
 	virtual bool less(const void*& a, const void*& b)const=0;
+	virtual bool greate(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
 	virtual int compare(const void* a,const void* b)const=0;
 	virtual fun GetADDFunction()=0;
@@ -177,6 +178,9 @@ public:
 	}
 	bool less(const void*& a, const void*& b)const{
 		return *(int*)a<*(int*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(int*)a>*(int*)b;
 	}
 	int compare(const void* a,const void* b)const{
 		return *(int*)a-*(int*)b;
@@ -304,6 +308,9 @@ public:
 	bool greate(const void*& a, const void*& b)const{
 		return *(double*)a>*(double*)b;
 	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(double*)a>*(double*)b;
+	}
 	int compare(const void* a,const void* b)const{
 		return *(double*)a-*(double*)b;
 	}
@@ -363,6 +370,9 @@ public:
 	}
 	bool less(const void*& a, const void*& b)const{
 		return *(unsigned long*)a<*(unsigned long*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(unsigned long*)a>*(unsigned long*)b;
 	}
 	int compare(const void* a,const void* b)const{
 		return *(unsigned long*)a-*(unsigned long*)b;
@@ -426,6 +436,9 @@ public:
 	bool less(const void*& a, const void*& b)const{
 		return strcmp((char*)a,(char*)b)<0;
 	}
+	bool greate(const void*& a, const void*& b)const{
+		return strcmp((char*)a,(char*)b)>0;
+	}
 	int compare(const void* a,const void* b)const{
 		return strcmp((char*)a,(char*)b);
 	}
@@ -487,6 +500,9 @@ public:
 	}
 	bool less(const void*& a, const void*& b)const{
 		return *(date*)a < *(date*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(date*)a > *(date*)b;
 	}
 	int compare(const void* a,const void* b)const{
 		if (*(date*)a < *(date*)b)
@@ -557,6 +573,9 @@ public:
 	bool less(const void*& a, const void*& b)const{
 		return *(time_duration*)a < *(time_duration*)b;
 	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(time_duration*)a > *(time_duration*)b;
+	}
 	int compare(const void* a,const void* b)const{
 		if (*(time_duration*)a < *(time_duration*)b)
 			return -1;
@@ -625,6 +644,9 @@ public:
 	}
 	bool less(const void*& a, const void*& b)const{
 		return *(ptime*)a < *(ptime*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(ptime*)a > *(ptime*)b;
 	}
 	int compare(const void* a,const void* b)const{
 		if (*(ptime*)a < *(ptime*)b)
@@ -697,6 +719,9 @@ public:
 	bool less(const void*& a, const void*& b)const{
 		return *(short*)a < *(short*)b;
 	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(short*)a > *(short*)b;
+	}
 	int compare(const void* a,const void* b)const{
 		return *(short*)a - *(short*)b;
 	}
@@ -755,6 +780,14 @@ public:
 		return ((NValue*)a)->op_equals(*(NValue*)b);
 	}
 	bool less(const void*& a, const void*& b)const{
+		if (((NValue*)a)->op_equals(*(NValue*)b))
+			return false;
+		NValue tmp = ((NValue*)a)->op_min(*(NValue*)b);
+		if (tmp.op_equals(*(NValue*)a))
+			return true;
+		return false;
+	}
+	bool greate(const void*& a, const void*& b)const{
 		if (((NValue*)a)->op_equals(*(NValue*)b))
 			return false;
 		NValue tmp = ((NValue*)a)->op_min(*(NValue*)b);
