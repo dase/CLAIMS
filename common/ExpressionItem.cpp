@@ -99,15 +99,15 @@ bool ExpressionItem::setDoubleValue(double &double_){
 }
 bool ExpressionItem::setULongValue(const char* u_long_str){
 	type=const_type;
-	return_type=t_double;
-	content.data.value._double=atol(u_long_str);
+	return_type=t_u_long;
+	content.data.value._ulong=atol(u_long_str);
 	return true;
 }
 
 bool ExpressionItem::setULongValue(unsigned long &u_long){
 	type=const_type;
 	return_type=t_u_long;
-	content.data.value._double=u_long;
+	content.data.value._ulong=u_long;
 	return true;
 }
 

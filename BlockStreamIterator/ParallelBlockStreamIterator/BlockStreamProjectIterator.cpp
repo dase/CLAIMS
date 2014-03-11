@@ -82,7 +82,6 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 						else{
 							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
 						}
-						ei.print_value();
 						toCalc.push_back(ei);
 					}
 					ExpressionCalculator::calcuate(toCalc,result);
@@ -154,6 +153,10 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 			break;
 		}
 		case t_float:{
+			memcpy(tuple,&result.content.data.value._float,length);
+			break;
+		}
+		case t_u_long:{
 			memcpy(tuple,&result.content.data.value._float,length);
 			break;
 		}
