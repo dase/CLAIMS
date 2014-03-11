@@ -76,7 +76,8 @@ static int testSort(){
 
 		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
 
-		LogicalOperator* sort=new LogicalSort(filter_1,3);
+		LogicalSort::OrderByAttr *od=new LogicalSort::OrderByAttr("cj","row_id");
+		LogicalOperator* sort=new LogicalSort(scan,od);
 
 		BlockStreamIteratorBase *sort_=sort->getIteratorTree(64*1024-sizeof(unsigned));
 
