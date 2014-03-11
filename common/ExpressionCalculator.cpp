@@ -61,12 +61,12 @@ void ExpressionCalculator::computes(ExpressionItem operator_item, ExpressionItem
 			break;
 		}
 		case op_com_L:{
-//			compare_less(stack,result);
+			compare_lesss(stack,result);
 			break;
 		}
 		case op_case:{
-//			reverse_stack(stack);
-//			do_case(stack,result);
+			reverse_stack(stack);
+			do_case(stack,result);
 			break;
 		}
 		default:{

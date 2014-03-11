@@ -45,6 +45,7 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 		void* tuple;
 		while((tuple=it->nextTuple())!=0){
 		
+
 			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
 			tuple_in_block++;
 			tuple_count_++;

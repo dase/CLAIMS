@@ -1,7 +1,7 @@
 /*
  * ids.h
  *	Suggested by Liyongfeng and Zhanglei, all the ids are defined in
- *	this file for better code organization purposes.
+ *	this file or better code organization purposes.
  *  Created on: Nov 8, 2013
  *      Author: wangli
  */
