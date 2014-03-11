@@ -13,7 +13,7 @@
 #include "../utility/synch.h"
 class ExpandableBlockStreamIteratorBase: public BlockStreamIteratorBase {
 public:
-	ExpandableBlockStreamIteratorBase();
+	ExpandableBlockStreamIteratorBase(unsigned number_of_barrier=1,unsigned number_of_seriliazed_section=1);
 	virtual ~ExpandableBlockStreamIteratorBase();
 	/**
 	 * Because that boost::serialization will allocate an instance of this class
@@ -41,13 +41,13 @@ protected:
 	void initialize_expanded_status();
 
 	/* Return true, if the current thread call this method first; otherwise, return false*/
-	bool completeForInitializationJob();
+	bool completeForInitializationJob(unsigned phase_id=0);
 
 	void setOpenReturnValue(bool value);
 	bool getOpenReturnValue()const;
 
 	void RegisterNewThreadToBarrier();
-	void barrierArrive();
+	void barrierArrive(unsigned barrier_index=0);
 protected:
 	/* the return value of open() */
 	volatile bool open_ret_;
@@ -57,12 +57,13 @@ protected:
 
 	pthread_mutex_t sync_lock_;
 	pthread_cond_t  sync_cv_;
-
 	/* the semaphore used to guarantee that only the first thread does the real initialization work.*/
-	semaphore sema_compete_open_;
+	semaphore* sema_compete_open_;
 
-	Barrier barrier_;
+	Barrier* barrier_;
 
+	unsigned number_of_barrier_;
+	unsigned number_of_seriliazed_section_;
 
 private:
 	friend class boost::serialization::access;

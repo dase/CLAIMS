@@ -12,14 +12,14 @@
 //#define Expand_count 5
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
-:state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
+:state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(3,2){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
         initialize_expanded_status();
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
-:open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0){
+:open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(3,2){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
         initialize_expanded_status();
@@ -59,8 +59,11 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		startTimer(&timer);
 #endif
 	RegisterNewThreadToBarrier();
+//	RegisterNewThreadToBarrier(1);
+//	RegisterNewThreadToBarrier(2);
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
-	if(completeForInitializationJob()){
+	if(completeForInitializationJob(0)){
+		printf("Winning threads!\n");
 		unsigned outputindex=0;
 		for(unsigned i=0;i<state_.groupByIndex.size();i++)
 		{
@@ -104,14 +107,17 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		hash_=PartitionFunctionFactory::createGeneralModuloFunction(state_.nbuckets);
 		hashtable_=new BasicHashTable(state_.nbuckets,state_.bucketsize,state_.output->getTupleMaxSize());
 		open_finished_=true;
-		broadcaseOpenFinishedSignal();
+//		broadcaseOpenFinishedSignal();
 	}
 	else{
 //		while (!open_finished_) {
 //			usleep(1);
 //		}
-		waitForOpenFinished();
+//		waitForOpenFinished();
 	}
+	std::cout<<"wait at the first barrier"<<std::endl;
+	barrierArrive(0);
+	std::cout<<"pass the first barrier"<<std::endl;
 //		cout<<"............................................"<<endl;
 
 	void *cur=0;
@@ -327,11 +333,10 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 
 
-
-		barrierArrive();
+		barrierArrive(1);
 //		barrier_.Arrive();
-		cout<<"Aggregation hash table is built!\n"<<endl;
-		if(sema_open_end_.try_wait()){
+//		cout<<"Aggregation hash table is built!\n"<<endl;
+		if(completeForInitializationJob(1)){
 //                cout<<"================================================"<<endl;
 				it_=hashtable_->CreateIterator();
 				bucket_cur_=0;
@@ -339,10 +344,11 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 				open_finished_end_=true;
 		}
 		else{
-				while (!open_finished_end_) {
-								usleep(1);
-						}
+//				while (!open_finished_end_) {
+//								usleep(1);
+//						}
 		}
+		barrierArrive(2);
 	#ifdef TIME
 			stopTimer(&timer);
 			printf("<+++++++>: time consuming: %lld, %f\n",timer,timer/(double)CPU_FRE);

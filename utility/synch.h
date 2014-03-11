@@ -93,7 +93,9 @@ public:
 		m_nSyncCount = 0;
 	}
 	void RegisterOneThread(){
+		pthread_mutex_lock(&m_l_SyncLock);
 		m_nThreads++;
+		pthread_mutex_unlock(&m_l_SyncLock);
 //		printf("Barrier:: new thread registered!\n\n\n");
 	}
 

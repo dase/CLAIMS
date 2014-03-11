@@ -7,16 +7,22 @@
 
 #include "ExpandableBlockStreamIteratorBase.h"
 
-ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase() {
+ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned number_of_barrier,unsigned number_of_seriliazed_section)
+:number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section){
 	// TODO Auto-generated constructor stub
-
+	barrier_=new Barrier[number_of_barrier_];
+	sema_compete_open_=new semaphore[number_of_seriliazed_section_];
 }
 
 ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
 	pthread_mutex_destroy(&sync_lock_);
 	pthread_cond_destroy(&sync_cv_);
-	barrier_.~Barrier();
-	sema_compete_open_.destroy();
+	for(unsigned i=0;i<number_of_barrier_;i++){
+		barrier_[i].~Barrier();
+	}
+	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
+		sema_compete_open_[i].destroy();
+	}
 }
 void ExpandableBlockStreamIteratorBase::waitForOpenFinished(){
 	pthread_mutex_lock(&sync_lock_);
@@ -36,8 +42,15 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 
 	open_finished_=false;
 	/* only one thread wins when complete for the job of initialization*/
-	sema_compete_open_.set_value(1);
-	barrier_.setEmpty();
+
+
+	for(unsigned i=0;i<number_of_barrier_;i++){
+		barrier_[i].setEmpty();
+	}
+
+	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
+		sema_compete_open_[i].set_value(1);
+	}
 }
 void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
 	pthread_mutex_lock(&sync_lock_);
@@ -48,8 +61,9 @@ void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
 
 	pthread_mutex_unlock(&sync_lock_);
 }
-bool ExpandableBlockStreamIteratorBase::completeForInitializationJob(){
-	return sema_compete_open_.try_wait();
+bool ExpandableBlockStreamIteratorBase::completeForInitializationJob(unsigned phase_id){
+	assert(phase_id<number_of_seriliazed_section_);
+	return sema_compete_open_[phase_id].try_wait();
 }
 void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
 	open_ret_=value;
@@ -58,8 +72,12 @@ bool ExpandableBlockStreamIteratorBase::getOpenReturnValue()const{
 	return open_ret_;
 }
 void ExpandableBlockStreamIteratorBase::RegisterNewThreadToBarrier(){
-	barrier_.RegisterOneThread();
+//	assert(barrier_index<number_of_barrier_);
+	for(unsigned i=0;i<number_of_barrier_;i++){
+		barrier_[i].RegisterOneThread();
+	}
 }
-void ExpandableBlockStreamIteratorBase::barrierArrive(){
-	barrier_.Arrive();
+void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
+	assert(barrier_index<number_of_barrier_);
+	barrier_[barrier_index].Arrive();
 }
