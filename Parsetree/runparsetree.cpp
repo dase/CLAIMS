@@ -34,6 +34,7 @@ static Node * getparsetreeroot()
 
 	while(1)
 	{
+		////
 		char c=getchar();
 		globalInputText[charnum++]=c;
 		if(c==';')
