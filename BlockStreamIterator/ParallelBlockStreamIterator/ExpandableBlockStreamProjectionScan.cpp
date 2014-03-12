@@ -12,6 +12,7 @@
 #include "../../rename.h"
 #include "ExpandableBlockStreamProjectionScan.h"
 #include "../../storage/BlockManager.h"
+#include "../../Executor/ExpanderTracker.h"
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan(State state)
 :state_(state), partition_reader_iterator_(0) {
@@ -78,6 +79,10 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>>>>>>>>>>>>\n");
+		return false;
+	}
 //	return false;
 	allocated_block allo_block_temp;
 	ChunkReaderIterator* chunk_reader_iterator;

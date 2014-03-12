@@ -53,6 +53,12 @@ protected:
 	 */
 	void RegisterNewThreadToAllBarriers();
 
+	/*
+	 * When an expanded thread is about to exit, call this method before exit to remove the count
+	 * in barriers.
+	 */
+	void unregisterNewThreadToAllBarriers();
+
 	void barrierArrive(unsigned barrier_index=0);
 
 protected:

@@ -20,6 +20,7 @@
 #include "Resource/ResourceManagerSlave.h"
 #include "Catalog/Catalog.h"
 #include "BufferManager/BufferManager.h"
+#include "Executor/ExpanderTracker.h"
 
 class Environment {
 public:
@@ -61,6 +62,7 @@ private:
 	BlockManagerMaster* blockManagerMaster_;
 	BlockManager*	blockManager_;
 	BufferManager* bufferManager_;
+	ExpanderTracker* expander_tracker_;
 
 	/**
 	 * TODO: the master and slave pair, such as ResouceManagerMaster and ResourceManagerSlave, should have a

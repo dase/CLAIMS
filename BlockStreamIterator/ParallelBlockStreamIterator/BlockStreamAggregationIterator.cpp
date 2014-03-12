@@ -8,6 +8,7 @@
 #include "BlockStreamAggregationIterator.h"
 #include "../../Debug.h"
 #include "../../rdtsc.h"
+#include "../../Executor/ExpanderTracker.h"
 
 //#define Expand_count 5
 
@@ -53,12 +54,17 @@ BlockStreamAggregationIterator::State::State(
 
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	barrier_.RegisterOneThread();
+	RegisterNewThreadToAllBarriers();
 	state_.child->open(partition_offset);
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		printf("<<<<<<<<<<<<<<<<<Aggregation detected call back signal before constructing hash table!>>>>>>>>>>>>>>>>>\n");
+		unregisterNewThreadToAllBarriers();
+		return true;
+	}
 	cout<<"in the open of aggregation"<<endl;
 #ifdef TIME
 		startTimer(&timer);
 #endif
-	RegisterNewThreadToAllBarriers();
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
 	if(tryEntryIntoSerializedSection(0)){
 		printf("Winning threads!\n");
@@ -330,7 +336,10 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 //		printf("Aggregation consumed %d tuples , %d allocation, %d matched!\n",consumed_tuples,allocated_tuples_in_hashtable,matched_tuples);
 
 
-
+		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+			unregisterNewThreadToAllBarriers();
+			return true;
+		}
 		barrierArrive(1);
 //		barrier_.Arrive();
 //		cout<<"Aggregation hash table is built!\n"<<endl;
@@ -369,6 +378,11 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 }
 
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		unregisterNewThreadToAllBarriers();
+		printf("<<<<<<<<<<<<<<<<<Aggregation next detected call back signal!>>>>>>>>>>>>>>>>>\n");
+		return true;
+	}
         //内存有可能不连续，所以，不能复制整个块
         void *cur_in_ht;
         void *tuple;
