@@ -6,7 +6,7 @@
  */
 #include <iostream>
 #include "BlockStreamExpander.h"
-
+#include "../../Executor/ExpanderTracker.h"
 
 BlockStreamExpander::BlockStreamExpander(State state)
 :state_(state),block_stream_buffer_(0),finished_thread_count_(0){
@@ -37,15 +37,21 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	expanded_thread_list_.clear();
 	for(unsigned i=0;i<state_.thread_count_;i++){
 //		usleep(500000);//test for the random startup properties
-		printf("New expanded thread created!\n");
-		pthread_t tid;
-		const int error=pthread_create(&tid,NULL,expanded_work,this);
-		if(error!=0){
-			std::cout<<"cannot create thread!"<<std::endl;
+		if(createNewThread()==false){
 			return false;
 		}
-		expanded_thread_list_.insert(tid);
 	}
+
+	/**
+	 * The following three lines test set callback status to expanded threads.
+	 */
+//	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
+//	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
+	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*expanded_thread_list_.begin()));
+
+	 	sleep(3);
+	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*expanded_thread_list_.begin()));
+//	}
 	return true;
 }
 
@@ -64,12 +70,11 @@ bool BlockStreamExpander::next(BlockStreamBase* block){
 bool BlockStreamExpander::close(){
 
 	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
-		pthread_cancel(*it);
+//		pthread_cancel(*it);
 		void* res;
 
 		pthread_join(*it,&res);
-		if(res!=PTHREAD_CANCELED)
-			assert(false);
+		assert(res==0);
 //		printf("A expander thread is killed before close!\n");
 	}
 	while(!expanded_thread_list_.empty()){
@@ -95,21 +100,31 @@ void* BlockStreamExpander::expanded_work(void* arg){
 
 	BlockStreamExpander* Pthis=(BlockStreamExpander*)arg;
 	Pthis->state_.child_->open(Pthis->state_.partition_offset);
-	BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
 
-	while(Pthis->state_.child_->next(block_for_asking)){
-		Pthis->block_stream_buffer_->insertBlock(block_for_asking);
-		block_count++;
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//		unregisterNewThreadToAllBarriers();
+		printf("<<<<<<<<<<<<<<<<<Expander detected call back signal!>>>>>>>>>>>>>>>>>\n");
+	}
+	else{
+		BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
+
+		while(Pthis->state_.child_->next(block_for_asking)){
+			Pthis->block_stream_buffer_->insertBlock(block_for_asking);
+			block_count++;
+		}
+		block_for_asking->~BlockStreamBase();
 	}
 	/*TODO: the following increment may need to use atomic add for the thread-safety.*/
 	Pthis->lock_.lock();
 	Pthis->finished_thread_count_++;
 
-	block_for_asking->~BlockStreamBase();
 
 //	printf("Thread %x generated %d blocks.\n",pthread_self(),block_count);
 	Pthis->expanded_thread_list_.erase(pthread_self());
 	Pthis->lock_.unlock();
+
+	/* delete its stauts from expander tracker before exit*/
+	ExpanderTracker::getInstance()->deleteExpandedThreadStatus(pthread_self());
 	return 0;
 
 }
@@ -117,4 +132,15 @@ void* BlockStreamExpander::expanded_work(void* arg){
 bool BlockStreamExpander::ChildExhausted(){
 
 	return finished_thread_count_==state_.thread_count_;
+}
+bool BlockStreamExpander::createNewThread(){
+	printf("New expanded thread created!\n");
+	pthread_t tid;
+	const int error=pthread_create(&tid,NULL,expanded_work,this);
+	if(error!=0){
+		std::cout<<"cannot create thread!"<<std::endl;
+		return false;
+	}
+	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(tid);
+	expanded_thread_list_.insert(tid);
 }

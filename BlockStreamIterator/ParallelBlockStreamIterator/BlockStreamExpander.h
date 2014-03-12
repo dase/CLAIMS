@@ -45,6 +45,7 @@ public:
 private:
 	static void* expanded_work(void* arg);
 	bool ChildExhausted();
+	bool createNewThread();
 
 private:
 	State state_;

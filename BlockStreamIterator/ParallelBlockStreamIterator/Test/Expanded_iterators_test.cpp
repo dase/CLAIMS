@@ -19,6 +19,7 @@
 #include "../../../utility/rdtsc.h"
 #include "../../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamExpander.h"
+#include "../../../Executor/ExpanderTracker.h"
 using namespace std;
 static int expanded_iterators_test(){
 	int master;
@@ -535,6 +536,7 @@ static int expanded_iterators_test(){
 				block->setEmpty();
 			}
 			top->close();
+
 			cout << "filter test: " << i << endl;
 			}
 			printf("Terminate(0) or continue(others)?\n");

@@ -79,6 +79,13 @@ void ExpandableBlockStreamIteratorBase::RegisterNewThreadToAllBarriers(){
 		barrier_[i].RegisterOneThread();
 	}
 }
+
+void ExpandableBlockStreamIteratorBase::unregisterNewThreadToAllBarriers(){
+	for(unsigned i=0;i<number_of_barrier_;i++){
+		barrier_[i].UnregisterOneThread();
+	}
+}
+
 void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
 	assert(barrier_index<number_of_barrier_);
 	barrier_[barrier_index].Arrive();

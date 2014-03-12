@@ -51,6 +51,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	iteratorExecutorSlave=new IteratorExecutorSlave();
 
 	exchangeTracker =new ExchangeTracker();
+	ExpanderTracker::getInstance();
 }
 
 Environment::~Environment() {
