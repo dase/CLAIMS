@@ -90,3 +90,31 @@ void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
 	assert(barrier_index<number_of_barrier_);
 	barrier_[barrier_index].Arrive();
 }
+void ExpandableBlockStreamIteratorBase::destoryAllContext(){
+	for(boost::unordered_map<pthread_t,thread_context>::iterator it=context_list_.begin();it!=context_list_.end();it++){
+		it->second.block_for_asking_->~BlockStreamBase();
+		it->second.iterator_->~BlockStreamTraverseIterator();
+		context_list_.erase(it);
+	}
+}
+void ExpandableBlockStreamIteratorBase::initContext(const Schema* const &  schema, const unsigned& blocksize){
+	context_lock_.acquire();
+	/* assert that no context is available for current thread*/
+	assert(context_list_.find(pthread_self())==context_list_.cend());
+
+	thread_context tc;
+	tc.block_for_asking_=BlockStreamBase::createBlock(schema,blocksize);
+	tc.iterator_=tc.block_for_asking_->createIterator();
+	assert(tc.iterator_->currentTuple()==0);
+	context_list_[pthread_self()]=tc;
+//	printf("Thread %lx is inited!\n",pthread_self());
+	context_lock_.release();
+}
+thread_context& ExpandableBlockStreamIteratorBase::getContext(){
+	context_lock_.acquire();
+	assert(context_list_.find(pthread_self())!=context_list_.cend());
+	thread_context& ret= context_list_[pthread_self()];
+//	printf("Thread %lx is poped!\n",pthread_self());
+	context_lock_.release();
+	return ret;
+}
