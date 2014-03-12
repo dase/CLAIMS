@@ -308,9 +308,6 @@ public:
 	bool greate(const void*& a, const void*& b)const{
 		return *(double*)a>*(double*)b;
 	}
-	bool greate(const void*& a, const void*& b)const{
-		return *(double*)a>*(double*)b;
-	}
 	int compare(const void* a,const void* b)const{
 		return *(double*)a-*(double*)b;
 	}
