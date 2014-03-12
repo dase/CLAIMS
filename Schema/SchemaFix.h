@@ -20,7 +20,7 @@ public:
 	SchemaFix(const SchemaFix& r);
 	SchemaFix(){};
 	virtual ~SchemaFix();
-	inline unsigned getTupleMaxSize();
+	inline unsigned getTupleMaxSize() const;
 	inline unsigned getTupleActualSize(void* tuple) const{
 		return totalsize;
 	}
@@ -43,7 +43,7 @@ public:
 		memcpy(desc,src,totalsize);
 		return totalsize;
 	}
-	inline Schema::schema_type getSchemaType(){
+	inline Schema::schema_type getSchemaType()const{
 		return Schema::fixed;
 	}
 	Schema* getSubSchema(std::vector<unsigned>)const;
