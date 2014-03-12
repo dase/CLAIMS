@@ -47,10 +47,10 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	 */
 //	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
 //	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
-	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*expanded_thread_list_.begin()));
+	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*expanded_thread_list_.begin()));
 
-	 	sleep(3);
-	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*expanded_thread_list_.begin()));
+	sleep(3);
+	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*expanded_thread_list_.begin()));
 //	}
 	return true;
 }
