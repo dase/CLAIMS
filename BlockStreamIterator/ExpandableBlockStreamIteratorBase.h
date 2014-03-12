@@ -11,8 +11,13 @@
 
 #include "BlockStreamIteratorBase.h"
 #include "../utility/synch.h"
+struct thread_context{
+	BlockStreamBase* block_for_asking_;
+	BlockStreamBase::BlockStreamTraverseIterator* iterator_;
+};
 class ExpandableBlockStreamIteratorBase: public BlockStreamIteratorBase {
 public:
+
 	ExpandableBlockStreamIteratorBase(unsigned number_of_barrier=1,unsigned number_of_seriliazed_section=1);
 	virtual ~ExpandableBlockStreamIteratorBase();
 	/**
@@ -61,6 +66,10 @@ protected:
 
 	void barrierArrive(unsigned barrier_index=0);
 
+	void initContext(const Schema* const &  schema, const unsigned& blocksize);
+	thread_context& getContext();
+	void destoryAllContext( );
+
 protected:
 	/* the return value of open() */
 	volatile bool open_ret_;
@@ -77,6 +86,10 @@ protected:
 
 	unsigned number_of_barrier_;
 	unsigned number_of_seriliazed_section_;
+
+
+	boost::unordered_map<pthread_t,thread_context> context_list_;
+	Lock context_lock_;
 
 private:
 	friend class boost::serialization::access;
