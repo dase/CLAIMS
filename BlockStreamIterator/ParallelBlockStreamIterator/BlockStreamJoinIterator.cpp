@@ -6,7 +6,7 @@
  */
 
 #include "BlockStreamJoinIterator.h"
-
+#include "../../Executor/ExpanderTracker.h"
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),reached_end(0){
 //	sema_open_.set_value(1);
@@ -155,13 +155,19 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		bsb->setEmpty();
 		bsti->~BlockStreamTraverseIterator();
 	}
-	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
+//	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
 	BasicHashTable::Iterator it=hashtable->CreateIterator();
 	unsigned tmp=0;
 	tuples_in_hashtable=0;
 
 	produced_tuples=0;
 	consumed_tuples_from_right=0;
+
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		unregisterNewThreadToAllBarriers();
+		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
+		return true;
+	}
 
 	barrierArrive();
 
@@ -171,7 +177,10 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 }
 
 bool BlockStreamJoinIterator::next(BlockStreamBase *block){
-
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		printf("<<<<<<<<<<<<<<<<<Join Next detected call back signal!>>>>>>>>>>>>>>>>>\n");
+		return false;
+	}
 	unsigned bn;
 	void *result_tuple;
 	void *tuple_from_right_child;
