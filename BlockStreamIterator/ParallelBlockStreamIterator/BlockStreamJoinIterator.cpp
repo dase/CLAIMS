@@ -86,6 +86,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
 		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
 		broadcaseOpenFinishedSignal();
+		consumed_tuples_from_left=0;
 	}else{
 		waitForOpenFinished();
 	}
@@ -110,7 +111,9 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 		bsti->reset();
 		while(cur=bsti->nextTuple()){
+			lock_.acquire();
 			consumed_tuples_from_left++;
+			lock_.release();
 //
 //			if(state_.ht_schema->getncolumns()>20)
 //			state_.ht_schema->displayTuple(cur,"|B|"); ///for debug
@@ -171,16 +174,14 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 	barrierArrive();
 
+	printf("join open consume %d tuples\n",consumed_tuples_from_left);
+
 	state_.child_right->open(partition_offset);
 
 	return true;
 }
 
 bool BlockStreamJoinIterator::next(BlockStreamBase *block){
-	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		printf("<<<<<<<<<<<<<<<<<Join Next detected call back signal!>>>>>>>>>>>>>>>>>\n");
-		return false;
-	}
 	unsigned bn;
 	void *result_tuple;
 	void *tuple_from_right_child;
@@ -239,8 +240,6 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 			if(block->Empty()==true){
 				AtomicPushFreeBlockStream(rb.bsb_right_);
 				free(joinedTuple);
-//				printf("****join next produces %d tuples while consumed %d tuples from right child and %d tuples from left, hash table has %d tuples\n",produced_tuples,consumed_tuples_from_right,consumed_tuples_from_left,tuples_in_hashtable);
-//				rb.bsb_right_->~BlockStreamBase();
 				return false;
 			}
 			else{
