@@ -36,7 +36,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamExpander::State expander_state;
 	expander_state.block_count_in_buffer_=10;
 	expander_state.block_size_=block_size;
-	expander_state.thread_count_=Thread_Count;
+	expander_state.init_thread_count_=Thread_Count;
 	expander_state.child_=child_iterator;
 	expander_state.schema_=getSchema(dataflow.attribute_list_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);

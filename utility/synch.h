@@ -103,6 +103,9 @@ public:
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nThreads--;
 		assert(m_nThreads>=0);
+		if(m_nThreads==m_nSyncCount){
+			pthread_cond_broadcast(&m_cv_SyncCV);
+		}
 		pthread_mutex_unlock(&m_l_SyncLock);
 	}
 

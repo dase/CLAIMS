@@ -10,6 +10,8 @@
 
 #include <pthread.h>
 #include <boost/unordered_map.hpp>
+#include <map>
+#include "../utility/synch.h"
 typedef pthread_t expanded_thread_id;
 
 struct ExpandedThreadStatus{
@@ -42,17 +44,20 @@ public:
 	/*
 	 * Call this method if you want to callback the expanded thread specified
 	 * by the expanded thread id. Return false if the thread id does not exists
-	 * in expander tracker.
+	 * in expander tracker or the thread has be called back.
 	 */
 	bool callbackExpandedThread(expanded_thread_id id);
 private:
 	ExpanderTracker();
 private:
 	static ExpanderTracker* instance_;
+
+	Lock lock_;
 	/*
 	 * A unordered map from expanded thread id to expanded thread status
 	 */
-	boost::unordered_map<expanded_thread_id,ExpandedThreadStatus> id_to_status_;
+public://for debug, this should be private!
+	std::map<expanded_thread_id,ExpandedThreadStatus> id_to_status_;
 };
 
 #endif /* EXPANDERTRACKER_H_ */

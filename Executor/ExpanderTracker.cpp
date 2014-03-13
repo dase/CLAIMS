@@ -6,6 +6,7 @@
  */
 
 #include "ExpanderTracker.h"
+#include <stdio.h>
 ExpanderTracker* ExpanderTracker::instance_=0;
 ExpanderTracker::ExpanderTracker() {
 	// TODO Auto-generated constructor stub
@@ -23,32 +24,54 @@ ExpanderTracker* ExpanderTracker::getInstance(){
 	return instance_;
 }
 bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id){
-
-	if(id_to_status_.find(id)==id_to_status_.cend()){
+	lock_.acquire();
+	if(id_to_status_.find(id)==id_to_status_.end()){
 		ExpandedThreadStatus status;
 		status.call_back_=false;
 		id_to_status_[id]=status;
+//		printf("[ExpanderTracker]: %lx is registered!\n",id);
+		lock_.release();
 		return true;
 	}
+	assert(false);
+	lock_.release();
 	return false;
 }
 bool ExpanderTracker::deleteExpandedThreadStatus(expanded_thread_id id){
-	if(id_to_status_.find(id)!=id_to_status_.cend()){
+	lock_.acquire();
+	if(id_to_status_.find(id)!=id_to_status_.end()){
 		id_to_status_.erase(id);
+//		printf("[ExpanderTracker]: %lx is delete!\n",id);
+		lock_.release();
 		return true;
 	}
+	assert(false);
+	lock_.release();
 	return false;
 }
 bool ExpanderTracker::isExpandedThreadCallBack(expanded_thread_id id){
-	if(id_to_status_.find(id)!=id_to_status_.cend()){
-		return id_to_status_[id].call_back_;
+	lock_.acquire();
+	if(id_to_status_.find(id)!=id_to_status_.end()){
+		bool ret= id_to_status_[id].call_back_;
+		lock_.release();
+		return ret;
 	}
+	lock_.release();
 	return false;
 }
 bool ExpanderTracker::callbackExpandedThread(expanded_thread_id id){
-	if(id_to_status_.find(id)!=id_to_status_.cend()){
-		id_to_status_[id].call_back_=true;
-		return true;
+	lock_.acquire();
+	if(id_to_status_.find(id)!=id_to_status_.end()){
+		if(id_to_status_[id].call_back_==true){
+			lock_.release();
+			return false;
+		}
+		else{
+			id_to_status_[id].call_back_=true;
+			lock_.release();
+			return true;
+		}
 	}
+	lock_.release();
 	return false;
 }
