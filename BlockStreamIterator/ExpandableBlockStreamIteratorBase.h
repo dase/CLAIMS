@@ -11,10 +11,14 @@
 
 #include "BlockStreamIteratorBase.h"
 #include "../utility/synch.h"
+#include "../hashtable.h"
 struct thread_context{
 	BlockStreamBase* block_for_asking_;
-	BlockStreamBase::BlockStreamTraverseIterator* iterator_;
+	BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+	BasicHashTable::Iterator hashtable_iterator_;
 };
+typedef int barrier_number;
+typedef int serialized_section_number;
 class ExpandableBlockStreamIteratorBase: public BlockStreamIteratorBase {
 public:
 
@@ -68,7 +72,16 @@ protected:
 
 	void initContext(const Schema* const &  schema, const unsigned& blocksize);
 	thread_context& getContext();
+
+	/*
+	 * This method is called when a thread wants its and all the others' context
+	 */
 	void destoryAllContext( );
+
+	/*
+	 * This method is call when a thread wants to destroy its own context
+	 */
+	void destorySelfContext();
 
 protected:
 	/* the return value of open() */

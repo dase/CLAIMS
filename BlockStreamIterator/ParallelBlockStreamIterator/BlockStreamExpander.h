@@ -24,7 +24,7 @@ public:
 	public:
 		Schema* schema_;
 		BlockStreamIteratorBase* child_;
-		unsigned thread_count_;
+		unsigned init_thread_count_;
 		unsigned block_size_;
 		unsigned block_count_in_buffer_;
 		PartitionOffset partition_offset;
@@ -32,7 +32,7 @@ public:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ & thread_count_ & block_size_ & block_count_in_buffer_;
+			ar & schema_ & child_ & init_thread_count_ & block_size_ & block_count_in_buffer_;
 		}
 	};
 	BlockStreamExpander(State state);
@@ -44,15 +44,41 @@ public:
 	void print();
 private:
 	static void* expanded_work(void* arg);
+	static void* coordinate_work(void* arg);
 	bool ChildExhausted();
 	bool createNewThread();
+	void callBackThread(pthread_t pid);
 
+	void addIntoInWorkingExpandedThreadList(pthread_t pid);
+	bool removeFromInWorkingExpandedThreadList(pthread_t pid);
+
+	void addIntoBeingCalledBackExpandedThreadList(pthread_t pid);
+	void removeFromBeingCalledBackExpandedThreadList(pthread_t pid);
 private:
 	State state_;
-	std::set<pthread_t> expanded_thread_list_;
+
+	/*
+	 * The set of threads that are working normally.
+	 */
+	std::set<pthread_t> in_work_expanded_thread_list_;
+
+	pthread_t coordinate_pid_;
+
+	/*
+	 * The set of threads that have been called back but have not
+	 * finished the remaining work yet.
+	 */
+	std::set<pthread_t> being_called_bacl_expanded_thread_list_;
+
 	BlockStreamBuffer* block_stream_buffer_;
 	volatile unsigned finished_thread_count_;
-	SpineLock lock_;
+	volatile unsigned thread_count_;
+
+	/*
+	 * whether at least one work thread has successfully finished!
+	 */
+	volatile bool working_thread_successful_;
+	Lock lock_;
 	/*
 	 * The following code is for boost serialization.
 	 */
