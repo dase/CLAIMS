@@ -80,7 +80,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>>>>>>>>>>>>\n");
+//		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>>>>>>>>>>>>\n");
 		return false;
 	}
 //	return false;

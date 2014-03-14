@@ -81,7 +81,7 @@ void Environment::InitializeEndPoint(){
 //	std::string endpoint_port=(const char*)cfg.lookup("port");
 	std::string endpoint_ip=ip;
 	int endpoint_port;
-	if((endpoint_port=portManager->applyPort())==0){
+	if((endpoint_port=portManager->applyPort())==-1){
 		logging_->elog("The ports in the PortManager is exhausted!");
 	}
 	port=endpoint_port;

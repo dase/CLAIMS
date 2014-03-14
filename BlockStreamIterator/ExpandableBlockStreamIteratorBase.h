@@ -65,8 +65,9 @@ protected:
 	/*
 	 * When an expanded thread is about to exit, call this method before exit to remove the count
 	 * in barriers.
+	 * Please note that
 	 */
-	void unregisterNewThreadToAllBarriers();
+	void unregisterNewThreadToAllBarriers(unsigned barrier_index=0);
 
 	void barrierArrive(unsigned barrier_index=0);
 

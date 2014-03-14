@@ -514,10 +514,10 @@ static int expanded_iterators_test(){
 
 
 //		filter_1->getDataflow();
-		LogicalOperator* target=filter_1;
+		LogicalOperator* target=aggregation;
 		executable_query_plan=target->getIteratorTree((1024*64-sizeof(unsigned)));
 
-		BlockStreamExpander::State expander_state(target->getDataflow().getSchema(),executable_query_plan,20,1024*64-sizeof(unsigned));
+		BlockStreamExpander::State expander_state(target->getDataflow().getSchema(),executable_query_plan,500,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
 		BlockStreamPerformanceMonitorTop::State perf_state(target->getDataflow().getSchema(),expander,1024*64-

@@ -138,7 +138,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		block_for_asking->~BlockStreamBase();
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
-			printf("<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",pthread_self);
+			printf("<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",pthread_self());
 			Pthis->removeFromBeingCalledBackExpandedThreadList(pthread_self());
 		}
 		else{
@@ -160,7 +160,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 
 	/* delete its stauts from expander tracker before exit*/
 	ExpanderTracker::getInstance()->deleteExpandedThreadStatus(pthread_self());
-	printf("One expande thread finished!\n");
+//	printf("One expande thread finished!\n");
 	return 0;
 
 }

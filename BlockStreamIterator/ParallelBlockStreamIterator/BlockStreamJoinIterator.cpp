@@ -152,7 +152,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	consumed_tuples_from_right=0;
 
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		unregisterNewThreadToAllBarriers();
+		unregisterNewThreadToAllBarriers(1);
 		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
 		return true;
 	}
