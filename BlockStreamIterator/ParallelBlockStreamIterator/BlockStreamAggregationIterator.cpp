@@ -250,10 +250,10 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		}
 	}
 
-		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-			unregisterNewThreadToAllBarriers();
-			return true;
-		}
+//		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//			unregisterNewThreadToAllBarriers(1);
+//			return true;
+//		}
 		barrierArrive(1);
 
 		if(tryEntryIntoSerializedSection(1)){
@@ -272,9 +272,9 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
  */
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		unregisterNewThreadToAllBarriers();
+		unregisterNewThreadToAllBarriers(3);
 		printf("<<<<<<<<<<<<<<<<<Aggregation next detected call back signal!>>>>>>>>>>>>>>>>>\n");
-		return true;
+		return false;
 	}
 	void *cur_in_ht;
 	void *tuple;
