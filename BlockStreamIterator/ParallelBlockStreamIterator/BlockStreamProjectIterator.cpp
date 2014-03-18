@@ -157,6 +157,10 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 			memcpy(tuple,&result.content.data.value._float,length);
 			break;
 		}
+		case t_u_long:{
+			memcpy(tuple,&result.content.data.value._ulong,length);
+			break;
+		}
 		default:{
 			cout<<"missing the operator!!!"<<endl;
 			break;
