@@ -15,6 +15,10 @@
 #include "../../Block/DynamicBlockBuffer.h"
 #include "../../rdtsc.h"
 
+#include <algorithm>
+#include <iterator>
+using namespace std;
+
 class BlockStreamSortIterator:public BlockStreamIteratorBase{
 public:
 	class State{
@@ -49,6 +53,9 @@ private:
 	void swap(void *& desc,void *& src);
 	//TODO:	just quick sort, and maybe other sort algorithms
 	void cqsort(int front,int end,Operate *);
+	//statble sort of stl
+	void cssort();
+	bool compare(const void *&,const void *&);
 	void order(unsigned column,unsigned tuple_count);
 	bool createBlockStream(BlockStreamBase*&)const;
 

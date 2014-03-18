@@ -79,10 +79,20 @@ void BlockStreamSortIterator::cqsort(int left,int right,Operate* op){
 
 }
 
+void BlockStreamSortIterator::cssort(){
+	stable_sort(secondaryArray.begin(),secondaryArray.end(),compare);
+}
+
+bool BlockStreamSortIterator::compare(const void *&a,const void *&b){
+//	BlockStreamSortIterator *pthis=(BlockStreamSortIterator*)args;
+	return state_.input_->getColumnAddess(state_.orderbyKey_,a)<state_.input_->getColumnAddess(state_.orderbyKey_,b);
+}
+
 void BlockStreamSortIterator::order(unsigned column,unsigned tuple_count){
 	/* tranverse the buffer and apply the space to store the secondaryArray*/
     Operate *op_=state_.input_->getcolumn(state_.orderbyKey_).operate->duplicateOperator();
-	cqsort(0,tuple_count-1,op_);
+//	cqsort(0,tuple_count-1,op_);
+	cssort();
 }
 
 bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
