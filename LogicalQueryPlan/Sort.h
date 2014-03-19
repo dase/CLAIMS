@@ -24,7 +24,7 @@ public:
 		const char *attr_;
 	};
 
-	LogicalSort(LogicalOperator *child, OrderByAttr *oba);
+	LogicalSort(LogicalOperator *child, vector<OrderByAttr*> oba);
 	virtual ~LogicalSort();
 
 	Dataflow getDataflow();
@@ -36,7 +36,7 @@ public:
 	virtual void print(int level=0)const{};
 
 private:
-	OrderByAttr *oba_;
+	vector<OrderByAttr*> oba_;
 	Dataflow dataflow_;
 	LogicalOperator *child_;
 };

@@ -7,7 +7,7 @@
 
 #include "Sort.h"
 
-LogicalSort::LogicalSort(LogicalOperator *child, OrderByAttr *oba)
+LogicalSort::LogicalSort(LogicalOperator *child, vector<OrderByAttr*> oba)
 :child_(child),oba_(oba){
 
 }
@@ -27,7 +27,9 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize)
 	BlockStreamSortIterator::State state;
 	state.block_size_=blocksize;
 	state.child_=child;
-	state.orderbyKey_=getOrderByKey(oba_->tbl_,oba_->attr_);
+	for(unsigned i=0;i<oba_.size();i++){
+		state.orderbyKey_.push_back(getOrderByKey(oba_[i]->tbl_,oba_[i]->attr_));
+	}
 	state.input_=getSchema(dataflow_.attribute_list_);
 	return new BlockStreamSortIterator(state);
 }

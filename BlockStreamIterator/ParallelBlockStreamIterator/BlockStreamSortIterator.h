@@ -30,7 +30,7 @@ public:
 		//TODO: fixed and varible schema both needed!
 		Schema* input_;
 		//TODO:	orderby key can be any one of the column
-		unsigned orderbyKey_;
+		vector<unsigned> orderbyKey_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 		PartitionOffset partition_offset_;
@@ -42,6 +42,13 @@ public:
 		}
 	};
 
+	typedef struct SNode{
+		State *state_;
+		void * tuple;
+		Operate *op;
+		int orderKey;
+	}SNode;
+
 	BlockStreamSortIterator();
 	BlockStreamSortIterator(State state);
 	virtual ~BlockStreamSortIterator();
@@ -49,14 +56,15 @@ public:
 	bool next(BlockStreamBase* block);
 	bool close();
 
+	void cssort();
+
 private:
 	void swap(void *& desc,void *& src);
 	//TODO:	just quick sort, and maybe other sort algorithms
 	void cqsort(int front,int end,Operate *);
-	//statble sort of stl
-	void cssort();
-	bool compare(const void *&,const void *&);
+	static bool compare(const SNode *,const SNode *);
 	void order(unsigned column,unsigned tuple_count);
+	void order();
 	bool createBlockStream(BlockStreamBase*&)const;
 
 private:
@@ -76,7 +84,7 @@ private:
 	semaphore sema_open_finished_;
 	//TODO: use malloc to get the continuous memory
 	vector<void *> secondaryArray;
-
+	vector<SNode *> secondaryArray_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -153,7 +161,6 @@ private:
 //	unsigned finished_thread_count_;
 //	unsigned registered_thread_count_;
 //	semaphore sema_open_;
-//	Lock threadsMutex;
 //
 //	int swap_num;
 //	unsigned temp_cur;
