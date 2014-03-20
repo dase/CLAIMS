@@ -44,7 +44,7 @@ int main(){
 //	return ResultCollect_test();
 //	return parser_test();
 //	return sub_tuple_test();
-//	return aggregation_test();
+	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics();
 //	return sort_iterator_test();
@@ -59,7 +59,7 @@ int main(){
 	//return testSort();
 //	return testProject_wl();
 //	return Project_test();
-	return expanded_iterators_test();
+//	return expanded_iterators_test();
 
 //	return testSort();
 //	return load_test();

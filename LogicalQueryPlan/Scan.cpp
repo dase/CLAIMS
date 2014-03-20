@@ -95,7 +95,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 	/* In the current implementation, all the attributes within the involved projection
 	 * are read.
 	 * TODO: Ideally, the columns in one projection are stored separately and only the
-	 * needed columns are touch for a given query.
+	 * needed columns are touched for a given query.
 	 */
 	ExpandableBlockStreamProjectionScan::State state;
 	state.block_size_=block_size;
