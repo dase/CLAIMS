@@ -510,6 +510,7 @@ static int aggregation_test(){
 //		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 		std::vector<Attribute> aggregation_attributes;
+		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
 //		aggregation_attributes.push_back(table_1->getAttribute("trade_date"));
@@ -521,24 +522,25 @@ static int aggregation_test(){
 //		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
-//		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //		aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
+////
+//		std::vector<Attribute> aggregation_attributes_1;
+//		aggregation_attributes_1.push_back(table_1->getAttribute("sec_code"));
+//		aggregation_attributes_1.push_back(Attribute(ATTRIBUTE_ANY));
+//		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function_1;
+//		aggregation_function_1.push_back(BlockStreamAggregationIterator::State::count);
 //
-		std::vector<Attribute> aggregation_attributes_1;
-		aggregation_attributes_1.push_back(Attribute(ATTRIBUTE_ANY));
-		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function_1;
-		aggregation_function_1.push_back(BlockStreamAggregationIterator::State::count);
-
-		LogicalOperator* aggregation_1=new Aggregation(std::vector<Attribute>(),aggregation_attributes_1,aggregation_function_1,aggregation);
+//		LogicalOperator* aggregation_1=new Aggregation(std::vector<Attribute>(),aggregation_attributes_1,aggregation_function_1,cj_join_key_scan);
 
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation_1,LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PRINT);
 		unsigned long long int timer_start=curtick();
 		root->print();
 
