@@ -91,7 +91,7 @@ bool BlockStreamExpander::close(){
 	assert(being_called_bacl_expanded_thread_list_.empty());
 	finished_thread_count_=0;
 
-	assert(ExpanderTracker::getInstance()->id_to_status_.size()==0);
+//	assert(ExpanderTracker::getInstance()->id_to_status_.size()==0);
 	block_stream_buffer_->~BlockStreamBuffer();
 
 	state_.child_->close();
@@ -160,7 +160,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 
 	/* delete its stauts from expander tracker before exit*/
 	ExpanderTracker::getInstance()->deleteExpandedThreadStatus(pthread_self());
-//	printf("One expande thread finished!\n");
+	printf("One expande thread finished!\n");
 	return 0;
 
 }
@@ -253,27 +253,27 @@ void BlockStreamExpander::removeFromBeingCalledBackExpandedThreadList(pthread_t 
 	lock_.release();
 }
 void* BlockStreamExpander::coordinate_work(void* arg){
-	printf("coordinate thread is created!!!!!!!!!!!!!\n");
-	BlockStreamExpander* pthis=static_cast<BlockStreamExpander*>(arg);
-	while(!pthis->ChildExhausted()){
-		if(rand()%100>50){
-			pthis->createNewThread();
-		}
-		else{
-			if(pthis->in_work_expanded_thread_list_.size()<=1){
-//				printf("Coordiante: this is the last working thread, cannot be called back!\n");
-				continue;
-			}
-			int drop_thread_index=rand()%pthis->in_work_expanded_thread_list_.size();
-			std::set<pthread_t>::iterator it=pthis->in_work_expanded_thread_list_.begin();
-			for(unsigned i=0;i!=drop_thread_index;i++){
-				it++;
-			}
-			pthis->callBackThread(*it);
-		}
-		usleep(10000);
-		printf("%d thread in expander\n",pthis->in_work_expanded_thread_list_.size());
-//		break;
-	}
-	printf("coordinate thread is terminated!!!!!!!!!!!!!\n");
+//	printf("coordinate thread is created!!!!!!!!!!!!!\n");
+//	BlockStreamExpander* pthis=static_cast<BlockStreamExpander*>(arg);
+//	while(!pthis->ChildExhausted()){
+//		if(rand()%100>50){
+//			pthis->createNewThread();
+//		}
+//		else{
+//			if(pthis->in_work_expanded_thread_list_.size()<=1){
+////				printf("Coordiante: this is the last working thread, cannot be called back!\n");
+//				continue;
+//			}
+//			int drop_thread_index=rand()%pthis->in_work_expanded_thread_list_.size();
+//			std::set<pthread_t>::iterator it=pthis->in_work_expanded_thread_list_.begin();
+//			for(unsigned i=0;i!=drop_thread_index;i++){
+//				it++;
+//			}
+//			pthis->callBackThread(*it);
+//		}
+//		usleep(10000);
+//		printf("%d thread in expander\n",pthis->in_work_expanded_thread_list_.size());
+////		break;
+//	}
+//	printf("coordinate thread is terminated!!!!!!!!!!!!!\n");
 }

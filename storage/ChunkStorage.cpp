@@ -56,7 +56,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 //					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
 					if(chunk_info.length<=0){
 						/*chunk_info.length<=0 means that either the file does not exist or
-						 * the current chunk_id exceed the actual size of the file.						 *
+						 * the current chunk_id exceeds the actual size of the file.						 *
 						 */
 						BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(chunk_id_);
 						ret=0;
