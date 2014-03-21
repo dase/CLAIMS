@@ -22,7 +22,7 @@ typedef unsigned AttributeOffset;
 typedef int ProjectionOffset;
 typedef unsigned ColumnOffset;
 typedef unsigned PartitionOffset;
-typedef unsigned ChunkOffset;
+typedef int ChunkOffset;
 
 /*the following ids are based on the assumption that the TableOffset is globally unique.*/
 
@@ -121,10 +121,10 @@ struct PartitionID{
 		std::ostringstream str;
 
 //		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-		str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+//		str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 
-		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-		str<<"/home/imdb/data/wangli/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+//		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+		str<<"/home/imdb/data/dsc/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 //		str<<"/home/imdb/data/wangli/T"<<partition_off;
 		return str.str();
 	}

@@ -117,7 +117,7 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_datetime,t_datetime)]=greatEqual<ptime,ptime>;
 	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<NValue*,NValue*>;
 
-	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
+	funs_GEQ[Comparator::Pair(t_u_long,t_u_long)]=greatEqual<unsigned long,unsigned long>;
 }
 void Comparator::initialize_EQ()
 {

@@ -35,6 +35,10 @@
 #include "../Loader/test_load.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
 
+#include "../IndexManager/Test/test_csb_classes.cpp"
+#include "../IndexManager/Test/test_csb_indexing.cpp"
+#include "../IndexManager/Test/test_CSB_index_building.cpp"
+
 int main(){
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -52,17 +56,20 @@ int main(){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 //	return daemon_test();
-//	testServerClient();
+//	return testServerClient();
 //	return test_data_type();
 //	return test_expression_item();
 //	return testProject();
-	return testSort();
+//	return testSort();
 //	return testProject_wl();
 //	return Project_test();
 //	return expanded_iterators_test();
 
-	return load_test();
-
+//	return load_test();
 //	return in_iterator_test();
+
+//	return test_csb_classes();
+//	return test_csb_indexing();
+	return test_CSBIndexBuilding();
 
 }

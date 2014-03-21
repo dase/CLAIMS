@@ -8,8 +8,8 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#define COOR "/home/imdb/config/zhanglei/coor.conf"
-#define CONFIG "/home/imdb/config/zhanglei/config"
+#define COOR "/home/imdb/config/dsc/coor.conf"
+#define CONFIG "/home/imdb/config/dsc/config"
 //#define CONFIG_SAME "/home/imdb/config/config"
 
 /*
