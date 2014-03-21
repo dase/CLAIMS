@@ -133,6 +133,14 @@ bool Partitioner::allPartitionBound()const{
 	}
 	return true;
 }
+vector<PartitionID> Partitioner::getPartitionIDList()
+{
+	vector<PartitionID> ret;
+	ret.clear();
+	for (vector<PartitionInfo*>::iterator iter = partition_info_list.begin(); iter != partition_info_list.end(); iter++)
+		ret.push_back((*iter)->partition_id_);
+	return ret;
+}
 bool OneToOnePartitionInfo::is_colocated(const PartitionInfo & target)const{
 	if(target.get_mode()==OneToMany)
 		return false;

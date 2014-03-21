@@ -9,12 +9,13 @@
 #define EXPANDABLEBLOCKSTREAMFILTER_H_
 #include <list>
 #include "../BlockStreamIteratorBase.h"
+#include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../Schema/Schema.h"
 #include "../../Comparator.h"
 #include "../../iterator/FilterIterator.h"
 #include "../../Block/BlockStream.h"
 #include "../../Block/synch.h"
-class ExpandableBlockStreamFilter:public BlockStreamIteratorBase {
+class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
 
 	/* struct to hold the remaining data when the next is returned but the block from the child

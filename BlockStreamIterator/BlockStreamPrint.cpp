@@ -22,11 +22,7 @@ BlockStreamPrint::~BlockStreamPrint() {
 }
 bool BlockStreamPrint::open(const PartitionOffset& offset){
 	block_buffer_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
-<<<<<<< HEAD
-	tuple_count_=0;
-=======
-	tuple_count = 0;
->>>>>>> before fetch li's branch
+	tuple_count_ = 0;
 	return state_.child_->open(offset);
 
 }
@@ -62,7 +58,7 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 bool BlockStreamPrint::close(){
 	printf("tuple count:%d\n",tuple_count_);
 	block_buffer_->~BlockStreamBase();
-	cout << "----------total tuples: " << tuple_count << "----------\n";
+	cout << "----------total tuples: " << tuple_count_ << "----------\n";
 	return state_.child_->close();
 }
 void BlockStreamPrint::print(){
