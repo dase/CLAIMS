@@ -1,26 +1,19 @@
 /*
- * test_CSB_index_building.cpp
+ * test_logical_csb_index_building.cpp
  *
- *  Created on: Mar 19, 2014
+ *  Created on: Mar 21, 2014
  *      Author: scdong
  */
 
-#include <vector>
-#include <iostream>
-#include <stdio.h>
+#include "../LogicalCSBIndexBuilding.h"
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
-#include "../../Catalog/table.h"
-#include "../CSBIndexBuilding.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-using namespace std;
+#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 
-static int test_CSBIndexBuilding ()
+static int test_logical_csb_index_building()
 {
 	int master;
-	//	cout<<"Master(0) or Slave(others)"<<endl;
-//		cin>>master;
 		printf("~!OKOKO!!!!!\n");
 		printf("Master(0) or Slave(others)??\n");
 		scanf("%d",&master);
@@ -64,7 +57,7 @@ static int test_CSBIndexBuilding ()
 			cj_proj0_index.push_back(4);
 			cj_proj0_index.push_back(5);
 			const int partition_key_index_1=2;
-			table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
+			table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);	//G0
 //			vector<ColumnOffset> cj_proj1_index;
 //			cj_proj1_index.push_back(0);
 //			cj_proj1_index.push_back(6);
@@ -176,66 +169,18 @@ static int test_CSBIndexBuilding ()
 //			}
 			/////////////////////////////////////////
 
-			ProjectionBinding *pb=new ProjectionBinding();
-			pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner());
-
 			printf("ready(?)\n");
 			int input;
 			scanf("%d",&input);
 
-			vector<column_type> blc_column_list;
-			blc_column_list.push_back(column_type(t_u_long));
-			blc_column_list.push_back(column_type(t_int));
-			blc_column_list.push_back(column_type(t_u_long));
-			blc_column_list.push_back(column_type(t_int));		//sec_code for indexing
-			blc_column_list.push_back(column_type(t_int));
-			blc_column_list.push_back(column_type(t_int));
+			LogicalOperator* csb_building = new LogicalCSBIndexBuilding(table_1->getProjectoin(0)->getProjectionID(), table_1->getAttribute(3));
+			const NodeID collector_node_id=0;
+			LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::PRINT);
+			root->print();
+			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
+			executable_query_plan->print();
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 
-/*for testing the original data*/
-//			Schema* ps_schema = new SchemaFix(blc_column_list);
-//			ExpandableBlockStreamProjectionScan::State ps_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), ps_schema, 64*1024);
-//			ExpandableBlockStreamIteratorBase* ps = new ExpandableBlockStreamProjectionScan(ps_state);
-//			ps->open();
-//			BlockStreamBase* block = BlockStreamBase::createBlockWithDesirableSerilaizedSize(ps_schema, 64*1024);
-//			void* tuple;
-//			while (ps->next(block))
-//			{
-//				BlockStreamBase::BlockStreamTraverseIterator* iterator = block->createIterator();
-//				while((tuple = iterator->nextTuple()) != 0)
-//				{
-//					ps_schema->displayTuple(tuple, " | ");
-//					sleep(1);
-//				}
-//
-//			}
-//			ps->close();
-/*for testing the original data*/
-
-
-			Schema* blc_schema = new SchemaFix(blc_column_list);
-			unsigned block_size = 64*1024;
-			bottomLayerCollecting::State blc_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, 3, block_size);
-//			ExpandableBlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
-			BlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
-
-			vector<column_type> bls_column_list;
-			bls_column_list.push_back(t_int);	//chunk offset
-			bls_column_list.push_back(t_int);			//sec_code
-			bls_column_list.push_back(t_u_smallInt);	//chunk offset
-			bls_column_list.push_back(t_u_smallInt);	//chunk offset
-
-			Schema* bls_schema = new SchemaFix(bls_column_list);
-			bottomLayerSorting::State bls_state(bls_schema, blc, block_size);
-//			ExpandableBlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
-			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
-
-			bls->open();
-			BlockStreamBase* block;
-			while(bls->next(block))
-			{
-
-			}
-			bls->close();
 		}
 		cout<<"Waiting~~~!~"<<endl;
 		while(true){
@@ -243,5 +188,3 @@ static int test_CSBIndexBuilding ()
 		}
 		return 0;
 }
-
-
