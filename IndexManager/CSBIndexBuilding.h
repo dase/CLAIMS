@@ -8,6 +8,7 @@
 #ifndef CSBINDEXBUILDING_H_
 #define CSBINDEXBUILDING_H_
 #include <boost/serialization/base_object.hpp>
+#include <map>
 #include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
 #include "../ids.h"
 #include "../Schema/Schema.h"
@@ -45,12 +46,12 @@ public:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & projection_id_ & block_size_;
+			ar & schema_ & projection_id_ & block_size_& key_indexing_;
 		}
 	};
 
 public:
-	bottomLayerCollecting() {}
+	bottomLayerCollecting();
 	bottomLayerCollecting(State state);
 	virtual ~bottomLayerCollecting();
 	bool open(const PartitionOffset& partition_offset=0);
@@ -82,6 +83,7 @@ private:
 
 	bool askForNextBlock(BlockStreamBase* & block, remaining_block& rb);
 
+	void computeOutputSchema();
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -99,10 +101,10 @@ public:
 		friend class bottomLayerSorting;
 	public:
 		State() {}
-		State(Schema* schema, ExpandableBlockStreamIteratorBase* child, const unsigned block_size);
+		State(Schema* schema, BlockStreamIteratorBase* child, const unsigned block_size);
 	public:
 		Schema* schema_;
-		ExpandableBlockStreamIteratorBase* child_;
+		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 	private:
 		friend class boost::serialization::access;
@@ -119,7 +121,7 @@ public:
 		Operate* op_;
 	} compare_node;
 
-	bottomLayerSorting() {}
+	bottomLayerSorting();
 	bottomLayerSorting(State state);
 	virtual ~bottomLayerSorting();
 
@@ -128,22 +130,17 @@ public:
 	bool close();
 
 private:
-	void sort(vector<void*> chunk_tuples, int begin, int end, Operate* op);
-	void cqsort(vector<void*> secondaryArray, int left,int right,Operate* op);
-	void swap(void* &a, void* &b);
-
 	static bool compare(const compare_node* a, const compare_node* b);
 
 	template<typename T>
 	CSBPlusTree<T>* indexBuilding(vector<compare_node*> chunk_tuples);
 
+	void computeVectorSchema();
+
 	State state_;
 
 	Schema* vector_schema_;
-//	DynamicBlockBuffer dynamic_block_buffer_;
-//	DynamicBlockBuffer::Iterator dynamic_block_buffer_iterator_;
-	boost::unordered_map <void*, vector<void*> > tuples_in_chunk; //ChunkID->tuples_in_chunk
-	boost::unordered_map <ChunkOffset, vector<compare_node*> > tuples_in_chunk_;
+	std::map <ChunkOffset, vector<compare_node*> > tuples_in_chunk_; //ChunkID->tuples_in_chunk
 
 private:
 	friend class boost::serialization::access;
