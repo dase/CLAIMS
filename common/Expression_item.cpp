@@ -181,6 +181,23 @@ inline void test_case_exp(){
 
 
 }
+
+inline void test_upper(){
+	Expression express_item_list;
+
+	ExpressionItem ei0;								// x
+	ei0.setStringValue("abc");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei1;							 	// 60
+	ei1.setOperator("upper");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+}
+
 static int test_expression_item(){
 	initialize_arithmetic_type_promotion_matrix();
 	initialize_type_cast_functions();
@@ -188,6 +205,7 @@ static int test_expression_item(){
 	test_add();
 	test_com_less();
 	test_case_exp();
+	test_upper();
 	return 0;
 }
 

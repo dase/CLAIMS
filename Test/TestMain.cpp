@@ -54,9 +54,9 @@ int main(){
 //	return daemon_test();
 //	testServerClient();
 //	return test_data_type();
-//	return test_expression_item();
+	return test_expression_item();
 //	return testProject();
-	return testSort();
+//	return testSort();
 //	return testProject_wl();
 //	return Project_test();
 //	return expanded_iterators_test();

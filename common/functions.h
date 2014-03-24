@@ -11,6 +11,9 @@
 #include "ExpressionCalculator.h"
 #include "TypePromotionMap.h"
 #include "TypeCast.h"
+#include <algorithm>
+#include <string>
+using namespace std;
 //extern data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
 
 bool check_data_type_for_add(data_type dt){
@@ -493,6 +496,23 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 
 
 
+}
+
+static void upper(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=1);
+
+	ExpressionItem uppered_string;
+
+	uppered_string=stack.top();
+	stack.pop();
+
+	target.return_type=t_string;
+	target.type=ExpressionItem::const_type;
+
+	string str=uppered_string._string;
+	transform(str.begin(),str.end(),str.begin(),::toupper);
+
+	target._string=str;
 }
 
 #endif /* FUNCTIONS_H_ */
