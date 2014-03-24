@@ -12,7 +12,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include "../data_type.h"
-enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
+enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
@@ -267,6 +267,9 @@ public:
 		}
 		case op_case_else:{
 			return std::string("else");
+		}
+		case op_upper:{
+			return std::string("upper");
 		}
 		default:{
 			assert(false);
