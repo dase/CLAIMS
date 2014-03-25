@@ -7,12 +7,16 @@
 
 #include "Catalog.h"
 Catalog* Catalog::instance_=0;
+
 Catalog::Catalog() {
 	logging=new CatalogLogging();
 	binding_=new ProjectionBinding();
+
+//	restoreCatalog();
 }
 
 Catalog::~Catalog() {
+	//	saveCatalog();
 	// TODO Auto-generated destructor stub
 }
 Catalog* Catalog::getInstance(){
@@ -28,11 +32,13 @@ bool Catalog::add_table(TableDescriptor* const &table){
 	std::string new_table_name=table->getTableName();
 	TableID new_table_id=table->get_table_id();
 	boost::unordered_map<std::string,TableDescriptor*>::iterator it_name_to_table=name_to_table.find(new_table_name);
-	if(it_name_to_table!=name_to_table.end()){
+	if(it_name_to_table!=name_to_table.cend()){
+		logging->elog("the table named %s is existed!", new_table_name);
 		return false;
 	}
 	boost::unordered_map<TableID,TableDescriptor*>::iterator it_tableid_to_table=tableid_to_table.find(new_table_id);
-	if(it_tableid_to_table!=tableid_to_table.find(new_table_id)){
+	if(it_tableid_to_table!=tableid_to_table.cend()){
+		logging->elog("the table whose id is %d is existed!", new_table_id);
 		return false;
 	}
 	/*The check is successful. Now we can add the new table into the catalog module.*/
@@ -73,3 +79,72 @@ bool Catalog::isAttributeExist(const std::string& table_name,const std::string& 
 	else
 		return td->isExist(attribute_name);
 }
+
+//void Catalog::outPut()
+//{
+//	boost::unordered_map<TableID,TableDescriptor*>::iterator it_tableid_to_table;//=tableid_to_table.find(new_table_id);
+//	for(it_tableid_to_table = tableid_to_table.begin(); it_tableid_to_table != tableid_to_table.end(); ++it_tableid_to_table)
+//	{
+//		cout<<it_tableid_to_table->first<<"  "<<it_tableid_to_table->second->getTableName()<<"  "<<it_tableid_to_table->second->get_table_id()<<"  ";
+//		cout<<it_tableid_to_table->second->getNumberOfProjection();
+//	}
+//	cout<<endl;
+//}
+
+// 2014-3-20---save as a file---by Yu
+void Catalog::saveCatalog(const char *filename)
+{
+	std::ofstream ofs(filename);
+	boost::archive::text_oarchive oa(ofs);
+
+	oa<<*this;
+}
+
+// 2014-3-20---restore from a file---by Yu
+void Catalog::restoreCatalog(const char *filename)
+{
+	if(access(filename,0) != 0)
+	{
+		logging->elog("the file %s is not existed!", filename);
+	}
+//	assert(access(filename, 0) == 0);
+	else
+	{
+		std::ifstream ifs(filename);
+		boost::archive::text_iarchive ia(ifs);
+
+		ia>>*this;
+	}
+//	cout<<"================================================================"<<endl<<endl;
+//	outPut();
+//	cout<<"================================================================"<<endl<<endl;
+}
+
+void Catalog::saveCatalog(Catalog &catalog_, const char *filename)
+{
+	std::ofstream ofs(filename);
+	boost::archive::text_oarchive oa(ofs);
+
+	oa<<catalog_;
+	ofs.close();
+}
+
+// 2014-3-20---restore from a file---by Yu
+void Catalog::restoreCatalog(Catalog &catalog_, const char *filename)
+{
+	//	if(access(filename,0) != 0)
+	//		logging->elog("the file %s is not existed!", filename);
+	assert(access(filename, 0) == 0);
+
+	std::ifstream ifs(filename);
+	boost::archive::text_iarchive ia(ifs);
+
+	ia>>catalog_;
+	ifs.close();
+
+//	cout<<"================================================================"<<endl<<endl;
+//	outPut();
+//	cout<<"================================================================"<<endl<<endl;
+}
+
+

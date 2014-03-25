@@ -869,6 +869,7 @@ public:
 	Operate* operate;
 	data_type type;
 private:
+	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
@@ -899,10 +900,6 @@ private:
 			default:operate=0;break;
 		}
 	}
-private:
-
-	unsigned size;
-
 };
 
 
