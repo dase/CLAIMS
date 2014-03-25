@@ -16,7 +16,7 @@
  */
  
 
-%glr-parser%expect 6
+%glr-parser%expect 9
 %expect-rr 79
 
 %defines
@@ -404,16 +404,20 @@ char linebuf[500];
 %type <ast_node> index_list opt_for_join opt_col_names
 %type <ast_node> delete_opts delete_list 
 %type <ast_node> insert_vals insert_vals_list
-%type <ast_node> insert_asgn_list  update_opts update_asgn_list
+%type <ast_node> insert_asgn_list   update_asgn_list
 %type <ast_node> opt_length  enum_list
 %type <ast_node> column_atts create_col_list
+
+%type <intval> update_opts	// 2014-3-24---更改位置到此---by Yu
 
 /** add by yukai **/
 %type <ast_node> create_database_stmt create_table_stmt  create_select_statement
 %type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc	
 %type <ast_node> alter_list alter_def data_type create_projection_stmt
 %type <ast_node> truncate_stmt
-%type <intval> table_list opt_rc  opt_ignore opt_if_exists
+%type <ast_node> create_index_stmt index_col_list drop_index_stmt	// 2014-3-24---增加---by Yu
+%type <ast_node> drop_database_stmt drop_table_stmt table_list	// 2014-3-24---增加---by Yu
+%type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		// 2014-3-24---增加---by Yu
 %type <intval> opt_col index_att index_type rename_list
 %type <intval> opt_chain opt_release opt_read_write
 %type <intval> opt_trans_level trans_att priv_database_type priv_table_type
@@ -658,7 +662,7 @@ opt_left_or_right_outer: LEFT opt_outer	{ $$ = 8 + $2; }
 	| /* nil */ { $$ = 0; }
 	;
 
-opt_join_condition: /* nil */
+opt_join_condition: /* nil */	{}
 	| join_condition	{$$=$1;}
 	;
 /*
@@ -746,16 +750,16 @@ opt_ondupupdate: /* nil */
    ;
 
 insert_opts: /* nil */			{ $$ = 0; }
-   | insert_opts LOW_PRIORITY	{ $$ = $1 | 01 ; }
+   | insert_opts LOW_PRIORITY		{ $$ = $1 | 01 ; }
    | insert_opts DELAYED 		{ $$ = $1 | 02 ; }
-   | insert_opts HIGH_PRIORITY  { $$ = $1 | 04 ; }
+   | insert_opts HIGH_PRIORITY 	{ $$ = $1 | 04 ; }
    | insert_opts IGNORE			{ $$ = $1 | 010 ; }
    ;
 
 opt_into: INTO | /* nil */
 	;
 
-opt_col_names: /* nil */
+opt_col_names: /* nil */	{}
    | '(' column_list ')' {  }
    ;
 
@@ -827,9 +831,10 @@ update_stmt: UPDATE update_opts table_references
 opt_limit { emit("UPDATE %d %d %d", $2, $3, $5); }
 ;
 
-update_opts: /* nil */ //{ $$ = 0; }
-   | insert_opts LOW_PRIORITY //{ $$ = $1 | 01 ; }
-   | insert_opts IGNORE //{ $$ = $1 | 010 ; }
+// 2014-3-24---修改---by Yu
+update_opts: /* nil */		{ $$ = 0; }
+   | insert_opts LOW_PRIORITY	{ $$ = $1 | 01; }
+   | insert_opts IGNORE		{ $$ = $1 | 02; }
    ;
 
 update_asgn_list:
@@ -1026,13 +1031,14 @@ opt_ignore: /* nil */ { $$ = 0; }
    | IGNORE { $$ = 1; }
    ;
 	
-    /** create index **/
-stmt: create_index_stmt { emit("STMT"); }
+    /** create index **/	// 2014-3-24---增加---by Yu
+stmt: create_index_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_index statement"); }
 	;
 	
 create_index_stmt:
-	CREATE index_att INDEX NAME opt_using_type ON NAME '(' index_col_list ')'
-    ;
+	CREATE index_att INDEX NAME opt_using_type ON NAME '(' index_col_list ')'	
+	{ $$ = newCreateIndex(t_create_index_stmt, $2, $4, $5, $7, $9); }
+	;
 	
 index_att: /* nil */ { $$ = 0;} 
    | UNIQUE 	{ $$ = 1; }
@@ -1040,53 +1046,50 @@ index_att: /* nil */ { $$ = 0;}
    | SPATIAL	{ $$ = 3; }
    ;
    
-opt_using_type: 
-    | USING index_type
+opt_using_type: 		{ $$ = 0; }
+    | USING index_type	{ $$ = $2; }
     ;
 	
 index_type: BTREE	{ $$ = 1; }
-    | HASH			{ $$ = 2; }
+	| HASH	{ $$ = 2; }
 	;
 	
-index_col_list: index_col_name
-    | index_col_list ',' index_col_name
+index_col_list: NAME opt_length opt_asc_desc			{ $$ = newIndexColList(t_index_col_list, $1, $2, $3, NULL); }
+	| NAME opt_length opt_asc_desc ',' index_col_list	{ $$ = newIndexColList(t_index_col_list, $1, $2, $3, $5); }
 	;
-
-index_col_name: NAME opt_length opt_asc_desc
+	
+	/** drop index **/	// 2014-3-24---增加---by Yu
+stmt: drop_index_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_index statement"); }
     ;
 	
-	/** drop index **/
-stmt: drop_index_stmt { emit("STMT"); }
+drop_index_stmt: DROP INDEX NAME ON NAME	{ $$ = newDropIndex(t_drop_index, $3, $5); }
     ;
 	
-drop_index_stmt: DROP INDEX NAME ON NAME
-    ;
-	
-	/**	drop database **/	
-stmt: drop_database_stmt { emit("STMT"); }
+	/**	drop database **/		// 2014-3-24---增加---by Yu
+stmt: drop_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_database statement"); }
 	;
 	
 drop_database_stmt: 
-	DROP DATABASE opt_if_exists NAME	{ emit("DROPDATABASE %d %s", $3, $4); free($4); }
-   | DROP SCHEMA opt_if_exists NAME 	{ emit("DROPSCHEMA %d %s", $3, $4); free($4); }
+	DROP DATABASE opt_if_exists NAME	{ $$ = newDropDatabase(t_drop_database_stmt, 1, $3, $4); }
+   | DROP SCHEMA opt_if_exists NAME 	{ $$ = newDropDatabase(t_drop_database_stmt, 2, $3, $4); }
    ;
    
 opt_if_exists: /* nil */	{ $$ = 0; }
-   | IF EXISTS				{ $$ = 1; }
+   | IF EXISTS			{ $$ = 1; }
    ;
    
-   /** drop table **/
-stmt: drop_table_stmt { emit("STMT"); }
+   /** drop table **/	// 2014-3-24---增加---by Yu
+stmt: drop_table_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_table statement"); }
 
 drop_table_stmt:
-	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	{ emit("DROP %d %d %d %d", $2, $4, $5, $6); }
+	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	{ $$ = newDropTable(t_drop_table_stmt, $2, $4, $6, $5); }
 	;
 	
-table_list: NAME 					{ emit("TABLE %s", $1);}
-   | NAME'.' NAME					{ emit("TABLE %s.%s", $1, $3); }
-   | table_list ',' NAME			{ emit("TABLE %s", $1);}
-   | table_list ',' NAME '.' NAME	{ emit("TABLE %s.%s", $1, $3); }
-   ;
+table_list: NAME 					{ $$ = newTableList(t_table_list, NULL, $1, NULL); }
+	| NAME '.' NAME				{ $$ = newTableList(t_table_list, $1, $3, NULL); }
+	| table_list ',' NAME			{ $$ = newTableList(t_table_list, NULL, $3, $1); }
+	| table_list ',' NAME '.' NAME	{ $$ = newTableList(t_table_list, $3, $5, $1); }
+	;
 
 opt_rc: /* nil */ 	{ $$ = 0; }
    | RESTRICT	 	{ $$ = 1; }
@@ -1101,8 +1104,8 @@ stmt: rename_table_stmt { emit("STMT"); }
 rename_table_stmt: RENAME TABLE rename_list {}
    ;
    
-rename_list: 
-   | NAME TO NAME{}
+rename_list: /* nil */	{}
+   | NAME TO NAME	{}
    | NAME '.' NAME TO NAME '.' NAME {}
    | rename_list ',' NAME TO NAME {}
    | rename_list ',' NAME '.' NAME TO NAME '.' NAME {}
@@ -1699,8 +1702,8 @@ expr: expr '+' expr 		{ $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }
    | expr '/' expr 		{ $$=newExprCal(t_expr_cal, "/", NULL, 0, $1, $3); }
    | expr '%' expr 		{ $$=newExprCal(t_expr_cal, "%", NULL, 0, $1, $3); }
    | expr MOD expr 		{ $$=newExprCal(t_expr_cal, "MOD", NULL, 0, $1, $3); }
-   | '-' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "--", NULL, 0, NULL, $2); }
-   | '+' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "++", NULL, 0, NULL, $2); }  
+   | '-' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "--", NULL, 0, NULL, $2); }	// 2014-3-14---增加---by余楷
+   | '+' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "++", NULL, 0, NULL, $2); }	// 2014-3-14---增加---by余楷  
    | expr ANDOP expr		{ $$=newExprCal(t_expr_cal, "ANDOP", NULL, 0, $1, $3); }
    | expr OR expr			{ $$=newExprCal(t_expr_cal, "OR", NULL, 0, $1, $3); }
    | expr XOR expr		{ $$=newExprCal(t_expr_cal, "XOR", NULL, 0, $1, $3); }
@@ -1729,19 +1732,24 @@ expr: expr BETWEEN expr AND expr %prec BETWEEN { $$=newExprFunc(t_expr_func, "BA
    ;
 
 
-expr_list: expr	{ $$ = newExprList(t_expr_list, $1, NULL); }
+expr_list: expr		{ $$ = newExprList(t_expr_list, $1, NULL); }
    | expr ',' expr_list { $$ = newExprList(t_expr_list, $1, $3); }
+   | '(' expr ',' expr_list ')'	{ $$ = newExprList(t_expr_list, $2, $4); }	// 2014-3-14---新增规则---by余楷
    ;
 
 opt_expr_list: /* nil */
    | expr_list {$$=$1;}
    ;
 
-expr: expr IN '(' expr_list ')'		{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
-   | expr NOT IN '(' expr_list ')'		{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $1, $5); }
-   | expr IN '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4); }
-   | expr NOT IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
-   | EXISTS '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3); }         
+expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
+   | '(' expr_list ')' IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $2, $6); }
+   | expr NOT IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $1, $5); }
+   | '(' expr_list ')' NOT IN  '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $2, $7); }
+   | expr IN '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4); }
+   | '(' expr_list ')' IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $2, $6); }
+   | expr NOT IN '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
+   | '(' expr_list ')' NOT IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $2, $7); }
+   | EXISTS '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3); }
    | NOT EXISTS '(' select_stmt ')'	%dprec 2	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, NULL, $4); } 
    ;
 

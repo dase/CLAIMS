@@ -84,7 +84,16 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					puts("No table name!");
 					exit(0);
 				}
-				TableDescriptor *table_3=new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+
+				// 2014-3-25---检查表是否已存在---by Yu
+				TableDescriptor *new_table = Environment::getInstance()->getCatalog()->getTable(tablename);
+				if (new_table != NULL)
+				{
+					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
+					break;
+				}
+
+				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 				Create_col_list *list = (Create_col_list*)ctnode->list;
 				string primaryname;
 				int colNum = 0;
@@ -102,7 +111,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						case 5:
 						case 6:
 						{
-							table_3->addAttribute(colname, data_type(t_int), 0, true);
+							new_table->addAttribute(colname, data_type(t_int), 0, true);
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -110,20 +119,20 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						{
 							if (datatype->opt_uz & 01 != 0)
 							{
-								table_3->addAttribute(colname, data_type(t_u_long), 0, true);
+								new_table->addAttribute(colname, data_type(t_u_long), 0, true);
 								cout<<colname<<" is created"<<endl;
 							}
 							break;
 						}
 						case 10:
 						{
-							table_3->addAttribute(colname, data_type(t_float), 0, true);
+							new_table->addAttribute(colname, data_type(t_float), 0, true);
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 9:
 						{
-							table_3->addAttribute(colname, data_type(t_double), 0, true);
+							new_table->addAttribute(colname, data_type(t_double), 0, true);
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -133,11 +142,11 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 							if (datatype->length)	//已指定长度
 							{
 								Length * l = (Length*)datatype->length;
-								table_3->addAttribute(colname, data_type(t_string), l->data1, true);
+								new_table->addAttribute(colname, data_type(t_string), l->data1, true);
 							}
 							else	//未指定长度
 							{
-								table_3->addAttribute(colname, data_type(t_string), 1, true);
+								new_table->addAttribute(colname, data_type(t_string), 1, true);
 							}
 							cout<<colname<<" is created"<<endl;
 							break;
@@ -146,21 +155,8 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					}
 					list = (Create_col_list* )list->next;
 				}
+				catalog->add_table(new_table);
 
-				//			vector<ColumnOffset> new_proj0_index;
-				//			for (int i = 0; i < colNum; ++i)
-				//			{
-				//				new_proj0_index.push_back(i);
-				//				cout<<"push "<<i<<endl;
-				//			}
-				//			const int partition_key_index_1=2;
-				//			table_3->createHashPartitionedProjection(new_proj0_index, primaryname,1);	//G0
-				catalog->add_table(table_3);
-
-				//			for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-				//				cout<<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions()<<endl;
-				//				table_3->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
-				//			}
 				break;
 			}
 
@@ -248,15 +244,13 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			}
 			}
 
-			// freeAST();	---尚未完成对节点的释放 ！！！！！！！！！！！！！！
 			stmtList = (Stmt *)stmtList->next;
 			//			sleep(1);	//留出时间，等待内部输出	bug已修复，不再需要
 			//			getchar();	//输入任意字符，继续执行 bug已修复，不再需要
 		}
 
 
-		// freeAST();	---尚未完成对节点的释放 ！！！！！！！！！！！！！！
-		//	sql语句错误恢复时还需要对动态分配的内存进行释放！！！！！！！！！！！！ FreeAllNode();
+//		FreeAllNode();	//---完成对节点的释放 ！！！！！！！！！！！！！！
 
 		printf("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 		printf("Continue(1) or not (0)?\n");

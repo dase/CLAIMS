@@ -59,6 +59,7 @@ BINARY	{ return BINARY; }
 BIT	{ return BIT; }
 BLOB	{ return BLOB; }
 BOTH	{ return BOTH; }
+BTREE	{ return BTREE;}	// 2014-3-24---增加---by Yu
 BY	{ return BY; }
 CALL	{ return CALL; }
 CASCADE	{ return CASCADE; }
@@ -120,6 +121,7 @@ FROM	{ return FROM; }
 FULLTEXT	{ return FULLTEXT; }
 GRANT	{ return GRANT; }
 GROUP	{ return GROUP; }
+HASH	{ return HASH; }	// 2014-3-24---增加---by Yu
 HAVING	{ return HAVING; }
 HIGH_PRIORITY	{ return HIGH_PRIORITY; }
 HOUR_MICROSECOND	{ return HOUR_MICROSECOND; }
@@ -139,7 +141,8 @@ INTO	{ return INTO; }
 IS	{ return IS; }
 ITERATE	{ return ITERATE; }
 JOIN	{ return JOIN; }
-INDEX|KEY	{ return KEY; }
+INDEX	{ return INDEX; }	// 2014-3-24---增加---by Yu
+KEY	{ return KEY; }	// 2014-3-24---修改---by Yu
 KEYS	{ return KEYS; }
 KILL	{ return KILL; }
 LEADING	{ return LEADING; }
