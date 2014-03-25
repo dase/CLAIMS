@@ -101,6 +101,10 @@ public:
 		}
 	}
 	static void compute(ExpressionItem operator_item,ExpressionItemStack& stack);
+
+	static void computes(ExpressionItem operator_item,ExpressionItemStack& stack);
+	static data_type getOutputType(vector<ExpressionItem> &exp);
+
 private:
 
 	/**

@@ -7,8 +7,14 @@
 
 #ifndef BLOCKSTREAM_H_
 #define BLOCKSTREAM_H_
+#include "../rename.h"
 #include "../Schema/Schema.h"
 #include "Block.h"
+
+#include <string>
+#include <iostream>
+using namespace std;
+
 class BlockStreamBase:public Block{
 public:
 
@@ -57,7 +63,7 @@ public:
 	 * also updated according the new data.
 	 */
 	virtual void copyBlock(void* addr, unsigned length)=0;
-
+	virtual bool insert(void *dest,void *src,unsigned bytes)=0;
 	/**
 	 * deep copy from block, including block content and member variables that maintain the block status.
 	 * the user should guarantee that rest block and desc block are of equal derived class type(e.g., both
@@ -83,12 +89,19 @@ public:
 	};
 	BlockStreamBase(unsigned block_size):Block(block_size){};
 	static BlockStreamBase* createBlock(Schema* schema,unsigned block_size);
+
+	/**
+	 * @li:I add this function in order to end the chaos of setting the block size
+	 *  when initializing the BlockStream. -_-
+	 */
+	static BlockStreamBase* createBlockWithDesirableSerilaizedSize(Schema* schema,unsigned block_size);
 protected:
 	virtual void* getTuple(unsigned offset) const =0;
 
 };
 
 class BlockStreamFix:public BlockStreamBase {
+	friend class BlockStreamBase;
 	struct tail_info{
 		unsigned tuple_count;
 	};
@@ -119,12 +132,12 @@ public:
 //	void setBlockDataAddress(void* addr);
 	bool switchBlock(BlockStreamBase& block);
 	void copyBlock(void* addr, unsigned length);
+	bool insert(void *dest,void *src,unsigned bytes);
 	void deepCopy(const Block* block);
 	bool serialize(Block & block) const;
 	bool deserialize(Block * block);
 	unsigned getSerializedBlockSize()const;
 	unsigned getTuplesInBlock()const;
-
 	/* construct the BlockStream from a storage level block,
 	 * which last four bytes indicate the number of tuples in the block.*/
 	void constructFromBlock(const Block& block);
@@ -136,6 +149,84 @@ public:
 
 };
 
+/* only on the situation of tuple size is little than a block size*/
+class BlockStreamVar:public BlockStreamBase{
+	struct tail_info{
+		unsigned tuple_count;
+	};
+public:
+	// BlockSize is 64k-4 because of the tuple_count is the member of the class
+	BlockStreamVar(unsigned block_size,Schema *schema);
+	virtual ~BlockStreamVar(){};
+	/* get the [offset]-th tuple of the block*/
+	inline void* getTuple(unsigned offset) const;
+	/* bytes is the length of the constructed tuple*/
+	inline void* allocateTuple(unsigned bytes);
+	/* for change the free_front_ and the free_end_*/
+	bool insert(void *dest,void *src,unsigned bytes);
+	/* turn the BlockStreamBase full of data structure to block*/
+	bool serialize(Block & block) const;
+	/* build the BlockStreamBase from the blcok when extract the data into
+	 * in-memory data structure, and this is the same as the deserialize
+	 * */
+	void constructFromBlock(const Block& block);
+	bool insert(void *dest,void *src){
+		int bytes=schema_->getTupleActualSize(src);
+		memcpy(dest,src,bytes);
+		int *free_end=(int*)free_end_;
+		*free_end=free_front_-start;
+		free_end_=free_end_-sizeof(int);
+		return true;
+	}
+
+	/*set the block empty*/
+	void setEmpty(){
+		free_front_=start;
+		free_end_=start+BlockSize-(attributes_+1)*4;
+	}
+
+
+	bool deserialize(Block * block){};
+
+	/* for debug*/
+	void toDisk(BlockStreamBase *bsb,string path){
+		int filed;
+		filed=FileOpen(path.c_str(),O_WRONLY|O_CREAT);
+		write(filed,bsb->getBlock(),1024*64-4);
+	};
+
+	void printSchema(){
+		int columns=schema_->getncolumns();
+		int* schema_info=(int*)((char*)start+BlockSize-sizeof(int)*(columns+1));
+		for(unsigned i=0;i<schema_->getncolumns();i++){
+			cout<<"the schema is:"<<*(schema_info+i)<<endl;
+		}
+		cout<<"the tuple count is:"<<*(schema_info+columns)<<endl;
+	}
+
+	/* whether is empty, if empty, return true, not false */
+	bool Empty() const{
+		return free_front_==start;
+	};
+
+	void* getBlockDataAddress(){};
+	bool switchBlock(BlockStreamBase& block){};
+	void copyBlock(void* addr, unsigned length){};
+	void deepCopy(const Block* block){};
+	unsigned getSerializedBlockSize()const{};
+	unsigned getTuplesInBlock()const{};
+
+private:
+	Schema *schema_;
+	unsigned attributes_;
+	unsigned var_attributes_;
+	/* free_front_ can be added for less computing*/
+	char *free_front_;
+	/* can be in end directly*/
+	char *free_end_;
+	/* how many attributes in the tuple*/
+	unsigned cur_tuple_size_;
+};
 
 
 #endif /* BLOCKSTREAM_H_ */

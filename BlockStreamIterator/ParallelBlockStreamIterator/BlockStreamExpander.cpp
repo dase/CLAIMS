@@ -36,6 +36,8 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 
 	expanded_thread_list_.clear();
 	for(unsigned i=0;i<state_.thread_count_;i++){
+//		usleep(500000);//test for the random startup properties
+		printf("New expanded thread created!\n");
 		pthread_t tid;
 		const int error=pthread_create(&tid,NULL,expanded_work,this);
 		if(error!=0){
@@ -81,7 +83,7 @@ bool BlockStreamExpander::close(){
 	return true;
 }
 void BlockStreamExpander::print(){
-//	printf("Expander: thread num:%d\n",state_.thread_count_);
+	printf("Expander: thread num:%d\n",state_.thread_count_);
 //	printf("---------------------\n");
 	state_.child_->print();
 
@@ -102,6 +104,8 @@ void* BlockStreamExpander::expanded_work(void* arg){
 	/*TODO: the following increment may need to use atomic add for the thread-safety.*/
 	Pthis->lock_.lock();
 	Pthis->finished_thread_count_++;
+
+	block_for_asking->~BlockStreamBase();
 
 //	printf("Thread %x generated %d blocks.\n",pthread_self(),block_count);
 	Pthis->expanded_thread_list_.erase(pthread_self());

@@ -56,3 +56,20 @@ Schema* SchemaFix::getSubSchema(std::vector<unsigned> index)const{
 Schema* SchemaFix::duplicateSchema()const{
 	return new SchemaFix(columns);
 }
+
+void SchemaFix::toValue(std::string text_tuple, void* binary_tuple, const char attr_separator)
+{
+	string::size_type prev_pos = 0;
+	string::size_type pos = 0;
+
+	for (int i = 0; i < columns.size(); i++)
+	{
+		for(; (attr_separator != text_tuple[pos]) && (pos<text_tuple.length()); pos++);
+		if(prev_pos <= pos)
+		{
+			columns[i].operate->toValue(binary_tuple+accum_offsets[i],text_tuple.substr(prev_pos,pos-prev_pos).c_str());
+			pos++;
+			prev_pos = pos;
+		}
+	}
+}

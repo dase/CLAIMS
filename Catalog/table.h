@@ -70,6 +70,7 @@ public:
 	bool AllPartitionBound()const;
 	std::vector<Attribute> getAttributeList()const;
 	Schema* getSchema()const;
+	int getAttributeIndex(const Attribute& att)const;
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;
@@ -147,6 +148,7 @@ public:
 	inline TableID get_table_id()const{return table_id_;}
 	ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
 	unsigned getNumberOfProjection()const;
+	Schema* getSchema()const;
 protected:
 	string tableName;
 	vector<Attribute> attributes;

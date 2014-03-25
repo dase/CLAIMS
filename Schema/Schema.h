@@ -31,12 +31,13 @@ public:
 	unsigned getncolumns();
 	virtual Schema* getSubSchema(std::vector<unsigned>)const=0;
 	virtual Schema* duplicateSchema()const=0;
-	inline column_type getcolumn(const unsigned index) const {
+	inline const column_type& getcolumn(const unsigned index) const {
 			return columns[index];
 		}
 	std::vector<column_type> columns;
 	virtual schema_type getSchemaType()=0;
 	virtual void displayTuple(const void* tuple_start_address,const char* spliter="|")const;
+	virtual void toValue(std::string text_tuple, void* binary_tuple, const char attr_separator){};
 protected:
 
 private:
