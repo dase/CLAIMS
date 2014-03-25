@@ -5,9 +5,11 @@
  *      Author: scdong
  */
 
+#include <map>
 #include "CSBIndexBuilding.h"
 #include "../storage/BlockManager.h"
 #include <algorithm>
+#include "IndexManager.h"
 
 using std::stable_sort;
 
@@ -240,8 +242,8 @@ bottomLayerSorting::~bottomLayerSorting()
 
 }
 
-bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child, unsigned block_size)
-: schema_(schema), child_(child), block_size_(block_size) {
+bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child, unsigned block_size, ProjectionID projection_id, unsigned key_indexing)
+: schema_(schema), child_(child), block_size_(block_size), projection_id_(projection_id), key_indexing_(key_indexing) {
 
 }
 bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
@@ -255,6 +257,10 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 	}
 	else
 		waitForOpenFinished();
+
+	//Construct the PartitionID for the next function to make up the ChunkID
+	partition_id_.projection_id = state_.projection_id_;
+	partition_id_.partition_off = partition_offset;
 
 	// Open finished. Buffer all the child create dataset in different group according to their ChunkIDs
 	BlockStreamBase* block_for_asking = BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
@@ -336,6 +342,33 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 
 bool bottomLayerSorting::next(BlockStreamBase* block)
 {
+	switch (vector_schema_->getcolumn(0).type)
+	{
+	case t_int:
+	{
+		map<ChunkID, void* > csb_index_list;
+		csb_index_list.clear();
+		for (std::map<ChunkOffset, vector<compare_node*> >::iterator iter = tuples_in_chunk_.begin(); iter != tuples_in_chunk_.end(); iter++)
+		{
+			ChunkID* chunk_id = new ChunkID();
+			chunk_id->partition_id = partition_id_;
+			chunk_id->chunk_off = iter->first;
+			CSBPlusTree<int>* csb_tree = indexBuilding<int>(iter->second);
+			csb_index_list[*chunk_id] = csb_tree;
+		}
+		IndexManager::getInstance()->addIndexToList(state_.key_indexing_, csb_index_list);
+		break;
+	}
+	default:
+	{
+		cout << "[ERROR: (CSBIndexBuilding.cpp->bottomLayerSorting->next()]: The data type is not defined!\n";
+		break;
+	}
+	}
+	return false;
+
+
+/*	original code for testing the Logical CSB Index Building iterator
 	for (std::map<ChunkOffset, vector<compare_node*> >::iterator iter = tuples_in_chunk_.begin(); iter != tuples_in_chunk_.end(); iter++)
 	{
 		switch (vector_schema_->getcolumn(0).type)
@@ -378,6 +411,7 @@ bool bottomLayerSorting::next(BlockStreamBase* block)
 		}
 	}
 	return false;
+*/
 }
 
 bool bottomLayerSorting::close()

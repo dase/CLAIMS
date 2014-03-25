@@ -101,16 +101,20 @@ public:
 		friend class bottomLayerSorting;
 	public:
 		State() {}
-		State(Schema* schema, BlockStreamIteratorBase* child, const unsigned block_size);
+		State(Schema* schema, BlockStreamIteratorBase* child, const unsigned block_size, ProjectionID projection_id, unsigned key_indexing);
 	public:
 		Schema* schema_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
+		//The following two variable is for registering to the IndexManager
+		//similar to its child's projection id and key indexing
+		ProjectionID projection_id_;
+		unsigned key_indexing_;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned version) {
-			ar & schema_ & child_ & block_size_;
+			ar & schema_ & child_ & block_size_ & projection_id_ & key_indexing_;
 		}
 	};
 
@@ -141,6 +145,8 @@ private:
 
 	Schema* vector_schema_;
 	std::map <ChunkOffset, vector<compare_node*> > tuples_in_chunk_; //ChunkID->tuples_in_chunk
+
+	PartitionID partition_id_;
 
 private:
 	friend class boost::serialization::access;

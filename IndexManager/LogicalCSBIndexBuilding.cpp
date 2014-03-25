@@ -61,6 +61,8 @@ BlockStreamIteratorBase* LogicalCSBIndexBuilding::getIteratorTree(const unsigned
 	bls_state.schema_ = new SchemaFix(bls_column_list);
 	bls_state.child_ = blc;
 	bls_state.block_size_ = block_size;
+	bls_state.projection_id_ = projection_id_;
+	bls_state.key_indexing_ = blc_state.key_indexing_;
 
 	return new bottomLayerSorting(bls_state);
 

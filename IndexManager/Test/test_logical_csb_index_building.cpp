@@ -10,6 +10,8 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../CSBPlusTree.h"
+#include "../IndexManager.h"
 
 static int test_logical_csb_index_building()
 {
@@ -180,10 +182,11 @@ static int test_logical_csb_index_building()
 			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
 			executable_query_plan->print();
 			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
-
 		}
 		cout<<"Waiting~~~!~"<<endl;
 		while(true){
+//			sleep(30);
+//			test_index_manager();
 			sleep(1);
 		}
 		return 0;
