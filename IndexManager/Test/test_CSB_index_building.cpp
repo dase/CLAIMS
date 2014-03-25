@@ -14,6 +14,8 @@
 #include "../../Catalog/table.h"
 #include "../CSBIndexBuilding.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "test_index_manager.cpp"
+
 using namespace std;
 
 static int test_CSBIndexBuilding ()
@@ -225,7 +227,7 @@ static int test_CSBIndexBuilding ()
 			bls_column_list.push_back(t_u_smallInt);	//chunk offset
 
 			Schema* bls_schema = new SchemaFix(bls_column_list);
-			bottomLayerSorting::State bls_state(bls_schema, blc, block_size);
+			bottomLayerSorting::State bls_state(bls_schema, blc, block_size, catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3);
 //			ExpandableBlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 
@@ -236,6 +238,9 @@ static int test_CSBIndexBuilding ()
 
 			}
 			bls->close();
+
+			//following for test the index manager~
+			test_index_manager();
 		}
 		cout<<"Waiting~~~!~"<<endl;
 		while(true){

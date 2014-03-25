@@ -20,6 +20,7 @@
 #include "Resource/ResourceManagerSlave.h"
 #include "Catalog/Catalog.h"
 #include "BufferManager/BufferManager.h"
+#include "IndexManager/IndexManager.h"
 
 class Environment {
 public:
@@ -41,6 +42,7 @@ private:
 	void InitializeStorage();
 	void InitializeResourceManager();
 	void InitializeBufferManager();
+	void InitializeIndexManager();
 private:
 	static Environment* _instance;
 	PortManager* portManager;
@@ -61,6 +63,7 @@ private:
 	BlockManagerMaster* blockManagerMaster_;
 	BlockManager*	blockManager_;
 	BufferManager* bufferManager_;
+	IndexManager* indexManager_;
 
 	/**
 	 * TODO: the master and slave pair, such as ResouceManagerMaster and ResourceManagerSlave, should have a

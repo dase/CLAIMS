@@ -123,6 +123,11 @@ void Environment::InitializeBufferManager(){
 	bufferManager_=BufferManager::getInstance();
 }
 
+void Environment::InitializeIndexManager()
+{
+	indexManager_ = IndexManager::getInstance();
+}
+
 AdaptiveEndPoint* Environment::getEndPoint(){
 	return endpoint;
 }
