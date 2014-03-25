@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 #include "NValue.hpp"
-
+int COUNTER::count=0;
 namespace decimal {
 
 TTInt NValue::s_maxDecimalValue("9999999999"   //10 digits
@@ -38,8 +38,9 @@ void NValue::createDecimalFromString(const string &txt) {
     /**
      * Check for invalid characters
      */
+    bool set_points = false;
     for (int ii = (setSign ? 1 : 0); ii < static_cast<int>(txt.size()); ii++) {
-        if ((txt[ii] < '0' || txt[ii] > '9') && txt[ii] != '.') {
+    	if ((txt[ii] < '0' || txt[ii] > '9') && txt[ii] != '.') {
             cout << "Invalid characters in decimal string: " << txt.c_str() << endl;
             exit(-1);
         }
@@ -101,7 +102,7 @@ void NValue::createDecimalFromString(const string &txt) {
 /**
  * Serialize sign and value using radix point (no exponent).
  */
-std::string NValue::createStringFromDecimal() const {
+std::string NValue::createStringFromDecimal(unsigned number_of_fractinal_digits) const {
     assert(!isNull());
     std::ostringstream buffer;
     TTInt scaledValue = getDecimal();
@@ -121,10 +122,10 @@ std::string NValue::createStringFromDecimal() const {
         fractional.ChangeSign();
     }
     std::string fractionalString = fractional.ToString(10);
-    for (int ii = static_cast<int>(fractionalString.size()); ii < NValue::kMaxDecScale; ii++) {
+    for (int ii = static_cast<int>(fractionalString.size()); ii < NValue::kMaxDecScale&&ii<number_of_fractinal_digits; ii++) {
         buffer << '0';
     }
-    buffer << fractionalString;
+    buffer << (fractionalString.size()>number_of_fractinal_digits? fractionalString.substr(0,number_of_fractinal_digits):fractionalString);
     return buffer.str();
 }
 
@@ -147,7 +148,7 @@ NValue NValue::opMultiplyDecimals(const NValue &lhs, const NValue &rhs) const {
 	calc /= NValue::kMaxScaleFactor;
 	TTInt retval;
 	if (retval.FromInt(calc)  || retval > s_maxDecimalValue || retval < s_minDecimalValue) {
-		cout << "Attempted to multiply " << lhs.createStringFromDecimal().c_str() << " by " << rhs.createStringFromDecimal().c_str() << " causing overflow/underflow. Unscaled result was " << calc.ToString(10).c_str() << endl;
+		cout << "Attempted to multiply " << lhs.createStringFromDecimal(12).c_str() << " by " << rhs.createStringFromDecimal(12).c_str() << " causing overflow/underflow. Unscaled result was " << calc.ToString(10).c_str() << endl;
 		exit(-1);
 	}
 	return getDecimalValue(retval);
@@ -172,13 +173,13 @@ NValue NValue::opDivideDecimals(const NValue lhs, const NValue rhs) const {
     calc *= NValue::kMaxScaleFactor;
     if (calc.Div(rhs.getDecimal())) {
         char message[4096];
-        cout << "Attempted to divide " << lhs.createStringFromDecimal().c_str() << " by " << rhs.createStringFromDecimal().c_str() << "causing overflow/underflow (or divide by zero)\n";
+        cout << "Attempted to divide " << lhs.createStringFromDecimal(12).c_str() << " by " << rhs.createStringFromDecimal(12).c_str() << "causing overflow/underflow (or divide by zero)\n";
         exit(-1);
     }
     TTInt retval;
     if (retval.FromInt(calc)  || retval > s_maxDecimalValue || retval < s_minDecimalValue) {
         char message[4096];
-        cout << "Attempted to divide " << lhs.createStringFromDecimal().c_str() << " by " << rhs.createStringFromDecimal().c_str() << " causing overflow. Unscaled result was " << calc.ToString(10).c_str() << endl;
+        cout << "Attempted to divide " << lhs.createStringFromDecimal(12).c_str() << " by " << rhs.createStringFromDecimal(12).c_str() << " causing overflow. Unscaled result was " << calc.ToString(10).c_str() << endl;
         exit(-1);
     }
     return getDecimalValue(retval);

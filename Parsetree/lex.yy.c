@@ -1892,7 +1892,7 @@ YY_RULE_SETUP
 case 18:
 YY_RULE_SETUP
 #line 62 "sql.l"
-{ return BTREE;}
+{ return BTREE;}	// 2014-3-24---增加---by Yu
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
@@ -2202,7 +2202,7 @@ YY_RULE_SETUP
 case 80:
 YY_RULE_SETUP
 #line 124 "sql.l"
-{ return HASH; }
+{ return HASH; }	// 2014-3-24---增加---by Yu
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
@@ -2302,12 +2302,12 @@ YY_RULE_SETUP
 case 100:
 YY_RULE_SETUP
 #line 144 "sql.l"
-{ return INDEX; }
+{ return INDEX; }	// 2014-3-24---增加---by Yu
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
 #line 145 "sql.l"
-{ return KEY; }
+{ return KEY; }	// 2014-3-24---修改---by Yu
 	YY_BREAK
 case 102:
 YY_RULE_SETUP

@@ -100,6 +100,7 @@ void add_table_column(Select_list *selectlist,Query_stmt * qstmt,Node *next)
 	}
 	selectlist->next=next;
 }
+
 bool selectlist_analysis(Query_stmt * qstmt)
 {
 	Node *sltree=(Node *)qstmt->select_list;

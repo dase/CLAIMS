@@ -86,7 +86,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 //		if(isMaster()){
 		if(partition_offset==0){
 			/*TODO: According to a bug reported by dsc, the master exchangeupper should check whether other
-			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fails to connection to the
+			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fails to connect to the
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
 			 *  have not register the exchange_id to the exchangeTracker.
 			*/

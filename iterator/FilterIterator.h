@@ -28,20 +28,20 @@ public:
 		AttributeComparator(column_type x,column_type y,Comparator::comparison c,unsigned index, void* value);
 		AttributeComparator(column_type x,Comparator::comparison c,unsigned index, void* value);
 		AttributeComparator(const  AttributeComparator & c_a);
-		AttributeComparator():value(0){};
+		AttributeComparator():value_(0),Comparator(),index(0){};
 		~AttributeComparator();
 		inline bool filter(void* x) const __attribute__((always_inline))
 		{
-		   return compare(x,(void*)value);
+		   return compare(x,(void*)value_);
 		}
 		inline unsigned get_index()const{
 			return index;
 		}
 		void* get_value()const{
-			return value;
+			return value_;
 		}
 	protected:
-		void* value;
+		void* value_;
 		unsigned index;
 
 	private:
@@ -60,18 +60,18 @@ public:
 			{
 				for(unsigned i=0;i<pair.second.get_length();i++)
 				{
-					valuebytes.push_back(*((char*)value+i));
+					valuebytes.push_back(*((char*)value_+i));
 				}
 			}
 
 			ar & boost::serialization::base_object<Comparator>(*this) & index & valuebytes;
 
-			if(value==0)
+			if(value_==0)
 			{
-				value=memalign(cacheline_size,pair.second.get_length());
+				value_=memalign(cacheline_size,pair.second.get_length());
 				for(unsigned i=0;i<pair.second.get_length();i++)
 				{
-					*((char*)value+i)=valuebytes[i];
+					*((char*)value_+i)=valuebytes[i];
 
 				}
 			}

@@ -13,13 +13,14 @@
 using namespace std;
 
 #include "../BlockStreamIteratorBase.h"
+#include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../Schema/Schema.h"
 #include "../../Block/synch.h"
 #include "../../hashtable.h"
 #include "../../hash.h"
 #include "../../Debug.h"
 
-class BlockStreamAggregationIterator:public BlockStreamIteratorBase{
+class BlockStreamAggregationIterator:public ExpandableBlockStreamIteratorBase{
 public:
         class State{
                 friend class BlockStreamAggregationIterator;
@@ -82,7 +83,7 @@ private:
         bool open_finished_;
         bool open_finished_end_;
         Lock lock_;
-        Barrier *barrier_;
+        Barrier barrier_;
 
         //hashtable traverse and in the next func
         Lock ht_cur_lock_;
@@ -96,7 +97,7 @@ private:
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version){
-            ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state_;
+            ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state_;
     }
 };
 

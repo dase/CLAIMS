@@ -42,8 +42,9 @@ bool FilterIterator::close()
 FilterIterator::AttributeComparator::AttributeComparator(column_type x,column_type y,Comparator::comparison c,unsigned index, void* _value)
 :Comparator(x,y,c),index(index)
 {
-	value=memalign(cacheline_size,y.get_length());
-	y.operate->assignment(_value,value);
+	value_=memalign(cacheline_size,y.get_length());
+	y.operate->assignment(_value,value_);
+	assert(compare!=0);
 //	for(unsigned i=0;i<pair.second.get_length();i++)
 //	{
 //		valuebytes.push_back(*(char*)(value+i));
@@ -52,8 +53,9 @@ FilterIterator::AttributeComparator::AttributeComparator(column_type x,column_ty
 FilterIterator::AttributeComparator::AttributeComparator(column_type x,Comparator::comparison c,unsigned index, void* _value)
 :Comparator(x,x,c),index(index)
 {
-	value=memalign(cacheline_size,x.get_length());
-	x.operate->assignment(_value,value);
+	value_=memalign(cacheline_size,x.get_length());
+	x.operate->assignment(_value,value_);
+	assert(compare!=0);
 //	for(unsigned i=0;i<pair.second.get_length();i++)
 //	{
 //		valuebytes.push_back(*(char*)(value+i));
@@ -63,9 +65,10 @@ FilterIterator::AttributeComparator::AttributeComparator(const  FilterIterator::
 :Comparator(c_a.pair.first,c_a.pair.second,c_a.compareType)
 {
 
-	value=memalign(cacheline_size,c_a.pair.second.get_length());
-	c_a.pair.second.operate->assignment(c_a.value,value);
+	value_=memalign(cacheline_size,c_a.pair.second.get_length());
+	c_a.pair.second.operate->assignment(c_a.value_,value_);
 	index=c_a.index;
+	assert(compare!=0);
 //	for(unsigned i=0;i<c_a.pair.second.get_length();i++)
 //	{
 //		valuebytes.push_back(*(char*)(value+i));
@@ -75,7 +78,7 @@ FilterIterator::AttributeComparator::AttributeComparator(const  FilterIterator::
 
 FilterIterator::AttributeComparator::~AttributeComparator()
 {
-	free(value);
+	free(value_);
 }
 void FilterIterator::try_it()
 {

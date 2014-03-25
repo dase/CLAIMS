@@ -66,7 +66,7 @@ static int testGenerateIteratorTree(){
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",4);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",2);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -85,7 +85,7 @@ static int testGenerateIteratorTree(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",2);	//G1
 
 		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -167,7 +167,7 @@ static int testGenerateIteratorTree(){
 		sb_proj0_index.push_back(5);
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",2);	//G0
 
 
 
@@ -197,7 +197,7 @@ static int testGenerateIteratorTree(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",2);	//G1
 
 		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -528,10 +528,10 @@ static int testGenerateIteratorTree(){
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
 
 //
 
@@ -543,10 +543,10 @@ static int testGenerateIteratorTree(){
 //		root->getDataflow();
 
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
-			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
-			printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
+		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 
-			executable_query_plan->print();
+		executable_query_plan->print();
 
 		int c=1;
 		while(c==1){

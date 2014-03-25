@@ -10,14 +10,10 @@
 #include <string>
 #include "table.h"
 #include <boost/unordered_map.hpp>
-//#include <boost/tr1/unordered_map.hpp>
-//#include "boost_serialize_unordered_map.hpp"
-////#include "unordered_map_serialize.hpp"
-//#include "unordered_map_load_imp.hpp"
 
 #include "unordered_map.hpp"
 
-//#include "boost_serialization_unorderedmap.hpp"
+
 
 #include "../Logging.h"
 #include "ProjectionBinding.h"
@@ -55,6 +51,7 @@ public:
 	void saveCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---save as a fileby Yu
 	void restoreCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu
 	void outPut();
+
 
 	/* whether given attribute specified by table_name and attribute_name exists*/
 	bool isAttributeExist(const std::string& table_name,const std::string& attribute_name )const;

@@ -22,6 +22,13 @@
 #include"sql_node_struct.h"
 #include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
+#include "../common/ExpressionItem.h"
+#include "../LogicalQueryPlan/Project.h"
+#include "../LogicalQueryPlan/Sort.h"
+static void p2l_print_error(char *str1,char *str2,char *str3)
+{
+	printf("parsetree2logicalplan >> %s  %s   %s",str1,str2,str3);
+}
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename)
 {
 	printf("getfiltercondition   ");
@@ -391,7 +398,279 @@ static LogicalOperator* groupby_where_from2logicalplan(Node *parsetree)//实现g
 		return aggregation;
 	}
 }
+static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *node)
+{
+	switch(node->type)
+	{
+		case t_expr_func:
+		{
+			Expr_func * funcnode=(Expr_func *)node;
+			if(strcmp(funcnode->funname,"CASE3")==0)
+			{
+				ExpressionItem expritem0;
+				expritem0.setOperator("case");
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				ExpressionItem expritem1;
+				expritem1.setOperator("case");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"CASE4")==0)//目前只支持case when [expr then expr]* [else expr] end
+			{
+				ExpressionItem expritem0;
+				expritem0.setOperator("case");
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("else");
+				expr.push_back(expritem1);
+				ExpressionItem expritem2;
+				expritem2.setOperator("case");
+				expr.push_back(expritem2);
 
+			}
+			else if(strcmp(funcnode->funname,"WHEN1")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				ExpressionItem expritem0;
+				expritem0.setOperator("when");
+				expr.push_back(expritem0);
+
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("then");
+				expr.push_back(expritem1);
+
+			}
+			else if(strcmp(funcnode->funname,"WHEN2")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				ExpressionItem expritem0;
+				expritem0.setOperator("when");
+				expr.push_back(expritem0);
+
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("then");
+				expr.push_back(expritem1);
+			}
+			else
+			{
+				p2l_print_error("get_a_selectlist_expression_item: ",funcnode->funname ,"   is null");
+			}
+		}break;
+		case t_expr_cal:
+		{
+			Expr_cal * calnode=(Expr_cal *)node;
+			if(strcmp(calnode->sign,"--")==0)//处理负号的初步方法，处理-的时候，在前面加0，即=（0-expr)
+			{
+				ExpressionItem expritem0;
+				expritem0.setIntValue(0);
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,calnode->rnext);
+				ExpressionItem expritem;
+				expritem.setOperator("-");
+				expr.push_back(expritem);
+			}
+			else
+			{
+				get_a_selectlist_expression_item(expr,calnode->lnext);
+				get_a_selectlist_expression_item(expr,calnode->rnext);
+				ExpressionItem expritem;
+				if(strcmp(calnode->sign,"CMP")==0)
+				{
+					switch(calnode->cmp)
+					{
+						case 1://"<"
+						{
+							expritem.setOperator("<");
+						}break;
+						case 2://">"
+						{
+							expritem.setOperator(">");
+						}break;
+						case 3://"<>"
+						{
+							expritem.setOperator("<>");
+						}break;
+						case 4://"="
+						{
+							expritem.setOperator("=");
+						}break;
+						case 5://"<="
+						{
+							expritem.setOperator("<=");
+						}break;
+						case 6://">="
+						{
+							expritem.setOperator(">=");
+						}break;
+						default:
+						{
+							p2l_print_error("get_a_selectlist_expression_item"," cmp error","");
+						}
+					}
+				}
+				else
+				{
+					expritem.setOperator(calnode->sign);
+				}
+				expr.push_back(expritem);
+			}
+		}break;
+		case t_name:
+		case t_name_name:
+		{
+			Columns *col=(Columns *)node;
+			ExpressionItem expritem;
+			expritem.setVariable(col->parameter1,col->parameter2);
+			expr.push_back(expritem);
+		}break;
+		case t_stringval:
+		{
+			Expr * exprval=(Expr *)node;
+			ExpressionItem expritem;
+			expritem.setStringValue(exprval->data.string_val);
+			expr.push_back(expritem);
+		}break;
+		case t_intnum:
+		{
+			Expr * exprval=(Expr *)node;
+			ExpressionItem expritem;
+			expritem.setIntValue(exprval->data.int_val);
+			expr.push_back(expritem);
+
+		}break;
+		case t_approxnum:
+		{
+			Expr * exprval=(Expr *)node;
+			ExpressionItem expritem;
+			expritem.setDoubleValue(exprval->data.double_val);
+			expr.push_back(expritem);
+
+		}break;
+		case t_bool:
+		{
+
+		}break;
+		default:
+		{
+
+		}
+	}
+}
+static void get_all_selectlist_expression_item(Node * node,vector<vector<ExpressionItem> >&allexpr)
+{
+	vector<ExpressionItem>expr;
+	for(Node *p=node;p!=NULL;)
+	{
+		Select_list *selectlist=(Select_list *)p;
+		Select_expr *sexpr=(Select_expr *)selectlist->args;
+		get_a_selectlist_expression_item(expr,sexpr->colname);
+		allexpr.push_back(expr);
+		expr.clear();
+		p=selectlist->next;
+	}
+}
+static LogicalOperator* select_groupby_where_from2logicalplan(Node *parsetree)
+{
+	LogicalOperator * groupby_where_from_logicalplan=groupby_where_from2logicalplan(parsetree);
+	Query_stmt *node=(Query_stmt *)parsetree;
+	vector<vector<ExpressionItem> >allexpr;
+	allexpr.clear();
+	get_all_selectlist_expression_item(node->select_list,allexpr);
+	cout<<"allexpr.size= "<<allexpr.size()<<endl;
+	for(unsigned i=0;i<allexpr.size();i++){
+		cout<<"allexpr "<<i<<"  size ="<<allexpr[i].size()<<endl;
+		for(unsigned j=0;j<allexpr[i].size();j++){
+			cout<<"******"<<endl;
+			allexpr[i][j].print_value();
+		}
+	}
+//	return groupby_where_from_logicalplan;
+	LogicalOperator* proj=new LogicalProject(groupby_where_from_logicalplan,allexpr);
+	return proj;
+}
+static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector<LogicalSort::OrderByAttr *>&obcol)
+{
+	Orderby_list * gblist=(Orderby_list *)(olnode);
+	for(Node *p=(Node *)(gblist->next);p!=NULL;)
+	{
+		Groupby_expr *gbexpr=(Groupby_expr *)p;
+		switch(gbexpr->args->type)
+		{
+			case t_name:
+			case t_column:
+			case t_name_name:
+			{
+				Columns *col=(Columns *)(gbexpr->args);
+				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter1,col->parameter2));
+			}break;
+			case t_intnum:
+			{
+				Expr * exprval=(Expr *)(gbexpr->args);
+				int num=0;
+				Node * q=slnode;
+				for(;q!=NULL;)
+				{
+					Select_list *selectlist=(Select_list *)q;
+					if(num==exprval->data.int_val)
+						break;
+					num++;
+					q=selectlist->next;
+				}
+				cout<<"```````````````````````````````"<<endl;
+				if(q==NULL)
+				{
+					//string str=(exprval->data.int_val);
+					p2l_print_error("get_orderby_column_from_selectlist order by attribute num ","","is beyond");
+				}
+				else
+				{
+					Select_list *selectlist=(Select_list *)q;
+					Select_expr *sexpr=(Select_expr *)selectlist->args;
+					switch(sexpr->colname->type)
+					{
+						case t_name:
+						case t_name_name:
+						case t_column:
+						{
+							Columns * col=(Columns *)sexpr->colname;
+							cout<<"order by attribute  "<<col->parameter1<<"  "<<col->parameter2<<endl;
+							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter1,col->parameter2));
+						}break;
+						default:
+						{
+							p2l_print_error("get_orderby_column_from_selectlist","gbexpr->colname->type ","not exist");
+						}
+					}
+				}
+			}break;
+			default:
+			{
+				p2l_print_error("get_orderby_column_from_selectlist","gbexpr->args->type ","not exist");
+			}
+		}
+		p=gbexpr->next;
+	}
+}
+static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *parsetree)
+{
+	LogicalOperator* select__logicalplan= select_groupby_where_from2logicalplan(parsetree);
+	Query_stmt *node=(Query_stmt *)parsetree;
+	if(node->orderby_list==NULL)
+	{
+		return select__logicalplan;
+	}
+	else
+	{
+		vector<LogicalSort::OrderByAttr *>obcol;
+		get_orderby_column_from_selectlist(node->orderby_list,node->select_list,obcol);
+		LogicalOperator* orderby__logicalplan=new LogicalSort(select__logicalplan,obcol[0]);
+		return orderby__logicalplan;
+	}
+}
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
 	switch(parsetree->type)
@@ -405,6 +684,7 @@ static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 
 			return NULL;
 		}
 	}
+
 }
 
 #endif
