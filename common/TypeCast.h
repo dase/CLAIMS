@@ -9,6 +9,8 @@
 #define TYPECAST_H_
 #include "ExpressionItem.h"
 #include "../data_type.h"
+#include <stdlib.h>
+
 typedef bool (*TypeCastFunction) (ExpressionItem& in);
 class TypeCast{
 public:
@@ -41,6 +43,15 @@ inline bool int_to_ulong(ExpressionItem& in){
 	in.content.data.value._ulong=new_value;
 	return true;
 }
+
+inline bool string_to_int(ExpressionItem& in){
+	assert(in.return_type==t_string);
+	int rt=atoi(in._string.c_str());
+	in.return_type=t_int;
+	in.content.data.value._int=rt;
+	return true;
+}
+
 /**
  * Note: This function must be called before computing any Expression
  */

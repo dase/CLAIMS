@@ -39,8 +39,19 @@ void ExpressionCalculator::compute(ExpressionItem operator_item,ExpressionItemSt
 			break;
 		}
 		case op_upper:{
-			cout<<"op_upper============================"<<endl;
 			upper(stack,result);
+			break;
+		}
+		case op_substring:{
+			substring(stack,result);
+			break;
+		}
+		case op_trim:{
+			trim(stack,result);
+			break;
+		}
+		case op_cast:{
+			cast(stack,result);
 			break;
 		}
 		default:{
@@ -75,6 +86,18 @@ void ExpressionCalculator::computes(ExpressionItem operator_item, ExpressionItem
 			break;
 		}
 		case op_upper:{
+
+			break;
+		}
+		case op_substring:{
+
+			break;
+		}
+		case op_trim:{
+
+			break;
+		}
+		case op_cast:{
 
 			break;
 		}

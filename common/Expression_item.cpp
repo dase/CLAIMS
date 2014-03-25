@@ -186,12 +186,80 @@ inline void test_upper(){
 	Expression express_item_list;
 
 	ExpressionItem ei0;								// x
-	ei0.setStringValue("abc");
+	ei0.setStringValue("abdcdafsgaggargaeranbafgdssssssssssc");
 	express_item_list.push_back(ei0);
 
 	ExpressionItem ei1;							 	// 60
 	ei1.setOperator("upper");
 	express_item_list.push_back(ei1);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+}
+
+inline void test_substring(){
+	Expression express_item_list;
+
+	ExpressionItem ei0;								// x
+	ei0.setStringValue("abdcdafsgaggargaeranbafgdssssssssssc");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei1;							 	// 60
+	ei1.setIntValue("1");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem ei2;							 	// 60
+	ei2.setIntValue("5");
+	express_item_list.push_back(ei2);
+
+	ExpressionItem ei3;							 	// 60
+	ei3.setOperator("substring");
+	express_item_list.push_back(ei3);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+}
+
+inline void test_trim(){
+	Expression express_item_list;
+
+	ExpressionItem ei1;							 	// 60
+	ei1.setStringValue(" ");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem ei0;							 	// 60
+	ei0.setIntValue("0");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei2;								// x
+	ei2.setStringValue("  abdcdafsgaggargaeranbafgdssssssssssc  ");
+	express_item_list.push_back(ei2);
+
+	ExpressionItem ei3;								// x
+	ei3.setOperator("trim");
+	express_item_list.push_back(ei3);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+}
+
+inline void test_cast(){
+	Expression express_item_list;
+
+	ExpressionItem ei0;							 	// 60
+	ei0.setIntValue("000012");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei1;								// x
+	ei1.setStringValue("int");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem ei2;								// x
+	ei2.setOperator("cast");
+	express_item_list.push_back(ei2);
 
 	ExpressionItem result;
 	ExpressionCalculator::calcuate(express_item_list,result);
@@ -206,6 +274,9 @@ static int test_expression_item(){
 	test_com_less();
 	test_case_exp();
 	test_upper();
+	test_substring();
+	test_trim();
+	test_cast();
 	return 0;
 }
 
