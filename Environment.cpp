@@ -19,6 +19,8 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	Initialize();
 	portManager=PortManager::getInstance();
 	catalog_=Catalog::getInstance();
+
+
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
 		InitializeCoordinator();
@@ -51,6 +53,10 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	iteratorExecutorSlave=new IteratorExecutorSlave();
 
 	exchangeTracker =new ExchangeTracker();
+
+	/* restore Catalog */
+//	catalog_->restoreCatalog(*catalog_);
+//	catalog_->restoreCatalog();
 }
 
 Environment::~Environment() {

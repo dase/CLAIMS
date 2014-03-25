@@ -40,7 +40,7 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 
 	logging_->log("Waiting for the Ready signal from the Coordinator.");
 	if(WaitForReadySignalFromCoordinator()==false){
-		logging_->elog("Error occurs when connecting to the coordinator EndPoint");
+		logging_->elog("Error occurs when waiting for the coordinator EndPoint");
 	}
 	close(socket_coor);
 
@@ -56,6 +56,7 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	libconfig::Config cfg;
 	cfg.readFile(COOR);
 	ip_coor=(const char *)cfg.lookup("coordinator.ip");
+
 	std::string coord_port=(const char*)cfg.lookup("coordinator.port");
 	int recvbytes;
 
@@ -115,8 +116,9 @@ bool AdaptiveEndPoint::WaitForReadySignalFromCoordinator(){
 bool AdaptiveEndPoint::ConnectToCoordinateEndPoint(int port){
 	std::ostringstream os;
 	os<<"tcp://"<<ip_coor<<":"<<port;
+
 	if(!ConnectToRemoteEndPoint(os.str().c_str())){
-		logging_->elog("Check whether network is enabled! %s",os.str().c_str());
+		logging_->elog("Check whether network is enabled! can't connect ot %s",os.str().c_str());
 		return false;
 	}
 

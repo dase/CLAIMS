@@ -38,6 +38,8 @@
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../utility/rdtsc.h"
 
+//#define DEBUG_TestForSerialize
+
 using namespace std;
 static int query_optimization_based_on_statistics_join(){
 	int master;
@@ -1045,6 +1047,9 @@ static int query_optimization_based_on_statistics(){
 		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 
+		catalog->restoreCatalog();	/* restore Catalog ---yu*/
+
+#ifdef DEBUG_TestForSerialize
 		puts("it is time to create table");
 		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 		table_1->addAttribute("row_id",data_type(t_u_long),0,true);  				//0
@@ -1136,7 +1141,7 @@ static int query_optimization_based_on_statistics(){
 		catalog->add_table(table_1);
 
 		////////////////////////////////////Create table right//////////////////////////
-		/*
+
 		TableDescriptor* table_2=new TableDescriptor("sb",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 		table_2->addAttribute("row_id",data_type(t_u_long));
 		table_2->addAttribute("order_no",data_type(t_u_long));
@@ -1173,9 +1178,9 @@ static int query_optimization_based_on_statistics(){
 		sb_proj0_index.push_back(3);
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
-*/
+
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-	/*	table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
 
 
 
@@ -1205,7 +1210,7 @@ static int query_optimization_based_on_statistics(){
 
 
 		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
-*/
+
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 //		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
 //
@@ -1235,8 +1240,8 @@ static int query_optimization_based_on_statistics(){
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G14
 
 
-	/*	catalog->add_table(table_2);
-		*////////////////////////////////////////////////////////////
+		catalog->add_table(table_2);
+		///////////////////////////////////////////////////////////
 
 
 
@@ -1276,7 +1281,7 @@ static int query_optimization_based_on_statistics(){
 //		}
 
 		//sb_table
-	/*	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+		for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
 			catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
 		}
@@ -1284,7 +1289,7 @@ static int query_optimization_based_on_statistics(){
 		for(unsigned i=0;i<table_2->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
 
 			catalog->getTable(1)->getProjectoin(1)->getPartitioner()->RegisterPartition(i,6);
-		}*/
+		}
 //		for(unsigned i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
 //
 //			catalog->getTable(1)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
@@ -1416,6 +1421,11 @@ static int query_optimization_based_on_statistics(){
 //		}
 
 		TableID table_id=catalog->getTable("cj")->get_table_id();
+		cout<<"cj is :"<<table_id<<endl;
+
+#endif DEBUG_TestForSerialize
+
+
 		Attribute att;
 //		Analyzer::analyse(table_id,Analyzer::a_l_attribute);
 
@@ -1426,12 +1436,13 @@ static int query_optimization_based_on_statistics(){
 
 	//	sleep(1);
 //		cout<<"ready(?)"<<endl;
-		printf("ready(?)\n");
-		int input;
-		scanf("%d",&input);
+//		printf("ready(?)\n");
+//		int input;
+//		scanf("%d",&input);
 //		cin>>input;
 
 //
+	catalog->saveCatalog();
 	cout<<"Waiting~~~!~"<<endl;
 	while(true){
 		sleep(1);
