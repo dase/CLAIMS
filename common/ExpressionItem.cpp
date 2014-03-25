@@ -149,6 +149,15 @@ bool ExpressionItem::setOperator(const char* op_str){
 	else if(tmp=="upper"){
 		content.op.op_=op_upper;
 	}
+	else if(tmp=="substring"){
+		content.op.op_=op_substring;
+	}
+	else if(tmp=="trim"){
+		content.op.op_=op_trim;
+	}
+	else if(tmp=="cast"){
+		content.op.op_=op_cast;
+	}
 	else{
 		printf("[%s] fails to match to any existing operator\n",op_str);
 		return false;

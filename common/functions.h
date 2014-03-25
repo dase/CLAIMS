@@ -13,6 +13,8 @@
 #include "TypeCast.h"
 #include <algorithm>
 #include <string>
+#include <vector>
+#include <functional>
 using namespace std;
 //extern data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
 
@@ -513,6 +515,103 @@ static void upper(ExpressionItemStack& stack, ExpressionItem& target){
 	transform(str.begin(),str.end(),str.begin(),::toupper);
 
 	target._string=str;
+
+	cout<<"+++++++++++++++++"<<str.c_str()<<endl;
+}
+
+static void substring(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=3);
+
+	ExpressionItem Str;
+	ExpressionItem Begin;
+	ExpressionItem Length;
+
+	Length=stack.top();
+	stack.pop();
+	Begin=stack.top();
+	stack.pop();
+	Str=stack.top();
+	stack.pop();
+
+	unsigned begin=Begin.content.data.value._int;
+	unsigned length=Length.content.data.value._int;
+
+	string subed_str=Str._string.substr(begin,length);
+
+	target.return_type=t_string;
+	target.type=ExpressionItem::const_type;
+	target._string=subed_str;
+
+	cout<<"------------------------"<<subed_str.c_str()<<endl;
+}
+
+static string& lTrim(string &ss){
+    string::iterator p=find_if(ss.begin(),ss.end(),not1(ptr_fun(::isspace)));
+    ss.erase(ss.begin(),p);
+    return ss;
+}
+
+static string& rTrim(string &ss){
+    string::reverse_iterator p=find_if(ss.rbegin(),ss.rend(),not1(ptr_fun(::isspace)));
+    ss.erase(p.base(),ss.end());
+    return ss;
+}
+
+static string& atrim(string &st){
+    lTrim(rTrim(st));
+    return st;
+}
+
+static void trim(ExpressionItemStack& stack, ExpressionItem& target){
+	/*
+	 * now the trim function only support deleting space on head and tail.
+	 * */
+	assert(stack.size()>=3);
+	ExpressionItem Str;
+	ExpressionItem mode;
+	ExpressionItem subStr;
+	Str=stack.top();
+	stack.pop();
+	mode=stack.top();
+	stack.pop();
+	subStr=stack.top();
+	stack.pop();
+
+	if(mode.content.data.value._int==0){
+		cout<<"in the trim system function!"<<endl;
+		string str=Str._string;
+		cout<<"target: "<<str.c_str()<<"end"<<endl;
+
+		string rt=atrim(str);
+		target._string=rt;
+		target.return_type=t_string;
+		target.type=ExpressionItem::const_type;
+
+		cout<<"target: "<<target._string.c_str()<<"end"<<endl;
+	}
+}
+
+static void cast(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+
+	ExpressionItem type;
+	ExpressionItem variable;
+
+	type=stack.top();
+	stack.pop();
+	variable=stack.top();
+	stack.pop();
+
+	type.getType(type._string.c_str());
+	TypeCast::type_cast_functions[variable.return_type][type.return_type](variable);
+
+	target=variable;
+
+	cout<<"after casting the data and become a: "<<target.content.data.value._int<<endl;
+}
+
+static void coalesce(ExpressionItemStack& stack, ExpressionItem& target){
+
 }
 
 #endif /* FUNCTIONS_H_ */
