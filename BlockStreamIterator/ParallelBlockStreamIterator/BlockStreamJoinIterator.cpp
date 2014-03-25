@@ -8,15 +8,15 @@
 #include "BlockStreamJoinIterator.h"
 
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
-:state_(state),hash(0),hashtable(0),open_finished_(false),reached_end(0){
-	sema_open_.set_value(1);
-	barrier_=new Barrier(1);
+:state_(state),hash(0),hashtable(0),reached_end(0){
+//	sema_open_.set_value(1);
+	initialize_expanded_status();
 }
 
 BlockStreamJoinIterator::BlockStreamJoinIterator()
-:hash(0),hashtable(0),open_finished_(false),reached_end(0){
-	sema_open_.set_value(1);
-	barrier_=new Barrier(1);
+:hash(0),hashtable(0),reached_end(0){
+//	sema_open_.set_value(1);
+	initialize_expanded_status();
 }
 
 BlockStreamJoinIterator::~BlockStreamJoinIterator() {
@@ -56,13 +56,15 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 #ifdef TIME
 	startTimer(&timer);
 #endif
+
+	RegisterNewThreadToAllBarriers();
+
 	state_.child_left->open(partition_offset);
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
-//	cout<<"AtomicPushFreeBlockStream\n\n"<<endl;
-//	cout<<"join open begin"<<endl;
+
 	unsigned long long int timer;
-	if(sema_open_.try_wait()){
+	if(tryEntryIntoSerializedSection(0)){
 	timer=curtick();
 
 
@@ -79,21 +81,17 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 			payload_right_to_output[i]=output_index;
 			output_index++;
 		}
-		/* Currently, the block is 4096, and the table in build phase is left one*/
-		hash=PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets);
-		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
-//		cout<<"in the open master "<<endl;
-		open_finished_=true;
-	}else{
-		while (!open_finished_) {
-			usleep(1);
-		}
-	}
 
-	//hashtable createIterator的好处就是创建的都是可读的对象，不需要加锁
-//	lock_.acquire();
+		hash=PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets);
+		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
+		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
+		broadcaseOpenFinishedSignal();
+	}else{
+		waitForOpenFinished();
+	}
+//	barrierArrive(0);
 	BasicHashTable::Iterator tmp_it=hashtable->CreateIterator();
-//	lock_.release();
+
 	void *cur;
 	void *tuple_in_hashtable;
 	unsigned bn;
@@ -103,9 +101,10 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	void *value_in_input;
 	void *value_in_hashtable;
 	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
-	PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
-//	cout<<"in the hashtable build stage!"<<endl;
+//	PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
+
 //	consumed_tuples_from_left=0;
+//	Operate* op=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->duplicateOperator();
 	while(state_.child_left->next(bsb)){
 		BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 
@@ -118,10 +117,15 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 			/* Currently, the join index is [0]-th column, so the hash table is based on the hash value of [0]-th column*/
 //			bn=hash->get_partition_value(*(unsigned long*)(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur)));
 //			bn=state_.input_schema_left->getcolumn(0).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash);
+			const void* key_addr=state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur);
+			bn=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->getPartitionValue(key_addr,hash);
 
-			bn=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash);
+
+//			bn=op->getPartitionValue(key_addr,hash);
 //			bn=boost::hash_value(*(unsigned long*)((char*)cur+sizeof(unsigned long )+sizeof(int)));
 
+
+//			op->~Operate();
 
 //			const unsigned test_bn=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],cur),hash_test);
 //			if(rand()%10000<3){
@@ -149,37 +153,25 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //			lock_.release();
 		}
 		bsb->setEmpty();
+		bsti->~BlockStreamTraverseIterator();
 	}
-//	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
+	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
 	BasicHashTable::Iterator it=hashtable->CreateIterator();
 	unsigned tmp=0;
 	tuples_in_hashtable=0;
-//	PartitionFunction* hash_tmp=PartitionFunctionFactory::createGeneralModuloFunction(4);
-//	while(hashtable->placeIterator(it,tmp++)){
-//		void* tuple;
-//		while(tuple=it.readCurrent()){
-////			printf("join key:%s\n",(state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->toString(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],tuple)).c_str()));
-//			tuples_in_hashtable++;
-//			unsigned bn=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->getPartitionValue(state_.input_schema_left->getColumnAddess(state_.joinIndex_left[0],tuple),hash_tmp);
-//			if(rand()%1000<3)
-//			printf("partition key of left tuple:%d\n",bn);
-//			it.increase_cur_();
-//		}
-//	}
-//	cout<<"join open end"<<endl;
+
 	produced_tuples=0;
 	consumed_tuples_from_right=0;
-//	water_mark=0;
-	barrier_->Arrive();
-//	cout<<"pass the arrive of barrier!!!"<<endl;
-//	cout<<"Build time"<<getSecond(timer)<<endl;
+
+	barrierArrive();
+
 	state_.child_right->open(partition_offset);
-//	cout<<"PartitionOffset:"<<partition_offset<<endl;
-//	sleep(1);
+
 	return true;
 }
 
 bool BlockStreamJoinIterator::next(BlockStreamBase *block){
+
 	unsigned bn;
 	void *result_tuple;
 	void *tuple_from_right_child;
@@ -192,11 +184,10 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 
 	remaining_block rb;
 
-	PartitionFunction* hash_tmp=PartitionFunctionFactory::createGeneralModuloFunction(4);
 	while(true){
 		if(atomicPopRemainingBlock(rb)){
 			while((tuple_from_right_child=rb.blockstream_iterator->currentTuple())>0){
-				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash_tmp);
+				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),hash);
 				while((tuple_in_hashtable=rb.hashtable_iterator_.readCurrent())>0){
 					key_exit=true;
 					for(unsigned i=0;i<state_.joinIndex_right.size();i++){
@@ -240,6 +231,7 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 				AtomicPushFreeBlockStream(rb.bsb_right_);
 				free(joinedTuple);
 //				printf("****join next produces %d tuples while consumed %d tuples from right child and %d tuples from left, hash table has %d tuples\n",produced_tuples,consumed_tuples_from_right,consumed_tuples_from_left,tuples_in_hashtable);
+//				rb.bsb_right_->~BlockStreamBase();
 				return false;
 			}
 			else{
@@ -265,9 +257,10 @@ bool BlockStreamJoinIterator::close(){
 	stopTimer(&timer);
 	printf("time consuming: %lld, %f\n",timer,timer/(double)CPU_FRE);
 #endif
-	sema_open_.post();
+//	sema_open_.post();
+	initialize_expanded_status();
 	open_finished_=false;
-//	barrier_->~Barrier();
+//	barrier_.setEmpty();
 	free_block_stream_list_.clear();
 	ht_free_block_stream_list_.clear();
 	remaining_block_list_.clear();
@@ -280,8 +273,11 @@ bool BlockStreamJoinIterator::close(){
 }
 void BlockStreamJoinIterator::print(){
 	printf("Join:\n");
-	printf("----------------\n");
+	printf("------Join Left-------\n");
 	state_.child_left->print();
+	printf("------Join Right-------\n");
+
+	state_.child_right->print();
 
 }
 bool BlockStreamJoinIterator::atomicPopRemainingBlock(remaining_block & rb){

@@ -37,6 +37,7 @@ bool Catalog::add_table(TableDescriptor* const &table){
 		return false;
 	}
 	boost::unordered_map<TableID,TableDescriptor*>::iterator it_tableid_to_table=tableid_to_table.find(new_table_id);
+
 	if(it_tableid_to_table!=tableid_to_table.cend()){
 		logging->elog("the table whose id is %d is existed!", new_table_id);
 		return false;
@@ -79,6 +80,7 @@ bool Catalog::isAttributeExist(const std::string& table_name,const std::string& 
 	else
 		return td->isExist(attribute_name);
 }
+
 
 //void Catalog::outPut()
 //{
@@ -146,5 +148,4 @@ void Catalog::restoreCatalog(Catalog &catalog_, const char *filename)
 //	outPut();
 //	cout<<"================================================================"<<endl<<endl;
 }
-
 

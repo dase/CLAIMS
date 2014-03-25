@@ -13,6 +13,7 @@
 #include "../Block/synch.h"
 #include "StorageLevel.h"
 #include "../ids.h"
+#include "../utility/lock.h"
 class ChunkReaderIterator{
 public:
 	ChunkReaderIterator(const ChunkID& chunk_id,const unsigned& number_of_blocks=0):chunk_id_(chunk_id),number_of_blocks_(number_of_blocks),cur_block_(0){};
@@ -98,6 +99,8 @@ private:
 	StorageLevel desirable_storage_level_;
 	StorageLevel current_storage_level_;
 	ChunkID chunk_id_;
+
+	Lock lock_;
 
 
 };

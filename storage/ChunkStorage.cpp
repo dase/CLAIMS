@@ -30,14 +30,16 @@ ChunkStorage::~ChunkStorage() {
 
 ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 //	printf("level value:%d\n",current_storage_level_);
+	ChunkReaderIterator* ret;
+	lock_.acquire();
 	switch(current_storage_level_){
 		case MEMORY:{
 //			printf("current storage level: MEMORY\n");
 			HdfsInMemoryChunk chunk_info;
 			if(BlockManager::getInstance()->getMemoryChunkStore()->getChunk(chunk_id_,chunk_info))
-				return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
+				ret =new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 			else
-				return 0;
+				ret =0;
 			break;
 		}
 		case DISK:{
@@ -57,11 +59,14 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 						 * the current chunk_id exceed the actual size of the file.						 *
 						 */
 						BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(chunk_id_);
-						return 0;
+						ret=0;
+						break;
+//						return 0;
 					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
-					return new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
+					ret = new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
+					break;
 				}
 				else{
 					/*
@@ -73,12 +78,15 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 				}
 			}
 //			return new HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
-			return new DiskChunkReaderIteraror(chunk_id_,chunk_size_,block_size_);
+			ret=new DiskChunkReaderIteraror(chunk_id_,chunk_size_,block_size_);
+			break;
 		}
 		default:{
 			printf("current storage level: unknown!\n");
 		}
 	}
+	lock_.release();
+	return ret;
 }
 std::string ChunkStorage::printCurrentStorageLevel()const{
 	return "";

@@ -39,6 +39,7 @@
 #include "../BlockStreamIterator/BlockStreamExchangeLowerBase.h"
 #include "../BlockStreamIterator/BlockStreamExchangeBase.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
+#include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
 #include "../iterator/RowScanIterator.h"
 #include "../iterator/RandomDiskAccessIterator.h"
 #include "../iterator/SequencialDiskAccessIterator.h"
@@ -51,6 +52,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBuffer.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamTopN.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamInIterator.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -103,6 +106,9 @@ void Register_Block_Stream_Iterator(Archive & ar){
 
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
 	ar.register_type(static_cast<BlockStreamTopN*>(NULL));
+	ar.register_type(static_cast<BlockStreamProjectIterator*>(NULL));
+	ar.register_type(static_cast<ExpandableBlockStreamIteratorBase*>(NULL));
+	ar.register_type(static_cast<BlockStreamInIterator*>(NULL));
 
 }
 void cheat_the_compiler(){

@@ -8,6 +8,7 @@ using namespace std;
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
+<<<<<<< HEAD
 extern Node *NodePointer[10000];		// 2014-3-7---指向每个节点的指针数组---by余楷
 extern int NodePointerNum;		// 2014-3-7---指向每个节点的指针数组中元素个数---by余楷
 
@@ -39,6 +40,31 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 	}
 	//cout<<"newStmt is created"<<endl;
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+=======
+extern Node **pointerToNodePointer[10000];
+extern int pointerToNodePointerNum;
+
+struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加新建语句列表函数---by余楷
+{
+	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+
+	a->type = t;
+	a->data = newNode;
+	a->next = NULL;
+	a->last = (Node *)a;
+
+	if (list != NULL)
+	{
+		((Stmt *)(((Stmt *)list)->last))->next = (Node *)a;
+		((Stmt *)list)->last = (Node *)a;
+		return (Node *)list;
+	}
+	//cout<<"newStmt is created"<<endl;
 	return (struct Node *)a;
 }
 
@@ -583,6 +609,7 @@ struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int tempora
 };
 
 // 2014-2-24---增加该结构体---by余楷
+
 struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list,
 		int partition_num, char *partition_attribute_name)
 {
@@ -640,9 +667,9 @@ struct Node * newTruncateStmt(nodetype type, char * name)
 	return (struct Node *)a;
 };
 
-	/*** 		alter 语句			***/
-	// 2-19---把函数名改为newAlterDatabaseStmt---by余楷
+	/*** 		alter 语句			***/	// 2-19---把函数名改为newAlterDatabaseStmt---by余楷
 struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt)
+
 {
 	Alterdatabase_stmt * a= (Alterdatabase_stmt *)malloc(sizeof( Alterdatabase_stmt));
 	if(!a)
@@ -941,28 +968,28 @@ void output(Node * oldnode, int floor)
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.string_val<<endl;
+			cout<<"t_stringval: "<<node->data.string_val<<endl;
 			break;
 		}
 		case t_intnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.int_val<<endl;
+			cout<<"t_intnum: "<<node->data.int_val<<endl;
 			break;
 		}
 		case t_approxnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.double_val<<endl;
+			cout<<"t_approxnum: "<<node->data.double_val<<endl;
 			break;
 		}
 		case t_bool:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.bool_val<<endl;
+			cout<<"t_bool: "<<node->data.bool_val<<endl;
 			break;
 		}	
 		

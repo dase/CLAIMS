@@ -27,6 +27,14 @@ BlockStreamBase* BlockStreamBase::createBlock(Schema* schema,unsigned block_size
 		return new BlockStreamFix(block_size,schema->getTupleMaxSize());
 	}
 	else{
+		return new BlockStreamVar(block_size,schema);
+	}
+}
+BlockStreamBase* BlockStreamBase::createBlockWithDesirableSerilaizedSize(Schema* schema,unsigned block_size){
+	if(schema->getSchemaType()==Schema::fixed){
+		return new BlockStreamFix(block_size-sizeof(BlockStreamFix::tail_info),schema->getTupleMaxSize());
+	}
+	else{
 		/*
 		 * TODO: support variable-length BlockStream
 		 */
@@ -68,6 +76,12 @@ void BlockStreamFix::copyBlock(void* addr, unsigned length){
 	memcpy(start,addr,length);
 	free_=start+length;
 }
+
+bool BlockStreamFix::insert(void *dest,void *src,unsigned bytes){
+	memcpy(dest,src,bytes);
+	return true;
+}
+
 void BlockStreamFix::deepCopy(const Block* block){
 	assert(this->BlockSize>=block->getsize());
 	memcpy(start,block->getBlock(),block->getsize());
@@ -189,3 +203,82 @@ void BlockStreamFix::constructFromBlock(const Block& block){
 	free_=(char*)start+(tail->tuple_count)*tuple_size_;
 }
 
+BlockStreamVar::BlockStreamVar(unsigned block_size,Schema *schema):BlockStreamBase(block_size),schema_(schema),cur_tuple_size_(0),var_attributes_(0){
+	attributes_=schema->getncolumns();
+	int* schema_info=(int*)((char*)start+block_size-sizeof(int)*attributes_);
+	for(unsigned i=0;i<attributes_;i++){
+		switch(schema->columns[i].type){
+			case t_int:*(schema_info+i)=1;break;
+			case t_float:*(schema_info+i)=2;break;
+			case t_double:*(schema_info+i)=3;break;
+			case t_u_long:*(schema_info+i)=4;break;
+			case t_string:*(schema_info+i)=5;var_attributes_++;break;
+			default:cout<<"no type!"<<endl;break;
+		}
+	}
+	free_front_=start;
+	free_end_=(char *)start+block_size-sizeof(unsigned )*(attributes_+1);
+}
+
+void* BlockStreamVar::getTuple(unsigned offset) const {
+	/*compute the address of the offset[-th] tuple*/
+	int start_of_tuple=*(int*)(start+BlockSize-(attributes_+1+offset)*4);
+	//void *ret=start+start_of_tuple+var_attributes_*4;
+	void *ret=start+start_of_tuple;
+	cout<<"free_end_-free_front_= "<<free_end_-free_front_<<endl;
+	if(ret>free_front_){
+		return 0;
+	}
+	else{
+		return ret;
+	}
+}
+
+void* BlockStreamVar::allocateTuple(unsigned bytes){
+	if(free_front_+bytes<=free_end_){
+		void *ret=free_front_;
+		return ret;
+	}
+	else{
+		cout<<"the allocateTuple is not success!!!"<<endl;
+		return 0;
+	}
+}
+
+void BlockStreamVar::constructFromBlock(const Block& block){
+	/*set block size*/
+	assert(BlockSize==block.getsize()-sizeof(tail_info));
+
+	/* copy the content*/
+	memcpy(start,block.getBlock(),BlockSize);
+
+	/*get tail info*/
+	tail_info* tail=(tail_info*)((char*)block.getBlock()+block.getsize()-sizeof(tail_info));
+
+	free_end_=(char *)start+BlockSize-(attributes_+tail->tuple_count)*4;
+	free_front_=(char *)start+*(int *)free_end_;
+}
+
+bool BlockStreamVar::insert(void *dest,void *src,unsigned bytes){
+	memcpy(dest,src,bytes);
+	int *free_end=(int*)free_end_;
+	*free_end=free_front_-start;
+	free_front_+=bytes;
+	free_end_=free_end_-sizeof(int);
+	cur_tuple_size_++;
+	return true;
+}
+
+bool BlockStreamVar::serialize(Block & block) const{
+	assert(block.getsize()>=BlockSize+sizeof(tail_info));
+
+	/*copy the content*/
+	memcpy(block.getBlock(),start,BlockSize);
+
+	/* copy the needed data for deserialization*/
+
+	/*get tail_info*/
+	tail_info* tail=(tail_info*)((char*)block.getBlock()+block.getsize()-sizeof(tail_info));
+	tail->tuple_count=cur_tuple_size_;
+	return true;
+};
