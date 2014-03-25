@@ -10,6 +10,15 @@
 #include <string>
 #include "table.h"
 #include <boost/unordered_map.hpp>
+//#include <boost/tr1/unordered_map.hpp>
+//#include "boost_serialize_unordered_map.hpp"
+////#include "unordered_map_serialize.hpp"
+//#include "unordered_map_load_imp.hpp"
+
+#include "unordered_map.hpp"
+
+//#include "boost_serialization_unorderedmap.hpp"
+
 #include "../Logging.h"
 #include "ProjectionBinding.h"
 struct TableIDAllocator{
@@ -19,6 +28,13 @@ struct TableIDAllocator{
 	unsigned table_id_curosr;
 	unsigned allocate_unique_table_id(){
 		return table_id_curosr++;
+	}
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int file_version)
+	{
+		ar & table_id_curosr;
 	}
 };
 
@@ -34,6 +50,12 @@ public:
 	ProjectionDescriptor* getProjection(const ProjectionID&) const;
 	ProjectionBinding* getBindingModele()const;
 
+	void saveCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---save as a fileby Yu
+	void restoreCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu
+	void saveCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---save as a fileby Yu
+	void restoreCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu
+	void outPut();
+
 	/* whether given attribute specified by table_name and attribute_name exists*/
 	bool isAttributeExist(const std::string& table_name,const std::string& attribute_name )const;
 
@@ -42,9 +64,20 @@ private:
 	TableIDAllocator table_id_allocator;
 	boost::unordered_map<std::string,TableDescriptor*> name_to_table;
 	boost::unordered_map<TableID,TableDescriptor*> tableid_to_table;
+
 	Logging* logging;
 	ProjectionBinding* binding_;
 	static Catalog* instance_;
+
+	// 2014-3-20---add serialize function---by Yu
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & table_id_allocator & name_to_table & tableid_to_table;
+	}
+
 };
+
 
 #endif /* CATALOG_H_ */

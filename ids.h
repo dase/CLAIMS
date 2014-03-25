@@ -61,11 +61,11 @@ struct ProjectionID{
 	}
 
 	/* for boost::serialization*/
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version){
-            ar & table_id & projection_off;
-    }
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version){
+		ar & table_id & projection_off;
+	}
 
 };
 /* for boost::unordered_map*/
@@ -88,6 +88,16 @@ struct ColumnID{
 	bool operator==(const ColumnID &r)const{
 		return projection_id==r.projection_id&&column_off==r.column_off;
 	}
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+//		ar & projection_id & column_off & partitioner & fileLocations & hdfsFilePath & blkMemoryLocations & Projection_name_;
+		ar & projection_id & column_off;
+	}
+
+
 };
 /* for boost::unordered_map*/
 static size_t hash_value(const ColumnID& key){
@@ -122,6 +132,12 @@ struct PartitionID{
 		str<<"/home/imdb/data/wangli/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 //		str<<"/home/imdb/data/wangli/T"<<partition_off;
 		return str.str();
+	}
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & partition_off & projection_id;
 	}
 };
 /* for boost::unordered_map*/

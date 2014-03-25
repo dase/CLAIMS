@@ -11,12 +11,12 @@
 #define CHUNKSIZE_IN_MB 64
 
 Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,PartitionFunction* partitioning_functin)
-:projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_key_(0),partition_functin_(partitioning_functin),mode_(OneToOne)
+:projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_key_(0),partition_function_(partitioning_functin),mode_(OneToOne)
 {
 
 }
 Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partitioning_function)
-:projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_functin_(partitioning_function),mode_(OneToOne){
+:projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_function_(partitioning_function),mode_(OneToOne){
 	partition_key_=new Attribute(partition_key);
 	for(unsigned i=0;i<number_of_partitions;i++){
 		PartitionID pid(projection_id_,i);
@@ -28,7 +28,7 @@ Partitioner::~Partitioner() {
 	// TODO Auto-generated destructor stub
 }
 unsigned Partitioner::getNumberOfPartitions()const{
-	return partition_functin_->getNumberOfPartitions();
+	return partition_function_->getNumberOfPartitions();
 }
 
 bool Partitioner::bindPartitionToNode(PartitionOffset partition_id,NodeID target_node){
@@ -64,7 +64,7 @@ void Partitioner::unbindPartitionToNode(PartitionOffset partition_id){
 }
 
 void Partitioner::RegisterPartition(unsigned partition_key,unsigned number_of_chunks){
-	assert(partition_key<partition_functin_->getNumberOfPartitions());
+	assert(partition_key<partition_function_->getNumberOfPartitions());
 
 	partition_info_list[partition_key]->hdfs_file_name=partition_info_list[partition_key]->partition_id_.getName();
 	partition_info_list[partition_key]->number_of_blocks=number_of_chunks;
@@ -114,13 +114,13 @@ NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 }
 
 PartitionFunction::partition_fashion Partitioner::getPartitionFashion()const{
-	return partition_functin_->getPartitionFashion();
+	return partition_function_->getPartitionFashion();
 }
 Attribute Partitioner::getPartitionKey()const{
 	return *partition_key_;
 }
 PartitionFunction* Partitioner::getPartitionFunction()const{
-	return partition_functin_;
+	return partition_function_;
 }
 ProjectionID Partitioner::getProejctionID()const{
 	return projection_id_;

@@ -13,7 +13,6 @@
 
 #include "data_type.h"
 
-
 typedef bool (*comFun)(const void*,const void*);
 
 

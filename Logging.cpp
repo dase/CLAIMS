@@ -6,7 +6,8 @@
  */
 #include "Logging.h"
 
-
+//#define DEBUG_Coordinator
+//#define DEBUG_AdaptiveEndPoint
 
 
 
@@ -89,7 +90,7 @@ void AdaptiveEndPointLogging::elog(const char* format,...){
 
 void CoordinatorLogging::log(const char* format,...){
 #ifdef DEBUG_Coordinator
-	printf("AdaptiveEndPoint: ");
+	printf("Coordinator: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
@@ -98,7 +99,7 @@ void CoordinatorLogging::log(const char* format,...){
 #endif
 }
 void CoordinatorLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[AdaptiveEndPoint]: ");
+	fprintf(stderr,"Error[Coordinator]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
