@@ -17,6 +17,7 @@
 static int test_index_manager()
 {
 	map<ChunkID, CSBPlusTree<int>* > sec_code_index = IndexManager::getInstance()->getIndexList<int>(Catalog::getInstance()->getTable(0)->getAttribute(3));
+//	map<ChunkID, CSBPlusTree<int>* > sec_code_index = IndexManager::getInstance()->getIndexList<int>(0);
 	if (sec_code_index.size() == 0)
 	{
 		cout << "[ERROR: test_index_manager.cpp->test_index_manager()]: No index on attribute " << Catalog::getInstance()->getTable(0)->getAttribute(3).attrName << endl;
