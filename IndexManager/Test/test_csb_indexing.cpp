@@ -43,7 +43,22 @@ static int test_csb_indexing()
 	}
 	else
 		cout << "No record searched!\n";
+	cout << endl;
 
+
+//For testing range query
+	ret.clear();
+	ret = csb_tree->rangeQuery(5, 10);
+	if (ret.size() != 0)
+	{
+		for (vector<search_result*>::iterator iter = ret.begin(); iter != ret.end(); iter++)
+		{
+			cout << "<" << (*iter)->_block_off << ", " << (*iter)->_tuple_off << ">\t";
+		}
+	}
+	else
+		cout << "No record searched!\n";
+	cout << endl;
 
 	cout << endl << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	return 0;
