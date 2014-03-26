@@ -334,6 +334,7 @@ public:
 	void BulkLoad(data_offset<T>* aray, unsigned arayNo);
 	//search certain records according to the key
 	vector<search_result*> Search(T key);
+	vector<search_result*> rangeQuery(T lower_key, T upper_key);
 	//insert a record
 	bool Insert(data_offset<T> data);
 	//delete the records according to the key
