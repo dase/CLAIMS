@@ -101,7 +101,7 @@ public:
 		friend class bottomLayerSorting;
 	public:
 		State() {}
-		State(Schema* schema, BlockStreamIteratorBase* child, const unsigned block_size, ProjectionID projection_id, unsigned key_indexing);
+		State(Schema* schema, BlockStreamIteratorBase* child, const unsigned block_size, ProjectionID projection_id, unsigned key_indexing, std::string index_name);
 	public:
 		Schema* schema_;
 		BlockStreamIteratorBase* child_;
@@ -110,11 +110,12 @@ public:
 		//similar to its child's projection id and key indexing
 		ProjectionID projection_id_;
 		unsigned key_indexing_;
+		std::string index_name_;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned version) {
-			ar & schema_ & child_ & block_size_ & projection_id_ & key_indexing_;
+			ar & schema_ & child_ & block_size_ & projection_id_ & key_indexing_ & index_name_;
 		}
 	};
 

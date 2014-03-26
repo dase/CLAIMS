@@ -227,7 +227,7 @@ static int test_CSBIndexBuilding ()
 			bls_column_list.push_back(t_u_smallInt);	//chunk offset
 
 			Schema* bls_schema = new SchemaFix(bls_column_list);
-			bottomLayerSorting::State bls_state(bls_schema, blc, block_size, catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3);
+			bottomLayerSorting::State bls_state(bls_schema, blc, block_size, catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3, "sec_code_index");
 //			ExpandableBlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 

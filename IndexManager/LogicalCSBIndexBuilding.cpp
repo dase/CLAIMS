@@ -9,8 +9,8 @@
 #include "../Catalog/Catalog.h"
 #include "CSBIndexBuilding.h"
 
-LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(ProjectionID projection_id, Attribute index_attr)
-: projection_id_(projection_id), index_attr_(index_attr){
+LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(ProjectionID projection_id, Attribute index_attr, std::string index_name)
+: projection_id_(projection_id), index_attr_(index_attr), index_name_(index_name){
 	scan_projection_ = Catalog::getInstance()->getTable(index_attr_.table_id_)->getProjectoin(projection_id_.projection_off);
 	assert(scan_projection_);
 }

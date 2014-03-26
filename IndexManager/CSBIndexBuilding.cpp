@@ -242,8 +242,8 @@ bottomLayerSorting::~bottomLayerSorting()
 
 }
 
-bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child, unsigned block_size, ProjectionID projection_id, unsigned key_indexing)
-: schema_(schema), child_(child), block_size_(block_size), projection_id_(projection_id), key_indexing_(key_indexing) {
+bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child, unsigned block_size, ProjectionID projection_id, unsigned key_indexing, std::string index_name)
+: schema_(schema), child_(child), block_size_(block_size), projection_id_(projection_id), key_indexing_(key_indexing), index_name_(index_name) {
 
 }
 bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
@@ -356,7 +356,8 @@ bool bottomLayerSorting::next(BlockStreamBase* block)
 			CSBPlusTree<int>* csb_tree = indexBuilding<int>(iter->second);
 			csb_index_list[*chunk_id] = csb_tree;
 		}
-		IndexManager::getInstance()->addIndexToList(state_.key_indexing_, csb_index_list);
+//		IndexManager::getInstance()->addIndexToList(state_.key_indexing_, csb_index_list);
+		IndexManager::getInstance()->insertIndexToList(state_.index_name_, state_.key_indexing_, csb_index_list);
 		break;
 	}
 	default:

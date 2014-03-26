@@ -71,7 +71,7 @@ int main(){
 
 //	return test_csb_classes();
 //	return test_csb_indexing();
-	return test_CSBIndexBuilding();
+	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
 
 }

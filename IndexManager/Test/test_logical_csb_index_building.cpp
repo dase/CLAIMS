@@ -175,7 +175,7 @@ static int test_logical_csb_index_building()
 			int input;
 			scanf("%d",&input);
 
-			LogicalOperator* csb_building = new LogicalCSBIndexBuilding(table_1->getProjectoin(0)->getProjectionID(), table_1->getAttribute(3));
+			LogicalOperator* csb_building = new LogicalCSBIndexBuilding(table_1->getProjectoin(0)->getProjectionID(), table_1->getAttribute(3), "sec_code_index");
 			const NodeID collector_node_id=0;
 			LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::PRINT);
 			root->print();
