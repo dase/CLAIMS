@@ -306,10 +306,20 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			break;
 		}
 		case right_repartition:{
+
+			BlockStreamExpander::State expander_state;
+			expander_state.block_count_in_buffer_=10;
+			expander_state.block_size_=block_size;
+			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state.child_=child_iterator_right;
+			expander_state.schema_=getSchema(dataflow_right.attribute_list_);
+			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
+
+
 			NodeTracker* node_tracker=NodeTracker::getInstance();
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size=block_size;
-			exchange_state.child=child_iterator_right;
+			exchange_state.child=expander;
 			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
@@ -344,9 +354,18 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 		case complete_repartition:{
 
 			/* build left input*/
+			BlockStreamExpander::State expander_state_l;
+			expander_state_l.block_count_in_buffer_=10;
+			expander_state_l.block_size_=block_size;
+			expander_state_l.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state_l.child_=child_iterator_left;
+			expander_state_l.schema_=getSchema(dataflow_left.attribute_list_);
+			BlockStreamIteratorBase* expander_l=new BlockStreamExpander(expander_state_l);
+
+
 			ExpandableBlockStreamExchangeEpoll::State l_exchange_state;
 			l_exchange_state.block_size=block_size;
-			l_exchange_state.child=child_iterator_left;
+			l_exchange_state.child=expander_l;
 			l_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
@@ -361,9 +380,18 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamIteratorBase* l_exchange=new ExpandableBlockStreamExchangeEpoll(l_exchange_state);
 
 			/*build right input*/
+
+			BlockStreamExpander::State expander_state_r;
+			expander_state_r.block_count_in_buffer_=10;
+			expander_state_r.block_size_=block_size;
+			expander_state_r.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state_r.child_=child_iterator_right;
+			expander_state_r.schema_=getSchema(dataflow_right.attribute_list_);
+			BlockStreamIteratorBase* expander_r=new BlockStreamExpander(expander_state_r);
+
 			ExpandableBlockStreamExchangeEpoll::State r_exchange_state;
 			r_exchange_state.block_size=block_size;
-			r_exchange_state.child=child_iterator_right;
+			r_exchange_state.child=expander_r;
 			r_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
