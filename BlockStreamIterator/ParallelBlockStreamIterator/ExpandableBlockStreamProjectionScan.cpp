@@ -70,6 +70,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 		}
 		open_ret_=true;
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
 		broadcaseOpenFinishedSignal();
 	}
 	else{

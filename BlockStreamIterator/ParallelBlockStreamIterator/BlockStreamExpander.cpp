@@ -48,6 +48,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	 */
 	assert(pthread_create(&coordinate_pid_,NULL,coordinate_work,this)==0);
 	printf("coordinate>>>>>>>>>>>>>>...\n");
+	expander_id_=ExpanderTracker::getInstance()->registerNewExpander(block_stream_buffer_);
 //	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
 ////	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
 //	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
@@ -107,7 +108,7 @@ void BlockStreamExpander::print(){
 }
 void* BlockStreamExpander::expanded_work(void* arg){
 	BlockStreamExpander* Pthis=(BlockStreamExpander*)arg;
-	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pthread_self());
+	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pthread_self(),Pthis->expander_id_);
 	Pthis->addIntoInWorkingExpandedThreadList(pthread_self());
 	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
@@ -271,7 +272,7 @@ void* BlockStreamExpander::coordinate_work(void* arg){
 //			}
 //			pthis->callBackThread(*it);
 //		}
-//		usleep(10000);
+//		usleep(100000);
 //		printf("%d thread in expander\n",pthis->in_work_expanded_thread_list_.size());
 ////		break;
 //	}
