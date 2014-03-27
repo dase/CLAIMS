@@ -7,7 +7,7 @@
 
 #include "BlockStreamBuffer.h"
 
-BlockStreamBuffer::BlockStreamBuffer(unsigned block_size, unsigned block_count, Schema* schema) {
+BlockStreamBuffer::BlockStreamBuffer(unsigned block_size, unsigned block_count, Schema* schema):received_block_count_(0),total_block_count_(block_count),block_size_(block_size) {
 	lock_.acquire();
 	for(unsigned i=0;i<block_count;i++){
 		block_stream_empty_list_.push_back(BlockStreamBase::createBlock(schema,block_size));
@@ -19,7 +19,7 @@ BlockStreamBuffer::BlockStreamBuffer(unsigned block_size, unsigned block_count, 
 }
 //njcdhcjdhjhnjcdncjdncj
 BlockStreamBuffer::~BlockStreamBuffer() {
-	printf("BlockStreawmBuffer being deconstructed<><><><><><><><><>!\n");
+//	printf("BlockStreawmBuffer being deconstructed<><><><><><><><><>!\n");
 	while(!block_stream_empty_list_.empty()){
 		const BlockStreamBase* block=block_stream_empty_list_.front();
 		block_stream_empty_list_.pop_front();
@@ -27,7 +27,7 @@ BlockStreamBuffer::~BlockStreamBuffer() {
 	}
 	assert(block_stream_used_list_.empty());
 	sema_empty_block_.destroy();
-	printf("BlockStreawmBuffer being deconstructed<><><><><><><><><>!\n");
+//	printf("BlockStreawmBuffer being deconstructed<><><><><><><><><>!\n");
 }
 
 void BlockStreamBuffer::insertBlock(BlockStreamBase* block){
@@ -46,6 +46,7 @@ void BlockStreamBuffer::insertBlock(BlockStreamBase* block){
 	/* add the empty block which now hold the read data into the used block list*/
 	block_stream_used_list_.push_back(empty_block);
 //	printf("[after inserted]: sema=%d, empty_list=%d\n",sema_empty_block_.get_value(),block_stream_empty_list_.size());
+	received_block_count_++;
 	lock_.release();
 }
 
@@ -85,4 +86,10 @@ unsigned BlockStreamBuffer::getBlockInBuffer(){
 	const bool ret=block_stream_used_list_.size();
 	lock_.release();
 	return ret;
+}
+double BlockStreamBuffer::getBufferUsage(){
+	return getBlockInBuffer()/(double)total_block_count_;
+}
+long BlockStreamBuffer::getReceivedDataSizeInKbytes(){
+	return received_block_count_*block_size_/1024;
 }

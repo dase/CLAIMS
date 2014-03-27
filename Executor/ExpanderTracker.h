@@ -11,14 +11,119 @@
 #include <pthread.h>
 #include <boost/unordered_map.hpp>
 #include <map>
+#include <stack>
 #include "../utility/synch.h"
+#include "../utility/Block/MonitorableBuffer.h"
+#include "../ids.h"
 typedef pthread_t expanded_thread_id;
 
-struct ExpandedThreadStatus{
-	bool call_back_;
+
+enum endpoint_type{stage_src,stage_desc};
+	/**
+	 * Local local_stage endpoint refers to the start or the end of a stage within a segment.
+	 * It could be either exchange, state, or expander.
+	 */
+	struct LocalStageEndPoint{
+		LocalStageEndPoint(endpoint_type tp,std::string name="Not Given",MonitorableBuffer* buffer_handle=0)
+		:type(tp),monitorable_buffer(buffer_handle),end_point_name(name){
+
+		}
+		LocalStageEndPoint():monitorable_buffer(0),end_point_name("Initial"),type(stage_src){
+		}
+		endpoint_type type;
+		MonitorableBuffer* monitorable_buffer;
+		std::string end_point_name;
+	};
+
+//typedef std::pair<LocalStageEndPoint,LocalStageEndPoint> local_stage;
+
+struct local_stage{
+	enum type{from_buffer, buffer_to_buffer, to_buffer,no_buffer,incomplete };
+	local_stage():type_(incomplete){
+
+	}
+	local_stage(const local_stage &r){
+		this->type_=r.type_;
+		this->start_=r.start_;
+		this->end_=r.end_;
+	}
+//	operator=(const local_stage &r){
+//
+//	}
+	local_stage(LocalStageEndPoint start,LocalStageEndPoint end)
+	:start_(start),end_(end){
+		bool start_buffer=start_.monitorable_buffer!=0;
+		bool end_buffer=end_.monitorable_buffer!=0;
+		if(start_buffer){
+			if(end_buffer){
+				type_=buffer_to_buffer;
+			}
+			else{
+				type_=from_buffer;
+			}
+		}
+		else{
+			if(end_buffer){
+				type_=to_buffer;
+			}
+			else{
+				type_=no_buffer;
+			}
+		}
+	}
+	LocalStageEndPoint start_;
+	LocalStageEndPoint end_;
+	type type_;
+	std::string get_type_name(type tp)const{
+		switch(tp){
+		case from_buffer:{
+			return std::string("from_buffer");
+		}
+		case buffer_to_buffer:{
+			return std::string("buffer_to_buffer");
+		}
+		case to_buffer:{
+			return std::string("to_buffer");
+		}
+		case no_buffer:{
+			return std::string("no_buffer");
+		}
+		default:{
+			return std::string("invalid type!");
+		}
+		}
+//		return std::string();
+	}
+	void print(){
+		if(type_==incomplete){
+			printf("Incomplete!\n");
+			return;
+		}
+		printf("%s----->%s, type: %s\n",start_.end_point_name.c_str(),end_.end_point_name.c_str(),get_type_name(type_));
+	}
+
 };
 
+
 class ExpanderTracker {
+
+
+
+	struct ExpandedThreadStatus{
+		bool call_back_;
+
+	};
+
+	/*
+	 * This structure maintains the status of current expander in terms of running stage.
+	 */
+	struct ExpanderStatus{
+		local_stage current_stage;
+		std::stack<LocalStageEndPoint> pending_endpoints;
+		void addNewEndpoint(LocalStageEndPoint);
+		Lock lock;
+	};
+
 public:
 	static ExpanderTracker* getInstance();
 	virtual ~ExpanderTracker();
@@ -26,7 +131,7 @@ public:
 	 * Call this method when a new expanded thread is created, and the
 	 * expander tracker will maintain a status of this thread.
 	 */
-	bool registerNewExpandedThreadStatus(expanded_thread_id id);
+	bool registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id);
 
 	/*
 	 * Call this method just before a expanded thread finishes its work
@@ -47,17 +152,33 @@ public:
 	 * in expander tracker or the thread has be called back.
 	 */
 	bool callbackExpandedThread(expanded_thread_id id);
+
+
+	bool addNewStageEndpoint(expanded_thread_id,LocalStageEndPoint);
+
+
+	ExpanderID registerNewExpander(MonitorableBuffer* buffer);
+
 private:
 	ExpanderTracker();
 private:
 	static ExpanderTracker* instance_;
 
 	Lock lock_;
+
+//	ExpanderID expander_id_cur_;
+
+	std::map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
+
+	std::map<ExpanderID,ExpanderStatus> expander_id_to_status_;
+
 	/*
 	 * A unordered map from expanded thread id to expanded thread status
 	 */
 public://for debug, this should be private!
 	std::map<expanded_thread_id,ExpandedThreadStatus> id_to_status_;
+
+
 };
 
 #endif /* EXPANDERTRACKER_H_ */

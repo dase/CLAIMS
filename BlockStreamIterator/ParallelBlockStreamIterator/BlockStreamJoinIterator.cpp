@@ -65,6 +65,8 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 	unsigned long long int timer;
 	if(tryEntryIntoSerializedSection(0)){
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Hash join build",0));
+
 	timer=curtick();
 
 

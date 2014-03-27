@@ -62,6 +62,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
 	if(tryEntryIntoSerializedSection(0)){
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Aggregation hash build",0));
+
 		printf("Winning threads!\n");
 		unsigned outputindex=0;
 		for(unsigned i=0;i<state_.groupByIndex.size();i++)
@@ -262,6 +264,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 				bucket_cur_=0;
 				hashtable_->placeIterator(it_,bucket_cur_);
 				open_finished_end_=true;
+				ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation read",0));
 		}
 		barrierArrive(2);
 }

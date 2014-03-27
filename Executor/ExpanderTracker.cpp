@@ -7,8 +7,19 @@
 
 #include "ExpanderTracker.h"
 #include <stdio.h>
+#include "../IDsGenerator.h"
+
+
+
+
+
+
+
+
+
+
 ExpanderTracker* ExpanderTracker::instance_=0;
-ExpanderTracker::ExpanderTracker() {
+ExpanderTracker::ExpanderTracker(){
 	// TODO Auto-generated constructor stub
 
 }
@@ -23,19 +34,32 @@ ExpanderTracker* ExpanderTracker::getInstance(){
 	}
 	return instance_;
 }
-bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id){
+bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id){
 	lock_.acquire();
-	if(id_to_status_.find(id)==id_to_status_.end()){
+	if(id_to_status_.find(id)!=id_to_status_.end()){
+		assert(false);
+		lock_.release();
+		return false;
+	}else{
 		ExpandedThreadStatus status;
 		status.call_back_=false;
 		id_to_status_[id]=status;
 //		printf("[ExpanderTracker]: %lx is registered!\n",id);
-		lock_.release();
-		return true;
 	}
-	assert(false);
+
+	if(thread_id_to_expander_id_.find(exp_id)!=thread_id_to_expander_id_.end()){
+		assert(false);
+		lock_.release();
+		return false;
+	}
+	else{
+		thread_id_to_expander_id_[exp_id]=exp_id;
+	}
+
+
+
 	lock_.release();
-	return false;
+	return true;
 }
 bool ExpanderTracker::deleteExpandedThreadStatus(expanded_thread_id id){
 	lock_.acquire();
@@ -75,3 +99,82 @@ bool ExpanderTracker::callbackExpandedThread(expanded_thread_id id){
 	lock_.release();
 	return false;
 }
+
+bool ExpanderTracker::addNewStageEndpoint(expanded_thread_id tid ,LocalStageEndPoint endpoint){
+
+
+	lock_.acquire();
+	if(thread_id_to_expander_id_.find(tid)==thread_id_to_expander_id_.end()){
+		lock_.release();
+//		assert(false);
+		return false;
+	}
+	ExpanderID expender_id=thread_id_to_expander_id_[tid];
+
+	if(expander_id_to_status_.find(expender_id)==expander_id_to_status_.end()){
+		lock_.release();
+		assert(false);
+		return false;
+	}
+	expander_id_to_status_[expender_id].addNewEndpoint(endpoint);
+	lock_.release();
+	return true;
+}
+
+ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer){
+	ExpanderID ret;
+	lock_.acquire();
+	ret=IDsGenerator::getInstance()->getUniqueExpanderID();
+	expander_id_to_status_[ret]=ExpanderStatus();
+	expander_id_to_status_[ret].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
+	lock_.release();
+	return ret;
+
+}
+void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_point){
+//	lock.acquire();
+//	if(pending_endpoints.empty()){
+//		pending_endpoints.push(new_end_point);
+//		lock.release();
+//		return;
+//	}
+//	//if the endpoint is exchange or state_stage_start, then the segment might step into a new local stage.
+//	switch(new_end_point.type){
+//	case endpoint_state_stage_start:{
+//		assert(!pending_endpoints.empty());
+//		LocalStageEndPoint top=pending_endpoints.top();
+//		pending_endpoints.pop();
+//		current_stage=local_stage(new_end_point,top);
+//		break;
+//	}
+//	case endpoint_exchange_:{
+//		assert(!pending_endpoints.empty());
+//		LocalStageEndPoint top=pending_endpoints.top();
+//		pending_endpoints.pop();
+//		current_stage=local_stage(new_end_point,top);
+//		break;
+//	}
+//	default:{
+//		pending_endpoints.push(new_end_point);
+//		lock.release();
+//		return;
+//	}
+//	}
+//
+//	lock.release();
+
+	lock.acquire();
+	if(new_end_point.type==stage_desc){
+		pending_endpoints.push(new_end_point);
+		printf("=======stage desc:%s\n",new_end_point.end_point_name.c_str());
+	}
+	else{
+		/*new_end_point.type==stage_end*/
+		LocalStageEndPoint top=pending_endpoints.top();
+		pending_endpoints.pop();
+		current_stage=local_stage(new_end_point,top);
+		printf("The execution is in a new stage: %s ---> %s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
+	}
+	lock.release();
+}
+

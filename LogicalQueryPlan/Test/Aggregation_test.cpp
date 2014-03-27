@@ -524,10 +524,10 @@ static int aggregation_test(){
 
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //		aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 ////
 //		std::vector<Attribute> aggregation_attributes_1;
