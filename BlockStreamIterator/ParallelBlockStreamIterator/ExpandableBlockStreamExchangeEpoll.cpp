@@ -110,7 +110,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		}
 
 
-
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",0));
 
 		open_finished_=true;
 //		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));

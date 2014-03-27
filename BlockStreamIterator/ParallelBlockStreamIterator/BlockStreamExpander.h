@@ -64,6 +64,8 @@ private:
 
 	pthread_t coordinate_pid_;
 
+	ExpanderID expander_id_;
+
 	/*
 	 * The set of threads that have been called back but have not
 	 * finished the remaining work yet.
