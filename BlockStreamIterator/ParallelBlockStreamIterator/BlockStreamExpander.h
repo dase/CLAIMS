@@ -14,7 +14,8 @@
 #include "../../Schema/Schema.h"
 #include "../../Block/BlockStreamBuffer.h"
 #include "../../lock.h"
-class BlockStreamExpander:public BlockStreamIteratorBase {
+#include "../../utility/ExpandabilityShrinkability.h"
+class BlockStreamExpander:public BlockStreamIteratorBase,public ExpandabilityShrinkability {
 public:
 	class State{
 	public:
@@ -46,8 +47,12 @@ private:
 	static void* expanded_work(void* arg);
 	static void* coordinate_work(void* arg);
 	bool ChildExhausted();
-	bool createNewThread();
-	void callBackThread(pthread_t pid);
+	bool createNewExpandedThread();
+	void terminateExpandedThread(pthread_t pid);
+
+	bool Expand();
+
+	bool Shrink();
 
 	void addIntoInWorkingExpandedThreadList(pthread_t pid);
 	bool removeFromInWorkingExpandedThreadList(pthread_t pid);

@@ -15,6 +15,7 @@
 #include "../utility/synch.h"
 #include "../utility/Block/MonitorableBuffer.h"
 #include "../ids.h"
+#include "../utility/ExpandabilityShrinkability.h"
 typedef pthread_t expanded_thread_id;
 
 
@@ -44,16 +45,16 @@ struct local_stage{
 	}
 	local_stage(const local_stage &r){
 		this->type_=r.type_;
-		this->start_=r.start_;
-		this->end_=r.end_;
+		this->dataflow_src_=r.dataflow_src_;
+		this->dataflow_desc_=r.dataflow_desc_;
 	}
 //	operator=(const local_stage &r){
 //
 //	}
 	local_stage(LocalStageEndPoint start,LocalStageEndPoint end)
-	:start_(start),end_(end){
-		bool start_buffer=start_.monitorable_buffer!=0;
-		bool end_buffer=end_.monitorable_buffer!=0;
+	:dataflow_src_(start),dataflow_desc_(end){
+		bool start_buffer=dataflow_src_.monitorable_buffer!=0;
+		bool end_buffer=dataflow_desc_.monitorable_buffer!=0;
 		if(start_buffer){
 			if(end_buffer){
 				type_=buffer_to_buffer;
@@ -71,8 +72,8 @@ struct local_stage{
 			}
 		}
 	}
-	LocalStageEndPoint start_;
-	LocalStageEndPoint end_;
+	LocalStageEndPoint dataflow_src_;
+	LocalStageEndPoint dataflow_desc_;
 	type type_;
 	std::string get_type_name(type tp)const{
 		switch(tp){
@@ -99,7 +100,7 @@ struct local_stage{
 			printf("Incomplete!\n");
 			return;
 		}
-		printf("%s----->%s, type: %s\n",start_.end_point_name.c_str(),end_.end_point_name.c_str(),get_type_name(type_));
+		printf("%s----->%s, type: %s\n",dataflow_src_.end_point_name.c_str(),dataflow_desc_.end_point_name.c_str(),get_type_name(type_));
 	}
 
 };
@@ -131,7 +132,7 @@ public:
 	 * Call this method when a new expanded thread is created, and the
 	 * expander tracker will maintain a status of this thread.
 	 */
-	bool registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id);
+	bool registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id,ExpandabilityShrinkability* expand_shrink);
 
 	/*
 	 * Call this method just before a expanded thread finishes its work
@@ -158,9 +159,16 @@ public:
 
 
 	ExpanderID registerNewExpander(MonitorableBuffer* buffer);
+	void unregisterExpander(ExpanderID expander_id);
 
 private:
 	ExpanderTracker();
+	static void* monitoringThread(void* arg);
+
+	/*
+	 * The access of current_stage might cause bug if thread-safe is not concerned.
+	 */
+	int decideExpandingOrShrinking(local_stage& current_stage);
 private:
 	static ExpanderTracker* instance_;
 
@@ -171,6 +179,8 @@ private:
 	std::map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
 
 	std::map<ExpanderID,ExpanderStatus> expander_id_to_status_;
+
+	std::map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
 
 	/*
 	 * A unordered map from expanded thread id to expanded thread status
