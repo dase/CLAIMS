@@ -8,20 +8,17 @@
 #include "ExpanderTracker.h"
 #include <stdio.h>
 #include "../IDsGenerator.h"
+#include <pthread.h>
 
-
-
-
-
-
-
-
-
+#define DECISION_SHRINK 0
+#define DECISION_EXPAND 1
+#define DECISION_KEEP 2
 
 ExpanderTracker* ExpanderTracker::instance_=0;
 ExpanderTracker::ExpanderTracker(){
 	// TODO Auto-generated constructor stub
-
+	pthread_t pid;
+	pthread_create(&pid,0,monitoringThread,this);
 }
 
 ExpanderTracker::~ExpanderTracker() {
@@ -34,7 +31,7 @@ ExpanderTracker* ExpanderTracker::getInstance(){
 	}
 	return instance_;
 }
-bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id){
+bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id,ExpandabilityShrinkability* expand_shrink){
 	lock_.acquire();
 	if(id_to_status_.find(id)!=id_to_status_.end()){
 		assert(false);
@@ -47,13 +44,14 @@ bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,Expa
 //		printf("[ExpanderTracker]: %lx is registered!\n",id);
 	}
 
-	if(thread_id_to_expander_id_.find(exp_id)!=thread_id_to_expander_id_.end()){
+	if(thread_id_to_expander_id_.find(id)!=thread_id_to_expander_id_.end()){
 		assert(false);
 		lock_.release();
 		return false;
 	}
 	else{
-		thread_id_to_expander_id_[exp_id]=exp_id;
+		thread_id_to_expander_id_[id]=exp_id;
+		expander_id_to_expand_shrink_[exp_id]=expand_shrink;
 	}
 
 
@@ -129,6 +127,14 @@ ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer){
 	expander_id_to_status_[ret].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
 	lock_.release();
 	return ret;
+}
+void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
+
+	lock_.acquire();
+	expander_id_to_status_.erase(expander_id);
+	expander_id_to_expand_shrink_.erase(expander_id);
+//	expander_id_to_status_[ret].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
+	lock_.release();
 
 }
 void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_point){
@@ -177,4 +183,41 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_
 	}
 	lock.release();
 }
+int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage){
+	if(current_stage.type_==local_stage::incomplete||current_stage.type_==local_stage::no_buffer)
+		return DECISION_KEEP;
+	switch(current_stage.type_){
+	case local_stage::incomplete:{
+		return DECISION_KEEP;
+	}
+	case local_stage::no_buffer:{
+		return DECISION_KEEP;
+	}
+	case local_stage::from_buffer:{
+		printf("Bottom buffer usage: %lf\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage());
+		return DECISION_KEEP;
+	}
+	case local_stage::to_buffer:{
+		printf("Top buffer usage: %lf\n",current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage());
+		return DECISION_KEEP;
+	}
+	case local_stage::buffer_to_buffer:{
+		printf("Top buffer usage: %lf\t Bottom buffer usage: %lf\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage(),current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage());
+		return DECISION_KEEP;
+	}
+	}
 
+	return DECISION_KEEP;
+
+
+}
+void* ExpanderTracker::monitoringThread(void* arg){
+	ExpanderTracker* Pthis=(ExpanderTracker*)arg;
+	while(true){
+//		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
+		for(std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();it!=Pthis->expander_id_to_status_.end();it++){
+			Pthis->decideExpandingOrShrinking(it->second.current_stage);
+			usleep(10000);
+		}
+	}
+}

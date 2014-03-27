@@ -36,8 +36,9 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	block_stream_buffer_=new BlockStreamBuffer(state_.block_size_,state_.block_count_in_buffer_,state_.schema_);
 
 	in_work_expanded_thread_list_.clear();
+	expander_id_=ExpanderTracker::getInstance()->registerNewExpander(block_stream_buffer_);
 	for(unsigned i=0;i<state_.init_thread_count_;i++){
-		if(createNewThread()==false){
+		if(createNewExpandedThread()==false){
 			printf("Failed!**************\n");
 			return false;
 		}
@@ -48,7 +49,6 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	 */
 	assert(pthread_create(&coordinate_pid_,NULL,coordinate_work,this)==0);
 	printf("coordinate>>>>>>>>>>>>>>...\n");
-	expander_id_=ExpanderTracker::getInstance()->registerNewExpander(block_stream_buffer_);
 //	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
 ////	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
 //	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
@@ -108,7 +108,7 @@ void BlockStreamExpander::print(){
 }
 void* BlockStreamExpander::expanded_work(void* arg){
 	BlockStreamExpander* Pthis=(BlockStreamExpander*)arg;
-	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pthread_self(),Pthis->expander_id_);
+	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pthread_self(),Pthis->expander_id_,Pthis);
 	Pthis->addIntoInWorkingExpandedThreadList(pthread_self());
 	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
@@ -186,7 +186,7 @@ bool BlockStreamExpander::ChildExhausted(){
 //	return finished_thread_count_==in_work_expanded_thread_list_.size();
 	return ret;
 }
-bool BlockStreamExpander::createNewThread(){
+bool BlockStreamExpander::createNewExpandedThread(){
 	printf("New expanded thread created!\n");
 	pthread_t tid;
 	const int error=pthread_create(&tid,NULL,expanded_work,this);
@@ -202,7 +202,7 @@ bool BlockStreamExpander::createNewThread(){
 //	in_work_expanded_thread_list_.insert(tid);
 	return true;
 }
-void BlockStreamExpander::callBackThread(pthread_t pid){
+void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
 	if(ExpanderTracker::getInstance()->callbackExpandedThread(pid)){
 
 //		in_work_expanded_thread_list_.erase(pid);
@@ -277,4 +277,22 @@ void* BlockStreamExpander::coordinate_work(void* arg){
 ////		break;
 //	}
 //	printf("coordinate thread is terminated!!!!!!!!!!!!!\n");
+}
+bool BlockStreamExpander::Expand(){
+	return createNewExpandedThread();
+}
+
+bool BlockStreamExpander::Shrink(){
+	bool ret;
+	lock_.acquire();
+	if(in_work_expanded_thread_list_.empty()){
+		ret=false;
+	}
+	else{
+		pthread_t cencel_thread_id=*in_work_expanded_thread_list_.begin();
+		in_work_expanded_thread_list_.erase(cencel_thread_id);
+		this->terminateExpandedThread(cencel_thread_id);
+	}
+	lock_.release();
+	return ret;
 }
