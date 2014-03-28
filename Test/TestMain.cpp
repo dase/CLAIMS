@@ -39,6 +39,7 @@
 #include "../IndexManager/Test/test_csb_indexing.cpp"
 #include "../IndexManager/Test/test_CSB_index_building.cpp"
 #include "../IndexManager/Test/test_logical_csb_index_building.cpp"
+#include "../IndexManager/Test/test_index_scan_iterator.cpp"
 
 int main(){
 //	return testGenerateIteratorTree();
@@ -70,8 +71,9 @@ int main(){
 //	return in_iterator_test();
 
 //	return test_csb_classes();
-	return test_csb_indexing();
+//	return test_csb_indexing();
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
+	return test_index_scan_iterator();
 
 }

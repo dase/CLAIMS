@@ -36,7 +36,12 @@ public:
 	template <typename T>
 	std::map<ChunkID, CSBPlusTree<T>* > getIndexList(unsigned long attr_index_id);
 
+	std::map<ChunkID, void* > getAttrIndex(unsigned long attr_index_id);
+
 	bool deleteIndexFromList(unsigned long index_id);
+
+	data_type getIndexType(unsigned long index_id);
+
 private:
 	IndexManager();
 

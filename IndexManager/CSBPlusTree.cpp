@@ -34,13 +34,20 @@ void cheak_com(){
 	CCSBLeafNodeGroup<int>();
 	CCSBLeafNodeGroup<int>* leaf = new CCSBLeafNodeGroup<int> (1);
 	data_offset<int>* data = NULL;
-	CSBPlusTree<int>* csb = new CSBPlusTree<int>();
-	csb->BulkLoad(data, 0);
-	csb->printDoubleLinkedList();
-	csb->printTree();
-	csb->Search(0);
-	csb->rangeQuery(0, 0);
-	csb->Insert(*data);
+	CSBPlusTree<int>* csb_int = new CSBPlusTree<int>();
+	csb_int->BulkLoad(data, 0);
+	csb_int->printDoubleLinkedList();
+	csb_int->printTree();
+	csb_int->Search(0);
+	csb_int->rangeQuery(0, 0);
+	csb_int->Insert(*data);
+	CSBPlusTree<short>* csb_short = new CSBPlusTree<short>();
+	csb_short->rangeQuery(0, 0);
+	CSBPlusTree<unsigned long>* csb_u_long = new CSBPlusTree<unsigned long>();
+	csb_u_long->rangeQuery(0, 0);
+	CSBPlusTree<float>* csb_float = new CSBPlusTree<float>();
+	csb_float->rangeQuery(0, 0);
+
 }
 
 

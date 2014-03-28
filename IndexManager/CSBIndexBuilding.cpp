@@ -43,7 +43,6 @@ bool bottomLayerCollecting::open(const PartitionOffset& partition_offset)
 		}
 		else{
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
-			chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		}
 		open_ret_=true;
 		broadcaseOpenFinishedSignal();
@@ -181,8 +180,6 @@ BlockStreamBase* bottomLayerCollecting::AtomicPopBlockStream()
 
 bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_block& rb)
 {
-//	if(chunk_reader_iterator_==0)
-//		return false;
 	if (chunk_reader_iterator_==0||chunk_reader_iterator_->nextBlock(block) == false)
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
@@ -202,10 +199,7 @@ bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_
 	}
 	rb.chunk_offset = chunk_offset_;
 	lock_.acquire();
-	if (block_offset_ == 0 && chunk_offset_ == 0)
-		rb.block_offset = block_offset_++;
-	else
-		rb.block_offset = ++block_offset_;
+	rb.block_offset = ++block_offset_;
 	lock_.release();
 	rb.tuple_offset = 0;
 	return true;
