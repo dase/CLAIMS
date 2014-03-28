@@ -140,6 +140,21 @@ std::map<ChunkID, CSBPlusTree<T>* > IndexManager::getIndexList(unsigned long att
 	return ret;
 }
 
+std::map<ChunkID, void* > IndexManager::getAttrIndex(unsigned long attr_index_id)
+{
+	map<ChunkID, void* > ret;
+	ret.clear();
+	if (csb_index_.find(attr_index_id) == csb_index_.end())
+		cout << "[WARNING: IndexManager.cpp->getIndexList()]: The index id " << attr_index_id << "hasn't be used to mapping a CSB+ column index!\n";
+	else
+	{
+		map<unsigned long, attr_index_list*>::iterator iter = csb_index_.find(attr_index_id);
+		for (map<ChunkID, void*>::iterator iter_ = iter->second->csb_tree_list.begin(); iter_ != iter->second->csb_tree_list.end(); iter_++)
+			ret[iter_->first] = (iter_->second);
+	}
+	return ret;
+}
+
 bool IndexManager::deleteIndexFromList(unsigned long index_id)
 {
 	if (csb_index_.find(index_id) == csb_index_.end())
@@ -151,4 +166,14 @@ bool IndexManager::deleteIndexFromList(unsigned long index_id)
 		 */
 		csb_index_.erase(index_id);
 	}
+}
+
+data_type IndexManager::getIndexType(unsigned long index_id)
+{
+	if (id_to_column_attribute.find(index_id) == id_to_column_attribute.end())
+	{
+		cout << "[ERROR: IndexManager.cpp->getIndexType()]: The index id " << index_id << "hasn't be used to mapping a CSB+ column index!\n";
+		exit(-1);
+	}
+	return id_to_column_attribute.find(index_id)->second.attrType->type;
 }
