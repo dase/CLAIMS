@@ -33,6 +33,8 @@
 #include "../../configure.h"
 #include "../../rename.h"
 #include "../../rdtsc.h"
+#define BUFFER_SIZE_IN_EXCHANGE 100
+
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
 	sem_open_.set_value(1);
@@ -66,7 +68,8 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		socket_fd_lower_list=new int[nlowers];
 //		lower_ip_array=new std::string[nlowers];
 
-		buffer=new BlockStreamBuffer(state.block_size,nlowers,state.schema);
+		buffer=new BlockStreamBuffer(state.block_size,BUFFER_SIZE_IN_EXCHANGE,state.schema);
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -110,7 +113,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		}
 
 
-		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",0));
 
 		open_finished_=true;
 //		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
@@ -127,6 +129,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 }
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
+//	usleep(10000);
 	while(nexhausted_lowers<nlowers){
 		if(buffer->getBlock(*block)){
 			return true;
@@ -157,7 +160,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	received_block_stream_->~BlockStreamBase();
 	buffer->~BlockStreamBuffer();
-
+	printf("Buffer is freed in Exchange!\n");
 	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
 	CloseTheSocket();
@@ -523,9 +526,9 @@ bool ExpandableBlockStreamExchangeEpoll::SetSocketNonBlocking(int socket_fd){
 void* ExpandableBlockStreamExchangeEpoll::debug(void* arg){
 	ExpandableBlockStreamExchangeEpoll* Pthis=(ExpandableBlockStreamExchangeEpoll*)arg;
 	while(true){
-		if(Pthis->state.exchange_id==2){
-//		printf("Upper: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
+//		if(Pthis->state.exchange_id==2){
+		printf("Upper: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
 		usleep(100000);
-		}
+//		}
 	}
 }

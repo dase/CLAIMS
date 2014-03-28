@@ -31,6 +31,11 @@ enum endpoint_type{stage_src,stage_desc};
 		}
 		LocalStageEndPoint():monitorable_buffer(0),end_point_name("Initial"),type(stage_src){
 		}
+		LocalStageEndPoint(const LocalStageEndPoint& r){
+			this->type=r.type;
+			this->monitorable_buffer=r.monitorable_buffer;
+			this->end_point_name=r.end_point_name;
+		}
 		endpoint_type type;
 		MonitorableBuffer* monitorable_buffer;
 		std::string end_point_name;

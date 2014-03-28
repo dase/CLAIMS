@@ -11,7 +11,7 @@
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
-#define NUM_OF_EXPANDED_THREADS 5
+#define NUM_OF_EXPANDED_THREADS 1
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -266,7 +266,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 		case left_repartition:{
 	//		state.child_left
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
 			expander_state.child_=child_iterator_left;
@@ -308,7 +308,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 		case right_repartition:{
 
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
 			expander_state.child_=child_iterator_right;
@@ -355,7 +355,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 
 			/* build left input*/
 			BlockStreamExpander::State expander_state_l;
-			expander_state_l.block_count_in_buffer_=10;
+			expander_state_l.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state_l.block_size_=block_size;
 			expander_state_l.init_thread_count_=NUM_OF_EXPANDED_THREADS;
 			expander_state_l.child_=child_iterator_left;
@@ -382,7 +382,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			/*build right input*/
 
 			BlockStreamExpander::State expander_state_r;
-			expander_state_r.block_count_in_buffer_=10;
+			expander_state_r.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state_r.block_size_=block_size;
 			expander_state_r.init_thread_count_=NUM_OF_EXPANDED_THREADS;
 			expander_state_r.child_=child_iterator_right;
