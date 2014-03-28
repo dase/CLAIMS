@@ -15,6 +15,9 @@
 #include "../../Block/BlockStreamBuffer.h"
 #include "../../lock.h"
 #include "../../utility/ExpandabilityShrinkability.h"
+
+#define EXPANDER_BUFFER_SIZE 100
+
 class BlockStreamExpander:public BlockStreamIteratorBase,public ExpandabilityShrinkability {
 public:
 	class State{

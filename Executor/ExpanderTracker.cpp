@@ -126,6 +126,7 @@ ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer){
 	expander_id_to_status_[ret]=ExpanderStatus();
 	expander_id_to_status_[ret].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
 	lock_.release();
+	printf("New Expander is registered, ID=%ld\n",ret);
 	return ret;
 }
 void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
@@ -133,7 +134,6 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
 	lock_.acquire();
 	expander_id_to_status_.erase(expander_id);
 	expander_id_to_expand_shrink_.erase(expander_id);
-//	expander_id_to_status_[ret].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
 	lock_.release();
 
 }
@@ -213,11 +213,38 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage){
 }
 void* ExpanderTracker::monitoringThread(void* arg){
 	ExpanderTracker* Pthis=(ExpanderTracker*)arg;
+	int cur=0;
 	while(true){
 //		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
-		for(std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();it!=Pthis->expander_id_to_status_.end();it++){
-			Pthis->decideExpandingOrShrinking(it->second.current_stage);
-			usleep(10000);
+		usleep(100000);
+		Pthis->lock_.acquire();
+		if(Pthis->expander_id_to_status_.size()<=cur){
+			cur=0;
+			Pthis->lock_.release();
+			continue;
 		}
+
+		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
+		for(int tmp=0;tmp<cur;tmp++)
+			it++;
+		printf("%s---->%s",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str());
+		Pthis->decideExpandingOrShrinking(it->second.current_stage);
+		Pthis->lock_.release();
+		cur++;
+
+//
+//
+//		for(std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();it!=Pthis->expander_id_to_status_.end();it++){
+//			Pthis->lock_.acquire();
+//			if(Pthis->expander_id_to_status_.find(it->first)==Pthis->expander_id_to_status_.end()){
+//				Pthis->lock_.release();
+//				continue;
+//			}
+//
+//			printf("%s---->%s",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str());
+//			Pthis->decideExpandingOrShrinking(it->second.current_stage);
+//			Pthis->lock_.release();
+//			usleep(10000);
+//		}
 	}
 }

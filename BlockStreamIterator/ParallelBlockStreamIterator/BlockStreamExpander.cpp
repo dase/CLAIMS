@@ -48,7 +48,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	 * The following three lines test set callback status to expanded threads.
 	 */
 	assert(pthread_create(&coordinate_pid_,NULL,coordinate_work,this)==0);
-	printf("coordinate>>>>>>>>>>>>>>...\n");
+//	printf("coordinate>>>>>>>>>>>>>>...\n");
 //	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
 ////	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
 //	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
@@ -76,6 +76,7 @@ bool BlockStreamExpander::close(){
 //	pthread_cancel(coordinate_pid_);
 //	void* res;
 //	pthread_join(coordinate_pid_,&res);
+	ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
 	for(std::set<pthread_t>::iterator it=in_work_expanded_thread_list_.begin();it!=in_work_expanded_thread_list_.end();it++){
 //		pthread_cancel(*it);
 		void* res;
@@ -94,10 +95,11 @@ bool BlockStreamExpander::close(){
 
 //	assert(ExpanderTracker::getInstance()->id_to_status_.size()==0);
 	block_stream_buffer_->~BlockStreamBuffer();
+	printf("Buffer is freed in Expander!\n");
 
 	state_.child_->close();
 	thread_count_=0;
-	printf("<<<<<<<Expander closed!>>>>>>>>>>\n");
+	printf("<<<<<<<Expander %ld closed!>>>>>>>>>>\n",expander_id_);
 	return true;
 }
 void BlockStreamExpander::print(){

@@ -137,7 +137,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			BlockStreamAggregationIterator* private_aggregation=new BlockStreamAggregationIterator(aggregation_state);
 
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=THREAD_COUNT;
 			expander_state.child_=private_aggregation;
@@ -181,7 +181,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 		case repartition:{
 
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=THREAD_COUNT;
 			expander_state.child_=child_->getIteratorTree(block_size);;

@@ -94,7 +94,7 @@ bool Coordinator::SetupTheTheron() {
 	EndPointPort = port.str();
 	ip_port = std::string("tcp://") + ip + ":" + port.str();
 
-	logging->log("[Coordinator]: Now is initializing the Theron EndPoint as ");
+	logging->log("[Coordinator]: Now is initializing the Theron EndPoint as %s",ip_port.c_str());
 
 	endpoint = new Theron::EndPoint((ip + ":" + port.str()).c_str(),
 			ip_port.c_str());
