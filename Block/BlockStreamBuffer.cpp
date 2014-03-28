@@ -83,12 +83,12 @@ unsigned BlockStreamBuffer::getBlockInBuffer(){
 //	if(block_stream_used_list_.empty())
 //		return 0;
 //	return block_stream_used_list_.size();
-	const bool ret=block_stream_used_list_.size();
+	const unsigned ret=block_stream_used_list_.size();
 	lock_.release();
 	return ret;
 }
 double BlockStreamBuffer::getBufferUsage(){
-	return getBlockInBuffer()/(double)total_block_count_;
+	return (double)getBlockInBuffer()/(double)total_block_count_;
 }
 long BlockStreamBuffer::getReceivedDataSizeInKbytes(){
 	return received_block_count_*block_size_/1024;
