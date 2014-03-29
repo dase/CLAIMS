@@ -29,7 +29,6 @@ private:
 	int socket_fd;
 	Theron::EndPoint* endpoint;
 	Theron::Framework* framework;
-	Theron::Actor* coordinateActor;
 	std::string EndPointPort;
 	std::vector<std::pair<std::string,std::string> > PeersIpPort;
 	Logging* logging;

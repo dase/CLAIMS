@@ -37,7 +37,9 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
  */
 
 	/*Before initializing Resource Manager, the instance ip and port should be decided.*/
+
 	InitializeResourceManager();
+//		return;
 
 	InitializeStorage();
 
@@ -51,11 +53,26 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	iteratorExecutorSlave=new IteratorExecutorSlave();
 
 	exchangeTracker =new ExchangeTracker();
-	ExpanderTracker::getInstance();
+	expander_tracker_=ExpanderTracker::getInstance();
 }
 
 Environment::~Environment() {
-	// TODO Auto-generated destructor stub
+	logging_->~Logging();
+	portManager->~PortManager();
+	catalog_->~Catalog();
+	coordinator->~Coordinator();
+	if(ismaster_){
+		iteratorExecutorMaster->~IteratorExecutorMaster();
+		resourceManagerMaster_->~ResourceManagerMaster();
+		blockManagerMaster_->~BlockManagerMaster();
+	}
+	iteratorExecutorSlave->~IteratorExecutorSlave();
+	exchangeTracker->~ExchangeTracker();
+	resourceManagerSlave_->~ResourceManagerSlave();
+	blockManager_->~BlockManager();
+	bufferManager_->~BufferManager();
+	expander_tracker_->~ExpanderTracker();
+	endpoint->~AdaptiveEndPoint();
 }
 Environment* Environment::getInstance(bool ismaster){
 	if(_instance==0){

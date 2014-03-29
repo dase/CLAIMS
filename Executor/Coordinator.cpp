@@ -42,10 +42,8 @@ Coordinator::Coordinator() {
 }
 
 Coordinator::~Coordinator() {
-	// TODO Auto-generated destructor stub
 	framework->~Framework();
 	endpoint->~EndPoint();
-	coordinateActor->~Actor();
 }
 bool Coordinator::PrepareTheSocket() {
 	libconfig::Config cfg;
@@ -62,8 +60,8 @@ bool Coordinator::PrepareTheSocket() {
 	}
 	my_addr.sin_family = AF_INET;
 	my_addr.sin_port = htons(atoi(master_port.c_str()));
-	std::cout << "Socket port:" << master_port << std::endl;
 	my_addr.sin_addr.s_addr = INADDR_ANY;
+
 	bzero(&(my_addr.sin_zero), 8);
 
 	/* Enable address reuse */
@@ -241,7 +239,7 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		Cthis->SendReadyNotificationToNewNode(socket_fd_new);
 
 		close(socket_fd_new);
-
+		receiver->~TimeOutReceiver();
 	}
 }
 

@@ -48,8 +48,10 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 
 AdaptiveEndPoint::~AdaptiveEndPoint() {
 	// TODO Auto-generated destructor stub
+//	return;
+	connectionActor->~Actor();
 	framework->~Framework();
-	this->~EndPoint();
+//	this->~EndPoint();
 }
 
 bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
