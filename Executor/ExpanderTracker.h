@@ -16,6 +16,7 @@
 #include "../utility/Block/MonitorableBuffer.h"
 #include "../ids.h"
 #include "../utility/ExpandabilityShrinkability.h"
+#include "../Logging.h"
 typedef pthread_t expanded_thread_id;
 
 
@@ -137,7 +138,7 @@ public:
 	 * Call this method when a new expanded thread is created, and the
 	 * expander tracker will maintain a status of this thread.
 	 */
-	bool registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id,ExpandabilityShrinkability* expand_shrink);
+	bool registerNewExpandedThreadStatus(expanded_thread_id id,ExpanderID exp_id);
 
 	/*
 	 * Call this method just before a expanded thread finishes its work
@@ -163,7 +164,7 @@ public:
 	bool addNewStageEndpoint(expanded_thread_id,LocalStageEndPoint);
 
 
-	ExpanderID registerNewExpander(MonitorableBuffer* buffer);
+	ExpanderID registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink);
 	void unregisterExpander(ExpanderID expander_id);
 
 private:
@@ -173,7 +174,7 @@ private:
 	/*
 	 * The access of current_stage might cause bug if thread-safe is not concerned.
 	 */
-	int decideExpandingOrShrinking(local_stage& current_stage);
+	int decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism);
 private:
 	static ExpanderTracker* instance_;
 
@@ -193,6 +194,7 @@ private:
 public://for debug, this should be private!
 	std::map<expanded_thread_id,ExpandedThreadStatus> id_to_status_;
 
+	Logging* log_;
 
 };
 
