@@ -13,7 +13,8 @@ Catalog::Catalog() {
 }
 
 Catalog::~Catalog() {
-	// TODO Auto-generated destructor stub
+	logging->~Logging();
+	binding_->~ProjectionBinding();
 }
 Catalog* Catalog::getInstance(){
 	if(instance_==0){

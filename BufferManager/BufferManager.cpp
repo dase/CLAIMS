@@ -23,6 +23,7 @@ BufferManager::BufferManager() {
 
 BufferManager::~BufferManager() {
 	// TODO Auto-generated destructor stub
+	logging_->~Logging();
 }
 
 BufferManager* BufferManager::getInstance(){
