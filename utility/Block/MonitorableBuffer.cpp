@@ -7,12 +7,17 @@
 
 #include "MonitorableBuffer.h"
 
-MonitorableBuffer::MonitorableBuffer() {
-	// TODO Auto-generated constructor stub
+MonitorableBuffer::MonitorableBuffer():input_complete_(false){
 
 }
 
 MonitorableBuffer::~MonitorableBuffer() {
-	// TODO Auto-generated destructor stub
+
 }
 
+void MonitorableBuffer::setInputComplete(){
+	input_complete_=true;
+}
+bool MonitorableBuffer::inputComplete()const{
+	return input_complete_==true;
+}

@@ -350,6 +350,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 
 		try{
 	while(true){
+		usleep(1000);
 		pthread_testcancel();
 		bool consumed=false;
 		int partition_id=Pthis->buffer_for_sending_->getBlockForSending(Pthis->block_for_sending);

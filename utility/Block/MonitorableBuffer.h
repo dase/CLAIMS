@@ -14,6 +14,10 @@ public:
 	virtual ~MonitorableBuffer();
 	virtual double getBufferUsage()=0;
 	virtual long getReceivedDataSizeInKbytes() =0;
+	void setInputComplete();
+	bool inputComplete()const;
+private:
+	bool input_complete_;
 };
 
 #endif /* MONITORABLEBUFFER_H_ */

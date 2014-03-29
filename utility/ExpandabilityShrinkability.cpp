@@ -7,7 +7,7 @@
 
 #include "ExpandabilityShrinkability.h"
 
-ExpandabilityShrinkability::ExpandabilityShrinkability() {
+ExpandabilityShrinkability::ExpandabilityShrinkability(){
 	// TODO Auto-generated constructor stub
 
 }
