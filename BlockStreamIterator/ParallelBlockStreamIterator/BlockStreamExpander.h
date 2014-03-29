@@ -15,6 +15,7 @@
 #include "../../Block/BlockStreamBuffer.h"
 #include "../../lock.h"
 #include "../../utility/ExpandabilityShrinkability.h"
+#include "../../Logging.h"
 
 #define EXPANDER_BUFFER_SIZE 100
 
@@ -62,6 +63,8 @@ private:
 
 	void addIntoBeingCalledBackExpandedThreadList(pthread_t pid);
 	void removeFromBeingCalledBackExpandedThreadList(pthread_t pid);
+
+	unsigned getDegreeOfParallelism();
 private:
 	State state_;
 
@@ -87,11 +90,13 @@ private:
 	/*
 	 * whether at least one work thread has successfully finished!
 	 */
-	volatile bool working_thread_successful_;
+	volatile bool input_data_complete_;
 	Lock lock_;
 	/*
 	 * The following code is for boost serialization.
 	 */
+
+	Logging* logging_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

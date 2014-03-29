@@ -13,7 +13,7 @@
 using namespace std;
 MemoryChunkStore* MemoryChunkStore::instance_=0;
 MemoryChunkStore::MemoryChunkStore(){
-	cout<<"in the memorystroage initialize"<<endl;
+//	cout<<"in the memorystroage initialize"<<endl;
 }
 
 MemoryChunkStore::~MemoryChunkStore() {

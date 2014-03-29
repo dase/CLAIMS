@@ -26,7 +26,6 @@ BlockManagerMaster::~BlockManagerMaster() {
 }
 
 void BlockManagerMaster::initialize(){
-	cout<<"initialize the blockManagerMaster"<<endl;
 	abi_=AllBlockInfo::getInstance();
 	testForPoc();
 }
@@ -50,7 +49,7 @@ BlockManagerMaster::BlockManagerMasterActor::BlockManagerMasterActor(Theron::Fra
 	RegisterHandler(this,&BlockManagerMasterActor::heartbeatReceiver);
 	RegisterHandler(this,&BlockManagerMasterActor::blockStatusReceiver);
 	RegisterHandler(this,&BlockManagerMasterActor::matcherReceiver);
-	cout<<"the workerRegister is ready"<<endl;
+//	cout<<"the workerRegister is ready"<<endl;
 }
 
 BlockManagerMaster::BlockManagerMasterActor::~BlockManagerMasterActor() {
@@ -58,7 +57,6 @@ BlockManagerMaster::BlockManagerMasterActor::~BlockManagerMasterActor() {
 }
 
 void BlockManagerMaster::BlockManagerMasterActor::workerRegister(const StorageBudgetMessage &message,const Theron::Address from){
-	cout<<"I am in the workerRegister!"<<endl;
 	// 加到blockInfo中
 	cout<<"I receive message: nodeid"<<message.nodeid<<" and other information "<<from.AsString()<<endl;
 	string respond="ok";

@@ -160,7 +160,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	received_block_stream_->~BlockStreamBase();
 	buffer->~BlockStreamBuffer();
-	printf("Buffer is freed in Exchange!\n");
+//	printf("Buffer is freed in Exchange!\n");
 	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
 	CloseTheSocket();
@@ -460,6 +460,16 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					else{
 						Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
+
+						if(Pthis->nexhausted_lowers==Pthis->nlowers){
+							/*
+							 * When all the exchange lowers are exhausted, notify the buffer
+							 * that the input data is completely received.
+							 */
+							Pthis->buffer->setInputComplete();
+						}
+
+
 						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",Pthis->nexhausted_lowers,Pthis->state.exchange_id,Pthis->partition_offset);
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
 						Pthis->logging_->log("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s] exchange=(%d,%d).\n",Pthis->lower_ip_array[socket_fd_index].c_str(),Pthis->state.exchange_id,Pthis->partition_offset);
