@@ -321,11 +321,15 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 		return ret;
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
+	const unsigned long max_limits=1024*1024;
+	const unsigned long min_limits=1024;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();
 	unsigned long ret;
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
 		if(group_by_attribute_list_[i].isUnique()){
-			return ret=data_card;
+			ret=ret<max_limits?ret:max_limits;
+			ret=ret>min_limits?ret:min_limits;
+			return ret;
 		}
 	}
 	unsigned long group_by_domain_size=1;
@@ -340,10 +344,8 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 	}
 	ret=group_by_domain_size;//TODO: This is only the upper bound of group_by domain size;
 
-	const unsigned long limits=1024*1024;
-	ret=ret<limits?ret:limits;
-
-
+	ret=ret<max_limits?ret:max_limits;
+	ret=ret>min_limits?ret:min_limits;
 	return ret;
 
 }
