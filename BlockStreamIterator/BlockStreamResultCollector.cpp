@@ -74,6 +74,12 @@ bool BlockStreamResultCollector::close(){
 	state_.child_->close();
 	return true;
 }
+void BlockStreamResultCollector::print(){
+	printf("------------\n");
+	printf("ResultCollector\n");
+	printf("------------\n");
+	state_.child_->print();
+}
 ResultSet* BlockStreamResultCollector::getResultSet(){
 
 	while(!ChildExhausted()){
