@@ -33,6 +33,9 @@ public:
 	virtual bool close()=0;
 	virtual void print(){printf("??\n");};
 
+	/*
+	 * Suggested by scdong, this method can be removed.
+	 */
 	virtual ResultSet* getResultSet();
 
 private:
