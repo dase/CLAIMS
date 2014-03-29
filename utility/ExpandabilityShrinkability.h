@@ -14,6 +14,7 @@ public:
 	virtual ~ExpandabilityShrinkability();
 	virtual bool Expand()=0;
 	virtual bool Shrink()=0;
+	virtual unsigned getDegreeOfParallelism()=0;
 };
 
 #endif /* EXPANDABILITYSHRINKABILITY_H_ */
