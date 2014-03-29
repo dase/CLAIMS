@@ -16,7 +16,7 @@ public:
 	AdaptiveEndPoint(const char* name, std::string ip, std::string port);
 
 	virtual ~AdaptiveEndPoint();
-	static AdaptiveEndPoint* getInstance();
+//	static AdaptiveEndPoint* getInstance();
 private:
 	bool SayHelloToCoordinator(std::string ip,std::string port);
 	int GetCoordinatorEndPointPort();
