@@ -155,7 +155,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterNewThreadToAllBarriers(1);
-		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
+//		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
 		return true;
 	}
 
@@ -264,6 +264,7 @@ bool BlockStreamJoinIterator::close(){
 	printf("time consuming: %lld, %f\n",timer,timer/(double)CPU_FRE);
 #endif
 //	sema_open_.post();
+	BlockStreamJoinLogging::log("Consumes %ld tuples from left child!");
 	initialize_expanded_status();
 	destoryAllContext();
 	open_finished_=false;

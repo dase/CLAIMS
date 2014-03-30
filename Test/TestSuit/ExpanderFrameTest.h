@@ -1,5 +1,6 @@
 #include "../../utility/test_tool.h"
 #include "../../Block/ResultSet.h"
+#include "../../BlockStreamIterator/BlockStreamResultCollector.h"
 /*
  * ExpanderFrameTest.h
  *
@@ -272,7 +273,7 @@ static int test_scan_filter_Aggregation(){
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
-	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("600036"));
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 	std::vector<Attribute> group_by_attributes;
@@ -294,7 +295,7 @@ static int test_scan_filter_Aggregation(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64-sizeof(unsigned));
-	executable_query_plan->print();
+//	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
 	executable_query_plan->close();
@@ -303,10 +304,66 @@ static int test_scan_filter_Aggregation(){
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
 	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
-	if(!print_test_name_result(number_of_tuples==870,"Aggregation")){
+	if(!print_test_name_result(number_of_tuples==870,"Filtered Aggregation")){
 		printf("\tExpected:870 actual: %d\n",number_of_tuples);
 	}
-//	result_set->~ResultSet();
+	executable_query_plan->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+
+	return 1;
+
+
+}
+static int test_scan_filter_Scalar_Aggregation(){
+
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+
+	Filter::Condition filter_condition_1;
+	const int order_type=1;
+	filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,std::string("1"));
+	const int trade_date=20101008;
+	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+	const int sec_code=600036;
+	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("600036"));
+	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+
+	std::vector<Attribute> group_by_attributes;
+//	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
+
+	std::vector<Attribute> aggregation_attributes;
+	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+
+
+	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+
+	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+
+
+
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//	executable_query_plan->print();
+	executable_query_plan->open();
+	while(executable_query_plan->next(0));
+	executable_query_plan->close();
+
+//	executable_query_plan
+	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet::Iterator it=result_set->createIterator();
+	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
+
+	const unsigned long int number_of_tuples=*(unsigned long*)b_it->currentTuple();
+	b_it->~BlockStreamTraverseIterator();
+
+	if(!print_test_name_result(number_of_tuples==3651348,"Filtered Scalar Aggregation")){
+		printf("\tExpected:3651348 actual: %d\n",number_of_tuples);
+	}
+	printf("%4.4f seconds\n",result_set->query_time_);
 	executable_query_plan->~BlockStreamIteratorBase();
 	root->~LogicalOperator();
 
@@ -315,21 +372,223 @@ static int test_scan_filter_Aggregation(){
 
 }
 
-static int test_expanderFramework(){
+static int test_no_repartition_filtered_join(){
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	TableDescriptor* table_2=Catalog::getInstance()->getTable("sb");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+
+
+	Filter::Condition filter_condition_1;
+	const int order_type=1;
+	filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,std::string("1"));
+	const int trade_date=20101008;
+	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+	const int sec_code=600036;
+	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+
+	Filter::Condition filter_condition_2;
+	const int order_type_=1;
+	filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,std::string("1"));
+	const int entry_date=20101008;
+	filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+	const int sec_code_=600036;
+	filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+
+
+	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+//	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+//	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//	executable_query_plan->print();
+	executable_query_plan->open();
+	while(executable_query_plan->next(0));
+	executable_query_plan->close();
+
+	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
+
+	if(!print_test_name_result(number_of_tuples==15,"Filtered no_repartition Join")){
+		printf("\tExpected:15 actual: %d\n",number_of_tuples);
+	}
+	printf("%4.4f seconds\n",result_set->query_time_);
+	executable_query_plan->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+
+	return 1;
+
+}
+static int test_complete_repartition_filtered_join(){
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	TableDescriptor* table_2=Catalog::getInstance()->getTable("sb");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+
+
+	Filter::Condition filter_condition_1;
+	const int order_type=1;
+	filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,std::string("1"));
+	const int trade_date=20101008;
+	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+	const int sec_code=600036;
+	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+
+	Filter::Condition filter_condition_2;
+	const int order_type_=1;
+	filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,std::string("1"));
+	const int entry_date=20101008;
+	filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+	const int sec_code_=600036;
+	filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+
+
+	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//	executable_query_plan->print();
+	executable_query_plan->open();
+	while(executable_query_plan->next(0));
+	executable_query_plan->close();
+
+	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
+
+	if(!print_test_name_result(number_of_tuples==27012,"Filtered Re-partitioned Join")){
+		printf("\tExpected:27012 actual: %d\n",number_of_tuples);
+	}
+	printf("%4.4f seconds\n",result_set->query_time_);
+	executable_query_plan->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+
+	return 1;
+
+}
+static int test_complete_repartition_scan_join(){
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	TableDescriptor* table_2=Catalog::getInstance()->getTable("sb");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+
+
+
+	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//	executable_query_plan->print();
+	executable_query_plan->open();
+	while(executable_query_plan->next(0));
+	executable_query_plan->close();
+
+	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
+
+	if(!print_test_name_result(number_of_tuples==4059609,"Re-partitioned Join")){
+		printf("\tExpected:4059609 actual: %d\n",number_of_tuples);
+//		assert(false);
+	}
+	printf("%4.4f seconds\n",result_set->query_time_);
+	executable_query_plan->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+
+	return 1;
+
+}
+static int test_no_repartition_scan_join(){
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	TableDescriptor* table_2=Catalog::getInstance()->getTable("sb");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
+
+
+
+	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+//	executable_query_plan->print();
+	executable_query_plan->open();
+	while(executable_query_plan->next(0));
+	executable_query_plan->close();
+
+	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
+
+	if(!print_test_name_result(number_of_tuples==944925,"no_repartition Join")){
+		printf("\tExpected:944925 actual: %d\n",number_of_tuples);
+	}
+//	result_set->print();
+	printf("%4.4f seconds\n",result_set->query_time_);
+//	result_set->~ResultSet();
+	executable_query_plan->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+
+	return 1;
+
+}
+static int test_expanderFramework(int repeated_times=20){
 
 	startup_environment();
 
-//	sleep(5);
+	sleep(5);
 	printf("============Scan->Filter->Expander->Exchange->root============\n");
-//	for(unsigned i=0;i<20;i++){
+//	for(unsigned i=0;i<repeated_times;i++){
 //		test_scan_filter_high_selectivity();
 //	}
-//	for(unsigned i=0;i<20;i++){
+//	for(unsigned i=0;i<repeated_times;i++){
 //		test_scan_filter_low_selectivity();
 //	}
-	for(unsigned i=0;i<20;i++){
-		test_scan_filter_Aggregation();
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Aggregation();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Scalar_Aggregation();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_complete_repartition_filtered_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_filtered_join();
+//	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_complete_repartition_scan_join();
+		sleep(1);
 	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_scan_join();
+//	}
+
 
 	Environment::getInstance()->~Environment();
 //
