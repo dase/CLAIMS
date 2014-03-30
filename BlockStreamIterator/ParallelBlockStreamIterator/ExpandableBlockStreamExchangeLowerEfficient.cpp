@@ -169,8 +169,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 
 			buffer->insertBlockToPartitionedList(block_for_inserting_to_buffer_,i);
 
-			/* the following stupid lines send a block with last block bytes to the buffer.
-			 * TODO: making any change to the three lines would make them much less stupid.
+			/* The following lines send an empty block to the upper, indicating that all
+			 * the data from current lower has been transmit to the uppers.
 			 */
 			if(!cur_block_stream_list_[i]->Empty()){
 				cur_block_stream_list_[i]->setEmpty();
@@ -185,7 +185,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		logging_->log("Waiting until all the blocks in the buffer is sent!");
 
 		while(!buffer->isEmpty()){
-			usleep(1);
+			usleep(10000);
 
 		}
 		/*
@@ -350,7 +350,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 
 		try{
 	while(true){
-		usleep(1000);
+//		usleep(100000);
 		pthread_testcancel();
 		bool consumed=false;
 		int partition_id=Pthis->buffer_for_sending_->getBlockForSending(Pthis->block_for_sending);
@@ -412,6 +412,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 			if(Pthis->buffer->getBlock(*Pthis->block_for_buffer_,partition_id)){
 				Pthis->block_for_buffer_->reset();
 				Pthis->buffer_for_sending_->insert(partition_id,Pthis->block_for_buffer_);
+			}
+			else{
+				usleep(1);
 			}
 
 		}

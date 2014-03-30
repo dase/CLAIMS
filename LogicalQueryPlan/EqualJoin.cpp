@@ -11,6 +11,7 @@
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
+#include "../Logging.h"
 #define NUM_OF_EXPANDED_THREADS 1
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
@@ -80,7 +81,7 @@ Dataflow EqualJoin::getDataflow(){
 	/**finally, construct the output data flow according to the join police**/
 	switch(join_police_){
 		case no_repartition:{
-			printf("no_repartition\n");
+			QueryOptimizationLogging::log("no_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			/*use the left partitioner as the output dataflow partitioner.
@@ -107,7 +108,7 @@ Dataflow EqualJoin::getDataflow(){
 			break;
 		}
 		case left_repartition:{
-			printf("left_repartition\n");
+			QueryOptimizationLogging::log("left_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 //			ret.property_.partitioner=right_dataflow.property_.partitioner;
@@ -129,7 +130,7 @@ Dataflow EqualJoin::getDataflow(){
 			break;
 		}
 		case right_repartition:{
-			printf("right_repartition\n");
+			QueryOptimizationLogging::log("right_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 //			ret.property_.partitioner=left_dataflow.property_.partitioner;
@@ -154,7 +155,7 @@ Dataflow EqualJoin::getDataflow(){
 			 * any child data flow. Additional optimization can be made by adopting the partition strategy which benefits the remaining
 			 * work.TODO.
 			 */
-			printf("complete_repartition\n");
+			QueryOptimizationLogging::log("complete_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
@@ -165,12 +166,12 @@ Dataflow EqualJoin::getDataflow(){
 
 
 //
-//			printf("[Complete_repartition hash join] is not implemented, because I'm very lazy. -_- \n");
+//			QueryOptimizationLogging::log("[Complete_repartition hash join] is not implemented, because I'm very lazy. -_- \n");
 //			assert(false);
 			break;
 		}
 		default:{
-			printf("The join police has not been decided!\n");
+			QueryOptimizationLogging::elog("The join police has not been decided!\n");
 			assert(false);
 			break;
 		}
@@ -704,6 +705,6 @@ double EqualJoin::predictEqualJoinSelectivityOnSingleJoinAttributePair(const Att
 		 */
 		ret= 0.1;
 	}
-	printf("Predicted selectivity for %s and %s is %f\n",a_l.attrName.c_str(),a_r.attrName.c_str(),ret);
+	QueryOptimizationLogging::log("Predicted selectivity for %s and %s is %f\n",a_l.attrName.c_str(),a_r.attrName.c_str(),ret);
 	return ret;
 }

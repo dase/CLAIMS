@@ -96,6 +96,8 @@ private:
 	 * The following code is for boost serialization.
 	 */
 
+	unsigned long int received_tuples_;
+
 	Logging* logging_;
 private:
 	friend class boost::serialization::access;
