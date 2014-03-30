@@ -5,9 +5,11 @@
  *      Author: wangli
  */
 #include "Logging.h"
-#ifndef CLAIMS_QUEIT
+#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
+
 //#define DEBUG_ExpanderTracker
-#define DEBUG_BlockStreamExpander
+//#define DEBUG_BlockStreamExpander
+//#define DEBUG_BlockStreamJoin
 //#define DEBUG_PerformanceTop
 //#define DEBUG_Coordinator~/
 //#define DEBUG_Environment
@@ -34,8 +36,7 @@
 //#define DEBUG_ResourceManagerSlave
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
-
-#endif
+#endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){
 #ifdef DEBUG_IteratorExecutorMaster
 	printf("IteratorExecutorMaster: ");
@@ -368,6 +369,26 @@ void QueryOptimizationLogging::log(const char* format,...){
 }
 void QueryOptimizationLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[PerformanceTop]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void BlockStreamJoinLogging::log(const char* format,...) {
+#ifdef DEBUG_BlockStreamJoin
+	printf("BlockStreamJoin: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+
+void BlockStreamJoinLogging::elog(const char* format,...) {
+	fprintf(stderr,"Error[BlockStreamJoin]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);

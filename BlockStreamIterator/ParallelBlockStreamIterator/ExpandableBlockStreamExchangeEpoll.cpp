@@ -129,11 +129,25 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 }
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
-//	usleep(10000);
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//		printf("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+		return false;
+	}
+
+/**
+ * In the initial implementation, busy waiting is used in while(), and consequently consumes
+ * large CPU usage. I add usleep(1) in the while to release this problem. Perhaps, a better way
+ * is to use conditioned wait.
+ * TODO: better implementation based on conditioned wait.
+ * --Li.
+ * Mar. 30th, 2014.
+ */
+
 	while(nexhausted_lowers<nlowers){
 		if(buffer->getBlock(*block)){
 			return true;
 		}
+		usleep(1);
 	}
 	/* all the lowers exchange are exhausted.*/
 	return buffer->getBlock(*block);
@@ -172,11 +186,14 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state.exchange_id,partition_offset));
 
+	for(unsigned i=0;i<nlowers;i++){
+		printf("Exchange: [%ld] consumes %d blocks from Lower[%d]\n",state.exchange_id,received_block[i],i);
+	}
 	return true;
 }
 
 void ExpandableBlockStreamExchangeEpoll::print(){
-	printf("Exchange upper:");
+	printf("Exchange upper[%ld]:",state.exchange_id);
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
 		printf("%s ",state.upper_ip_list[i].c_str());
 	}
@@ -360,6 +377,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 	int fd_cur=0;
 
 	while(true){
+		usleep(1);
 		const int event_count=epoll_wait(efd,events,Pthis->nlowers,-1);
 		for(int i=0;i<event_count;i++){
 			if((events[i].events & EPOLLERR)||(events[i].events & EPOLLHUP)||(!(events[i].events&EPOLLIN))){

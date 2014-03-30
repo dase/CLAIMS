@@ -30,12 +30,12 @@ Dataflow Aggregation::getDataflow(){
 	const Dataflow child_dataflow=child_->getDataflow();
 	if(canLeverageHashPartition(child_dataflow)){
 		fashion_=no_repartition;
-		printf("no_repartition\n");
+		QueryOptimizationLogging::log("no_repartition\n");
 	}
 	else{
 //		fashion_=repartition;
 		fashion_=hybrid;
-		printf("hybrid\n");
+		QueryOptimizationLogging::log("hybrid\n");
 	}
 	switch(fashion_){
 		case no_repartition:{
@@ -122,7 +122,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.block_size=block_size;
 //	aggregation_state.nbuckets=1024;
 	aggregation_state.nbuckets=estimateGroupByCardinality(child_dataflow);
-	printf("# of hash buckets:%d\n",aggregation_state.nbuckets);
+	QueryOptimizationLogging::log("# of hash buckets:%d\n",aggregation_state.nbuckets);
 
 	aggregation_state.bucketsize=64;
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);

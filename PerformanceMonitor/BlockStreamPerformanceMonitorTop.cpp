@@ -59,7 +59,7 @@ bool BlockStreamPerformanceMonitorTop::close(){
 	double eclipsed_seconds=getSecond(start_);
 	double processed_data_in_bytes=tuplecount_*state_.schema_->getTupleMaxSize();
 
-	logging_->log("Total time: %5.5f seconds\n",getSecond(start_));
+	printf("Total time: %5.5f seconds\n",getSecond(start_));
 	logging_->log("Total tuples: %d\n",tuplecount_);
 	logging_->log("Avg throughput: %5.3f M data/s, %5.3f M tuples/s\n",processed_data_in_bytes/eclipsed_seconds/1024/1024,(float)tuplecount_/2014/1024/eclipsed_seconds);
 	block_->~BlockStreamBase();

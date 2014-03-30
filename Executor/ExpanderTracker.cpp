@@ -18,6 +18,13 @@
 #define THRESHOLD_EMPTY (THRESHOLD)
 #define THRESHOLD_FULL (1-THRESHOLD)
 
+
+/**
+ * Ideally, this should be guaranteed by resource manager.
+ */
+#define MAX_DEGREE_OF_PARALLELISM 4
+
+
 ExpanderTracker* ExpanderTracker::instance_=0;
 ExpanderTracker::ExpanderTracker(){
 	// TODO Auto-generated constructor stub
@@ -196,14 +203,14 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_
 	lock.acquire();
 	if(new_end_point.type==stage_desc){
 		pending_endpoints.push(new_end_point);
-//		Pthis->log_->log("=======stage desc:%s\n",new_end_point.end_point_name.c_str());
+//		printf("=======stage desc:%s\n",new_end_point.end_point_name.c_str());
 	}
 	else{
 		/*new_end_point.type==stage_end*/
 		LocalStageEndPoint top=pending_endpoints.top();
 		pending_endpoints.pop();
 		current_stage=local_stage(new_end_point,top);
-//		Pthis->log_->log("The execution is in a new stage: %s ---> %s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
+//		printf("The execution is in a new stage: %s ---> %s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
 	}
 	lock.release();
 }
@@ -217,38 +224,84 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 	 *  there is at least one expanded threads to process the remaining data in buffer.
 	 */
 
+	int ret;
 	switch(current_stage.type_){
 	case local_stage::incomplete:{
+		ret=DECISION_KEEP;
+		break;
 		return DECISION_KEEP;
 	}
 	case local_stage::no_buffer:{
-		return DECISION_KEEP;
+		/**
+		 * Currently, for the stage without synchronization buffer, the workload is not known and hence
+		 * maximum degree of parallelism is used.
+		 */
+		if(current_degree_of_parallelism==MAX_DEGREE_OF_PARALLELISM){
+			ret=DECISION_KEEP;
+			break;
+			return DECISION_KEEP;
+		}
+		else if (current_degree_of_parallelism<MAX_DEGREE_OF_PARALLELISM){
+			ret=DECISION_EXPAND;
+			break;
+			return DECISION_EXPAND;
+		}
+		ret=DECISION_SHRINK;
+		break;
+		return DECISION_SHRINK;
 	}
 	case local_stage::from_buffer:{
 		log_->log("%lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage());
 		const double current_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		if(current_stage.dataflow_src_.monitorable_buffer->inputComplete()){
-			if(current_degree_of_parallelism==0)
+			if(current_degree_of_parallelism==0){
+				ret=DECISION_EXPAND;
+				break;
 				return DECISION_EXPAND;
-			else
+			}
+			else{
+				ret=DECISION_KEEP;
+				break;
 				return DECISION_KEEP;
+			}
 		}
-		if(current_usage>THRESHOLD_FULL)
+		if(current_usage>THRESHOLD_FULL){
+			ret=DECISION_EXPAND;
+			break;
 			return DECISION_EXPAND;
-		else if(current_usage<THRESHOLD_EMPTY)
+		}
+		else if(current_usage<THRESHOLD_EMPTY){
+			ret=DECISION_SHRINK;
+			break;
 			return DECISION_SHRINK;
-		else
+		}
+		else{
+			ret=DECISION_KEEP;
+			break;
 			return DECISION_KEEP;
+		}
 	}
 	case local_stage::to_buffer:{
 		log_->log("N/A=====>%lf\n",current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage());
 		const double current_usage=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
-		if(current_usage>THRESHOLD_FULL)
+		if(current_usage>THRESHOLD_FULL){
+			ret=DECISION_SHRINK;
+			break;
 			return DECISION_SHRINK;
-		else if(current_usage<THRESHOLD_EMPTY)
+		}
+		else if(current_usage<THRESHOLD_EMPTY){
+//			if(current_degree_of_parallelism>=MAX_DEGREE_OF_PARALLELISM)
+//				return DECISION_KEEP;
+//			else
+			ret=DECISION_EXPAND;
+			break;
 			return DECISION_EXPAND;
-		else
+		}
+		else{
+			ret=DECISION_KEEP;
+			break;
 			return DECISION_KEEP;
+		}
 //		return DECISION_KEEP;
 	}
 	case local_stage::buffer_to_buffer:{
@@ -257,23 +310,44 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 		const double top_usage=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
 		/* guarantee that there is at least one expanded thread when the input is complete so that the stage can be finished soon.*/
 		if(current_stage.dataflow_src_.monitorable_buffer->inputComplete()){
-			if(current_degree_of_parallelism==0)
+			if(current_degree_of_parallelism==0){
+				ret=DECISION_EXPAND;
+				break;
 				return DECISION_EXPAND;
-			else
+			}
+			else{
+				ret=DECISION_KEEP;
+				break;
 				return DECISION_KEEP;
+			}
 		}
 
 		if(bottom_usage>THRESHOLD_FULL&&top_usage<THRESHOLD_EMPTY){
+//			if(current_degree_of_parallelism>=MAX_DEGREE_OF_PARALLELISM)
+//				return DECISION_KEEP;
+//			else
+			ret=DECISION_EXPAND;
+			break;
 			return DECISION_EXPAND;
 		}
-		if(top_usage>THRESHOLD_FULL || bottom_usage<THRESHOLD_EMPTY)
+		if(top_usage>THRESHOLD_FULL || bottom_usage<THRESHOLD_EMPTY){
+			ret=DECISION_SHRINK;
+			break;
 			return DECISION_SHRINK;
+		}
 		log_->elog("The theory is not complete!\n");
 		return DECISION_KEEP;
 	}
 	}
 
-	return DECISION_KEEP;
+	if(ret==DECISION_EXPAND){
+		return expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
+	}
+	if(ret==DECISION_SHRINK){
+		return shrinkIfNotExceedTheMinDegreeOfParallelims(current_degree_of_parallelism);
+	}
+
+	return ret;
 
 
 }
@@ -282,7 +356,8 @@ void* ExpanderTracker::monitoringThread(void* arg){
 	int cur=0;
 	while(true){
 //		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
-		usleep(100000000);
+		usleep(10000);
+//		sleep(1000);
 		Pthis->lock_.acquire();
 		if(Pthis->expander_id_to_status_.size()<=cur){
 			cur=0;
@@ -295,6 +370,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			it++;
 
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
+		Pthis->log_->log("-------------------");
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
 		Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism);
 		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism);
@@ -302,17 +378,24 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		Pthis->lock_.release();
 		switch(decision){
 		case DECISION_EXPAND:{
-			Pthis->log_->log("=========Expanding========\n");
-			Pthis->expander_id_to_expand_shrink_[it->first]->Expand();
+
+			if(Pthis->expander_id_to_expand_shrink_[it->first]->Expand()){
+				Pthis->log_->log("=========Expanding======== %d-->%d ",current_degree_of_parallelism,current_degree_of_parallelism+1);
+			}
+			else{
+				Pthis->log_->log("=========Expanding======== Failed!");
+			}
 			break;
 		}
 		case DECISION_SHRINK:{
 //			if(Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()<=1)
 //				break;
 			if(Pthis->expander_id_to_expand_shrink_[it->first]->Shrink()){
-				Pthis->log_->log("=========Shrinking==== %d-->%d ==== \n",Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()+1,Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism());
+				Pthis->log_->log("=========Shrinking========  %d-->%d",current_degree_of_parallelism,current_degree_of_parallelism-1);
 			}
-
+			else{
+				Pthis->log_->log("=========Shrinking======== Failed!");
+			}
 			break;
 		}
 		default:{
@@ -338,4 +421,21 @@ void* ExpanderTracker::monitoringThread(void* arg){
 //		}
 	}
 	Pthis->log_->log("<><><><><><><><>TOTAL WRONG!<><><><><><><><><>\n");
+}
+
+int ExpanderTracker::expandeIfNotExceedTheMaxDegreeOfParallelism(
+		int current_degree_of_parallelism) const {
+	if(current_degree_of_parallelism<MAX_DEGREE_OF_PARALLELISM){
+		return DECISION_EXPAND;
+	}
+	else
+		return DECISION_KEEP;
+}
+
+int ExpanderTracker::shrinkIfNotExceedTheMinDegreeOfParallelims(
+		int current_degree_of_parallelism) const {
+	if(current_degree_of_parallelism>0){
+		return DECISION_SHRINK;
+	}
+	return DECISION_KEEP;
 }

@@ -175,6 +175,9 @@ private:
 	 * The access of current_stage might cause bug if thread-safe is not concerned.
 	 */
 	int decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism);
+
+	int expandeIfNotExceedTheMaxDegreeOfParallelism(int current_degree_of_parallelism)const;
+	int shrinkIfNotExceedTheMinDegreeOfParallelims(int current_degree_of_parallelism)const;
 private:
 	static ExpanderTracker* instance_;
 
