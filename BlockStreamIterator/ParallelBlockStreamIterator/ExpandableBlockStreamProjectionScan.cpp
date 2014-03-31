@@ -85,6 +85,9 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 //		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
 		return false;
 	}
+	return partition_reader_iterator_->nextBlock(block);
+
+
 //	return false;
 	allocated_block allo_block_temp;
 	ChunkReaderIterator* chunk_reader_iterator;
@@ -122,12 +125,13 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		return next(block);
 	}
 	else{
+		printf("**********Scan is exhausted!\n");
 		return false;
 	}
 }
 
 bool ExpandableBlockStreamProjectionScan::close() {
-	printf("ProjectoinScan[%d]: returned %ld blocks\n",state_.projection_id_.projection_off,return_blocks_);
+//	printf("ProjectoinScan[%d]: returned %ld blocks\n",state_.projection_id_.projection_off,return_blocks_);
 //	sema_open_.post();
 	partition_reader_iterator_->~PartitionReaderItetaor();
 	open_finished_ = false;
