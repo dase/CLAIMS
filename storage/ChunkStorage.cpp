@@ -100,6 +100,7 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 		lock_.release();
 		return false;
 	}
+//	printf("Read Block:%d:%d\n",chunk_id_.chunk_off,cur_block_);
 	/* calculate the block start address.*/
 	const char* block_start_address=(char*)start_+cur_block_*block_size_;
 
