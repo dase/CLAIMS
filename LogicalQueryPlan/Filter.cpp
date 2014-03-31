@@ -14,13 +14,13 @@
 Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
 	assert(!comparator_list_.empty());
+	setOperatortype(l_filter);
 }
 
 Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(condition),child_(child){
 
 //	condition_.print();
-
-
+	setOperatortype(l_filter);
 }
 Filter::~Filter() {
 	// TODO Auto-generated destructor stub
