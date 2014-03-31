@@ -59,15 +59,14 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 	RegisterNewThreadToAllBarriers();
 
-	ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Hash join build",0));
-	state_.child_left->open(partition_offset);
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
 
 	unsigned long long int timer;
 	if(tryEntryIntoSerializedSection(0)){
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Hash join build",0));
 
-	timer=curtick();
+		timer=curtick();
 
 
 		unsigned output_index=0;
@@ -87,11 +86,16 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		hash=PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets);
 		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
 		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
-//		broadcaseOpenFinishedSignal();
+
 		consumed_tuples_from_left=0;
-	}else{
-//		waitForOpenFinished();
 	}
+
+
+	/**
+	 * For performance concern, the following line should place just after "RegisterNewThreadToAllBarriers();"
+	 * in order to accelerate the open response time.
+	 */
+	state_.child_left->open(partition_offset);
 	barrierArrive(0);
 	BasicHashTable::Iterator tmp_it=hashtable->CreateIterator();
 
