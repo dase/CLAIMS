@@ -186,9 +186,9 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state.exchange_id,partition_offset));
 
-	for(unsigned i=0;i<nlowers;i++){
-		printf("Exchange: [%ld] consumes %d blocks from Lower[%d]\n",state.exchange_id,received_block[i],i);
-	}
+//	for(unsigned i=0;i<nlowers;i++){
+//		printf("Exchange: [%ld] consumes %d blocks from Lower[%d]\n",state.exchange_id,received_block[i],i);
+//	}
 	return true;
 }
 

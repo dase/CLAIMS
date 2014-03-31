@@ -74,7 +74,12 @@ bool BlockStreamExpander::next(BlockStreamBase* block){
 }
 
 bool BlockStreamExpander::close(){
-	printf("Expander:[%ld]: received %ld kByte %ld tuples!\n",expander_id_,block_stream_buffer_->getReceivedDataSizeInKbytes(),received_tuples_);
+	logging_->log("Expander:[%ld]: received %ld kByte %ld tuples!\n",expander_id_,block_stream_buffer_->getReceivedDataSizeInKbytes(),received_tuples_);
+//	if(expander_id_%3!=0){
+//		if(received_tuples_!=3966020&&received_tuples_!=3780597){
+//			assert(false);
+//		}
+//	}
 //	pthread_cancel(coordinate_pid_);
 //	void* res;
 //	pthread_join(coordinate_pid_,&res);
@@ -151,9 +156,11 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
 			Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
+			Pthis->lock_.acquire();
 			Pthis->input_data_complete_=false;
+			Pthis->lock_.release();
 			Pthis->removeFromBeingCalledBackExpandedThreadList(pthread_self());
-//			printf("%lx Produced %d block before called-back\n",pthread_self(),block_count);
+			Pthis->logging_->log("%lx Produced %d block before called-back\n",pthread_self(),block_count);
 		}
 		else{
 //			printf("%lx Produced %d block before finished\n",pthread_self(),block_count);
@@ -168,7 +175,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			 *
 			 */
 			Pthis->block_stream_buffer_->setInputComplete();
-
+			Pthis->logging_->log("Thread %x generated %d blocks.\n",pthread_self(),block_count);
 //			Pthis->logging_->log("Thread %x generated %d blocks.\n",pthread_self(),block_count);
 	//		Pthis->in_work_expanded_thread_list_.erase(pthread_self());
 			Pthis->lock_.release();
@@ -209,13 +216,14 @@ bool BlockStreamExpander::ChildExhausted(){
 	return ret;
 }
 bool BlockStreamExpander::createNewExpandedThread(){
-	logging_->log("[%ld] New expanded thread created!\n",expander_id_);
+	//logging_->log
 	pthread_t tid;
 	const int error=pthread_create(&tid,NULL,expanded_work,this);
 	if(error!=0){
 		std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
 		return false;
 	}
+	logging_->log("[%ld] New expanded thread [%lx] created!\n",expander_id_,tid);
 
 
 	lock_.acquire();

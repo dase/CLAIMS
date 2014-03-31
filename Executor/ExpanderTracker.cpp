@@ -232,6 +232,8 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 		return DECISION_KEEP;
 	}
 	case local_stage::no_buffer:{
+		ret=DECISION_KEEP;
+		break;
 		/**
 		 * Currently, for the stage without synchronization buffer, the workload is not known and hence
 		 * maximum degree of parallelism is used.
@@ -251,6 +253,8 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 		return DECISION_SHRINK;
 	}
 	case local_stage::from_buffer:{
+		ret=DECISION_KEEP;
+		break;
 		log_->log("%lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage());
 		const double current_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		if(current_stage.dataflow_src_.monitorable_buffer->inputComplete()){
@@ -335,7 +339,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 			break;
 			return DECISION_SHRINK;
 		}
-		log_->elog("The theory is not complete!\n");
+//		log_->elog("The theory is not complete!\n");
 		return DECISION_KEEP;
 	}
 	}
