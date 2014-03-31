@@ -42,6 +42,11 @@ public:
 
 	data_type getIndexType(unsigned long index_id);
 
+	bool isIndexExist(Attribute attr);
+	bool isIndexExist(unsigned long index_id);
+
+	unsigned long getIndexID(Attribute attr);
+
 private:
 	IndexManager();
 

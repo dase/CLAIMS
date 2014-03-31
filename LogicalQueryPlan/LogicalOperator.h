@@ -15,6 +15,8 @@
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "Requirement.h"
 
+enum operator_type{l_scan,l_filter,l_aggregation,l_equal_join,l_project,l_sort, l_root};
+
 typedef BlockStreamIteratorBase* PhysicalPlan;
 typedef struct PhysicalPlanDescriptor{
 	PhysicalPlan plan;
@@ -54,6 +56,12 @@ protected:
 	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;
 	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const;
 	void align(int space)const;
+
+	inline void setOperatortype(operator_type node_operator) { operator_type_ = node_operator; }
+	inline operator_type getOperatorType() { return operator_type_; }
+
+private:
+	operator_type operator_type_;
 
 };
 

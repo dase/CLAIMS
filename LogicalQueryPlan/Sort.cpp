@@ -9,7 +9,7 @@
 
 LogicalSort::LogicalSort(LogicalOperator *child, int sortByKey)
 :child_(child),sortByKey_(sortByKey){
-
+	setOperatortype(l_sort);
 }
 
 LogicalSort::~LogicalSort() {

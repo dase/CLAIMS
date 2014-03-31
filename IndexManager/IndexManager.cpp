@@ -16,6 +16,7 @@ void cheak_com_index()
 }
 
 IndexManager* IndexManager::instance_ = 0;
+
 IndexManager::IndexManager() {
 	// TODO Auto-generated constructor stub
 	csb_index_.clear();
@@ -165,6 +166,8 @@ bool IndexManager::deleteIndexFromList(unsigned long index_id)
 		 * here need to delete the index structure
 		 */
 		csb_index_.erase(index_id);
+		column_attribute_to_id.erase(id_to_column_attribute.find(index_id)->second);
+		id_to_column_attribute.erase(index_id);
 	}
 }
 
@@ -176,4 +179,26 @@ data_type IndexManager::getIndexType(unsigned long index_id)
 		exit(-1);
 	}
 	return id_to_column_attribute.find(index_id)->second.attrType->type;
+}
+
+bool IndexManager::isIndexExist(Attribute attr)
+{
+	if (column_attribute_to_id.find(attr) != column_attribute_to_id.end())
+		return true;
+	return false;
+}
+
+bool IndexManager::isIndexExist(unsigned long index_id)
+{
+	if (csb_index_.find(index_id) != csb_index_.end())
+		return true;
+	return false;
+}
+
+unsigned long IndexManager::getIndexID(Attribute attr)
+{
+	if (isIndexExist(attr))
+		return column_attribute_to_id[attr];
+	cout << "[ERROR: IndexManager.cpp->getIndexID()]: The index for column " << attr.attrName << " is not exist!\n";
+	return -1;
 }

@@ -14,7 +14,7 @@
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
 :scan_attribute_list_(attribute_list),target_projection_(0) {
 	// TODO Auto-generated constructor stub
-
+	setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
@@ -22,10 +22,12 @@ LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
 		printf("Table[id=%d] does not exists!\n",table_id);
 	}
 	scan_attribute_list_=table->getAttributes();
+	setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,const float sample_rate):sample_rate_(sample_rate){
 	scan_attribute_list_=projection->getAttributeList();
 	target_projection_=projection;
+	setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& selected_attribute_index_list)
 :target_projection_(0) {
@@ -36,6 +38,7 @@ LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& se
 	for(unsigned i=0;i<selected_attribute_index_list.size();i++){
 		scan_attribute_list_.push_back(table->getAttribute(selected_attribute_index_list[i]));
 	}
+	setOperatortype(l_scan);
 }
 
 LogicalScan::~LogicalScan() {
