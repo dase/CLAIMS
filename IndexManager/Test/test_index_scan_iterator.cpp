@@ -106,12 +106,19 @@ static int test_index_scan_iterator()
 			bls->close();
 /********************************** CSB Plus Tree Index Building Finished! **********************************/
 			unsigned long index_id = 0;
-			void* value_low = malloc(sizeof(int));
-			int value = 10107;
-			value_low = (void*)(&value);
-			void* value_high = malloc(sizeof(int));
-			value_high = (void*)(&value);
-			IndexScanIterator::State isi_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, index_id, value_low, value_high, block_size);
+			vector<IndexScanIterator::query_range> q_range;
+			q_range.clear();
+			IndexScanIterator::query_range q1;
+			q1.value_low = malloc(sizeof(int));
+			int value_low = 10106;
+			int value_high = 10111;
+			q1.value_low = (void*)(&value_low);
+			q1.comp_low = FilterIterator::AttributeComparator::G;
+			q1.value_high = malloc(sizeof(int));
+			q1.value_high = (void*)(&value_high);
+			q1.comp_high = FilterIterator::AttributeComparator::L;
+			q_range.push_back(q1);
+			IndexScanIterator::State isi_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, index_id, q_range, block_size);
 			BlockStreamIteratorBase* isi = new IndexScanIterator(isi_state);
 
 			std::vector<std::string> attribute_name;

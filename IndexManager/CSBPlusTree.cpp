@@ -40,6 +40,7 @@ void cheak_com(){
 	csb_int->printTree();
 	csb_int->Search(0);
 	csb_int->rangeQuery(0, 0);
+	csb_int->rangeQuery(0, FilterIterator::AttributeComparator::EQ, 0, FilterIterator::AttributeComparator::EQ);
 	csb_int->Insert(*data);
 	CSBPlusTree<short>* csb_short = new CSBPlusTree<short>();
 	csb_short->rangeQuery(0, 0);
@@ -47,7 +48,6 @@ void cheak_com(){
 	csb_u_long->rangeQuery(0, 0);
 	CSBPlusTree<float>* csb_float = new CSBPlusTree<float>();
 	csb_float->rangeQuery(0, 0);
-
 }
 
 
@@ -803,9 +803,11 @@ int CSBPlusTree<T>::makeInternalNodeGroup(T* aray, int aray_num, CCSBNodeGroup<T
 
 // 查找指定的数据
 template <typename T>
-vector<search_result*> CSBPlusTree<T>::Search(T key)
+map<index_offset, vector<index_offset> > CSBPlusTree<T>::Search(T key)
+//vector<search_result*> CSBPlusTree<T>::Search(T key)
 {
-	vector<search_result*> ret;
+	map<index_offset, vector<index_offset> > ret;
+//	vector<search_result*> ret;
 	ret.clear();
 	int i = 0;
 /*for testing*/	char* sPath = (char*)malloc(1024);
@@ -867,12 +869,7 @@ vector<search_result*> CSBPlusTree<T>::Search(T key)
 		for (; i < search_node->getUsedKeys(); i++)
 		{
 			if (key == search_node->getElement(i)._key)
-			{
-				search_result* tmp_ret = new search_result();
-				tmp_ret->_block_off = search_node->getElement(i)._block_off;
-				tmp_ret->_tuple_off = search_node->getElement(i)._tuple_off;
-				ret.push_back(tmp_ret);
-			}
+				ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
 			else
 				return ret;
 		}
@@ -892,12 +889,7 @@ vector<search_result*> CSBPlusTree<T>::Search(T key)
 			for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 			{
 				if (key == search_node_group->getNode(j)->getElement(i)._key)
-				{
-					search_result* tmp_ret = new search_result();
-					tmp_ret->_block_off = search_node_group->getNode(j)->getElement(i)._block_off;
-					tmp_ret->_tuple_off = search_node_group->getNode(j)->getElement(i)._tuple_off;
-					ret.push_back(tmp_ret);
-				}
+					ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 				else
 					return ret;
 			}
@@ -923,9 +915,9 @@ vector<search_result*> CSBPlusTree<T>::Search(T key)
 }
 
 template <typename T>
-vector<search_result*> CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
+map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
 {
-	vector<search_result*> ret;
+	map<index_offset, vector<index_offset> > ret;
 	ret.clear();
 	if (lower_key > upper_key)
 		return ret;
@@ -989,12 +981,7 @@ vector<search_result*> CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
 		for (; i < search_node->getUsedKeys(); i++)
 		{
 			if ((lower_key <= search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
-			{
-				search_result* tmp_ret = new search_result();
-				tmp_ret->_block_off = search_node->getElement(i)._block_off;
-				tmp_ret->_tuple_off = search_node->getElement(i)._tuple_off;
-				ret.push_back(tmp_ret);
-			}
+				ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
 			else
 				return ret;
 		}
@@ -1014,12 +1001,7 @@ vector<search_result*> CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
 			for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 			{
 				if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
-				{
-					search_result* tmp_ret = new search_result();
-					tmp_ret->_block_off = search_node_group->getNode(j)->getElement(i)._block_off;
-					tmp_ret->_tuple_off = search_node_group->getNode(j)->getElement(i)._tuple_off;
-					ret.push_back(tmp_ret);
-				}
+					ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 				else
 					return ret;
 			}
@@ -1028,6 +1010,230 @@ vector<search_result*> CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
 		i = 0;
 		j = 0;
 		search_node_group = search_node_group->getTailerNG();
+	}
+
+//For testing begin
+	if (NULL != sPath)
+	{
+		if (true == found)
+
+			(void)sprintf(sPath+offset, " ,succeeded.");
+		else
+			(void)sprintf(sPath+offset, " ,failed.");
+	}
+//For testing end
+	return ret;
+}
+
+template<typename T>
+map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)
+{
+	//For point query
+	if (comp_lower == FilterIterator::AttributeComparator::EQ)
+	{
+		if (lower_key != upper_key)
+			cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the equal point query, the lower_key " << lower_key << " != the upper_key " << upper_key << endl;
+		return Search(lower_key);
+	}
+	// Range Query
+	else if ((!(comp_lower == FilterIterator::AttributeComparator::G || comp_lower == FilterIterator::AttributeComparator::GEQ)) || (!(comp_upper == FilterIterator::AttributeComparator::L || comp_upper == FilterIterator::AttributeComparator::LEQ)))
+	{
+		cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the range query, the given two key isn't a range\n";
+		exit(-1);
+	}
+	map<index_offset, vector<index_offset> > ret;
+	ret.clear();
+	if (lower_key > upper_key)
+		return ret;
+	int i = 0;
+/*for testing*/	char* sPath = (char*)malloc(1024);
+/*for testing*/	memset((void*)sPath, 0, 1024);
+
+//For testing begin
+	int offset = 0;
+	if (NULL != sPath)
+	{
+		(void)sprintf(sPath+offset, "The serach path is:");
+		offset+=19;
+	}
+//For testing end
+
+	CCSBNode<T>* search_node = csb_root;
+
+	//find the leaf node
+	for (unsigned depth = 1; depth < this->csb_depth; depth++)
+	{
+		//find the first search_node.key > lower_key for GEQ and search_node.key >= lower_key for G
+		if (comp_lower == FilterIterator::AttributeComparator::GEQ)
+			for (i = 0; (lower_key > search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
+		else if (comp_lower == FilterIterator::AttributeComparator::G)
+			for (i = 0; (lower_key >= search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
+
+//For testing begin
+		if (NULL != sPath)
+		{
+			(void)sprintf(sPath+offset, " %3d -->", search_node->getElement(0)._key);
+			offset+=8;
+		}
+//For testing end
+
+		search_node = (search_node->getPointer())->getNode(i);
+	}
+	//not found
+	if (NULL == search_node)
+		return ret;
+
+//For testing begin
+	if (NULL != sPath)
+	{
+		(void)sprintf(sPath+offset, "%3d", search_node->getElement(0)._key);
+		offset+=3;
+	}
+//For testing end
+
+	//finding the first data in leaf_node whose key >= lower_key
+/*for testing*/	bool found = false;
+	for (i = 0; (i < search_node->used_keys); i++)
+	{
+		if (comp_lower == FilterIterator::AttributeComparator::GEQ)
+		{
+			if (lower_key <= search_node->getElement(i)._key)
+			{
+/*for testing*/				found = true;
+				break;
+			}
+		}
+		if (comp_lower == FilterIterator::AttributeComparator::G)
+		{
+			if (lower_key < search_node->getElement(i)._key)
+			{
+/*for testing*/				found = true;
+				break;
+			}
+		}
+	}
+
+	//collect all tuples whose key is between lower_key and upper_key
+	if (search_node->getFather() == NULL)
+	{
+		if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key <= search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
+					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+		else if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::L)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key <= search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
+					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key < search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
+					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::L)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key < search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
+					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+	}
+	CCSBNodeGroup<T>* search_node_group = search_node->getFather()->getPointer();
+	unsigned j = 0;
+	for (j = 0; j < search_node_group->getUsedNodes(); j++)
+	{
+		if (search_node == search_node_group->getNode(j))
+			break;
+	}
+	while (search_node_group != NULL)
+	{
+		if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
+						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+		else if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::L)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
+						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
+						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::L)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
+						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
 	}
 
 //For testing begin

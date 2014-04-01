@@ -47,6 +47,7 @@ public:
 
 	virtual void print(int level=0)const =0;
 
+	inline operator_type getOperatorType() { return operator_type_; }
 
 protected:
 	Schema* getSchema(const std::vector<Attribute>&)const;
@@ -58,7 +59,6 @@ protected:
 	void align(int space)const;
 
 	inline void setOperatortype(operator_type node_operator) { operator_type_ = node_operator; }
-	inline operator_type getOperatorType() { return operator_type_; }
 
 private:
 	operator_type operator_type_;

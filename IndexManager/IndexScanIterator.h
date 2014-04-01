@@ -13,42 +13,53 @@
 #include "../Block/BlockStream.h"
 #include "CSBPlusTree.h"
 #include "../storage/PartitionStorage.h"
+#include "../iterator/FilterIterator.h"
 
 class IndexScanIterator :public ExpandableBlockStreamIteratorBase {
 public:
 	struct remaining_block {
-		remaining_block() : result_set(0), iter_result_set(0), block_off(0), block(0), iterator(0) {}
-		remaining_block(vector<search_result*> result_set, vector<search_result*>::iterator current_tuple_off, unsigned short block_off, BlockStreamBase* block, BlockStreamBase::BlockStreamTraverseIterator* iterator)
-		:result_set(result_set), iter_result_set(current_tuple_off), block_off(block_off), block(block), iterator(iterator) {}
+		remaining_block() : iter_result_map(0), iter_result_vector(0), block_off(0), block(0), iterator(0) { result_set.clear(); }
+		remaining_block(map<index_offset, vector<index_offset> > result_set, map<index_offset, vector<index_offset> >::iterator iter_result_map, vector<index_offset>::iterator iter_result_vector, unsigned short block_off, BlockStreamBase* block, BlockStreamBase::BlockStreamTraverseIterator* iterator)
+		:result_set(result_set), iter_result_map(iter_result_map), iter_result_vector(iter_result_vector), block_off(block_off), block(block), iterator(iterator) {}
 
-		vector<search_result*> result_set;
-		vector<search_result*>::iterator iter_result_set;
+		map<index_offset, vector<index_offset> > result_set;
+		map<index_offset, vector<index_offset> >::iterator iter_result_map;
+		vector<index_offset>::iterator iter_result_vector;
 		unsigned short block_off;
 
 		BlockStreamBase* block;
 		BlockStreamBase::BlockStreamTraverseIterator* iterator;
 	};
+
+	struct query_range {
+		void* value_low;
+		comparison comp_low;
+		void* value_high;
+		comparison comp_high;
+	};
+
 	class State {
 		friend class IndexScanIterator;
 	public:
 		State() {}
-		State(ProjectionID projection_id, Schema* schema, unsigned long index_id, void* value_low, void* value_high, unsigned block_size);
+//		State(ProjectionID projection_id, Schema* schema, unsigned long index_id, void* value_low, void* value_high, unsigned block_size);
+		State(ProjectionID projection_id, Schema* schema, unsigned long index_id, vector<query_range> query_range__, unsigned block_size);
 
 	public:
 		ProjectionID projection_id_;
 		Schema* schema_;
-		PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
-		ChunkReaderIterator* chunk_reader_iterator_;
 
 		unsigned long index_id_;
-		void* value_low_;
-		void* value_high_;
+//		void* value_low_;
+//		void* value_high_;
+		vector<query_range> query_range_;
 		unsigned block_size_;
 
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version) {
-			ar & projection_id_ & schema_ & index_id_ & value_low_ & value_high_ & block_size_;
+//			ar & projection_id_ & schema_ & index_id_ & value_low_ & value_high_ & block_size_;
+			ar & projection_id_ & schema_ & index_id_ & query_range_ & block_size_;
 		}
 	};
 
