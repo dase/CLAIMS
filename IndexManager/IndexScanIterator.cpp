@@ -23,8 +23,13 @@ IndexScanIterator::~IndexScanIterator() {
 	// TODO Auto-generated destructor stub
 }
 
-IndexScanIterator::State::State(ProjectionID projection_id, Schema* schema, unsigned long index_id, void* value_low, void* value_high, unsigned block_size)
-: projection_id_(projection_id), schema_(schema), index_id_(index_id), value_low_(value_low), value_high_(value_high), block_size_(block_size) {
+//IndexScanIterator::State::State(ProjectionID projection_id, Schema* schema, unsigned long index_id, void* value_low, void* value_high, unsigned block_size)
+//: projection_id_(projection_id), schema_(schema), index_id_(index_id), value_low_(value_low), value_high_(value_high), block_size_(block_size) {
+//
+//}
+
+IndexScanIterator::State::State(ProjectionID projection_id, Schema* schema, unsigned long index_id, vector<query_range> query_range__, unsigned block_size)
+: projection_id_(projection_id), schema_(schema), index_id_(index_id), query_range_(query_range__), block_size_(block_size) {
 
 }
 
@@ -62,13 +67,18 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 	// There are blocks which haven't been completely processed
 	if (atomicPopRemainingBlock(rb))
 	{
-		while (rb.block_off == (*(rb.iter_result_set))->_block_off)
+		while (rb.block_off == rb.iter_result_map->first)
 		{
 			const unsigned bytes = state_.schema_->getTupleMaxSize();
 			if ((tuple_from_index_search = block->allocateTuple(bytes)) > 0)
 			{
-				tuple_from_index_search = rb.iterator->getTuple((*(rb.iter_result_set))->_tuple_off);
-				rb.iter_result_set++;
+				state_.schema_->copyTuple(rb.iterator->getTuple(*rb.iter_result_vector), tuple_from_index_search);
+				rb.iter_result_vector++;
+				if (rb.iter_result_vector == rb.iter_result_map->second.end())
+				{
+					rb.iter_result_map++;
+					rb.iter_result_vector = rb.iter_result_map->second.begin();
+				}
 			}
 			else
 			{
@@ -86,20 +96,25 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 	while (askForNextBlock(rb))
 	{
 		rb.iterator = rb.block->createIterator();
-		while (rb.block_off == (*(rb.iter_result_set))->_block_off)
+		while (rb.block_off == rb.iter_result_map->first)
 		{
 			const unsigned bytes = state_.schema_->getTupleMaxSize();
 			if ((tuple_from_index_search = block->allocateTuple(bytes)) > 0)
 			{
-				state_.schema_->copyTuple(rb.iterator->getTuple((*(rb.iter_result_set))->_tuple_off), tuple_from_index_search);
+				state_.schema_->copyTuple(rb.iterator->getTuple(*rb.iter_result_vector), tuple_from_index_search);
 ////For testing begin
-//				cout << "<" << (*(rb.iter_result_set))->_block_off << ", " << (*(rb.iter_result_set))->_tuple_off << ">\t";
+//				cout << "<" << rb.iter_result_map->first << ", " << *rb.iter_result_vector << ">\t";
 //				state_.schema_->displayTuple(tuple_from_index_search, "\t");
 //				sleep(1);
 ////For testing end
-				rb.iter_result_set++;
-				if (rb.iter_result_set == rb.result_set.end())
-					break;
+				rb.iter_result_vector++;
+				if (rb.iter_result_vector == rb.iter_result_map->second.end())
+				{
+					rb.iter_result_map++;
+					if (rb.iter_result_map == rb.result_set.end())
+						break;
+					rb.iter_result_vector = rb.iter_result_map->second.begin();
+				}
 			}
 			else
 			{
@@ -165,7 +180,7 @@ bool IndexScanIterator::atomicPopRemainingBlock(remaining_block& rb)
 
 bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 {
-	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->nextBlock(rb.block) == false || rb.iter_result_set == rb.result_set.end())
+	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->nextBlock(rb.block) == false || rb.iter_result_map == rb.result_set.end())
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		if (chunk_reader_iterator_ == false)
@@ -180,11 +195,11 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 		{
 		case t_smallInt:
 		{
-			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
-			CSBPlusTree<short>* csb_tree = (CSBPlusTree<short>*)iter->second;
-			csb_index_list_.erase(iter++);
-			rb.result_set = csb_tree->rangeQuery(*(short*)state_.value_low_, *(short*)state_.value_high_);
-			rb.iter_result_set = rb.result_set.begin();
+//			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
+//			CSBPlusTree<short>* csb_tree = (CSBPlusTree<short>*)iter->second;
+//			csb_index_list_.erase(iter++);
+//			rb.result_set = csb_tree->rangeQuery(*(short*)state_.value_low_, *(short*)state_.value_high_);
+//			rb.iter_result_set = rb.result_set.begin();
 			return true;
 		}
 		case t_int:
@@ -192,26 +207,33 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
 			CSBPlusTree<int>* csb_tree = (CSBPlusTree<int>*)iter->second;
 			csb_index_list_.erase(iter++);
-			rb.result_set = csb_tree->rangeQuery(*(int*)state_.value_low_, *(int*)state_.value_high_);
-			rb.iter_result_set = rb.result_set.begin();
+//			rb.result_set = csb_tree->rangeQuery(*(int*)state_.value_low_, *(int*)state_.value_high_);
+			rb.result_set = csb_tree->rangeQuery(*(int*)state_.query_range_.begin()->value_low, state_.query_range_.begin()->comp_low, *(int*)state_.query_range_.begin()->value_high, state_.query_range_.begin()->comp_high);
+			if (rb.result_set.size() == 0)
+			{
+				chunk_reader_iterator_ = 0;
+				return askForNextBlock(rb);
+			}
+			rb.iter_result_map = rb.result_set.begin();
+			rb.iter_result_vector = rb.iter_result_map->second.begin();
 			return true;
 		}
 		case t_u_long:
 		{
-			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
-			CSBPlusTree<unsigned long>* csb_tree = (CSBPlusTree<unsigned long>*)iter->second;
-			csb_index_list_.erase(iter++);
-			rb.result_set = csb_tree->rangeQuery(*(unsigned long*)state_.value_low_, *(unsigned long*)state_.value_high_);
-			rb.iter_result_set = rb.result_set.begin();
+//			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
+//			CSBPlusTree<unsigned long>* csb_tree = (CSBPlusTree<unsigned long>*)iter->second;
+//			csb_index_list_.erase(iter++);
+//			rb.result_set = csb_tree->rangeQuery(*(unsigned long*)state_.value_low_, *(unsigned long*)state_.value_high_);
+//			rb.iter_result_set = rb.result_set.begin();
 			return true;
 		}
 		case t_float:
 		{
-			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
-			CSBPlusTree<float>* csb_tree = (CSBPlusTree<float>*)iter->second;
-			csb_index_list_.erase(iter++);
-			rb.result_set = csb_tree->rangeQuery(*(float*)state_.value_low_, *(float*)state_.value_high_);
-			rb.iter_result_set = rb.result_set.begin();
+//			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
+//			CSBPlusTree<float>* csb_tree = (CSBPlusTree<float>*)iter->second;
+//			csb_index_list_.erase(iter++);
+//			rb.result_set = csb_tree->rangeQuery(*(float*)state_.value_low_, *(float*)state_.value_high_);
+//			rb.iter_result_set = rb.result_set.begin();
 			return true;
 		}
 		case t_double:
@@ -260,3 +282,5 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 	}
 
 }
+
+

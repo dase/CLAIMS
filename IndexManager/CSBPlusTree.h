@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+#include "../iterator/FilterIterator.h"
 using namespace std;
 
 enum NODE_TYPE
@@ -29,6 +30,7 @@ enum NODE_TYPE
 #define CSB_ORDER_V 2		//6
 
 typedef unsigned short index_offset;
+typedef FilterIterator::AttributeComparator::comparison comparison;
 
 //struct for the offset of the real data: leaf node's element struct
 template <typename T>
@@ -36,13 +38,6 @@ struct data_offset
 {
 	data_offset<T>():_key(INVALID), _block_off(INVALID), _tuple_off(INVALID){};
 	T _key;
-	index_offset _block_off;
-	index_offset _tuple_off;
-};
-
-struct search_result
-{
-	search_result():_block_off(INVALID), _tuple_off(INVALID) {};
 	index_offset _block_off;
 	index_offset _tuple_off;
 };
@@ -333,8 +328,9 @@ public:
 	//bulkload indexing
 	void BulkLoad(data_offset<T>* aray, unsigned arayNo);
 	//search certain records according to the key
-	vector<search_result*> Search(T key);
-	vector<search_result*> rangeQuery(T lower_key, T upper_key);
+	map<index_offset, vector<index_offset> > Search(T key);
+	map<index_offset, vector<index_offset> > rangeQuery(T lower_key, T upper_key);
+	map<index_offset, vector<index_offset> > rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper);
 	//insert a record
 	bool Insert(data_offset<T> data);
 	//delete the records according to the key

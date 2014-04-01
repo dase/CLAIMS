@@ -31,15 +31,27 @@ static int test_csb_indexing()
 
 
 //For testing search
-	vector<search_result*> ret;
+//	vector<search_result*> ret;
+//	ret.clear();
+//	ret = csb_tree->Search(5);
+//	if (ret.size() != 0)
+//	{
+//		for (vector<search_result*>::iterator iter = ret.begin(); iter != ret.end(); iter++)
+//		{
+//			cout << "<" << (*iter)->_block_off << ", " << (*iter)->_tuple_off << ">\t";
+//		}
+//	}
+//	else
+//		cout << "No record searched!\n";
+//	cout << endl;
+	map<index_offset, vector<index_offset> > ret;
 	ret.clear();
 	ret = csb_tree->Search(5);
 	if (ret.size() != 0)
 	{
-		for (vector<search_result*>::iterator iter = ret.begin(); iter != ret.end(); iter++)
-		{
-			cout << "<" << (*iter)->_block_off << ", " << (*iter)->_tuple_off << ">\t";
-		}
+		for (map<index_offset, vector<index_offset> >::iterator iter = ret.begin(); iter != ret.end(); iter++)
+			for (vector<index_offset>::iterator iter_ = iter->second.begin(); iter_ != iter->second.end(); iter_++)
+				cout << "<" << iter->first << ", " << *iter_ << ">\t";
 	}
 	else
 		cout << "No record searched!\n";
@@ -47,18 +59,18 @@ static int test_csb_indexing()
 
 
 //For testing range query
-	ret.clear();
-	ret = csb_tree->rangeQuery(5, 10);
-	if (ret.size() != 0)
-	{
-		for (vector<search_result*>::iterator iter = ret.begin(); iter != ret.end(); iter++)
-		{
-			cout << "<" << (*iter)->_block_off << ", " << (*iter)->_tuple_off << ">\t";
-		}
-	}
-	else
-		cout << "No record searched!\n";
-	cout << endl;
+//	ret.clear();
+//	ret = csb_tree->rangeQuery(5, 10);
+//	if (ret.size() != 0)
+//	{
+//		for (vector<search_result*>::iterator iter = ret.begin(); iter != ret.end(); iter++)
+//		{
+//			cout << "<" << (*iter)->_block_off << ", " << (*iter)->_tuple_off << ">\t";
+//		}
+//	}
+//	else
+//		cout << "No record searched!\n";
+//	cout << endl;
 
 	cout << endl << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	return 0;

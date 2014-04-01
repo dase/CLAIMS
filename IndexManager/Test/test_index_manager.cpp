@@ -24,7 +24,7 @@ static int test_index_manager()
 		return -1;
 	}
 	map<ChunkID, CSBPlusTree<int>* >::iterator iter = sec_code_index.begin();
-	vector<search_result*>* ret = new vector<search_result*> [sec_code_index.size()];
+	map<index_offset, vector<index_offset> >* ret = new map<index_offset, vector<index_offset> > [sec_code_index.size()];
 	while (true)
 	{
 		int sec_code = 0;
@@ -36,7 +36,7 @@ static int test_index_manager()
 		for (iter = sec_code_index.begin(); iter != sec_code_index.end(); iter++)
 		{
 			ret[count].clear();
-			ret[count] = iter->second->Search(sec_code);
+			ret[count] = iter->second->rangeQuery(sec_code, sec_code);
 			total_tuple += ret[count].size();
 			count++;
 		}
@@ -50,8 +50,11 @@ static int test_index_manager()
 			{
 				cout << "How many to print? ";
 				cin >> sec_code;
-				for (int i = 0; i < ret[count].size() && i < sec_code; i++)
-					cout << "<" << ret[count][i]->_block_off << ", " << ret[count][i]->_tuple_off << ">\t";
+				for (map<index_offset, vector<index_offset> >::iterator iter = ret[count].begin(); iter != ret[count].end(); iter++)
+					for (vector<index_offset>::iterator iter_ = iter->second.begin(); iter_ != iter->second.end(); iter_++)
+						cout << "<" << iter->first << ", " << *iter_ << ">\t";
+//				for (int i = 0; i < ret[count].size() && i < sec_code; i++)
+//					cout << "<" << ret[count][i]->_block_off << ", " << ret[count][i]->_tuple_off << ">\t";
 				cout << endl;
 			}
 		}
