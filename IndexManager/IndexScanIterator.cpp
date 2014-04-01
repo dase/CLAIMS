@@ -207,8 +207,19 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
 			CSBPlusTree<int>* csb_tree = (CSBPlusTree<int>*)iter->second;
 			csb_index_list_.erase(iter++);
-//			rb.result_set = csb_tree->rangeQuery(*(int*)state_.value_low_, *(int*)state_.value_high_);
-			rb.result_set = csb_tree->rangeQuery(*(int*)state_.query_range_.begin()->value_low, state_.query_range_.begin()->comp_low, *(int*)state_.query_range_.begin()->value_high, state_.query_range_.begin()->comp_high);
+
+			rb.result_set.clear();
+			map<index_offset, vector<index_offset> > result_set;
+			for (vector<query_range>::iterator iter = state_.query_range_.begin(); iter != state_.query_range_.end(); iter++)
+			{
+				result_set = csb_tree->rangeQuery(*(int*)iter->value_low, iter->comp_low, *(int*)iter->value_high, iter->comp_high);
+				if (result_set.size() != 0)
+				{
+					for (map<index_offset, vector<index_offset> >::iterator iter_map = result_set.begin(); iter_map != result_set.end(); iter_map++)
+						rb.result_set[iter_map->first].insert(rb.result_set[iter_map->first].end(), iter_map->second.begin(), iter_map->second.end());
+				}
+			}
+
 			if (rb.result_set.size() == 0)
 			{
 				chunk_reader_iterator_ = 0;
