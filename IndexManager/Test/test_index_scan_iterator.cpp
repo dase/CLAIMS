@@ -108,16 +108,27 @@ static int test_index_scan_iterator()
 			unsigned long index_id = 0;
 			vector<IndexScanIterator::query_range> q_range;
 			q_range.clear();
+			int value_low = 10107;
+			int value_high = 10110;
+
 			IndexScanIterator::query_range q1;
 			q1.value_low = malloc(sizeof(int));
-			int value_low = 10106;
-			int value_high = 10111;
 			q1.value_low = (void*)(&value_low);
-			q1.comp_low = FilterIterator::AttributeComparator::G;
+			q1.comp_low = FilterIterator::AttributeComparator::EQ;
 			q1.value_high = malloc(sizeof(int));
-			q1.value_high = (void*)(&value_high);
-			q1.comp_high = FilterIterator::AttributeComparator::L;
+			q1.value_high = (void*)(&value_low);
+			q1.comp_high = FilterIterator::AttributeComparator::EQ;
 			q_range.push_back(q1);
+
+			IndexScanIterator::query_range q2;
+			q2.value_low = malloc(sizeof(int));
+			q2.value_low = (void*)(&value_high);
+			q2.comp_low = FilterIterator::AttributeComparator::EQ;
+			q2.value_high = malloc(sizeof(int));
+			q2.value_high = (void*)(&value_high);
+			q2.comp_high = FilterIterator::AttributeComparator::EQ;
+			q_range.push_back(q2);
+
 			IndexScanIterator::State isi_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, index_id, q_range, block_size);
 			BlockStreamIteratorBase* isi = new IndexScanIterator(isi_state);
 
