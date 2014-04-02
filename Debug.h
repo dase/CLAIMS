@@ -10,6 +10,7 @@
 
 #define COOR "/home/imdb/config/dsc/coor.conf"
 #define CONFIG "/home/imdb/config/dsc/config"
+
 //#define CONFIG_SAME "/home/imdb/config/config"
 
 /*
@@ -33,29 +34,5 @@
 #define HDFS_N "10.11.1.190"
 // 磁盘目录
 #define DISKDIR "/home/imdb/diskdata"
-//#define DEBUG_Coordinator~/
-//#define DEBUG_Environment
 
-//#define DEBUG_ExchangeIteratorLowerWithWideDependency
-//#define DEBUG_ExchangeIteratorWithWideDependency
-//#define DEBUG_ExchangeIteratorEager
-//#define DEBUG_ExchangeIteratorEagerLower
-//
-//#define DEBUG_ExchangeRegister
-//#define DEBUG_ExchangeTracker
-//
-//#define DEBUG_PortManager
-//#define DEBUG_IteratorExecutorSlave
-//#define DEBUG_IteratorExecutorMaster
-//
-
-//#define DEBUG_ExchangeIteratorEager
-//#define DEBUG_ExpandableBlockStreamExchangeMaterialized
-//#define DEBUG_BlockStreamExchangeLowerBase
-//#define DEBUG_ExpandableBlockStreamExchangeLM
-
-#define DEBUG_ResourceManagerMaster
-#define DEBUG_ResourceManagerSlave
-#define DEBUG_Catalog
-//#define DEBUG_BufferManager
 #endif /* DEBUG_H_ */

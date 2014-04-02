@@ -29,6 +29,8 @@ using namespace decimal;
 enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
 typedef void (*fun)(void*,void*);
 
+//static int count_open_for_data_column=0;
+
 /**
  * the number of bytes that are aligned between any two adjacent data types
  */
@@ -135,6 +137,7 @@ public:
 	}
 	inline virtual void assignment(const void* const& src, void* const &desc) const =0;
 	virtual unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const=0;
+	virtual unsigned getPartitionValue(const void* key, const unsigned long & mod)const=0;
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
 	virtual void toValue(void* target, const char* string)=0;
@@ -209,6 +212,9 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(int*)key);
 	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(int*)key)%mod;
+	}
 	Operate* duplicateOperator()const{
 		return new OperateInt();
 	}
@@ -271,6 +277,9 @@ public:
 	}
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(float*)key);
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(float*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
 		return new OperateFloat();
@@ -335,6 +344,9 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(double*)key);
 	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(double*)key)%mod;
+	}
 	Operate* duplicateOperator()const{
 		return new OperateDouble();
 	}
@@ -397,6 +409,9 @@ public:
 	}
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(unsigned long*)key);
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(unsigned long*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
 		return new OperateULong();
@@ -465,7 +480,10 @@ public:
 		return 0;
 	}
 	unsigned getPartitionValue(const void* key)const{
-		return boost::hash_value(*(char*)key);
+		return boost::hash_value((std::string)((char*)key));
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value((std::string)((char*)key))%mod;
 	}
 	Operate* duplicateOperator()const{
 		return new OperateString();
@@ -487,7 +505,11 @@ public:
 		return to_simple_string(*(date*)value);
 	};
 	void toValue(void* target, const char* string){
-		*(date*)target = from_undelimited_string(string);
+		std::string s(string);
+		if (s.length() == 8)
+			*(date*)target = from_undelimited_string(string);
+		else
+			*(date*)target = from_string(string);
 	};
 	inline bool equal(void* a, void* b)
 	{
@@ -533,11 +555,10 @@ public:
 		return 0;
 	}
 	unsigned getPartitionValue(const void* key)const{
-//		return boost::hash_value(*(date*)key);
-		printf("The hash function for date type is not implemented yet!\n");
-		assert(false);
-
-		return 0;
+		return boost::hash_value((*(boost::gregorian::date*)(key)).julian_day());
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value((*(boost::gregorian::date*)(key)).julian_day())%mod;
 	}
 	Operate* duplicateOperator()const{
 		return new OperateDate();
@@ -605,11 +626,10 @@ public:
 		return 0;
 	}
 	unsigned getPartitionValue(const void* key)const{
-//		return boost::hash_value(*(time_duration*)key);
-		printf("The hash function for time type is not implemented yet!\n");
-		assert(false);
-
-		return 0;
+		return boost::hash_value((*(time_duration*)(key)).total_nanoseconds());
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value((*(time_duration*)(key)).total_nanoseconds())%mod;
 	}
 	Operate* duplicateOperator()const{
 		return new OperateTime();
@@ -676,12 +696,12 @@ public:
 
 		return 0;
 	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(to_simple_string(*(ptime*)(key)))%mod;
+	}
 	unsigned getPartitionValue(const void* key)const{
-//		return boost::hash_value(*(ptime*)key);
-		printf("The hash function for datetime type is not implemented yet!\n");
-		assert(false);
-
-		return 0;
+		return boost::hash_value(to_simple_string(*(ptime*)(key)));
+		//TODO: maybe there is a more efficient way.
 	}
 	Operate* duplicateOperator()const{
 		return new OperateDatetime();
@@ -746,6 +766,9 @@ public:
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(short*)key);
 	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(short*)key)%mod;
+	}
 	Operate* duplicateOperator()const{
 		return new OperateSmallInt();
 	}
@@ -808,6 +831,9 @@ public:
 	}
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(unsigned short*)key);
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(unsigned short*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
 		return new OperateUSmallInt();
@@ -902,6 +928,12 @@ public:
 
 		return 0;
 	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		unsigned long ul1 = *(unsigned long*)((*(NValue*)key).m_data);
+		unsigned long ul2 = *(unsigned long*)((*(NValue*)key).m_data+8);
+		boost::hash_combine(ul1,ul2);
+		return ul1%mod;
+	}
 	Operate* duplicateOperator()const{
 		return new OperateDecimal(number_of_decimal_digits_);
 	}
@@ -927,17 +959,20 @@ public:
 			case t_u_smallInt: operate = new OperateUSmallInt();break;
 			default:operate=0;break;
 		}
+		COUNTER::count++;
 	};
 	 column_type(const column_type &r){
 		 this->type=r.type;
 		 this->size=r.size;
 		 this->operate=r.operate->duplicateOperator();
 		 assert(this->operate!=0);
+		 COUNTER::count++;
 	 }
-	column_type():operate(0){};
+	column_type():operate(0){COUNTER::count++;};
 	~column_type(){
 		operate->~Operate();
 		operate=0;
+		COUNTER::count--;
 	};
 	inline unsigned get_length() const
 	{

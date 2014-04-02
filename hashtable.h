@@ -101,6 +101,12 @@ public:
 		func(loc, newvalue);
 		lock_list_[offset].unlock();
 	}
+	inline void lockBlock(unsigned & bn){
+		lock_list_[bn].lock();
+	}
+	inline void unlockBlock(unsigned & bn){
+		lock_list_[bn].unlock();
+	}
 	class Iterator
 	{
 		friend class BasicHashTable;

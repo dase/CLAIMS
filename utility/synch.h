@@ -9,10 +9,11 @@
 #define SYNCH_H_
 
 
-#include "../Block/synch.h"
 #include <semaphore.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <assert.h>
+#include "../Block/synch.h"
 
 class Lock
 {
@@ -93,8 +94,19 @@ public:
 		m_nSyncCount = 0;
 	}
 	void RegisterOneThread(){
+		pthread_mutex_lock(&m_l_SyncLock);
 		m_nThreads++;
+		pthread_mutex_unlock(&m_l_SyncLock);
 //		printf("Barrier:: new thread registered!\n\n\n");
+	}
+	void UnregisterOneThread(){
+		pthread_mutex_lock(&m_l_SyncLock);
+		m_nThreads--;
+		assert(m_nThreads>=0);
+		if(m_nThreads==m_nSyncCount){
+			pthread_cond_broadcast(&m_cv_SyncCV);
+		}
+		pthread_mutex_unlock(&m_l_SyncLock);
 	}
 
 	virtual ~Barrier() {
@@ -103,7 +115,12 @@ public:
 	}
 	void setEmpty(){
 		m_nThreads=0;
+		m_nSyncCount=0;
 	}
+
+	/*
+	 * One must call setEmpty() before the second's calling of Arrive()
+	 */
 	void Arrive(){
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nSyncCount++;
@@ -112,7 +129,6 @@ public:
 //			printf("arrive the nthreads\n");
 //			printf("arrive the broadcast\n");
 			pthread_cond_broadcast(&m_cv_SyncCV);
-			m_nSyncCount = 0;
 		}
 		else {
 //			printf("arrive the wait\n");

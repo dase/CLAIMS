@@ -46,3 +46,13 @@ unsigned Dataflow::getTupleSize()const{
 	}
 	return ret;
 }
+Attribute Dataflow::getAttribute(std::string name)const{
+	for(unsigned i=0;i<attribute_list_.size();i++){
+		if(attribute_list_[i].attrName==name){
+			return attribute_list_[i];
+		}
+	}
+	printf("Failed to find attribute [%s]\n",name.c_str());
+	assert(false);
+	return Attribute(ATTRIBUTE_NULL);
+}

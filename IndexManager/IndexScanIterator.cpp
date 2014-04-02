@@ -36,7 +36,7 @@ IndexScanIterator::State::State(ProjectionID projection_id, Schema* schema, unsi
 bool IndexScanIterator::open(const PartitionOffset& partition_off)
 {
 	AtomicPushBlockStream(BlockStreamBase::createBlockWithDesirableSerilaizedSize(state_.schema_, state_.block_size_));
-	if(completeForInitializationJob()){
+	if(tryEntryIntoSerializedSection()){
 
 		/* this is the first expanded thread*/
 		csb_index_list_ = IndexManager::getInstance()->getAttrIndex(state_.index_id_);

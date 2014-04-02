@@ -138,6 +138,26 @@ bool TableDescriptor::createHashPartitionedProjection(vector<ColumnOffset> colum
 	return true;
 
 }
+bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
+		std::string partition_attribute_name, unsigned number_of_partitions) {
+	ProjectionID projection_id(table_id_,projection_list_.size());
+	ProjectionDescriptor *projection=new ProjectionDescriptor(projection_id);
+
+//	projection->projection_offset_=projection_list_.size();
+//	projection->addAttribute(attributes[0]);
+
+	for(unsigned i=0;i<attributes.size();i++){
+		projection->addAttribute(attributes[i]);
+	}
+
+	PartitionFunction* hash_function=PartitionFunctionFactory::createGeneralModuloFunction(number_of_partitions);
+//	projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+	projection->DefinePartitonier(number_of_partitions,getAttribute(partition_attribute_name),hash_function);
+
+
+	projection_list_.push_back(projection);
+	return true;
+}
 bool TableDescriptor::createHashPartitionedProjection(vector<ColumnOffset> column_list,std::string partition_attribute_name,unsigned number_of_partitions){
 
 
@@ -211,6 +231,7 @@ ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionOffset pid)const{
 unsigned TableDescriptor::getNumberOfProjection()const{
 	return projection_list_.size();
 }
+
 
 Schema* TableDescriptor::getSchema()const
 {

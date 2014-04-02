@@ -7,6 +7,7 @@
 
 #include "BlockStreamResultCollector.h"
 #include "../rdtsc.h"
+#include "../utility/rdtsc.h"
 BlockStreamResultCollector::BlockStreamResultCollector()
 :finished_thread_count_(0),registered_thread_count_(0){
 	// TODO Auto-generated constructor stub
@@ -44,11 +45,11 @@ bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
 	registered_thread_count_++;
 	pthread_t tid;
 	pthread_create(&tid,NULL,worker,this);
-
+	unsigned long long int start=curtick();
 	while(!ChildExhausted()){
 		usleep(1);
 	}
-
+	block_buffer_.query_time_=getSecond(start);
 	return true;
 }
 bool BlockStreamResultCollector::next(BlockStreamBase* block){
@@ -73,6 +74,12 @@ bool BlockStreamResultCollector::close(){
 //	}
 	state_.child_->close();
 	return true;
+}
+void BlockStreamResultCollector::print(){
+	printf("------------\n");
+	printf("ResultCollector\n");
+	printf("------------\n");
+	state_.child_->print();
 }
 ResultSet* BlockStreamResultCollector::getResultSet(){
 

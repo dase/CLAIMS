@@ -24,6 +24,7 @@ extern "C" int yylex();
 extern char globalInputText[10000];
 extern int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 int oldstate;
+extern char linebuf[500];
 
 #undef YY_INPUT
 #define YY_INPUT(b,r,s) readInputForLexer(b,&r,s)
@@ -179,9 +180,11 @@ ORDER	{ return ORDER; }
 OUT	{ return OUT; }
 OUTER	{ return OUTER; }
 OUTFILE	{ return OUTFILE; }
+PARTITIONED	{ return PARTITIONED; }	// 2014-2-24---增加对这个词的识别---by余楷
 PRECISION	{ return PRECISION; }
 PRIMARY	{ return PRIMARY; }
 PROCEDURE	{ return PROCEDURE; }
+PROJECTION	{ return PROJECTION; }	// 2014-2-24---增加对这个词的识别---by余楷
 PURGE	{ return PURGE; }
 QUICK	{ return QUICK; }
 READ	{ return READ; }
@@ -281,12 +284,12 @@ FALSE	{ yylval.intval = 0; return BOOL; }
 '(\\.|''|[^'\n])*'	|
 \"(\\.|\"\"|[^"\n])*\"  { yylval.strval = strdup(yytext); return STRING; }
 
-'(\\.|[^'\n])*$	        { yyerror("Unterminated string %s", yytext); }
-\"(\\.|[^"\n])*$	{ yyerror("Unterminated string %s", yytext); }
+'(\\.|[^'\n])*$		{ yyerror("Unterminated string %s", yytext); }
+\"(\\.|[^"\n])*$		{ yyerror("Unterminated string %s", yytext); }
 
    /* hex strings */
 X'[0-9A-F]+' |  
-0X[0-9A-F]+  { yylval.strval = strdup(yytext); return STRING; }
+0X[0-9A-F]+  	{ yylval.strval = strdup(yytext); return STRING; }
 
    /* bit strings */
 
@@ -320,7 +323,10 @@ DATE_ADD/"(" { return FDATE_ADD; }
 DATE_SUB/"(" { return FDATE_SUB; }
 
 	/* 
-        ---2.18 add aggrection functions
+         * peek ahead and return function if name(
+         */
+	/* 
+        ---2.18add aggrection functions
          */
 COUNT    { int c = yyinput(); unput(c);
            if(c == '(') return FCOUNT;
@@ -342,8 +348,7 @@ MAX    { int c = yyinput(); unput(c);
            if(c == '(') return FMAX;
            yylval.strval = strdup(yytext);
            return NAME; } 
-
-
+           
 [A-Za-z][A-Za-z0-9_]*	{ yylval.strval = strdup(yytext);
                           return NAME; }
 `[^`/\\.\n]+`           { yylval.strval = strdup(yytext+1);
