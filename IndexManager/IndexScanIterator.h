@@ -32,10 +32,44 @@ public:
 	};
 
 	struct query_range {
+		query_range() : value_low(0), value_high(0){ valuebytes_low.clear(); valuebytes_high.clear(); }
+		query_range(void* value_low_, comparison comp_low_, void* value_high_, comparison comp_high_, column_type c_type_)
+		:value_low(value_low_), comp_low(comp_low_), value_high(value_high_), comp_high(comp_high_), c_type(c_type_)
+		{ valuebytes_low.clear(); valuebytes_high.clear(); }
+
 		void* value_low;
 		comparison comp_low;
 		void* value_high;
 		comparison comp_high;
+		column_type c_type;
+		std::vector<char> valuebytes_low, valuebytes_high;
+
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive & ar, const unsigned int version) {
+
+			if(valuebytes_low.empty() && valuebytes_high.empty() && c_type.operate != 0)
+			{
+				for (unsigned i = 0; i < c_type.get_length(); i++)
+				{
+					valuebytes_low.push_back(*((char*)value_low+i));
+					valuebytes_high.push_back(*((char*)value_high+i));
+				}
+			}
+
+			ar & valuebytes_low & comp_low & valuebytes_high & comp_high & c_type;
+
+			if (value_low == 0 || value_high ==0)
+			{
+				value_low = malloc(c_type.get_length());
+				value_high = malloc(c_type.get_length());
+				for (unsigned i = 0; i < c_type.get_length(); i++)
+				{
+					*((char*)value_low+i)=valuebytes_low[i];
+					*((char*)value_high+i)=valuebytes_high[i];
+				}
+			}
+		}
 	};
 
 	class State {

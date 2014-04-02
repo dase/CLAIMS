@@ -32,7 +32,7 @@
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
 
-#include "../Loader/test_load.cpp"
+#include "../Loader/Test/test_load.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
 
 #include "../IndexManager/Test/test_csb_classes.cpp"
@@ -73,7 +73,7 @@ int main(){
 //	return test_csb_classes();
 //	return test_csb_indexing();
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
-//	return test_logical_csb_index_building();
-	return test_index_scan_iterator();
+	return test_logical_csb_index_building();
+//	return test_index_scan_iterator();
 
 }
