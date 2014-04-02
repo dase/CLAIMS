@@ -399,12 +399,12 @@ char linebuf[500];
 %type <ast_node> select_expr_list opt_where select_stmt stmt opt_groupby select_expr
 %type <ast_node> expr_list opt_expr_list  case_list  opt_having opt_orderby expr
 %type <ast_node> groupby_list opt_limit table_reference table_factor
-%type <ast_node> table_references   opt_into_list opt_join_condition join_condition
+%type <ast_node> table_references opt_into_list opt_join_condition join_condition
 %type <ast_node> column_list  table_subquery  join_table
 %type <ast_node> index_list opt_for_join opt_col_names
 %type <ast_node> delete_opts delete_list 
 %type <ast_node> insert_vals insert_vals_list
-%type <ast_node> insert_asgn_list  update_opts update_asgn_list
+%type <ast_node> insert_asgn_list update_asgn_list
 %type <ast_node> opt_length  enum_list
 %type <ast_node> column_atts create_col_list
 
@@ -417,6 +417,7 @@ char linebuf[500];
 %type <ast_node> truncate_stmt
 %type <ast_node> create_index_stmt index_col_list drop_index_stmt	// 2014-3-24---增加---by Yu
 %type <ast_node> drop_database_stmt drop_table_stmt table_list	// 2014-3-24---增加---by Yu
+%type <ast_node> load_table_stmt	// 2014-3-27---增加---by Yu
 %type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		// 2014-3-24---增加---by Yu
 %type <intval> opt_col index_att index_type rename_list
 %type <intval> opt_chain opt_release opt_read_write
@@ -1098,6 +1099,12 @@ opt_rc: /* nil */ 	{ $$ = 0; }
    | CASCADE 		{ $$ = 2; }
    ;
    
+   /** load table **/	// 2014-3-27---增加---by Yu
+stmt: load_table_stmt	{ $$=$1; output($$, 1); puts("SQL parser： This is a load_table statement"); }
+	;
+	
+load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING	{ $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9);}
+	;
    
    /** rename table **/
 stmt: rename_table_stmt { emit("STMT"); }

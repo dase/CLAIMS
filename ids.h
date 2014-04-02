@@ -129,7 +129,7 @@ struct PartitionID{
 	}
 	std::string getPathAndName()const{
 		std::ostringstream str;
-		str<<"/home/imdb/data/wangli/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+		str<<"/home/imdb/data/yukai/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 
 		return str.str();
 	}

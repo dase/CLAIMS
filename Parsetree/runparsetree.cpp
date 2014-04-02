@@ -7,6 +7,7 @@
 #ifndef __RUNPARSER__
 #define __RUNPARSER__
 #include "sql_node_struct.h"
+#include <algorithm>
 //#include "../Environment.h"
 extern "C" int yylex();
 extern "C" int yyparse();

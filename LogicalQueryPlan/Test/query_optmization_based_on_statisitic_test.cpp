@@ -1438,5 +1438,5 @@ static int query_optimization_based_on_statistics(){
 			sleep(1);
 		}
 	}
-
+	return 0;
 }
