@@ -19,20 +19,23 @@ class PartitionStorage {
 public:
 	class PartitionReaderItetaor{
 	public:
-		PartitionReaderItetaor();
+//		PartitionReaderItetaor();
 		PartitionReaderItetaor(PartitionStorage* partition_storage);
 		virtual ~PartitionReaderItetaor();
 		virtual ChunkReaderIterator* nextChunk();
+		virtual bool nextBlock(BlockStreamBase* &block);
 	protected:
 		PartitionStorage* ps;
 		unsigned chunk_cur_;
+		ChunkReaderIterator* chunk_it_;
 	};
 	class AtomicPartitionReaderIterator:public PartitionReaderItetaor{
 	public:
-		AtomicPartitionReaderIterator();
+//		AtomicPartitionReaderIterator();
 		AtomicPartitionReaderIterator(PartitionStorage* partition_storage):PartitionReaderItetaor(partition_storage){};
 		virtual ~AtomicPartitionReaderIterator();
 		ChunkReaderIterator* nextChunk();
+		virtual bool nextBlock(BlockStreamBase* &block);
 	private:
 		Lock lock_;
 	};

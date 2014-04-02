@@ -18,7 +18,7 @@ Schema::~Schema() {
 	// TODO Auto-generated destructor stub
 }
 
-unsigned Schema::getncolumns()
+unsigned Schema::getncolumns()const
 {
 	return columns.size();
 }

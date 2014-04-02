@@ -48,6 +48,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 ///////////////////////////////// END ////////////////////////////////////
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
+	initContext(state_.schema_,state_.block_size_);
 	if(tryEntryIntoSerializedSection()){
 		tuple_after_filter_=0;
 		const bool child_open_return=state_.child_->open(part_off);
@@ -65,58 +66,60 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 
 bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 
-	remaining_block rb;
+
 	void* tuple_from_child;
 	void* tuple_in_block;
 	bool pass_filter;
-	if(atomicPopRemainingBlock(rb)){
-		while((tuple_from_child=rb.iterator->currentTuple())>0){
-			pass_filter=true;
-			for(unsigned i=0;i<state_.comparator_list_.size();i++){
+	thread_context& tc=getContext();
 
-				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
-					pass_filter=false;
-					break;
-				}
-			}
-			if(pass_filter){
-				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
-				if((tuple_in_block=block->allocateTuple(bytes))>0){
-					/* the block has space to hold this tuple*/
-//					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
-					/* the block has space to hold this tuple,
-					 * copyTuple can be used in the hashtable,
-					 * but here we must use the block insert
-					 * modified by zhanglei for the variable supported!*/
-					block->insert(tuple_in_block,tuple_from_child,bytes);
-					tuple_after_filter_++;
-					rb.iterator->increase_cur_();
-				}
-				else{
-					/* the block is full, before we return, we pop the remaining block.*/
-					atomicPushRemainingBlock(rb);
-					return true;
-				}
-			}
-			else{
-				rb.iterator->increase_cur_();
+	while((tuple_from_child=tc.block_stream_iterator_->currentTuple())>0){
+		pass_filter=true;
+		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+
+			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+				pass_filter=false;
+				break;
 			}
 		}
-		rb.iterator->~BlockStreamTraverseIterator();
-		AtomicPushFreeBlockStream(rb.block);
-
+		if(pass_filter){
+			const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
+			if((tuple_in_block=block->allocateTuple(bytes))>0){
+				/* the block has space to hold this tuple*/
+//					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
+				/* the block has space to hold this tuple,
+				 * copyTuple can be used in the hashtable,
+				 * but here we must use the block insert
+				 * modified by zhanglei for the variable supported!*/
+				block->insert(tuple_in_block,tuple_from_child,bytes);
+				tuple_after_filter_++;
+				tc.block_stream_iterator_->increase_cur_();
+			}
+			else{
+				/* the block is full, before we return, we pop the remaining block.*/
+				return true;
+			}
+		}
+		else{
+			tc.block_stream_iterator_->increase_cur_();
+		}
 	}
 
 	/* When the program arrivals here, it means that there is no remaining block or the remaining block
 	 * is exhausted, so we read a new block from the child.
 	 */
 
-//	BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
-	BlockStreamBase* block_for_asking=AtomicPopFreeBlockStream();
-	block_for_asking->setEmpty();
-	while(state_.child_->next(block_for_asking)){
-		BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_for_asking->createIterator();
-		while((tuple_from_child=traverse_iterator->currentTuple())>0){
+
+	tc.block_for_asking_->setEmpty();
+	tc.block_stream_iterator_->~BlockStreamTraverseIterator();
+
+	while(state_.child_->next(tc.block_for_asking_)){
+		tc.block_stream_iterator_=tc.block_for_asking_->createIterator();
+
+		/*
+		 * TODO: The following lines are the same as the some lines above,
+		 * so consider put them into a method.
+		 */
+		while((tuple_from_child=tc.block_stream_iterator_->currentTuple())>0){
 			pass_filter=true;
 			for(unsigned i=0;i<state_.comparator_list_.size();i++){
 				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
@@ -135,30 +138,29 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 					 * modified by zhanglei for the variable supported!*/
 					block->insert(tuple_in_block,tuple_from_child,bytes);
 					tuple_after_filter_++;
-					traverse_iterator->increase_cur_();
+					tc.block_stream_iterator_->increase_cur_();
 				}
 				else{
 					/* the block is full, before we return, we pop the remaining block.*/
-					atomicPushRemainingBlock(remaining_block(block_for_asking,traverse_iterator));
+
 					return true;
 				}
 			}
 			else{
-				traverse_iterator->increase_cur_();
+				tc.block_stream_iterator_->increase_cur_();
 			}
 
 		}
 		/* the block_for_asking is exhausted, but the block is not full*/
-		traverse_iterator->~BlockStreamTraverseIterator();
-		block_for_asking->setEmpty();
+		tc.block_stream_iterator_->~BlockStreamTraverseIterator();
+		tc.block_for_asking_->setEmpty();
 	}
 	/* the child iterator is exhausted, but the block is not full.*/
-//	block_for_asking->~BlockStreamBase();
-	AtomicPushFreeBlockStream(block_for_asking);
-	if(!block->Empty())
+
+	if(!block->Empty()){
 		return true;
+	}
 	else{
-//		cout<<"tuple_after_filter_: "<<tuple_after_filter_<<endl;
 		return false;
 	}
 }
@@ -171,6 +173,8 @@ bool ExpandableBlockStreamFilter::close(){
 		free_block_stream_list_.front()->~BlockStreamBase();
 		free_block_stream_list_.pop_front();
 	}
+
+	destoryAllContext();
 
 	free_block_stream_list_.clear();
 	state_.child_->close();
@@ -220,3 +224,31 @@ void ExpandableBlockStreamFilter::AtomicPushFreeBlockStream(BlockStreamBase* blo
 	free_block_stream_list_.push_back(block);
 	lock_.release();
 }
+thread_context ExpandableBlockStreamFilter::popContext(){
+	lock_.acquire();
+	assert(context_list_.find(pthread_self())!=context_list_.cend());
+	thread_context ret= context_list_[pthread_self()];
+	context_list_.erase(pthread_self());
+//	printf("Thread %lx is poped!\n",pthread_self());
+	lock_.release();
+	return ret;
+}
+
+void ExpandableBlockStreamFilter::pushContext(const thread_context& tc){
+	lock_.acquire();
+	assert(context_list_.find(pthread_self())==context_list_.cend());
+	context_list_[pthread_self()]=tc;
+//	printf("Thread %lx is pushed!\n",pthread_self());
+	lock_.release();
+}
+//void ExpandableBlockStreamFilter::destoryContext(thread_context& tc){
+//	lock_.acquire();
+//	assert(context_list_.find(pthread_self())!=context_list_.cend());
+//	context_list_[pthread_self()].block_for_asking_->~BlockStreamBase();
+//	context_list_[pthread_self()].iterator_->~BlockStreamTraverseIterator();
+//	context_list_.erase(pthread_self());
+//	lock_.release();
+////	tc.block_for_asking_->~BlockStreamBase();
+////	tc.iterator_->~BlockStreamTraverseIterator();
+//}
+

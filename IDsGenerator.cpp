@@ -9,6 +9,7 @@
 IDsGenerator* IDsGenerator::instance_=0;
 IDsGenerator::IDsGenerator() {
 	exchange_id_cursor_=0;
+	expander_id_cursor_=0;
 
 }
 
@@ -17,7 +18,18 @@ IDsGenerator::~IDsGenerator() {
 }
 
 unsigned long long int IDsGenerator::generateUniqueExchangeID(){
-	return exchange_id_cursor_++;
+	unsigned long long int ret;
+	lock_.acquire();
+	ret=exchange_id_cursor_++;
+	lock_.release();
+	return ret;
+}
+ExpanderID IDsGenerator::getUniqueExpanderID(){
+	ExpanderID ret;
+	lock_.acquire();
+	ret=expander_id_cursor_++;
+	lock_.release();
+	return ret;
 }
 
 IDsGenerator* IDsGenerator::getInstance(){

@@ -39,7 +39,7 @@ bool Partitioner::bindPartitionToNode(PartitionOffset partition_id,NodeID target
 //	partitionid_to_nodeid_[partition_id]=target_node;
 //	return true;
 
-	printf("PartitionID:%d is bound to NodeID:%d\n",partition_id,target_node);
+//	printf("PartitionID:%d is bound to NodeID:%d\n",partition_id,target_node);
 //
 //	if(partition_node_blockinfo_.contains(partition_id)){
 //		return false;

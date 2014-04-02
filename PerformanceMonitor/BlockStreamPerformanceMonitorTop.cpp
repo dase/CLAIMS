@@ -12,11 +12,14 @@
 BlockStreamPerformanceMonitorTop::BlockStreamPerformanceMonitorTop(State state)
 :state_(state){
 	// TODO Auto-generated constructor stub
-
+	logging_=new PerformanceTopLogging();
 }
-
+BlockStreamPerformanceMonitorTop::BlockStreamPerformanceMonitorTop(){
+	logging_=new PerformanceTopLogging();
+}
 BlockStreamPerformanceMonitorTop::~BlockStreamPerformanceMonitorTop() {
 	// TODO Auto-generated destructor stub
+	logging_->~Logging();
 }
 
 bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_offset){
@@ -42,7 +45,7 @@ bool BlockStreamPerformanceMonitorTop::next(BlockStreamBase*){
 		while(it->nextTuple()){
 //			tuplecount_++;
 //			if(rand()%10000<3){
-//				printf("partition value:%d",state_.schema_->getcolumn(partition_index).operate->ge)
+//				logging_->log("partition value:%d",state_.schema_->getcolumn(partition_index).operate->ge)
 //			}
 		}
 		tuplecount_+=block_->getTuplesInBlock();
@@ -57,8 +60,8 @@ bool BlockStreamPerformanceMonitorTop::close(){
 	double processed_data_in_bytes=tuplecount_*state_.schema_->getTupleMaxSize();
 
 	printf("Total time: %5.5f seconds\n",getSecond(start_));
-	printf("Total tuples: %d\n",tuplecount_);
-	printf("Avg throughput: %5.3f M data/s, %5.3f M tuples/s\n",processed_data_in_bytes/eclipsed_seconds/1024/1024,(float)tuplecount_/2014/1024/eclipsed_seconds);
+	logging_->log("Total tuples: %d\n",tuplecount_);
+	logging_->log("Avg throughput: %5.3f M data/s, %5.3f M tuples/s\n",processed_data_in_bytes/eclipsed_seconds/1024/1024,(float)tuplecount_/2014/1024/eclipsed_seconds);
 	block_->~BlockStreamBase();
 	state_.child_->close();
 	return true;
@@ -71,7 +74,9 @@ void BlockStreamPerformanceMonitorTop::print(){
 	state_.child_->print();
 
 }
-
+unsigned long int BlockStreamPerformanceMonitorTop::getNumberOfTuples()const{
+	return tuplecount_;
+}
 void* BlockStreamPerformanceMonitorTop::report(void* arg){
 	BlockStreamPerformanceMonitorTop* Pthis=(BlockStreamPerformanceMonitorTop*)arg;
 
@@ -82,6 +87,6 @@ void* BlockStreamPerformanceMonitorTop::report(void* arg){
 		double eclipsed_seconds=getSecond(Pthis->start_);
 		double processed_data_in_bytes=Pthis->tuplecount_*Pthis->state_.schema_->getTupleMaxSize();
 		double processed_data_in_bytes_during_last_cycle=(Pthis->tuplecount_-last_tuple_count)*Pthis->state_.schema_->getTupleMaxSize();
-		printf("[%2.3f s] Real Time: %5.3f M/s\tAVG: %5.3f M/s.\t%5.2f M tuples received.\n",eclipsed_seconds,processed_data_in_bytes_during_last_cycle/(Pthis->state_.report_cycles_/1000)/1024/1024,processed_data_in_bytes/eclipsed_seconds/1024/1024,(float)Pthis->tuplecount_/1024/1024);
+		Pthis->logging_->log("[%2.3f s] Real Time: %5.3f M/s\tAVG: %5.3f M/s.\t%5.2f M tuples received.\n",eclipsed_seconds,processed_data_in_bytes_during_last_cycle/(Pthis->state_.report_cycles_/1000)/1024/1024,processed_data_in_bytes/eclipsed_seconds/1024/1024,(float)Pthis->tuplecount_/1024/1024);
 	}
 }

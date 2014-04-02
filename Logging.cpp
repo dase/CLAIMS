@@ -5,11 +5,41 @@
  *      Author: wangli
  */
 #include "Logging.h"
+#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
 
+//#define DEBUG_ExpanderTracker
+//#define DEBUG_BlockStreamExpander
+//#define DEBUG_BlockStreamJoin
+//#define DEBUG_PerformanceTop
+//#define DEBUG_Coordinator~/
+//#define DEBUG_Environment
 
+//#define DEBUG_ExchangeIteratorLowerWithWideDependency
+//#define DEBUG_ExchangeIteratorWithWideDependency
+//#define DEBUG_ExchangeIteratorEager
+//#define DEBUG_ExchangeIteratorEagerLower
+//
+//#define DEBUG_ExchangeRegister
+//#define DEBUG_ExchangeTracker
+//
+//#define DEBUG_PortManager
+//#define DEBUG_IteratorExecutorSlave
+//#define DEBUG_IteratorExecutorMaster
+//
 
+//#define DEBUG_ExchangeIteratorEager
+//#define DEBUG_ExpandableBlockStreamExchangeMaterialized
+//#define DEBUG_BlockStreamExchangeLowerBase
+//#define DEBUG_ExpandableBlockStreamExchangeLM
 
+//#define DEBUG_ResourceManagerMaster
+//#define DEBUG_ResourceManagerSlave
+//#define DEBUG_Catalog
+//#define DEBUG_BufferManager
 
+#define DEBUG_ASTParser
+
+#endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){
 #ifdef DEBUG_IteratorExecutorMaster
 	printf("IteratorExecutorMaster: ");
@@ -125,6 +155,25 @@ void ExchangeTrackerLogging::elog(const char* format,...){
 	va_end (arg);
 }
 
+void ExpanderTrackerLogging::log(const char* format,...){
+#ifdef DEBUG_ExpanderTracker
+	printf("ExpanderTracker: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ExpanderTrackerLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[ExpanderTracker]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
 void ExchangeIteratorEagerLogging::log(const char* format,...){
 #ifdef DEBUG_ExchangeIteratorEager
 	printf("ExchangeEagerUpper: ");
@@ -221,14 +270,14 @@ void ResourceManagerSlaveLogging::elog(const char* format,...){
 }
 
 void StorageManagerLogging::log(const char* format,...){
-//#ifdef DEBUG_StorageManager
+#ifdef DEBUG_StorageManager
 	printf("StorageManager: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
 	printf("\n");
 	va_end (arg);
-//#endif
+#endif
 }
 void StorageManagerLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[StorageManager]: ");
@@ -239,14 +288,14 @@ void StorageManagerLogging::elog(const char* format,...){
 	va_end (arg);
 }
 void StorageManagerMasterLogging::log(const char* format,...){
-//#ifdef DEBUG_StorageManager
+#ifdef DEBUG_StorageManager
 	printf("StorageManagerMaster: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
 	printf("\n");
 	va_end (arg);
-//#endif
+#endif
 }
 void StorageManagerMasterLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[StorageManagerMaster]: ");
@@ -295,3 +344,77 @@ void ASTParserLogging::elog(const char* format,...){
 	va_end (arg);
 }
 
+void BlockStreamExpanderLogging::log(const char* format,...){
+#ifdef DEBUG_BlockStreamExpander
+	printf("BlockStreamExpander: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void BlockStreamExpanderLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[BlockStreamExpander]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+void PerformanceTopLogging::log(const char* format,...){
+#ifdef DEBUG_PerformanceTop
+	printf("PerformanceTop: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void PerformanceTopLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[PerformanceTop]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+void QueryOptimizationLogging::log(const char* format,...){
+#ifdef DEBUG_QueryOptimization
+	printf("QueryOptimization: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void QueryOptimizationLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[PerformanceTop]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void BlockStreamJoinLogging::log(const char* format,...) {
+#ifdef DEBUG_BlockStreamJoin
+	printf("BlockStreamJoin: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+
+void BlockStreamJoinLogging::elog(const char* format,...) {
+	fprintf(stderr,"Error[BlockStreamJoin]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}

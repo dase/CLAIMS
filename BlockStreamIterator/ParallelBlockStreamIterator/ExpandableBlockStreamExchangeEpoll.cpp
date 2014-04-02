@@ -33,6 +33,8 @@
 #include "../../configure.h"
 #include "../../rename.h"
 #include "../../rdtsc.h"
+#define BUFFER_SIZE_IN_EXCHANGE 100
+
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
 	sem_open_.set_value(1);
@@ -66,7 +68,8 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		socket_fd_lower_list=new int[nlowers];
 //		lower_ip_array=new std::string[nlowers];
 
-		buffer=new BlockStreamBuffer(state.block_size,nlowers,state.schema);
+		buffer=new BlockStreamBuffer(state.block_size,BUFFER_SIZE_IN_EXCHANGE,state.schema);
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -111,7 +114,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 
 
-
 		open_finished_=true;
 //		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
 		return true;
@@ -127,10 +129,25 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 }
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//		printf("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+		return false;
+	}
+
+/**
+ * In the initial implementation, busy waiting is used in while(), and consequently consumes
+ * large CPU usage. I add usleep(1) in the while to release this problem. Perhaps, a better way
+ * is to use conditioned wait.
+ * TODO: better implementation based on conditioned wait.
+ * --Li.
+ * Mar. 30th, 2014.
+ */
+
 	while(nexhausted_lowers<nlowers){
 		if(buffer->getBlock(*block)){
 			return true;
 		}
+		usleep(1);
 	}
 	/* all the lowers exchange are exhausted.*/
 	return buffer->getBlock(*block);
@@ -157,7 +174,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	received_block_stream_->~BlockStreamBase();
 	buffer->~BlockStreamBuffer();
-
+//	printf("Buffer is freed in Exchange!\n");
 	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
 	CloseTheSocket();
@@ -169,11 +186,14 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	Environment::getInstance()->getExchangeTracker()->LogoutExchange(ExchangeID(state.exchange_id,partition_offset));
 
+//	for(unsigned i=0;i<nlowers;i++){
+//		printf("Exchange: [%ld] consumes %d blocks from Lower[%d]\n",state.exchange_id,received_block[i],i);
+//	}
 	return true;
 }
 
 void ExpandableBlockStreamExchangeEpoll::print(){
-	printf("Exchange upper:");
+	printf("Exchange upper[%ld]:",state.exchange_id);
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
 		printf("%s ",state.upper_ip_list[i].c_str());
 	}
@@ -357,6 +377,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 	int fd_cur=0;
 
 	while(true){
+		usleep(1);
 		const int event_count=epoll_wait(efd,events,Pthis->nlowers,-1);
 		for(int i=0;i<event_count;i++){
 			if((events[i].events & EPOLLERR)||(events[i].events & EPOLLHUP)||(!(events[i].events&EPOLLIN))){
@@ -457,6 +478,16 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					else{
 						Pthis->logging_->log("*****This block is the last one.");
 						Pthis->nexhausted_lowers++;
+
+						if(Pthis->nexhausted_lowers==Pthis->nlowers){
+							/*
+							 * When all the exchange lowers are exhausted, notify the buffer
+							 * that the input data is completely received.
+							 */
+							Pthis->buffer->setInputComplete();
+						}
+
+
 						Pthis->logging_->log("<<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",Pthis->nexhausted_lowers,Pthis->state.exchange_id,Pthis->partition_offset);
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
 						Pthis->logging_->log("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s] exchange=(%d,%d).\n",Pthis->lower_ip_array[socket_fd_index].c_str(),Pthis->state.exchange_id,Pthis->partition_offset);
@@ -523,9 +554,9 @@ bool ExpandableBlockStreamExchangeEpoll::SetSocketNonBlocking(int socket_fd){
 void* ExpandableBlockStreamExchangeEpoll::debug(void* arg){
 	ExpandableBlockStreamExchangeEpoll* Pthis=(ExpandableBlockStreamExchangeEpoll*)arg;
 	while(true){
-		if(Pthis->state.exchange_id==2){
-//		printf("Upper: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
+//		if(Pthis->state.exchange_id==2){
+		printf("Upper: %d blocks in buffer.\n",Pthis->buffer->getBlockInBuffer());
 		usleep(100000);
-		}
+//		}
 	}
 }

@@ -29,7 +29,10 @@ BlockManager::BlockManager() {
 	memstore_=MemoryChunkStore::getInstance();
 }
 BlockManager::~BlockManager() {
-
+	actor_->~Actor();
+	framework_->~Framework();
+	logging_->~Logging();
+	memstore_->~MemoryChunkStore();
 }
 MemoryChunkStore* BlockManager::getMemoryChunkStore()const{
 	return memstore_;
@@ -411,6 +414,5 @@ string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,Block
 }
 void BlockManager::BlockManagerWorkerActor::BindingPartition(const PartitionBindingMessage& message,const Theron::Address from){
 	bm_->addPartition(message.partition_id,message.number_of_chunks,message.storage_level);
-	printf("Received!\n");
 	Send(int(0),from);
 }

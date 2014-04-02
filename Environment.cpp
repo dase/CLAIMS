@@ -39,7 +39,9 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
  */
 
 	/*Before initializing Resource Manager, the instance ip and port should be decided.*/
+
 	InitializeResourceManager();
+//		return;
 
 	InitializeStorage();
 
@@ -53,14 +55,26 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	iteratorExecutorSlave=new IteratorExecutorSlave();
 
 	exchangeTracker =new ExchangeTracker();
-
-	/* restore Catalog */
-//	catalog_->restoreCatalog(*catalog_);
-//	catalog_->restoreCatalog();
+	expander_tracker_=ExpanderTracker::getInstance();
 }
 
 Environment::~Environment() {
-	// TODO Auto-generated destructor stub
+	logging_->~Logging();
+	portManager->~PortManager();
+	catalog_->~Catalog();
+	coordinator->~Coordinator();
+	if(ismaster_){
+		iteratorExecutorMaster->~IteratorExecutorMaster();
+		resourceManagerMaster_->~ResourceManagerMaster();
+		blockManagerMaster_->~BlockManagerMaster();
+	}
+	iteratorExecutorSlave->~IteratorExecutorSlave();
+	exchangeTracker->~ExchangeTracker();
+	resourceManagerSlave_->~ResourceManagerSlave();
+	blockManager_->~BlockManager();
+	bufferManager_->~BufferManager();
+	expander_tracker_->~ExpanderTracker();
+	endpoint->~AdaptiveEndPoint();
 }
 Environment* Environment::getInstance(bool ismaster){
 	if(_instance==0){
@@ -86,7 +100,7 @@ void Environment::InitializeEndPoint(){
 //	std::string endpoint_port=(const char*)cfg.lookup("port");
 	std::string endpoint_ip=ip;
 	int endpoint_port;
-	if((endpoint_port=portManager->applyPort())==0){
+	if((endpoint_port=portManager->applyPort())==-1){
 		logging_->elog("The ports in the PortManager is exhausted!");
 	}
 	port=endpoint_port;
