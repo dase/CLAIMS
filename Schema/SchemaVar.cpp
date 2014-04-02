@@ -44,7 +44,7 @@ unsigned SchemaVar::copyTuple(void* src, void* desc) const{
 	memcpy(desc,src,getTupleActualSize(src));
 };
 
-Schema::schema_type SchemaVar::getSchemaType(){
+Schema::schema_type SchemaVar::getSchemaType()const{
 	return Schema::varaible;
 };
 Schema* SchemaVar::duplicateSchema()const{

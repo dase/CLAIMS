@@ -63,6 +63,9 @@ private:
 	vector<vector <unsigned> > blocks_per_partition;
 	vector<SubTuple*> sub_tuple_generator;
 
+	Schema* table_schema;
+	vector<Schema*> projection_schema;
+
 };
 
 #endif /* HDFSLOADER_H_ */

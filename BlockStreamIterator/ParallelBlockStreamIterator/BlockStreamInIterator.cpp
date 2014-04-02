@@ -78,7 +78,7 @@ bool BlockStreamInIterator::open(const PartitionOffset& partition_offset)
 		bsti->reset();
 		while (cur_tuple = bsti->nextTuple())
 		{
-			bn = state_.schema_child_set->getcolumn(state_.index_child_set).operate->getPartitionValue(state_.schema_child_set->getColumnAddess(state_.index_child_set, cur_tuple), hash);
+			bn = state_.schema_child_set->getcolumn(state_.index_child_set).operate->getPartitionValue(state_.schema_child_set->getColumnAddess(state_.index_child_set, cur_tuple), state_.ht_nbuckets);
 			tuple_in_hashtable = hashtable->atomicAllocate(bn);
 			state_.schema_child_set->getcolumn(state_.index_child_set).operate->assignment(state_.schema_child_set->getColumnAddess(state_.index_child_set, cur_tuple), tuple_in_hashtable);
 		}
@@ -105,7 +105,7 @@ bool BlockStreamInIterator::next (BlockStreamBase* block)
 		while ((tuple_from_child_in = rb.blockstream_iterator->currentTuple()) > 0)
 		{
 			passIn = false;
-			bn = state_.schema_child_in->getcolumn(state_.index_child_in).operate->getPartitionValue(state_.schema_child_in->getColumnAddess(state_.index_child_in, tuple_from_child_in), hash);
+			bn = state_.schema_child_in->getcolumn(state_.index_child_in).operate->getPartitionValue(state_.schema_child_in->getColumnAddess(state_.index_child_in, tuple_from_child_in), state_.ht_nbuckets);
 			hashtable->placeIterator(hashtable_iterator, bn);
 			while ((tuple_in_hashtable = hashtable_iterator.readnext()) > 0)
 			{
@@ -143,7 +143,7 @@ bool BlockStreamInIterator::next (BlockStreamBase* block)
 		while ((tuple_from_child_in = traverse_iterator->currentTuple()) > 0)
 		{
 			passIn = false;
-			bn = state_.schema_child_in->getcolumn(state_.index_child_in).operate->getPartitionValue(state_.schema_child_in->getColumnAddess(state_.index_child_in, tuple_from_child_in), hash);
+			bn = state_.schema_child_in->getcolumn(state_.index_child_in).operate->getPartitionValue(state_.schema_child_in->getColumnAddess(state_.index_child_in, tuple_from_child_in), state_.ht_nbuckets);
 			hashtable->placeIterator(hashtable_iterator, bn);
 			while ((tuple_in_hashtable = hashtable_iterator.readCurrent()) != 0)
 			{

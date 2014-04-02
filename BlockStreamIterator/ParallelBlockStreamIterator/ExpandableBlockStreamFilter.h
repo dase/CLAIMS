@@ -28,6 +28,7 @@ public:
 	};
 
 
+
 	class State{
 	public:
 		friend class ExpandableBlockStreamFilter;
@@ -59,12 +60,23 @@ private:
 	void atomicPushRemainingBlock(remaining_block rb);
 	BlockStreamBase* AtomicPopFreeBlockStream();
 	void AtomicPushFreeBlockStream(BlockStreamBase* block);
+
+
+	thread_context popContext();
+	void pushContext(const thread_context& tc);
+
+
 private:
 	State state_;
+
+/* the following five lines are considered to be deleted*/
 	std::list<remaining_block> remaining_block_list_;
 	std::list<BlockStreamBase*> free_block_stream_list_;
+	boost::unordered_map<pthread_t,thread_context> context_list_;
 	semaphore sem_open_;
 	volatile bool open_finished_;
+
+
 	Lock lock_;
 	/*for debug for the filter tuple numbers*/
 	unsigned tuple_after_filter_;

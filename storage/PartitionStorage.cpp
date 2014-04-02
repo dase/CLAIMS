@@ -34,13 +34,13 @@ PartitionStorage::PartitionReaderItetaor* PartitionStorage::createAtomicReaderIt
 
 
 PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor(PartitionStorage::PartitionStorage* partition_storage)
-:ps(partition_storage),chunk_cur_(0){
+:ps(partition_storage),chunk_cur_(0),chunk_it_(0){
 
 }
 
-PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor():chunk_cur_(0){
-
-}
+//PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor():chunk_cur_(0){
+//
+//}
 PartitionStorage::PartitionReaderItetaor::~PartitionReaderItetaor(){
 
 }
@@ -50,19 +50,53 @@ ChunkReaderIterator* PartitionStorage::PartitionReaderItetaor::nextChunk(){
 	else
 		return 0;
 }
-PartitionStorage::AtomicPartitionReaderIterator::AtomicPartitionReaderIterator():PartitionReaderItetaor(){
-
-}
+//PartitionStorage::AtomicPartitionReaderIterator::AtomicPartitionReaderIterator():PartitionReaderItetaor(){
+//
+//}
 PartitionStorage::AtomicPartitionReaderIterator::~AtomicPartitionReaderIterator(){
 
 }
 ChunkReaderIterator* PartitionStorage::AtomicPartitionReaderIterator::nextChunk(){
-	lock_.acquire();
+//	lock_.acquire();
 	ChunkReaderIterator* ret;
 	if(chunk_cur_<ps->number_of_chunks_)
 		ret= ps->chunk_list_[chunk_cur_++]->createChunkReaderIterator();
 	else
 		ret= 0;
-	lock_.release();
+//	lock_.release();
 	return ret;
+}
+
+bool PartitionStorage::PartitionReaderItetaor::nextBlock(
+		BlockStreamBase*& block) {
+	if(chunk_it_>0&&chunk_it_->nextBlock(block)){
+		return true;
+	}
+	else{
+		if((chunk_it_=nextChunk())>0){
+			return nextBlock(block);
+		}
+		else{
+			return false;
+		}
+	}
+}
+
+bool PartitionStorage::AtomicPartitionReaderIterator::nextBlock(
+		BlockStreamBase*& block) {
+	lock_.acquire();
+	if(chunk_it_>0&&chunk_it_->nextBlock(block)){
+		lock_.release();
+		return true;
+	}
+	else{
+		if((chunk_it_=nextChunk())>0){
+			lock_.release();
+			return nextBlock(block);
+		}
+		else{
+			lock_.release();
+			return false;
+		}
+	}
 }

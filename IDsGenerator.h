@@ -8,14 +8,20 @@
 #ifndef IDSGENERATOR_H_
 #define IDSGENERATOR_H_
 
+#include "ids.h"
+#include "utility/synch.h"
+
 class IDsGenerator {
 public:
 	static IDsGenerator* getInstance();
 	virtual ~IDsGenerator();
 	unsigned long long int generateUniqueExchangeID();
+	ExpanderID getUniqueExpanderID();
 private:
 	IDsGenerator();
 	unsigned long long int exchange_id_cursor_;
+	ExpanderID expander_id_cursor_;
+	Lock lock_;
 	static IDsGenerator* instance_;
 };
 

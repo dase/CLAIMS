@@ -15,7 +15,7 @@
 ExchangeTracker::ExchangeTracker() {
 	endpoint=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint);
-	framework->SetMaxThreads(5);
+	framework->SetMaxThreads(1);
 	logging_=new ExchangeTrackerLogging();
 	std::ostringstream name;
 	name<<"ExchangeTrackerActor://"+Environment::getInstance()->getIp();
@@ -26,6 +26,9 @@ ExchangeTracker::ExchangeTracker() {
 }
 
 ExchangeTracker::~ExchangeTracker() {
+	logging_->~Logging();
+	actor->~Actor();
+	framework->~Framework();
 	// TODO Auto-generated destructor stub
 }
 bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port){
@@ -79,6 +82,7 @@ int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::stri
 //	receiver.~Receiver();
 //	return atoi(NCM.port.c_str());
 //	printf("OOOOOOOOOOOO step 2:%4.4f\n",getSecond(step2));
+	receiver->~TimeOutReceiver();
 	return port;
 }
 

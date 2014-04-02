@@ -56,7 +56,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 //					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
 					if(chunk_info.length<=0){
 						/*chunk_info.length<=0 means that either the file does not exist or
-						 * the current chunk_id exceed the actual size of the file.						 *
+						 * the current chunk_id exceeds the actual size of the file.						 *
 						 */
 						BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(chunk_id_);
 						ret=0;
@@ -100,6 +100,7 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 		lock_.release();
 		return false;
 	}
+//	printf("Read Block:%d:%d\n",chunk_id_.chunk_off,cur_block_);
 	/* calculate the block start address.*/
 	const char* block_start_address=(char*)start_+cur_block_*block_size_;
 

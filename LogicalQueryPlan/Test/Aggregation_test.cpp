@@ -65,7 +65,7 @@ static int aggregation_test(){
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",4);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -84,7 +84,7 @@ static int aggregation_test(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",4);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
 
 //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",8);	//G2
 //		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",8);	//G3
@@ -166,7 +166,7 @@ static int aggregation_test(){
 		sb_proj0_index.push_back(5);
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
-		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",1);	//G0
 
 
 
@@ -196,7 +196,7 @@ static int aggregation_test(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",4);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
 
 //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",8);	//G2
 //		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",8);	//G3
@@ -443,7 +443,7 @@ static int aggregation_test(){
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
 		const int sec_code=600036;
-		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+		filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("600036"));
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 		Filter::Condition filter_condition_2;
@@ -452,7 +452,7 @@ static int aggregation_test(){
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
 		const int sec_code_=600036;
-		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+		filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("600036"));
 		LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
 
 
@@ -510,6 +510,7 @@ static int aggregation_test(){
 //		group_by_attributes.push_back(table_1->getAttribute("trade_date"));
 //		group_by_attributes.push_back(table_1->getAttribute("trade_dir"));
 		std::vector<Attribute> aggregation_attributes;
+		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
 //		aggregation_attributes.push_back(table_1->getAttribute("trade_date"));
@@ -521,24 +522,25 @@ static int aggregation_test(){
 //		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
-//		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //		aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
+////
+//		std::vector<Attribute> aggregation_attributes_1;
+//		aggregation_attributes_1.push_back(table_1->getAttribute("sec_code"));
+//		aggregation_attributes_1.push_back(Attribute(ATTRIBUTE_ANY));
+//		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function_1;
+//		aggregation_function_1.push_back(BlockStreamAggregationIterator::State::count);
 //
-		std::vector<Attribute> aggregation_attributes_1;
-		aggregation_attributes_1.push_back(Attribute(ATTRIBUTE_ANY));
-		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function_1;
-		aggregation_function_1.push_back(BlockStreamAggregationIterator::State::count);
-
-		LogicalOperator* aggregation_1=new Aggregation(std::vector<Attribute>(),aggregation_attributes_1,aggregation_function_1,aggregation);
+//		LogicalOperator* aggregation_1=new Aggregation(std::vector<Attribute>(),aggregation_attributes_1,aggregation_function_1,cj_join_key_scan);
 
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation_1,LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
 		root->print();
 
@@ -553,7 +555,7 @@ static int aggregation_test(){
 		int c=1;
 		while(c==1){
 			timer_start=curtick();
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,0);//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;
