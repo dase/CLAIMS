@@ -584,8 +584,8 @@ static int test_no_repartition_scan_join(){
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
-	if(!print_test_name_result(number_of_tuples==944925,"no_repartition Join")){
-		printf("\tExpected:944925 actual: %d\n",number_of_tuples);
+	if(!print_test_name_result(number_of_tuples==15118958,"no_repartition Join")){
+		printf("\tExpected:15118958 actual: %d\n",number_of_tuples);
 	}
 //	result_set->print();
 	printf("%4.4f seconds\n",result_set->query_time_);
@@ -1257,11 +1257,10 @@ static int test_multiple_expanderFramework_single_node(int repeated_times=20){
 	}
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_multiple_complete_repartition_scan_join();
-//		sleep(1);
 	}
-//	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_no_repartition_scan_join();
-//	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_no_repartition_scan_join();
+	}
 
 	}
 	printf("Press any key to continue;\n");

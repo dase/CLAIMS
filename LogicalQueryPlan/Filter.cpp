@@ -193,7 +193,7 @@ bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitioningDes
 	for(unsigned i=0;i<condition_.getCompaisonNumber();i++){
 		if(part.getPartitionKey()==condition_.attribute_list_[i]){
 			if(comparator_list_[i].getCompareType()==Comparator::EQ){
-				if(partition_id==part.getPartitionKey().attrType->operate->getPartitionValue(comparator_list_[i].get_value(),part.getPartitionFunction())){
+				if(partition_id==part.getPartitionKey().attrType->operate->getPartitionValue(comparator_list_[i].get_value(),part.getPartitionFunction()->getNumberOfPartitions())){
 
 				}
 				else{

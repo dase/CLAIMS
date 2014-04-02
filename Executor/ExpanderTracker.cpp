@@ -361,7 +361,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 	while(true){
 //		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
 		usleep(10000);
-//		sleep(1000);
+		sleep(1000);
 		Pthis->lock_.acquire();
 		if(Pthis->expander_id_to_status_.size()<=cur){
 			cur=0;
