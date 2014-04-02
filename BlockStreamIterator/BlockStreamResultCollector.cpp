@@ -63,7 +63,7 @@ bool BlockStreamResultCollector::next(BlockStreamBase* block){
 //	}
 //	block->deepCopy(buffered_block);
 
-	return true;
+	return false;
 }
 bool BlockStreamResultCollector::close(){
 //	DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();

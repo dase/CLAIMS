@@ -21,8 +21,6 @@ LogicalCSBIndexBuilding::~LogicalCSBIndexBuilding() {
 
 Dataflow LogicalCSBIndexBuilding::getDataflow()
 {
-
-
 	if(!scan_projection_->AllPartitionBound()){
 		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),MEMORY);
 	}

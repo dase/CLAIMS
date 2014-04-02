@@ -360,6 +360,7 @@ bool bottomLayerSorting::next(BlockStreamBase* block)
 		break;
 	}
 	}
+	cout << "bottomLayerSorting next return false!\n";
 	return false;
 
 
@@ -413,6 +414,7 @@ bool bottomLayerSorting::close()
 {
 	initialize_expanded_status();
 	state_.child_->close();
+	cout << "bottomLayerSorting close finished!\n";
 	return true;
 }
 
