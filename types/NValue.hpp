@@ -124,6 +124,7 @@ public:
         TTInt retval(lhs.getDecimal());
         if (retval.Add(rhs.getDecimal()) || retval > s_maxDecimalValue || retval < s_minDecimalValue) {
             cout << "Attempted to add " << lhs.createStringFromDecimal().c_str() << " with " << rhs.createStringFromDecimal().c_str() << " causing overflow/underflow\n";
+            assert(false);
             exit(-1);
         }
         return getDecimalValue(retval);
