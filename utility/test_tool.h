@@ -10,10 +10,10 @@
 
 #include <string>
 inline void print_pass(){
-	printf("\033[;32mPASS!\033[0m\n");
+	printf("\033[;32m PASS!\033[0m\n");
 }
 inline void print_fail(){
-	printf("\033[;31mFAILED!\033[0m\n");
+	printf("\033[;31m FAIL!\033[0m\n");
 }
 inline void print_test_result(bool result){
 	if(result)
@@ -21,14 +21,18 @@ inline void print_test_result(bool result){
 	else
 		print_fail();
 }
-inline void print_test_name_result(bool result,std::string test_name=std::string()){
+inline bool print_test_name_result(bool result,std::string test_name=std::string()){
 	if(test_name.size()>0){
-		printf("Test %5.15s\t",test_name.c_str());
+		printf("Test %s =====>",test_name.c_str());
 	}
-	if(result)
+	if(result){
 		print_pass();
-	else
+		return true;
+	}
+	else{
 		print_fail();
+		return false;
+	}
 }
 inline bool is_equal(float x,float b){
 	return fabs(x-b)<0.000001;

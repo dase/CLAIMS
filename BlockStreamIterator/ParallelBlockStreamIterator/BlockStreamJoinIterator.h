@@ -112,11 +112,11 @@ private:
 	std::list<BlockStreamBase *> free_block_stream_list_;
 	std::list<BlockStreamBase *> ht_free_block_stream_list_;
 
-	semaphore sema_open_;
-	volatile bool open_finished_;
+//	semaphore sema_open_;
+//	volatile bool open_finished_;
 	unsigned reached_end;
 	Lock lock_;
-	Barrier barrier_;
+//	Barrier barrier_;
 
 	//debug
 	unsigned produced_tuples;

@@ -35,7 +35,7 @@ private:
 
 private:
 	Mapping mappings_;
-	Dataflow dataflow_;
+	Dataflow* dataflow_;
 	LogicalOperator *child_;
 	std::vector<Expression> exprArray_;
 };

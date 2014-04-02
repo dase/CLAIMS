@@ -71,12 +71,13 @@ static int testSort(){
 
 		Filter::Condition filter_condition_1;
 
-		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("100"));
+		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("100000"));
 
 
 		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
 
-		LogicalOperator* sort=new LogicalSort(filter_1,3);
+		LogicalSort::OrderByAttr *od=new LogicalSort::OrderByAttr("cj","order_no");
+		LogicalOperator* sort=new LogicalSort(scan,od);
 
 		BlockStreamIteratorBase *sort_=sort->getIteratorTree(64*1024-sizeof(unsigned));
 

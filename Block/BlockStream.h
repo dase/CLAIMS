@@ -95,7 +95,7 @@ public:
 		return new BlockStreamTraverseIterator(this);
 	};
 	BlockStreamBase(unsigned block_size):Block(block_size){};
-	static BlockStreamBase* createBlock(Schema* schema,unsigned block_size);
+	static BlockStreamBase* createBlock(const Schema* const & schema,unsigned block_size);
 
 	/**
 	 * @li:I add this function in order to end the chaos of setting the block size
@@ -163,7 +163,7 @@ class BlockStreamVar:public BlockStreamBase{
 	};
 public:
 	// BlockSize is 64k-4 because of the tuple_count is the member of the class
-	BlockStreamVar(unsigned block_size,Schema *schema);
+	BlockStreamVar(unsigned block_size,const Schema* const &schema);
 	virtual ~BlockStreamVar(){};
 	/* get the [offset]-th tuple of the block*/
 	inline void* getTuple(unsigned offset) const;
@@ -224,7 +224,7 @@ public:
 	unsigned getTuplesInBlock()const{};
 
 private:
-	Schema *schema_;
+	const Schema *schema_;
 	unsigned attributes_;
 	unsigned var_attributes_;
 	/* free_front_ can be added for less computing*/

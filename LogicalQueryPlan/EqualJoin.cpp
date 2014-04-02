@@ -11,7 +11,8 @@
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
-#define NUM_OF_EXPANDED_THREADS 5
+#include "../Logging.h"
+#define NUM_OF_EXPANDED_THREADS 1
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -81,7 +82,7 @@ Dataflow EqualJoin::getDataflow(){
 	/**finally, construct the output data flow according to the join police**/
 	switch(join_police_){
 		case no_repartition:{
-			printf("no_repartition\n");
+			QueryOptimizationLogging::log("no_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			/*use the left partitioner as the output dataflow partitioner.
@@ -108,7 +109,7 @@ Dataflow EqualJoin::getDataflow(){
 			break;
 		}
 		case left_repartition:{
-			printf("left_repartition\n");
+			QueryOptimizationLogging::log("left_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 //			ret.property_.partitioner=right_dataflow.property_.partitioner;
@@ -130,7 +131,7 @@ Dataflow EqualJoin::getDataflow(){
 			break;
 		}
 		case right_repartition:{
-			printf("right_repartition\n");
+			QueryOptimizationLogging::log("right_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 //			ret.property_.partitioner=left_dataflow.property_.partitioner;
@@ -155,7 +156,7 @@ Dataflow EqualJoin::getDataflow(){
 			 * any child data flow. Additional optimization can be made by adopting the partition strategy which benefits the remaining
 			 * work.TODO.
 			 */
-			printf("complete_repartition\n");
+			QueryOptimizationLogging::log("complete_repartition\n");
 			ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 			ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
 			ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
@@ -166,12 +167,12 @@ Dataflow EqualJoin::getDataflow(){
 
 
 //
-//			printf("[Complete_repartition hash join] is not implemented, because I'm very lazy. -_- \n");
+//			QueryOptimizationLogging::log("[Complete_repartition hash join] is not implemented, because I'm very lazy. -_- \n");
 //			assert(false);
 			break;
 		}
 		default:{
-			printf("The join police has not been decided!\n");
+			QueryOptimizationLogging::elog("The join police has not been decided!\n");
 			assert(false);
 			break;
 		}
@@ -267,9 +268,9 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 		case left_repartition:{
 	//		state.child_left
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
 			expander_state.child_=child_iterator_left;
 			expander_state.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
@@ -307,10 +308,20 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			break;
 		}
 		case right_repartition:{
+
+			BlockStreamExpander::State expander_state;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
+			expander_state.block_size_=block_size;
+			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state.child_=child_iterator_right;
+			expander_state.schema_=getSchema(dataflow_right.attribute_list_);
+			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
+
+
 			NodeTracker* node_tracker=NodeTracker::getInstance();
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size=block_size;
-			exchange_state.child=child_iterator_left;
+			exchange_state.child=expander;
 			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
@@ -320,37 +331,43 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
 
 
-			const Attribute left_partition_key=dataflow_->property_.partitioner.getPartitionKey();
+			const Attribute output_partition_key=dataflow_->property_.partitioner.getPartitionKey();
 
-			if(exchange_state.exchange_id==0){
-				printf("0\n");
-			}
 			/* get the right attribute that is corresponding to the partition key.*/
-			Attribute right_partition_key;
+			Attribute right_repartition_key;
 			if(dataflow_->property_.partitioner.hasShadowPartitionKey()){
-				right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key,dataflow_->property_.partitioner.getShadowAttributeList())].second;
+				right_repartition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(output_partition_key,dataflow_->property_.partitioner.getShadowAttributeList())].second;
 			}
 			else{
-				right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
+				right_repartition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(output_partition_key)].second;
 			}
 
 
-			exchange_state.partition_key_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key);
+			exchange_state.partition_key_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_repartition_key);
 
 
-			exchange_state.schema=getSchema(dataflow_left.attribute_list_);
+			exchange_state.schema=getSchema(dataflow_right.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
-			state.child_left=exchange;
-			state.child_right=child_iterator_right;
+			state.child_left=child_iterator_left;
+			state.child_right=exchange;
 			join_iterator=new BlockStreamJoinIterator(state);
 			break;
 		}
 		case complete_repartition:{
 
 			/* build left input*/
+			BlockStreamExpander::State expander_state_l;
+			expander_state_l.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
+			expander_state_l.block_size_=block_size;
+			expander_state_l.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state_l.child_=child_iterator_left;
+			expander_state_l.schema_=getSchema(dataflow_left.attribute_list_);
+			BlockStreamIteratorBase* expander_l=new BlockStreamExpander(expander_state_l);
+
+
 			ExpandableBlockStreamExchangeEpoll::State l_exchange_state;
 			l_exchange_state.block_size=block_size;
-			l_exchange_state.child=child_iterator_left;
+			l_exchange_state.child=expander_l;
 			l_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
@@ -365,9 +382,18 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamIteratorBase* l_exchange=new ExpandableBlockStreamExchangeEpoll(l_exchange_state);
 
 			/*build right input*/
+
+			BlockStreamExpander::State expander_state_r;
+			expander_state_r.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
+			expander_state_r.block_size_=block_size;
+			expander_state_r.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state_r.child_=child_iterator_right;
+			expander_state_r.schema_=getSchema(dataflow_right.attribute_list_);
+			BlockStreamIteratorBase* expander_r=new BlockStreamExpander(expander_state_r);
+
 			ExpandableBlockStreamExchangeEpoll::State r_exchange_state;
 			r_exchange_state.block_size=block_size;
-			r_exchange_state.child=child_iterator_right;
+			r_exchange_state.child=expander_r;
 			r_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
@@ -431,13 +457,17 @@ std::vector<unsigned> EqualJoin::getLeftPayloadIndexList()const{
 	const std::vector<unsigned> left_join_key_index_list=getLeftJoinKeyIndexList();
 
 	for(unsigned i=0;i<dataflow.attribute_list_.size();i++){
+		bool found_equal=false;
 		for(unsigned j=0;j<left_join_key_index_list.size();j++){
 			if(i==left_join_key_index_list[j]){
+				found_equal=true;
 				break;
 			}
 
 		}
-		ret.push_back(i);
+		if(!found_equal){
+			ret.push_back(i);
+		}
 	}
 	return ret;
 
@@ -576,7 +606,28 @@ DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dat
 
 }
 void EqualJoin::print(int level)const{
-	printf("%*.sEqualJoin:\n",level*8," ");
+	printf("%*.sEqualJoin:",level*8," ");
+	switch(join_police_){
+	case no_repartition:{
+		printf("no_repartition\n");
+		break;
+	}
+	case left_repartition:{
+		printf("left_repartition\n");
+		break;
+	}
+	case right_repartition:{
+		printf("right_repartition!\n");
+		break;
+	}
+	case complete_repartition:{
+		printf("complete_repartition!\n");
+		break;
+	}
+	default:{
+		printf("not given!\n");
+	}
+	}
 	for(unsigned i=0;i<this->joinkey_pair_list_.size();i++){
 		printf("%*.s",level*8," ");
 		printf("%s=%s\n",joinkey_pair_list_[i].first.attrName.c_str(),joinkey_pair_list_[i].second.attrName.c_str());
@@ -655,6 +706,6 @@ double EqualJoin::predictEqualJoinSelectivityOnSingleJoinAttributePair(const Att
 		 */
 		ret= 0.1;
 	}
-	printf("Predicted selectivity for %s and %s is %f\n",a_l.attrName.c_str(),a_r.attrName.c_str(),ret);
+	QueryOptimizationLogging::log("Predicted selectivity for %s and %s is %f\n",a_l.attrName.c_str(),a_r.attrName.c_str(),ret);
 	return ret;
 }

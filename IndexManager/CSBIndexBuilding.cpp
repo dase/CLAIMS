@@ -32,7 +32,7 @@ bool bottomLayerCollecting::open(const PartitionOffset& partition_offset)
 {
 
 	AtomicPushBlockStream(BlockStreamBase::createBlockWithDesirableSerilaizedSize(state_.schema_, state_.block_size_));
-	if(completeForInitializationJob()){
+	if(tryEntryIntoSerializedSection()){
 
 		computeOutputSchema();
 		/* this is the first expanded thread*/
@@ -242,7 +242,7 @@ bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child,
 }
 bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 {
-	if (completeForInitializationJob())
+	if (tryEntryIntoSerializedSection())
 	{
 		computeVectorSchema();
 		const bool child_open_return = state_.child_->open(partition_offset);

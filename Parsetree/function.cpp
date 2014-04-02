@@ -8,6 +8,32 @@ using namespace std;
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
+extern Node **pointerToNodePointer[10000];
+extern int pointerToNodePointerNum;
+
+struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加新建语句列表函数---by余楷
+{
+	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+
+	a->type = t;
+	a->data = newNode;
+	a->next = NULL;
+	a->last = (Node *)a;
+
+	if (list != NULL)
+	{
+		((Stmt *)(((Stmt *)list)->last))->next = (Node *)a;
+		((Stmt *)list)->last = (Node *)a;
+		return (Node *)list;
+	}
+	//cout<<"newStmt is created"<<endl;
+	return (struct Node *)a;
+}
 
 struct Node * newExpr(nodetype t, dataval d)
 {
@@ -440,8 +466,8 @@ struct Node * newCreateColList(nodetype type, Node * data, Node * next)
 	return (struct Node *)a;
 };
 
-struct Node * newCreateDef(nodetype type, int deftype, Node * datatype,  Node * col_atts, Node * col_list)
-{
+struct Node * newCreateDef(nodetype type, int deftype, char * name, Node * datatype,  Node * col_atts, Node * col_list)
+{	// 2-18---增加name属性---by余楷
 	struct Create_def * a= (struct Create_def *)malloc(sizeof(struct Create_def));
 	if(!a)
 	{
@@ -450,6 +476,7 @@ struct Node * newCreateDef(nodetype type, int deftype, Node * datatype,  Node * 
 	}
 	a->type = type;
 	a->deftype = deftype;
+	a->name = name;		// 2-18---增加name属性---by余楷
 	a->datatype = datatype;
 	a->col_atts = col_atts;
 	a->col_list = col_list;
@@ -493,7 +520,26 @@ struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int tempora
 	//cout<<"Create_select_stmt is created"<<endl;
 	return (struct Node *)a;
 };
-	
+
+// 2014-2-24---增加该结构体---by余楷
+struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list, int partition_num, char *partition_attribute_name)
+{
+	Create_projection_stmt * a= (Create_projection_stmt *)malloc(sizeof(Create_projection_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->tablename = tablename;
+	a->column_list = column_list;
+	a->partition_num = partition_num;
+	a->partition_attribute_name = partition_attribute_name;
+
+	//cout<<"Create_projection_stmt is created"<<endl;
+	return (struct Node *)a;
+};
+
 	/*** 		do 语句				***/
 struct Node * newDoStmt(nodetype type, Node * data)
 {
@@ -528,7 +574,7 @@ struct Node * newTruncateStmt(nodetype type, char * name)
 
 	/*** 		alter 语句			***/
 	
-struct Node * newAlterDBStmt(nodetype type, int createtype, char * name, Node* opt)
+struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt)	// 2-19---把函数名改为newAlterDatabaseStmt---by余楷
 {
 	Alterdatabase_stmt * a= (Alterdatabase_stmt *)malloc(sizeof( Alterdatabase_stmt));
 	if(!a)
@@ -679,33 +725,39 @@ void output(Node * oldnode, int floor)
 			cout<<"Columns: "<< node->parameter1<< "  "<< node->parameter2<<endl;
 			break;
 		}
-		case t_name:
+		case t_name:	// ---3.5---
+		{
+					Columns * node = (Columns *) oldnode;
+					outputSpace(floor);
+					cout<<"Columns: "<< node->parameter2<<endl;
+					break;
+		}
 		case t_stringval:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.string_val<<endl;
+			cout<<"t_stringval: "<<node->data.string_val<<endl;
 			break;
 		}
 		case t_intnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.int_val<<endl;
+			cout<<"t_intnum: "<<node->data.int_val<<endl;
 			break;
 		}
 		case t_approxnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.double_val<<endl;
+			cout<<"t_approxnum: "<<node->data.double_val<<endl;
 			break;
 		}
 		case t_bool:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"name: "<<node->data.bool_val<<endl;
+			cout<<"t_bool: "<<node->data.bool_val<<endl;
 			break;
 		}	
 		
@@ -793,8 +845,7 @@ void output(Node * oldnode, int floor)
 		}
 		
 		case t_table://///////////////////////////////////////////////////
-		/* nodetype type;	char * dbname,*tablename,*astablename;	
-			int issubquery;	Node *subquery; Node * condition */
+		/* nodetype type;	char * dbname,*tablename,*astablename; int issubquery;	Node *subquery; Node * condition */
 		{
 			Table * node = (Table *) oldnode;
 			
@@ -1015,6 +1066,19 @@ void output(Node * oldnode, int floor)
 			break;
 		}
 	}
+}
+
+void FreeAllNode()	// 2014-3-6---增加释放所有节点的函数---by余楷
+{
+	int i;
+	for (i = 0; i < pointerToNodePointerNum; ++i)
+	{
+		free(*pointerToNodePointer[i]);
+		*pointerToNodePointer[i] = NULL;
+		pointerToNodePointer[i] = NULL;
+	}
+	puts("All node freed successfully");
+	pointerToNodePointerNum = 0;
 }
 
 

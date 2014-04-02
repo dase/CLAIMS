@@ -23,7 +23,7 @@ typedef int ProjectionOffset;
 typedef unsigned ColumnOffset;
 typedef unsigned PartitionOffset;
 typedef int ChunkOffset;
-
+typedef unsigned long ExpanderID;
 /*the following ids are based on the assumption that the TableOffset is globally unique.*/
 
 
@@ -135,6 +135,7 @@ struct PartitionID{
 	}
 	std::string getPathAndName()const{
 		std::ostringstream str;
+//		str<<"/home/imdb/data/tpc-h/4_partitions/SF-1/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 
 //		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 //		str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
@@ -142,6 +143,7 @@ struct PartitionID{
 //		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		str<<"/home/imdb/data/dsc/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 //		str<<"/home/imdb/data/wangli/T"<<partition_off;
+
 		return str.str();
 	}
 };
