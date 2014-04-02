@@ -23,10 +23,10 @@ public:
 
 	SchemaVar(std::vector<column_type> columns);
 
-	virtual unsigned getTupleMaxSize(){};
+	virtual unsigned getTupleMaxSize()const{return -1;};
 	virtual unsigned getTupleActualSize(void* tuple) const;
 	virtual unsigned copyTuple(void* src, void* desc) const;
-	virtual Schema::schema_type getSchemaType();
+	virtual Schema::schema_type getSchemaType()const;
 	/*get the pointer of the tuple and get the value of the tuple offset*/
 	virtual void getColumnValue(unsigned index,void* src, void* desc){};
 	virtual Schema* getSubSchema(std::vector<unsigned>)const{};

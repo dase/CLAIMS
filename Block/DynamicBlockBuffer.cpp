@@ -21,7 +21,9 @@ DynamicBlockBuffer::DynamicBlockBuffer(const DynamicBlockBuffer& r){
 }
 
 DynamicBlockBuffer::~DynamicBlockBuffer() {
-	// TODO Auto-generated destructor stub
+	for(unsigned i=0;i<block_list_.size();i++){
+		block_list_[i]->~BlockStreamBase();
+	}
 }
 
 bool DynamicBlockBuffer::appendNewBlock(BlockStreamBase* new_block){

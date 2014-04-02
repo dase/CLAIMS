@@ -38,6 +38,7 @@ public:
 	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* block);
 	bool close();
+	void print();
 	ResultSet* getResultSet();
 	unsigned long getNumberOftuples()const;
 private:
