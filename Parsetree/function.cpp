@@ -8,7 +8,6 @@ using namespace std;
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
-<<<<<<< HEAD
 extern Node *NodePointer[10000];		// 2014-3-7---指向每个节点的指针数组---by余楷
 extern int NodePointerNum;		// 2014-3-7---指向每个节点的指针数组中元素个数---by余楷
 
@@ -40,31 +39,6 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 	}
 	//cout<<"newStmt is created"<<endl;
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
-=======
-extern Node **pointerToNodePointer[10000];
-extern int pointerToNodePointerNum;
-
-struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加新建语句列表函数---by余楷
-{
-	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
-	if(!a)
-	{
-		yyerror("out of space!");
-		exit(0);
-	}
-
-	a->type = t;
-	a->data = newNode;
-	a->next = NULL;
-	a->last = (Node *)a;
-
-	if (list != NULL)
-	{
-		((Stmt *)(((Stmt *)list)->last))->next = (Node *)a;
-		((Stmt *)list)->last = (Node *)a;
-		return (Node *)list;
-	}
-	//cout<<"newStmt is created"<<endl;
 	return (struct Node *)a;
 }
 
@@ -79,6 +53,12 @@ struct Node * newExpr(nodetype t, dataval d)
 
 	a->type = t;
 	a->data = d;
+	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号
+	{
+		strncpy(a->data.string_val, d.string_val+1, strlen(d.string_val)-2);
+		a->data.string_val[strlen(d.string_val)-2] = '\0';
+	}
+
 	//cout<<"newExpr is created"<<endl;
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
@@ -911,6 +891,27 @@ struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, 
 
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
+}
+
+// 2014-3-27---增加---by Yu
+struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator)
+{
+	Loadtable_stmt *a= (Loadtable_stmt *)malloc(sizeof(Loadtable_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->table_name = table_name;
+	a->path = path;
+	a->column_separator = column_separator;
+	a->tuple_separator = tuple_separator;
+
+	//cout<<"Loadtable_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (Node*)a;
 }
 
 // 2014-3-24---增加---by Yu

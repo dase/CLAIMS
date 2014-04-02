@@ -9,11 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include <string>
 #include <iostream>
 #include <set>
-#include <vector>
-#include <algorithm>
 using namespace std;
 
 
@@ -43,7 +40,8 @@ enum nodetype
 	t_create_select_stmt,t_column_atts, t_opt_csc,
 	t_datatype,t_length,t_enum_list,
 	t_create_index_stmt,	t_index_col_list,	t_drop_index,	// 2014-3-24---增加---by Yu
-	t_drop_database_stmt,t_drop_table_stmt, t_table_list	// 2014-3-24---增加---by Yu
+	t_drop_database_stmt,t_drop_table_stmt, t_table_list,	// 2014-3-24---增加---by Yu
+	t_load_table_stmt	// 2014-3-24---增加---by Yu
 };
 
 union dataval	// 2014-3-8---不支持更长的整数，需改用long或其他类型---by余楷
@@ -460,6 +458,14 @@ struct Tablelist	// 2014-3-24---增加---by Yu
 	Node * next;
 };
 
+struct Loadtable_stmt{	// 2014-4-1---修改---by Yu
+	nodetype type;
+	char *table_name;
+	Node *path;
+	char *column_separator;
+	char *tuple_separator;
+};
+
 struct Rename_stmt
 {
 	nodetype type;
@@ -671,6 +677,9 @@ struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, 
 
 // 2014-3-24---增加---by Yu
 struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next);
+
+// 2014-3-27---增加---by Yu
+struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 

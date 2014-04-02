@@ -58,4 +58,9 @@
 #define DEBUG_ResourceManagerSlave
 #define DEBUG_Catalog
 //#define DEBUG_BufferManager
+
+//#define DEBUG_Coordinator
+//#define DEBUG_AdaptiveEndPoint
+#define DEBUG_ASTParser
+
 #endif /* DEBUG_H_ */
