@@ -34,7 +34,10 @@
 #include "../Loader/test_load.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
 #include "../LogicalQueryPlan/Test/testIn.cpp"
+#include "TestSuit/ExpanderFrameTest.h"
+#include "TestSuit/tpc_h_test.cpp"
 int main(){
+
 //	return testGenerateIteratorTree();
 //	return iterator_test();
 //	return testIteratorExecutor();
@@ -42,7 +45,7 @@ int main(){
 //	return getOptimalQueryPlan();
 //	return ResultCollect_test();
 //	return parser_test();
-//	return sub_tuple_test();
+////	return sub_tuple_test();
 //	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics();
@@ -66,6 +69,7 @@ int main(){
 //	return in_iterator_test();
 
 //	in_test();
-
-
+//	test_expanderFramework_single_node(3);
+//	test_multiple_expanderFramework_single_node(3);
+	tcp_h_test();
 }

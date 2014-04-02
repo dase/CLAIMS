@@ -19,6 +19,7 @@
 #include "../../../utility/rdtsc.h"
 #include "../../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamExpander.h"
+#include "../../../Executor/ExpanderTracker.h"
 using namespace std;
 static int expanded_iterators_test(){
 	int master;
@@ -513,30 +514,33 @@ static int expanded_iterators_test(){
 
 
 //		filter_1->getDataflow();
-		executable_query_plan=aggregation->getIteratorTree((1024*64-sizeof(unsigned)));
+		LogicalOperator* target=aggregation;
+		executable_query_plan=target->getIteratorTree((1024*64-sizeof(unsigned)));
 
-		BlockStreamExpander::State expander_state(aggregation->getDataflow().getSchema(),executable_query_plan,5,1024*64-sizeof(unsigned));
+		BlockStreamExpander::State expander_state(target->getDataflow().getSchema(),executable_query_plan,500,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-		BlockStreamPerformanceMonitorTop::State perf_state(aggregation->getDataflow().getSchema(),expander,1024*64-
+		BlockStreamPerformanceMonitorTop::State perf_state(target->getDataflow().getSchema(),expander,1024*64-
 				sizeof(unsigned));
 		BlockStreamIteratorBase* top=new BlockStreamPerformanceMonitorTop(perf_state);
 
 		top->print();
 
-		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(aggregation->getDataflow().getSchema(),1024*64);
+		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(target->getDataflow().getSchema(),1024*64);
 		int c=1;
 		while(c==1){
-//			timer_start=curtick();
+//			timer_start=curtick();b
 			for (int i = 0; i < 1; i++)
 			{
 				top->open();
-			while(top->next(block)){
-				block->setEmpty();
+				while(top->next(block)){
+					block->setEmpty();
+				}
+				top->close();
+
+				cout << "filter test: " << i << endl;
 			}
-			top->close();
-			cout << "filter test: " << i << endl;
-			}
+//			sleep(1);
 			printf("Terminate(0) or continue(others)?\n");
 //			sleep()
 			scanf("%d",&c);

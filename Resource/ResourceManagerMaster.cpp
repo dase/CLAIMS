@@ -18,6 +18,8 @@ ResourceManagerMaster::ResourceManagerMaster() {
 
 ResourceManagerMaster::~ResourceManagerMaster() {
 	acter_->~ResourceManagerMasterActor();
+	framework->~Framework();
+	node_tracker_->~NodeTracker();
 }
 NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 	NodeID new_node_id=node_tracker_->RegisterNode(new_slave_ip_);

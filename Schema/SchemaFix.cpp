@@ -29,7 +29,7 @@ SchemaFix::SchemaFix(const SchemaFix& r):Schema(r){
 SchemaFix::~SchemaFix() {
 }
 
-unsigned SchemaFix::getTupleMaxSize()
+unsigned SchemaFix::getTupleMaxSize()const
 {
 	return totalsize;
 }

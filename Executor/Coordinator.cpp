@@ -42,10 +42,8 @@ Coordinator::Coordinator() {
 }
 
 Coordinator::~Coordinator() {
-	// TODO Auto-generated destructor stub
 	framework->~Framework();
 	endpoint->~EndPoint();
-	coordinateActor->~Actor();
 }
 bool Coordinator::PrepareTheSocket() {
 	libconfig::Config cfg;
@@ -62,8 +60,8 @@ bool Coordinator::PrepareTheSocket() {
 	}
 	my_addr.sin_family = AF_INET;
 	my_addr.sin_port = htons(atoi(master_port.c_str()));
-	std::cout << "Socket port:" << master_port << std::endl;
 	my_addr.sin_addr.s_addr = INADDR_ANY;
+
 	bzero(&(my_addr.sin_zero), 8);
 
 	/* Enable address reuse */
@@ -94,7 +92,7 @@ bool Coordinator::SetupTheTheron() {
 	EndPointPort = port.str();
 	ip_port = std::string("tcp://") + ip + ":" + port.str();
 
-	logging->log("[Coordinator]: Now is initializing the Theron EndPoint as ");
+	logging->log("[Coordinator]: Now is initializing the Theron EndPoint as %s",ip_port.c_str());
 
 	endpoint = new Theron::EndPoint((ip + ":" + port.str()).c_str(),
 			ip_port.c_str());
@@ -245,7 +243,7 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		Cthis->SendReadyNotificationToNewNode(socket_fd_new);
 
 		close(socket_fd_new);
-
+		receiver->~TimeOutReceiver();
 	}
 }
 

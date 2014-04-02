@@ -23,7 +23,7 @@ typedef int ProjectionOffset;
 typedef unsigned ColumnOffset;
 typedef unsigned PartitionOffset;
 typedef unsigned ChunkOffset;
-
+typedef unsigned long ExpanderID;
 /*the following ids are based on the assumption that the TableOffset is globally unique.*/
 
 

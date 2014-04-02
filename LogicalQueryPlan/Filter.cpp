@@ -193,7 +193,7 @@ bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitioningDes
 	for(unsigned i=0;i<condition_.getCompaisonNumber();i++){
 		if(part.getPartitionKey()==condition_.attribute_list_[i]){
 			if(comparator_list_[i].getCompareType()==Comparator::EQ){
-				if(partition_id==part.getPartitionKey().attrType->operate->getPartitionValue(comparator_list_[i].get_value(),part.getPartitionFunction())){
+				if(partition_id==part.getPartitionKey().attrType->operate->getPartitionValue(comparator_list_[i].get_value(),part.getPartitionFunction()->getNumberOfPartitions())){
 
 				}
 				else{
@@ -359,9 +359,9 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 		}
 		FilterIterator::AttributeComparator filter(*dataflow.attribute_list_[attribute_index].attrType,condition_.comparison_list_[i],attribute_index,condition_.const_value_list_[i]);
 		comparator_list_.push_back(filter);
-		printf("************** pushed ***************\n");
+//		printf("************** pushed ***************\n");
 	}
-	printf("comparator size=%d\n",comparator_list_.size());
+//	printf("comparator size=%d\n",comparator_list_.size());
 	assert(condition_.comparison_list_.size()==comparator_list_.size());
 }
 void Filter::print(int level)const{

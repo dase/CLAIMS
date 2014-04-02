@@ -114,6 +114,7 @@ public:
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions);
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,std::string partition_attribute_name,unsigned number_of_partitions);
 	bool createHashPartitionedProjection(vector<Attribute> column_list,std::string partition_attribute_name,unsigned number_of_partitions);
+	bool createHashPartitionedProjectionOnAllAttribute(std::string partition_attribute_name,unsigned number_of_partitions);
 	bool isExist(const string& name) const;
 	inline string getTableName() const {return tableName;}
 	ColumnOffset getColumnID(const string& attrName) const;
