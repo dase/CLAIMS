@@ -6,8 +6,7 @@
  */
 #include "Logging.h"
 
-//#define DEBUG_Coordinator
-//#define DEBUG_AdaptiveEndPoint
+
 
 
 
@@ -276,3 +275,23 @@ void BufferManagerLogging::elog(const char* format,...){
 	printf("\n");
 	va_end (arg);
 }
+
+void ASTParserLogging::log(const char* format,...){
+#ifdef DEBUG_ASTParser
+	printf("ASTParser: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ASTParserLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[ASTParser]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+

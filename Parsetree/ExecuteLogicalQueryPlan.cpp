@@ -24,6 +24,8 @@
 #include "../LogicalQueryPlan/Buffer.h"
 #include "../utility/rdtsc.h"
 
+#include "../Loader/Hdfsloader.h"
+
 using namespace std;
 
 void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改变，相关代码进行修改---by余楷
@@ -93,6 +95,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					break;
 				}
 
+				// 创建新表
 				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 				Create_col_list *list = (Create_col_list*)ctnode->list;
 				string primaryname;
@@ -105,9 +108,19 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						++colNum;	// 2014-2-24---移动位置到if语句内
 						string colname = data->name;	// 2014-2-24---移动位置到if语句内
 						primaryname = colname;
+						Column_atts *column_atts = (Column_atts*)data->col_atts;
+
+						/* TODO: Whether column is unique or not null or has default value is not finished,
+						 *  because there are not supports
+						 */
 						Datatype * datatype = (Datatype *)data->datatype;
-						switch (datatype->datatype)
+						switch (datatype->datatype)	// add more type --- 2014-4-2
 						{
+						case 3:
+						{
+							new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+							break;
+						}
 						case 5:
 						case 6:
 						{
@@ -124,18 +137,41 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 							}
 							break;
 						}
-						case 10:
-						{
-							new_table->addAttribute(colname, data_type(t_float), 0, true);
-							cout<<colname<<" is created"<<endl;
-							break;
-						}
 						case 9:
 						{
 							new_table->addAttribute(colname, data_type(t_double), 0, true);
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
+						case 10:
+						{
+							new_table->addAttribute(colname, data_type(t_float), 0, true);
+							cout<<colname<<" is created"<<endl;
+							break;
+						}
+						case 11:
+						{
+							new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+						}
+						case 12:	// DATE --- 2014-4-1
+						{
+							new_table->addAttribute(colname, data_type(t_date), 0, true);
+							cout<<colname<<" is created"<<endl;
+							break;
+						}
+						case 13:	// TIME --- 2014-4-1
+						{
+							new_table->addAttribute(colname, data_type(t_time), 0, true);
+							cout<<colname<<" is created"<<endl;
+							break;
+						}
+						case 15:	// DATETIME --- 2014-4-1
+						{
+							new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							cout<<colname<<" is created"<<endl;
+							break;
+						}
+
 						case 17:
 						case 18:
 						{
@@ -236,6 +272,32 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
 
 				break;
+			}
+			case t_load_table_stmt:	//
+			{
+				Loadtable_stmt *new_node = (Loadtable_stmt*)node;
+
+				string table_name(new_node->table_name);
+				TableDescriptor *table = Environment::getInstance()->getCatalog()->getTable(table_name);
+				string column_separator(new_node->column_separator);
+				string tuple_separator(new_node->tuple_separator);
+				Expr_list *path_node = (Expr_list*)new_node->path;
+
+				ASTParserLogging::log("load file\'s name:");
+				vector<string> path_names;	// save the name of files which should be loaded
+				//for test: the path name is:	/home/imdb/data/tpc-h/part.tbl
+				while(path_node)
+				{
+					Expr *data = (Expr*)path_node->data;
+					ASTParserLogging::log("%s",data->data.string_val);
+					path_names.push_back(string(data->data.string_val));
+					path_node = (Expr_list*)path_node->next;
+				}
+
+				// split sign should be considered carefully, in case of it may be "||" or "###"
+				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table_name, table);
+
+				loader->load();
 			}
 			default:
 			{
