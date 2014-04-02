@@ -222,7 +222,7 @@ unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
 //		return ret;
 //	}
 
-	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,partition_function_);
+	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,nuppers);
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){
