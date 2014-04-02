@@ -226,16 +226,15 @@ std::vector<unsigned> Aggregation::getInvolvedIndexList(const std::vector<Attrib
 	for(unsigned i=0;i<attribute_list.size();i++){
 		bool found=false;
 		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
-			if(attribute_list[j].isANY()||(dataflow.attribute_list_[j]==attribute_list[i])){
+			/*
+			 * Bug caused by attribute_list[j].isANY() is fixed.
+			 */
+			if(attribute_list[i].isANY()||(dataflow.attribute_list_[j]==attribute_list[i])){
 				found=true;
 				ret.push_back(j);
 				break;
 			}
 		}
-//		if(found==false){
-//			printf("Cannot find any matching attribute.\n");
-//			assert(false);
-//		}
 	}
 	return ret;
 }
