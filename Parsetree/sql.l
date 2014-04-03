@@ -133,7 +133,7 @@ INNER	{ return INNER; }
 INOUT	{ return INOUT; }
 INSENSITIVE	{ return INSENSITIVE; }
 INSERT	{ return INSERT; }
-INT4?|INTEGER	{ return INTEGER; }
+INT4?|INTEGER|INT	{ return INTEGER; }
 INTERVAL	{ return INTERVAL; }
 INTO	{ return INTO; }
 IS	{ return IS; }
@@ -321,7 +321,10 @@ SUBSTR(ING)?/"(" { return FSUBSTRING; }
 TRIM/"(" { return FTRIM; }
 DATE_ADD/"(" { return FDATE_ADD; }
 DATE_SUB/"(" { return FDATE_SUB; }
-
+UPPER/"(" { return FUPPER; }//---3.25fzh---
+COALESCE/"(" { return FCOALESCE; }
+CAST/"(" { return FCAST; }
+CONVERT/"(" { return FCONVERT; }
 	/* 
          * peek ahead and return function if name(
          */
