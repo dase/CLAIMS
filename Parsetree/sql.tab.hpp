@@ -350,10 +350,14 @@
      FDATE_ADD = 567,
      FDATE_SUB = 568,
      FCOUNT = 569,
-     FSUM = 570,
-     FAVG = 571,
-     FMIN = 572,
-     FMAX = 573
+     FUPPER = 570,
+     FCAST = 571,
+     FCOALESCE = 572,
+     FCONVERT = 573,
+     FSUM = 574,
+     FAVG = 575,
+     FMIN = 576,
+     FMAX = 577
    };
 #endif
 
@@ -374,7 +378,7 @@ typedef union YYSTYPE
 
 
 /* Line 2638 of glr.c  */
-#line 378 "sql.tab.hpp"
+#line 382 "sql.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 #endif

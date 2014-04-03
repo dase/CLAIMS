@@ -25,11 +25,12 @@
 #include "../common/ExpressionItem.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
+static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void p2l_print_error(char *str1,char *str2,char *str3)
 {
 	printf("parsetree2logicalplan >> %s  %s   %s",str1,str2,str3);
 }
-static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename)
+static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator)
 {
 	printf("getfiltercondition   ");
 	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
@@ -59,9 +60,9 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 			{
 
 			}
-			else if(strcmp(node->sign,"--")==0)
+			else if(strcmp(node->sign,"INS")==0)
 			{
-
+				hasin=true;
 			}
 			else if(strcmp(node->sign,"ANDOP")==0)
 			{
@@ -77,63 +78,152 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 			}
 			else if(strcmp(node->sign,"CMP")==0)
 			{
+				char * attribute;
+				switch((node->lnext)->type)//获得左边的表名
+				{
+					case t_name:
+					{
+						Expr *expr=(Expr *)(node->lnext);
+						attribute=expr->data.string_val;
+					}break;
+					case t_name_name:
+					{
+						Columns *col=(Columns *)(node->lnext);
+						attribute=col->parameter2;
+					}break;
+					default:
+					{
+
+					}
+				};
+
 				switch(node->cmp)
 				{
 					case 1://"<"
 					{
-
-					}break;
-					case 2://">"
-					{
-
-					}break;
-					case 3://"<>"
-					{
-
-					}break;
-					case 4://"="
-					{
-						char * attribute;
-						switch((node->lnext)->type)//获得左边的表名
-						{
-							case t_name:
-							{
-								Expr *expr=(Expr *)(node->lnext);
-								attribute=expr->data.string_val;
-							}break;
-							case t_name_name:
-							{
-								Columns *col=(Columns *)(node->lnext);
-								attribute=col->parameter2;
-							}break;
-							default:
-							{
-
-							}
-						};
 						Expr *expr=(Expr *)(node->rnext);
 						switch(expr->type)//获得右边的属性
 						{
 							case t_intnum:
 							{
 								int temp=expr->data.int_val;
-								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
 								std::ostringstream str;
 								str<<temp;
-								cout<<str.str()<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,str.str());
+							//	cout<<str.str()<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::L,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=expr->data.double_val;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::L,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data.string_val;
-								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,temp);
+							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::L,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
+
+					}break;
+					case 2://">"
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+							//	cout<<str.str()<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::G,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::G,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::G,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
+
+					}break;
+					case 3://"<>"
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+								std::ostringstream str;
+								str<<temp;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
+
+					}break;
+					case 4://"="
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+						//		cout<<"arrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrttribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+						//		cout<<str.str()<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::EQ,str.str());
+							//	filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::EQ,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::EQ,temp);
 
 							}break;
 							default:
@@ -145,10 +235,70 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 					}break;
 					case 5://"<="
 					{
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+							//	cout<<str.str()<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::LEQ,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::LEQ,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::LEQ,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
 
 					}break;
 					case 6://">="
 					{
+						Expr *expr=(Expr *)(node->rnext);
+						switch(expr->type)//获得右边的属性
+						{
+							case t_intnum:
+							{
+								int temp=expr->data.int_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
+								std::ostringstream str;
+								str<<temp;
+							//	cout<<str.str()<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,str.str());
+							}break;
+							case t_approxnum:
+							{
+								double temp=expr->data.double_val;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,&temp);
+							}break;
+							case t_name:
+							case t_stringval ://////////////////////
+							{
+								char * temp=expr->data.string_val;
+							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,temp);
+
+							}break;
+							default:
+							{
+
+							}
+						}
 
 					}break;
 					default:
@@ -164,22 +314,121 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 		}
 	}
 }
-static void getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_list)
+static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_list,LogicalOperator *filter_1,LogicalOperator * filter_2)
 {
-	printf("getjoinpairlist   ");
-//		join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
 	switch(wcexpr->type)
 	{
 		case t_expr_cal://目前只支持equaljoin
 		{
 			Expr_cal *node=(Expr_cal *)wcexpr;
-			Columns *lnode=(Columns *)(node->lnext);
-			Columns *rnode=(Columns *)(node->rnext);
-			printf("left %s.%s   right %s.%s\n",lnode->parameter1,lnode->parameter2,rnode->parameter1,rnode->parameter2);
-			join_pair_list.push_back(EqualJoin::JoinPair(Environment::getInstance()->getCatalog()->getTable(lnode->parameter1)->getAttribute(lnode->parameter2),Environment::getInstance()->getCatalog()->getTable(rnode->parameter1)->getAttribute(rnode->parameter2)));
-		}break;
+			if(strcmp(node->sign,"CMP")==0)
+			{
+				switch (node->cmp)
+				{
+					case 1://"<"
+					{
 
+					}break;
+					case 2://">"
+					{
+
+					}break;
+					case 3://"<>"
+					{
+
+					}break;
+					case 4://"="
+					{
+						Columns *lnode=(Columns *)(node->lnext);
+						Columns *rnode=(Columns *)(node->rnext);
+					//	printf("left %s.%s   right %s.%s\n",lnode->parameter1,lnode->parameter2,rnode->parameter1,rnode->parameter2);
+						if(filter_1->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2)!=NULL&&filter_2->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2)!=NULL)
+						{
+							join_pair_list.push_back(EqualJoin::JoinPair(filter_1->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2),filter_2->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2)));
+						}
+						else if(filter_1->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2)!=NULL&&filter_2->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2)!=NULL)
+						{
+							join_pair_list.push_back(EqualJoin::JoinPair(filter_1->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2),filter_2->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2)));
+						}
+						else
+						{
+							return 0;
+						}
+					}break;
+					case 5://"<="
+					{
+
+					}break;
+					case 6://">="
+					{
+
+					}break;
+					default:
+					{
+
+					}
+				}
+			}
+			else
+			{
+
+			}
+
+		}break;
+		default:
+		{
+
+		}
 	}
+	return 1;
+}
+static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
+{
+	switch (exprnode->type)
+	{
+		case t_expr_cal:
+		{
+			Expr_cal *node=(Expr_cal *)exprnode;
+			if(strcmp(node->sign,"INS")==0)
+			{
+				if(node->rnext->type==t_query_stmt)
+				{
+					LogicalOperator * sublogicalplan=parsetree2logicalplan(node->rnext);//1.获得原子查询的logicalplan
+					Query_stmt * subquery=(Query_stmt *)(node->rnext);
+					vector<Attribute> group_by_attributes;
+					vector<Attribute> aggregation_attributes;
+					for(Node *p=subquery->select_list;p!=NULL;)//2.1获得groupby的属性
+					{
+						Select_list *selectlist=(Select_list *)p;
+						Select_expr *sexpr=(Select_expr *)selectlist->args;
+						group_by_attributes.push_back(sublogicalplan->getDataflow().getAttribute(sexpr->ascolname));///????
+						p=selectlist->next;
+					}//2.2在1中的logicalplan上做groupby
+					LogicalOperator * aggrection_sublogicalplan=new Aggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),sublogicalplan);
+					vector<EqualJoin::JoinPair> join_pair_list;
+					Node *lp,*sp;
+					for(lp=node->lnext,sp=((Query_stmt *)node->rnext)->select_list;lp!=NULL;)//3.1获得equaljoin的左右属性
+					{
+						Expr_list * lpexpr=(Expr_list *)lp;
+						Columns * lcol=(Columns *)lpexpr->data;
+						Select_list *spexpr=(Select_list *)sp;
+						Columns *rcol=(Columns *)spexpr->args;
+						join_pair_list.push_back(EqualJoin::JoinPair(input->getDataflow().getAttribute(lcol->parameter1,lcol->parameter2),sublogicalplan->getDataflow().getAttribute(rcol->parameter1,rcol->parameter2)));
+						lp=lpexpr->next;
+						sp=spexpr->next;
+					}
+					LogicalOperator* join_logicalplan=new EqualJoin(join_pair_list,input,aggrection_sublogicalplan);
+					return join_logicalplan;
+				}
+			}
+		}break;
+		default:
+		{
+
+		}
+	}
+
+	return NULL;
 }
 static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_from_parsetree(即将where转换到from_list后的)到logicalplan的转换
 {
@@ -188,25 +437,38 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 		puts("parsetree2logicalpaln error");
 		return NULL;
 	}
-
-	//对于t_query_stmt中才可以直接进行下面的操作，所以以后要再套一层判断
 	switch(parsetree->type)
 	{
 		case t_table://table节点获得scan 和在该节点上condition的filter
 		{
 			Table * node=(Table *)parsetree;
-			LogicalOperator* tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));
-
+			LogicalOperator* tablescan;
+			if(node->issubquery==0)
+			{
+				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));
+			}
+			else
+			{
+				tablescan=parsetree2logicalplan(node->subquery);
+			}
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
 			{
 				Filter::Condition filter_condition;
 				Node * p;
+				bool hasin=false;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
-					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename);
+					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename,hasin,tablescan);
 				}
 				LogicalOperator* filter=new Filter(filter_condition,tablescan);
+				if(hasin==true)
+				{
+					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
+					{
+						filter=solve_insubquery(((Expr_list *)p)->data,filter);
+					}
+				}
 				return filter;
 			}
 			else
@@ -229,14 +491,32 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
-				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
+				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
-					getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list);
+					getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
 				}
-				vector<EqualJoin::JoinPair>::iterator it;
-				for(it=join_pair_list.begin();it!=join_pair_list.end();it++)
+				LogicalOperator* join=new EqualJoin(join_pair_list,filter_1,filter_2);
+				return join;
+			}
+			else//没有equaljoin的情况
+			{
+				puts("fromlist no equaljoin");
+				return NULL;
+			}
+
+		}break;
+		case t_join:
+		{
+			Join *node=(Join *)parsetree;
+			LogicalOperator * filter_1= where_from2logicalplan(node->lnext);
+			LogicalOperator * filter_2= where_from2logicalplan(node->rnext);
+			if(node->condition!=NULL)
+			{
+				vector<EqualJoin::JoinPair> join_pair_list;
+				Node * p;
+				for(p=node->condition;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
-					cout<<it->first.attrName<<"  <<  "<<it->second.attrName<<endl;
+					getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
 				}
 				LogicalOperator* join=new EqualJoin(join_pair_list,filter_1,filter_2);
 				return join;
@@ -254,7 +534,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			return NULL;
 		}
 	}
-
+	return NULL;
 }
 static void get_aggregation_args(int &funcnum,Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function)
 {
@@ -377,7 +657,7 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 	}
 
 }
-static LogicalOperator* groupby_where_from2logicalplan(Node *parsetree)//实现groupby_where_from_parsetree 到logicalplan的转换
+static LogicalOperator* groupby_where_from2logicalplan(Node *parsetree,bool & hasaggrection)//实现groupby_where_from_parsetree 到logicalplan的转换
 {
 	Query_stmt *node=(Query_stmt *)parsetree;
 	LogicalOperator * where_from_logicalplan=where_from2logicalplan(node->from_list);
@@ -388,13 +668,16 @@ static LogicalOperator* groupby_where_from2logicalplan(Node *parsetree)//实现g
 	get_aggregation_args(funcnum,node->select_list, aggregation_attributes,aggregation_function);
 	if(funcnum==0)
 	{
+		hasaggrection=false;
 		return where_from_logicalplan;
 	}
 	else//获得select子句中的聚集函数及其参数以及groupby子句参数
 	{
+
 		if(node->groupby_list!=NULL)
 		get_group_by_attributes(node->groupby_list,group_by_attributes);
 		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,where_from_logicalplan);
+		hasaggrection=true;
 		return aggregation;
 	}
 }
@@ -454,6 +737,91 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem1;
 				expritem1.setOperator("then");
 				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->args);
+				ExpressionItem expritem0;
+				expritem0.setIntValue(0);
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				ExpressionItem expritem1;
+				expritem1.setOperator("substr");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FSUBSTRING1")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->args);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("substr");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FTRIM0")==0)
+			{
+				ExpressionItem expritem0;
+				expritem0.setIntValue(0);
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("trim");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FTRIM1")==0)
+			{
+				ExpressionItem expritem0;
+				expritem0.setIntValue(1);
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("trim");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FTRIM2")==0)
+			{
+				ExpressionItem expritem0;
+				expritem0.setIntValue(2);
+				expr.push_back(expritem0);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("trim");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FTRIM3")==0)
+			{
+				ExpressionItem expritem0;
+				expritem0.setIntValue(0);
+				expr.push_back(expritem0);
+				ExpressionItem expritem;
+				expritem.setStringValue(" ");
+				expr.push_back(expritem);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				ExpressionItem expritem1;
+				expritem1.setOperator("trim");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FUPPER")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				ExpressionItem expritem1;
+				expritem1.setOperator("upper");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FCAST")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2);
+				ExpressionItem expritem1;
+				expritem1.setOperator("cast");
+				expr.push_back(expritem1);
+			}
+			else if(strcmp(funcnode->funname,"FCOALESCE")==0)
+			{
+
 			}
 			else
 			{
@@ -575,22 +943,29 @@ static void get_all_selectlist_expression_item(Node * node,vector<vector<Express
 }
 static LogicalOperator* select_groupby_where_from2logicalplan(Node *parsetree)
 {
-	LogicalOperator * groupby_where_from_logicalplan=groupby_where_from2logicalplan(parsetree);
-	Query_stmt *node=(Query_stmt *)parsetree;
-	vector<vector<ExpressionItem> >allexpr;
-	allexpr.clear();
-	get_all_selectlist_expression_item(node->select_list,allexpr);
-	cout<<"allexpr.size= "<<allexpr.size()<<endl;
-	for(unsigned i=0;i<allexpr.size();i++){
-		cout<<"allexpr "<<i<<"  size ="<<allexpr[i].size()<<endl;
-		for(unsigned j=0;j<allexpr[i].size();j++){
-			cout<<"******"<<endl;
-			allexpr[i][j].print_value();
-		}
+	bool hasaggrection=false;
+	LogicalOperator * groupby_where_from_logicalplan=groupby_where_from2logicalplan(parsetree,hasaggrection);
+	if(hasaggrection==true)
+	{
+		return groupby_where_from_logicalplan;
 	}
-//	return groupby_where_from_logicalplan;
-	LogicalOperator* proj=new LogicalProject(groupby_where_from_logicalplan,allexpr);
-	return proj;
+	else
+	{
+		Query_stmt *node=(Query_stmt *)parsetree;
+		vector<vector<ExpressionItem> >allexpr;
+		allexpr.clear();
+		get_all_selectlist_expression_item(node->select_list,allexpr);
+		cout<<"allexpr.size= "<<allexpr.size()<<endl;
+		for(unsigned i=0;i<allexpr.size();i++){
+			cout<<"allexpr "<<i<<"  size ="<<allexpr[i].size()<<endl;
+			for(unsigned j=0;j<allexpr[i].size();j++){
+				cout<<"******"<<endl;
+				allexpr[i][j].print_value();
+			}
+		}
+		LogicalOperator* proj=new LogicalProject(groupby_where_from_logicalplan,allexpr);
+		return proj;
+	}
 }
 static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector<LogicalSort::OrderByAttr *>&obcol)
 {
@@ -673,19 +1048,21 @@ static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *pars
 }
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
+	LogicalOperator* result=NULL;
 	switch(parsetree->type)
 	{
 		case t_query_stmt:
 		{
-			return orderby_select_groupby_where_from2logicalplan(parsetree);
+			result=orderby_select_groupby_where_from2logicalplan(parsetree);
 		}break;
 		default:
 		{
 			puts("parsetree type is null");
-			return NULL;
+			result= NULL;
 		}
 	}
-	return NULL;
+	cout<<"parsetree2Logicalplan is completed!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	return result;
 }
 
 #endif

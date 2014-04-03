@@ -36,6 +36,7 @@ public:
 	Schema* getSchema()const;
 	unsigned getTupleSize()const;
 	Attribute getAttribute(std::string name)const;
+	Attribute getAttribute(std::string name,std::string attname)const;
 public:
 	std::vector<Attribute> attribute_list_;
 	property property_;

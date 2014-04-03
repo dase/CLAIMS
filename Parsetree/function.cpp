@@ -35,6 +35,7 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加
 	return (struct Node *)a;
 }
 
+
 struct Node * newExpr(nodetype t, dataval d)
 {
 	struct Expr * a= (struct Expr *)malloc(sizeof(struct Expr));
@@ -45,8 +46,25 @@ struct Node * newExpr(nodetype t, dataval d)
 	}
 
 	a->type = t;
+	cout<<d.string_val<<endl;
+    cout<<"NexExpr create begin!!!!"<<endl;
+	if(t == t_stringval) // 2014-3-25---输入若为字符串，去除首位的引号
+	{
+		if(d.string_val[0]=='\''||d.string_val[0]=='\"')
+		{
+			int slen=strlen(d.string_val);
+			d.string_val[slen-1]='\0';
+			for(int i=1;i<slen;i++)
+			{
+				d.string_val[i-1]=d.string_val[i];
+			}
+		}
+	}
 	a->data = d;
-	//cout<<"newExpr is created"<<endl;
+	cout<<a->data.string_val;
+	cout<<" newExpr is created"<<endl;
+	output((Node *)a,1);
+//	insertNodePointer((Node*)a); // 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -736,28 +754,28 @@ void output(Node * oldnode, int floor)
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_stringval: "<<node->data.string_val<<endl;
+			cout<<"t_stringval: "<<node->data.string_val<<endl;//---3.14fzh---
 			break;
 		}
 		case t_intnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_intnum: "<<node->data.int_val<<endl;
+			cout<<"t_intnum: "<<node->data.int_val<<endl;//---3.14fzh---
 			break;
 		}
 		case t_approxnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_approxnum: "<<node->data.double_val<<endl;
+			cout<<"t_approxnum: "<<node->data.double_val<<endl;//---3.14fzh---
 			break;
 		}
 		case t_bool:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_bool: "<<node->data.bool_val<<endl;
+			cout<<"t_bool: "<<node->data.bool_val<<endl;//---3.14fzh---
 			break;
 		}	
 		
@@ -768,7 +786,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Expr_list: ";cout<<endl;
 			
 			if(node->data!=NULL) output(node->data,floor+1);
-			//if(node->next!=NULL) output(node->next);
+			if(node->next!=NULL) output(node->next,floor);//---3.14fzh---
 			
 			
 			
@@ -919,7 +937,7 @@ void output(Node * oldnode, int floor)
 			
 			cout<<endl;
 			output(node->args, floor + 1);
-			output(node->next, floor + 1);
+			output(node->next, floor);//---3.14fzh---
 			
 			break;
 		}
@@ -1064,6 +1082,26 @@ void output(Node * oldnode, int floor)
 			output(node->offset, floor+1);
 			output(node->row_count, floor+1);
 			break;
+		}//---3.21 fzh---
+		case t_join:
+		{
+			Join *node=(Join *)oldnode;
+			outputSpace(floor);
+			cout<<"Join:   jtype= "<<node->jointype<<endl;
+			output(node->lnext,floor+1);
+			output(node->rnext,floor+1);
+			output(node->condition,floor+1);
+		}break;
+		case t_condition:
+		{
+			Condition *node=(Condition *)oldnode;
+			outputSpace(floor);
+			cout<<"joincondition:   ctype= "<<node->conditiontype<<endl;
+			output(node->args,floor+1);
+		}break;
+		default:
+		{
+			printf("output type not exist!!!\n");
 		}
 	}
 }

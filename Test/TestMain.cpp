@@ -46,7 +46,7 @@ int main(){
 //	return sub_tuple_test();
 //	return aggregation_test();
 //	return statistic_manager_test();
-//	return query_optimization_based_on_statistics();
+	return query_optimization_based_on_statistics();
 //	return sort_iterator_test();
 //	return variable_schema_test();
 //	return generateVariableData_test();
@@ -59,7 +59,7 @@ int main(){
 	//return testSort();
 //	return testProject_wl();
 //	return Project_test();
-	return expanded_iterators_test();
+//	return expanded_iterators_test();
 
 //	return testSort();
 //	return load_test();

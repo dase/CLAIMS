@@ -210,11 +210,12 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			case t_query_stmt: // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
 			{
 				cout<<"this is query stmt"<<endl;
-
-				if (!semantic_analysis(node))
+				if (!semantic_analysis(node,false))//---3.22fzh---
 					cout<<"semantic_analysis error"<<endl;
+				output(node,0);
 					Query_stmt *querynode=(Query_stmt *)node;
 					puts("select_stmt2>>>>>>>>");
+
 					if(querynode->where_list!=NULL)
 					{
 						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
@@ -223,6 +224,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						departwc(cur,querynode->from_list);
 						puts("partree complete!!!");
 					}
+					if(querynode->from_list!=NULL)
+					int fg=solve_join_condition(querynode->from_list);
+
+
 				output(node,0);
 				puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
@@ -241,6 +246,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 //
 //				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
 				plan->print();
+
 				BlockStreamPrint::State print_state;
 				print_state.block_size_=64*1024-sizeof(unsigned);
 				print_state.child_=plan->getIteratorTree(64*1024-sizeof(unsigned));

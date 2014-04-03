@@ -653,7 +653,7 @@ void solvewc(struct Node * wcexpr,struct Node *fromlist);
 
 void departwc(struct Node *  wherecondition,struct Node * fromlist);
 
-bool semantic_analysis(Node *parsetree);
+bool semantic_analysis(Node *parsetree,bool issubquery);//---3.22fzh--
 
-
+int solve_join_condition(Node * fromnode);//---3.22fzh---
 #endif /* NODES_H_ */
