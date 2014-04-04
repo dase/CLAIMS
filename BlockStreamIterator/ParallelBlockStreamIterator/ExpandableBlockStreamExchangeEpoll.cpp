@@ -277,8 +277,10 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 		std::string ip=state.upper_ip_list[i];
 		/* Repeatedly ask node with ip for port information untile the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
+		int wait_time_in_millisecond=1;
 		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,i),ip)==0){
-			usleep(1);
+			usleep(wait_time_in_millisecond);
+			wait_time_in_millisecond=wait_time_in_millisecond<1000?wait_time_in_millisecond+20:1000;
 		}
 //		printf("ExchangeID[%lld] is synchronized in %s",state.exchange_id,ip.c_str());
 	}
