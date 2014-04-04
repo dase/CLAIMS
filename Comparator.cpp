@@ -4,7 +4,8 @@
  *  Created on: Jun 13, 2013
  *      Author: wangli
  */
-
+#ifndef __COMPARATOR_CPP_
+#define __COMPARATOR_CPP_
 #include "Comparator.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,12 +55,13 @@ bool LESS<char*,float>(const void* x,const  void* y)
 }
 template<>
 bool LESS<NValue*, NValue*>(const void *x,const void *y){
-	if (((NValue*)x)->op_equals(*(NValue*)y))
-		return false;
-	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
-	if (tmp.op_equals(*(NValue*)x))
-		return true;
-	return false;
+//	if (((NValue*)x)->op_equals(*(NValue*)y))
+//		return false;
+//	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
+//	if (tmp.op_equals(*(NValue*)x))
+//		return true;
+//	return false;
+	return ((NValue*)x)->compare(*(NValue*)y)==VALUE_COMPARE_LESSTHAN;
 }
 ////////////////////////////////////////////
 
@@ -77,8 +79,10 @@ inline bool greatEqual(const void* x,const void* y)
 std::map<Comparator::Pair,comFun> Comparator::funs_L;
 std::map<Comparator::Pair,comFun> Comparator::funs_GEQ;
 std::map<Comparator::Pair,comFun> Comparator::funs_EQ;
+Lock Comparator::lock_;
 void Comparator::initialize_L()
 {
+//	lock_.acquire();
 	funs_L[Comparator::Pair(t_int,t_int)]=LESS<int,int>;
 	funs_L[Comparator::Pair(t_int,t_float)]=LESS<int,float>;
 	funs_L[Comparator::Pair(t_int,t_string)]=LESS<int,char*>;
@@ -94,12 +98,14 @@ void Comparator::initialize_L()
 	funs_L[Comparator::Pair(t_date,t_date)]=LESS<date,date>;
 	funs_L[Comparator::Pair(t_time,t_time)]=LESS<time_duration,time_duration>;
 	funs_L[Comparator::Pair(t_datetime,t_datetime)]=LESS<ptime,ptime>;
-	funs_L[Comparator::Pair(t_datetime,t_decimal)]=LESS<NValue*,NValue*>;
+	funs_L[Comparator::Pair(t_decimal,t_decimal)]=LESS<NValue*,NValue*>;
 
 	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
+//	lock_.release();
 }
 void Comparator::initialize_GEQ()
 {
+//	lock_.acquire();
 	funs_GEQ[Comparator::Pair(t_int,t_int)]=greatEqual<int,int>;
 	funs_GEQ[Comparator::Pair(t_int,t_float)]=greatEqual<int,float>;
 	funs_GEQ[Comparator::Pair(t_int,t_string)]=greatEqual<int,char*>;
@@ -118,9 +124,11 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<NValue*,NValue*>;
 
 	funs_GEQ[Comparator::Pair(t_u_long,t_u_long)]=greatEqual<unsigned long,unsigned long>;
+//	lock_.release();
 }
 void Comparator::initialize_EQ()
 {
+//	lock_.acquire();
 	funs_EQ[Comparator::Pair(t_int,t_int)]=equal<int,int>;
 	funs_EQ[Comparator::Pair(t_int,t_float)]=equal<int,float>;
 //	funs_EQ[Comparator::Pair(t_int,t_string)]=equal<int,char*>;
@@ -138,6 +146,7 @@ void Comparator::initialize_EQ()
 	funs_EQ[Comparator::Pair(t_time,t_time)]=equal<time_duration,time_duration>;
 	funs_EQ[Comparator::Pair(t_datetime,t_datetime)]=equal<ptime,ptime>;
 	funs_EQ[Comparator::Pair(t_decimal,t_decimal)]=equal<NValue*,NValue*>;
+//	lock_.release();
 }
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
 	// TODO Auto-generated constructor stub
@@ -156,6 +165,7 @@ Comparator::~Comparator() {
 
 void Comparator::iniatilize()
 {
+	lock_.acquire();
 	if(funs_L.empty())
 	{
 		Comparator::initialize_L();
@@ -168,28 +178,33 @@ void Comparator::iniatilize()
 	{
 		Comparator::initialize_EQ();
 	}
+	lock_.release();
 	switch(compareType)
 	{
 		case Comparator::L:
 		{
+
 			if(funs_L.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_L.end())
 			{
-//			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
 				compare=funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));break;
 			}
 			else
 			{
+				assert(false);
 				printf("Error!\n");
 			}
-
+			break;
 		}
 		case Comparator::GEQ:
 		{
 			if(funs_GEQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_GEQ.end())
 			{
-			compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+			compare=funs_GEQ.at(Comparator::Pair(pair.first.type,pair.second.type));
 			}
-
+			else{
+				assert(false);
+			}
+			break;
 		}
 		case Comparator::EQ:
 		{
@@ -203,6 +218,12 @@ void Comparator::iniatilize()
 				}
 				break;
 			}
+			else
+			{
+				assert(false);
+				printf("Error!\n");
+			}
+			break;
 
 		}
 		default:
@@ -214,3 +235,4 @@ void Comparator::iniatilize()
 	}
 	assert(compare!=0);
 }
+#endif
