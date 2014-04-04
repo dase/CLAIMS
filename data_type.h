@@ -25,7 +25,7 @@ using namespace boost::posix_time;
 
 #include "types/NValue.hpp"
 using namespace decimal;
-#define DATA_TYPE_NUMBER 11
+#define DATA_TYPE_NUMBER 100
 enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean};
 typedef void (*fun)(void*,void*);
 
@@ -141,7 +141,7 @@ public:
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
 	virtual void toValue(void* target, const char* string)=0;
-	virtual bool equal(void* a, void* b)=0;
+	virtual bool equal(const void* const &a, const void* const & b)const=0;
 	virtual bool less(const void*& a, const void*& b)const=0;
 	virtual bool greate(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
@@ -173,7 +173,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(int*)target=atoi(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(int*)a==*(int*)b;
 	}
@@ -239,7 +239,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(float*)target=atof(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(float*)a==*(float*)b;
 	}
@@ -305,7 +305,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(double*)target=atof(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(double*)a==*(double*)b;
 	}
@@ -371,7 +371,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(unsigned long*)target=strtoul(string,0,10);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(unsigned long*)a==*(unsigned long*)b;
 	}
@@ -435,7 +435,7 @@ public:
 	void toValue(void* target, const char* string){
 		strcpy((char*)target,string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return strcmp((char*)a,(char*)b)==0;
 	}
@@ -511,7 +511,7 @@ public:
 		else
 			*(date*)target = from_string(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(date*)a == *(date*)b;
 	}
@@ -582,7 +582,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(time_duration*)target = duration_from_string(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(time_duration*)a == *(time_duration*)b;
 	}
@@ -653,7 +653,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(ptime*)target = time_from_string(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(ptime*)a == *(ptime*)b;
 	}
@@ -727,7 +727,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(short*)target = (short)atoi(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(short*)a==*(short*)b;
 	}
@@ -790,10 +790,16 @@ public:
 		((NValue*)value)->serializeToExport(out,&number_of_decimal_digits_);
 		return std::string(buf+4);
 	};
+	static std::string toString(const NValue v,unsigned n_o_d_d=12){
+		char buf[39] = {"\0"};
+		ExportSerializeOutput out(buf, 39);
+		(v).serializeToExport(out,&n_o_d_d);
+		return std::string(buf+4);
+	}
 	void toValue(void* target, const char* string){
 		*(NValue*)target = NValue::getDecimalValueFromString(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return ((NValue*)a)->op_equals(*(NValue*)b);
 	}
