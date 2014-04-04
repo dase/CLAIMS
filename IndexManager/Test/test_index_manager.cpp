@@ -14,7 +14,7 @@
 
 
 
-static int test_index_manager()
+static int test_index_manager_()
 {
 	map<ChunkID, CSBPlusTree<int>* > sec_code_index = IndexManager::getInstance()->getIndexList<int>(Catalog::getInstance()->getTable(0)->getAttribute(3));
 //	map<ChunkID, CSBPlusTree<int>* > sec_code_index = IndexManager::getInstance()->getIndexList<int>(0);

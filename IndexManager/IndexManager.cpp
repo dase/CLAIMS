@@ -7,6 +7,7 @@
 
 #include "IndexManager.h"
 #include "../Catalog/Catalog.h"
+#include <stdio.h>
 
 void cheak_com_index()
 {
@@ -201,4 +202,75 @@ unsigned long IndexManager::getIndexID(Attribute attr)
 		return column_attribute_to_id[attr];
 	cout << "[ERROR: IndexManager.cpp->getIndexID()]: The index for column " << attr.attrName << " is not exist!\n";
 	return -1;
+}
+
+bool IndexManager::serialize(std::string file_name)
+{
+	FILE* filename = fopen(file_name.c_str(), "wb+");
+	if (filename == NULL)
+	{
+		cout << "[ERROR: IndexManager.cpp->serialize()]: Can't open file " << file_name << ", serialization failed!\n";
+		return false;
+	}
+
+	/*
+	 * Serialize the IndexManager: map<unsigned long, attr_index_list*> csb_index_
+	 * csb_index_.size() 				(unsigned long)
+	 * for each item in csb_index_:
+	 * 	 map.first: index_id_ 			(unsigned long)
+	 * 	 map.second: attr_index_list*
+	 * 	   index_name 					(unsigned+string)
+	 * 	   Attribute->unique 			(bool)
+	 * 	   Attribute->table_id_ 		(TableID unsigned)
+	 * 	   Attribute->index				(unsigned)
+	 * 	   Attribute->attrType			(just data_type, new operator* in deserialize)
+	 * 	   Attribute->attrName			(unsigned+string)
+	 * 	   map<ChunkID, void*>
+	 * 	     map.size()					(unsigned long)
+	 * 	     for each item in the map
+	 * 	       map.first: ChunkID		(struct)
+	 * 	       map.second: void*		(CSBPlusTree<T>*)
+	 */
+	attr_index_list* new_attr_index = new attr_index_list();
+	unsigned long tmp = csb_index_.size();
+	fwrite((void*)(&tmp), sizeof(unsigned long), 1, filename);
+	for (unsigned long i = 0; i < attr_index_id_; i++)
+	{
+		if (csb_index_.find(i) != csb_index_.end())
+		{
+			fwrite((void*)(&i), sizeof(unsigned long), 1, filename);
+
+			new_attr_index = csb_index_.find(i)->second;
+
+			tmp = new_attr_index->attr_index_name.length();
+			fwrite((void*)(&tmp), sizeof(unsigned long), 1, filename);
+			fwrite(new_attr_index->attr_index_name.c_str(), sizeof(char), new_attr_index->attr_index_name.length(), filename);
+
+			fwrite((void*)(&new_attr_index->attribute.unique), sizeof(bool), 1, filename);
+			fwrite((void*)(&new_attr_index->attribute.table_id_), sizeof(unsigned), 1, filename);
+			fwrite((void*)(&new_attr_index->attribute.index), sizeof(unsigned), 1, filename);
+			fwrite((void*)(&new_attr_index->attribute.attrType->type), sizeof(data_type), 1, filename);
+			tmp = new_attr_index->attribute.attrName.length();
+			fwrite((void*)(&tmp), sizeof(unsigned long), 1, filename);
+			fwrite((void*)new_attr_index->attribute.attrName.c_str(), sizeof(char), new_attr_index->attribute.attrName.length(), filename);
+
+			tmp = new_attr_index->csb_tree_list.size();
+			fwrite((void*)(&tmp), sizeof(unsigned long), 1, filename);
+			for (map<ChunkID, void*>::iterator iter = new_attr_index->csb_tree_list.begin(); iter != new_attr_index->csb_tree_list.end(); iter++)
+			{
+				fwrite((void*)(&iter->first), sizeof(ChunkID), 1, filename);
+				switch(new_attr_index->attribute.attrType->type)
+				{
+				case t_int:
+					((CSBPlusTree<int>*)iter->second)->serialize(filename);
+					break;
+				default:
+					cout << "[ERROR: IndexManager->serialize()]: The data_type of index is illegal!\n";
+					return false;
+				}
+			}
+
+		}
+	}
+	return true;
 }

@@ -42,6 +42,7 @@ void cheak_com(){
 	csb_int->rangeQuery(0, 0);
 	csb_int->rangeQuery(0, FilterIterator::AttributeComparator::EQ, 0, FilterIterator::AttributeComparator::EQ);
 	csb_int->Insert(*data);
+	csb_int->serialize(0);
 	CSBPlusTree<short>* csb_short = new CSBPlusTree<short>();
 	csb_short->rangeQuery(0, 0);
 	CSBPlusTree<unsigned long>* csb_u_long = new CSBPlusTree<unsigned long>();
@@ -53,10 +54,7 @@ void cheak_com(){
 
 /***********************************  CSBNode  ***********************************/
 template <typename T>
-CCSBNode<T>::CCSBNode():node_type(NODE_TYPE_LEAF), used_keys(0), p_father(NULL) { }
-
-template <typename T>
-CCSBNode<T>::CCSBNode(NODE_TYPE type):node_type(type), used_keys(0), p_father(NULL) { }
+CCSBNode<T>::CCSBNode():used_keys(0), p_father(NULL) { }
 
 template <typename T>
 CCSBNode<T>::~CCSBNode()
@@ -157,6 +155,13 @@ void CCSBInternalNode<T>::DeleteChildren()
 
 }
 
+template <typename T>
+bool CCSBInternalNode<T>::serialize(FILE* filename)
+{
+	fwrite((void*)(&this->used_keys), sizeof(int), 1, filename);
+	fwrite(this->node_keys, sizeof(T), this->used_keys, filename);
+	return true;
+}
 
 /***********************************  CSBLeafNode  ***********************************/
 template <typename T>
@@ -253,6 +258,14 @@ void CCSBLeafNode<T>::DeleteChildren()
 
 }
 
+template <typename T>
+bool CCSBLeafNode<T>::serialize(FILE* filename)
+{
+	fwrite((void*)(&this->used_keys), sizeof(int), 1, filename);
+	fwrite(this->node_datas, sizeof(data_offset<T>), this->used_keys, filename);
+	return true;
+}
+
 
 /***********************************  NodeGroup  ***********************************/
 
@@ -273,6 +286,14 @@ CCSBInternalNodeGroup<T>::~CCSBInternalNodeGroup()
 
 }
 
+template <typename T>
+bool CCSBInternalNodeGroup<T>::serialize(FILE* filename)
+{
+	fwrite((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
+	for (unsigned i = 0; i < this->used_nodes; i++)
+		internal_nodes[i]->serialize(filename);
+}
+
 
 /***********************************  LeafNodeGroup  ***********************************/
 template <typename T>
@@ -290,6 +311,14 @@ template <typename T>
 CCSBLeafNodeGroup<T>::~CCSBLeafNodeGroup()
 {
 
+}
+
+template <typename T>
+bool CCSBLeafNodeGroup<T>::serialize(FILE* filename)
+{
+	fwrite((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
+	for (unsigned i = 0; i < this->used_nodes; i++)
+		leaf_nodes[i]->serialize(filename);
 }
 
 
@@ -1525,6 +1554,52 @@ template <typename T>
 bool CSBPlusTree<T>::Delete(T key)
 {
 
+}
+
+template<typename T>
+bool CSBPlusTree<T>::serialize(FILE* filename)
+{
+	if (this->csb_root == NULL)
+	{
+		cout << "The index tree is empty! Nothing could be serialized!\n";
+		return true;
+	}
+
+	vector<CCSBNodeGroup<T>* > current_level;
+	vector<CCSBNodeGroup<T>* > lower_level;
+	current_level.clear();
+	lower_level.clear();
+	int depth = 1;
+
+	fwrite((void*)(&csb_depth), sizeof(unsigned), 1, filename);
+	csb_root->serialize(filename);
+	lower_level.push_back(((CCSBNode<T>*)(this->csb_root))->getPointer());
+	depth++;
+
+	while (depth <= csb_depth)
+	{
+		current_level.clear();
+		while(lower_level.size() != 0)
+		{
+			current_level.push_back(lower_level.back());
+			lower_level.pop_back();
+		}
+		lower_level.clear();
+
+		while (current_level.size() != 0)
+		{
+			if (depth != csb_depth)
+			{
+				for (unsigned i = 0; i < current_level.back()->getUsedNodes(); i++)
+					lower_level.push_back(current_level.back()->getNode(i)->getPointer());
+			}
+			current_level.back()->serialize(filename);
+			current_level.pop_back();
+		}
+		depth++;
+	}
+
+	return true;
 }
 
 template <typename T>

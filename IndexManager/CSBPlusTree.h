@@ -13,12 +13,6 @@
 #include "../iterator/FilterIterator.h"
 using namespace std;
 
-enum NODE_TYPE
-{
-	NODE_TYPE_ROOT = 1,  //root node
-	NODE_TYPE_INTERNAL = 2,  //internal node
-	NODE_TYPE_LEAF = 3,  //leaf node
-};
 
 #define NULL 0
 #define INVALID -1
@@ -52,28 +46,25 @@ class CCSBNode
 {
 public:
 	CCSBNode();
-	CCSBNode(NODE_TYPE type);
 
 	virtual ~CCSBNode();
 
 	//the get and set function for node_type, node_inner_key_count, node's_father
-	NODE_TYPE getType() {return node_type;}
-	void setType(NODE_TYPE type) {node_type = type;}
 	int getUsedKeys() {return used_keys;}
-	virtual bool setUsedKeys(int count) {};
+	virtual bool setUsedKeys(int count) { assert(false); };
 	CCSBNode* getFather() { return p_father;}
 	void setFather(CCSBNode* father) { p_father = father; }
 
 	//for the leaf nodes: get or set a certain data
-	virtual data_offset<T> getElement(unsigned i) {};
-	virtual bool setElement(unsigned i, data_offset<T> value) {};
+	virtual data_offset<T> getElement(unsigned i) { assert(false); };
+	virtual bool setElement(unsigned i, data_offset<T> value) { assert(false); };
 
 	//for the internal nodes: get or set a certain key
 //	virtual T getElement(unsigned i) {};
-	virtual bool setElement(unsigned i, T value) {};
+	virtual bool setElement(unsigned i, T value) { assert(false); };
 	//for the internal nodes: get or set the child's pointer
-	virtual CCSBNodeGroup<T>* getPointer() {};
-	virtual void setPointer(CCSBNodeGroup<T>* pointer) {};
+	virtual CCSBNodeGroup<T>* getPointer() { assert(false); };
+	virtual void setPointer(CCSBNodeGroup<T>* pointer) { assert(false); };
 
 	// 获取一个最近的兄弟结点
 //	virtual CCSBNode* GetBrother(int& flag);
@@ -82,16 +73,17 @@ public:
 	virtual void DeleteChildren() {};
 
 	//operations for a index nodes
-	virtual bool Insert(T key) {};	//for internal node
-	virtual bool Insert(data_offset<T> value) {};	//for leaf node
-	virtual bool Delete(T value) {};
-	virtual T SplitInsert(CCSBNode<T>* pNode, T key) {};	//internal
-	virtual T SplitInsert(CCSBNode<T>* pNode, data_offset<T> data) {};	//leaf
-	virtual bool Combine(CCSBNode<T>* pNode) {};
+	virtual bool Insert(T key) { assert(false); };	//for internal node
+	virtual bool Insert(data_offset<T> value) { assert(false); };	//for leaf node
+	virtual bool Delete(T value) { assert(false); };
+	virtual T SplitInsert(CCSBNode<T>* pNode, T key) { assert(false); };	//internal
+	virtual T SplitInsert(CCSBNode<T>* pNode, data_offset<T> data) { assert(false); };	//leaf
+	virtual bool Combine(CCSBNode<T>* pNode) { assert(false); };
+	virtual bool serialize(FILE* filename) { assert(false); }
 public:
-	NODE_TYPE node_type;  //node type
 	int used_keys;  //number of datas/keys in the node
 	CCSBNode* p_father;  //father pointer
+
 };
 
 //structure for the internal node
@@ -152,9 +144,12 @@ public:
 	void DeleteChildren();
 //	// 从另一结点移一个元素到本结点
 //	bool MoveOneElement(CCSBNode<T>* pNode);
+	bool serialize(FILE* filename);
+
 public:
 	T node_keys[CSB_MAXNUM_KEY];  //array for the keys
 	CCSBNodeGroup<T>* p_child_node_group;  //the pointer for the child nodes group
+
 };
 
 //structure for the leaf node
@@ -209,8 +204,11 @@ public:
 	bool Combine(CCSBNode<T>* pNode);
 	void DeleteChildren();
 
+	bool serialize(FILE* filename);
+
 public:
 	data_offset<T> node_datas[CSB_MAXNUM_DATA];
+
 };
 
 //base structure of Node Group
@@ -232,8 +230,11 @@ public:
 	inline virtual bool setUsedNodes(unsigned n) {};
 	virtual CCSBNode<T>* getNode(unsigned i) {};
 	virtual void setNode(unsigned i, CCSBNode<T>* node) {};
+
+	virtual bool serialize(FILE* filename) { assert(false); }
 public:
 	unsigned used_nodes;
+
 };
 
 //sturcture of internal node group
@@ -266,13 +267,15 @@ public:
 	{
 		for (unsigned j = 0; j < node->getUsedKeys(); j++)
 			internal_nodes[i]->setElement(j, node->getElement(j)._key);
-		internal_nodes[i]->setType(node->getType());
 		internal_nodes[i]->setUsedKeys(node->getUsedKeys());
 		internal_nodes[i]->setFather(node->getFather());
 		internal_nodes[i]->setPointer(node->getPointer());
 	}
+	bool serialize(FILE* filename);
+
 public:
 	CCSBNode<T>** internal_nodes;
+
 };
 
 //sturcture of leaf node group
@@ -314,10 +317,13 @@ public:
 		leaf_nodes[i]->setUsedKeys(node->getUsedKeys());
 		leaf_nodes[i]->setFather(node->getFather());
 	}
+	bool serialize(FILE* filename);
+
 public:
 	CCSBNode<T>** leaf_nodes;
 	CCSBNodeGroup<T>* p_header;
 	CCSBNodeGroup<T>* p_tailer;
+
 };
 
 template <typename T>
@@ -335,6 +341,8 @@ public:
 	bool Insert(data_offset<T> data);
 	//delete the records according to the key
 	bool Delete(T key);
+	//save the index structure to disk
+	bool serialize(FILE* filename);
 
 	//for testing
 	void printTree();

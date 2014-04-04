@@ -195,11 +195,7 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 		{
 		case t_smallInt:
 		{
-//			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
-//			CSBPlusTree<short>* csb_tree = (CSBPlusTree<short>*)iter->second;
-//			csb_index_list_.erase(iter++);
-//			rb.result_set = csb_tree->rangeQuery(*(short*)state_.value_low_, *(short*)state_.value_high_);
-//			rb.iter_result_set = rb.result_set.begin();
+			assert(false);
 			return true;
 		}
 		case t_int:
@@ -231,57 +227,58 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 		}
 		case t_u_long:
 		{
-//			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
-//			CSBPlusTree<unsigned long>* csb_tree = (CSBPlusTree<unsigned long>*)iter->second;
-//			csb_index_list_.erase(iter++);
-//			rb.result_set = csb_tree->rangeQuery(*(unsigned long*)state_.value_low_, *(unsigned long*)state_.value_high_);
-//			rb.iter_result_set = rb.result_set.begin();
+			assert(false);
 			return true;
 		}
 		case t_float:
 		{
-//			map<ChunkID, void*>::iterator iter = csb_index_list_.begin();
-//			CSBPlusTree<float>* csb_tree = (CSBPlusTree<float>*)iter->second;
-//			csb_index_list_.erase(iter++);
-//			rb.result_set = csb_tree->rangeQuery(*(float*)state_.value_low_, *(float*)state_.value_high_);
-//			rb.iter_result_set = rb.result_set.begin();
+			assert(false);
 			return true;
 		}
 		case t_double:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_string:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_date:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_time:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_datetime:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_decimal:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_boolean:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		case t_u_smallInt:
 		{
-			break;
+			assert(false);
+			return true;
 		}
 		default:
 		{
 			cout << "[ERROR: (IndexScanIterator.cpp->askForNextBlock()]: The data type is not defined!\n";
+			assert(false);
 			return false;
 		}
 		}
