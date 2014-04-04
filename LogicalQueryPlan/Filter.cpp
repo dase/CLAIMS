@@ -354,7 +354,7 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 			}
 		}
 		if(attribute_index==dataflow.attribute_list_.size()){
-			printf("the filter condition does match any input attribute! Rechech the filter condition or the filter transformation module.\n");
+			printf("the filter condition %s does match any input attribute! Rechech the filter condition or the filter transformation module.\n",condition_.attribute_list_[i].attrName.c_str());
 			assert(false);
 		}
 		FilterIterator::AttributeComparator filter(*dataflow.attribute_list_[attribute_index].attrType,condition_.comparison_list_[i],attribute_index,condition_.const_value_list_[i]);

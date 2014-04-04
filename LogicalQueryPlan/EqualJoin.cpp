@@ -570,6 +570,7 @@ int EqualJoin::getIndexInAttributeList(const std::vector<Attribute>& attributes,
 			return i;
 		}
 	}
+	assert(false);
 	return -1;
 }
 DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
