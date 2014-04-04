@@ -80,6 +80,7 @@ public:
 	virtual T SplitInsert(CCSBNode<T>* pNode, data_offset<T> data) { assert(false); };	//leaf
 	virtual bool Combine(CCSBNode<T>* pNode) { assert(false); };
 	virtual bool serialize(FILE* filename) { assert(false); }
+	virtual bool deserialize(FILE* filename) { assert(false); }
 public:
 	int used_keys;  //number of datas/keys in the node
 	CCSBNode* p_father;  //father pointer
@@ -145,6 +146,7 @@ public:
 //	// 从另一结点移一个元素到本结点
 //	bool MoveOneElement(CCSBNode<T>* pNode);
 	bool serialize(FILE* filename);
+	bool deserialize(FILE* filename);
 
 public:
 	T node_keys[CSB_MAXNUM_KEY];  //array for the keys
@@ -205,6 +207,7 @@ public:
 	void DeleteChildren();
 
 	bool serialize(FILE* filename);
+	bool deserialize(FILE* filename);
 
 public:
 	data_offset<T> node_datas[CSB_MAXNUM_DATA];
@@ -232,6 +235,7 @@ public:
 	virtual void setNode(unsigned i, CCSBNode<T>* node) {};
 
 	virtual bool serialize(FILE* filename) { assert(false); }
+	virtual bool deserialize(FILE* filename) { assert(false); }
 public:
 	unsigned used_nodes;
 
@@ -272,6 +276,7 @@ public:
 		internal_nodes[i]->setPointer(node->getPointer());
 	}
 	bool serialize(FILE* filename);
+	bool deserialize(FILE* filename);
 
 public:
 	CCSBNode<T>** internal_nodes;
@@ -318,6 +323,7 @@ public:
 		leaf_nodes[i]->setFather(node->getFather());
 	}
 	bool serialize(FILE* filename);
+	bool deserialize(FILE* filename);
 
 public:
 	CCSBNode<T>** leaf_nodes;
@@ -343,6 +349,7 @@ public:
 	bool Delete(T key);
 	//save the index structure to disk
 	bool serialize(FILE* filename);
+	bool deserialize(FILE* filename);
 
 	//for testing
 	void printTree();
