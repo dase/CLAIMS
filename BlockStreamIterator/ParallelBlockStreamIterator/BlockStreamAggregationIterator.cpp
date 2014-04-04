@@ -323,7 +323,7 @@ bool BlockStreamAggregationIterator::close(){
 	return true;
 }
 void BlockStreamAggregationIterator::print(){
-	printf("Aggregation:\n");
+	printf("Aggregation:  %d buckets in hash table\n",state_.nbuckets);
 	printf("---------------\n");
 	state_.child->print();
 }
