@@ -272,5 +272,6 @@ bool IndexManager::serialize(std::string file_name)
 
 		}
 	}
+	fclose(filename);
 	return true;
 }

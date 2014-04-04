@@ -163,6 +163,14 @@ bool CCSBInternalNode<T>::serialize(FILE* filename)
 	return true;
 }
 
+template <typename T>
+bool CCSBInternalNode<T>::deserialize(FILE* filename)
+{
+	fread((void*)(&this->used_keys), sizeof(int), 1, filename);
+	fread(this->node_keys, sizeof(T), this->used_keys, filename);
+	return true;
+}
+
 /***********************************  CSBLeafNode  ***********************************/
 template <typename T>
 CCSBLeafNode<T>::CCSBLeafNode()
@@ -266,6 +274,13 @@ bool CCSBLeafNode<T>::serialize(FILE* filename)
 	return true;
 }
 
+template <typename T>
+bool CCSBLeafNode<T>::deserialize(FILE* filename)
+{
+	fread((void*)(&this->used_keys), sizeof(int), 1, filename);
+	fread(this->node_datas, sizeof(data_offset<T>), this->used_keys, filename);
+	return true;
+}
 
 /***********************************  NodeGroup  ***********************************/
 
@@ -292,8 +307,21 @@ bool CCSBInternalNodeGroup<T>::serialize(FILE* filename)
 	fwrite((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
 	for (unsigned i = 0; i < this->used_nodes; i++)
 		internal_nodes[i]->serialize(filename);
+	return true;
 }
 
+template <typename T>
+bool CCSBInternalNodeGroup<T>::deserialize(FILE* filename)
+{
+	fread((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
+	internal_nodes = (CCSBNode<T>**) new CCSBInternalNode<T>* [this->used_nodes];
+	for (unsigned i = 0; i < this->used_nodes; i++)
+	{
+		internal_nodes[i] = new CCSBInternalNode<T> ();
+		internal_nodes[i]->deserialize(filename);
+	}
+	return true;
+}
 
 /***********************************  LeafNodeGroup  ***********************************/
 template <typename T>
@@ -319,8 +347,21 @@ bool CCSBLeafNodeGroup<T>::serialize(FILE* filename)
 	fwrite((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
 	for (unsigned i = 0; i < this->used_nodes; i++)
 		leaf_nodes[i]->serialize(filename);
+	return true;
 }
 
+template <typename T>
+bool CCSBLeafNodeGroup<T>::deserialize(FILE* filename)
+{
+	fread((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
+	leaf_nodes = (CCSBNode<T>**) new CCSBLeafNode<T>* [this->used_nodes];
+	for (unsigned i = 0; i < this->used_nodes; i++)
+	{
+		leaf_nodes[i] = new CCSBLeafNode<T> ();
+		leaf_nodes[i]->deserialize(filename);
+	}
+	return true;
+}
 
 /***********************************  CSBPlusTree  ***********************************/
 template <typename T>
@@ -1600,6 +1641,35 @@ bool CSBPlusTree<T>::serialize(FILE* filename)
 	}
 
 	return true;
+}
+
+template <typename T>
+bool CSBPlusTree<T>::deserialize(FILE* filename)
+{
+	vector<CCSBNodeGroup<T>* > current_level;
+	vector<CCSBNodeGroup<T>* > upper_level;
+	int depth = 1;
+	fread((void*)(&csb_depth), sizeof(unsigned), 1, filename);
+	csb_root->deserialize(filename);
+	current_level.push_back((CCSBNodeGroup<T>*)&csb_root);
+	depth++;
+	//deserialize the internal nodes
+	while (depth < csb_depth)
+	{
+		upper_level.clear();
+		while(current_level.size() != 0)
+		{
+			upper_level.push_back(current_level.back());
+			current_level.pop_back();
+		}
+		for (unsigned i = 0; i < upper_level.size(); i++)
+		{
+			for (unsigned j = 0; j < upper_level[i]->getUsedNodes(); j++)
+			{
+				CCSBNodeGroup<T>* internal = new CCSBInternalNodeGroup<T> (upper_level[i]->getNode(j)->getUsedKeys());
+			}
+		}
+	}
 }
 
 template <typename T>
