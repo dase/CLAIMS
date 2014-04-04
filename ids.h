@@ -13,6 +13,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 
+
 #define INTERMEIDATE_TABLEID 100000;
 
 typedef int NodeID;
@@ -117,12 +118,7 @@ struct PartitionID{
 		str<<"T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		return str.str();
 	}
-	std::string getPathAndName()const{
-		std::ostringstream str;
-		str<<"/home/imdb/data/tpc-h/4_partitions/SF-1/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-
-		return str.str();
-	}
+	std::string getPathAndName()const;
 };
 /* for boost::unordered_map*/
 static size_t hash_value(const PartitionID& key){
