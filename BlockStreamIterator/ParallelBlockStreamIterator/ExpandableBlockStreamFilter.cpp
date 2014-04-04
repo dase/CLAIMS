@@ -82,6 +82,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 			}
 		}
 		if(pass_filter){
+
 			const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 			if((tuple_in_block=block->allocateTuple(bytes))>0){
 				/* the block has space to hold this tuple*/
@@ -128,6 +129,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				}
 			}
 			if(pass_filter){
+
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 				if((tuple_in_block=block->allocateTuple(bytes))>0){
 					/* the block has space to hold this tuple*/
