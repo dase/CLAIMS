@@ -92,7 +92,7 @@ std::string ChunkStorage::printCurrentStorageLevel()const{
 	return "";
 }
 InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(void* const &start,const unsigned& chunk_size,const unsigned & number_of_blocks,const unsigned& block_size,const ChunkID& chunk_id)
-:start_(start),chunk_size_(chunk_size),block_size_(block_size),ChunkReaderIterator(chunk_id,number_of_blocks){
+:start_(start),ChunkReaderIterator(chunk_id,block_size,chunk_size,number_of_blocks){
 }
 bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 	lock_.acquire();
@@ -100,6 +100,8 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 		lock_.release();
 		return false;
 	}
+	cur_block_++;
+	lock_.release();
 //	printf("Read Block:%d:%d\n",chunk_id_.chunk_off,cur_block_);
 	/* calculate the block start address.*/
 	const char* block_start_address=(char*)start_+cur_block_*block_size_;
@@ -113,15 +115,13 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase* &block){
 	 */
 	block->constructFromBlock(temp_block);
 
-	cur_block_++;
-	lock_.release();
 	return true;
 }
 InMemoryChunkReaderItetaor::~InMemoryChunkReaderItetaor(){
 }
 
 DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,unsigned& chunk_size,const unsigned& block_size)
-:ChunkReaderIterator(chunk_id),chunk_size_(chunk_size),block_size_(block_size){
+:ChunkReaderIterator(chunk_id,block_size,chunk_size){
 	block_buffer_=new Block(block_size_);
 	fd_=FileOpen(chunk_id_.partition_id.getPathAndName().c_str(),O_RDONLY);
 	if(fd_==-1){
@@ -185,7 +185,7 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block){
 
 }
 HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id, unsigned& chunk_size,const unsigned& block_size)
-:ChunkReaderIterator(chunk_id),chunk_size_(chunk_size),block_size_(block_size){
+:ChunkReaderIterator(chunk_id,block_size,chunk_size){
 	block_buffer_=new Block(block_size_);
 	fs_=hdfsConnect(HDFS_N,9000);
 	hdfs_fd_=hdfsOpenFile(fs_,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);
@@ -235,3 +235,94 @@ bool HDFSChunkReaderIterator::nextBlock(BlockStreamBase*& block){
 	}
 
 }
+
+//bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor & ba) {
+//	if(cur_block_>=number_of_blocks_){
+//		lock_.release();
+//		return false;
+//	}
+//	ba.target_block_start_address=(char*)start_+cur_block_*block_size_;
+//	ba.block_size=block_size_;
+//	return true;
+//
+//}
+//
+//void ChunkReaderIterator::getBlock(const block_accessor& ba) const {
+//}
+
+bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor*& ba) {
+	lock_.acquire();
+	if(cur_block_>=number_of_blocks_){
+		lock_.release();
+		return false;
+	}
+	const unsigned cur_block=cur_block_;
+	cur_block_++;
+	lock_.release();
+	ba=new InMemeryBlockAccessor();
+	InMemeryBlockAccessor* imba=(InMemeryBlockAccessor*)ba;
+	imba->setBlockSize(block_size_);
+	imba->setTargetBlockStartAddress(start_+cur_block*block_size_);
+	return true;
+}
+
+bool DiskChunkReaderIteraror::getNextBlockAccessor(block_accessor*& ba) {
+	lock_.acquire();
+	if(cur_block_>=number_of_blocks_){
+		lock_.release();
+		return false;
+	}
+	const unsigned cur_block=cur_block_;
+	cur_block_++;
+	lock_.release();
+	ba=new InDiskBlockAccessor();
+	InDiskBlockAccessor* idba=(InDiskBlockAccessor*)ba;
+	idba->setBlockCur(cur_block);
+	idba->setBlockSize(block_size_);
+	idba->setChunkId(chunk_id_);
+	idba->setBlockSize(chunk_size_);
+	return true;
+}
+
+bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
+	lock_.acquire();
+	if(cur_block_>=number_of_blocks_){
+		lock_.release();
+		return false;
+	}
+	const unsigned cur_block=cur_block_;
+	cur_block_++;
+	lock_.release();
+	ba=new InHDFSBlockAccessor();
+	InHDFSBlockAccessor* ihba=(InHDFSBlockAccessor*)ba;
+	ihba->setBlockCur(cur_block);
+	ihba->setBlockSize(block_size_);
+	ihba->setChunkId(chunk_id_);
+	ihba->setBlockSize(chunk_size_);
+	return true;
+}
+
+
+
+
+void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& block) const {
+	/* Create a block, which will not free block_start_address when destructed.*/
+	Block temp_block(block_size,target_block_start_address);
+
+	/*construct the block stream from temp_block. In the current version, the memory copy
+	 * is used for simplicity.
+	 * TODO: avoid memory copy.
+	 */
+	block->constructFromBlock(temp_block);
+}
+
+void ChunkReaderIterator::InDiskBlockAccessor::getBlock(BlockStreamBase*& block) const {
+	printf("InDiskBlockAccessor::getBlock() is not implemented!\n");
+	assert(false);
+}
+
+void ChunkReaderIterator::InHDFSBlockAccessor::getBlock(BlockStreamBase*& block) const {
+	printf("InHDFSBlockAccessor::getBlock() is not implemented!\n");
+	assert(false);
+}
+
