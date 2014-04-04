@@ -105,7 +105,7 @@ void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const ExchangeI
 
 //		Send(NodeConnectionMessage::serialize(NodeConnectionMessage("0","0")),from);
 		Send(int(0),from);
-		et->logging_->elog("No exchange matched for %lld!",exchange_id.exchange_id);
+		et->logging_->log("No exchange matched for %lld!",exchange_id.exchange_id);
 	}
 
 
