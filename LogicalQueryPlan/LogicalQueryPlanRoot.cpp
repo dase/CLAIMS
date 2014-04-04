@@ -93,6 +93,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 Dataflow LogicalQueryPlanRoot::getDataflow(){
 	Dataflow ret=child_->getDataflow();
 	QueryOptimizationLogging::log("Communication cost:%ld, predicted ouput size=%ld\n",ret.property_.commnication_cost,ret.property_.partitioner.getAggregatedDataCardinality());
+//	print();
 	return child_->getDataflow();
 }
 
