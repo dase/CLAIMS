@@ -84,9 +84,29 @@ bool PartitionStorage::PartitionReaderItetaor::nextBlock(
 
 bool PartitionStorage::AtomicPartitionReaderIterator::nextBlock(
 		BlockStreamBase*& block) {
+////	lock_.acquire();
+//	if(chunk_it_>0&&chunk_it_->nextBlock(block)){
+////		lock_.release();
+//		return true;
+//	}
+//	else{
+//		lock_.acquire();
+//		if((chunk_it_=nextChunk())>0){
+//			lock_.release();
+//			return nextBlock(block);
+//		}
+//		else{
+//			lock_.release();
+//			return false;
+//		}
+//	}
+	//	lock_.acquire();
+
 	lock_.acquire();
-	if(chunk_it_>0&&chunk_it_->nextBlock(block)){
+	ChunkReaderIterator::block_accessor* ba;
+	if(chunk_it_!=0&&chunk_it_->getNextBlockAccessor(ba)){
 		lock_.release();
+		ba->getBlock(block);
 		return true;
 	}
 	else{
