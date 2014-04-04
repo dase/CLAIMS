@@ -46,7 +46,7 @@ int main(){
 //	return getOptimalQueryPlan();
 //	return ResultCollect_test();
 //	return parser_test();
-////	return sub_tuple_test();
+//	return sub_tuple_test();
 //	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics();
