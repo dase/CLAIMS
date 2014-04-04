@@ -349,6 +349,13 @@ bool bottomLayerSorting::next(BlockStreamBase* block)
 			chunk_id->chunk_off = iter->first;
 			CSBPlusTree<int>* csb_tree = indexBuilding<int>(iter->second);
 			csb_index_list[*chunk_id] = csb_tree;
+
+//			char ch;
+//			cout << "Input any key to print the index(except 0 for not print): ";
+//			cin >> ch;
+//			if (ch != '0')
+//				csb_tree->printTree();
+
 		}
 //		IndexManager::getInstance()->addIndexToList(state_.key_indexing_, csb_index_list);
 		IndexManager::getInstance()->insertIndexToList(state_.index_name_, state_.key_indexing_, csb_index_list);
@@ -360,7 +367,6 @@ bool bottomLayerSorting::next(BlockStreamBase* block)
 		break;
 	}
 	}
-	cout << "bottomLayerSorting next return false!\n";
 	return false;
 
 

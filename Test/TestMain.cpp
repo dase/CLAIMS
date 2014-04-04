@@ -40,6 +40,7 @@
 #include "../IndexManager/Test/test_CSB_index_building.cpp"
 #include "../IndexManager/Test/test_logical_csb_index_building.cpp"
 #include "../IndexManager/Test/test_index_scan_iterator.cpp"
+#include "../IndexManager/Test/test_IndexManager_serialize.cpp"
 
 #include "../LogicalQueryPlan/Test/testIn.cpp"
 #include "TestSuit/ExpanderFrameTest.h"
@@ -54,7 +55,7 @@ int main(){
 //	return getOptimalQueryPlan();
 //	return ResultCollect_test();
 //	return parser_test();
-////	return sub_tuple_test();
+//	return sub_tuple_test();
 //	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics();
@@ -81,9 +82,10 @@ int main(){
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
 //	return test_index_scan_iterator();
+	return test_index_manager();
 
 //	in_test();
-	test_expanderFramework_single_node(3);
+//	test_expanderFramework_single_node(3);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test();
 }

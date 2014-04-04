@@ -125,7 +125,7 @@ static int test_CSBIndexBuilding ()
 			bls->close();
 
 			//following for test the index manager~
-			test_index_manager();
+			test_index_manager_();
 		}
 		cout<<"Waiting~~~!~"<<endl;
 		while(true){
