@@ -37,6 +37,7 @@
 #include "../LogicalQueryPlan/Test/testIn.cpp"
 #include "TestSuit/ExpanderFrameTest.h"
 #include "TestSuit/tpc_h_test.cpp"
+#include "TestSuit/in_segment_scalability_test.cpp"
 int main(){
 
 //	return testGenerateIteratorTree();
@@ -71,5 +72,6 @@ int main(){
 //	in_test();
 //	test_expanderFramework_single_node(3);
 //	test_multiple_expanderFramework_single_node(3);
-	tcp_h_test();
+//	tcp_h_test();
+	in_segment_scalability_test();
 }
