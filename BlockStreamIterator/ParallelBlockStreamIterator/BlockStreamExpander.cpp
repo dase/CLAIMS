@@ -173,7 +173,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			Pthis->lock_.acquire();
 			Pthis->finished_thread_count_++;
 
-			if(Pthis->in_work_expanded_thread_list_.empty()){
+//			if(Pthis->in_work_expanded_thread_list_.empty()){
 				Pthis->input_data_complete_=true;
 
 			/**
@@ -181,10 +181,8 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			 *
 			 */
 				Pthis->block_stream_buffer_->setInputComplete();
-			}
+//			}
 			Pthis->logging_->log("Thread %x generated %d blocks.\n",pthread_self(),block_count);
-//			Pthis->logging_->log("Thread %x generated %d blocks.\n",pthread_self(),block_count);
-	//		Pthis->in_work_expanded_thread_list_.erase(pthread_self());
 			Pthis->lock_.release();
 
 			if(!Pthis->removeFromInWorkingExpandedThreadList(pthread_self())){
@@ -230,7 +228,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
 		return false;
 	}
-	printf("[Expander %d ]Expanded!\n",expander_id_);
+//	printf("[Expander %d ]Expanded!\n",expander_id_);
 	logging_->log("[%ld] New expanded thread [%lx] created!\n",expander_id_,tid);
 
 
@@ -324,15 +322,15 @@ void* BlockStreamExpander::coordinate_work(void* arg){
 //	logging_->log("coordinate thread is terminated!!!!!!!!!!!!!\n");
 }
 bool BlockStreamExpander::Expand(){
-//	if(input_data_complete_){
+	if(input_data_complete_){
 //		/*
 //		 * Expander does not expand when at least one expanded thread has completely processed
 //		 * the input data flow. Otherwise the newly created expanded thread might not be able to
 //		 * work properly if the expander's close is called before its create.
 //		 */
 //		printf("[Expander %d ]Expanding failed because the input data is complete!\n",expander_id_);
-//		return false;
-//	}
+		return false;
+	}
 	return createNewExpandedThread();
 }
 
@@ -349,7 +347,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
-		printf("[Expander %d ]Shrunk!\n",expander_id_);
+//		printf("[Expander %d ]Shrunk!\n",expander_id_);
 		return true;
 	}
 //	lock_.release();

@@ -12,7 +12,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Logging.h"
-#define NUM_OF_EXPANDED_THREADS 1
+#include "../Config.h"
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
 :joinkey_pair_list_(joinpair_list),left_child_(left_input),right_child_(right_input),join_police_(na),dataflow_(0){
 	for(unsigned i=0;i<joinpair_list.size();i++){
@@ -232,7 +232,8 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 	BlockStreamJoinIterator::State state;
 	state.block_size_=block_size;
 
-	state.ht_nbuckets=1024*1024;
+//	state.ht_nbuckets=1024*1024;
+	state.ht_nbuckets=1024;
 	state.input_schema_left=getSchema(dataflow_left.attribute_list_);
 	state.input_schema_right=getSchema(dataflow_right.attribute_list_);
 	state.ht_schema=getSchema(dataflow_left.attribute_list_);
@@ -245,7 +246,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 	 * a relatively large bucket size could reduce the number of overflowing buckets and
 	 * avoid the random memory access caused by acceesing overflowing buckets.
 	 */
-	state.ht_bucketsize=128;
+	state.ht_bucketsize=256;
 	state.output_schema=getSchema(dataflow_->attribute_list_);
 
 	state.joinIndex_left=getLeftJoinKeyIndexList();
@@ -269,7 +270,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=child_iterator_left;
 			expander_state.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
@@ -311,7 +312,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=child_iterator_right;
 			expander_state.schema_=getSchema(dataflow_right.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
@@ -358,7 +359,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamExpander::State expander_state_l;
 			expander_state_l.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state_l.block_size_=block_size;
-			expander_state_l.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state_l.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state_l.child_=child_iterator_left;
 			expander_state_l.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* expander_l=new BlockStreamExpander(expander_state_l);
@@ -385,7 +386,7 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamExpander::State expander_state_r;
 			expander_state_r.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state_r.block_size_=block_size;
-			expander_state_r.init_thread_count_=NUM_OF_EXPANDED_THREADS;
+			expander_state_r.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state_r.child_=child_iterator_right;
 			expander_state_r.schema_=getSchema(dataflow_right.attribute_list_);
 			BlockStreamIteratorBase* expander_r=new BlockStreamExpander(expander_state_r);

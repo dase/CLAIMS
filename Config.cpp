@@ -37,7 +37,10 @@ bool Config::enable_expander_adaptivity;
  */
 int Config::expander_adaptivity_check_frequency;
 
-
+/**
+ * This parameter sets the initial degree of parallelism for each segment.
+ */
+int Config::initial_degree_of_parallelism;
 
 Config* Config::getInstance() {
 	if(instance_==0){
@@ -72,6 +75,8 @@ void Config::initialize() {
 	expander_adaptivity_check_frequency=getInt("expander_adaptivity_check_frequency",1000);
 
 	enable_expander_adaptivity=getBoolean("enable_expander_adaptivity",false);
+
+	initial_degree_of_parallelism=getInt("initial_degree_of_parallelism",1);
 
 
 #ifdef DEBUG_Config
@@ -119,5 +124,5 @@ void Config::print_configure() const {
 	std::cout<<"max_degree_of_parallelism:"<<max_degree_of_parallelism<<std::endl;
 	std::cout<<"expander_adaptivity_check_frequency:"<<expander_adaptivity_check_frequency<<std::endl;
 	std::cout<<"enable_expander_adaptivity:"<<enable_expander_adaptivity<<std::endl;
-
+	std::cout<<"initial_degree_of_parallelism:"<<initial_degree_of_parallelism<<std::endl;
 }

@@ -53,9 +53,9 @@ public:
 	 */
 	static std::string data_dir;
 	static int max_degree_of_parallelism;
+	static int initial_degree_of_parallelism;
 	static bool enable_expander_adaptivity;
 	static int expander_adaptivity_check_frequency;
-
 private:
 	static Config* instance_;
 	libconfig::Config cfg;
