@@ -43,6 +43,8 @@ void cheak_com(){
 	csb_int->rangeQuery(0, FilterIterator::AttributeComparator::EQ, 0, FilterIterator::AttributeComparator::EQ);
 	csb_int->Insert(*data);
 	csb_int->serialize(0);
+	csb_int->deserialize(0);
+
 	CSBPlusTree<short>* csb_short = new CSBPlusTree<short>();
 	csb_short->rangeQuery(0, 0);
 	CSBPlusTree<unsigned long>* csb_u_long = new CSBPlusTree<unsigned long>();
@@ -1648,13 +1650,29 @@ bool CSBPlusTree<T>::deserialize(FILE* filename)
 {
 	vector<CCSBNodeGroup<T>* > current_level;
 	vector<CCSBNodeGroup<T>* > upper_level;
-	int depth = 1;
+	unsigned depth = 1;
 	fread((void*)(&csb_depth), sizeof(unsigned), 1, filename);
-	csb_root->deserialize(filename);
-	current_level.push_back((CCSBNodeGroup<T>*)&csb_root);
+
+	if (csb_depth == 1)
+	{
+		CCSBNodeGroup<T>* leaf = (CCSBNodeGroup<T>*)new CCSBLeafNodeGroup<T>(1);
+		leaf->getNode(0)->deserialize(filename);
+
+		csb_root = leaf->getNode(0);
+		leaf->setHeaderNG(NULL);
+		leaf->setTailerNG(NULL);
+		leaf_header = leaf;
+		leaf_tailer = leaf;
+		return true;
+	}
+
+	CCSBNodeGroup<T>* root_group = new CCSBInternalNodeGroup<T> (1);
+	root_group->getNode(0)->deserialize(filename);
+	csb_root = root_group->getNode(0);
+	current_level.push_back(root_group);
 	depth++;
-	//deserialize the internal nodes
-	while (depth < csb_depth)
+
+	while (depth <= csb_depth)
 	{
 		upper_level.clear();
 		while(current_level.size() != 0)
@@ -1662,14 +1680,46 @@ bool CSBPlusTree<T>::deserialize(FILE* filename)
 			upper_level.push_back(current_level.back());
 			current_level.pop_back();
 		}
-		for (unsigned i = 0; i < upper_level.size(); i++)
+		while (upper_level.size() != 0)
 		{
-			for (unsigned j = 0; j < upper_level[i]->getUsedNodes(); j++)
+			for (unsigned i = 0; i < upper_level.back()->getUsedNodes(); i++)
 			{
-				CCSBNodeGroup<T>* internal = new CCSBInternalNodeGroup<T> (upper_level[i]->getNode(j)->getUsedKeys());
+				CCSBNodeGroup<T>* node_group = NULL;
+				if (depth < csb_depth)
+					node_group = new CCSBInternalNodeGroup<T> (); //(upper_level[i]->getNode(j)->getUsedKeys()+1);
+				else
+					node_group = new CCSBLeafNodeGroup<T> ();
+				node_group->deserialize(filename);
+
+				current_level.push_back(node_group);
+
+				//set the parent-children relationship
+				upper_level.back()->getNode(i)->setPointer(node_group);
+				for (unsigned j = 0; j < node_group->getUsedNodes(); j++)
+					node_group->getNode(j)->setFather(upper_level.back()->getNode(i));
 			}
+			upper_level.pop_back();
 		}
+		depth++;
 	}
+	// depth == csb_depth, the current_level collects all the leafNodeGroup of the CSBPlusTree
+	// set the double linked list in the leaf layer
+	leaf_header = current_level[0];
+	leaf_tailer = current_level[current_level.size()-1];
+	current_level[0]->setHeaderNG(NULL);
+	current_level[current_level.size()-1]->setTailerNG(NULL);
+	if (current_level.size() > 1)
+	{
+		current_level[0]->setTailerNG(current_level[1]);
+		current_level[current_level.size()-1]->setHeaderNG(current_level[current_level.size()-2]);
+		for (unsigned i = 1; i < current_level.size()-1; i++)
+		{
+			current_level[i]->setHeaderNG(current_level[i-1]);
+			current_level[i]->setTailerNG(current_level[i+1]);
+		}
+
+	}
+	return true;
 }
 
 template <typename T>

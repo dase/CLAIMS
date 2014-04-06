@@ -275,3 +275,67 @@ bool IndexManager::serialize(std::string file_name)
 	fclose(filename);
 	return true;
 }
+
+bool IndexManager::deserialize(std::string file_name)
+{
+	FILE* filename = fopen(file_name.c_str(), "r");
+	if (filename == NULL)
+	{
+		cout << "[ERROR: IndexManager.cpp->deserialize()]: Can't open file " << file_name << ", deserialization failed!\n";
+		return false;
+	}
+
+	unsigned long count = 0;
+	fread((void*)(&count), sizeof(unsigned long), 1, filename);
+	while (count > 0)
+	{
+		//map->first
+		unsigned long index_id;
+		fread((void*)(&index_id), sizeof(unsigned long), 1, filename);
+
+		//map->second
+		attr_index_list* index = new attr_index_list();
+		unsigned long strlength = 0;
+		fread((void*)(&strlength), sizeof(unsigned long), 1, filename);
+		fread((void*)(index->attr_index_name.c_str()), sizeof(char), strlength, filename);
+
+		fread((void*)(&index->attribute.unique), sizeof(bool), 1, filename);
+		fread((void*)(&index->attribute.table_id_), sizeof(unsigned), 1, filename);
+		fread((void*)(&index->attribute.index), sizeof(unsigned), 1, filename);
+		data_type type;
+		fread((void*)(&type), sizeof(data_type), 1, filename);
+		index->attribute.attrType = new column_type(type);
+		fread((void*)(&strlength), sizeof(unsigned long), 1, filename);
+		fread((void*)index->attribute.attrName.c_str(), sizeof(char), strlength, filename);
+
+		unsigned long index_num;
+		fread((void*)(&index_num), sizeof(unsigned long), 1, filename);
+		while (index_num > 0)
+		{
+			ChunkID* chunk_id = new ChunkID();
+			fread((void*)chunk_id, sizeof(ChunkID), 1, filename);
+			switch (index->attribute.attrType->type)
+			{
+			case t_int:
+			{
+				CSBPlusTree<int>* csb_tree = new CSBPlusTree<int> ();
+				csb_tree->deserialize(filename);
+				index->csb_tree_list[*chunk_id] = (void*)csb_tree;
+				break;
+			}
+			default:
+			{
+				assert(false);
+				break;
+			}
+			}
+		}
+
+		csb_index_[index_id] = index;
+		column_attribute_to_id[index->attribute] = index_id;
+		id_to_column_attribute[index_id] = index->attribute;
+		attr_index_id_ = index_id+1;
+
+		count--;
+	}
+}

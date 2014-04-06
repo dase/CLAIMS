@@ -49,6 +49,7 @@ public:
 	unsigned long getIndexID(Attribute attr);
 
 	bool serialize(std::string file_name);
+	bool deserialize(std::string file_name);
 
 private:
 	IndexManager();

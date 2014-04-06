@@ -70,12 +70,19 @@ static void test_serialize()
 	IndexManager::getInstance()->serialize("/home/scdong/code/index.dat");
 }
 
+static void test_deserialize()
+{
+	IndexManager::getInstance()->deserialize("/home/scdong/code/index.dat");
+}
+
 static int test_index_manager()
 {
 	init_poc_environment();
 
-	test_logical_index_building();
-	test_serialize();
+//	test_logical_index_building();
+//	test_serialize();
+
+	test_deserialize();
 
 	Environment::getInstance()->~Environment();
 	return 0;
