@@ -101,7 +101,7 @@ BasicHashTable::Iterator::Iterator() : buck_actual_size(0), tuplesize(0), cur(0)
 BasicHashTable::Iterator::Iterator(const unsigned& buck_actual_size,const unsigned& tuplesize):buck_actual_size(buck_actual_size),tuplesize(tuplesize),cur(0), next(0), free(0){}
 
 void* BasicHashTable::allocate(const unsigned & offset){
-	assert(offset<nbuckets_);
+//	assert(offset<nbuckets_);
 
 	void* data=bucket_[offset];
 	void* ret;
@@ -112,7 +112,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 		{
 			ret = *freeloc;
 			*freeloc = ((char*)(*freeloc)) + tuplesize_;
-			assert(ret!=0);
+//			assert(ret!=0);
 			return ret;
 		}
 	}
