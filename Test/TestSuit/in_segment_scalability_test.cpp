@@ -13,8 +13,11 @@ typedef double QueryTime;
 typedef QueryTime (*query_function)();
 static double lineitem_scan_self_join(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
+	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("NATION");
 
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
+
+	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
 	Filter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),FilterIterator::AttributeComparator::EQ,std::string("0"));
@@ -22,15 +25,15 @@ static double lineitem_scan_self_join(){
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_ORDERKEY"),table->getAttribute("L_ORDERKEY")));
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table_right->getAttribute("N_NATIONKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
-	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,filter,scan);
+	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
-//	root->print();
+	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
@@ -152,7 +155,7 @@ static int in_segment_scalability_test(int repeated_times=10){
 
 //	scalability_test(lineitem_scan_filter,"Scan-->filter",8);
 //	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",8);
-	scalability_test(lineitem_scan_self_join,"Scan-->join",8);
+	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
 
 	Environment::getInstance()->~Environment();
 
