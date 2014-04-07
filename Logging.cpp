@@ -11,7 +11,7 @@
 //#define DEBUG_BlockStreamExpander
 //#define DEBUG_BlockStreamJoin
 //#define DEBUG_PerformanceTop
-//#define DEBUG_Coordinator~/
+//#define DEBUG_Coordinator
 //#define DEBUG_Environment
 
 //#define DEBUG_ExchangeIteratorLowerWithWideDependency
@@ -135,12 +135,12 @@ void CoordinatorLogging::elog(const char* format,...){
 
 void ExchangeTrackerLogging::log(const char* format,...){
 #ifdef DEBUG_ExchangeTracker
-//	printf("ExchangeTracker: ");
-//	va_list arg;
-//	va_start (arg, format);
-//	vprintf(format,arg);
-//	printf("\n");
-//	va_end (arg);
+	printf("ExchangeTracker: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
 #endif
 }
 void ExchangeTrackerLogging::elog(const char* format,...){

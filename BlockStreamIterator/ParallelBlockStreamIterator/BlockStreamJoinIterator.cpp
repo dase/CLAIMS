@@ -119,6 +119,9 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //	consumed_tuples_from_left=0;
 //	Operate* op=state_.input_schema_left->getcolumn(state_.joinIndex_left[0]).operate->duplicateOperator();
 
+	unsigned long long int start=curtick();
+	unsigned long long int processed_tuple_count=0;
+
 	while(state_.child_left->next(ct.block_for_asking_)){
 //		BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 		ct.block_stream_iterator_->~BlockStreamTraverseIterator();
@@ -126,14 +129,17 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 //		bsti->reset();
 		while(cur=ct.block_stream_iterator_->nextTuple()){
+			processed_tuple_count++;
 //			lock_.acquire();
 //			consumed_tuples_from_left++;
 //			lock_.release();
+			continue;
 			const void* key_addr=input_schema->getColumnAddess(state_.joinIndex_left[0],cur);
 			bn=op->getPartitionValue(key_addr,buckets);
-//			if(bn!=-1){
-//				continue;
-//			}
+//			printf("%d\t",bn);
+			if(bn!=-1){
+				continue;
+			}
 			tuple_in_hashtable=hashtable->atomicAllocate(bn);
 //			tuple_in_hashtable=hashtable->allocate(bn);
 			/* copy join index columns*/
@@ -159,6 +165,10 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	}
 //	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
 	BasicHashTable::Iterator it=hashtable->CreateIterator();
+
+	printf("%d cycles per tuple!\n",(curtick()-start)/processed_tuple_count);
+
+
 	unsigned tmp=0;
 	tuples_in_hashtable=0;
 
@@ -188,6 +198,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 }
 
 bool BlockStreamJoinIterator::next(BlockStreamBase *block){
+//	return false;
 	unsigned bn;
 	void *result_tuple;
 	void *tuple_from_right_child;

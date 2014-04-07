@@ -47,8 +47,8 @@ BlockStreamBuffer* initial_input_date(Schema* schema,unsigned long total_data_si
 		new_block->setEmpty();
 		while(tuple=new_block->allocateTuple(schema->getTupleMaxSize())){
 			schema->columns[0].operate->assignment(&value,tuple);
-//			value=random();
-			value++;
+			value=random();
+//			value++;
 		}
 		buffer->insertBlock(new_block);
 	}
@@ -72,7 +72,7 @@ void* insert_into_hash_table(void * argment){
 //				break;
 //			}
 			unsigned bn=arg.schema->columns[0].operate->getPartitionValue(tuple,arg.hash);
-			void* new_tuple_in_hashtable=arg.hash_table->allocate(bn);
+			void* new_tuple_in_hashtable=arg.hash_table->atomicAllocate(bn);
 			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
 		}
 	}
@@ -85,7 +85,7 @@ void create_thread(unsigned nthreads){
 double fill_hash_table(unsigned degree_of_parallelism){
 	Config::getInstance();
 	const unsigned nbuckets=1024*1024;
-	const unsigned tuple_size=80;
+	const unsigned tuple_size=200;
 	const unsigned bucketsize=256-8;
 	const unsigned long data_size_in_MB=128;
 	const unsigned nthreads=degree_of_parallelism;

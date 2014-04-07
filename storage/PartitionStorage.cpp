@@ -69,6 +69,7 @@ ChunkReaderIterator* PartitionStorage::AtomicPartitionReaderIterator::nextChunk(
 
 bool PartitionStorage::PartitionReaderItetaor::nextBlock(
 		BlockStreamBase*& block) {
+	assert(false);
 	if(chunk_it_>0&&chunk_it_->nextBlock(block)){
 		return true;
 	}
