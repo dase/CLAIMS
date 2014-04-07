@@ -11,6 +11,8 @@
 
 typedef double QueryTime;
 typedef QueryTime (*query_function)();
+
+
 static double lineitem_scan_self_join(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
 	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("NATION");
