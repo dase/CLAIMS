@@ -42,8 +42,8 @@ public:
 	};
 	class InMemeryBlockAccessor:public block_accessor{
 	public:
-		void getBlock(BlockStreamBase* &block)const;
 
+		void getBlock(BlockStreamBase* &block)const;
 		void* getTargetBlockStartAddress() const {
 			return target_block_start_address;
 		}

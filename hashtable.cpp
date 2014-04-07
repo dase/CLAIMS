@@ -105,7 +105,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 
 	void* data=bucket_[offset];
 	void* ret;
-	if(data>0){
+	if(data!=0){
 		void** freeloc = (void**)((char*)data + buck_actual_size_);
 
 		if ((*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
@@ -123,7 +123,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 	{
 		cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
 		//TODO: as mentioned in .cpp.
-		memset(cur_mother_page,0,pagesize_);
+//		memset(cur_mother_page,0,pagesize_);
 		assert(cur_mother_page);
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);

@@ -307,13 +307,18 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
 
 void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& block) const {
 	/* Create a block, which will not free block_start_address when destructed.*/
-	Block temp_block(block_size,target_block_start_address);
+//	Block temp_block(block_size,target_block_start_address);
+//
+//	/*construct the block stream from temp_block. In the current version, the memory copy
+//	 * is used for simplicity.
+//	 * TODO: avoid memory copy.
+//	 */
+//	block->constructFromBlock(temp_block);
 
-	/*construct the block stream from temp_block. In the current version, the memory copy
-	 * is used for simplicity.
-	 * TODO: avoid memory copy.
-	 */
-	block->constructFromBlock(temp_block);
+
+	block->setIsReference(true);
+	block->setBlock(target_block_start_address);
+	((BlockStreamFix*)block)->free_=(char*)target_block_start_address+block_size-sizeof(unsigned);
 }
 
 void ChunkReaderIterator::InDiskBlockAccessor::getBlock(BlockStreamBase*& block) const {
