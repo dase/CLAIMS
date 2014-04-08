@@ -992,6 +992,7 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::Search(T key)
 template <typename T>
 map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
 {
+/*for testing*/	unsigned long count = 0;
 	map<index_offset, vector<index_offset> > ret;
 	ret.clear();
 	if (lower_key > upper_key)
@@ -1076,9 +1077,15 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 			for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 			{
 				if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
+				{
 					ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+/*for testing*/					count++;
+				}
 				else
+				{
+/*for testing*/					cout << "Total count: " << count << endl;
 					return ret;
+				}
 			}
 			i = 0;
 		}
