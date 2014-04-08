@@ -115,7 +115,7 @@ T CCSBInternalNode<T>::SplitInsert(CCSBNode<T>* pNode, T key)
 	if (this->getUsedKeys() != CSB_MAXNUM_KEY)
 	{
 		cout << "[ERROR: CSBPlusTree.cpp (CCSBInternalNode->SplitInsert)] The unfull internal node can not be splited!\n";
-		exit(-1);
+		return key;
 	}
 
 	if (key < this->node_keys[CSB_MAXNUM_KEY/2])	//insert into the first node
@@ -222,7 +222,7 @@ T CCSBLeafNode<T>::SplitInsert(CCSBNode<T>* pNode, data_offset<T> data)
 	if (this->getUsedKeys() != CSB_MAXNUM_DATA)
 	{
 		cout << "[ERROR: CSBPlusTree.cpp (CCSBLeafNode->SplitInsert)] The unfull leaf node can not be splited!\n";
-		exit(-1);
+		return data._key;
 	}
 
 	if (data._key < this->node_datas[CSB_MAXNUM_DATA/2]._key)	//insert into the first node
@@ -281,6 +281,9 @@ bool CCSBLeafNode<T>::deserialize(FILE* filename)
 {
 	fread((void*)(&this->used_keys), sizeof(int), 1, filename);
 	fread(this->node_datas, sizeof(data_offset<T>), this->used_keys, filename);
+	for (unsigned i = 0; i < this->used_keys; i++)
+		if (this->node_datas[i]._block_off > 1023 || this->node_datas[i]._tuple_off > 2046)
+			assert(false);
 	return true;
 }
 
@@ -1100,6 +1103,8 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 template<typename T>
 map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)
 {
+	map<index_offset, vector<index_offset> > ret;
+	ret.clear();
 	//For point query
 	if (comp_lower == FilterIterator::AttributeComparator::EQ)
 	{
@@ -1111,10 +1116,8 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 	else if ((!(comp_lower == FilterIterator::AttributeComparator::G || comp_lower == FilterIterator::AttributeComparator::GEQ)) || (!(comp_upper == FilterIterator::AttributeComparator::L || comp_upper == FilterIterator::AttributeComparator::LEQ)))
 	{
 		cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the range query, the given two key isn't a range\n";
-		exit(-1);
+		return ret;
 	}
-	map<index_offset, vector<index_offset> > ret;
-	ret.clear();
 	if (lower_key > upper_key)
 		return ret;
 	int i = 0;
@@ -1771,7 +1774,8 @@ void CSBPlusTree<T>::printTree()
 			cout << "Used nodes: " << current_level.back()->getUsedNodes() << endl;
 			for (unsigned j = 0; j < current_level.back()->getUsedNodes(); j++)
 			{
-				lower_level.push_back(current_level.back()->getNode(j)->getPointer());
+				if (depth <= this->csb_depth)
+					lower_level.push_back(current_level.back()->getNode(j)->getPointer());
 				cout << "Node: " << j << "\t";
 				cout << "Used keys: " << ((CCSBNodeGroup<T>*)(current_level.back()))->getNode(j)->getUsedKeys() << endl;
 				for (unsigned k = 0; k < ((CCSBNodeGroup<T>*)(current_level.back()))->getNode(j)->getUsedKeys(); k++)
