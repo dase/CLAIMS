@@ -18,7 +18,10 @@
 class IndexScanIterator :public ExpandableBlockStreamIteratorBase {
 public:
 	struct remaining_block {
-		remaining_block() : iter_result_map(0), iter_result_vector(0), block_off(0), block(0), iterator(0) { result_set.clear(); }
+		remaining_block() :  iter_result_vector(0), block_off(0), block(0), iterator(0) {
+			result_set.clear();
+			iter_result_map=result_set.end();
+		}
 		remaining_block(map<index_offset, vector<index_offset> > result_set, map<index_offset, vector<index_offset> >::iterator iter_result_map, vector<index_offset>::iterator iter_result_vector, unsigned short block_off, BlockStreamBase* block, BlockStreamBase::BlockStreamTraverseIterator* iterator)
 		:result_set(result_set), iter_result_map(iter_result_map), iter_result_vector(iter_result_vector), block_off(block_off), block(block), iterator(iterator) {}
 
