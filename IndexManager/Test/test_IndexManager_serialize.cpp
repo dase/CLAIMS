@@ -136,10 +136,10 @@ static int test_index_manager()
 {
 	init_poc_environment();
 
-	test_logical_index_building();
+//	test_logical_index_building();
 //	test_serialize();
 //
-//	test_deserialize();
+	test_deserialize();
 
 	int count = 1022;
 	ifstream infile("/home/scdong/code/sec_code", ios::in);
