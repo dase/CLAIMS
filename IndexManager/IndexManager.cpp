@@ -177,7 +177,7 @@ data_type IndexManager::getIndexType(unsigned long index_id)
 	if (id_to_column_attribute.find(index_id) == id_to_column_attribute.end())
 	{
 		cout << "[ERROR: IndexManager.cpp->getIndexType()]: The index id " << index_id << "hasn't be used to mapping a CSB+ column index!\n";
-		exit(-1);
+		assert(false);
 	}
 	return id_to_column_attribute.find(index_id)->second.attrType->type;
 }
@@ -329,6 +329,7 @@ bool IndexManager::deserialize(std::string file_name)
 				break;
 			}
 			}
+			index_num--;
 		}
 
 		csb_index_[index_id] = index;
@@ -338,4 +339,6 @@ bool IndexManager::deserialize(std::string file_name)
 
 		count--;
 	}
+	fclose(filename);
+	return true;
 }
