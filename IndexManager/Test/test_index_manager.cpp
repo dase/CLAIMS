@@ -50,9 +50,16 @@ static int test_index_manager_()
 			{
 				cout << "How many to print? ";
 				cin >> sec_code;
+				while (sec_code > 0)
+				{
 				for (map<index_offset, vector<index_offset> >::iterator iter = ret[count].begin(); iter != ret[count].end(); iter++)
 					for (vector<index_offset>::iterator iter_ = iter->second.begin(); iter_ != iter->second.end(); iter_++)
-						cout << "<" << iter->first << ", " << *iter_ << ">\t";
+					{
+//						cout << "<" << iter->first << ", " << *iter_ << ">\t";
+						assert(iter->first < 1024 && *iter_ <= 2046);
+						sec_code--;
+					}
+				}
 //				for (int i = 0; i < ret[count].size() && i < sec_code; i++)
 //					cout << "<" << ret[count][i]->_block_off << ", " << ret[count][i]->_tuple_off << ">\t";
 				cout << endl;

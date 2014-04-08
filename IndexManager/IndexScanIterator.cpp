@@ -9,7 +9,7 @@
 #include "IndexManager.h"
 #include "../storage/BlockManager.h"
 
-IndexScanIterator::IndexScanIterator() {
+IndexScanIterator::IndexScanIterator():partition_reader_iterator_(0), chunk_reader_iterator_(0)  {
 	// TODO Auto-generated constructor stub
 	initialize_expanded_status();
 }
@@ -65,8 +65,10 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 	void* tuple_from_index_search;
 
 	// There are blocks which haven't been completely processed
+	bool remain_block_obtained=false;
 	if (atomicPopRemainingBlock(rb))
 	{
+		remain_block_obtained=true;
 		while (rb.block_off == rb.iter_result_map->first)
 		{
 			const unsigned bytes = state_.schema_->getTupleMaxSize();
@@ -93,6 +95,9 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 	BlockStreamBase* block_for_asking = AtomicPopBlockStream();
 	block_for_asking->setEmpty();
 	rb.block = block_for_asking;
+	map<index_offset, vector<index_offset> >::iterator it_old;
+	bool entry=false;
+	bool iterator_exceed=false;
 	while (askForNextBlock(rb))
 	{
 		rb.iterator = rb.block->createIterator();
@@ -107,9 +112,12 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 //				state_.schema_->displayTuple(tuple_from_index_search, "\t");
 //				sleep(1);
 ////For testing end
+				entry=true;
 				rb.iter_result_vector++;
 				if (rb.iter_result_vector == rb.iter_result_map->second.end())
 				{
+					iterator_exceed=true;
+					it_old=rb.iter_result_map;
 					rb.iter_result_map++;
 					if (rb.iter_result_map == rb.result_set.end())
 						break;
@@ -183,7 +191,7 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->nextBlock(rb.block) == false || rb.iter_result_map == rb.result_set.end())
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
-		if (chunk_reader_iterator_ == false)
+		if (chunk_reader_iterator_ == 0)
 			return false;
 
 		chunk_reader_iterator_->nextBlock(rb.block);
@@ -221,8 +229,19 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 				chunk_reader_iterator_ = 0;
 				return askForNextBlock(rb);
 			}
+//			unsigned long count = 0;
+			for (rb.iter_result_map = rb.result_set.begin(); rb.iter_result_map != rb.result_set.end(); rb.iter_result_map++)
+			{
+				for (rb.iter_result_vector = rb.iter_result_map->second.begin(); rb.iter_result_vector != rb.iter_result_map->second.end(); rb.iter_result_vector++)
+				{
+//					count++;
+					assert(*rb.iter_result_vector<2047);
+				}
+			}
+//			cout << "Total count: " << count << endl;
 			rb.iter_result_map = rb.result_set.begin();
 			rb.iter_result_vector = rb.iter_result_map->second.begin();
+			assert(*rb.iter_result_vector<2047);
 			return true;
 		}
 		case t_u_long:
