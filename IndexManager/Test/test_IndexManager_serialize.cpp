@@ -18,6 +18,7 @@
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+#include "../CSBPlusTree.h"
 
 static void init_poc_environment()
 {
@@ -150,13 +151,14 @@ static void test_scan_filter_performance()
 	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("10107"));
+	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::L,std::string("600030"));
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64-sizeof(unsigned));
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64);
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -177,16 +179,17 @@ static void test_index_filter_performance()
 {
 	vector<IndexScanIterator::query_range> q_range;
 	q_range.clear();
-	unsigned long int value = 600036;
+	int value_low = 10107;
+	int value_high = 600030;
 	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
 
 	IndexScanIterator::query_range q;
 	q.value_low = malloc(sizeof(int));
-	q.value_low = (void*)(&value);
-	q.comp_low = FilterIterator::AttributeComparator::EQ;
+	q.value_low = (void*)(&value_low);
+	q.comp_low = FilterIterator::AttributeComparator::GEQ;
 	q.value_high = malloc(sizeof(int));
-	q.value_high = (void*) (&value);
-	q.comp_high = FilterIterator::AttributeComparator::EQ;
+	q.value_high = (void*) (&value_high);
+	q.comp_high = FilterIterator::AttributeComparator::L;
 	q.c_type.type = t_int;
 	q.c_type.operate = new OperateInt();
 	q_range.push_back(q);
@@ -195,7 +198,7 @@ static void test_index_filter_performance()
 	const NodeID collector_node_id = 0;
 	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PERFORMANCE);
 	root->print();
-	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024 * 64-sizeof(unsigned));
+	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024 * 64);
 	executable_query_plan->open();
 	while (executable_query_plan->next(0));
 	executable_query_plan->close();
@@ -205,9 +208,9 @@ static void test_index_filter_performance()
 	const unsigned long int number_of_tuples = executable_query_plan->getNumberOfTuples();
 	executable_query_plan->~BlockStreamIteratorBase();
 	root->~LogicalOperator();
-	cout << "Sec_code: " << value << "\t Result: " << number_of_tuples << endl;
+	cout << "Sec_code: " << value_low << "\t Result: " << number_of_tuples << endl;
 	if(!print_test_name_result(number_of_tuples == 26820,"Index Scan")){
-		printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value, 26820, number_of_tuples);
+		printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value_low, 26820, number_of_tuples);
 	}
 }
 
