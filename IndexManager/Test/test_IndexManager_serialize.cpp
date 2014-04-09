@@ -15,6 +15,9 @@
 #include "../IndexScanIterator.h"
 #include "../LogicalIndexScan.h"
 #include "../../utility/test_tool.h"
+#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/Filter.h"
+#include "../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 
 static void init_poc_environment()
 {
@@ -78,13 +81,22 @@ static void test_deserialize()
 	IndexManager::getInstance()->deserialize("/home/scdong/code/index.dat");
 }
 
-static unsigned long int test_logical_index_scan(int value)
+static void test_logical_index_scan()
 {
 	vector<IndexScanIterator::query_range> q_range;
-	q_range.clear();
-	int value_low = 10110;
-	int value_high = 10112;
-
+	int count = 1022;
+	ifstream infile("/home/scdong/code/sec_code", ios::in);
+	ofstream outfile("/home/scdong/code/fail_log.dat", ios::out);
+	unsigned long int value = 0;
+	unsigned long int expect_num;
+	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
+	IndexScanIterator::query_range q2;
+	while (count > 0)
+	{
+		q_range.clear();
+		infile >> value >> expect_num;
+//	int value_low = 10110;
+//	int value_high = 10112;
 //	IndexScanIterator::query_range q1;
 //	q1.value_low = malloc(sizeof(int));
 //	q1.value_low = (void*)(&value_low);
@@ -98,38 +110,105 @@ static unsigned long int test_logical_index_scan(int value)
 //	q1.valuebytes_high.clear();
 //	q_range.push_back(q1);
 
-	IndexScanIterator::query_range q2;
-	q2.value_low = malloc(sizeof(int));
-	q2.value_low = (void*)(&value);
-	q2.comp_low = FilterIterator::AttributeComparator::EQ;
-	q2.value_high = malloc(sizeof(int));
-	q2.value_high = (void*)(&value);
-	q2.comp_high = FilterIterator::AttributeComparator::EQ;
-	q2.c_type.type = t_int;
-	q2.c_type.operate = new OperateInt();
-	q_range.push_back(q2);
+		q2.value_low = malloc(sizeof(int));
+		q2.value_low = (void*)(&value);
+		q2.comp_low = FilterIterator::AttributeComparator::EQ;
+		q2.value_high = malloc(sizeof(int));
+		q2.value_high = (void*) (&value);
+		q2.comp_high = FilterIterator::AttributeComparator::EQ;
+		q2.c_type.type = t_int;
+		q2.c_type.operate = new OperateInt();
+		q_range.push_back(q2);
 
-	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
-	LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
+		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
+		const NodeID collector_node_id = 0;
+		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+		root->print();
+		BlockStreamIteratorBase* executable_query_plan = root->getIteratorTree(1024 * 64);
+		executable_query_plan->open();
+		while (executable_query_plan->next(0));
+		executable_query_plan->close();
+
+		ResultSet* result_set = executable_query_plan->getResultSet();
+
+		const unsigned long int number_of_tuples = result_set->getNumberOftuples();
+		executable_query_plan->~BlockStreamIteratorBase();
+		root->~LogicalOperator();
+		cout << "Sec_code: " << value << "\t Result: " << number_of_tuples << endl;
+		if(!print_test_name_result(number_of_tuples == expect_num,"Index Scan")){
+			printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value, expect_num, number_of_tuples);
+			outfile << "Index Scan sec_code = " << value << "\tFAIL!\n";
+			outfile << "\tExcepted: " << expect_num << "\tActual: " << number_of_tuples << endl;
+		}
+		count--;
+	}
+}
+
+static void test_scan_filter_performance()
+{
+	TableDescriptor* table=Catalog::getInstance()->getTable("cj");
+	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
+
+	Filter::Condition filter_condition_1;
+	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::EQ,std::string("600036"));
+	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_scan);
+
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,index_scan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64-sizeof(unsigned));
+//	executable_query_plan->print();
+	executable_query_plan->open();
+	while(executable_query_plan->next(0));
+	executable_query_plan->close();
+
+//	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	if(!print_test_name_result(number_of_tuples==26820,"Low selectivity filter")){
+		printf("\tExpected:26695 actual: %d\n",number_of_tuples);
+	}
+//	result_set->~ResultSet();
+	executable_query_plan->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+}
+
+static void test_index_filter_performance()
+{
+	vector<IndexScanIterator::query_range> q_range;
+	q_range.clear();
+	unsigned long int value = 600036;
+	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
+
+	IndexScanIterator::query_range q;
+	q.value_low = malloc(sizeof(int));
+	q.value_low = (void*)(&value);
+	q.comp_low = FilterIterator::AttributeComparator::EQ;
+	q.value_high = malloc(sizeof(int));
+	q.value_high = (void*) (&value);
+	q.comp_high = FilterIterator::AttributeComparator::EQ;
+	q.c_type.type = t_int;
+	q.c_type.operate = new OperateInt();
+	q_range.push_back(q);
+
+	LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
+	const NodeID collector_node_id = 0;
+	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PERFORMANCE);
 	root->print();
-	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
+	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024 * 64-sizeof(unsigned));
 	executable_query_plan->open();
 	while (executable_query_plan->next(0));
 	executable_query_plan->close();
 
-	ResultSet* result_set = executable_query_plan->getResultSet();
+//	ResultSet* result_set = executable_query_plan->getResultSet();
 
-//	if(!print_test_name_result(number_of_tuples==3966020,"Scan")){
-//		printf("\tExpected:3966020 actual: %d\n",number_of_tuples);
-//	}
-//	cout << "Sec_Code = " << value << "\tTotal tuples: " << result_set->getNumberOftuples() << endl;
-
-	const unsigned long int number_of_tuples = result_set->getNumberOftuples();
+	const unsigned long int number_of_tuples = executable_query_plan->getNumberOfTuples();
 	executable_query_plan->~BlockStreamIteratorBase();
 	root->~LogicalOperator();
-	return number_of_tuples;
+	cout << "Sec_code: " << value << "\t Result: " << number_of_tuples << endl;
+	if(!print_test_name_result(number_of_tuples == 26820,"Index Scan")){
+		printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value, 26820, number_of_tuples);
+	}
 }
 
 static int test_index_manager()
@@ -138,30 +217,10 @@ static int test_index_manager()
 
 //	test_logical_index_building();
 //	test_serialize();
-//
 	test_deserialize();
-
-	int count = 1022;
-	ifstream infile("/home/scdong/code/sec_code", ios::in);
-	ofstream outfile("/home/scdong/code/fail_log.dat", ios::out);
-	unsigned long int value = 0;
-	unsigned long int ret_num;
-	unsigned long int ecpect_num;
-	while (count > 0)
-	{
-		infile >> value;
-		ret_num = test_logical_index_scan(value);
-
-		infile >> ecpect_num;
-		cout << "Sec_code: " << value << "\t Result: " << ret_num << endl;
-		if(!print_test_name_result(ret_num == ecpect_num,"Index Scan")){
-			printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value, ecpect_num, ret_num);
-			outfile << "Index Scan sec_code = " << value << "\tFAIL!\n";
-			outfile << "\tExcepted: " << ecpect_num << "\tActual: " << ret_num << endl;
-		}
-		count--;
-//		sleep(1);
-	}
+//	test_logical_index_scan();
+	test_scan_filter_performance();
+	test_index_filter_performance();
 
 	Environment::getInstance()->~Environment();
 	return 0;
