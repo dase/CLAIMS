@@ -2,18 +2,18 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <vector>
 #include "sql_node_struct.h"
 using namespace std;
 
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
-extern Node *NodePointer[10000];		// 2014-3-7---指向每个节点的指针数组---by余楷
-extern int NodePointerNum;		// 2014-3-7---指向每个节点的指针数组中元素个数---by余楷
+extern vector<Node*> NodePointer;	// 2014-4-2---存放节点指针的数组改为vector---by Yu
 
 inline void insertNodePointer(Node *a)	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
 {
-	NodePointer[NodePointerNum++] = a;
+	NodePointer.push_back(a);	// 2014-4-2---存放节点指针的数组改为vector---by Yu
 }
 
 // 2014-3-4---增加新建语句列表函数---by余楷
@@ -53,11 +53,11 @@ struct Node * newExpr(nodetype t, dataval d)
 
 	a->type = t;
 	a->data = d;
-	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号
-	{
-		strncpy(a->data.string_val, d.string_val+1, strlen(d.string_val)-2);
-		a->data.string_val[strlen(d.string_val)-2] = '\0';
-	}
+//	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号	//2014-4-2---将这部分工作放在词法识别阶段进行，见sql.l
+//	{
+//		strncpy(a->data.string_val, d.string_val+1, strlen(d.string_val)-2);
+//		a->data.string_val[strlen(d.string_val)-2] = '\0';
+//	}
 
 	//cout<<"newExpr is created"<<endl;
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
@@ -907,6 +907,7 @@ struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *col
 	a->path = path;
 	a->column_separator = column_separator;
 	a->tuple_separator = tuple_separator;
+	printf("the separator are %s,%s\n", a->column_separator, a->tuple_separator);
 
 	//cout<<"Loadtable_stmt is created"<<endl;
 
@@ -1302,16 +1303,58 @@ void output(Node * oldnode, int floor)
 	}
 }
 
-void FreeAllNode()	// 2014-3-6---增加释放所有节点的函数---by余楷
+void FreeAllNode()	// 2014-3-6---增加释放所有节点的函数---by余楷	// 2014-4-2---存放节点指针的数组改为vector---by Yu
 {
-	int i;
-	for (i = 0; i < NodePointerNum; ++i)
+	int NodePointerNum = NodePointer.size();
+	vector<Node*>::iterator it;
+	for (it = NodePointer.begin(); it != NodePointer.end(); ++it)
 	{
-		free(NodePointer[i]);
-		NodePointer[i] = NULL;
+		free(*it);
+		*it = NULL;
 	}
 	cout<<"All "<<NodePointerNum<<" node freed successfully"<<endl;
-	NodePointerNum = 0;
+	NodePointer.clear();
+}
+
+// 2014-4-2----处理转义字符以及消去首尾的引号---by Yu
+void GetCorrectString(char *dest, const char *src)
+{
+	int j = 0;
+	for(int i = 1; i < strlen(src)-1; ++i)
+	{
+		if(src[i] == '\\')
+		{
+			if(src[i+1] == 'n')	// 若内部表示为“\\n”，改为“\n”
+			{
+				dest[j++] = '\n';
+				++i;
+			}
+			else if(src[i+1] == 't')	// 若内部表示为“\\t”，改为“\t”
+			{
+				dest[j++] = '\t';
+				++i;
+			}
+			else if(src[i+1] == '\'' && (i+1) != (strlen(src)-1))	// 若内部表示为“\\\'”且引号不为最后的引号,改为“\'”
+			{
+				dest[j++] = '\'';
+				++i;
+			}
+			else if(src[i+1] == '\"' && (i+1) != (strlen(src)-1))	// 若内部表示为“\\\"”且引号不为最后的引号，改为“\"”
+			{
+				dest[j++] = '\"';
+				++i;
+			}
+			else	//复制
+			{
+				dest[j++] = src[i];
+			}
+		}
+		else
+		{
+			dest[j++] = src[i];
+		}
+	}
+	dest[j] = '\0';
 }
 
 
