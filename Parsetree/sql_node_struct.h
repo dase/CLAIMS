@@ -47,7 +47,7 @@ enum nodetype
 union dataval	// 2014-3-8---不支持更长的整数，需改用long或其他类型---by余楷
 {
 	int int_val;
-	char * string_val;
+	char *string_val;
 	double double_val;
 	bool bool_val;
 };
@@ -561,14 +561,6 @@ struct enum_list
 *************************************************************************/
 
 
-inline void insertNodePointer(Node * a);	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
-
-void FreeAllNode();		// 2014-3-6---增加释放所有节点函数---by余楷
-
-void output(Node * n, int floor);
-
-void outputSpace(int f);
-
 struct Node *newStmt(nodetype t, Node *list, Node *newNode);	// 2014-3-4---增加新建语句列表函数---by余楷
 
 struct Node* newExpr(nodetype t, dataval d);
@@ -682,6 +674,17 @@ struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next
 struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator);
 
 //////////////////////////////////////////////////////////////////////////////////////////
+
+
+inline void insertNodePointer(Node * a);	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
+
+void FreeAllNode();		// 2014-3-6---增加释放所有节点函数---by余楷
+
+void output(Node * n, int floor);
+
+void outputSpace(int f);
+
+void GetCorrectString(char *dest, const char *src);	// 2014-4-2---增加该函数---by Yu
 
 
 int judgepos(struct Node *args,set<string>*st);

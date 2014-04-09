@@ -281,6 +281,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				TableDescriptor *table = Environment::getInstance()->getCatalog()->getTable(table_name);
 				string column_separator(new_node->column_separator);
 				string tuple_separator(new_node->tuple_separator);
+				printf("wef:%s\n",new_node->tuple_separator);
 				Expr_list *path_node = (Expr_list*)new_node->path;
 
 				ASTParserLogging::log("load file\'s name:");
@@ -295,6 +296,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				}
 
 				// split sign should be considered carefully, in case of it may be "||" or "###"
+				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table_name, table);
 
 				loader->load();

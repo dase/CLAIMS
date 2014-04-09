@@ -2966,14 +2966,24 @@ case 234:
 case 235:
 YY_RULE_SETUP
 #line 288 "sql.l"
-{ yylval.strval = strdup(yytext); return STRING; }
+{
+				char *temp = strdup(yytext); 
+				printf("temp:%s\n",temp);
+				yylval.strval = strdup(yytext);
+				
+				//2014-4-3---处理转义字符以及消去首尾的引号---by Yu
+				GetCorrectString(yylval.strval, temp);
+				
+				printf("the string is %s\n",yylval.strval);
+				return STRING; 
+			}
 	YY_BREAK
 case 236:
 *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 290 "sql.l"
+#line 300 "sql.l"
 { yyerror("Unterminated string %s", yytext); }
 	YY_BREAK
 case 237:
@@ -2981,86 +2991,86 @@ case 237:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 291 "sql.l"
+#line 301 "sql.l"
 { yyerror("Unterminated string %s", yytext); }
 	YY_BREAK
-/* hex strings */
+/* hex strings */	// TODO:消除这种形式的STRING的首尾引号
 case 238:
-#line 295 "sql.l"
+#line 305 "sql.l"
 case 239:
 YY_RULE_SETUP
-#line 295 "sql.l"
+#line 305 "sql.l"
 { yylval.strval = strdup(yytext); return STRING; }
 	YY_BREAK
-/* bit strings */
+/* bit strings */	// TODO:消除这种形式的STRING的首尾引号
 case 240:
-#line 300 "sql.l"
+#line 310 "sql.l"
 case 241:
 YY_RULE_SETUP
-#line 300 "sql.l"
+#line 310 "sql.l"
 { yylval.strval = strdup(yytext); return STRING; }
 	YY_BREAK
 /* operators */
 case 242:
 YY_RULE_SETUP
-#line 304 "sql.l"
+#line 314 "sql.l"
 { return yytext[0]; }
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 306 "sql.l"
+#line 316 "sql.l"
 { return ANDOP; }
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 307 "sql.l"
+#line 317 "sql.l"
 { return OR; }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 309 "sql.l"
+#line 319 "sql.l"
 { yylval.subtok = 1; return COMPARISON; }
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-#line 310 "sql.l"
+#line 320 "sql.l"
 { yylval.subtok = 2; return COMPARISON; }
 	YY_BREAK
 case 247:
-#line 312 "sql.l"
+#line 322 "sql.l"
 case 248:
 YY_RULE_SETUP
-#line 312 "sql.l"
+#line 322 "sql.l"
 { yylval.subtok = 3; return COMPARISON; }
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 313 "sql.l"
+#line 323 "sql.l"
 { yylval.subtok = 4; return COMPARISON; }
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 314 "sql.l"
+#line 324 "sql.l"
 { yylval.subtok = 5; return COMPARISON; }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 315 "sql.l"
+#line 325 "sql.l"
 { yylval.subtok = 6; return COMPARISON; }
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 316 "sql.l"
+#line 326 "sql.l"
 { yylval.subtok = 12; return COMPARISON; }
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 318 "sql.l"
+#line 328 "sql.l"
 { yylval.subtok = 1; return SHIFT; }
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 319 "sql.l"
+#line 329 "sql.l"
 { yylval.subtok = 2; return SHIFT; }
 	YY_BREAK
 /* functions */
@@ -3069,7 +3079,7 @@ case 255:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 323 "sql.l"
+#line 333 "sql.l"
 { return FSUBSTRING; }
 	YY_BREAK
 case 256:
@@ -3077,7 +3087,7 @@ case 256:
 (yy_c_buf_p) = yy_cp = yy_bp + 4;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 324 "sql.l"
+#line 334 "sql.l"
 { return FTRIM; }
 	YY_BREAK
 case 257:
@@ -3085,7 +3095,7 @@ case 257:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 325 "sql.l"
+#line 335 "sql.l"
 { return FDATE_ADD; }
 	YY_BREAK
 case 258:
@@ -3093,7 +3103,7 @@ case 258:
 (yy_c_buf_p) = yy_cp = yy_bp + 8;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 326 "sql.l"
+#line 336 "sql.l"
 { return FDATE_SUB; }
 	YY_BREAK
 /* 
@@ -3104,7 +3114,7 @@ YY_RULE_SETUP
          */
 case 259:
 YY_RULE_SETUP
-#line 334 "sql.l"
+#line 344 "sql.l"
 { int c = yyinput(); unput(c);
            if(c == '(') return FCOUNT;
            yylval.strval = strdup(yytext);
@@ -3112,7 +3122,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 338 "sql.l"
+#line 348 "sql.l"
 { int c = yyinput(); unput(c);
            if(c == '(') return FSUM;
            yylval.strval = strdup(yytext);
@@ -3120,7 +3130,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 342 "sql.l"
+#line 352 "sql.l"
 { int c = yyinput(); unput(c);
            if(c == '(') return FAVG;
            yylval.strval = strdup(yytext);
@@ -3128,7 +3138,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 346 "sql.l"
+#line 356 "sql.l"
 { int c = yyinput(); unput(c);
            if(c == '(') return FMIN;
            yylval.strval = strdup(yytext);
@@ -3136,7 +3146,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 350 "sql.l"
+#line 360 "sql.l"
 { int c = yyinput(); unput(c);
            if(c == '(') return FMAX;
            yylval.strval = strdup(yytext);
@@ -3144,13 +3154,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 355 "sql.l"
+#line 365 "sql.l"
 { yylval.strval = strdup(yytext);
                           return NAME; }
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 357 "sql.l"
+#line 367 "sql.l"
 { yylval.strval = strdup(yytext+1);
                           yylval.strval[yyleng-2] = 0;
                           return NAME; }
@@ -3160,19 +3170,19 @@ case 266:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 361 "sql.l"
+#line 371 "sql.l"
 { yyerror("unterminated quoted name %s", yytext); }
 	YY_BREAK
 /* user variables */
 case 267:
-#line 365 "sql.l"
+#line 375 "sql.l"
 case 268:
-#line 366 "sql.l"
+#line 376 "sql.l"
 case 269:
-#line 367 "sql.l"
+#line 377 "sql.l"
 case 270:
 YY_RULE_SETUP
-#line 367 "sql.l"
+#line 377 "sql.l"
 { yylval.strval = strdup(yytext+1); return USERVAR; }
 	YY_BREAK
 case 271:
@@ -3180,7 +3190,7 @@ case 271:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 369 "sql.l"
+#line 379 "sql.l"
 { yyerror("unterminated quoted user variable %s", yytext); }
 	YY_BREAK
 case 272:
@@ -3188,7 +3198,7 @@ case 272:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 370 "sql.l"
+#line 380 "sql.l"
 { yyerror("unterminated quoted user variable %s", yytext); }
 	YY_BREAK
 case 273:
@@ -3196,63 +3206,63 @@ case 273:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 371 "sql.l"
+#line 381 "sql.l"
 { yyerror("unterminated quoted user variable %s", yytext); }
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 374 "sql.l"
+#line 384 "sql.l"
 { return ASSIGN; }
 	YY_BREAK
 /* comments */   
 case 275:
 YY_RULE_SETUP
-#line 377 "sql.l"
+#line 387 "sql.l"
 ;
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 378 "sql.l"
+#line 388 "sql.l"
 ;
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 380 "sql.l"
+#line 390 "sql.l"
 { oldstate = YY_START; BEGIN COMMENT; }
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 381 "sql.l"
+#line 391 "sql.l"
 { BEGIN oldstate; }
 	YY_BREAK
 case 279:
 /* rule 279 can match eol */
 YY_RULE_SETUP
-#line 382 "sql.l"
+#line 392 "sql.l"
 ;
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 383 "sql.l"
+#line 393 "sql.l"
 { yyerror("unclosed comment"); }
 	YY_BREAK
 /* everything else */
 case 280:
 /* rule 280 can match eol */
 YY_RULE_SETUP
-#line 386 "sql.l"
+#line 396 "sql.l"
 /* white space */
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 387 "sql.l"
+#line 397 "sql.l"
 { yyerror("mystery character '%c'", *yytext); }
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 389 "sql.l"
+#line 399 "sql.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3256 "lex.yy.c"
+#line 3266 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(BTWMODE):
 	yyterminate();
@@ -4263,7 +4273,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 389 "sql.l"
+#line 399 "sql.l"
 
 
 
