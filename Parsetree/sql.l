@@ -285,16 +285,26 @@ FALSE	{ yylval.intval = 0; return BOOL; }
    /* strings */
 
 '(\\.|''|[^'\n])*'	|
-\"(\\.|\"\"|[^"\n])*\"  { yylval.strval = strdup(yytext); return STRING; }
+\"(\\.|\"\"|[^"\n])*\"  {
+				char *temp = strdup(yytext); 
+				printf("temp:%s\n",temp);
+				yylval.strval = strdup(yytext);
+				
+				//2014-4-3---处理转义字符以及消去首尾的引号---by Yu
+				GetCorrectString(yylval.strval, temp);
+				
+				printf("the string is %s\n",yylval.strval);
+				return STRING; 
+			}
 
 '(\\.|[^'\n])*$		{ yyerror("Unterminated string %s", yytext); }
 \"(\\.|[^"\n])*$		{ yyerror("Unterminated string %s", yytext); }
 
-   /* hex strings */
+   /* hex strings */	// TODO:消除这种形式的STRING的首尾引号
 X'[0-9A-F]+' |  
 0X[0-9A-F]+  	{ yylval.strval = strdup(yytext); return STRING; }
 
-   /* bit strings */
+   /* bit strings */	// TODO:消除这种形式的STRING的首尾引号
 
 0B[01]+      |
 B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
