@@ -369,10 +369,11 @@ bool CCSBLeafNodeGroup<T>::deserialize(FILE* filename)
 }
 
 /***********************************  CSBPlusTree  ***********************************/
-template <typename T>
-CSBPlusTree<T>::CSBPlusTree() :csb_root(NULL), csb_depth(0), leaf_header(NULL), leaf_tailer(NULL) {
-	// TODO Auto-generated constructor stub
-}
+//#pragma auto_inline
+//template <typename T>
+//CSBPlusTree<T>::CSBPlusTree() :csb_root(NULL), csb_depth(0), leaf_header(NULL), leaf_tailer(NULL) {
+//	// TODO Auto-generated constructor stub
+//}
 
 template <typename T>
 CSBPlusTree<T>::~CSBPlusTree() {

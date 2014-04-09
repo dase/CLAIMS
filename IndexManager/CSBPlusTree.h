@@ -19,9 +19,9 @@ using namespace std;
 #define FLAG_LEFT 1
 #define FLAG_RIGHT 2
 
-#define CSB_MAXNUM_KEY 4	//12
-#define CSB_MAXNUM_DATA 4	//12
-#define CSB_ORDER_V 2		//6
+#define CSB_MAXNUM_KEY 		12
+#define CSB_MAXNUM_DATA 	12
+#define CSB_ORDER_V 		6
 
 typedef unsigned short index_offset;
 typedef FilterIterator::AttributeComparator::comparison comparison;
@@ -335,7 +335,7 @@ public:
 template <typename T>
 class CSBPlusTree {
 public:
-	CSBPlusTree();
+	CSBPlusTree():csb_root(NULL), csb_depth(0), leaf_header(NULL), leaf_tailer(NULL) {}
 	virtual ~CSBPlusTree();
 	//bulkload indexing
 	void BulkLoad(data_offset<T>* aray, unsigned arayNo);
