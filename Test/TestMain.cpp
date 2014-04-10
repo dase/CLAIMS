@@ -71,9 +71,10 @@ int main(){
 //	return in_iterator_test();
 
 //	in_test();
-//	test_expanderFramework_single_node(3);
+	test_expanderFramework_single_node(3);
 //	test_multiple_expanderFramework_single_node(3);
-//	tcp_h_test();
+//	tcp_h_test_single_node();
+//	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test();
-	hash_table_test();
+//	hash_table_test();
 }

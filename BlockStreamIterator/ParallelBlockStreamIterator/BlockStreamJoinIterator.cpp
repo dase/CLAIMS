@@ -130,16 +130,16 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //		bsti->reset();
 		while(cur=ct.block_stream_iterator_->nextTuple()){
 			processed_tuple_count++;
-//			lock_.acquire();
-//			consumed_tuples_from_left++;
-//			lock_.release();
-			continue;
+			lock_.acquire();
+			consumed_tuples_from_left++;
+			lock_.release();
+//			continue;
 			const void* key_addr=input_schema->getColumnAddess(state_.joinIndex_left[0],cur);
 			bn=op->getPartitionValue(key_addr,buckets);
 //			printf("%d\t",bn);
-			if(bn!=-1){
-				continue;
-			}
+//			if(bn!=-1){
+//				continue;
+//			}
 			tuple_in_hashtable=hashtable->atomicAllocate(bn);
 //			tuple_in_hashtable=hashtable->allocate(bn);
 			/* copy join index columns*/
@@ -166,7 +166,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
 	BasicHashTable::Iterator it=hashtable->CreateIterator();
 
-	printf("%d cycles per tuple!\n",(curtick()-start)/processed_tuple_count);
+//	printf("%d cycles per tuple!\n",(curtick()-start)/processed_tuple_count);
 
 
 	unsigned tmp=0;
@@ -182,15 +182,15 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	}
 
 	barrierArrive(1);
-//	if(winning_thread){
-//		hashtable->report_status();
-//	}
+	if(winning_thread){
+		hashtable->report_status();
+	}
 	/* destory the context for the left child*/
 	destorySelfContext();
 	/* create and initialized the context for the right child*/
 	initContext(state_.input_schema_right,state_.block_size_);
 
-//	printf("join open consume %d tuples\n",consumed_tuples_from_left);
+	printf("join open consume %d tuples\n",consumed_tuples_from_left);
 
 	state_.child_right->open(partition_offset);
 

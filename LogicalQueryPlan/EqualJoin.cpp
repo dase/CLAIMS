@@ -232,8 +232,8 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 	BlockStreamJoinIterator::State state;
 	state.block_size_=block_size;
 
-//	state.ht_nbuckets=1024*1024;
-	state.ht_nbuckets=1024;
+	state.ht_nbuckets=1024*1024;
+//	state.ht_nbuckets=1024;
 	state.input_schema_left=getSchema(dataflow_left.attribute_list_);
 	state.input_schema_right=getSchema(dataflow_right.attribute_list_);
 	state.ht_schema=getSchema(dataflow_left.attribute_list_);
