@@ -598,6 +598,7 @@ static int test_no_repartition_scan_join(){
 }
 static int test_expanderFramework_single_node(int repeated_times=20){
 
+
 	startup_single_node_environment();
 
 	sleep(5);
@@ -869,7 +870,7 @@ static int test_multiple_scan_filter_high_selectivity(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64-sizeof(unsigned));
-//	executable_query_plan->print();
+	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
 	executable_query_plan->close();
@@ -1233,34 +1234,35 @@ static int test_multiple_expanderFramework_single_node(int repeated_times=20){
 		int i;
 		scanf("%d",&i);
 	printf("============Scan->Filter->Expander->Exchange->root============\n");
-	for(unsigned i=0;i<repeated_times;i++){
-		test_multiple_scan();
-	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_multiple_scan();
+//	}
 
-	for(unsigned i=0;i<repeated_times;i++){
-		test_multiple_scan_filter_high_selectivity();
-	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_multiple_scan_filter_high_selectivity();
+//		printf("----------------------------------\n");
+//	}
 	for(unsigned i=0;i<repeated_times;i++){
 		test_multiple_scan_filter_low_selectivity();
 	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_multiple_scan_filter_Aggregation();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_multiple_scan_filter_Scalar_Aggregation();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_multiple_complete_repartition_filtered_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_multiple_no_repartition_filtered_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_multiple_complete_repartition_scan_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_no_repartition_scan_join();
-	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_multiple_scan_filter_Aggregation();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_multiple_scan_filter_Scalar_Aggregation();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_multiple_complete_repartition_filtered_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_multiple_no_repartition_filtered_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_multiple_complete_repartition_scan_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_scan_join();
+//	}
 
 	}
 	printf("Press any key to continue;\n");

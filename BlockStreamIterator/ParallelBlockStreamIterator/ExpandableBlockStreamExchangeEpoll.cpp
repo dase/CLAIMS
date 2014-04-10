@@ -132,8 +132,8 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		printf("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
-		assert(false);
+		logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+//		assert(false);
 		return false;
 	}
 

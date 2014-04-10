@@ -16,7 +16,7 @@
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"
 #include "../../ids.h"
-#define block_size (1024*64)
+#define block_size (1024*1024)
 static void startup_catalog(){
 //	int master;
 	int master=0;
@@ -209,7 +209,7 @@ void* insert_into_hash_table_from_projection(void * argment){
 	unsigned long long force=0;
 	Arg arg=*(Arg*)argment;
 	BlockStreamBase* fetched_block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(arg.schema,block_size);
-	Operate* op=arg.schema->columns[1].operate->duplicateOperator();
+	Operate* op=arg.schema->columns[0].operate->duplicateOperator();
 	unsigned nbuckets=arg.hash->getNumberOfPartitions();
 	unsigned long long int start=curtick();
 	printf("tuple length=%d\n",arg.schema->getTupleMaxSize());
@@ -231,15 +231,15 @@ void* insert_into_hash_table_from_projection(void * argment){
 //			}
 //			unsigned bn=op->getPartitionValue(tuple,arg.hash);
 			unsigned bn=boost::hash_value(*(unsigned long*)tuple)%nbuckets;
-//			if(bn!=0){
-//				continue;
-//			}
+			if(bn!=0){
+				continue;
+			}
 //			else{
 //				force++;
 //			}
 			void* new_tuple_in_hashtable=arg.hash_table->allocate(bn);
 
-//			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
+			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
 		}
 	}
 
@@ -247,8 +247,9 @@ void* insert_into_hash_table_from_projection(void * argment){
 }
 
 static double projection_scan(unsigned degree_of_parallelism){
-	const unsigned nbuckets=1024*1024;
-	const unsigned bucketsize=4096-8;
+//	const unsigned nbuckets=1024*1024*16;
+	const unsigned nbuckets=1024;
+	const unsigned bucketsize=256-8;
 	const unsigned nthreads=degree_of_parallelism;
 	double ret;
 	printf("nthread=%d\n",nthreads);
@@ -287,7 +288,7 @@ static double projection_scan(unsigned degree_of_parallelism){
 	for(unsigned i=0;i<nthreads;i++){
 		pthread_join(pid[i],0);
 	}
-	hashtable->report_status();
+//	hashtable->report_status();
 	printf("time:%4.4f\n",getSecond(start));
 	ret=getSecond(start);
 	int cycles_per_allocate=((double)curtick()-start)/(65536000)*nthreads;
@@ -313,7 +314,6 @@ BasicHashTable* generate_hashtable(Schema* schema, unsigned nbuckets, unsigned b
 BlockStreamBuffer* initial_input_date(Schema* schema,unsigned long total_data_size_in_MB){
 
 	unsigned block_num=total_data_size_in_MB*1024*1024/(block_size);
-	printf("%d blocks\n",block_num);
 
 	BlockStreamBuffer* buffer=new BlockStreamBuffer(block_size-4,block_num,schema);
 	int value=0;
@@ -341,9 +341,9 @@ void* insert_into_hash_table(void * argment){
 		void* tuple;
 		BlockStreamBase::BlockStreamTraverseIterator* it=fetched_block->createIterator();
 		while(tuple=it->nextTuple()){
-//			if(boost::hash_value((*(int*)tuple)%1342342)==0){
-//				break;
-//			}
+			if(boost::hash_value((*(int*)tuple)%1342342)!=0){
+				continue;
+			}
 //			if(op->getPartitionValue(tuple,arg.hash)==0){
 //				break;
 //			}
@@ -361,12 +361,11 @@ void create_thread(unsigned nthreads){
 double fill_hash_table(unsigned degree_of_parallelism){
 	Config::getInstance();
 	const unsigned nbuckets=1024*1024;
-	const unsigned tuple_size=200;
+	const unsigned tuple_size=8;
 	const unsigned bucketsize=256-8;
-	const unsigned long data_size_in_MB=128;
+	const unsigned long data_size_in_MB=1024;
 	const unsigned nthreads=degree_of_parallelism;
 	double ret;
-	printf("nthread=%d\n",nthreads);
 	Schema* schema=generate_schema(tuple_size);
 	BasicHashTable* hashtable=generate_hashtable(schema,nbuckets,bucketsize);
 	BlockStreamBuffer* buffer=initial_input_date(schema,data_size_in_MB);
@@ -400,8 +399,8 @@ double fill_hash_table(unsigned degree_of_parallelism){
 double getAverage(int degree_of_parallelism,int repeated_times=10){
 	double ret=0;
 	for(unsigned i=0;i<repeated_times;i++){
-//		ret+=fill_hash_table(degree_of_parallelism);
-		ret+=projection_scan(degree_of_parallelism);
+		ret+=fill_hash_table(degree_of_parallelism);
+//		ret+=projection_scan(degree_of_parallelism);
 	}
 	return ret/repeated_times;
 }
@@ -409,7 +408,7 @@ double getAverage(int degree_of_parallelism,int repeated_times=10){
 int hash_table_test(){
 //	Environment::getInstance(true);
 	startup_catalog();
-	unsigned int max_degree_of_parallelism=4;
+	unsigned int max_degree_of_parallelism=Config::max_degree_of_parallelism;
 	unsigned repeated_times=3;
 	double standard_throughput=0;
 	for(unsigned i=1;i<=max_degree_of_parallelism;i++){
