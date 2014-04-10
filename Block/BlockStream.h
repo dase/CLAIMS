@@ -35,6 +35,13 @@ public:
 			return block_stream_base_->getTuple(cur);
 		}
 
+		/*
+		 * get certain tuple, for random access
+		 */
+		inline void* getTuple(unsigned tuple_off) const{
+			return block_stream_base_->getTuple(tuple_off);
+		}
+
 
 		/* This function is usually called after currentTuple()  */
 		inline void increase_cur_(){

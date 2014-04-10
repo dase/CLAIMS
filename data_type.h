@@ -26,7 +26,7 @@ using namespace boost::posix_time;
 #include "types/NValue.hpp"
 using namespace decimal;
 #define DATA_TYPE_NUMBER 11
-enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean};
+enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
 typedef void (*fun)(void*,void*);
 
 //static int count_open_for_data_column=0;
@@ -711,7 +711,7 @@ public:
 class OperateSmallInt:public Operate
 {
 public:
-	OperateSmallInt(){assign=assigns<int>;};
+	OperateSmallInt(){assign=assigns<short>;};
 //	~OperateSmallInt(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -771,6 +771,72 @@ public:
 	}
 	Operate* duplicateOperator()const{
 		return new OperateSmallInt();
+	}
+};
+
+class OperateUSmallInt:public Operate
+{
+public:
+	OperateUSmallInt(){assign=assigns<unsigned short>;};
+//	~OperateSmallInt(){};
+	inline void assignment(const void* const &src,void* const &desc)const
+	{
+		*(unsigned short*)desc=*(unsigned short*)src;
+	};
+	inline std::string toString( void* value)
+	{
+		std::ostringstream ss;
+		ss<<*(unsigned short*)value;
+		std::string ret=ss.str();
+		return ret;
+	};
+	void toValue(void* target, const char* string){
+		*(unsigned short*)target = (unsigned short)atoi(string);
+	};
+	inline bool equal(void* a, void* b)
+	{
+		return *(unsigned short*)a==*(unsigned short*)b;
+	}
+	bool less(const void*& a, const void*& b)const{
+		return *(unsigned short*)a < *(unsigned short*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(unsigned short*)a > *(unsigned short*)b;
+	}
+	int compare(const void* a,const void* b)const{
+		return *(unsigned short*)a - *(unsigned short*)b;
+	}
+	inline void add(void* target, void* increment)
+	{
+		ADD<unsigned short>(target,increment);
+	}
+	inline fun GetADDFunction()
+	{
+		return ADD<unsigned short>;
+	}
+	inline fun GetMINFunction()
+	{
+		return MIN<unsigned short>;
+	}
+	inline fun GetMAXFunction()
+	{
+		return MAX<unsigned short>;
+	}
+	inline fun GetIncreateByOneFunction()
+	{
+		return IncreaseByOne<unsigned short>;
+	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(unsigned short*)key);
+	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(unsigned short*)key);
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(unsigned short*)key)%mod;
+	}
+	Operate* duplicateOperator()const{
+		return new OperateUSmallInt();
 	}
 };
 
@@ -890,6 +956,7 @@ public:
 			case t_datetime: operate = new OperateDatetime();break;
 			case t_decimal: operate = new OperateDecimal(size);break;
 			case t_smallInt: operate = new OperateSmallInt();break;
+			case t_u_smallInt: operate = new OperateUSmallInt();break;
 			default:operate=0;break;
 		}
 		COUNTER::count++;
@@ -921,6 +988,7 @@ public:
 			case t_datetime: return sizeof(ptime);
 			case t_decimal: return 16;
 			case t_smallInt: return sizeof(short);
+			case t_u_smallInt: return sizeof(unsigned short);
 			default: return 0;
 
 		}
@@ -965,6 +1033,7 @@ private:
 			case t_datetime: operate = new OperateDatetime();break;
 			case t_decimal: operate = new OperateDecimal(size);break;
 			case t_smallInt: operate = new OperateSmallInt();break;
+			case t_u_smallInt: operate = new OperateUSmallInt();break;
 			default:operate=0;break;
 		}
 	}

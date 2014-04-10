@@ -54,6 +54,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamTopN.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamInIterator.h"
+#include "../IndexManager/CSBIndexBuilding.h"
+#include "../IndexManager/IndexScanIterator.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -109,6 +111,9 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamProjectIterator*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamIteratorBase*>(NULL));
 	ar.register_type(static_cast<BlockStreamInIterator*>(NULL));
+	ar.register_type(static_cast<bottomLayerCollecting*>(NULL));
+	ar.register_type(static_cast<bottomLayerSorting*>(NULL));
+	ar.register_type(static_cast<IndexScanIterator*>(NULL));
 
 }
 void cheat_the_compiler(){

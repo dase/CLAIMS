@@ -76,16 +76,15 @@ private:
 	semaphore sem_open_;
 	volatile bool open_finished_;
 
+	unsigned long tuple_after_filter_;
 
 	Lock lock_;
-	/*for debug for the filter tuple numbers*/
-	unsigned tuple_after_filter_;
 	/* the following code is for boost serialization*/
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) &state_;
+		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) &state_;
 	}
 };
 

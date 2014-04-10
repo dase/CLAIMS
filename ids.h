@@ -22,7 +22,7 @@ typedef unsigned AttributeOffset;
 typedef int ProjectionOffset;
 typedef unsigned ColumnOffset;
 typedef unsigned PartitionOffset;
-typedef unsigned ChunkOffset;
+typedef int ChunkOffset;
 typedef unsigned long ExpanderID;
 /*the following ids are based on the assumption that the TableOffset is globally unique.*/
 
@@ -58,6 +58,14 @@ struct ProjectionID{
 	ProjectionOffset projection_off;
 	bool operator==(const ProjectionID& r)const{
 		return table_id==r.table_id&& projection_off==r.projection_off;
+	}
+	bool operator<(const ProjectionID& r)const{
+		if (table_id < r.table_id)
+			return true;
+		else if (table_id == r.table_id)
+			return (projection_off < r.projection_off);
+		else
+			return false;
 	}
 
 	/* for boost::serialization*/
@@ -108,6 +116,14 @@ struct PartitionID{
 	bool operator==(const PartitionID& r)const{
 		return projection_id==r.projection_id&&partition_off==r.partition_off;
 	}
+	bool operator<(const PartitionID& r)const{
+		if (projection_id < r.projection_id)
+			return true;
+		else if (projection_id == r.projection_id)
+			return (partition_off < r.partition_off);
+		else
+			return false;
+	}
 	PartitionID(const PartitionID& r){
 		projection_id=r.projection_id;
 		partition_off=r.partition_off;
@@ -119,7 +135,14 @@ struct PartitionID{
 	}
 	std::string getPathAndName()const{
 		std::ostringstream str;
-		str<<"/home/imdb/data/tpc-h/4_partitions/SF-1/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+//		str<<"/home/imdb/data/tpc-h/4_partitions/SF-1/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+
+//		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+//		str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+
+//		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+		str<<"/home/imdb/data/dsc/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
+//		str<<"/home/imdb/data/wangli/T"<<partition_off;
 
 		return str.str();
 	}
@@ -140,7 +163,15 @@ struct ChunkID{
 		chunk_off=r.chunk_off;
 	}
 	bool operator==(const ChunkID& r)const{
-		return partition_id==r.partition_id&&partition_id==r.partition_id;
+		return partition_id==r.partition_id&&chunk_off==r.chunk_off;
+	}
+	bool operator<(const ChunkID& r)const{
+		if (partition_id < r.partition_id)
+			return true;
+		else if (partition_id == r.partition_id)
+			return (chunk_off < r.chunk_off);
+		else
+			return false;
 	}
 	PartitionID partition_id;
 	ChunkOffset chunk_off;

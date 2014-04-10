@@ -20,6 +20,7 @@ EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_i
 		right_join_key_list_.push_back(joinpair_list[i].second);
 	}
 //	print();
+	setOperatortype(l_equal_join);
 }
 
 EqualJoin::~EqualJoin() {
