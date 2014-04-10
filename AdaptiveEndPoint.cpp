@@ -124,7 +124,7 @@ bool AdaptiveEndPoint::ConnectToCoordinateEndPoint(int port){
 //	sleep(1);
 	if(!ConnectToRemoteEndPoint(os.str().c_str())){
 		logging_->elog("Check whether network is enabled! %s",os.str().c_str());
-		assert(false);
+//		assert(false);
 		return false;
 	}
 

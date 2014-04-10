@@ -17,7 +17,7 @@
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
 :collecter_(collecter),child_(child),fashion_(fashion){
 	// TODO Auto-generated constructor stub
-
+	setOperatortype(l_root);
 }
 
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {

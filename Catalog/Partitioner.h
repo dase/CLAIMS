@@ -228,6 +228,8 @@ public:
 	PartitionFunction* getPartitionFunction()const;
 	ProjectionID getProejctionID()const;
 	bool allPartitionBound()const;
+
+	vector<PartitionID> getPartitionIDList();
 private:
 	Attribute* partition_key_;
 	PartitionFunction* partition_functin_;

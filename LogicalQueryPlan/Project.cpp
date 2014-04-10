@@ -11,6 +11,7 @@ LogicalProject::LogicalProject(LogicalOperator *child, std::vector<std::vector<E
 :child_(child),exprArray_(exprArray){
 	initialize_arithmetic_type_promotion_matrix();
 	initialize_type_cast_functions();
+	setOperatortype(l_project);
 }
 
 LogicalProject::~LogicalProject(){
