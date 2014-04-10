@@ -157,15 +157,16 @@ std::map<ChunkID, void* > IndexManager::getAttrIndex(unsigned long attr_index_id
 	return ret;
 }
 
+template <typename T>
 bool IndexManager::deleteIndexFromList(unsigned long index_id)
 {
 	if (csb_index_.find(index_id) == csb_index_.end())
 		return true;
 	else
 	{
-		/*
-		 * here need to delete the index structure
-		 */
+		attr_index_list* index_ = csb_index_.find(index_id)->second;
+		for (map<ChunkID, void*>::iterator iter = index_->csb_tree_list.begin(); iter != index_->csb_tree_list.end(); iter++)
+			((CSBPlusTree<T>*)(iter->second))->~CSBPlusTree();
 		csb_index_.erase(index_id);
 		column_attribute_to_id.erase(id_to_column_attribute.find(index_id)->second);
 		id_to_column_attribute.erase(index_id);

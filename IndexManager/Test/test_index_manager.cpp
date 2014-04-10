@@ -24,7 +24,9 @@ static int test_index_manager_()
 		return -1;
 	}
 	map<ChunkID, CSBPlusTree<int>* >::iterator iter = sec_code_index.begin();
-	map<index_offset, vector<index_offset> >* ret = new map<index_offset, vector<index_offset> > [sec_code_index.size()];
+	map<index_offset, vector<index_offset>* >** ret = new map<index_offset, vector<index_offset>* >* [sec_code_index.size()];
+	for (unsigned i = 0; i < sec_code_index.size(); i++)
+		ret[i] = new map<index_offset, vector<index_offset>* >;
 	while (true)
 	{
 		int sec_code = 0;
@@ -35,9 +37,9 @@ static int test_index_manager_()
 		unsigned long total_tuple = 0;
 		for (iter = sec_code_index.begin(); iter != sec_code_index.end(); iter++)
 		{
-			ret[count].clear();
+			ret[count]->clear();
 			ret[count] = iter->second->rangeQuery(sec_code, sec_code);
-			total_tuple += ret[count].size();
+			total_tuple += ret[count]->size();
 			count++;
 		}
 
@@ -45,23 +47,23 @@ static int test_index_manager_()
 		cout << "tuples in each chunk: \n";
 		for (count = 0; count < sec_code_index.size(); count++)
 		{
-			cout << "Chunk " << count << ": " << ret[count].size() << " tuples.\n";
-			if (ret[count].size() != 0)
+			cout << "Chunk " << count << ": " << ret[count]->size() << " tuples.\n";
+			if (ret[count]->size() != 0)
 			{
 				cout << "How many to print? ";
 				cin >> sec_code;
-				while (sec_code > 0)
-				{
-				for (map<index_offset, vector<index_offset> >::iterator iter = ret[count].begin(); iter != ret[count].end(); iter++)
-					for (vector<index_offset>::iterator iter_ = iter->second.begin(); iter_ != iter->second.end(); iter_++)
+// For testing begin: make sure the result is legal
+				for (map<index_offset, vector<index_offset>* >::iterator iter = ret[count]->begin(); iter != ret[count]->end(); iter++)
+					for (vector<index_offset>::iterator iter_ = iter->second->begin(); iter_ != iter->second->end(); iter_++)
 					{
-//						cout << "<" << iter->first << ", " << *iter_ << ">\t";
+						if (sec_code > 0)
+						{
+							cout << "<" << iter->first << ", " << *iter_ << ">\t";
+							sec_code--;
+						}
 						assert(iter->first < 1024 && *iter_ <= 2046);
-						sec_code--;
 					}
-				}
-//				for (int i = 0; i < ret[count].size() && i < sec_code; i++)
-//					cout << "<" << ret[count][i]->_block_off << ", " << ret[count][i]->_tuple_off << ">\t";
+// For testing end
 				cout << endl;
 			}
 		}

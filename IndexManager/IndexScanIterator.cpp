@@ -74,10 +74,12 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 			{
 				state_.schema_->copyTuple(rb.iterator->getTuple(*rb.iter_result_vector), tuple_from_index_search);
 				rb.iter_result_vector++;
-				if (rb.iter_result_vector == rb.iter_result_map->second.end())
+				if (rb.iter_result_vector == rb.iter_result_map->second->end())
 				{
 					rb.iter_result_map++;
-					rb.iter_result_vector = rb.iter_result_map->second.begin();
+					if (rb.iter_result_map == rb.result_set->end())
+						break;
+					rb.iter_result_vector = rb.iter_result_map->second->begin();
 				}
 			}
 			else
@@ -108,12 +110,12 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 //				sleep(1);
 ////For testing end
 				rb.iter_result_vector++;
-				if (rb.iter_result_vector == rb.iter_result_map->second.end())
+				if (rb.iter_result_vector == rb.iter_result_map->second->end())
 				{
 					rb.iter_result_map++;
-					if (rb.iter_result_map == rb.result_set.end())
+					if (rb.iter_result_map == rb.result_set->end())
 						break;
-					rb.iter_result_vector = rb.iter_result_map->second.begin();
+					rb.iter_result_vector = rb.iter_result_map->second->begin();
 				}
 			}
 			else
@@ -180,7 +182,7 @@ bool IndexScanIterator::atomicPopRemainingBlock(remaining_block& rb)
 
 bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 {
-	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->nextBlock(rb.block) == false || rb.iter_result_map == rb.result_set.end())
+	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->nextBlock(rb.block) == false || rb.iter_result_map == rb.result_set->end())
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		if (chunk_reader_iterator_ == 0)
@@ -204,35 +206,39 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 			CSBPlusTree<int>* csb_tree = (CSBPlusTree<int>*)iter->second;
 			csb_index_list_.erase(iter++);
 
-			rb.result_set.clear();
-			map<index_offset, vector<index_offset> > result_set;
+			rb.result_set->clear();
+			map<index_offset, vector<index_offset>* >* result_set;
 			for (vector<query_range>::iterator iter = state_.query_range_.begin(); iter != state_.query_range_.end(); iter++)
 			{
 				result_set = csb_tree->rangeQuery(*(int*)iter->value_low, iter->comp_low, *(int*)iter->value_high, iter->comp_high);
-				if (result_set.size() != 0)
+				if (result_set->size() != 0)
 				{
-					for (map<index_offset, vector<index_offset> >::iterator iter_map = result_set.begin(); iter_map != result_set.end(); iter_map++)
-						rb.result_set[iter_map->first].insert(rb.result_set[iter_map->first].end(), iter_map->second.begin(), iter_map->second.end());
+					for (map<index_offset, vector<index_offset>* >::iterator iter_map = result_set->begin(); iter_map != result_set->end(); iter_map++)
+					{
+						if (rb.result_set->find(iter_map->first) == rb.result_set->end())
+							(*rb.result_set)[iter_map->first] = new vector<index_offset>;
+						(*rb.result_set)[iter_map->first]->insert((*rb.result_set)[iter_map->first]->end(), iter_map->second->begin(), iter_map->second->end());
+					}
 				}
 			}
 
-			if (rb.result_set.size() == 0)
+			if (rb.result_set->size() == 0)
 			{
 				chunk_reader_iterator_ = 0;
 				return askForNextBlock(rb);
 			}
 ///*for testing*/			unsigned long count = 0;
-			for (rb.iter_result_map = rb.result_set.begin(); rb.iter_result_map != rb.result_set.end(); rb.iter_result_map++)
+			for (rb.iter_result_map = rb.result_set->begin(); rb.iter_result_map != rb.result_set->end(); rb.iter_result_map++)
 			{
-				for (rb.iter_result_vector = rb.iter_result_map->second.begin(); rb.iter_result_vector != rb.iter_result_map->second.end(); rb.iter_result_vector++)
+				for (rb.iter_result_vector = rb.iter_result_map->second->begin(); rb.iter_result_vector != rb.iter_result_map->second->end(); rb.iter_result_vector++)
 				{
 ///*for testing*/					count++;
 					assert(*rb.iter_result_vector<2047);
 				}
 			}
 ///*for testing*/			cout << "Total count: " << count << endl;
-			rb.iter_result_map = rb.result_set.begin();
-			rb.iter_result_vector = rb.iter_result_map->second.begin();
+			rb.iter_result_map = rb.result_set->begin();
+			rb.iter_result_vector = rb.iter_result_map->second->begin();
 			assert(*rb.iter_result_vector<2047);
 			return true;
 		}

@@ -19,32 +19,14 @@ class IndexScanIterator :public ExpandableBlockStreamIteratorBase {
 public:
 	struct remaining_block {
 		remaining_block() :  iter_result_vector(0), block_off(0), block(0), iterator(0) {
-			result_set.clear();
-			iter_result_map=result_set.end();
+			result_set = new map<index_offset, vector<index_offset>* >;
+			iter_result_map=result_set->end();
 		}
-		remaining_block(map<index_offset, vector<index_offset> > result_set, map<index_offset, vector<index_offset> >::iterator iter_result_map, vector<index_offset>::iterator iter_result_vector, unsigned short block_off, BlockStreamBase* block, BlockStreamBase::BlockStreamTraverseIterator* iterator)
+		remaining_block(map<index_offset, vector<index_offset>* >* result_set, map<index_offset, vector<index_offset>* >::iterator iter_result_map, vector<index_offset>::iterator iter_result_vector, unsigned short block_off, BlockStreamBase* block, BlockStreamBase::BlockStreamTraverseIterator* iterator)
 		:result_set(result_set), iter_result_map(iter_result_map), iter_result_vector(iter_result_vector), block_off(block_off), block(block), iterator(iterator) {}
 
-		remaining_block(const remaining_block & r){
-			result_set=r.result_set;
-			iter_result_map=result_set.find(r.iter_result_map->first);
-			iter_result_vector=iter_result_map->second.begin()+(r.iter_result_vector-r.iter_result_map->second.begin());
-			block_off=r.block_off;
-			block=r.block;
-			iterator=r.iterator;
-
-		}
-		remaining_block& operator=(const remaining_block& r){
-			result_set=r.result_set;
-			iter_result_map=result_set.find(r.iter_result_map->first);
-			iter_result_vector=iter_result_map->second.begin()+(r.iter_result_vector-r.iter_result_map->second.begin());
-			block_off=r.block_off;
-			block=r.block;
-			iterator=r.iterator;
-			return *this;
-		}
-		map<index_offset, vector<index_offset> > result_set;
-		map<index_offset, vector<index_offset> >::iterator iter_result_map;
+		map<index_offset, vector<index_offset>* >* result_set;
+		map<index_offset, vector<index_offset>* >::iterator iter_result_map;
 		vector<index_offset>::iterator iter_result_vector;
 		unsigned short block_off;
 

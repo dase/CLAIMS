@@ -61,7 +61,8 @@ CCSBNode<T>::CCSBNode():used_keys(0), p_father(NULL) { }
 template <typename T>
 CCSBNode<T>::~CCSBNode()
 {
-	DeleteChildren();
+	used_keys = 0;
+	p_father = NULL;
 }
 
 
@@ -154,7 +155,12 @@ return false;
 template <typename T>
 void CCSBInternalNode<T>::DeleteChildren()
 {
+	if (this->getPointer())
+		this->getPointer()->DeleteChildren();
 
+	for (unsigned i = 0; i < CSB_MAXNUM_KEY; i++)
+		node_keys[i] = INVALID;
+	delete p_child_node_group;
 }
 
 template <typename T>
@@ -265,7 +271,12 @@ return false;
 template <typename T>
 void CCSBLeafNode<T>::DeleteChildren()
 {
-
+	data_offset<T> tmp;
+	tmp._key = INVALID;
+	tmp._block_off = INVALID;
+	tmp._tuple_off = INVALID;
+	for (unsigned i = 0; i < CSB_MAXNUM_DATA; i++)
+		node_datas[i] = tmp;
 }
 
 template <typename T>
@@ -307,6 +318,13 @@ CCSBInternalNodeGroup<T>::~CCSBInternalNodeGroup()
 }
 
 template <typename T>
+void CCSBInternalNodeGroup<T>::DeleteChildren()
+{
+	for (unsigned i = 0; i < this->used_nodes; i++)
+		internal_nodes[i]->DeleteChildren();
+}
+
+template <typename T>
 bool CCSBInternalNodeGroup<T>::serialize(FILE* filename)
 {
 	fwrite((void*)(&this->used_nodes), sizeof(unsigned), 1, filename);
@@ -344,6 +362,13 @@ template <typename T>
 CCSBLeafNodeGroup<T>::~CCSBLeafNodeGroup()
 {
 
+}
+
+template <typename T>
+void CCSBLeafNodeGroup<T>::DeleteChildren()
+{
+	for (unsigned i = 0; i < this->used_nodes; i++)
+		leaf_nodes[i]->DeleteChildren();
 }
 
 template <typename T>
@@ -879,12 +904,12 @@ int CSBPlusTree<T>::makeInternalNodeGroup(T* aray, int aray_num, CCSBNodeGroup<T
 
 // 查找指定的数据
 template <typename T>
-map<index_offset, vector<index_offset> > CSBPlusTree<T>::Search(T key)
+map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::Search(T key)
 //vector<search_result*> CSBPlusTree<T>::Search(T key)
 {
-	map<index_offset, vector<index_offset> > ret;
+	map<index_offset, vector<index_offset>* >* ret = new map<index_offset, vector<index_offset>* >;
 //	vector<search_result*> ret;
-	ret.clear();
+	ret->clear();
 	int i = 0;
 /*for testing*/	char* sPath = (char*)malloc(1024);
 /*for testing*/	memset((void*)sPath, 0, 1024);
@@ -945,7 +970,12 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::Search(T key)
 		for (; i < search_node->getUsedKeys(); i++)
 		{
 			if (key == search_node->getElement(i)._key)
-				ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+			{
+				index_offset tmp = search_node->getElement(i)._block_off;
+				if (ret->find(tmp) == ret->end())
+					(*ret)[tmp] = new vector<index_offset>;
+				(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+			}
 			else
 				return ret;
 		}
@@ -965,7 +995,12 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::Search(T key)
 			for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 			{
 				if (key == search_node_group->getNode(j)->getElement(i)._key)
-					ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+				{
+					index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+				}
 				else
 					return ret;
 			}
@@ -991,11 +1026,11 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::Search(T key)
 }
 
 template <typename T>
-map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
+map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_key, T upper_key)
 {
 /*for testing*/	unsigned long count = 0;
-	map<index_offset, vector<index_offset> > ret;
-	ret.clear();
+	map<index_offset, vector<index_offset>* >* ret = new map<index_offset, vector<index_offset>* >;
+	ret->clear();
 	if (lower_key > upper_key)
 		return ret;
 	int i = 0;
@@ -1058,7 +1093,12 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 		for (; i < search_node->getUsedKeys(); i++)
 		{
 			if ((lower_key <= search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
-				ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+			{
+				index_offset tmp = search_node->getElement(i)._block_off;
+				if (ret->find(tmp) == ret->end())
+					(*ret)[tmp] = new vector<index_offset>;
+				(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+			}
 			else
 				return ret;
 		}
@@ -1079,7 +1119,10 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 			{
 				if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
 				{
-					ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 /*for testing*/					count++;
 				}
 				else
@@ -1109,10 +1152,10 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 }
 
 template<typename T>
-map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)
+map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)
 {
-	map<index_offset, vector<index_offset> > ret;
-	ret.clear();
+	map<index_offset, vector<index_offset>* >* ret = new map<index_offset, vector<index_offset>* >;
+	ret->clear();
 	//For point query
 	if (comp_lower == FilterIterator::AttributeComparator::EQ)
 	{
@@ -1204,7 +1247,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 			for (; i < search_node->getUsedKeys(); i++)
 			{
 				if ((lower_key <= search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
-					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
 				else
 					return ret;
 			}
@@ -1214,7 +1263,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 			for (; i < search_node->getUsedKeys(); i++)
 			{
 				if ((lower_key <= search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
-					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
 				else
 					return ret;
 			}
@@ -1224,7 +1279,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 			for (; i < search_node->getUsedKeys(); i++)
 			{
 				if ((lower_key < search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
-					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
 				else
 					return ret;
 			}
@@ -1234,7 +1295,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 			for (; i < search_node->getUsedKeys(); i++)
 			{
 				if ((lower_key < search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
-					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
 				else
 					return ret;
 			}
@@ -1256,7 +1323,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 				{
 					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
-						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 					else
 						return ret;
 				}
@@ -1273,7 +1346,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 				{
 					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
-						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 					else
 						return ret;
 				}
@@ -1290,7 +1369,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 				{
 					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
-						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 					else
 						return ret;
 				}
@@ -1307,7 +1392,13 @@ map<index_offset, vector<index_offset> > CSBPlusTree<T>::rangeQuery(T lower_key,
 				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
 				{
 					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
-						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
 					else
 						return ret;
 				}
@@ -1731,6 +1822,16 @@ bool CSBPlusTree<T>::deserialize(FILE* filename)
 
 	}
 	return true;
+}
+
+template <typename T>
+void CSBPlusTree<T>::ClearTree()
+{
+	csb_root->DeleteChildren();
+	leaf_header = NULL;
+	leaf_tailer = NULL;
+	csb_root = NULL;
+	csb_depth = 0;
 }
 
 template <typename T>
