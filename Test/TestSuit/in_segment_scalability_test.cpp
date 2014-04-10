@@ -84,7 +84,7 @@ static double lineitem_scan_aggregation(){
 	physical_iterator_tree->close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
-//	printf("tuples %d\n",result_set->getNumberOftuples());
+	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
 
 	physical_iterator_tree->~BlockStreamIteratorBase();
@@ -156,8 +156,8 @@ static int in_segment_scalability_test(int repeated_times=10){
 	double total_time=0;
 
 //	scalability_test(lineitem_scan_filter,"Scan-->filter",8);
-//	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",8);
-	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
+	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",24);
+//	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
 
 	Environment::getInstance()->~Environment();
 

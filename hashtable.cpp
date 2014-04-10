@@ -123,7 +123,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 	{
 		cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
 		//TODO: as mentioned in .cpp.
-//		memset(cur_mother_page,0,pagesize_);
+		memset(cur_mother_page,0,pagesize_);
 		assert(cur_mother_page);
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);
@@ -131,7 +131,6 @@ void* BasicHashTable::allocate(const unsigned & offset){
 	overflow_count_[offset]++;
 	ret=cur_mother_page+cur_MP_;
 	cur_MP_+=bucksize_;
-	mother_page_lock_.unlock();
 
 	void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
 	void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
@@ -139,6 +138,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 	*new_buck_nextloc = data;
 
 	bucket_[offset]=ret;
+	mother_page_lock_.unlock();
 	return ret;
 }
 
@@ -152,6 +152,16 @@ void BasicHashTable::report_status() {
 		total_overflow_buckets+=overflow_count_[i];
 	}
 	printf("#. of overflow buckets: %ld\n",total_overflow_buckets);
+
+	unsigned long long int tuple_count=0;
+	for(unsigned i=0;i<nbuckets_;i++){
+		Iterator it=this->CreateIterator();
+		this->placeIterator(it,i);
+		while(it.readnext()){
+			tuple_count++;
+		}
+	}
+	printf("Total tuples in hash table:%lld\n",tuple_count);
 	printf("------------------------------------------\n");
 
 }
