@@ -8,8 +8,9 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#define COOR "/home/imdb/config/wangli/coor.conf"
-#define CONFIG "/home/imdb/config/wangli/config"
+#define COOR "/home/imdb/config/dsc/coor.conf"
+#define CONFIG "/home/imdb/config/dsc/config"
+
 //#define CONFIG_SAME "/home/imdb/config/config"
 
 /*

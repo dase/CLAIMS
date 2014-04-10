@@ -37,6 +37,8 @@ public:
 	/* whether given attribute specified by table_name and attribute_name exists*/
 	bool isAttributeExist(const std::string& table_name,const std::string& attribute_name )const;
 
+	vector<PartitionID> getPartitionIDList(const std::string& table_name, const std::string& attribute_name);
+
 private:
 	Catalog();
 	TableIDAllocator table_id_allocator;
