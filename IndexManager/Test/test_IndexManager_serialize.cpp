@@ -145,14 +145,14 @@ static void test_logical_index_scan()
 	}
 }
 
-static void test_scan_filter_performance()
+static void test_scan_filter_performance(int value)
 {
 	TableDescriptor* table=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
 
 	Filter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("10107"));
-	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::L,std::string("600030"));
+	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::L,(void*)&value);
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_scan);
 
 	const NodeID collector_node_id=0;
@@ -175,12 +175,12 @@ static void test_scan_filter_performance()
 	root->~LogicalOperator();
 }
 
-static void test_index_filter_performance()
+static void test_index_filter_performance(int value_high)
 {
 	vector<IndexScanIterator::query_range> q_range;
 	q_range.clear();
 	int value_low = 10107;
-	int value_high = 600030;
+//	int value_high = 600257;
 	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
 
 	IndexScanIterator::query_range q;
@@ -222,8 +222,14 @@ static int test_index_manager()
 //	test_serialize();
 	test_deserialize();
 //	test_logical_index_scan();
-	test_scan_filter_performance();
-	test_index_filter_performance();
+	int tmp = 0;
+	while (true)
+	{
+	cout << "Input sec_code: ";
+	cin >> tmp;
+	test_scan_filter_performance(tmp);
+	test_index_filter_performance(tmp);
+	}
 
 	Environment::getInstance()->~Environment();
 	return 0;

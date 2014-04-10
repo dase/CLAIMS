@@ -39,6 +39,7 @@ public:
 
 	std::map<ChunkID, void* > getAttrIndex(unsigned long attr_index_id);
 
+	template <typename T>
 	bool deleteIndexFromList(unsigned long index_id);
 
 	data_type getIndexType(unsigned long index_id);
