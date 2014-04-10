@@ -19,9 +19,9 @@ using namespace std;
 #define FLAG_LEFT 1
 #define FLAG_RIGHT 2
 
-#define CSB_MAXNUM_KEY 		12
-#define CSB_MAXNUM_DATA 	12
-#define CSB_ORDER_V 		6
+#define CSB_MAXNUM_KEY 4//		12
+#define CSB_MAXNUM_DATA 4//	12
+#define CSB_ORDER_V 2//		6
 
 typedef unsigned short index_offset;
 typedef FilterIterator::AttributeComparator::comparison comparison;
@@ -70,7 +70,7 @@ public:
 //	virtual CCSBNode* GetBrother(int& flag);
 
 	//delete the child nodes
-	virtual void DeleteChildren() {};
+	virtual void DeleteChildren() { assert(false); };
 
 	//operations for a index nodes
 	virtual bool Insert(T key) { assert(false); };	//for internal node
@@ -200,6 +200,11 @@ public:
 		}
 	}
 
+	CCSBNodeGroup<T>* getPointer()
+	{
+		return NULL;
+	}
+
 	bool Insert(data_offset<T> value);
 	bool Delete(T value);
 	T SplitInsert(CCSBNode<T>* pNode, data_offset<T> data);
@@ -225,14 +230,17 @@ public:
 
 	unsigned getUsedNodes() { return used_nodes; }
 	void nodeCountIncrement() { used_nodes++; }
-	virtual CCSBNodeGroup<T>* getHeaderNG() {};
-	virtual void setHeaderNG(CCSBNodeGroup<T>* header) {};
-	virtual CCSBNodeGroup<T>* getTailerNG() {};
-	virtual void setTailerNG(CCSBNodeGroup<T>* tailer) {};
 
-	inline virtual bool setUsedNodes(unsigned n) {};
-	virtual CCSBNode<T>* getNode(unsigned i) {};
-	virtual void setNode(unsigned i, CCSBNode<T>* node) {};
+	virtual CCSBNodeGroup<T>* getHeaderNG() { assert(false); };
+	virtual void setHeaderNG(CCSBNodeGroup<T>* header) { assert(false); };
+	virtual CCSBNodeGroup<T>* getTailerNG() { assert(false); };
+	virtual void setTailerNG(CCSBNodeGroup<T>* tailer) { assert(false); };
+
+	inline virtual bool setUsedNodes(unsigned n) { assert(false); };
+	virtual CCSBNode<T>* getNode(unsigned i) { assert(false); };
+	virtual void setNode(unsigned i, CCSBNode<T>* node) { assert(false); };
+
+	virtual void DeleteChildren() { assert(false); }
 
 	virtual bool serialize(FILE* filename) { assert(false); }
 	virtual bool deserialize(FILE* filename) { assert(false); }
@@ -275,6 +283,9 @@ public:
 		internal_nodes[i]->setFather(node->getFather());
 		internal_nodes[i]->setPointer(node->getPointer());
 	}
+
+	void DeleteChildren();
+
 	bool serialize(FILE* filename);
 	bool deserialize(FILE* filename);
 
@@ -322,6 +333,8 @@ public:
 		leaf_nodes[i]->setUsedKeys(node->getUsedKeys());
 		leaf_nodes[i]->setFather(node->getFather());
 	}
+
+	void DeleteChildren();
 	bool serialize(FILE* filename);
 	bool deserialize(FILE* filename);
 
@@ -340,9 +353,9 @@ public:
 	//bulkload indexing
 	void BulkLoad(data_offset<T>* aray, unsigned arayNo);
 	//search certain records according to the key
-	map<index_offset, vector<index_offset> > Search(T key);
-	map<index_offset, vector<index_offset> > rangeQuery(T lower_key, T upper_key);
-	map<index_offset, vector<index_offset> > rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper);
+	map<index_offset, vector<index_offset>* >* Search(T key);
+	map<index_offset, vector<index_offset>* >* rangeQuery(T lower_key, T upper_key);
+	map<index_offset, vector<index_offset>* >* rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper);
 	//insert a record
 	bool Insert(data_offset<T> data);
 	//delete the records according to the key
@@ -379,7 +392,7 @@ private:
 	// 在中间结点中删除键
 	bool DeleteInternalNode(CCSBInternalNode<T>* pNode, T key);
 	// 清除树
-	void ClearTree() {};
+	void ClearTree();
 };
 
 #endif /* CSBPLUSTREE_H_ */
