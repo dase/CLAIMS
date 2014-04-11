@@ -113,10 +113,10 @@ static void test_logical_index_scan()
 
 		q2.value_low = malloc(sizeof(int));
 		q2.value_low = (void*)(&value);
-		q2.comp_low = FilterIterator::AttributeComparator::EQ;
+		q2.comp_low = EQ;
 		q2.value_high = malloc(sizeof(int));
 		q2.value_high = (void*) (&value);
-		q2.comp_high = FilterIterator::AttributeComparator::EQ;
+		q2.comp_high = EQ;
 		q2.c_type.type = t_int;
 		q2.c_type.operate = new OperateInt();
 		q_range.push_back(q2);
@@ -186,10 +186,10 @@ static void test_index_filter_performance(int value_high)
 	IndexScanIterator::query_range q;
 	q.value_low = malloc(sizeof(int));
 	q.value_low = (void*)(&value_low);
-	q.comp_low = FilterIterator::AttributeComparator::GEQ;
+	q.comp_low = GEQ;
 	q.value_high = malloc(sizeof(int));
 	q.value_high = (void*) (&value_high);
-	q.comp_high = FilterIterator::AttributeComparator::L;
+	q.comp_high = L;
 	q.c_type.type = t_int;
 	q.c_type.operate = new OperateInt();
 	q_range.push_back(q);
@@ -218,9 +218,9 @@ static int test_index_manager()
 {
 	init_poc_environment();
 
-//	test_logical_index_building();
+	test_logical_index_building();
 //	test_serialize();
-	test_deserialize();
+//	test_deserialize();
 //	test_logical_index_scan();
 	int tmp = 0;
 	while (true)
