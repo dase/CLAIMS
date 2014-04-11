@@ -10,7 +10,9 @@
 
 #include <iostream>
 #include <vector>
-#include "../iterator/FilterIterator.h"
+#include <assert.h>
+#include <map>
+#include "../configure.h"
 using namespace std;
 
 
@@ -19,12 +21,9 @@ using namespace std;
 #define FLAG_LEFT 1
 #define FLAG_RIGHT 2
 
-#define CSB_MAXNUM_KEY 4//		12
-#define CSB_MAXNUM_DATA 4//	12
-#define CSB_ORDER_V 2//		6
-
 typedef unsigned short index_offset;
-typedef FilterIterator::AttributeComparator::comparison comparison;
+
+enum comparison {EQ, L, LEQ, G, GEQ};
 
 //struct for the offset of the real data: leaf node's element struct
 template <typename T>
@@ -51,39 +50,39 @@ public:
 
 	//the get and set function for node_type, node_inner_key_count, node's_father
 	int getUsedKeys() {return used_keys;}
-	virtual bool setUsedKeys(int count) { assert(false); };
-	CCSBNode* getFather() { return p_father;}
-	void setFather(CCSBNode* father) { p_father = father; }
+	virtual bool setUsedKeys(int count) { assert(false); }
+	CCSBNode<T>* getFather() { return p_father;}
+	void setFather(CCSBNode<T>* father) { p_father = father; }
+
+	static unsigned getMaxKeys() { return (cacheline_size-8)/sizeof(T); }
+	static unsigned getMaxDatas() { return cacheline_size/sizeof(data_offset<T>); }
 
 	//for the leaf nodes: get or set a certain data
-	virtual data_offset<T> getElement(unsigned i) { assert(false); };
-	virtual bool setElement(unsigned i, data_offset<T> value) { assert(false); };
+	virtual data_offset<T> getElement(unsigned i) { assert(false); }
+	virtual bool setElement(unsigned i, data_offset<T> value) { assert(false); }
 
 	//for the internal nodes: get or set a certain key
 //	virtual T getElement(unsigned i) {};
-	virtual bool setElement(unsigned i, T value) { assert(false); };
+	virtual bool setElement(unsigned i, T value) { assert(false); }
 	//for the internal nodes: get or set the child's pointer
-	virtual CCSBNodeGroup<T>* getPointer() { assert(false); };
-	virtual void setPointer(CCSBNodeGroup<T>* pointer) { assert(false); };
-
-	// 获取一个最近的兄弟结点
-//	virtual CCSBNode* GetBrother(int& flag);
+	virtual CCSBNodeGroup<T>* getPointer() { assert(false); }
+	virtual void setPointer(CCSBNodeGroup<T>* pointer) { assert(false); }
 
 	//delete the child nodes
-	virtual void DeleteChildren() { assert(false); };
+	virtual void DeleteChildren() { assert(false); }
 
 	//operations for a index nodes
-	virtual bool Insert(T key) { assert(false); };	//for internal node
-	virtual bool Insert(data_offset<T> value) { assert(false); };	//for leaf node
-	virtual bool Delete(T value) { assert(false); };
-	virtual T SplitInsert(CCSBNode<T>* pNode, T key) { assert(false); };	//internal
-	virtual T SplitInsert(CCSBNode<T>* pNode, data_offset<T> data) { assert(false); };	//leaf
-	virtual bool Combine(CCSBNode<T>* pNode) { assert(false); };
+	virtual bool Insert(T key) { assert(false); }	//for internal node
+	virtual bool Insert(data_offset<T> value) { assert(false); }	//for leaf node
+	virtual bool Delete(T value) { assert(false); }
+	virtual T SplitInsert(CCSBNode<T>* pNode, T key) { assert(false); }	//internal
+	virtual T SplitInsert(CCSBNode<T>* pNode, data_offset<T> data) { assert(false); }	//leaf
+	virtual bool Combine(CCSBNode<T>* pNode) { assert(false); }
 	virtual bool serialize(FILE* filename) { assert(false); }
 	virtual bool deserialize(FILE* filename) { assert(false); }
 public:
 	int used_keys;  //number of datas/keys in the node
-	CCSBNode* p_father;  //father pointer
+	CCSBNode<T>* p_father;  //father pointer
 
 };
 
@@ -97,7 +96,7 @@ public:
 
 	bool setUsedKeys(int count)
 	{
-		if (count <= CSB_MAXNUM_KEY)
+		if (count <= this->getMaxKeys())
 		{
 			this->used_keys = count;
 			return true;
@@ -109,14 +108,14 @@ public:
 		data_offset<T> ret;
 		ret._block_off = INVALID;
 		ret._tuple_off = INVALID;
-		if ((i >= 0 ) && (i < CSB_MAXNUM_KEY))
+		if ((i >= 0 ) && (i < this->getMaxKeys()))
 			ret._key = node_keys[i];
 		else
 			ret._key = INVALID;
 		return ret;
 	}
 	bool setElement(unsigned i, T key) {
-		if ((i >= 0 ) && (i < CSB_MAXNUM_KEY))
+		if ((i >= 0 ) && (i < this->getMaxKeys()))
 		{
 			node_keys[i] = key;
 			return true;
@@ -149,7 +148,7 @@ public:
 	bool deserialize(FILE* filename);
 
 public:
-	T node_keys[CSB_MAXNUM_KEY];  //array for the keys
+	T* node_keys;  //array for the keys
 	CCSBNodeGroup<T>* p_child_node_group;  //the pointer for the child nodes group
 
 };
@@ -164,7 +163,7 @@ public:
 
 	bool setUsedKeys(int count)
 	{
-		if (count <= CSB_MAXNUM_DATA)
+		if (count <= this->getMaxDatas())
 		{
 			this->used_keys = count;
 			return true;
@@ -174,7 +173,7 @@ public:
 	//get or set a certain data
 	data_offset<T> getElement(unsigned i)
 	{
-		if ((i >= 0 ) && (i < CSB_MAXNUM_DATA))
+		if ((i >= 0 ) && (i < this->getMaxDatas()))
 			return node_datas[i];
 		else
 		{
@@ -186,7 +185,7 @@ public:
 
 	bool setElement(unsigned i, data_offset<T> data)
 	{
-		if ((i >= 0 ) && (i < CSB_MAXNUM_DATA))
+		if ((i >= 0 ) && (i < this->getMaxDatas()))
 		{
 			node_datas[i]._key = data._key;
 			node_datas[i]._block_off = data._block_off;
@@ -215,7 +214,7 @@ public:
 	bool deserialize(FILE* filename);
 
 public:
-	data_offset<T> node_datas[CSB_MAXNUM_DATA];
+	data_offset<T>* node_datas;
 
 };
 
@@ -259,7 +258,7 @@ public:
 
 	inline bool setUsedNodes(unsigned n)
 	{
-		if (n <= CSB_MAXNUM_KEY+1)
+		if (n <= CCSBNode<T>::getMaxKeys()+1)
 		{
 			this->used_nodes = n;
 			return true;
@@ -309,7 +308,7 @@ public:
 
 	inline bool setUsedNodes(unsigned n)
 	{
-		if (n <= CSB_MAXNUM_DATA+1)
+		if (n <= CCSBNode<T>::getMaxDatas()+1)
 		{
 			this->used_nodes = n;
 			return true;
@@ -348,7 +347,11 @@ public:
 template <typename T>
 class CSBPlusTree {
 public:
-	CSBPlusTree():csb_root(NULL), csb_depth(0), leaf_header(NULL), leaf_tailer(NULL) {}
+	CSBPlusTree():csb_root(NULL), csb_depth(0), leaf_header(NULL), leaf_tailer(NULL)
+	{
+		max_keys = CCSBNode<T>::getMaxKeys();
+		max_datas = CCSBNode<T>::getMaxDatas();
+	}
 	virtual ~CSBPlusTree();
 	//bulkload indexing
 	void BulkLoad(data_offset<T>* aray, unsigned arayNo);
@@ -376,6 +379,10 @@ public:
 	CCSBNode<T>* csb_root;
 	//depth of the index CSB+ Tree
 	unsigned csb_depth;
+
+private:
+	unsigned max_keys;
+	unsigned max_datas;
 
 private:
 

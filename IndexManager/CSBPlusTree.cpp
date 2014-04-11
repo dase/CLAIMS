@@ -40,7 +40,7 @@ void cheak_com(){
 	csb_int->printTree();
 	csb_int->Search(0);
 	csb_int->rangeQuery(0, 0);
-	csb_int->rangeQuery(0, FilterIterator::AttributeComparator::EQ, 0, FilterIterator::AttributeComparator::EQ);
+	csb_int->rangeQuery(0, EQ, 0, EQ);
 	csb_int->Insert(*data);
 	csb_int->serialize(0);
 	csb_int->deserialize(0);
@@ -70,8 +70,9 @@ CCSBNode<T>::~CCSBNode()
 template <typename T>
 CCSBInternalNode<T>::CCSBInternalNode()
 {
-	CCSBNode<T>(NODE_TYPE_INTERNAL);
-	for (unsigned i = 0; i < CSB_MAXNUM_KEY; i++)
+	CCSBNode<T>();
+	node_keys = new T [this->getMaxKeys()];
+	for (unsigned i = 0; i < this->getMaxKeys(); i++)
 		node_keys[i] = INVALID;
 	p_child_node_group = NULL;
 }
@@ -86,7 +87,7 @@ template <typename T>
 bool CCSBInternalNode<T>::Insert(T key)
 {
 	//return false when the node is full
-	if (this->getUsedKeys() >= CSB_MAXNUM_KEY)
+	if (this->getUsedKeys() >= this->getMaxKeys())
 	{
 		return false;
 	}
@@ -113,33 +114,34 @@ return false;
 template <typename T>
 T CCSBInternalNode<T>::SplitInsert(CCSBNode<T>* pNode, T key)
 {
-	if (this->getUsedKeys() != CSB_MAXNUM_KEY)
+	unsigned max_keys = this->getMaxKeys();
+	if (this->getUsedKeys() != max_keys)
 	{
 		cout << "[ERROR: CSBPlusTree.cpp (CCSBInternalNode->SplitInsert)] The unfull internal node can not be splited!\n";
 		return key;
 	}
 
-	if (key < this->node_keys[CSB_MAXNUM_KEY/2])	//insert into the first node
+	if (key < this->node_keys[max_keys/2])	//insert into the first node
 	{
-		for (unsigned i = CSB_MAXNUM_KEY/2; i < CSB_MAXNUM_KEY; i++)
+		for (unsigned i = max_keys/2; i < max_keys; i++)
 		{
-			pNode->setElement(i-CSB_MAXNUM_KEY/2, this->node_keys[i]);
+			pNode->setElement(i-max_keys/2, this->node_keys[i]);
 			this->node_keys[i] = INVALID;
 		}
-		pNode->setUsedKeys(CSB_MAXNUM_KEY-CSB_MAXNUM_KEY/2);
-		this->setUsedKeys(CSB_MAXNUM_KEY/2);
+		pNode->setUsedKeys(max_keys-max_keys/2);
+		this->setUsedKeys(max_keys/2);
 		this->Insert(key);
 		return pNode->getElement(0)._key;
 	}
 	else	//insert into pNode
 	{
-		unsigned tmp = CSB_MAXNUM_KEY-CSB_MAXNUM_KEY/2;
-		for (unsigned i = tmp; i < CSB_MAXNUM_KEY; i++)
+		unsigned tmp = max_keys-max_keys/2;
+		for (unsigned i = tmp; i < max_keys; i++)
 		{
 			pNode->setElement(i-tmp, this->node_keys[i]);
 			this->node_keys[i] = INVALID;
 		}
-		pNode->setUsedKeys(CSB_MAXNUM_KEY-tmp);
+		pNode->setUsedKeys(max_keys-tmp);
 		this->setUsedKeys(tmp);
 		pNode->Insert(key);
 		return pNode->getElement(0)._key;
@@ -158,8 +160,7 @@ void CCSBInternalNode<T>::DeleteChildren()
 	if (this->getPointer())
 		this->getPointer()->DeleteChildren();
 
-	for (unsigned i = 0; i < CSB_MAXNUM_KEY; i++)
-		node_keys[i] = INVALID;
+	delete[] node_keys;
 	delete p_child_node_group;
 }
 
@@ -183,12 +184,13 @@ bool CCSBInternalNode<T>::deserialize(FILE* filename)
 template <typename T>
 CCSBLeafNode<T>::CCSBLeafNode()
 {
-	CCSBNode<T>(NODE_TYPE_LEAF);
+	CCSBNode<T>();
+	node_datas = new data_offset<T> [this->getMaxDatas()];
 	data_offset<T> tmp;
 	tmp._key = INVALID;
 	tmp._block_off = INVALID;
 	tmp._tuple_off = INVALID;
-	for (unsigned i = 0; i < CSB_MAXNUM_DATA; i++)
+	for (unsigned i = 0; i < this->getMaxDatas(); i++)
 		node_datas[i] = tmp;
 }
 
@@ -202,7 +204,7 @@ template <typename T>
 bool CCSBLeafNode<T>::Insert(data_offset<T> value)
 {
 	//return false if the leaf node is full
-	if (this->getUsedKeys() >= CSB_MAXNUM_DATA)
+	if (this->getUsedKeys() >= this->getMaxDatas())
 		return false;
 
 	//determine the position for insert(for the equals keys insert at the last)
@@ -225,37 +227,38 @@ return false;
 template <typename T>
 T CCSBLeafNode<T>::SplitInsert(CCSBNode<T>* pNode, data_offset<T> data)
 {
-	if (this->getUsedKeys() != CSB_MAXNUM_DATA)
+	unsigned max_datas = this->getMaxDatas();
+	if (this->getUsedKeys() != max_datas)
 	{
 		cout << "[ERROR: CSBPlusTree.cpp (CCSBLeafNode->SplitInsert)] The unfull leaf node can not be splited!\n";
 		return data._key;
 	}
 
-	if (data._key < this->node_datas[CSB_MAXNUM_DATA/2]._key)	//insert into the first node
+	if (data._key < this->node_datas[max_datas/2]._key)	//insert into the first node
 	{
-		for (unsigned i = CSB_MAXNUM_DATA/2; i < CSB_MAXNUM_DATA; i++)
+		for (unsigned i = max_datas/2; i < max_datas; i++)
 		{
-			pNode->setElement(i-CSB_MAXNUM_DATA/2, this->node_datas[i]);
+			pNode->setElement(i-max_datas/2, this->node_datas[i]);
 			this->node_datas[i]._key = INVALID;
 			this->node_datas[i]._block_off = INVALID;
 			this->node_datas[i]._tuple_off = INVALID;
 		}
-		pNode->setUsedKeys(CSB_MAXNUM_DATA-CSB_MAXNUM_DATA/2);
-		this->setUsedKeys(CSB_MAXNUM_DATA/2);
+		pNode->setUsedKeys(max_datas-max_datas/2);
+		this->setUsedKeys(max_datas/2);
 		this->Insert(data);
 		return pNode->getElement(0)._key;
 	}
 	else	//insert into pNode
 	{
-		unsigned tmp = CSB_MAXNUM_DATA-CSB_MAXNUM_DATA/2;
-		for (unsigned i = tmp; i < CSB_MAXNUM_DATA; i++)
+		unsigned tmp = max_datas-max_datas/2;
+		for (unsigned i = tmp; i < max_datas; i++)
 		{
 			pNode->setElement(i-tmp, this->node_datas[i]);
 			this->node_datas[i]._key = INVALID;
 			this->node_datas[i]._block_off = INVALID;
 			this->node_datas[i]._tuple_off = INVALID;
 		}
-		pNode->setUsedKeys(CSB_MAXNUM_DATA-tmp);
+		pNode->setUsedKeys(max_datas-tmp);
 		this->setUsedKeys(tmp);
 		pNode->Insert(data);
 		return pNode->getElement(0)._key;
@@ -271,12 +274,7 @@ return false;
 template <typename T>
 void CCSBLeafNode<T>::DeleteChildren()
 {
-	data_offset<T> tmp;
-	tmp._key = INVALID;
-	tmp._block_off = INVALID;
-	tmp._tuple_off = INVALID;
-	for (unsigned i = 0; i < CSB_MAXNUM_DATA; i++)
-		node_datas[i] = tmp;
+	delete[] node_datas;
 }
 
 template <typename T>
@@ -413,7 +411,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 	if (aray_num == 0)
 		return;
 	//just one CSBNode
-	else if (aray_num <= CSB_MAXNUM_DATA)
+	else if (aray_num <= max_datas)
 	{
 		this->csb_depth = 1;
 		CCSBNodeGroup<T>* leaf = (CCSBNodeGroup<T>*) new CCSBLeafNodeGroup<T>(1);
@@ -447,11 +445,11 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 	else
 	{
 		//allocate the leaf_node_group
-		int leaf_node_group_num = ceil((double)(ceil((double)(aray_num)/(double)(CSB_MAXNUM_DATA)))/(double)(CSB_MAXNUM_KEY+1));
+		int leaf_node_group_num = ceil((double)(ceil((double)(aray_num)/(double)(max_datas)))/(double)(max_keys+1));
 		CCSBNodeGroup<T>** leaf = (CCSBNodeGroup<T>**) new CCSBLeafNodeGroup<T>* [leaf_node_group_num];
 
 		//allocate the parent_key_array of the leaf_node_group
-		int internal_key_array_num = ceil((double)aray_num/(double)CSB_MAXNUM_DATA)-1;
+		int internal_key_array_num = ceil((double)aray_num/(double)max_datas)-1;
 		T* internal_key_array = new T [internal_key_array_num];
 		//建立最底层叶子结点，并返回其索引internalAray
 		internal_key_array_num = makeLeafNodeGroup(aray, aray_num,leaf,internal_key_array);
@@ -486,7 +484,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 		//used the internal_key_array to build the internal indexing node;
 		//the indexing array is in internal_key_array, internal_key_array_num stands for the number of keys in it
 		//set the p_father and p_child_node_group between index nodes
-		if (internal_key_array_num <= CSB_MAXNUM_KEY)
+		if (internal_key_array_num <= max_keys)
 		{
 			this->csb_depth += 1;
 			CCSBNodeGroup<T>* internal = (CCSBNodeGroup<T>*)new CCSBInternalNodeGroup<T>(1);
@@ -519,7 +517,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 		else
 		{
 			//allocate upper node_group (equals to the lower_node_groups/branches)
-			int internal_node_group_num = ceil((double)leaf_node_group_num/(double)(CSB_MAXNUM_KEY+1));
+			int internal_node_group_num = ceil((double)leaf_node_group_num/(double)(max_keys+1));
 			CCSBNodeGroup<T>** internal = (CCSBNodeGroup<T>**)new CCSBInternalNodeGroup<T>* [internal_node_group_num];
 
 			//allocate the key_array for the upper internal_key_array
@@ -553,7 +551,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 
 
 			//loop construct the internal node groups until reach the root
-			while (upper_internal_key_array_num > CSB_MAXNUM_KEY)
+			while (upper_internal_key_array_num > max_keys)
 			{
 				//释放已经建立索引的internalAray数据，将其上层索引in2Aray赋给该指针准备再次建立索引
 				delete[] internal_key_array;
@@ -563,7 +561,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 				CCSBNodeGroup<T>** leaf = internal;
 
 				//申请足够的中间结点group空间，注：上层索引node的个数即为下层的nodegroup数
-				internal_node_group_num = ceil((double)leaf_node_group_num/(double)(CSB_MAXNUM_KEY+1));
+				internal_node_group_num = ceil((double)leaf_node_group_num/(double)(max_keys+1));
 				internal = (CCSBNodeGroup<T>**)new CCSBInternalNodeGroup<T>* [internal_node_group_num];
 
 				//申请更上一层内部结点空间，即为本层node数目-1
@@ -596,7 +594,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 ////For testing end
 
 			}
-			if (upper_internal_key_array_num <= CSB_MAXNUM_KEY)
+			if (upper_internal_key_array_num <= max_keys)
 			{
 				//建立根结点
 
@@ -646,7 +644,7 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 	csb_depth += 1;
 
 	//计算leafNodeGroup的数目
-	int leaf_node_group_num = ceil((double)(ceil((double)(aray_num)/(double)(CSB_MAXNUM_DATA)))/(double)(CSB_MAXNUM_KEY+1));
+	int leaf_node_group_num = ceil((double)(ceil((double)(aray_num)/(double)(max_datas)))/(double)(max_keys+1));
 
 	int internal_key_array_off = 0;  //记录internalAray下标
 
@@ -654,7 +652,7 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 	if (leaf_node_group_num == 1)
 	{
 		//判断之中有几个leafNode （arayNo <= CSB_MAXNUM_DATA的情况已单独讨论过，至少有两个leafNode结点）
-		int leaf_node_num = ceil((double)aray_num/(double)CSB_MAXNUM_DATA);
+		int leaf_node_num = ceil((double)aray_num/(double)max_datas);
 		leaf[0] = new CCSBLeafNodeGroup<T>(leaf_node_num);
 
 		//将数据填入leaf[0]中，对前leafNNo-2个结点而言，每个leafNode中均填满CSB_MAXNUM_DATA个数据
@@ -662,9 +660,9 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 		while (counter < leaf_node_num-2)
 		{
 			unsigned k = 0;
-			for (k = 0; k < CSB_MAXNUM_DATA && i < aray_num; k++)
+			for (k = 0; k < max_datas && i < aray_num; k++)
 			{
-				leaf[0]->getNode(counter)->setElement(i%CSB_MAXNUM_DATA, aray[i]);
+				leaf[0]->getNode(counter)->setElement(i%max_datas, aray[i]);
 				if (counter != 0 && k == 0)
 					internal_key_array[internal_key_array_off++] = aray[i]._key;
 				i += 1;
@@ -672,12 +670,12 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 			leaf[0]->getNode(counter)->setUsedKeys(k);
 			counter += 1;
 		}
-		if (aray_num-(leaf_node_num-1)*CSB_MAXNUM_DATA >= CSB_ORDER_V) //不需平衡最后两个结点
+		if (aray_num-(leaf_node_num-1)*max_datas >= max_datas/2) //不需平衡最后两个结点
 		{
 			int k = 0;
 			while (counter < leaf_node_num)
 			{
-				for (k = 0; k < CSB_MAXNUM_DATA && i < aray_num; k++)
+				for (k = 0; k < max_datas && i < aray_num; k++)
 				{
 					((CCSBNode<T>*)(leaf[0]->getNode(counter)))->setElement(k, aray[i]);
 					if (counter != 0 && k == 0)
@@ -691,7 +689,7 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 		else //最后一个结点data数目小于CSB_ORDER_V，需平衡最后两个结点
 		{
 			//剩余的data数目
-			int rest = aray_num-CSB_MAXNUM_DATA*(leaf_node_num-2);
+			int rest = aray_num-max_datas*(leaf_node_num-2);
 			if (rest%2 ==1)
 				((CCSBNode<T>*)(leaf[0]->getNode(counter)))->setUsedKeys(rest/2+1);
 			else
@@ -715,19 +713,19 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 		unsigned i = 0, counter = 0;  //记录aray下标、leaf下标
 		while (counter < leaf_node_group_num-2)  //对前leafNGNo-2个NG而言，每个NG中均填满CSB_MAXNUM_KEY+1个leafNode
 		{
-			leaf[counter] = new CCSBLeafNodeGroup<T>(CSB_MAXNUM_KEY+1);
+			leaf[counter] = new CCSBLeafNodeGroup<T>(max_keys+1);
 			counter += 1;
 		}
-		int rest = ceil((double)(aray_num-(leaf_node_group_num-1)*(CSB_MAXNUM_KEY+1)*CSB_MAXNUM_DATA)/(double)CSB_MAXNUM_DATA);
-		if (rest >= CSB_ORDER_V+1)  //无需平衡最后两个NG
+		int rest = ceil((double)(aray_num-(leaf_node_group_num-1)*(max_keys+1)*max_datas)/(double)max_datas);
+		if (rest >= max_keys/2+1)  //无需平衡最后两个NG
 		{
 			//倒数第二个NG仍满，最后一个NG中leafNode的数目需要计算
-			leaf[counter] = new CCSBLeafNodeGroup<T>(CSB_MAXNUM_KEY+1);
+			leaf[counter] = new CCSBLeafNodeGroup<T>(max_keys+1);
 			leaf[counter+1] = new CCSBLeafNodeGroup<T>(rest);
 		}
 		else //最后一个NG中leafNode数目小于CSB_ORDER_V+1，需平衡最后两个NG
 		{
-			rest = rest + (CSB_MAXNUM_KEY+1);
+			rest = rest + (max_keys+1);
 			if (rest%2 == 0)
 				leaf[counter] = new CCSBLeafNodeGroup<T>(rest/2);
 			else
@@ -741,7 +739,7 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 			for (int j = 0; j < leaf[counter]->used_nodes; j++)
 			{
 				unsigned k = 0;
-				for (k = 0; k < CSB_MAXNUM_DATA; k++)
+				for (k = 0; k < max_datas; k++)
 				{
 					((CCSBNode<T>*)(leaf[counter]->getNode(j)))->setElement(k, aray[i]);
 					if (i != 0 && k == 0)
@@ -752,23 +750,23 @@ int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, C
 			}
 		}
 		//最后一个NG的填入
-		int restdata = aray_num%CSB_MAXNUM_DATA;
+		int restdata = aray_num%max_datas;
 		if (restdata == 0)
-			restdata = CSB_MAXNUM_DATA;
+			restdata = max_datas;
 		//确定每个leafNode中填充的data数目
 		int j = 0;
 		for (j = 0; j < leaf[counter]->used_nodes-2; j++)
 		{
-			((CCSBNode<T>*)(leaf[counter]->getNode(j)))->setUsedKeys(CSB_MAXNUM_DATA);
+			((CCSBNode<T>*)(leaf[counter]->getNode(j)))->setUsedKeys(max_datas);
 		}
-		if (restdata >= CSB_ORDER_V)  //无需平衡
+		if (restdata >= max_datas/2)  //无需平衡
 		{
-			((CCSBNode<T>*)(leaf[counter]->getNode(j)))->setUsedKeys(CSB_MAXNUM_DATA);
+			((CCSBNode<T>*)(leaf[counter]->getNode(j)))->setUsedKeys(max_datas);
 			((CCSBNode<T>*)(leaf[counter]->getNode(j+1)))->setUsedKeys(restdata);
 		}
 		else  //平衡最后两个leafNode
 		{
-			restdata += CSB_MAXNUM_DATA;
+			restdata += max_datas;
 			if (restdata%2 == 0)
 				((CCSBNode<T>*)(leaf[counter]->getNode(j)))->setUsedKeys(restdata/2);
 			else
@@ -807,7 +805,7 @@ int CSBPlusTree<T>::makeInternalNodeGroup(T* aray, int aray_num, CCSBNodeGroup<T
 	//m_Depth记录树高度，建立叶子层其自加1
 	csb_depth += 1;
 	//计算internalNodeGroup数目
-	int internal_node_group_num = ceil((double)leaf_node_group_num/(double)(CSB_MAXNUM_KEY+1));
+	int internal_node_group_num = ceil((double)leaf_node_group_num/(double)(max_keys+1));
 //	internal = (CCSBNodeGroup<T>**)new CCSBInternalNodeGroup<T>* [internal_node_group_num];
 
 	int upper_key_array_off = 0;  //记录in2Aray下标
@@ -818,18 +816,18 @@ int CSBPlusTree<T>::makeInternalNodeGroup(T* aray, int aray_num, CCSBNodeGroup<T
 	{
 		while (counter < internal_node_group_num-2)  //除了最后两个NG外，其他的NG均填满CSB_MAXNUM_KEY+1个node
 		{
-			internal[counter] = new CCSBInternalNodeGroup<T>(CSB_MAXNUM_KEY+1);
+			internal[counter] = new CCSBInternalNodeGroup<T>(max_keys+1);
 			counter += 1;
 		}
-		int rest = leaf_node_group_num-(internal_node_group_num-1)*(CSB_MAXNUM_KEY+1);
-		if (rest >= CSB_ORDER_V+1)  //不需平衡最后两个NG
+		int rest = leaf_node_group_num-(internal_node_group_num-1)*(max_keys+1);
+		if (rest >= max_keys/2+1)  //不需平衡最后两个NG
 		{
-			internal[counter] = new CCSBInternalNodeGroup<T>(CSB_MAXNUM_KEY+1);
+			internal[counter] = new CCSBInternalNodeGroup<T>(max_keys+1);
 			internal[counter+1] = new CCSBInternalNodeGroup<T>(rest);
 		}
 		else //最后一个NG中leafNode数目小于CSB_ORDER_V+1，需平衡最后两个NG
 		{
-			rest = rest + (CSB_MAXNUM_KEY+1);
+			rest = rest + (max_keys+1);
 			if (rest%2 == 0)
 				internal[counter] = new CCSBInternalNodeGroup<T>(rest/2);
 			else
@@ -848,7 +846,7 @@ int CSBPlusTree<T>::makeInternalNodeGroup(T* aray, int aray_num, CCSBNodeGroup<T
 		for (int j = 0; j < internal[counter]->getUsedNodes(); j++)
 		{
 			int k = 0;
-			for (k = 0; k < CSB_MAXNUM_KEY; k++)
+			for (k = 0; k < max_keys; k++)
 			{
 				((CCSBNode<T>*)(internal[counter]->getNode(j)))->setElement(k, aray[i++]);
 			}
@@ -861,7 +859,7 @@ int CSBPlusTree<T>::makeInternalNodeGroup(T* aray, int aray_num, CCSBNodeGroup<T
 	for (j = 0; j < internal[counter]->getUsedNodes()-2; j++)
 	{
 		int k = 0;
-		for (k = 0; k < CSB_MAXNUM_KEY; k++)
+		for (k = 0; k < max_keys; k++)
 		{
 			((CCSBNode<T>*)(internal[counter]->getNode(j)))->setElement(k, aray[i++]);
 		}
@@ -1157,14 +1155,14 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 	map<index_offset, vector<index_offset>* >* ret = new map<index_offset, vector<index_offset>* >;
 	ret->clear();
 	//For point query
-	if (comp_lower == FilterIterator::AttributeComparator::EQ)
+	if (comp_lower == EQ)
 	{
 		if (lower_key != upper_key)
 			cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the equal point query, the lower_key " << lower_key << " != the upper_key " << upper_key << endl;
 		return Search(lower_key);
 	}
 	// Range Query
-	else if ((!(comp_lower == FilterIterator::AttributeComparator::G || comp_lower == FilterIterator::AttributeComparator::GEQ)) || (!(comp_upper == FilterIterator::AttributeComparator::L || comp_upper == FilterIterator::AttributeComparator::LEQ)))
+	else if ((!(comp_lower == G || comp_lower == GEQ)) || (!(comp_upper == L || comp_upper == LEQ)))
 	{
 		cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the range query, the given two key isn't a range\n";
 		return ret;
@@ -1190,9 +1188,9 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 	for (unsigned depth = 1; depth < this->csb_depth; depth++)
 	{
 		//find the first search_node.key > lower_key for GEQ and search_node.key >= lower_key for G
-		if (comp_lower == FilterIterator::AttributeComparator::GEQ)
+		if (comp_lower == GEQ)
 			for (i = 0; (lower_key > search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
-		else if (comp_lower == FilterIterator::AttributeComparator::G)
+		else if (comp_lower == G)
 			for (i = 0; (lower_key >= search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
 
 //For testing begin
@@ -1221,7 +1219,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 /*for testing*/	bool found = false;
 	for (i = 0; (i < search_node->used_keys); i++)
 	{
-		if (comp_lower == FilterIterator::AttributeComparator::GEQ)
+		if (comp_lower == GEQ)
 		{
 			if (lower_key <= search_node->getElement(i)._key)
 			{
@@ -1229,7 +1227,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 				break;
 			}
 		}
-		if (comp_lower == FilterIterator::AttributeComparator::G)
+		if (comp_lower == G)
 		{
 			if (lower_key < search_node->getElement(i)._key)
 			{
@@ -1242,7 +1240,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 	//collect all tuples whose key is between lower_key and upper_key
 	if (search_node->getFather() == NULL)
 	{
-		if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		if (comp_lower == GEQ && comp_upper == LEQ)
 		{
 			for (; i < search_node->getUsedKeys(); i++)
 			{
@@ -1258,7 +1256,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 					return ret;
 			}
 		}
-		else if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::L)
+		else if (comp_lower == GEQ && comp_upper == L)
 		{
 			for (; i < search_node->getUsedKeys(); i++)
 			{
@@ -1274,7 +1272,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 					return ret;
 			}
 		}
-		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		else if (comp_lower == G && comp_upper == LEQ)
 		{
 			for (; i < search_node->getUsedKeys(); i++)
 			{
@@ -1290,7 +1288,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 					return ret;
 			}
 		}
-		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::L)
+		else if (comp_lower == G && comp_upper == L)
 		{
 			for (; i < search_node->getUsedKeys(); i++)
 			{
@@ -1316,7 +1314,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 	}
 	while (search_node_group != NULL)
 	{
-		if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		if (comp_lower == GEQ && comp_upper == LEQ)
 		{
 			for (; j < search_node_group->getUsedNodes(); j++)
 			{
@@ -1339,7 +1337,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 			j = 0;
 			search_node_group = search_node_group->getTailerNG();
 		}
-		else if (comp_lower == FilterIterator::AttributeComparator::GEQ && comp_upper == FilterIterator::AttributeComparator::L)
+		else if (comp_lower == GEQ && comp_upper == L)
 		{
 			for (; j < search_node_group->getUsedNodes(); j++)
 			{
@@ -1362,7 +1360,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 			j = 0;
 			search_node_group = search_node_group->getTailerNG();
 		}
-		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::LEQ)
+		else if (comp_lower == G && comp_upper == LEQ)
 		{
 			for (; j < search_node_group->getUsedNodes(); j++)
 			{
@@ -1385,7 +1383,7 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 			j = 0;
 			search_node_group = search_node_group->getTailerNG();
 		}
-		else if (comp_lower == FilterIterator::AttributeComparator::G && comp_upper == FilterIterator::AttributeComparator::L)
+		else if (comp_lower == G && comp_upper == L)
 		{
 			for (; j < search_node_group->getUsedNodes(); j++)
 			{
@@ -1466,7 +1464,7 @@ bool CSBPlusTree<T>::Insert(data_offset<T> data)
 	}
 
 	//2. the insert_node is not full: insert directly
-	if (leaf_node->getUsedKeys() < CSB_MAXNUM_DATA)
+	if (leaf_node->getUsedKeys() < max_datas)
 		return leaf_node->Insert(data);
 
 	//3.1 the insert_node is full and it's the root node
@@ -1474,15 +1472,15 @@ bool CSBPlusTree<T>::Insert(data_offset<T> data)
 	{
 		//allocate a new leaf_node_group which has two nodes, split the insert_node into the two new nodes
 		CCSBNodeGroup<T>* leaf = (CCSBNodeGroup<T>*) new CCSBLeafNodeGroup<T>(2);
-		for (int i = 0; i < CSB_MAXNUM_DATA; i++)
+		for (int i = 0; i < max_datas; i++)
 		{
-			if (i < CSB_MAXNUM_DATA/2)
+			if (i < max_datas/2)
 				((CCSBNode<T>*)(leaf->getNode(0)))->setElement(i, leaf_node->getElement(i));
 			else
-				((CCSBNode<T>*)(leaf->getNode(1)))->setElement(i-CSB_MAXNUM_DATA/2, leaf_node->getElement(i));
+				((CCSBNode<T>*)(leaf->getNode(1)))->setElement(i-max_datas/2, leaf_node->getElement(i));
 		}
-		((CCSBNode<T>*)(leaf->getNode(0)))->setUsedKeys(CSB_MAXNUM_DATA/2);
-		((CCSBNode<T>*)(leaf->getNode(1)))->setUsedKeys(CSB_MAXNUM_DATA-CSB_MAXNUM_DATA/2);
+		((CCSBNode<T>*)(leaf->getNode(0)))->setUsedKeys(max_datas/2);
+		((CCSBNode<T>*)(leaf->getNode(1)))->setUsedKeys(max_datas-max_datas/2);
 
 		//set the double linked list
 		leaf->setHeaderNG(NULL);
@@ -1513,7 +1511,7 @@ bool CSBPlusTree<T>::Insert(data_offset<T> data)
 	}
 
 	//3.2 the insert_node is full but its parent is not full
-	if (((CCSBNode<T>*)(leaf_node->getFather()))->getUsedKeys() < CSB_MAXNUM_KEY)
+	if (((CCSBNode<T>*)(leaf_node->getFather()))->getUsedKeys() < max_keys)
 	{
 		//find the leaf_node_group which the insert_node is in
 		CCSBNodeGroup<T>* original_leaf = ((CCSBNode<T>*)(leaf_node->getFather()))->getPointer();
@@ -1529,17 +1527,17 @@ bool CSBPlusTree<T>::Insert(data_offset<T> data)
 			//split the insert_node
 			else if (original_leaf->getNode(i) == leaf_node)
 			{
-				for (int j = 0; j < CSB_MAXNUM_DATA; j++)
+				for (int j = 0; j < max_datas; j++)
 				{
-					if (j < CSB_MAXNUM_DATA/2)
+					if (j < max_datas/2)
 						((CCSBNode<T>*)(leaf->getNode(i)))->setElement(j, leaf_node->getElement(j));
 					else
-						((CCSBNode<T>*)(leaf->getNode(i+1)))->setElement(j-CSB_MAXNUM_DATA/2, leaf_node->getElement(j));
+						((CCSBNode<T>*)(leaf->getNode(i+1)))->setElement(j-max_datas/2, leaf_node->getElement(j));
 				}
 				((CCSBNode<T>*)(leaf->getNode(i)))->setFather(leaf_node->getFather());
-				((CCSBNode<T>*)(leaf->getNode(i++)))->setUsedKeys(CSB_MAXNUM_DATA/2);
+				((CCSBNode<T>*)(leaf->getNode(i++)))->setUsedKeys(max_datas/2);
 				((CCSBNode<T>*)(leaf->getNode(i)))->setFather(leaf_node->getFather());
-				((CCSBNode<T>*)(leaf->getNode(i)))->setUsedKeys(CSB_MAXNUM_DATA-CSB_MAXNUM_DATA/2);
+				((CCSBNode<T>*)(leaf->getNode(i)))->setUsedKeys(max_datas-max_datas/2);
 
 				//add a index key to the parent to index the new node
 				((CCSBNode<T>*)(((CCSBNode<T>*)leaf_node)->getFather()))->Insert(((CCSBNode<T>*)(leaf->getNode(i)))->getElement(0)._key);
@@ -1574,7 +1572,7 @@ bool CSBPlusTree<T>::Insert(data_offset<T> data)
 	}
 
 	//3.3 both the insert_node and its parent are full
-	if (((CCSBNode<T>*)(((CCSBNode<T>*)leaf_node)->getFather()))->getUsedKeys() >= CSB_MAXNUM_KEY)
+	if (((CCSBNode<T>*)(((CCSBNode<T>*)leaf_node)->getFather()))->getUsedKeys() >= max_keys)
 	{
 		//allocate two new leaf_node_group to split the original_leaf_node_group which insert_node is in
 		CCSBNodeGroup<T>* original_leaf = ((CCSBNode<T>*)(leaf_node->getFather()))->getPointer();
@@ -1587,15 +1585,15 @@ bool CSBPlusTree<T>::Insert(data_offset<T> data)
 
 		CCSBNodeGroup<T>* left_leaf = (CCSBNodeGroup<T>*) new CCSBLeafNodeGroup<T>();
 		CCSBNodeGroup<T>* right_leaf = (CCSBNodeGroup<T>*) new CCSBLeafNodeGroup<T>();
-		if (insert_node_offset < CSB_MAXNUM_DATA/2)
+		if (insert_node_offset < max_datas/2)
 		{
-			left_leaf->setUsedNodes(CSB_MAXNUM_DATA/2);
-			right_leaf->setUsedNodes(CSB_MAXNUM_DATA-CSB_MAXNUM_DATA/2);
+			left_leaf->setUsedNodes(max_datas/2);
+			right_leaf->setUsedNodes(max_datas-max_datas/2);
 		}
 		else
 		{
-			left_leaf->setUsedNodes(CSB_MAXNUM_DATA-CSB_MAXNUM_DATA/2);
-			right_leaf->setUsedNodes(CSB_MAXNUM_DATA/2);
+			left_leaf->setUsedNodes(max_datas-max_datas/2);
+			right_leaf->setUsedNodes(max_datas/2);
 		}
 		//set the double linked list for leaf layer
 		left_leaf->setTailerNG(right_leaf);

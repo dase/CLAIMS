@@ -11,9 +11,9 @@
 #include "../CSBPlusTree.h"
 using namespace std;
 
-static int test_csb_indexing()
+static int test_csb_indexing(unsigned data_size)
 {
-	const unsigned data_size = 16;
+//	const unsigned data_size = 16;
 	data_offset<int>* data = new data_offset<int> [data_size];
 	for (unsigned i = 0; i < data_size; i++)
 	{
