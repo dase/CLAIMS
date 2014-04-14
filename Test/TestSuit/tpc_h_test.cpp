@@ -80,7 +80,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partnames;
 	partnames.push_back("/home/imdb/data/tpc-h/SF-1/part.tbl");
-	HdfsLoader* Hl = new HdfsLoader('|','\n',partnames,"PART",table_1);
+	HdfsLoader* Hl = new HdfsLoader('|','\n',partnames,table_1);
 	Hl->load();
 	Hl->~HdfsLoader();
 	partnames.clear();
@@ -104,7 +104,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> suppliernames;
 	suppliernames.push_back("/home/imdb/data/tpc-h/SF-1/supplier.tbl");
-	Hl = new HdfsLoader('|','\n',suppliernames,"supplier",table_2);
+	Hl = new HdfsLoader('|','\n',suppliernames,table_2);
 	Hl->load();
 	Hl->~HdfsLoader();
 	suppliernames.clear();
@@ -126,7 +126,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partsuppnames;
 	partsuppnames.push_back("/home/imdb/data/tpc-h/SF-1/partsupp.tbl");
-	Hl = new HdfsLoader('|','\n',partsuppnames,"partsupp",table_3);
+	Hl = new HdfsLoader('|','\n',partsuppnames,table_3);
 	Hl->load();
 	Hl->~HdfsLoader();
 	partsuppnames.clear();
@@ -151,7 +151,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> customernames;
 	customernames.push_back("/home/imdb/data/tpc-h/SF-1/customer.tbl");
-	Hl = new HdfsLoader('|','\n',customernames,"customer",table_4);
+	Hl = new HdfsLoader('|','\n',customernames,table_4);
 	Hl->load();
 	Hl->~HdfsLoader();
 	customernames.clear();
@@ -177,7 +177,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> ordersnames;
 	ordersnames.push_back("/home/imdb/data/tpc-h/SF-1/orders.tbl");
-	Hl = new HdfsLoader('|','\n',ordersnames,"orders",table_5);
+	Hl = new HdfsLoader('|','\n',ordersnames,table_5);
 	Hl->load();
 	Hl->~HdfsLoader();
 	ordersnames.clear();
@@ -197,7 +197,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> nationnames;
 	nationnames.push_back("/home/imdb/data/tpc-h/SF-1/nation.tbl");
-	Hl = new HdfsLoader('|','\n',nationnames,"nation",table_7);
+	Hl = new HdfsLoader('|','\n',nationnames,table_7);
 	Hl->load();
 	Hl->~HdfsLoader();
 	nationnames.clear();
@@ -216,7 +216,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> regionnames;
 	regionnames.push_back("/home/imdb/data/tpc-h/SF-1/region.tbl");
-	Hl = new HdfsLoader('|','\n',regionnames,"region",table_8);
+	Hl = new HdfsLoader('|','\n',regionnames,table_8);
 	Hl->load();
 	Hl->~HdfsLoader();
 	regionnames.clear();
@@ -249,7 +249,7 @@ static void load_tpc_h_4_partition(){
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> lineitemnames;
 	lineitemnames.push_back("/home/imdb/data/tpc-h/SF-1/lineitem.tbl");
-	Hl = new HdfsLoader('|','\n',lineitemnames,"lineitem",table_6);
+	Hl = new HdfsLoader('|','\n',lineitemnames,table_6);
 	Hl->load();
 	Hl->~HdfsLoader();
 	lineitemnames.clear();

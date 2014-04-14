@@ -137,11 +137,14 @@ public:
 	ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
 	unsigned getNumberOfProjection()const;
 	Schema* getSchema()const;
+	inline void setRowNumber(unsigned long row_number) { row_number_ = row_number; }
+	inline unsigned long getRowNumber() { return row_number_; }
 protected:
 	string tableName;
 	vector<Attribute> attributes;
 	TableID table_id_;
 	vector<ProjectionDescriptor*> projection_list_;
+	unsigned long row_number_;
 	// delete for debugging
 //	hashmap<ColumnID, ColumnDescriptor*> columns;
 

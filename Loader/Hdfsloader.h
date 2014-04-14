@@ -27,17 +27,19 @@ using namespace std;
 class HdfsLoader {
 public:
 	HdfsLoader();
-	HdfsLoader(const char c_separator, const char r_separator, std::vector<std::string> file_name, std::string table_name, TableDescriptor* tableDescriptor);
+	HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator = '|', const char r_separator = '\n', open_flag open_flag_=APPEND);
+	HdfsLoader(const char c_separator, const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_=CREATE);
 	virtual ~HdfsLoader();
 
 	const char get_c_separator();
 	const char get_r_separator();
 	vector<string> get_file_list();
-	string get_table_name();
 
 	bool insertRecords();
 
 	bool load();
+
+	bool append(TableDescriptor* table_descripter, std::string tuple_string);
 
 public:
 	TableDescriptor* table_descriptor_;
@@ -54,17 +56,18 @@ private:
 	const char col_separator;
 	const char row_separator;
 	std::vector<std::string> file_list;
-	std::string name_of_table;
 	vector<vector<string> > writepath;
 	Block* sblock;
 	std::string s_record;
 	vector < vector<BlockStreamBase*> > pj_buffer;
 
-	vector<vector <unsigned> > blocks_per_partition;
+	vector<vector <unsigned long> > blocks_per_partition;
 	vector<SubTuple*> sub_tuple_generator;
 
 	Schema* table_schema;
 	vector<Schema*> projection_schema;
+
+	open_flag open_flag_;
 
 };
 
