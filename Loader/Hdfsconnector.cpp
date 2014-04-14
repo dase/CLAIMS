@@ -6,6 +6,7 @@
  */
 
 #include "Hdfsconnector.h"
+#include <assert.h>
 
 HdfsConnector::HdfsConnector(vector<vector <string> > hdfs_writepath):writepath(hdfs_writepath) {
 	hdfsFS hdfsfs = hdfsConnect("10.11.1.190", 9000);
@@ -13,7 +14,7 @@ HdfsConnector::HdfsConnector(vector<vector <string> > hdfs_writepath):writepath(
 
 }
 
-bool HdfsConnector::assgin_open_file(){
+bool HdfsConnector::assgin_open_file(open_flag open_flag_){
 
 	vector<vector<string> >::iterator prj_writepath;
 	vector<string>::iterator par_writepath;
@@ -24,28 +25,51 @@ bool HdfsConnector::assgin_open_file(){
 		prj_writefile.clear();
 		for (par_writepath = (*prj_writepath).begin(); par_writepath != (*prj_writepath).end(); par_writepath++)
 		{
-			prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY|O_CREAT, 0, 0, 0));
+			switch (open_flag_)
+			{
+			case CREATE:
+			{
+				if (hdfsExists(fs, (*par_writepath).c_str()) == 0)
+					cout << "[WARNINIG: Hdfsconnector.cpp->assgin_open_file()]: The file " << *par_writepath << " is already exits! It will be override!\n";
+				prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY|O_CREAT, 0, 0, 0));
+				break;
+			}
+			case APPEND:
+			{
+				if (hdfsExists(fs, (*par_writepath).c_str()) == -1)
+				{
+					cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: The file " << *par_writepath << "is not exits!\n";
+					return false;
+				}
+				prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY|O_APPEND, 0, 0, 0));
+				break;
+			}
+			default:
+			{
+				cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: Illegal file open flag for data loading!\n";
+				return false;
+			}
+			}
 		}
 		writefile.push_back(prj_writefile);
 	}
 	return true;
 }
 
-bool HdfsConnector::op_connect(){
+bool HdfsConnector::op_connect(open_flag open_flag_){
 	if(!fs)
 	{
-		fprintf(stderr,"Failed to connect to hdfs.\n");
+		fprintf(stderr,"[ERROR: Hdfsconnector.cpp->op_connect()]: Failed to connect to hdfs.\n");
 		exit(-1);
 	}
-	assgin_open_file();
+	assgin_open_file(open_flag_);
 	if(writefile.size()==0)
 	{
-		cout << "Failed to connect HDFS!" << endl;
+		cout << "[ERROR: Hdfsconnector.cpp->op_connect()]: the writefile is empty!" << endl;
 		exit(-1);
  	}else
  	{
  		cout << "HDFS connect successfully." << "\t";
- 		cout << "writefile.size(): " << writefile.size() << endl;
  	}
 
 	return true;
