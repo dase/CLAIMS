@@ -14,14 +14,10 @@
 
 #define HDFS_LOAD
 
-HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vector<std::string> file_name, std::string table_name,TableDescriptor* tableDescriptor)
-:table_descriptor_(tableDescriptor),
- col_separator(c_separator),
- row_separator(r_separator),
- file_list(file_name),
- name_of_table(table_name),
- block_size(64*1024),
- row_id(0) {
+HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag)
+:table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
+{
+	row_id = table_descriptor_->getRowNumber();
 
 	table_schema = table_descriptor_->getSchema();
 	vector <unsigned> prj_index;
@@ -60,7 +56,7 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
 	{
 		vector<BlockStreamBase*> temp_v;
-		vector<unsigned> tmp_block_num;
+		vector<unsigned long> tmp_block_num;
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
@@ -70,8 +66,60 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		blocks_per_partition.push_back(tmp_block_num);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
+}
+
+HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_)
+:table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), file_list(file_name), open_flag_(open_flag_), block_size(64*1024)
+{
+	row_id = table_descriptor_->getRowNumber();
+
+	table_schema = table_descriptor_->getSchema();
+	vector <unsigned> prj_index;
+	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+	{
+		projection_schema.push_back(table_descriptor_->getProjectoin(i)->getSchema());
+		vector<string> prj_writepath;
+		prj_writepath.clear();
+		for(int j=0; j<table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions();j++){
+			string path = PartitionID(table_descriptor_->getProjectoin(i)->getProjectionID(),j).getPathAndName();
+			prj_writepath.push_back(path);
+		}
+		writepath.push_back(prj_writepath);
 
 
+		Attribute partition_attribute = table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionKey();
+		int hash_key_index=table_descriptor_->getProjectoin(i)->getAttributeIndex(partition_attribute);
+		partition_key_index.push_back(hash_key_index);
+
+		PartitionFunction* pf = table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionFunction();
+		partition_functin_list_.push_back(pf);
+
+		prj_index.clear();
+		for (int j = 0; j < table_descriptor_->getProjectoin(i)->getAttributeList().size(); j++)
+		{
+			prj_index.push_back(table_descriptor_->getProjectoin(i)->getAttributeList()[j].index);
+		}
+		SubTuple* st = new SubTuple(table_descriptor_->getSchema(), table_descriptor_->getProjectoin(i)->getSchema(), prj_index);
+		sub_tuple_generator.push_back(st);
+	}
+
+	sblock = new Block(BLOCK_SIZE);
+
+
+	///////////////////////////////////assign 64k buffer to each PJ/////////////////////////////
+	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+	{
+		vector<BlockStreamBase*> temp_v;
+		vector<unsigned long> tmp_block_num;
+		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
+		{
+			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
+			tmp_block_num.push_back(0);
+		}
+		pj_buffer.push_back(temp_v);
+		blocks_per_partition.push_back(tmp_block_num);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
 }
 
 const char HdfsLoader::get_c_separator(){
@@ -82,9 +130,6 @@ const char HdfsLoader::get_r_separator(){
 }
 vector<string> HdfsLoader::get_file_list(){
 	return file_list;
-}
-string HdfsLoader::get_table_name(){
-	return name_of_table;
 }
 
 
@@ -152,7 +197,7 @@ bool HdfsLoader::load(){
 
 #ifdef HDFS_LOAD
 	connector_ = new HdfsConnector(writepath);
-	connector_->op_connect();
+	connector_->op_connect(open_flag_);
 #endif
 
 	cout << "\n\n\n--------------------------Load Begin!--------------------------\n";
@@ -166,7 +211,7 @@ bool HdfsLoader::load(){
 			printf("Cannot open source file:%s , reason: %s\n",(*iter).c_str(),strerror(errno));
 			return false;
 		}
-		while(!InFile.eof())
+		while(!InFile.eof()/* for testing && t_count++ < 500 */)
 		{
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
@@ -221,6 +266,8 @@ bool HdfsLoader::load(){
  		cout << "HDFS close successfully." << endl;
 #endif
 
+	//register the number of rows in table to catalog
+	table_descriptor_->setRowNumber(row_id);
 	//register the partition information to catalog
 	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
 	{
@@ -231,6 +278,11 @@ bool HdfsLoader::load(){
 	}
 	cout << "\n\n\n--------------------------Load End!--------------------------\n";
  	return true;
+}
+
+bool HdfsLoader::append(TableDescriptor* table_descripter, std::string tuple_string)
+{
+
 }
 
 HdfsLoader::~HdfsLoader() {

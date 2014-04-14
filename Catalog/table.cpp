@@ -81,7 +81,7 @@ int ProjectionDescriptor::getAttributeIndex(const Attribute& att)const{
 
 // TableDescritptor
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
-: tableName(name),table_id_(table_id){
+: tableName(name), table_id_(table_id), row_number_(0){
 	/*
 	 * Automatically add row_id as the first column.
 	 */

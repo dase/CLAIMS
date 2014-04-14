@@ -11,7 +11,7 @@
 
 using namespace std;
 
-static int load_test()
+static void create_load_test()
 {
 //	cout << "\n\n\n\n--------------------------Load Begin--------------------------\n";
 	Environment::getInstance(true);
@@ -99,11 +99,37 @@ static int load_test()
 	TD->createHashPartitionedProjection(Col_index_PJ0, 0, num_of_partition);
 	TD->createHashPartitionedProjection(Col_index_PJ1, 0, num_of_partition);
 
-	HdfsLoader* Hl = new HdfsLoader('|','\n',file_name,table_name,TD);
+	HdfsLoader* Hl = new HdfsLoader('|','\n',file_name,TD);
 
 
 	Hl->load();
-	cout << "Importing accomplished!!\n";
-	while(true){sleep(1);};
+
+	Catalog* catalog = Catalog::getInstance();
+	catalog->add_table(TD);
+
+	for(unsigned i=0;i<TD->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
+	}
+
+	cout << "Importing accomplished!!\n\trow numbers: " << catalog->getTable("CJ")->getRowNumber() << endl;
+}
+
+static void append_load_test()
+{
+	Environment::getInstance(true);
+	vector<string> file_name;
+	file_name.push_back("/home/spark/poc/cj/CJ20101008.txt");
+	TableDescriptor* td = Catalog::getInstance()->getTable("CJ");
+	HdfsLoader* Hl = new HdfsLoader('|', '\n', file_name, td, APPEND);
+	Hl->load();
+	cout << "Append accomplished!!\n\trow numbers: " << Catalog::getInstance()->getTable("CJ")->getRowNumber() << endl;
+}
+
+static int test_load()
+{
+	create_load_test();
+	append_load_test();
+	Environment::getInstance()->~Environment();
 	return 0;
 }
