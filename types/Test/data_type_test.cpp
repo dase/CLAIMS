@@ -46,11 +46,29 @@ static void test_decimal_to_value4(){
 		printf("Expected 0.00, actual: %s\n",op->operate->toString(&v1).c_str());
 	}
 }
+static void test_decimal_to_value5(){
+	NValue v1 = NValue::getDecimalValueFromString("-0.02");
+	column_type* op=new column_type(data_type(t_decimal),2);
+	if(!print_test_name_result(op->operate->toString(&v1)==string("-0.02"),"Decimal toString()")){
+		printf("Expected -0.02, actual: %s\n",op->operate->toString(&v1).c_str());
+	}
+}
+static void test_decimal_add1(){
+	NValue v1 = NValue::getDecimalValueFromString("4.4");
+	NValue v2 = NValue::getDecimalValueFromString("-18");
+	column_type* op=new column_type(data_type(t_decimal),2);
+	op->operate->add(&v1,&v2);
+	if(!print_test_name_result(op->operate->toString(&v1)==string("-13.60"),"Decimal add")){
+		printf("Expected -13.60, actual: %s\n",op->operate->toString(&v1).c_str());
+	}
+}
 static int test_decimal(){
 	test_decimal_to_value1();
 	test_decimal_to_value2();
 	test_decimal_to_value3();
 	test_decimal_to_value4();
+	test_decimal_to_value5();
+	test_decimal_add1();
 }
 
 
