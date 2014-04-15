@@ -1838,7 +1838,7 @@ void CSBPlusTree<T>::printTree()
 	cout << "\n\n---------------------Print the index tree---------------------\n";
 	if (this->csb_root == NULL)
 	{
-		cout << "The index tree is empty!\n";
+		cout << "[OUTPUT: CSBPlusTree.cpp->printTree()]: The index tree is empty!\n";
 		return;
 	}
 
@@ -1911,13 +1911,13 @@ void CSBPlusTree<T>::printDoubleLinkedList()
 	cout << "\n\n---------------------Print the doubly linked list---------------------\n";
 	if (this->csb_root == NULL)
 	{
-		cout << "The index tree is empty!\n";
+		cout << "[OUTPUT: CSBPlusTree.cpp->printDoubleLinkedList()]: The index tree is empty!\n";
 		return;
 	}
 
 	if (this->leaf_header == NULL || this->leaf_tailer == NULL)
 	{
-		cout << "The double linked list is error!\n";
+		cout << "[ERROR: CSBPlusTree.cpp->printDoubleLinkedList()]:The double linked list is error!\n";
 		return;
 	}
 

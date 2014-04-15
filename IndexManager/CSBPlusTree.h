@@ -122,7 +122,7 @@ public:
 		}
 		else
 		{
-			cout << "the offset i: " << i << "is invalid!\n";
+			cout << "[ERROR: CSBPlusTree.h<CCSBInternalNode>->setElement()]: The offset i: " << i << " is invalid!\n";
 			return false;
 		}
 	}
@@ -177,7 +177,7 @@ public:
 			return node_datas[i];
 		else
 		{
-			cout << "the offset i: " << i << "is invalid!	return NULL\n";
+			cout << "[ERROR: CSBPlusTree.h<CCSBLeafNode>->getElement()]: The offset i: " << i << " is invalid!	return NULL\n";
 			data_offset<T> * ret = NULL;
 			return *ret;
 		}
@@ -194,7 +194,7 @@ public:
 		}
 		else
 		{
-			cout << "the offset i: " << i << "is invalid!\n";
+			cout << "[ERROR: CSBPlusTree.h<CCSBLeafNode>->setElement()]: The offset i: " << i << " is invalid!\n";
 			return false;
 		}
 	}
@@ -244,7 +244,7 @@ public:
 	virtual bool serialize(FILE* filename) { assert(false); }
 	virtual bool deserialize(FILE* filename) { assert(false); }
 public:
-	int used_nodes;
+	unsigned used_nodes;
 
 };
 
@@ -269,7 +269,7 @@ public:
 	{
 		if (i > this->used_nodes)
 		{
-			cout << "the offset i: " << i << " is invalid!\n";
+			cout << "[ERROR: CSBPlusTree.h<CCSBInternalNodeGroup>->getNode()]: The offset i: " << i << " is invalid!\n";
 			return NULL;
 		}
 		return internal_nodes[i];
@@ -308,7 +308,7 @@ public:
 
 	inline bool setUsedNodes(unsigned n)
 	{
-		if (n <= CCSBNode<T>::getMaxDatas()+1)
+		if (n <= CCSBNode<T>::getMaxKeys()+1)
 		{
 			this->used_nodes = n;
 			return true;
@@ -319,7 +319,7 @@ public:
 	{
 		if (i > this->used_nodes)
 		{
-			cout << "the offset i: " << i << " is invalid!\n";
+			cout << "[ERROR: CSBPlusTree.h<CCSBLeafNodeGroup>->getNode()]: The offset i: " << i << " is invalid!\n";
 			return NULL;
 		}
 		return leaf_nodes[i];
