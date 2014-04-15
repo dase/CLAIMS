@@ -170,11 +170,17 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	CancelReceiverThread();
 
+	FileClose(epoll_fd_);
+
 	for(unsigned i=0;i<nlowers;i++){
 //		FileClose(this->socket_fd_lower_list[i]);
 		block_for_socket_[i]->~BlockContainer();
 	}
 
+	for(std::map<int,int>::iterator it=lower_sock_fd_to_index.begin();it!=lower_sock_fd_to_index.end();it++){
+//		printf("upper %d is closed!\n",it->first);
+		FileClose(it->first);
+	}
 
 	received_block_stream_->~BlockStreamBase();
 	buffer->~BlockStreamBuffer();
@@ -227,6 +233,9 @@ bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 	}
 	logging_->log("[%ld] The applied port for socket is %d",state.exchange_id,socket_port);
 
+//	printf("Upper open %d is created!\n",sock_fd);
+
+
 	my_addr.sin_port=htons(socket_port);
 	my_addr.sin_addr.s_addr = INADDR_ANY;
 	bzero(&(my_addr.sin_zero),8);
@@ -264,6 +273,8 @@ void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 
 	/* close the socket of this exchange*/
 	FileClose(sock_fd);
+
+//	printf("Upper %d is closed!\n",sock_fd);
 
 	/* return the applied port to the port manager*/
 	PortManager::getInstance()->returnPort(socket_port);
@@ -365,15 +376,15 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 
 	int status;
 
-	int efd=epoll_create1(0);
-	if(efd==-1){
+	Pthis->epoll_fd_=epoll_create1(0);
+	if(Pthis->epoll_fd_==-1){
 		Pthis->logging_->elog("epoll create error!\n");
 		return 0;
 	}
 
 	event.data.fd=Pthis->sock_fd;
 	event.events=EPOLLIN | EPOLLET;
-	status=epoll_ctl(efd,EPOLL_CTL_ADD,Pthis->sock_fd,&event);
+	status=epoll_ctl(Pthis->epoll_fd_,EPOLL_CTL_ADD,Pthis->sock_fd,&event);
 	if(status==-1){
 		Pthis->logging_->elog("epoll ctl error!\n");
 		return 0;
@@ -384,7 +395,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 
 	while(true){
 		usleep(1);
-		const int event_count=epoll_wait(efd,events,Pthis->nlowers,-1);
+		const int event_count=epoll_wait(Pthis->epoll_fd_,events,Pthis->nlowers,-1);
 		for(int i=0;i<event_count;i++){
 			if((events[i].events & EPOLLERR)||(events[i].events & EPOLLHUP)||(!(events[i].events&EPOLLIN))){
 				if(errno==EINTR){
@@ -410,7 +421,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 							break;
 						}
 						else{
-							perror("accept error!");
+							perror("accept error!  ");
 							break;
 						}
 					}
@@ -421,7 +432,6 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
 						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_ip_list.size());
-
 					}
 					/*Make the incoming socket non-blocking and add it to the list of fds to monitor.*/
 					if(!Pthis->SetSocketNonBlocking(infd)){
@@ -429,7 +439,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					}
 					event.data.fd=infd;
 					event.events=EPOLLIN|EPOLLET;
-					status=epoll_ctl(efd,EPOLL_CTL_ADD, infd,&event);
+					status=epoll_ctl(Pthis->epoll_fd_,EPOLL_CTL_ADD, infd,&event);
 					if(status==-1){
 						perror("epoll_ctl");
 						return 0;
