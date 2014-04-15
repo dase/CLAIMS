@@ -67,7 +67,7 @@ int main(){
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
-//	return test_data_type();
+	return test_data_type();
 //	return test_expression_item();
 //	return testProject();
 //	return testSort();
@@ -87,7 +87,7 @@ int main(){
 //	return test_index_manager();
 
 //	in_test();
-	test_expanderFramework_single_node(3);
+//	test_expanderFramework_single_node(3);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test();
 //	tcp_h_test_single_node();
