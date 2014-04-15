@@ -9,11 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include <string>
 #include <iostream>
 #include <set>
-#include <vector>
-#include <algorithm>
 using namespace std;
 
 
@@ -41,13 +38,16 @@ enum nodetype
 	t_create_database_stmt, t_create_table_stmt, t_create_col_list, t_create_def, t_create_projection_stmt,// 2014-2-24---新增t_create_projection_stmt类型---by余楷
 	t_alter_database_stmt, t_alter_table_stmt, t_alter_def,
 	t_create_select_stmt,t_column_atts, t_opt_csc,
-	t_datatype,t_length,t_enum_list
+	t_datatype,t_length,t_enum_list,
+	t_create_index_stmt,	t_index_col_list,	t_drop_index,	// 2014-3-24---增加---by Yu
+	t_drop_database_stmt,t_drop_table_stmt, t_table_list,	// 2014-3-24---增加---by Yu
+	t_load_table_stmt	// 2014-3-24---增加---by Yu
 };
 
-union dataval
+union dataval	// 2014-3-8---不支持更长的整数，需改用long或其他类型---by余楷
 {
 	int int_val;
-	char * string_val;
+	char *string_val;
 	double double_val;
 	bool bool_val;
 };
@@ -411,17 +411,17 @@ struct Createindex_stmt
 {
 	nodetype type;
 	int index_att;
-	char * name1;
+	char * index_name;
 	int index_type;
-	char * name2;
+	char * table_name;
 	Node * index_col_name;
 };
 
-struct Index_col_name
+struct Index_col_list
 {
 	nodetype type;
 	char * name;
-	int length;
+	Node* length;
 	int asc_desc;
 	Node * next;
 };
@@ -429,31 +429,41 @@ struct Index_col_name
 struct Dropindex_stmt
 {
 	nodetype type;
-	char * name1;
-	char * name2;
+	char* index_name;
+	char* table_name;
 };
 
-struct Dropdatabase_stmt
+struct Dropdatabase_stmt	// 2014-3-24---增加---by Yu
 {
 	nodetype type;
 	int droptype;
+	int check;	// actually, it has no mean
 	char * name;
 };
 
-struct Droptable_stmt
+struct Droptable_stmt	// 2014-3-24---增加---by Yu
 {
 	nodetype type;
-	int istemp;
-	int opt_rc;
-	Node * tablelist;
+	int is_temp;
+	int is_check;
+	int option_rc;
+	Node * table_list;
 };
 
-struct Tablelist
+struct Tablelist	// 2014-3-24---增加---by Yu
 {
 	nodetype type;
 	char * name1;
 	char * name2;
 	Node * next;
+};
+
+struct Loadtable_stmt{	// 2014-4-1---修改---by Yu
+	nodetype type;
+	char *table_name;
+	Node *path;
+	char *column_separator;
+	char *tuple_separator;
 };
 
 struct Rename_stmt
@@ -540,6 +550,7 @@ struct enum_list
 	Node * next;
 };
 
+
 //////////////////////////未完待续////////////////////////////////////////
 
 
@@ -549,11 +560,6 @@ struct enum_list
 /******************函数声明***********************************************
 *************************************************************************/
 
-void FreeAllNode();		// 2014-3-6---增加释放所有节点函数---by余楷
-
-void output(Node * n, int floor);
-
-void outputSpace(int f);
 
 struct Node *newStmt(nodetype t, Node *list, Node *newNode);	// 2014-3-4---增加新建语句列表函数---by余楷
 
@@ -609,16 +615,20 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count);
 /*******　DDL语句  *****/
 struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, char * name);
 
-struct Node * newCreateTableStmt( nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt);
+struct Node * newCreateTableStmt( nodetype type, int create_type,
+		int check, char * name1, char * name2, Node * list, Node * select_stmt);
 
 struct Node * newCreateColList(nodetype type, Node * data, Node * next);
 
-struct Node * newCreateDef(nodetype type, int deftype, char * name, Node * datatype, Node * col_atts, Node * col_list);	// 2-18---增加name属性---by余楷
+struct Node * newCreateDef(nodetype type, int deftype, char * name,
+		Node * datatype, Node * col_atts, Node * col_list);	// 2-18---增加name属性---by余楷
 
-struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, char *s, Node * col_list);
+struct Node * newColumnAtts(nodetype type, int datatype,
+		int num1, double num2, char *s, Node * col_list);
 
 // 2014-2-24---增加该结构体---by余楷
-struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list, int partition_num, char *partition_attribute_name);
+struct Node *newCreateProjectionStmt(nodetype type, char *tablename,
+		Node *column_list, int partition_num, char *partition_attribute_name);
 
 struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt);
 
@@ -626,11 +636,13 @@ struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2);
 
 struct Node * newAlterTableStmt(nodetype type, int isignore, char * name, Node * parameter);
 
-struct Node * newAlterDef (nodetype type, int altertype, char * name1, char * name2, int datatype, int coltype, Node * parameter, Node * next);
+struct Node * newAlterDef (nodetype type, int altertype, char * name1,
+		char * name2, int datatype, int coltype, Node * parameter, Node * next);
 
 struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int temporary, Node * select_stmt);
 
-struct Node * newDatatype (nodetype type, int datatype, Node* length, int opt_uz, Node * opt_csc, int isbinary, Node * enum_list);
+struct Node * newDatatype (nodetype type, int datatype, Node* length,
+		int opt_uz, Node * opt_csc, int isbinary, Node * enum_list);
 
 struct Node * newLength (nodetype type, int data1, int data2);
 
@@ -640,7 +652,39 @@ struct Node * newDoStmt(nodetype type, Node * data);
 
 struct Node * newTruncateStmt(nodetype type, char * name);
 
+// 2014-3-24---增加---by Yu
+struct Node* newIndexColList(nodetype type, char * name, Node* length, int asc_desc, Node * next);
+
+// 2014-3-24---增加---by Yu
+struct Node* newCreateIndex(nodetype type, int index_att, char* index_name, int index_type, char* table_name, Node* index_col_name);
+
+// 2014-3-24---增加---by Yu
+struct Node* newDropIndex(nodetype type, char* index_name, char* table_name);
+
+// 2014-3-24---增加---by Yu
+struct Node* newDropDatabase(nodetype type, int drop_type, int check, char* name);
+
+// 2014-3-24---增加---by Yu
+struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, Node * table_list);
+
+// 2014-3-24---增加---by Yu
+struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next);
+
+// 2014-3-27---增加---by Yu
+struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator);
+
 //////////////////////////////////////////////////////////////////////////////////////////
+
+
+inline void insertNodePointer(Node * a);	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
+
+void FreeAllNode();		// 2014-3-6---增加释放所有节点函数---by余楷
+
+void output(Node * n, int floor);
+
+void outputSpace(int f);
+
+void GetCorrectString(char *dest, const char *src);	// 2014-4-2---增加该函数---by Yu
 
 
 int judgepos(struct Node *args,set<string>*st);

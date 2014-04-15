@@ -211,6 +211,7 @@ inline void NValue::serializeToExport(ExportSerializeOutput &io,void* para) cons
 //    switch (getValueType()) {
 //    case VALUE_TYPE_DECIMAL:
 //    {
+
     	std::string decstr = createStringFromDecimal(*(unsigned*)para);
     	int32_t objectLength = (int32_t)decstr.length();
     	io.writeBinaryString(decstr.data(), objectLength);

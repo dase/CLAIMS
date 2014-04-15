@@ -954,6 +954,7 @@ public:
 			case t_date: operate = new OperateDate();break;
 			case t_time: operate = new OperateTime();break;
 			case t_datetime: operate = new OperateDatetime();break;
+
 			case t_decimal: operate = new OperateDecimal(size);break;
 			case t_smallInt: operate = new OperateSmallInt();break;
 			case t_u_smallInt: operate = new OperateUSmallInt();break;
@@ -1006,6 +1007,7 @@ public:
 	Operate* operate;
 	data_type type;
 private:
+	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
@@ -1037,10 +1039,6 @@ private:
 			default:operate=0;break;
 		}
 	}
-private:
-
-	unsigned size;
-
 };
 
 
