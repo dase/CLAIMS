@@ -13,6 +13,8 @@
 #include <set>
 #include <string>
 #include <map>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
 #include "../data_type.h"
 #include "Partitioner.h"
 #include "Attribute.h"
@@ -53,6 +55,7 @@ class ProjectionDescriptor
 {
 public:
 	friend class TableDescriptor;
+	ProjectionDescriptor(){};
 	ProjectionDescriptor(ProjectionID);
 	ProjectionDescriptor(const string& name);
 	virtual ~ProjectionDescriptor();
@@ -83,14 +86,24 @@ private:
 	string hdfsFilePath;
 	map<string, string> blkMemoryLocations;
 
+
 	/* The following is deleted from version 1.2*/
 	string Projection_name_;	//projection does not need a string name.
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		/* The serialzation does not include fileLocations, hdfsFilePath and blkMemoryLocations */
+		ar & projection_id_ & column_list_ & partitioner & Projection_name_;
+	}
 };
 
 
 class TableDescriptor {
 
 public:
+	TableDescriptor(){};
 	TableDescriptor(const string& name, const TableID table_id);
 	virtual ~TableDescriptor();
 
@@ -145,10 +158,14 @@ protected:
 	// delete for debugging
 //	hashmap<ColumnID, ColumnDescriptor*> columns;
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & tableName & attributes & table_id_ & projection_list_;
+	}
+
 };
-
-
-
 
 
 

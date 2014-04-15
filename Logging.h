@@ -121,6 +121,12 @@ public:
 	static void elog(const char* format,...);
 };
 
+class ASTParserLogging{
+public:
+	static void log(const char* format,...);
+	static void elog(const char* format,...);
+};
+
 static void Logging_ExchangeIteratorLowerWithWideDependency(const char* format,...){
 #ifdef DEBUG_ExchangeIteratorWithWideDependency
 	printf("[EILWWD]: ");
