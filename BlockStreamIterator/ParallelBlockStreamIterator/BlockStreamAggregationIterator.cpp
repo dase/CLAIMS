@@ -258,7 +258,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		barrierArrive(1);
 
 		if(tryEntryIntoSerializedSection(1)){
-
+//			hashtable_->report_status();
 				it_=hashtable_->CreateIterator();
 				bucket_cur_=0;
 				hashtable_->placeIterator(it_,bucket_cur_);
@@ -271,6 +271,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 /*
  * In the current implementation, the lock is used based on the entire
  * hash table, which will definitely reduce the degree of parallelism.
+ * But it is for now, assuming that the aggregated results are small.
+ *
  */
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
