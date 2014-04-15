@@ -31,8 +31,8 @@
 #include "../Client/Test/TestSeverClient.cpp"
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
-
 #include "../Loader/Test/test_load.cpp"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
 
 #include "../IndexManager/Test/test_csb_classes.cpp"
@@ -63,6 +63,7 @@ int main(){
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
+	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
 //	return test_data_type();

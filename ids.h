@@ -69,11 +69,11 @@ struct ProjectionID{
 	}
 
 	/* for boost::serialization*/
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version){
-            ar & table_id & projection_off;
-    }
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version){
+		ar & table_id & projection_off;
+	}
 
 };
 /* for boost::unordered_map*/
@@ -96,6 +96,16 @@ struct ColumnID{
 	bool operator==(const ColumnID &r)const{
 		return projection_id==r.projection_id&&column_off==r.column_off;
 	}
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+//		ar & projection_id & column_off & partitioner & fileLocations & hdfsFilePath & blkMemoryLocations & Projection_name_;
+		ar & projection_id & column_off;
+	}
+
+
 };
 /* for boost::unordered_map*/
 static size_t hash_value(const ColumnID& key){
@@ -135,16 +145,14 @@ struct PartitionID{
 	}
 	std::string getPathAndName()const{
 		std::ostringstream str;
-//		str<<"/home/imdb/data/tpc-h/4_partitions/SF-1/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-
-//		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-//		str<<"/home/imdb/data/dsc/testLoad/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-
-//		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-		str<<"/home/imdb/data/dsc/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-//		str<<"/home/imdb/data/wangli/T"<<partition_off;
-
+		str<<"/home/imdb/data/yukai/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		return str.str();
+	}
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & partition_off & projection_id;
 	}
 };
 /* for boost::unordered_map*/
