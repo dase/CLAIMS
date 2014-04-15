@@ -84,6 +84,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 			perror("socket creation errors!\n");
 			return false;
 		}
+//		printf("Lower %d is created!\n",socket_fd_upper_list[upper_id]);
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
@@ -248,6 +249,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	/* close the socket connections to the uppers */
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
 //		FileClose(socket_fd_upper_list[i]);
+//		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 	}
 	state.child->close();
 	buffer->~PartitionedBlockBuffer();
@@ -336,6 +338,7 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 			perror("recv error!\n");
 		}
 		FileClose(socket_fd_upper_list[i]);
+//		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 //		printf("Receive the close notifaction from the upper[%s], the byte='%c' state=%d\n",state.upper_ip_list[i].c_str(),byte,state.exchange_id);
 		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
