@@ -12,13 +12,17 @@
 #include <string>
 #include "Debug.h"
 #include "Logging.h"
+#include "Config.h"
 Environment* Environment::_instance=0;
 Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	_instance=this;
+	Config::getInstance();
 	logging_=new EnvironmentLogging();
 	Initialize();
 	portManager=PortManager::getInstance();
 	catalog_=Catalog::getInstance();
+
+
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
 		InitializeCoordinator();

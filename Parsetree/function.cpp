@@ -2,16 +2,22 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <vector>
 #include "sql_node_struct.h"
 using namespace std;
 
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
-extern Node **pointerToNodePointer[10000];
-extern int pointerToNodePointerNum;
+extern vector<Node*> NodePointer;	// 2014-4-2---存放节点指针的数组改为vector---by Yu
 
-struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加新建语句列表函数---by余楷
+inline void insertNodePointer(Node *a)	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
+{
+	NodePointer.push_back(a);	// 2014-4-2---存放节点指针的数组改为vector---by Yu
+}
+
+// 2014-3-4---增加新建语句列表函数---by余楷
+struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 {
 	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
 	if(!a)
@@ -32,6 +38,7 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)	// 2014-3-4---增加
 		return (Node *)list;
 	}
 	//cout<<"newStmt is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -46,7 +53,14 @@ struct Node * newExpr(nodetype t, dataval d)
 
 	a->type = t;
 	a->data = d;
+//	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号	//2014-4-2---将这部分工作放在词法识别阶段进行，见sql.l
+//	{
+//		strncpy(a->data.string_val, d.string_val+1, strlen(d.string_val)-2);
+//		a->data.string_val[strlen(d.string_val)-2] = '\0';
+//	}
+
 	//cout<<"newExpr is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -63,6 +77,7 @@ struct Node * newExprList(nodetype t, Node * data, Node * next)
 	a->data = data;
 	a->next = next;
 	//cout<<"newExpr is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -79,7 +94,9 @@ struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * 
 	a->parameter1 = parameter1;
 	a->parameter2 = parameter2;
 	a->next = next;
-	//cout<<"newExpr is created"<<endl;
+	//cout<<"newColumn is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -99,7 +116,9 @@ struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 	a->cmp = cmp;
 	a->lnext = lnext;
 	a->rnext = rnext;
-	//cout<<"newExpr is created"<<endl;
+	//cout<<"newExprCal is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -118,13 +137,15 @@ struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 	a->parameter1 = parameter1;
 	a->parameter2 = parameter2;
 	a->next = next;
-	//cout<<"newExpr is created"<<endl;
+	//cout<<"newExprFunc is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
 struct Node *newExprlistheader(nodetype type,Node * header,Node * tail)
 {
-	struct Expr_list_header *node=(struct Expr_list_header *)malloc(sizeof(struct Expr_list_header));
+	Expr_list_header *node=( Expr_list_header *)malloc(sizeof( Expr_list_header));
 	node->type=t_expr_list_header;
 	node->header=header;
 	node->tail=tail;
@@ -149,6 +170,9 @@ struct Node * newTable(nodetype type, char * dbname, char *tablename,
 
 	a->whcdn=newExprlistheader(t_expr_list_header,NULL,NULL);
 	
+
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node *condition)
@@ -165,6 +189,8 @@ struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node
 	a->rnext = rnext;
 	a->condition = condition;
 	//cout<<"Join is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -180,6 +206,8 @@ struct Node * newCondition(nodetype type, int conditiontype, Node * args)
 	a->conditiontype = conditiontype;
 	a->args = args;
 	//cout<<"Condition is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -195,6 +223,8 @@ struct Node * newSubquery(nodetype type, char * querystring, Node *next)
 	a->querystring = querystring;
 	a->next = next;
 	//cout<<"Subquery is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -222,6 +252,8 @@ struct Node * newQueryStmt(nodetype t, char * querystring, int select_opts,
 	a->into_list = into_list;
 
 	//cout<<"Query_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -239,6 +271,8 @@ struct Node * newSelectList(nodetype type,int isall,Node * args,Node *next)
 	a->next = next;
 
 	//cout<<"Select_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
 
@@ -255,6 +289,8 @@ struct Node * newSelectExpr(nodetype type, char *ascolname, Node * colname)
 	a->colname = colname;
 
 	//cout<<"Select_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -274,6 +310,8 @@ struct Node *  newFromList(nodetype type, Node * args, Node *next)
 	//a->wcondition.clear();
 	a->whcdn=newExprlistheader(t_expr_list_header,NULL,NULL);
 	//cout<<"From_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -290,6 +328,8 @@ struct Node * newFromExpr( nodetype type, char * astablename, Node *next)
 	a->next = next;
 
 	//cout<<"From_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -306,12 +346,14 @@ struct Node * newWhereList(nodetype type, char * wherestring, Node *next)
 	a->next = next;
 
 	//cout<<"Where_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, int with_rollup)
 {
-	struct Groupby_list * a= (struct Groupby_list *)malloc(sizeof(struct Groupby_list));
+	Groupby_list * a= (Groupby_list *)malloc(sizeof(Groupby_list));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -323,12 +365,14 @@ struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, in
 	a->with_rollup = with_rollup;
 
 	//cout<<"Groupby_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next)
 {
-	struct Groupby_expr * a= (struct Groupby_expr *)malloc(sizeof(struct Groupby_expr));
+	Groupby_expr * a= (Groupby_expr *)malloc(sizeof(Groupby_expr));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -340,12 +384,14 @@ struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next
 	a->next = next;
 
 	//cout<<"Groupby_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 struct Node * newHavingList(nodetype type, char * havingstring, Node *next)
 {
-	struct Having_list * a= (struct Having_list *)malloc(sizeof(struct Having_list));
+	Having_list * a= (Having_list *)malloc(sizeof( Having_list));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -356,13 +402,15 @@ struct Node * newHavingList(nodetype type, char * havingstring, Node *next)
 	a->next = next;
 
 	//cout<<"Having_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 
 struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next)
 {
-	struct Orderby_list * a= (struct Orderby_list *)malloc(sizeof(struct Orderby_list));
+	Orderby_list * a= ( Orderby_list *)malloc(sizeof( Orderby_list));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -373,6 +421,8 @@ struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next)
 	a->next = next;
 
 	//cout<<"Orderby_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -390,6 +440,8 @@ struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *n
 	a->next = next;
 
 	//cout<<"Orderby_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -406,6 +458,8 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
 	a->row_count = row_count;
 
 	//cout<<"Limit_expr is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -414,7 +468,7 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
 	/*** 		create 语句			***/
 struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, char * name)
 {
-	struct Create_database_stmt * a= (struct Create_database_stmt *)malloc(sizeof(struct Create_database_stmt));
+	struct Create_database_stmt * a= (Create_database_stmt *)malloc(sizeof(Create_database_stmt));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -426,6 +480,8 @@ struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, c
 	a->name = name;
 
 	//cout<<"Create_database_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -447,6 +503,8 @@ struct Node * newCreateTableStmt
 	a->select_stmt = select_stmt;
 
 	//cout<<"Create_table_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -463,10 +521,13 @@ struct Node * newCreateColList(nodetype type, Node * data, Node * next)
 	a->next = next;
 
 	//cout<<"Create_col_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
-struct Node * newCreateDef(nodetype type, int deftype, char * name, Node * datatype,  Node * col_atts, Node * col_list)
+struct Node * newCreateDef(nodetype type, int deftype, char * name,
+		Node * datatype,  Node * col_atts, Node * col_list)
 {	// 2-18---增加name属性---by余楷
 	struct Create_def * a= (struct Create_def *)malloc(sizeof(struct Create_def));
 	if(!a)
@@ -482,6 +543,8 @@ struct Node * newCreateDef(nodetype type, int deftype, char * name, Node * datat
 	a->col_list = col_list;
 
 	//cout<<"Create_def is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -501,12 +564,14 @@ struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, 
 	a->col_list = col_list;
 
 	//cout<<"Column_atts is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int temporary, Node * select_stmt)
 {
-	struct Create_select_stmt * a= (struct Create_select_stmt *)malloc(sizeof(struct Create_select_stmt));
+	Create_select_stmt * a= (Create_select_stmt *)malloc(sizeof(Create_select_stmt));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -518,11 +583,15 @@ struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int tempora
 	a->select_stmt = select_stmt;
 
 	//cout<<"Create_select_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
 // 2014-2-24---增加该结构体---by余楷
-struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list, int partition_num, char *partition_attribute_name)
+
+struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *column_list,
+		int partition_num, char *partition_attribute_name)
 {
 	Create_projection_stmt * a= (Create_projection_stmt *)malloc(sizeof(Create_projection_stmt));
 	if(!a)
@@ -537,6 +606,8 @@ struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *colum
 	a->partition_attribute_name = partition_attribute_name;
 
 	//cout<<"Create_projection_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -553,6 +624,8 @@ struct Node * newDoStmt(nodetype type, Node * data)
 	a->data = data;
 
 	//cout<<"Do_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -569,12 +642,14 @@ struct Node * newTruncateStmt(nodetype type, char * name)
 	a->name = name;
 
 	//cout<<"Truncate_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
-	/*** 		alter 语句			***/
-	
-struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt)	// 2-19---把函数名改为newAlterDatabaseStmt---by余楷
+	/*** 		alter 语句			***/	// 2-19---把函数名改为newAlterDatabaseStmt---by余楷
+struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt)
+
 {
 	Alterdatabase_stmt * a= (Alterdatabase_stmt *)malloc(sizeof( Alterdatabase_stmt));
 	if(!a)
@@ -588,6 +663,8 @@ struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, N
 	a->opt = opt;
 
 	//cout<<"Alterdatabase_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -605,6 +682,8 @@ struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2)
 	a->s2 = s2;
 
 	//cout<<"Opt_csc is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -622,6 +701,8 @@ struct Node * newAlterTableStmt(nodetype type, int isignore, char * name, Node *
 	a->parameter = parameter;
 
 	//cout<<"Altertable_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -644,6 +725,8 @@ struct Node * newAlterDef (nodetype type, int altertype, char * name1, char * na
 	a->next = next;
 
 	//cout<<"Alter_def is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -665,6 +748,8 @@ struct Node * newDatatype (nodetype type, int datatype, Node* length, int opt_uz
 	a->enum_list = enum_list;
 
 	//cout<<"Datatype is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -681,6 +766,8 @@ struct Node * newLength (nodetype type, int data1, int data2)
 	a->data2 = data2;
 
 	//cout<<"Length is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
 
@@ -697,8 +784,155 @@ struct Node * newEnumList (nodetype type, char * s, Node * next)
 	a->next = next;
 
 	//cout<<"enum_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 };
+
+// 2014-3-24---增加---by Yu
+struct Node* newCreateIndex(nodetype type, int index_att, char* index_name, int index_type, char* table_name, Node* index_col_name)
+{
+	Createindex_stmt * a= (Createindex_stmt *)malloc(sizeof(Createindex_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->index_att = index_att;
+	a->index_name = index_name;
+	a->index_type = index_type;
+	a->table_name = table_name;
+	a->index_col_name = index_col_name;
+
+	//cout<<"Createindex_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
+
+// 2014-3-24---增加---by Yu
+struct Node* newIndexColList(nodetype type, char * name, Node* length, int asc_desc, Node * next)
+{
+	Index_col_list * a= (Index_col_list *)malloc(sizeof(Index_col_list));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->name = name;
+	a->length = length;
+	a->asc_desc = asc_desc;
+	a->next = next;
+
+	//cout<<"Index_col_list is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
+
+// 2014-3-24---增加---by Yu
+struct Node* newDropIndex(nodetype type, char* index_name, char* table_name)
+{
+	Dropindex_stmt * a= (Dropindex_stmt *)malloc(sizeof(Dropindex_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->index_name = index_name;
+	a->table_name = table_name;
+
+	//cout<<"Dropindex_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
+
+// 2014-3-24---增加---by Yu
+struct Node* newDropDatabase(nodetype type, int drop_type, int check, char* name)
+{
+	Dropdatabase_stmt * a= (Dropdatabase_stmt *)malloc(sizeof(Dropdatabase_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->droptype = drop_type;
+	a->check = check;
+	a->name = name;
+
+	//cout<<"Dropdatabase_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
+
+// 2014-3-24---增加---by Yu
+struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, Node * table_list)
+{
+	Droptable_stmt * a= (Droptable_stmt *)malloc(sizeof(Droptable_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->is_temp = is_temp;
+
+	a->is_check = is_check;
+	a->option_rc = opt_rc;
+	a->table_list = table_list;
+
+	//cout<<"Droptable_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
+
+// 2014-3-27---增加---by Yu
+struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator)
+{
+	Loadtable_stmt *a= (Loadtable_stmt *)malloc(sizeof(Loadtable_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->table_name = table_name;
+	a->path = path;
+	a->column_separator = column_separator;
+	a->tuple_separator = tuple_separator;
+	printf("the separator are %s,%s\n", a->column_separator, a->tuple_separator);
+
+	//cout<<"Loadtable_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (Node*)a;
+}
+
+// 2014-3-24---增加---by Yu
+struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next)
+{
+	Tablelist * a= (Tablelist *)malloc(sizeof(Tablelist));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = type;
+	a->name1 = name1;
+	a->name2 = name2;
+	a->next = next;
+
+	//cout<<"Tablelist is created"<<endl;
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (struct Node *)a;
+}
 	
 /*************************** DDL语句结束 ********************************/
 void outputSpace(int f)
@@ -845,7 +1079,8 @@ void output(Node * oldnode, int floor)
 		}
 		
 		case t_table://///////////////////////////////////////////////////
-		/* nodetype type;	char * dbname,*tablename,*astablename; int issubquery;	Node *subquery; Node * condition */
+		/* nodetype type;	char * dbname,*tablename,*astablename;
+		 * int issubquery;Node *subquery; Node * condition */
 		{
 			Table * node = (Table *) oldnode;
 			
@@ -1068,17 +1303,58 @@ void output(Node * oldnode, int floor)
 	}
 }
 
-void FreeAllNode()	// 2014-3-6---增加释放所有节点的函数---by余楷
+void FreeAllNode()	// 2014-3-6---增加释放所有节点的函数---by余楷	// 2014-4-2---存放节点指针的数组改为vector---by Yu
 {
-	int i;
-	for (i = 0; i < pointerToNodePointerNum; ++i)
+	int NodePointerNum = NodePointer.size();
+	vector<Node*>::iterator it;
+	for (it = NodePointer.begin(); it != NodePointer.end(); ++it)
 	{
-		free(*pointerToNodePointer[i]);
-		*pointerToNodePointer[i] = NULL;
-		pointerToNodePointer[i] = NULL;
+		free(*it);
+		*it = NULL;
 	}
-	puts("All node freed successfully");
-	pointerToNodePointerNum = 0;
+	cout<<"All "<<NodePointerNum<<" node freed successfully"<<endl;
+	NodePointer.clear();
+}
+
+// 2014-4-2----处理转义字符以及消去首尾的引号---by Yu
+void GetCorrectString(char *dest, const char *src)
+{
+	int j = 0;
+	for(int i = 1; i < strlen(src)-1; ++i)
+	{
+		if(src[i] == '\\')
+		{
+			if(src[i+1] == 'n')	// 若内部表示为“\\n”，改为“\n”
+			{
+				dest[j++] = '\n';
+				++i;
+			}
+			else if(src[i+1] == 't')	// 若内部表示为“\\t”，改为“\t”
+			{
+				dest[j++] = '\t';
+				++i;
+			}
+			else if(src[i+1] == '\'' && (i+1) != (strlen(src)-1))	// 若内部表示为“\\\'”且引号不为最后的引号,改为“\'”
+			{
+				dest[j++] = '\'';
+				++i;
+			}
+			else if(src[i+1] == '\"' && (i+1) != (strlen(src)-1))	// 若内部表示为“\\\"”且引号不为最后的引号，改为“\"”
+			{
+				dest[j++] = '\"';
+				++i;
+			}
+			else	//复制
+			{
+				dest[j++] = src[i];
+			}
+		}
+		else
+		{
+			dest[j++] = src[i];
+		}
+	}
+	dest[j] = '\0';
 }
 
 

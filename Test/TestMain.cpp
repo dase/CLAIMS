@@ -31,8 +31,8 @@
 #include "../Client/Test/TestSeverClient.cpp"
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
-
 #include "../Loader/Test/test_load.cpp"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
 
 #include "../IndexManager/Test/test_csb_classes.cpp"
@@ -45,7 +45,8 @@
 #include "../LogicalQueryPlan/Test/testIn.cpp"
 #include "TestSuit/ExpanderFrameTest.h"
 #include "TestSuit/tpc_h_test.cpp"
-
+#include "TestSuit/in_segment_scalability_test.cpp"
+#include "TestSuit/hash_table_test.h"
 int main(){
 
 //	return testGenerateIteratorTree();
@@ -63,6 +64,7 @@ int main(){
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
+//	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
 //	return test_data_type();
@@ -88,4 +90,8 @@ int main(){
 //	test_expanderFramework_single_node(3);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test();
+//	tcp_h_test_single_node();
+//	tcp_h_test_multi_nodes();
+//	in_segment_scalability_test();
+//	hash_table_test();
 }

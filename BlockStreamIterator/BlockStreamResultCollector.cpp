@@ -13,12 +13,14 @@ BlockStreamResultCollector::BlockStreamResultCollector()
 	// TODO Auto-generated constructor stub
 	sema_open_.set_value(1);
 	sema_open_finished_.set_value(0);
+	sema_input_complete_.set_value(0);
 }
 BlockStreamResultCollector::BlockStreamResultCollector(State state)
 :finished_thread_count_(0),registered_thread_count_(0),state_(state){
 	// TODO Auto-generated constructor stub
 	sema_open_.set_value(1);
 	sema_open_finished_.set_value(0);
+	sema_input_complete_.set_value(0);
 }
 BlockStreamResultCollector::~BlockStreamResultCollector() {
 	// TODO Auto-generated destructor stub
@@ -46,9 +48,10 @@ bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
 	pthread_t tid;
 	pthread_create(&tid,NULL,worker,this);
 	unsigned long long int start=curtick();
-	while(!ChildExhausted()){
-		usleep(1);
-	}
+//	while(!ChildExhausted()){
+//		usleep(1);
+//	}
+	sema_input_complete_.wait();
 	block_buffer_.query_time_=getSecond(start);
 	return true;
 }
@@ -73,6 +76,7 @@ bool BlockStreamResultCollector::close(){
 //		deallocateBlockStream(block_to_deallocate);
 //	}
 	state_.child_->close();
+	sema_input_complete_.set_value(0);
 	return true;
 }
 void BlockStreamResultCollector::print(){
@@ -117,7 +121,7 @@ void* BlockStreamResultCollector::worker(void* arg){
 		if(Pthis->createBlockStream(block_for_asking)==false)
 			return 0;
 	}
-
+	Pthis->sema_input_complete_.post();
 	double eclipsed_seconds = getSecond(start);
 	Pthis->block_buffer_.query_time_=eclipsed_seconds;
 	Pthis->block_buffer_.schema_=Pthis->state_.input_->duplicateSchema();
