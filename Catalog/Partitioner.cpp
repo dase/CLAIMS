@@ -9,6 +9,7 @@
 #include "Partitioner.h"
 #include "../Catalog/Catalog.h"
 #define CHUNKSIZE_IN_MB 64
+#define BLOCKSIZE_IN_KB 64
 
 Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partitions,PartitionFunction* partitioning_functin)
 :projection_id_(projection_id),number_of_partitions_(number_of_partitions),partition_key_(0),partition_functin_(partitioning_functin),mode_(OneToOne)
@@ -67,8 +68,15 @@ void Partitioner::RegisterPartition(unsigned partition_key,unsigned number_of_ch
 	assert(partition_key<partition_functin_->getNumberOfPartitions());
 
 	partition_info_list[partition_key]->hdfs_file_name=partition_info_list[partition_key]->partition_id_.getName();
-	partition_info_list[partition_key]->number_of_blocks=number_of_chunks;
+	partition_info_list[partition_key]->number_of_blocks=number_of_chunks*1024;
+}
 
+void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_key,unsigned long number_of_blocks)
+{
+	assert(partition_key<partition_functin_->getNumberOfPartitions());
+
+	partition_info_list[partition_key]->hdfs_file_name=partition_info_list[partition_key]->partition_id_.getName();
+	partition_info_list[partition_key]->number_of_blocks=number_of_blocks;
 }
 
 void Partitioner::print(){
@@ -93,7 +101,7 @@ bool Partitioner::hasSamePartitionLocation(const Partitioner & target_partition 
 	return true;
 }
 unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
-	return partition_info_list[partitoin_index]->number_of_blocks*CHUNKSIZE_IN_MB;
+	return partition_info_list[partitoin_index]->number_of_blocks*BLOCKSIZE_IN_KB/1024;
 }
 unsigned long Partitioner::getPartitionCardinality(unsigned partition_index)const{
 	unsigned tuple_bytes=Catalog::getInstance()->getProjection(projection_id_)->getSchema()->getTupleMaxSize();

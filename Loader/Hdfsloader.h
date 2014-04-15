@@ -39,7 +39,7 @@ public:
 
 	bool load();
 
-	bool append(TableDescriptor* table_descripter, std::string tuple_string);
+	bool append(std::string tuple_string);
 
 public:
 	TableDescriptor* table_descriptor_;

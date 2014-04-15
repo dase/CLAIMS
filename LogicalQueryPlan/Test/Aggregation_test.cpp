@@ -547,7 +547,7 @@ static int aggregation_test(){
 //		root->getDataflow();
 
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
-			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
 			printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 
 			executable_query_plan->print();
