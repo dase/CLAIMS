@@ -183,14 +183,14 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 	barrierArrive(1);
 	if(winning_thread){
-		hashtable->report_status();
+//		hashtable->report_status();
 	}
 	/* destory the context for the left child*/
 	destorySelfContext();
 	/* create and initialized the context for the right child*/
 	initContext(state_.input_schema_right,state_.block_size_);
 
-	printf("join open consume %d tuples\n",consumed_tuples_from_left);
+//	printf("join open consume %d tuples\n",consumed_tuples_from_left);
 
 	state_.child_right->open(partition_offset);
 
