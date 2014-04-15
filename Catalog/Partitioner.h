@@ -14,6 +14,7 @@
 #include "Attribute.h"
 #include "../hash.h"
 
+#include "Column.h"
 #include "Partitioner.h"
 #include "../Resource/NodeTracker.h"
 #include "../ids.h"
@@ -51,6 +52,7 @@ class PartitionInfo{
 public:
 
 	friend class Partitioner;
+	explicit PartitionInfo(){};
 	explicit PartitionInfo(PartitionID partition_id):partition_id_(partition_id),number_of_blocks(-1){};
 	explicit PartitionInfo(PartitionID partition_id,string file_name)
 	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(0){}
@@ -73,10 +75,18 @@ protected:
 	unsigned long number_of_blocks;//p
 	PartitionID partition_id_;
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & hdfs_file_name & number_of_blocks & partition_id_;
+	}
+
 };
 
 class OneToOnePartitionInfo:public PartitionInfo{
 public:
+	OneToOnePartitionInfo():binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid):PartitionInfo(pid),binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name),binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks),binding_node_id_(-1){};
@@ -122,10 +132,27 @@ public:
 	virtual ~OneToOnePartitionInfo(){};
 private:
 	NodeID binding_node_id_;
+
+	/**
+	 * A strange error happens when serializing derived class without involving any member variable.
+	 *  So when add test member to avoid the error.
+	 *  Note test is meaningless.
+	 */
+	int test;
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+
+		ar & boost::serialization::base_object<PartitionInfo>(*this);
+		ar & test;// test is meaningless
+	}
 };
 
 class OneToManyPartitionInfo:public PartitionInfo{
 public:
+	OneToManyPartitionInfo(){};
 	OneToManyPartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name){};
 	OneToManyPartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks){
 		for(int i=0;i<number_of_blocks;i++){
@@ -190,11 +217,20 @@ private:
 	 */
 	boost::unordered_map<BlockID,NodeID> block_to_node;
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<PartitionInfo>(*this);
+		ar & block_to_node;
+	}
+
 };
 
 
 class Partitioner {
 public:
+	Partitioner(){};
 	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
 	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
 	virtual ~Partitioner();
@@ -233,7 +269,7 @@ public:
 	vector<PartitionID> getPartitionIDList();
 private:
 	Attribute* partition_key_;
-	PartitionFunction* partition_functin_;
+	PartitionFunction* partition_function_;
 	unsigned number_of_partitions_;
 
 	/**
@@ -252,9 +288,23 @@ private:
 //
 //	vector<PartitionInfo> partition_info_list;
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar.register_type(static_cast<Column *> (NULL));
+
+		ar.register_type(static_cast<BoostHashFunctin *> (NULL));
+		ar.register_type(static_cast<GeneralModuloFunction *> (NULL));
+		ar.register_type(static_cast<ModuloHashFunction *> (NULL));
+		ar.register_type(static_cast<RoundRobinPartitionFunction *> (NULL));
+		ar.register_type(static_cast<UniformRangePartitionFunction *> (NULL));
+
+		ar.register_type(static_cast<OneToManyPartitionInfo *> (NULL));
+		ar.register_type(static_cast<OneToOnePartitionInfo *> (NULL));
+
+		ar & partition_key_ & partition_function_ & number_of_partitions_ & partition_info_list & mode_ & projection_id_;
+	}
 };
-
-
-
 
 #endif /* PARTITIONER_H_ */

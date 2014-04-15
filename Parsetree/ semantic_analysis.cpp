@@ -100,104 +100,7 @@ void add_table_column(Select_list *selectlist,Query_stmt * qstmt,Node *next)
 	}
 	selectlist->next=next;
 }
-int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node)
-{
 
-	Select_list *selectlist=(Select_list *)slnode;
-	Select_expr *sexpr=(Select_expr *)selectlist->args;
-
-	switch(node->type)
-	{
-		case t_expr_func://需要判断函数使用是否正确，包括参数及参数类型
-		{
-			Expr_func * funcnode=(Expr_func *)node;
-			if(strcmp(funcnode->funname,"FCOUNTALL")==0)
-			{
-				return 3;
-			}
-			else
-			{
-				int result=selectlist_expr_analysis(slnode,qstmt,funcnode->parameter1);
-				if(result==3)//countall不能被套用
-					return 0;
-				else
-					return result;
-			}
-		}break;
-		case t_expr_cal://需要判断表达式是否正确使用，比如计算符号左右的类型，以及除数是否为零判断等
-		{
-			Expr_cal * calnode=(Expr_cal *)node;
-			return selectlist_expr_analysis(slnode,qstmt,calnode->lnext)&selectlist_expr_analysis(slnode,qstmt,calnode->rnext);
-		}break;
-		case t_name:
-		{
-			Columns *col=(Columns *)node;
-			char *astablename;
-			int result=table_has_column(col->parameter2,qstmt->from_list,astablename);
-			if(result==1)
-			{
-				col->parameter1=astablename;
-				col->type=t_name_name;
-				if(sexpr->ascolname==NULL)
-				{
-					//strcpy(sexpr->ascolname,col->parameter2);
-					sexpr->ascolname=col->parameter2;
-				}
-			}
-			else if(result==0)
-			{
-				print_analysis_error("selectlist",col->parameter2,"can't find in tables");
-				return 0;
-			}
-			else
-			{
-				print_analysis_error("selectlist",col->parameter2,"is ambiguous");
-				return 0;
-			}
-		}break;
-		case t_name_name:
-		{
-			Columns *col=(Columns *)node;
-			char *tablename;
-			if(fromlist_has_astablename(col->parameter1,qstmt->from_list,tablename)==false)
-			{
-				char * str="str is null";
-				strcpy(str,col->parameter1);
-				strcat(str,".");
-				strcat(str,col->parameter2);
-				print_analysis_error("selectlist",str," can't find ");
-				return 0;
-			}
-			if(strcmp(col->parameter2,"*")==0)
-			{
-				selectlist->isall=1;
-			}
-			else
-			{
-				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
-				{
-					char *str=col->parameter2;
-					//strcat(str,"  can't find ");
-					print_analysis_error("selectlist",col->parameter1,str);
-					return 0;
-				}
-				else
-				{
-					if(sexpr->ascolname==NULL)
-					{
-						//strcpy(sexpr->ascolname,col->parameter2);
-						sexpr->ascolname=col->parameter2;
-					}
-				}
-			}
-		}break;
-		default:
-		{
-
-		}
-	}
-	return 1;
-}
 bool selectlist_analysis(Query_stmt * qstmt)
 {
 	Node *sltree=(Node *)qstmt->select_list;
@@ -213,12 +116,87 @@ bool selectlist_analysis(Query_stmt * qstmt)
 			if(selectlist->isall==0)
 			{
 				Select_expr *sexpr=(Select_expr *)selectlist->args;
-				Node *node=(Node *)sexpr->colname;//此处selectexpr包括expr_func,t_name,t_name_name,expr_cal
-				int result=selectlist_expr_analysis(p,qstmt,node);
-				if(result==3)
+				Node *node=(Node *)sexpr->colname;
+				if(node->type==t_expr_func)//selectlist中的function
 				{
-					p=selectlist->next;
-					continue;
+					Expr_func * funcnode=(Expr_func *)node;
+					if(strcmp(funcnode->funname,"FCOUNTALL")==0)
+					{
+						p=selectlist->next;
+						continue;
+					}
+					else
+					{
+						node=(Node *)funcnode->parameter1;
+					}
+				}
+				switch (node->type)
+				{
+					case t_name:
+					{
+						Columns *col=(Columns *)node;
+						char *astablename;
+						int result=table_has_column(col->parameter2,qstmt->from_list,astablename);
+						if(result==1)
+						{
+							col->parameter1=astablename;
+							col->type=t_name_name;
+							if(sexpr->ascolname==NULL)
+							{
+								//strcpy(sexpr->ascolname,col->parameter2);
+								sexpr->ascolname=col->parameter2;
+							}
+						}
+						else if(result==0)
+						{
+							print_analysis_error("selectlist",col->parameter2,"can't find in tables");
+							return false;
+						}
+						else
+						{
+							print_analysis_error("selectlist",col->parameter2,"is ambiguous");
+							return false;
+						}
+					}break;
+					case t_name_name:
+					{
+						Columns *col=(Columns *)node;
+						char *tablename;
+						if(fromlist_has_astablename(col->parameter1,qstmt->from_list,tablename)==false)
+						{
+							char * str=col->parameter1;
+							//strcat(str,".");
+							//strcat(str,col->parameter2);
+							print_analysis_error("selectlist",str," can't find ");
+							return false;
+						}
+						if(strcmp(col->parameter2,"*")==0)
+						{
+							selectlist->isall=1;
+						}
+						else
+						{
+							if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
+							{
+								char *str=col->parameter2;
+								//strcat(str,"  can't find ");
+								print_analysis_error("selectlist",col->parameter1,str);
+								return false;
+							}
+							else
+							{
+								if(sexpr->ascolname==NULL)
+								{
+									//strcpy(sexpr->ascolname,col->parameter2);
+									sexpr->ascolname=col->parameter2;
+								}
+							}
+						}
+					}break;
+					default:
+					{
+
+					}
 				}
 			}
 			p=selectlist->next;

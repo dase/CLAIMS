@@ -91,6 +91,8 @@ private:
 	 * whether at least one work thread has successfully finished!
 	 */
 	volatile bool input_data_complete_;
+
+	volatile bool one_thread_finished_;
 	Lock lock_;
 	/*
 	 * The following code is for boost serialization.

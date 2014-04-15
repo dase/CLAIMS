@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "../IDsGenerator.h"
 #include <pthread.h>
+#include "../Config.h"
 
 #define DECISION_SHRINK 0
 #define DECISION_EXPAND 1
@@ -19,10 +20,10 @@
 #define THRESHOLD_FULL (1-THRESHOLD)
 
 
-/**
- * Ideally, this should be guaranteed by resource manager.
- */
-#define MAX_DEGREE_OF_PARALLELISM 4
+///**
+// * Ideally, this should be guaranteed by resource manager.
+// */
+//#define MAX_DEGREE_OF_PARALLELISM 6
 
 
 ExpanderTracker* ExpanderTracker::instance_=0;
@@ -233,17 +234,16 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 	}
 	case local_stage::no_buffer:{
 		ret=DECISION_KEEP;
-		break;
 		/**
 		 * Currently, for the stage without synchronization buffer, the workload is not known and hence
 		 * maximum degree of parallelism is used.
 		 */
-		if(current_degree_of_parallelism==MAX_DEGREE_OF_PARALLELISM){
+		if(current_degree_of_parallelism==Config::max_degree_of_parallelism){
 			ret=DECISION_KEEP;
 			break;
 			return DECISION_KEEP;
 		}
-		else if (current_degree_of_parallelism<MAX_DEGREE_OF_PARALLELISM){
+		else if (current_degree_of_parallelism<Config::max_degree_of_parallelism){
 			ret=DECISION_EXPAND;
 			break;
 			return DECISION_EXPAND;
@@ -254,7 +254,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 	}
 	case local_stage::from_buffer:{
 		ret=DECISION_KEEP;
-		break;
+//		break;
 		log_->log("%lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage());
 		const double current_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		if(current_stage.dataflow_src_.monitorable_buffer->inputComplete()){
@@ -356,12 +356,15 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 
 }
 void* ExpanderTracker::monitoringThread(void* arg){
+	if(!Config::enable_expander_adaptivity){
+		return 0;
+	}
 	ExpanderTracker* Pthis=(ExpanderTracker*)arg;
 	int cur=0;
 	while(true){
 //		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
-		usleep(10000);
-		sleep(1000);
+		usleep(Config::expander_adaptivity_check_frequency);
+//		sleep(1000);
 		Pthis->lock_.acquire();
 		if(Pthis->expander_id_to_status_.size()<=cur){
 			cur=0;
@@ -376,13 +379,12 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
 		Pthis->log_->log("-------------------");
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
-		Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism);
 		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism);
+		Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism);
 		ExpanderID exp_id=it->first;
 		Pthis->lock_.release();
 		switch(decision){
 		case DECISION_EXPAND:{
-
 			if(Pthis->expander_id_to_expand_shrink_[it->first]->Expand()){
 				Pthis->log_->log("=========Expanding======== %d-->%d ",current_degree_of_parallelism,current_degree_of_parallelism+1);
 			}
@@ -424,12 +426,11 @@ void* ExpanderTracker::monitoringThread(void* arg){
 //b			usleep(10000);
 //		}
 	}
-	Pthis->log_->log("<><><><><><><><>TOTAL WRONG!<><><><><><><><><>\n");
 }
 
 int ExpanderTracker::expandeIfNotExceedTheMaxDegreeOfParallelism(
 		int current_degree_of_parallelism) const {
-	if(current_degree_of_parallelism<MAX_DEGREE_OF_PARALLELISM){
+	if(current_degree_of_parallelism<Config::max_degree_of_parallelism){
 		return DECISION_EXPAND;
 	}
 	else

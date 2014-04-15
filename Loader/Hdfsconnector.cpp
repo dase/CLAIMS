@@ -9,7 +9,7 @@
 #include <assert.h>
 
 HdfsConnector::HdfsConnector(vector<vector <string> > hdfs_writepath):writepath(hdfs_writepath) {
-	hdfsFS hdfsfs = hdfsConnect("10.11.1.190", 9000);
+	hdfsFS hdfsfs = hdfsConnect("10.11.1.201", 9000);
 	fs = hdfsfs;
 
 }

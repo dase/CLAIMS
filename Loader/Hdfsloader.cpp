@@ -237,7 +237,7 @@ bool HdfsLoader::load(){
 #ifdef HDFS_LOAD
 				tSize num_written_every64k_bytes = hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][j], (void*)sblock->getBlock(), sblock->getsize());
 #endif
-				cout << row_id << "The last block has written to HDFS!\n";
+				cout << row_id << "\tThe last block has written to HDFS!\n";
 
 				blocks_per_partition[i][j]++;
 				pj_buffer[i][j]->setEmpty();

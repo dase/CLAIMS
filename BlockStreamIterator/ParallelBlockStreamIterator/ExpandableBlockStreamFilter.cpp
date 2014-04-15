@@ -42,9 +42,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 	}
 	else
 	{
-		while(!open_finished_){
-			usleep(1);
-		}
+		waitForOpenFinished();
 		return state_.child_->open(part_off);
 	}
 }
@@ -69,6 +67,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 			}
 		}
 		if(pass_filter){
+
 			const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 			if((tuple_in_block=block->allocateTuple(bytes))>0){
 				/* the block has space to hold this tuple*/
@@ -115,6 +114,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				}
 			}
 			if(pass_filter){
+
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 				if((tuple_in_block=block->allocateTuple(bytes))>0){
 					/* the block has space to hold this tuple*/
