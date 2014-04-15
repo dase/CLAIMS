@@ -164,7 +164,8 @@ static void startup_single_node_environment(){
 		catalog->add_table(table_2);
 		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+//			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,0);
 		}
 
 		for(unsigned i=0;i<table_1->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
@@ -194,7 +195,7 @@ static int test_scan(){
 	const int order_type=1;
 //	filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
-	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+	filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::EQ,std::string("20101008"));
 	const int sec_code=600036;
 //	filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("600036"));
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
@@ -604,7 +605,10 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 	sleep(5);
 	printf("============Scan->Filter->Expander->Exchange->root============\n");
 	for(unsigned i=0;i<repeated_times;i++){
+		printf("%d:",i);
 		test_scan();
+		sleep(1);
+		printf("-----------------------------------------\n");
 	}
 
 	for(unsigned i=0;i<repeated_times;i++){

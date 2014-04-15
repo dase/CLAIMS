@@ -46,6 +46,8 @@ private:
 	bool getBoolean(std::string attribute_name, bool defalut_value);
 
 public:
+
+	static std::string config_file;
 	/**
 	 * parameter values.
 	 * Note: these values are static, so that they can be accessed directly, like Config::data_dir.

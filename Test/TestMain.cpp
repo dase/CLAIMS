@@ -84,10 +84,10 @@ int main(){
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
 //	return test_index_scan_iterator();
-	return test_index_manager();
+//	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(3);
+	test_expanderFramework_single_node(10000);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test();
 //	tcp_h_test_single_node();
