@@ -103,6 +103,13 @@ struct Attribute
 	unsigned index;
 	TableID table_id_;
 	bool unique;
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & attrName & attrType & index & table_id_ & unique;
+	}
 };
 
 #endif /* ATTRIBUTE_H_ */

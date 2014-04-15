@@ -150,9 +150,9 @@ public:
 	void constructFromBlock(const Block& block);
 
 protected:
-	char* free_;
 	unsigned tuple_size_;
 public:
+	char* free_;  //should be protected.
 
 };
 

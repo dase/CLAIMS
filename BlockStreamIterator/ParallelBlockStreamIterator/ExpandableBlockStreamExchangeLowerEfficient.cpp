@@ -32,7 +32,8 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 	// TODO Auto-generated destructor stub
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
-
+	logging_=new ExchangeIteratorEagerLowerLogging();
+	logging_->log("[%lld] Exchange lower is created!",state.exchange_id);
 	unsigned long long int start=curtick();
 	unsigned long long int step1,step2,step3;
 	step1=curtick();
@@ -42,7 +43,6 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	connected_uppers_in=0;
 	state.child->open(state.partition_offset);
 
-	logging_=new ExchangeIteratorEagerLowerLogging();
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
 //	printf("<><><><><><><> lower open time:%4.4f (step 1) \n",getSecond(step1));
