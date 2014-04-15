@@ -6,8 +6,8 @@
  */
 #include "Logging.h"
 #ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
-#define DEBUG_Config
-#define DEBUG_ExpanderTracker
+//#define DEBUG_Config
+//#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
 //#define DEBUG_BlockStreamJoin
 //#define DEBUG_PerformanceTop
@@ -18,7 +18,9 @@
 //#define DEBUG_ExchangeIteratorWithWideDependency
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorEagerLower
-//
+
+//#define DEBUG_BlockStreamExpander
+
 //#define DEBUG_ExchangeRegister
 //#define DEBUG_ExchangeTracker
 //

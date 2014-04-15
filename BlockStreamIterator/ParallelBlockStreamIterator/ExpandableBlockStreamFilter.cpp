@@ -42,9 +42,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 	}
 	else
 	{
-		while(!open_finished_){
-			usleep(1);
-		}
+		waitForOpenFinished();
 		return state_.child_->open(part_off);
 	}
 }
