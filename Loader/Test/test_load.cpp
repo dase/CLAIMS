@@ -18,7 +18,6 @@ static void create_load_test()
 	int num_of_partition = 4;
 	vector<string> file_name;
 	file_name.push_back("/home/spark/poc/cj/CJ20101008.txt");
-//	file_name.push_back("/home/spark/poc/cj/CJ20101011.txt");
 	string table_name = "CJ";
 	TableDescriptor* TD = new TableDescriptor(table_name,0);
 
@@ -105,19 +104,12 @@ static void create_load_test()
 	Hl->load();
 
 	Catalog* catalog = Catalog::getInstance();
-	catalog->add_table(TD);
-
-	for(unsigned i=0;i<TD->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
 
 	cout << "Importing accomplished!!\n\trow numbers: " << catalog->getTable("CJ")->getRowNumber() << endl;
 }
 
-static void append_load_test()
+static void append_test()
 {
-	Environment::getInstance(true);
 	vector<string> file_name;
 	file_name.push_back("/home/spark/poc/cj/CJ20101008.txt");
 	TableDescriptor* td = Catalog::getInstance()->getTable("CJ");
@@ -126,10 +118,20 @@ static void append_load_test()
 	cout << "Append accomplished!!\n\trow numbers: " << Catalog::getInstance()->getTable("CJ")->getRowNumber() << endl;
 }
 
+static void inmemory_append_test()
+{
+	TableDescriptor* td = Catalog::getInstance()->getTable("CJ");
+//	HdfsLoader* Hl = new HdfsLoader(td, '|', '\n', APPEND);
+	HdfsLoader* Hl = new HdfsLoader(td);
+	Hl->append("33|20101013|09:25:00|0.3060230|09:23:09|0.0657177|2860002000075807|24.40000|4880.00000|200.000|600497|37083|A817704401|S|P|000|X|O|L|\n75|20101013|09:25:01|0.5378289|09:15:07|0.2101664|2860020000003633|0.64000|6400.00000|10000.000|900918|73261|C564499309|S|P|000|X|O|L|");
+	cout << "In memory append accomplished!!\n\trow numbers: " << Catalog::getInstance()->getTable("CJ")->getRowNumber() << endl;
+}
+
 static int test_load()
 {
 	create_load_test();
-	append_load_test();
+	append_test();
+	inmemory_append_test();
 	Environment::getInstance()->~Environment();
 	return 0;
 }

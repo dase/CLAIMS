@@ -14,7 +14,7 @@
 
 #define HDFS_LOAD
 
-HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag)
+HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
 {
 	row_id = table_descriptor_->getRowNumber();
@@ -60,7 +60,7 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			tmp_block_num.push_back(0);
+			tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -114,7 +114,7 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			tmp_block_num.push_back(0);
+			tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -203,7 +203,7 @@ bool HdfsLoader::load(){
 	cout << "\n\n\n--------------------------Load Begin!--------------------------\n";
 
 	vector<string>::iterator iter;
-///*for testing*/	int t_count = 1;
+/*for testing*/	int t_count = 1;
 	for (iter = file_list.begin(); iter != file_list.end(); iter++)
 	{
 		ifstream InFile((*iter).c_str());
@@ -211,7 +211,7 @@ bool HdfsLoader::load(){
 			printf("Cannot open source file:%s , reason: %s\n",(*iter).c_str(),strerror(errno));
 			return false;
 		}
-		while(!InFile.eof()/* for testing && t_count++ < 500 */)
+		while(!InFile.eof()/* for testing*/ && t_count++ < 500 )
 		{
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
@@ -266,6 +266,8 @@ bool HdfsLoader::load(){
  		cout << "HDFS close successfully." << endl;
 #endif
 
+	//register the table to catalog
+	Catalog::getInstance()->add_table(table_descriptor_);
 	//register the number of rows in table to catalog
 	table_descriptor_->setRowNumber(row_id);
 	//register the partition information to catalog
@@ -273,16 +275,78 @@ bool HdfsLoader::load(){
 	{
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
-			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartition(j, blocks_per_partition[i][j]);
+			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
 		}
 	}
 	cout << "\n\n\n--------------------------Load End!--------------------------\n";
  	return true;
 }
 
-bool HdfsLoader::append(TableDescriptor* table_descripter, std::string tuple_string)
+bool HdfsLoader::append(std::string tuple_string)
 {
+#ifdef HDFS_LOAD
+	connector_ = new HdfsConnector(writepath);
+	connector_->op_connect(open_flag_);
+#endif
 
+	cout << "\n\n\n--------------------------Append Begin!--------------------------\n";
+
+	while (tuple_string.length() != 0)
+	{
+		int current = 0;
+		s_record.clear();
+		while (current < tuple_string.length() && tuple_string[current] != '\n')
+			s_record += tuple_string[current++];
+		current++;
+		if (current < tuple_string.length())
+			tuple_string = tuple_string.substr(current, tuple_string.length()-current);
+		else
+			tuple_string = "\0";
+		insertRecords();
+	}
+
+	//flush the last block which is not full of 64*1024Byte
+	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+	{
+		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
+		{
+			if(!pj_buffer[i][j]->Empty())
+			{
+				pj_buffer[i][j]->serialize(*sblock);
+
+#ifdef HDFS_LOAD
+				tSize num_written_every64k_bytes = hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][j], (void*)sblock->getBlock(), sblock->getsize());
+#endif
+				cout << row_id << "The last block has written to HDFS!\n";
+
+				blocks_per_partition[i][j]++;
+				pj_buffer[i][j]->setEmpty();
+			}
+		}
+
+	}
+
+#ifdef HDFS_LOAD
+	if(connector_->op_disconnect() == false)
+	{
+		cout << "Failed to close HDFS." << endl;
+		exit(-1);
+	}else
+ 		cout << "HDFS close successfully." << endl;
+#endif
+
+	//register the number of rows in table to catalog
+	table_descriptor_->setRowNumber(row_id);
+	//register the partition information to catalog
+	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+	{
+		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
+		{
+			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+		}
+	}
+	cout << "\n\n\n--------------------------Append End!--------------------------\n";
+ 	return true;
 }
 
 HdfsLoader::~HdfsLoader() {

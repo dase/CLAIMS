@@ -244,7 +244,7 @@ public:
 	virtual bool serialize(FILE* filename) { assert(false); }
 	virtual bool deserialize(FILE* filename) { assert(false); }
 public:
-	unsigned used_nodes;
+	int used_nodes;
 
 };
 
@@ -269,7 +269,7 @@ public:
 	{
 		if (i > this->used_nodes)
 		{
-			cout << "the offset i: " << i << "is invalid!\n";
+			cout << "the offset i: " << i << " is invalid!\n";
 			return NULL;
 		}
 		return internal_nodes[i];
@@ -319,7 +319,7 @@ public:
 	{
 		if (i > this->used_nodes)
 		{
-			cout << "the offset i: " << i << "is invalid!\n";
+			cout << "the offset i: " << i << " is invalid!\n";
 			return NULL;
 		}
 		return leaf_nodes[i];
