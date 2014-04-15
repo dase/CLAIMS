@@ -63,7 +63,7 @@ int main(){
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
-	return query_optimization_based_on_statistics();
+//	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
 //	return test_data_type();
@@ -83,10 +83,10 @@ int main(){
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
 //	return test_index_scan_iterator();
-	return test_index_manager();
+//	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(3);
+	test_expanderFramework_single_node(3);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test();
 }
