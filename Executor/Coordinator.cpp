@@ -18,6 +18,7 @@
 #include "../Message.h"
 #include "../Environment.h"
 #include "../TimeOutReceiver.h"
+#include "../Config.h"
 Coordinator::Coordinator() {
 	logging = new CoordinatorLogging();
 	/** swap the order of SetupTheTheron and PreparetheSocket to provide more time
@@ -47,7 +48,7 @@ Coordinator::~Coordinator() {
 }
 bool Coordinator::PrepareTheSocket() {
 	libconfig::Config cfg;
-	cfg.readFile(COOR);
+	cfg.readFile(Config::config_file.c_str());
 	std::string master_ip = (const char *) cfg.lookup("coordinator.ip");
 	std::string master_port = (const char*) cfg.lookup("coordinator.port");
 

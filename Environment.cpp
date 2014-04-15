@@ -92,7 +92,7 @@ unsigned Environment::getPort(){
 }
 void Environment::Initialize(){
 	libconfig::Config cfg;
-	cfg.readFile(CONFIG);
+	cfg.readFile(Config::config_file.c_str());
 	ip=(const char*)cfg.lookup("ip");
 }
 void Environment::InitializeEndPoint(){

@@ -12,6 +12,7 @@
 #include <iostream>
 #define DEBUG_Config
 
+std::string Config::config_file="/home/imdb/config/wangli/config";
 Config* Config::instance_=0;
 
 /**
@@ -62,7 +63,7 @@ void Config::initialize() {
 	/**
 	 * open configure file, which path is specified in CONFIG.
 	 */
-	cfg.readFile(CONFIG);
+	cfg.readFile(config_file.c_str());
 
 	/*
 	 * The following lines set the search attribute name and default value for each parameter.
