@@ -6,8 +6,8 @@
  */
 #include "Logging.h"
 #ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
-
-//#define DEBUG_ExpanderTracker
+#define DEBUG_Config
+#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
 //#define DEBUG_BlockStreamJoin
 //#define DEBUG_PerformanceTop
@@ -138,12 +138,12 @@ void CoordinatorLogging::elog(const char* format,...){
 
 void ExchangeTrackerLogging::log(const char* format,...){
 #ifdef DEBUG_ExchangeTracker
-//	printf("ExchangeTracker: ");
-//	va_list arg;
-//	va_start (arg, format);
-//	vprintf(format,arg);
-//	printf("\n");
-//	va_end (arg);
+	printf("ExchangeTracker: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
 #endif
 }
 void ExchangeTrackerLogging::elog(const char* format,...){

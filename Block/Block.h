@@ -18,6 +18,15 @@ public:
 	void setBlock(void*);
 	unsigned getsize() const;
 	unsigned setsize(const unsigned& size) ;
+
+	bool isIsReference() const {
+		return isReference_;
+	}
+
+	void setIsReference(bool isReference) {
+		isReference_ = isReference;
+	}
+
 protected:
 	unsigned BlockSize;
 	char* start;
