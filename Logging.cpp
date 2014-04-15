@@ -11,7 +11,7 @@
 //#define DEBUG_BlockStreamExpander
 //#define DEBUG_BlockStreamJoin
 //#define DEBUG_PerformanceTop
-//#define DEBUG_Coordinator~/
+//#define DEBUG_Coordinator
 //#define DEBUG_Environment
 
 //#define DEBUG_ExchangeIteratorLowerWithWideDependency
