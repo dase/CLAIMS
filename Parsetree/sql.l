@@ -48,7 +48,7 @@ ANALYZE	{ return ANALYZE; }
    */
 <BTWMODE>AND	{ BEGIN INITIAL; return AND; }
 AND	{ return ANDOP; }
-ANY     { return ANY; }
+ANY	{ return ANY; }
 AS	{ return AS; }
 ASC	{ return ASC; }
 AUTO_INCREMENT	{ return AUTO_INCREMENT; }
@@ -269,18 +269,18 @@ BEGIN		{ return BEGINT; }
 
    /* numbers */
 
-[0-9]+	{ yylval.intval = atoi(yytext); return INTNUM; } 
+[0-9]+	{ yylval.strval = strdup(yytext); return INTNUM; } 	// 2014-4-14---save int value in string type
 
 [0-9]+"."[0-9]* |
 "."[0-9]+	|
 [0-9]+E[-+]?[0-9]+	|
 [0-9]+"."[0-9]*E[-+]?[0-9]+ |
-"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
-                                  return APPROXNUM; }
-    /* booleans */
-TRUE	{ yylval.intval = 1; return BOOL; }
-UNKNOWN	{ yylval.intval = -1; return BOOL; }
-FALSE	{ yylval.intval = 0; return BOOL; }
+"."[0-9]*E[-+]?[0-9]+	{ yylval.strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
+
+    /* booleans */	// 2014-4-14---save bool value in string type
+TRUE	{ yylval.strval = "1"; return BOOL; }
+UNKNOWN	{ yylval.strval = "-1"; return BOOL; }	// 2014-4-14---not supported now---Yu
+FALSE	{ yylval.strval = "0"; return BOOL; }
 
    /* strings */
 
@@ -300,11 +300,11 @@ FALSE	{ yylval.intval = 0; return BOOL; }
 '(\\.|[^'\n])*$		{ yyerror("Unterminated string %s", yytext); }
 \"(\\.|[^"\n])*$		{ yyerror("Unterminated string %s", yytext); }
 
-   /* hex strings */	// TODO:消除这种形式的STRING的首尾引号
+   /* hex strings */
 X'[0-9A-F]+' |  
 0X[0-9A-F]+  	{ yylval.strval = strdup(yytext); return STRING; }
 
-   /* bit strings */	// TODO:消除这种形式的STRING的首尾引号
+   /* bit strings */
 
 0B[01]+      |
 B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }

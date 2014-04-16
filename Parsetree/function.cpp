@@ -42,7 +42,8 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 	return (struct Node *)a;
 }
 
-struct Node * newExpr(nodetype t, dataval d)
+// 2014-4-14---the old version is newExpr(nodetype t, dataval d)---by Yu
+struct Node * newExpr(nodetype t, char *d)
 {
 	struct Expr * a= (struct Expr *)malloc(sizeof(struct Expr));
 	if(!a)
@@ -55,8 +56,8 @@ struct Node * newExpr(nodetype t, dataval d)
 	a->data = d;
 //	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号	//2014-4-2---将这部分工作放在词法识别阶段进行，见sql.l
 //	{
-//		strncpy(a->data.string_val, d.string_val+1, strlen(d.string_val)-2);
-//		a->data.string_val[strlen(d.string_val)-2] = '\0';
+//		strncpy(a->data, d+1, strlen(d)-2);
+//		a->data[strlen(d)-2] = '\0';
 //	}
 
 	//cout<<"newExpr is created"<<endl;
@@ -550,7 +551,7 @@ struct Node * newCreateDef(nodetype type, int deftype, char * name,
 
 struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, char *s, Node * col_list)
 {
-	struct Column_atts * a= (struct Column_atts *)malloc(sizeof(struct Column_atts));
+	Column_atts * a= (Column_atts *)malloc(sizeof(Column_atts));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -970,28 +971,28 @@ void output(Node * oldnode, int floor)
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_stringval: "<<node->data.string_val<<endl;
+			cout<<"t_stringval: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}
 		case t_intnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_intnum: "<<node->data.int_val<<endl;
+			cout<<"t_intnum: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}
 		case t_approxnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_approxnum: "<<node->data.double_val<<endl;
+			cout<<"t_approxnum: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}
 		case t_bool:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_bool: "<<node->data.bool_val<<endl;
+			cout<<"t_bool: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}	
 		

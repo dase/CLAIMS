@@ -25,22 +25,22 @@ enum endpoint_type{stage_src,stage_desc};
 	 * Local local_stage endpoint refers to the start or the end of a stage within a segment.
 	 * It could be either exchange, state, or expander.
 	 */
-	struct LocalStageEndPoint{
-		LocalStageEndPoint(endpoint_type tp,std::string name="Not Given",MonitorableBuffer* buffer_handle=0)
-		:type(tp),monitorable_buffer(buffer_handle),end_point_name(name){
+struct LocalStageEndPoint{
+	LocalStageEndPoint(endpoint_type tp,std::string name="Not Given",MonitorableBuffer* buffer_handle=0)
+	:type(tp),monitorable_buffer(buffer_handle),end_point_name(name){
 
-		}
-		LocalStageEndPoint():monitorable_buffer(0),end_point_name("Initial"),type(stage_src){
-		}
-		LocalStageEndPoint(const LocalStageEndPoint& r){
-			this->type=r.type;
-			this->monitorable_buffer=r.monitorable_buffer;
-			this->end_point_name=r.end_point_name;
-		}
-		endpoint_type type;
-		MonitorableBuffer* monitorable_buffer;
-		std::string end_point_name;
-	};
+	}
+	LocalStageEndPoint():monitorable_buffer(0),end_point_name("Initial"),type(stage_src){
+	}
+	LocalStageEndPoint(const LocalStageEndPoint& r){
+		this->type=r.type;
+		this->monitorable_buffer=r.monitorable_buffer;
+		this->end_point_name=r.end_point_name;
+	}
+	endpoint_type type;
+	MonitorableBuffer* monitorable_buffer;
+	std::string end_point_name;
+};
 
 //typedef std::pair<LocalStageEndPoint,LocalStageEndPoint> local_stage;
 
