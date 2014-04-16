@@ -2928,7 +2928,7 @@ YY_RULE_SETUP
 case 225:
 YY_RULE_SETUP
 #line 272 "sql.l"
-{ yylval.intval = atoi(yytext); return INTNUM; } 
+{ yylval.strval = strdup(yytext); return INTNUM; } 	// 2014-4-14---save int value in string type
 	YY_BREAK
 case 226:
 #line 275 "sql.l"
@@ -2941,24 +2941,23 @@ case 229:
 case 230:
 YY_RULE_SETUP
 #line 278 "sql.l"
-{ yylval.floatval = atof(yytext) ;
-                                  return APPROXNUM; }
+{ yylval.strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
 	YY_BREAK
-/* booleans */
+/* booleans */	// 2014-4-14---save bool value in string type
 case 231:
 YY_RULE_SETUP
 #line 281 "sql.l"
-{ yylval.intval = 1; return BOOL; }
+{ yylval.strval = "1"; return BOOL; }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
 #line 282 "sql.l"
-{ yylval.intval = -1; return BOOL; }
+{ yylval.strval = "-1"; return BOOL; }	// 2014-4-14---not supported now---Yu
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
 #line 283 "sql.l"
-{ yylval.intval = 0; return BOOL; }
+{ yylval.strval = "0"; return BOOL; }
 	YY_BREAK
 /* strings */
 case 234:
@@ -2994,7 +2993,7 @@ YY_RULE_SETUP
 #line 301 "sql.l"
 { yyerror("Unterminated string %s", yytext); }
 	YY_BREAK
-/* hex strings */	// TODO:消除这种形式的STRING的首尾引号
+/* hex strings */
 case 238:
 #line 305 "sql.l"
 case 239:
@@ -3002,7 +3001,7 @@ YY_RULE_SETUP
 #line 305 "sql.l"
 { yylval.strval = strdup(yytext); return STRING; }
 	YY_BREAK
-/* bit strings */	// TODO:消除这种形式的STRING的首尾引号
+/* bit strings */
 case 240:
 #line 310 "sql.l"
 case 241:
@@ -3262,7 +3261,7 @@ YY_RULE_SETUP
 #line 399 "sql.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3266 "lex.yy.c"
+#line 3265 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(BTWMODE):
 	yyterminate();

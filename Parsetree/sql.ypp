@@ -55,9 +55,9 @@ char linebuf[500];
 
 %token <strval> NAME
 %token <strval> STRING
-%token <intval> INTNUM
-%token <intval> BOOL
-%token <floatval> APPROXNUM
+%token <strval> INTNUM
+%token <strval> BOOL
+%token <strval> APPROXNUM
 
        /* user @abc names */
 
@@ -946,19 +946,20 @@ create_definition: 	/* 2-18---增加name属性---by余楷 */
     | FULLTEXT KEY '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 6, NULL, NULL, NULL, $4); }
      ;
 
+// 2014-4-14---change '+=' to '|=', save data in t->data ---Yu
 column_atts: /* nil */				{ $$ = newColumnAtts(t_column_atts, 0, 0, 0, NULL, NULL); }
-    | column_atts NOT NULLX			{ Column_atts *t = (Column_atts *)$1;t->datatype += 01; $$ = (Node *)t; }
-    | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1;t->datatype += 02; $$ = (Node *)t; }
-    | column_atts DEFAULT STRING        	{ Column_atts *t = (Column_atts *)$1;t->datatype += 04; t->s = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1;t->datatype += 010; t->num1 = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT APPROXNUM 	{ Column_atts *t = (Column_atts *)$1;t->datatype += 020; t->num2 = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT BOOL          	{ Column_atts *t = (Column_atts *)$1;t->datatype += 040; t->num1 = $3; $$ = (Node *)t; }
-    | column_atts AUTO_INCREMENT        	{ Column_atts *t = (Column_atts *)$1;t->datatype += 0100; $$ = (Node *)t; }
-    | column_atts UNIQUE KEY 			{ Column_atts *t = (Column_atts *)$1;t->datatype += 0200; $$ = (Node *)t; }
-    | column_atts PRIMARY KEY			{ Column_atts *t = (Column_atts *)$1;t->datatype += 0400; $$ = (Node *)t; }
-    | column_atts KEY 				{ Column_atts *t = (Column_atts *)$1;t->datatype += 01000; $$ = (Node *)t; }
-    | column_atts COMMENT STRING 		{ Column_atts *t = (Column_atts *)$1;t->datatype += 02000; $$ = (Node *)t; }
-    | column_atts UNIQUE '(' column_list ')'	{ Column_atts *t = (Column_atts *)$1;t->datatype += 04000; t->col_list = $4; $$ = (Node *)t; }	
+    | column_atts NOT NULLX			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 01; $$ = (Node *)t; }
+    | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1; t->datatype |= 02; $$ = (Node *)t; }
+    | column_atts DEFAULT STRING        	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 04; t->s = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1; t->datatype |= 010; t->num1 = atoi($3); $$ = (Node *)t; }
+    | column_atts DEFAULT APPROXNUM 	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 020; t->num2 = atof($3); $$ = (Node *)t; }
+    | column_atts DEFAULT BOOL          	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 040; t->num1 = atoi($3); $$ = (Node *)t; }
+    | column_atts AUTO_INCREMENT        	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0100; $$ = (Node *)t; }
+    | column_atts UNIQUE KEY 			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0200; $$ = (Node *)t; }
+    | column_atts PRIMARY KEY			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0400; $$ = (Node *)t; }
+    | column_atts KEY 				{ Column_atts *t = (Column_atts *)$1; t->datatype |= 01000; $$ = (Node *)t; }
+    | column_atts COMMENT STRING 		{ Column_atts *t = (Column_atts *)$1; t->datatype |= 02000; $$ = (Node *)t; }
+    | column_atts UNIQUE '(' column_list ')'	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 04000; t->col_list = $4; $$ = (Node *)t; }	
     ;
     
 	/** create projection **/	// 2014-2-24---增加对create projection语句的语法识别---by 余楷
@@ -971,7 +972,7 @@ create_projection_stmt: CREATE PROJECTION ON NAME '(' column_list ')' PARTITIONE
 	| CREATE PROJECTION ON NAME '(' column_list ')' NUMBER COMPARISON INTNUM PARTITIONED ON NAME
 	{ 
 		if ($9 != 4) { yyerror("please give a specific number"); } 
-		else { $$ = newCreateProjectionStmt(t_create_projection_stmt, $4, $6, $10, $13); }
+		else { $$ = newCreateProjectionStmt(t_create_projection_stmt, $4, $6, atoi($10), $13); }
 	}
 	;
 	
@@ -1635,8 +1636,8 @@ set_expr:
     
 
 opt_length: /* nil */		{ $$ = NULL; }
-   | '(' INTNUM ')' 		{ $$ = newLength (t_length, $2, 0); }
-   | '(' INTNUM ',' INTNUM ')'	{ $$ = newLength (t_length, $2, $4); }
+   | '(' INTNUM ')' 		{ $$ = newLength (t_length, atoi($2), 0); }
+   | '(' INTNUM ',' INTNUM ')'	{ $$ = newLength (t_length, atoi($2), atoi($4)); }
    ;
 
 opt_binary: /* nil */	{ $$ = 0; }
@@ -1673,9 +1674,9 @@ data_type:		// 2-18---修改各类别的表示从按位区分到按大小区分-
    | DATETIME 				{ $$ = newDatatype (t_datatype, 15, NULL, 0, NULL, 0, NULL); }
    | YEAR 					{ $$ = newDatatype (t_datatype, 16, NULL, 0, NULL, 0, NULL); }
    | CHAR opt_length opt_csc	 	{ $$ = newDatatype (t_datatype, 17, $2, 0, $3, 0, NULL); }
-   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, $3, NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL); }
+   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL); }
    | BINARY opt_length 			{ $$ = newDatatype (t_datatype, 19, $2, 0, NULL, 0, NULL); }
-   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, $3, NULL); $$ = newDatatype (t_datatype, 20, t, 0, NULL, 0, NULL); }
+   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 20, t, 0, NULL, 0, NULL); }
    | TINYBLOB 				{ $$ = newDatatype (t_datatype, 21, NULL, 0, NULL, 0, NULL); }
    | BLOB 					{ $$ = newDatatype (t_datatype, 22, NULL, 0, NULL, 0, NULL); }
    | MEDIUMBLOB				{ $$ = newDatatype (t_datatype, 23, NULL, 0, NULL, 0, NULL); }
@@ -1693,15 +1694,15 @@ enum_list: STRING 		{ $$ = newEnumList( t_enum_list, $1, NULL); }
    ;
 
 
-   /**** expressions ****/
+   /**** expressions ****/	// 2014-4-14---modify because of the change of value type---by Yu
 expr: NAME         { $$ = newColumn(t_name, NULL, $1, NULL); /*puts("expr1");*/ }//---3.5fzh---
-   | USERVAR       { dataval d; d.string_val = $1; $$ = newExpr(t_name, d); }
+   | USERVAR       { $$ = newExpr(t_name, $1); }
    | NAME '.' NAME { $$ = newColumn(t_name_name, $1, $3, NULL); /*puts("expr2");*/ }
    | NAME '.' '*'  { $$ = newColumn(t_name_name, $1, "*", NULL);/* puts("expr22");*/}//---3.6fzh---
-   | STRING        { dataval d; d.string_val = $1; $$ = newExpr(t_stringval, d); /*puts("expr3");*/ }
-   | INTNUM        { dataval d; d.int_val=$1; $$ = newExpr(t_intnum, d); /*puts("expr4");*/ }
-   | APPROXNUM     { dataval d; d.double_val = $1; $$ = newExpr(t_approxnum, d); }
-   | BOOL          { dataval d; d.bool_val = $1; $$ = newExpr(t_bool, d); }
+   | STRING        { $$ = newExpr(t_stringval, $1); /*puts("expr3");*/ }
+   | INTNUM        { $$ = newExpr(t_intnum, $1); /*puts("expr4");*/ }	
+   | APPROXNUM     { $$ = newExpr(t_approxnum, $1); }	
+   | BOOL          { $$ = newExpr(t_bool, $1); }
    ;
 
 expr: expr '+' expr 		{ $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }

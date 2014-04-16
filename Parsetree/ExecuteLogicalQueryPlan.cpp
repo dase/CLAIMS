@@ -273,7 +273,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				break;
 			}
-			case t_load_table_stmt:	//
+			case t_load_table_stmt:	//	导入数据的语句
 			{
 				Loadtable_stmt *new_node = (Loadtable_stmt*)node;
 
@@ -290,8 +290,8 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				while(path_node)
 				{
 					Expr *data = (Expr*)path_node->data;
-					ASTParserLogging::log("%s",data->data.string_val);
-					path_names.push_back(string(data->data.string_val));
+					ASTParserLogging::log("%s",data->data);
+					path_names.push_back(string(data->data));
 					path_node = (Expr_list*)path_node->next;
 				}
 
@@ -300,6 +300,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table_name, table);
 
 				loader->load();
+				break;
 			}
 			default:
 			{
