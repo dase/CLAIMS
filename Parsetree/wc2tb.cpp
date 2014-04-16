@@ -106,7 +106,7 @@ void getwctable(struct Node *cur)//cur=wcexpr,获得wcexpr中涉及的表并放�
 	if(cur->type==t_name)
 	{
 		Expr *node=(Expr *)(cur);
-		st.insert((node->data).string_val);//应该获得的是表名？？？
+		st.insert(string(node->data));//应该获得的是表名？？？		// 2014-4-14---modify because of the change of struct Expr---by Yu
 	}
 	else if(cur->type==t_name_name)
 	{

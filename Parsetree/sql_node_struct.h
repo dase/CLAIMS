@@ -44,13 +44,7 @@ enum nodetype
 	t_load_table_stmt	// 2014-3-24---增加---by Yu
 };
 
-union dataval	// 2014-3-8---不支持更长的整数，需改用long或其他类型---by余楷
-{
-	int int_val;
-	char *string_val;
-	double double_val;
-	bool bool_val;
-};
+// 2014-4-14---delete union dataval, because only char* is need---by Yu
 
 struct Node//基本节点
 {
@@ -68,7 +62,7 @@ struct Stmt	//语句列表 2014-3-4---增加语句列表结构体---by余楷
 struct Expr//常量表达式
 {
 	nodetype type;
-	dataval data;
+	char *data;
 	//Node *next;
 };
 
@@ -331,10 +325,11 @@ struct Create_def
 	Node * col_list;
 };
 
+// 2014-4-14---change the struct---by Yu
 struct Column_atts
 {
 	nodetype type;
-	int datatype;	//若 datatype & 0111100 != 0，则还有内容存在num1或num2或s中
+	int datatype;	//若 datatype & 0111100 != 0，则还有内容存在data中
 	int num1;
 	double num2;
 	char *s;
@@ -563,7 +558,7 @@ struct enum_list
 
 struct Node *newStmt(nodetype t, Node *list, Node *newNode);	// 2014-3-4---增加新建语句列表函数---by余楷
 
-struct Node* newExpr(nodetype t, dataval d);
+struct Node* newExpr(nodetype t, char *data);
 
 struct Node * newExprList(nodetype t, Node * data, Node * next);
 

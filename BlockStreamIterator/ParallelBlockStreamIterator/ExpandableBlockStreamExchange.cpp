@@ -312,7 +312,7 @@ void* ExpandableBlockStreamExchange::receiver(void* arg){
 						Logging_ExchangeIteratorEager("This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s].",Pthis->lower_ip_array[seed].c_str());
 
 					}
-				break;
+					break;
 				}
 				seed=(seed+1)%Pthis->nlowers;
 			}
