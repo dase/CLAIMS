@@ -35,6 +35,7 @@ enum nodetype
 	t_having_list,
 	t_orderby_list,t_orderby_expr,
 	t_limit_list,t_limit_expr,
+	t_insert_stmt,	t_insert_val_list, t_insert_vals, t_insert_assign, // 2014-4-17---增加---by Yu
 	t_create_database_stmt, t_create_table_stmt, t_create_col_list, t_create_def, t_create_projection_stmt,// 2014-2-24---新增t_create_projection_stmt类型---by余楷
 	t_alter_database_stmt, t_alter_table_stmt, t_alter_def,
 	t_create_select_stmt,t_column_atts, t_opt_csc,
@@ -282,6 +283,47 @@ struct Limit_expr
 	Node * offset;
 	Node *row_count;
 };
+
+// 2014-4-17---add ---by Yu
+struct Insert_stmt
+{
+	nodetype type;
+	int insert_opt;	// 2014-4-16---not used in this version ---by Yu
+	char *tablename;
+	Node *col_list;
+	Node *insert_val_list;
+	Node *insert_assign_list;	// 2014-4-16---not used in this version ---by Yu
+	Node *insert_assign_list_from_set;	// 2014-4-17---not used in this version ---by Yu
+	Node *select_stmt;	// 2014-4-17---not used in this version ---by Yu
+};
+
+// 2014-4-17---add ---by Yu
+struct Insert_val_list
+{
+	nodetype type;
+	Node *insert_vals;
+	Node *next;
+};
+
+// 2014-4-17---add ---by Yu
+struct Insert_vals
+{
+	nodetype type;
+	int value_type;
+	Node *expr;
+	Node *next;
+};
+
+// 2014-4-17---add ---by Yu
+struct Insert_assign_list
+{
+	nodetype type;
+	char *col_name;
+	int value_type;
+	Node *expr;
+	Node *next;
+};
+
 
 /*****************select子句结束*********************************************************************************************************************/
 
@@ -606,6 +648,20 @@ struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next);
 struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *next);
 
 struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count);
+
+
+//2014-4-17---add---by Yu
+Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
+		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt);
+
+//2014-4-17---add---by Yu
+Node* newInsertValueList(Node *insert_vals, Node *next);
+
+//2014-4-17---add---by Yu
+Node* newInsertVals(int value_type, Node *expr, Node *next);
+
+//2014-4-17---add---by Yu
+Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next);
 
 /*******　DDL语句  *****/
 struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, char * name);

@@ -287,14 +287,14 @@ FALSE	{ yylval.strval = "0"; return BOOL; }
 '(\\.|''|[^'\n])*'	|
 \"(\\.|\"\"|[^"\n])*\"  {
 				char *temp = strdup(yytext); 
-				printf("temp:%s\n",temp);
+				//printf("temp:%s\n",temp);
 				yylval.strval = strdup(yytext);
 				
 				//2014-4-3---处理转义字符以及消去首尾的引号---by Yu
 				GetCorrectString(yylval.strval, temp);
 				
-				printf("the string is %s\n",yylval.strval);
-				return STRING; 
+				//printf("the string is %s\n",yylval.strval);
+				return STRING;
 			}
 
 '(\\.|[^'\n])*$		{ yyerror("Unterminated string %s", yytext); }
