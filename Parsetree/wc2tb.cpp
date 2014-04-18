@@ -42,6 +42,7 @@ void setwcposition(struct Node *wccur,struct Node *flcur)//在fromlist中定位�
 	{
 		From_list * node=(From_list *)flcur;
 		int judgeresult=judgepos(node->args);
+//		if(judgeresult==0)
 		if(judgeresult==0)
 		{
 			setwcposition(wccur,node->next);
@@ -103,10 +104,15 @@ void setwcposition(struct Node *wccur,struct Node *flcur)//在fromlist中定位�
 void getwctable(struct Node *cur)//cur=wcexpr,获得wcexpr中涉及的表并放入set中
 {
 //	cout<<"wc "<<cur->type<<"  "<<(st.size())<<endl;
-	if(cur->type==t_name)
+	if(cur->type==t_name)	// 2014-4-16---modify because Columns struct has the t_name for NAME, while Expr struct has the t_name for USERVAR---by Yu
 	{
-		Expr *node=(Expr *)(cur);
-		st.insert(string(node->data));//应该获得的是表名？？？		// 2014-4-14---modify because of the change of struct Expr---by Yu
+//		Expr *node=(Expr *)(cur);
+//		if(node->data == NULL)
+//		{
+//			cout<<"node->data is null"<<endl;
+//		}
+		Columns *node = (Columns*) cur;
+		st.insert(string(node->parameter2));//应该获得的是表名？？？	<<<	// 2014-4-16---Now it is the name of table ---by Yu
 	}
 	else if(cur->type==t_name_name)
 	{

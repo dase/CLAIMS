@@ -254,6 +254,7 @@ bool fromlist_analysis(Query_stmt *qstmt)
 	if(fltree==NULL)
 	{
 		print_analysis_error("fromlist","query_stmt from_list is null","");
+		return false;	// 2014-4-17---add ---by Yu
 	}
 	else
 	{

@@ -223,8 +223,8 @@ map<string, set<string> > TableDescriptor::getColumnLocations(const string& attr
 }
 
 ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionOffset pid)const{
-	if(pid>=0||pid<projection_list_.size()){
-		return projection_list_[pid];
+	if(pid>=0 && pid<projection_list_.size()){	// 2014-4-14---change || to &&---by Yu
+		return projection_list_.at(pid);	// 2014-4-14---change [pid] to .at(pid)---by Yu
 	}
 	return NULL;
 }

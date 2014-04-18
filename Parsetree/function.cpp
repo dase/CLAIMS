@@ -461,8 +461,93 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
 	//cout<<"Limit_expr is created"<<endl;
 
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
-	return (struct Node *)a;
+	return (Node *)a;
 };
+
+//2014-4-16---add---by Yu
+Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
+		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt)
+{
+	Insert_stmt *a= (Insert_stmt *)malloc(sizeof(Insert_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_stmt;
+	a->insert_opt = insert_opt;
+	a->tablename = tablename;
+	a->col_list = col_list;
+	a->insert_val_list = insert_val_list;
+	a->insert_assign_list = insert_assign_list;
+	a->insert_assign_list_from_set = insert_assign_list_from_set;
+	a->select_stmt = select_stmt;
+
+	//cout<<"Insert_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (Node*)a;
+};
+
+//2014-4-17---add---by Yu
+Node* newInsertValueList(Node *insert_vals, Node *next)
+{
+	Insert_val_list *a= (Insert_val_list *)malloc(sizeof(Insert_val_list));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_val_list;
+	a->insert_vals = insert_vals;
+	a->next = next;
+
+	//cout<<"Insert_val_list is created"<<endl;
+
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (Node*)a;
+};
+
+//2014-4-17---add---by Yu
+Node* newInsertVals(int value_type, Node *expr, Node *next)
+{
+	Insert_vals *a= (Insert_vals *)malloc(sizeof(Insert_vals));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_vals;
+	a->value_type = value_type;
+	a->expr = expr;
+	a->next = next;
+
+	//cout<<"Insert_vals is created"<<endl;
+	insertNodePointer((Node*)a);
+	return (Node*)a;
+};
+
+//2014-4-17---add---by Yu
+Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next)
+{
+	Insert_assign_list *a= (Insert_assign_list *)malloc(sizeof(Insert_assign_list));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_assign;
+	a->col_name = col_name;
+	a->value_type = value_type;
+	a->expr = expr;
+	a->next = next;
+
+	//cout<<"Insert_assign_list is created"<<endl;
+	insertNodePointer((Node*)a);
+	return (Node*)a;
+};
+
 
 /*************************** DDL语句开始 ********************************/
 
