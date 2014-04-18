@@ -410,6 +410,8 @@ char linebuf[500];
 
 %type <intval> update_opts	// 2014-3-24---更改位置到此---by Yu
 
+%type <ast_node> opt_ondupupdate insert_stmt	// 2014-4-17---add---by Yu
+
 /** add by yukai **/
 %type <ast_node> create_database_stmt create_table_stmt  create_select_statement
 %type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc	
@@ -549,7 +551,7 @@ opt_limit: /* nil */ {$$ = NULL; /*puts("opt_limit is null");*/ }
 	; 
 
 opt_into_list: /* nil */ { $$=NULL; /*puts("opt_into_list is null");*/ }//no
-   | INTO column_list {  }											//-------------------------------------------------------------------------------------------
+   | INTO column_list {  }							//-----------------------
    ;
 
 column_list: NAME { $$ = newColumn(t_column, $1, NULL, NULL); }
@@ -737,19 +739,19 @@ delete_stmt: DELETE delete_opts FROM delete_list USING table_references opt_wher
    { emit("DELETEMULTI %d %d %d", $2, $4, $6); }
    ;
 
-   /* statements: insert statement */
+   /* statements: insert statement */	//2014-4-17---add---by Yu
 
-stmt: insert_stmt { emit("STMT"); }
+stmt: insert_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a insert statement"); }	//2014-4-16---add---by Yu
    ;
 
 insert_stmt: INSERT insert_opts opt_into NAME
      opt_col_names
      VALUES insert_vals_list
-     opt_ondupupdate { emit("INSERTVALS %d %d %s", $2, $7, $4); free($4) }
+     opt_ondupupdate { $$ = newInsertStmt($2, $4, $5, $7, $8, NULL, NULL); }
    ;
 
-opt_ondupupdate: /* nil */
-   | ON DUPLICATE KEY UPDATE insert_asgn_list { emit("DUPUPDATE %d", $5); }
+opt_ondupupdate: /* nil */				{ $$ = NULL; }
+   | ON DUPLICATE KEY UPDATE insert_asgn_list	{ $$ = $5; }
    ;
 
 insert_opts: /* nil */			{ $$ = 0; }
@@ -762,44 +764,42 @@ insert_opts: /* nil */			{ $$ = 0; }
 opt_into: INTO | /* nil */
 	;
 
-opt_col_names: /* nil */	{}
-   | '(' column_list ')' {  }
+opt_col_names: /* nil */	{ $$ = NULL; }
+   | '(' column_list ')'	{ $$ = $2; }
    ;
 
-insert_vals_list: '(' insert_vals ')' /*{ emit("VALUES %d", $2); }*/
-   | insert_vals_list ',' '(' insert_vals ')' /*{ emit("VALUES %d", $4);}*/
-;
+insert_vals_list: '(' insert_vals ')'		{ $$ = newInsertValueList($2, NULL); }
+   | insert_vals_list ',' '(' insert_vals ')'	{ $$ = newInsertValueList($4, $1); }	//2014-4-17---Attention: the order can be reversed---by Yu
+   ;
+   
 insert_vals:
-     expr //{ $$ = 1; }
-   | DEFAULT// { emit("DEFAULT"); $$ = 1; }
-   | insert_vals ',' expr //{ $$ = $1 + 1; }
-   | insert_vals ',' DEFAULT //{ emit("DE//没什么用，因为limit只有一项FAULT"); $$ = $1 + 1; }
+     expr		{ $$ = newInsertVals(0, $1, NULL); }
+   | DEFAULT	{ $$ = newInsertVals(1, NULL, NULL); }
+   | expr ',' insert_vals	{ $$ = newInsertVals(0, $1, $3); }
+   | DEFAULT ',' insert_vals	{ $$ = newInsertVals(1, NULL, $3); }
    ;
 
-insert_stmt: INSERT insert_opts opt_into NAME
-    SET insert_asgn_list
-    opt_ondupupdate
-     { emit("INSERTASGN %d %d %s", $2, $6, $4); free($4) }
+insert_stmt: INSERT insert_opts opt_into NAME 
+	SET insert_asgn_list opt_ondupupdate	{ $$ = newInsertStmt($2, $4, NULL, NULL, $7, $6, NULL); }
    ;
 
 insert_stmt: INSERT insert_opts opt_into NAME opt_col_names
-    select_stmt
-    opt_ondupupdate { emit("INSERTSELECT %d %s", $2, $4); free($4); }
+    select_stmt opt_ondupupdate { $$ = newInsertStmt($2, $4, $5, NULL, $7, NULL, $6); }
   ;
 
 insert_asgn_list:
-     NAME COMPARISON expr 
-    // { if ($2 != 4) yyerror("bad insert assignment to %s", $1);
-     //  emit("ASSIGN %s", $1); free($1); $$ = 1; }
-   | NAME COMPARISON DEFAULT
-               //{ if ($2 != 4) yyerror("bad insert assignment to %s", $1);
-              //   emit("DEFAULT"); emit("ASSIGN %s", $1); free($1); $$ = 1; }
-   | insert_asgn_list ',' NAME COMPARISON expr
-              // { if ($4 != 4) yyerror("bad insert assignment to %s", $1);
-             //    emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
-   | insert_asgn_list ',' NAME COMPARISON DEFAULT
-             //  { if ($4 != 4) yyerror("bad insert assignment to %s", $1);
-             //    emit("DEFAULT"); emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
+	NAME COMPARISON expr { 
+		if($2 != 4) yyerror("bad insert assignment to %s", $1); 
+		else $$ = newInsertAssignList($1, 0, $3, NULL); }
+	| NAME COMPARISON DEFAULT { 
+		if ($2 != 4) yyerror("bad insert assignment to %s", $1);
+ 		else $$ = newInsertAssignList($1, 1, NULL, NULL); }
+	| insert_asgn_list ',' NAME COMPARISON expr { 
+		if ($4 != 4) yyerror("bad insert assignment to %s", $1);		 
+		else $$ = newInsertAssignList($3, 0, $5, $1); }
+	| insert_asgn_list ',' NAME COMPARISON DEFAULT { 
+		if ($4 != 4) yyerror("bad insert assignment to %s", $1);
+		else $$ = newInsertAssignList($3, 1, NULL, $1); }
    ;
 
    /** replace just like insert **/
@@ -934,7 +934,7 @@ opt_temporary: /* nil */{ $$ = 0; }
 	;
 
 create_col_list: create_definition { $$ = newCreateColList(t_create_col_list, $1, NULL); }
-	| create_col_list ',' create_definition { $$ = newCreateColList(t_create_col_list, $3, $1); }
+	| create_definition ',' create_col_list { $$ = newCreateColList(t_create_col_list, $1, $3); }
 	;
 
 create_definition: 	/* 2-18---增加name属性---by余楷 */

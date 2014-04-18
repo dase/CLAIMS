@@ -192,10 +192,8 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					list = (Create_col_list* )list->next;
 				}
 				catalog->add_table(new_table);
-
-				break;
 			}
-
+			break;
 			case t_create_projection_stmt:	// 创建projection的语句
 			{
 				cout<<"this is create projection "<<endl;
@@ -235,16 +233,20 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
 					//				catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
 				}
-				break;
 			}
+			break;
 			case t_query_stmt: // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
 			{
 				cout<<"this is query stmt"<<endl;
 
 				if (!semantic_analysis(node))
+				{
 					cout<<"semantic_analysis error"<<endl;
+					break;	// 2014-4-17---add ---by Yu
+				}
 				Query_stmt *querynode=(Query_stmt *)node;
 				puts("select_stmt2>>>>>>>>");
+
 				if(querynode->where_list!=NULL)
 				{
 					struct Where_list * curt=(struct Where_list *)(querynode->where_list);
@@ -270,15 +272,21 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				please->print();
 
 				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
-
-				break;
 			}
+			break;
 			case t_load_table_stmt:	//	导入数据的语句
 			{
 				Loadtable_stmt *new_node = (Loadtable_stmt*)node;
 
 				string table_name(new_node->table_name);
 				TableDescriptor *table = Environment::getInstance()->getCatalog()->getTable(table_name);
+
+				// 2014-4-17---check the exist of table---by Yu
+				if(table == NULL)
+				{
+					ASTParserLogging::elog("the table %s does not exist!", table_name);
+					break;
+				}
 				string column_separator(new_node->column_separator);
 				string tuple_separator(new_node->tuple_separator);
 				printf("wef:%s\n",new_node->tuple_separator);
@@ -300,8 +308,113 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table_name, table);
 
 				loader->load();
-				break;
 			}
+			break;
+			case t_insert_stmt:	// 2014-4-17---add---by Yu
+			{
+				bool correct = true;
+				Insert_stmt *insert_stmt = (Insert_stmt *)node;
+				string table_name(insert_stmt->tablename);
+				TableDescriptor *table = Environment::getInstance()->getCatalog()->getTable(table_name);
+				if(table == NULL)
+				{
+					ASTParserLogging::elog("the table %s does not exist!", table_name);
+					break;
+				}
+
+//				vector<string> col_list;
+//				Columns *col = (Columns *)insert_stmt->col_list;
+//				new HdfsLoader();
+//				while(col)
+//				{
+//					col_list.push_back(col->parameter1);
+//					col = (Columns *)col->next;
+//				}
+
+				Columns *col = (Columns *)insert_stmt->col_list;
+				bool is_all_col = false;
+				if(col == NULL)
+					is_all_col = true;
+
+				ostringstream ostr;
+				Insert_val_list *insert_value_list = (Insert_val_list*)insert_stmt->insert_val_list;
+				while(insert_value_list)	// 循环获得 （……），（……），（……）中的每一个（……）
+				{
+					// init
+					Insert_vals *insert_value = (Insert_vals *)insert_value_list->insert_vals;
+					col = (Columns *)insert_stmt->col_list;
+
+					std::vector<Attribute> attrs = table->getAttributes();
+					for(unsigned int position = 0; position < attrs.size(); position++)
+					{
+						if(is_all_col || !table->getAttribute(position).attrName.compare(col->parameter1))	//添加的列与表中的列相匹配 或者 添加的是所有列
+						{
+							if(insert_value->value_type == 0)	// 指定具体的值
+							{
+								switch(insert_value->expr->type)	// 2014-4-17---only these type are supported now---by Yu
+								{
+								case t_stringval: case t_intnum: case t_approxnum: case t_bool:
+								{
+									Expr *expr = (Expr *)insert_value->expr;
+									ostr<<expr->data;
+								}
+								break;
+								default:{}
+								}
+							}
+							if(insert_value->type == 1)	// 设置为default, 暂不支持
+							{}
+
+							if(!is_all_col)	// insert part of columns
+							{
+								col = (Columns *)col->next;	// col point to next column
+								insert_value = (Insert_vals *)insert_value->next;	// insert_val point to next value
+
+								if(col == NULL && insert_value == NULL) // insert column and value both exhaust
+								{
+									ostr<<"|";
+									break;
+								}
+								else if(col == NULL || insert_value == NULL)	// insert columns number don't equal to insert value number
+								{
+									ASTParserLogging::elog("the number of columns and values are not equal!");
+									correct = false;
+									break;
+								}
+							}
+							else	// insert all columns
+							{
+								// make sure value number is equl to the column number
+								if((insert_value = (Insert_vals *)insert_value->next)  == NULL)
+								{
+									if(position < attrs.size()-1)
+									{
+										ASTParserLogging::elog("number of values is too few");
+										correct = false;
+									}
+									ostr<<"|";
+									break;
+								}
+							}
+						}
+						ostr<<"|";
+
+					}
+					if(!correct)
+						break;
+
+					insert_value_list = (Insert_val_list *)insert_value_list->next;
+					if(insert_value_list != NULL)
+						ostr<<"\n";
+				}
+				if(!correct)
+					break;
+				ASTParserLogging::log("the insert content is %s",ostr.str().c_str());
+
+				HdfsLoader* Hl = new HdfsLoader(table);
+				Hl->append(ostr.str().c_str());
+			}
+			break;
 			default:
 			{
 				cout<<node->type<<endl;
