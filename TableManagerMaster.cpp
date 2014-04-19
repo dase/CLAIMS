@@ -12,11 +12,11 @@ TableManagerMaster::TableManagerMaster():table_cursor(0) {
 	_instance=this;
 
 	libconfig::Config cfg;
-	cfg.readFile(CONFIG);
+//	cfg.readFile(CONFIG);
 
 	std::string master_ip=(const char*)cfg.lookup("TableManager.Master.ip");
 	std::string master_port=(const char*)cfg.lookup("TableManager.Master.port");
-
+	assert(false);
 //	slave_id_list.push_back("10.11.1.224:6000");
 	endpoint=new Theron::EndPoint((master_ip+":"+master_port).c_str(),("tcp://"+master_ip+":"+master_port).c_str());
 	endpoint->Connect("tcp://10.11.1.224:6000");

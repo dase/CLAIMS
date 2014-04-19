@@ -122,9 +122,12 @@ std::string NValue::createStringFromDecimal(unsigned number_of_fractinal_digits)
         fractional.ChangeSign();
     }
     std::string fractionalString = fractional.ToString(10);
-    for (int ii = static_cast<int>(fractionalString.size()); ii < NValue::kMaxDecScale&&ii<number_of_fractinal_digits; ii++) {
+//    for (int ii = static_cast<int>(fractionalString.size()); ii < NValue::kMaxDecScale&&ii<number_of_fractinal_digits; ii++) {
+    unsigned number_of_zero=0;
+    for (int ii = static_cast<int>(fractionalString.size()); ii < NValue::kMaxDecScale&&number_of_zero<number_of_fractinal_digits; ii++,number_of_zero++) {
         buffer << '0';
     }
+    number_of_fractinal_digits-=number_of_zero;
     buffer << (fractionalString.size()>number_of_fractinal_digits? fractionalString.substr(0,number_of_fractinal_digits):fractionalString);
     return buffer.str();
 }

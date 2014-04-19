@@ -24,7 +24,7 @@ void BlockStreamFix::setEmpty(){
 
 BlockStreamBase* BlockStreamBase::createBlock(const Schema* const & schema,unsigned block_size) {
 	if(schema->getSchemaType()==Schema::fixed){
-		return new BlockStreamFix(block_size,schema->getTupleMaxSize());
+		return new BlockStreamFix(block_size-sizeof(BlockStreamFix::tail_info),schema->getTupleMaxSize());
 	}
 	else{
 		return new BlockStreamVar(block_size,schema);

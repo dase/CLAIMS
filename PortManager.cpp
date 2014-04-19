@@ -9,7 +9,8 @@
 #include <libconfig.h++>
 #include <iostream>
 #include "Logging.h"
-#include "Debug.h"
+#include "Config.h"
+//#include "Debug.h"
 PortManager* PortManager::_instance=0;
 PortManager::PortManager() {
 	getConfigure();
@@ -29,7 +30,7 @@ PortManager* PortManager::getInstance(){
 }
 void PortManager::getConfigure(){
 	libconfig::Config cfg;
-	cfg.readFile(CONFIG);
+	cfg.readFile(Config::config_file.c_str());
 	start=(unsigned)cfg.lookup("PortManager.start");
 	end=(unsigned)cfg.lookup("PortManager.end");
 }

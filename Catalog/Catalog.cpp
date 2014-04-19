@@ -82,6 +82,22 @@ bool Catalog::isAttributeExist(const std::string& table_name,const std::string& 
 }
 
 
+vector<PartitionID> Catalog::getPartitionIDList(const std::string& table_name, const std::string& attribute_name)
+{
+	vector<PartitionID> ret;
+	ret.clear();
+	TableDescriptor* table_descripter = this->getTable(table_name);
+	ProjectionDescriptor* projection_descripter = NULL;
+	unsigned projection_num = table_descripter->getNumberOfProjection();
+	for (unsigned i = 0; i < projection_num; i++)
+	{
+		projection_descripter = table_descripter->getProjectoin(i);
+		if (projection_descripter->isExist(attribute_name))
+			break;
+	}
+	return projection_descripter->getPartitioner()->getPartitionIDList();
+}
+
 //void Catalog::outPut()
 //{
 //	boost::unordered_map<TableID,TableDescriptor*>::iterator it_tableid_to_table;//=tableid_to_table.find(new_table_id);

@@ -305,7 +305,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				// split sign should be considered carefully, in case of it may be "||" or "###"
 				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
-				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table_name, table);
+				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
 
 				loader->load();
 			}
@@ -347,7 +347,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					std::vector<Attribute> attrs = table->getAttributes();
 					for(unsigned int position = 0; position < attrs.size(); position++)
 					{
-						if(is_all_col || !table->getAttribute(position).attrName.compare(col->parameter1))	//添加的列与表中的列相匹配 或者 添加的是所有列
+						if(is_all_col || (col && !table->getAttribute(position).attrName.compare(col->parameter1)))	//添加的列与表中的列相匹配 或者 添加的是所有列
 						{
 							if(insert_value->value_type == 0)	// 指定具体的值
 							{
@@ -370,12 +370,13 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 								col = (Columns *)col->next;	// col point to next column
 								insert_value = (Insert_vals *)insert_value->next;	// insert_val point to next value
 
-								if(col == NULL && insert_value == NULL) // insert column and value both exhaust
-								{
-									ostr<<"|";
-									break;
-								}
-								else if(col == NULL || insert_value == NULL)	// insert columns number don't equal to insert value number
+//								if(col == NULL && insert_value == NULL) // insert column and value both exhaust,which is correct
+//								{
+//									ostr<<"|";
+//									continue;
+//								}
+//								else
+									if((col == NULL) ^ (insert_value == NULL))	// insert columns number don't equal to insert value number
 								{
 									ASTParserLogging::elog("the number of columns and values are not equal!");
 									correct = false;
@@ -411,8 +412,8 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					break;
 				ASTParserLogging::log("the insert content is %s",ostr.str().c_str());
 
-				HdfsLoader* Hl = new HdfsLoader(table);
-				Hl->append(ostr.str().c_str());
+//				HdfsLoader* Hl = new HdfsLoader(table);
+//				Hl->append(ostr.str().c_str());
 			}
 			break;
 			default:

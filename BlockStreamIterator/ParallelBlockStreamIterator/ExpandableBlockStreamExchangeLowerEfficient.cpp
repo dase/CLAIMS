@@ -32,7 +32,8 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 	// TODO Auto-generated destructor stub
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
-
+	logging_=new ExchangeIteratorEagerLowerLogging();
+	logging_->log("[%lld] Exchange lower is created!",state.exchange_id);
 	unsigned long long int start=curtick();
 	unsigned long long int step1,step2,step3;
 	step1=curtick();
@@ -42,7 +43,6 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	connected_uppers_in=0;
 	state.child->open(state.partition_offset);
 
-	logging_=new ExchangeIteratorEagerLowerLogging();
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
 //	printf("<><><><><><><> lower open time:%4.4f (step 1) \n",getSecond(step1));
@@ -84,6 +84,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 			perror("socket creation errors!\n");
 			return false;
 		}
+//		printf("Lower %d is created!\n",socket_fd_upper_list[upper_id]);
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
@@ -248,6 +249,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	/* close the socket connections to the uppers */
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
 //		FileClose(socket_fd_upper_list[i]);
+//		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 	}
 	state.child->close();
 	buffer->~PartitionedBlockBuffer();
@@ -336,6 +338,7 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 			perror("recv error!\n");
 		}
 		FileClose(socket_fd_upper_list[i]);
+//		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 //		printf("Receive the close notifaction from the upper[%s], the byte='%c' state=%d\n",state.upper_ip_list[i].c_str(),byte,state.exchange_id);
 		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}

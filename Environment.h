@@ -20,6 +20,7 @@
 #include "Resource/ResourceManagerSlave.h"
 #include "Catalog/Catalog.h"
 #include "BufferManager/BufferManager.h"
+#include "IndexManager/IndexManager.h"
 #include "Executor/ExpanderTracker.h"
 
 class Environment {
@@ -42,6 +43,7 @@ private:
 	void InitializeStorage();
 	void InitializeResourceManager();
 	void InitializeBufferManager();
+	void InitializeIndexManager();
 private:
 	static Environment* _instance;
 	PortManager* portManager;
@@ -62,6 +64,7 @@ private:
 	BlockManagerMaster* blockManagerMaster_;
 	BlockManager*	blockManager_;
 	BufferManager* bufferManager_;
+	IndexManager* indexManager_;
 	ExpanderTracker* expander_tracker_;
 
 	/**

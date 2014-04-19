@@ -72,7 +72,7 @@ public:
 	virtual NodeID get_location() const=0;
 protected:
 	string hdfs_file_name;//p
-	int number_of_blocks;//p
+	unsigned long number_of_blocks;//p
 	PartitionID partition_id_;
 
 	friend class boost::serialization::access;
@@ -244,6 +244,7 @@ public:
 
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,unsigned number_of_chunks);
+	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks);
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 
@@ -264,6 +265,8 @@ public:
 	PartitionFunction* getPartitionFunction()const;
 	ProjectionID getProejctionID()const;
 	bool allPartitionBound()const;
+
+	vector<PartitionID> getPartitionIDList();
 private:
 	Attribute* partition_key_;
 	PartitionFunction* partition_function_;

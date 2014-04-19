@@ -58,6 +58,7 @@ private:
 
 	volatile bool open_finished_;
 	semaphore sema_open_finished_;
+	semaphore sema_input_complete_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

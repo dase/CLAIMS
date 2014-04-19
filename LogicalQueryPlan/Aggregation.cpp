@@ -10,10 +10,11 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
-#define THREAD_COUNT 1
+#include "../Config.h"
 Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vector<Attribute> aggregation_attribute_list,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child)
 :group_by_attribute_list_(group_by_attribute_list),aggregation_attribute_list_(aggregation_attribute_list),aggregation_list_(aggregation_list),dataflow_(0),child_(child){
 	assert(aggregation_attribute_list_.size()==aggregation_list_.size());
+	setOperatortype(l_aggregation);
 }
 
 Aggregation::~Aggregation() {
@@ -139,7 +140,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.init_thread_count_=THREAD_COUNT;
+			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=private_aggregation;
 			expander_state.schema_=getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state);
@@ -183,7 +184,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.init_thread_count_=THREAD_COUNT;
+			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=child_->getIteratorTree(block_size);;
 			expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
@@ -321,7 +322,7 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
 	const unsigned long max_limits=1024*1024;
-	const unsigned long min_limits=1024;
+	const unsigned long min_limits=1024*4;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();
 	unsigned long ret;
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){

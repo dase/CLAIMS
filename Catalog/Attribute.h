@@ -46,6 +46,15 @@ struct Attribute
 		return *this;
 	}
 
+	bool operator<(const Attribute& att) const{
+		if (table_id_ < att.table_id_)
+			return false;
+		else if (table_id_ == att.table_id_)
+			return (index < att.index);
+		else
+			return false;
+	}
+
 	Attribute(unsigned symbol=ATTRIBUTE_NULL):table_id_(symbol),index(-1),attrType(0),unique(false){
 		switch(symbol){
 		case ATTRIBUTE_ANY:{
