@@ -6,7 +6,8 @@
  *  Modifed on: Mar 26, 2014
  *  	  Author: yukai
  */
-
+#ifndef __COMPARATOR_CPP_
+#define __COMPARATOR_CPP_
 #include "Comparator.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,12 +69,13 @@ bool LESS<char*,float>(const void* x,const  void* y)
 
 template<>
 bool LESS<NValue*, NValue*>(const void *x,const void *y){
-	if (((NValue*)x)->op_equals(*(NValue*)y))
-		return false;
-	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
-	if (tmp.op_equals(*(NValue*)x))
-		return true;
-	return false;
+//	if (((NValue*)x)->op_equals(*(NValue*)y))
+//		return false;
+//	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
+//	if (tmp.op_equals(*(NValue*)x))
+//		return true;
+//	return false;
+	return ((NValue*)x)->compare(*(NValue*)y)==VALUE_COMPARE_LESSTHAN;
 }
 ////////////////////////////////////////////
 
@@ -144,6 +146,7 @@ std::map<Comparator::Pair,comFun> Comparator::funs_EQ;
 std::map<Comparator::Pair,comFun> Comparator::funs_NEQ;
 std::map<Comparator::Pair,comFun> Comparator::funs_G;
 std::map<Comparator::Pair,comFun> Comparator::funs_LEQ;
+Lock Comparator::lock_;
 void Comparator::initialize_L()
 {
 	funs_L[Comparator::Pair(t_int,t_int)]=LESS<int,int>;
@@ -164,10 +167,10 @@ void Comparator::initialize_L()
 	funs_L[Comparator::Pair(t_decimal,t_decimal)]=LESS<NValue*,NValue*>;
 
 	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
-
 }
 void Comparator::initialize_GEQ()
 {
+//	lock_.acquire();
 	funs_GEQ[Comparator::Pair(t_int,t_int)]=greatEqual<int,int>;
 	funs_GEQ[Comparator::Pair(t_int,t_float)]=greatEqual<int,float>;
 	funs_GEQ[Comparator::Pair(t_int,t_string)]=greatEqual<int,char*>;
@@ -186,9 +189,11 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<NValue*,NValue*>;
 
 	funs_GEQ[Comparator::Pair(t_u_long,t_u_long)]=greatEqual<unsigned long,unsigned long>;
+//	lock_.release();
 }
 void Comparator::initialize_EQ()
 {
+//	lock_.acquire();
 	funs_EQ[Comparator::Pair(t_int,t_int)]=equal<int,int>;
 	funs_EQ[Comparator::Pair(t_int,t_float)]=equal<int,float>;
 //	funs_EQ[Comparator::Pair(t_int,t_string)]=equal<int,char*>;
@@ -206,6 +211,7 @@ void Comparator::initialize_EQ()
 	funs_EQ[Comparator::Pair(t_time,t_time)]=equal<time_duration,time_duration>;
 	funs_EQ[Comparator::Pair(t_datetime,t_datetime)]=equal<ptime,ptime>;
 	funs_EQ[Comparator::Pair(t_decimal,t_decimal)]=equal<NValue*,NValue*>;
+//	lock_.release();
 }
 
 void Comparator::initialize_NEQ()
@@ -289,6 +295,7 @@ Comparator::~Comparator() {
 
 void Comparator::iniatilize()
 {
+	lock_.acquire();
 	if(funs_L.empty())
 	{
 		Comparator::initialize_L();
@@ -313,17 +320,19 @@ void Comparator::iniatilize()
 	{
 		Comparator::initialize_LEQ();
 	}
+	lock_.release();
 	switch(compareType)
 	{
 		case Comparator::L:
 		{
+
 			if(funs_L.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_L.end())
 			{
-//			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
 				compare=funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));
 			}
 			else
 			{
+				assert(false);
 				printf("Error!\n");
 			}
 			break;
@@ -333,6 +342,9 @@ void Comparator::iniatilize()
 			if(funs_GEQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_GEQ.end())
 			{
 				compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];
+			}
+			else{
+				assert(false);
 			}
 			break;
 		}
@@ -382,3 +394,4 @@ void Comparator::iniatilize()
 	}
 	assert(compare!=0);
 }
+#endif

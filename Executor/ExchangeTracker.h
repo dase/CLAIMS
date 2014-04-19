@@ -18,6 +18,7 @@
 #include "../Logging.h"
 #include "../Message.h"
 #include "../ids.h"
+#include "../utility/synch.h"
 class ExchangeTracker {
 public:
 	ExchangeTracker();
@@ -25,12 +26,14 @@ public:
 	bool RegisterExchange(ExchangeID exchange_id, std::string port);
 	void LogoutExchange(const ExchangeID &exchange_id);
 	int AskForSocketConnectionInfo(ExchangeID exchange_id,std::string target_ip);
+	void printAllExchangeId()const;
 private:
 	Theron::EndPoint* endpoint;
 	Theron::Framework* framework;
 	Theron::Actor* actor;
 	boost::unordered_map<ExchangeID,std::string> id_to_port;
 	Logging* logging_;
+	Lock lock_;
 
 
 	/////////////////////////////////////////////////////////////

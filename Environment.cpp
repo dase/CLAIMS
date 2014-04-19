@@ -12,9 +12,11 @@
 #include <string>
 #include "Debug.h"
 #include "Logging.h"
+#include "Config.h"
 Environment* Environment::_instance=0;
 Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	_instance=this;
+	Config::getInstance();
 	logging_=new EnvironmentLogging();
 	Initialize();
 	portManager=PortManager::getInstance();
@@ -90,7 +92,7 @@ unsigned Environment::getPort(){
 }
 void Environment::Initialize(){
 	libconfig::Config cfg;
-	cfg.readFile(CONFIG);
+	cfg.readFile(Config::config_file.c_str());
 	ip=(const char*)cfg.lookup("ip");
 }
 void Environment::InitializeEndPoint(){
@@ -141,6 +143,11 @@ void Environment::InitializeResourceManager(){
 }
 void Environment::InitializeBufferManager(){
 	bufferManager_=BufferManager::getInstance();
+}
+
+void Environment::InitializeIndexManager()
+{
+	indexManager_ = IndexManager::getInstance();
 }
 
 AdaptiveEndPoint* Environment::getEndPoint(){

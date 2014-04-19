@@ -14,7 +14,8 @@ TableManagerSlave::TableManagerSlave(std::string ip,std::string port)
 
 {
 	libconfig::Config cfg;
-	cfg.readFile(CONFIG);
+//	cfg.readFile(CONFIG);
+	assert(false);
 	std::string master_ip=(const char*)cfg.lookup("TableManager.Master.ip");
 	std::string master_port=(const char*)cfg.lookup("TableManager.Master.port");
 

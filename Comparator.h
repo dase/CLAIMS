@@ -12,6 +12,7 @@
 #include <map>
 
 #include "data_type.h"
+#include "utility/synch.h"
 
 typedef bool (*comFun)(const void*,const void*);
 
@@ -35,7 +36,7 @@ public:
 		{
 
 //			return this->first<p.first||this->second<p.second; //This is a bug.
-			return (int)this->first.type*DATA_TYPE_NUMBER+(int)this->second.type<(int)p.first.type*DATA_TYPE_NUMBER+(int)p.second.type;
+			return ((int)this->first.type*DATA_TYPE_NUMBER+(int)this->second.type)<((int)p.first.type*DATA_TYPE_NUMBER+(int)p.second.type);
 		}
 		friend class boost::serialization::access;
 		template<class Archive>
@@ -69,6 +70,7 @@ private:
 	static std::map<Pair,comFun> funs_LEQ;
 	static void initialize_LEQ();
 	void iniatilize();
+	static Lock lock_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
