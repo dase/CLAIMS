@@ -9,7 +9,10 @@
 #define DEBUG_H_
 
 #define COOR "/home/imdb/config/wangli/coor.conf"
-#define CONFIG "/home/imdb/config/wangli/config"
+
+/* CONFIG is now specified in Config.cpp
+//#define CONFIG "/home/imdb/config/wangli/config"
+
 //#define CONFIG_SAME "/home/imdb/config/config"
 
 /*

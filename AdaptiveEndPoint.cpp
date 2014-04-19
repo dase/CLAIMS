@@ -124,6 +124,7 @@ bool AdaptiveEndPoint::ConnectToCoordinateEndPoint(int port){
 	os<<"tcp://"<<ip_coor<<":"<<port;
 	//	sleep(1);
 	if(!ConnectToRemoteEndPoint(os.str().c_str())){
+
 		logging_->elog("Check whether network is enabled! can't connect ot %s",os.str().c_str());
 //		assert(false);
 		return false;

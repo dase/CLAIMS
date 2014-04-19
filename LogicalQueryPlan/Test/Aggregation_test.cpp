@@ -64,8 +64,8 @@ static int aggregation_test(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-//		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);	//G0
-		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",1);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",1);	//G0
+//		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -527,7 +527,7 @@ static int aggregation_test(){
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 ////
 //		std::vector<Attribute> aggregation_attributes_1;
@@ -540,14 +540,14 @@ static int aggregation_test(){
 
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PRINT);
 		unsigned long long int timer_start=curtick();
 		root->print();
 
 //		root->getDataflow();
 
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
-			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
 			printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 
 			executable_query_plan->print();
@@ -576,7 +576,6 @@ static int aggregation_test(){
 	}
 
 }
-
 
 
 

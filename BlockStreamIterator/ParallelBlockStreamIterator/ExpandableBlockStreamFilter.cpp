@@ -30,24 +30,9 @@ ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBas
 
 
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
-////////////////// BEOFRE USING ExpandableBlockStreamIteratorBase////////////
-//	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
-//	if(sem_open_.try_wait()){
-//
-//		open_finished_=true;
-//		return state_.child_->open(part_off);
-//	}
-//	else
-//	{
-//		while(!open_finished_){
-//			usleep(1);
-//		}
-//		return state_.child_->open(part_off);
-//	}
-//	tuple_after_filter_=0;
-///////////////////////////////// END ////////////////////////////////////
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
+
 	initContext(state_.schema_,state_.block_size_);
 	if(tryEntryIntoSerializedSection()){
 		tuple_after_filter_=0;
@@ -58,8 +43,8 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 	else
 	{
 		waitForOpenFinished();
+		return state_.child_->open(part_off);
 	}
-	return getOpenReturnValue();
 }
 
 
@@ -82,6 +67,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 			}
 		}
 		if(pass_filter){
+
 			const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 			if((tuple_in_block=block->allocateTuple(bytes))>0){
 				/* the block has space to hold this tuple*/
@@ -128,6 +114,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				}
 			}
 			if(pass_filter){
+
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 				if((tuple_in_block=block->allocateTuple(bytes))>0){
 					/* the block has space to hold this tuple*/

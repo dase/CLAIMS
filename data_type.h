@@ -13,20 +13,20 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "hash.h"
 
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
 #include "types/NValue.hpp"
 using namespace decimal;
 #define DATA_TYPE_NUMBER 11
-enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean};
+enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
 typedef void (*fun)(void*,void*);
 
 //static int count_open_for_data_column=0;
@@ -141,7 +141,7 @@ public:
 	virtual unsigned getPartitionValue(const void* key)const=0;
 	virtual std::string toString(void* value)=0;
 	virtual void toValue(void* target, const char* string)=0;
-	virtual bool equal(void* a, void* b)=0;
+	virtual bool equal(const void* const &a, const void* const & b)const=0;
 	virtual bool less(const void*& a, const void*& b)const=0;
 	virtual bool greate(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
@@ -173,7 +173,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(int*)target=atoi(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(int*)a==*(int*)b;
 	}
@@ -211,6 +211,7 @@ public:
 	}
 	unsigned getPartitionValue(const void* key)const{
 		return boost::hash_value(*(int*)key);
+//				boost::hash_value(*(int*)key);
 	}
 	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
 		return boost::hash_value(*(int*)key)%mod;
@@ -239,7 +240,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(float*)target=atof(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(float*)a==*(float*)b;
 	}
@@ -305,7 +306,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(double*)target=atof(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(double*)a==*(double*)b;
 	}
@@ -371,7 +372,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(unsigned long*)target=strtoul(string,0,10);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(unsigned long*)a==*(unsigned long*)b;
 	}
@@ -435,7 +436,7 @@ public:
 	void toValue(void* target, const char* string){
 		strcpy((char*)target,string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return strcmp((char*)a,(char*)b)==0;
 	}
@@ -511,7 +512,7 @@ public:
 		else
 			*(date*)target = from_string(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(date*)a == *(date*)b;
 	}
@@ -582,7 +583,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(time_duration*)target = duration_from_string(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(time_duration*)a == *(time_duration*)b;
 	}
@@ -653,7 +654,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(ptime*)target = time_from_string(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(ptime*)a == *(ptime*)b;
 	}
@@ -711,7 +712,7 @@ public:
 class OperateSmallInt:public Operate
 {
 public:
-	OperateSmallInt(){assign=assigns<int>;};
+	OperateSmallInt(){assign=assigns<short>;};
 //	~OperateSmallInt(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -727,7 +728,7 @@ public:
 	void toValue(void* target, const char* string){
 		*(short*)target = (short)atoi(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return *(short*)a==*(short*)b;
 	}
@@ -774,6 +775,72 @@ public:
 	}
 };
 
+class OperateUSmallInt:public Operate
+{
+public:
+	OperateUSmallInt(){assign=assigns<unsigned short>;};
+//	~OperateSmallInt(){};
+	inline void assignment(const void* const &src,void* const &desc)const
+	{
+		*(unsigned short*)desc=*(unsigned short*)src;
+	};
+	inline std::string toString( void* value)
+	{
+		std::ostringstream ss;
+		ss<<*(unsigned short*)value;
+		std::string ret=ss.str();
+		return ret;
+	};
+	void toValue(void* target, const char* string){
+		*(unsigned short*)target = (unsigned short)atoi(string);
+	};
+	inline bool equal(const void* const &a, const void* const & b)const
+	{
+		return *(unsigned short*)a==*(unsigned short*)b;
+	}
+	bool less(const void*& a, const void*& b)const{
+		return *(unsigned short*)a < *(unsigned short*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(unsigned short*)a > *(unsigned short*)b;
+	}
+	int compare(const void* a,const void* b)const{
+		return *(unsigned short*)a - *(unsigned short*)b;
+	}
+	inline void add(void* target, void* increment)
+	{
+		ADD<unsigned short>(target,increment);
+	}
+	inline fun GetADDFunction()
+	{
+		return ADD<unsigned short>;
+	}
+	inline fun GetMINFunction()
+	{
+		return MIN<unsigned short>;
+	}
+	inline fun GetMAXFunction()
+	{
+		return MAX<unsigned short>;
+	}
+	inline fun GetIncreateByOneFunction()
+	{
+		return IncreaseByOne<unsigned short>;
+	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(unsigned short*)key);
+	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(unsigned short*)key);
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(unsigned short*)key)%mod;
+	}
+	Operate* duplicateOperator()const{
+		return new OperateUSmallInt();
+	}
+};
+
 class OperateDecimal:public Operate
 {
 public:
@@ -790,10 +857,16 @@ public:
 		((NValue*)value)->serializeToExport(out,&number_of_decimal_digits_);
 		return std::string(buf+4);
 	};
+	static std::string toString(const NValue v,unsigned n_o_d_d=12){
+		char buf[39] = {"\0"};
+		ExportSerializeOutput out(buf, 39);
+		(v).serializeToExport(out,&n_o_d_d);
+		return std::string(buf+4);
+	}
 	void toValue(void* target, const char* string){
 		*(NValue*)target = NValue::getDecimalValueFromString(string);
 	};
-	inline bool equal(void* a, void* b)
+	inline bool equal(const void* const &a, const void* const & b)const
 	{
 		return ((NValue*)a)->op_equals(*(NValue*)b);
 	}
@@ -891,6 +964,7 @@ public:
 
 			case t_decimal: operate = new OperateDecimal(size);break;
 			case t_smallInt: operate = new OperateSmallInt();break;
+			case t_u_smallInt: operate = new OperateUSmallInt();break;
 			default:operate=0;break;
 		}
 		COUNTER::count++;
@@ -922,6 +996,7 @@ public:
 			case t_datetime: return sizeof(ptime);
 			case t_decimal: return 16;
 			case t_smallInt: return sizeof(short);
+			case t_u_smallInt: return sizeof(unsigned short);
 			default: return 0;
 
 		}
@@ -967,6 +1042,7 @@ private:
 			case t_datetime: operate = new OperateDatetime();break;
 			case t_decimal: operate = new OperateDecimal(size);break;
 			case t_smallInt: operate = new OperateSmallInt();break;
+			case t_u_smallInt: operate = new OperateUSmallInt();break;
 			default:operate=0;break;
 		}
 	}

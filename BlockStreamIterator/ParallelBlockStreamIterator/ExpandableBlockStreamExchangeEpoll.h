@@ -80,6 +80,7 @@ private:
 	int sock_fd;
 	unsigned socket_port;
 	unsigned nlowers;
+	int epoll_fd_;
 	int* socket_fd_lower_list;
 	std::vector<std::string>  lower_ip_array;
 	pthread_t receiver_tid;

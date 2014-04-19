@@ -15,18 +15,21 @@
 
 using namespace std;
 
+enum open_flag { CREATE, APPEND };
+
 class HdfsConnector {
 public:
 	HdfsConnector(vector<vector<string> > hdfs_writepath);
+	virtual ~HdfsConnector();
 
-	bool assgin_open_file();
-	bool op_connect();
+	bool op_connect(open_flag open_flag_);
 	bool op_disconnect();
 
 	hdfsFS get_fs();
 	vector<vector<hdfsFile> > get_writefile();
 
-	virtual ~HdfsConnector();
+private:
+	bool assgin_open_file(open_flag open_flag_);
 
 private:
 	hdfsFS fs;
