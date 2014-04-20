@@ -333,7 +333,6 @@ void ASTParserLogging::log(const char* format,...){
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
-	printf("\n");
 	va_end (arg);
 #endif
 }
