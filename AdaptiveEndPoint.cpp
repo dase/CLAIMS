@@ -14,6 +14,7 @@
 #include "Debug.h"
 #include "Logging.h"
 #include "utility/ThreadSafe.h"
+#include "Config.h"
 AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::string port)
 :Theron::EndPoint(name, ("tcp://"+ip+":"+port).c_str()){
 	logging_=new AdaptiveEndPointLogging();
@@ -56,7 +57,7 @@ AdaptiveEndPoint::~AdaptiveEndPoint() {
 
 bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	libconfig::Config cfg;
-	cfg.readFile(COOR);
+	cfg.readFile(Config::config_file.c_str());
 	ip_coor=(const char *)cfg.lookup("coordinator.ip");
 
 	std::string coord_port=(const char*)cfg.lookup("coordinator.port");

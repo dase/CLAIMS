@@ -388,7 +388,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 {
 	if(parsetree==NULL)
 	{
-		puts("parsetree2logicalpaln error");
+//		puts("parsetree2logicalpaln error");
 		return NULL;
 	}
 

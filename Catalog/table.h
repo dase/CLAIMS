@@ -166,7 +166,7 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & tableName & attributes & table_id_ & projection_list_;
+		ar & tableName & attributes & table_id_ & projection_list_ & row_number_;
 	}
 
 };
