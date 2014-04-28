@@ -10,7 +10,7 @@
 //#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
 //#define DEBUG_BlockStreamJoin
-//#define DEBUG_PerformanceTop
+#define DEBUG_PerformanceTop
 //#define DEBUG_Coordinator
 //#define DEBUG_Environment
 

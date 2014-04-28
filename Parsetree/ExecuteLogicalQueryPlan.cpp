@@ -265,9 +265,8 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PERFORMANCE);
 				unsigned long long int timer_start=curtick();
 
-				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024-sizeof(unsigned));
+				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
 				root->print();
-
 
 				please->print();
 
@@ -345,7 +344,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					col = (Columns *)insert_stmt->col_list;
 
 //					const std::vector<Attribute> attrs = table->getAttributes();
-					for(unsigned int position = 0; position < table->getNumberOfAttribute(); position++)
+					for(unsigned int position = 1; position < table->getNumberOfAttribute(); position++)  // by scdong: Claims adds a default row_id attribute for all tables which is attribute(0), when inserting tuples we should begin to construct the string_tuple from the second attribute.
 					{
 						if(is_all_col || (col && !table->getAttribute(position).attrName.compare(col->parameter1)))	//添加的列与表中的列相匹配 或者 添加的是所有列
 						{
@@ -413,6 +412,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				ASTParserLogging::log("the insert content is \n%s\n",ostr.str().c_str());
 
 				HdfsLoader* Hl = new HdfsLoader(table);
+				string tmp = ostr.str().c_str();
 				Hl->append(ostr.str().c_str());
 			}
 			break;
