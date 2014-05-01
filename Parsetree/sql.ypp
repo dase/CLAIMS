@@ -43,9 +43,9 @@ char linebuf[500];
 
 %locations
 
-%union {		// TODO:2014-3-9---新增一个支持最大数字的类型，dicimal，将所有识别到的整数和浮点数存为该类型，若要存入某个表中，再根据这个列的类型进行转化。 ！！！！！
-	int intval;
-	double floatval;
+%union {
+	int intval;		// no used ---4-28
+	double floatval;	// no used ---4-28
 	char *strval;
 	int subtok;
 	struct Node * ast_node;
