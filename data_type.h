@@ -1001,6 +1001,10 @@ public:
 
 		}
 	}
+	inline unsigned get_size()const
+	{
+		return size;
+	}
 	bool operator==(const class column_type &c) const
 	{
 		return this->type==c.type;

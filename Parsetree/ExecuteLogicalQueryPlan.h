@@ -8,6 +8,12 @@
 #ifndef EXECUTELOGICALQUERYPLAN_H_
 #define EXECUTELOGICALQUERYPLAN_H_
 
+#include "../data_type.h"
+
 void ExecuteLogicalQueryPlan();
+
+bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsigned position, ostringstream &ostr);
+
+bool CheckType(const column_type *col_type, Expr *expr);
 
 #endif /* EXECUTELOGICALQUERYPLAN_H_ */
