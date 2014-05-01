@@ -20,6 +20,11 @@ extern "C" void emit(char *s, ...);
 extern "C" void yyerror(const char *s, ...);
 extern int yylineno;
 
+/*
+ * enum data_type{
+ * 	t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
+ * from data_type.h
+ */
 
 enum nodetype
 {

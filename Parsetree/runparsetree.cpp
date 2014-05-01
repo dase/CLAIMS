@@ -40,7 +40,7 @@ static Node * getparsetreeroot()
 		if(c==';')
 		{
 			globalInputText[charnum++]='\0';
-			getchar();
+//			getchar();
 			break;
 		}
 	}
