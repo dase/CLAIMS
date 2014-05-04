@@ -1019,6 +1019,24 @@ struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
+
+Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string)	//2014-5-4---add ---by Yu
+{
+	Show_stmt *a = (Show_stmt *)malloc(sizeof(Show_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_show_stmt;
+	a->show_type = show_type;
+	a->full = full;
+	a->database_name = database_name;
+	a->like_string = like_string;
+
+	insertNodePointer((Node*)a);
+	return (struct Node *)a;
+}
 	
 /*************************** DDL语句结束 ********************************/
 void outputSpace(int f)
