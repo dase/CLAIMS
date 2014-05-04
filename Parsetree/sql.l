@@ -229,6 +229,7 @@ SSL	{ return SSL; }
 STARTING	{ return STARTING; }
 STRAIGHT_JOIN	{ return STRAIGHT_JOIN; }
 TABLE	{ return TABLE; }
+TABLES	{ return TABLES; }
 TEMPORARY	{ return TEMPORARY; }
 TERMINATED	{ return TERMINATED; }
 TEXT	{ return TEXT; }

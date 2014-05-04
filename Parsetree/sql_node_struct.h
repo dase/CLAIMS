@@ -47,7 +47,8 @@ enum nodetype
 	t_datatype,t_length,t_enum_list,
 	t_create_index_stmt,	t_index_col_list,	t_drop_index,	// 2014-3-24---增加---by Yu
 	t_drop_database_stmt,t_drop_table_stmt, t_table_list,	// 2014-3-24---增加---by Yu
-	t_load_table_stmt	// 2014-3-24---增加---by Yu
+	t_load_table_stmt,	// 2014-3-24---add---by Yu
+	t_show_stmt,	// 2014-5-4---add---by Yu
 };
 
 // 2014-4-14---delete union dataval, because only char* is need---by Yu
@@ -592,6 +593,15 @@ struct enum_list
 	Node * next;
 };
 
+struct Show_stmt	//2014-5-4---add ---by Yu
+{
+	nodetype type;
+	bool full;
+	int show_type;
+	char *database_name;
+	char *like_string;
+};
+
 
 //////////////////////////未完待续////////////////////////////////////////
 
@@ -728,6 +738,8 @@ struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next
 
 // 2014-3-27---增加---by Yu
 struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator);
+
+Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string);	//2014-5-4---add ---by Yu
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
