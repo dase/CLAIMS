@@ -413,6 +413,8 @@ char linebuf[500];
 %type <ast_node> opt_ondupupdate insert_stmt	// 2014-4-17---add---by Yu
 
 /** add by yukai **/
+
+%type <strval> opt_from opt_like_string	// 2014-5-4---add---by Yu
 %type <ast_node> create_database_stmt create_table_stmt  create_select_statement
 %type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc	
 %type <ast_node> alter_list alter_def data_type create_projection_stmt
@@ -420,6 +422,7 @@ char linebuf[500];
 %type <ast_node> create_index_stmt index_col_list drop_index_stmt	// 2014-3-24---增加---by Yu
 %type <ast_node> drop_database_stmt drop_table_stmt table_list	// 2014-3-24---增加---by Yu
 %type <ast_node> load_table_stmt	// 2014-3-27---增加---by Yu
+%type <ast_node> show_stmt	// 2014-5-4---add---by Yu
 %type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		// 2014-3-24---增加---by Yu
 %type <intval> opt_col index_att index_type rename_list
 %type <intval> opt_chain opt_release opt_read_write
@@ -1452,11 +1455,10 @@ stmt: restore_table_stmt { emit("STMT"); }
 restore_table_stmt: RESTORE TABLE table_list FROM STRING
    ;
    
-   /** show statement **/
-stmt: show_stmt
-   ;
+stmt: show_stmt { $$ = $1; output($$, 1); puts("SQL parser： This is a show statement"); }
+	;
    
-show_stmt: SHOW CHARACTER SET opt_like_string
+show_stmt: SHOW opt_full TABLES opt_from opt_like_string	{ $$ = newShowStmt(1, $2, $4, $5); }
    | SHOW COLLATION opt_like_string
    | SHOW opt_full COLUMNS FROM NAME opt_from opt_like_string
    | SHOW CREATE DATABASE NAME
@@ -1478,7 +1480,7 @@ show_stmt: SHOW CHARACTER SET opt_like_string
    | SHOW opt_full PROCESSLIST
    | SHOW opt_trans_level STATUS opt_like_string
    | SHOW TABLE STATUS opt_from opt_like_string
-   | SHOW opt_full TABLES opt_from opt_like_string
+   | SHOW CHARACTER SET opt_like_string
    | SHOW TRIGGERS opt_from opt_like_expr
    | SHOW opt_trans_level VARIABLES opt_like_string
    | SHOW WARNINGS opt_limit
@@ -1489,12 +1491,12 @@ opt_full: /* nil */	{ $$ = 0; }
    | FULL	{ $$ = 1; }
    ;
    
-opt_from: /* nil */
-   | FROM NAME
+opt_from: /* nil */	{ $$ = NULL; }
+   | FROM NAME	{ $$ = $2; }
    ;
    
-opt_like_string: /* nil */
-   | LIKE STRING
+opt_like_string: /* nil */	{ $$ = NULL; }
+   | LIKE STRING	{ $$ = $2; }
    ;
    
 opt_like_expr: /* nil */

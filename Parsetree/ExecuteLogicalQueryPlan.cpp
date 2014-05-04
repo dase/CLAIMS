@@ -312,7 +312,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				Loadtable_stmt *new_node = (Loadtable_stmt*)node;
 
 				string table_name(new_node->table_name);
-				TableDescriptor *table = Environment::getInstance()->getCatalog()->getTable(table_name);
+				TableDescriptor *table = catalog->getTable(table_name);
 
 				// 2014-4-17---check the exist of table---by Yu
 				if(table == NULL)
@@ -480,6 +480,24 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 //				HdfsLoader* Hl = new HdfsLoader(table);
 //				string tmp = ostr.str().c_str();
 //				Hl->append(ostr.str().c_str());
+			}
+			break;
+			case t_show_stmt:
+			{
+				Show_stmt *show_stmt = (Show_stmt *)node;
+				switch(show_stmt->show_type)
+				{
+					case 1:
+					{
+						cout<<"Tables:"<<endl;
+						for (unsigned i = 0; i < catalog->getTableCount(); ++i)
+							cout<<catalog->getTable(i)->getTableName()<<endl;
+					}
+					break;
+					default:{
+						ASTParserLogging::elog("Sorry, not supported now!");
+					}
+				}
 			}
 			break;
 			default:
