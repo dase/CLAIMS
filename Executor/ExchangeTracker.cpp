@@ -40,24 +40,21 @@ bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port){
 	}
 	id_to_port[id]=port;
 	logging_->log("New exchange with id=%d (port %s)is successfully registered!",id.exchange_id,port.c_str());
-	printAllExchangeId();
 	lock_.release();
 	return true;
 }
 void ExchangeTracker::LogoutExchange(const ExchangeID &id){
 	lock_.acquire();
 	boost::unordered_map<ExchangeID,std::string> ::const_iterator it=id_to_port.find(id);
-	if(it==id_to_port.cend()){
-		printf("Print:\n");
-		this->printAllExchangeId();
-		printf("Printed!\n");
-	}
+//	if(it==id_to_port.cend()){
+//		printf("Print:\n");
+//		this->printAllExchangeId();
+//		printf("Printed!\n");
+//	}
 	assert(it!=id_to_port.cend());
 	id_to_port.erase(it);
 	lock_.release();
 	logging_->log("Exchange with id=(%d,%d) is logged out!",id.exchange_id,id.partition_offset);
-	printf("Remaining:\n");
-	printAllExchangeId();
 }
 
 int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::string target_ip){
