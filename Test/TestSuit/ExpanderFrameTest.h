@@ -164,8 +164,8 @@ static void startup_single_node_environment(){
 		catalog->add_table(table_2);
 		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-//			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
-			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,0);
+			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+//			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,0);
 		}
 
 		for(unsigned i=0;i<table_1->getProjectoin(1)->getPartitioner()->getNumberOfPartitions();i++){
@@ -602,32 +602,32 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 
 	startup_single_node_environment();
 
-	sleep(5);
-	printf("============Scan->Filter->Expander->Exchange->root============\n");
-	for(unsigned i=0;i<repeated_times;i++){
-		printf("%d:",i);
-		test_scan();
-		sleep(1);
-		printf("-----------------------------------------\n");
-	}
-
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_high_selectivity();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_low_selectivity();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_Aggregation();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_Scalar_Aggregation();
+//	sleep(5);
+//	printf("============Scan->Filter->Expander->Exchange->root============\n");
+//	for(unsigned i=0;i<repeated_times;i++){
+//		printf("%d:",i);
+//		test_scan();
+//		sleep(1);
+//		printf("-----------------------------------------\n");
+//	}
+//
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_high_selectivity();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_low_selectivity();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Aggregation();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Scalar_Aggregation();
+//	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_no_repartition_filtered_join();
 	}
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_complete_repartition_filtered_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_no_repartition_filtered_join();
 	}
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_complete_repartition_scan_join();
@@ -637,7 +637,7 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 //		test_no_repartition_scan_join();
 //	}
 
-
+	sleep(1);
 	Environment::getInstance()->~Environment();
 //
 }

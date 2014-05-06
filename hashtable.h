@@ -167,6 +167,8 @@ private:
 	SpineLock* lock_list_;
 	SpineLock mother_page_lock_;
 	unsigned * overflow_count_;
+
+	unsigned long allocate_count;
 };
 
 //
