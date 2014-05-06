@@ -22,7 +22,7 @@
 //#define DEBUG_BlockStreamExpander
 
 //#define DEBUG_ExchangeRegister
-#define DEBUG_ExchangeTracker
+//#define DEBUG_ExchangeTracker
 //
 //#define DEBUG_PortManager
 //#define DEBUG_IteratorExecutorSlave
