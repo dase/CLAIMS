@@ -18,6 +18,7 @@
 #include "../Message.h"
 #include "../Environment.h"
 #include "../TimeOutReceiver.h"
+#include "../Config.h"
 Coordinator::Coordinator() {
 	logging = new CoordinatorLogging();
 	/** swap the order of SetupTheTheron and PreparetheSocket to provide more time
@@ -42,14 +43,12 @@ Coordinator::Coordinator() {
 }
 
 Coordinator::~Coordinator() {
-	// TODO Auto-generated destructor stub
 	framework->~Framework();
 	endpoint->~EndPoint();
-	coordinateActor->~Actor();
 }
 bool Coordinator::PrepareTheSocket() {
 	libconfig::Config cfg;
-	cfg.readFile(COOR);
+	cfg.readFile(Config::config_file.c_str());
 	std::string master_ip = (const char *) cfg.lookup("coordinator.ip");
 	std::string master_port = (const char*) cfg.lookup("coordinator.port");
 
@@ -62,8 +61,8 @@ bool Coordinator::PrepareTheSocket() {
 	}
 	my_addr.sin_family = AF_INET;
 	my_addr.sin_port = htons(atoi(master_port.c_str()));
-	std::cout << "Socket port:" << master_port << std::endl;
 	my_addr.sin_addr.s_addr = INADDR_ANY;
+
 	bzero(&(my_addr.sin_zero), 8);
 
 	/* Enable address reuse */
@@ -94,7 +93,7 @@ bool Coordinator::SetupTheTheron() {
 	EndPointPort = port.str();
 	ip_port = std::string("tcp://") + ip + ":" + port.str();
 
-	logging->log("[Coordinator]: Now is initializing the Theron EndPoint as ");
+	logging->log("[Coordinator]: Now is initializing the Theron EndPoint as %s",ip_port.c_str());
 
 	endpoint = new Theron::EndPoint((ip + ":" + port.str()).c_str(),
 			ip_port.c_str());
@@ -178,13 +177,17 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		if (!Cthis->endpoint->Connect(("tcp://" + new_node_ip + ":"
 				+ new_node_port).c_str())) {
 			Cthis->logging->elog(
-					"Error occurs when the Coordinator EndPoint is connecting to the EndPoint of the new node:");
+					"Error occurs when the Coordinator EndPoint is connecting to the EndPoint of the new node: "
+					"tcp://%s:%s", new_node_ip.c_str(), new_node_port.c_str());
 			Cthis->logging->log(" tcp://%s:%s", new_node_ip.c_str(),
 					new_node_port.c_str());
 		}
 
+		else
+		{
 		Cthis->logging->log(
 				"[Coordinator]: The Coordinator EndPoint has successfully connected to the EndPoint of the new node!");
+		}
 
 		TimeOutReceiver *receiver = new TimeOutReceiver(Cthis->endpoint);
 		Theron::Catcher<int> resultCatcher;
@@ -241,7 +244,7 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		Cthis->SendReadyNotificationToNewNode(socket_fd_new);
 
 		close(socket_fd_new);
-
+		receiver->~TimeOutReceiver();
 	}
 }
 
@@ -258,6 +261,7 @@ bool Coordinator::SendReadyNotificationToNewNode(int socket_new_node) {
 }
 bool Coordinator::SendCoordinatorEndPointPort(int socket_new_node) {
 	int port = atoi(EndPointPort.c_str());
+
 	if (!send(socket_new_node, &port, sizeof(int), 0)) {
 		logging->elog(
 				"Error occurs when sending the Coordinate EndPoint port to the new node!");

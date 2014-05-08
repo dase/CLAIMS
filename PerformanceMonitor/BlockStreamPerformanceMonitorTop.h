@@ -12,6 +12,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../Schema/Schema.h"
+#include "../Logging.h"
 
 class BlockStreamPerformanceMonitorTop:public BlockStreamIteratorBase {
 public:
@@ -36,6 +37,7 @@ public:
 	bool next(BlockStreamBase* block);
 	bool close();
 	void print();
+	unsigned long int getNumberOfTuples()const;
 private:
 	static void* report(void* arg);
 private:
@@ -44,8 +46,9 @@ private:
 	unsigned long int tuplecount_;
 	unsigned long long int start_;
 	pthread_t report_tid_;
+	Logging* logging_;
 private:
-	BlockStreamPerformanceMonitorTop(){};
+	BlockStreamPerformanceMonitorTop();
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version){

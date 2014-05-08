@@ -42,48 +42,7 @@ class BasicHashTable
 public:
 	BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize);
 	~BasicHashTable();
-	inline void* allocate(const unsigned& offset)
-	{
-		assert(offset<nbuckets_);
-
-		void* data=bucket_[offset];
-		void* ret;
-		if(data>0){
-			void** freeloc = (void**)((char*)data + buck_actual_size_);
-
-			if ((*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
-			{
-				ret = *freeloc;
-				*freeloc = ((char*)(*freeloc)) + tuplesize_;
-				assert(ret!=0);
-				return ret;
-			}
-		}
-
-		mother_page_lock_.lock();
-		char* cur_mother_page=mother_page_list_.back();
-		if(bucksize_+cur_MP_>=pagesize_ )// the current mother page doesn't have enough space for the new buckets
-		{
-			cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
-			//TODO: as mentioned in .cpp.
-//			memset(cur_mother_page,0,pagesize_);
-			assert(cur_mother_page);
-			cur_MP_=0;
-			mother_page_list_.push_back(cur_mother_page);
-		}
-		overflow_count_[offset]++;
-		ret=cur_mother_page+cur_MP_;
-		cur_MP_+=bucksize_;
-
-		void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
-		void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
-		*new_buck_freeloc = (ret)+tuplesize_ ;
-		*new_buck_nextloc = data;
-
-		bucket_[offset]=ret;
-		mother_page_lock_.unlock();
-		return ret;
-	}
+	void* allocate(const unsigned& offset);
 	inline void* atomicAllocate(const unsigned& offset){
 		void* ret;
 		lock_list_[offset].lock();
@@ -101,6 +60,13 @@ public:
 		func(loc, newvalue);
 		lock_list_[offset].unlock();
 	}
+	inline void lockBlock(unsigned & bn){
+		lock_list_[bn].lock();
+	}
+	inline void unlockBlock(unsigned & bn){
+		lock_list_[bn].unlock();
+	}
+	void report_status();
 	class Iterator
 	{
 		friend class BasicHashTable;
@@ -201,6 +167,8 @@ private:
 	SpineLock* lock_list_;
 	SpineLock mother_page_lock_;
 	unsigned * overflow_count_;
+
+	unsigned long allocate_count;
 };
 
 //

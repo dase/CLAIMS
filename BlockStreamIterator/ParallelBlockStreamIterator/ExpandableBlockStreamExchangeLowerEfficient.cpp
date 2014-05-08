@@ -32,7 +32,8 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 	// TODO Auto-generated destructor stub
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
-
+	logging_=new ExchangeIteratorEagerLowerLogging();
+	logging_->log("[%lld] Exchange lower is created!",state.exchange_id);
 	unsigned long long int start=curtick();
 	unsigned long long int step1,step2,step3;
 	step1=curtick();
@@ -42,7 +43,6 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	connected_uppers_in=0;
 	state.child->open(state.partition_offset);
 
-	logging_=new ExchangeIteratorEagerLowerLogging();
 	nuppers=state.upper_ip_list.size();
 	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers);
 //	printf("<><><><><><><> lower open time:%4.4f (step 1) \n",getSecond(step1));
@@ -84,6 +84,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 			perror("socket creation errors!\n");
 			return false;
 		}
+//		printf("Lower %d is created!\n",socket_fd_upper_list[upper_id]);
 
 		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 		int upper_port;
@@ -141,6 +142,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		while((tuple_from_child=traverse_iterator->nextTuple())>0){
 			const unsigned partition_id=hash(tuple_from_child);
 //			assert(partition_id==state.partition_offset);
+//			assert(partition_id==state.partition_offset);
 //			if(rand()%10000<3){
 //
 //				printf("key:%d\n",test_hash->get_partition_value(*(unsigned long*)state.schema->getColumnAddess(1,tuple_from_child)));
@@ -168,8 +170,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 
 			buffer->insertBlockToPartitionedList(block_for_inserting_to_buffer_,i);
 
-			/* the following stupid lines send a block with last block bytes to the buffer.
-			 * TODO: making any change to the three lines would make them much less stupid.
+			/* The following lines send an empty block to the upper, indicating that all
+			 * the data from current lower has been transmit to the uppers.
 			 */
 			if(!cur_block_stream_list_[i]->Empty()){
 				cur_block_stream_list_[i]->setEmpty();
@@ -184,7 +186,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		logging_->log("Waiting until all the blocks in the buffer is sent!");
 
 		while(!buffer->isEmpty()){
-			usleep(1);
+			usleep(10000);
 
 		}
 		/*
@@ -221,7 +223,7 @@ unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
 //		return ret;
 //	}
 
-	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,partition_function_);
+	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,nuppers);
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){
@@ -247,6 +249,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	/* close the socket connections to the uppers */
 	for(unsigned i=0;i<state.upper_ip_list.size();i++){
 //		FileClose(socket_fd_upper_list[i]);
+//		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 	}
 	state.child->close();
 	buffer->~PartitionedBlockBuffer();
@@ -335,6 +338,7 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 			perror("recv error!\n");
 		}
 		FileClose(socket_fd_upper_list[i]);
+//		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 //		printf("Receive the close notifaction from the upper[%s], the byte='%c' state=%d\n",state.upper_ip_list[i].c_str(),byte,state.exchange_id);
 		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
@@ -349,6 +353,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 
 		try{
 	while(true){
+//		usleep(100000);
 		pthread_testcancel();
 		bool consumed=false;
 		int partition_id=Pthis->buffer_for_sending_->getBlockForSending(Pthis->block_for_sending);
@@ -410,6 +415,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 			if(Pthis->buffer->getBlock(*Pthis->block_for_buffer_,partition_id)){
 				Pthis->block_for_buffer_->reset();
 				Pthis->buffer_for_sending_->insert(partition_id,Pthis->block_for_buffer_);
+			}
+			else{
+				usleep(1);
 			}
 
 		}

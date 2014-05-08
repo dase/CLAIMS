@@ -13,6 +13,8 @@
 #include <set>
 #include <string>
 #include <map>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
 #include "../data_type.h"
 #include "Partitioner.h"
 #include "Attribute.h"
@@ -53,6 +55,7 @@ class ProjectionDescriptor
 {
 public:
 	friend class TableDescriptor;
+	ProjectionDescriptor(){};
 	ProjectionDescriptor(ProjectionID);
 	ProjectionDescriptor(const string& name);
 	virtual ~ProjectionDescriptor();
@@ -83,14 +86,24 @@ private:
 	string hdfsFilePath;
 	map<string, string> blkMemoryLocations;
 
+
 	/* The following is deleted from version 1.2*/
 	string Projection_name_;	//projection does not need a string name.
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		/* The serialzation does not include fileLocations, hdfsFilePath and blkMemoryLocations */
+		ar & projection_id_ & column_list_ & partitioner & Projection_name_;
+	}
 };
 
 
 class TableDescriptor {
 
 public:
+	TableDescriptor(){};
 	TableDescriptor(const string& name, const TableID table_id);
 	virtual ~TableDescriptor();
 
@@ -101,6 +114,7 @@ public:
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions);
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,std::string partition_attribute_name,unsigned number_of_partitions);
 	bool createHashPartitionedProjection(vector<Attribute> column_list,std::string partition_attribute_name,unsigned number_of_partitions);
+	bool createHashPartitionedProjectionOnAllAttribute(std::string partition_attribute_name,unsigned number_of_partitions);
 	bool isExist(const string& name) const;
 	inline string getTableName() const {return tableName;}
 	ColumnOffset getColumnID(const string& attrName) const;
@@ -136,18 +150,25 @@ public:
 	ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
 	unsigned getNumberOfProjection()const;
 	Schema* getSchema()const;
+	inline void setRowNumber(unsigned long row_number) { row_number_ = row_number; }
+	inline unsigned long getRowNumber() { return row_number_; }
 protected:
 	string tableName;
 	vector<Attribute> attributes;
 	TableID table_id_;
 	vector<ProjectionDescriptor*> projection_list_;
+	unsigned long row_number_;
 	// delete for debugging
 //	hashmap<ColumnID, ColumnDescriptor*> columns;
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & tableName & attributes & table_id_ & projection_list_;
+	}
+
 };
-
-
-
 
 
 

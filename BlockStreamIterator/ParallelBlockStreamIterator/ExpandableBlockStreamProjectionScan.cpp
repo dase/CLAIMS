@@ -12,20 +12,21 @@
 #include "../../rename.h"
 #include "ExpandableBlockStreamProjectionScan.h"
 #include "../../storage/BlockManager.h"
+#include "../../Executor/ExpanderTracker.h"
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan(State state)
 :state_(state), partition_reader_iterator_(0) {
-//	sema_open_.set_value(1);
-//	sema_open_finished_.set_value(0);
+	//	sema_open_.set_value(1);
+	//	sema_open_finished_.set_value(0);
 	initialize_expanded_status();
 }
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan()
 :partition_reader_iterator_(0){
-//	sema_open_.set_value(1);
-//	sema_open_finished_.set_value(0);
+	//	sema_open_.set_value(1);
+	//	sema_open_finished_.set_value(0);
 	initialize_expanded_status();
-	}
+}
 
 ExpandableBlockStreamProjectionScan::~ExpandableBlockStreamProjectionScan() {
 	// TODO Auto-generated destructor stub
@@ -38,29 +39,30 @@ ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,Sch
 
 
 bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_offset) {
-////////////////////THE VERSION BEFORE USING ExpandableBlockStrreamIteratorBase ///////////////////////////
-//	if (sema_open_.try_wait()) {
-//		PartitionStorage* partition_handle_;
-//		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
-//			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
-//			open_ret_=false;
-//		}
-//		else{
-//			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
-//		}
-//		open_ret_=true;
-//		open_finished_ = true;
-//
-//	} else {
-//		while (!open_finished_) {
-//			usleep(1);
-//		}
-//	}
-//	return open_ret_;
-///////////////////////////////////////////// END ////////////////////////////////////////////////
-	if(completeForInitializationJob()){
+	////////////////////THE VERSION BEFORE USING ExpandableBlockStrreamIteratorBase ///////////////////////////
+	//	if (sema_open_.try_wait()) {
+	//		PartitionStorage* partition_handle_;
+	//		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
+	//			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
+	//			open_ret_=false;
+	//		}
+	//		else{
+	//			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
+	//		}
+	//		open_ret_=true;
+	//		open_finished_ = true;
+	//
+	//	} else {
+	//		while (!open_finished_) {
+	//			usleep(1);
+	//		}
+	//	}
+	//	return open_ret_;
+	///////////////////////////////////////////// END ////////////////////////////////////////////////
+	if(tryEntryIntoSerializedSection()){
 		/* this is the first expanded thread*/
 		PartitionStorage* partition_handle_;
+		return_blocks_=0;
 		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
 			open_ret_=false;
@@ -69,6 +71,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 		}
 		open_ret_=true;
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
 		broadcaseOpenFinishedSignal();
 	}
 	else{
@@ -78,12 +81,19 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
-//	return false;
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		//		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+		return false;
+	}
+	return partition_reader_iterator_->nextBlock(block);
+
+
+	//	return false;
 	allocated_block allo_block_temp;
 	ChunkReaderIterator* chunk_reader_iterator;
 	if(atomicPopChunkReaderIterator(chunk_reader_iterator)){
 		/* there is unused ChunkReaderIterator*/
-//		if(chunk_reader_iterator->nextBlock(block)){
+		//		if(chunk_reader_iterator->nextBlock(block)){
 
 		bool next;
 		if(passSample()){
@@ -95,12 +105,15 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		if(next){
 			/* there is still unread block*/
 			atomicPushChunkReaderIterator(chunk_reader_iterator);
+			lock_.acquire();
+			return_blocks_++;
+			lock_.release();
 			return true;
 		}
 		else{
 			/* the ChunkReaderIterator is exhausted, so we destructe it.*/
 
-//			printf("Chunk(%d,%d,%d,%d) is exhausted!\n",chunk_reader_iterator->chunk_id_.partition_id.projection_id.table_id,chunk_reader_iterator->chunk_id_.partition_id.projection_id.projection_off,chunk_reader_iterator->chunk_id_.partition_id.partition_off,chunk_reader_iterator->chunk_id_.chunk_off);
+			//			printf("Chunk(%d,%d,%d,%d) is exhausted!\n",chunk_reader_iterator->chunk_id_.partition_id.projection_id.table_id,chunk_reader_iterator->chunk_id_.partition_id.projection_id.projection_off,chunk_reader_iterator->chunk_id_.partition_id.partition_off,chunk_reader_iterator->chunk_id_.chunk_off);
 			chunk_reader_iterator->~ChunkReaderIterator();
 
 		}
@@ -112,12 +125,14 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		return next(block);
 	}
 	else{
+		printf("**********Scan is exhausted!\n");
 		return false;
 	}
 }
 
 bool ExpandableBlockStreamProjectionScan::close() {
-//	sema_open_.post();
+	//	printf("ProjectoinScan[%d]: returned %ld blocks\n",state_.projection_id_.projection_off,return_blocks_);
+	//	sema_open_.post();
 	partition_reader_iterator_->~PartitionReaderItetaor();
 	open_finished_ = false;
 
@@ -148,7 +163,7 @@ bool ExpandableBlockStreamProjectionScan::atomicPopChunkReaderIterator(ChunkRead
 	return ret;
 }
 bool ExpandableBlockStreamProjectionScan::passSample()const{
-//	const float ram=(float)rand()/(float)RAND_MAX;
+	//	const float ram=(float)rand()/(float)RAND_MAX;
 	if((rand()/(float)RAND_MAX)<state_.sample_rate_)
 		return true;
 	return false;

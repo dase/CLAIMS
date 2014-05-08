@@ -40,7 +40,7 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 
 	logging_->log("Waiting for the Ready signal from the Coordinator.");
 	if(WaitForReadySignalFromCoordinator()==false){
-		logging_->elog("Error occurs when connecting to the coordinator EndPoint");
+		logging_->elog("Error occurs when waiting for the coordinator EndPoint");
 	}
 	close(socket_coor);
 
@@ -48,14 +48,17 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 
 AdaptiveEndPoint::~AdaptiveEndPoint() {
 	// TODO Auto-generated destructor stub
+//	return;
+	connectionActor->~Actor();
 	framework->~Framework();
-	this->~EndPoint();
+//	this->~EndPoint();
 }
 
 bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	libconfig::Config cfg;
 	cfg.readFile(COOR);
 	ip_coor=(const char *)cfg.lookup("coordinator.ip");
+
 	std::string coord_port=(const char*)cfg.lookup("coordinator.port");
 	int recvbytes;
 
@@ -65,11 +68,13 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	if((ThreadSafe::gethostbyname_ts(host,ip_coor.c_str()))==0)
 	{
 		logging_->elog("gethostbyname errors!\n");
+		assert(false);
 		return false;
 	}
 	if((socket_coor = socket(AF_INET, SOCK_STREAM,0))==-1)
 	{
 		logging_->elog("socket create errors!\n");
+		assert(false);
 		return false;
 	}
 
@@ -80,6 +85,7 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	if(connect(socket_coor,(struct sockaddr *)&serv_addr, sizeof(struct sockaddr))==-1)
 	{
 		logging_->elog("connection errors when connecting to %s:%s! Reason:%s",inet_ntoa(serv_addr.sin_addr),coord_port.c_str(),strerror(errno));
+		assert(false);
 		return false;
 	}
 
@@ -87,6 +93,7 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	if(send(socket_coor,&port_send,sizeof(int),0)==-1)
 	{
 		logging_->elog("Error occurs when sending the hello message to the coordinator!\n");
+		assert(false);
 		return false;
 	}
 	return true;
@@ -115,8 +122,11 @@ bool AdaptiveEndPoint::WaitForReadySignalFromCoordinator(){
 bool AdaptiveEndPoint::ConnectToCoordinateEndPoint(int port){
 	std::ostringstream os;
 	os<<"tcp://"<<ip_coor<<":"<<port;
+	//	sleep(1);
 	if(!ConnectToRemoteEndPoint(os.str().c_str())){
-		logging_->elog("Check whether network is enabled! %s",os.str().c_str());
+
+		logging_->elog("Check whether network is enabled! can't connect ot %s",os.str().c_str());
+//		assert(false);
 		return false;
 	}
 

@@ -21,6 +21,7 @@
 #include "../../storage/ChunkStorage.h"
 #include "../../storage/PartitionStorage.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
+#include "../../utility/synch.h"
 class ExpandableBlockStreamProjectionScan:public ExpandableBlockStreamIteratorBase {
 public:
 	struct allocated_block{
@@ -69,11 +70,16 @@ private:
 //	volatile bool open_finished_;
 //	semaphore sema_open_finished_;
 
-	Lock cursor_lock_;
+//	Lock cursor_lock_;
 
 	PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
 	std::list<ChunkReaderIterator*> remaining_chunk_reader_iterator_list_;
 	Lock chunk_reader_container_lock_;
+
+	/* for debug*/
+	unsigned long int return_blocks_;
+	Lock lock_;
+
 	/*
 	 * The following code is for boost serialization.
 	 */
