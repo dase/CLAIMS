@@ -13,6 +13,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 
+
 #define INTERMEIDATE_TABLEID 100000;
 
 typedef int NodeID;
@@ -22,8 +23,8 @@ typedef unsigned AttributeOffset;
 typedef int ProjectionOffset;
 typedef unsigned ColumnOffset;
 typedef unsigned PartitionOffset;
-typedef unsigned ChunkOffset;
-
+typedef int ChunkOffset;
+typedef unsigned long ExpanderID;
 /*the following ids are based on the assumption that the TableOffset is globally unique.*/
 
 
@@ -59,13 +60,21 @@ struct ProjectionID{
 	bool operator==(const ProjectionID& r)const{
 		return table_id==r.table_id&& projection_off==r.projection_off;
 	}
+	bool operator<(const ProjectionID& r)const{
+		if (table_id < r.table_id)
+			return true;
+		else if (table_id == r.table_id)
+			return (projection_off < r.projection_off);
+		else
+			return false;
+	}
 
 	/* for boost::serialization*/
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version){
-            ar & table_id & projection_off;
-    }
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version){
+		ar & table_id & projection_off;
+	}
 
 };
 /* for boost::unordered_map*/
@@ -88,6 +97,16 @@ struct ColumnID{
 	bool operator==(const ColumnID &r)const{
 		return projection_id==r.projection_id&&column_off==r.column_off;
 	}
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+//		ar & projection_id & column_off & partitioner & fileLocations & hdfsFilePath & blkMemoryLocations & Projection_name_;
+		ar & projection_id & column_off;
+	}
+
+
 };
 /* for boost::unordered_map*/
 static size_t hash_value(const ColumnID& key){
@@ -108,6 +127,14 @@ struct PartitionID{
 	bool operator==(const PartitionID& r)const{
 		return projection_id==r.projection_id&&partition_off==r.partition_off;
 	}
+	bool operator<(const PartitionID& r)const{
+		if (projection_id < r.projection_id)
+			return true;
+		else if (projection_id == r.projection_id)
+			return (partition_off < r.partition_off);
+		else
+			return false;
+	}
 	PartitionID(const PartitionID& r){
 		projection_id=r.projection_id;
 		partition_off=r.partition_off;
@@ -117,10 +144,13 @@ struct PartitionID{
 		str<<"T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		return str.str();
 	}
-	std::string getPathAndName()const{
-		std::ostringstream str;
-		str<<"/home/casa/storage/file/var/T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
-		return str.str();
+
+	std::string getPathAndName() const;
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & partition_off & projection_id;
 	}
 };
 /* for boost::unordered_map*/
@@ -139,7 +169,15 @@ struct ChunkID{
 		chunk_off=r.chunk_off;
 	}
 	bool operator==(const ChunkID& r)const{
-		return partition_id==r.partition_id&&partition_id==r.partition_id;
+		return partition_id==r.partition_id&&chunk_off==r.chunk_off;
+	}
+	bool operator<(const ChunkID& r)const{
+		if (partition_id < r.partition_id)
+			return true;
+		else if (partition_id == r.partition_id)
+			return (chunk_off < r.chunk_off);
+		else
+			return false;
 	}
 	PartitionID partition_id;
 	ChunkOffset chunk_off;

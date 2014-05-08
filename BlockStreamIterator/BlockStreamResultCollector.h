@@ -38,6 +38,7 @@ public:
 	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* block);
 	bool close();
+	void print();
 	ResultSet* getResultSet();
 	unsigned long getNumberOftuples()const;
 private:
@@ -57,6 +58,7 @@ private:
 
 	volatile bool open_finished_;
 	semaphore sema_open_finished_;
+	semaphore sema_input_complete_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

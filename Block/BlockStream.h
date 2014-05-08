@@ -35,6 +35,13 @@ public:
 			return block_stream_base_->getTuple(cur);
 		}
 
+		/*
+		 * get certain tuple, for random access
+		 */
+		inline void* getTuple(unsigned tuple_off) const{
+			return block_stream_base_->getTuple(tuple_off);
+		}
+
 
 		/* This function is usually called after currentTuple()  */
 		inline void increase_cur_(){
@@ -88,7 +95,7 @@ public:
 		return new BlockStreamTraverseIterator(this);
 	};
 	BlockStreamBase(unsigned block_size):Block(block_size){};
-	static BlockStreamBase* createBlock(Schema* schema,unsigned block_size);
+	static BlockStreamBase* createBlock(const Schema* const & schema,unsigned block_size);
 
 	/**
 	 * @li:I add this function in order to end the chaos of setting the block size
@@ -143,9 +150,9 @@ public:
 	void constructFromBlock(const Block& block);
 
 protected:
-	char* free_;
 	unsigned tuple_size_;
 public:
+	char* free_;  //should be protected.
 
 };
 
@@ -156,7 +163,7 @@ class BlockStreamVar:public BlockStreamBase{
 	};
 public:
 	// BlockSize is 64k-4 because of the tuple_count is the member of the class
-	BlockStreamVar(unsigned block_size,Schema *schema);
+	BlockStreamVar(unsigned block_size,const Schema* const &schema);
 	virtual ~BlockStreamVar(){};
 	/* get the [offset]-th tuple of the block*/
 	inline void* getTuple(unsigned offset) const;
@@ -217,7 +224,7 @@ public:
 	unsigned getTuplesInBlock()const{};
 
 private:
-	Schema *schema_;
+	const Schema *schema_;
 	unsigned attributes_;
 	unsigned var_attributes_;
 	/* free_front_ can be added for less computing*/

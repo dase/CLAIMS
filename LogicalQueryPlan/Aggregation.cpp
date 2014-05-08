@@ -10,10 +10,11 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
-#define THREAD_COUNT 4
+#include "../Config.h"
 Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vector<Attribute> aggregation_attribute_list,std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_list,LogicalOperator* child)
 :group_by_attribute_list_(group_by_attribute_list),aggregation_attribute_list_(aggregation_attribute_list),aggregation_list_(aggregation_list),dataflow_(0),child_(child){
 	assert(aggregation_attribute_list_.size()==aggregation_list_.size());
+	setOperatortype(l_aggregation);
 }
 
 Aggregation::~Aggregation() {
@@ -30,12 +31,12 @@ Dataflow Aggregation::getDataflow(){
 	const Dataflow child_dataflow=child_->getDataflow();
 	if(canLeverageHashPartition(child_dataflow)){
 		fashion_=no_repartition;
-		printf("no_repartition\n");
+		QueryOptimizationLogging::log("no_repartition\n");
 	}
 	else{
 //		fashion_=repartition;
 		fashion_=hybrid;
-		printf("hybrid\n");
+		QueryOptimizationLogging::log("hybrid\n");
 	}
 	switch(fashion_){
 		case no_repartition:{
@@ -44,6 +45,9 @@ Dataflow Aggregation::getDataflow(){
 //			ret.attribute_list_.insert(ret.attribute_list_.end(),aggregation_attribute_list_.begin(),aggregation_attribute_list_.end());
 			ret.property_.commnication_cost=child_dataflow.property_.commnication_cost;
 			ret.property_.partitioner=child_dataflow.property_.partitioner;
+			Attribute att=child_dataflow.property_.partitioner.getPartitionKey();
+			att.table_id_=INTERMEIDATE_TABLEID;
+			ret.property_.partitioner.setPartitionKey(att);
 			for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
 				const unsigned cardinality=ret.property_.partitioner.getPartition(i)->getDataCardinality();
 //				ret.property_.partitioner.getPartition(i)->setDataCardinality(cardinality*predictSelectivity());
@@ -107,6 +111,9 @@ bool Aggregation::canLeverageHashPartition(const Dataflow& child_dataflow)const{
 	return false;
 }
 BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size){
+	if(dataflow_==0){
+		getDataflow();
+	}
 	BlockStreamIteratorBase* ret;
 	Dataflow child_dataflow=child_->getDataflow();
 	BlockStreamAggregationIterator::State aggregation_state;
@@ -116,6 +123,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.block_size=block_size;
 //	aggregation_state.nbuckets=1024;
 	aggregation_state.nbuckets=estimateGroupByCardinality(child_dataflow);
+	QueryOptimizationLogging::log("# of hash buckets:%d\n",aggregation_state.nbuckets);
+
 	aggregation_state.bucketsize=64;
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);
 	aggregation_state.output=getSchema(dataflow_->attribute_list_);
@@ -129,9 +138,9 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			BlockStreamAggregationIterator* private_aggregation=new BlockStreamAggregationIterator(aggregation_state);
 
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.thread_count_=THREAD_COUNT;
+			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=private_aggregation;
 			expander_state.schema_=getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state);
@@ -173,9 +182,9 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 		case repartition:{
 
 			BlockStreamExpander::State expander_state;
-			expander_state.block_count_in_buffer_=10;
+			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
-			expander_state.thread_count_=THREAD_COUNT;
+			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=child_->getIteratorTree(block_size);;
 			expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
@@ -218,16 +227,15 @@ std::vector<unsigned> Aggregation::getInvolvedIndexList(const std::vector<Attrib
 	for(unsigned i=0;i<attribute_list.size();i++){
 		bool found=false;
 		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
-			if(attribute_list[j].isANY()||(dataflow.attribute_list_[j]==attribute_list[i])){
+			/*
+			 * Bug caused by attribute_list[j].isANY() is fixed.
+			 */
+			if(attribute_list[i].isANY()||(dataflow.attribute_list_[j]==attribute_list[i])){
 				found=true;
 				ret.push_back(j);
 				break;
 			}
 		}
-//		if(found==false){
-//			printf("Cannot find any matching attribute.\n");
-//			assert(false);
-//		}
 	}
 	return ret;
 }
@@ -313,11 +321,15 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 		return ret;
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
+	const unsigned long max_limits=1024*1024;
+	const unsigned long min_limits=1024*4;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();
 	unsigned long ret;
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
 		if(group_by_attribute_list_[i].isUnique()){
-			return ret=data_card;
+			ret=ret<max_limits?ret:max_limits;
+			ret=ret>min_limits?ret:min_limits;
+			return ret;
 		}
 	}
 	unsigned long group_by_domain_size=1;
@@ -332,14 +344,30 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 	}
 	ret=group_by_domain_size;//TODO: This is only the upper bound of group_by domain size;
 
-	const unsigned long limits=1024*1024;
-	ret=ret<limits?ret:limits;
-
+	ret=ret<max_limits?ret:max_limits;
+	ret=ret>min_limits?ret:min_limits;
 	return ret;
 
 }
 void Aggregation::print(int level)const{
-	printf("%*.sAggregation:\n",level*8," ");
+	printf("%*.sAggregation:",level*8," ");
+	switch(fashion_){
+	case no_repartition:{
+		printf("no_repartition\n");
+		break;
+	}
+	case repartition:{
+		printf("repartition\n");
+		break;
+	}
+	case hybrid:{
+		printf("hybrid!\n");
+		break;
+	}
+	default:{
+		printf("not given!\n");
+	}
+	}
 	printf("%*.sgroup-by attributes:\n",level*8," ");
 	for(unsigned i=0;i<this->group_by_attribute_list_.size();i++){
 		printf("%*.s",level*8," ");

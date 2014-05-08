@@ -74,54 +74,7 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 				{
 					case 1://"<"
 					{
-						char * attribute;
-						switch((node->lnext)->type)//获得左边的表名
-						{
-							case t_name:
-							{
-								Expr *expr=(Expr *)(node->lnext);
-								attribute=expr->data.string_val;
-							}break;
-							case t_name_name:
-							{
-								Columns *col=(Columns *)(node->lnext);
-								attribute=col->parameter2;
-							}break;
-							default:
-							{
 
-							}
-						};
-						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=expr->data.int_val;
-								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
-								std::ostringstream str;
-								str<<temp;
-								cout<<str.str()<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::L,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=expr->data.double_val;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::L,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data.string_val;
-								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::L,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
 					}break;
 					case 2://">"
 					{
@@ -129,54 +82,7 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 					}break;
 					case 3://"<>"
 					{
-						char * attribute;
-						switch((node->lnext)->type)//获得左边的表名
-						{
-							case t_name:
-							{
-								Expr *expr=(Expr *)(node->lnext);
-								attribute=expr->data.string_val;
-							}break;
-							case t_name_name:
-							{
-								Columns *col=(Columns *)(node->lnext);
-								attribute=col->parameter2;
-							}break;
-							default:
-							{
 
-							}
-						};
-						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=expr->data.int_val;
-								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
-								std::ostringstream str;
-								str<<temp;
-								cout<<str.str()<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=expr->data.double_val;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data.string_val;
-								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
 					}break;
 					case 4://"="
 					{
@@ -236,54 +142,6 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 					}break;
 					case 6://">="
 					{
-						char * attribute;
-						switch((node->lnext)->type)//获得左边的表名
-						{
-							case t_name:
-							{
-								Expr *expr=(Expr *)(node->lnext);
-								attribute=expr->data.string_val;
-							}break;
-							case t_name_name:
-							{
-								Columns *col=(Columns *)(node->lnext);
-								attribute=col->parameter2;
-							}break;
-							default:
-							{
-
-							}
-						};
-						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=expr->data.int_val;
-								cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
-								std::ostringstream str;
-								str<<temp;
-								cout<<str.str()<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=expr->data.double_val;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data.string_val;
-								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
 
 					}break;
 					default:
@@ -378,7 +236,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			}
 			else//没有equaljoin的情况
 			{
-				puts("parsetree2logicalplan  type fromlist error");
+				puts("fromlist no equaljoin");
 				return NULL;
 			}
 
@@ -391,7 +249,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 	}
 
 }
-static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function)
+static void get_aggregation_args(int &funcnum,Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function)
 {
 	if(selectlist==NULL)
 	{
@@ -403,13 +261,13 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 		case t_select_list:
 		{
 			Select_list *selectnode=(Select_list *)selectlist;
-			get_aggregation_args(selectnode->args, aggregation_attributes,aggregation_function);
-			get_aggregation_args(selectnode->next, aggregation_attributes,aggregation_function);
+			get_aggregation_args(funcnum,selectnode->args, aggregation_attributes,aggregation_function);
+			get_aggregation_args(funcnum,selectnode->next, aggregation_attributes,aggregation_function);
 		}break;
 		case t_select_expr:
 		{
 			Select_expr *selectnode=(Select_expr *)selectlist;
-			get_aggregation_args(selectnode->colname, aggregation_attributes,aggregation_function);
+			get_aggregation_args(funcnum,selectnode->colname, aggregation_attributes,aggregation_function);
 
 		}break;
 		case t_expr_func:
@@ -419,6 +277,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 				aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FCOUNT")==0)
 			{
@@ -426,6 +285,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				Columns *funccol=(Columns *)funcnode->parameter1;
 				cout<<"Fcount  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
 				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				funcnum++;
 			}/////////////////////----2.19日
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
@@ -433,6 +293,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				Columns *funccol=(Columns *)funcnode->parameter1;
 				cout<<"Fsum  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
 				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
@@ -440,6 +301,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				Columns *funccol=(Columns *)funcnode->parameter1;
 				cout<<"Fmin  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
 				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
@@ -447,6 +309,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				Columns *funccol=(Columns *)funcnode->parameter1;
 				cout<<"Fmax  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
 				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)///////////////////////////////////底层还未实现
 			{
@@ -454,6 +317,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				Columns *funccol=(Columns *)funcnode->parameter1;
 				cout<<"Fcount  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
 				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				funcnum++;
 			}/////////////////////----2.19日
 			else
 			{
@@ -510,30 +374,37 @@ static LogicalOperator* groupby_where_from2logicalplan(Node *parsetree)//实现g
 {
 	Query_stmt *node=(Query_stmt *)parsetree;
 	LogicalOperator * where_from_logicalplan=where_from2logicalplan(node->from_list);
-	if(node->groupby_list==NULL)
+	int funcnum=0;
+	vector<Attribute> group_by_attributes;
+	vector<Attribute> aggregation_attributes;
+	vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	get_aggregation_args(funcnum,node->select_list, aggregation_attributes,aggregation_function);
+	if(funcnum==0)
 	{
 		return where_from_logicalplan;
 	}
 	else//获得select子句中的聚集函数及其参数以及groupby子句参数
 	{
-		vector<Attribute> group_by_attributes;
-		vector<Attribute> aggregation_attributes;
-		vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
-		if(node->select_list!=NULL)
-		{
-			get_aggregation_args(node->select_list, aggregation_attributes,aggregation_function);
-		}
+		if(node->groupby_list!=NULL)
 		get_group_by_attributes(node->groupby_list,group_by_attributes);
 		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,where_from_logicalplan);
 		return aggregation;
 	}
-
-
 }
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
-	return groupby_where_from2logicalplan(parsetree);
+	switch(parsetree->type)
+	{
+		case t_query_stmt:
+		{
+			return groupby_where_from2logicalplan(parsetree);
+		}break;
+		default:
+		{
+			return NULL;
+		}
+	}
 }
 
 #endif

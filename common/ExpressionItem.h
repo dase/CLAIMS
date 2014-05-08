@@ -122,7 +122,7 @@ public:
 			break;
 		}
 		case variable_type:{
-			printf(" variable \n");
+			printf(" variable %s,%s\n",this->content.var.table_name,this->content.var.column_name);
 			break;
 		}
 		case operator_type:{

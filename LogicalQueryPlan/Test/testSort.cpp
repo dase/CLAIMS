@@ -71,7 +71,7 @@ static int testSort(){
 
 		Filter::Condition filter_condition_1;
 
-		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("100"));
+		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("100000"));
 
 
 		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
