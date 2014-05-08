@@ -24,6 +24,7 @@ extern "C" int yylex();
 extern char globalInputText[10000];
 extern int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 int oldstate;
+extern char linebuf[500];
 
 #undef YY_INPUT
 #define YY_INPUT(b,r,s) readInputForLexer(b,&r,s)
@@ -58,6 +59,7 @@ BINARY	{ return BINARY; }
 BIT	{ return BIT; }
 BLOB	{ return BLOB; }
 BOTH	{ return BOTH; }
+BTREE	{ return BTREE;}	// 2014-3-24---增加---by Yu
 BY	{ return BY; }
 CALL	{ return CALL; }
 CASCADE	{ return CASCADE; }
@@ -119,6 +121,7 @@ FROM	{ return FROM; }
 FULLTEXT	{ return FULLTEXT; }
 GRANT	{ return GRANT; }
 GROUP	{ return GROUP; }
+HASH	{ return HASH; }	// 2014-3-24---增加---by Yu
 HAVING	{ return HAVING; }
 HIGH_PRIORITY	{ return HIGH_PRIORITY; }
 HOUR_MICROSECOND	{ return HOUR_MICROSECOND; }
@@ -138,7 +141,8 @@ INTO	{ return INTO; }
 IS	{ return IS; }
 ITERATE	{ return ITERATE; }
 JOIN	{ return JOIN; }
-INDEX|KEY	{ return KEY; }
+INDEX	{ return INDEX; }	// 2014-3-24---增加---by Yu
+KEY	{ return KEY; }	// 2014-3-24---修改---by Yu
 KEYS	{ return KEYS; }
 KILL	{ return KILL; }
 LEADING	{ return LEADING; }
@@ -179,9 +183,11 @@ ORDER	{ return ORDER; }
 OUT	{ return OUT; }
 OUTER	{ return OUTER; }
 OUTFILE	{ return OUTFILE; }
+PARTITIONED	{ return PARTITIONED; }	// 2014-2-24---增加对这个词的识别---by余楷
 PRECISION	{ return PRECISION; }
 PRIMARY	{ return PRIMARY; }
 PROCEDURE	{ return PROCEDURE; }
+PROJECTION	{ return PROJECTION; }	// 2014-2-24---增加对这个词的识别---by余楷
 PURGE	{ return PURGE; }
 QUICK	{ return QUICK; }
 READ	{ return READ; }
@@ -263,13 +269,13 @@ BEGIN		{ return BEGINT; }
 
    /* numbers */
 
-"+"?[0-9]+	        { yylval.intval = atoi(yytext); return INTNUM; } 
+[0-9]+	{ yylval.intval = atoi(yytext); return INTNUM; } 
 
-"+"?[0-9]+"."[0-9]* |
-"+"?"."[0-9]+	|
-"+"?[0-9]+E[-+]?[0-9]+	|
-"+"?[0-9]+"."[0-9]*E[-+]?[0-9]+ |
-"+"?"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
+[0-9]+"."[0-9]* |
+"."[0-9]+	|
+[0-9]+E[-+]?[0-9]+	|
+[0-9]+"."[0-9]*E[-+]?[0-9]+ |
+"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
                                   return APPROXNUM; }
     /* booleans */
 TRUE	{ yylval.intval = 1; return BOOL; }
@@ -279,16 +285,26 @@ FALSE	{ yylval.intval = 0; return BOOL; }
    /* strings */
 
 '(\\.|''|[^'\n])*'	|
-\"(\\.|\"\"|[^"\n])*\"  { yylval.strval = strdup(yytext); return STRING; }
+\"(\\.|\"\"|[^"\n])*\"  {
+				char *temp = strdup(yytext); 
+				printf("temp:%s\n",temp);
+				yylval.strval = strdup(yytext);
+				
+				//2014-4-3---处理转义字符以及消去首尾的引号---by Yu
+				GetCorrectString(yylval.strval, temp);
+				
+				printf("the string is %s\n",yylval.strval);
+				return STRING; 
+			}
 
-'(\\.|[^'\n])*$	        { yyerror("Unterminated string %s", yytext); }
-\"(\\.|[^"\n])*$	{ yyerror("Unterminated string %s", yytext); }
+'(\\.|[^'\n])*$		{ yyerror("Unterminated string %s", yytext); }
+\"(\\.|[^"\n])*$		{ yyerror("Unterminated string %s", yytext); }
 
-   /* hex strings */
+   /* hex strings */	// TODO:消除这种形式的STRING的首尾引号
 X'[0-9A-F]+' |  
-0X[0-9A-F]+  { yylval.strval = strdup(yytext); return STRING; }
+0X[0-9A-F]+  	{ yylval.strval = strdup(yytext); return STRING; }
 
-   /* bit strings */
+   /* bit strings */	// TODO:消除这种形式的STRING的首尾引号
 
 0B[01]+      |
 B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
@@ -300,11 +316,11 @@ B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
 "&&"	{ return ANDOP; }
 "||"	{ return OR; }
 
-"<"		{ yylval.subtok = 1; return COMPARISON; }
-">"		{ yylval.subtok = 2; return COMPARISON; }
+"<"	{ yylval.subtok = 1; return COMPARISON; }
+">"	{ yylval.subtok = 2; return COMPARISON; }
 "!="	|
 "<>"	{ yylval.subtok = 3; return COMPARISON; }
-"="		{ yylval.subtok = 4; return COMPARISON; }
+"="	{ yylval.subtok = 4; return COMPARISON; }
 "<="	{ yylval.subtok = 5; return COMPARISON; }
 ">="	{ yylval.subtok = 6; return COMPARISON; }
 "<=>"	{ yylval.subtok = 12; return COMPARISON; }
@@ -320,7 +336,10 @@ DATE_ADD/"(" { return FDATE_ADD; }
 DATE_SUB/"(" { return FDATE_SUB; }
 
 	/* 
-        ---2.18 add aggrection functions
+         * peek ahead and return function if name(
+         */
+	/* 
+        ---2.18add aggrection functions
          */
 COUNT    { int c = yyinput(); unput(c);
            if(c == '(') return FCOUNT;
@@ -342,8 +361,7 @@ MAX    { int c = yyinput(); unput(c);
            if(c == '(') return FMAX;
            yylval.strval = strdup(yytext);
            return NAME; } 
-
-
+           
 [A-Za-z][A-Za-z0-9_]*	{ yylval.strval = strdup(yytext);
                           return NAME; }
 `[^`/\\.\n]+`           { yylval.strval = strdup(yytext+1);

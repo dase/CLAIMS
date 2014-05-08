@@ -1,6 +1,7 @@
 /*
  *
  * 14.02.15 已有select语句和create语句，包括select语句连接系统所需的函数
+ *	--------------------------------表示还没完成
  *
  */
 
@@ -15,7 +16,7 @@
  */
  
 
-%glr-parser%expect 7
+%glr-parser%expect 9
 %expect-rr 79
 
 %defines
@@ -27,17 +28,22 @@
 #include <iostream>
 #include <stdio.h>
 #include <malloc.h>
+#include <vector>
 #include "sql_node_struct.h"
 using namespace std;
 
-Node * parsetreeroot;
+Node * parsetreeroot = NULL;
 char globalInputText[10000];
 int globalReadOffset;
+vector<Node *> NodePointer;	// 2014-4-2---存放节点指针的数组改为vector---by Yu
+int errorNumber = 0;			// 2014-3-6---声明SQL解析错误数---by余楷
 int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
+char linebuf[500];
 %}
 
+%locations
 
-%union {
+%union {		// TODO:2014-3-9---新增一个支持最大数字的类型，dicimal，将所有识别到的整数和浮点数存为该类型，若要存入某个表中，再根据这个列的类型进行转化。 ！！！！！
 	int intval;
 	double floatval;
 	char *strval;
@@ -214,9 +220,11 @@ int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 %token OUT
 %token OUTER
 %token OUTFILE
-%token PRECISION
+%token PARTITIONED	// 2014-2-24---增加对这个词的识别---by余楷
+%token PRECISION	
 %token PRIMARY
 %token PROCEDURE
+%token PROJECTION	// 2014-2-24---增加对这个词的识别---by余楷
 %token PURGE
 %token QUICK
 %token READ
@@ -381,7 +389,6 @@ int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 %token FMIN
 %token FMAX
   
-  
 /**********/
 
 
@@ -392,21 +399,26 @@ int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 %type <ast_node> select_expr_list opt_where select_stmt stmt opt_groupby select_expr
 %type <ast_node> expr_list opt_expr_list  case_list  opt_having opt_orderby expr
 %type <ast_node> groupby_list opt_limit table_reference table_factor
-%type <ast_node> table_references   opt_into_list opt_join_condition join_condition
+%type <ast_node> table_references opt_into_list opt_join_condition join_condition
 %type <ast_node> column_list  table_subquery  join_table
 %type <ast_node> index_list opt_for_join opt_col_names
 %type <ast_node> delete_opts delete_list 
 %type <ast_node> insert_vals insert_vals_list
-%type <ast_node> insert_asgn_list  update_opts update_asgn_list
-%type <ast_node>  opt_length  enum_list
+%type <ast_node> insert_asgn_list update_asgn_list
+%type <ast_node> opt_length  enum_list
 %type <ast_node> column_atts create_col_list
+
+%type <intval> update_opts	// 2014-3-24---更改位置到此---by Yu
 
 /** add by yukai **/
 %type <ast_node> create_database_stmt create_table_stmt  create_select_statement
-%type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc
-%type <ast_node> alter_noduplicate_definition alter_definition data_type
+%type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc	
+%type <ast_node> alter_list alter_def data_type create_projection_stmt
 %type <ast_node> truncate_stmt
-%type <intval> table_list opt_rc  opt_ignore opt_if_exists
+%type <ast_node> create_index_stmt index_col_list drop_index_stmt	// 2014-3-24---增加---by Yu
+%type <ast_node> drop_database_stmt drop_table_stmt table_list	// 2014-3-24---增加---by Yu
+%type <ast_node> load_table_stmt	// 2014-3-27---增加---by Yu
+%type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		// 2014-3-24---增加---by Yu
 %type <intval> opt_col index_att index_type rename_list
 %type <intval> opt_chain opt_release opt_read_write
 %type <intval> opt_trans_level trans_att priv_database_type priv_table_type
@@ -415,54 +427,95 @@ int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 %type <intval> reset_opt reset_opt_list opt_ignore_replace opt_if_not_exists
 %type <intval> opt_temporary  opt_binary opt_uz
 
+/*		// 2014-3-7---不用这种方法进行错误恢复---by余楷
+%destructor	{ if(errorNumber ) { puts("All node freed successfully!!"); FreeAllNode(); } }<ast_node>
+*/
+
 %start stmt_list
 
 %%
 
-stmt_list: stmt ';'		{ printf("> \n"); $$ = $1; parsetreeroot = $$; /*output($$, 1);*/ }
-	| stmt_list stmt ';'	{ printf("> \n");/* $$ = $1;*/ parsetreeroot = $$; /*output($$, 1);*/ }
+stmt_list: stmt ';'		{ 		// 2014-3-4---增加对多条指令的识别支持---by余楷		// 2014-3-6---解析错误后置根结点为空---by余楷
+  						printf("> \n"); 
+  						$$ = newStmt(t_stmt, NULL, $1); 
+  						if (errorNumber == 0) 
+  						{
+  							parsetreeroot = $$;
+  						}
+  						else
+  						{
+  							parsetreeroot = NULL;
+  						} 
+  						/* output($$, 1);*/ 
+  					}	
+	| stmt_list stmt ';'	{ 		// 2014-3-4---增加对多条指令的识别支持---by余楷		// 2014-3-6---解析错误后置根结点为空---by余楷
+	  					printf(">> \n"); 
+	  					$$ = newStmt(t_stmt, $1, $2); 
+	  					if (errorNumber == 0)
+	  					{
+	  						parsetreeroot = $$;
+	  					}
+	  					else
+	  					{
+	  						parsetreeroot = NULL;
+	  					}
+	  					/*output($$, 1);*/ 
+	  				}		
+  	| error ';'			{ 
+  						printf("> \n");
+  						parsetreeroot = NULL;	// 2014-3-6---解析错误后置根结点为空---by余楷
+  						errorNumber++;		// 2014-3-6---错误数加1---by余楷
+  						//yyerror("First statement discarded, input new statement"); 
+  						yyclearin;
+  						yyerrok; 				
+  					}	// 2014-3-4---增加对错误的支持---by余楷
+  	| stmt_list error ';'	{ 
+  						printf(">> \n"); 
+  						parsetreeroot = NULL;	// 2014-3-6---解析错误后置根结点为空---by余楷
+  						errorNumber++;		// 2014-3-6---错误数加1---by余楷
+  						//yyerror("Current statement discarded, input new statement"); 
+  						yyclearin;
+  						yyerrok; 
+  					}	// 2014-3-4---增加对错误的支持---by余楷
   	;
 
    /* statements: select statement */
 
-stmt: select_stmt { $$=$1; output($$, 1); puts("This is a select statement"); }
+stmt: select_stmt { $$=$1; /*output($$, 1);*/ puts("SQL parser： This is a select statement"); }		// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 
 select_stmt: 
 	SELECT select_opts select_expr_list
 	{
 		$$ = newQueryStmt(t_query_stmt, NULL, $2, $3, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-		puts("select_stmt1");
+		/*puts("SQL parser： select_stmt1");	*/ // 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	}
 	| SELECT select_opts select_expr_list FROM table_references opt_where 
     			opt_groupby opt_having opt_orderby opt_limit opt_into_list 
 		{
 			$$ = newQueryStmt(t_query_stmt, NULL, $2, $3, $5, $6, $7, $8, $9, $10, $11);
-			puts("select_stmt2");
-		}		
+			/*puts("SQL parser： select_stmt2");	*/ // 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+		}
+
 	;
 
-opt_where: /* nil */	{ $$= NULL; puts("opt_where is null"); }
-	| WHERE expr 		{ $$ = newWhereList(t_where_list, NULL, $2); puts("opt_where");};
+opt_where: /* nil */	{ $$= NULL; /*puts("opt_where is null")*/; }
+	| WHERE expr 		{ $$ = newWhereList(t_where_list, NULL, $2); /*puts("opt_where");*/};
 
-opt_groupby: /* nil */ { $$=NULL; puts("opt_groupby is null"); }
-	| GROUP BY groupby_list opt_with_rollup
-	{
-     	$$ = newGroupbyList(t_groupby_list, NULL, $3, $4);
-      	puts("opt_groupby");
-	}
+opt_groupby: /* nil */ { $$=NULL; /*puts("opt_groupby is null");*/ }
+	| GROUP BY groupby_list opt_with_rollup { $$ = newGroupbyList(t_groupby_list, NULL, $3, $4); /*puts("opt_groupby");*/}
 	;
 
 groupby_list: expr opt_asc_desc
 	{ 
 		$$=newGroupbyExpr(t_groupby_expr, $1, $2, NULL);
-		puts("groupby_list1");
+		/*puts("groupby_list1");*/
 	}
-	| groupby_list ',' expr opt_asc_desc
-    {
-     	$$=newGroupbyExpr(t_groupby_expr, $3, $4, $1);
-     	puts("groupby_list2");
-    }
+	| expr opt_asc_desc ',' groupby_list
+	{
+		$$=newGroupbyExpr(t_groupby_expr, $1, $2, $4);
+		/*puts("groupby_list2");*/
+	}
 	;
 
 opt_asc_desc: /* nil */ { $$ = 0; }
@@ -474,44 +527,33 @@ opt_with_rollup: /* nil */  { $$ = 0; }
    | WITH ROLLUP  { $$ = 1; }
    ;
 
-opt_having: /* nil */ { $$=NULL; puts("opt_having is null"); }
+opt_having: /* nil */ { $$=NULL; /*puts("opt_having is null");*/ }
 	| HAVING expr 
 	{
 		$$=newHavingList(t_having_list, NULL, $2);
-		puts("opt_having2");
+		/*puts("opt_having2");*/
 	}
 	;
 
-opt_orderby: /* nil */ { $$=NULL; puts("opt_orederby is null"); }
+opt_orderby: /* nil */ { $$=NULL; /*puts("opt_orederby is null");*/ }
 	| ORDER BY groupby_list 
 	{
 		$$=newOrderbyList(t_groupby_list, NULL, $3);
-		puts("opt_orederby2");
+		/*puts("opt_orederby2");*/
 	}
 	;
 
-opt_limit: /* nil */ {$$ = NULL; puts("opt_limit is null");}
-	| LIMIT expr
-	{
-		$$=newLimitExpr(t_limit_expr, NULL, $2);
-		puts("opt_limit2");
-	}
-  	| LIMIT expr ',' expr
-  	{
-  		Limit_expr *n=(Limit_expr *)malloc(sizeof(struct Limit_expr));
-  		n->type=t_limit_expr;
-  		n->offset=$2;
-  		n->row_count=$4;
-		$$=(Node *)n;
-	}
+opt_limit: /* nil */ {$$ = NULL; /*puts("opt_limit is null");*/ }
+	| LIMIT expr { $$=newLimitExpr(t_limit_expr, NULL, $2); /*puts("opt_limit2");*/ }
+  	| LIMIT expr ',' expr { $$=newLimitExpr(t_limit_expr, $2, $4); }
 	; 
 
-opt_into_list: /* nil */ { $$=NULL; puts("opt_into_list is null"); }//no
-   | INTO column_list {  }
+opt_into_list: /* nil */ { $$=NULL; /*puts("opt_into_list is null");*/ }//no
+   | INTO column_list {  }											//-------------------------------------------------------------------------------------------
    ;
 
 column_list: NAME { $$ = newColumn(t_column, $1, NULL, NULL); }
-  | column_list ',' NAME { $$ = newColumn(t_column, $3, NULL, $1); }
+  | NAME ',' column_list { $$ = newColumn(t_column, $1, NULL, $3); }
   ;
 
 select_opts:                      { $$ = 0; }
@@ -525,36 +567,38 @@ select_opts:                      { $$ = 0; }
 | select_opts SQL_CALC_FOUND_ROWS { if($$ & 128) yyerror("duplicate SQL_CALC_FOUND_ROWS option"); $$ = $1 | 128; }
     ;
 
-select_expr_list: select_expr			{ $$ = newSelectList(t_select_list, 0, $1, NULL); puts("select_expr_list1"); }
-    | select_expr_list ',' select_expr	{ $$ = newSelectList(t_select_list, 0, $3, $1); puts("select_expr_list2"); }
-    | '*'	{ $$ = newSelectList(t_select_list, 1, NULL, NULL); puts("select_expr_list3"); }
+select_expr_list: select_expr			{ $$ = newSelectList(t_select_list, 0, $1, NULL); /*puts("select_expr_list1");*/ }
+    | select_expr ',' select_expr_list	{ $$ = newSelectList(t_select_list, 0, $1, $3); /*puts("select_expr_list2");*/ }
+    | '*'						{ $$ = newSelectList(t_select_list, 1, NULL, NULL); /*puts("select_expr_list3");*/ }
+    | '*' ',' select_expr_list		{ $$ = newSelectList(t_select_list, 1, NULL, $3); /*puts("select_expr_list4");*/ }	//---3.6fzh---
     ;
 
-select_expr: expr opt_as_alias	{ $$ = newSelectExpr(t_select_expr, $2, $1); puts("select_expr"); }
+select_expr: expr opt_as_alias	{ $$ = newSelectExpr(t_select_expr, $2, $1); /*puts("select_expr");*/ }
 	;
 
-table_references: table_reference			{ $$=newFromList(t_from_list, $1, NULL); puts("table_references1"); }
-    | table_references ',' table_reference	{ $$=newFromList(t_from_list, $3, $1); puts("table_references2"); }
+table_references: table_reference			{ $$=newFromList(t_from_list, $1, NULL); /*puts("table_references1");*/ }
+    | table_reference ',' table_references	{ $$=newFromList(t_from_list, $1, $3); /*puts("table_references2");*/ }
     ;
 
-table_reference:  table_factor { $$=$1;puts("table_referen1"); }
-  	| join_table { $$=$1;puts("table_referen2");}
+table_reference:  table_factor { $$=$1; /*puts("table_referen1");*/ }
+  	| join_table { $$=$1; /*puts("table_referen2");*/ }
 	;
 
 table_factor:
-    NAME opt_as_alias/* index_hint */
-    {
-	    $$=newTable(t_table, NULL,$1, $2, 0, NULL);
-	    puts("table_factor1");
-    }
+	NAME opt_as_alias/* index_hint */
+	{
+		$$=newTable(t_table, NULL,$1, $2, 0, NULL);
+		/*puts("table_factor1");*/
+	}
   	| NAME '.' NAME opt_as_alias /*index_hint*/ 
   	{
 		$$=newTable(t_table, $1, $3, $4, 0, NULL);
-   		puts("table_factor2");}
+   		/*puts("table_factor2");*/ 
+   	}
   	| table_subquery opt_as NAME 
   	{
 		$$=newTable(t_table, NULL, NULL, $3, 1, $1);
-		puts("table_factor3");
+		/*puts("table_factor3");*/
 	}
 	| '(' table_references ')' { $$=$2; }
   	;
@@ -563,9 +607,9 @@ opt_as: /* nil */
   | AS 
   ;
 
-opt_as_alias: AS NAME { $$=$2; puts("opt_as_alias1");}
-  | NAME              { $$=$1; puts("opt_as_alias2");}
-  | /* nil */         { $$=NULL; puts("opt_as_alias3");}
+opt_as_alias: AS NAME { $$=$2; /*puts("opt_as_alias1");*/ }
+  | NAME              { $$=$1; /*puts("opt_as_alias2");*/ }
+  | /* nil */         { $$=NULL; /*puts("opt_as_alias3");*/ }
   ;
 
 /*
@@ -594,9 +638,9 @@ join_table:// 枚举不同的制约参数
 		$$=newJoin(t_join, -1, $1, $3, m);
 	}
   	| table_reference left_or_right opt_outer JOIN table_factor join_condition
-    {
+    	{
 		$$=newJoin(t_join, $2+$3, $1, $5, $6);
-    }
+    	}
   	| table_reference NATURAL opt_left_or_right_outer JOIN table_factor
 	{
 		$$=newJoin(t_join, 32 + $3, $1, $5, NULL);
@@ -621,7 +665,7 @@ opt_left_or_right_outer: LEFT opt_outer	{ $$ = 8 + $2; }
 	| /* nil */ { $$ = 0; }
 	;
 
-opt_join_condition: /* nil */
+opt_join_condition: /* nil */	{}
 	| join_condition	{$$=$1;}
 	;
 /*
@@ -709,16 +753,16 @@ opt_ondupupdate: /* nil */
    ;
 
 insert_opts: /* nil */			{ $$ = 0; }
-   | insert_opts LOW_PRIORITY	{ $$ = $1 | 01 ; }
+   | insert_opts LOW_PRIORITY		{ $$ = $1 | 01 ; }
    | insert_opts DELAYED 		{ $$ = $1 | 02 ; }
-   | insert_opts HIGH_PRIORITY  { $$ = $1 | 04 ; }
+   | insert_opts HIGH_PRIORITY 	{ $$ = $1 | 04 ; }
    | insert_opts IGNORE			{ $$ = $1 | 010 ; }
    ;
 
 opt_into: INTO | /* nil */
 	;
 
-opt_col_names: /* nil */
+opt_col_names: /* nil */	{}
    | '(' column_list ')' {  }
    ;
 
@@ -790,9 +834,10 @@ update_stmt: UPDATE update_opts table_references
 opt_limit { emit("UPDATE %d %d %d", $2, $3, $5); }
 ;
 
-update_opts: /* nil */ //{ $$ = 0; }
-   | insert_opts LOW_PRIORITY //{ $$ = $1 | 01 ; }
-   | insert_opts IGNORE //{ $$ = $1 | 010 ; }
+// 2014-3-24---修改---by Yu
+update_opts: /* nil */		{ $$ = 0; }
+   | insert_opts LOW_PRIORITY	{ $$ = $1 | 01; }
+   | insert_opts IGNORE		{ $$ = $1 | 02; }
    ;
 
 update_asgn_list:
@@ -828,7 +873,7 @@ update_asgn_list:
 
    /** create database **/
 
-stmt: create_database_stmt { $$=$1; output($$, 1); puts("This is a create_database statement"); }
+stmt: create_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_database statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
    ;
 
 create_database_stmt: 
@@ -844,7 +889,7 @@ opt_if_not_exists:  /* nil */ { $$ = 0; }
 
    /** create table **/
    
-stmt: create_table_stmt { $$=$1; output($$, 1); puts("This is a create_table statement"); }
+stmt: create_table_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_table statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
    ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
@@ -892,41 +937,53 @@ create_col_list: create_definition { $$ = newCreateColList(t_create_col_list, $1
 	| create_col_list ',' create_definition { $$ = newCreateColList(t_create_col_list, $3, $1); }
 	;
 
-create_definition: 
-    NAME data_type column_atts		{ $$ = newCreateDef( t_create_def, 1, $2, $3, NULL); }
-    | PRIMARY KEY '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 2, 0, NULL, $4); }
-    | KEY '(' column_list ')'		{ $$ = newCreateDef( t_create_def, 3, 0, NULL, $3); }
-    | INDEX '(' column_list ')'		{ $$ = newCreateDef( t_create_def, 4, 0, NULL, $3); }
-    | FULLTEXT INDEX '(' column_list ')'{ $$ = newCreateDef( t_create_def, 5, 0, NULL, $4); }
-    | FULLTEXT KEY '(' column_list ')'  { $$ = newCreateDef( t_create_def, 6, 0, NULL, $4); }
-    ;
+create_definition: 	/* 2-18---增加name属性---by余楷 */
+    NAME data_type column_atts		{ $$ = newCreateDef( t_create_def, 1, $1, $2, $3, NULL); }
+    | PRIMARY KEY '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 2, NULL, NULL, NULL, $4); /*puts("primary key ok!");*/ }
+    | KEY '(' column_list ')'			{ $$ = newCreateDef( t_create_def, 3, NULL, NULL, NULL, $3); }
+    | INDEX '(' column_list ')'		{ $$ = newCreateDef( t_create_def, 4, NULL, NULL, NULL, $3); }
+    | FULLTEXT INDEX '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 5, NULL, NULL, NULL, $4); }
+    | FULLTEXT KEY '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 6, NULL, NULL, NULL, $4); }
+     ;
 
 column_atts: /* nil */				{ $$ = newColumnAtts(t_column_atts, 0, 0, 0, NULL, NULL); }
-    | column_atts NOT NULLX             	{ Column_atts *t = (Column_atts *)$1;t->datatype += 01; $$ = (Node *)t; }
+    | column_atts NOT NULLX			{ Column_atts *t = (Column_atts *)$1;t->datatype += 01; $$ = (Node *)t; }
     | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1;t->datatype += 02; $$ = (Node *)t; }
-    | column_atts DEFAULT STRING        	{  Column_atts *t = (Column_atts *)$1;t->datatype += 04; t->s = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT INTNUM		{  Column_atts *t = (Column_atts *)$1;t->datatype += 010; t->num1 = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT APPROXNUM     	{  Column_atts *t = (Column_atts *)$1;t->datatype += 020; t->num2 = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT BOOL          	{  Column_atts *t = (Column_atts *)$1;t->datatype += 040; t->num1 = $3; $$ = (Node *)t; }
-    | column_atts AUTO_INCREMENT        	{  Column_atts *t = (Column_atts *)$1;t->datatype += 0100; $$ = (Node *)t; }
-    | column_atts UNIQUE KEY 			{  Column_atts *t = (Column_atts *)$1;t->datatype += 0200; $$ = (Node *)t; }
-    | column_atts PRIMARY KEY			{  Column_atts *t = (Column_atts *)$1;t->datatype += 0400; $$ = (Node *)t; }
-    | column_atts KEY 				{  Column_atts *t = (Column_atts *)$1;t->datatype += 01000; $$ = (Node *)t; }
-    | column_atts COMMENT STRING 		{  Column_atts *t = (Column_atts *)$1;t->datatype += 02000; $$ = (Node *)t; }
-    | column_atts UNIQUE '(' column_list ')'	{  Column_atts *t = (Column_atts *)$1;t->datatype += 04000; t->col_list = $4; $$ = (Node *)t; }	
+    | column_atts DEFAULT STRING        	{ Column_atts *t = (Column_atts *)$1;t->datatype += 04; t->s = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1;t->datatype += 010; t->num1 = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT APPROXNUM 	{ Column_atts *t = (Column_atts *)$1;t->datatype += 020; t->num2 = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT BOOL          	{ Column_atts *t = (Column_atts *)$1;t->datatype += 040; t->num1 = $3; $$ = (Node *)t; }
+    | column_atts AUTO_INCREMENT        	{ Column_atts *t = (Column_atts *)$1;t->datatype += 0100; $$ = (Node *)t; }
+    | column_atts UNIQUE KEY 			{ Column_atts *t = (Column_atts *)$1;t->datatype += 0200; $$ = (Node *)t; }
+    | column_atts PRIMARY KEY			{ Column_atts *t = (Column_atts *)$1;t->datatype += 0400; $$ = (Node *)t; }
+    | column_atts KEY 				{ Column_atts *t = (Column_atts *)$1;t->datatype += 01000; $$ = (Node *)t; }
+    | column_atts COMMENT STRING 		{ Column_atts *t = (Column_atts *)$1;t->datatype += 02000; $$ = (Node *)t; }
+    | column_atts UNIQUE '(' column_list ')'	{ Column_atts *t = (Column_atts *)$1;t->datatype += 04000; t->col_list = $4; $$ = (Node *)t; }	
     ;
     
+	/** create projection **/	// 2014-2-24---增加对create projection语句的语法识别---by 余楷
+stmt: create_projection_stmt	{ $$ = $1; puts("SQL parser： This is a create_projection statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+	;
 	
+	// 2014-2-24---增加对create projection语句的语法识别---by 余楷
+create_projection_stmt: CREATE PROJECTION ON NAME '(' column_list ')' PARTITIONED ON NAME	
+		{ $$ = newCreateProjectionStmt(t_create_projection_stmt, $4, $6, 1, $10); }
+	| CREATE PROJECTION ON NAME '(' column_list ')' NUMBER COMPARISON INTNUM PARTITIONED ON NAME
+	{ 
+		if ($9 != 4) { yyerror("please give a specific number"); } 
+		else { $$ = newCreateProjectionStmt(t_create_projection_stmt, $4, $6, $10, $13); }
+	}
+	;
 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** do expr **/
-stmt: DO expr_list { $$ = newDoStmt(t_do_stmt,$2); puts("This is a do expr statement"); }
+stmt: DO expr_list { $$ = newDoStmt(t_do_stmt,$2); puts("SQL parser： This is a do expr statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
     ;
     
 	/** truncate stmt **/
-stmt: truncate_stmt { $$ = $1; puts("This is a truncate_stmt statement"); }
+stmt: truncate_stmt { $$ = $1; puts("SQL parser： This is a truncate_stmt statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
     ;
 	
 truncate_stmt: TRUNCATE NAME	{ $$ = newTruncateStmt(t_truncate_stmt, $2); }
@@ -934,59 +991,57 @@ truncate_stmt: TRUNCATE NAME	{ $$ = newTruncateStmt(t_truncate_stmt, $2); }
     ;
 
    /** alter database **/
-stmt: alter_database_stmt { $$=$1; output($$, 1); puts("This is a alter_database statement"); }
+stmt: alter_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a alter_database statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 
-alter_database_stmt:
-	ALTER DATABASE NAME opt_csc 	{ $$ = newAlterDBStmt(t_alter_database_stmt, 1, $3, $4); }	
-   | ALTER SCHEMA NAME opt_csc		{ $$ = newAlterDBStmt(t_alter_database_stmt, 2, $3, $4); }
-   ;
+alter_database_stmt:	// 2-19---修改函数名---by余楷
+	ALTER DATABASE NAME opt_csc 	{ $$ = newAlterDatabaseStmt(t_alter_database_stmt, 1, $3, $4); }	
+   | ALTER SCHEMA NAME opt_csc	{ $$ = newAlterDatabaseStmt(t_alter_database_stmt, 2, $3, $4); }
+	;
    
-   /** alter table **/
-stmt: alter_table_stmt { $$=$1; output($$, 1); puts("This is a alter_table statement"); }
+   /** alter table **/	// 2-19---修改alter table 语句语法结构---by余楷
+stmt: alter_table_stmt	{ $$=$1; output($$, 1); puts("SQL parser： This is a alter_table statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 	
 /*MySQL可以在一个ALTER TABLE语句里写入多个ADD, ALTER, DROP和CHANGE子句，中间用逗号分开*/   
-alter_table_stmt: 
-	ALTER opt_ignore TABLE NAME alter_definition { $$ = newAlterTableStmt(t_alter_table_stmt, $2, $4, $5); }
-   | ALTER opt_ignore TABLE NAME alter_noduplicate_definition { $$ = newAlterTableStmt(t_alter_table_stmt, $2, $4, $5); }
+alter_table_stmt:
+	ALTER opt_ignore TABLE NAME alter_list { $$ = newAlterTableStmt(t_alter_table_stmt, $2, $4, $5); }
+   ;
+
+alter_list:
+	alter_def
+   | alter_list ',' alter_def
    ;
    
-alter_definition:
-	alter_duplicate_definition
-   | alter_definition ',' alter_duplicate_definition
-   ;
-   
-alter_duplicate_definition: 
+alter_def: 
 	ADD opt_col create_col_list {}
    | CHANGE opt_col NAME NAME data_type column_atts {}
    | DROP opt_col NAME 
    | DROP PRIMARY KEY
    | DROP INDEX column_list
    | DROP FOREIGN KEY column_list
+   | RENAME NAME {}
+   | RENAME TO NAME {}
+   | ORDER BY NAME
    ;
    
 opt_col: /* nil */ { $$ = 0; }
    | COLUMN { $$ = 1; }
    ;
    
-alter_noduplicate_definition:
-   | RENAME NAME {}
-   | RENAME TO NAME {}
-   | ORDER BY NAME
-   ;
    
 opt_ignore: /* nil */ { $$ = 0; }
    | IGNORE { $$ = 1; }
    ;
 	
-    /** create index **/
-stmt: create_index_stmt { emit("STMT"); }
+    /** create index **/	// 2014-3-24---增加---by Yu
+stmt: create_index_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_index statement"); }
 	;
 	
 create_index_stmt:
-	CREATE index_att INDEX NAME opt_using_type ON NAME '(' index_col_list ')'
-    ;
+	CREATE index_att INDEX NAME opt_using_type ON NAME '(' index_col_list ')'	
+	{ $$ = newCreateIndex(t_create_index_stmt, $2, $4, $5, $7, $9); }
+	;
 	
 index_att: /* nil */ { $$ = 0;} 
    | UNIQUE 	{ $$ = 1; }
@@ -994,59 +1049,62 @@ index_att: /* nil */ { $$ = 0;}
    | SPATIAL	{ $$ = 3; }
    ;
    
-opt_using_type: 
-    | USING index_type
+opt_using_type: 		{ $$ = 0; }
+    | USING index_type	{ $$ = $2; }
     ;
 	
 index_type: BTREE	{ $$ = 1; }
-    | HASH			{ $$ = 2; }
+	| HASH	{ $$ = 2; }
 	;
 	
-index_col_list: index_col_name
-    | index_col_list ',' index_col_name
+index_col_list: NAME opt_length opt_asc_desc			{ $$ = newIndexColList(t_index_col_list, $1, $2, $3, NULL); }
+	| NAME opt_length opt_asc_desc ',' index_col_list	{ $$ = newIndexColList(t_index_col_list, $1, $2, $3, $5); }
 	;
-
-index_col_name: NAME opt_length opt_asc_desc
+	
+	/** drop index **/	// 2014-3-24---增加---by Yu
+stmt: drop_index_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_index statement"); }
     ;
 	
-	/** drop index **/
-stmt: drop_index_stmt { emit("STMT"); }
+drop_index_stmt: DROP INDEX NAME ON NAME	{ $$ = newDropIndex(t_drop_index, $3, $5); }
     ;
 	
-drop_index_stmt: DROP INDEX NAME ON NAME
-    ;
-	
-	/**	drop database **/	
-stmt: drop_database_stmt { emit("STMT"); }
+	/**	drop database **/		// 2014-3-24---增加---by Yu
+stmt: drop_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_database statement"); }
 	;
 	
 drop_database_stmt: 
-	DROP DATABASE opt_if_exists NAME	{ emit("DROPDATABASE %d %s", $3, $4); free($4); }
-   | DROP SCHEMA opt_if_exists NAME 	{ emit("DROPSCHEMA %d %s", $3, $4); free($4); }
+	DROP DATABASE opt_if_exists NAME	{ $$ = newDropDatabase(t_drop_database_stmt, 1, $3, $4); }
+   | DROP SCHEMA opt_if_exists NAME 	{ $$ = newDropDatabase(t_drop_database_stmt, 2, $3, $4); }
    ;
    
 opt_if_exists: /* nil */	{ $$ = 0; }
-   | IF EXISTS				{ $$ = 1; }
+   | IF EXISTS			{ $$ = 1; }
    ;
    
-   /** drop table **/
-stmt: drop_table_stmt { emit("STMT"); }
+   /** drop table **/	// 2014-3-24---增加---by Yu
+stmt: drop_table_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_table statement"); }
 
 drop_table_stmt:
-	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	{ emit("DROP %d %d %d %d", $2, $4, $5, $6); }
+	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	{ $$ = newDropTable(t_drop_table_stmt, $2, $4, $6, $5); }
 	;
 	
-table_list: NAME 					{ emit("TABLE %s", $1);}
-   | NAME'.' NAME					{ emit("TABLE %s.%s", $1, $3); }
-   | table_list ',' NAME			{ emit("TABLE %s", $1);}
-   | table_list ',' NAME '.' NAME	{ emit("TABLE %s.%s", $1, $3); }
-   ;
+table_list: NAME 					{ $$ = newTableList(t_table_list, NULL, $1, NULL); }
+	| NAME '.' NAME				{ $$ = newTableList(t_table_list, $1, $3, NULL); }
+	| table_list ',' NAME			{ $$ = newTableList(t_table_list, NULL, $3, $1); }
+	| table_list ',' NAME '.' NAME	{ $$ = newTableList(t_table_list, $3, $5, $1); }
+	;
 
 opt_rc: /* nil */ 	{ $$ = 0; }
    | RESTRICT	 	{ $$ = 1; }
    | CASCADE 		{ $$ = 2; }
    ;
    
+   /** load table **/	// 2014-3-27---增加---by Yu
+stmt: load_table_stmt	{ $$=$1; output($$, 1); puts("SQL parser： This is a load_table statement"); }
+	;
+	
+load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING	{ $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9);}
+	;
    
    /** rename table **/
 stmt: rename_table_stmt { emit("STMT"); }
@@ -1055,8 +1113,8 @@ stmt: rename_table_stmt { emit("STMT"); }
 rename_table_stmt: RENAME TABLE rename_list {}
    ;
    
-rename_list: 
-   | NAME TO NAME{}
+rename_list: /* nil */	{}
+   | NAME TO NAME	{}
    | NAME '.' NAME TO NAME '.' NAME {}
    | rename_list ',' NAME TO NAME {}
    | rename_list ',' NAME '.' NAME TO NAME '.' NAME {}
@@ -1586,50 +1644,48 @@ opt_binary: /* nil */	{ $$ = 0; }
    ;
 
 opt_uz: /* nil */ 	{ $$ = 0; }
-   | opt_uz UNSIGNED	{ $$ = $1 | 01; }
+   | opt_uz UNSIGNED	{ $$ = $1 | 01; }	
    | opt_uz ZEROFILL	{ $$ = $1 | 02; }
    ;
 
 opt_csc: /* nil */		{ $$ =newOptCsc(t_opt_csc, 0, NULL, NULL);}
    | opt_csc CHAR SET NAME	/* 最先是char set string，后改为name */
 		{ Opt_csc * t = (Opt_csc *)$1; t->datatype = t->datatype | 01; t->s1 = $4; $$ = (Node *)t; }
-   | opt_csc COLLATE NAME	
+   | opt_csc COLLATE NAME
 		{ Opt_csc * t = (Opt_csc *)$1; t->datatype = t->datatype | 02; t->s2 = $3; $$ = (Node *)t; }
    ;
 
-data_type:
-   BIT opt_length			{ $$ = newDatatype (t_datatype, 01, $2, 0, NULL, 0, NULL); }
-   | TINYINT opt_length opt_uz 		{ $$ = newDatatype (t_datatype, 02, $2, $3, NULL, 0, NULL); }
-   | SMALLINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 04, $2, $3, NULL, 0, NULL); }
-   | MEDIUMINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 010, $2, $3, NULL, 0, NULL); }
-   | INT opt_length opt_uz		{ $$ = newDatatype (t_datatype, 020, $2, $3, NULL, 0, NULL); }
-   | INTEGER opt_length opt_uz		{ $$ = newDatatype (t_datatype, 040, $2, $3, NULL, 0, NULL); }
-   | BIGINT opt_length opt_uz	{ $$ = newDatatype (t_datatype, 0100, $2, $3, NULL, 0, NULL); }
-   | REAL opt_length opt_uz	{ $$ = newDatatype (t_datatype, 0200, $2, $3, NULL, 0, NULL); }
-   | DOUBLE opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 0400, $2, $3, NULL, 0, NULL); }
-   | FLOAT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 01000, $2, $3, NULL, 0, NULL); }
-   | DECIMAL opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 02000, $2, $3, NULL, 0, NULL); }
-   | DATE 			{ $$ = newDatatype (t_datatype, 04000, NULL, 0, NULL, 0, NULL); }
-   | TIME			{ $$ = newDatatype (t_datatype, 010000, NULL, 0, NULL, 0, NULL); }
-   | TIMESTAMP			{ $$ = newDatatype (t_datatype, 020000, NULL, 0, NULL, 0, NULL); }
-   | DATETIME 			{ $$ = newDatatype (t_datatype, 040000, NULL, 0, NULL, 0, NULL); }
-   | YEAR 			{ $$ = newDatatype (t_datatype, 0100000, NULL, 0, NULL, 0, NULL); }
-   | CHAR opt_length opt_csc 	{ $$ = newDatatype (t_datatype, 0200000, $2, 0, $3, 0, NULL); }
-   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, $3, NULL);
-					$$ = newDatatype (t_datatype, 0400000, t, 0, $5, 0, NULL); }
-   | BINARY opt_length 		{ $$ = newDatatype (t_datatype, 01000000, $2, 0, NULL, 0, NULL); }
-   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, $3, NULL);
-				$$ = newDatatype (t_datatype, 02000000, NULL, 0, NULL, 0, NULL); }
-   | TINYBLOB 			{ $$ = newDatatype (t_datatype, 04000000, NULL, 0, NULL, 0, NULL); }
-   | BLOB 			{ $$ = newDatatype (t_datatype, 010000000, NULL, 0, NULL, 0, NULL); }
-   | MEDIUMBLOB			{ $$ = newDatatype (t_datatype, 020000000, NULL, 0, NULL, 0, NULL); }
-   | LONGBLOB			{ $$ = newDatatype (t_datatype, 040000000, NULL, 0, NULL, 0, NULL); }
-   | TINYTEXT opt_binary opt_csc{ $$ = newDatatype (t_datatype, 0100000000, NULL, 0, $3, $2, NULL); }
-   | TEXT opt_binary opt_csc 	{ $$ = newDatatype (t_datatype, 0200000000, NULL, 0, $3, $2, NULL); }
-   | MEDIUMTEXT opt_binary opt_csc{ $$ = newDatatype (t_datatype, 0400000000, NULL,0, $3, $2, NULL); }
-   | LONGTEXT opt_binary opt_csc  { $$ = newDatatype (t_datatype, 01000000000,NULL,0, $3, $2, NULL); }
-   | ENUM '(' enum_list ')' opt_csc{ $$ = newDatatype (t_datatype, 02000000000, NULL, 0, $5, 0, $3); }
-   | SET '(' enum_list ')' opt_csc { $$ = newDatatype (t_datatype, 04000000000, NULL, 0, $5, 0, $3); }
+data_type:		// 2-18---修改各类别的表示从按位区分到按大小区分---by余楷
+   BIT opt_length				{ $$ = newDatatype (t_datatype, 1, $2, 0, NULL, 0, NULL); }
+   | TINYINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 2, $2, $3, NULL, 0, NULL); }
+   | SMALLINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 3, $2, $3, NULL, 0, NULL); }
+   | MEDIUMINT opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 4, $2, $3, NULL, 0, NULL); }
+   | INT opt_length opt_uz		{ $$ = newDatatype (t_datatype, 5, $2, $3, NULL, 0, NULL); }
+   | INTEGER opt_length opt_uz	{ $$ = newDatatype (t_datatype, 6, $2, $3, NULL, 0, NULL); }
+   | BIGINT opt_length opt_uz		{ $$ = newDatatype (t_datatype, 7, $2, $3, NULL, 0, NULL); }
+   | REAL opt_length opt_uz		{ $$ = newDatatype (t_datatype, 8, $2, $3, NULL, 0, NULL); }
+   | DOUBLE opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 9, $2, $3, NULL, 0, NULL); }
+   | FLOAT opt_length opt_uz 		{ $$ = newDatatype (t_datatype, 10, $2, $3, NULL, 0, NULL); }
+   | DECIMAL opt_length opt_uz 	{ $$ = newDatatype (t_datatype, 11, $2, $3, NULL, 0, NULL); }
+   | DATE 					{ $$ = newDatatype (t_datatype, 12, NULL, 0, NULL, 0, NULL); }
+   | TIME					{ $$ = newDatatype (t_datatype, 13, NULL, 0, NULL, 0, NULL); }
+   | TIMESTAMP				{ $$ = newDatatype (t_datatype, 14, NULL, 0, NULL, 0, NULL); }
+   | DATETIME 				{ $$ = newDatatype (t_datatype, 15, NULL, 0, NULL, 0, NULL); }
+   | YEAR 					{ $$ = newDatatype (t_datatype, 16, NULL, 0, NULL, 0, NULL); }
+   | CHAR opt_length opt_csc	 	{ $$ = newDatatype (t_datatype, 17, $2, 0, $3, 0, NULL); }
+   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, $3, NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL); }
+   | BINARY opt_length 			{ $$ = newDatatype (t_datatype, 19, $2, 0, NULL, 0, NULL); }
+   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, $3, NULL); $$ = newDatatype (t_datatype, 20, t, 0, NULL, 0, NULL); }
+   | TINYBLOB 				{ $$ = newDatatype (t_datatype, 21, NULL, 0, NULL, 0, NULL); }
+   | BLOB 					{ $$ = newDatatype (t_datatype, 22, NULL, 0, NULL, 0, NULL); }
+   | MEDIUMBLOB				{ $$ = newDatatype (t_datatype, 23, NULL, 0, NULL, 0, NULL); }
+   | LONGBLOB				{ $$ = newDatatype (t_datatype, 24, NULL, 0, NULL, 0, NULL); }
+   | TINYTEXT opt_binary opt_csc	{ $$ = newDatatype (t_datatype, 25, NULL, 0, $3, $2, NULL); }
+   | TEXT opt_binary opt_csc 		{ $$ = newDatatype (t_datatype, 26, NULL, 0, $3, $2, NULL); }
+   | MEDIUMTEXT opt_binary opt_csc	{ $$ = newDatatype (t_datatype, 27, NULL, 0, $3, $2, NULL); }
+   | LONGTEXT opt_binary opt_csc  	{ $$ = newDatatype (t_datatype, 28, NULL, 0, $3, $2, NULL); }
+   | ENUM '(' enum_list ')' opt_csc	{ $$ = newDatatype (t_datatype, 29, NULL, 0, $5, 0, $3); }
+   | SET '(' enum_list ')' opt_csc	{ $$ = newDatatype (t_datatype, 30, NULL, 0, $5, 0, $3); }
    ;
 
 enum_list: STRING 		{ $$ = newEnumList( t_enum_list, $1, NULL); }
@@ -1638,28 +1694,29 @@ enum_list: STRING 		{ $$ = newEnumList( t_enum_list, $1, NULL); }
 
 
    /**** expressions ****/
-
-expr: NAME         { dataval d; d.string_val = $1; $$ = newExpr(t_name, d);  puts("expr1");}
+expr: NAME         { $$ = newColumn(t_name, NULL, $1, NULL); /*puts("expr1");*/ }//---3.5fzh---
    | USERVAR       { dataval d; d.string_val = $1; $$ = newExpr(t_name, d); }
-   | NAME '.' NAME { $$ = newColumn(t_name_name, $1, $3, NULL); puts("expr2");}
-   | STRING        { dataval d; d.string_val = $1; $$ = newExpr(t_stringval, d); puts("expr3");}
-   | INTNUM        { dataval d; d.int_val=$1; $$ = newExpr(t_intnum, d); puts("expr4");}
+   | NAME '.' NAME { $$ = newColumn(t_name_name, $1, $3, NULL); /*puts("expr2");*/ }
+   | NAME '.' '*'  { $$ = newColumn(t_name_name, $1, "*", NULL);/* puts("expr22");*/}//---3.6fzh---
+   | STRING        { dataval d; d.string_val = $1; $$ = newExpr(t_stringval, d); /*puts("expr3");*/ }
+   | INTNUM        { dataval d; d.int_val=$1; $$ = newExpr(t_intnum, d); /*puts("expr4");*/ }
    | APPROXNUM     { dataval d; d.double_val = $1; $$ = newExpr(t_approxnum, d); }
    | BOOL          { dataval d; d.bool_val = $1; $$ = newExpr(t_bool, d); }
    ;
 
-expr: expr '+' expr { $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }
-   | expr '-' expr  { $$=newExprCal(t_expr_cal, "-", NULL, 0, $1, $3); }
-   | expr '*' expr  { $$=newExprCal(t_expr_cal, "*", NULL, 0, $1, $3); }
-   | expr '/' expr 	{ $$=newExprCal(t_expr_cal, "/", NULL, 0, $1, $3); }
-   | expr '%' expr 	{ $$=newExprCal(t_expr_cal, "%", NULL, 0, $1, $3); }
-   | expr MOD expr 	{ $$=newExprCal(t_expr_cal, "MOD", NULL, 0, $1, $3); }
-   | '-' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "--", NULL, 0, NULL, $2); }
-   | expr ANDOP expr	{ $$=newExprCal(t_expr_cal, "ANDOP", NULL, 0, $1, $3); }
-   | expr OR expr	{ $$=newExprCal(t_expr_cal, "OR", NULL, 0, $1, $3); }
-   | expr XOR expr	{ $$=newExprCal(t_expr_cal, "XOR", NULL, 0, $1, $3); }
+expr: expr '+' expr 		{ $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }
+   | expr '-' expr 		{ $$=newExprCal(t_expr_cal, "-", NULL, 0, $1, $3); }
+   | expr '*' expr  		{ $$=newExprCal(t_expr_cal, "*", NULL, 0, $1, $3); }
+   | expr '/' expr 		{ $$=newExprCal(t_expr_cal, "/", NULL, 0, $1, $3); }
+   | expr '%' expr 		{ $$=newExprCal(t_expr_cal, "%", NULL, 0, $1, $3); }
+   | expr MOD expr 		{ $$=newExprCal(t_expr_cal, "MOD", NULL, 0, $1, $3); }
+   | '-' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "--", NULL, 0, NULL, $2); }	// 2014-3-14---增加---by余楷
+   | '+' expr %prec UMINUS	{ $$=newExprCal(t_expr_cal, "++", NULL, 0, NULL, $2); }	// 2014-3-14---增加---by余楷  
+   | expr ANDOP expr		{ $$=newExprCal(t_expr_cal, "ANDOP", NULL, 0, $1, $3); }
+   | expr OR expr			{ $$=newExprCal(t_expr_cal, "OR", NULL, 0, $1, $3); }
+   | expr XOR expr		{ $$=newExprCal(t_expr_cal, "XOR", NULL, 0, $1, $3); }
    | expr COMPARISON expr	{ $$ = newExprCal(t_expr_cal, "CMP", NULL, $2, $1, $3);/* puts("=");*/ }
-   | expr COMPARISON '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", NULL, $2, $1, $4); }
+   | expr COMPARISON '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "CMP", NULL, $2, $1, $4); }
    | expr COMPARISON ANY '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", "ANY", $2, $1, $5); }
    | expr COMPARISON SOME '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", "SOME", $2, $1, $5); }
    | expr COMPARISON ALL '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "CMP", "ALL", $2, $1, $5); }
@@ -1668,9 +1725,9 @@ expr: expr '+' expr { $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }
    | expr '^' expr	{ $$=newExprCal(t_expr_cal, "^", NULL, 0, $1, $3); }
    | expr SHIFT expr	{ $$=newExprCal(t_expr_cal, (SHIFT==1?"LS":"RS"), NULL, 0, $1, $3); }
    | NOT expr %dprec 1	{ $$=newExprCal(t_expr_cal, "NOT", NULL, 0, NULL, $2); }
-   | '!' expr	{ $$=newExprCal(t_expr_cal, "!", NULL, 0, NULL, $2); }
-   | USERVAR ASSIGN expr	{ $$=NULL; }////////////////////////////////////////////////////////////////////////////////////
-   | '(' expr ')'	{ $$ = $2; }
+   | '!' expr		{ $$=newExprCal(t_expr_cal, "!", NULL, 0, NULL, $2); }
+   | USERVAR ASSIGN expr	{ $$=NULL; }		//---------------------------------------------
+   | '(' expr ')'		{ $$ = $2; }
    ;    
 
 expr:  expr IS NULLX     { $$=newExprFunc(t_expr_func, "ISN", $1, NULL, NULL, NULL); }
@@ -1683,19 +1740,24 @@ expr: expr BETWEEN expr AND expr %prec BETWEEN { $$=newExprFunc(t_expr_func, "BA
    ;
 
 
-expr_list: expr	{ $$ = newExprList(t_expr_list, $1, NULL); }
+expr_list: expr		{ $$ = newExprList(t_expr_list, $1, NULL); }
    | expr ',' expr_list { $$ = newExprList(t_expr_list, $1, $3); }
+   | '(' expr ',' expr_list ')'	{ $$ = newExprList(t_expr_list, $2, $4); }	// 2014-3-14---新增规则---by余楷
    ;
 
 opt_expr_list: /* nil */
    | expr_list {$$=$1;}
    ;
 
-expr: expr IN '(' expr_list ')'		{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
-   | expr NOT IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $1, $5); }
-   | expr IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4); }
-   | expr NOT IN '(' select_stmt ')'{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
-   | EXISTS '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3); }         
+expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
+   | '(' expr_list ')' IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $2, $6); }
+   | expr NOT IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $1, $5); }
+   | '(' expr_list ')' NOT IN  '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $2, $7); }
+   | expr IN '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4); }
+   | '(' expr_list ')' IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $2, $6); }
+   | expr NOT IN '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
+   | '(' expr_list ')' NOT IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $2, $7); }
+   | EXISTS '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3); }
    | NOT EXISTS '(' select_stmt ')'	%dprec 2	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, NULL, $4); } 
    ;
 
@@ -1705,20 +1767,19 @@ expr: NAME '(' opt_expr_list ')'	{ $$=newExprCal(t_expr_cal, "NAME", $1, 0, NULL
   /* functions with special syntax */
 expr: FCOUNT '(' '*' ')'	{ $$=newExprFunc(t_expr_func, "FCOUNTALL", NULL, NULL, NULL, NULL); }
    | FCOUNT '(' expr ')'	{ $$=newExprFunc(t_expr_func, "FCOUNT", NULL, $3, NULL, NULL); }
-//---2.18 add aggrection function
+   //---2.18 add aggrection function
 	|FSUM '(' expr ')' { $$=newExprFunc(t_expr_func, "FSUM", NULL, $3, NULL, NULL); }
 	|FAVG '(' expr ')' { $$=newExprFunc(t_expr_func, "FAVG", NULL, $3, NULL, NULL); }
 	|FMIN '(' expr ')' { $$=newExprFunc(t_expr_func, "FMIN", NULL, $3, NULL, NULL); }
 	|FMAX '(' expr ')' { $$=newExprFunc(t_expr_func, "FMAX", NULL, $3, NULL, NULL); }
-	   
    
    ;
    
-expr: FSUBSTRING '(' expr_list ')'	{ $$=newExprFunc(t_expr_func, "FSUBSTRING", NULL, $3, NULL, NULL); }
-   | FSUBSTRING '(' expr FROM expr ')'	{ $$=newExprFunc(t_expr_func, "FSUBSTRING2", NULL, $3, $5, NULL);}
+expr: FSUBSTRING '(' expr_list ')'			{ $$=newExprFunc(t_expr_func, "FSUBSTRING", NULL, $3, NULL, NULL); }
+   | FSUBSTRING '(' expr FROM expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING2", NULL, $3, $5, NULL);}
    | FSUBSTRING '(' expr FROM expr FOR expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING3", $7, $3, $5, NULL); }
-   | FTRIM '(' expr_list ')' { $$=newExprFunc(t_expr_func, "FTRIM", NULL, $3, NULL, NULL); }
-   | FTRIM '(' trim_ltb expr FROM expr_list ')'	{ }//////////////////////////////////////////////////////////////////////////////
+   | FTRIM '(' expr_list ')'				{ $$=newExprFunc(t_expr_func, "FTRIM", NULL, $3, NULL, NULL); }
+   | FTRIM '(' trim_ltb expr FROM expr_list ')'	{ }			//--------------------------------------------------
    ;
 
 trim_ltb: LEADING  { emit("INT 1"); }
@@ -1741,13 +1802,13 @@ interval_exp: INTERVAL expr DAY_HOUR { emit("NUMBER 1"); }
    | INTERVAL expr HOUR_SECOND { emit("NUMBER 9"); }
    ;
 	
-expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE3", $2, $3, NULL, NULL); }
+expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE1", $2, $3, NULL, NULL); }//---3.8fzh---
    |  CASE expr case_list ELSE expr END	{ $$=newExprFunc(t_expr_func, "CASE2", $2, $3, $5, NULL); }
    |  CASE case_list END                { $$=newExprFunc(t_expr_func, "CASE3", NULL, $2, NULL, NULL); }
    |  CASE case_list ELSE expr END      { $$=newExprFunc(t_expr_func, "CASE4", NULL, $2, $4, NULL); }
    ;
 
-case_list: WHEN expr THEN expr		{ $$=newExprFunc(t_expr_func, "WHEN1", NULL, $2, $4, NULL); }
+case_list: WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN1", NULL, $2, $4, NULL); }
    | case_list WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN2", NULL, $3, $5, $1); }
    ;
 
@@ -1785,14 +1846,20 @@ emit(char *s, ...)
 void
 yyerror(const char *s, ...)
 {
-  extern int  yylineno;
+	extern int  yylineno;
 
-  va_list ap;
-  va_start(ap, s);
+	va_list ap;
+	va_start(ap, s);
 
-  fprintf(stderr, "%d: error: ", yylineno);
-  vfprintf(stderr, s, ap);
-  fprintf(stderr, "\n");
+	fprintf(stderr, "%d: error: ", yylineno);
+	vfprintf(stderr, s, ap);
+//  	printf("at %s",yytext);
+	fprintf(stderr, "\n");
+  
+  //	yychar = YYEMPTY;
+  	//yyerrstatus = 0;
+//	yyclearin;
+//	yyerrok;
 }
 
 
@@ -1808,13 +1875,42 @@ int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead ) {
 	globalReadOffset += numBytesToRead;
 	return 0;
 }
-/*
 
+/*
 main(int ac, char **av)
 {
-	
-  if(!yyparse())
-    printf("SQL parse worked\n");
-  else
-    printf("SQL parse failed\n");
-} */
+	char c;
+	while(1)
+	{
+		int charnum=0;
+		memset(globalInputText, 0, sizeof(globalInputText));
+		//cout<<"globalInputText: "<<globalInputText;
+		globalReadOffset = 0;
+	    	while(1)
+		{
+			c=getchar();
+			globalInputText[charnum++]=c;
+			if(c==';')
+			{
+				globalInputText[charnum++]='\0';
+				break;
+			}
+		}
+//		strcpy(globalInputText, "select a from b; sd; select a from b;");	// 2014-3-4---测试用---by余楷
+		cout<<"globalInputText: "<<globalInputText<<endl;
+		if(!yyparse())
+	    		printf("SQL parse worked\n");
+		else
+    			printf("SQL parse failed\n");
+		puts("input a number! 0 quit, 1 continue");
+		c = getchar();
+		while( c == '\n')
+			c= getchar();
+		if (c == '0') 
+			break;
+		else 
+			cout<<c<<endl;
+		getchar();
+	}
+} 
+*/

@@ -35,6 +35,7 @@ public:
 	bool isHashPartitioned()const;
 	Schema* getSchema()const;
 	unsigned getTupleSize()const;
+	Attribute getAttribute(std::string name)const;
 public:
 	std::vector<Attribute> attribute_list_;
 	property property_;

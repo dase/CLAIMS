@@ -22,9 +22,9 @@ void BlockStreamFix::setEmpty(){
 }
 
 
-BlockStreamBase* BlockStreamBase::createBlock(Schema* schema,unsigned block_size) {
+BlockStreamBase* BlockStreamBase::createBlock(const Schema* const & schema,unsigned block_size) {
 	if(schema->getSchemaType()==Schema::fixed){
-		return new BlockStreamFix(block_size,schema->getTupleMaxSize());
+		return new BlockStreamFix(block_size-sizeof(BlockStreamFix::tail_info),schema->getTupleMaxSize());
 	}
 	else{
 		return new BlockStreamVar(block_size,schema);
@@ -203,7 +203,7 @@ void BlockStreamFix::constructFromBlock(const Block& block){
 	free_=(char*)start+(tail->tuple_count)*tuple_size_;
 }
 
-BlockStreamVar::BlockStreamVar(unsigned block_size,Schema *schema):BlockStreamBase(block_size),schema_(schema),cur_tuple_size_(0),var_attributes_(0){
+BlockStreamVar::BlockStreamVar(unsigned block_size,const Schema* const &schema):BlockStreamBase(block_size),schema_(schema),cur_tuple_size_(0),var_attributes_(0){
 	attributes_=schema->getncolumns();
 	int* schema_info=(int*)((char*)start+block_size-sizeof(int)*attributes_);
 	for(unsigned i=0;i<attributes_;i++){

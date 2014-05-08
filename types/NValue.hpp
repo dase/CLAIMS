@@ -18,6 +18,11 @@ using namespace std;
 #include "ExportSerializeIo.h"
 #include "value_defs.h"
 
+class COUNTER{
+public:
+	static int count;
+};
+
 namespace decimal {
 
 #define OBJECT_NULL_BIT static_cast<char>(1 << 6)
@@ -119,6 +124,7 @@ public:
         TTInt retval(lhs.getDecimal());
         if (retval.Add(rhs.getDecimal()) || retval > s_maxDecimalValue || retval < s_minDecimalValue) {
             cout << "Attempted to add " << lhs.createStringFromDecimal().c_str() << " with " << rhs.createStringFromDecimal().c_str() << " causing overflow/underflow\n";
+            assert(false);
             exit(-1);
         }
         return getDecimalValue(retval);
@@ -205,6 +211,7 @@ inline void NValue::serializeToExport(ExportSerializeOutput &io,void* para) cons
 //    switch (getValueType()) {
 //    case VALUE_TYPE_DECIMAL:
 //    {
+
     	std::string decstr = createStringFromDecimal(*(unsigned*)para);
     	int32_t objectLength = (int32_t)decstr.length();
     	io.writeBinaryString(decstr.data(), objectLength);

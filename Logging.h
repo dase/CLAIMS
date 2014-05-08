@@ -61,7 +61,11 @@ public:
 	void log(const char* format,...);
 	void elog(const char* format,...);
 };
-
+class ExpanderTrackerLogging:public Logging{
+public:
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
 class ExchangeIteratorEagerLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
@@ -95,6 +99,32 @@ class StorageManagerMasterLogging:public Logging{
 class BufferManagerLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
+};
+class BlockStreamExpanderLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
+class PerformanceTopLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
+
+class QueryOptimizationLogging{
+public:
+	static void log(const char* format,...);
+	static void elog(const char* format,...);
+};
+
+class BlockStreamJoinLogging{
+public:
+	static void log(const char* format,...);
+	static void elog(const char* format,...);
+};
+
+class ASTParserLogging{
+public:
+	static void log(const char* format,...);
+	static void elog(const char* format,...);
 };
 
 static void Logging_ExchangeIteratorLowerWithWideDependency(const char* format,...){

@@ -11,6 +11,7 @@ LogicalProject::LogicalProject(LogicalOperator *child, std::vector<std::vector<E
 :child_(child),exprArray_(exprArray){
 	initialize_arithmetic_type_promotion_matrix();
 	initialize_type_cast_functions();
+	setOperatortype(l_project);
 }
 
 LogicalProject::~LogicalProject(){
@@ -18,8 +19,12 @@ LogicalProject::~LogicalProject(){
 }
 
 Dataflow LogicalProject::getDataflow(){
-	dataflow_=child_->getDataflow();
-	return dataflow_;
+	if(dataflow_==0){
+		dataflow_=new Dataflow();
+		*dataflow_=child_->getDataflow();
+
+	}
+	return *dataflow_;
 }
 
 BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksize){
@@ -30,7 +35,7 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 	state.block_size_=blocksize;
 	state.children_=child;
 	state.v_ei_=exprArray_;
-	state.input_=getSchema(dataflow_.attribute_list_);
+	state.input_=getSchema(dataflow_->attribute_list_);
 	state.map_=mappings_;
 	state.output_=getOutputSchema();
 	return new BlockStreamProjectIterator(state);
@@ -39,7 +44,7 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 Schema *LogicalProject::getOutputSchema(){
 	//must scan the expression and get the output schema
 	vector<column_type> column_list;
-	Schema *input_=getSchema(dataflow_.attribute_list_);
+	Schema *input_=getSchema(dataflow_->attribute_list_);
 	for(unsigned i=0;i<exprArray_.size();i++){
 		for(unsigned j=0;j<exprArray_[i].size();j++){
 			if(exprArray_[i][j].type==ExpressionItem::variable_type){
@@ -72,10 +77,10 @@ int LogicalProject::getColumnSeq(ExpressionItem &ei){
 	/*every time invoke a getColumnSeq, you need to new a catalog--@li: it seams that you actually get
 	 * the reference to the catalog rather than creating one.
 	*/
-	for(unsigned i=0;i<dataflow_.attribute_list_.size();i++){
-		TableDescriptor *table=Catalog::getInstance()->getTable(dataflow_.attribute_list_[i].table_id_);
+	for(unsigned i=0;i<dataflow_->attribute_list_.size();i++){
+		TableDescriptor *table=Catalog::getInstance()->getTable(dataflow_->attribute_list_[i].table_id_);
 		string tablename=table->getTableName();
-		if((tablename.compare(ei.content.var.table_name)==0)&&(dataflow_.attribute_list_[i].attrName.compare(ei.content.var.column_name)==0)){
+		if((tablename.compare(ei.content.var.table_name)==0)&&(dataflow_->attribute_list_[i].attrName.compare(ei.content.var.column_name)==0)){
 			return i;
 		}
 	}

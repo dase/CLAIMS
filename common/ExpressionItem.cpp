@@ -109,8 +109,8 @@ bool ExpressionItem::setULongValue(const char* u_long_str){
 bool ExpressionItem::setULongValue(unsigned long &u_long){
 	type=const_type;
 	return_type=t_u_long;
-	content.data.value._ulong
-	=u_long;
+//	content.data.value._ulong=u_long;
+	content.data.value._ulong=u_long;
 	return true;
 }
 

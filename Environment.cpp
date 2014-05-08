@@ -12,13 +12,17 @@
 #include <string>
 #include "Debug.h"
 #include "Logging.h"
+#include "Config.h"
 Environment* Environment::_instance=0;
 Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	_instance=this;
+	Config::getInstance();
 	logging_=new EnvironmentLogging();
 	Initialize();
 	portManager=PortManager::getInstance();
 	catalog_=Catalog::getInstance();
+
+
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
 		InitializeCoordinator();
@@ -37,7 +41,9 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
  */
 
 	/*Before initializing Resource Manager, the instance ip and port should be decided.*/
+
 	InitializeResourceManager();
+//		return;
 
 	InitializeStorage();
 
@@ -51,10 +57,26 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	iteratorExecutorSlave=new IteratorExecutorSlave();
 
 	exchangeTracker =new ExchangeTracker();
+	expander_tracker_=ExpanderTracker::getInstance();
 }
 
 Environment::~Environment() {
-	// TODO Auto-generated destructor stub
+	logging_->~Logging();
+	portManager->~PortManager();
+	catalog_->~Catalog();
+	coordinator->~Coordinator();
+	if(ismaster_){
+		iteratorExecutorMaster->~IteratorExecutorMaster();
+		resourceManagerMaster_->~ResourceManagerMaster();
+		blockManagerMaster_->~BlockManagerMaster();
+	}
+	iteratorExecutorSlave->~IteratorExecutorSlave();
+	exchangeTracker->~ExchangeTracker();
+	resourceManagerSlave_->~ResourceManagerSlave();
+	blockManager_->~BlockManager();
+	bufferManager_->~BufferManager();
+	expander_tracker_->~ExpanderTracker();
+	endpoint->~AdaptiveEndPoint();
 }
 Environment* Environment::getInstance(bool ismaster){
 	if(_instance==0){
@@ -70,7 +92,7 @@ unsigned Environment::getPort(){
 }
 void Environment::Initialize(){
 	libconfig::Config cfg;
-	cfg.readFile(CONFIG);
+	cfg.readFile(Config::config_file.c_str());
 	ip=(const char*)cfg.lookup("ip");
 }
 void Environment::InitializeEndPoint(){
@@ -80,7 +102,7 @@ void Environment::InitializeEndPoint(){
 //	std::string endpoint_port=(const char*)cfg.lookup("port");
 	std::string endpoint_ip=ip;
 	int endpoint_port;
-	if((endpoint_port=portManager->applyPort())==0){
+	if((endpoint_port=portManager->applyPort())==-1){
 		logging_->elog("The ports in the PortManager is exhausted!");
 	}
 	port=endpoint_port;
@@ -121,6 +143,11 @@ void Environment::InitializeResourceManager(){
 }
 void Environment::InitializeBufferManager(){
 	bufferManager_=BufferManager::getInstance();
+}
+
+void Environment::InitializeIndexManager()
+{
+	indexManager_ = IndexManager::getInstance();
 }
 
 AdaptiveEndPoint* Environment::getEndPoint(){

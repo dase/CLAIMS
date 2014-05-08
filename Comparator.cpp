@@ -3,8 +3,11 @@
  *
  *  Created on: Jun 13, 2013
  *      Author: wangli
+ *  Modifed on: Mar 26, 2014
+ *  	  Author: yukai
  */
-
+#ifndef __COMPARATOR_CPP_
+#define __COMPARATOR_CPP_
 #include "Comparator.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,9 +18,20 @@ bool equal(const void *x,const void *y){
 	return (*(X*)x)==(*(Y*)y);
 }
 template<>
+bool equal<char*, char*>(const void *x, const void *y){
+	return (strcmp((char*)x, (char*)y)) == 0;
+}
+template<>
 bool equal<NValue*, NValue*>(const void *x,const void *y){
 	return ((NValue*)x)->op_equals(*(NValue*)y);
 }
+
+// != operator
+template<typename X, typename Y>
+inline bool notEqual(const void *x, const void *y){
+	return !equal<X,Y>(x,y);
+}
+
 
 ///////////////////////less
 template<typename X, typename Y>
@@ -39,7 +53,7 @@ bool LESS<float,char*>(const void* x,const  void* y)
 template<>
 bool LESS<char*,char*>(const void* x,const  void* y)
 {
-	return strcmp((char*)x,(char*)y);
+	return (strcmp((char*)x,(char*)y) == -1);
 }
 
 template<>
@@ -52,14 +66,16 @@ bool LESS<char*,float>(const void* x,const  void* y)
 {
 	return atof((char*)y)<*(float*)x;
 }
+
 template<>
 bool LESS<NValue*, NValue*>(const void *x,const void *y){
-	if (((NValue*)x)->op_equals(*(NValue*)y))
-		return false;
-	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
-	if (tmp.op_equals(*(NValue*)x))
-		return true;
-	return false;
+//	if (((NValue*)x)->op_equals(*(NValue*)y))
+//		return false;
+//	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
+//	if (tmp.op_equals(*(NValue*)x))
+//		return true;
+//	return false;
+	return ((NValue*)x)->compare(*(NValue*)y)==VALUE_COMPARE_LESSTHAN;
 }
 ////////////////////////////////////////////
 
@@ -73,10 +89,64 @@ inline bool greatEqual(const void* x,const void* y)
 	return !LESS<X,Y>(x,y);
 }
 
+// > operator
+template<typename X, typename Y>
+bool great(const void *x, const void *y){
+	return *(X*)x > *(Y*)y;
+}
+
+template<>
+bool great<int,char*>(const void* x,const  void* y)
+{
+	return *(int*)x>atoi((char*)y);
+}
+template<>
+bool great<float,char*>(const void* x,const  void* y)
+{
+	return *(float*)x>atof((char*)y);
+}
+template<>
+bool great<char*,char*>(const void* x,const  void* y)
+{
+	return (strcmp((char*)x,(char*)y) == 1);
+}
+
+template<>
+bool great<char*,int>(const void* x,const  void* y)
+{
+	return atoi((char*)y)>*(int*)x;
+}
+template<>
+bool great<char*,float>(const void* x,const  void* y)
+{
+	return atof((char*)y)>*(float*)x;
+}
+
+template<>
+bool great<NValue*, NValue*>(const void *x,const void *y){
+	if (((NValue*)x)->op_equals(*(NValue*)y))
+		return false;
+	NValue tmp = ((NValue*)x)->op_max(*(NValue*)y);
+	if (tmp.op_equals(*(NValue*)x))
+		return true;
+	return false;
+}
+
+// <= operator
+template<typename X,typename Y>
+inline bool lessEqual(const void* x,const void* y)
+{
+	return !great<X,Y>(x,y);
+}
+
 ////////////////////
 std::map<Comparator::Pair,comFun> Comparator::funs_L;
 std::map<Comparator::Pair,comFun> Comparator::funs_GEQ;
 std::map<Comparator::Pair,comFun> Comparator::funs_EQ;
+std::map<Comparator::Pair,comFun> Comparator::funs_NEQ;
+std::map<Comparator::Pair,comFun> Comparator::funs_G;
+std::map<Comparator::Pair,comFun> Comparator::funs_LEQ;
+Lock Comparator::lock_;
 void Comparator::initialize_L()
 {
 	funs_L[Comparator::Pair(t_int,t_int)]=LESS<int,int>;
@@ -94,12 +164,13 @@ void Comparator::initialize_L()
 	funs_L[Comparator::Pair(t_date,t_date)]=LESS<date,date>;
 	funs_L[Comparator::Pair(t_time,t_time)]=LESS<time_duration,time_duration>;
 	funs_L[Comparator::Pair(t_datetime,t_datetime)]=LESS<ptime,ptime>;
-	funs_L[Comparator::Pair(t_datetime,t_decimal)]=LESS<NValue*,NValue*>;
+	funs_L[Comparator::Pair(t_decimal,t_decimal)]=LESS<NValue*,NValue*>;
 
 	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
 }
 void Comparator::initialize_GEQ()
 {
+//	lock_.acquire();
 	funs_GEQ[Comparator::Pair(t_int,t_int)]=greatEqual<int,int>;
 	funs_GEQ[Comparator::Pair(t_int,t_float)]=greatEqual<int,float>;
 	funs_GEQ[Comparator::Pair(t_int,t_string)]=greatEqual<int,char*>;
@@ -117,10 +188,12 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_datetime,t_datetime)]=greatEqual<ptime,ptime>;
 	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<NValue*,NValue*>;
 
-	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
+	funs_GEQ[Comparator::Pair(t_u_long,t_u_long)]=greatEqual<unsigned long,unsigned long>;
+//	lock_.release();
 }
 void Comparator::initialize_EQ()
 {
+//	lock_.acquire();
 	funs_EQ[Comparator::Pair(t_int,t_int)]=equal<int,int>;
 	funs_EQ[Comparator::Pair(t_int,t_float)]=equal<int,float>;
 //	funs_EQ[Comparator::Pair(t_int,t_string)]=equal<int,char*>;
@@ -138,7 +211,73 @@ void Comparator::initialize_EQ()
 	funs_EQ[Comparator::Pair(t_time,t_time)]=equal<time_duration,time_duration>;
 	funs_EQ[Comparator::Pair(t_datetime,t_datetime)]=equal<ptime,ptime>;
 	funs_EQ[Comparator::Pair(t_decimal,t_decimal)]=equal<NValue*,NValue*>;
+//	lock_.release();
 }
+
+void Comparator::initialize_NEQ()
+{
+	funs_NEQ[Comparator::Pair(t_int,t_int)]=notEqual<int,int>;
+	funs_NEQ[Comparator::Pair(t_int,t_float)]=notEqual<int,float>;
+//	funs_NEQ[Comparator::Pair(t_int,t_string)]=notEqual<int,char*>;
+
+	funs_NEQ[Comparator::Pair(t_float,t_int)]=notEqual<float,int>;
+	funs_NEQ[Comparator::Pair(t_float,t_float)]=notEqual<float,float>;
+//	funs_NEQ[Comparator::Pair(t_float,t_string)]=notEqual<float,char*>;
+
+//	funs_NEQ[Comparator::Pair(t_string,t_int)]=notEqual<char*,int>;
+//	funs_NEQ[Comparator::Pair(t_string,t_float)]=notEqual<char*,float>;
+	funs_NEQ[Comparator::Pair(t_string,t_string)]=notEqual<char*,char*>;
+	funs_NEQ[Comparator::Pair(t_u_long,t_u_long)]=notEqual<unsigned long,unsigned long>;
+
+	funs_NEQ[Comparator::Pair(t_date,t_date)]=notEqual<date,date>;
+	funs_NEQ[Comparator::Pair(t_time,t_time)]=notEqual<time_duration,time_duration>;
+	funs_NEQ[Comparator::Pair(t_datetime,t_datetime)]=notEqual<ptime,ptime>;
+	funs_NEQ[Comparator::Pair(t_decimal,t_decimal)]=notEqual<NValue*,NValue*>;
+}
+
+
+void Comparator::initialize_G()
+{
+	funs_G[Comparator::Pair(t_int,t_int)]=great<int,int>;
+	funs_G[Comparator::Pair(t_int,t_float)]=great<int,float>;
+//	funs_G[Comparator::Pair(t_int,t_string)]=great<int,char*>;
+
+	funs_G[Comparator::Pair(t_float,t_int)]=great<float,int>;
+	funs_G[Comparator::Pair(t_float,t_float)]=great<float,float>;
+//	funs_G[Comparator::Pair(t_float,t_string)]=great<float,char*>;
+
+//	funs_G[Comparator::Pair(t_string,t_int)]=great<char*,int>;
+//	funs_G[Comparator::Pair(t_string,t_float)]=great<char*,float>;
+	funs_G[Comparator::Pair(t_string,t_string)]=great<char*,char*>;
+	funs_G[Comparator::Pair(t_u_long,t_u_long)]=great<unsigned long,unsigned long>;
+
+	funs_G[Comparator::Pair(t_date,t_date)]=great<date,date>;
+	funs_G[Comparator::Pair(t_time,t_time)]=great<time_duration,time_duration>;
+	funs_G[Comparator::Pair(t_datetime,t_datetime)]=great<ptime,ptime>;
+	funs_G[Comparator::Pair(t_decimal,t_decimal)]=great<NValue*,NValue*>;
+}
+
+void Comparator::initialize_LEQ()
+{
+	funs_LEQ[Comparator::Pair(t_int,t_int)]=lessEqual<int,int>;
+	funs_LEQ[Comparator::Pair(t_int,t_float)]=lessEqual<int,float>;
+//	funs_LEQ[Comparator::Pair(t_int,t_string)]=lessEqual<int,char*>;
+
+	funs_LEQ[Comparator::Pair(t_float,t_int)]=lessEqual<float,int>;
+	funs_LEQ[Comparator::Pair(t_float,t_float)]=lessEqual<float,float>;
+//	funs_LEQ[Comparator::Pair(t_float,t_string)]=lessEqual<float,char*>;
+
+//	funs_LEQ[Comparator::Pair(t_string,t_int)]=lessEqual<char*,int>;
+//	funs_LEQ[Comparator::Pair(t_string,t_float)]=lessEqual<char*,float>;
+	funs_LEQ[Comparator::Pair(t_string,t_string)]=lessEqual<char*,char*>;
+	funs_LEQ[Comparator::Pair(t_u_long,t_u_long)]=lessEqual<unsigned long,unsigned long>;
+
+	funs_LEQ[Comparator::Pair(t_date,t_date)]=lessEqual<date,date>;
+	funs_LEQ[Comparator::Pair(t_time,t_time)]=lessEqual<time_duration,time_duration>;
+	funs_LEQ[Comparator::Pair(t_datetime,t_datetime)]=lessEqual<ptime,ptime>;
+	funs_LEQ[Comparator::Pair(t_decimal,t_decimal)]=lessEqual<NValue*,NValue*>;
+}
+
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
 	// TODO Auto-generated constructor stub
 	iniatilize();
@@ -156,6 +295,7 @@ Comparator::~Comparator() {
 
 void Comparator::iniatilize()
 {
+	lock_.acquire();
 	if(funs_L.empty())
 	{
 		Comparator::initialize_L();
@@ -168,28 +308,45 @@ void Comparator::iniatilize()
 	{
 		Comparator::initialize_EQ();
 	}
+	if(funs_NEQ.empty())
+	{
+		Comparator::initialize_NEQ();
+	}
+	if(funs_G.empty())
+	{
+		Comparator::initialize_G();
+	}
+	if(funs_LEQ.empty())
+	{
+		Comparator::initialize_LEQ();
+	}
+	lock_.release();
 	switch(compareType)
 	{
 		case Comparator::L:
 		{
+
 			if(funs_L.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_L.end())
 			{
-//			compare=funs_L[Comparator::Pair(pair.first.type,pair.second.type)];break;
-				compare=funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));break;
+				compare=funs_L.at(Comparator::Pair(pair.first.type,pair.second.type));
 			}
 			else
 			{
+				assert(false);
 				printf("Error!\n");
 			}
-
+			break;
 		}
 		case Comparator::GEQ:
 		{
 			if(funs_GEQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_GEQ.end())
 			{
-			compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];break;
+				compare=funs_GEQ[Comparator::Pair(pair.first.type,pair.second.type)];
 			}
-
+			else{
+				assert(false);
+			}
+			break;
 		}
 		case Comparator::EQ:
 		{
@@ -201,9 +358,32 @@ void Comparator::iniatilize()
 					printf("value:::---->>> %x\n",funs_EQ.at(Comparator::Pair(pair.first.type,pair.second.type)));
 					assert(false);
 				}
-				break;
 			}
-
+			break;
+		}
+		case Comparator::NEQ:
+		{
+			if(funs_NEQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_NEQ.end())
+			{
+				compare=funs_NEQ.at(Comparator::Pair(pair.first.type,pair.second.type));
+			}
+			break;
+		}
+		case Comparator::G:
+		{
+			if(funs_G.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_G.end())
+			{
+				compare=funs_G.at(Comparator::Pair(pair.first.type,pair.second.type));
+			}
+			break;
+		}
+		case Comparator::LEQ:
+		{
+			if(funs_LEQ.find(Comparator::Pair(pair.first.type,pair.second.type))!=funs_LEQ.end())
+			{
+				compare=funs_LEQ[Comparator::Pair(pair.first.type,pair.second.type)];
+			}
+			break;
 		}
 		default:
 		{
@@ -214,3 +394,4 @@ void Comparator::iniatilize()
 	}
 	assert(compare!=0);
 }
+#endif

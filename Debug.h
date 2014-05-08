@@ -8,8 +8,11 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#define COOR "/home/imdb/config/zhanglei/coor.conf"
-#define CONFIG "/home/imdb/config/zhanglei/config"
+#define COOR "/home/imdb/config/wangli/coor.conf"
+
+/* CONFIG is now specified in Config.cpp
+//#define CONFIG "/home/imdb/config/wangli/config"
+
 //#define CONFIG_SAME "/home/imdb/config/config"
 
 /*
@@ -33,29 +36,6 @@
 #define HDFS_N "10.11.1.190"
 // 磁盘目录
 #define DISKDIR "/home/imdb/diskdata"
-//#define DEBUG_Coordinator~/
-//#define DEBUG_Environment
 
-//#define DEBUG_ExchangeIteratorLowerWithWideDependency
-//#define DEBUG_ExchangeIteratorWithWideDependency
-//#define DEBUG_ExchangeIteratorEager
-//#define DEBUG_ExchangeIteratorEagerLower
-//
-//#define DEBUG_ExchangeRegister
-//#define DEBUG_ExchangeTracker
-//
-//#define DEBUG_PortManager
-//#define DEBUG_IteratorExecutorSlave
-//#define DEBUG_IteratorExecutorMaster
-//
 
-//#define DEBUG_ExchangeIteratorEager
-//#define DEBUG_ExpandableBlockStreamExchangeMaterialized
-//#define DEBUG_BlockStreamExchangeLowerBase
-//#define DEBUG_ExpandableBlockStreamExchangeLM
-
-#define DEBUG_ResourceManagerMaster
-#define DEBUG_ResourceManagerSlave
-#define DEBUG_Catalog
-//#define DEBUG_BufferManager
 #endif /* DEBUG_H_ */
