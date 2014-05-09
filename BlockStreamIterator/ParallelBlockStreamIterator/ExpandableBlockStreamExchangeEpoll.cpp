@@ -177,6 +177,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 		block_for_socket_[i]->~BlockContainer();
 	}
 
+//	sleep(1);
 	for(std::map<int,int>::iterator it=lower_sock_fd_to_index.begin();it!=lower_sock_fd_to_index.end();it++){
 //		printf("upper %d is closed!\n",it->first);
 		FileClose(it->first);
@@ -516,7 +517,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 //					Pthis->nexhausted_lowers++;
 	                  /* Closing the descriptor will make epoll remove it
 	                     from the set of descriptors which are monitored. */
-	                  FileClose (events[i].data.fd);
+//	                  FileClose (events[i].data.fd);
 //	                  printf("Closed connection on descriptor %d[%s]\n",
 //	                          events[i].data.fd,Pthis->lower_ip_array[Pthis->lower_sock_fd_to_index[events[i].data.fd]].c_str());
 //	                  Pthis->lower_sock_fd_to_index.erase(Pthis->lower_sock_fd_to_index.find(events[i].data.fd));

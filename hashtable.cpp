@@ -81,13 +81,17 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 			cur_MP_+=bucksize_;
 #else
 			bucket_[i]=malloc(bucksize_);
+			memset(bucket_[i],0,bucksize_);
+			mother_page_lock_.lock();
 			allocate_count++;
+			mother_page_lock_.unlock();
 #endif
 
-			void** free = (void**)(((char*)bucket_[i]) + buck_actual_size_);
-			void** next = (void**)(((char*)bucket_[i]) + buck_actual_size_ + sizeof(void*));
-			*next = 0;
-			*free = bucket_[i];
+			void** free_p = (void**)(((char*)bucket_[i]) + buck_actual_size_);
+			void** next_p = (void**)(((char*)bucket_[i]) + buck_actual_size_ + sizeof(void*));
+			*next_p = 0;
+			*free_p = bucket_[i];
+//			free(bucket_[i]);
 		}
 	}
 	catch (exception& e) {
@@ -97,14 +101,14 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 
 BasicHashTable::~BasicHashTable()
 {
+//	report_status();
 #ifdef __MOTHER_PAGE__
 	for(int i=0;i<mother_page_list_.size();i++)
 	{
 		free(mother_page_list_.at(i));
 	}
-	delete[] bucket_;
-	delete[] lock_list_;
 #else
+//	return;
 	unsigned long free_count=0;
 	for(int i=0;i<nbuckets_;i++){
 		void* next_bucket=bucket_[i];
@@ -117,6 +121,9 @@ BasicHashTable::~BasicHashTable()
 	}
 	printf("%ld allocate, %ld free\n",allocate_count,free_count);
 #endif
+	delete[] bucket_;
+	delete[] lock_list_;
+	delete[] overflow_count_;
 }
 
 BasicHashTable::Iterator::Iterator() : buck_actual_size(0), tuplesize(0), cur(0), next(0), free(0) { }
@@ -154,7 +161,10 @@ void* BasicHashTable::allocate(const unsigned & offset){
 	cur_MP_+=bucksize_;
 #else
 	ret=malloc(bucksize_);
+	memset(ret,0,bucksize_);
+//	mother_page_lock_.lock();
 	allocate_count++;
+//	mother_page_lock_.unlock();
 #endif
 	void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
 	void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
@@ -169,15 +179,17 @@ void* BasicHashTable::allocate(const unsigned & offset){
 }
 
 void BasicHashTable::report_status() {
-	printf("-----------Hash table status--------------\n");
+//	printf("-----------Hash table status--------------\n");
 	printf("Bucket size: %d\n",bucksize_);
 	printf("#. of buckets: %d\n",nbuckets_);
-	printf("Number of Mother pages:%d\n",mother_page_list_.size());
+//	printf("Number of Mother pages:%d\n",mother_page_list_.size());
 	unsigned long int total_overflow_buckets=0;
 	for(unsigned i=0;i<nbuckets_;i++){
 		total_overflow_buckets+=overflow_count_[i];
 	}
-	printf("#. of overflow buckets: %ld\n",total_overflow_buckets);
+//	printf("#. of overflow buckets: %ld\n",total_overflow_buckets);
+
+	printf("#. of total buckets :%ld \n",total_overflow_buckets+nbuckets_);
 
 	unsigned long long int tuple_count=0;
 	for(unsigned i=0;i<nbuckets_;i++){
@@ -187,8 +199,8 @@ void BasicHashTable::report_status() {
 			tuple_count++;
 		}
 	}
-	printf("Total tuples in hash table:%lld\n",tuple_count);
-	printf("------------------------------------------\n");
+//	printf("Total tuples in hash table:%lld\n",tuple_count);
+//	printf("------------------------------------------\n");
 
 }
 
@@ -211,3 +223,4 @@ BasicHashTable::Iterator::~Iterator(){
 	this->tuplesize=0;
 
 }
+

@@ -16,6 +16,7 @@
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"
 #include "../../ids.h"
+#include <string.h>
 #define block_size (1024*1024)
 static void startup_catalog(){
 //	int master;
@@ -203,7 +204,7 @@ struct Arg{
 	PartitionStorage::PartitionReaderItetaor* partition_reader;
 };
 
-BasicHashTable* generate_hashtable(Schema* schema, unsigned nbuckets, unsigned bucketsize);
+BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize);
 void* insert_into_hash_table_from_projection(void * argment){
 	unsigned long count=0;
 	unsigned long long force=0;
@@ -255,7 +256,7 @@ static double projection_scan(unsigned degree_of_parallelism){
 	printf("nthread=%d\n",nthreads);
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
 	Schema* schema=table->getProjectoin(1)->getSchema();
-	BasicHashTable* hashtable=generate_hashtable(schema,nbuckets,bucketsize);
+	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
 
 
 	LogicalScan* scan=new LogicalScan(table->getProjectoin(1));
@@ -306,8 +307,8 @@ Schema* generate_schema(unsigned tuple_length){
 	return schema;
 }
 
-BasicHashTable* generate_hashtable(Schema* schema, unsigned nbuckets, unsigned bucketsize){
-	BasicHashTable* hashtable=new BasicHashTable(nbuckets,bucketsize,schema->getTupleMaxSize());
+BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize){
+	BasicHashTable* hashtable=new BasicHashTable(nbuckets,bucketsize,tuple_size);
 	return hashtable;
 }
 
@@ -315,7 +316,7 @@ BlockStreamBuffer* initial_input_date(Schema* schema,unsigned long total_data_si
 
 	unsigned block_num=total_data_size_in_MB*1024*1024/(block_size);
 
-	BlockStreamBuffer* buffer=new BlockStreamBuffer(block_size-4,block_num,schema);
+	BlockStreamBuffer* buffer=new BlockStreamBuffer(block_size,block_num,schema);
 	int value=0;
 	BlockStreamBase* new_block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(schema,block_size);
 	for(unsigned i=0;i<block_num;i++){
@@ -362,12 +363,12 @@ double fill_hash_table(unsigned degree_of_parallelism){
 	Config::getInstance();
 	const unsigned nbuckets=1024*1024;
 	const unsigned tuple_size=8;
-	const unsigned bucketsize=256-8;
+	const unsigned bucketsize=64-8;
 	const unsigned long data_size_in_MB=1024;
 	const unsigned nthreads=degree_of_parallelism;
 	double ret;
 	Schema* schema=generate_schema(tuple_size);
-	BasicHashTable* hashtable=generate_hashtable(schema,nbuckets,bucketsize);
+	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
 	BlockStreamBuffer* buffer=initial_input_date(schema,data_size_in_MB);
 
 	Arg arg;
@@ -405,8 +406,7 @@ double getAverage(int degree_of_parallelism,int repeated_times=10){
 	return ret/repeated_times;
 }
 
-int hash_table_test(){
-//	Environment::getInstance(true);
+void scalability_test(){
 	startup_catalog();
 	unsigned int max_degree_of_parallelism=Config::max_degree_of_parallelism;
 	unsigned repeated_times=3;
@@ -420,8 +420,73 @@ int hash_table_test(){
 		else{
 			printf("D=%d\ts=%4.4f scale:%f\n",i,total_time,1/total_time/standard_throughput);
 		}
+		printf("______________\n");
+		sleep(5);
 	}
 	Environment::getInstance()->~Environment();
 }
 
+
+BasicHashTable* init_hash_table(){
+	const unsigned nbuckets=1024*1024;
+	const unsigned bucket_size=256;
+	const unsigned tuple_size=12;
+	return generate_hashtable(bucket_size,nbuckets,tuple_size);
+}
+
+void init_and_destory(){
+	BasicHashTable* hashtable=init_hash_table();
+	hashtable->~BasicHashTable();
+}
+
+void init_alloc_destory(){
+	const unsigned long allocate_count=1024*1024*16;
+
+	string str = "123456789012";
+	BasicHashTable* hashtable=init_hash_table();
+
+	for(unsigned long i=0;i<allocate_count;i++){
+		void* allocated_tuple=hashtable->allocate(rand()%(1024));
+		memcpy(allocated_tuple, (void*)&str, 12);
+//		memset(allocated_tuple,0,12);
+	}
+
+
+	hashtable->~BasicHashTable();
+}
+
+void memory_leak_test(){
+
+	const unsigned repeated_times=10;
+//	printf("Init and destroy test.\n");
+//	for(unsigned i=0;i<repeated_times;i++){
+//		init_and_destory();
+//		printf("%d-th round!\n",i);
+//		sleep(1);
+//	}
+
+	printf("Init, allocate, and destory test.\n");
+	for(unsigned i=0;i<repeated_times;i++){
+		init_alloc_destory();
+		printf("%d-th round!\n",i);
+//		sleep(1);
+	}
+
+
+
+
+
+
+	sleep(1000);
+
+
+
+}
+
+int hash_table_test(){
+//	scalability_test();
+	memory_leak_test();
+}
+
 #endif /* HASH_TABLE_TEST_H_ */
+

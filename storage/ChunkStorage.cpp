@@ -46,7 +46,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 			break;
 		}
 		case HDFS:{
-//			printf("current storage level: HDFS\n");
+//			printf("%lx current storage level for %d %d: HDFS\n",this,this->chunk_id_.partition_id.partition_off,this->chunk_id_.chunk_off);
 			if(desirable_storage_level_==MEMORY){
 				HdfsInMemoryChunk chunk_info;
 				chunk_info.length=CHUNK_SIZE;
@@ -65,6 +65,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
+					printf("%lx current is set to memory!\n");
 					ret = new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 					break;
 				}
