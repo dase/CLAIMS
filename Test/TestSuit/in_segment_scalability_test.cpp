@@ -15,7 +15,7 @@ typedef QueryTime (*query_function)();
 
 static double lineitem_scan_self_join(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
-	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("NATION");
+	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
 
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
@@ -27,15 +27,16 @@ static double lineitem_scan_self_join(){
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table_right->getAttribute("N_NATIONKEY")));
+//	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table_right->getAttribute("N_NATIONKEY")));
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_ORDERKEY"),table_right->getAttribute("L_ORDERKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
-	root->print();
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
@@ -122,18 +123,21 @@ static double lineitem_scan_filter(){
 }
 
 static void scalability_test(query_function qf,const char* test_name,int max_test_degree_of_parallelism=4){
-	unsigned repeated_times=10;
+	unsigned repeated_times=5;
 	double standard_throughput=0;
 	/* warm up the memory*/
 	qf();
 
 	printf("_______Test Scalability for %s ___________\n",test_name);
 
-	for(unsigned i=1;i<=max_test_degree_of_parallelism;i++){
+//	for(unsigned i=1;i<=max_test_degree_of_parallelism;i++){
+	for(unsigned i=	1;i<=4;i++){
 		Config::initial_degree_of_parallelism=i;
 		double total_time=0;
 		for(unsigned j=0;j<repeated_times;j++){
+			printf("--------------%d---------------\n",j);
 			total_time+=qf();
+//			sleep(3);
 		}
 
 
@@ -156,10 +160,10 @@ static int in_segment_scalability_test(int repeated_times=10){
 	double total_time=0;
 
 //	scalability_test(lineitem_scan_filter,"Scan-->filter",8);
-	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",24);
-//	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
+//	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",24);
+	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
 
 	Environment::getInstance()->~Environment();
-
+	sleep(100);
 }
 
