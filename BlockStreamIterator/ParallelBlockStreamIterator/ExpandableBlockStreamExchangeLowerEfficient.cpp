@@ -368,8 +368,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 					if (errno == EAGAIN){
 						continue;
 					}
-					printf("Error=%d\n",errno);
+					printf("Error=%d,fd=%d\n",errno,Pthis->socket_fd_upper_list[partition_id]);
 					perror("Send error!\n");
+//					printf("fd=%d",Pthis->socket_fd_upper_list[partition_id]);
 					break;
 				}
 				else{

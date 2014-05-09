@@ -16,6 +16,7 @@ public:
 	virtual ~BufferManager();
 	bool applyStorageDedget(unsigned long size);
 	unsigned getStorageMemoryBudegeInMilibyte()const;
+	void returnStorageBudget(unsigned long size);
 private:
 	BufferManager();
 	unsigned long int getTotalUsed()const;

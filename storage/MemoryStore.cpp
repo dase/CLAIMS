@@ -48,6 +48,7 @@ void MemoryChunkStore::returnChunk(const ChunkID& chunk_id){
 	free(chunk_info.hook);
 
 	chunk_list_.erase(it);
+	BufferManager::getInstance()->returnStorageBudget(chunk_info.length);
 }
 
 bool MemoryChunkStore::getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info)const{
