@@ -21,7 +21,7 @@
 #include <malloc.h>
 #include <vector>
 #include <assert.h>
-
+#include <set>
 #include "atomics.h"
 #include "lock.h"
 #include "configure.h"
@@ -169,6 +169,7 @@ private:
 	unsigned * overflow_count_;
 
 	unsigned long allocate_count;
+	std::set<void*> allocated_buckets;
 };
 
 //
