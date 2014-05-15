@@ -94,6 +94,8 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 					}
 					ExpressionCalculator::calcuate(toCalc,result);
 //					result.print_value();
+//					cout<<"state_.output_->getcolumn(i).get_length(): "<<state_.output_->getcolumn(i).get_length();
+//					getchar();
 					copyColumn(tuple,result,state_.output_->getcolumn(i).get_length());
 					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
 				}
@@ -168,7 +170,14 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 		}
 		case t_u_long:{
 			memcpy(tuple,&result.content.data.value._ulong,length);
-//			memcpy(tuple,&result.content.data.value._float,length);
+			break;
+		}
+		case t_string:{
+			memcpy(tuple,result._string.c_str(),length);
+			break;
+		}
+		case t_decimal:{
+			memcpy(tuple,result.content.data.value._decimal,length);
 			break;
 		}
 		default:{
