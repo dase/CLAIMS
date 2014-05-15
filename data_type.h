@@ -1012,8 +1012,10 @@ public:
 	}
 public:
 	Operate* operate;
+	//这个data_type是什么type
 	data_type type;
 private:
+	//且这个data_type的size是多少
 	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>
