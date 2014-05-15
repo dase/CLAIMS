@@ -12,6 +12,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include "../data_type.h"
+#include "../types/NValue.hpp"
 enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
@@ -142,6 +143,8 @@ public:
 	bool setFloatValue(const char*);
 	bool setFloatValue(float&);
 	bool setDoubleValue(const char*);
+	//currently,decimal only const char * supported!
+	bool setDecimalValue(const char*);
 	bool setDoubleValue(double&);
 	bool setULongValue(const char*);
 	bool setULongValue(unsigned long&);
@@ -157,6 +160,7 @@ public:
 	ItemType type;
 	std::string _string;// string cannot be in unoin.
 	data_type return_type;
+	unsigned size;//add by zhanglei
 
 	friend class boost::serialization::access;
 	template<class Archive>

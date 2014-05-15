@@ -37,6 +37,10 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 	state.v_ei_=exprArray_;
 	state.input_=getSchema(dataflow_.attribute_list_);
 	state.map_=mappings_;
+	/*
+	 * the output schema has the column type which has the data type and the data length
+	 * like the column type string, _string and sizeof(_string)
+	 * */
 	state.output_=getOutputSchema();
 	return new BlockStreamProjectIterator(state);
 }
@@ -51,8 +55,12 @@ Schema *LogicalProject::getOutputSchema(){
 				exprArray_[i][j].return_type=input_->getcolumn(mappings_.getMapping()[i][j]).type;
 			}
 		}
+		//如果是获得输出的类型，就用原来的算一遍
 		data_type rt_type_per_expression=ExpressionCalculator::getOutputType(exprArray_[i]);
-		column_type column_schema(rt_type_per_expression);
+		//只是试试：-》
+		column_type column_schema=*dataflow_.attribute_list_[i].attrType;
+//		column_type column_schema(rt_type_per_expression);
+
 		column_list.push_back(column_schema);
 	}
 	Schema *rt_schema=new SchemaFix(column_list);
