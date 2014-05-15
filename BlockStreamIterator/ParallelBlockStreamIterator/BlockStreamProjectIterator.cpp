@@ -9,7 +9,7 @@
 
 BlockStreamProjectIterator::BlockStreamProjectIterator() {
 	// TODO 自动生成的构造函数存根
-
+	sema_open_.set_value(1);
 }
 
 BlockStreamProjectIterator::~BlockStreamProjectIterator() {
@@ -18,7 +18,7 @@ BlockStreamProjectIterator::~BlockStreamProjectIterator() {
 
 BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 :state_(state){
-
+	sema_open_.set_value(1);
 }
 
 BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei)
@@ -29,14 +29,22 @@ BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockSt
 bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
 	//first
 	state_.children_->open(partition_offset);
-	BlockStreamBase *bsb=new BlockStreamFix(64*1024-sizeof(unsigned),state_.input_->getTupleMaxSize());
-	free_block_stream_list_.push_back(bsb);
+	if(sema_open_.try_wait()){
+		BlockStreamBase *bsb=new BlockStreamFix(64*1024-sizeof(unsigned),state_.input_->getTupleMaxSize());
+		free_block_stream_list_.push_back(bsb);
 //	for(unsigned i=0;i<state_.children_.size();i++){
 //			if(!state_.children_[i]->open(partition_offset)){
 //					//TODO: handle the failure
 //					return false;
 //			}
 //	}
+	}
+	else
+	{
+		while (!open_finished_)
+			usleep(1);
+	}
+
 	return true;
 }
 
@@ -121,8 +129,10 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 }
 
 bool BlockStreamProjectIterator::close(){
-		state_.children_->close();
-        return true;
+	sema_open_.post();
+	open_finished_ =false;
+	state_.children_->close();
+    return true;
 }
 
 
