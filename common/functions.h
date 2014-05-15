@@ -494,12 +494,11 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()==0);
 	target=else_result;
 	return;
-
-
-
-
 }
 
+/*
+ * upper supported!
+ * */
 static void upper(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=1);
 
@@ -516,9 +515,11 @@ static void upper(ExpressionItemStack& stack, ExpressionItem& target){
 
 	target._string=str;
 
-	cout<<"+++++++++++++++++"<<str.c_str()<<endl;
 }
 
+/*
+ * substring supported!
+ * */
 static void substring(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=3);
 
@@ -542,9 +543,11 @@ static void substring(ExpressionItemStack& stack, ExpressionItem& target){
 	target.type=ExpressionItem::const_type;
 	target._string=subed_str;
 
-	cout<<"------------------------"<<subed_str.c_str()<<endl;
 }
 
+/*
+ * trim supported!
+ * */
 static string& lTrim(string &ss){
     string::iterator p=find_if(ss.begin(),ss.end(),not1(ptr_fun(::isspace)));
     ss.erase(ss.begin(),p);
@@ -578,19 +581,17 @@ static void trim(ExpressionItemStack& stack, ExpressionItem& target){
 	stack.pop();
 
 	if(mode.content.data.value._int==0){
-		cout<<"in the trim system function!"<<endl;
 		string str=Str._string;
-		cout<<"target: "<<str.c_str()<<"end"<<endl;
-
 		string rt=atrim(str);
 		target._string=rt;
 		target.return_type=t_string;
 		target.type=ExpressionItem::const_type;
-
-		cout<<"target: "<<target._string.c_str()<<"end"<<endl;
 	}
 }
 
+/*
+ * cast supported!
+ * */
 static void cast(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=2);
 
@@ -606,12 +607,6 @@ static void cast(ExpressionItemStack& stack, ExpressionItem& target){
 	TypeCast::type_cast_functions[variable.return_type][type.return_type](variable);
 
 	target=variable;
-
-	cout<<"after casting the data and become a: "<<target.content.data.value._int<<endl;
-}
-
-static void coalesce(ExpressionItemStack& stack, ExpressionItem& target){
-
 }
 
 #endif /* FUNCTIONS_H_ */

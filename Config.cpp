@@ -12,7 +12,7 @@
 #include <iostream>
 #define DEBUG_Config
 
-std::string Config::config_file="/home/imdb/config/wangli/config";
+std::string Config::config_file="/home/imdb/config/zhanglei/config";
 Config* Config::instance_=0;
 
 /**
@@ -69,7 +69,7 @@ void Config::initialize() {
 	 * The following lines set the search attribute name and default value for each parameter.
 	 */
 
-	data_dir=getString("data","/home/imdb/data/wangli/");
+	data_dir=getString("data","/home/imdb/data/zhanglei/");
 
 	max_degree_of_parallelism=getInt("max_degree_of_parallelism",4);
 
