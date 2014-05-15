@@ -536,7 +536,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 	}
 	return NULL;
 }
-static void get_aggregation_args(int &funcnum,Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function)
+static void get_aggregation_args(int sid,int &funcnum,Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function,LogicalOperator * input)
 {
 	if(selectlist==NULL)
 	{
@@ -548,13 +548,13 @@ static void get_aggregation_args(int &funcnum,Node *selectlist, vector<Attribute
 		case t_select_list:
 		{
 			Select_list *selectnode=(Select_list *)selectlist;
-			get_aggregation_args(funcnum,selectnode->args, aggregation_attributes,aggregation_function);
-			get_aggregation_args(funcnum,selectnode->next, aggregation_attributes,aggregation_function);
+			get_aggregation_args(sid,funcnum,selectnode->args, aggregation_attributes,aggregation_function,input);
+			get_aggregation_args(sid+1,funcnum,selectnode->next, aggregation_attributes,aggregation_function,input);
 		}break;
 		case t_select_expr:
 		{
 			Select_expr *selectnode=(Select_expr *)selectlist;
-			get_aggregation_args(funcnum,selectnode->colname, aggregation_attributes,aggregation_function);
+			get_aggregation_args(sid,funcnum,selectnode->colname, aggregation_attributes,aggregation_function,input);
 
 		}break;
 		case t_expr_func:
@@ -570,40 +570,37 @@ static void get_aggregation_args(int &funcnum,Node *selectlist, vector<Attribute
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 				Columns *funccol=(Columns *)funcnode->parameter1;
-				cout<<"Fcount  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
-				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+		//		cout<<"Fcount  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
+				//aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
 				funcnum++;
 			}/////////////////////----2.19日
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 				Columns *funccol=(Columns *)funcnode->parameter1;
-				cout<<"Fsum  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
-				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
 				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 				Columns *funccol=(Columns *)funcnode->parameter1;
-				cout<<"Fmin  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
-				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
 				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::max);
 				Columns *funccol=(Columns *)funcnode->parameter1;
-				cout<<"Fmax  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
-				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
 				funcnum++;
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)///////////////////////////////////底层还未实现
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 				Columns *funccol=(Columns *)funcnode->parameter1;
-				cout<<"Fcount  "<<funccol->parameter1<<" "<<funccol->parameter2<<endl;
-				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(funccol->parameter1)->getAttribute(funccol->parameter2));
+				aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
 				funcnum++;
 			}/////////////////////----2.19日
 			else
@@ -656,30 +653,6 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 		}
 	}
 
-}
-static LogicalOperator* groupby_where_from2logicalplan(Node *parsetree,bool & hasaggrection)//实现groupby_where_from_parsetree 到logicalplan的转换
-{
-	Query_stmt *node=(Query_stmt *)parsetree;
-	LogicalOperator * where_from_logicalplan=where_from2logicalplan(node->from_list);
-	int funcnum=0;
-	vector<Attribute> group_by_attributes;
-	vector<Attribute> aggregation_attributes;
-	vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
-	get_aggregation_args(funcnum,node->select_list, aggregation_attributes,aggregation_function);
-	if(funcnum==0)
-	{
-		hasaggrection=false;
-		return where_from_logicalplan;
-	}
-	else//获得select子句中的聚集函数及其参数以及groupby子句参数
-	{
-
-		if(node->groupby_list!=NULL)
-		get_group_by_attributes(node->groupby_list,group_by_attributes);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,where_from_logicalplan);
-		hasaggrection=true;
-		return aggregation;
-	}
 }
 static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *node)
 {
@@ -821,7 +794,27 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else if(strcmp(funcnode->funname,"FCOALESCE")==0)
 			{
-
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+			}
+			else if(strcmp(funcnode->funname,"FCOUNT")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+			}
+			else if(strcmp(funcnode->funname,"FSUM")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+			}
+			else if(strcmp(funcnode->funname,"FAVG")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+			}
+			else if(strcmp(funcnode->funname,"FMIN")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
+			}
+			else if(strcmp(funcnode->funname,"FMAX")==0)
+			{
+				get_a_selectlist_expression_item(expr,funcnode->parameter1);
 			}
 			else
 			{
@@ -941,13 +934,11 @@ static void get_all_selectlist_expression_item(Node * node,vector<vector<Express
 		p=selectlist->next;
 	}
 }
-static LogicalOperator* select_groupby_where_from2logicalplan(Node *parsetree)
+static LogicalOperator* select_where_from2logicalplan(Node *parsetree)
 {
-	bool hasaggrection=false;
-	LogicalOperator * groupby_where_from_logicalplan=groupby_where_from2logicalplan(parsetree,hasaggrection);
-	if(hasaggrection==true)
+	if(parsetree==NULL)
 	{
-		return groupby_where_from_logicalplan;
+		return NULL;
 	}
 	else
 	{
@@ -963,8 +954,30 @@ static LogicalOperator* select_groupby_where_from2logicalplan(Node *parsetree)
 				allexpr[i][j].print_value();
 			}
 		}
-		LogicalOperator* proj=new LogicalProject(groupby_where_from_logicalplan,allexpr);
+		LogicalOperator * where_from_logicalplan=where_from2logicalplan(node->from_list);
+		LogicalOperator* proj=new LogicalProject(where_from_logicalplan,allexpr);
 		return proj;
+	}
+}
+static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//实现groupby_select_where_from2logicalplan 到logicalplan的转换
+{
+	Query_stmt *node=(Query_stmt *)parsetree;
+	LogicalOperator * select_where_from_logicalplan=select_where_from2logicalplan(parsetree);
+	int funcnum=0,sid=0;
+	vector<Attribute> group_by_attributes;
+	vector<Attribute> aggregation_attributes;
+	vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	get_aggregation_args(sid,funcnum,node->select_list, aggregation_attributes,aggregation_function,select_where_from_logicalplan);
+	if(funcnum==0)
+	{
+		return select_where_from_logicalplan;
+	}
+	else//获得select子句中的聚集函数及其参数以及groupby子句参数
+	{
+		if(node->groupby_list!=NULL)
+		get_group_by_attributes(node->groupby_list,group_by_attributes);
+		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_where_from_logicalplan);
+		return aggregation;
 	}
 }
 static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector<LogicalSort::OrderByAttr *>&obcol)
@@ -1032,7 +1045,7 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 }
 static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *parsetree)
 {
-	LogicalOperator* select__logicalplan= select_groupby_where_from2logicalplan(parsetree);
+	LogicalOperator* select__logicalplan= groupby_select_where_from2logicalplan(parsetree);
 	Query_stmt *node=(Query_stmt *)parsetree;
 	if(node->orderby_list==NULL)
 	{
