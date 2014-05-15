@@ -33,6 +33,8 @@ const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
 
+timeval start_time;	//2014-5-4---add---by Yu
+
 void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改变，相关代码进行修改---by余楷
 {
 
@@ -49,6 +51,11 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 		string tablename;
 		Node* oldnode=getparsetreeroot();
+
+		// get parser time	//2014-5-4---add---by Yu
+		timeval finish_parser_time;
+		gettimeofday(&finish_parser_time, NULL);
+		cout<<"parser use "<<(double)(finish_parser_time.tv_usec - start_time.tv_usec)/1000+(finish_parser_time.tv_sec - start_time.tv_sec)<<" ms"<<endl;
 
 		if(oldnode == NULL)	// 2014-2-24---增加node为空的判断---by余楷
 		{
