@@ -8,7 +8,7 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#define COOR "/home/imdb/config/wangli/coor.conf"
+#define COOR "/home/imdb/config/zhanglei/coor.conf"
 
 /* CONFIG is now specified in Config.cpp
 //#define CONFIG "/home/imdb/config/wangli/config"
