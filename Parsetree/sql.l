@@ -266,13 +266,13 @@ BEGIN		{ return BEGINT; }
 
    /* numbers */
 
-"+"?[0-9]+	        { yylval.intval = atoi(yytext); return INTNUM; } 
+[0-9]+	        { yylval.intval = atoi(yytext); return INTNUM; } 
 
-"+"?[0-9]+"."[0-9]* |
-"+"?"."[0-9]+	|
-"+"?[0-9]+E[-+]?[0-9]+	|
-"+"?[0-9]+"."[0-9]*E[-+]?[0-9]+ |
-"+"?"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
+[0-9]+"."[0-9]* |
+"."[0-9]+	|
+[0-9]+E[-+]?[0-9]+	|
+[0-9]+"."[0-9]*E[-+]?[0-9]+ |
+"."[0-9]*E[-+]?[0-9]+	{ yylval.floatval = atof(yytext) ;
                                   return APPROXNUM; }
     /* booleans */
 TRUE	{ yylval.intval = 1; return BOOL; }

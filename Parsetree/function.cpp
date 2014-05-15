@@ -46,7 +46,7 @@ struct Node * newExpr(nodetype t, dataval d)
 	}
 
 	a->type = t;
-	cout<<d.string_val<<endl;
+//	cout<<d.string_val<<endl;
     cout<<"NexExpr create begin!!!!"<<endl;
 	if(t == t_stringval) // 2014-3-25---输入若为字符串，去除首位的引号
 	{
@@ -61,7 +61,7 @@ struct Node * newExpr(nodetype t, dataval d)
 		}
 	}
 	a->data = d;
-	cout<<a->data.string_val;
+//	cout<<a->data.string_val;
 	cout<<" newExpr is created"<<endl;
 	output((Node *)a,1);
 //	insertNodePointer((Node*)a); // 2014-3-7---将节点指针存入指针数组---by余楷
