@@ -119,7 +119,6 @@ public:
 	PartitionStorage* getPartitionHandle(const PartitionID& partition_id)const;
 private:
 	BlockManager();
-
 private:
 	static BlockManager *blockmanager_;
 	// 这里blockmanager只是管理的是block的id，这个block到底是由memorystore管理
@@ -132,11 +131,7 @@ private:
 	MemoryChunkStore *memstore_;
 	DiskStore *diskstore_;
 
-	// 要采用Serializer但是到底采用哪个serializer
-	// Serializer serializer;
 
-	// 在memorystore中要在构造函数中写出
-//	unsigned maxMemory_;
 
 	/* poc测试 filename和projectid的映射*/
 	map<string, string> file_proj_;

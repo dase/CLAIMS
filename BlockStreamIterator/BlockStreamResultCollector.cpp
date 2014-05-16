@@ -50,7 +50,7 @@ bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
 	unsigned long long int start=curtick();
 //	while(!ChildExhausted()){
 //		usleep(1);
-//	}
+//	}x
 	sema_input_complete_.wait();
 	block_buffer_.query_time_=getSecond(start);
 	return true;
@@ -109,8 +109,10 @@ void* BlockStreamResultCollector::worker(void* arg){
 	Pthis->state_.child_->open(Pthis->state_.partition_offset_);
 
 	BlockStreamBase* block_for_asking;
-	if(Pthis->createBlockStream(block_for_asking)==false)
+	if(Pthis->createBlockStream(block_for_asking)==false){
+		assert(false);
 		return 0;
+	}
 	Pthis->block_buffer_.column_header_list_=Pthis->state_.column_header_;
 
 	unsigned long long start = 0;
@@ -118,8 +120,10 @@ void* BlockStreamResultCollector::worker(void* arg){
 
 	while(Pthis->state_.child_->next(block_for_asking)){
 		Pthis->block_buffer_.atomicAppendNewBlock(block_for_asking);
-		if(Pthis->createBlockStream(block_for_asking)==false)
+		if(Pthis->createBlockStream(block_for_asking)==false){
+			assert(false);
 			return 0;
+		}
 	}
 	Pthis->sema_input_complete_.post();
 	double eclipsed_seconds = getSecond(start);

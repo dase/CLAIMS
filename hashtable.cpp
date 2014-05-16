@@ -22,11 +22,18 @@
 
 //#define __MOTHER_PAGE__
 
+//#define __PRE_ALLOCATED__
+
+ unsigned BasicHashTable::number_of_instances_=0;
+
+
 
 BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize)
-:nbuckets_(nbuckets), tuplesize_(tuplesize)
+:nbuckets_(nbuckets), tuplesize_(tuplesize),grandmother(get_aligned_space(bucksize),1024*1024)
 {
-	printf("new hash table :%lx\n",this);
+
+	number_of_instances_++;
+//	printf("new hash table :%lx\n",this);
 	allocate_count=0;
 	try
 	{
@@ -35,9 +42,6 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 
 		/** create spinlocks, each of which corresponds to a single bucket*/
 		lock_list_=new SpineLock[nbuckets];
-//		for(unsigned i=0;i<nbuckets_;i++){
-//			lock_list_[i]=new SpineLock();
-//		}
 
 		bucket_ = (void**)new char[sizeof(void*) * nbuckets];
 		memset(bucket_,0,sizeof(void*) * nbuckets);
@@ -46,7 +50,8 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 			bucksize_=tuplesize+2*sizeof(void*);
 		}
 		buck_actual_size_=bucksize_-2*sizeof(void*);
-		pagesize_=(unsigned long)nbuckets*bucksize_<16*1024*(unsigned long)1024?(unsigned long)nbuckets*bucksize_:16*1024*(unsigned long)1024;
+//		pagesize_=(unsigned long)nbuckets*bucksize_<16*1024*(unsigned long)1024?(unsigned long)nbuckets*bucksize_:16*1024*(unsigned long)1024;
+		pagesize_=1024*1024*4;
 //		printf("Page size:%d\n",pagesize_);
 #ifdef __MOTHER_PAGE__
 		char* cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
@@ -64,6 +69,8 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);
 #endif
+
+#ifdef __PRE_ALLOCATED__
 		for (unsigned i=0; i<nbuckets; i++)
 		{
 #ifdef __MOTHER_PAGE__
@@ -81,20 +88,22 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 			bucket_[i]=(void*)(cur_mother_page+cur_MP_);
 			cur_MP_+=bucksize_;
 #else
-			bucket_[i]=malloc(bucksize_);
-			memset(bucket_[i],0,bucksize_);
-			mother_page_lock_.lock();
-			allocate_count++;
-			allocated_buckets.insert(bucket_[i]);
-			mother_page_lock_.unlock();
+//			bucket_[i]=malloc(bucksize_);
+//			bucket_[i]=(char*)memalign(256,bucksize_);
+//			bucket_[i]=(char*)grandmother.malloc();
+//			memset(bucket_[i],0,bucksize_);
+//			mother_page_lock_.lock();
+//			allocate_count++;
+//			allocated_buckets.insert(bucket_[i]);
+//			mother_page_lock_.unlock();
 #endif
 
 			void** free_p = (void**)(((char*)bucket_[i]) + buck_actual_size_);
 			void** next_p = (void**)(((char*)bucket_[i]) + buck_actual_size_ + sizeof(void*));
 			*next_p = 0;
 			*free_p = bucket_[i];
-//			free(bucket_[i]);
 		}
+#endif
 	}
 	catch (exception& e) {
 		cout << "failed" << endl;
@@ -103,7 +112,8 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 
 BasicHashTable::~BasicHashTable()
 {
-	printf("free hash table :%lx\n",this);
+	number_of_instances_--;
+//	printf("free hash table :%lx\n",this);
 //	report_status();
 #ifdef __MOTHER_PAGE__
 	for(int i=0;i<mother_page_list_.size();i++)
@@ -112,19 +122,20 @@ BasicHashTable::~BasicHashTable()
 	}
 #else
 //	return;
-	unsigned long free_count=0;
-	for(int i=0;i<nbuckets_;i++){
-		void* next_bucket=bucket_[i];
-		while(next_bucket!=0){
-			void* cur_bucket=next_bucket;
-			next_bucket=*(void**)(((char*)next_bucket) + buck_actual_size_ + sizeof(void*));
-			free(cur_bucket);
-			free_count++;
-			assert(allocated_buckets.erase(cur_bucket)==1);
-		}
-	}
-	printf("%ld allocate, %ld free\n",allocate_count,free_count);
-	assert(allocated_buckets.empty());
+//	unsigned long free_count=0;
+//	for(int i=0;i<nbuckets_;i++){
+//		void* next_bucket=bucket_[i];
+//		while(next_bucket!=0){
+//			void* cur_bucket=next_bucket;
+//			next_bucket=*(void**)(((char*)next_bucket) + buck_actual_size_ + sizeof(void*));
+//			free(cur_bucket);
+//			free_count++;
+//			assert(allocated_buckets.erase(cur_bucket)==1);
+//		}
+//	}
+//	printf("%ld allocate, %ld free\n",allocate_count,free_count);
+//	assert(allocated_buckets.empty());
+	grandmother.purge_memory();
 #endif
 	delete[] bucket_;
 	delete[] lock_list_;
@@ -158,6 +169,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 		cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
 		//TODO: as mentioned in .cpp.
 		memset(cur_mother_page,0,pagesize_);
+		printf("<><><><><><><><><><><><>New mother page!<><><><><><><><><><><><>\n");
 		assert(cur_mother_page);
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);
@@ -165,18 +177,20 @@ void* BasicHashTable::allocate(const unsigned & offset){
 	ret=cur_mother_page+cur_MP_;
 	cur_MP_+=bucksize_;
 #else
-	ret=malloc(bucksize_);
-	memset(ret,0,bucksize_);
+//	ret=malloc(bucksize_);
+//	ret=(char*)memalign(256,bucksize_);
 	mother_page_lock_.lock();
-	allocate_count++;
-	allocated_buckets.insert(ret);
+	ret=(char*)grandmother.malloc();
+//	memset(ret,0,bucksize_);
+//	allocate_count++;
+//	allocated_buckets.insert(ret);
 	mother_page_lock_.unlock();
 #endif
 	void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
 	void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
 	*new_buck_freeloc = (ret)+tuplesize_ ;
 	*new_buck_nextloc = data;
-	overflow_count_[offset]++;
+//	overflow_count_[offset]++;
 	bucket_[offset]=ret;
 #ifdef __MOTHER_PAGE__
 	mother_page_lock_.unlock();
@@ -230,3 +244,6 @@ BasicHashTable::Iterator::~Iterator(){
 
 }
 
+unsigned BasicHashTable::getNumberOfInstances() {
+	return number_of_instances_;
+}

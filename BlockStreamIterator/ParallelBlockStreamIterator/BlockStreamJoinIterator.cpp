@@ -91,7 +91,6 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
 		unsigned long long hash_table_build=curtick();
 		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
-		printf("hash table is created!\n");
 //		printf("Hash table construction time:%4.4f\n",getSecond(hash_table_build));
 		consumed_tuples_from_left=0;
 	}
@@ -230,9 +229,9 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 	while(true){
 //		if(atomicPopRemainingBlock(rb)){
 			while((tuple_from_right_child=ct.block_stream_iterator_->currentTuple())>0){
-				ct.block_stream_iterator_->increase_cur_();
-				bn=0;
-				continue;
+//				ct.block_stream_iterator_->increase_cur_();
+//				bn=0;
+//				continue;
 				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
 				while((tuple_in_hashtable=ct.hashtable_iterator_.readCurrent())>0){
 					key_exit=true;

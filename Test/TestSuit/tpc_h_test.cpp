@@ -452,9 +452,10 @@ static void load_tpc_h_4_partition(){
 
 static void init_single_node_tpc_h_envoriment(bool master=true){
 	Environment::getInstance(master);
-	printf("Press any key to continue!\n");
-	int input;
-	scanf("%d",&input);
+//	printf("Press any key to continue!\n");
+//	int input;
+//	scanf("%d",&input);
+	sleep(1);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 

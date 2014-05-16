@@ -18,6 +18,7 @@
 #include "../../ids.h"
 #include <string.h>
 #define block_size (1024*1024)
+void init_alloc_destory();
 static void startup_catalog(){
 //	int master;
 	int master=0;
@@ -197,11 +198,13 @@ static void startup_catalog(){
 }
 struct Arg{
 	BlockStreamBuffer* buffer;
-	BasicHashTable *hash_table;
+	BasicHashTable ** hash_table;
 	Schema* schema;
 	PartitionFunction* hash;
 	BlockStreamIteratorBase* iterator;
 	PartitionStorage::PartitionReaderItetaor* partition_reader;
+	Barrier* barrier;
+	unsigned tid;
 };
 
 BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize);
@@ -209,6 +212,16 @@ void* insert_into_hash_table_from_projection(void * argment){
 	unsigned long count=0;
 	unsigned long long force=0;
 	Arg arg=*(Arg*)argment;
+	if(arg.tid==0){
+		const unsigned nbuckets=1024;
+		const unsigned bucketsize=256-8;
+		TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
+		Schema* schema=table->getProjectoin(1)->getSchema();
+		*arg.hash_table=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
+	}
+
+	arg.barrier->Arrive();
+
 	BlockStreamBase* fetched_block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(arg.schema,block_size);
 	Operate* op=arg.schema->columns[0].operate->duplicateOperator();
 	unsigned nbuckets=arg.hash->getNumberOfPartitions();
@@ -232,13 +245,13 @@ void* insert_into_hash_table_from_projection(void * argment){
 //			}
 //			unsigned bn=op->getPartitionValue(tuple,arg.hash);
 			unsigned bn=boost::hash_value(*(unsigned long*)tuple)%nbuckets;
-			if(bn!=0){
-				continue;
-			}
+//			if(bn!=0){
+//				continue;
+//			}
 //			else{
 //				force++;
 //			}
-			void* new_tuple_in_hashtable=arg.hash_table->allocate(bn);
+			void* new_tuple_in_hashtable=(*arg.hash_table)->allocate(bn);
 
 			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
 		}
@@ -256,7 +269,7 @@ static double projection_scan(unsigned degree_of_parallelism){
 	printf("nthread=%d\n",nthreads);
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
 	Schema* schema=table->getProjectoin(1)->getSchema();
-	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
+//	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
 
 
 	LogicalScan* scan=new LogicalScan(table->getProjectoin(1));
@@ -277,12 +290,14 @@ static double projection_scan(unsigned degree_of_parallelism){
 
 	Arg arg;
 	arg.hash=PartitionFunctionFactory::createBoostHashFunction(nbuckets);
-	arg.hash_table=hashtable;
+//	arg.hash_table=hashtable;
 	arg.schema=schema;
 	arg.partition_reader=BlockManager::getInstance()->getPartitionHandle(PartitionID(table->getProjectoin(1)->getProjectionID(),0))->createAtomicReaderIterator();
+	arg.barrier=new Barrier(nthreads);
 	pthread_t pid[1000];
 	unsigned long long int start=curtick();
 	for(unsigned i=0;i<nthreads;i++){
+		arg.tid=i;
 		pthread_create(&pid[i],0,insert_into_hash_table_from_projection,&arg);
 	}
 
@@ -294,7 +309,7 @@ static double projection_scan(unsigned degree_of_parallelism){
 	ret=getSecond(start);
 	int cycles_per_allocate=((double)curtick()-start)/(65536000)*nthreads;
 	printf("Avg. %d cycles per allocation!\n",cycles_per_allocate);
-	hashtable->~BasicHashTable();
+	(*arg.hash_table)->~BasicHashTable();
 	schema->~Schema();
 	return ret;
 }
@@ -335,6 +350,23 @@ BlockStreamBuffer* initial_input_date(Schema* schema,unsigned long total_data_si
 }
 void* insert_into_hash_table(void * argment){
 	Arg arg=*(Arg*)argment;
+	printf("pid=%d\n",arg.tid);
+	if(arg.tid==0){
+//		printf("hash table initilizing!\n");
+//		const unsigned nbuckets=1024*1024;
+//		const unsigned bucketsize=256-8;
+//		TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
+//		Schema* schema=table->getProjectoin(1)->getSchema();
+//		*arg.hash_table=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
+	}
+
+	arg.barrier->Arrive();
+	printf("pass!\n");
+
+	if(arg.tid==0){
+		arg.barrier->reset();
+	}
+
 	BlockStreamBase* fetched_block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(arg.schema,block_size);
 	Operate* op=arg.schema->columns[0].operate->duplicateOperator();
 	unsigned nbuckets=arg.hash->getNumberOfPartitions();
@@ -342,16 +374,21 @@ void* insert_into_hash_table(void * argment){
 		void* tuple;
 		BlockStreamBase::BlockStreamTraverseIterator* it=fetched_block->createIterator();
 		while(tuple=it->nextTuple()){
-			if(boost::hash_value((*(int*)tuple)%1342342)!=0){
-				continue;
-			}
+//			if(boost::hash_value((*(int*)tuple)%(1024*1024))!=0){
+////				continue;
+//			}
 //			if(op->getPartitionValue(tuple,arg.hash)==0){
 //				break;
 //			}
 			unsigned bn=arg.schema->columns[0].operate->getPartitionValue(tuple,arg.hash);
-			void* new_tuple_in_hashtable=arg.hash_table->atomicAllocate(bn);
-			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
+			void* new_tuple_in_hashtable=(*arg.hash_table)->atomicAllocate(bn);
+//			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
 		}
+	}
+	arg.barrier->Arrive();
+	if(arg.tid==0){
+//		(*arg.hash_table)->~BasicHashTable();
+//		printf("I can release the hash table!\n");
 	}
 }
 
@@ -360,6 +397,7 @@ void create_thread(unsigned nthreads){
 }
 
 double fill_hash_table(unsigned degree_of_parallelism){
+//	init_alloc_destory();
 	Config::getInstance();
 	const unsigned nbuckets=1024*1024;
 	const unsigned tuple_size=8;
@@ -369,17 +407,26 @@ double fill_hash_table(unsigned degree_of_parallelism){
 	double ret;
 	Schema* schema=generate_schema(tuple_size);
 	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
-	BlockStreamBuffer* buffer=initial_input_date(schema,data_size_in_MB);
+	printf("before allocate data!\n");
+//	sleep(3);
 
+	BlockStreamBuffer* buffer=initial_input_date(schema,data_size_in_MB);
+	printf("after allocate data!\n");
+//	sleep(3);
+	Arg args[1000];
+	pthread_t pid[1000];
 	Arg arg;
 	arg.buffer=buffer;
 	arg.hash=PartitionFunctionFactory::createBoostHashFunction(nbuckets);
-	arg.hash_table=hashtable;
+	arg.hash_table=&hashtable;
 	arg.schema=schema;
-	pthread_t pid[1000];
+	arg.barrier=new Barrier(degree_of_parallelism);
 	unsigned long long int start=curtick();
 	for(unsigned i=0;i<nthreads;i++){
-		pthread_create(&pid[i],0,insert_into_hash_table,&arg);
+
+		args[i]=arg;
+		args[i].tid=i;
+		pthread_create(&pid[i],0,insert_into_hash_table,&args[i]);
 	}
 
 	for(unsigned i=0;i<nthreads;i++){
@@ -391,7 +438,7 @@ double fill_hash_table(unsigned degree_of_parallelism){
 	int cycles_per_allocate=((double)curtick()-start)/(data_size_in_MB*1024*1024/tuple_size)*nthreads;
 	printf("Avg. %d cycles per allocation!\n",cycles_per_allocate);
 	buffer->~BlockStreamBuffer();
-	hashtable->~BasicHashTable();
+	(*arg.hash_table)->~BasicHashTable();
 	schema->~Schema();
 
 	return ret;
@@ -407,11 +454,14 @@ double getAverage(int degree_of_parallelism,int repeated_times=10){
 }
 
 void scalability_test(){
+//	init_alloc_destory();
 	startup_catalog();
 	unsigned int max_degree_of_parallelism=Config::max_degree_of_parallelism;
-	unsigned repeated_times=3;
+//	max_degree_of_parallelism=1;
+	unsigned repeated_times=1;
 	double standard_throughput=0;
 	for(unsigned i=1;i<=max_degree_of_parallelism;i++){
+//		init_alloc_destory();
 		double total_time=getAverage(i,repeated_times);
 		if(i==1){
 			standard_throughput=1/total_time;
@@ -421,15 +471,16 @@ void scalability_test(){
 			printf("D=%d\ts=%4.4f scale:%f\n",i,total_time,1/total_time/standard_throughput);
 		}
 		printf("______________\n");
-		sleep(5);
+//		sleep(5);
 	}
-	Environment::getInstance()->~Environment();
-}
 
+	Environment::getInstance()->~Environment();
+	sleep(100);
+}
 
 BasicHashTable* init_hash_table(){
 	const unsigned nbuckets=1024*1024;
-	const unsigned bucket_size=256;
+	const unsigned bucket_size=256-8;
 	const unsigned tuple_size=12;
 	return generate_hashtable(bucket_size,nbuckets,tuple_size);
 }
@@ -440,16 +491,16 @@ void init_and_destory(){
 }
 
 void init_alloc_destory(){
-	const unsigned long allocate_count=1024*1024*16;
+	const unsigned long allocate_count=1024*1024;
 
 	string str = "123456789012";
 	BasicHashTable* hashtable=init_hash_table();
 
-	for(unsigned long i=0;i<allocate_count;i++){
-		void* allocated_tuple=hashtable->allocate(rand()%(1024));
-		memcpy(allocated_tuple, (void*)&str, 12);
-//		memset(allocated_tuple,0,12);
-	}
+//	for(unsigned long i=0;i<allocate_count;i++){
+//		void* allocated_tuple=hashtable->allocate(rand()%(1024));
+//		memcpy(allocated_tuple, (void*)&str, 12);
+////		memset(allocated_tuple,0,12);
+//	}
 
 
 	hashtable->~BasicHashTable();
@@ -484,8 +535,8 @@ void memory_leak_test(){
 }
 
 int hash_table_test(){
-//	scalability_test();
-	memory_leak_test();
+	scalability_test();
+//	memory_leak_test();
 }
 
 #endif /* HASH_TABLE_TEST_H_ */

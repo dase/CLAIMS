@@ -43,6 +43,8 @@ Coordinator::Coordinator() {
 }
 
 Coordinator::~Coordinator() {
+	pthread_cancel(prochaseId);
+
 	framework->~Framework();
 	endpoint->~EndPoint();
 }
@@ -107,7 +109,6 @@ bool Coordinator::SetupTheTheron() {
 
 }
 bool Coordinator::CreateListeningThread() {
-	pthread_t prochaseId;
 
 	const int error = pthread_create(&prochaseId, NULL, ListeningNewNode, this);
 
