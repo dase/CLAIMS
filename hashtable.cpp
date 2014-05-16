@@ -20,11 +20,13 @@
 #include <malloc.h>
 #include "rdtsc.h"
 
+//#define __MOTHER_PAGE__
+
 
 BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize)
 :nbuckets_(nbuckets), tuplesize_(tuplesize)
 {
-
+	allocate_count=0;
 	try
 	{
 		overflow_count_=new unsigned[nbuckets];
@@ -45,6 +47,8 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 		buck_actual_size_=bucksize_-2*sizeof(void*);
 		pagesize_=(unsigned long)nbuckets*bucksize_<16*1024*(unsigned long)1024?(unsigned long)nbuckets*bucksize_:16*1024*(unsigned long)1024;
 //		printf("Page size:%d\n",pagesize_);
+
+#ifdef __MOTHER_PAGE__
 		char* cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
 		assert(cur_mother_page);
 		t_start_=cur_mother_page;
@@ -59,13 +63,15 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 		assert(cur_mother_page);
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);
-
+#endif
 		for (unsigned i=0; i<nbuckets; i++)
 		{
+#ifdef __MOTHER_PAGE__
 			if(bucksize_+cur_MP_>=pagesize_)// the current mother page doesn't have enough space for the new buckets
 			{
 				cur_mother_page=(char*)memalign(PAGE_SIZE,pagesize_);
 				assert(cur_mother_page);
+
 
 				//TODO: as mentioned above.
 				memset(cur_mother_page,0,pagesize_);
@@ -75,6 +81,10 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 			}
 			bucket_[i]=(void*)(cur_mother_page+cur_MP_);
 			cur_MP_+=bucksize_;
+#else
+			bucket_[i]=malloc(bucksize_);
+			allocate_count++;
+#endif
 
 			void** free = (void**)(((char*)bucket_[i]) + buck_actual_size_);
 			void** next = (void**)(((char*)bucket_[i]) + buck_actual_size_ + sizeof(void*));
@@ -89,12 +99,26 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 
 BasicHashTable::~BasicHashTable()
 {
+#ifdef __MOTHER_PAGE__
 	for(int i=0;i<mother_page_list_.size();i++)
 	{
 		free(mother_page_list_.at(i));
 	}
-		delete[] bucket_;
-		delete[] lock_list_;
+	delete[] bucket_;
+	delete[] lock_list_;
+#else
+	unsigned long free_count=0;
+	for(int i=0;i<nbuckets_;i++){
+		void* next_bucket=bucket_[i];
+		while(next_bucket!=0){
+			void* cur_bucket=next_bucket;
+			next_bucket=*(void**)(((char*)next_bucket) + buck_actual_size_ + sizeof(void*));
+			free(cur_bucket);
+			free_count++;
+		}
+	}
+	printf("%ld allocate, %ld free\n",allocate_count,free_count);
+#endif
 }
 
 BasicHashTable::Iterator::Iterator() : buck_actual_size(0), tuplesize(0), cur(0), next(0), free(0) { }
@@ -117,6 +141,7 @@ void* BasicHashTable::allocate(const unsigned & offset){
 		}
 	}
 
+#ifdef __MOTHER_PAGE__
 	mother_page_lock_.lock();
 	char* cur_mother_page=mother_page_list_.back();
 	if(bucksize_+cur_MP_>=pagesize_ )// the current mother page doesn't have enough space for the new buckets
@@ -128,17 +153,21 @@ void* BasicHashTable::allocate(const unsigned & offset){
 		cur_MP_=0;
 		mother_page_list_.push_back(cur_mother_page);
 	}
-	overflow_count_[offset]++;
 	ret=cur_mother_page+cur_MP_;
 	cur_MP_+=bucksize_;
-
+#else
+	ret=malloc(bucksize_);
+	allocate_count++;
+#endif
 	void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
 	void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
 	*new_buck_freeloc = (ret)+tuplesize_ ;
 	*new_buck_nextloc = data;
-
+	overflow_count_[offset]++;
 	bucket_[offset]=ret;
+#ifdef __MOTHER_PAGE__
 	mother_page_lock_.unlock();
+#endif
 	return ret;
 }
 
@@ -185,4 +214,3 @@ BasicHashTable::Iterator::~Iterator(){
 	this->tuplesize=0;
 
 }
-

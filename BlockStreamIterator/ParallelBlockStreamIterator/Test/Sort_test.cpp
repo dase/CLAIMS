@@ -68,7 +68,10 @@ static int sort_iterator_test(){
 	BlockStreamSortIterator::State sort_state;
 	sort_state.block_size_=64*1024-sizeof(unsigned);
 	sort_state.child_=scan;
-	sort_state.orderbyKey_=0;
+	vector<unsigned> orderbyKey_;
+	sort_state.orderbyKey_.push_back(0);
+	sort_state.orderbyKey_.push_back(1);
+	sort_state.orderbyKey_.push_back(2);
 	sort_state.input_=new SchemaFix(column_list);
 	BlockStreamSortIterator *sort=new BlockStreamSortIterator(sort_state);
 

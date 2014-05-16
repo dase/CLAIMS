@@ -35,7 +35,9 @@ bool ExpressionItem::setValue(void* value_str,data_type data){
 			setULongValue(*(unsigned long*)value_str);
 			break;
 		}
-
+		case t_string:{
+			setStringValue(*(string *)value_str);
+		}
 		default:{
 			cout<<"no matching operator exists!!!"<<endl;
 			/*
@@ -107,6 +109,7 @@ bool ExpressionItem::setULongValue(const char* u_long_str){
 bool ExpressionItem::setULongValue(unsigned long &u_long){
 	type=const_type;
 	return_type=t_u_long;
+//	content.data.value._ulong=u_long;
 	content.data.value._ulong=u_long;
 	return true;
 }
@@ -142,6 +145,18 @@ bool ExpressionItem::setOperator(const char* op_str){
 	}
 	else if(tmp=="else"){
 		content.op.op_=op_case_else;
+	}
+	else if(tmp=="upper"){
+		content.op.op_=op_upper;
+	}
+	else if(tmp=="substring"){
+		content.op.op_=op_substring;
+	}
+	else if(tmp=="trim"){
+		content.op.op_=op_trim;
+	}
+	else if(tmp=="cast"){
+		content.op.op_=op_cast;
 	}
 	else{
 		printf("[%s] fails to match to any existing operator\n",op_str);

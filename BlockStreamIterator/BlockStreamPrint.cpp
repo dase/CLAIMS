@@ -38,13 +38,15 @@ bool BlockStreamPrint::next(BlockStreamBase*){
 
 
 	unsigned block_count(0);
-
+	cout<<"hi hello!"<<endl;
 	while(state_.child_->next(block_buffer_)){
+		cout<<"hi hello!"<<endl;
 		unsigned tuple_in_block(0);
 		BlockStreamBase::BlockStreamTraverseIterator* it=block_buffer_->createIterator();
 		void* tuple;
+		cout<<"hi hello!"<<endl;
 		while((tuple=it->nextTuple())!=0){
-		
+			cout<<"hi cdcdc!"<<endl;
 
 			state_.schema_->displayTuple(tuple,state_.spliter_.c_str());
 			tuple_in_block++;
