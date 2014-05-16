@@ -29,6 +29,9 @@ BlockManager::BlockManager() {
 	memstore_=MemoryChunkStore::getInstance();
 }
 BlockManager::~BlockManager() {
+
+
+
 	actor_->~Actor();
 	framework_->~Framework();
 	logging_->~Logging();

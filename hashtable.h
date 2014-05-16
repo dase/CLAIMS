@@ -22,6 +22,8 @@
 #include <vector>
 #include <assert.h>
 #include <set>
+#include <boost/pool/pool.hpp>
+
 #include "atomics.h"
 #include "lock.h"
 #include "configure.h"
@@ -29,6 +31,7 @@
 typedef void (*fun)(void*, void*);
 
 using namespace std;
+using boost::pool;
 
 #ifndef __HASHTABLE__
 #define __HASHTABLE__
@@ -154,6 +157,7 @@ public:
 	unsigned getHashTableTupleSize(){
 		return tuplesize_;
 	}
+	static unsigned getNumberOfInstances();
 private:
 	int nbuckets_;
 	int bucksize_;
@@ -170,6 +174,9 @@ private:
 
 	unsigned long allocate_count;
 	std::set<void*> allocated_buckets;
+	static unsigned number_of_instances_;
+	pool<> grandmother;
+
 };
 
 //

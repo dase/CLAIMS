@@ -585,8 +585,8 @@ static int test_no_repartition_scan_join(){
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
-	if(!print_test_name_result(number_of_tuples==15118958,"no_repartition Join")){
-		printf("\tExpected:15118958 actual: %d\n",number_of_tuples);
+	if(!print_test_name_result(number_of_tuples==944925,"no_repartition Join")){
+		printf("\tExpected:944925 actual: %d\n",number_of_tuples);
 	}
 //	result_set->print();
 	printf("%4.4f seconds\n",result_set->query_time_);
@@ -602,27 +602,29 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 
 	startup_single_node_environment();
 
+	printf("This test requires one partition of POC sb and cj\n");
+
 //	sleep(5);
-//	printf("============Scan->Filter->Expander->Exchange->root============\n");
-//	for(unsigned i=0;i<repeated_times;i++){
+	printf("============Scan->Filter->Expander->Exchange->root============\n");
+	for(unsigned i=0;i<repeated_times;i++){
 //		printf("%d:",i);
-//		test_scan();
+		test_scan();
 //		sleep(1);
 //		printf("-----------------------------------------\n");
-//	}
+	}
 //
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_high_selectivity();
-//	}
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_low_selectivity();
-//	}
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_Aggregation();
-//	}
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_Scalar_Aggregation();
-//	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_high_selectivity();
+	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_low_selectivity();
+	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_Aggregation();
+	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_Scalar_Aggregation();
+	}
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_no_repartition_filtered_join();
 	}
@@ -633,10 +635,10 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 		test_complete_repartition_scan_join();
 //		sleep(1);
 	}
-//	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_no_repartition_scan_join();
-//	}
-
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_no_repartition_scan_join();
+	}
+	printf("__________________FINISHED__________________\n");
 	sleep(1);
 	Environment::getInstance()->~Environment();
 //
