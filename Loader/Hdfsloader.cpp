@@ -267,7 +267,8 @@ bool HdfsLoader::load(){
 #endif
 
 	//register the table to catalog
-//	Catalog::getInstance()->add_table(table_descriptor_);
+
+	Catalog::getInstance()->add_table(table_descriptor_);
 	//register the number of rows in table to catalog
 	table_descriptor_->setRowNumber(row_id);
 	//register the partition information to catalog

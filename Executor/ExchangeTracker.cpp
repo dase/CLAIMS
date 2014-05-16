@@ -45,7 +45,14 @@ bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port){
 }
 void ExchangeTracker::LogoutExchange(const ExchangeID &id){
 	lock_.acquire();
-	id_to_port.erase(id_to_port.find(id));
+	boost::unordered_map<ExchangeID,std::string> ::const_iterator it=id_to_port.find(id);
+//	if(it==id_to_port.cend()){
+//		printf("Print:\n");
+//		this->printAllExchangeId();
+//		printf("Printed!\n");
+//	}
+	assert(it!=id_to_port.cend());
+	id_to_port.erase(it);
 	lock_.release();
 	logging_->log("Exchange with id=(%d,%d) is logged out!",id.exchange_id,id.partition_offset);
 }
@@ -118,6 +125,6 @@ void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const ExchangeI
 
 void ExchangeTracker::printAllExchangeId() const {
 	for(boost::unordered_map<ExchangeID,std::string>::const_iterator it=id_to_port.cbegin();it!=id_to_port.cend();it++){
-		printf("%ld --->%s\n",it->first,it->second.c_str());
+		printf("(%ld,%ld) --->%s\n",it->first.exchange_id,it->first.partition_offset,it->second.c_str());
 	}
 }
