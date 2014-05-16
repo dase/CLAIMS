@@ -1440,3 +1440,61 @@ static int query_optimization_based_on_statistics(){
 	}
 	return 0;
 }
+static int query_optimization_outputdata()
+{
+	int master;
+//	cout<<"Master(0) or Slave(others)"<<endl;
+//	cin>>master;
+	printf("~!OKOKO!!!!!\n");
+	printf("Master(0) or Slave(others)??\n");
+	scanf("%d",&master);
+	getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+	if(master!=0)
+	{
+		Environment::getInstance(false);
+	}
+	else
+	{
+		Environment::getInstance(true);
+		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+		Catalog* catalog=Environment::getInstance()->getCatalog();
+
+		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+		/**
+		 * @li: I change the following code such that the scheme matches those in cj's first projection
+		 */
+		table_1->addAttribute("row_id",data_type(t_u_long));  				//0
+		table_1->addAttribute("trade_date",data_type(t_int));
+		table_1->addAttribute("order_no",data_type(t_u_long));
+		table_1->addAttribute("sec_code",data_type(t_int));
+		table_1->addAttribute("trade_dir",data_type(t_int));
+		table_1->addAttribute("order_type",data_type(t_int));
+
+		vector<ColumnOffset> cj_proj0;
+		cj_proj0.push_back(0);
+		cj_proj0.push_back(1);
+		cj_proj0.push_back(2);
+		cj_proj0.push_back(3);
+		cj_proj0.push_back(4);
+		cj_proj0.push_back(5);
+		const int partition_key_index_1=0;
+		table_1->createHashPartitionedProjection(cj_proj0,"row_id",1);	//G0
+		catalog->add_table(table_1);
+
+		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++)
+		{
+
+			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
+		}
+		ExecuteLogicalQueryPlan();
+		printf("ready(?)\n");
+		int input;
+		scanf("%d",&input);
+
+		cout<<"Waiting~~~!~"<<endl;
+		while(true)
+		{
+			sleep(1);
+		}
+	}
+}
