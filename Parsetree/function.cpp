@@ -53,6 +53,20 @@ struct Node * newExpr(nodetype t, char *d)
 	}
 
 	a->type = t;
+//	cout<<d.string_val<<endl;
+    cout<<"NexExpr create begin!!!!"<<endl;
+	if(t == t_stringval) // 2014-3-25---输入若为字符串，去除首位的引号
+	{
+//		if(d.string_val[0]=='\''||d.string_val[0]=='\"')
+//		{
+//			int slen=strlen(d.string_val);
+//			d.string_val[slen-1]='\0';
+//			for(int i=1;i<slen;i++)
+//			{
+//				d.string_val[i-1]=d.string_val[i];
+//			}
+//		}
+	}
 	a->data = d;
 //	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号	//2014-4-2---将这部分工作放在词法识别阶段进行，见sql.l
 //	{
@@ -1106,7 +1120,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Expr_list: ";cout<<endl;
 			
 			if(node->data!=NULL) output(node->data,floor+1);
-			//if(node->next!=NULL) output(node->next);
+			if(node->next!=NULL) output(node->next,floor);//---3.14fzh---
 			
 			
 			
@@ -1258,7 +1272,7 @@ void output(Node * oldnode, int floor)
 			
 			cout<<endl;
 			output(node->args, floor + 1);
-			output(node->next, floor + 1);
+			output(node->next, floor);//---3.14fzh---
 			
 			break;
 		}
@@ -1403,6 +1417,26 @@ void output(Node * oldnode, int floor)
 			output(node->offset, floor+1);
 			output(node->row_count, floor+1);
 			break;
+		}//---3.21 fzh---
+		case t_join:
+		{
+			Join *node=(Join *)oldnode;
+			outputSpace(floor);
+			cout<<"Join:   jtype= "<<node->jointype<<endl;
+			output(node->lnext,floor+1);
+			output(node->rnext,floor+1);
+			output(node->condition,floor+1);
+		}break;
+		case t_condition:
+		{
+			Condition *node=(Condition *)oldnode;
+			outputSpace(floor);
+			cout<<"joincondition:   ctype= "<<node->conditiontype<<endl;
+			output(node->args,floor+1);
+		}break;
+		default:
+		{
+			printf("output type not exist!!!\n");
 		}
 	}
 }

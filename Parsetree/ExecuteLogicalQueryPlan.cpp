@@ -279,32 +279,31 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			case t_query_stmt: // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
 			{
 				cout<<"this is query stmt"<<endl;
-
-				if (!semantic_analysis(node))
-				{
+				if (!semantic_analysis(node,false))//---3.22fzh---
 					cout<<"semantic_analysis error"<<endl;
-					break;	// 2014-4-17---add ---by Yu
-				}
-				Query_stmt *querynode=(Query_stmt *)node;
-				puts("select_stmt2>>>>>>>>");
+				output(node,0);
+					Query_stmt *querynode=(Query_stmt *)node;
+					puts("select_stmt2>>>>>>>>");
 
-				if(querynode->where_list!=NULL)
-				{
-					struct Where_list * curt=(struct Where_list *)(querynode->where_list);
-					struct Node *cur=(struct Node *)(curt->next);
-					puts("wc2tb");
-					departwc(cur,querynode->from_list);
-					puts("partree complete!!!");
-				}
+					if(querynode->where_list!=NULL)
+					{
+						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
+						struct Node *cur=(struct Node *)(curt->next);
+						puts("wc2tb");
+						departwc(cur,querynode->from_list);
+						puts("partree complete!!!");
+					}
+					if(querynode->from_list!=NULL)
+					int fg=solve_join_condition(querynode->from_list);
 				output(node,0);
 				puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
 				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
-
 				//const NodeID collector_node_id=0;
 				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
 				unsigned long long int timer_start=curtick();
+
 
 				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
 				root->print();

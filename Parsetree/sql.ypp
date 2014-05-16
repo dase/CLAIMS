@@ -19,6 +19,7 @@
 %glr-parser%expect 9
 %expect-rr 79
 
+
 %defines
 
 %{
@@ -377,12 +378,18 @@ char linebuf[500];
 %token BDB
 %token OPEN
 %token FULL
-
+%token INTEGER
  /* functions with special syntax */
 %token FSUBSTRING
 %token FTRIM
 %token FDATE_ADD FDATE_SUB
 %token FCOUNT
+//---3.25fzh----
+%token FUPPER
+%token FCAST
+%token FCOALESCE
+%token FCONVERT
+
 //---2.18 add aggrection function
 %token FSUM
 %token FAVG
@@ -394,8 +401,8 @@ char linebuf[500];
 
 %type <intval> select_opts opt_with_rollup opt_asc_desc opt_inner_cross left_or_right 
 %type <intval> opt_left_or_right_outer opt_outer  insert_opts
-%type <strval>  opt_as_alias  
-%type <ast_node> stmt_list
+%type <strval>  opt_as_alias  trim_ltb //---3.25fzh---
+%type <ast_node> stmt_list date_type //---3.25fzh---
 %type <ast_node> select_expr_list opt_where select_stmt stmt opt_groupby select_expr
 %type <ast_node> expr_list opt_expr_list  case_list  opt_having opt_orderby expr
 %type <ast_node> groupby_list opt_limit table_reference table_factor
@@ -603,7 +610,6 @@ table_factor:
   	| table_subquery opt_as NAME 
   	{
 		$$=newTable(t_table, NULL, NULL, $3, 1, $1);
-		/*puts("table_factor3");*/
 	}
 	| '(' table_references ')' { $$=$2; }
   	;
@@ -706,7 +712,7 @@ index_list: NAME  { emit("INDEX %s", $1);  }////////////////////////////////////
    | index_list ',' NAME { emit("INDEX %s", $3); }//////////////////////////////////////////////////////////////////////////
    ;
 
-table_subquery: '(' select_stmt ')' {  }
+table_subquery: '(' select_stmt ')' { $$=$2; }//---3.14fzh---
    ;
 
    /* statements: delete statement */
@@ -1743,14 +1749,19 @@ expr: expr BETWEEN expr AND expr %prec BETWEEN { $$=newExprFunc(t_expr_func, "BA
    ;
 
 
+
 expr_list: expr		{ $$ = newExprList(t_expr_list, $1, NULL); }
+
    | expr ',' expr_list { $$ = newExprList(t_expr_list, $1, $3); }
+
    | '(' expr ',' expr_list ')'	{ $$ = newExprList(t_expr_list, $2, $4); }	// 2014-3-14---新增规则---by余楷
+
    ;
 
 opt_expr_list: /* nil */
    | expr_list {$$=$1;}
    ;
+
 
 expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
    | '(' expr_list ')' IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $2, $6); }
@@ -1777,18 +1788,30 @@ expr: FCOUNT '(' '*' ')'	{ $$=newExprFunc(t_expr_func, "FCOUNTALL", NULL, NULL, 
 	|FMAX '(' expr ')' { $$=newExprFunc(t_expr_func, "FMAX", NULL, $3, NULL, NULL); }
    
    ;
-   
-expr: FSUBSTRING '(' expr_list ')'			{ $$=newExprFunc(t_expr_func, "FSUBSTRING", NULL, $3, NULL, NULL); }
-   | FSUBSTRING '(' expr FROM expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING2", NULL, $3, $5, NULL);}
-   | FSUBSTRING '(' expr FROM expr FOR expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING3", $7, $3, $5, NULL); }
-   | FTRIM '(' expr_list ')'				{ $$=newExprFunc(t_expr_func, "FTRIM", NULL, $3, NULL, NULL); }
-   | FTRIM '(' trim_ltb expr FROM expr_list ')'	{ }			//--------------------------------------------------
-   ;
 
-trim_ltb: LEADING  { emit("INT 1"); }
-   | TRAILING { emit("INT 2"); }
-   | BOTH { emit("INT 3"); }
+   //---3.25fzh---sds
+expr: FSUBSTRING'(' expr ',' expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING0", $3, $5, NULL, NULL); }
+   | FSUBSTRING'(' expr FROM expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING0", $3, $5, NULL, NULL);}
+   | FSUBSTRING'(' expr ',' expr ',' expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING1", $3, $5, $7, NULL); }
+   | FSUBSTRING'(' expr FROM expr FOR expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING1", $3, $5, $7, NULL); }
+   | FTRIM'(' expr ')'						{ $$=newExprFunc(t_expr_func, "FTRIM3", NULL, $3, NULL, NULL); }
+   | FTRIM'(' trim_ltb expr FROM expr ')'	{ $$=newExprFunc(t_expr_func,$3, NULL, $4, $6, NULL); }
+   | FUPPER'(' expr ')'   					{ $$=newExprFunc(t_expr_func,"FUPPER", NULL, $3, NULL, NULL); }
+   | FCAST '(' expr AS date_type ')'        {$$=newExprFunc(t_expr_func,"FCAST", NULL, $3, $5, NULL); }
+   | FCOALESCE'(' expr_list ')'             { $$=newExprFunc(t_expr_func,"FCOALESCE", NULL, $3,NULL, NULL); }
    ;
+trim_ltb: LEADING   { $$="FTRIM1"; }
+   | TRAILING 		{ $$="FTRIM2"; }
+   | BOTH 			{ $$="FTRIM0"; }
+   ;
+date_type:     {$$=NULL;} 
+   | INTEGER   { char d[10]="int"; $$ = newExpr(t_stringval, d);}
+   | STRING    { char d[10] = "string"; $$ = newExpr(t_stringval, d);}
+   | DOUBLE    { char d[10] = "double"; $$ = newExpr(t_stringval, d);}
+   | FLOAT     { char d[10] = "float"; $$ = newExpr(t_stringval, d);}
+   | CHAR      { char d[10] = "char"; $$ = newExpr(t_stringval, d);}
+   ;
+//////////////////
 
 expr: FDATE_ADD '(' expr ',' interval_exp ')' //71{ emit("CALL 3 DATE_ADD"); }
    |  FDATE_SUB '(' expr ',' interval_exp ')' //72{ emit("CALL 3 DATE_SUB"); }
