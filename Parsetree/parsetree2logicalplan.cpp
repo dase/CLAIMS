@@ -1051,7 +1051,7 @@ static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *pars
 	{
 		vector<LogicalSort::OrderByAttr *>obcol;
 		get_orderby_column_from_selectlist(node->orderby_list,node->select_list,obcol);
-		LogicalOperator* orderby__logicalplan=new LogicalSort(select__logicalplan,obcol[0]);
+		LogicalOperator* orderby__logicalplan=new LogicalSort(select__logicalplan,obcol);
 		return orderby__logicalplan;
 	}
 }

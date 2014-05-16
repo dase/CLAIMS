@@ -31,6 +31,7 @@
 #include "../Client/Test/TestSeverClient.cpp"
 #include "../types/Test/data_type_test.cpp"
 #include "../common/Expression_item.cpp"
+#include "common/TestNew.cpp"
 #include "../Loader/Test/test_load.cpp"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
@@ -59,12 +60,13 @@ int main(){
 //	return sub_tuple_test();
 //	return aggregation_test();
 //	return statistic_manager_test();
-	return query_optimization_based_on_statistics();
+//	return query_optimization_based_on_statistics();
 //	return sort_iterator_test();
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 	return query_optimization_outputdata();
+
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
@@ -73,26 +75,4 @@ int main(){
 //	return testProject();
 //	return testSort();
 
-//	return testProject_wl();
-//	return Project_test();
-//	return expanded_iterators_test();
-
-//	return test_load();
-//	return in_iterator_test();
-
-//	return test_csb_classes();
-//	return test_csb_indexing();
-//	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
-//	return test_logical_csb_index_building();
-//	return test_index_scan_iterator();
-//	return test_index_manager();
-
-//	in_test();
-//	test_expanderFramework_single_node(10000);
-//	test_multiple_expanderFramework_single_node(3);
-//	tcp_h_test();
-//	tcp_h_test_single_node();
-//	tcp_h_test_multi_nodes();
-//	in_segment_scalability_test();
-//	hash_table_test();
 }

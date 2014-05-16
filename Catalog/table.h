@@ -153,6 +153,7 @@ public:
 	inline void setRowNumber(unsigned long row_number) { row_number_ = row_number; }
 	inline unsigned long getRowNumber() { return row_number_; }
 	inline unsigned int getNumberOfAttribute(){ return attributes.size();}	// add by Yu
+
 protected:
 	string tableName;
 	vector<Attribute> attributes;

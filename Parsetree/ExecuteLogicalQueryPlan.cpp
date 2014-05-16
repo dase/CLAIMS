@@ -301,16 +301,26 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
 				//const NodeID collector_node_id=0;
+//				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+//				unsigned long long int timer_start=curtick();
+//
+//
+//				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
+//				root->print();
+//
+//				please->print();
+//
+//				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
+
+
 				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
-				unsigned long long int timer_start=curtick();
 
-
-				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
-				root->print();
-
-				please->print();
-
-				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
+				cout<<"performance is ok!"<<endl;
+				BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+				physical_iterator_tree->open();
+				while(physical_iterator_tree->next(0));
+				physical_iterator_tree->close();
+			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 			}
 			break;
 			case t_load_table_stmt:	//	导入数据的语句

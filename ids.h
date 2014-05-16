@@ -144,7 +144,9 @@ struct PartitionID{
 		str<<"T"<<projection_id.table_id<<"G"<<projection_id.projection_off<<"P"<<partition_off;
 		return str.str();
 	}
-	std::string getPathAndName()const;
+
+
+	std::string getPathAndName() const;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
