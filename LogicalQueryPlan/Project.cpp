@@ -84,6 +84,13 @@ int LogicalProject::getColumnSeq(ExpressionItem &ei){
 			return i;
 		}
 	}
-	printf("Variable ExpressItem fails to match any attribute in the dataflow!\n");
-	assert(false);
+//	printf("Variable ExpressItem fails to match any attribute in the dataflow!\n");
+//	assert(false);
 }
+
+void LogicalProject::print(int level)const{
+	printf("%*.project:\n",level*8," ");
+
+
+}
+
