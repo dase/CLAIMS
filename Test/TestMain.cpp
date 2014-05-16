@@ -87,12 +87,11 @@ int main(){
 //	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(1);
+//	test_expanderFramework_single_node(5);
 //	test_multiple_expanderFramework_single_node(3);
-//	tcp_h_test();
-//	tcp_h_test_single_node();
+	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
-	in_segment_scalability_test();
+//	in_segment_scalability_test();
 //	hash_table_test();
 	sleep(1000);
 }

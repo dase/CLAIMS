@@ -32,7 +32,7 @@ private:
 	std::string EndPointPort;
 	std::vector<std::pair<std::string,std::string> > PeersIpPort;
 	Logging* logging;
-
+	pthread_t prochaseId;
 /**
  * Actor
  */

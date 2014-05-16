@@ -43,8 +43,8 @@ static double lineitem_scan_self_join(){
 	physical_iterator_tree->close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
-//	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
+
 
 	physical_iterator_tree->~BlockStreamIteratorBase();
 	root->~LogicalOperator();
@@ -77,7 +77,7 @@ static double lineitem_scan_aggregation(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
@@ -107,7 +107,7 @@ static double lineitem_scan_filter(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
@@ -123,19 +123,18 @@ static double lineitem_scan_filter(){
 }
 
 static void scalability_test(query_function qf,const char* test_name,int max_test_degree_of_parallelism=4){
-	unsigned repeated_times=5;
+	unsigned repeated_times=3;
 	double standard_throughput=0;
 	/* warm up the memory*/
 	qf();
 
 	printf("_______Test Scalability for %s ___________\n",test_name);
 
-//	for(unsigned i=1;i<=max_test_degree_of_parallelism;i++){
-	for(unsigned i=	1;i<=4;i++){
+	for(unsigned i=1;i<=max_test_degree_of_parallelism;i++){
 		Config::initial_degree_of_parallelism=i;
 		double total_time=0;
 		for(unsigned j=0;j<repeated_times;j++){
-			printf("--------------%d---------------\n",j);
+//			printf("--------------%d---------------\n",j);
 			total_time+=qf();
 //			sleep(3);
 		}
@@ -159,11 +158,13 @@ static int in_segment_scalability_test(int repeated_times=10){
 	init_single_node_tpc_h_envoriment();
 	double total_time=0;
 
-//	scalability_test(lineitem_scan_filter,"Scan-->filter",8);
-//	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",24);
-	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
+	scalability_test(lineitem_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
+	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
+	scalability_test(lineitem_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
 
+	sleep(1);
 	Environment::getInstance()->~Environment();
+//	printf("hash table =%d\n",BasicHashTable::getNumberOfInstances());
 	sleep(100);
 }
 

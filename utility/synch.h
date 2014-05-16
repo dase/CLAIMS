@@ -13,7 +13,6 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <assert.h>
-#include "../Block/synch.h"
 
 class Lock
 {
@@ -118,6 +117,9 @@ public:
 		m_nSyncCount=0;
 	}
 
+	void reset(){
+		m_nSyncCount=0;
+	}
 	/*
 	 * One must call setEmpty() before the second's calling of Arrive()
 	 */

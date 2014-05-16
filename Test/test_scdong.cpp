@@ -19,7 +19,6 @@
 
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Executor/IteratorExecutorSlave.h"
-#include "../TableManager.h"
 #include "../rdtsc.h"
 #include "../Environment.h"
 #include "../Comparator.h"
