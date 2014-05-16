@@ -16,8 +16,8 @@ ExpressionItem::~ExpressionItem() {
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpressionItem::setValue(void* value_str,data_type data){
-	switch(data){
+bool ExpressionItem::setValue(void* value_str,data_type type){
+	switch(type){
 		case t_int:{
 //			cout<<"the value in the expressionitem is: "<<*(int *)value_str<<endl;
 			setIntValue(*(int *)value_str);
@@ -36,7 +36,12 @@ bool ExpressionItem::setValue(void* value_str,data_type data){
 			break;
 		}
 		case t_string:{
-			setStringValue(*(string *)value_str);
+			setStringValue((const char *)value_str);
+			break;
+		}
+		case t_decimal:{
+			setDecimalValue((const char *)value_str);
+			break;
 		}
 		default:{
 			cout<<"no matching operator exists!!!"<<endl;
@@ -109,8 +114,14 @@ bool ExpressionItem::setULongValue(const char* u_long_str){
 bool ExpressionItem::setULongValue(unsigned long &u_long){
 	type=const_type;
 	return_type=t_u_long;
-//	content.data.value._ulong=u_long;
 	content.data.value._ulong=u_long;
+	return true;
+}
+
+bool ExpressionItem::setDecimalValue(const char * decimal_str){
+	type=const_type;
+	return_type=t_decimal;
+	strcpy(content.data.value._decimal,decimal_str);
 	return true;
 }
 

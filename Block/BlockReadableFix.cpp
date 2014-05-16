@@ -19,7 +19,7 @@ BlockReadableFix::BlockReadableFix(unsigned BlockSize, Schema* schema)
 :BlockReadable(BlockSize),schema(schema)
 {
 	cur=(char*)start;
-	end=(char*)start;//cdcdccdcdcdcdcdcdcdc
+	end=(char*)start;
 }
 
 BlockReadableFix::~BlockReadableFix() {
