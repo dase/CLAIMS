@@ -303,7 +303,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
 
 				//const NodeID collector_node_id=0;
-				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PERFORMANCE);
+				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
 				unsigned long long int timer_start=curtick();
 
 				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
