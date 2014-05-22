@@ -9,7 +9,6 @@
 #define LOGICALOPERATOR_H_
 #include <stdio.h>
 #include <vector>
-#include "../Schema/LogicalProjection.h"
 #include "../Scheduler/Dataflow.h"
 #include "../Schema/SchemaFix.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
