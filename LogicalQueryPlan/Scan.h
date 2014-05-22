@@ -8,8 +8,8 @@
 #ifndef SCAN_H_
 #define SCAN_H_
 #include "LogicalOperator.h"
-#include "../Schema/LogicalProjection.h"
 #include "../ids.h"
+#include "../Catalog/table.h"
 class LogicalScan: public LogicalOperator {
 public:
 	LogicalScan(std::vector<Attribute> attribute_list);
@@ -17,7 +17,7 @@ public:
 	LogicalScan(ProjectionDescriptor* projection,const float sample_rate_=1);
 	LogicalScan(const TableID&,const std::vector<unsigned>& selected_attribute_index_list);
 	virtual ~LogicalScan();
-	LogicalProjection getLogcialProjection()const;
+//	LogicalProjection getLogcialProjection()const;
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
@@ -27,7 +27,7 @@ private:
 	void print(int level=0)const;
 
 private:
-	LogicalProjection logical_projection_;
+//	LogicalProjection logical_projection_;
 //	Partitioner* partition_info_;
 //	Dataflow* dataflow_;
 	std::vector<Attribute> scan_attribute_list_;
