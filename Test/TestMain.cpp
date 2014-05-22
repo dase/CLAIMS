@@ -29,7 +29,7 @@
 //#include "hashtable_test.cpp"
 
 #include "../Client/Test/TestSeverClient.cpp"
-#include "../types/Test/data_type_test.cpp"
+#include "../types/Test/data_type_test.h"
 #include "../common/Expression_item.cpp"
 #include "../Loader/Test/test_load.cpp"
 
@@ -47,7 +47,8 @@
 #include "TestSuit/tpc_h_test.cpp"
 #include "TestSuit/in_segment_scalability_test.cpp"
 #include "TestSuit/hash_table_test.h"
-int main(){
+#include "gtest.h"
+int main(int argc , char ** argv){
 
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -89,9 +90,10 @@ int main(){
 //	in_test();
 //	test_expanderFramework_single_node(5);
 //	test_multiple_expanderFramework_single_node(3);
-	tcp_h_test_single_node();
+//	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test();
 //	hash_table_test();
-	sleep(1000);
+	g_test_main(argc,argv);
+//	sleep(1000);
 }
