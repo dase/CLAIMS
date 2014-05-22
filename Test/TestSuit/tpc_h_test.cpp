@@ -18,6 +18,7 @@
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../types/NValue.hpp"
 #include "../../utility/rdtsc.h"
+#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
 
 static void query_1(){
 	unsigned long long int start=curtick();
@@ -50,7 +51,7 @@ static void query_1(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
@@ -108,7 +109,7 @@ static void query_2(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* sub_physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* sub_physical_iterator_tree=root->getIteratorTree(64*1024);
 
 	sub_physical_iterator_tree->open();
 	while(sub_physical_iterator_tree->next(0));
@@ -157,7 +158,7 @@ static void query_2(){
 
 
 	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::PERFORMANCE);
-	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->getIteratorTree(64*1024);
 //
 //	final_physical_iterator_tree->open();
 //	while(final_physical_iterator_tree->next(0));
@@ -230,7 +231,7 @@ static void query_3(){
 
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
-	BlockStreamIteratorBase* final_physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* final_physical_iterator_tree=root->getIteratorTree(64*1024);
 
 	final_physical_iterator_tree->open();
 	while(final_physical_iterator_tree->next(0));
