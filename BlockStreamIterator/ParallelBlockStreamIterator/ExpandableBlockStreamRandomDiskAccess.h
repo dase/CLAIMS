@@ -12,8 +12,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "../BlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Block/synch.h"
+#include "../../common/Schema/Schema.h"
+#include "../../utility/lock.h"
 
 class ExpandableBlockStreamRandomDiskAccess:public BlockStreamIteratorBase {
 public:

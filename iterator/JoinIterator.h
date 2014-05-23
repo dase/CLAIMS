@@ -14,9 +14,9 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 #include "../iterator.hpp"
-#include "../Schema/Schema.h"
-#include "../hash.h"
-#include "../hashtable.h"
+#include "../common/Schema/Schema.h"
+#include "../common/hash.h"
+#include "../common/hashtable.h"
 
 class JoinIterator:public Iterator {
 public:

@@ -8,7 +8,7 @@
 #ifndef TYPECAST_H_
 #define TYPECAST_H_
 #include "ExpressionItem.h"
-#include "../data_type.h"
+#include "../common/data_type.h"
 typedef bool (*TypeCastFunction) (ExpressionItem& in);
 class TypeCast{
 public:

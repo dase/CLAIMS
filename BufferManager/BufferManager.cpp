@@ -46,6 +46,12 @@ bool BufferManager::applyStorageDedget(unsigned long size){
 	lock_.release();
 	return ret;
 }
+void BufferManager::returnStorageBudget(unsigned long size){
+	lock_.acquire();
+	storage_used_-=size;
+	lock_.release();
+}
+
 unsigned BufferManager::getStorageMemoryBudegeInMilibyte()const{
 	return storage_budget_max_/1024/1024;
 }

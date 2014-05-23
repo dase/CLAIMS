@@ -10,8 +10,11 @@
 
 
 #include "BlockStreamIteratorBase.h"
-#include "../utility/synch.h"
-#include "../hashtable.h"
+#include "../utility/lock.h"
+#include "../common/hashtable.h"
+#include <boost/unordered/unordered_map.hpp>
+
+using boost::unordered::unordered_map;
 struct thread_context{
 	BlockStreamBase* block_for_asking_;
 	BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;

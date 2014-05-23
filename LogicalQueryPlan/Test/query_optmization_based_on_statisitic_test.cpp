@@ -9,6 +9,10 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <unistd.h>
+#include <cstdio>
+#include <iostream>
+#include <vector>
 
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/Catalog.h"
@@ -18,13 +22,9 @@
 #include "../../Catalog/stat/Statistic.h"
 #include "../../Catalog/stat/StatManager.h"
 #include "../../Catalog/table.h"
-#include "../../data_type.h"
+#include "../../common/data_type.h"
 #include "../../Environment.h"
-#include "../../ids.h"
-#include <unistd.h>
-#include <cstdio>
-#include <iostream>
-#include <vector>
+#include "../../common/ids.h"
 
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"

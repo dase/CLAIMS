@@ -18,15 +18,15 @@
 #include <string>
 #include <pthread.h>
 
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
 #include "../../Block/BlockReadable.h"
 #include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
-#include "../../Block/synch.h"
 #include "../../Block/PartitionedBlockBuffer.h"
 #include "../../Block/BlockStream.h"
 #include "../../Block/BlockStreamBuffer.h"
+#include "../../utility/lock.h"
 
 class ExpandableBlockStreamBroadcastExchange:public BlockStreamIteratorBase {
 public:

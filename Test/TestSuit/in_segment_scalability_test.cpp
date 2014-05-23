@@ -8,6 +8,7 @@
 
 #include "tpc_h_test.cpp"
 #include "../../Config.h"
+#include "../set_up_environment.h"
 
 typedef double QueryTime;
 typedef QueryTime (*query_function)();
@@ -15,7 +16,7 @@ typedef QueryTime (*query_function)();
 
 static double lineitem_scan_self_join(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
-	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("NATION");
+	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
 
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
@@ -27,23 +28,24 @@ static double lineitem_scan_self_join(){
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table_right->getAttribute("N_NATIONKEY")));
+//	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table_right->getAttribute("N_NATIONKEY")));
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_ORDERKEY"),table_right->getAttribute("L_ORDERKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
-	root->print();
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
 	physical_iterator_tree->close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
-//	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
+
 
 	physical_iterator_tree->~BlockStreamIteratorBase();
 	root->~LogicalOperator();
@@ -76,7 +78,7 @@ static double lineitem_scan_aggregation(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
@@ -106,7 +108,36 @@ static double lineitem_scan_filter(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	root->print();
+//	physical_iterator_tree->print();
+	physical_iterator_tree->open();
+	while(physical_iterator_tree->next(0));
+	physical_iterator_tree->close();
+
+	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	double ret=result_set->query_time_;
+
+	physical_iterator_tree->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+	return ret;
+}
+
+static double sb_scan_filter(){
+	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
+
+	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
+	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
+
+	Filter::Condition filter_condition_1;
+	filter_condition_1.add(table->getAttribute("row_id"),FilterIterator::AttributeComparator::EQ,std::string("0"));
+	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+
+
+
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
@@ -122,7 +153,7 @@ static double lineitem_scan_filter(){
 }
 
 static void scalability_test(query_function qf,const char* test_name,int max_test_degree_of_parallelism=4){
-	unsigned repeated_times=10;
+	unsigned repeated_times=3;
 	double standard_throughput=0;
 	/* warm up the memory*/
 	qf();
@@ -133,7 +164,9 @@ static void scalability_test(query_function qf,const char* test_name,int max_tes
 		Config::initial_degree_of_parallelism=i;
 		double total_time=0;
 		for(unsigned j=0;j<repeated_times;j++){
+//			printf("--------------%d---------------\n",j);
 			total_time+=qf();
+//			sleep(3);
 		}
 
 
@@ -151,15 +184,35 @@ static void scalability_test(query_function qf,const char* test_name,int max_tes
 
 }
 
-static int in_segment_scalability_test(int repeated_times=10){
+static int in_segment_scalability_test_on_tpch(int repeated_times=10){
 	init_single_node_tpc_h_envoriment();
 	double total_time=0;
 
-//	scalability_test(lineitem_scan_filter,"Scan-->filter",8);
-	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",24);
-//	scalability_test(lineitem_scan_self_join,"Scan-->join",4);
+	scalability_test(lineitem_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
+//	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
+//	scalability_test(lineitem_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
 
+	sleep(1);
 	Environment::getInstance()->~Environment();
-
+//	printf("hash table =%d\n",BasicHashTable::getNumberOfInstances());
+	sleep(100);
 }
 
+static int in_segment_scalability_test_on_poc(int repeated_times=10){
+	startup_single_node_environment_of_poc();
+	double total_time=0;
+
+	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
+//	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
+//	scalability_test(lineitem_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
+
+	sleep(1);
+	Environment::getInstance()->~Environment();
+//	printf("hash table =%d\n",BasicHashTable::getNumberOfInstances());
+	sleep(100);
+}
+static int in_segment_scalability_test(int repeated_times=10){
+//	in_segment_scalability_test_on_tpch(repeated_times);
+	in_segment_scalability_test_on_poc(repeated_times);
+	return 0;
+}

@@ -15,9 +15,10 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/vector.hpp>
 #include "../iterator.hpp"
-#include "../Schema/Schema.h"
-#include "../Comparator.h"
+#include "../common/Schema/Schema.h"
 #include "../configure.h"
+#include "../common/data_type.h"
+#include "../common/Comparator.h"
 
 class FilterIterator:public Iterator {
 public:

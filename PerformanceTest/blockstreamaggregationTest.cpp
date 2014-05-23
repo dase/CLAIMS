@@ -16,10 +16,10 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExchangeBroadcast.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../Serialization/RegisterDerivedClass.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/SchemaFix.h"
 
-#include "../Message.h"
-#include "../rdtsc.h"
+#include "../common/Message.h"
+#include "../utility/rdtsc.h"
 #include "../Environment.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 

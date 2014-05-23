@@ -7,7 +7,7 @@
 
 #include "Estimation.h"
 
-#include "../../data_type.h"
+#include "../../common/data_type.h"
 //#include "../../ids.h"
 #include "../Attribute.h"
 #include "../Catalog.h"

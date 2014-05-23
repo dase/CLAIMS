@@ -9,7 +9,8 @@
 
 #include "BlockManagerMaster.h"
 #include "../Environment.h"
-#include "../TimeOutReceiver.h"
+#include "../common/TimeOutReceiver.h"
+#include "../common/Message.h"
 BlockManagerMaster *BlockManagerMaster::master_=0;
 
 BlockManagerMaster::BlockManagerMaster() {

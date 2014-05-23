@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#include "../rename.h"
+#include "../common/rename.h"
 #include "RowScanIterator.h"
 
 RowScanIterator::RowScanIterator(RowScanIterator::State state)

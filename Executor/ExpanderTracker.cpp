@@ -10,6 +10,7 @@
 #include "../IDsGenerator.h"
 #include <pthread.h>
 #include "../Config.h"
+#include "../common/ids.h"
 
 #define DECISION_SHRINK 0
 #define DECISION_EXPAND 1

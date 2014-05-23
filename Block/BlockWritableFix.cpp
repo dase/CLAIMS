@@ -6,7 +6,7 @@
  */
 
 #include "BlockWritableFix.h"
-#include "../rename.h"
+#include "../common/rename.h"
 #include <iostream>
 using namespace std;
 

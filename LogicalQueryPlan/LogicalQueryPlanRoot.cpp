@@ -42,12 +42,13 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
 	BlockStreamIteratorBase* middle_tier=expander;
+//	BlockStreamIteratorBase* middle_tier=child_iterator;
 
 	/**
 	 * If the number of partitions in the child dataflow is 1 and the the location is right in the collector,
 	 * then exchange is not necessary.
 	 */
-//	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
+	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
 		ExpandableBlockStreamExchangeEpoll::State state;
 		state.block_size=block_size;
 		state.child=expander;//child_iterator;
@@ -62,7 +63,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 			state.lower_ip_list.push_back(ip);
 		}
 		middle_tier=new ExpandableBlockStreamExchangeEpoll(state);
-//	}
+	}
 
 	BlockStreamIteratorBase* ret;
 	switch(fashion_){
@@ -88,6 +89,8 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		}
 	}
 
+
+//	schema->~Schema();
 	return ret;
 }
 Dataflow LogicalQueryPlanRoot::getDataflow(){

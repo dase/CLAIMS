@@ -12,7 +12,7 @@
 #include <string>
 #include "../Block/ResultSet.h"
 #include "../Block/BlockStream.h"
-#include "../ids.h"
+#include "../common/ids.h"
 
 
 

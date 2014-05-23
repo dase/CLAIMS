@@ -12,11 +12,11 @@
 #include <boost/archive/text_oarchive.hpp>
 
 
-#include "../Schema/Schema.h"
 #include "../iterator.hpp"
 #include "../Block/Block.h"
 #include "ExchangeIteratorLower.h"
 #include "../Block/BlockReadable.h"
+#include "../common/Schema/Schema.h"
 class ExchangeIterator:public Iterator {
 public:
 

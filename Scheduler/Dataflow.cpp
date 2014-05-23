@@ -6,6 +6,7 @@
  */
 
 #include "Dataflow.h"
+#include "../common/Schema/SchemaFix.h"
 
 Dataflow::Dataflow() {
 	// TODO Auto-generated constructor stub

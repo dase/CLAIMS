@@ -24,13 +24,12 @@
 #include <assert.h>
 
 #include "../../Block/BlockReadableFix.h"
-#include "../../Logging.h"
-#include "../../PortManager.h"
+#include "../../common/Logging.h"
 #include "../../Environment.h"
 #include "../../Executor/ExchangeTracker.h"
 
 #include "../../configure.h"
-#include "../../rename.h"
+#include "../../common/rename.h"
 ExpandableBlockStreamExchange::ExpandableBlockStreamExchange(State state)
 :state(state){
 	sem_open_.set_value(1);

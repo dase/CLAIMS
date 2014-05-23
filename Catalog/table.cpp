@@ -6,7 +6,7 @@
  */
 
 #include "table.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/SchemaFix.h"
 // ColumnDescriptor
 ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid){
 }

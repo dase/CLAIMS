@@ -20,7 +20,7 @@
 
 #include "ExchangeIteratorLower.h"
 #include "../Block/BlockWritableFix.h"
-#include "../rename.h"
+#include "../common/rename.h"
 //typedef int (f)(int);
 //f *file_close=close;
 ExchangeIteratorLower::ExchangeIteratorLower(State state)

@@ -19,12 +19,11 @@
 
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Executor/IteratorExecutorSlave.h"
-#include "../TableManager.h"
-#include "../rdtsc.h"
+#include "../utility/rdtsc.h"
 #include "../Environment.h"
-#include "../Comparator.h"
-#include "../Message.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Comparator.h"
+#include "../common/Message.h"
+#include "../common/Schema/SchemaFix.h"
 #include "../PerformanceMonitor/PerformanceIteratorTop.h"
 
 #include "../iterator.hpp"

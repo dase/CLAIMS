@@ -9,8 +9,8 @@
 #define EXPANDABLEBLOCKSTREAMEXCHANGEMATERIALIZED_H_
 #include <pthread.h>
 #include "../BlockStreamExchangeBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Block/synch.h"
+#include "../../common/Schema/Schema.h"
+#include "../../utility/lock.h"
 #include "../../Block/BlockReadableFix.h"
 #include "../../Block/BlockStreamBuffer.h"
 class ExpandableBlockStreamExchangeMaterialized: public BlockStreamExchangeBase {

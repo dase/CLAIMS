@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include "../configure.h"
-#include "../rdtsc.h"
+#include "../utility/rdtsc.h"
 PerformanceIteratorTop::PerformanceIteratorTop(PerformanceIteratorTop::State state)
 :state(state),tuplecount(0){
 	// TODO Auto-generated constructor stub

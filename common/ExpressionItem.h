@@ -11,7 +11,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
-#include "../data_type.h"
+#include "../common/data_type.h"
 enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
 using namespace boost::gregorian;
 using namespace boost::posix_time;

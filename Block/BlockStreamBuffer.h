@@ -10,9 +10,9 @@
 #define BLOCKSTREAMBUFFER_H_
 #include <list>
 #include "BlockStream.h"
-#include "../Schema/Schema.h"
-#include "synch.h"
+#include "../common/Schema/Schema.h"
 #include "../utility/Block/MonitorableBuffer.h"
+#include "../utility/lock.h"
 class BlockStreamBuffer:public MonitorableBuffer {
 public:
 	BlockStreamBuffer(unsigned block_size, unsigned block_count, Schema* schema);

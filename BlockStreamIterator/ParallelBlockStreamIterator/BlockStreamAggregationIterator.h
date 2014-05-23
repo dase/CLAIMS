@@ -14,11 +14,11 @@ using namespace std;
 
 #include "../BlockStreamIteratorBase.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Block/synch.h"
-#include "../../hashtable.h"
-#include "../../hash.h"
+#include "../../common/hashtable.h"
+#include "../../common/hash.h"
 #include "../../Debug.h"
+#include "../../utility/lock.h"
+#include "../../common/Schema/Schema.h"
 
 class BlockStreamAggregationIterator:public ExpandableBlockStreamIteratorBase{
 public:

@@ -16,11 +16,11 @@
 
 #include "../Catalog/table.h"
 #include "../Catalog/Catalog.h"
-#include "../hash.h"
 #include "../Environment.h"
-#include "../Schema/TupleConvertor.h"
 #include "../Catalog/ProjectionBinding.h"
 #include <hdfs.h>
+#include "../common/Schema/TupleConvertor.h"
+#include "../common/hash.h"
 
 using namespace std;
 
