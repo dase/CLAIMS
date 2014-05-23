@@ -25,8 +25,8 @@
 #include "../iterator/ExchangeIteratorEager.h"
 #include "../Environment.h"
 #include "../PerformanceMonitor/PerformanceIteratorTop.h"
-#include "../rdtsc.h"
-#include "../Schema/SchemaFix.h"
+#include "../utility/rdtsc.h"
+#include "../common/Schema/SchemaFix.h"
 
 int mainasfasdfasf(int argc, const char** argv){
 	std::vector<column_type> column_list;

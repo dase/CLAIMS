@@ -12,8 +12,8 @@
 //#include <boost/unordered_map.hpp>
 
 #include <boost/unordered_map.hpp>
-#include "../../data_type.h"
-#include "../../ids.h"
+#include "../../common/data_type.h"
+#include "../../common/ids.h"
 
 typedef void* ValuePtr;
 

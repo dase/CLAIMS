@@ -8,8 +8,8 @@
 #ifndef RESOURCEMANAGERSLAVE_H_
 #define RESOURCEMANAGERSLAVE_H_
 #include <Theron/Theron.h>
-#include "../Message.h"
-#include "../Logging.h"
+#include "../common/Message.h"
+#include "../common/Logging.h"
 typedef int NodeID;
 class ResourceManagerSlave {
 public:

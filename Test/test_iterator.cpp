@@ -8,17 +8,16 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-#include "../TableManager.h"
-#include "../rdtsc.h"
-#include "../Schema/SchemaFix.h"
+#include "../utility/rdtsc.h"
+#include "../common/Schema/SchemaFix.h"
 #include "../iterator/SingleColumnScanIterator.h"
 #include "../iterator/FilterIterator.h"
 #include "../iterator/JoinIterator.h"
 #include "../iterator/CombinedIterator.h"
 #include "../iterator/PrintIterator.h"
 #include "../iterator/AggregationIterator.h"
-#include "../Comparator.h"
-#include "../Message.h"
+#include "../common/Comparator.h"
+#include "../common/Message.h"
 struct int_float
 {
 	int i;
@@ -43,42 +42,7 @@ public:
 	bool (*compare)(void*,void*);
 };
 
-int main2()		//generate data
-{
 
-
-
-	printf("100: %s, 100:%s, 200: %s",typeid(fixrecord<10>).name(),typeid(fixrecord<100>).name(),typeid(fixrecord<200>).name());
-
-	vector<data_type> dt;
-	dt.push_back(t_int);
-	dt.push_back(t_int);
-	TableManager tm;
-	tm.create_table_partition(1,dt);
-
-
-	printf("\n sizof of TableManager is %ld\n",sizeof(Column_TOBEREMOVED));
-
-
-	unsigned long long t1;
-	startTimer(&t1);
-
-	int tupleCount=1000;
-	int oid=0;
-	int_float tmp;
-	while(tupleCount>0)
-	{
-
-		tmp.i=rand()%80;
-		tmp.f=rand()%80;
-//		tm.append(1,&tmp,oid++);
-		tm.append(1,&tmp,oid++);
-		tupleCount--;
-	}
-	double time=getMilliSecond(t1);
-	printf("Total Time: %lf ms, %f M record/s!\n",time, 8*10000/(float)1024/1024/(time/1000));
-	return 1;
-}
 enum ccc{c1,c2};
 
 

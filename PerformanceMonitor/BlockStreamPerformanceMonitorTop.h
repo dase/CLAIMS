@@ -11,8 +11,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
-#include "../Logging.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Logging.h"
 
 class BlockStreamPerformanceMonitorTop:public BlockStreamIteratorBase {
 public:

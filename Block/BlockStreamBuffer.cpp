@@ -25,7 +25,13 @@ BlockStreamBuffer::~BlockStreamBuffer() {
 		block_stream_empty_list_.pop_front();
 		block->~BlockStreamBase();
 	}
-	assert(block_stream_used_list_.empty());
+
+	while(!block_stream_used_list_.empty()){
+		const BlockStreamBase* block=block_stream_used_list_.front();
+		block_stream_used_list_.pop_front();
+		block->~BlockStreamBase();
+	}
+//	assert(block_stream_used_list_.empty());
 	sema_empty_block_.destroy();
 //	printf("BlockStreawmBuffer being deconstructed<><><><><><><><><>!\n");
 }

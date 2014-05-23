@@ -8,8 +8,8 @@
 #include "ExchangeIteratorWithWideDependency.h"
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Block/BlockReadableFixBuffer.h"
-#include "../rename.h"
-#include "../Logging.h"
+#include "../common/rename.h"
+#include "../common/Logging.h"
 
 #include <libconfig.h++>
 #include <stdlib.h>
@@ -24,7 +24,6 @@
 #include <sys/un.h>
 #include <netdb.h>
 #include <unistd.h>
-#include "../PortManager.h"
 #include "../Environment.h"
 #include "../Executor/ExchangeTracker.h"
 

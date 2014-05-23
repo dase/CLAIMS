@@ -11,9 +11,9 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-#include "../rename.h"
 #include "RandomMemAccessIterator.h"
 #include "../configure.h"
+#include "../common/rename.h"
 RandomMemAccessIterator::RandomMemAccessIterator(RandomMemAccessIterator::State state)
 :Iterator(), state(state), base(NULL), length(0), fd(0), oid(0)
 {

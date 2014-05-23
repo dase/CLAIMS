@@ -13,7 +13,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 #include "../iterator.hpp"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 
 class CombinedIterator:public Iterator {
 public:

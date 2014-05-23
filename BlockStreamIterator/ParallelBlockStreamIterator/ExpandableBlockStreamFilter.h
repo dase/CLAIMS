@@ -10,11 +10,11 @@
 #include <list>
 #include "../BlockStreamIteratorBase.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Comparator.h"
+#include "../../common/Schema/Schema.h"
+#include "../../common/Comparator.h"
 #include "../../iterator/FilterIterator.h"
 #include "../../Block/BlockStream.h"
-#include "../../Block/synch.h"
+#include "../../utility/lock.h"
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
 

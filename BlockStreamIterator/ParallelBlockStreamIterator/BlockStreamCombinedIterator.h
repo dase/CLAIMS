@@ -12,9 +12,8 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include "../BlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../../configure.h"
-#include "../../Block/synch.h"
 
 #include <list>
 #include <vector>
@@ -22,6 +21,7 @@
 using namespace std;
 
 #include <malloc.h>
+#include "../../utility/lock.h"
 
 #define BLOCK_SIZE_CAO 4096
 

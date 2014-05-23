@@ -8,7 +8,7 @@
 #ifndef BLOCKWRITABLEFIX_H_
 #define BLOCKWRITABLEFIX_H_
 #include "BlockWritable.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/SchemaFix.h"
 class BlockWritableFix : public BlockWritable {
 public:
 	BlockWritableFix(unsigned BlockSize, Schema* schema);

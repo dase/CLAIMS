@@ -15,8 +15,8 @@
 #include <boost/serialization/base_object.hpp>
 
 #include "../iterator.hpp"
-#include "../Schema/Schema.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Schema/SchemaFix.h"
 
 //#include "../Serialization/s.h"
 class SingleColumnScanIteratorFix:public Iterator{

@@ -18,8 +18,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
 #include "../Serialization/RegisterDerivedClass.h"
-#include "../Schema/SchemaFix.h"
-#include "../rdtsc.h"
+#include "../common/Schema/SchemaFix.h"
+#include "../utility/rdtsc.h"
 
 int mainafasf234(int argc,const char** argv){
 

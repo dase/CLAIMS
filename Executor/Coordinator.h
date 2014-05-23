@@ -11,7 +11,7 @@
 #include <Theron/Theron.h>
 #include <string>
 #include <vector>
-#include "../Logging.h"
+#include "../common/Logging.h"
 
 class Coordinator {
 public:
@@ -32,7 +32,7 @@ private:
 	std::string EndPointPort;
 	std::vector<std::pair<std::string,std::string> > PeersIpPort;
 	Logging* logging;
-
+	pthread_t prochaseId;
 /**
  * Actor
  */

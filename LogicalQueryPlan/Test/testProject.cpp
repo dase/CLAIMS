@@ -10,7 +10,7 @@
 #include "../../BlockStreamIterator/BlockStreamPrint.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../../ids.h"
+#include "../../common/ids.h"
 #include "../../Environment.h"
 #include "../../common/Mapping.h"
 #include "../../common/ExpressionItem.h"

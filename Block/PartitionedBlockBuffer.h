@@ -10,7 +10,7 @@
 #include "Block.h"
 #include <list>
 #include <stdio.h>
-#include "synch.h"
+#include "../utility/lock.h"
 class PartitionedBlockBuffer {
 public:
 

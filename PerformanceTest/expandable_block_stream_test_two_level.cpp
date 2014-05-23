@@ -6,7 +6,7 @@
  */
 #include <stdlib.h>
 #include <string>
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/SchemaFix.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
@@ -15,8 +15,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchange.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeMaterialized.h"
-#include "../Message.h"
-#include "../rdtsc.h"
+#include "../common/Message.h"
+#include "../utility/rdtsc.h"
 #include "../Environment.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 int main___S_S_(int argc, const char** argv){

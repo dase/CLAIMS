@@ -9,7 +9,7 @@
 #define EXPANDABLEBLOCKSTREAMBUFFER_H_
 
 #include "BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../Block/DynamicBlockBuffer.h"
 class BlockStreamResultCollector:public BlockStreamIteratorBase {
 public:
@@ -39,7 +39,12 @@ public:
 	bool next(BlockStreamBase* block);
 	bool close();
 	void print();
+
+	/*
+	 * The resultset will be automatically freed along with the result collector iterator.
+	 */
 	ResultSet* getResultSet();
+
 	unsigned long getNumberOftuples()const;
 private:
 	bool createBlockStream(BlockStreamBase*&)const;
@@ -50,7 +55,13 @@ private:
 	State state_;
 //	DynamicBlockBuffer block_buffer_;
 //	DynamicBlockBuffer::Iterator block_buffer_iterator_;
+
+
+	/**
+	 * block_buffer_ will automatically be freed when the destructor of this class is called.
+	 */
 	ResultSet block_buffer_;
+
 	ResultSet::Iterator block_buffer_iterator_;
 	unsigned finished_thread_count_;
 	unsigned registered_thread_count_;

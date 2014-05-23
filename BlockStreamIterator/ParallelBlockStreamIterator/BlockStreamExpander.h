@@ -11,11 +11,11 @@
 #include <vector>
 #include <set>
 #include "../BlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../../Block/BlockStreamBuffer.h"
-#include "../../lock.h"
 #include "../../utility/ExpandabilityShrinkability.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
+#include "../../utility/lock.h"
 
 #define EXPANDER_BUFFER_SIZE 100
 

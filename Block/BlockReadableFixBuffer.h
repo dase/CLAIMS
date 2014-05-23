@@ -9,7 +9,7 @@
 #define BLOCKREADABLEFIXBUFFER_H_
 
 #include "BlockReadableFix.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include <iostream>
 using namespace std;
 

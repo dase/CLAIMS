@@ -13,11 +13,10 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
 
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../iterator.hpp"
 #include "../Block/BlockWritableFixBuffer.h"
-#include "../Block/synch.h"
-#include "../rename.h"
+#include "../common/rename.h"
 
 #include <string>
 #include <netdb.h>
@@ -29,6 +28,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <iostream>
+#include "../utility/lock.h"
 using namespace std;
 
 //Currently, we restrict the event number is 100

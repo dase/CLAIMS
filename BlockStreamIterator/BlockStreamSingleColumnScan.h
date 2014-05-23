@@ -9,7 +9,7 @@
 #define BLOCKSTREAMSINGLECOLUMNSCAN_H_
 #include <string>
 #include "BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 class BlockStreamSingleColumnScan:public BlockStreamIteratorBase {
 public:
 	class State{

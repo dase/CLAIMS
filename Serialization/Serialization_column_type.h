@@ -11,7 +11,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "../data_type.h"
+#include "../common/data_type.h"
 
 class Serialization_column_type:public column_type
 {

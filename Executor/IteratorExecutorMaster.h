@@ -13,10 +13,9 @@
 #include <vector>
 #include <string>
 #include <libconfig.h++>
-#include "../Message.h"
 #include "../iterator.hpp"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
-#include "../Logging.h"
+#include "../common/Logging.h"
 class IteratorExecutorMaster {
 public:
 	IteratorExecutorMaster();

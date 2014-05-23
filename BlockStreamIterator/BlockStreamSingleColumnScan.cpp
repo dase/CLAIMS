@@ -9,7 +9,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include "BlockStreamSingleColumnScan.h"
-#include "../rename.h"
+#include "../common/rename.h"
 BlockStreamSingleColumnScan::BlockStreamSingleColumnScan(State state)
 :state_(state),data_(0),cursor_(0),file_length_(0),base_(0),fd_(0){
 

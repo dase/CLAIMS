@@ -10,7 +10,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 class BlockStreamPrint:public BlockStreamIteratorBase{
 public:
 	struct State{

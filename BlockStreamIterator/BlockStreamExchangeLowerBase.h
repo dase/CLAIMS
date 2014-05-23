@@ -13,7 +13,7 @@
 
 #include <boost/serialization/utility.hpp>
 #include "BlockStreamIteratorBase.h"
-#include "../ids.h"
+#include "../common/ids.h"
 class BlockStreamExchangeLowerBase: public BlockStreamIteratorBase {
 public:
 	BlockStreamExchangeLowerBase();

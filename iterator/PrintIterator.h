@@ -12,7 +12,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/base_object.hpp>
 #include "../iterator.hpp"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 
 class PrintIterator:public Iterator {
 public:

@@ -14,8 +14,8 @@
  * */
 #include <string>
 using namespace std;
-#include "../ids.h"
 #include "../Debug.h"
+#include "../common/ids.h"
 class ChunkStore{
 public:
 	ChunkStore();

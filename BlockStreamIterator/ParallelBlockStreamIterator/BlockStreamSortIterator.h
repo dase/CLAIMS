@@ -10,10 +10,10 @@
 
 #include "../BlockStreamIteratorBase.h"
 #include "../../Block/BlockStream.h"
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../../configure.h"
 #include "../../Block/DynamicBlockBuffer.h"
-#include "../../rdtsc.h"
+#include "../../utility/rdtsc.h"
 
 class BlockStreamSortIterator:public BlockStreamIteratorBase{
 public:

@@ -7,8 +7,8 @@
 
 #include "IteratorExecutorMaster.h"
 #include "../Environment.h"
-#include "../TimeOutReceiver.h"
-#include "../rdtsc.h"
+#include "../common/TimeOutReceiver.h"
+#include "../utility/rdtsc.h"
 IteratorExecutorMaster* IteratorExecutorMaster::_instance=0;
 
 

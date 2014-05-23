@@ -8,7 +8,7 @@
 #ifndef COLUMN_H_
 #define COLUMN_H_
 #include "Attribute.h"
-#include "../ids.h"
+#include "../common/ids.h"
 class Column:public Attribute {
 public:
 	Column(){};

@@ -6,6 +6,7 @@
  */
 
 #include "AggregationIterator.h"
+#include "../configure.h"
 
 AggregationIterator::AggregationIterator(AggregationIterator::State state)
 :state(state),hashtable(0),hash(0),bucket_cur(0),tuple(0)

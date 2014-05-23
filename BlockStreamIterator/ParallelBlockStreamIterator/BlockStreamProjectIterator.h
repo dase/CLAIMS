@@ -12,7 +12,6 @@
 #include "../../common/ExpressionCalculator.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/Mapping.h"
-#include "../../utility/Expression.h"
 #include "../../configure.h"
 
 #include <iostream>

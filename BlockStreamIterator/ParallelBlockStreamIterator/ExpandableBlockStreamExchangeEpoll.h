@@ -19,17 +19,17 @@
 #include <string>
 #include <pthread.h>
 #include <map>
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
 #include "../../Block/BlockReadable.h"
 #include "../../Block/BlockContainer.h"
 #include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
-#include "../../Block/synch.h"
 #include "../../Block/PartitionedBlockBuffer.h"
 #include "../../Block/BlockStream.h"
 #include "../../Block/BlockStreamBuffer.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
+#include "../../utility/lock.h"
 class ExpandableBlockStreamExchangeEpoll:public BlockStreamIteratorBase {
 public:
 	struct State{

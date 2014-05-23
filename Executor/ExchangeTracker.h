@@ -14,11 +14,10 @@
 #define EXCHANGETRACKER_H_
 #include <map>
 #include <boost/unordered_map.hpp>
-#include "../AdaptiveEndPoint.h"
-#include "../Logging.h"
-#include "../Message.h"
-#include "../ids.h"
-#include "../utility/synch.h"
+#include <Theron/Theron.h>
+#include "../common/Logging.h"
+#include "../utility/lock.h"
+#include "../common/ids.h"
 class ExchangeTracker {
 public:
 	ExchangeTracker();
