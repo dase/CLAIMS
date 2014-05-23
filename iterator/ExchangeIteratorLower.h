@@ -13,7 +13,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <netdb.h>
 
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../iterator.hpp"
 #include "../Block/BlockWritable.h"
 

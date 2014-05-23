@@ -19,7 +19,7 @@
 #include "ExchangeIterator.h"
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Block/BlockReadableFix.h"
-#include "../rename.h"
+#include "../common/rename.h"
 ExchangeIterator::ExchangeIterator(State state)
 :state(state)
 {

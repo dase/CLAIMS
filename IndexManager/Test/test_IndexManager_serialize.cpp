@@ -8,7 +8,7 @@
 #include "../../Environment.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../../ids.h"
+#include "../../common/ids.h"
 #include "../../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalCSBIndexBuilding.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"

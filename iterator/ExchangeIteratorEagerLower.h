@@ -22,12 +22,11 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <pthread.h>
-#include "../Schema/Schema.h"
 #include "../iterator.hpp"
 #include "../Block/PartitionedBlockBuffer.h"
 #include "../Block/BlockWritable.h"
-#include "../Block/synch.h"
-#include "../rename.h"
+#include "../common/rename.h"
+#include "../common/Schema/Schema.h"
 
 
 class ExchangeIteratorEagerLower:public Iterator {

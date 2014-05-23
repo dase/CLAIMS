@@ -7,7 +7,7 @@
 
 #ifndef PERFORMANCEITERATORTOP_H_
 #define PERFORMANCEITERATORTOP_H_
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../iterator.hpp"
 #include <pthread.h>
 class PerformanceIteratorTop:public Iterator {

@@ -15,7 +15,7 @@
 #include "../../Block/DynamicBlockBuffer.h"
 #include "../../Block/ResultSet.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../../data_type.h"
+#include "../../common/data_type.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Scan.h"

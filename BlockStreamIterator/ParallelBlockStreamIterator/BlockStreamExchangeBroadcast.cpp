@@ -25,12 +25,11 @@
 #include <assert.h>
 
 #include "../../Block/BlockReadableFix.h"
-#include "../../Logging.h"
-#include "../../PortManager.h"
+#include "../../common/Logging.h"
 #include "../../Environment.h"
 #include "../../Executor/ExchangeTracker.h"
 #include "../../configure.h"
-#include "../../rename.h"
+#include "../../common/rename.h"
 
 BlockStreamExchangeBroadcast::BlockStreamExchangeBroadcast(State state)
 :BlockStreamExchangeBase(state.upper_ip_list,state.lower_ip_list.size()),state_(state),open_finished_(false){

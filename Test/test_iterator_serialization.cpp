@@ -24,8 +24,8 @@
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
 
-#include "../Schema/Schema.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Schema/SchemaFix.h"
 #include "../Serialization/Serialization_column_type.h"
 #include "../iterator.hpp"
 #include "../iterator/SingleColumnScanIterator.h"
@@ -35,7 +35,7 @@
 #include "../iterator/PrintIterator.h"
 
 #include "../Serialization/RegisterDerivedClass.h"
-#include "../Message.h"
+#include "../common/Message.h"
 
 int mainasdf()
 {

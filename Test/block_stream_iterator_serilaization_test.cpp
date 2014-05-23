@@ -7,8 +7,8 @@
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/BlockStreamFilter.h"
 
-#include "../Schema/SchemaFix.h"
-#include "../rdtsc.h"
+#include "../common/Schema/SchemaFix.h"
+#include "../utility/rdtsc.h"
 
 int mainasdfaf234(int argc,const char** argv){
 

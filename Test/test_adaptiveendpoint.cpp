@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 #include <sstream>
-#include "../AdaptiveEndPoint.h"
 #include "../Executor/Coordinator.h"
+#include "../Executor/AdaptiveEndPoint.h"
 int main234112234(int argc, char** argv){
 	printf("0 for coordinate, 1 for AdaptiveEndPoint!\n");
 	char input;

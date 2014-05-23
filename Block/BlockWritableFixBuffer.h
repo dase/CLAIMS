@@ -9,7 +9,7 @@
 #define BLOCKWRITABLEFIXBUFFER_H_
 
 #include "BlockWritableFix.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 
 class BlockWritableFixBuffer {
 public:

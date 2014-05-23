@@ -11,7 +11,8 @@
 #include <sys/mman.h>
 #include "SingleColumnScanIterator.h"
 #include "../configure.h"
-#include "../rename.h"
+#include "../common/rename.h"
+#include <string.h>
 //typedef int (f)(const char*,int,...);
 //f *fileopen=open;
 //typedef int (g)(int);

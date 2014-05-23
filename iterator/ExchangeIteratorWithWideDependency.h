@@ -14,7 +14,7 @@
 #include <boost/serialization/utility.hpp>
 
 #include "ExchangeIteratorLowerWithWideDependency.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../iterator.hpp"
 #include "../Block/Block.h"
 #include "../Block/BlockReadableFixBuffer.h"

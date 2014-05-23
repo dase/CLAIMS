@@ -11,7 +11,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include "../configure.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/SchemaFix.h"
 #include "../Block/Block.h"
 class BlockFix {
 public:

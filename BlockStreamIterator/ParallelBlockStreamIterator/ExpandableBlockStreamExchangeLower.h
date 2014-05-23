@@ -24,13 +24,13 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <pthread.h>
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
 #include "../../Block/BlockReadable.h"
 #include "../../Block/BlockWritable.h"
 #include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
-#include "../../Block/synch.h"
+#include "../../utility/lock.h"
 #include "../../Block/PartitionedBlockBuffer.h"
 #include "../../Block/BlockStream.h"
 #include "../../Block/BlockStreamBuffer.h"

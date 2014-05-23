@@ -7,9 +7,10 @@
 #include <sstream>
 #include "BlockManager.h"
 #include "../Environment.h"
-#include "../Message.h"
 #include "../BufferManager/BufferManager.h"
-#include "../rename.h"
+#include "../common/rename.h"
+#include "../common/Message.h"
+#include "../common/Logging.h"
 BlockManager *BlockManager::blockmanager_=0;
 
 BlockManager *BlockManager::getInstance(){
@@ -29,6 +30,9 @@ BlockManager::BlockManager() {
 	memstore_=MemoryChunkStore::getInstance();
 }
 BlockManager::~BlockManager() {
+
+
+
 	actor_->~Actor();
 	framework_->~Framework();
 	logging_->~Logging();

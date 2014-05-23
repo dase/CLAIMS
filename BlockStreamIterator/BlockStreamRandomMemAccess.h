@@ -15,7 +15,7 @@
 #include <boost/serialization/base_object.hpp>
 
 #include "BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../Block/BlockStream.h"
 
 class BlockStreamRandomMemAccess :public BlockStreamIteratorBase {

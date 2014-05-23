@@ -10,8 +10,8 @@
 #include "../ExpandableBlockStreamFilter.h"
 #include "../BlockStreamInIterator.h"
 #include "../../BlockStreamPrint.h"
-#include "../../../Schema/SchemaFix.h"
-#include "../../../Message.h"
+#include "../../../common/Schema/SchemaFix.h"
+#include "../../../common/Message.h"
 
 static int in_iterator_test ()
 {

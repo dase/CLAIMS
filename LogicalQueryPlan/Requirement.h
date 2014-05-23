@@ -9,8 +9,8 @@
 #define REQUIREMENT_H_
 #include <vector>
 
-#include "../ids.h"
-#include "../hash.h"
+#include "../common/ids.h"
+#include "../common/hash.h"
 #include "../Catalog/Attribute.h"
 #include "../Scheduler/Dataflow.h"
 /**

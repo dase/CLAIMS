@@ -14,7 +14,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <malloc.h>
-#include "../lock.h"
+#include "../utility/lock.h"
 
 class ThreadSafe {
 public:

@@ -8,7 +8,7 @@
 #ifndef BLOCKREADBALEFIX_H_
 #define BLOCKREADBALEFIX_H_
 #include "BlockReadable.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 class BlockReadableFix:public BlockReadable {
 public:
 	BlockReadableFix(Block block, Schema* schema);

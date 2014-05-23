@@ -8,7 +8,7 @@
 #ifndef LOGICALQUERYPLANROOT_H_
 #define LOGICALQUERYPLANROOT_H_
 #include "LogicalOperator.h"
-#include "../ids.h"
+#include "../common/ids.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 class LogicalQueryPlanRoot: public LogicalOperator {
 public:

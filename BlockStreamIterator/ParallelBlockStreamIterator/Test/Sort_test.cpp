@@ -10,7 +10,7 @@
 #include "../../BlockStreamPrint.h"
 #include "../BlockStreamSortIterator.h"
 #include "../ExpandableBlockStreamProjectionScan.h"
-#include "../../../ids.h"
+#include "../../../common/ids.h"
 #include "../../../Environment.h"
 #include "../../../Block/BlockStream.h"
 #include "../../../LogicalQueryPlan/Scan.h"

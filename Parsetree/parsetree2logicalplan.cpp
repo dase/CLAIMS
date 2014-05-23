@@ -12,7 +12,7 @@
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-#include "../Comparator.h"
+#include "../common/Comparator.h"
 #include "../iterator/FilterIterator.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"

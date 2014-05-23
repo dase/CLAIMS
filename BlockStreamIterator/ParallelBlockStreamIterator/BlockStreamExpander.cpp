@@ -7,7 +7,7 @@
 #include <iostream>
 #include "BlockStreamExpander.h"
 #include "../../Executor/ExpanderTracker.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
 
 BlockStreamExpander::BlockStreamExpander(State state)
 :state_(state),block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0){

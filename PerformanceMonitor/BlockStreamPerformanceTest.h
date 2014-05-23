@@ -9,7 +9,7 @@
 #define BLOCKSTREAMPERFORMANCETEST_H_
 #include <pthread.h>
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 
 class BlockStreamPerformanceTest:public BlockStreamIteratorBase {
 public:

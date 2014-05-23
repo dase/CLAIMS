@@ -7,7 +7,7 @@
 
 #include "BlockStreamPerformanceMonitorTop.h"
 //#include "hash.h"
-#include "../rdtsc.h"
+#include "../utility/rdtsc.h"
 
 BlockStreamPerformanceMonitorTop::BlockStreamPerformanceMonitorTop(State state)
 :state_(state){

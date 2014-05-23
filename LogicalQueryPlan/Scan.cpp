@@ -45,9 +45,9 @@ LogicalScan::~LogicalScan() {
 	// TODO Auto-generated destructor stub
 }
 
-LogicalProjection LogicalScan::getLogcialProjection()const{
-	return logical_projection_;
-}
+//LogicalProjection LogicalScan::getLogcialProjection()const{
+//	return logical_projection_;
+//}
 
 Dataflow LogicalScan::getDataflow(){
 	TableID table_id=scan_attribute_list_[0].table_id_;

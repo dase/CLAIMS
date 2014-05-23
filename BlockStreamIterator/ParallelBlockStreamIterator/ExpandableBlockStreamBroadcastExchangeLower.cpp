@@ -12,11 +12,11 @@
 
 #include "../../Block/BlockWritableFix.h"
 #include "../../Block/BlockReadable.h"
-#include "../../rename.h"
-#include "../../Logging.h"
+#include "../../common/rename.h"
+#include "../../common/Logging.h"
 #include "../../Executor/ExchangeTracker.h"
 #include "../../Environment.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
 
 //#define BROADCAST 3//1011
 

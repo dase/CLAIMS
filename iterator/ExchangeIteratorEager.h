@@ -14,12 +14,11 @@
 #include <string>
 #include <pthread.h>
 #include "ExchangeIteratorLowerWithWideDependency.h"
-#include "../Schema/Schema.h"
+#include "../common/Schema/Schema.h"
 #include "../iterator.hpp"
 #include "../Block/BlockReadable.h"
 #include "../Block/BlockReadableFixBuffer.h"
 #include "../Executor/IteratorExecutorMaster.h"
-#include "../Block/synch.h"
 #include "../Block/PartitionedBlockBuffer.h"
 
 class ExchangeIteratorEager:public Iterator {

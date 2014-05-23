@@ -15,12 +15,12 @@
 #include <string>
 #include <iostream>
 
-#include "../Message.h"
 #include "BlockManagerId.h"
 #include "AllBlockInfo.h"
 #include "BlanceMatcher.h"
-#include "../Message.h"
-#include "../Logging.h"
+#include "../common/Logging.h"
+#include "../common/ids.h"
+#include "../common/Message.h"
 using namespace std;
 
 class BlockManagerMaster {

@@ -9,8 +9,8 @@
 #define ATTRIBUTE_H_
 #include <string>
 
-#include "../data_type.h"
-#include "../ids.h"
+#include "../common/ids.h"
+#include "../common/data_type.h"
 #define ATTRIBUTE_NULL -1
 #define ATTRIBUTE_ANY -2
 

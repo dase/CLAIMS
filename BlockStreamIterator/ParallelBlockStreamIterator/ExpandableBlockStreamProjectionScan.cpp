@@ -9,7 +9,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <limits.h>
-#include "../../rename.h"
+#include "../../common/rename.h"
 #include "ExpandableBlockStreamProjectionScan.h"
 #include "../../storage/BlockManager.h"
 #include "../../Executor/ExpanderTracker.h"

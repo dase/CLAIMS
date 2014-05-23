@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include "SingleColumnScanIteratorFix.h"
 #include "../configure.h"
-#include "../rename.h"
+#include "../common/rename.h"
 
 SingleColumnScanIteratorFix::SingleColumnScanIteratorFix(SingleColumnScanIteratorFix::State state)
 :state(state),cursor(0),length(0),base(0),fd(-1)

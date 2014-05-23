@@ -5,13 +5,6 @@
  *      Author: zhanglei
  */
 
-#include "ExchangeIteratorLowerWithWideDependency.h"
-#include "../Block/BlockWritableFixBuffer.h"
-#include "../rename.h"
-#include "../Logging.h"
-#include "../Executor/ExchangeTracker.h"
-#include "../Environment.h"
-#include "../configure.h"
 #include <libconfig.h++>
 #include <stdlib.h>
 #include <error.h>
@@ -29,6 +22,13 @@
 #include <unistd.h>
 #include <string>
 
+#include "ExchangeIteratorLowerWithWideDependency.h"
+#include "../Block/BlockWritableFixBuffer.h"
+#include "../common/rename.h"
+#include "../common/Logging.h"
+#include "../Executor/ExchangeTracker.h"
+#include "../Environment.h"
+#include "../configure.h"
 
 
 ExchangeIteratorLowerWithWideDependency::ExchangeIteratorLowerWithWideDependency(State state):state(state) {

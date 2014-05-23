@@ -13,14 +13,14 @@
 
 #include "../../Block/BlockWritableFix.h"
 #include "../../Block/BlockReadable.h"
-#include "../../rename.h"
-#include "../../Logging.h"
+#include "../../common/rename.h"
+#include "../../common/Logging.h"
 #include "../../Executor/ExchangeTracker.h"
 #include "../../Environment.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
 #include "../../utility/ThreadSafe.h"
-#include "../../ids.h"
-#include "../../rdtsc.h"
+#include "../../common/ids.h"
+#include "../../utility/rdtsc.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
 :state(state){
 	// TODO Auto-generated constructor stub
@@ -368,8 +368,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 					if (errno == EAGAIN){
 						continue;
 					}
-					printf("Error=%d\n",errno);
+					printf("Error=%d,fd=%d\n",errno,Pthis->socket_fd_upper_list[partition_id]);
 					perror("Send error!\n");
+//					printf("fd=%d",Pthis->socket_fd_upper_list[partition_id]);
 					break;
 				}
 				else{

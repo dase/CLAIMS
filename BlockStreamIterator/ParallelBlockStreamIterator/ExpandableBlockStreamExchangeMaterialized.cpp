@@ -9,7 +9,7 @@
 
 #include "ExpandableBlockStreamExchangeMaterialized.h"
 #include "../../Block/BlockReadableFix.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
 #include "../../Environment.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 ExpandableBlockStreamExchangeMaterialized::ExpandableBlockStreamExchangeMaterialized(State state)
