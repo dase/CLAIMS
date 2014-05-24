@@ -12,7 +12,6 @@
 #include "../Block/BlockStream.h"
 #include "CSBPlusTree.h"
 #include "../storage/PartitionStorage.h"
-#include "../iterator/FilterIterator.h"
 
 class IndexScanIterator :public ExpandableBlockStreamIteratorBase {
 public:

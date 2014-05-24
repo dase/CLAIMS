@@ -13,7 +13,6 @@
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
-#include "../iterator/FilterIterator.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
@@ -22,10 +21,11 @@
 #include"sql_node_struct.h"
 #include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
+#include "../common/AttributeComparator.h"
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename)
 {
 	printf("getfiltercondition   ");
-	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
+	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
 	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
 	switch(wcexpr->type)
 	{
@@ -114,19 +114,19 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								std::ostringstream str;
 								str<<temp;
 								cout<<str.str()<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,str.str());
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),AttributeComparator::EQ,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=expr->data.double_val;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,&temp);
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),AttributeComparator::EQ,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data.string_val;
 								cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,temp);
+								filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),AttributeComparator::EQ,temp);
 
 							}break;
 							default:

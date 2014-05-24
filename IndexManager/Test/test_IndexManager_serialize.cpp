@@ -17,8 +17,9 @@
 #include "../../utility/test_tool.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../CSBPlusTree.h"
+#include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
+#include "../../common/AttributeComparator.h"
 
 static void init_poc_environment()
 {
@@ -101,10 +102,10 @@ static void test_logical_index_scan()
 //	IndexScanIterator::query_range q1;
 //	q1.value_low = malloc(sizeof(int));
 //	q1.value_low = (void*)(&value_low);
-//	q1.comp_low = FilterIterator::AttributeComparator::GEQ;
+//	q1.comp_low = AttributeComparator::GEQ;
 //	q1.value_high = malloc(sizeof(int));
 //	q1.value_high = (void*)(&value_high);
-//	q1.comp_high = FilterIterator::AttributeComparator::LEQ;
+//	q1.comp_high = AttributeComparator::LEQ;
 //	q1.c_type.type = t_int;
 //	q1.c_type.operate = new OperateInt();
 //	q1.valuebytes_low.clear();
@@ -151,8 +152,8 @@ static void test_scan_filter_performance(int value)
 	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("10107"));
-	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::L,(void*)&value);
+	filter_condition_1.add(table->getAttribute(3),AttributeComparator::GEQ,std::string("10107"));
+	filter_condition_1.add(table->getAttribute(3),AttributeComparator::L,(void*)&value);
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_scan);
 
 	const NodeID collector_node_id=0;

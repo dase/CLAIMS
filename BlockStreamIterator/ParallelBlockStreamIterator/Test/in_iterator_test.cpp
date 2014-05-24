@@ -12,6 +12,7 @@
 #include "../../BlockStreamPrint.h"
 #include "../../../common/Schema/SchemaFix.h"
 #include "../../../common/Message.h"
+#include "../../../common/AttributeComparator.h"
 
 static int in_iterator_test ()
 {
@@ -33,8 +34,8 @@ static int in_iterator_test ()
 	BlockStreamIteratorBase* ebssc1=new ExpandableBlockStreamSingleColumnScan(ebsscs1_state);
 
 	unsigned long f = 20000;
-	FilterIterator::AttributeComparator fA(column_type(t_u_long),Comparator::L,0,&f);
-	std::vector<FilterIterator::AttributeComparator> ComparatorList;
+	AttributeComparator fA(column_type(t_u_long),Comparator::L,0,&f);
+	std::vector<AttributeComparator> ComparatorList;
 	ComparatorList.push_back(fA);
 	ExpandableBlockStreamFilter::State ebsf_state(input, ebssc1, ComparatorList, block_size);
 	BlockStreamIteratorBase* ebfs = new ExpandableBlockStreamFilter(ebsf_state);

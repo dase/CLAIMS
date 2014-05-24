@@ -12,8 +12,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
-#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../Config.h"
+#include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
 :collecter_(collecter),child_(child),fashion_(fashion){
 	// TODO Auto-generated constructor stub
