@@ -541,7 +541,7 @@ static int aggregation_test(){
 
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PRINT,LimitConstraint(13,2));
 		unsigned long long int timer_start=curtick();
 		root->print();
 
