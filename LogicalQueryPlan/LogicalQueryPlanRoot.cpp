@@ -14,8 +14,9 @@
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../Config.h"
 #include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
-LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
-:collecter_(collecter),child_(child),fashion_(fashion){
+#include "../BlockStreamIterator/BlockStreamLimit.h"
+LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion,LimitConstraint limit_constraint)
+:collecter_(collecter),child_(child),fashion_(fashion),limit_constraint_(limit_constraint){
 	// TODO Auto-generated constructor stub
 	setOperatortype(l_root);
 }
@@ -41,9 +42,16 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-	BlockStreamIteratorBase* middle_tier=expander;
-//	BlockStreamIteratorBase* middle_tier=child_iterator;
-
+	BlockStreamIteratorBase* middle_tier;
+	if(!limit_constraint_.canBeOmitted()){
+		/* we should add a limit operator*/
+		BlockStreamLimit::State limit_state(expander_state.schema_,expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
+		BlockStreamIteratorBase* limit=new BlockStreamLimit(limit_state);
+		middle_tier=limit;
+	}
+	else{
+		middle_tier=expander;
+	}
 	/**
 	 * If the number of partitions in the child dataflow is 1 and the the location is right in the collector,
 	 * then exchange is not necessary.

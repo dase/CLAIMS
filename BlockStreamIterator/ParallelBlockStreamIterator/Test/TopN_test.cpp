@@ -9,12 +9,12 @@
 #include <iostream>
 #include "../ExpandableBlockStreamProjectionScan.h"
 #include "../ExpandableBlockStreamBuffer.h"
-#include "../BlockStreamTopN.h"
 #include "../../BlockStreamPrint.h"
 #include "../../../Environment.h"
 #include "../../../Catalog/ProjectionBinding.h"
 #include "../BlockStreamExpander.h"
 #include "../../BlockStreamPerformanceMonitorTop.h"
+#include "../../BlockStreamLimit.h"
 using namespace std;
 static int test_TopN(){
 	Environment::getInstance(true);
@@ -85,7 +85,7 @@ static int test_TopN(){
 
 
 	ProjectionBinding *pb=new ProjectionBinding();
-	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),HDFS);
+	pb->BindingEntireProjection(catalog->getTable(0)->getProjectoin(0)->getPartitioner(),MEMORY);
 //	pb->BindingEntireProjection(catalog->getTable(1)->getProjectoin(0)->getPartitioner());
 
 
@@ -94,7 +94,7 @@ static int test_TopN(){
 
 	/////////////////////Scan///////////////////////////
 	ExpandableBlockStreamProjectionScan::State scan_state;
-	scan_state.block_size_=64*1024-sizeof(unsigned);
+	scan_state.block_size_=64*1024;
 	scan_state.projection_id_=catalog->getTable(0)->getProjectoin(0)->getProjectionID();
 	vector<column_type> column_list;
 	column_list.push_back(column_type(t_u_long));
@@ -116,24 +116,24 @@ static int test_TopN(){
 	BlockStreamExpander::State exp_state(scan_state.schema_,scan,4,scan_state.block_size_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(exp_state);
 
-	BlockStreamTopN::State top_state(scan_state.schema_,expander,10,scan_state.block_size_);
-	BlockStreamIteratorBase* top=new BlockStreamTopN(top_state);
-
-	///Performance Monitor//
-	BlockStreamPerformanceMonitorTop::State p_state(scan_state.schema_,top,scan_state.block_size_);
-	BlockStreamIteratorBase* perf_top=new BlockStreamPerformanceMonitorTop(p_state);
+	BlockStreamLimit::State top_state(scan_state.schema_,scan,-1,scan_state.block_size_,100000);
+	BlockStreamIteratorBase* top=new BlockStreamLimit(top_state);
+//
+//	///Performance Monitor//
+//	BlockStreamPerformanceMonitorTop::State p_state(scan_state.schema_,top,scan_state.block_size_);
+//	BlockStreamIteratorBase* perf_top=new BlockStreamPerformanceMonitorTop(p_state);
 
 //	/////////////////Print/////////////////////////////
-//	BlockStreamPrint::State print_state;
-//	print_state.block_size_=64*1024-sizeof(unsigned);
-//	print_state.child_=scan;
-//	print_state.schema_=scan_state.schema_;
-//	print_state.spliter_="-|-";
-//
-//	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
+	BlockStreamPrint::State print_state;
+	print_state.block_size_=64*1024;
+	print_state.child_=top;
+	print_state.schema_=scan_state.schema_;
+	print_state.spliter_="-|-";
+
+	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
 	int input=1;
 	while(input>0){
-		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(perf_top,"127.0.0.1");
+		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
 		printf("continue or not?\n");
 		scanf("%d",&input);
 	}
