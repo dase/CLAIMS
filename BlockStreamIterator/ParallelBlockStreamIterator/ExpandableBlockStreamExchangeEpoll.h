@@ -21,9 +21,7 @@
 #include <map>
 #include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
-#include "../../Block/BlockReadable.h"
 #include "../../Block/BlockContainer.h"
-#include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../Block/PartitionedBlockBuffer.h"
 #include "../../Block/BlockStream.h"
