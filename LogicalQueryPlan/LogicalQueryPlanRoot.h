@@ -10,10 +10,25 @@
 #include "LogicalOperator.h"
 #include "../common/ids.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+struct LimitConstraint{
+	/* the upper bound on the number of tuples returned*/
+	unsigned long returned_tuples_;
+	/* the start position of the first returned tuples.
+	 * Note: the index starts from 1;
+	 */
+	unsigned long start_position_;
+	LimitConstraint(unsigned long return_tuples):returned_tuples_(return_tuples),start_position_(1){};
+	LimitConstraint(unsigned long return_tuples,unsigned long position):returned_tuples_(return_tuples),start_position_(position){};
+	LimitConstraint():returned_tuples_(-1),start_position_(1){}
+	/* return if the limit constraint can be omitted.*/
+	bool canBeOmitted()const{
+		return returned_tuples_==-1&start_position_==1;
+	}
+};
 class LogicalQueryPlanRoot: public LogicalOperator {
 public:
 	enum outputFashion{PRINT,PERFORMANCE,RESULTCOLLECTOR};
-	LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion=PERFORMANCE);
+	LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion=PERFORMANCE, LimitConstraint limit_constraint=LimitConstraint());
 	virtual ~LogicalQueryPlanRoot();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned&);
@@ -25,6 +40,7 @@ private:
 	NodeID collecter_;
 	LogicalOperator* child_;
 	outputFashion fashion_;
+	LimitConstraint limit_constraint_;
 
 };
 
