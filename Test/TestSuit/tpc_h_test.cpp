@@ -19,6 +19,7 @@
 #include "../../common/types/NValue.hpp"
 #include "../../utility/rdtsc.h"
 #include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../../common/AttributeComparator.h"
 
 static void query_1(){
 	unsigned long long int start=curtick();
@@ -28,7 +29,7 @@ static void query_1(){
 
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute("L_SHIPDATE"),FilterIterator::AttributeComparator::L,std::string("1998-12-01"));
+	filter_condition_1.add(table->getAttribute("L_SHIPDATE"),AttributeComparator::L,std::string("1998-12-01"));
 	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 //	LogicalOperator* filter=new Filter();
 
@@ -80,7 +81,7 @@ static void query_2(){
 
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(region->getAttribute("R_NAME"),FilterIterator::AttributeComparator::EQ,std::string("EUROPE"));
+	filter_condition_1.add(region->getAttribute("R_NAME"),AttributeComparator::EQ,std::string("EUROPE"));
 	LogicalOperator* r_filter=new Filter(filter_condition_1,r_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_join_condition;
@@ -123,13 +124,13 @@ static void query_2(){
 	sub_physical_iterator_tree->~BlockStreamIteratorBase();
 
 	Filter::Condition p_filter_condition_1;
-	p_filter_condition_1.add(part->getAttribute("P_SIZE"),FilterIterator::AttributeComparator::EQ,std::string("15"));//randomly 0~50
+	p_filter_condition_1.add(part->getAttribute("P_SIZE"),AttributeComparator::EQ,std::string("15"));//randomly 0~50
 	//TODO like predicates
 	LogicalOperator* p_filter=new Filter(p_filter_condition_1,p_scan);
 
 	Filter::Condition ps_filter_condition_1;
-	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),FilterIterator::AttributeComparator::EQ,OperateDecimal::toString(sub_query_result));
-//	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),FilterIterator::AttributeComparator::EQ,std::string("1.00"));
+	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),AttributeComparator::EQ,OperateDecimal::toString(sub_query_result));
+//	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),AttributeComparator::EQ,std::string("1.00"));
 	LogicalOperator* ps_filter=new Filter(ps_filter_condition_1,ps_scan);
 
 	std::vector<EqualJoin::JoinPair> p_ps_farther_join_condition;
@@ -141,7 +142,7 @@ static void query_2(){
 	///////////////////////////
 
 	Filter::Condition r_filter_father_condition;
-	r_filter_father_condition.add(region->getAttribute("R_NAME"),FilterIterator::AttributeComparator::EQ,std::string("AFRICA"));
+	r_filter_father_condition.add(region->getAttribute("R_NAME"),AttributeComparator::EQ,std::string("AFRICA"));
 	LogicalOperator* r_filter_father=new Filter(r_filter_father_condition,r_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_farther_join_condition;
@@ -195,11 +196,11 @@ static void query_3(){
 
 
 	Filter::Condition c_filter_condition;
-	c_filter_condition.add(customer->getAttribute("C_MKTSEGMENT"),FilterIterator::AttributeComparator::EQ,std::string("BUILDING"));
+	c_filter_condition.add(customer->getAttribute("C_MKTSEGMENT"),AttributeComparator::EQ,std::string("BUILDING"));
 	LogicalOperator* c_filter=new Filter(c_filter_condition,c_scan);
 
 	Filter::Condition o_filter_condition;
-	o_filter_condition.add(orders->getAttribute("O_ORDERDATE"),FilterIterator::AttributeComparator::L,std::string("1995-3-15"));
+	o_filter_condition.add(orders->getAttribute("O_ORDERDATE"),AttributeComparator::L,std::string("1995-3-15"));
 	LogicalOperator* o_filter=new Filter(o_filter_condition,o_scan);
 
 
@@ -208,7 +209,7 @@ static void query_3(){
 	LogicalOperator* c_o_join=new EqualJoin(c_o_join_condition,c_filter,o_filter);
 
 	Filter::Condition l_filter_condition;
-	l_filter_condition.add(lineitem->getAttribute("L_SHIPDATE"),FilterIterator::AttributeComparator::GEQ,std::string("1995-3-15"));
+	l_filter_condition.add(lineitem->getAttribute("L_SHIPDATE"),AttributeComparator::GEQ,std::string("1995-3-15"));
 	LogicalOperator* l_filter=new Filter(l_filter_condition,l_scan);
 
 	std::vector<EqualJoin::JoinPair> c_o_l_join_condition;

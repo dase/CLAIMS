@@ -11,7 +11,8 @@
 #include "../IDsGenerator.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Catalog/stat/Estimation.h"
-Filter::Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child )
+#include "../common/AttributeComparator.h"
+Filter::Filter(std::vector<AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
 	assert(!comparator_list_.empty());
 	setOperatortype(l_filter);
@@ -281,7 +282,7 @@ Filter::Condition::Condition(const Condition& r){
 		add(r.attribute_list_[i],r.comparison_list_[i],r.const_value_list_[i]);
 	}
 }
-void Filter::Condition::add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,const void*const & const_value){
+void Filter::Condition::add(const Attribute& attr,const AttributeComparator::comparison& com,const void*const & const_value){
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
 	const unsigned value_length=attr.attrType->get_length();
@@ -289,7 +290,7 @@ void Filter::Condition::add(const Attribute& attr,const FilterIterator::Attribut
 	attr.attrType->operate->assignment(const_value,value);
 	const_value_list_.push_back(value);
 }
-void Filter::Condition::add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,std::string str_exp){
+void Filter::Condition::add(const Attribute& attr,const AttributeComparator::comparison& com,std::string str_exp){
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
 	const unsigned value_length=attr.attrType->get_length();
@@ -303,27 +304,27 @@ void Filter::Condition::print(int level)const{
         	printf("%*.s",level*8,"    ");
                 printf("%s",attribute_list_[i].attrName.c_str());
                 switch(comparison_list_[i]){
-                        case FilterIterator::AttributeComparator::L :{
+                        case AttributeComparator::L :{
                                 printf("<");
                                 break;
                         }
-                        case FilterIterator::AttributeComparator::LEQ:{
+                        case AttributeComparator::LEQ:{
                                         printf("<=");
                                         break;
                                 }
-                        case FilterIterator::AttributeComparator::EQ:{
+                        case AttributeComparator::EQ:{
                                         printf("=");
                                         break;
                                 }
-                        case FilterIterator::AttributeComparator::NEQ:{
+                        case AttributeComparator::NEQ:{
                                         printf("!=");
                                         break;
                                 }
-                        case FilterIterator::AttributeComparator::G:{
+                        case AttributeComparator::G:{
                                         printf(">");
                                         break;
                                 }
-                        case FilterIterator::AttributeComparator::GEQ:{
+                        case AttributeComparator::GEQ:{
                                         printf(">=");
                                         break;
                                 }
@@ -357,7 +358,7 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 			printf("the filter condition %s does match any input attribute! Rechech the filter condition or the filter transformation module.\n",condition_.attribute_list_[i].attrName.c_str());
 			assert(false);
 		}
-		FilterIterator::AttributeComparator filter(*dataflow.attribute_list_[attribute_index].attrType,condition_.comparison_list_[i],attribute_index,condition_.const_value_list_[i]);
+		AttributeComparator filter(*dataflow.attribute_list_[attribute_index].attrType,condition_.comparison_list_[i],attribute_index,condition_.const_value_list_[i]);
 		comparator_list_.push_back(filter);
 //		printf("************** pushed ***************\n");
 	}

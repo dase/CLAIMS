@@ -25,7 +25,6 @@
 #include "../../Environment.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../common/ids.h"
-#include "../../iterator/FilterIterator.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
