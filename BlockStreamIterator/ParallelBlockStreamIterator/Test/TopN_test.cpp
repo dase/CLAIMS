@@ -13,8 +13,8 @@
 #include "../../BlockStreamPrint.h"
 #include "../../../Environment.h"
 #include "../../../Catalog/ProjectionBinding.h"
-#include "../../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamExpander.h"
+#include "../../BlockStreamPerformanceMonitorTop.h"
 using namespace std;
 static int test_TopN(){
 	Environment::getInstance(true);

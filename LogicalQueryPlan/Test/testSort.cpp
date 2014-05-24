@@ -27,6 +27,7 @@
 #include "../../Catalog/ProjectionBinding.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
+#include "../../common/AttributeComparator.h"
 
 static int testSort(){
 	int master;
@@ -71,7 +72,7 @@ static int testSort(){
 
 		Filter::Condition filter_condition_1;
 
-		filter_condition_1.add(table_1->getAttribute("row_id"),FilterIterator::AttributeComparator::L,std::string("100000"));
+		filter_condition_1.add(table_1->getAttribute("row_id"),AttributeComparator::L,std::string("100000"));
 
 
 		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);

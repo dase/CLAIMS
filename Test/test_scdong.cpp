@@ -24,10 +24,8 @@
 #include "../common/Comparator.h"
 #include "../common/Message.h"
 #include "../common/Schema/SchemaFix.h"
-#include "../PerformanceMonitor/PerformanceIteratorTop.h"
 
 #include "../iterator.hpp"
-#include "../iterator/FilterIterator.h"
 
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
@@ -41,10 +39,9 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
 
-#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
-#include "../PerformanceMonitor/BlockStreamPerformanceTest.h"
 
 #include <fstream>
+#include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 using namespace std;
 
 /***********************************Pthread && Block at a time*******************************************/

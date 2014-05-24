@@ -22,6 +22,7 @@
 #include "../../../LogicalQueryPlan/Aggregation.h"
 #include "../../../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../../../Environment.h"
+#include "../../AttributeComparator.h"
 using namespace std;
 
 static int variable_schema_test(){
@@ -69,10 +70,10 @@ static int variable_schema_test(){
 	ExpandableBlockStreamFilter::State filter_state;
 
 	int f0=1;
-	FilterIterator::AttributeComparator filter0(column_type(t_int),Comparator::EQ,0,&f0);
+	AttributeComparator filter0(column_type(t_int),Comparator::EQ,0,&f0);
 	char* str="string123";
-	FilterIterator::AttributeComparator filter1(column_type(t_string),Comparator::EQ,2,str);
-	std::vector<FilterIterator::AttributeComparator> ComparatorList;
+	AttributeComparator filter1(column_type(t_string),Comparator::EQ,2,str);
+	std::vector<AttributeComparator> ComparatorList;
 	ComparatorList.push_back(filter1);
 
 	std::vector<column_type> svc;

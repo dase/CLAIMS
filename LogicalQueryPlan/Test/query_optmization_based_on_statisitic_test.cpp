@@ -37,6 +37,7 @@
 #include "../../Parsetree/sql_node_struct.h"
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../utility/rdtsc.h"
+#include "../../common/AttributeComparator.h"
 
 //#define DEBUG_TestForSerialize
 
@@ -463,26 +464,26 @@ static int query_optimization_based_on_statistics_join(){
 			LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 			Filter::Condition filter_condition_1;
 			//			const int order_type=1;
-			filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,std::string("1"));
+			filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
-			filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+			filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 			int sec_code;
 			printf("sec_code=%?\n");
 			scanf("%d",&sec_code);
-			filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+			filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,&sec_code);
 			LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 
 			LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 			Filter::Condition filter_condition_2;
 			//			const int order_type=1;
-			filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,std::string("1"));
+			filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
-			filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+			filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 			//			int sec_code;
 			//			printf("sec_code=%?\n");
 			//			scanf("%d",&sec_code);
-			//			filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+			//			filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,&sec_code);
 			LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
 
 
@@ -952,26 +953,26 @@ static int query_optimization_based_on_statistics_aggregation(){
 			LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(6));
 			Filter::Condition filter_condition_1;
 			//			const int order_type=1;
-			filter_condition_1.add(table_1->getAttribute(5),FilterIterator::AttributeComparator::EQ,std::string("1"));
+			filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
-			filter_condition_1.add(table_1->getAttribute(1),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+			filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 			int sec_code;
 			printf("sec_code=%?\n");
 			scanf("%d",&sec_code);
-			filter_condition_1.add(table_1->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+			filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,&sec_code);
 			LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 
 			LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 			Filter::Condition filter_condition_2;
 			//			const int order_type=1;
-			filter_condition_2.add(table_2->getAttribute(4),FilterIterator::AttributeComparator::EQ,std::string("1"));
+			filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
-			filter_condition_2.add(table_2->getAttribute(2),FilterIterator::AttributeComparator::GEQ,std::string("20101008"));
+			filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 			//			int sec_code;
 			//			printf("sec_code=%?\n");
 			//			scanf("%d",&sec_code);
-			//			filter_condition_2.add(table_2->getAttribute(3),FilterIterator::AttributeComparator::EQ,&sec_code);
+			//			filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,&sec_code);
 			LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
 
 			std::vector<Attribute> group_by_attributes;

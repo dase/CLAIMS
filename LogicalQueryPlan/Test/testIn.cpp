@@ -16,6 +16,7 @@
 #include "../Aggregation.h"
 #include "../Buffer.h"
 #include "../../utility/rdtsc.h"
+#include "../../common/AttributeComparator.h"
 using namespace std;
 static int in_test(){
 	int master;
@@ -112,7 +113,7 @@ static int in_test(){
 
 		//set child: row_id < 20;
 		Filter::Condition filter_condition_1;
-		filter_condition_1.add(table_1->getAttribute(0),FilterIterator::AttributeComparator::L,std::string("5"
+		filter_condition_1.add(table_1->getAttribute(0),AttributeComparator::L,std::string("5"
 				""));
 		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_payload_scan);
 

@@ -8,7 +8,6 @@
 #include <boost/iostreams/stream.hpp>
 
 #include "RegisterDerivedClass.h"
-#include "../PerformanceMonitor/PerformanceIteratorTop.h"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScanDisk.h"
@@ -28,7 +27,6 @@
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBuffer.h"
@@ -37,11 +35,12 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamInIterator.h"
 #include "../IndexManager/CSBIndexBuilding.h"
 #include "../IndexManager/IndexScanIterator.h"
+#include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
 {
-	ar.register_type(static_cast<FilterIterator*>(NULL));
+//	ar.register_type(static_cast<FilterIterator*>(NULL));
 
 }
 

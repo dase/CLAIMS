@@ -9,6 +9,7 @@
 #include "tpc_h_test.cpp"
 #include "../../Config.h"
 #include "../set_up_environment.h"
+#include "../../common/AttributeComparator.h"
 
 typedef double QueryTime;
 typedef QueryTime (*query_function)();
@@ -23,7 +24,7 @@ static double lineitem_scan_self_join(){
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute("row_id"),FilterIterator::AttributeComparator::EQ,std::string("0"));
+	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
 	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 
 
@@ -101,7 +102,7 @@ static double lineitem_scan_filter(){
 
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute("row_id"),FilterIterator::AttributeComparator::EQ,std::string("0"));
+	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
 	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 
 
@@ -130,7 +131,7 @@ static double sb_scan_filter(){
 	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute("row_id"),FilterIterator::AttributeComparator::EQ,std::string("0"));
+	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
 	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 
 

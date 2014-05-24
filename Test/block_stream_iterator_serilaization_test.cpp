@@ -9,6 +9,7 @@
 
 #include "../common/Schema/SchemaFix.h"
 #include "../utility/rdtsc.h"
+#include "../common/AttributeComparator.h"
 
 int mainasdfaf234(int argc,const char** argv){
 
@@ -25,8 +26,8 @@ int mainasdfaf234(int argc,const char** argv){
 
 
 
-	FilterIterator::AttributeComparator fA(column_type(t_int),Comparator::L,0,&f);
-	std::vector<FilterIterator::AttributeComparator> ComparatorList;
+	AttributeComparator fA(column_type(t_int),Comparator::L,0,&f);
+	std::vector<AttributeComparator> ComparatorList;
 	ComparatorList.push_back(fA);
 	BlockStreamFilter::State bsf_state(input,bsscs1,ComparatorList,4096);
 	BlockStreamIteratorBase* bsf=new BlockStreamFilter(bsf_state);

@@ -22,7 +22,7 @@ ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {
 }
 
 ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
-		std::vector<FilterIterator::AttributeComparator> comparator_list
+		std::vector<AttributeComparator> comparator_list
 		,unsigned block_size)
 :schema_(schema),child_(child),comparator_list_(comparator_list),block_size_(block_size){
 
