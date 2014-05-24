@@ -9,10 +9,10 @@
 #define BLOCKSTREAMSORTITERATOR_H_
 
 #include "../BlockStreamIteratorBase.h"
-#include "../../Block/BlockStream.h"
+#include "../../common/Block/BlockStream.h"
 #include "../../common/Schema/Schema.h"
 #include "../../configure.h"
-#include "../../Block/DynamicBlockBuffer.h"
+#include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../utility/rdtsc.h"
 
 class BlockStreamSortIterator:public BlockStreamIteratorBase{

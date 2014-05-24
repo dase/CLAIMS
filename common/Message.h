@@ -30,7 +30,7 @@
 #include <assert.h>
 #include <Theron/Defines.h>
 #include <Theron/Theron.h>
-#include "../Serialization/RegisterDerivedClass.h"
+#include "../BlockStreamIterator/Serialization/RegisterDerivedClass.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../Debug.h"
 #include "../storage/StorageLevel.h"

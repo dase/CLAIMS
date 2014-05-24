@@ -8,7 +8,7 @@
 #ifndef EXECUTING_H_
 #define EXECUTING_H_
 #include <string>
-#include "../Block/ResultSet.h"
+#include "../common/Block/ResultSet.h"
 class Executing {
 public:
 	Executing();

@@ -1,5 +1,5 @@
 #include "../../utility/test_tool.h"
-#include "../../Block/ResultSet.h"
+#include "../../common/Block/ResultSet.h"
 #include "../../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../set_up_environment.h"
 #include "../../common/AttributeComparator.h"

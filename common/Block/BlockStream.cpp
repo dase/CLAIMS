@@ -5,7 +5,7 @@
  *      Author: wangli
  */
 #include <malloc.h>
-#include "../configure.h"
+#include "../../configure.h"
 #include "BlockStream.h"
 #include <assert.h>
 BlockStreamFix::BlockStreamFix(unsigned block_size,unsigned tuple_size)

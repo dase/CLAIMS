@@ -10,7 +10,7 @@
 
 #include "../SchemaVar.h"
 #include "../../ids.h"
-#include "../../../Block/BlockStream.h"
+#include "../../../common/Block/BlockStream.h"
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
 #include "../../../BlockStreamIterator/BlockStreamPrint.h"

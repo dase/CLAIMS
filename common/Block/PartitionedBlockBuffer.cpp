@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <memory.h>
-#include "../configure.h"
+#include "../../configure.h"
 PartitionedBlockBuffer::PartitionedBlockBuffer(unsigned nPartitions,unsigned block_size,unsigned nBlocks)
 :nPartitions(nPartitions),nBlocks(nBlocks){
 	blocks_in_partition_list=new std::list<Block*>[nPartitions];

@@ -12,7 +12,7 @@
 #include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../common/Schema/Schema.h"
 #include "../../common/Comparator.h"
-#include "../../Block/BlockStream.h"
+#include "../../common/Block/BlockStream.h"
 #include "../../utility/lock.h"
 #include "../../common/AttributeComparator.h"
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {

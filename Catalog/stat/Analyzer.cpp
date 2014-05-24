@@ -11,9 +11,9 @@
 #include <cstdlib>
 #include <vector>
 
-#include "../../Block/BlockStream.h"
-#include "../../Block/DynamicBlockBuffer.h"
-#include "../../Block/ResultSet.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../common/Block/DynamicBlockBuffer.h"
+#include "../../common/Block/ResultSet.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../common/data_type.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
