@@ -27,14 +27,7 @@
 #include "../PerformanceMonitor/PerformanceIteratorTop.h"
 
 #include "../iterator.hpp"
-#include "../iterator/SingleColumnScanIterator.h"
 #include "../iterator/FilterIterator.h"
-#include "../iterator/JoinIterator.h"
-#include "../iterator/CombinedIterator.h"
-#include "../iterator/PrintIterator.h"
-#include "../iterator/AggregationIterator.h"
-
-#include "../iterator/ExchangeIteratorEager.h"
 
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
@@ -43,15 +36,10 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScanDisk.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchange.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeMaterialized.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBroadcastExchange.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBroadcastExchangeLower.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExchangeBroadcast.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExchangeLowerBroadcast.h"
 
 #include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../PerformanceMonitor/BlockStreamPerformanceTest.h"

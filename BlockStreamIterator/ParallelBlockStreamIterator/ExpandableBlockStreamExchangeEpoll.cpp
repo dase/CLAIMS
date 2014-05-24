@@ -23,9 +23,7 @@
 #include <assert.h>
 #include <sys/epoll.h>
 #include "ExpandableBlockStreamExchangeEpoll.h"
-#include "ExpandableBlockStreamExchangeLower.h"
 #include "ExpandableBlockStreamExchangeLowerEfficient.h"
-#include "../../Block/BlockReadableFix.h"
 #include "../../common/Logging.h"
 #include "../../Environment.h"
 #include "../../Executor/ExchangeTracker.h"

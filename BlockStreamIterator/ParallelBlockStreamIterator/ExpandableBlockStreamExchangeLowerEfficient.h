@@ -27,9 +27,6 @@
 #include <pthread.h>
 #include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
-#include "../../Block/BlockReadable.h"
-#include "../../Block/BlockWritable.h"
-#include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../Block/PartitionedBlockBuffer.h"
 #include "../../Block/BlockStream.h"
@@ -93,7 +90,7 @@ private:
 	BlockContainer* block_for_sending;
 	BlockContainer* block_for_buffer_;
 	PartitionedBlockContainer* buffer_for_sending_;
-	BlockWritable* block_for_inserting_to_buffer_;
+	Block* block_for_inserting_to_buffer_;
 	BlockStreamBase* block_stream_for_asking_;
 	pthread_t sender_tid;
 	pthread_t debug_tid;

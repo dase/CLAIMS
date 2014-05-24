@@ -8,7 +8,6 @@
 #include <sys/socket.h>
 
 #include "ExpandableBlockStreamExchangeMaterialized.h"
-#include "../../Block/BlockReadableFix.h"
 #include "../../common/Logging.h"
 #include "../../Environment.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
@@ -26,7 +25,8 @@ bool ExpandableBlockStreamExchangeMaterialized::open(const PartitionOffset& part
 	if(sem_open_.try_wait()){
 		nexhausted_lowers_=0;
 		received_block_stream_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
-		block_for_socket_=new BlockReadableFix(received_block_stream_->getSerializedBlockSize(),state_.schema_);
+//		block_for_socket_=new BlockReadableFix(received_block_stream_->getSerializedBlockSize(),state_.schema_);
+				block_for_socket_=new Block(received_block_stream_->getSerializedBlockSize());
 		buffer=new BlockStreamBuffer(state_.block_size_,nlowers_*10,state_.schema_);
 		if(PrepareTheSocket()==false)
 			return false;
@@ -77,7 +77,7 @@ bool ExpandableBlockStreamExchangeMaterialized::close(){
 
 
 	sem_open_.set_value(1);
-	block_for_socket_->~BlockReadable();
+	block_for_socket_->~Block();
 	received_block_stream_->~BlockStreamBase();
 	buffer->~BlockStreamBuffer();
 
@@ -164,8 +164,8 @@ void* ExpandableBlockStreamExchangeMaterialized::receiver(void* arg){
 
 
 						Pthis->received_block_stream_->deserialize(Pthis->block_for_socket_);
-						const bool isLastBlock=Pthis->block_for_socket_->IsLastBlock();
-
+//						const bool isLastBlock=Pthis->block_for_socket_->IsLastBlock();
+						const bool isLastBlock=	Pthis->received_block_stream_->Empty();
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
 
 
