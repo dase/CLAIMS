@@ -36,7 +36,6 @@
 #include "../storage/StorageLevel.h"
 #include "ids.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
-#include "../iterator.hpp"
 //It's better to use fixed length information for implementation concern.
 THERON_DECLARE_REGISTERED_MESSAGE(ExchangeID)
 struct StorageBudgetMessage{
@@ -396,18 +395,14 @@ private:
 class IteratorMessage
 {
 public:
-	IteratorMessage(Iterator* it)
-	:tuple_stream_iterator_root_(it),block_stream_iterator_root_(0)
-	{};
 	IteratorMessage(BlockStreamIteratorBase* it)
-		:tuple_stream_iterator_root_(0),block_stream_iterator_root_(it)
+		:block_stream_iterator_root_(it)
 		{};
 	IteratorMessage(const IteratorMessage& r){
-		tuple_stream_iterator_root_=r.tuple_stream_iterator_root_;
 		block_stream_iterator_root_=r.block_stream_iterator_root_;
 	}
 
-	IteratorMessage():tuple_stream_iterator_root_(0),block_stream_iterator_root_(0){};
+	IteratorMessage():block_stream_iterator_root_(0){};
 	~IteratorMessage(){
 //		if(tuple_stream_iterator_root_>0)
 //			tuple_stream_iterator_root_->~Iterator();
@@ -420,23 +415,13 @@ public:
 	 * IteratorMessage
 	 */
 	void destory(){
-		if(tuple_stream_iterator_root_>0)
-			tuple_stream_iterator_root_->~Iterator();
-		if(block_stream_iterator_root_>0)
-			block_stream_iterator_root_->~BlockStreamIteratorBase();
+		block_stream_iterator_root_->~BlockStreamIteratorBase();
 	}
 	void run()
 	{
-		if(tuple_stream_iterator_root_>0){
-			tuple_stream_iterator_root_->open();
-			while(tuple_stream_iterator_root_->next(0));
-			tuple_stream_iterator_root_->close();
-		}
-		if(block_stream_iterator_root_>0){
-			block_stream_iterator_root_->open();
-			while(block_stream_iterator_root_->next(0));
-			block_stream_iterator_root_->close();
-		}
+		block_stream_iterator_root_->open();
+		while(block_stream_iterator_root_->next(0));
+		block_stream_iterator_root_->close();
 
 
 	}
@@ -461,7 +446,6 @@ public:
 		return Serialize4K<IteratorMessage>(input);
 	}
 private:
-	Iterator* tuple_stream_iterator_root_;
 	BlockStreamIteratorBase* block_stream_iterator_root_;
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -470,7 +454,7 @@ private:
 		Register_Schemas(ar);
 		Register_Tuple_Stream_Iterators(ar);
 		Register_Block_Stream_Iterator(ar);
-		ar & tuple_stream_iterator_root_ & block_stream_iterator_root_;
+		ar  & block_stream_iterator_root_;
 //		ar & block_stream_iterator_root_;
 
 	}
