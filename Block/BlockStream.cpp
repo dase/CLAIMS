@@ -7,7 +7,6 @@
 #include <malloc.h>
 #include "../configure.h"
 #include "BlockStream.h"
-#include "BlockWritable.h"
 #include <assert.h>
 BlockStreamFix::BlockStreamFix(unsigned block_size,unsigned tuple_size)
 :BlockStreamBase(block_size),tuple_size_(tuple_size){

@@ -20,9 +20,6 @@
 #include <stdio.h>
 #include "../../common/Schema/Schema.h"
 #include "../BlockStreamExchangeLowerBase.h"
-#include "../../Block/BlockReadable.h"
-#include "../../Block/BlockWritable.h"
-#include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../utility/lock.h"
 #include "../../Block/PartitionedBlockBuffer.h"
@@ -82,8 +79,8 @@ private:
 	 * partition key.
 	 */
 	BlockStreamBase** cur_block_stream_list_;
-	BlockWritable* block_for_sending_;
-	BlockWritable* block_for_inserting_to_buffer_;
+	Block* block_for_sending_;//writable
+	Block* block_for_inserting_to_buffer_;//writable
 	BlockStreamBase* block_stream_for_asking_;
 	pthread_t sender_tid_;
 	pthread_t debug_tid_;

@@ -11,7 +11,6 @@
 #include "../BlockStreamExchangeBase.h"
 #include "../../common/Schema/Schema.h"
 #include "../../utility/lock.h"
-#include "../../Block/BlockReadableFix.h"
 #include "../../Block/BlockStreamBuffer.h"
 class ExpandableBlockStreamExchangeMaterialized: public BlockStreamExchangeBase {
 public:
@@ -46,7 +45,7 @@ private:
 	semaphore sem_open_;
 	volatile bool open_finished_;
 	unsigned nexhausted_lowers_;
-	BlockReadable* block_for_socket_;
+	Block* block_for_socket_;
 	BlockStreamBase* received_block_stream_;
 	BlockStreamBuffer* buffer;
 	pthread_t receiver_tid;
