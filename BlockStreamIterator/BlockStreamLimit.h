@@ -15,7 +15,7 @@ public:
 	struct State{
 		friend class BlockStreamLimit;
 	public:
-		State(Schema* schema,BlockStreamIteratorBase* child,unsigned long limits,unsigned block_size,unsigned long start_position=1);
+		State(Schema* schema,BlockStreamIteratorBase* child,unsigned long limits,unsigned block_size,unsigned long start_position=0);
 		State();
 	private:
 		Schema* schema_;
@@ -41,7 +41,7 @@ private:
 		return received_tuples_>=state_.limits_;
 	}
 	inline bool shouldSkip()const{
-		return tuple_cur_<state_.start_position_-1;
+		return tuple_cur_<state_.start_position_;
 	}
 private:
 	State state_;
