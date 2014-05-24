@@ -8,7 +8,7 @@
 #include <memory.h>
 //hello
 #include "Block.h"
-#include "../configure.h"
+#include "../../configure.h"
 Block::Block(unsigned BlockSize)
 :BlockSize(BlockSize),isReference_(false)
 {

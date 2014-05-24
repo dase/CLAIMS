@@ -9,7 +9,7 @@
 #define CHUNKSTORAGE_H_
 #include <string>
 #include <hdfs.h>
-#include "../Block/BlockStream.h"
+#include "../common/Block/BlockStream.h"
 #include "StorageLevel.h"
 #include "../utility/lock.h"
 #include "../common/ids.h"

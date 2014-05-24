@@ -12,7 +12,7 @@
 #include <set>
 #include "../BlockStreamIteratorBase.h"
 #include "../../common/Schema/Schema.h"
-#include "../../Block/BlockStreamBuffer.h"
+#include "../../common/Block/BlockStreamBuffer.h"
 #include "../../utility/ExpandabilityShrinkability.h"
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"

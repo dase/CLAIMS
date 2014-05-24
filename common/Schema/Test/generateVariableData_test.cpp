@@ -3,7 +3,7 @@ using namespace std;
 
 #include "../SchemaVar.h"
 #include "../../rename.h"
-#include "../../../Block/BlockStream.h"
+#include "../../../common/Block/BlockStream.h"
 
 static int generateVariableData_test(){
 	int fd=FileOpen("/home/casa/storage/file/var/new.data",O_WRONLY|O_CREAT);

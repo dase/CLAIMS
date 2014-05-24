@@ -22,9 +22,9 @@
 #include "../BlockStreamExchangeLowerBase.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../utility/lock.h"
-#include "../../Block/PartitionedBlockBuffer.h"
-#include "../../Block/BlockStream.h"
-#include "../../Block/BlockStreamBuffer.h"
+#include "../../common/Block/PartitionedBlockBuffer.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../common/Block/BlockStreamBuffer.h"
 
 class ExpandableBlockStreamExchangeLowerMaterialized:public BlockStreamExchangeLowerBase {
 public:

@@ -14,7 +14,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 
 
-#include "../common/Schema/SchemaFix.h"
+#include "../../common/Schema/SchemaFix.h"
 template<class Archive>
 void Register_Schemas(Archive & ar)
 {

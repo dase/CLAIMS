@@ -7,7 +7,7 @@
 
 #ifndef HASH_TABLE_TEST_H_
 #define HASH_TABLE_TEST_H_
-#include "../../Block/BlockStreamBuffer.h"
+#include "../../common/Block/BlockStreamBuffer.h"
 #include "../../Catalog/Column.h"
 #include <boost/functional/hash.hpp>
 #include "../../BlockStreamIterator/BlockStreamIteratorBase.h"

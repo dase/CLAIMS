@@ -21,11 +21,11 @@
 #include <map>
 #include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
-#include "../../Block/BlockContainer.h"
+#include "../../common/Block/BlockContainer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
-#include "../../Block/PartitionedBlockBuffer.h"
-#include "../../Block/BlockStream.h"
-#include "../../Block/BlockStreamBuffer.h"
+#include "../../common/Block/PartitionedBlockBuffer.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../common/Block/BlockStreamBuffer.h"
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"
 class ExpandableBlockStreamExchangeEpoll:public BlockStreamIteratorBase {

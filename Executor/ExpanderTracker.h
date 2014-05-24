@@ -12,7 +12,7 @@
 #include <boost/unordered_map.hpp>
 #include <map>
 #include <stack>
-#include "../utility/Block/MonitorableBuffer.h"
+#include "../common/Block/MonitorableBuffer.h"
 #include "../utility/ExpandabilityShrinkability.h"
 #include "../utility/lock.h"
 #include "../common/Logging.h"
