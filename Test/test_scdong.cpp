@@ -25,7 +25,6 @@
 #include "../common/Message.h"
 #include "../common/Schema/SchemaFix.h"
 
-#include "../iterator.hpp"
 
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
