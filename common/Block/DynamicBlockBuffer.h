@@ -10,7 +10,7 @@
 #include <vector>
 #include "Block.h"
 #include "BlockStream.h"
-#include "../utility/lock.h"
+#include "../../utility/lock.h"
 /**
  * A container which buffers serialized blocks. The number of blocks in the buffer is not known when constructing
  * and is growing dynamically on the fly.

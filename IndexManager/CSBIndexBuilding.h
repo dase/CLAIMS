@@ -13,7 +13,7 @@
 #include "../common/ids.h"
 #include "../common/Schema/Schema.h"
 #include "../storage/PartitionStorage.h"
-#include "../Block/BlockStream.h"
+#include "../common/Block/BlockStream.h"
 #include "../storage/ChunkStorage.h"
 #include "../common/data_type.h"
 #include "CSBPlusTree.h"

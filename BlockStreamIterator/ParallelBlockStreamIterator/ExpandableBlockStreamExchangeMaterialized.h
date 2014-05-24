@@ -11,7 +11,7 @@
 #include "../BlockStreamExchangeBase.h"
 #include "../../common/Schema/Schema.h"
 #include "../../utility/lock.h"
-#include "../../Block/BlockStreamBuffer.h"
+#include "../../common/Block/BlockStreamBuffer.h"
 class ExpandableBlockStreamExchangeMaterialized: public BlockStreamExchangeBase {
 public:
 	struct State{

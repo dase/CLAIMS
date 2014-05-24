@@ -12,9 +12,9 @@
 #include <iostream>
 #include <vector>
 
-#include "../../Block/BlockStream.h"
-#include "../../Block/DynamicBlockBuffer.h"
-#include "../../Block/ResultSet.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../common/Block/DynamicBlockBuffer.h"
+#include "../../common/Block/ResultSet.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/Catalog.h"

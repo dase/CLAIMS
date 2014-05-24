@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 #include <list>
-#include "../Block/ResultSet.h"
+#include "../common/Block/ResultSet.h"
 #include "../utility/lock.h"
 
 #define EXECUTED_RESULT_STATUS_OK 0

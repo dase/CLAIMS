@@ -16,7 +16,7 @@
 
 #include "BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
-#include "../Block/BlockStream.h"
+#include "../common/Block/BlockStream.h"
 
 class BlockStreamRandomMemAccess :public BlockStreamIteratorBase {
 public:

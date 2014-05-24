@@ -5,7 +5,7 @@
  *      Author: wangli
  */
 #include "../common/Schema/SchemaFix.h"
-#include "../Block/BlockStream.h"
+#include "../common/Block/BlockStream.h"
 int mainasfasdf22(){
 	std::vector<column_type> column_list;
 	column_list.push_back(column_type(t_int));

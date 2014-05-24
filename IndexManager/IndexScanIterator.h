@@ -9,7 +9,7 @@
 #define INDEXSCANITERATOR_H_
 #include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
 #include "../common/ids.h"
-#include "../Block/BlockStream.h"
+#include "../common/Block/BlockStream.h"
 #include "CSBPlusTree.h"
 #include "../storage/PartitionStorage.h"
 

@@ -12,7 +12,7 @@
 #include "../ExpandableBlockStreamProjectionScan.h"
 #include "../../../common/ids.h"
 #include "../../../Environment.h"
-#include "../../../Block/BlockStream.h"
+#include "../../../common/Block/BlockStream.h"
 #include "../../../LogicalQueryPlan/Scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
