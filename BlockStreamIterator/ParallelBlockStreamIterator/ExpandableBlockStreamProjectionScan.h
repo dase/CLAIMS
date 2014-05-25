@@ -19,6 +19,7 @@
 #include "../../storage/ChunkStorage.h"
 #include "../../storage/PartitionStorage.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
+#include "../../common/ExpandedThreadTracker.h"
 class ExpandableBlockStreamProjectionScan:public ExpandableBlockStreamIteratorBase {
 public:
 	struct allocated_block{
@@ -76,6 +77,8 @@ private:
 	/* for debug*/
 	unsigned long int return_blocks_;
 	Lock lock_;
+
+	PerformanceInfo* perf_info;
 
 	/*
 	 * The following code is for boost serialization.
