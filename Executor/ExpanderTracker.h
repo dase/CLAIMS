@@ -17,6 +17,7 @@
 #include "../utility/lock.h"
 #include "../common/Logging.h"
 #include "../common/ids.h"
+#include "../common/ExpandedThreadTracker.h"
 typedef pthread_t expanded_thread_id;
 
 
@@ -125,6 +126,7 @@ class ExpanderTracker {
 	 * This structure maintains the status of current expander in terms of running stage.
 	 */
 	struct ExpanderStatus{
+		PerformanceInfo perf_info;
 		local_stage current_stage;
 		std::stack<LocalStageEndPoint> pending_endpoints;
 		void addNewEndpoint(LocalStageEndPoint);
@@ -163,6 +165,7 @@ public:
 
 	bool addNewStageEndpoint(expanded_thread_id,LocalStageEndPoint);
 
+	PerformanceInfo* getPerformanceInfo(expanded_thread_id);
 
 	ExpanderID registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink);
 	void unregisterExpander(ExpanderID expander_id);

@@ -255,6 +255,9 @@ std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(const Dataflow& 
 }
 void LogicalQueryPlanRoot::print(int level)const{
 	printf("Root\n");
+	if(!limit_constraint_.canBeOmitted()){
+		printf("With limit constaint: %ld, %ld\n",limit_constraint_.start_position_,limit_constraint_.returned_tuples_);
+	}
 	child_->print(level+1);
 
 }

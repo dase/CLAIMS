@@ -146,7 +146,24 @@ bool ExpanderTracker::addNewStageEndpoint(expanded_thread_id tid ,LocalStageEndP
 	lock_.release();
 	return true;
 }
+PerformanceInfo* ExpanderTracker::getPerformanceInfo(expanded_thread_id tid){
+	lock_.acquire();
+	if(thread_id_to_expander_id_.find(tid)==thread_id_to_expander_id_.end()){
+		lock_.release();
+		assert(false);
+//		return false;
+	}
+	ExpanderID expender_id=thread_id_to_expander_id_[tid];
 
+	if(expander_id_to_status_.find(expender_id)==expander_id_to_status_.end()){
+		lock_.release();
+		assert(false);
+//		return false;
+	}
+	PerformanceInfo* ret=&expander_id_to_status_[expender_id].perf_info;
+	lock_.release();
+	return ret;
+}
 ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink){
 	ExpanderID expander_id;
 	lock_.acquire();
@@ -212,6 +229,7 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_
 		LocalStageEndPoint top=pending_endpoints.top();
 		pending_endpoints.pop();
 		current_stage=local_stage(new_end_point,top);
+		perf_info=PerformanceInfo();
 //		printf("The execution is in a new stage: %s ---> %s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
 	}
 	lock.release();
@@ -379,6 +397,9 @@ void* ExpanderTracker::monitoringThread(void* arg){
 
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
 		Pthis->log_->log("-------------------");
+
+		printf("Instance throughput: %lf Mbytes\n",it->second.perf_info.report_instance_performance_in_millibytes());
+
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
 		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism);
 		Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism);
