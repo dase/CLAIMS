@@ -48,6 +48,7 @@
 #include "TestSuit/in_segment_scalability_test.cpp"
 #include "TestSuit/hash_table_test.h"
 #include "gtest.h"
+#include "../common/ExpandedThreadTracker_test.cpp"
 int main(int argc , char ** argv){
 
 //	return testGenerateIteratorTree();
@@ -58,7 +59,7 @@ int main(int argc , char ** argv){
 //	return ResultCollect_test();
 //	return parser_test();
 //	return sub_tuple_test();
-	return aggregation_test();
+//	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics();
 //	return sort_iterator_test();
@@ -88,12 +89,14 @@ int main(int argc , char ** argv){
 //	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(5);
+	test_expanderFramework_single_node(5);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test();
 //	hash_table_test();
 //	g_test_main(argc,argv);
+
+//	test_ExpandedThreadTracker();
 //	sleep(1000);
 }

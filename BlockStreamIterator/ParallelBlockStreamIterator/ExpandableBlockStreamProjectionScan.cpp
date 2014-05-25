@@ -72,6 +72,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		}
 		open_ret_=true;
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
+		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		broadcaseOpenFinishedSignal();
 	}
 	else{
@@ -85,49 +86,52 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		//		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
 		return false;
 	}
+	perf_info->processed_one_block();
 	return partition_reader_iterator_->nextBlock(block);
 
 
-	//	return false;
-	allocated_block allo_block_temp;
-	ChunkReaderIterator* chunk_reader_iterator;
-	if(atomicPopChunkReaderIterator(chunk_reader_iterator)){
-		/* there is unused ChunkReaderIterator*/
-		//		if(chunk_reader_iterator->nextBlock(block)){
-
-		bool next;
-		if(passSample()){
-			next=chunk_reader_iterator->nextBlock(block);
-		}
-		else{
-			next=chunk_reader_iterator->nextBlock();
-		}
-		if(next){
-			/* there is still unread block*/
-			atomicPushChunkReaderIterator(chunk_reader_iterator);
-			lock_.acquire();
-			return_blocks_++;
-			lock_.release();
-			return true;
-		}
-		else{
-			/* the ChunkReaderIterator is exhausted, so we destructe it.*/
-
-			//			printf("Chunk(%d,%d,%d,%d) is exhausted!\n",chunk_reader_iterator->chunk_id_.partition_id.projection_id.table_id,chunk_reader_iterator->chunk_id_.partition_id.projection_id.projection_off,chunk_reader_iterator->chunk_id_.partition_id.partition_off,chunk_reader_iterator->chunk_id_.chunk_off);
-			chunk_reader_iterator->~ChunkReaderIterator();
-
-		}
-	}
-	/* there isn't any unused ChunkReaderIterator or the ChunkReaderIterator is exhausted,
-	 * so we create new one*/
-	if((chunk_reader_iterator=partition_reader_iterator_->nextChunk())!=0){
-		atomicPushChunkReaderIterator(chunk_reader_iterator);
-		return next(block);
-	}
-	else{
-		printf("**********Scan is exhausted!\n");
-		return false;
-	}
+//	//	return false;
+//	allocated_block allo_block_temp;
+//	ChunkReaderIterator* chunk_reader_iterator;
+//	if(atomicPopChunkReaderIterator(chunk_reader_iterator)){
+//		/* there is unused ChunkReaderIterator*/
+//		//		if(chunk_reader_iterator->nextBlock(block)){
+//
+//		bool next;
+//		if(passSample()){
+//			next=chunk_reader_iterator->nextBlock(block);
+//		}
+//		else{
+//			next=chunk_reader_iterator->nextBlock();
+//		}
+//		if(next){
+//			/* there is still unread block*/
+//			atomicPushChunkReaderIterator(chunk_reader_iterator);
+//			lock_.acquire();
+//			return_blocks_++;
+//			lock_.release();
+//			printf("r!!!\n");
+//			perf_info->processed_one_block();
+//			return true;
+//		}
+//		else{
+//			/* the ChunkReaderIterator is exhausted, so we destructe it.*/
+//
+//			//			printf("Chunk(%d,%d,%d,%d) is exhausted!\n",chunk_reader_iterator->chunk_id_.partition_id.projection_id.table_id,chunk_reader_iterator->chunk_id_.partition_id.projection_id.projection_off,chunk_reader_iterator->chunk_id_.partition_id.partition_off,chunk_reader_iterator->chunk_id_.chunk_off);
+//			chunk_reader_iterator->~ChunkReaderIterator();
+//
+//		}
+//	}
+//	/* there isn't any unused ChunkReaderIterator or the ChunkReaderIterator is exhausted,
+//	 * so we create new one*/
+//	if((chunk_reader_iterator=partition_reader_iterator_->nextChunk())!=0){
+//		atomicPushChunkReaderIterator(chunk_reader_iterator);
+//		return next(block);
+//	}
+//	else{
+//		printf("**********Scan is exhausted!\n");
+//		return false;
+//	}
 }
 
 bool ExpandableBlockStreamProjectionScan::close() {
