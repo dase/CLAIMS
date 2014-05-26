@@ -132,6 +132,11 @@ static double sb_scan_filter(){
 
 	Filter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
+//	filter_condition_1.add(table->getAttribute("entry_dir"),AttributeComparator::EQ,std::string("1"));
+//	const int trade_date=20101008;
+//	filter_condition_1.add(table->getAttribute("entry_date"),AttributeComparator::GEQ,std::string("20101008"));
+//	const int sec_code=600036;
+//	filter_condition_1.add(table->getAttribute("sec_code"),AttributeComparator::EQ,std::string("600036"));
 	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 
 

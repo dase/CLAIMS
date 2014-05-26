@@ -28,6 +28,7 @@
 #include "../../common/Block/BlockStreamBuffer.h"
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"
+#include "../../common/ExpandedThreadTracker.h"
 class ExpandableBlockStreamExchangeEpoll:public BlockStreamIteratorBase {
 public:
 	struct State{
@@ -92,6 +93,8 @@ private:
 	/*the lower socket fd to the index*/
 	std::map<int,int> lower_sock_fd_to_index;
 	Logging* logging_;
+
+	PerformanceInfo * perf_info_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
