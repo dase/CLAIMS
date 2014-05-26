@@ -275,7 +275,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 	case local_stage::from_buffer:{
 		ret=DECISION_KEEP;
 //		break;
-		SWITCHER(print,log_->log("%lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage()))
+		SWITCHER(print,log_->log("Buffer usage: %lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage()))
 		const double current_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		if(current_stage.dataflow_src_.monitorable_buffer->inputComplete()){
 			if(current_degree_of_parallelism==0){
@@ -306,7 +306,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 		}
 	}
 	case local_stage::to_buffer:{
-		SWITCHER(print,log_->log("N/A=====>%lf\n",current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()));
+		SWITCHER(print,log_->log("Buffer usage: N/A=====>%lf\n",current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()));
 		const double current_usage=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
 		if(current_usage>THRESHOLD_FULL){
 			ret=DECISION_SHRINK;
@@ -329,7 +329,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 //		return DECISION_KEEP;
 	}
 	case local_stage::buffer_to_buffer:{
-		SWITCHER(print,log_->log("%lf=====> %lf\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage(),current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()))
+		SWITCHER(print,log_->log("Buffer usage: %lf=====> %lf\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage(),current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()))
 		const double bottom_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		const double top_usage=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
 		/* guarantee that there is at least one expanded thread when the input is complete so that the stage can be finished soon.*/
@@ -399,8 +399,8 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
 //		bool print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
 //		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation")!=-1)||(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);
-//		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);
-		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
+		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);  //       ---> Join
+//		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
 //		printf("return=%d %d print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
 //		bool print=true;
 		SWITCHER(print,Pthis->log_->log("-------------------"))
