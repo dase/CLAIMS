@@ -20,6 +20,7 @@
 #define THRESHOLD_EMPTY (THRESHOLD)
 #define THRESHOLD_FULL (1-THRESHOLD)
 
+#define SWITCHER(SWITCH,CAUSE) if (SWITCH) CAUSE;
 
 ///**
 // * Ideally, this should be guaranteed by resource manager.
@@ -234,7 +235,7 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_
 	}
 	lock.release();
 }
-int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism){
+int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism,bool print){
 	/**
 	 * In the initial implementation, if all expanded threads are shrunk and the condition
 	 *  for expanding will never be triggered due to the exhaust of input data-flow, then
@@ -274,7 +275,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 	case local_stage::from_buffer:{
 		ret=DECISION_KEEP;
 //		break;
-		log_->log("%lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage());
+		SWITCHER(print,log_->log("%lf=====>N/A\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage()))
 		const double current_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		if(current_stage.dataflow_src_.monitorable_buffer->inputComplete()){
 			if(current_degree_of_parallelism==0){
@@ -305,7 +306,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 		}
 	}
 	case local_stage::to_buffer:{
-		log_->log("N/A=====>%lf\n",current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage());
+		SWITCHER(print,log_->log("N/A=====>%lf\n",current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()));
 		const double current_usage=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
 		if(current_usage>THRESHOLD_FULL){
 			ret=DECISION_SHRINK;
@@ -328,7 +329,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 //		return DECISION_KEEP;
 	}
 	case local_stage::buffer_to_buffer:{
-		log_->log("%lf=====> %lf\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage(),current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage());
+		SWITCHER(print,log_->log("%lf=====> %lf\n",current_stage.dataflow_src_.monitorable_buffer->getBufferUsage(),current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()))
 		const double bottom_usage=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
 		const double top_usage=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
 		/* guarantee that there is at least one expanded thread when the input is complete so that the stage can be finished soon.*/
@@ -396,22 +397,28 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			it++;
 
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
-		Pthis->log_->log("-------------------");
+//		bool print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
+//		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation")!=-1)||(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);
+//		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);
+		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
+//		printf("return=%d %d print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
+//		bool print=true;
+		SWITCHER(print,Pthis->log_->log("-------------------"))
 
-		printf("Instance throughput: %lf Mbytes\n",it->second.perf_info.report_instance_performance_in_millibytes());
+		SWITCHER(print,printf("Instance throughput: %lf Mbytes\n",it->second.perf_info.report_instance_performance_in_millibytes()))
 
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
-		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism);
-		Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism);
+		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism,print);
+		SWITCHER(print,Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism))
 		ExpanderID exp_id=it->first;
 		Pthis->lock_.release();
 		switch(decision){
 		case DECISION_EXPAND:{
 			if(Pthis->expander_id_to_expand_shrink_[it->first]->Expand()){
-				Pthis->log_->log("=========Expanding======== %d-->%d ",current_degree_of_parallelism,current_degree_of_parallelism+1);
+				SWITCHER(print,Pthis->log_->log("=========Expanding======== %d-->%d ",current_degree_of_parallelism,current_degree_of_parallelism+1))
 			}
 			else{
-				Pthis->log_->log("=========Expanding======== Failed!");
+				SWITCHER(print,Pthis->log_->log("=========Expanding======== Failed!"))
 			}
 			break;
 		}
@@ -419,10 +426,10 @@ void* ExpanderTracker::monitoringThread(void* arg){
 //			if(Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()<=1)
 //				break;
 			if(Pthis->expander_id_to_expand_shrink_[it->first]->Shrink()){
-				Pthis->log_->log("=========Shrinking========  %d-->%d",current_degree_of_parallelism,current_degree_of_parallelism-1);
+				SWITCHER(print,Pthis->log_->log("=========Shrinking========  %d-->%d",current_degree_of_parallelism,current_degree_of_parallelism-1))
 			}
 			else{
-				Pthis->log_->log("=========Shrinking======== Failed!");
+				SWITCHER(print,Pthis->log_->log("=========Shrinking======== Failed!"))
 			}
 			break;
 		}

@@ -19,6 +19,7 @@ using namespace std;
 #include "../../Debug.h"
 #include "../../utility/lock.h"
 #include "../../common/Schema/Schema.h"
+#include "../../common/ExpandedThreadTracker.h"
 
 class BlockStreamAggregationIterator:public ExpandableBlockStreamIteratorBase{
 public:
@@ -89,6 +90,9 @@ private:
         Lock ht_cur_lock_;
         unsigned bucket_cur_;
         BasicHashTable::Iterator it_;
+
+        PerformanceInfo* perf_info_;
+
 //        unsigned allocated_tuples_in_hashtable;
 #ifdef TIME
         unsigned long long timer;

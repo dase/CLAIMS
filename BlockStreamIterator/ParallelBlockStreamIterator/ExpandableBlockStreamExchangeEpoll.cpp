@@ -67,6 +67,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 		buffer=new BlockStreamBuffer(state.block_size,BUFFER_SIZE_IN_EXCHANGE,state.schema);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
+		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -145,12 +146,19 @@ bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 
 	while(nexhausted_lowers<nlowers){
 		if(buffer->getBlock(*block)){
+			perf_info_->processed_one_block();
 			return true;
 		}
 		usleep(1);
 	}
 	/* all the lowers exchange are exhausted.*/
-	return buffer->getBlock(*block);
+	if(buffer->getBlock(*block)){
+		perf_info_->processed_one_block();
+		return true;
+	}
+	else{
+		return false;
+	}
 
 }
 
