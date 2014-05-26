@@ -34,6 +34,9 @@ using boost::pool;
 #ifndef __HASHTABLE__
 #define __HASHTABLE__
 
+
+#define CONTENTION_REDUCTION
+
 inline int get_aligned_space(const unsigned& bucksize)
 {
 	return ((bucksize+2*sizeof(void*)-1)/cacheline_size+1)*cacheline_size;
@@ -41,13 +44,13 @@ inline int get_aligned_space(const unsigned& bucksize)
 class BasicHashTable
 {
 public:
-	BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize);
+	BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize, unsigned expected_number_of_visiting_thread=1);
 	~BasicHashTable();
-	void* allocate(const unsigned& offset);
-	inline void* atomicAllocate(const unsigned& offset){
+	void* allocate(const unsigned& offset,unsigned thread_id=0);
+	inline void* atomicAllocate(const unsigned& offset,unsigned thread_id=0){
 		void* ret;
 		lock_list_[offset].lock();
-		ret=allocate(offset);
+		ret=allocate(offset,thread_id);
 		lock_list_[offset].unlock();
 		return ret;
 	}
@@ -167,13 +170,18 @@ private:
 	int cur_MP_;
 	std::vector<char*> mother_page_list_;
 	SpineLock* lock_list_;
-	SpineLock mother_page_lock_;
 	unsigned * overflow_count_;
 
 	unsigned long allocate_count;
 	std::set<void*> allocated_buckets;
 	static unsigned number_of_instances_;
-	pool<> grandmother;
+#ifdef CONTENTION_REDUCTION
+	unsigned expected_number_of_visiting_thread_;
+	pool<>** grandmothers;
+#else
+	SpineLock mother_page_lock_;
+	pool<>* grandmother;
+#endif
 
 };
 

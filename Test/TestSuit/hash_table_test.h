@@ -207,7 +207,7 @@ struct Arg{
 	unsigned tid;
 };
 
-BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize);
+BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize, unsigned nthreads=1);
 void* insert_into_hash_table_from_projection(void * argment){
 	unsigned long count=0;
 	unsigned long long force=0;
@@ -322,8 +322,8 @@ Schema* generate_schema(unsigned tuple_length){
 	return schema;
 }
 
-BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize){
-	BasicHashTable* hashtable=new BasicHashTable(nbuckets,bucketsize,tuple_size);
+BasicHashTable* generate_hashtable(unsigned tuple_size, unsigned nbuckets, unsigned bucketsize,unsigned nthreads){
+	BasicHashTable* hashtable=new BasicHashTable(nbuckets,bucketsize,tuple_size,nthreads);
 	return hashtable;
 }
 
@@ -381,8 +381,8 @@ void* insert_into_hash_table(void * argment){
 //				break;
 //			}
 			unsigned bn=arg.schema->columns[0].operate->getPartitionValue(tuple,arg.hash);
-			void* new_tuple_in_hashtable=(*arg.hash_table)->atomicAllocate(bn);
-//			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
+			void* new_tuple_in_hashtable=(*arg.hash_table)->atomicAllocate(bn,arg.tid);
+			arg.schema->copyTuple(tuple,new_tuple_in_hashtable);
 		}
 	}
 	arg.barrier->Arrive();
@@ -399,14 +399,14 @@ void create_thread(unsigned nthreads){
 double fill_hash_table(unsigned degree_of_parallelism){
 //	init_alloc_destory();
 	Config::getInstance();
-	const unsigned nbuckets=1024*1024;
-	const unsigned tuple_size=8;
-	const unsigned bucketsize=64-8;
-	const unsigned long data_size_in_MB=1024;
+	const unsigned nbuckets=64;
+	const unsigned tuple_size=32;
+	const unsigned bucketsize=1024-8;
+	const unsigned long data_size_in_MB=256;
 	const unsigned nthreads=degree_of_parallelism;
 	double ret;
 	Schema* schema=generate_schema(tuple_size);
-	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize);
+	BasicHashTable* hashtable=generate_hashtable(schema->getTupleMaxSize(),nbuckets,bucketsize,nthreads);
 	printf("before allocate data!\n");
 //	sleep(3);
 
@@ -533,8 +533,26 @@ void memory_leak_test(){
 
 
 }
+int performance_test(){
+	const unsigned tuple_size=32;
+	unsigned nbuckets=1024*1024;
+	unsigned bucket_size=256;
+	const unsigned long datasize=1024*1024*1024;
+
+	BasicHashTable* hashtable=generate_hashtable(tuple_size,nbuckets,bucket_size,1);
+
+	unsigned long long int start=curtick();
+	for(unsigned i=0,bn=0;i<datasize/tuple_size;i++,bn++){
+		hashtable->atomicAllocate(bn);
+		if(bn==nbuckets){
+			bn=0;
+		}
+	}
+	printf("Avg: %d cycles per allocation!\n",(curtick()-start)/(datasize/tuple_size));
+}
 
 int hash_table_test(){
+//	performance_test();
 	scalability_test();
 //	memory_leak_test();
 }

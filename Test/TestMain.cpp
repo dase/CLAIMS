@@ -93,8 +93,8 @@ int main(int argc , char ** argv){
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
-	in_segment_scalability_test();
-//	hash_table_test();
+//	in_segment_scalability_test();
+	hash_table_test();
 //	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
