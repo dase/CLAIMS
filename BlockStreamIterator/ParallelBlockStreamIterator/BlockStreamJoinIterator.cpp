@@ -8,7 +8,7 @@
 #include "BlockStreamJoinIterator.h"
 #include "../../Executor/ExpanderTracker.h"
 
-#define DISABLE_HASH_TABLE
+//#define _DEBUG_
 
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),reached_end(0),ExpandableBlockStreamIteratorBase(barrier_number(2),serialized_section_number(1)){
@@ -88,11 +88,13 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		}
 
 		hash=PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets);
-		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
+//		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
 		unsigned long long hash_table_build=curtick();
 		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
 //		printf("Hash table construction time:%4.4f\n",getSecond(hash_table_build));
+#ifdef	_DEBUG_
 		consumed_tuples_from_left=0;
+#endif
 	}
 
 
@@ -141,15 +143,17 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		while(cur=ct.block_stream_iterator_->nextTuple()){
 //			hashtable->atomicAllocate(0);
 //			continue;
+#ifdef	_DEBUG_
 			processed_tuple_count++;
 			lock_.acquire();
 			consumed_tuples_from_left++;
 			lock_.release();
+#endif
 //			continue;
 			const void* key_addr=input_schema->getColumnAddess(state_.joinIndex_left[0],cur);
 			bn=op->getPartitionValue(key_addr,buckets);
 //			printf("%d\t",bn);
-//			if(bn!=-1){
+//			if(bn!=0){
 //				continue;
 //			}
 			tuple_in_hashtable=hashtable->atomicAllocate(bn);
@@ -184,11 +188,12 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 
 	unsigned tmp=0;
+#ifdef	_DEBUG_
 	tuples_in_hashtable=0;
 
 	produced_tuples=0;
 	consumed_tuples_from_right=0;
-
+#endif
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterNewThreadToAllBarriers(1);
 //		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
@@ -261,8 +266,9 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 				}
 				ct.block_stream_iterator_->increase_cur_();
 //				rb.blockstream_iterator->increase_cur_();
+#ifdef	_DEBUG_
 				consumed_tuples_from_right++;
-
+#endif
 				if((tuple_from_right_child=ct.block_stream_iterator_->currentTuple())){
 					bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
 					hashtable->placeIterator(ct.hashtable_iterator_,bn);

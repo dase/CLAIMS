@@ -52,6 +52,44 @@ static double lineitem_scan_self_join(){
 	root->~LogicalOperator();
 	return ret;
 }
+
+static double sb_scan_self_join(){
+	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("cj");
+	TableDescriptor* table_right=Environment::getInstance()->getCatalog()->getTable("sb");
+
+	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
+
+	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
+
+	Filter::Condition filter_condition_1;
+	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
+	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+
+
+	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("order_no"),table_right->getAttribute("order_no")));
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("trade_dir"),table_right->getAttribute("entry_dir")));
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("trade_date"),table_right->getAttribute("entry_date")));
+	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
+
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	root->print();
+//	physical_iterator_tree->print();
+	physical_iterator_tree->open();
+	while(physical_iterator_tree->next(0));
+	physical_iterator_tree->close();
+
+	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	double ret=result_set->query_time_;
+
+
+	physical_iterator_tree->~BlockStreamIteratorBase();
+	root->~LogicalOperator();
+	return ret;
+}
+
 static double lineitem_scan_aggregation(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
 
@@ -159,6 +197,8 @@ static double sb_scan_filter(){
 }
 
 static void scalability_test(query_function qf,const char* test_name,int max_test_degree_of_parallelism=4){
+	/*disable expander adaptivity*/
+	Config::enable_expander_adaptivity=false;
 	unsigned repeated_times=3;
 	double standard_throughput=0;
 	/* warm up the memory*/
@@ -208,9 +248,9 @@ static int in_segment_scalability_test_on_poc(int repeated_times=10){
 	startup_single_node_environment_of_poc();
 	double total_time=0;
 
-	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
+//	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
 //	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
-//	scalability_test(lineitem_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
+	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
 
 	sleep(1);
 	Environment::getInstance()->~Environment();
