@@ -263,4 +263,24 @@ static void Logging_BlockStreamExchangeLowerBase(const char* format,...){
 #endif
 }
 
+static void SQLParse_log(const char* format,...) {
+#ifdef DEBUG_SQLParse
+	printf("SQLParse: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+
+static void SQLParse_elog(const char* format,...) {
+	fprintf(stderr,"Error[SQLParse]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
 #endif /* LOGGING_H_ */

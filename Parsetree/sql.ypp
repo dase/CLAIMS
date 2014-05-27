@@ -124,6 +124,7 @@ char linebuf[500];
 %token DATE
 %token DATETIME
 %token DAY_HOUR
+%token DAY  //---5.26fzh---
 %token DAY_MICROSECOND
 %token DAY_MINUTE
 %token DAY_SECOND
@@ -228,6 +229,7 @@ char linebuf[500];
 %token PROJECTION	// 2014-2-24---增加对这个词的识别---by余楷
 %token PURGE
 %token QUICK
+%token QUARTER //---5.26fzh---
 %token READ
 %token READS
 %token REAL
@@ -305,6 +307,8 @@ char linebuf[500];
 %token YEAR_MONTH
 %token ZEROFILL
 
+%token WEEK //---5.26fzh---
+
 /** added by yukai **/
 %token DO
 %token MAX_QUERIES_PER_HOUR
@@ -378,7 +382,6 @@ char linebuf[500];
 %token BDB
 %token OPEN
 %token FULL
-%token INTEGER
  /* functions with special syntax */
 %token FSUBSTRING
 %token FTRIM
@@ -418,6 +421,8 @@ char linebuf[500];
 %type <intval> update_opts	// 2014-3-24---更改位置到此---by Yu
 
 %type <ast_node> opt_ondupupdate insert_stmt	// 2014-4-17---add---by Yu
+
+%type <ast_node>interval_exp //---5.26fzh----
 
 /** add by yukai **/
 
@@ -1812,21 +1817,23 @@ date_type:     {$$=NULL;}
    | CHAR      { char d[10] = "char"; $$ = newExpr(t_stringval, d);}
    ;
 //////////////////
+//---5.26fzh---
 
-expr: FDATE_ADD '(' expr ',' interval_exp ')' //71{ emit("CALL 3 DATE_ADD"); }
-   |  FDATE_SUB '(' expr ',' interval_exp ')' //72{ emit("CALL 3 DATE_SUB"); }
+expr: FDATE_ADD '(' expr ',' interval_exp ')' { $$=newExprFunc(t_expr_func, "FDATE_ADD", $3, $5, NULL, NULL); }
+   |  FDATE_SUB '(' expr ',' interval_exp ')' { $$=newExprFunc(t_expr_func, "FDATE_SUB", $3, $5, NULL, NULL); }
    ;
-
-interval_exp: INTERVAL expr DAY_HOUR { emit("NUMBER 1"); }
-   | INTERVAL expr DAY_MICROSECOND { emit("NUMBER 2"); }
-   | INTERVAL expr DAY_MINUTE { emit("NUMBER 3"); }
-   | INTERVAL expr DAY_SECOND { emit("NUMBER 4"); }
-   | INTERVAL expr YEAR_MONTH { emit("NUMBER 5"); }
-   | INTERVAL expr YEAR       { emit("NUMBER 6"); }
-   | INTERVAL expr HOUR_MICROSECOND { emit("NUMBER 7"); }
-   | INTERVAL expr HOUR_MINUTE { emit("NUMBER 8"); }
-   | INTERVAL expr HOUR_SECOND { emit("NUMBER 9"); }
+interval_exp: 
+	INTERVAL expr DAY_HOUR         	   { $$=newExprFunc(t_expr_func, "INTERVAL_HOUR",        $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY_MICROSECOND     { $$=newExprFunc(t_expr_func, "INTERVAL_MICROSECOND", $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY_MINUTE          { $$=newExprFunc(t_expr_func, "INTERVAL_MINUTE",      $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY_SECOND          { $$=newExprFunc(t_expr_func, "INTERVAL_SECOND",      $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY                 { $$=newExprFunc(t_expr_func, "INTERVAL_DAY",         $2, NULL, NULL, NULL);  }
+   | INTERVAL expr YEAR_MONTH          { $$=newExprFunc(t_expr_func, "INTERVAL_MONTH",       $2, NULL, NULL, NULL);  }
+   | INTERVAL expr YEAR                { $$=newExprFunc(t_expr_func, "INTERVAL_YEAR",        $2, NULL, NULL, NULL);  }
+   | INTERVAL expr WEEK                { $$=newExprFunc(t_expr_func, "INTERVAL_WEEK",        $2, NULL, NULL, NULL);  }
+   | INTERVAL expr QUARTER             { $$=newExprFunc(t_expr_func, "INTERVAL_QUARTER",     $2, NULL, NULL, NULL);  }
    ;
+//---5.26fzh---
 	
 expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE1", $2, $3, NULL, NULL); }//---3.8fzh---
    |  CASE expr case_list ELSE expr END	{ $$=newExprFunc(t_expr_func, "CASE2", $2, $3, $5, NULL); }

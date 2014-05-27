@@ -54,7 +54,7 @@ struct Node * newExpr(nodetype t, char *d)
 
 	a->type = t;
 //	cout<<d.string_val<<endl;
-    cout<<"NexExpr create begin!!!!"<<endl;
+//    cout<<"NexExpr create begin!!!!"<<endl;
 	if(t == t_stringval) // 2014-3-25---输入若为字符串，去除首位的引号
 	{
 //		if(d.string_val[0]=='\''||d.string_val[0]=='\"')
@@ -124,7 +124,7 @@ struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 		yyerror("out of space!");
 		exit(0);
 	}
-
+	a->str="";
 	a->type = type;
 	a->sign = sign;
 	a->parameter = parameter;
@@ -145,7 +145,7 @@ struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 		yyerror("out of space!");
 		exit(0);
 	}
-
+	a->str="";
 	a->type = type;
 	a->funname = funname;
 	a->args = args;
@@ -1155,6 +1155,8 @@ void output(Node * oldnode, int floor)
 		case t_expr_cal: 
 		{
 			Expr_cal * node = (Expr_cal *) oldnode;
+			outputSpace(floor);//---5.23by fzh---
+			cout<<"str: >>>>>>>>"<<node->str<<endl;//---5.23by fzh---
 			outputSpace(floor);
 			cout<<"Expr_cal: ";
 			if (node->sign)
@@ -1183,6 +1185,9 @@ void output(Node * oldnode, int floor)
 		case t_expr_func:
 		{
 			Expr_func * node = (Expr_func *) oldnode;
+			outputSpace(floor);//---5.23by fzh---
+			if(node->str!=NULL)
+			cout<<"str: >>>>>>>>"<<node->str<<endl;//---5.23by fzh---
 			outputSpace(floor);
 			cout<<"Expr_func: ";
 			if (node->funname)
