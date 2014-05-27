@@ -27,12 +27,10 @@
 #include"sql_node_struct.h"
 #include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
+#include "../Logging.h"
 bool semantic_analysis(Node *parsetree,bool issubquery);
 bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable);
-void print_analysis_error(char * str1,char *str2,char * str3)
-{
-	printf("!!! Semantic Analysis >> %s >> %s   %s\n",str1,str2,str3);
-}
+
 int subquery_has_column(char *colname,Node * subquery)
 {
 	int result=0;
@@ -225,12 +223,12 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 			}
 			else if(result==0)
 			{
-				print_analysis_error("selectlist",col->parameter2,"can't find in tables");
+				SQLParse_elog("selectlist",col->parameter2,"can't find in tables");
 				return 0;
 			}
 			else
 			{
-				print_analysis_error("selectlist",col->parameter2,"is ambiguous");
+				SQLParse_elog("selectlist",col->parameter2,"is ambiguous");
 				return 0;
 			}
 		}break;
@@ -248,7 +246,7 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				strcpy(str,col->parameter1);
 				strcat(str,".");
 				strcat(str,col->parameter2);
-				print_analysis_error("selectlist",str," can't find ");
+				SQLParse_elog("selectlist",str," can't find ");
 				return 0;
 			}
 			if(strcmp(col->parameter2,"*")==0)
@@ -262,7 +260,7 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				{
 					char *str=col->parameter2;
 					//strcat(str,"  can't find ");
-					print_analysis_error("selectlist",col->parameter1,str);
+					SQLParse_elog("selectlist",col->parameter1,str);
 					return 0;
 				}
 				else
@@ -295,7 +293,7 @@ bool selectlist_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 	Node *sltree=(Node *)qstmt->select_list;
 	if(sltree==NULL)
 	{
-		print_analysis_error("selectlist","query_stmt select_list is null","");
+		SQLParse_elog("selectlist","query_stmt select_list is null","");
 	}
 	else
 	{
@@ -378,12 +376,12 @@ int oncondition_check(Node *cur,vector<Node *>rtable)
 			}
 			else if(result==0)
 			{
-				print_analysis_error("oncondition",col->parameter2,"can't find in tables and selectlist ");
+				SQLParse_elog("oncondition",col->parameter2,"can't find in tables and selectlist ");
 				return false;
 			}
 			else
 			{
-				print_analysis_error("oncondition",col->parameter2,"in fromlist is ambiguous");
+				SQLParse_elog("oncondition",col->parameter2,"in fromlist is ambiguous");
 				return false;
 			}
 		}break;
@@ -399,7 +397,7 @@ int oncondition_check(Node *cur,vector<Node *>rtable)
 				strcpy(str,col->parameter1);
 				strcat(str,".");
 				strcat(str,col->parameter2);
-				print_analysis_error("oncondition",str," can't find ");
+				SQLParse_elog("oncondition",str," can't find ");
 				return false;
 			}
 			else if(fg==1)
@@ -409,7 +407,7 @@ int oncondition_check(Node *cur,vector<Node *>rtable)
 					char str[100]="str is null";
 					strcpy(str,col->parameter2);
 					strcat(str,"  can't find ");
-					print_analysis_error("oncondition",col->parameter1,str);
+					SQLParse_elog("oncondition",col->parameter1,str);
 					return false;
 				}
 			}
@@ -508,7 +506,7 @@ bool fromlist_analysis(Query_stmt * querynode,Node *qnode,vector<Node *>&rtable)
 {
 	if(qnode==NULL)
 	{
-		print_analysis_error("fromlist","query_stmt from_list is null","");
+		SQLParse_elog("fromlist","query_stmt from_list is null","");
 	}
 	switch(qnode->type)
 	{
@@ -543,7 +541,7 @@ bool fromlist_analysis(Query_stmt * querynode,Node *qnode,vector<Node *>&rtable)
 			{
 				if(Environment::getInstance()->getCatalog()->getTable(table->tablename)==NULL)
 				{
-					print_analysis_error("fromlist",table->tablename," can't find ");
+					SQLParse_elog("fromlist",table->tablename," can't find ");
 					return false;
 				}
 				else
@@ -623,7 +621,7 @@ bool fromlist_table_is_unique(vector<Node *>rtable)
 			Table *table1=(Table *)rtable[i];
 			if(strcmp(table->astablename,table1->astablename)==0)
 			{
-				print_analysis_error("fromlist",table->astablename,"is ambiguous");
+				SQLParse_elog("fromlist",table->astablename,"is ambiguous");
 				return false;
 			}
 		//	q=fromlist1->next;
@@ -681,7 +679,7 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 				int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
 				if(result==0)
 				{
-					print_analysis_error("wherecondition",col->parameter2,"can't find in tables and selectlist ");
+					SQLParse_elog("wherecondition",col->parameter2,"can't find in tables and selectlist ");
 					return false;
 				}
 				else if(result==1)
@@ -691,13 +689,13 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 				}
 				else
 				{
-					print_analysis_error("wherecondition",col->parameter2,"in selectlist is ambiguous");
+					SQLParse_elog("wherecondition",col->parameter2,"in selectlist is ambiguous");
 					return false;
 				}
 			}
 			else
 			{
-				print_analysis_error("wherecondition",col->parameter2,"in fromlist is ambiguous");
+				SQLParse_elog("wherecondition",col->parameter2,"in fromlist is ambiguous");
 				return false;
 			}
 		}break;
@@ -713,7 +711,7 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 				strcpy(str,col->parameter1);
 				strcat(str,".");
 				strcat(str,col->parameter2);
-				print_analysis_error("wherecondition",str," can't find ");
+				SQLParse_elog("wherecondition",str," can't find ");
 				return false;
 			}
 			else if(fg==1)
@@ -723,7 +721,7 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 					char str[100]="str is null";
 					strcpy(str,col->parameter2);
 					strcat(str,"  can't find ");
-					print_analysis_error("wherecondition",col->parameter1,str);
+					SQLParse_elog("wherecondition",col->parameter1,str);
 					return false;
 				}
 			}
@@ -844,7 +842,7 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 					int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
 					if(result==0)
 					{
-						print_analysis_error("groupbylist",col->parameter2,"can't find in tables and selectlist ");
+						SQLParse_elog("groupbylist",col->parameter2,"can't find in tables and selectlist ");
 						return false;
 					}
 					else if(result==1)
@@ -854,13 +852,13 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 					}
 					else
 					{
-						print_analysis_error("groupbylist",col->parameter2,"in selectlist is ambiguous");
+						SQLParse_elog("groupbylist",col->parameter2,"in selectlist is ambiguous");
 						return false;
 					}
 				}
 				else
 				{
-					print_analysis_error("groupbylist",col->parameter2,"in fromlist is ambiguous");
+					SQLParse_elog("groupbylist",col->parameter2,"in fromlist is ambiguous");
 					return false;
 				}
 			}break;
@@ -876,7 +874,7 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 					strcpy(str,col->parameter1);
 					strcat(str,".");
 					strcat(str,col->parameter2);
-					print_analysis_error("groupbylist",str," can't find ");
+					SQLParse_elog("groupbylist",str," can't find ");
 					return false;
 				}
 				else if(fg==1)
@@ -886,7 +884,7 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 						char str[100]="str is null";
 						strcpy(str,col->parameter2);
 						strcat(str,"  can't find ");
-						print_analysis_error("groupbylist",col->parameter1,str);
+						SQLParse_elog("groupbylist",col->parameter1,str);
 						return false;
 					}
 				}
@@ -899,7 +897,7 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 			}break;
 			default:
 			{
-				print_analysis_error("groupbylist","there is other type in groupby list","not the colname ");
+				SQLParse_elog("groupbylist","there is other type in groupby list","not the colname ");
 				return false;
 			}
 		}
@@ -930,7 +928,7 @@ bool orderby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//与groupby处理
 					int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
 					if(result==0)
 					{
-						print_analysis_error("orderbylist",col->parameter2,"can't find in tables and selectlist ");
+						SQLParse_elog("orderbylist",col->parameter2,"can't find in tables and selectlist ");
 						return false;
 					}
 					else if(result==1)
@@ -940,13 +938,13 @@ bool orderby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//与groupby处理
 					}
 					else
 					{
-						print_analysis_error("orderbylist",col->parameter2,"in selectlist is ambiguous");
+						SQLParse_elog("orderbylist",col->parameter2,"in selectlist is ambiguous");
 						return false;
 					}
 				}
 				else
 				{
-					print_analysis_error("orderbylist",col->parameter2,"in fromlist is ambiguous");
+					SQLParse_elog("orderbylist",col->parameter2,"in fromlist is ambiguous");
 					return false;
 				}
 			}break;
@@ -962,7 +960,7 @@ bool orderby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//与groupby处理
 					strcpy(str,col->parameter1);
 					strcat(str,".");
 					strcat(str,col->parameter2);
-					print_analysis_error("orderbylist",str," can't find ");
+					SQLParse_elog("orderbylist",str," can't find ");
 					return false;
 				}
 				else if(fg==1)
@@ -972,7 +970,7 @@ bool orderby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//与groupby处理
 						char str[100]="str is null";
 						strcpy(str,col->parameter2);
 						strcat(str,"  can't find ");
-						print_analysis_error("orderbylist",col->parameter1,str);
+						SQLParse_elog("orderbylist",col->parameter1,str);
 						return false;
 					}
 				}
@@ -985,7 +983,7 @@ bool orderby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//与groupby处理
 			}break;
 			default:
 			{
-				print_analysis_error("orderbylist","there is other type in orderby list","not the colname ");
+				SQLParse_elog("orderbylist","there is other type in orderby list","not the colname ");
 				return false;
 			}
 		}
@@ -998,7 +996,7 @@ bool semantic_analysis(Node *parsetree,bool issubquery)
 {
 	if(parsetree==NULL)
 	{
-		print_analysis_error("","parsetree is null","");
+		SQLParse_elog("","parsetree is null","");
 	}
 	switch (parsetree->type)
 	{

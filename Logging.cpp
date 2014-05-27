@@ -40,7 +40,10 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
+
 #define DEBUG_ASTParser
+
+#define DEBUG_SQLParser
 
 #endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){
@@ -420,3 +423,4 @@ void BlockStreamJoinLogging::elog(const char* format,...) {
 	printf("\n");
 	va_end (arg);
 }
+
