@@ -12,25 +12,27 @@
 #include "../configure.h"
 using namespace std;
 MemoryChunkStore* MemoryChunkStore::instance_=0;
-MemoryChunkStore::MemoryChunkStore(){
+MemoryChunkStore::MemoryChunkStore():chunk_pool_(CHUNK_SIZE),block_pool_(BLOCK_SIZE){
 //	cout<<"in the memorystroage initialize"<<endl;
+
 }
 
 MemoryChunkStore::~MemoryChunkStore() {
-
+	chunk_pool_.purge_memory();
+	block_pool_.purge_memory();
 }
-bool MemoryChunkStore::applyChunk(ChunkID chunk_id, HdfsInMemoryChunk& chunk_info){
+bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address){
 	boost::unordered_map<ChunkID,HdfsInMemoryChunk>::const_iterator it=chunk_list_.find(chunk_id);
 	if(it!=chunk_list_.cend()){
 		printf("chunk id already exists!\n");
 		return false;
 	}
-	if(!BufferManager::getInstance()->applyStorageDedget(chunk_info.length)){
+	if(!BufferManager::getInstance()->applyStorageDedget(CHUNK_SIZE)){
 		printf("not enough memory!!\n");
 		return false;
 	}
-	if((chunk_info.hook=memalign(cacheline_size,chunk_info.length))!=0){
-		chunk_list_[chunk_id]=chunk_info;
+	if((start_address=chunk_pool_.malloc())!=0){
+		chunk_list_[chunk_id]=HdfsInMemoryChunk(start_address,CHUNK_SIZE);
 		return true;
 	}
 	else{
@@ -45,9 +47,10 @@ void MemoryChunkStore::returnChunk(const ChunkID& chunk_id){
 		return;
 	HdfsInMemoryChunk chunk_info=it->second;
 
-	free(chunk_info.hook);
+	chunk_pool_.free(chunk_info.hook);
 
 	chunk_list_.erase(it);
+	BufferManager::getInstance()->returnStorageBudget(chunk_info.length);
 }
 
 bool MemoryChunkStore::getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info)const{

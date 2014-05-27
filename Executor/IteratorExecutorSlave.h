@@ -12,9 +12,9 @@
 #include <libconfig.h++>
 #include <iostream>
 #include <set>
-#include "../Message.h"
-#include "../Logging.h"
-#include "../lock.h"
+#include "../common/Message.h"
+#include "../common/Logging.h"
+#include "../utility/lock.h"
 using namespace std;
 
 

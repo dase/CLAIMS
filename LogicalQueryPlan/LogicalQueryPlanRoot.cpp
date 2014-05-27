@@ -12,10 +12,11 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
-#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
 #include "../Config.h"
-LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion)
-:collecter_(collecter),child_(child),fashion_(fashion){
+#include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
+#include "../BlockStreamIterator/BlockStreamLimit.h"
+LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion,LimitConstraint limit_constraint)
+:collecter_(collecter),child_(child),fashion_(fashion),limit_constraint_(limit_constraint){
 	// TODO Auto-generated constructor stub
 	setOperatortype(l_root);
 }
@@ -41,13 +42,21 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-	BlockStreamIteratorBase* middle_tier=expander;
-
+	BlockStreamIteratorBase* middle_tier;
+	if(!limit_constraint_.canBeOmitted()){
+		/* we should add a limit operator*/
+		BlockStreamLimit::State limit_state(expander_state.schema_,expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
+		BlockStreamIteratorBase* limit=new BlockStreamLimit(limit_state);
+		middle_tier=limit;
+	}
+	else{
+		middle_tier=expander;
+	}
 	/**
 	 * If the number of partitions in the child dataflow is 1 and the the location is right in the collector,
 	 * then exchange is not necessary.
 	 */
-//	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
+	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
 		ExpandableBlockStreamExchangeEpoll::State state;
 		state.block_size=block_size;
 		state.child=expander;//child_iterator;
@@ -62,7 +71,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 			state.lower_ip_list.push_back(ip);
 		}
 		middle_tier=new ExpandableBlockStreamExchangeEpoll(state);
-//	}
+	}
 
 	BlockStreamIteratorBase* ret;
 	switch(fashion_){
@@ -88,6 +97,8 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		}
 	}
 
+
+//	schema->~Schema();
 	return ret;
 }
 Dataflow LogicalQueryPlanRoot::getDataflow(){

@@ -8,8 +8,8 @@
 #ifndef IDSGENERATOR_H_
 #define IDSGENERATOR_H_
 
-#include "ids.h"
-#include "utility/synch.h"
+#include "common/ids.h"
+#include "utility/lock.h"
 
 class IDsGenerator {
 public:

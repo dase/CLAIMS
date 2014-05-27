@@ -7,7 +7,7 @@
 
 #include "IteratorExecutorSlave.h"
 #include "../Environment.h"
-#include "../Logging.h"
+#include "../common/Logging.h"
 
 
 IteratorExecutorSlave::IteratorExecutorSlave(){

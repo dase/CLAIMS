@@ -11,8 +11,7 @@
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-#include "../Comparator.h"
-#include "../iterator/FilterIterator.h"
+#include "../common/Comparator.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
@@ -24,13 +23,14 @@
 #include "../common/ExpressionItem.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
-#include "../Logging.h"
+#include "../common/Logging.h"
+#include "../common/AttributeComparator.h"
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator)
 {
 	SQLParse_log("getfiltercondition   ");
-	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),FilterIterator::AttributeComparator::EQ,&order_type_);
+	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
 	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
 	switch(wcexpr->type)
 	{
@@ -107,19 +107,19 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								std::ostringstream str;
 								str<<temp;
 							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::L,str.str());
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::L,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data;
 							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::L,temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,temp);
 
 							}break;
 							default:
@@ -141,18 +141,18 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								std::ostringstream str;
 								str<<temp;
 							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::G,str.str());
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::G,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::G,temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,temp);
 
 							}break;
 							default:
@@ -172,18 +172,18 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								int temp=atof(expr->data);
 								std::ostringstream str;
 								str<<temp;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,str.str());
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::NEQ,temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,temp);
 
 							}break;
 							default:
@@ -204,19 +204,19 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								std::ostringstream str;
 								str<<temp;
 						//		cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::EQ,str.str());
-							//	filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),FilterIterator::AttributeComparator::EQ,str.str());
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,str.str());
+							//	filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),AttributeComparator::EQ,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::EQ,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::EQ,temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,temp);
 
 							}break;
 							default:
@@ -238,18 +238,18 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								std::ostringstream str;
 								str<<temp;
 							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::LEQ,str.str());
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::LEQ,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::LEQ,temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,temp);
 							}break;
 							default:
 							{
@@ -270,18 +270,18 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 								std::ostringstream str;
 								str<<temp;
 							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,str.str());
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,str.str());
 							}break;
 							case t_approxnum:
 							{
 								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,&temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,&temp);
 							}break;
 							case t_name:
 							case t_stringval ://////////////////////
 							{
 								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),FilterIterator::AttributeComparator::GEQ,temp);
+								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,temp);
 
 							}break;
 							default:

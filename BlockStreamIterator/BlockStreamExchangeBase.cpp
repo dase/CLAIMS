@@ -12,8 +12,8 @@
 #include "BlockStreamExchangeBase.h"
 #include "../Environment.h"
 #include "../Executor/ExchangeTracker.h"
-#include "../rename.h"
-#include "../Logging.h"
+#include "../common/rename.h"
+#include "../common/Logging.h"
 BlockStreamExchangeBase::BlockStreamExchangeBase(const std::vector<std::string> &upper_ip_list,const unsigned &nlowers)
 :upper_ip_list_(upper_ip_list),nlowers_(nlowers){
 	socket_fd_lower_list_=new int[nlowers_];

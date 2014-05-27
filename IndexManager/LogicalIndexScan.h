@@ -9,8 +9,9 @@
 #define LOGICALINDEXSCAN_H_
 
 #include "../LogicalQueryPlan/LogicalOperator.h"
-#include "../ids.h"
+#include "../common/ids.h"
 #include "IndexScanIterator.h"
+#include "../Catalog/table.h"
 
 class LogicalIndexScan :public LogicalOperator{
 public:

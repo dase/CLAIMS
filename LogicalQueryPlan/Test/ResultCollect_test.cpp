@@ -12,9 +12,9 @@
 #include <iostream>
 #include <vector>
 
-#include "../../Block/BlockStream.h"
-#include "../../Block/DynamicBlockBuffer.h"
-#include "../../Block/ResultSet.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../common/Block/DynamicBlockBuffer.h"
+#include "../../common/Block/ResultSet.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/Catalog.h"
@@ -24,9 +24,9 @@
 #include "../../Catalog/stat/Statistic.h"
 #include "../../Catalog/stat/StatManager.h"
 #include "../../Catalog/table.h"
-#include "../../data_type.h"
+#include "../../common/data_type.h"
 #include "../../Environment.h"
-#include "../../ids.h"
+#include "../../common/ids.h"
 #include "../Aggregation.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../Scan.h"

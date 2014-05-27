@@ -7,7 +7,7 @@
 
 #ifndef DATAFLOWBRANCH_H_
 #define DATAFLOWBRANCH_H_
-#include "../ids.h"
+#include "../common/ids.h"
 //#include "../Catalog"
 
 

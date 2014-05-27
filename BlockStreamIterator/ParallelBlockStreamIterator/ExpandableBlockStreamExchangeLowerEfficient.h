@@ -25,19 +25,15 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <pthread.h>
-#include "../../Schema/Schema.h"
+#include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
-#include "../../Block/BlockReadable.h"
-#include "../../Block/BlockWritable.h"
-#include "../../Block/BlockReadableFixBuffer.h"
 #include "../../Executor/IteratorExecutorMaster.h"
-#include "../../Block/synch.h"
-#include "../../Block/PartitionedBlockBuffer.h"
-#include "../../Block/BlockStream.h"
-#include "../../Block/BlockStreamBuffer.h"
-#include "../../Block/PartitionedBlockContainer.h"
-#include "../../hash.h"
-#include "../../Logging.h"
+#include "../../common/Block/PartitionedBlockBuffer.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../common/Block/BlockStreamBuffer.h"
+#include "../../common/Block/PartitionedBlockContainer.h"
+#include "../../common/hash.h"
+#include "../../common/Logging.h"
 
 class ExpandableBlockStreamExchangeLowerEfficient:public BlockStreamIteratorBase {
 public:
@@ -94,7 +90,7 @@ private:
 	BlockContainer* block_for_sending;
 	BlockContainer* block_for_buffer_;
 	PartitionedBlockContainer* buffer_for_sending_;
-	BlockWritable* block_for_inserting_to_buffer_;
+	Block* block_for_inserting_to_buffer_;
 	BlockStreamBase* block_stream_for_asking_;
 	pthread_t sender_tid;
 	pthread_t debug_tid;

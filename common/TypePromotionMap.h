@@ -7,7 +7,7 @@
 
 #ifndef TYPEPROMOTIONMAP_H_
 #define TYPEPROMOTIONMAP_H_
-#include "../data_type.h"
+#include "../common/data_type.h"
 #include <memory.h>
 class TypePromotion{
 public:

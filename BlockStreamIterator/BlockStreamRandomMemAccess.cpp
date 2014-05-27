@@ -9,7 +9,7 @@
 #include <malloc.h>
 #include <sys/mman.h>
 #include <errno.h>
-#include "../rename.h"
+#include "../common/rename.h"
 #include "BlockStreamRandomMemAccess.h"
 
 BlockStreamRandomMemAccess::BlockStreamRandomMemAccess(State state)

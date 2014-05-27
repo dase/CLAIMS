@@ -9,8 +9,7 @@
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-#include "../Comparator.h"
-#include "../iterator/FilterIterator.h"
+#include "../common/Comparator.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
@@ -19,7 +18,7 @@
 #include"sql_node_struct.h"
 #include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../Logging.h"
+#include "../common/Logging.h"
 int getlevel(Expr_cal *calnode)
 {
 	int level=0;

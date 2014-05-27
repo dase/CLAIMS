@@ -46,11 +46,11 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 			break;
 		}
 		case HDFS:{
-//			printf("current storage level: HDFS\n");
+//			printf("%lx current storage level for %d %d: HDFS\n",this,this->chunk_id_.partition_id.partition_off,this->chunk_id_.chunk_off);
 			if(desirable_storage_level_==MEMORY){
 				HdfsInMemoryChunk chunk_info;
 				chunk_info.length=CHUNK_SIZE;
-				if(BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(chunk_id_,chunk_info)){
+				if(BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(chunk_id_,chunk_info.hook)){
 					/* there is enough memory storage space, so the storage level can be shifted.*/
 					chunk_info.length=BlockManager::getInstance()->loadFromDisk(chunk_id_,chunk_info.hook,chunk_info.length);
 //					chunk_info.length=BlockManager::getInstance()->loadFromHdfs(chunk_id_,chunk_info.hook,chunk_info.length);
@@ -65,6 +65,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
+//					printf("%lx current is set to memory!\n");
 					ret = new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 					break;
 				}
@@ -306,6 +307,7 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
 
 
 void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& block) const {
+
 	/* Create a block, which will not free block_start_address when destructed.*/
 	Block temp_block(block_size,target_block_start_address);
 
@@ -315,6 +317,7 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& bloc
 	 */
 	block->constructFromBlock(temp_block);
 
+//	usleep(1);
 
 //	block->setIsReference(true);
 //	block->setBlock(target_block_start_address);

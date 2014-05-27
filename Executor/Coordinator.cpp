@@ -15,9 +15,9 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include "../Debug.h"
-#include "../Message.h"
+#include "../common/Message.h"
 #include "../Environment.h"
-#include "../TimeOutReceiver.h"
+#include "../common/TimeOutReceiver.h"
 #include "../Config.h"
 Coordinator::Coordinator() {
 	logging = new CoordinatorLogging();
@@ -43,6 +43,8 @@ Coordinator::Coordinator() {
 }
 
 Coordinator::~Coordinator() {
+	pthread_cancel(prochaseId);
+
 	framework->~Framework();
 	endpoint->~EndPoint();
 }
@@ -107,7 +109,6 @@ bool Coordinator::SetupTheTheron() {
 
 }
 bool Coordinator::CreateListeningThread() {
-	pthread_t prochaseId;
 
 	const int error = pthread_create(&prochaseId, NULL, ListeningNewNode, this);
 

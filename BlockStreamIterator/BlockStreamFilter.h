@@ -8,17 +8,17 @@
 #ifndef BLOCKSTREAMFILTER_H_
 #define BLOCKSTREAMFILTER_H_
 #include "BlockStreamIteratorBase.h"
-#include "../Schema/Schema.h"
-#include "../Comparator.h"
-#include "../iterator/FilterIterator.h"
-#include "../Block/BlockStream.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Comparator.h"
+#include "../common/Block/BlockStream.h"
+#include "../common/AttributeComparator.h"
 class BlockStreamFilter:public BlockStreamIteratorBase {
 public:
 	class State{
 	public:
-		State(Schema* s, BlockStreamIteratorBase* child,std::vector<FilterIterator::AttributeComparator> comparator_list,unsigned block_size );
+		State(Schema* s, BlockStreamIteratorBase* child,std::vector<AttributeComparator> comparator_list,unsigned block_size );
 		Schema* schema_;
-		std::vector<FilterIterator::AttributeComparator> comparator_list_;
+		std::vector<AttributeComparator> comparator_list_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 	};

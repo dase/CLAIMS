@@ -10,9 +10,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <string>
-#include "../Block/ResultSet.h"
-#include "../Block/BlockStream.h"
-#include "../ids.h"
+#include "../common/Block/ResultSet.h"
+#include "../common/Block/BlockStream.h"
+#include "../common/ids.h"
 
 
 

@@ -10,11 +10,11 @@
 #include <list>
 #include "../BlockStreamIteratorBase.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Comparator.h"
-#include "../../iterator/FilterIterator.h"
-#include "../../Block/BlockStream.h"
-#include "../../Block/synch.h"
+#include "../../common/Schema/Schema.h"
+#include "../../common/Comparator.h"
+#include "../../common/Block/BlockStream.h"
+#include "../../utility/lock.h"
+#include "../../common/AttributeComparator.h"
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
 
@@ -32,11 +32,11 @@ public:
 	class State{
 	public:
 		friend class ExpandableBlockStreamFilter;
-		State(Schema* s, BlockStreamIteratorBase* child,std::vector<FilterIterator::AttributeComparator> comparator_list,unsigned block_size );
+		State(Schema* s, BlockStreamIteratorBase* child,std::vector<AttributeComparator> comparator_list,unsigned block_size );
 		State(){};
 	public:
 		Schema* schema_;
-		std::vector<FilterIterator::AttributeComparator> comparator_list_;
+		std::vector<AttributeComparator> comparator_list_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 	private:

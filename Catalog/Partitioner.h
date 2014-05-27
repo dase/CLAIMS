@@ -12,12 +12,12 @@
 #include <map>
 #include <boost/unordered_map.hpp>
 #include "Attribute.h"
-#include "../hash.h"
 
 #include "Column.h"
 #include "Partitioner.h"
 #include "../Resource/NodeTracker.h"
-#include "../ids.h"
+#include "../common/ids.h"
+#include "../common/hash.h"
 /**Partitioner describes how the data is partitioned and what nodes are
  * involved in the partition. *
  */

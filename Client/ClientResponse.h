@@ -30,8 +30,8 @@
 #include <vector>
 #include <sstream>
 
-#include "../Block/BlockStream.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Block/BlockStream.h"
+#include "../common/Schema/SchemaFix.h"
 
 #define Error 	0
 #define OK 		1

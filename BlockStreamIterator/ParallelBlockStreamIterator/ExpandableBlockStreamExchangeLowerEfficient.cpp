@@ -11,16 +11,14 @@
 #include <malloc.h>
 #include "../../configure.h"
 
-#include "../../Block/BlockWritableFix.h"
-#include "../../Block/BlockReadable.h"
-#include "../../rename.h"
-#include "../../Logging.h"
+#include "../../common/rename.h"
+#include "../../common/Logging.h"
 #include "../../Executor/ExchangeTracker.h"
 #include "../../Environment.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
 #include "../../utility/ThreadSafe.h"
-#include "../../ids.h"
-#include "../../rdtsc.h"
+#include "../../common/ids.h"
+#include "../../utility/rdtsc.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
 :state(state){
 	// TODO Auto-generated constructor stub
@@ -51,7 +49,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 //	block_for_sending=new BlockContainer(block_stream_for_asking_->getSerializedBlockSize());
 	block_for_buffer_=new BlockContainer(block_stream_for_asking_->getSerializedBlockSize());
 	buffer_for_sending_=new PartitionedBlockContainer(nuppers,block_stream_for_asking_->getSerializedBlockSize());
-	block_for_inserting_to_buffer_=new BlockWritableFix(block_stream_for_asking_->getSerializedBlockSize(),state.schema);
+//	block_for_inserting_to_buffer_=BlockStreamBase::createBlockWithDesirableSerilaizedSize(state.schema,block_stream_for_asking_->getSerializedBlockSize());
+	block_for_inserting_to_buffer_=new Block(block_stream_for_asking_->getSerializedBlockSize());
 
 	cur_block_stream_list_= new BlockStreamBase*[nuppers];
 	for(unsigned i=0;i<nuppers;i++){
@@ -137,22 +136,12 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 	void* tuple_in_cur_block_stream;
 	block_stream_for_asking_->setEmpty();
 	if(state.child->next(block_stream_for_asking_)){
-//		printf("Lower next retured tuple count=%d\n",block_stream_for_asking_->getTuplesInBlock());
 		BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
 		while((tuple_from_child=traverse_iterator->nextTuple())>0){
 			const unsigned partition_id=hash(tuple_from_child);
-//			assert(partition_id==state.partition_offset);
-//			assert(partition_id==state.partition_offset);
-//			if(rand()%10000<3){
-//
-//				printf("key:%d\n",test_hash->get_partition_value(*(unsigned long*)state.schema->getColumnAddess(1,tuple_from_child)));
-//			}
-//			printf("Lower partition key:%d\n",partition_id);
 			const unsigned bytes=state.schema->getTupleActualSize(tuple_from_child);
 			while(!(tuple_in_cur_block_stream=cur_block_stream_list_[partition_id]->allocateTuple(bytes))){
-//				printf("cur_block_stream_list:%d",cur_block_stream_list_[partition_id]->getTuplesInBlock());
 				cur_block_stream_list_[partition_id]->serialize(*block_for_inserting_to_buffer_);
-//				printf("tuple count in [block_for_inserting_to_buffer_] =%d\n",*(int*)((char*)block_for_inserting_to_buffer_->getBlock()+65532));
 				buffer->insertBlockToPartitionedList(block_for_inserting_to_buffer_,partition_id);
 				cur_block_stream_list_[partition_id]->setEmpty();
 			}
@@ -255,7 +244,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	buffer->~PartitionedBlockBuffer();
 	block_stream_for_asking_->~BlockStreamBase();
 	block_for_sending->~BlockContainer();
-	block_for_inserting_to_buffer_->~BlockWritable();
+	block_for_inserting_to_buffer_->~Block();
 	buffer_for_sending_->~PartitionedBlockContainer();
 	block_for_buffer_->~BlockContainer();
 	for(unsigned i=0;i<nuppers;i++){
@@ -368,8 +357,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 					if (errno == EAGAIN){
 						continue;
 					}
-					printf("Error=%d\n",errno);
+					printf("Error=%d,fd=%d\n",errno,Pthis->socket_fd_upper_list[partition_id]);
 					perror("Send error!\n");
+//					printf("fd=%d",Pthis->socket_fd_upper_list[partition_id]);
 					break;
 				}
 				else{

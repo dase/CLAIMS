@@ -7,7 +7,7 @@
 
 #include "ResourceManagerSlave.h"
 #include "../Environment.h"
-#include "../TimeOutReceiver.h"
+#include "../common/TimeOutReceiver.h"
 #define ResourceManagerMasterName "ResourceManagerMaster"
 ResourceManagerSlave::ResourceManagerSlave() {
 	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
