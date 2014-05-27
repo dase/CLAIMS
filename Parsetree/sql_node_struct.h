@@ -1,6 +1,8 @@
 /*
  *
  * 14.02.15 已有select语句和create语句，包括select语句连接系统所需的函数
+
+ *
  *
  */
 
@@ -98,6 +100,7 @@ struct Columns//列
 struct Expr_cal//计算表达式,二元表达式
 {
 	nodetype type;
+	char * str;//5.23---by fzh---
 	char * sign,*parameter;
 	int cmp;
 	Node *lnext,*rnext;
@@ -106,6 +109,7 @@ struct Expr_cal//计算表达式,二元表达式
 struct Expr_func //函数表达式，将is null/exist等判断抽象成函数
 {
 	nodetype type;
+	char * str;//5.23---by fzh---
 	char * funname;
 	Node *args;
 	Node * parameter1,*parameter2;//函数中的参数列表，处理between...and.../case...when...then...end等
@@ -768,4 +772,5 @@ void departwc(struct Node *  wherecondition,struct Node * fromlist);
 bool semantic_analysis(Node *parsetree,bool issubquery);//---3.22fzh--
 
 int solve_join_condition(Node * fromnode);//---3.22fzh---
+void expr_to_str_test(Node *node);//---5.23fzh---
 #endif /* NODES_H_ */

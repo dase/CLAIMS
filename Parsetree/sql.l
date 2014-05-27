@@ -83,12 +83,13 @@ CURRENT_USER	{ return CURRENT_USER; }
 CURSOR	{ return CURSOR; }
 DATABASE	{ return DATABASE; }
 DATABASES	{ return DATABASES; }
+DAY   { return DAY;}//---5.26fzh---
 DATE	{ return DATE; }
 DATETIME	{ return DATETIME; }
-DAY_HOUR	{ return DAY_HOUR; }
-DAY_MICROSECOND	{ return DAY_MICROSECOND; }
-DAY_MINUTE	{ return DAY_MINUTE; }
-DAY_SECOND	{ return DAY_SECOND; }
+HOUR	{ return DAY_HOUR; }//---5.26fzh---
+MICROSECOND	{ return DAY_MICROSECOND; }//---5.26fzh---
+MINUTE	{ return DAY_MINUTE; }//---5.26fzh---
+SECOND	{ return DAY_SECOND; }//---5.26fzh---
 NUMERIC|DEC|DECIMAL	{ return DECIMAL; }
 DECLARE	{ return DECLARE; }
 DEFAULT	{ return DEFAULT; }
@@ -190,6 +191,7 @@ PROCEDURE	{ return PROCEDURE; }
 PROJECTION	{ return PROJECTION; }	// 2014-2-24---增加对这个词的识别---by余楷
 PURGE	{ return PURGE; }
 QUICK	{ return QUICK; }
+QUARTER { return QUARTER;}
 READ	{ return READ; }
 READS	{ return READS; }
 REAL	{ return REAL; }
@@ -259,12 +261,13 @@ VARCHAR(ACTER)?	{ return VARCHAR; }
 VARYING	{ return VARYING; }
 WHEN	{ return WHEN; }
 WHERE	{ return WHERE; }
+WEEK    { return WEEK;}//---5.26fzh---
 WHILE	{ return WHILE; }
 WITH	{ return WITH; }
 WRITE	{ return WRITE; }
 XOR	{ return XOR; }
 YEAR	{ return YEAR; }
-YEAR_MONTH	{ return YEAR_MONTH; }
+MONTH	{ return YEAR_MONTH; }//---5.26fzh---
 ZEROFILL	{ return ZEROFILL; }
 BEGIN		{ return BEGINT; }
 
