@@ -17,7 +17,7 @@
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../types/NValue.hpp"
+#include "../../common/types/NValue.hpp"
 #include "../../utility/rdtsc.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"

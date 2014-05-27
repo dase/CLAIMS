@@ -5,7 +5,7 @@
  *      Author: root
  */
 
-#include "../Block/BlockStream.h"
+#include "../common/Block/BlockStream.h"
 #include "../Catalog/Attribute.h"
 #include "Hdfsloader.h"
 #include "../Debug.h"

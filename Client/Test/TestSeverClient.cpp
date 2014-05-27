@@ -13,7 +13,7 @@
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/Partitioner.h"
 #include "../../Catalog/table.h"
-#include "../../data_type.h"
+#include "../../common/data_type.h"
 #include "../../Environment.h"
 
 using namespace std;

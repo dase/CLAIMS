@@ -4,8 +4,8 @@
  *  Created on: Aug 26, 2013
  *      Author: wangli
  */
-#include "../Schema/SchemaFix.h"
-#include "../Block/BlockStream.h"
+#include "../common/Schema/SchemaFix.h"
+#include "../common/Block/BlockStream.h"
 int mainasfasdf22(){
 	std::vector<column_type> column_list;
 	column_list.push_back(column_type(t_int));

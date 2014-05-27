@@ -9,7 +9,6 @@
 #define PARTITIONREADERITERATOR_H_
 #include "PartitionStorage.h"
 #include "ChunkStorage.h"
-#include "../Block/synch.h"
 
 
 #endif /* PARTITIONREADERITERATOR_H_ */

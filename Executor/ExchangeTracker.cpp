@@ -8,10 +8,10 @@
 #include "ExchangeTracker.h"
 #include <string>
 #include <sstream>
-#include "../Logging.h"
+#include "../common/Logging.h"
 #include "../Environment.h"
-#include "../TimeOutReceiver.h"
-#include "../rdtsc.h"
+#include "../common/TimeOutReceiver.h"
+#include "../utility/rdtsc.h"
 ExchangeTracker::ExchangeTracker() {
 	endpoint=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint);

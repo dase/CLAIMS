@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "../utility/lock.h"
 using namespace std;
 
-#include "../Block/synch.h"
 
 /*
  * 在master端由于theron的局限性，用一个专门的单例对象来存储，供master使用,

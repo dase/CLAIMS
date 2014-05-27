@@ -8,7 +8,7 @@
 #ifndef EXECUTELOGICALQUERYPLAN_H_
 #define EXECUTELOGICALQUERYPLAN_H_
 
-#include "../data_type.h"
+#include "../common/data_type.h"
 
 void ExecuteLogicalQueryPlan();
 

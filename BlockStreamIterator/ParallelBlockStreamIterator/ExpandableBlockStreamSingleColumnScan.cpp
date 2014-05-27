@@ -8,7 +8,7 @@
 #include <malloc.h>
 #include <sys/mman.h>
 #include <errno.h>
-#include "../../rename.h"
+#include "../../common/rename.h"
 #include "ExpandableBlockStreamSingleColumnScan.h"
 
 ExpandableBlockStreamSingleColumnScan::ExpandableBlockStreamSingleColumnScan(State state)

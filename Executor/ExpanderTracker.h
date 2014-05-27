@@ -12,11 +12,11 @@
 #include <boost/unordered_map.hpp>
 #include <map>
 #include <stack>
-#include "../utility/synch.h"
-#include "../utility/Block/MonitorableBuffer.h"
-#include "../ids.h"
+#include "../common/Block/MonitorableBuffer.h"
 #include "../utility/ExpandabilityShrinkability.h"
-#include "../Logging.h"
+#include "../utility/lock.h"
+#include "../common/Logging.h"
+#include "../common/ids.h"
 typedef pthread_t expanded_thread_id;
 
 

@@ -8,7 +8,7 @@
 #ifndef ANALYZER_H_
 #define ANALYZER_H_
 
-#include "../../ids.h"
+#include "../../common/ids.h"
 #include "../../Catalog/Attribute.h"
 #include "Statistic.h"
 class Analyzer {

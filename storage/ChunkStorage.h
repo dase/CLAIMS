@@ -9,11 +9,10 @@
 #define CHUNKSTORAGE_H_
 #include <string>
 #include <hdfs.h>
-#include "../Block/BlockStream.h"
-#include "../Block/synch.h"
+#include "../common/Block/BlockStream.h"
 #include "StorageLevel.h"
-#include "../ids.h"
 #include "../utility/lock.h"
+#include "../common/ids.h"
 class ChunkReaderIterator{
 public:
 	/**

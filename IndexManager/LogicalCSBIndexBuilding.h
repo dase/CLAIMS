@@ -10,7 +10,8 @@
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../Scheduler/Dataflow.h"
 #include "../Catalog/Attribute.h"
-#include "../ids.h"
+#include "../common/ids.h"
+#include "../Catalog/table.h"
 
 class LogicalCSBIndexBuilding : public LogicalOperator {
 public:

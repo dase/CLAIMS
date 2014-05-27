@@ -12,8 +12,8 @@
 #include <Theron/Theron.h>
 #include "ResourceInfo.h"
 #include "NodeTracker.h"
-#include "../Logging.h"
-#include "../Message.h"
+#include "../common/Message.h"
+#include "../common/Logging.h"
 class ResourceManagerMaster {
 public:
 	class ResourceManagerMasterActor:public Theron::Actor{

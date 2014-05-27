@@ -15,13 +15,10 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "../BlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Block/synch.h"
-#include "../../ids.h"
+#include "../../common/Schema/Schema.h"
 #include "../../storage/ChunkStorage.h"
 #include "../../storage/PartitionStorage.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../../utility/synch.h"
 class ExpandableBlockStreamProjectionScan:public ExpandableBlockStreamIteratorBase {
 public:
 	struct allocated_block{
