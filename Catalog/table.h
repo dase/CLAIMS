@@ -15,12 +15,11 @@
 #include <map>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/set.hpp>
-#include "../data_type.h"
 #include "Partitioner.h"
 #include "Attribute.h"
-#include "../ids.h"
 #include "Column.h"
-#include "../Schema/Schema.h"
+#include "../common/ids.h"
+#include "../common/Schema/Schema.h"
 
 using namespace std;
 

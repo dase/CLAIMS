@@ -7,7 +7,7 @@
 #include <iostream>
 #include "../table.h"
 #include "../Catalog.h"
-#include "../../hash.h"
+#include "../../common/hash.h"
 #include "../../Environment.h"
 #include "../ProjectionBinding.h"
 using namespace std;

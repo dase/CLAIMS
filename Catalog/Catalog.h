@@ -15,7 +15,7 @@
 
 
 
-#include "../Logging.h"
+#include "../common/Logging.h"
 #include "ProjectionBinding.h"
 struct TableIDAllocator{
 	TableIDAllocator(){

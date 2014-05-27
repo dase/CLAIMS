@@ -11,7 +11,7 @@
 #include "../Catalog/Column.h"
 #include "../Catalog/Partitioner.h"
 #include "../LogicalQueryPlan/DataflowPartitionDescriptor.h"
-#include "../Schema/SchemaFix.h"
+#include "../common/Schema/Schema.h"
 class Dataflow {
 	/* describe the properties of the data flow*/
 	friend class LogcalOperator;

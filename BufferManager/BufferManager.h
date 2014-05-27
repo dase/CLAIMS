@@ -8,14 +8,15 @@
 #ifndef BUFFERMANAGER_H_
 #define BUFFERMANAGER_H_
 #include "../storage/MemoryStore.h"
-#include "../Block/synch.h"
-#include "../Logging.h"
+#include "../utility/lock.h"
+#include "../common/Logging.h"
 class BufferManager {
 public:
 	static BufferManager* getInstance();
 	virtual ~BufferManager();
 	bool applyStorageDedget(unsigned long size);
 	unsigned getStorageMemoryBudegeInMilibyte()const;
+	void returnStorageBudget(unsigned long size);
 private:
 	BufferManager();
 	unsigned long int getTotalUsed()const;

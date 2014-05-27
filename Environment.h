@@ -7,13 +7,10 @@
 
 #ifndef ENVIRONMENT_H_
 #define ENVIRONMENT_H_
-#include "AdaptiveEndPoint.h"
 #include "Executor/Coordinator.h"
 #include "Executor/IteratorExecutorMaster.h"
 #include "Executor/IteratorExecutorSlave.h"
 #include "Executor/ExchangeTracker.h"
-#include "PortManager.h"
-#include "Logging.h"
 #include "storage/BlockManager.h"
 #include "storage/BlockManagerMaster.h"
 #include "Resource/ResourceManagerMaster.h"
@@ -22,6 +19,9 @@
 #include "BufferManager/BufferManager.h"
 #include "IndexManager/IndexManager.h"
 #include "Executor/ExpanderTracker.h"
+#include "Executor/AdaptiveEndPoint.h"
+#include "Executor/PortManager.h"
+#include "common/Logging.h"
 
 class Environment {
 public:

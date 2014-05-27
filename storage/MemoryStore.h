@@ -25,9 +25,12 @@
 using namespace std;
 
 #include "BlockStore.h"
-#include "../rename.h"
-#include "../Block/synch.h"
+#include "../common/rename.h"
 #include "../Debug.h"
+#include <boost/pool/pool.hpp>
+#include "../utility/lock.h"
+
+using boost::pool;
 
 /* 在此的block内的模式信息以及有多少个tuple是不会存储在这里的，那个就
  * 是catalog来管理的，所以这个地方只是负责存取，知道那些信息也没用，那
@@ -36,7 +39,8 @@ using namespace std;
 struct HdfsBlock{
 //	/*可以直接使用hdfs的blockid*/
 //	unsigned blockId;
-
+	HdfsBlock():hook(0),length(0){}
+	HdfsBlock(void* add,int length):hook(add),length(length){}
 	/*是将block mmap操作之后返回的内存地址*/
 	void *hook;
 	/*记录每个block大小也就是文件长度*/
@@ -68,7 +72,7 @@ public:
 	};
 
 
-	bool applyChunk(ChunkID chunk_id,HdfsInMemoryChunk& chunk_info);
+	bool applyChunk(ChunkID chunk_id,void*& start_address);
 
 	void returnChunk(const ChunkID& chunk_id);
 
@@ -139,6 +143,10 @@ private:
 	long currentMemory_;
 	// 在存储进去buffer pool的时候要枷锁
 	Lock lock_;
+
+	pool<> chunk_pool_;
+	pool<> block_pool_;
+
 	static MemoryChunkStore* instance_;
 };
 

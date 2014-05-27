@@ -11,7 +11,7 @@
 //#include <boost/unordered_map.hpp>
 
 #include <boost/unordered_map.hpp>
-#include "../../ids.h"
+#include "../../common/ids.h"
 #include "Statistic.h"
 #include "TableStatistic.h"
 #include "../Attribute.h"

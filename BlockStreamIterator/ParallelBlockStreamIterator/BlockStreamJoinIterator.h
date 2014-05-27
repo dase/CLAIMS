@@ -11,10 +11,9 @@
 #include "../BlockStreamIteratorBase.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../Debug.h"
-#include "../../rdtsc.h"
-#include "../../hash.h"
-#include "../../hashtable.h"
-#include "../../Block/synch.h"
+#include "../../utility/rdtsc.h"
+#include "../../common/hash.h"
+#include "../../common/hashtable.h"
 
 #include <iostream>
 #include <vector>

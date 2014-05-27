@@ -10,8 +10,8 @@
 
 #include "../../storage/BlockManager.h"
 #include "../../storage/BlanceMatcher.h"
-#include "../../Schema/Schema.h"
-#include "../../Block/synch.h"
+#include "../../common/Schema/Schema.h"
+#include "../../utility/lock.h"
 #include "../BlockStreamIteratorBase.h"
 #include "../../Debug.h"
 #include "../../configure.h"

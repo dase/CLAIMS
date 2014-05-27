@@ -9,27 +9,27 @@
 #define FILTER_H_
 #include <vector>
 #include "LogicalOperator.h"
-#include "../iterator/FilterIterator.h"
+#include "../common/AttributeComparator.h"
 class Filter:public LogicalOperator {
 public:
 	class Condition{
 	public:
 		friend class Filter;
-//		typedef FilterIterator::AttributeComparator::comparison comparison;
+//		typedef AttributeComparator::comparison comparison;
 		Condition(){}
 		Condition(const Condition& r);
 		~Condition();
-		void add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,const void*const& const_value);
-		void add(const Attribute& attr,const FilterIterator::AttributeComparator::comparison& com,std::string str_exp);
+		void add(const Attribute& attr,const AttributeComparator::comparison& com,const void*const& const_value);
+		void add(const Attribute& attr,const AttributeComparator::comparison& com,std::string str_exp);
 		void print(int level=0)const;
 	private:
 		unsigned getCompaisonNumber()const;
 	private:
 		std::vector<Attribute> attribute_list_;
-		std::vector<FilterIterator::AttributeComparator::comparison> comparison_list_;
+		std::vector<AttributeComparator::comparison> comparison_list_;
 		std::vector<void*> const_value_list_;
 	};
-	Filter(std::vector<FilterIterator::AttributeComparator> ComparatorList,LogicalOperator* child );
+	Filter(std::vector<AttributeComparator> ComparatorList,LogicalOperator* child );
 	Filter(const Condition& condition, LogicalOperator*  child);
 	virtual ~Filter();
 	Dataflow getDataflow();
@@ -43,7 +43,7 @@ private:
 private:
 	LogicalOperator* child_;
 	Condition condition_;
-	vector<FilterIterator::AttributeComparator> comparator_list_;
+	vector<AttributeComparator> comparator_list_;
 
 
 };

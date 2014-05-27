@@ -7,7 +7,7 @@
 
 #ifndef ESTIMATION_H_
 #define ESTIMATION_H_
-#include "../../ids.h"
+#include "../../common/ids.h"
 class Estimation {
 public:
 	Estimation();

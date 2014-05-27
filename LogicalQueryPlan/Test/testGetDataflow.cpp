@@ -11,6 +11,7 @@
 #include "../Scan.h"
 #include "../EqualJoin.h"
 #include "../Filter.h"
+#include "../../common/AttributeComparator.h"
 int main_asdfasdf(){
 	Environment::getInstance(true);
 
@@ -100,8 +101,8 @@ int main_asdfasdf(){
 
 	////////filter////////
 	int f=0;
-	FilterIterator::AttributeComparator filter1(column_type(t_int),Comparator::EQ,2,&f);
-	std::vector<FilterIterator::AttributeComparator> ComparatorList;
+	AttributeComparator filter1(column_type(t_int),Comparator::EQ,2,&f);
+	std::vector<AttributeComparator> ComparatorList;
 	ComparatorList.push_back(filter1);
 	LogicalOperator* filter=new Filter(ComparatorList,scan_1);
 

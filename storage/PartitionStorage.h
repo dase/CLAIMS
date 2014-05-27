@@ -8,11 +8,10 @@
 #ifndef PARTITIONSTORAGE_H_
 #define PARTITIONSTORAGE_H_
 
-#include "../ids.h"
 #include "ChunkStorage.h"
 #include "StorageLevel.h"
-#include "../Block/synch.h"
 #include "PartitionReaderIterator.h"
+#include "../utility/lock.h"
 
 
 class PartitionStorage {

@@ -10,15 +10,15 @@
 
 #include "../BlockStreamIteratorBase.h"
 #include "../../Debug.h"
-#include "../../rdtsc.h"
-#include "../../hash.h"
-#include "../../hashtable.h"
-#include "../../Block/synch.h"
+#include "../../utility/rdtsc.h"
+#include "../../common/hashtable.h"
 
 #include <iostream>
 #include <vector>
 #include <map>
 #include <list>
+#include "../../utility/lock.h"
+#include "../../common/hash.h"
 using namespace std;
 
 class BlockStreamInIterator :public BlockStreamIteratorBase {

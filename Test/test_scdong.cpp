@@ -19,23 +19,12 @@
 
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Executor/IteratorExecutorSlave.h"
-#include "../TableManager.h"
-#include "../rdtsc.h"
+#include "../utility/rdtsc.h"
 #include "../Environment.h"
-#include "../Comparator.h"
-#include "../Message.h"
-#include "../Schema/SchemaFix.h"
-#include "../PerformanceMonitor/PerformanceIteratorTop.h"
+#include "../common/Comparator.h"
+#include "../common/Message.h"
+#include "../common/Schema/SchemaFix.h"
 
-#include "../iterator.hpp"
-#include "../iterator/SingleColumnScanIterator.h"
-#include "../iterator/FilterIterator.h"
-#include "../iterator/JoinIterator.h"
-#include "../iterator/CombinedIterator.h"
-#include "../iterator/PrintIterator.h"
-#include "../iterator/AggregationIterator.h"
-
-#include "../iterator/ExchangeIteratorEager.h"
 
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
@@ -44,20 +33,14 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScanDisk.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchange.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeMaterialized.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBroadcastExchange.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamBroadcastExchangeLower.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExchangeBroadcast.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExchangeLowerBroadcast.h"
 
-#include "../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
-#include "../PerformanceMonitor/BlockStreamPerformanceTest.h"
 
 #include <fstream>
+#include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 using namespace std;
 
 /***********************************Pthread && Block at a time*******************************************/

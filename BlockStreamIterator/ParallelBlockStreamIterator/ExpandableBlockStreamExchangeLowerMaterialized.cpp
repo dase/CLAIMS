@@ -21,13 +21,11 @@
 
 #include "../../configure.h"
 
-#include "../../Block/BlockWritableFix.h"
-#include "../../Block/BlockReadable.h"
-#include "../../rename.h"
-#include "../../Logging.h"
+#include "../../common/rename.h"
+#include "../../common/Logging.h"
 #include "../../Executor/ExchangeTracker.h"
 #include "../../Environment.h"
-#include "../../Logging.h"
+#include "../../common/Logging.h"
 
 ExpandableBlockStreamExchangeLowerMaterialized::ExpandableBlockStreamExchangeLowerMaterialized(State state)
 :state_(state),BlockStreamExchangeLowerBase(){
@@ -47,8 +45,8 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::open(const PartitionOffset&
 	disk_file_length_list_=new unsigned[nuppers_];
 	disk_file_cur_list_=new unsigned[nuppers_];
 	block_stream_for_asking_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
-	block_for_sending_=new BlockWritableFix(block_stream_for_asking_->getSerializedBlockSize(),state_.schema_);
-	block_for_inserting_to_buffer_=new BlockWritableFix(block_stream_for_asking_->getSerializedBlockSize(),state_.schema_);
+	block_for_sending_=new Block(block_stream_for_asking_->getSerializedBlockSize(),state_.schema_);
+	block_for_inserting_to_buffer_=new Block(block_stream_for_asking_->getSerializedBlockSize(),state_.schema_);
 
 	cur_block_stream_list_= new BlockStreamBase*[nuppers_];
 	for(unsigned i=0;i<nuppers_;i++){
@@ -156,8 +154,8 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::close(){
 //	}
 	state_.child_->close();
 	block_stream_for_asking_->~BlockStreamBase();
-	block_for_sending_->~BlockWritable();
-	block_for_inserting_to_buffer_->~BlockWritable();
+	block_for_sending_->~Block();
+	block_for_inserting_to_buffer_->~Block();
 	for(unsigned i=0;i<nuppers_;i++){
 		cur_block_stream_list_[i]->~BlockStreamBase();
 	}

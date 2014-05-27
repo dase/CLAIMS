@@ -9,8 +9,8 @@
 #define EXPANDABLEBLOCKSTREAMBUFFER_H_
 
 #include "../BlockStreamIteratorBase.h"
-#include "../../Schema/Schema.h"
-#include "../../Block/DynamicBlockBuffer.h"
+#include "../../common/Schema/Schema.h"
+#include "../../common/Block/DynamicBlockBuffer.h"
 class ExpandableBlockStreamBuffer:public BlockStreamIteratorBase {
 public:
 

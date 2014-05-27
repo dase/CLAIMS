@@ -23,16 +23,13 @@
 #include <assert.h>
 #include <sys/epoll.h>
 #include "ExpandableBlockStreamExchangeEpoll.h"
-#include "ExpandableBlockStreamExchangeLower.h"
 #include "ExpandableBlockStreamExchangeLowerEfficient.h"
-#include "../../Block/BlockReadableFix.h"
-#include "../../Logging.h"
-#include "../../PortManager.h"
+#include "../../common/Logging.h"
 #include "../../Environment.h"
 #include "../../Executor/ExchangeTracker.h"
 #include "../../configure.h"
-#include "../../rename.h"
-#include "../../rdtsc.h"
+#include "../../common/rename.h"
+#include "../../utility/rdtsc.h"
 #define BUFFER_SIZE_IN_EXCHANGE 100
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
@@ -177,6 +174,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 		block_for_socket_[i]->~BlockContainer();
 	}
 
+//	sleep(1);
 	for(std::map<int,int>::iterator it=lower_sock_fd_to_index.begin();it!=lower_sock_fd_to_index.end();it++){
 //		printf("upper %d is closed!\n",it->first);
 		FileClose(it->first);
@@ -516,7 +514,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 //					Pthis->nexhausted_lowers++;
 	                  /* Closing the descriptor will make epoll remove it
 	                     from the set of descriptors which are monitored. */
-	                  FileClose (events[i].data.fd);
+//	                  FileClose (events[i].data.fd);
 //	                  printf("Closed connection on descriptor %d[%s]\n",
 //	                          events[i].data.fd,Pthis->lower_ip_array[Pthis->lower_sock_fd_to_index[events[i].data.fd]].c_str());
 //	                  Pthis->lower_sock_fd_to_index.erase(Pthis->lower_sock_fd_to_index.find(events[i].data.fd));
