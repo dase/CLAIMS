@@ -34,10 +34,48 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	Schema* schema=getSchema(child_dataflow.attribute_list_);
 	NodeTracker* node_tracker=NodeTracker::getInstance();
 
+	BlockStreamExpander::State expander_state_lower;
+	expander_state_lower.block_count_in_buffer_=10;
+	expander_state_lower.block_size_=block_size;
+	expander_state_lower.init_thread_count_=Config::initial_degree_of_parallelism;
+	expander_state_lower.child_=child_iterator;
+	expander_state_lower.schema_=getSchema(child_dataflow.attribute_list_);
+
+
+	bool data_exchange_used=false;
+	/**
+	 * If the number of partitions in the child dataflow is 1 and the the location is right in the collector,
+	 * then exchange is not necessary.
+	 */
+	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
+		data_exchange_used=true;
+		ExpandableBlockStreamExchangeEpoll::State state;
+		state.block_size=block_size;
+		BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state_lower);
+		state.child=expander_lower;//child_iterator;
+		state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+		state.schema=schema;
+		state.upper_ip_list.push_back(node_tracker->getNodeIP(collecter_));
+		state.partition_key_index=0;
+		std::vector<NodeID> lower_id_list=getInvolvedNodeID(child_dataflow.property_.partitioner);
+		for(unsigned i=0;i<lower_id_list.size();i++){
+			const std::string ip=node_tracker->getNodeIP(lower_id_list[i]);
+			assert(ip!="");
+			state.lower_ip_list.push_back(ip);
+		}
+		child_iterator=new ExpandableBlockStreamExchangeEpoll(state);
+	}
+
 	BlockStreamExpander::State expander_state;
 	expander_state.block_count_in_buffer_=10;
 	expander_state.block_size_=block_size;
-	expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
+	if(data_exchange_used){
+		/** if data exchange is used, only one expanded thread is enough.**/
+		expander_state.init_thread_count_=1;
+	}
+	else{
+		expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
+	}
 	expander_state.child_=child_iterator;
 	expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
@@ -51,26 +89,6 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	}
 	else{
 		middle_tier=expander;
-	}
-	/**
-	 * If the number of partitions in the child dataflow is 1 and the the location is right in the collector,
-	 * then exchange is not necessary.
-	 */
-	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
-		ExpandableBlockStreamExchangeEpoll::State state;
-		state.block_size=block_size;
-		state.child=expander;//child_iterator;
-		state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema=schema;
-		state.upper_ip_list.push_back(node_tracker->getNodeIP(collecter_));
-		state.partition_key_index=0;
-		std::vector<NodeID> lower_id_list=getInvolvedNodeID(child_dataflow.property_.partitioner);
-		for(unsigned i=0;i<lower_id_list.size();i++){
-			const std::string ip=node_tracker->getNodeIP(lower_id_list[i]);
-			assert(ip!="");
-			state.lower_ip_list.push_back(ip);
-		}
-		middle_tier=new ExpandableBlockStreamExchangeEpoll(state);
 	}
 
 	BlockStreamIteratorBase* ret;

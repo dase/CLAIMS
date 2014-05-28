@@ -10,6 +10,7 @@
 #include "../../Config.h"
 #include "../set_up_environment.h"
 #include "../../common/AttributeComparator.h"
+#include "../common/TestNew.cpp"
 
 typedef double QueryTime;
 typedef QueryTime (*query_function)();
@@ -135,7 +136,7 @@ static double lineitem_scan_aggregation(){
 
 static double lineitem_scan_filter(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
-
+//	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
 
@@ -166,7 +167,7 @@ static double sb_scan_filter(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
 
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
-	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
+//	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
 
 	Filter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
@@ -183,7 +184,7 @@ static double sb_scan_filter(){
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	root->print();
-//	physical_iterator_tree->print();
+	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
 	physical_iterator_tree->close();
@@ -231,7 +232,7 @@ static void scalability_test(query_function qf,const char* test_name,int max_tes
 }
 
 static int in_segment_scalability_test_on_tpch(int repeated_times=10){
-	init_single_node_tpc_h_envoriment();
+	startup_single_node_one_partition_environment_of_tpch();
 	double total_time=0;
 
 	scalability_test(lineitem_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
@@ -248,9 +249,9 @@ static int in_segment_scalability_test_on_poc(int repeated_times=10){
 	startup_single_node_environment_of_poc();
 	double total_time=0;
 
-//	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
+	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
 //	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
-	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
+//	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
 
 	sleep(1);
 	Environment::getInstance()->~Environment();
@@ -258,7 +259,7 @@ static int in_segment_scalability_test_on_poc(int repeated_times=10){
 	sleep(100);
 }
 static int in_segment_scalability_test(int repeated_times=10){
-//	in_segment_scalability_test_on_tpch(repeated_times);
-	in_segment_scalability_test_on_poc(repeated_times);
+	in_segment_scalability_test_on_tpch(repeated_times);
+//	in_segment_scalability_test_on_poc(repeated_times);
 	return 0;
 }
