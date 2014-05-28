@@ -14,6 +14,8 @@
 #include "../../storage/BlockManager.h"
 #include "../../Executor/ExpanderTracker.h"
 
+#define AVOID_CONTENTION_IN_SCAN
+
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan(State state)
 :state_(state), partition_reader_iterator_(0) {
 	//	sema_open_.set_value(1);
@@ -70,24 +72,77 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		else{
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 		}
+
+#ifdef AVOID_CONTENTION_IN_SCAN
+		ChunkReaderIterator* chunk_reader_it;
+		ChunkReaderIterator::block_accessor* ba;
+		while(chunk_reader_it=partition_reader_iterator_->nextChunk()){
+			while(chunk_reader_it->getNextBlockAccessor(ba)){
+				ba->getBlockSize();
+				input_dataset_.input_data_blocks.push_back(ba);
+			}
+		}
+
+#endif
 		open_ret_=true;
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
-		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+//		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		broadcaseOpenFinishedSignal();
 	}
 	else{
 		/* this is not the first thread, so it will wait for the first thread finishing initialization*/
 		waitForOpenFinished();
 	}
+
+
+
+
+
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
+	scan_thread_context* stc=(scan_thread_context*)getContext();
+	if(stc==0){
+		stc=new scan_thread_context();
+		initContext(stc);
+	}
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		//		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+		input_dataset_.atomicPut(stc->assigned_data_);
+		delete stc;
+		destorySelfContext();
 		return false;
 	}
-	perf_info->processed_one_block();
-	return partition_reader_iterator_->nextBlock(block);
+
+	if(!stc->assigned_data_.empty()){
+		ChunkReaderIterator::block_accessor* ba=stc->assigned_data_.front();
+		stc->assigned_data_.pop_front();
+		ba->getBlock(block);
+		return true;
+	}
+	else{
+		if(input_dataset_.atomicGet(stc->assigned_data_,100))
+			return next(block);
+		else
+			delete stc;
+			destorySelfContext();
+			return false;
+
+	}
+
+
+
+//////////////////////////////////
+//	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//		//		printf("<<<<<<<<<<<<<<<<<Scan detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+//		return false;
+//	}
+//	perf_info->processed_one_block();
+//	return partition_reader_iterator_->nextBlock(block);
+
+
+//////////////////////////////////
+
 
 
 //	//	return false;

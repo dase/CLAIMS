@@ -184,7 +184,7 @@ static double sb_scan_filter(){
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	root->print();
-	physical_iterator_tree->print();
+//	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
 	physical_iterator_tree->close();
@@ -251,15 +251,45 @@ static int in_segment_scalability_test_on_poc(int repeated_times=10){
 
 	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
 //	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
-//	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
+	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
 
 	sleep(1);
 	Environment::getInstance()->~Environment();
 //	printf("hash table =%d\n",BasicHashTable::getNumberOfInstances());
 	sleep(100);
 }
+
+static void test_block_construct(){
+	startup_single_node_environment_of_poc();
+	sleep(1);
+	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
+
+	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
+	scan->getDataflow();
+	BlockStreamIteratorBase* s=scan->getIteratorTree(64*1024);
+	s->print();
+
+	std::vector<BlockStreamBase*> vect;
+	BlockStreamBase* block=BlockStreamBase::createBlock(table->getProjectoin(0)->getSchema(),64*1024);
+	s->open();
+	while(s->next(block));
+	s->close();
+	s->open();
+	unsigned long long int start=curtick();
+	while(s->next(block));
+	printf("time: %lf \n",getSecond(start));
+	s->close();
+
+
+
+
+
+
+}
+
 static int in_segment_scalability_test(int repeated_times=10){
-	in_segment_scalability_test_on_tpch(repeated_times);
-//	in_segment_scalability_test_on_poc(repeated_times);
+//	in_segment_scalability_test_on_tpch(repeated_times);
+	in_segment_scalability_test_on_poc(repeated_times);
+//	test_block_construct();
 	return 0;
 }
