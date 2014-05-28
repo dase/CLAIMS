@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 
-#ifndef TPC_H_TEST_CPP_
-#define TPC_H_TEST_CPP_
+#ifndef TEST_NEW
+#define TEST_NEW
 #include "../../Environment.h"
 #include "../../Catalog/table.h"
 #include "../../Loader/Hdfsloader.h"
@@ -21,6 +21,7 @@
 #include "../../utility/rdtsc.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
+#include "../set_up_environment.h"
 
 static void query_project(){
 	unsigned long long int start=curtick();
@@ -123,93 +124,19 @@ static void query_project(){
 
 }
 
-static void init_single_node_tpc_h_envoriment(bool master=true){
-	Environment::getInstance(master);
-	printf("Press any key to continue!\n");
-	int input;
-	scanf("%d",&input);
-	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
-	Catalog* catalog=Environment::getInstance()->getCatalog();
-
-	/////////////////////////////// PART TABLE //////////////////////////////////
-	TableDescriptor* table_1=new TableDescriptor("PART",0);
-	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
-	table_1->addAttribute("P_NAME",data_type(t_string),55);
-	table_1->addAttribute("P_MFGR",data_type(t_string),25);
-	table_1->addAttribute("P_BRAND",data_type(t_string),10);
-	table_1->addAttribute("P_TYPE",data_type(t_string),25);
-	table_1->addAttribute("P_SIZE",data_type(t_int));
-	table_1->addAttribute("P_CONTAINER",data_type(t_string),10);
-	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
-	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
-
-	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",1);//should be 4
-
-	catalog->add_table(table_1);
-
-	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
-	}
-}
-
-static void init_multi_node_tpc_h_envoriment(bool master=true){
-	Environment::getInstance(master);
-	printf("Press any key to continue!\n");
-	int input;
-	scanf("%d",&input);
-	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
-	Catalog* catalog=Environment::getInstance()->getCatalog();
-
-	/////////////////////////////// PART TABLE //////////////////////////////////
-	TableDescriptor* table_1=new TableDescriptor("PART",0);
-	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
-	table_1->addAttribute("P_NAME",data_type(t_string),55);
-	table_1->addAttribute("P_MFGR",data_type(t_string),25);
-	table_1->addAttribute("P_BRAND",data_type(t_string),10);
-	table_1->addAttribute("P_TYPE",data_type(t_string),25);
-	table_1->addAttribute("P_SIZE",data_type(t_int));
-	table_1->addAttribute("P_CONTAINER",data_type(t_string),10);
-	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
-	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
-
-	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);//should be 4
-
-	catalog->add_table(table_1);
-
-	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
-	}
-}
-
-static int common_project_tcp_h_test_single_node(){
-
-	unsigned repeated_times=3;
-
-	init_single_node_tpc_h_envoriment();
-	for(unsigned i=0;i<repeated_times;i++){
-		query_project();
-	}
-
-	Environment::getInstance()->~Environment();
-	return 0;
-}
-
 static int common_project_tcp_h_test_multi_nodes(){
 	unsigned repeated_times=2;
 	printf("Master or slave?\n");
 	int input;
 	scanf("%d",&input);
 	if(input==0){
-		init_multi_node_tpc_h_envoriment(true);
+		startup_multiple_node_environment_of_tpch(true);
 		for(unsigned i=0;i<repeated_times;i++){
 			query_project();
 		}
 	}
 	else{
-		init_multi_node_tpc_h_envoriment(false);
+		startup_multiple_node_environment_of_tpch(false);
 	}
 
 	Environment::getInstance()->~Environment();
