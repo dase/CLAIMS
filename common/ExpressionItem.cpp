@@ -16,8 +16,8 @@ ExpressionItem::~ExpressionItem() {
 	// TODO Auto-generated destructor stub
 }
 
-bool ExpressionItem::setValue(void* value_str,data_type data){
-	switch(data){
+bool ExpressionItem::setValue(void* value_str,data_type type){
+	switch(type){
 		case t_int:{
 //			cout<<"the value in the expressionitem is: "<<*(int *)value_str<<endl;
 			setIntValue(*(int *)value_str);
@@ -35,7 +35,14 @@ bool ExpressionItem::setValue(void* value_str,data_type data){
 			setULongValue(*(unsigned long*)value_str);
 			break;
 		}
-
+		case t_string:{
+			setStringValue((const char *)value_str);
+			break;
+		}
+		case t_decimal:{
+			setDecimalValue((const char *)value_str);
+			break;
+		}
 		default:{
 			cout<<"no matching operator exists!!!"<<endl;
 			/*
@@ -111,6 +118,13 @@ bool ExpressionItem::setULongValue(unsigned long &u_long){
 	return true;
 }
 
+bool ExpressionItem::setDecimalValue(const char * decimal_str){
+	type=const_type;
+	return_type=t_decimal;
+	strcpy(content.data.value._decimal,decimal_str);
+	return true;
+}
+
 bool ExpressionItem::setStringValue(std::string str){
 	type=const_type;
 	return_type=t_string;
@@ -142,6 +156,18 @@ bool ExpressionItem::setOperator(const char* op_str){
 	}
 	else if(tmp=="else"){
 		content.op.op_=op_case_else;
+	}
+	else if(tmp=="upper"){
+		content.op.op_=op_upper;
+	}
+	else if(tmp=="substring"){
+		content.op.op_=op_substring;
+	}
+	else if(tmp=="trim"){
+		content.op.op_=op_trim;
+	}
+	else if(tmp=="cast"){
+		content.op.op_=op_cast;
 	}
 	else{
 		printf("[%s] fails to match to any existing operator\n",op_str);

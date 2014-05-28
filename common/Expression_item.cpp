@@ -34,10 +34,6 @@ static void test_add(){
 	ei5.setOperator("+");
 	express_item_list.push_back(ei5);
 
-//		for(unsigned i=0;i<express_item_list.size();i++){
-//			express_item_list[i].print();
-//		}
-
 	ExpressionItem result;
 	ExpressionCalculator::calcuate(express_item_list,result);
 	print_test_name_result(is_equal(result.content.data.value._float,1.8)&&result.return_type==t_float,"(+)");
@@ -46,33 +42,29 @@ static void test_com_less(){
 	//(3.3+4.4)<10
 	std::vector<ExpressionItem> express_item_list;
 
-		ExpressionItem ei1;
-		ei1.setFloatValue("3.3");
-		express_item_list.push_back(ei1);
+	ExpressionItem ei1;
+	ei1.setFloatValue("3.3");
+	express_item_list.push_back(ei1);
 
-		ExpressionItem ei2;
-		ei2.setFloatValue("4.4");
-		express_item_list.push_back(ei2);
+	ExpressionItem ei2;
+	ei2.setFloatValue("4.4");
+	express_item_list.push_back(ei2);
 
-		ExpressionItem ei3;
-		ei3.setOperator("-");
-		express_item_list.push_back(ei3);
+	ExpressionItem ei3;
+	ei3.setOperator("-");
+	express_item_list.push_back(ei3);
 
-		ExpressionItem ei4;
-		ei4.setIntValue("10");
-		express_item_list.push_back(ei4);
+	ExpressionItem ei4;
+	ei4.setIntValue("10");
+	express_item_list.push_back(ei4);
 
-		ExpressionItem ei5;
-		ei5.setOperator("<");
-		express_item_list.push_back(ei5);
+	ExpressionItem ei5;
+	ei5.setOperator("<");
+	express_item_list.push_back(ei5);
 
-//		for(unsigned i=0;i<express_item_list.size();i++){
-//			express_item_list[i].print();
-//		}
-
-		ExpressionItem result;
-		ExpressionCalculator::calcuate(express_item_list,result);
-		print_test_name_result(result.content.data.value._bool==true&&result.return_type==t_boolean,"compare(<)");
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+	print_test_name_result(result.content.data.value._bool==true&&result.return_type==t_boolean,"compare(<)");
 }
 
 inline void test_case_exp(){
@@ -175,12 +167,98 @@ inline void test_case_exp(){
 
 	ExpressionItem result;
 	ExpressionCalculator::calcuate(express_item_list,result);
-//	result.print();
 
 	print_test_name_result(result._string=="FAILED"&&result.return_type==t_string,"case");
-
-
 }
+
+inline void test_upper(){
+	Expression express_item_list;
+
+	ExpressionItem ei0;								// x
+	ei0.setStringValue("asbcd");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei1;							 	// 60
+	ei1.setOperator("upper");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+	print_test_name_result(result._string=="ABCD"&&result.return_type==t_string,"upper");
+}
+
+inline void test_substring(){
+	Expression express_item_list;
+
+	ExpressionItem ei0;								// x
+	ei0.setStringValue("abdcsga");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei1;							 	// 60
+	ei1.setIntValue("1");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem ei2;							 	// 60
+	ei2.setIntValue("5");
+	express_item_list.push_back(ei2);
+
+	ExpressionItem ei3;							 	// 60
+	ei3.setOperator("substring");
+	express_item_list.push_back(ei3);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+	print_test_name_result(result._string=="bdcsg"&&result.return_type==t_string,"substring");
+}
+
+inline void test_trim(){
+	Expression express_item_list;
+
+	ExpressionItem ei1;							 	// 60
+	ei1.setStringValue(" ");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem ei0;							 	// 60
+	ei0.setIntValue("0");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei2;								// x
+	ei2.setStringValue("  abdsc       ");
+	express_item_list.push_back(ei2);
+
+	ExpressionItem ei3;								// x
+	ei3.setOperator("trim");
+	express_item_list.push_back(ei3);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+	print_test_name_result(result._string=="abdsc"&&result.return_type==t_string,"trim");
+}
+
+inline void test_cast(){
+	Expression express_item_list;
+
+	ExpressionItem ei0;							 	// 60
+	ei0.setIntValue("000012");
+	express_item_list.push_back(ei0);
+
+	ExpressionItem ei1;								// x
+	ei1.setStringValue("int");
+	express_item_list.push_back(ei1);
+
+	ExpressionItem ei2;								// x
+	ei2.setOperator("cast");
+	express_item_list.push_back(ei2);
+
+	ExpressionItem result;
+	ExpressionCalculator::calcuate(express_item_list,result);
+
+	print_test_name_result(result.content.data.value._int==12&&result.return_type==t_int,"cast");
+}
+
 static int test_expression_item(){
 	initialize_arithmetic_type_promotion_matrix();
 	initialize_type_cast_functions();
@@ -188,6 +266,11 @@ static int test_expression_item(){
 	test_add();
 	test_com_less();
 	test_case_exp();
+	test_upper();
+	test_substring();
+	test_trim();
+	test_cast();
+
 	return 0;
 }
 
