@@ -69,7 +69,7 @@ bool BlockStreamPerformanceMonitorTop::close(){
 }
 
 void BlockStreamPerformanceMonitorTop::print(){
-	printf("Top");
+	printf("Performance Top");
 	printf("-------------\n");
 	state_.child_->print();
 
