@@ -119,8 +119,14 @@ void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 }
 thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 	context_lock_.acquire();
-	assert(context_list_.find(pthread_self())!=context_list_.cend());
-	thread_context* ret= context_list_[pthread_self()];
+	thread_context* ret;
+	if(context_list_.find(pthread_self())!=context_list_.cend()){
+		ret= context_list_[pthread_self()];
+	}
+	else
+	{
+		ret=0;
+	}
 //	printf("Thread %lx is poped!\n",pthread_self());
 	context_lock_.release();
 	return ret;

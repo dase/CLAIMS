@@ -46,9 +46,13 @@ void BlockStreamBuffer::insertBlock(BlockStreamBase* block){
 
 //	assert(block_stream_empty_list_.size()==sema_empty_block_.get_value());
 
-	/* swap the data address of empty block and the input block to avoid memory copy.*/
-	block->switchBlock(*empty_block);
-
+	if(block->isIsReference()){
+		empty_block->deepCopy(block);
+	}
+	else{
+		/* swap the data address of empty block and the input block to avoid memory copy.*/
+		block->switchBlock(*empty_block);
+	}
 	/* add the empty block which now hold the read data into the used block list*/
 	block_stream_used_list_.push_back(empty_block);
 //	printf("[after inserted]: sema=%d, empty_list=%d\n",sema_empty_block_.get_value(),block_stream_empty_list_.size());
@@ -63,6 +67,8 @@ bool BlockStreamBuffer::getBlock(BlockStreamBase &block){
 	if(!block_stream_used_list_.empty()){
 		BlockStreamBase* fetched_block=block_stream_used_list_.front();
 		block_stream_used_list_.pop_front();
+
+
 		fetched_block->switchBlock(block);
 		block_stream_empty_list_.push_back(fetched_block);
 		sema_empty_block_.post();
