@@ -172,21 +172,6 @@ static int parser_test(){
 					table_2->addAttribute("order_star",data_type(t_int));
 					table_2->addAttribute("order_restr_type",data_type(t_int));
 					table_2->addAttribute("short_sell_flag",data_type(t_int));		//25
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 					vector<ColumnOffset> sb_proj0_index;
 					sb_proj0_index.push_back(0);
 					sb_proj0_index.push_back(1);
@@ -194,13 +179,9 @@ static int parser_test(){
 					sb_proj0_index.push_back(3);
 					sb_proj0_index.push_back(4);
 					sb_proj0_index.push_back(5);
-
 			//		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);	//G0
 					table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",4);	//G0
-
-
-
-					vector<ColumnOffset> sb_proj1_index;
+      				vector<ColumnOffset> sb_proj1_index;
 					sb_proj1_index.push_back(0);
 					sb_proj1_index.push_back(6);
 					sb_proj1_index.push_back(7);
@@ -258,19 +239,7 @@ static int parser_test(){
 
 
 					catalog->add_table(table_2);
-					///////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-					///////////////////////////////////////
-
-
-					////////////////////////////////////////
 					/* the following codes should be triggered by Load module*/
 					//////////////////ONE DAY////////////////////////////////////////////////
 					//cj_table
@@ -458,6 +427,7 @@ static int parser_test(){
 
 			printf("SQL:fuck\n");
 			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
+			clock_t t;
 			Node* node=getparsetreeroot();
 			output(node,0);
 			puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");

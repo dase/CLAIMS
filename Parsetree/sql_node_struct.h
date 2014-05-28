@@ -1,6 +1,8 @@
 /*
  *
  * 14.02.15 已有select语句和create语句，包括select语句连接系统所需的函数
+
+ *
  *
  */
 
@@ -20,6 +22,11 @@ extern "C" void emit(char *s, ...);
 extern "C" void yyerror(const char *s, ...);
 extern int yylineno;
 
+/*
+ * enum data_type{
+ * 	t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
+ * from data_type.h
+ */
 
 enum nodetype
 {
@@ -35,22 +42,18 @@ enum nodetype
 	t_having_list,
 	t_orderby_list,t_orderby_expr,
 	t_limit_list,t_limit_expr,
+	t_insert_stmt,	t_insert_val_list, t_insert_vals, t_insert_assign, // 2014-4-17---增加---by Yu
 	t_create_database_stmt, t_create_table_stmt, t_create_col_list, t_create_def, t_create_projection_stmt,// 2014-2-24---新增t_create_projection_stmt类型---by余楷
 	t_alter_database_stmt, t_alter_table_stmt, t_alter_def,
 	t_create_select_stmt,t_column_atts, t_opt_csc,
 	t_datatype,t_length,t_enum_list,
 	t_create_index_stmt,	t_index_col_list,	t_drop_index,	// 2014-3-24---增加---by Yu
 	t_drop_database_stmt,t_drop_table_stmt, t_table_list,	// 2014-3-24---增加---by Yu
-	t_load_table_stmt	// 2014-3-24---增加---by Yu
+	t_load_table_stmt,	// 2014-3-24---add---by Yu
+	t_show_stmt,	// 2014-5-4---add---by Yu
 };
 
-union dataval	// 2014-3-8---不支持更长的整数，需改用long或其他类型---by余楷
-{
-	int int_val;
-	char *string_val;
-	double double_val;
-	bool bool_val;
-};
+// 2014-4-14---delete union dataval, because only char* is need---by Yu
 
 struct Node//基本节点
 {
@@ -68,7 +71,7 @@ struct Stmt	//语句列表 2014-3-4---增加语句列表结构体---by余楷
 struct Expr//常量表达式
 {
 	nodetype type;
-	dataval data;
+	char *data;
 	//Node *next;
 };
 
@@ -97,6 +100,7 @@ struct Columns//列
 struct Expr_cal//计算表达式,二元表达式
 {
 	nodetype type;
+	char * str;//5.23---by fzh---
 	char * sign,*parameter;
 	int cmp;
 	Node *lnext,*rnext;
@@ -105,6 +109,7 @@ struct Expr_cal//计算表达式,二元表达式
 struct Expr_func //函数表达式，将is null/exist等判断抽象成函数
 {
 	nodetype type;
+	char * str;//5.23---by fzh---
 	char * funname;
 	Node *args;
 	Node * parameter1,*parameter2;//函数中的参数列表，处理between...and.../case...when...then...end等
@@ -289,6 +294,47 @@ struct Limit_expr
 	Node *row_count;
 };
 
+// 2014-4-17---add ---by Yu
+struct Insert_stmt
+{
+	nodetype type;
+	int insert_opt;	// 2014-4-16---not used in this version ---by Yu
+	char *tablename;
+	Node *col_list;
+	Node *insert_val_list;
+	Node *insert_assign_list;	// 2014-4-16---not used in this version ---by Yu
+	Node *insert_assign_list_from_set;	// 2014-4-17---not used in this version ---by Yu
+	Node *select_stmt;	// 2014-4-17---not used in this version ---by Yu
+};
+
+// 2014-4-17---add ---by Yu
+struct Insert_val_list
+{
+	nodetype type;
+	Node *insert_vals;
+	Node *next;
+};
+
+// 2014-4-17---add ---by Yu
+struct Insert_vals
+{
+	nodetype type;
+	int value_type;
+	Node *expr;
+	Node *next;
+};
+
+// 2014-4-17---add ---by Yu
+struct Insert_assign_list
+{
+	nodetype type;
+	char *col_name;
+	int value_type;
+	Node *expr;
+	Node *next;
+};
+
+
 /*****************select子句结束*********************************************************************************************************************/
 
 /******************DDL语句开始***************************************
@@ -331,10 +377,11 @@ struct Create_def
 	Node * col_list;
 };
 
+// 2014-4-14---change the struct---by Yu
 struct Column_atts
 {
 	nodetype type;
-	int datatype;	//若 datatype & 0111100 != 0，则还有内容存在num1或num2或s中
+	int datatype;	//若 datatype & 0111100 != 0，则还有内容存在data中
 	int num1;
 	double num2;
 	char *s;
@@ -550,6 +597,15 @@ struct enum_list
 	Node * next;
 };
 
+struct Show_stmt	//2014-5-4---add ---by Yu
+{
+	nodetype type;
+	bool full;
+	int show_type;
+	char *database_name;
+	char *like_string;
+};
+
 
 //////////////////////////未完待续////////////////////////////////////////
 
@@ -563,7 +619,7 @@ struct enum_list
 
 struct Node *newStmt(nodetype t, Node *list, Node *newNode);	// 2014-3-4---增加新建语句列表函数---by余楷
 
-struct Node* newExpr(nodetype t, dataval d);
+struct Node* newExpr(nodetype t, char *data);
 
 struct Node * newExprList(nodetype t, Node * data, Node * next);
 
@@ -611,6 +667,20 @@ struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next);
 struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *next);
 
 struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count);
+
+
+//2014-4-17---add---by Yu
+Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
+		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt);
+
+//2014-4-17---add---by Yu
+Node* newInsertValueList(Node *insert_vals, Node *next);
+
+//2014-4-17---add---by Yu
+Node* newInsertVals(int value_type, Node *expr, Node *next);
+
+//2014-4-17---add---by Yu
+Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next);
 
 /*******　DDL语句  *****/
 struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, char * name);
@@ -673,6 +743,8 @@ struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next
 // 2014-3-27---增加---by Yu
 struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator);
 
+Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string);	//2014-5-4---add ---by Yu
+
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -697,7 +769,8 @@ void solvewc(struct Node * wcexpr,struct Node *fromlist);
 
 void departwc(struct Node *  wherecondition,struct Node * fromlist);
 
-bool semantic_analysis(Node *parsetree);
+bool semantic_analysis(Node *parsetree,bool issubquery);//---3.22fzh--
 
-
+int solve_join_condition(Node * fromnode);//---3.22fzh---
+void expr_to_str_test(Node *node);//---5.23fzh---
 #endif /* NODES_H_ */

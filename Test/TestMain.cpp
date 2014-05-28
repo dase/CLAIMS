@@ -31,6 +31,7 @@
 #include "../Client/Test/TestSeverClient.cpp"
 #include "../common/types/Test/data_type_test.h"
 #include "../common/Expression_item.cpp"
+#include "common/TestNew.cpp"
 #include "../Loader/Test/test_load.cpp"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
@@ -66,6 +67,8 @@ int main(int argc , char ** argv){
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
+//	return query_optimization_outputdata();
+
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
@@ -73,6 +76,7 @@ int main(int argc , char ** argv){
 //	return test_expression_item();
 //	return testProject();
 //	return testSort();
+
 
 //	return testProject_wl();
 //	return Project_test();
@@ -89,12 +93,12 @@ int main(int argc , char ** argv){
 //	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(20);
+	test_expanderFramework_single_node(5);
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test();
-	hash_table_test();
+//	hash_table_test();
 //	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();

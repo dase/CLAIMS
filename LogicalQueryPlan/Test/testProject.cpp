@@ -40,15 +40,23 @@ static int testProject(){
 		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 
-		TableDescriptor* table_1=new TableDescriptor("T",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-		table_1->addAttribute("x",data_type(t_int));  				//0
-		table_1->addAttribute("y",data_type(t_int));
+		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+		table_1->addAttribute("row_id",data_type(t_u_long));  				//0
+		table_1->addAttribute("trade_date",data_type(t_int));
+		table_1->addAttribute("order_no",data_type(t_u_long));
+		table_1->addAttribute("sec_code",data_type(t_int));
+		table_1->addAttribute("trade_dir",data_type(t_int));
+		table_1->addAttribute("order_type",data_type(t_int));
 
 		vector<ColumnOffset> cj_proj0;
 		cj_proj0.push_back(0);
 		cj_proj0.push_back(1);
+		cj_proj0.push_back(2);
+		cj_proj0.push_back(3);
+		cj_proj0.push_back(4);
+		cj_proj0.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0,"x",1);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0,"row_id",1);	//G0
 		catalog->add_table(table_1);
 
 		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
@@ -59,91 +67,53 @@ static int testProject(){
 		LogicalOperator* scan=new LogicalScan(table_1->getProjectoin(0));
 
 		std::vector<std::vector<ExpressionItem> > vve;
-		std::vector<ExpressionItem> ve;
-
-		ExpressionItem ei1;
-		ei1.setVariable("T","y");
-		ve.push_back(ei1);
-
-		ExpressionItem ei2;
-		ei2.setVariable("T","x");
-		ve.push_back(ei2);
-
-		ExpressionItem ei3;
-		ei3.setOperator("+");
-		ve.push_back(ei3);
-
-		vve.push_back(ve);
-
 		std::vector<ExpressionItem> ve1;
-
-		ExpressionItem ei11;
-		ei11.setVariable("T","y");
-		ve1.push_back(ei11);
-
-		ExpressionItem ei12;
-		ei12.setVariable("T","x");
-		ve1.push_back(ei12);
-
-		ExpressionItem ei13;
-		ei13.setOperator("-");
-		ve1.push_back(ei13);
-
-//		ExpressionItem ei14;
-//		ei14.setDoubleValue("1.23");
-//		ve1.push_back(ei14);
-//
-//		ExpressionItem ei15;
-//		ei15.setOperator("+");
-//		ve1.push_back(ei15);
-
-		vve.push_back(ve1);
+		ExpressionItem ei1;
+		ei1.setVariable("cj","row_id");
+		ve1.push_back(ei1);
 
 		std::vector<ExpressionItem> ve2;
+		ExpressionItem ei2;
+		ei2.setVariable("cj","trade_date");
+		ve2.push_back(ei2);
 
-		ExpressionItem ei21;
-		ei21.setVariable("T","y");
-		ve2.push_back(ei21);
+		std::vector<ExpressionItem> ve3;
+		ExpressionItem ei3;
+		ei3.setVariable("cj","order_no");
+		ve3.push_back(ei3);
 
-		ExpressionItem ei22;
-		ei22.setVariable("T","x");
-		ve2.push_back(ei22);
+		std::vector<ExpressionItem> ve4;
+		ExpressionItem ei4;
+		ei4.setVariable("cj","sec_code");
+		ve4.push_back(ei4);
 
-		ExpressionItem ei23;
-		ei23.setOperator("+");
-		ve2.push_back(ei23);
+		std::vector<ExpressionItem> ve5;
+		ExpressionItem ei5;
+		ei5.setVariable("cj","trade_dir");
+		ve5.push_back(ei5);
 
-//		ExpressionItem ei24;
-//		ei24.setIntValue("100");
-//		ve2.push_back(ei24);
-//
-//		ExpressionItem ei25;
-//		ei25.setOperator("-");
-//		ve2.push_back(ei25);
+		std::vector<ExpressionItem> ve6;
+		ExpressionItem ei6;
+		ei6.setVariable("cj","order_type");
+		ve6.push_back(ei6);
 
+		vve.push_back(ve1);
 		vve.push_back(ve2);
+		vve.push_back(ve3);
+		vve.push_back(ve4);
+		vve.push_back(ve5);
+		vve.push_back(ve6);
 
-//		vve.push_back(ve);
-
-		LogicalOperator* proj=new LogicalProject(scan,vve);
-
-//		const NodeID collector_node_id=0;
-//		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,proj,LogicalQueryPlanRoot::PRINT);
-//		unsigned long long int timer_start=curtick();
-////		root->print();
-////
-//		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
-//		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
-
-//		executable_query_plan->print();
-
-//		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(proj->getIteratorTree(1024*64-sizeof(unsigned)),"127.0.0.1");
+		LogicalProject *proj=new LogicalProject(scan,vve);
 		BlockStreamIteratorBase* prj=proj->getIteratorTree(1024*64-sizeof(unsigned));
 
 		BlockStreamPrint::State print_state;
 		print_state.block_size_=64*1024-sizeof(unsigned);
 		print_state.child_=prj;
 		vector<column_type> column_list;
+		column_list.push_back(column_type(t_u_long));
+		column_list.push_back(column_type(t_int));
+		column_list.push_back(column_type(t_u_long));
 		column_list.push_back(column_type(t_int));
 		column_list.push_back(column_type(t_int));
 		column_list.push_back(column_type(t_int));
