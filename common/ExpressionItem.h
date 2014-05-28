@@ -11,8 +11,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
+
 #include "../common/data_type.h"
-enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else};
+enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
@@ -142,6 +143,8 @@ public:
 	bool setFloatValue(const char*);
 	bool setFloatValue(float&);
 	bool setDoubleValue(const char*);
+	//currently,decimal only const char * supported!
+	bool setDecimalValue(const char*);
 	bool setDoubleValue(double&);
 	bool setULongValue(const char*);
 	bool setULongValue(unsigned long&);
@@ -157,6 +160,7 @@ public:
 	ItemType type;
 	std::string _string;// string cannot be in unoin.
 	data_type return_type;
+	unsigned size;//add by zhanglei
 
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -268,11 +272,39 @@ public:
 		case op_case_else:{
 			return std::string("else");
 		}
+		case op_upper:{
+			return std::string("upper");
+		}
+		case op_substring:{
+			return std::string("substring");
+		}
+		case op_trim:{
+			return std::string("trim");
+		}
+		case op_cast:{
+			return std::string("cast");
+		}
 		default:{
 			assert(false);
 		}
 		return std::string();
 		}
+	}
+
+	bool getType(const char* type_str){
+		type=variable_type;
+		std::string tmp(type_str);
+		if(tmp=="int"){
+			return_type=t_int;
+		}
+		else if(tmp=="string"){
+			return_type=t_string;
+		}
+		else{
+			printf("[%s] fails to match to any existing data type\n",type_str);
+			return false;
+		}
+		return true;
 	}
 };
 

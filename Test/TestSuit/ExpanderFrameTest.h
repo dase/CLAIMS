@@ -11,6 +11,7 @@
  */
 using namespace std;
 
+
 static int test_scan(){
 
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
@@ -430,6 +431,7 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 	printf("This test requires one partition of POC sb and cj\n");
 
 	printf("This test requires one partition of POC sb and cj\n");
+
 
 //	sleep(5);
 	printf("============Scan->Filter->Expander->Exchange->root============\n");

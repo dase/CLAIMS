@@ -151,6 +151,8 @@ public:
 	Schema* getSchema()const;
 	inline void setRowNumber(unsigned long row_number) { row_number_ = row_number; }
 	inline unsigned long getRowNumber() { return row_number_; }
+	inline unsigned int getNumberOfAttribute(){ return attributes.size();}	// add by Yu
+
 protected:
 	string tableName;
 	vector<Attribute> attributes;
@@ -164,7 +166,7 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & tableName & attributes & table_id_ & projection_list_;
+		ar & tableName & attributes & table_id_ & projection_list_ & row_number_;
 	}
 
 };

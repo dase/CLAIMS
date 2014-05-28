@@ -71,6 +71,9 @@ private:
 
 	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
 private:
+	semaphore sema_open_;
+	volatile bool open_finished_;
+
 	State state_;
 
 	std::list<remaining_block> remaining_block_list_;

@@ -178,6 +178,7 @@ private:
 #ifdef CONTENTION_REDUCTION
 	unsigned expected_number_of_visiting_thread_;
 	pool<>** grandmothers;
+	SpineLock* grandmother_lock_;
 #else
 	SpineLock mother_page_lock_;
 	pool<>* grandmother;

@@ -39,6 +39,7 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 	for(unsigned i=0;i<expected_number_of_visiting_thread_;i++){
 		grandmothers[i]=new pool<>(get_aligned_space(bucksize));
 	}
+	grandmother_lock_=new SpineLock[expected_number_of_visiting_thread_];
 #else
 	grandmother=new pool<>(get_aligned_space(bucksize));
 #endif
@@ -154,6 +155,7 @@ BasicHashTable::~BasicHashTable()
 		delete grandmothers[i];
 	}
 	delete[] grandmothers;
+	delete[] grandmother_lock_;
 #else
 	grandmother->purge_memory();
 	grandmother->~pool();
@@ -204,7 +206,9 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 //	ret=malloc(bucksize_);
 //	ret=(char*)memalign(256,bucksize_);
 #ifdef CONTENTION_REDUCTION
+	grandmother_lock_[thread_id].lock();
 	ret=(char*)grandmothers[thread_id]->malloc();
+	grandmother_lock_[thread_id].unlock();
 #else
 	mother_page_lock_.lock();
 	ret=(char*)grandmother->malloc();

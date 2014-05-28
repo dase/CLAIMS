@@ -38,6 +38,22 @@ void ExpressionCalculator::compute(ExpressionItem operator_item,ExpressionItemSt
 			do_case(stack,result);
 			break;
 		}
+		case op_upper:{
+			upper(stack,result);
+			break;
+		}
+		case op_substring:{
+			substring(stack,result);
+			break;
+		}
+		case op_trim:{
+			trim(stack,result);
+			break;
+		}
+		case op_cast:{
+			cast(stack,result);
+			break;
+		}
 		default:{
 			printf("The operator[%d] is not supported currently!\n",operator_item.content.op.op_);
 		}
@@ -67,6 +83,22 @@ void ExpressionCalculator::computes(ExpressionItem operator_item, ExpressionItem
 		case op_case:{
 			reverse_stack(stack);
 			do_case(stack,result);
+			break;
+		}
+		case op_upper:{
+
+			break;
+		}
+		case op_substring:{
+
+			break;
+		}
+		case op_trim:{
+
+			break;
+		}
+		case op_cast:{
+
 			break;
 		}
 		default:{
