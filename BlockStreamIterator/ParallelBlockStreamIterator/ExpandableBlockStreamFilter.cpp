@@ -33,7 +33,13 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
 
-	initContext(state_.schema_,state_.block_size_);
+
+	filter_thread_context* ftc=new filter_thread_context();
+	ftc->block_for_asking_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
+	ftc->block_stream_iterator_=ftc->block_for_asking_->createIterator();
+
+	initContext(ftc);
+
 	if(tryEntryIntoSerializedSection()){
 		tuple_after_filter_=0;
 		const bool child_open_return=state_.child_->open(part_off);
@@ -55,9 +61,9 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 	void* tuple_from_child;
 	void* tuple_in_block;
 	bool pass_filter;
-	thread_context& tc=getContext();
+	filter_thread_context* tc=(filter_thread_context*)getContext();
 
-	while((tuple_from_child=tc.block_stream_iterator_->currentTuple())>0){
+	while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0){
 		pass_filter=true;
 		for(unsigned i=0;i<state_.comparator_list_.size();i++){
 
@@ -78,7 +84,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				 * modified by zhanglei for the variable supported!*/
 				block->insert(tuple_in_block,tuple_from_child,bytes);
 				tuple_after_filter_++;
-				tc.block_stream_iterator_->increase_cur_();
+				tc->block_stream_iterator_->increase_cur_();
 			}
 			else{
 				/* the block is full, before we return, we pop the remaining block.*/
@@ -86,7 +92,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 			}
 		}
 		else{
-			tc.block_stream_iterator_->increase_cur_();
+			tc->block_stream_iterator_->increase_cur_();
 		}
 	}
 
@@ -95,17 +101,18 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 	 */
 
 
-	tc.block_for_asking_->setEmpty();
-	tc.block_stream_iterator_->~BlockStreamTraverseIterator();
+	tc->block_for_asking_->setEmpty();
+	tc->block_stream_iterator_->~BlockStreamTraverseIterator();
 
-	while(state_.child_->next(tc.block_for_asking_)){
-		tc.block_stream_iterator_=tc.block_for_asking_->createIterator();
+
+	while(state_.child_->next(tc->block_for_asking_)){
+		tc->block_stream_iterator_=tc->block_for_asking_->createIterator();
 
 		/*
 		 * TODO: The following lines are the same as the some lines above,
 		 * so consider put them into a method.
 		 */
-		while((tuple_from_child=tc.block_stream_iterator_->currentTuple())>0){
+		while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0){
 			pass_filter=true;
 			for(unsigned i=0;i<state_.comparator_list_.size();i++){
 				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
@@ -125,7 +132,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 					 * modified by zhanglei for the variable supported!*/
 					block->insert(tuple_in_block,tuple_from_child,bytes);
 					tuple_after_filter_++;
-					tc.block_stream_iterator_->increase_cur_();
+					tc->block_stream_iterator_->increase_cur_();
 				}
 				else{
 					/* the block is full, before we return, we pop the remaining block.*/
@@ -134,13 +141,13 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				}
 			}
 			else{
-				tc.block_stream_iterator_->increase_cur_();
+				tc->block_stream_iterator_->increase_cur_();
 			}
 
 		}
 		/* the block_for_asking is exhausted, but the block is not full*/
-		tc.block_stream_iterator_->~BlockStreamTraverseIterator();
-		tc.block_for_asking_->setEmpty();
+		tc->block_stream_iterator_->~BlockStreamTraverseIterator();
+		tc->block_for_asking_->setEmpty();
 	}
 	/* the child iterator is exhausted, but the block is not full.*/
 
@@ -148,6 +155,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 		return true;
 	}
 	else{
+		delete tc;
 		return false;
 	}
 }
@@ -235,7 +243,7 @@ void ExpandableBlockStreamFilter::pushContext(const thread_context& tc){
 //	context_list_[pthread_self()].iterator_->~BlockStreamTraverseIterator();
 //	context_list_.erase(pthread_self());
 //	lock_.release();
-////	tc.block_for_asking_->~BlockStreamBase();
-////	tc.iterator_->~BlockStreamTraverseIterator();
+////	tc->block_for_asking_->~BlockStreamBase();
+////	tc->iterator_->~BlockStreamTraverseIterator();
 //}
 

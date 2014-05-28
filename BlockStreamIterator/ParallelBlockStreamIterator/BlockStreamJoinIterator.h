@@ -23,6 +23,12 @@ using namespace std;
 
 class BlockStreamJoinIterator:public ExpandableBlockStreamIteratorBase{
 public:
+	class join_thread_context:public thread_context{
+	public:
+		BlockStreamBase* block_for_asking_;
+		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+		BasicHashTable::Iterator hashtable_iterator_;
+	};
 	struct remaining_block{
 		remaining_block(BlockStreamBase *bsb_right,BlockStreamBase::BlockStreamTraverseIterator *bsti)
 		:bsb_right_(bsb_right),blockstream_iterator(bsti){};
