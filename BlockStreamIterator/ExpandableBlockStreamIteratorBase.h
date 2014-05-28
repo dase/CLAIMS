@@ -15,10 +15,10 @@
 #include <boost/unordered/unordered_map.hpp>
 
 using boost::unordered::unordered_map;
-struct thread_context{
-	BlockStreamBase* block_for_asking_;
-	BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
-	BasicHashTable::Iterator hashtable_iterator_;
+class thread_context{
+//	BlockStreamBase* block_for_asking_;
+//	BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+//	BasicHashTable::Iterator hashtable_iterator_;
 };
 typedef int barrier_number;
 typedef int serialized_section_number;
@@ -74,8 +74,8 @@ protected:
 
 	void barrierArrive(unsigned barrier_index=0);
 
-	void initContext(const Schema* const &  schema, const unsigned& blocksize);
-	thread_context& getContext();
+	void initContext(thread_context* tc);
+	thread_context* getContext();
 
 	/*
 	 * This method is called when a thread wants its and all the others' context
@@ -105,7 +105,7 @@ protected:
 	unsigned number_of_seriliazed_section_;
 
 
-	boost::unordered_map<pthread_t,thread_context> context_list_;
+	boost::unordered_map<pthread_t,thread_context*> context_list_;
 	Lock context_lock_;
 
 private:
