@@ -4,8 +4,10 @@
  *  Created on: Aug 28, 2013
  *      Author: wangli
  */
-
+#include <limits>
 #include "ExpandableBlockStreamFilter.h"
+#include "../../utility/warmup.h"
+#include "../../utility/rdtsc.h"
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
 :state_(state){
@@ -106,6 +108,14 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 
 
 	while(state_.child_->next(tc->block_for_asking_)){
+//		continue;
+//
+//		unsigned long long int warmup_tick=curtick();
+//		Unit temp=warmup(tc->block_for_asking_,tc->block_for_asking_->getSerializedBlockSize());
+//		printf("%ld cycles for warmup\n",curtick()-warmup_tick,temp);
+
+		unsigned long long int process_block=curtick();
+
 		tc->block_stream_iterator_=tc->block_for_asking_->createIterator();
 
 		/*
@@ -120,6 +130,9 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 					break;
 				}
 			}
+//			if(*(unsigned long*)tuple_from_child!=0){
+//				pass_filter=false;
+//			}
 			if(pass_filter){
 
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
@@ -145,6 +158,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 			}
 
 		}
+//		printf("block processing cycles: %ld\n",curtick()-process_block);
 		/* the block_for_asking is exhausted, but the block is not full*/
 		tc->block_stream_iterator_->~BlockStreamTraverseIterator();
 		tc->block_for_asking_->setEmpty();

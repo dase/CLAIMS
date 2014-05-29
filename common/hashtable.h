@@ -49,9 +49,9 @@ public:
 	void* allocate(const unsigned& offset,unsigned thread_id=0);
 	inline void* atomicAllocate(const unsigned& offset,unsigned thread_id=0){
 		void* ret;
-		lock_list_[offset].lock();
+		lock_list_[offset].acquire();
 		ret=allocate(offset,thread_id);
-		lock_list_[offset].unlock();
+		lock_list_[offset].release();
 		return ret;
 	}
 	inline void UpdateTuple(unsigned int offset,void* loc,void* newvalue, fun func)
@@ -60,15 +60,15 @@ public:
 	}
 	inline void atomicUpdateTuple(unsigned int offset,void* loc,void* newvalue, fun func)
 	{
-		lock_list_[offset].lock();
+		lock_list_[offset].acquire();
 		func(loc, newvalue);
-		lock_list_[offset].unlock();
+		lock_list_[offset].release();
 	}
 	inline void lockBlock(unsigned & bn){
-		lock_list_[bn].lock();
+		lock_list_[bn].acquire();
 	}
 	inline void unlockBlock(unsigned & bn){
-		lock_list_[bn].unlock();
+		lock_list_[bn].release();
 	}
 	void report_status();
 	class Iterator

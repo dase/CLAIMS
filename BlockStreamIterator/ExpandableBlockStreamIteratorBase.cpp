@@ -120,8 +120,9 @@ void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 	context_lock_.acquire();
 	thread_context* ret;
-	if(context_list_.find(pthread_self())!=context_list_.cend()){
-		ret= context_list_[pthread_self()];
+	boost::unordered_map<pthread_t,thread_context*>::iterator it;
+	if((it=context_list_.find(pthread_self()))!=context_list_.cend()){
+		ret= it->second;
 	}
 	else
 	{

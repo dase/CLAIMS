@@ -13,6 +13,7 @@
 #include "ExpandableBlockStreamProjectionScan.h"
 #include "../../storage/BlockManager.h"
 #include "../../Executor/ExpanderTracker.h"
+#include "../../Config.h"
 
 #define AVOID_CONTENTION_IN_SCAN
 
@@ -74,6 +75,8 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		}
 
 #ifdef AVOID_CONTENTION_IN_SCAN
+		unsigned long long start=curtick();
+
 		ChunkReaderIterator* chunk_reader_it;
 		ChunkReaderIterator::block_accessor* ba;
 		while(chunk_reader_it=partition_reader_iterator_->nextChunk()){
@@ -82,7 +85,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 				input_dataset_.input_data_blocks.push_back(ba);
 			}
 		}
-
+		printf("%lf seconds for initializing!\n",getSecond(start));
 #endif
 		open_ret_=true;
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
@@ -101,7 +104,10 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 }
 
 bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
+	unsigned long long total_start=curtick();
+//	unsigned long long int context_start=curtick();
 	scan_thread_context* stc=(scan_thread_context*)getContext();
+//	printf("%ld\n",curtick()-context_start);
 	if(stc==0){
 		stc=new scan_thread_context();
 		initContext(stc);
@@ -117,15 +123,20 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 	if(!stc->assigned_data_.empty()){
 		ChunkReaderIterator::block_accessor* ba=stc->assigned_data_.front();
 		stc->assigned_data_.pop_front();
+		const unsigned long long int start=curtick();
 		ba->getBlock(block);
+//		printf("%ld cycles\n",curtick()-start);
+
+//		printf("scan_call %ld cycles\n",curtick()-total_start);
 		return true;
 	}
 	else{
-		if(input_dataset_.atomicGet(stc->assigned_data_,100))
+		if(input_dataset_.atomicGet(stc->assigned_data_,Config::scan_batch))
 			return next(block);
 		else
 			delete stc;
 			destorySelfContext();
+//			printf("scan_call %ld cycles\n",curtick()-total_start);
 			return false;
 
 	}
