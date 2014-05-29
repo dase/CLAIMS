@@ -27,19 +27,19 @@ struct input_dataset{
 	assigned_data input_data_blocks;
 	SpineLock lock;
 	bool atomicGet(assigned_data &target,unsigned number_of_block){
-		lock.lock();
+		lock.acquire();
 		while(number_of_block--&&(!input_data_blocks.empty())){
 			target.push_back(input_data_blocks.front());
 			input_data_blocks.pop_front();
 		}
-		lock.unlock();
+		lock.release();
 		return !target.empty();
 	}
 	void atomicPut(assigned_data blocks){
-		lock.lock();
+		lock.acquire();
 		for(assigned_data::iterator it=blocks.begin();it!=blocks.end();it++)
 			input_data_blocks.push_front(*it);
-		lock.unlock();
+		lock.release();
 	}
 };
 

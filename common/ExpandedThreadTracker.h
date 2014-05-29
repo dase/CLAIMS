@@ -25,7 +25,7 @@
 		}
 		unsigned long get_accumulated_blocks_(){
 			unsigned long ret;
-			lock_.lock();
+			lock_.acquire();
 			ret=accumulated_blocks_;
 //			lock_.unlock();
 			return ret;

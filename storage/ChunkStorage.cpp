@@ -8,6 +8,9 @@
 #include "ChunkStorage.h"
 #include "../Debug.h"
 #include "BlockManager.h"
+#include "../utility/warmup.h"
+#include "../utility/rdtsc.h"
+
 
 bool ChunkReaderIterator::nextBlock(){
 	lock_.acquire();
@@ -308,20 +311,53 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
 
 void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& block) const {
 
+//#define MEMORY_COPY
+#ifdef MEMORY_COPY
+
 	/* Create a block, which will not free block_start_address when destructed.*/
-//	Block temp_block(block_size,target_block_start_address);
-//
-//	/*construct the block stream from temp_block. In the current version, the memory copy
-//	 * is used for simplicity.
-//	 * TODO: avoid memory copy.
-//	 */
-//	block->constructFromBlock(temp_block);
+	Block temp_block(block_size,target_block_start_address);
+
+	/*construct the block stream from temp_block. In the current version, the memory copy
+	 * is used for simplicity.
+	 * TODO: avoid memory copy.
+	 */
+	block->constructFromBlock(temp_block);
 
 //	usleep(1);
+//
+
+//
+#else
 
 	block->setIsReference(true);
 	block->setBlock(target_block_start_address);
 	((BlockStreamFix*)block)->free_=(char*)target_block_start_address+block_size-sizeof(unsigned);
+
+
+	warmup(target_block_start_address,block_size-sizeof(unsigned));
+//	unsigned long long int first=curtick();
+//	Unit temp1=warmup(target_block_start_address,block_size-sizeof(unsigned));
+//	printf("1 :%ld\n",curtick()-first,temp1);
+//
+//	unsigned long long int second=curtick();
+//	Unit temp2=warmup(target_block_start_address,block_size-sizeof(unsigned));
+//	printf("2 :%ld\n",curtick()-second,temp1);
+
+#endif
+//	block->deepCopy()
+
+
+//	warmup(target_block_start_address,block_size-sizeof(unsigned));
+
+//	volatile int sink;
+//	long result;
+//	long *data=(long*)(char*)target_block_start_address;
+//	const int num=(block_size-sizeof(unsigned))/sizeof(long);
+//	for(unsigned i=0;i<num;i++){
+//		result+=data[i];
+//	};
+//	sink=result;
+
 }
 
 void ChunkReaderIterator::InDiskBlockAccessor::getBlock(BlockStreamBase*& block) const {

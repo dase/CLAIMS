@@ -188,7 +188,7 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 	}
 //	return 0;
 #ifdef __MOTHER_PAGE__
-	mother_page_lock_.lock();
+	mother_page_lock_.acquire();
 	char* cur_mother_page=mother_page_list_.back();
 	if(bucksize_+cur_MP_>=pagesize_ )// the current mother page doesn't have enough space for the new buckets
 	{
@@ -206,13 +206,13 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 //	ret=malloc(bucksize_);
 //	ret=(char*)memalign(256,bucksize_);
 #ifdef CONTENTION_REDUCTION
-	grandmother_lock_[thread_id].lock();
+	grandmother_lock_[thread_id].acquire();
 	ret=(char*)grandmothers[thread_id]->malloc();
-	grandmother_lock_[thread_id].unlock();
+	grandmother_lock_[thread_id].release();
 #else
-	mother_page_lock_.lock();
+	mother_page_lock_.acquire();
 	ret=(char*)grandmother->malloc();
-	mother_page_lock_.unlock();
+	mother_page_lock_.release();
 #endif
 //	memset(ret,0,bucksize_);
 //	allocate_count++;
@@ -225,7 +225,7 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 //	overflow_count_[offset]++;
 	bucket_[offset]=ret;
 #ifdef __MOTHER_PAGE__
-	mother_page_lock_.unlock();
+	mother_page_lock_.release();
 #endif
 	return ret;
 }
