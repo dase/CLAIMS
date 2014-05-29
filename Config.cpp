@@ -43,6 +43,9 @@ int Config::expander_adaptivity_check_frequency;
  */
 int Config::initial_degree_of_parallelism;
 
+
+int Config::scan_batch;
+
 Config* Config::getInstance() {
 	if(instance_==0){
 		instance_=new Config();
@@ -77,6 +80,8 @@ void Config::initialize() {
 	enable_expander_adaptivity=getBoolean("enable_expander_adaptivity",false);
 
 	initial_degree_of_parallelism=getInt("initial_degree_of_parallelism",1);
+
+	scan_batch=getInt("scan_batch",10);
 
 
 #ifdef DEBUG_Config

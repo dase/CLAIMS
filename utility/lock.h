@@ -157,7 +157,7 @@ class SpineLock {
 	SpineLock() : _l(0) { }
 
 		/** Call blocks and retunrs only when it has the lock. */
-		inline void lock()
+		inline void acquire()
 		{
 			while(tas(&_l)) {
 #if defined(__i386__) || defined(__x86_64__)
@@ -180,7 +180,7 @@ class SpineLock {
 		}
 
 		/** Unlocks the lock object. */
-		inline void unlock()
+		inline void release()
 		{
 			_l = 0;
 		}
@@ -198,8 +198,8 @@ class SpineLock {
 #elif defined(__sparc__)
 			__asm__ __volatile__ (
 					"ldstub [%2], %0"
-					: "=r"(res), "+m"(*lock)
-					: "r"(lock)
+					: "=r"(res), "+m"(*acquire)
+					: "r"(acquire)
 					: "memory");
 #else
 #error TAS not defined for this architecture.

@@ -218,11 +218,11 @@ static void scalability_test(query_function qf,const char* test_name,int max_tes
 
 
 		if(i==1){
-			standard_throughput=1/total_time;
-			printf("D=%d\ts=%4.4f scale:1\n",i,total_time,1);
+			standard_throughput=1/(total_time/repeated_times);
+			printf("D=%d\ts=%4.4f scale:1\n",i,total_time/repeated_times,1);
 		}
 		else{
-			printf("D=%d\ts=%4.4f scale:%f\n",i,total_time,1/total_time/standard_throughput);
+			printf("D=%d\ts=%4.4f scale:%f\n",i,total_time/repeated_times,1/(total_time/repeated_times)/standard_throughput);
 		}
 
 
@@ -251,7 +251,7 @@ static int in_segment_scalability_test_on_poc(int repeated_times=10){
 
 	scalability_test(sb_scan_filter,"Scan-->filter",Config::max_degree_of_parallelism);
 //	scalability_test(lineitem_scan_aggregation,"Scan-->aggregation",Config::max_degree_of_parallelism);
-	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
+//	scalability_test(sb_scan_self_join,"Scan-->join",Config::max_degree_of_parallelism);
 
 	sleep(1);
 	Environment::getInstance()->~Environment();

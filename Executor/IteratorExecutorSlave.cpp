@@ -87,9 +87,9 @@ void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
 	arg[0]=it;
 	arg[1]=this;
 	pthread_create(&thread,NULL,run_iterator,arg);
-	lock_.lock();
+	lock_.acquire();
 	busy_thread_list_.insert(thread);
-	lock_.unlock();
+	lock_.release();
 
 	logging_->log("A new Running thread is created!");
 }
@@ -100,8 +100,8 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 	it->~IteratorMessage();
 	Pthis->logging_->log("A iterator tree is successfully executed!\n");
 	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
-	Pthis->lock_.lock();
+	Pthis->lock_.acquire();
 	Pthis->busy_thread_list_.erase(pthread_self());
-	Pthis->lock_.unlock();
+	Pthis->lock_.release();
 	free((void**)arg);
 }
