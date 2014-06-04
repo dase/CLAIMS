@@ -20,6 +20,7 @@ public:
 	class filter_thread_context:public thread_context{
 	public:
 		BlockStreamBase* block_for_asking_;
+		BlockStreamBase* temp_block_;
 		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
 	};
 	/* struct to hold the remaining data when the next is returned but the block from the child

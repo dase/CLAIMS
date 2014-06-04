@@ -38,6 +38,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 
 	filter_thread_context* ftc=new filter_thread_context();
 	ftc->block_for_asking_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
+	ftc->temp_block_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
 	ftc->block_stream_iterator_=ftc->block_for_asking_->createIterator();
 
 	initContext(ftc);
@@ -107,16 +108,22 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 	tc->block_stream_iterator_->~BlockStreamTraverseIterator();
 
 
+
 	while(state_.child_->next(tc->block_for_asking_)){
+//		continue;
+//		tc->temp_block_->deepCopy(tc->block_for_asking_);
+//		memcpy(tc->temp_block_->getBlock(),tc->block_for_asking_->getBlock(),tc->block_for_asking_->getSerializedBlockSize());
+//		((BlockStreamFix*)tc->temp_block_)->free_=(char*)((BlockStreamFix*)tc->temp_block_)->getBlock()+state_.schema_->getTupleMaxSize()*((BlockStreamFix*)tc->block_for_asking_)->getTuplesInBlock();
 //		continue;
 //
 //		unsigned long long int warmup_tick=curtick();
 //		Unit temp=warmup(tc->block_for_asking_,tc->block_for_asking_->getSerializedBlockSize());
 //		printf("%ld cycles for warmup\n",curtick()-warmup_tick,temp);
 
-		unsigned long long int process_block=curtick();
+//		unsigned long long int process_block=curtick();
 
 		tc->block_stream_iterator_=tc->block_for_asking_->createIterator();
+//		tc->block_stream_iterator_=tc->temp_block_->createIterator();
 
 		/*
 		 * TODO: The following lines are the same as the some lines above,
@@ -149,7 +156,6 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				}
 				else{
 					/* the block is full, before we return, we pop the remaining block.*/
-
 					return true;
 				}
 			}
