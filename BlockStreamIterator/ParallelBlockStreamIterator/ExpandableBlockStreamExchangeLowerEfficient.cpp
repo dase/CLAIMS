@@ -175,7 +175,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		logging_->log("Waiting until all the blocks in the buffer is sent!");
 
 		while(!buffer->isEmpty()){
-			usleep(10000);
+			usleep(1);
 
 		}
 		/*

@@ -555,6 +555,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 static void startup_single_node_one_partition_environment_of_tpch(bool master=true){
 	Environment::getInstance(master);
 	printf("---TPC---\n");
+	sleep(1);
 //	int input;
 //	scanf("%d",&input);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();

@@ -82,7 +82,7 @@ bool BlockStreamFix::insert(void *dest,void *src,unsigned bytes){
 }
 
 void BlockStreamFix::deepCopy(const Block* block){
-	assert(this->BlockSize>=block->getsize());
+	assert(this->BlockSize==block->getsize());
 	memcpy(start,block->getBlock(),block->getsize());
 	this->tuple_size_=((BlockStreamFix*)block)->tuple_size_;
 	this->free_=start+tuple_size_*((BlockStreamFix*)block)->getTuplesInBlock();
