@@ -14,6 +14,8 @@
 #include "../../storage/BlockManager.h"
 #include "../../Executor/ExpanderTracker.h"
 #include "../../Config.h"
+#include "../../utility/warmup.h"
+#include "../../storage/ChunkStorage.h"
 
 #define AVOID_CONTENTION_IN_SCAN
 
@@ -123,8 +125,19 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 	if(!stc->assigned_data_.empty()){
 		ChunkReaderIterator::block_accessor* ba=stc->assigned_data_.front();
 		stc->assigned_data_.pop_front();
-		const unsigned long long int start=curtick();
+//		const unsigned long long int start=curtick();
+
 		ba->getBlock(block);
+//
+//		void* start_addr=((ChunkReaderIterator::InMemeryBlockAccessor*)ba)->getTargetBlockStartAddress();
+//		memcpy(block->getBlock(),
+//				start_addr,block->getSerializedBlockSize()-4);
+//		const unsigned tuple_count=*(unsigned*)(start_addr+block->getSerializedBlockSize()-4);
+////		printf("tuple count=%d",tuple_count);
+//		((BlockStreamFix*)block)->free_=(char*)((BlockStreamFix*)block)->getBlock()+tuple_count*state_.schema_->getTupleMaxSize();
+
+
+//		warmup(block->getBlock(),block->getSerializedBlockSize());
 //		printf("%ld cycles\n",curtick()-start);
 
 //		printf("scan_call %ld cycles\n",curtick()-total_start);

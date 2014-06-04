@@ -321,8 +321,9 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& bloc
 	 * is used for simplicity.
 	 * TODO: avoid memory copy.
 	 */
+//	unsigned long long int second=curtick();
 	block->constructFromBlock(temp_block);
-
+//	printf("copy :%ld\n",curtick()-second);
 //	usleep(1);
 //
 
@@ -331,7 +332,8 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& bloc
 
 	block->setIsReference(true);
 	block->setBlock(target_block_start_address);
-	((BlockStreamFix*)block)->free_=(char*)target_block_start_address+block_size-sizeof(unsigned);
+	int tuple_count=*(unsigned*)((char*)target_block_start_address+block->getSerializedBlockSize()-sizeof(unsigned));
+	((BlockStreamFix*)block)->free_=(char*)block->getBlock()+tuple_count*((BlockStreamFix*)block)->tuple_size_;
 
 
 //	warmup(target_block_start_address,block_size-sizeof(unsigned));
