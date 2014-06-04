@@ -33,7 +33,7 @@ PartitionStorage::PartitionReaderItetaor* PartitionStorage::createAtomicReaderIt
 
 
 
-PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor(PartitionStorage::PartitionStorage* partition_storage)
+PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor(PartitionStorage* partition_storage)
 :ps(partition_storage),chunk_cur_(0),chunk_it_(0){
 
 }

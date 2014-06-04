@@ -246,6 +246,7 @@ static int in_segment_scalability_test_on_tpch(int repeated_times=10){
 }
 
 static int in_segment_scalability_test_on_poc(int repeated_times=10){
+	printf("-----poc-----\n");
 	startup_single_node_environment_of_poc();
 	double total_time=0;
 
@@ -288,8 +289,8 @@ static void test_block_construct(){
 }
 
 static int in_segment_scalability_test(int repeated_times=10){
-//	in_segment_scalability_test_on_tpch(repeated_times);
-	in_segment_scalability_test_on_poc(repeated_times);
+	in_segment_scalability_test_on_tpch(repeated_times);
+//	in_segment_scalability_test_on_poc(repeated_times);
 //	test_block_construct();
 	return 0;
 }

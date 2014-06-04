@@ -7,7 +7,6 @@
 
 #ifndef DAEMON_H_
 #define DAEMON_H_
-#include <pair>
 #include <vector>
 #include <string>
 #include <list>

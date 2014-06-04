@@ -334,7 +334,7 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& bloc
 	((BlockStreamFix*)block)->free_=(char*)target_block_start_address+block_size-sizeof(unsigned);
 
 
-	warmup(target_block_start_address,block_size-sizeof(unsigned));
+//	warmup(target_block_start_address,block_size-sizeof(unsigned));
 //	unsigned long long int first=curtick();
 //	Unit temp1=warmup(target_block_start_address,block_size-sizeof(unsigned));
 //	printf("1 :%ld\n",curtick()-first,temp1);
