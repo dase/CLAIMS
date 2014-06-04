@@ -107,7 +107,7 @@ struct local_stage{
 			printf("Incomplete!\n");
 			return;
 		}
-		printf("%s----->%s, type: %s\n",dataflow_src_.end_point_name.c_str(),dataflow_desc_.end_point_name.c_str(),get_type_name(type_));
+		printf("%s----->%s, type: %s\n",dataflow_src_.end_point_name.c_str(),dataflow_desc_.end_point_name.c_str(),get_type_name(type_).c_str());
 	}
 
 };

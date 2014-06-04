@@ -93,6 +93,7 @@ void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
 }
 void ExpandableBlockStreamIteratorBase::destoryAllContext(){
 	for(boost::unordered_map<pthread_t,thread_context*>::iterator it=context_list_.begin();it!=context_list_.end();it++){
+		delete it->second;
 		context_list_.erase(it);
 	}
 }

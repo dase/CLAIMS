@@ -169,7 +169,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 		return true;
 	}
 	else{
-		delete tc;
+//		delete tc;
 		return false;
 	}
 }
