@@ -18,7 +18,7 @@ PartitionedBlockContainer::PartitionedBlockContainer(unsigned partition_count,un
 
 PartitionedBlockContainer::~PartitionedBlockContainer() {
 	for(unsigned i=0;i<partition_count_;i++){
-		block_list_[i]->~BlockContainer();
+		delete block_list_[i];
 	}
 	block_list_.clear();
 	status_list_.clear();

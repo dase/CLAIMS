@@ -23,39 +23,38 @@ TEST(INSERT_OPTIMIZED_HASH_TABLE,INSERT){
 	const unsigned data_size_in_MB=1024;
 	const unsigned tuple_length=32;
 
-//	InsertOptimizedHashTable hashtable(nbuckets);
+	InsertOptimizedHashTable hashtable(nbuckets);
 	void* tmp;
 
 	Schema* schema=generateSchema(tuple_length);
-//	DynamicBlockBuffer* buffer=generate_BlockStreamBuffer(schema,data_size_in_MB);
-//
-//	DynamicBlockBuffer::Iterator it=buffer->createIterator();
-//
-//	BlockStreamBase* block;
-//
-//	while((block=it.nextBlock())!=0){
-//		BlockStreamBase::BlockStreamTraverseIterator* bit=block->createIterator();
-//		hashtable.insertBlock(block);
-//		void* tuple;
-//		while((tuple=bit->nextTuple())!=0){
-//			InsertOptimizedHashTable::entry ent_tmp=InsertOptimizedHashTable::entry(tuple);
-//			hashtable.insertEntry(random()%(nbuckets),ent_tmp);
-//		}
-//		bit->~BlockStreamTraverseIterator();
-//	}
-//
-//	unsigned long tuples_in_hashtable=0;
-//	for(unsigned i=0;i<nbuckets;i++){
-//		InsertOptimizedHashTable::BucketIterator buck_iter=hashtable.createBucketIterator(i);
-//		while(buck_iter.nextTuple()){
-//			tuples_in_hashtable++;
-//		}
-//	}
-//
-//	EXPECT_EQ(buffer->getNumberOftuples(),tuples_in_hashtable);
-	EXPECT_EQ(1,1);
-	schema->~Schema();
-//	buffer->~DynamicBlockBuffer();
+	DynamicBlockBuffer* buffer=generate_BlockStreamBuffer(schema,data_size_in_MB);
+
+	DynamicBlockBuffer::Iterator it=buffer->createIterator();
+
+	BlockStreamBase* block;
+
+	while((block=it.nextBlock())!=0){
+		BlockStreamBase::BlockStreamTraverseIterator* bit=block->createIterator();
+		hashtable.insertBlock(block);
+		void* tuple;
+		while((tuple=bit->nextTuple())!=0){
+			InsertOptimizedHashTable::entry ent_tmp=InsertOptimizedHashTable::entry(tuple);
+			hashtable.insertEntry(random()%(nbuckets),ent_tmp);
+		}
+		delete bit;
+	}
+
+	unsigned long tuples_in_hashtable=0;
+	for(unsigned i=0;i<nbuckets;i++){
+		InsertOptimizedHashTable::BucketIterator buck_iter=hashtable.createBucketIterator(i);
+		while(buck_iter.nextTuple()){
+			tuples_in_hashtable++;
+		}
+	}
+
+	EXPECT_EQ(buffer->getNumberOftuples(),tuples_in_hashtable);
+	delete schema;
+	delete buffer;
 }
 #endif
 

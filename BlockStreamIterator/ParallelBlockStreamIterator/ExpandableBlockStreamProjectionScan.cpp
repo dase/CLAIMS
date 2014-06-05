@@ -216,7 +216,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 bool ExpandableBlockStreamProjectionScan::close() {
 	//	printf("ProjectoinScan[%d]: returned %ld blocks\n",state_.projection_id_.projection_off,return_blocks_);
 	//	sema_open_.post();
-	partition_reader_iterator_->~PartitionReaderItetaor();
+	delete partition_reader_iterator_;
 	open_finished_ = false;
 
 	/* reset the expanded status in that open and next will be re-invoked.*/

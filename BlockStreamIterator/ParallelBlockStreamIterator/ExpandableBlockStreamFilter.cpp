@@ -187,7 +187,7 @@ bool ExpandableBlockStreamFilter::close(){
 	open_finished_=false;
 
 	for(unsigned i=0;i<free_block_stream_list_.size();i++){
-		free_block_stream_list_.front()->~BlockStreamBase();
+		delete free_block_stream_list_.front();
 		free_block_stream_list_.pop_front();
 	}
 

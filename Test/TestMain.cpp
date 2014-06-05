@@ -50,7 +50,6 @@
 #include "TestSuit/hash_table_test.h"
 #include "gtest.h"
 #include "../common/ExpandedThreadTracker_test.cpp"
-#include "common/insert_optimized_hash_table_test.h"
 #include "memory_leak_test.h"
 int main(int argc , char ** argv){
 
@@ -101,11 +100,11 @@ int main(int argc , char ** argv){
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test(10);
 //	hash_table_test();
-//	g_test_main(argc,argv);
+	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 
 //	sleep(1000);
 //	insert_optimziaed_hash_table_test();
-	memory_leak_test();
+//	memory_leak_test();
 }

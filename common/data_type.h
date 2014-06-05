@@ -978,7 +978,8 @@ public:
 	 }
 	column_type():operate(0){COUNTER::count++;};
 	~column_type(){
-		operate->~Operate();
+//		operate->~Operate() ;
+		delete operate;
 		operate=0;
 		COUNTER::count--;
 	};

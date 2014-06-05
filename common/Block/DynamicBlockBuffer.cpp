@@ -22,7 +22,7 @@ DynamicBlockBuffer::DynamicBlockBuffer(const DynamicBlockBuffer& r){
 
 DynamicBlockBuffer::~DynamicBlockBuffer() {
 	for(unsigned i=0;i<block_list_.size();i++){
-		block_list_[i]->~BlockStreamBase();
+		delete block_list_[i];
 	}
 }
 
