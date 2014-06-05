@@ -344,7 +344,7 @@ BlockStreamBuffer* initial_input_date(Schema* schema,unsigned long total_data_si
 		}
 		buffer->insertBlock(new_block);
 	}
-	new_block->~BlockStreamBase();
+	delete new_block;
 	return buffer;
 
 }
@@ -453,15 +453,12 @@ double getAverage(int degree_of_parallelism,int repeated_times=10){
 	return ret/repeated_times;
 }
 
-void scalability_test(){
-//	init_alloc_destory();
+void scalability_test_on_basic_hashtable(){
 	startup_catalog();
 	unsigned int max_degree_of_parallelism=Config::max_degree_of_parallelism;
-//	max_degree_of_parallelism=1;
 	unsigned repeated_times=1;
 	double standard_throughput=0;
 	for(unsigned i=1;i<=max_degree_of_parallelism;i++){
-//		init_alloc_destory();
 		double total_time=getAverage(i,repeated_times);
 		if(i==1){
 			standard_throughput=1/total_time;
@@ -553,7 +550,7 @@ int performance_test(){
 
 int basic_hash_table_test(){
 //	performance_test();
-	scalability_test();
+	scalability_test_on_basic_hashtable();
 //	memory_leak_test();
 }
 
