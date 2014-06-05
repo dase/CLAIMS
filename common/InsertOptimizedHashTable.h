@@ -46,11 +46,8 @@ public:
 			return head.tuple_count!=(Bucket_Capacity);
 		}
 		bool allocate_new_entry(unsigned& new_entry_index){
-//			bool ret=(meta_data.tuple_count!=(Bucket_Capacity));
 			new_entry_index=head.tuple_count;
 			head.tuple_count++;
-//			meta_data.tuple_count+=ret;
-//			return ret;
 		}
 	};
 

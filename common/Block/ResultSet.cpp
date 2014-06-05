@@ -8,7 +8,7 @@
 #include "ResultSet.h"
 
 ResultSet::~ResultSet() {
-	schema_->~Schema();
+	delete schema_;
 }
 
 ResultSet::ResultSet(const ResultSet& r)

@@ -47,10 +47,6 @@ PartitionedBlockBuffer::~PartitionedBlockBuffer() {
 	delete [] blocks_in_partition_list;
 	unsigned free_count=0;
 //	printf("in ~PartitionedBlockBuffer()\n");
-//	for(unsigned i=0;i<empty_block_list.size();i++){
-//		Block* block=empty_block_list.
-//		block->~Block();
-//	}
 
 	destoryEmptyBlocks();
 }
@@ -67,8 +63,8 @@ void PartitionedBlockBuffer::destoryEmptyBlocks(){
 	while(!empty_block_list.empty()){
 		Block* block=empty_block_list.front();
 //		free(block->getBlock());
-		block->~Block();
 		empty_block_list.pop_front();
+		delete block;
 		free_count++;
 	}
 //	printf("%d buffer is freed!<><><><><><><><><>\n",free_count);
