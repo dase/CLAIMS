@@ -58,6 +58,11 @@ public:
 		unsigned cur;
 	};
 	friend class BlockStreamTraverseIterator;
+	BlockStreamBase(unsigned block_size):Block(block_size){};
+	BlockStreamBase(unsigned block_size,void* start_addr):Block(block_size,start_addr){};
+
+	virtual BlockStreamBase* createBlockAndDeepCopy()=0;
+
 	virtual ~BlockStreamBase(){};
 
 	virtual void* allocateTuple(unsigned bytes)=0;
@@ -94,7 +99,6 @@ public:
 	BlockStreamTraverseIterator* createIterator(){
 		return new BlockStreamTraverseIterator(this);
 	};
-	BlockStreamBase(unsigned block_size):Block(block_size){};
 	static BlockStreamBase* createBlock(const Schema* const & schema,unsigned block_size);
 
 	/**
@@ -114,6 +118,7 @@ class BlockStreamFix:public BlockStreamBase {
 	};
 public:
 	BlockStreamFix(unsigned block_size,unsigned tuple_size);
+	BlockStreamFix(unsigned block_size,unsigned tuple_size,void* start_addr,unsigned ntuples);
 	virtual ~BlockStreamFix();
 public:
 	inline void* allocateTuple(unsigned bytes){
@@ -148,7 +153,7 @@ public:
 	/* construct the BlockStream from a storage level block,
 	 * which last four bytes indicate the number of tuples in the block.*/
 	void constructFromBlock(const Block& block);
-
+	BlockStreamBase* createBlockAndDeepCopy();
 protected:
 public:
 	unsigned tuple_size_;
@@ -222,7 +227,7 @@ public:
 	void deepCopy(const Block* block){};
 	unsigned getSerializedBlockSize()const{};
 	unsigned getTuplesInBlock()const{};
-
+	BlockStreamBase* createBlockAndDeepCopy();
 private:
 	const Schema *schema_;
 	unsigned attributes_;

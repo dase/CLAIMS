@@ -506,7 +506,7 @@ void init_alloc_destory(){
 	hashtable->~BasicHashTable();
 }
 
-void memory_leak_test(){
+void memory_leak_test1(){
 
 	const unsigned repeated_times=10;
 //	printf("Init and destroy test.\n");
@@ -551,10 +551,18 @@ int performance_test(){
 	printf("Avg: %d cycles per allocation!\n",(curtick()-start)/(datasize/tuple_size));
 }
 
-int hash_table_test(){
+int basic_hash_table_test(){
 //	performance_test();
 	scalability_test();
 //	memory_leak_test();
+}
+
+int insert_optimized_hash_table_test(){
+
+}
+int hash_table_test(){
+	return basic_hash_table_test();
+
 }
 
 #endif /* HASH_TABLE_TEST_H_ */

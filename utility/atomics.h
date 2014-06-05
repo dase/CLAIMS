@@ -26,8 +26,8 @@
  */
 inline void* atomic_compare_and_swap(void** ptr, void* oldval, void* newval)
 {
-#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
-//#if defined(Roanldo)
+//#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
+#if defined(Roanldo)
 	newval = __sync_val_compare_and_swap(ptr, oldval, newval);// Remove for compiler error remover
 #elif defined(__sparcv9)
 	__asm__ __volatile__ ( \
@@ -62,8 +62,8 @@ inline void* atomic_compare_and_swap(void** ptr, void* oldval, void* newval)
 }
 inline int atomic_compare_and_swap(int* ptr,int oldval,int newval)
 {
-#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
-//#if defined(Roanldo)
+//#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
+#if defined(Roanldo)
 	newval = __sync_val_compare_and_swap(ptr, oldval, newval);// Remove for compiler error remover
 #elif defined(__x86_64__)
 	__asm__ __volatile__ ( \
@@ -76,8 +76,8 @@ inline int atomic_compare_and_swap(int* ptr,int oldval,int newval)
 }
 inline char* atomic_compare_and_swap(char** ptr,char* oldval,char* newval)
 {
-#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
-//#if defined(Roanldo)
+//#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
+#if defined(Roanldo)
 	newval = __sync_val_compare_and_swap(ptr, oldval, newval);// Remove for compiler error remover
 #elif defined(__x86_64__)
 	__asm__ __volatile__ ( \

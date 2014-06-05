@@ -8,6 +8,7 @@
 #include "ExpandableBlockStreamFilter.h"
 #include "../../utility/warmup.h"
 #include "../../utility/rdtsc.h"
+#include <assert.h>
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
 :state_(state){
@@ -130,6 +131,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 		 * so consider put them into a method.
 		 */
 		while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0){
+//			assert((long)tuple_from_child%8==0);
 			pass_filter=true;
 			for(unsigned i=0;i<state_.comparator_list_.size();i++){
 				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
