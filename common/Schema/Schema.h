@@ -18,7 +18,7 @@
 class Schema {
 public:
 	enum schema_type{fixed,varaible};
-	Schema(std::vector<column_type> columns);
+	Schema(const std::vector<column_type>& columns);
 	Schema(const Schema& r);
 	Schema(){};
 	virtual ~Schema();
@@ -34,10 +34,11 @@ public:
 	inline const column_type& getcolumn(const unsigned index) const {
 			return columns[index];
 		}
-	std::vector<column_type> columns;
 	virtual schema_type getSchemaType()const=0;
 	virtual void displayTuple(const void* tuple_start_address,const char* spliter="|")const;
 	virtual void toValue(std::string text_tuple, void* binary_tuple, const char attr_separator){};
+	bool hasSameSchema(Schema* schema);
+	std::vector<column_type> columns;
 protected:
 
 private:

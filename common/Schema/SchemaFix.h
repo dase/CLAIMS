@@ -16,7 +16,7 @@
 #include "Schema.h"
 class SchemaFix:public Schema {
 public:
-	SchemaFix(std::vector<column_type> columns);
+	SchemaFix(const std::vector<column_type>& columns);
 	SchemaFix(const SchemaFix& r);
 	SchemaFix(){};
 	virtual ~SchemaFix();
