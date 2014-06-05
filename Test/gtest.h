@@ -7,7 +7,7 @@
 #ifndef __G_TEST_MAIN__
 #define __G_TEST_MAIN__
 #include <gtest/gtest.h>
-
+#include "utility/generator_test.h"
 
 static int g_test_main(int argc, char **argv){
 	testing::InitGoogleTest(&argc,argv);

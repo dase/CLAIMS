@@ -207,7 +207,7 @@ class SpineLock {
 			return res;
 		}
 
-		volatile char _l ;//__attribute__((aligned(64)));
+		volatile char _l ;//__attribute__((aligned(64)))
 
 };
 #endif /* LOCK_H_ */
