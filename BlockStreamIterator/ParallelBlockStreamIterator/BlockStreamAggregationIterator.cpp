@@ -323,7 +323,7 @@ bool BlockStreamAggregationIterator::close(){
 	open_finished_=false;
 	open_finished_end_=false;
 
-	hashtable_->~BasicHashTable();
+	delete hashtable_;
 	ht_free_block_stream_list_.clear();
 	aggregationFunctions_.clear();
 	inputAggregationToOutput_.clear();

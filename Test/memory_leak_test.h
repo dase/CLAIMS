@@ -11,6 +11,7 @@
 
 
 void test_schema_allocate_and_deallocate(unsigned long repeat=10000){
+
 	volatile Schema* schema;
 	for(unsigned i=0;i<repeat;i++){
 		Schema* schema=generateSchema(4);

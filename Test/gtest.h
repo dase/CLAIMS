@@ -8,7 +8,7 @@
 #define __G_TEST_MAIN__
 #include <gtest/gtest.h>
 #include "utility/generator_test.h"
-
+#include "common/insert_optimized_hash_table_test.h"
 static int g_test_main(int argc, char **argv){
 	testing::InitGoogleTest(&argc,argv);
 	return RUN_ALL_TESTS();

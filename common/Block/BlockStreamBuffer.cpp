@@ -23,13 +23,15 @@ BlockStreamBuffer::~BlockStreamBuffer() {
 	while(!block_stream_empty_list_.empty()){
 		const BlockStreamBase* block=block_stream_empty_list_.front();
 		block_stream_empty_list_.pop_front();
-		block->~BlockStreamBase();
+//		block->~BlockStreamBase();
+		delete block;
 	}
 
 	while(!block_stream_used_list_.empty()){
 		const BlockStreamBase* block=block_stream_used_list_.front();
 		block_stream_used_list_.pop_front();
-		block->~BlockStreamBase();
+//		block->~BlockStreamBase();
+		delete block;
 	}
 //	assert(block_stream_used_list_.empty());
 	sema_empty_block_.destroy();
