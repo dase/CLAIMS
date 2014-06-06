@@ -12,6 +12,7 @@
 #include "../utility/lock.h"
 
 
+
 /**
  * This is an implementation of insert-optimized hash table. Rather than inserting each
  * received tuples into the hash table, all tuples are organized in listed blocks and an
@@ -22,7 +23,7 @@
  */
 
 
-#define Bucket_Size 64
+#define Bucket_Size (64)
 #define Bucket_Capacity (Bucket_Size-sizeof(meta_data))/sizeof(entry)
 
 class InsertOptimizedHashTable {
@@ -75,6 +76,7 @@ public:
 	friend class BucketIterator;
 public:
 	InsertOptimizedHashTable(unsigned nbuckets);
+	void initialize();
 	virtual ~InsertOptimizedHashTable();
 
 	/**
@@ -100,6 +102,10 @@ protected:
 	unsigned nbuckets_;
 
 	const unsigned long hash_value_mask;
+
+//	singleton_pool memory_pool_;
+
+
 };
 
 
