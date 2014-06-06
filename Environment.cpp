@@ -61,6 +61,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 }
 
 Environment::~Environment() {
+	_instance=0;
 	logging_->~Logging();
 	portManager->~PortManager();
 	catalog_->~Catalog();

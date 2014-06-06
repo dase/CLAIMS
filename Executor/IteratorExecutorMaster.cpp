@@ -22,6 +22,7 @@ IteratorExecutorMaster::IteratorExecutorMaster(){
 }
 
 IteratorExecutorMaster::~IteratorExecutorMaster() {
+	_instance=0;
 	framework->~Framework();
 }
 

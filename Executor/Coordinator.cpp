@@ -44,7 +44,7 @@ Coordinator::Coordinator() {
 
 Coordinator::~Coordinator() {
 	pthread_cancel(prochaseId);
-
+	close(socket_fd);
 	framework->~Framework();
 	endpoint->~EndPoint();
 }

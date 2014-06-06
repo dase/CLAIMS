@@ -52,7 +52,7 @@ inline DynamicBlockBuffer* generate_BlockStreamBuffer(Schema* schema,unsigned lo
 			if(i==tuple_count)
 				break;
 		}
-		new_block->setIsReference(true);
+//		new_block->setIsReference(true);
 		buffer->appendNewBlock(new_block);
 	}
 	free(tmp_tuple);
