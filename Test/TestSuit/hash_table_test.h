@@ -17,6 +17,7 @@
 #include "../../common/ids.h"
 #include <string.h>
 #include "../../common/hash.h"
+#include "../common/insert_optimized_hash_table_test.h"
 #define block_size (1024*1024)
 void init_alloc_destory();
 static void startup_catalog(){
@@ -395,11 +396,11 @@ void* insert_into_hash_table(void * argment){
 void create_thread(unsigned nthreads){
 
 }
-
-double fill_hash_table(unsigned degree_of_parallelism){
+typedef double (parallel_test)(unsigned);
+double fill_basic_hash_table(unsigned degree_of_parallelism){
 //	init_alloc_destory();
 	Config::getInstance();
-	const unsigned nbuckets=64;
+	const unsigned nbuckets=1024*1024;
 	const unsigned tuple_size=32;
 	const unsigned bucketsize=1024-8;
 	const unsigned long data_size_in_MB=256;
@@ -444,24 +445,59 @@ double fill_hash_table(unsigned degree_of_parallelism){
 	return ret;
 
 }
-double getAverage(int degree_of_parallelism,int repeated_times=10){
+
+double fill_insert_optimized_hash_table(unsigned degree_of_parallelism){
+	const unsigned nbuckets=1024;
+	const unsigned data_size_in_MB=1;
+	const unsigned tuple_length=32;
+	const unsigned nthreads=degree_of_parallelism;
+
+	double ret;
+	InsertOptimizedHashTable hashtable(nbuckets);
+
+	Schema* schema=generateSchema(tuple_length);
+	DynamicBlockBuffer* buffer=generate_BlockStreamBuffer(schema,data_size_in_MB);
+
+	DynamicBlockBuffer::Iterator it=buffer->createIterator();
+
+	unsigned long long int start=curtick();
+	parallel_insert_to_insert_optimized_hash(hashtable,nbuckets,buffer,&it,nthreads);
+	unsigned long long int finished=curtick();
+	ret=getSecond(start);
+	unsigned long tuples_in_hashtable=0;
+	for(unsigned i=0;i<nbuckets;i++){
+		InsertOptimizedHashTable::BucketIterator buck_iter=hashtable.createBucketIterator(i);
+		while(buck_iter.nextTuple()){
+			tuples_in_hashtable++;
+		}
+	}
+
+	printf("%d cycles per tuple!\n",(finished-start)/(tuples_in_hashtable+1));
+//
+//	EXPECT_EQ(buffer->getNumberOftuples(),tuples_in_hashtable);
+	delete schema;
+	delete buffer;
+	return ret;
+}
+
+double getAverage(parallel_test* function,int degree_of_parallelism,int repeated_times=10){
 	double ret=0;
 	for(unsigned i=0;i<repeated_times;i++){
-		ret+=fill_hash_table(degree_of_parallelism);
+		ret+=function(degree_of_parallelism);
 //		ret+=projection_scan(degree_of_parallelism);
 	}
 	return ret/repeated_times;
 }
 
-void scalability_test_on_basic_hashtable(){
+void scalability_test(parallel_test* function){
 	startup_catalog();
 	unsigned int max_degree_of_parallelism=Config::max_degree_of_parallelism;
 	unsigned repeated_times=1;
 	double standard_throughput=0;
 	for(unsigned i=1;i<=max_degree_of_parallelism;i++){
-		double total_time=getAverage(i,repeated_times);
+		double total_time=getAverage(function,i,repeated_times);
 		if(i==1){
-			standard_throughput=1/total_time;
+			standard_throughput=1/(total_time);
 			printf("D=%d\ts=%4.4f scale:1\n",i,total_time,1);
 		}
 		else{
@@ -472,7 +508,7 @@ void scalability_test_on_basic_hashtable(){
 	}
 
 	Environment::getInstance()->~Environment();
-	sleep(100);
+//	sleep(100);
 }
 
 BasicHashTable* init_hash_table(){
@@ -550,15 +586,20 @@ int performance_test(){
 
 int basic_hash_table_test(){
 //	performance_test();
-	scalability_test_on_basic_hashtable();
+	scalability_test(fill_basic_hash_table);
 //	memory_leak_test();
 }
 
 int insert_optimized_hash_table_test(){
 
+	scalability_test(fill_insert_optimized_hash_table);
 }
 int hash_table_test(){
-	return basic_hash_table_test();
+	int repeat=10;
+	while(repeat--){
+		insert_optimized_hash_table_test();
+	}
+//	return basic_hash_table_test();
 
 }
 

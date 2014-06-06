@@ -38,6 +38,7 @@ ExpanderTracker::ExpanderTracker(){
 }
 
 ExpanderTracker::~ExpanderTracker() {
+	instance_=0;
 	log_->~Logging();
 }
 

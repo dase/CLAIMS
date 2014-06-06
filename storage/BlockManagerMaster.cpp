@@ -21,6 +21,7 @@ BlockManagerMaster::BlockManagerMaster() {
 }
 
 BlockManagerMaster::~BlockManagerMaster() {
+	master_=0;
 	actor_->~Actor();
 	framework_->~Framework();
 	logging_->~Logging();

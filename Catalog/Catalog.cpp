@@ -16,6 +16,7 @@ Catalog::Catalog() {
 }
 
 Catalog::~Catalog() {
+	instance_=0;
 	logging->~Logging();
 	binding_->~ProjectionBinding();
 }

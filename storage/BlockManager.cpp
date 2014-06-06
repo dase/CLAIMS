@@ -30,9 +30,7 @@ BlockManager::BlockManager() {
 	memstore_=MemoryChunkStore::getInstance();
 }
 BlockManager::~BlockManager() {
-
-
-
+	blockmanager_=0;
 	actor_->~Actor();
 	framework_->~Framework();
 	logging_->~Logging();
