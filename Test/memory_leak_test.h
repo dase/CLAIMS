@@ -23,9 +23,7 @@ void test_schema_allocate_and_deallocate(unsigned long repeat=10000){
 }
 
 int memory_leak_test(){
-	test_schema_allocate_and_deallocate(1);
-	assert(COUNTER::count==0);
-//	sleep(100);
+	test_schema_allocate_and_deallocate(100000000);
 }
 
 #endif /* MEMORY_LEAK_TEST_H_ */
