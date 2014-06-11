@@ -91,7 +91,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 #endif
 		open_ret_=true;
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
-//		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		broadcaseOpenFinishedSignal();
 	}
 	else{
@@ -119,6 +119,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		input_dataset_.atomicPut(stc->assigned_data_);
 		delete stc;
 		destorySelfContext();
+		perf_info->report_instance_performance_in_millibytes();
 		return false;
 	}
 
@@ -141,6 +142,8 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 //		printf("%ld cycles\n",curtick()-start);
 
 //		printf("scan_call %ld cycles\n",curtick()-total_start);
+		perf_info->processed_one_block();
+		perf_info->report_instance_performance_in_millibytes();
 		return true;
 	}
 	else{
@@ -150,6 +153,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 			delete stc;
 			destorySelfContext();
 //			printf("scan_call %ld cycles\n",curtick()-total_start);
+			perf_info->report_instance_performance_in_millibytes();
 			return false;
 
 	}

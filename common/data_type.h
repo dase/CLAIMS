@@ -967,21 +967,16 @@ public:
 			case t_u_smallInt: operate = new OperateUSmallInt();break;
 			default:operate=0;break;
 		}
-		COUNTER::count++;
 	};
 	 column_type(const column_type &r){
 		 this->type=r.type;
 		 this->size=r.size;
 		 this->operate=r.operate->duplicateOperator();
-		 assert(this->operate!=0);
-		 COUNTER::count++;
 	 }
-	column_type():operate(0){COUNTER::count++;};
+	column_type():operate(0){};
 	~column_type(){
-//		operate->~Operate() ;
 		delete operate;
 		operate=0;
-		COUNTER::count--;
 	};
 	inline unsigned get_length() const
 	{
