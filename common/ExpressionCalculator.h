@@ -10,6 +10,9 @@
 #include <stack>
 #include <list>
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ExpressionItem.h"
 
 typedef std::stack<ExpressionItem> ExpressionItemStack;

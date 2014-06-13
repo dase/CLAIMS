@@ -9,7 +9,9 @@
 #define CLIENT_H_
 
 #include <string>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 class ClientResponse;
 
 class Client {

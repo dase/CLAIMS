@@ -48,6 +48,7 @@ ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 }
 ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 	// TODO Auto-generated destructor stub
+	delete logging_;
 }
 
 bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
@@ -179,7 +180,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	for(unsigned i=0;i<nlowers;i++){
 //		FileClose(this->socket_fd_lower_list[i]);
-		block_for_socket_[i]->~BlockContainer();
+		delete block_for_socket_[i];;
 	}
 
 //	sleep(1);
@@ -188,8 +189,8 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 		FileClose(it->first);
 	}
 
-	received_block_stream_->~BlockStreamBase();
-	buffer->~BlockStreamBuffer();
+	delete received_block_stream_;
+	delete buffer;
 //	printf("Buffer is freed in Exchange!\n");
 	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;

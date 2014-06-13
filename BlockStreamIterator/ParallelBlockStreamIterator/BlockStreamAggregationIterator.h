@@ -10,6 +10,9 @@
 
 #include <vector>
 #include <map>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 
 #include "../BlockStreamIteratorBase.h"

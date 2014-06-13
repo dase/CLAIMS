@@ -8,6 +8,9 @@
 #ifndef DYNAMICBLOCKBUFFER_H_
 #define DYNAMICBLOCKBUFFER_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Block.h"
 #include "BlockStream.h"
 #include "../../utility/lock.h"

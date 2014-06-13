@@ -12,6 +12,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../data_type.h"
 
 

@@ -8,6 +8,10 @@
 #ifndef INSERTOPTIMIZEDHASHTABLE_H_
 #define INSERTOPTIMIZEDHASHTABLE_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+
 #include "../common/Block/BlockStream.h"
 #include "../utility/lock.h"
 

@@ -39,7 +39,7 @@ ExpanderTracker::ExpanderTracker(){
 
 ExpanderTracker::~ExpanderTracker() {
 	instance_=0;
-	log_->~Logging();
+	delete log_;
 }
 
 ExpanderTracker* ExpanderTracker::getInstance(){
@@ -68,7 +68,16 @@ bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,Expa
 	else{
 		thread_id_to_expander_id_[id]=exp_id;
 
-		assert(expander_id_to_expand_shrink_[exp_id]!=0);
+		if(expander_id_to_expand_shrink_.find(exp_id)==expander_id_to_expand_shrink_.cend()){
+			printf("error!  not exists: expander_id = %d\n", exp_id);
+			assert(false);
+		}
+
+
+		if(expander_id_to_expand_shrink_[exp_id]==0){
+			printf("error! is NULL expander_id = %d\n", exp_id);
+			assert(false);
+		}
 	}
 
 
@@ -173,6 +182,7 @@ ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer,Expand
 	expander_id_to_status_[expander_id]=ExpanderStatus();
 	expander_id_to_status_[expander_id].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
 	expander_id_to_expand_shrink_[expander_id]=expand_shrink;
+	assert(expand_shrink!=0);
 	lock_.release();
 	log_->log("New Expander is registered, ID=%ld\n",expander_id);
 	return expander_id;
@@ -181,7 +191,7 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
 
 	lock_.acquire();
 
-	for(std::map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
+	for(boost::unordered_map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
 		assert(it->second!=expander_id);
 	}
 	expander_id_to_status_.erase(expander_id);
@@ -393,22 +403,26 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			continue;
 		}
 
-		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
+		boost::unordered_map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
 		for(int tmp=0;tmp<cur;tmp++)
 			it++;
 		ExpanderID id=it->first;
 
+		printf("id=%d \n",id);
+
+
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
+		bool print=true;
 //		bool print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
-//		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation")!=-1)||(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);
+		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);// ----> Agg
 //		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);  //       ---> Join
-		bool print=(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
+		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
 //		printf("return=%d %d print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
 //		bool print=true;
-		printf("\n");
+//		printf("\n");
 		SWITCHER(print,Pthis->log_->log("--------%d---------",id))
 
-		SWITCHER(print,printf("Instance throughput: %lf Mbytes\n",it->second.perf_info.report_instance_performance_in_millibytes()))
+		SWITCHER(print,Pthis->log_->log("Instance throughput: %lf Mbytes",it->second.perf_info.report_instance_performance_in_millibytes()))
 
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
 		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism,print);
@@ -427,8 +441,6 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			break;
 		}
 		case DECISION_SHRINK:{
-//			if(Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()<=1)
-//				break;
 			if(Pthis->expander_id_to_expand_shrink_[it->first]->Shrink()){
 				SWITCHER(print,Pthis->log_->log("=========Shrinking========  %d-->%d",current_degree_of_parallelism,current_degree_of_parallelism-1))
 			}
@@ -438,7 +450,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			break;
 		}
 		default:{
-			SWITCHER(print,Pthis->log_->log("=========KEEP======== Failed to shrink!"))
+			SWITCHER(print,Pthis->log_->log("=========KEEP========"))
 			break;
 		}
 		}

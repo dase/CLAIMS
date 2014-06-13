@@ -22,9 +22,9 @@ BlockManagerMaster::BlockManagerMaster() {
 
 BlockManagerMaster::~BlockManagerMaster() {
 	master_=0;
-	actor_->~Actor();
-	framework_->~Framework();
-	logging_->~Logging();
+	delete actor_;
+	delete framework_;
+	delete logging_;
 }
 
 void BlockManagerMaster::initialize(){

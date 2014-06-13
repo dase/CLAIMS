@@ -10,6 +10,9 @@
 #ifndef PARTITIONEDBLOCKCONTAINER_H_
 #define PARTITIONEDBLOCKCONTAINER_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockContainer.h"
 class PartitionedBlockContainer {
 	struct status{

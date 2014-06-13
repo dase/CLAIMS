@@ -29,6 +29,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 #include "../common/Block/BlockStream.h"
 #include "../common/Schema/SchemaFix.h"

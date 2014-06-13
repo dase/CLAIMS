@@ -19,6 +19,9 @@
 #include <vector>
 #include <map>
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 
 class BlockStreamJoinIterator:public ExpandableBlockStreamIteratorBase{

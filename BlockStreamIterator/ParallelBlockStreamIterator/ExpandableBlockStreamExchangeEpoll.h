@@ -15,7 +15,9 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include <string>
 #include <pthread.h>
 #include <map>

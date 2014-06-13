@@ -23,6 +23,10 @@
 #include <assert.h>
 #include <set>
 #include <boost/pool/pool.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+
 
 #include "../configure.h"
 #include "../utility/lock.h"
