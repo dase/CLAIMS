@@ -6,6 +6,7 @@
  */
 #include <stdlib.h>
 #include "PartitionedBlockContainer.h"
+#include <string.h>
 
 PartitionedBlockContainer::PartitionedBlockContainer(unsigned partition_count,unsigned block_size)
 :partition_count_(partition_count),block_size_(block_size)
@@ -17,7 +18,7 @@ PartitionedBlockContainer::PartitionedBlockContainer(unsigned partition_count,un
 }
 
 PartitionedBlockContainer::~PartitionedBlockContainer() {
-	for(unsigned i=0;i<partition_count_;i++){
+	for(unsigned i=0;i<block_list_.size();i++){
 		delete block_list_[i];
 	}
 	block_list_.clear();
@@ -34,19 +35,30 @@ int PartitionedBlockContainer::getBlockForSending(BlockContainer* &block){
 //		return -1;
 //	unsigned rand_seed=rand()%avaiable_index.size();
 	unsigned rand_seed=rand()%partition_count_;
-	block=block_list_[rand_seed];
-	return rand_seed;
+	if(rand_seed<block_list_.size()){
+		block=block_list_[rand_seed];
+		return rand_seed;
+	}
+	else{
+		return -1;
+	}
 }
 
 void PartitionedBlockContainer::insert(unsigned partition_id,BlockContainer* & block){
-	BlockContainer* temp=block_list_[partition_id];
-	block_list_[partition_id]=block;
-	block=temp;
+
+//	/** swap the block container **/
+//	BlockContainer* temp=block_list_[partition_id];
+//	block_list_[partition_id]=block;
+//	block=temp;
+//////////////////////////////////////////////
+
+	block_list_[partition_id]->copy(*block);
+
 //	status_list_[partition_id].avaiable=true;
 }
 
 void PartitionedBlockContainer::Initialized(){
-	for(unsigned i=0;i<partition_count_;i++){
+	for(unsigned i=0;i<block_list_.size();i++){
 		block_list_[i]->reset();
 		block_list_[i]->IncreaseActualSize(block_list_[i]->GetMaxSize());
 //		status_list_[i].avaiable=true;

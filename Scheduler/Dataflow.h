@@ -8,6 +8,9 @@
 #ifndef DATAFLOW_H_
 #define DATAFLOW_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../Catalog/Column.h"
 #include "../Catalog/Partitioner.h"
 #include "../LogicalQueryPlan/DataflowPartitionDescriptor.h"

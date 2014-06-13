@@ -9,19 +9,24 @@
 #include "../../Executor/ExpanderTracker.h"
 #include "../../common/Logging.h"
 
+struct ExpanderContext{
+	BlockStreamExpander* pthis;
+	semaphore sem;
+};
+
 BlockStreamExpander::BlockStreamExpander(State state)
-:state_(state),block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0){
+:state_(state),block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0),coordinate_pid_(0){
 	// TODO Auto-generated constructor stub
 	logging_=new BlockStreamExpanderLogging();
 }
 
 BlockStreamExpander::BlockStreamExpander()
-:block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0){
+:block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0),coordinate_pid_(0){
 	logging_=new BlockStreamExpanderLogging();
 }
 
 BlockStreamExpander::~BlockStreamExpander() {
-	logging_->~Logging();
+	delete logging_;
 }
 
 BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,unsigned thread_count,unsigned block_size, unsigned block_count_in_buffer)
@@ -50,7 +55,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	/**
 	 * The following three lines test set callback status to expanded threads.
 	 */
-	assert(pthread_create(&coordinate_pid_,NULL,coordinate_work,this)==0);
+//	assert(pthread_create(&coordinate_pid_,NULL,coordinate_work,this)==0);
 //	logging_->log("coordinate>>>>>>>>>>>>>>...\n");
 //	for(std::set<pthread_t>::iterator it=expanded_thread_list_.begin();it!=expanded_thread_list_.end();it++){
 ////	 	assert(ExpanderTracker::getInstance()->callbackExpandedThread(*it));
@@ -104,7 +109,7 @@ bool BlockStreamExpander::close(){
 	finished_thread_count_=0;
 
 //	assert(ExpanderTracker::getInstance()->expander_id_to_status_.size()==0);
-	block_stream_buffer_->~BlockStreamBuffer();
+	delete block_stream_buffer_;
 	logging_->log("[%ld] Buffer is freed in Expander!\n",expander_id_);
 
 	state_.child_->close();
@@ -119,12 +124,14 @@ void BlockStreamExpander::print(){
 
 }
 void* BlockStreamExpander::expanded_work(void* arg){
-	BlockStreamExpander* Pthis=(BlockStreamExpander*)arg;
-	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pthread_self(),Pthis->expander_id_);
-	Pthis->addIntoInWorkingExpandedThreadList(pthread_self());
+	const pthread_t pid=pthread_self();
+
+	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
+	Pthis->addIntoInWorkingExpandedThreadList(pid);
+	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pid,Pthis->expander_id_);
 	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
-
+	((ExpanderContext*)arg)->sem.post();
 
 
 
@@ -132,13 +139,14 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		return 0;
 	}
 
-	Pthis->logging_->log("[%ld] %lx begins to open child\n",Pthis->expander_id_,pthread_self());
+	Pthis->logging_->log("[%ld] %lx begins to open child\n",Pthis->expander_id_,pid);
 	Pthis->state_.child_->open(Pthis->state_.partition_offset);
-	Pthis->logging_->log("[%ld] %lx finished opening child\n",Pthis->expander_id_,pthread_self());
-	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+	Pthis->logging_->log("[%ld] %lx finished opening child\n",Pthis->expander_id_,pid);
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pid)){
 //		unregisterNewThreadToAllBarriers();
 		Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal after open!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
-		Pthis->removeFromBeingCalledBackExpandedThreadList(pthread_self());
+		Pthis->removeFromBeingCalledBackExpandedThreadList(pid);
+		Pthis->tid_to_shrink_semaphore[pid]->post();
 	}
 	else{
 		BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
@@ -165,6 +173,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			Pthis->lock_.release();
 			Pthis->removeFromBeingCalledBackExpandedThreadList(pthread_self());
 			Pthis->logging_->log("%lx Produced %d block before called-back\n",pthread_self(),block_count);
+			Pthis->tid_to_shrink_semaphore[pid]->post();
 		}
 		else{
 			Pthis->logging_->log("%lx Produced %d block before finished\n",pthread_self(),block_count);
@@ -188,6 +197,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			if(!Pthis->removeFromInWorkingExpandedThreadList(pthread_self())){
 				/* current thread has been called back*/
 				Pthis->removeFromBeingCalledBackExpandedThreadList(pthread_self());
+				Pthis->tid_to_shrink_semaphore[pid]->post();
 			}
 		}
 	}
@@ -201,12 +211,17 @@ void* BlockStreamExpander::expanded_work(void* arg){
 }
 
 bool BlockStreamExpander::ChildExhausted(){
+
+	 /* first acquire the exclusive lock to prevent creating expanded thread,
+	  * Otherwise, newly created thread may not be detected by ChildExhausted().*/
+	exclusive_expanding_.acquire();
 	lock_.acquire();
 	bool ret=input_data_complete_==true&&
 			in_work_expanded_thread_list_.empty()&&
 			being_called_bacl_expanded_thread_list_.empty()&&
 			this->block_stream_buffer_->Empty();
 	lock_.release();
+	exclusive_expanding_.release();
 	if(ret==true&&coordinate_pid_!=0){
 		void* res;
 		pthread_join(coordinate_pid_,&res);
@@ -216,35 +231,47 @@ bool BlockStreamExpander::ChildExhausted(){
 	if(ret){
 		logging_->log("[%ld] child iterator is exhausted!\n",expander_id_);
 	}
-//	return finished_thread_count_==thread_count_;
-//	return finished_thread_count_==in_work_expanded_thread_list_.size();
 	return ret;
 }
 bool BlockStreamExpander::createNewExpandedThread(){
-	//logging_->log
 	pthread_t tid;
-	const int error=pthread_create(&tid,NULL,expanded_work,this);
-	if(error!=0){
-		std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
+
+
+	ExpanderContext para;
+	para.pthis=this;
+
+	if(exclusive_expanding_.try_acquire()){
+		const int error=pthread_create(&tid,NULL,expanded_work,&para);
+		if(error!=0){
+			std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
+			return false;
+		}
+		para.sem.wait();
+		exclusive_expanding_.release();
+	//	printf("[Expander %d ]Expanded!\n",expander_id_);
+		logging_->log("[%ld] New expanded thread [%lx] created!\n",expander_id_,tid);
+
+		lock_.acquire();
+		thread_count_++;
+		lock_.release();
+	//	in_work_expanded_thread_list_.insert(tid);
+		return true;
+	}
+	else{
+		printf("Fails to obtain the exclusive lock to expanding!\n");
 		return false;
 	}
-//	printf("[Expander %d ]Expanded!\n",expander_id_);
-	logging_->log("[%ld] New expanded thread [%lx] created!\n",expander_id_,tid);
-
-
-	lock_.acquire();
-	thread_count_++;
-	lock_.release();
-//	in_work_expanded_thread_list_.insert(tid);
-	return true;
 }
 void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
 	if(ExpanderTracker::getInstance()->callbackExpandedThread(pid)){
-
-//		in_work_expanded_thread_list_.erase(pid);
+		semaphore sem;
+		tid_to_shrink_semaphore[pid]=&sem;
 		removeFromInWorkingExpandedThreadList(pid);
 		addIntoBeingCalledBackExpandedThreadList(pid);
-//		being_called_bacl_expanded_thread_list_.insert(pid);
+		tid_to_shrink_semaphore[pid]->wait();
+		lock_.acquire();
+		tid_to_shrink_semaphore.erase(pid);
+		lock_.release();
 
 		lock_.acquire();
 		thread_count_--;
@@ -347,7 +374,6 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
-//		printf("[Expander %d ]Shrunk!\n",expander_id_);
 		return true;
 	}
 //	lock_.release();

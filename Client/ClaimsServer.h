@@ -7,6 +7,9 @@
 
 #ifndef CLAIMSSERVER_H_
 #define CLAIMSSERVER_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ClientResponse.h"
 
 class ClaimsServer {

@@ -8,13 +8,16 @@
 #ifndef FUNCTIONS_H_
 #define FUNCTIONS_H_
 
-#include "ExpressionCalculator.h"
-#include "TypePromotionMap.h"
-#include "TypeCast.h"
 #include <algorithm>
 #include <string>
 #include <vector>
 #include <functional>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+#include "ExpressionCalculator.h"
+#include "TypePromotionMap.h"
+#include "TypeCast.h"
 using namespace std;
 //extern data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
 

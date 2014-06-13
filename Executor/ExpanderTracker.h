@@ -12,6 +12,9 @@
 #include <boost/unordered_map.hpp>
 #include <map>
 #include <stack>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Block/MonitorableBuffer.h"
 #include "../utility/ExpandabilityShrinkability.h"
 #include "../utility/lock.h"
@@ -188,11 +191,11 @@ private:
 
 //	ExpanderID expander_id_cur_;
 
-	std::map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
+	boost::unordered_map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
 
-	std::map<ExpanderID,ExpanderStatus> expander_id_to_status_;
+	boost::unordered_map<ExpanderID,ExpanderStatus> expander_id_to_status_;
 
-	std::map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
+	boost::unordered_map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
 
 	/*
 	 * A unordered map from expanded thread id to expanded thread status

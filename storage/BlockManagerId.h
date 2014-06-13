@@ -18,6 +18,9 @@ using namespace std;
 #include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 static string getIpFromLocal(){
 	char * ipLocal=0;

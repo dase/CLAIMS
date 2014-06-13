@@ -9,6 +9,9 @@
 #ifndef BLOCKSTREAMBUFFER_H_
 #define BLOCKSTREAMBUFFER_H_
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStream.h"
 #include "../../common/Schema/Schema.h"
 #include "../../common/Block/MonitorableBuffer.h"

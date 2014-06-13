@@ -64,7 +64,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		return true;
 	}
 
-	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
+//	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
 	if(tryEntryIntoSerializedSection(1)){
 
 
@@ -131,7 +131,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	BasicHashTable::Iterator ht_it=hashtable_->CreateIterator();
 
 	unsigned long long one=1;
-	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
+//	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
+	BlockStreamBase *bsb=BlockStreamBase::createBlock(state_.input,state_.block_size);
 	bsb->setEmpty();
 
 	unsigned consumed_tuples=0;
@@ -256,6 +257,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		}
 	}
 
+
 //		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 //			unregisterNewThreadToAllBarriers(1);
 //			return true;
@@ -272,6 +274,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 				perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		}
 		barrierArrive(3);
+
+		delete bsb;
 }
 
 /*

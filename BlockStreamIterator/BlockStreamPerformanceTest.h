@@ -8,6 +8,9 @@
 #ifndef BLOCKSTREAMPERFORMANCETEST_H_
 #define BLOCKSTREAMPERFORMANCETEST_H_
 #include <pthread.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
 

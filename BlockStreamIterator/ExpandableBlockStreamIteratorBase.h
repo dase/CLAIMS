@@ -9,10 +9,13 @@
 #define EXPANDABLEBLOCKSTREAMITERATORBASE_H_
 
 
+#include <boost/unordered/unordered_map.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStreamIteratorBase.h"
 #include "../utility/lock.h"
 #include "../common/hashtable.h"
-#include <boost/unordered/unordered_map.hpp>
 
 using boost::unordered::unordered_map;
 class thread_context{

@@ -31,10 +31,10 @@ BlockManager::BlockManager() {
 }
 BlockManager::~BlockManager() {
 	blockmanager_=0;
-	actor_->~Actor();
-	framework_->~Framework();
-	logging_->~Logging();
-	memstore_->~MemoryChunkStore();
+	delete actor_;
+	delete framework_;
+	delete logging_;
+	delete memstore_;
 }
 MemoryChunkStore* BlockManager::getMemoryChunkStore()const{
 	return memstore_;

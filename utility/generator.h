@@ -7,6 +7,9 @@
 
 #ifndef GENERATOR_H_
 #define GENERATOR_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Schema/Schema.h"
 #include <stdarg.h>
 #include "../common/Schema/SchemaFix.h"

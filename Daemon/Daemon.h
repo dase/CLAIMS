@@ -10,6 +10,9 @@
 #include <vector>
 #include <string>
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Block/ResultSet.h"
 #include "../utility/lock.h"
 

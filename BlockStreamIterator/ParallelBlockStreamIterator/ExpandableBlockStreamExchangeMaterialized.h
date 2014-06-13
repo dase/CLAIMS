@@ -8,6 +8,9 @@
 #ifndef EXPANDABLEBLOCKSTREAMEXCHANGEMATERIALIZED_H_
 #define EXPANDABLEBLOCKSTREAMEXCHANGEMATERIALIZED_H_
 #include <pthread.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamExchangeBase.h"
 #include "../../common/Schema/Schema.h"
 #include "../../utility/lock.h"

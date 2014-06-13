@@ -28,6 +28,7 @@ ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerE
 
 ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
 	// TODO Auto-generated destructor stub
+	delete logging_;
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	logging_=new ExchangeIteratorEagerLowerLogging();
@@ -241,20 +242,20 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 //		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 	}
 	state.child->close();
-	buffer->~PartitionedBlockBuffer();
-	block_stream_for_asking_->~BlockStreamBase();
-	block_for_sending->~BlockContainer();
-	block_for_inserting_to_buffer_->~Block();
-	buffer_for_sending_->~PartitionedBlockContainer();
-	block_for_buffer_->~BlockContainer();
+	delete buffer;
+	delete block_stream_for_asking_;
+//	delete block_for_sending;
+	delete block_for_inserting_to_buffer_;
+	delete buffer_for_sending_;
+	delete block_for_buffer_;
 	for(unsigned i=0;i<nuppers;i++){
-		cur_block_stream_list_[i]->~BlockStreamBase();
+		delete cur_block_stream_list_[i];
 	}
 
 	delete [] cur_block_stream_list_;
 	delete [] socket_fd_upper_list;
 
-	partition_function_->~PartitionFunction();
+	delete partition_function_;
 	return true;
 }
 
@@ -395,6 +396,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 		else{
 			/*block_for_sending is empty, so we get one block from the buffer into the block_for_sending_*/
 			unsigned index=Pthis->buffer->getBlock(*Pthis->block_for_buffer_);
+			Pthis->block_for_buffer_->reset();
 			Pthis->buffer_for_sending_->insert(index,Pthis->block_for_buffer_);
 		}
 		if(consumed==true){

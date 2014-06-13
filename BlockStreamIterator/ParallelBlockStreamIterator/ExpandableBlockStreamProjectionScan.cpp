@@ -84,7 +84,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		while(chunk_reader_it=partition_reader_iterator_->nextChunk()){
 			while(chunk_reader_it->getNextBlockAccessor(ba)){
 				ba->getBlockSize();
-				input_dataset_.input_data_blocks.push_back(ba);
+//				input_dataset_.input_data_blocks.push_back(ba);
 			}
 		}
 		printf("%lf seconds for initializing!\n",getSecond(start));
@@ -143,7 +143,8 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 
 //		printf("scan_call %ld cycles\n",curtick()-total_start);
 		perf_info->processed_one_block();
-		perf_info->report_instance_performance_in_millibytes();
+//		printf("[]");
+//		perf_info->report_instance_performance_in_millibytes();
 		return true;
 	}
 	else{
@@ -153,7 +154,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 			delete stc;
 			destorySelfContext();
 //			printf("scan_call %ld cycles\n",curtick()-total_start);
-			perf_info->report_instance_performance_in_millibytes();
+//			perf_info->report_instance_performance_in_millibytes();
 			return false;
 
 	}

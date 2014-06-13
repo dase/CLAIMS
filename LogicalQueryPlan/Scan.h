@@ -7,6 +7,9 @@
 
 #ifndef SCAN_H_
 #define SCAN_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 #include "../common/ids.h"
 #include "../Catalog/table.h"
