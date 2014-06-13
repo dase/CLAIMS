@@ -7,11 +7,14 @@
 
 #ifndef BLOCKSTREAM_H_
 #define BLOCKSTREAM_H_
+#include <string>
+#include <iostream>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../../common/rename.h"
 #include "Block.h"
 
-#include <string>
-#include <iostream>
 #include "../../common/Schema/Schema.h"
 using namespace std;
 

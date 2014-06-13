@@ -7,7 +7,9 @@
 
 #ifndef BUFFER_H_
 #define BUFFER_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 
 class Buffer: public LogicalOperator {

@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../utility/lock.h"
 using namespace std;
 

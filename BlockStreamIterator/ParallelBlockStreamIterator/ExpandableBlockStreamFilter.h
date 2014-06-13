@@ -8,6 +8,9 @@
 #ifndef EXPANDABLEBLOCKSTREAMFILTER_H_
 #define EXPANDABLEBLOCKSTREAMFILTER_H_
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIteratorBase.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../common/Schema/Schema.h"

@@ -26,9 +26,9 @@ IteratorExecutorSlave::IteratorExecutorSlave(){
 }
 
 IteratorExecutorSlave::~IteratorExecutorSlave() {
-	execute_iterator_actor->~Actor();
-	framework->~Framework();
-	logging_->~Logging();
+	delete execute_iterator_actor;
+	delete framework;
+	delete logging_;
 }
 
 IteratorExecutorSlave::ExecuteIteratorActor::ExecuteIteratorActor(IteratorExecutorSlave* ies, Theron::Framework &framework, const char *const slaveID)

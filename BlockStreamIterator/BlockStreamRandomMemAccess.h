@@ -13,7 +13,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/base_object.hpp>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
 #include "../common/Block/BlockStream.h"

@@ -10,6 +10,9 @@
 #include <string>
 #include <stdarg.h>
 #include <stdio.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../Debug.h"
 
 

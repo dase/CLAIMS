@@ -10,7 +10,9 @@
 /*
  * 是否应该有个手动清楚内存的方式？
  */
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include <memory.h>
 #include <malloc.h>
 #include <sys/mman.h>

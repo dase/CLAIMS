@@ -7,6 +7,9 @@
 
 #ifndef ATTRIBUTECOMPARATOR_H_
 #define ATTRIBUTECOMPARATOR_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Comparator.h"
 #include <malloc.h>
 #include "../configure.h"

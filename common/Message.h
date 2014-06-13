@@ -7,7 +7,9 @@
 
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 /*
  * Message.h
  *

@@ -7,7 +7,9 @@
 
 #ifndef RESULTSET_H_
 #define RESULTSET_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "DynamicBlockBuffer.h"
 
 class ResultSet :public DynamicBlockBuffer{

@@ -15,8 +15,8 @@ ResourceManagerSlave::ResourceManagerSlave() {
 }
 
 ResourceManagerSlave::~ResourceManagerSlave() {
-	framework_->~Framework();
-	logging_->~Logging();
+	delete framework_;
+	delete logging_;
 }
 NodeID ResourceManagerSlave::Register(){
 	NodeID ret=10;

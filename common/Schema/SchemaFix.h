@@ -13,6 +13,9 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/base_object.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Schema.h"
 class SchemaFix:public Schema {
 public:

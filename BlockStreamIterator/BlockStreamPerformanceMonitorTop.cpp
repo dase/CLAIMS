@@ -19,7 +19,7 @@ BlockStreamPerformanceMonitorTop::BlockStreamPerformanceMonitorTop(){
 }
 BlockStreamPerformanceMonitorTop::~BlockStreamPerformanceMonitorTop() {
 	// TODO Auto-generated destructor stub
-	logging_->~Logging();
+	delete logging_;
 }
 
 bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_offset){

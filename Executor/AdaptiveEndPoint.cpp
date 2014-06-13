@@ -52,8 +52,8 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 AdaptiveEndPoint::~AdaptiveEndPoint() {
 	// TODO Auto-generated destructor stub
 //	return;
-	connectionActor->~Actor();
-	framework->~Framework();
+	delete connectionActor;
+	delete framework;
 //	this->~EndPoint();
 }
 

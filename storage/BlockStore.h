@@ -13,6 +13,9 @@
  * 比如，内存不足的时候的交换策略，初步是以最近最久未使用的column来交换blockId
  * */
 #include <string>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 #include "../Debug.h"
 #include "../common/ids.h"

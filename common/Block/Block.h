@@ -7,7 +7,9 @@
 
 #ifndef BLOCK_H_
 #define BLOCK_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 class Block {
 public:
 	Block(unsigned BlockSize);

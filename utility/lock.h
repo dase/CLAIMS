@@ -31,6 +31,9 @@ public:
         pthread_mutex_lock(&m);
     }
 
+    bool try_acquire(){
+    	return pthread_mutex_trylock(&m)==0;
+    }
     void release() {
         pthread_mutex_unlock(&m);
     }
@@ -103,7 +106,7 @@ public:
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nThreads--;
 		assert(m_nThreads>=0);
-		if(m_nThreads==m_nSyncCount){
+		if(m_nThreads<=m_nSyncCount){
 			pthread_cond_broadcast(&m_cv_SyncCV);
 		}
 		pthread_mutex_unlock(&m_l_SyncLock);
@@ -128,7 +131,7 @@ public:
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nSyncCount++;
 //		printf("cpu processor test: %d\n",m_nSyncCount);
-		if(m_nSyncCount == m_nThreads) {
+		if(m_nSyncCount >= m_nThreads) {
 //			printf("arrive the nthreads\n");
 //			printf("arrive the broadcast\n");
 			pthread_cond_broadcast(&m_cv_SyncCV);
