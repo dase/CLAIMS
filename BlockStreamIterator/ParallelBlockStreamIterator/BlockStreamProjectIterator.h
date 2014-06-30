@@ -28,7 +28,6 @@ public:
 		remaining_block(BlockStreamBase * bsb,BlockStreamBase::BlockStreamTraverseIterator * bsti)
 		:bsb_(bsb),bsti_(bsti){};
 		remaining_block():bsb_(0),bsti_(0){};
-//        void * combinedTuple_;
         BlockStreamBase * bsb_;
         BlockStreamBase::BlockStreamTraverseIterator * bsti_;
 	};
@@ -64,7 +63,7 @@ public:
 	bool open(const PartitionOffset& partition_offset=0);
 	bool next(BlockStreamBase *block);
 	bool close();
-
+void print();
 private:
 	bool atomicPopRemainingBlock(remaining_block & rb);
 	void atomicPushRemainingBlock(remaining_block rb);

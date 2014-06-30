@@ -192,6 +192,10 @@ string expr_to_str(Node * node,int level)
 			{
 
 			}
+			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+				str="count(*)";
+			}
 			else if(strcmp(funcnode->funname,"FCOUNT")==0)
 			{
 				str="count(";
@@ -226,7 +230,7 @@ string expr_to_str(Node * node,int level)
 			{
 				SQLParse_elog("expr_to_str doesn't exist this function !!!");
 			}
-			funcnode->str=(char *)malloc(sizeof(str.c_str()));
+			funcnode->str=(char *)malloc(str.size()+1);
 			strcpy(funcnode->str,str.c_str());
 		}break;
 		case t_expr_cal:
@@ -285,7 +289,7 @@ string expr_to_str(Node * node,int level)
 			}
 
 	    	str=str+expr_to_str(calnode->rnext,thislevel);
-			calnode->str=(char *)malloc(sizeof(str.c_str()));
+			calnode->str=(char *)malloc(str.size()+1);
 			strcpy(calnode->str,str.c_str());
 			if(thislevel<level)
 			{
@@ -299,29 +303,27 @@ string expr_to_str(Node * node,int level)
 			Columns *col=(Columns *)node;
 			if(col->parameter1==NULL)
 			{
-				str=str+col->parameter2;
+				str=str+string(col->parameter2);
 			}
 			else
 			{
-				str=str+col->parameter1;
-				str=str+".";
-				str=str+col->parameter2;
+				str=str+string(col->parameter2);
 			}
 		}break;
 		case t_stringval:
 		{
 			Expr * exprval=(Expr *)node;
-			str=str+exprval->data;
+			str=str+string(exprval->data);
 		}break;
 		case t_intnum:
 		{
 			Expr * exprval=(Expr *)node;
-			str=str+exprval->data;
+			str=str+string(exprval->data);
 		}break;
 		case t_approxnum:
 		{
 			Expr * exprval=(Expr *)node;
-			str=str+exprval->data;
+			str=str+string(exprval->data);
 		}break;
 		case t_bool:
 		{

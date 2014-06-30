@@ -21,6 +21,7 @@ LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* chi
 	setOperatortype(l_root);
 }
 
+
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
 	if(child_>0){
 		child_->~LogicalOperator();

@@ -36,8 +36,10 @@ public:
 		}
 	std::vector<column_type> columns;
 	virtual schema_type getSchemaType()const=0;
+	virtual void addColumn(column_type ct,unsigned size){};
 	virtual void displayTuple(const void* tuple_start_address,const char* spliter="|")const;
 	virtual void toValue(std::string text_tuple, void* binary_tuple, const char attr_separator){};
+	inline virtual void showAccum_off(){};
 protected:
 
 private:
