@@ -151,7 +151,7 @@ static int test_scan_filter_Aggregation(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
 
@@ -442,30 +442,30 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 ////		printf("-----------------------------------------\n");
 	}
 //
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_high_selectivity();
-//	}
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_low_selectivity();
-//	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_high_selectivity();
+	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_low_selectivity();
+	}
 	for(unsigned i=0;i<repeated_times;i++){
 		test_scan_filter_Aggregation();
 	}
-//	for(unsigned i=0;i<repeated_times;i++){
-//		test_scan_filter_Scalar_Aggregation();
-//	}
-//	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_no_repartition_filtered_join();
-//	}
-//	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_complete_repartition_filtered_join();
-//	}
-//	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_complete_repartition_scan_join();
-//	}
-//	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_no_repartition_scan_join();
-//	}
+	for(unsigned i=0;i<repeated_times;i++){
+		test_scan_filter_Scalar_Aggregation();
+	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_no_repartition_filtered_join();
+	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_complete_repartition_filtered_join();
+	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_complete_repartition_scan_join();
+	}
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_no_repartition_scan_join();
+	}
 	printf("__________________FINISHED__________________\n");
 	sleep(1);
 	Environment::getInstance()->~Environment();
