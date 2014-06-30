@@ -57,7 +57,7 @@ class ProjectionDescriptor
 {
 public:
 	friend class TableDescriptor;
-	ProjectionDescriptor(){};
+	ProjectionDescriptor():schema_(0){};
 	ProjectionDescriptor(ProjectionID);
 	ProjectionDescriptor(const string& name);
 	virtual ~ProjectionDescriptor();
@@ -71,7 +71,7 @@ public:
 	inline ProjectionID getProjectionID()const{return projection_id_;}
 	bool AllPartitionBound()const;
 	std::vector<Attribute> getAttributeList()const;
-	Schema* getSchema()const;
+	Schema* getSchema();
 	int getAttributeIndex(const Attribute& att)const;
 private:
 //	ProjectionOffset projection_offset_;
@@ -80,6 +80,7 @@ private:
 
 	Partitioner* partitioner;
 
+	Schema* schema_;
 
 	/* The following is considered to be deleted, as the catalog module only has a logically view
 	 * of a table rather than detailed physical view such as filename, etc.

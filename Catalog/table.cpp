@@ -8,11 +8,11 @@
 #include "table.h"
 #include "../common/Schema/SchemaFix.h"
 // ColumnDescriptor
-ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid){
+ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid),schema_(0){
 }
 
 ProjectionDescriptor::ProjectionDescriptor(const string& name)
-:Projection_name_(name){
+:Projection_name_(name),schema_(0){
 	// Check if hdfsfile already exists
 	// Meanwhile create a hsfsfile to store this column's data.
 }
@@ -57,17 +57,20 @@ std::vector<Attribute> ProjectionDescriptor::getAttributeList()const{
 	}
 	return ret;
 }
-Schema* ProjectionDescriptor::getSchema()const{
+Schema* ProjectionDescriptor::getSchema(){
 	/**
 	 * Only fixed schema is supported now.
 	 * TODO: support other schema.
 	 */
-	const vector<Attribute> attributes=getAttributeList();
-	std::vector<column_type> columns;
-	for(unsigned i=0;i<attributes.size();i++){
-		columns.push_back(*attributes[i].attrType);
+	if(schema_==0){
+		const vector<Attribute> attributes=getAttributeList();
+		std::vector<column_type> columns;
+		for(unsigned i=0;i<attributes.size();i++){
+			columns.push_back(*attributes[i].attrType);
+		}
+		schema_=new SchemaFix(columns);
 	}
-	return new SchemaFix(columns);
+	return schema_;
 }
 int ProjectionDescriptor::getAttributeIndex(const Attribute& att)const{
 	const vector<Attribute> attributes=getAttributeList();
@@ -89,7 +92,9 @@ TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 }
 
 TableDescriptor::~TableDescriptor(){
-
+	for(unsigned i=0;i<projection_list_.size();i++){
+		delete projection_list_[i];
+	}
 }
 
 void TableDescriptor::addAttribute(Attribute attr)

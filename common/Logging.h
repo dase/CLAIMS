@@ -73,9 +73,10 @@ class ExchangeIteratorEagerLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
 };
-class ExchangeIteratorEagerLowerLogging:public Logging{
-	void log(const char* format,...);
-	void elog(const char* format,...);
+class ExchangeIteratorEagerLowerLogging{
+public:
+	static void log(const char* format,...);
+	static void elog(const char* format,...);
 };
 
 class CatalogLogging:public Logging{

@@ -84,7 +84,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		while(chunk_reader_it=partition_reader_iterator_->nextChunk()){
 			while(chunk_reader_it->getNextBlockAccessor(ba)){
 				ba->getBlockSize();
-//				input_dataset_.input_data_blocks.push_back(ba);
+				input_dataset_.input_data_blocks.push_back(ba);
 			}
 		}
 		printf("%lf seconds for initializing!\n",getSecond(start));
@@ -129,6 +129,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 //		const unsigned long long int start=curtick();
 
 		ba->getBlock(block);
+		delete ba;
 //
 //		void* start_addr=((ChunkReaderIterator::InMemeryBlockAccessor*)ba)->getTargetBlockStartAddress();
 //		memcpy(block->getBlock(),

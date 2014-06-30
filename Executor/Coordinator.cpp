@@ -245,7 +245,7 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		Cthis->SendReadyNotificationToNewNode(socket_fd_new);
 
 		close(socket_fd_new);
-		receiver->~TimeOutReceiver();
+		delete receiver;
 	}
 }
 

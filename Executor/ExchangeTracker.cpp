@@ -94,7 +94,7 @@ int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::stri
 //	receiver.~Receiver();
 //	return atoi(NCM.port.c_str());
 //	printf("OOOOOOOOOOOO step 2:%4.4f\n",getSecond(step2));
-	receiver->~TimeOutReceiver();
+	delete receiver;
 	return port;
 }
 

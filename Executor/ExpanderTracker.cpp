@@ -408,7 +408,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			it++;
 		ExpanderID id=it->first;
 
-		printf("id=%d \n",id);
+//		printf("id=%d \n",id);
 
 
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
