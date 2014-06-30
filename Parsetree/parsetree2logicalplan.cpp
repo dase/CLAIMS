@@ -27,8 +27,7 @@
 #include "../common/AttributeComparator.h"
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
-static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator)
-{
+static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
 	SQLParse_log("getfiltercondition   ");
 	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
 	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
@@ -525,7 +524,54 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 	}
 	return NULL;
 }
-static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function,LogicalOperator * input)
+
+static char * get_expr_str(Node *node)
+{
+	char *str="";
+	switch(node->type)
+	{
+		case t_expr_cal:
+		{
+			Expr_cal * calnode=(Expr_cal *)node;
+			str=calnode->str;
+		}break;
+		case t_expr_func:
+		{
+			Expr_func * funcnode=(Expr_func *)node;
+			str=funcnode->str;
+		}break;
+		case t_name:
+		case t_name_name:
+		{
+			Columns *col=(Columns *)node;
+			str=col->parameter2;
+		}break;
+		case t_stringval:
+		{
+			Expr * exprval=(Expr *)node;
+		}break;
+		case t_intnum:
+		{
+			Expr * exprval=(Expr *)node;
+		}break;
+		case t_approxnum:
+		{
+			Expr * exprval=(Expr *)node;
+
+		}break;
+		case t_bool:
+		{
+
+		}break;
+		default:
+		{
+
+		}
+	}
+	return str;
+}
+
+static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function,LogicalOperator * input)
 {
 	if(selectlist==NULL)
 	{
@@ -537,18 +583,13 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 		case t_select_list:
 		{
 			Select_list *selectnode=(Select_list *)selectlist;
-			int oldsid=sid;
-			get_aggregation_args(sid,selectnode->args, aggregation_attributes,aggregation_function,input);
-			if(selectnode->isall!=-1)
-			{
-				sid=oldsid+1;
-			}
-			get_aggregation_args(sid,selectnode->next, aggregation_attributes,aggregation_function,input);
+			get_aggregation_args(selectnode->args, aggregation_attributes,aggregation_function,input);
+			get_aggregation_args(selectnode->next, aggregation_attributes,aggregation_function,input);
 		}break;
 		case t_select_expr:
 		{
 			Select_expr *selectnode=(Select_expr *)selectlist;
-			get_aggregation_args(sid,selectnode->colname, aggregation_attributes,aggregation_function,input);
+			get_aggregation_args(selectnode->colname, aggregation_attributes,aggregation_function,input);
 
 		}break;
 		case t_expr_func:
@@ -569,10 +610,9 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
-			}/////////////////////----2.19日
+			}
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
@@ -583,8 +623,8 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
+
 				}
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
@@ -597,8 +637,7 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
@@ -611,13 +650,12 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)///////////////////////////////////底层还未实现
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::avg);
 				if(input==NULL)
 				{
 					Columns *funccol=(Columns *)funcnode->parameter1;
@@ -625,19 +663,18 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
-			}/////////////////////----2.19日
+			}
 			else
 			{
 				if(strcmp(funcnode->funname,"FSUBSTRING0")==0||strcmp(funcnode->funname,"FSUBSTRING1")==0)
 				{
-					get_aggregation_args(sid,funcnode->args, aggregation_attributes,aggregation_function,input);
+					get_aggregation_args(funcnode->args, aggregation_attributes,aggregation_function,input);
 				}
 				else
 				{
-					get_aggregation_args(sid,funcnode->parameter1, aggregation_attributes,aggregation_function,input);
+					get_aggregation_args(funcnode->parameter1, aggregation_attributes,aggregation_function,input);
 				}
 			}
 
@@ -645,23 +682,23 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 		case t_expr_cal:
 		{
 			Expr_cal * calnode=(Expr_cal *)selectlist;
-			get_aggregation_args(sid,calnode->lnext, aggregation_attributes,aggregation_function,input);
-			get_aggregation_args(sid,calnode->rnext, aggregation_attributes,aggregation_function,input);
+			get_aggregation_args(calnode->lnext, aggregation_attributes,aggregation_function,input);
+			get_aggregation_args(calnode->rnext, aggregation_attributes,aggregation_function,input);
 
 		}break;
 		case t_name:
 		case t_name_name:
 		{
-			Columns *colnode=(Columns *)selectlist;
-			if(input==NULL)
-			{
-				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(colnode->parameter1)->getAttribute(colnode->parameter2));
-			}
-			else
-			{
-				aggregation_attributes.push_back(input->getDataflow().attribute_list_[sid]);
-				sid++;
-			}
+//			Columns *colnode=(Columns *)selectlist;
+//			if(input==NULL)
+//			{
+//				aggregation_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(colnode->parameter1)->getAttribute(colnode->parameter2));
+//			}
+//			else
+//			{
+//				aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(selectlist)));
+//
+//			}
 		}break;
 		case t_stringval:
 		{
@@ -686,7 +723,8 @@ static void get_aggregation_args(int &sid,Node *selectlist, vector<Attribute> &a
 	}
 
 }
-static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_by_attributes)
+
+static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_by_attributes,LogicalOperator *input)
 {
 	if(groupby_node==NULL)
 	{
@@ -698,20 +736,27 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 		case t_groupby_list:
 		{
 			Groupby_list *node=(Groupby_list *)groupby_node;
-			get_group_by_attributes(node->next,group_by_attributes);
+			get_group_by_attributes(node->next,group_by_attributes,input);
 		}break;
 		case t_groupby_expr:
 		{
 			Groupby_expr *node=(Groupby_expr *)groupby_node;
-			get_group_by_attributes(node->args,group_by_attributes);
-			get_group_by_attributes(node->next,group_by_attributes);
+			get_group_by_attributes(node->args,group_by_attributes,input);
+			get_group_by_attributes(node->next,group_by_attributes,input);
 		}break;
+		case t_name:
 		case t_name_name:
 		case t_column:
 		{
-			Columns *node=(Columns *)groupby_node;
-			SQLParse_log("group by ",node->parameter1,"  ",node->parameter2);
-			group_by_attributes.push_back(Environment::getInstance()->getCatalog()->getTable(node->parameter1)->getAttribute(node->parameter2));
+			group_by_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+		}break;
+		case t_expr_cal:
+		{
+			group_by_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+		}break;
+		case t_expr_func:
+		{
+			group_by_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(groupby_node)));
 		}break;
 		default:
 		{
@@ -720,9 +765,10 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 	}
 
 }
-static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input,int &sid)
+
+static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input)
 {
-/*	switch(node->type)
+	switch(node->type)
 	{
 		case t_expr_func:
 		{
@@ -732,7 +778,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setOperator("case");
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("case");
 				expr.push_back(expritem1);
@@ -742,8 +788,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setOperator("case");
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("else");
 				expr.push_back(expritem1);
@@ -754,11 +800,11 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else if(strcmp(funcnode->funname,"WHEN1")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem0;
 				expritem0.setOperator("when");
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("then");
 				expr.push_back(expritem1);
@@ -766,32 +812,32 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else if(strcmp(funcnode->funname,"WHEN2")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem0;
 				expritem0.setOperator("when");
 				expr.push_back(expritem0);
 
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("then");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->args,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->args,input);
 				ExpressionItem expritem0;
 				expritem0.setIntValue(0);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("substr");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING1")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->args,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->args,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("substr");
 				expr.push_back(expritem1);
@@ -801,8 +847,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(0);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
@@ -812,8 +858,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(1);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
@@ -823,8 +869,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(2);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
@@ -837,22 +883,22 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem;
 				expritem.setStringValue(" ");
 				expr.push_back(expritem);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FUPPER")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("upper");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FCAST")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input,sid);
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("cast");
 				expr.push_back(expritem1);
@@ -865,13 +911,25 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+
 				}
 				else
 				{
 					ExpressionItem expritem;
-					expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					expritem.setVariable("count(*)");
+					expr.push_back(expritem);
+				}
+			}
+			else if(strcmp(funcnode->funname,"FCOUNT")==0)
+			{
+				if(input==NULL)
+				{
+					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				}
+				else
+				{
+					ExpressionItem expritem;
+					expritem.setVariable((const char*)funcnode->str);
 					expr.push_back(expritem);
 				}
 			}
@@ -879,57 +937,56 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
 					ExpressionItem expritem;
-					expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					expritem.setVariable((const char*)funcnode->str);
 					expr.push_back(expritem);
 				}			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
 					ExpressionItem expritem;
-					expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					expritem.setVariable((const char*)funcnode->str);
 					expr.push_back(expritem);
-				}			}
+				}
+			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
 					ExpressionItem expritem;
-					expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					expritem.setVariable((const char*)funcnode->str);
 					expr.push_back(expritem);
-				}			}
+				}
+			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
 					ExpressionItem expritem;
-					expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-					sid++;
+					expritem.setVariable((const char*)funcnode->str);
 					expr.push_back(expritem);
-				}			}
+				}
+			}
 			else
 			{
-				p2l_print_error("get_a_selectlist_expression_item: ",funcnode->funname ,"   is null");
+				SQLParse_elog("get_a_selectlist_expression_item: ",funcnode->funname ,"   is null");
 			}
 		}break;
 		case t_expr_cal:
@@ -940,7 +997,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(0);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,calnode->rnext,input,sid);
+				get_a_selectlist_expression_item(expr,calnode->rnext,input);
 				ExpressionItem expritem;
 				expritem.setOperator("-");
 				expr.push_back(expritem);
@@ -950,8 +1007,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else
 			{
-				get_a_selectlist_expression_item(expr,calnode->lnext,input,sid);
-				get_a_selectlist_expression_item(expr,calnode->rnext,input,sid);
+				get_a_selectlist_expression_item(expr,calnode->lnext,input);
+				get_a_selectlist_expression_item(expr,calnode->rnext,input);
 				ExpressionItem expritem;
 				if(strcmp(calnode->sign,"CMP")==0)
 				{
@@ -983,7 +1040,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 						}break;
 						default:
 						{
-							p2l_print_error("get_a_selectlist_expression_item"," cmp error","");
+							SQLParse_elog("get_a_selectlist_expression_item"," cmp error","");
 						}
 					}
 				}
@@ -999,15 +1056,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 		{
 			Columns *col=(Columns *)node;
 			ExpressionItem expritem;
-			if(input==NULL)
-			{
-				expritem.setVariable(col->parameter1,col->parameter2);
-			}
-			else
-			{
-				expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-				sid++;
-			}
+			expritem.setVariable(col->parameter2);
 			expr.push_back(expritem);
 		}break;
 		case t_stringval:
@@ -1021,7 +1070,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 		{
 			Expr * exprval=(Expr *)node;
 			ExpressionItem expritem;
-			expritem.setIntValue(atof(exprval->data));
+			expritem.setIntValue(exprval->data);
 			expr.push_back(expritem);
 
 		}break;
@@ -1042,23 +1091,29 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 
 		}
 	}
-*/
+
 }
+/*
+ * 只需要获得agg函数参数的expr并加入到allexpr
+ */
+
 static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&allexpr)
 {
-/*	int sid=0;
 	switch(node->type)
 	{
 		case t_expr_func:
 		{
-			vector<ExpressionItem>expr;
 			Expr_func * funcnode=(Expr_func *)node;
 			if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
 			{
-				expr.clear();
-				get_a_selectlist_expression_item(expr,funcnode->args,NULL,sid);
+				vector<ExpressionItem>expr;
+				get_a_selectlist_expression_item(expr,funcnode->parameter1,NULL);
 				allexpr.push_back(expr);
 				expr.clear();
+			}
+			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+
 			}
 			else
 			{
@@ -1082,10 +1137,7 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 		case t_name:
 		case t_name_name:
 		{
-			vector<ExpressionItem>expr;
-			get_a_selectlist_expression_item(expr,node,NULL,sid);
-			allexpr.push_back(expr);
-			expr.clear();
+
 		}break;
 		case t_stringval:
 		{
@@ -1107,60 +1159,66 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 		{
 
 		}
-	}*/
+	}
 }
-static void get_all_selectlist_expression_item(Node * node,vector<vector<ExpressionItem> >&allexpr,LogicalOperator *input)
+static void get_all_selectlist_expression_item(Node * node,vector<vector<ExpressionItem> >&allexpr,LogicalOperator *input,int proj_type)
 {
-/*	vector<ExpressionItem>expr;
-	int sid=0;
-	if(input==NULL)
+	vector<ExpressionItem>expr;
+	for(Node *p=node;p!=NULL;)
 	{
-		for(Node *p=node;p!=NULL;)
+		Select_list *selectlist=(Select_list *)p;
+		Select_expr *sexpr=(Select_expr *)selectlist->args;
+		if(proj_type==0)
 		{
-			Select_list *selectlist=(Select_list *)p;
-			Select_expr *sexpr=(Select_expr *)selectlist->args;
+			get_a_selectlist_expression_item(expr,sexpr->colname,NULL);
+			allexpr.push_back(expr);
+			expr.clear();
+		}
+		else if(proj_type==1)
+		{
 			if(selectlist->isall==-1)
 			{
 				recurse_get_item_in_expr(sexpr->colname,allexpr);
 			}
-			else
+			else if(selectlist->isall==-2)//count(*) 不能参与运算
 			{
-				sid=0;
-				get_a_selectlist_expression_item(expr,sexpr->colname,NULL,sid);
-				allexpr.push_back(expr);
-				expr.clear();
+				SQLParse_log("this sql has count(*)");
 			}
-			p=selectlist->next;
 		}
-	}
-	else
-	{
-		sid=0;
-		for(Node *p=node;p!=NULL;)
+		else if(proj_type==2)
 		{
-			Select_list *selectlist=(Select_list *)p;
-			Select_expr *sexpr=(Select_expr *)selectlist->args;
 			if(selectlist->isall==-1)
 			{
-				get_a_selectlist_expression_item(expr,sexpr->colname,input,sid);
+				get_a_selectlist_expression_item(expr,sexpr->colname,input);
 				allexpr.push_back(expr);
 				expr.clear();
 			}
 			else
 			{
 				ExpressionItem expritem;
-				expritem.setVariable(input->getDataflow().attribute_list_[sid]);
-				sid++;
-				expr.push_back(expritem);
-				allexpr.push_back(expr);
+				expritem.setVariable(get_expr_str(sexpr->colname));
+ 				expr.push_back(expritem);
+ 				allexpr.push_back(expr);
 				expr.clear();
 			}
-			p=selectlist->next;
 		}
+		p=selectlist->next;
 	}
-*/
 }
-static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,bool is_get_attid)
+static void get_all_groupby_expression_item(Node * node,vector<vector<ExpressionItem> >&allexpr,LogicalOperator *input)
+{
+	vector<ExpressionItem>expr;
+	for(Node *p=(Node *)(((Groupby_list*)node)->next);p!=NULL;)
+	{
+		Groupby_expr *gbexpr=(Groupby_expr *)p;
+		get_a_selectlist_expression_item(expr,gbexpr->args,NULL);
+		allexpr.push_back(expr);
+		expr.clear();
+		p=gbexpr->next;
+	}
+
+}
+static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,int proj_type)
 {
 	if(parsetree==NULL)
 	{
@@ -1171,14 +1229,23 @@ static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOpe
 		Query_stmt *node=(Query_stmt *)parsetree;
 		vector<vector<ExpressionItem> >allexpr;
 		allexpr.clear();
-		if(is_get_attid)
+		if(proj_type==0)
 		{
-			get_all_selectlist_expression_item(node->select_list,allexpr,last_logicalplan);
+			get_all_selectlist_expression_item(node->select_list,allexpr,NULL,0);
+		}
+		else if(proj_type==1)
+		{
+			if(node->groupby_list!=NULL)
+			{
+				get_all_groupby_expression_item(node->groupby_list,allexpr,NULL);
+			}
+			get_all_selectlist_expression_item(node->select_list,allexpr,NULL,1);
 		}
 		else
 		{
-			get_all_selectlist_expression_item(node->select_list,allexpr,NULL);
+			get_all_selectlist_expression_item(node->select_list,allexpr,last_logicalplan,2);
 		}
+
 //		cout<<"allexpr.size= "<<allexpr.size()<<endl;
 //		for(unsigned i=0;i<allexpr.size();i++){
 //			cout<<"allexpr "<<i<<"  size ="<<allexpr[i].size()<<endl;
@@ -1187,7 +1254,16 @@ static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOpe
 //				allexpr[i][j].print_value();
 //			}
 //		}
-		LogicalOperator* proj=new LogicalProject(last_logicalplan,allexpr);
+		LogicalOperator* proj=NULL;
+		if(allexpr.size()>0)
+		{
+			proj=new LogicalProject(last_logicalplan,allexpr);
+		}
+		else
+		{
+			SQLParse_log("allexpr.size=0");
+			proj=last_logicalplan;
+		}
 		return proj;
 	}
 }
@@ -1213,6 +1289,21 @@ static void dfs_select_args(int flag,int &ans,Node * node)
 					ans+=1;
 				}
 				dfs_select_args(-2,ans,funcnode->parameter1);
+			}
+			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+				if(flag==-2)
+				{
+					SQLParse_elog("dfs_select_args error!!!!");
+				}
+				if(flag==-1&&(ans&4)==0)
+				{
+					ans+=4;//expr has agg
+				}
+				if((ans&8)==0)
+				{
+					ans+=8;
+				}
 			}
 			else if(strcmp(funcnode->funname,"CASE3")==0)
 			{
@@ -1342,9 +1433,11 @@ static void dfs_select_args(int flag,int &ans,Node * node)
 		case t_stringval:
 		{
 
+
 		}break;
 		case t_intnum:
 		{
+
 
 		}break;
 		case t_approxnum:
@@ -1358,10 +1451,15 @@ static void dfs_select_args(int flag,int &ans,Node * node)
 		default:
 		{
 
+
 		}
 	}
 	return;
 }
+/*判断selectlist的expression中是否存在
+ * 聚集函数agg中的参数为表达式expr eg: min(a+b)
+ * 或者聚集函数agg包含在表达式中 eg:min(a)+max(b)
+ */
 static void judge_selectlist_agg_has_or_in_expr(Node *node,int &has_agg,int &agg_has_expr,int &agg_in_expr)
 {
 	int ans=0;
@@ -1371,17 +1469,37 @@ static void judge_selectlist_agg_has_or_in_expr(Node *node,int &has_agg,int &agg
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
 		ans=0;
 		dfs_select_args(0,ans,sexpr->colname);
-		if((ans&1)==0) has_agg=1;
-		if((ans&2)==0) agg_has_expr=1;
-		if((ans&4)==0)
+//		if((ans&1)==1) has_agg=1;
+//		if((ans&2)==1) agg_has_expr=1;
+//		if((ans&4)==1)
+//		{
+//			agg_in_expr=1;
+//			selectlist->isall=-1;
+//		}
+//		SQLParse_log("judge_selectlist_agg_has_or_in_expr ans=%d",ans);
+		if((ans&1)==1)
 		{
-			agg_in_expr=1;
-			selectlist->isall=-1;//需要进入编号
+			has_agg=1;
+			selectlist->isall=-1;
+		}
+//		SQLParse_log("ans&8= %d ",ans&8);
+		if((ans&8)==8)
+		{
+			has_agg=1;
+			selectlist->isall=-2;
 		}
 		p=selectlist->next;
 	}
 }
-
+/*
+ *a||g==0 selectlist中所有表达式放入，记为proj0
+ *a||g==1 groupbylist+agg函数中的参数，记为proj1
+ *对于proj2 含有agg的参数用整体表示，并完成该表达式的计算；如果没有，则直接用整体
+ *eg:max(a+b),c+d => a+b,c+d
+ *
+ *目前的groupby中可以含有表达式，但是不支持该表达式在selectexpr中参与运算
+ *
+ */
 static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//proj,agg处理合并在一起,形成p-a-p模型
 {
 	Query_stmt *node=(Query_stmt *)parsetree;
@@ -1392,51 +1510,41 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 	int agg_has_expr,agg_in_expr,has_agg,sid=0;
 	agg_has_expr=agg_in_expr=has_agg=0;
 	judge_selectlist_agg_has_or_in_expr(node->select_list,has_agg,agg_has_expr,agg_in_expr);
-//	if(has_agg==0&&node->groupby_list==NULL)//只需要proj,应该是getByAttribute()，不需要进行agg
-//	{
-//		return select_where_from2logicalplan(parsetree,where_from_logicalplan,false);
-//	}
-//	else
-//	{
-//		if(node->groupby_list!=NULL)//获取group_by_attributes
-//		{
-//			get_group_by_attributes(node->groupby_list,group_by_attributes);
-//		}
-//		if(has_agg==0)//没有聚集函数，eg:select a from tb group by a;
-//		{
-//			LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,where_from_logicalplan);
-//			return aggregation;
-//		}
-//		else
-//		{
-//			if(agg_has_expr==0&&agg_in_expr==0)//含有简单聚集函数，eg: max(a),应该是getAttribute()获取属性
+	LogicalOperator *select_logicalplan=NULL;
+//	SQLParse_log("has_agg= %d,agg_has_expr=%d,agg_in_expr=%d",has_agg,agg_has_expr,agg_in_expr);
+	if(has_agg==0&&node->groupby_list==NULL)
+	{
+		select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,0);
+	}
+	else
+	{
+		select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,1);
+		if(node->groupby_list!=NULL)//获取group_by_attributes
+		{
+			get_group_by_attributes(node->groupby_list,group_by_attributes,select_logicalplan);
+//#ifdef SQL_Parser
+//			cout<<"groupby size= "<<group_by_attributes.size()<<endl;
+//			for(int i=0;i<group_by_attributes.size();i++)
 //			{
-//				get_aggregation_args(sid,node->select_list, aggregation_attributes,aggregation_function,NULL);
+//				cout<<"groupby_att  "<<group_by_attributes[i].attrName<<endl;
 //			}
-//			else
+//#endif
+		}
+		if(has_agg==1)
+		{
+			get_aggregation_args(node->select_list, aggregation_attributes,aggregation_function,select_logicalplan);
+//#ifdef SQL_Parser
+//			cout<<"agg_att size= "<<aggregation_attributes.size()<<endl;
+//			for(int i=0;i<aggregation_attributes.size();i++)
 //			{
-//				LogicalOperator* projection_or_aggregation=NULL;
-//				if(agg_has_expr==1)//必须proj1通过getAttribute获取属性；agg,通过getid获取属性
-//				{
-//					LogicalOperator* select_where_from_logicalplan=select_where_from2logicalplan(parsetree,where_from_logicalplan,false);
-//					get_aggregation_args(sid,node->select_list, aggregation_attributes,aggregation_function,select_where_from_logicalplan);
-//					projection_or_aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_where_from_logicalplan);
-//				}
-//				else//agg,通过getAttribute获得属性
-//				{
-//					get_aggregation_args(sid,node->select_list, aggregation_attributes,aggregation_function,NULL);
-//					projection_or_aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,where_from_logicalplan);
-//				}
-//				if(agg_in_expr==1)//必须proj2,getId
-//				{
-//					projection_or_aggregation=select_where_from2logicalplan(parsetree,projection_or_aggregation,true);
-//
-//				}
+//				cout<<"agg_att  "<<aggregation_attributes[i].attrName<<endl;
 //			}
-//
-//		}
-//	}
-	LogicalOperator *select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,false);
+//#endif
+		}
+		LogicalOperator* projection_or_aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_logicalplan);
+		select_logicalplan= select_where_from2logicalplan(parsetree,projection_or_aggregation,2);
+	}
+	return select_logicalplan;
 }
 static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector<LogicalSort::OrderByAttr *>&obcol)
 {
@@ -1451,7 +1559,9 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 			case t_name_name:
 			{
 				Columns *col=(Columns *)(gbexpr->args);
-				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter1,col->parameter2));
+//				obcol.push_back(col->parameter2);
+				//obcol.push_back(col->parameter2);
+				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2));
 			}break;
 			case t_intnum:
 			{
@@ -1482,7 +1592,7 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 						case t_column:
 						{
 							Columns * col=(Columns *)sexpr->colname;
-							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter1,col->parameter2));
+							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2));
 						}break;
 						default:
 						{
@@ -1499,39 +1609,54 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 		p=gbexpr->next;
 	}
 }
-static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *parsetree)
+static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *&parsetree)
 {
-	LogicalOperator* select__logicalplan= groupby_select_where_from2logicalplan(parsetree);
+	LogicalOperator* orderby_logicalplan=NULL;
+	LogicalOperator* select_logicalplan= groupby_select_where_from2logicalplan(parsetree);
 	Query_stmt *node=(Query_stmt *)parsetree;
 	if(node->orderby_list==NULL)
 	{
-		return select__logicalplan;
+		orderby_logicalplan= select_logicalplan;
 	}
 	else
 	{
-		vector<LogicalSort::OrderByAttr *>obcol;
+//		vector<string>obstr;
+		vector<LogicalSort::OrderByAttr*>obcol;
 		get_orderby_column_from_selectlist(node->orderby_list,node->select_list,obcol);
-		LogicalOperator* orderby__logicalplan=new LogicalSort(select__logicalplan,obcol);
-		return orderby__logicalplan;
+//		for(int i=obstr.size()-1;i>=0;i--)
+//		{
+//			obcol.push_back(new LogicalSort::OrderByAttr(obstr[i].c_str()));
+//		}
+	//	obcol.push_back(&LogicalSort::OrderByAttr("LINEITEM.L_LINESTATUS"));
+		reverse(obcol.begin(),obcol.end());
+//#ifdef SQL_Parser
+//		cout<<"orderby size=  "<<obcol.size()<<endl;
+//		for(int i=0;i<obcol.size();i++)
+//		{
+//			cout<<"orderby att= "<<obcol[i]->ta_ <<endl;
+//		}
+//#endif
+		 orderby_logicalplan=new LogicalSort(select_logicalplan,obcol);
 	}
+		return orderby_logicalplan;
 }
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
-	LogicalOperator* result=NULL;
+	LogicalOperator* alllogicalplan=NULL;
 	switch(parsetree->type)
 	{
 		case t_query_stmt:
 		{
-	//		result=orderby_select_groupby_where_from2logicalplan(parsetree);
+			alllogicalplan=orderby_select_groupby_where_from2logicalplan(parsetree);
 		}break;
 		default:
 		{
 			SQLParse_log("parsetree type is null");
-			result= NULL;
+			alllogicalplan= NULL;
 		}
 	}
 	SQLParse_log("parsetree2Logicalplan is completed!!!!!!!!!!!!!!!!!!!!!");
-	return result;
+	return alllogicalplan;
 }
 
 

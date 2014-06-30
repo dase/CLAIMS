@@ -49,9 +49,16 @@ public:
 	Schema* getSubSchema(std::vector<unsigned>)const;
 	Schema* duplicateSchema()const;
 //	void displayTuple(const void* tuple_start_address,const char* spliter)const;
-
+	void addColumn(column_type ct,unsigned size);
 	unsigned getColumnOffset(unsigned index);
 	void toValue(std::string text_tuple, void* binary_tuple, const char attr_separator);
+	inline void showAccum_off()
+	{
+		for(int i=0;i<accum_offsets.size();i++)
+		{
+			printf("%d  %d\n",i,accum_offsets[i]);
+		}
+	}
 private:
 	unsigned totalsize;
 	std::vector<unsigned> accum_offsets;

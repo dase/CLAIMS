@@ -35,6 +35,7 @@ const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
 
+
 void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改变，相关代码进行修改---by余楷
 {
 
@@ -46,9 +47,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 	int count=1;
 	while(count)
 	{
-		cout<<"SQL start:\n";
-		puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
+		cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
 
@@ -82,7 +81,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			{
 				/* nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt */
 
-				cout<<"this is create table stmt "<<endl;
+				SQLParse_log("this is create table stmt \n");
 				Create_table_stmt * ctnode = (Create_table_stmt *)node;
 				//获取新建表的表名
 				if(ctnode->name2 != NULL)
@@ -278,49 +277,45 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			break;
 			case t_query_stmt: // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
 			{
-				SQLParse_log("this is query stmt");
-		//		if (!semantic_analysis(node,false))//---3.22fzh---
-		//			SQLParse_elog("semantic_analysis error");
+				SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
+				if (!semantic_analysis(node,false))//---3.22fzh---
+					SQLParse_elog("semantic_analysis error");
 				expr_to_str_test(node);
+#ifdef SQL_Parser
 				output(node,0);
-	/*				Query_stmt *querynode=(Query_stmt *)node;
+#endif
+					Query_stmt *querynode=(Query_stmt *)node;
 					if(querynode->where_list!=NULL)
 					{
 						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
 						struct Node *cur=(struct Node *)(curt->next);
 						SQLParse_log("wc2tb");
 						departwc(cur,querynode->from_list);
-						SQLParse_log("partree complete!!!!!!!!!!!!!!!!!!!");
 					}
 					if(querynode->from_list!=NULL)
 					int fg=solve_join_condition(querynode->from_list);
+#ifdef SQL_Parser
 				output(node,0);
-				SQLParse_log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-		//		LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
+#endif
+				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
-				//const NodeID collector_node_id=0;
-//				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
-//				unsigned long long int timer_start=curtick();
-//
-//
-//				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
-//				root->print();
-//
-//				please->print();
-//
-//				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
-
 
 				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
-
-				cout<<"performance is ok!"<<endl;
+#ifdef SQL_Parser
+				root->print(0);
+				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
+				getchar();
+				getchar();
+#endif
 				BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				physical_iterator_tree->print();
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));*/
-				SQLParse_log("test output is completed!!");
+			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 			}
 			break;
 			case t_load_table_stmt:	//	导入数据的语句
