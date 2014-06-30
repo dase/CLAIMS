@@ -18,9 +18,9 @@ Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vec
 }
 
 Aggregation::~Aggregation() {
-	dataflow_->~Dataflow();
+	delete dataflow_;
 	if(child_>0){
-		child_->~LogicalOperator();
+		delete child_;
 	}
 	// TODO Auto-generated destructor stub
 }

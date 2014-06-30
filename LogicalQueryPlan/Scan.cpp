@@ -43,6 +43,7 @@ LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& se
 
 LogicalScan::~LogicalScan() {
 	// TODO Auto-generated destructor stub
+
 }
 
 //LogicalProjection LogicalScan::getLogcialProjection()const{

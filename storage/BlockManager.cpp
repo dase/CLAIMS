@@ -31,10 +31,20 @@ BlockManager::BlockManager() {
 }
 BlockManager::~BlockManager() {
 	blockmanager_=0;
+
+	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.cbegin();
+	while(it!=partition_id_to_storage_.cend()){
+		delete it->second;
+		it++;
+	}
+
 	delete actor_;
 	delete framework_;
 	delete logging_;
 	delete memstore_;
+
+
+
 }
 MemoryChunkStore* BlockManager::getMemoryChunkStore()const{
 	return memstore_;

@@ -328,7 +328,7 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 			return false;
 		}
 //		printf("***************************** send iterator to %d,%d*********************************\n",state.exchange_id,i);
-		EIEL->~BlockStreamIteratorBase();
+		delete EIEL;
 	}
 //	printf("AVG::%f\n",getSecond(start)/times);
 	return true;

@@ -75,7 +75,7 @@ struct Attribute
 	}
 	~Attribute(){
 		if(table_id_<TableID(ATTRIBUTE_ANY)){
-			attrType->~column_type();
+			delete attrType;
 		}
 	}
 	bool operator==(const Attribute& r)const{

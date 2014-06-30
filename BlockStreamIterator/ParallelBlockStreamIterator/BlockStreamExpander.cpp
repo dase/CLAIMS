@@ -221,7 +221,8 @@ bool BlockStreamExpander::ChildExhausted(){
 			being_called_bacl_expanded_thread_list_.empty()&&
 			this->block_stream_buffer_->Empty();
 	lock_.release();
-	exclusive_expanding_.release();
+	if(ret==false)
+		exclusive_expanding_.release();
 	if(ret==true&&coordinate_pid_!=0){
 		void* res;
 		pthread_join(coordinate_pid_,&res);
