@@ -12,12 +12,12 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
 
-#include "../common/data_type.h"
+#include "data_type.h"
+#include "types/NValue.hpp"
 enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
-	//t_int,t_float,t_string,t_double,t_u_long, t_date, t_time, t_datetime, t_decimal, t_smallInt
 	switch(return_type){
 		case t_int:{
 			return std::string("int");
@@ -50,7 +50,7 @@ static std::string getReturnTypeName(data_type return_type){
 			return std::string("t_boolean");
 		}
 		default:{
-//			assert(false);
+			assert(false);
 			return std::string("Not given");
 		}
 	}
@@ -68,7 +68,6 @@ struct express_operator{
 	}
 	op_type op_;
 	unsigned num_of_parameter;
-//	data_type return_type;
 };
 
 struct data__{
@@ -78,14 +77,11 @@ struct data__{
 	double _double;
 	unsigned long _ulong;
 	bool _bool;
-	char _date[4];//date
-	char _time[8];//time
-	char _datatime[8];//datetime
-	char _decimal[16];//decimal
 	}value;
 };
 
 struct variable{
+	const char* table_column;
 	const char* table_name;
 	const char* column_name;
 };
@@ -138,6 +134,7 @@ public:
 	virtual ~ExpressionItem();
 	bool setValue(void*,data_type);
 	bool setData(data__&);
+	bool setData(data__&,data_type);
 	bool setIntValue(const char *);
 	bool setIntValue(int);
 	bool setFloatValue(const char*);
@@ -151,6 +148,10 @@ public:
 	bool setOperator(const char*);
 	bool setStringValue(std::string);
 	bool setVariable(const char *,const char *);
+	bool setVariable(const char *);
+
+	//currently,date only const char * supported!
+	bool setDateValue(const char *);
 public:
 	union {
 		variable var;
@@ -158,9 +159,14 @@ public:
 		express_operator op;
 	}content;
 	ItemType type;
-	std::string _string;// string cannot be in unoin.
+	date _date;
+	time_duration _time;
+	ptime _datatime;
+	NValue _decimal;
+	std::string _string;
+	std::string item_name;
 	data_type return_type;
-	unsigned size;//add by zhanglei
+	unsigned size;
 
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -171,9 +177,8 @@ public:
 			ar& *start_of_union;
 			start_of_union++;
 		}
-
-
 	}
+
 private:
 	std::string getItemTypeName()const{
 		switch(type){
@@ -189,7 +194,6 @@ private:
 			default:{
 				assert(false);
 			}
-
 		}
 		return std::string();
 	}
@@ -197,7 +201,6 @@ private:
 	std::string data_value_to_string()const{
 		assert(type==const_type);
 		std::stringstream ss;
-
 		switch(return_type){
 			case t_int:{
 				ss<<content.data.value._int;
@@ -226,7 +229,8 @@ private:
 				return std::string("t_datetime");
 			}
 			case t_decimal:{
-				return std::string("t_decimal");
+//				ss<<content.data.value._decimal;
+				break;
 			}
 			case t_smallInt:{
 				return std::string("t_smallInt");

@@ -183,10 +183,14 @@ bool BlockStreamSortIterator::next(BlockStreamBase* block){
 		while((desc=block->allocateTuple(tuple_size))){
 			memcpy(desc,secondaryArray_[temp_cur]->tuple,tuple_size);
 			temp_cur++;
+			if(temp_cur<secondaryArray_.size())
+				continue;
+			else
+				break;
 		}
 		return true;
 	}
-		return false;
+	return false;
 
 }
 

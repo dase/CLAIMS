@@ -73,3 +73,9 @@ void SchemaFix::toValue(std::string text_tuple, void* binary_tuple, const char a
 		}
 	}
 }
+void SchemaFix::addColumn(column_type  ct,unsigned size)
+{
+	accum_offsets.push_back(totalsize);
+	columns.push_back(ct);
+	totalsize+=size;
+}

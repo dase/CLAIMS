@@ -102,7 +102,9 @@ bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_leng
 		if(attributes[i].attrName==attname)
 			return false;
 	}
-	Attribute att(table_id_,attributes.size(),attname,dt,max_length,unique);
+	stringstream attrintable;
+	attrintable<<tableName.c_str()<<"."<<attname.c_str();
+	Attribute att(table_id_,attributes.size(),attrintable.str(),dt,max_length,unique);
 	attributes.push_back(att);
 	return true;
 }

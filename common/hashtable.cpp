@@ -18,6 +18,7 @@
 #include "hashtable.h"
 
 #include <malloc.h>
+#define MAX(x,y) (x>y?x:y)
 
 //#define __MOTHER_PAGE__
 
@@ -28,7 +29,7 @@
 
 
 BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize)
-:nbuckets_(nbuckets), tuplesize_(tuplesize),grandmother(get_aligned_space(bucksize),1024*1024)
+:nbuckets_(nbuckets), tuplesize_(tuplesize),grandmother(get_aligned_space(MAX(bucksize,tuplesize)),1024*1024)
 {
 
 	number_of_instances_++;

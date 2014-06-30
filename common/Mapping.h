@@ -11,7 +11,7 @@
 #include <vector>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-//typedef std::pair<int,int> MapPair;
+
 typedef std::vector<int> ExpressionMapping;
 
 class Mapping {

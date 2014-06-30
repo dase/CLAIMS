@@ -25,27 +25,31 @@ public:
         class State{
                 friend class BlockStreamAggregationIterator;
         public:
-                enum aggregation{sum,min,max,count};
+                enum aggregation{sum,min,max,count,avg};
                 State(Schema *input,
                          Schema *output,
+                         Schema *hashSchema,
                          BlockStreamIteratorBase *child,
                          std::vector<unsigned> groupByIndex,
                          std::vector<unsigned> aggregationIndex,
                          std::vector<aggregation> aggregations,
                          unsigned nbuckets,
                          unsigned bucketsize,
-                         unsigned block_size
+                         unsigned block_size,
+                         std::vector<unsigned>avgIndex,
+                         bool isPartitionNode
                          );
                 State(){};
                 ~State(){};
                 friend class boost::serialization::access;
                 template<class Archive>
                 void serialize(Archive & ar, const unsigned int version){
-                        ar & input & output & child & groupByIndex & aggregationIndex & aggregations & nbuckets & bucketsize & block_size;
+                        ar & input & output & hashSchema & child & groupByIndex & aggregationIndex & aggregations & nbuckets & bucketsize & block_size &avgIndex &isPartitionNode ;
                 }
         public:
 		Schema *input;
 		Schema *output;
+		Schema *hashSchema;
          BlockStreamIteratorBase *child;
          std::vector<unsigned> groupByIndex;
          std::vector<unsigned> aggregationIndex;
@@ -53,7 +57,8 @@ public:
          unsigned nbuckets;
          unsigned bucketsize;
          unsigned block_size;
-
+         std::vector<unsigned>avgIndex;
+         bool isPartitionNode;
         };
         BlockStreamAggregationIterator(State state);
         BlockStreamAggregationIterator();

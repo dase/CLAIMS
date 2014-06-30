@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "../Debug.h"
+#define SQL_Parser
 
 
 class Logging{

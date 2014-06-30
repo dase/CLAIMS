@@ -21,8 +21,162 @@
 #include "../../utility/rdtsc.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
+//
+//static void query_select_aggregation(){
+//	/*
+//	 * select sum(a+1)+count(a),b
+//	 * from T
+//	 * group by b
+//	 *
+//	 * notation: p a p s
+//	 * */
+//	unsigned long long int start=curtick();
+//	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("PART");
+//	//===========================scan===========================
+//	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
+//
+//	//==========================project=========================
+//	vector< vector<ExpressionItem> >expr_list;
+//
+//	Expression expr1;
+//	Expression expr2;
+//	Expression expr3;
+//	Expression expr9;
+//
+//	ExpressionItem expr_item1;
+//	ExpressionItem expr_item2;
+//	ExpressionItem expr_item3;
+//	ExpressionItem expr_item9;
+//
+//	expr_item1.setVariable("PART","row_id");
+//	expr_item2.setVariable("PART","P_PARTKEY");
+//	expr_item3.setVariable("PART","P_NAME");
+//	expr_item3.size=54;
+//	expr_item9.setVariable("PART","P_RETAILPRICE");
+//
+//	expr1.push_back(expr_item1);
+//	expr2.push_back(expr_item2);
+//	expr3.push_back(expr_item3);
+//	expr9.push_back(expr_item9);
+//
+//	expr_list.push_back(expr1);
+//	expr_list.push_back(expr2);
+//	expr_list.push_back(expr3);
+//	expr_list.push_back(expr9);
+//
+//	LogicalOperator* project1=new LogicalProject(scan,expr_list);
+//
+//	//========================aggregation=======================
+//		std::vector<Attribute> group_by_attributes;
+//		group_by_attributes.push_back(table->getAttribute("L_RETURNFLAG"));
+//		group_by_attributes.push_back(table->getAttribute("L_LINESTATUS"));
+//		std::vector<Attribute> aggregation_attributes;
+//		aggregation_attributes.push_back(table->getAttribute("L_QUANTITY"));
+//		aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
+//		aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
+//		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+//		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+//
+//		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+//		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+//		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+//		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+//		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
+//
+//	//==========================project=========================
+//	vector< vector<ExpressionItem> >expr_list;
+//
+//	Expression expr1;
+//	Expression expr2;
+//	Expression expr3;
+//	Expression expr9;
+//
+//	ExpressionItem expr_item1;
+//	ExpressionItem expr_item2;
+//	ExpressionItem expr_item3;
+//	ExpressionItem expr_item9;
+//
+//	expr_item1.setVariable("PART","row_id");
+//	expr_item2.setVariable("PART","P_PARTKEY");
+//	expr_item3.setVariable("PART","P_NAME");
+//	expr_item3.size=54;
+//	expr_item9.setVariable("PART","P_RETAILPRICE");
+//
+//	expr1.push_back(expr_item1);
+//	expr2.push_back(expr_item2);
+//	expr3.push_back(expr_item3);
+//	expr9.push_back(expr_item9);
+//
+//	expr_list.push_back(expr1);
+//	expr_list.push_back(expr2);
+//	expr_list.push_back(expr3);
+//	expr_list.push_back(expr9);
+//
+//	LogicalOperator* project2=new LogicalProject(scan,expr_list);
+//	//===========================root===========================
+//	LogicalOperator* root=new LogicalQueryPlanRoot(0,project2,LogicalQueryPlanRoot::PERFORMANCE);
+//
+//	cout<<"performance is ok!"<<endl;
+//	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+////	physical_iterator_tree->print();
+//	physical_iterator_tree->open();
+//	while(physical_iterator_tree->next(0));
+//	physical_iterator_tree->close();
+//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
+//
+//}
 
-static void query_project(){
+static void query_select_a_b_c_d(){
+	unsigned long long int start=curtick();
+	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("PART");
+	//===========================scan===========================
+	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
+
+	//==========================project=========================
+	vector< vector<ExpressionItem> >expr_list;
+
+	Expression expr1;
+	Expression expr2;
+	Expression expr3;
+	Expression expr9;
+
+	ExpressionItem expr_item1;
+	ExpressionItem expr_item2;
+	ExpressionItem expr_item3;
+	ExpressionItem expr_item9;
+
+	expr_item1.setVariable("PART","row_id");
+	expr_item2.setVariable("PART","P_PARTKEY");
+	expr_item3.setVariable("PART","P_NAME");
+	expr_item3.size=54;
+	expr_item9.setVariable("PART","P_RETAILPRICE");
+
+	expr1.push_back(expr_item1);
+	expr2.push_back(expr_item2);
+	expr3.push_back(expr_item3);
+	expr9.push_back(expr_item9);
+
+	expr_list.push_back(expr1);
+	expr_list.push_back(expr2);
+	expr_list.push_back(expr3);
+	expr_list.push_back(expr9);
+
+	LogicalOperator* project=new LogicalProject(scan,expr_list);
+
+	//===========================root===========================
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,project,LogicalQueryPlanRoot::PERFORMANCE);
+
+	cout<<"performance is ok!"<<endl;
+	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	physical_iterator_tree->print();
+	physical_iterator_tree->open();
+	while(physical_iterator_tree->next(0));
+	physical_iterator_tree->close();
+	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
+
+}
+
+static void query_select_star(){
 	unsigned long long int start=curtick();
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("PART");
 
@@ -78,13 +232,19 @@ static void query_project(){
 	expr_item1.setVariable("PART","row_id");
 	expr_item2.setVariable("PART","P_PARTKEY");
 	expr_item3.setVariable("PART","P_NAME");
+	expr_item3.size=55;
 	expr_item4.setVariable("PART","P_MFGR");
+	expr_item4.size=25;
 	expr_item5.setVariable("PART","P_BRAND");
+	expr_item5.size=10;
 	expr_item6.setVariable("PART","P_TYPE");
+	expr_item6.size=25;
 	expr_item7.setVariable("PART","P_SIZE");
 	expr_item8.setVariable("PART","P_CONTAINER");
+	expr_item8.size=10;
 	expr_item9.setVariable("PART","P_RETAILPRICE");
 	expr_item10.setVariable("PART","P_COMMENT");
+	expr_item10.size=23;
 
 	expr1.push_back(expr_item1);
 	expr2.push_back(expr_item2);
@@ -190,7 +350,8 @@ static int common_project_tcp_h_test_single_node(){
 
 	init_single_node_tpc_h_envoriment();
 	for(unsigned i=0;i<repeated_times;i++){
-		query_project();
+		query_select_a_b_c_d();
+//		query_select_star();
 	}
 
 	Environment::getInstance()->~Environment();
@@ -205,7 +366,8 @@ static int common_project_tcp_h_test_multi_nodes(){
 	if(input==0){
 		init_multi_node_tpc_h_envoriment(true);
 		for(unsigned i=0;i<repeated_times;i++){
-			query_project();
+//			query_select_star();
+			query_select_a_b_c_d();
 		}
 	}
 	else{

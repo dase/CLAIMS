@@ -555,7 +555,7 @@ opt_having: /* nil */ { $$=NULL; /*puts("opt_having is null");*/ }
 opt_orderby: /* nil */ { $$=NULL; /*puts("opt_orederby is null");*/ }
 	| ORDER BY groupby_list 
 	{
-		$$=newOrderbyList(t_groupby_list, NULL, $3);
+		$$=newOrderbyList(t_orderby_list, NULL, $3);
 		/*puts("opt_orederby2");*/
 	}
 	;
