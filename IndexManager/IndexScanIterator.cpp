@@ -233,6 +233,7 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 				for (rb.iter_result_vector = rb.iter_result_map->second->begin(); rb.iter_result_vector != rb.iter_result_map->second->end(); rb.iter_result_vector++)
 				{
 ///*for testing*/					count++;
+///*for testing*/					cout << "<" << rb.iter_result_map->first << ", " << *rb.iter_result_vector << ">\t";
 					assert(*rb.iter_result_vector<2047);
 				}
 			}

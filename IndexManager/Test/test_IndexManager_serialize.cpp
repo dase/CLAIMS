@@ -17,8 +17,9 @@
 #include "../../utility/test_tool.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../CSBPlusTree.h"
 #include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
+#include "../CSBPlusTree.h"
+#include "../../utility/rdtsc.h"
 #include "../../common/AttributeComparator.h"
 
 static void init_poc_environment()
@@ -86,6 +87,40 @@ static void test_deserialize()
 static void test_logical_index_scan()
 {
 	vector<IndexScanIterator::query_range> q_range;
+	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
+	IndexScanIterator::query_range q;
+	int value = 0;
+	while (true)
+	{
+		q_range.clear();
+		cout << "Input the search sec_code: ";
+		cin >> value;
+
+		q.value_low = malloc(sizeof(int));
+		q.value_low = (void*)(&value);
+		q.comp_low = EQ;
+		q.value_high = malloc(sizeof(int));
+		q.value_high = (void*) (&value);
+		q.comp_high = EQ;
+		q.c_type.type = t_int;
+		q.c_type.operate = new OperateInt();
+		q_range.push_back(q);
+
+		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
+		const NodeID collector_node_id = 0;
+		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PRINT);
+		BlockStreamIteratorBase* executable_query_plan = root->getIteratorTree(1024 * 64);
+		executable_query_plan->open();
+		while (executable_query_plan->next(0));
+		executable_query_plan->close();
+		executable_query_plan->~BlockStreamIteratorBase();
+		root->~LogicalOperator();
+	}
+}
+
+static void bulk_test_logical_index_scan()
+{
+	vector<IndexScanIterator::query_range> q_range;
 	int count = 1022;
 	ifstream infile("/home/scdong/code/sec_code", ios::in);
 	ofstream outfile("/home/scdong/code/fail_log.dat", ios::out);
@@ -97,20 +132,6 @@ static void test_logical_index_scan()
 	{
 		q_range.clear();
 		infile >> value >> expect_num;
-//	int value_low = 10110;
-//	int value_high = 10112;
-//	IndexScanIterator::query_range q1;
-//	q1.value_low = malloc(sizeof(int));
-//	q1.value_low = (void*)(&value_low);
-//	q1.comp_low = AttributeComparator::GEQ;
-//	q1.value_high = malloc(sizeof(int));
-//	q1.value_high = (void*)(&value_high);
-//	q1.comp_high = AttributeComparator::LEQ;
-//	q1.c_type.type = t_int;
-//	q1.c_type.operate = new OperateInt();
-//	q1.valuebytes_low.clear();
-//	q1.valuebytes_high.clear();
-//	q_range.push_back(q1);
 
 		q2.value_low = malloc(sizeof(int));
 		q2.value_low = (void*)(&value);
@@ -125,7 +146,6 @@ static void test_logical_index_scan()
 		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
 		const NodeID collector_node_id = 0;
 		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::RESULTCOLLECTOR);
-		root->print();
 		BlockStreamIteratorBase* executable_query_plan = root->getIteratorTree(1024 * 64);
 		executable_query_plan->open();
 		while (executable_query_plan->next(0));
@@ -136,7 +156,7 @@ static void test_logical_index_scan()
 		const unsigned long int number_of_tuples = result_set->getNumberOftuples();
 		executable_query_plan->~BlockStreamIteratorBase();
 		root->~LogicalOperator();
-		cout << "Sec_code: " << value << "\t Result: " << number_of_tuples << endl;
+		cout << 1022-count << ": Sec_code: " << value << "\t Result: " << number_of_tuples << endl;
 		if(!print_test_name_result(number_of_tuples == expect_num,"Index Scan")){
 			printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value, expect_num, number_of_tuples);
 			outfile << "Index Scan sec_code = " << value << "\tFAIL!\n";
@@ -148,6 +168,7 @@ static void test_logical_index_scan()
 
 static void test_scan_filter_performance(int value)
 {
+	unsigned long long int start=curtick();
 	TableDescriptor* table=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
 
@@ -168,6 +189,7 @@ static void test_scan_filter_performance(int value)
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
 	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	printf("execution time: %4.4f seconds.\n",getSecond(start));
 	if(!print_test_name_result(number_of_tuples==26820,"Low selectivity filter")){
 		printf("\tExpected:26695 actual: %d\n",number_of_tuples);
 	}
@@ -178,6 +200,7 @@ static void test_scan_filter_performance(int value)
 
 static void test_index_filter_performance(int value_high)
 {
+	unsigned long long int start=curtick();
 	vector<IndexScanIterator::query_range> q_range;
 	q_range.clear();
 	int value_low = 10107;
@@ -198,7 +221,7 @@ static void test_index_filter_performance(int value_high)
 	LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
 	const NodeID collector_node_id = 0;
 	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PERFORMANCE);
-	root->print();
+//	root->print();
 	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024 * 64);
 	executable_query_plan->open();
 	while (executable_query_plan->next(0));
@@ -209,20 +232,71 @@ static void test_index_filter_performance(int value_high)
 	const unsigned long int number_of_tuples = executable_query_plan->getNumberOfTuples();
 	executable_query_plan->~BlockStreamIteratorBase();
 	root->~LogicalOperator();
-	cout << "Sec_code: " << value_low << "\t Result: " << number_of_tuples << endl;
+//	cout << "Sec_code: " << value_low << "\t Result: " << number_of_tuples << endl;
+	printf("execution time: %4.4f seconds.\n",getSecond(start));
 	if(!print_test_name_result(number_of_tuples == 26820,"Index Scan")){
 		printf("\tIndex Scan sec_code = %d, Expected:%d actual: %d\n", value_low, 26820, number_of_tuples);
 	}
 }
+
+// For testing
+static void init_tt_environment()
+{
+	Environment::getInstance(true);
+	sleep(1);
+	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+	Catalog* catalog=Environment::getInstance()->getCatalog();
+
+	// num int not null, s int, ss int primary key, c char, vc varchar(10)
+	TableDescriptor* table_1=new TableDescriptor("tt",2);
+	table_1->addAttribute("row_id",data_type(t_u_long));  				//0
+	table_1->addAttribute("num",data_type(t_int));
+	table_1->addAttribute("s",data_type(t_int));
+	table_1->addAttribute("ss",data_type(t_int));
+	table_1->addAttribute("c",data_type(t_string), 4);
+	table_1->addAttribute("vc",data_type(t_string), 10);				//5
+
+	vector<ColumnOffset> proj_0;
+	proj_0.push_back(0);
+	proj_0.push_back(1);
+	proj_0.push_back(2);
+	proj_0.push_back(3);
+	proj_0.push_back(4);
+	proj_0.push_back(5);
+	const int partition_key_index_1=1;
+	table_1->createHashPartitionedProjection(proj_0,"num",1);	//G0
+
+	catalog->add_table(table_1);
+
+	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(2)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
+	}
+}
+
+//static void test_print_tt()
+//{
+//	TableDescriptor* table = Catalog::getInstance()->getTable("tt");
+//	LogicalOperator* scan = new LogicalScan(table->getProjectoin(0));
+//
+//	const NodeID collector_node_id = 0;
+//	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, scan, LogicalQueryPlanRoot::PRINT);
+//	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024 * 64);
+//	executable_query_plan->open();
+//	while (executable_query_plan->next(0));
+//	executable_query_plan->close();
+//}
+
 
 static int test_index_manager()
 {
 	init_poc_environment();
 
 	test_logical_index_building();
-//	test_serialize();
-//	test_deserialize();
-//	test_logical_index_scan();
+	test_serialize();
+	test_deserialize();
+	test_logical_index_scan();
+	bulk_test_logical_index_scan();
 	int tmp = 0;
 	while (true)
 	{
@@ -231,7 +305,13 @@ static int test_index_manager()
 	test_scan_filter_performance(tmp);
 	test_index_filter_performance(tmp);
 	}
-
 	Environment::getInstance()->~Environment();
+
+
+
+//// For testing
+//	init_tt_environment();
+//	test_print_tt();
+
 	return 0;
 }

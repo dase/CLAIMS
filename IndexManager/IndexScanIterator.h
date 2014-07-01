@@ -8,6 +8,7 @@
 #ifndef INDEXSCANITERATOR_H_
 #define INDEXSCANITERATOR_H_
 #include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
+#include "../common/Schema/Schema.h"
 #include "../common/ids.h"
 #include "../common/Block/BlockStream.h"
 #include "CSBPlusTree.h"

@@ -28,6 +28,7 @@ LogicalIndexScan::~LogicalIndexScan() {
 Dataflow LogicalIndexScan::getDataflow()
 {
 	if(!scan_projection_->AllPartitionBound()){
+		printf("Binded!\n");
 		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),MEMORY);
 	}
 
