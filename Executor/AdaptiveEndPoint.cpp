@@ -15,6 +15,8 @@
 #include "../common/Logging.h"
 #include "../utility/ThreadSafe.h"
 #include "../Config.h"
+
+#include <string.h>
 #include <errno.h>
 AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::string port)
 :Theron::EndPoint(name, ("tcp://"+ip+":"+port).c_str()){
@@ -51,8 +53,8 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 AdaptiveEndPoint::~AdaptiveEndPoint() {
 	// TODO Auto-generated destructor stub
 //	return;
-	connectionActor->~Actor();
-	framework->~Framework();
+	delete connectionActor;
+	delete framework;
 //	this->~EndPoint();
 }
 

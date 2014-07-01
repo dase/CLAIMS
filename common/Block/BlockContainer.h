@@ -8,6 +8,9 @@
 #ifndef BLOCKCONTAINER_H_
 #define BLOCKCONTAINER_H_
 #include "Block.h"
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 class BlockContainer:public Block {
 public:
 	BlockContainer(unsigned size);
@@ -17,6 +20,10 @@ public:
 	unsigned GetRestSize()const;
 	void reset();
 	void IncreaseActualSize(unsigned size);
+	/**
+	 * Copy the block content and the acutal_size_
+	 */
+	void copy(BlockContainer& block);
 private:
 	unsigned actual_size_;
 };

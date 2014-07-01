@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 #include <Theron/Theron.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ResourceInfo.h"
 #include "NodeTracker.h"
 #include "../common/Message.h"

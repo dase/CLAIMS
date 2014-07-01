@@ -10,6 +10,9 @@
 #include "../storage/MemoryStore.h"
 #include "../utility/lock.h"
 #include "../common/Logging.h"
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 class BufferManager {
 public:
 	static BufferManager* getInstance();

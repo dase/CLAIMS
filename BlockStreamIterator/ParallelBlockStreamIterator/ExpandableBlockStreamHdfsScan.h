@@ -7,7 +7,9 @@
 
 #ifndef EXPANDABLEBLOCKSTREAMHDFSSCAN_H_
 #define EXPANDABLEBLOCKSTREAMHDFSSCAN_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../../storage/BlockManager.h"
 #include "../../storage/BlanceMatcher.h"
 #include "../../common/Schema/Schema.h"

@@ -22,10 +22,13 @@
 #ifndef __MYHASHFUNCTION__
 #define __MYHASHFUNCTION__
 #include <stdlib.h>
-#include <maths.h>
+#include <math.h>
 #include <boost/functional/hash.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 class PartitionFunction {
 
 public:

@@ -8,6 +8,9 @@
 #ifndef BLOCKSTREAMSINGLECOLUMNSCAN_H_
 #define BLOCKSTREAMSINGLECOLUMNSCAN_H_
 #include <string>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
 class BlockStreamSingleColumnScan:public BlockStreamIteratorBase {

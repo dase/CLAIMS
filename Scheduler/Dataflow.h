@@ -8,6 +8,9 @@
 #ifndef DATAFLOW_H_
 #define DATAFLOW_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../Catalog/Column.h"
 #include "../Catalog/Partitioner.h"
 #include "../LogicalQueryPlan/DataflowPartitionDescriptor.h"
@@ -36,6 +39,8 @@ public:
 	Schema* getSchema()const;
 	unsigned getTupleSize()const;
 	Attribute getAttribute(std::string name)const;
+	Attribute getAttribute(std::string tbname,std::string colname)const;
+
 public:
 	std::vector<Attribute> attribute_list_;
 	property property_;

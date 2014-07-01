@@ -42,7 +42,8 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 	return (struct Node *)a;
 }
 
-struct Node * newExpr(nodetype t, dataval d)
+// 2014-4-14---the old version is newExpr(nodetype t, dataval d)---by Yu
+struct Node * newExpr(nodetype t, char *d)
 {
 	struct Expr * a= (struct Expr *)malloc(sizeof(struct Expr));
 	if(!a)
@@ -52,11 +53,25 @@ struct Node * newExpr(nodetype t, dataval d)
 	}
 
 	a->type = t;
+//	cout<<d.string_val<<endl;
+//    cout<<"NexExpr create begin!!!!"<<endl;
+	if(t == t_stringval) // 2014-3-25---输入若为字符串，去除首位的引号
+	{
+//		if(d.string_val[0]=='\''||d.string_val[0]=='\"')
+//		{
+//			int slen=strlen(d.string_val);
+//			d.string_val[slen-1]='\0';
+//			for(int i=1;i<slen;i++)
+//			{
+//				d.string_val[i-1]=d.string_val[i];
+//			}
+//		}
+	}
 	a->data = d;
 //	if(t == t_stringval)	// 2014-3-25---输入若为字符串，去除首尾的引号	//2014-4-2---将这部分工作放在词法识别阶段进行，见sql.l
 //	{
-//		strncpy(a->data.string_val, d.string_val+1, strlen(d.string_val)-2);
-//		a->data.string_val[strlen(d.string_val)-2] = '\0';
+//		strncpy(a->data, d+1, strlen(d)-2);
+//		a->data[strlen(d)-2] = '\0';
 //	}
 
 	//cout<<"newExpr is created"<<endl;
@@ -109,7 +124,7 @@ struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 		yyerror("out of space!");
 		exit(0);
 	}
-
+	a->str="";
 	a->type = type;
 	a->sign = sign;
 	a->parameter = parameter;
@@ -130,7 +145,7 @@ struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 		yyerror("out of space!");
 		exit(0);
 	}
-
+	a->str="";
 	a->type = type;
 	a->funname = funname;
 	a->args = args;
@@ -460,8 +475,93 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
 	//cout<<"Limit_expr is created"<<endl;
 
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
-	return (struct Node *)a;
+	return (Node *)a;
 };
+
+//2014-4-16---add---by Yu
+Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
+		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt)
+{
+	Insert_stmt *a= (Insert_stmt *)malloc(sizeof(Insert_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_stmt;
+	a->insert_opt = insert_opt;
+	a->tablename = tablename;
+	a->col_list = col_list;
+	a->insert_val_list = insert_val_list;
+	a->insert_assign_list = insert_assign_list;
+	a->insert_assign_list_from_set = insert_assign_list_from_set;
+	a->select_stmt = select_stmt;
+
+	//cout<<"Insert_stmt is created"<<endl;
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (Node*)a;
+};
+
+//2014-4-17---add---by Yu
+Node* newInsertValueList(Node *insert_vals, Node *next)
+{
+	Insert_val_list *a= (Insert_val_list *)malloc(sizeof(Insert_val_list));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_val_list;
+	a->insert_vals = insert_vals;
+	a->next = next;
+
+	//cout<<"Insert_val_list is created"<<endl;
+
+
+	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
+	return (Node*)a;
+};
+
+//2014-4-17---add---by Yu
+Node* newInsertVals(int value_type, Node *expr, Node *next)
+{
+	Insert_vals *a= (Insert_vals *)malloc(sizeof(Insert_vals));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_vals;
+	a->value_type = value_type;
+	a->expr = expr;
+	a->next = next;
+
+	//cout<<"Insert_vals is created"<<endl;
+	insertNodePointer((Node*)a);
+	return (Node*)a;
+};
+
+//2014-4-17---add---by Yu
+Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next)
+{
+	Insert_assign_list *a= (Insert_assign_list *)malloc(sizeof(Insert_assign_list));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_insert_assign;
+	a->col_name = col_name;
+	a->value_type = value_type;
+	a->expr = expr;
+	a->next = next;
+
+	//cout<<"Insert_assign_list is created"<<endl;
+	insertNodePointer((Node*)a);
+	return (Node*)a;
+};
+
 
 /*************************** DDL语句开始 ********************************/
 
@@ -550,7 +650,7 @@ struct Node * newCreateDef(nodetype type, int deftype, char * name,
 
 struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, char *s, Node * col_list)
 {
-	struct Column_atts * a= (struct Column_atts *)malloc(sizeof(struct Column_atts));
+	Column_atts * a= (Column_atts *)malloc(sizeof(Column_atts));
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -933,6 +1033,24 @@ struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (struct Node *)a;
 }
+
+Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string)	//2014-5-4---add ---by Yu
+{
+	Show_stmt *a = (Show_stmt *)malloc(sizeof(Show_stmt));
+	if(!a)
+	{
+		yyerror("out of space!");
+		exit(0);
+	}
+	a->type = t_show_stmt;
+	a->show_type = show_type;
+	a->full = full;
+	a->database_name = database_name;
+	a->like_string = like_string;
+
+	insertNodePointer((Node*)a);
+	return (struct Node *)a;
+}
 	
 /*************************** DDL语句结束 ********************************/
 void outputSpace(int f)
@@ -970,31 +1088,37 @@ void output(Node * oldnode, int floor)
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_stringval: "<<node->data.string_val<<endl;
+			cout<<"t_stringval: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}
 		case t_intnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_intnum: "<<node->data.int_val<<endl;
+			cout<<"t_intnum: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}
 		case t_approxnum:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_approxnum: "<<node->data.double_val<<endl;
+			cout<<"t_approxnum: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}
 		case t_bool:
 		{
 			Expr * node = (Expr *) oldnode;
 			outputSpace(floor);
-			cout<<"t_bool: "<<node->data.bool_val<<endl;
+			cout<<"t_bool: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}	
-		
+		case t_dateval:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_dateval: "<<node->data<<endl;	//---2014.6.22fzh---
+			break;
+		}
 		case t_expr_list:
 		{
 			Expr_list * node = (Expr_list *) oldnode;
@@ -1002,7 +1126,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Expr_list: ";cout<<endl;
 			
 			if(node->data!=NULL) output(node->data,floor+1);
-			//if(node->next!=NULL) output(node->next);
+			if(node->next!=NULL) output(node->next,floor);//---3.14fzh---
 			
 			
 			
@@ -1037,6 +1161,8 @@ void output(Node * oldnode, int floor)
 		case t_expr_cal: 
 		{
 			Expr_cal * node = (Expr_cal *) oldnode;
+			outputSpace(floor);//---5.23by fzh---
+			cout<<"str: >>>>>>>>"<<node->str<<endl;//---5.23by fzh---
 			outputSpace(floor);
 			cout<<"Expr_cal: ";
 			if (node->sign)
@@ -1065,6 +1191,9 @@ void output(Node * oldnode, int floor)
 		case t_expr_func:
 		{
 			Expr_func * node = (Expr_func *) oldnode;
+			outputSpace(floor);//---5.23by fzh---
+			if(node->str!=NULL)
+			cout<<"str: >>>>>>>>"<<node->str<<endl;//---5.23by fzh---
 			outputSpace(floor);
 			cout<<"Expr_func: ";
 			if (node->funname)
@@ -1154,7 +1283,7 @@ void output(Node * oldnode, int floor)
 			
 			cout<<endl;
 			output(node->args, floor + 1);
-			output(node->next, floor + 1);
+			output(node->next, floor);//---3.14fzh---
 			
 			break;
 		}
@@ -1299,6 +1428,27 @@ void output(Node * oldnode, int floor)
 			output(node->offset, floor+1);
 			output(node->row_count, floor+1);
 			break;
+		}//---3.21 fzh---
+		case t_join:
+		{
+			Join *node=(Join *)oldnode;
+			outputSpace(floor);
+			cout<<"Join:   jtype= "<<node->jointype<<endl;
+			output(node->lnext,floor+1);
+			output(node->rnext,floor+1);
+			output(node->condition,floor+1);
+		}break;
+		case t_condition:
+		{
+			Condition *node=(Condition *)oldnode;
+			outputSpace(floor);
+			cout<<"joincondition:   ctype= "<<node->conditiontype<<endl;
+			output(node->args,floor+1);
+		}break;
+
+		default:
+		{
+			printf("output type not exist!!!\n");
 		}
 	}
 }

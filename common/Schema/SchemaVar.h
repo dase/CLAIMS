@@ -13,6 +13,9 @@
 #include <boost/serialization/base_object.hpp>
 #include <assert.h>
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Schema.h"
 #include "../data_type.h"
 

@@ -8,6 +8,9 @@
 #ifndef AGGREGATION_H_
 #define AGGREGATION_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 #include "../Catalog/Attribute.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"

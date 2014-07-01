@@ -12,7 +12,7 @@
 #include <iostream>
 #define DEBUG_Config
 
-std::string Config::config_file="/home/imdb/config/wangli/config";
+std::string Config::config_file="/home/imdb/config/dsc/config";
 Config* Config::instance_=0;
 
 /**
@@ -43,6 +43,9 @@ int Config::expander_adaptivity_check_frequency;
  */
 int Config::initial_degree_of_parallelism;
 
+
+int Config::scan_batch;
+
 Config* Config::getInstance() {
 	if(instance_==0){
 		instance_=new Config();
@@ -70,7 +73,6 @@ void Config::initialize() {
 	 */
 
 	data_dir=getString("data","/home/imdb/data/wangli/");
-
 	max_degree_of_parallelism=getInt("max_degree_of_parallelism",4);
 
 	expander_adaptivity_check_frequency=getInt("expander_adaptivity_check_frequency",1000);
@@ -78,6 +80,8 @@ void Config::initialize() {
 	enable_expander_adaptivity=getBoolean("enable_expander_adaptivity",false);
 
 	initial_degree_of_parallelism=getInt("initial_degree_of_parallelism",1);
+
+	scan_batch=getInt("scan_batch",10);
 
 
 #ifdef DEBUG_Config

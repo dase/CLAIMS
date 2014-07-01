@@ -7,7 +7,9 @@
 
 #ifndef PARTITIONSTORAGE_H_
 #define PARTITIONSTORAGE_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ChunkStorage.h"
 #include "StorageLevel.h"
 #include "PartitionReaderIterator.h"

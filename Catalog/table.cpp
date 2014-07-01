@@ -102,7 +102,9 @@ bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_leng
 		if(attributes[i].attrName==attname)
 			return false;
 	}
-	Attribute att(table_id_,attributes.size(),attname,dt,max_length,unique);
+	stringstream attrintable;
+	attrintable<<tableName.c_str()<<"."<<attname.c_str();
+	Attribute att(table_id_,attributes.size(),attrintable.str(),dt,max_length,unique);
 	attributes.push_back(att);
 	return true;
 }
@@ -223,8 +225,8 @@ map<string, set<string> > TableDescriptor::getColumnLocations(const string& attr
 }
 
 ProjectionDescriptor* TableDescriptor::getProjectoin(ProjectionOffset pid)const{
-	if(pid>=0||pid<projection_list_.size()){
-		return projection_list_[pid];
+	if(pid>=0 && pid<projection_list_.size()){	// 2014-4-14---change || to &&---by Yu
+		return projection_list_.at(pid);	// 2014-4-14---change [pid] to .at(pid)---by Yu
 	}
 	return NULL;
 }

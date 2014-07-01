@@ -7,7 +7,9 @@
 
 #ifndef EXPANDABLEBLOCKSTREAMBUFFER_H_
 #define EXPANDABLEBLOCKSTREAMBUFFER_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIteratorBase.h"
 #include "../../common/Schema/Schema.h"
 #include "../../common/Block/DynamicBlockBuffer.h"
