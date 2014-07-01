@@ -55,8 +55,8 @@ void cheak_com(){
 
 
 /***********************************  CSBNode  ***********************************/
-//template <typename T>
-//CCSBNode<T>::CCSBNode():used_keys(0), p_father(NULL) { }
+template <typename T>
+CCSBNode<T>::CCSBNode():used_keys(0), p_father(NULL) { }
 
 template <typename T>
 CCSBNode<T>::~CCSBNode()
@@ -67,13 +67,22 @@ CCSBNode<T>::~CCSBNode()
 
 
 /***********************************  CSBInternalNode  ***********************************/
-//template <typename T>
-//CCSBInternalNode<T>::CCSBInternalNode()
+template <typename T>
+CCSBInternalNode<T>::CCSBInternalNode()
+{
+	CCSBNode<T>();
+	node_keys = new T [this->getMaxKeys()];
+	for (unsigned i = 0; i < this->getMaxKeys(); i++)
+		node_keys[i] = INVALID;
+	p_child_node_group = NULL;
+}
 
 template <typename T>
 CCSBInternalNode<T>::~CCSBInternalNode()
 {
-	DeleteChildren();
+	delete[] node_keys;
+	p_child_node_group = NULL;
+	this->~CCSBNode<T>();
 }
 
 template <typename T>
@@ -190,7 +199,8 @@ CCSBLeafNode<T>::CCSBLeafNode()
 template <typename T>
 CCSBLeafNode<T>::~CCSBLeafNode()
 {
-	DeleteChildren();
+	delete[] node_datas;
+	this->~CCSBNode<T>();
 }
 
 template <typename T>
@@ -293,19 +303,27 @@ bool CCSBLeafNode<T>::deserialize(FILE* filename)
 
 
 /***********************************  InternalNodeGroup  ***********************************/
-//template <typename T>
-//CCSBInternalNodeGroup<T>::CCSBInternalNodeGroup(unsigned n)
-//{
-//	internal_nodes = (CCSBNode<T>**) new CCSBInternalNode<T>* [n];
-//	for (unsigned i = 0; i < n; i++)
-//		internal_nodes[i] = new CCSBInternalNode<T> ();
-//	this->setUsedNodes(n);
-//}
+template <typename T>
+CCSBInternalNodeGroup<T>::CCSBInternalNodeGroup(unsigned n)
+{
+	internal_nodes = (CCSBNode<T>**) new CCSBInternalNode<T>* [n];
+	for (unsigned i = 0; i < n; i++)
+		internal_nodes[i] = new CCSBInternalNode<T> ();
+	this->setUsedNodes(n);
+}
 
 template <typename T>
 CCSBInternalNodeGroup<T>::~CCSBInternalNodeGroup()
 {
+	for (unsigned i = 0; i < this->used_nodes; i++)
+		((CCSBInternalNode<T>*)internal_nodes[i])->~CCSBInternalNode();
+	this->~CCSBNodeGroup<T>();
+}
 
+template <typename T>
+bool CCSBInternalNodeGroup<T>::Insert(unsigned node_off, T key)
+{
+	return false;
 }
 
 template <typename T>
@@ -352,7 +370,11 @@ CCSBLeafNodeGroup<T>::CCSBLeafNodeGroup(unsigned n)
 template <typename T>
 CCSBLeafNodeGroup<T>::~CCSBLeafNodeGroup()
 {
-
+	for (unsigned i = 0; i < this->used_nodes; i++)
+		((CCSBLeafNode<T>*)leaf_nodes[i])->~CCSBLeafNode();
+	this->~CCSBNodeGroup<T>();
+	p_header = NULL;
+	p_tailer = NULL;
 }
 
 template <typename T>
@@ -396,9 +418,8 @@ CSBPlusTree<T>::~CSBPlusTree() {
 	// TODO Auto-generated destructor stub
 	ClearTree();
 }
-/*
+
 //bulkload the CSB+-Tree index
-#pragma auto_inline
 template <typename T>
 void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 {
@@ -629,7 +650,7 @@ void CSBPlusTree<T>::BulkLoad(data_offset<T>* aray, unsigned aray_num)
 		}
 	}
 }
-*/
+
 //将aray填入leafNodeGroup中，并记录上层索引key
 template <typename T>
 int CSBPlusTree<T>::makeLeafNodeGroup(data_offset<T>* aray, unsigned aray_num, CCSBNodeGroup<T>** leaf, T* internal_key_array)
@@ -1142,279 +1163,279 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 //For testing end
 	return ret;
 }
-//#pragma auto_inline
-//template<typename T>
-//map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)
-//{
-//	map<index_offset, vector<index_offset>* >* ret = new map<index_offset, vector<index_offset>* >;
-//	ret->clear();
-//	//For point query
-//	if (comp_lower == EQ)
-//	{
-//		if (lower_key != upper_key)
-//			cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the equal point query, the lower_key " << lower_key << " != the upper_key " << upper_key << endl;
-//		return Search(lower_key);
-//	}
-//	// Range Query
-//	else if ((!(comp_lower == G || comp_lower == GEQ)) || (!(comp_upper == L || comp_upper == LEQ)))
-//	{
-//		cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the range query, the given two key isn't a range\n";
-//		return ret;
-//	}
-//	if (lower_key > upper_key)
-//		return ret;
-//	int i = 0;
-///*for testing*/	char* sPath = (char*)malloc(1024);
-///*for testing*/	memset((void*)sPath, 0, 1024);
-//
-////For testing begin
-//	int offset = 0;
-//	if (NULL != sPath)
-//	{
-//		(void)sprintf(sPath+offset, "The serach path is:");
-//		offset+=19;
-//	}
-////For testing end
-//
-//	CCSBNode<T>* search_node = csb_root;
-//
-//	//find the leaf node
-//	for (unsigned depth = 1; depth < this->csb_depth; depth++)
-//	{
-//		//find the first search_node.key > lower_key for GEQ and search_node.key >= lower_key for G
-//		if (comp_lower == GEQ)
-//			for (i = 0; (lower_key > search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
-//		else if (comp_lower == G)
-//			for (i = 0; (lower_key >= search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
-//
-////For testing begin
-//		if (NULL != sPath)
-//		{
-//			(void)sprintf(sPath+offset, " %3d -->", search_node->getElement(0)._key);
-//			offset+=8;
-//		}
-////For testing end
-//
-//		search_node = (search_node->getPointer())->getNode(i);
-//	}
-//	//not found
-//	if (NULL == search_node)
-//		return ret;
-//
-////For testing begin
-//	if (NULL != sPath)
-//	{
-//		(void)sprintf(sPath+offset, "%3d", search_node->getElement(0)._key);
-//		offset+=3;
-//	}
-////For testing end
-//
-//	//finding the first data in leaf_node whose key >= lower_key
-///*for testing*/	bool found = false;
-//	for (i = 0; (i < search_node->used_keys); i++)
-//	{
-//		if (comp_lower == GEQ)
-//		{
-//			if (lower_key <= search_node->getElement(i)._key)
-//			{
-///*for testing*/				found = true;
-//				break;
-//			}
-//		}
-//		if (comp_lower == G)
-//		{
-//			if (lower_key < search_node->getElement(i)._key)
-//			{
-///*for testing*/				found = true;
-//				break;
-//			}
-//		}
-//	}
-//
-//	//collect all tuples whose key is between lower_key and upper_key
-//	if (search_node->getFather() == NULL)
-//	{
-//		if (comp_lower == GEQ && comp_upper == LEQ)
-//		{
-//			for (; i < search_node->getUsedKeys(); i++)
-//			{
-//				if ((lower_key <= search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
-//				{
-//					index_offset tmp = search_node->getElement(i)._block_off;
-//					if (ret->find(tmp) == ret->end())
-//						(*ret)[tmp] = new vector<index_offset>;
-//					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
-//				}
-////					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
-//				else
-//					return ret;
-//			}
-//		}
-//		else if (comp_lower == GEQ && comp_upper == L)
-//		{
-//			for (; i < search_node->getUsedKeys(); i++)
-//			{
-//				if ((lower_key <= search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
-//				{
-//					index_offset tmp = search_node->getElement(i)._block_off;
-//					if (ret->find(tmp) == ret->end())
-//						(*ret)[tmp] = new vector<index_offset>;
-//					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
-//				}
-////					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
-//				else
-//					return ret;
-//			}
-//		}
-//		else if (comp_lower == G && comp_upper == LEQ)
-//		{
-//			for (; i < search_node->getUsedKeys(); i++)
-//			{
-//				if ((lower_key < search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
-//				{
-//					index_offset tmp = search_node->getElement(i)._block_off;
-//					if (ret->find(tmp) == ret->end())
-//						(*ret)[tmp] = new vector<index_offset>;
-//					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
-//				}
-////					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
-//				else
-//					return ret;
-//			}
-//		}
-//		else if (comp_lower == G && comp_upper == L)
-//		{
-//			for (; i < search_node->getUsedKeys(); i++)
-//			{
-//				if ((lower_key < search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
-//				{
-//					index_offset tmp = search_node->getElement(i)._block_off;
-//					if (ret->find(tmp) == ret->end())
-//						(*ret)[tmp] = new vector<index_offset>;
-//					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
-//				}
-////					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
-//				else
-//					return ret;
-//			}
-//		}
-//	}
-//	CCSBNodeGroup<T>* search_node_group = search_node->getFather()->getPointer();
-//	unsigned j = 0;
-//	for (j = 0; j < search_node_group->getUsedNodes(); j++)
-//	{
-//		if (search_node == search_node_group->getNode(j))
-//			break;
-//	}
-//	while (search_node_group != NULL)
-//	{
-//		if (comp_lower == GEQ && comp_upper == LEQ)
-//		{
-//			for (; j < search_node_group->getUsedNodes(); j++)
-//			{
-//				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
-//				{
-//					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
-//					{
-//						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
-//						if (ret->find(tmp) == ret->end())
-//							(*ret)[tmp] = new vector<index_offset>;
-//						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					}
-////						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					else
-//						return ret;
-//				}
-//				i = 0;
-//			}
-//			i = 0;
-//			j = 0;
-//			search_node_group = search_node_group->getTailerNG();
-//		}
-//		else if (comp_lower == GEQ && comp_upper == L)
-//		{
-//			for (; j < search_node_group->getUsedNodes(); j++)
-//			{
-//				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
-//				{
-//					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
-//					{
-//						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
-//						if (ret->find(tmp) == ret->end())
-//							(*ret)[tmp] = new vector<index_offset>;
-//						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					}
-////						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					else
-//						return ret;
-//				}
-//				i = 0;
-//			}
-//			i = 0;
-//			j = 0;
-//			search_node_group = search_node_group->getTailerNG();
-//		}
-//		else if (comp_lower == G && comp_upper == LEQ)
-//		{
-//			for (; j < search_node_group->getUsedNodes(); j++)
-//			{
-//				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
-//				{
-//					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
-//					{
-//						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
-//						if (ret->find(tmp) == ret->end())
-//							(*ret)[tmp] = new vector<index_offset>;
-//						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					}
-////						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					else
-//						return ret;
-//				}
-//				i = 0;
-//			}
-//			i = 0;
-//			j = 0;
-//			search_node_group = search_node_group->getTailerNG();
-//		}
-//		else if (comp_lower == G && comp_upper == L)
-//		{
-//			for (; j < search_node_group->getUsedNodes(); j++)
-//			{
-//				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
-//				{
-//					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
-//					{
-//						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
-//						if (ret->find(tmp) == ret->end())
-//							(*ret)[tmp] = new vector<index_offset>;
-//						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					}
-////						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
-//					else
-//						return ret;
-//				}
-//				i = 0;
-//			}
-//			i = 0;
-//			j = 0;
-//			search_node_group = search_node_group->getTailerNG();
-//		}
-//	}
-//
-////For testing begin
-//	if (NULL != sPath)
-//	{
-//		if (true == found)
-//
-//			(void)sprintf(sPath+offset, " ,succeeded.");
-//		else
-//			(void)sprintf(sPath+offset, " ,failed.");
-//	}
-////For testing end
-//
-//	return ret;
-//}
+
+template<typename T>
+map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)
+{
+	map<index_offset, vector<index_offset>* >* ret = new map<index_offset, vector<index_offset>* >;
+	ret->clear();
+	//For point query
+	if (comp_lower == EQ)
+	{
+		if (lower_key != upper_key)
+			cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the equal point query, the lower_key " << lower_key << " != the upper_key " << upper_key << endl;
+		return Search(lower_key);
+	}
+	// Range Query
+	else if ((!(comp_lower == G || comp_lower == GEQ)) || (!(comp_upper == L || comp_upper == LEQ)))
+	{
+		cout << "[ERROR: CSBPlusTree.cpp->rangeQuery()]: For the range query, the given two key isn't a range\n";
+		return ret;
+	}
+	if (lower_key > upper_key)
+		return ret;
+	int i = 0;
+/*for testing*/	char* sPath = (char*)malloc(1024);
+/*for testing*/	memset((void*)sPath, 0, 1024);
+
+//For testing begin
+	int offset = 0;
+	if (NULL != sPath)
+	{
+		(void)sprintf(sPath+offset, "The serach path is:");
+		offset+=19;
+	}
+//For testing end
+
+	CCSBNode<T>* search_node = csb_root;
+
+	//find the leaf node
+	for (unsigned depth = 1; depth < this->csb_depth; depth++)
+	{
+		//find the first search_node.key > lower_key for GEQ and search_node.key >= lower_key for G
+		if (comp_lower == GEQ)
+			for (i = 0; (lower_key > search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
+		else if (comp_lower == G)
+			for (i = 0; (lower_key >= search_node->getElement(i)._key)&&(i < search_node->used_keys); i++);
+
+//For testing begin
+		if (NULL != sPath)
+		{
+			(void)sprintf(sPath+offset, " %3d -->", search_node->getElement(0)._key);
+			offset+=8;
+		}
+//For testing end
+
+		search_node = (search_node->getPointer())->getNode(i);
+	}
+	//not found
+	if (NULL == search_node)
+		return ret;
+
+//For testing begin
+	if (NULL != sPath)
+	{
+		(void)sprintf(sPath+offset, "%3d", search_node->getElement(0)._key);
+		offset+=3;
+	}
+//For testing end
+
+	//finding the first data in leaf_node whose key >= lower_key
+/*for testing*/	bool found = false;
+	for (i = 0; (i < search_node->used_keys); i++)
+	{
+		if (comp_lower == GEQ)
+		{
+			if (lower_key <= search_node->getElement(i)._key)
+			{
+/*for testing*/				found = true;
+				break;
+			}
+		}
+		if (comp_lower == G)
+		{
+			if (lower_key < search_node->getElement(i)._key)
+			{
+/*for testing*/				found = true;
+				break;
+			}
+		}
+	}
+
+	//collect all tuples whose key is between lower_key and upper_key
+	if (search_node->getFather() == NULL)
+	{
+		if (comp_lower == GEQ && comp_upper == LEQ)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key <= search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+		else if (comp_lower == GEQ && comp_upper == L)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key <= search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+		else if (comp_lower == G && comp_upper == LEQ)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key < search_node->getElement(i)._key) && upper_key >= search_node->getElement(i)._key)
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+		else if (comp_lower == G && comp_upper == L)
+		{
+			for (; i < search_node->getUsedKeys(); i++)
+			{
+				if ((lower_key < search_node->getElement(i)._key) && upper_key > search_node->getElement(i)._key)
+				{
+					index_offset tmp = search_node->getElement(i)._block_off;
+					if (ret->find(tmp) == ret->end())
+						(*ret)[tmp] = new vector<index_offset>;
+					(*ret)[tmp]->push_back(search_node->getElement(i)._tuple_off);
+				}
+//					ret[search_node->getElement(i)._block_off].push_back(search_node->getElement(i)._tuple_off);
+				else
+					return ret;
+			}
+		}
+	}
+	CCSBNodeGroup<T>* search_node_group = search_node->getFather()->getPointer();
+	unsigned j = 0;
+	for (j = 0; j < search_node_group->getUsedNodes(); j++)
+	{
+		if (search_node == search_node_group->getNode(j))
+			break;
+	}
+	while (search_node_group != NULL)
+	{
+		if (comp_lower == GEQ && comp_upper == LEQ)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+		else if (comp_lower == GEQ && comp_upper == L)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key <= search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+		else if (comp_lower == G && comp_upper == LEQ)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key >= search_node_group->getNode(j)->getElement(i)._key))
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+		else if (comp_lower == G && comp_upper == L)
+		{
+			for (; j < search_node_group->getUsedNodes(); j++)
+			{
+				for (; i < search_node_group->getNode(j)->getUsedKeys(); i++)
+				{
+					if ((lower_key < search_node_group->getNode(j)->getElement(i)._key) && (upper_key > search_node_group->getNode(j)->getElement(i)._key))
+					{
+						index_offset tmp = search_node_group->getNode(j)->getElement(i)._block_off;
+						if (ret->find(tmp) == ret->end())
+							(*ret)[tmp] = new vector<index_offset>;
+						(*ret)[tmp]->push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					}
+//						ret[search_node_group->getNode(j)->getElement(i)._block_off].push_back(search_node_group->getNode(j)->getElement(i)._tuple_off);
+					else
+						return ret;
+				}
+				i = 0;
+			}
+			i = 0;
+			j = 0;
+			search_node_group = search_node_group->getTailerNG();
+		}
+	}
+
+//For testing begin
+	if (NULL != sPath)
+	{
+		if (true == found)
+
+			(void)sprintf(sPath+offset, " ,succeeded.");
+		else
+			(void)sprintf(sPath+offset, " ,failed.");
+	}
+//For testing end
+
+	return ret;
+}
 
 /* 插入指定的数据，分几种情况讨论
  * 1. 初始索引树为空，直接生成根结点，并将要插入的数据填入

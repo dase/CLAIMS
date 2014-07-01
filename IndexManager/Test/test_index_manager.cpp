@@ -8,7 +8,7 @@
 #include "../CSBPlusTree.h"
 #include <map>
 #include <vector>
-#include "../../common/ids.h"
+#include "../../ids.h"
 #include "../IndexManager.h"
 #include "../../Catalog/Catalog.h"
 
