@@ -12,7 +12,7 @@
 #include <iostream>
 #define DEBUG_Config
 
-std::string Config::config_file="/home/imdb/config/dsc/config";
+std::string Config::config_file="/home/imdb/config/yukai/config";
 Config* Config::instance_=0;
 
 /**
