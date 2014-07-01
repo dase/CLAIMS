@@ -8,7 +8,9 @@
 #ifndef RESOURCEINFO_H_
 #define RESOURCEINFO_H_
 #include <string>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 struct memory_info{
 	/* the following volumes are in Mbytes*/
 	memory_info():allocated_capacity(-1),used_capacity(-1){};

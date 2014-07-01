@@ -12,6 +12,10 @@ BlockStreamFix::BlockStreamFix(unsigned block_size,unsigned tuple_size)
 :BlockStreamBase(block_size),tuple_size_(tuple_size){
 	free_=start;
 }
+BlockStreamFix::BlockStreamFix(unsigned block_size,unsigned tuple_size,void* start_addr,unsigned ntuples)
+:BlockStreamBase(block_size,start_addr),tuple_size_(tuple_size),free_((char*)start_addr+tuple_size*ntuples)
+{
+}
 
 BlockStreamFix::~BlockStreamFix() {
 }
@@ -82,7 +86,7 @@ bool BlockStreamFix::insert(void *dest,void *src,unsigned bytes){
 }
 
 void BlockStreamFix::deepCopy(const Block* block){
-	assert(this->BlockSize>=block->getsize());
+	assert(this->BlockSize==block->getsize());
 	memcpy(start,block->getBlock(),block->getsize());
 	this->tuple_size_=((BlockStreamFix*)block)->tuple_size_;
 	this->free_=start+tuple_size_*((BlockStreamFix*)block)->getTuplesInBlock();
@@ -134,6 +138,18 @@ bool BlockStreamFix::serialize(Block & block) const{
 
 }
 
+BlockStreamBase* BlockStreamFix::createBlockAndDeepCopy() {
+	BlockStreamBase* ret;
+	if(this->isIsReference()){
+		ret=new BlockStreamFix(this->BlockSize,this->tuple_size_,this->getBlock(),this->getTuplesInBlock());
+	}
+	else{
+		ret= new BlockStreamFix(this->BlockSize,this->tuple_size_);
+		ret->deepCopy(this);
+	}
+	return ret;
+
+}
 bool BlockStreamFix::deserialize(Block * block){
 	assert(block->getsize()>=BlockSize+sizeof(tail_info));
 
@@ -280,4 +296,10 @@ bool BlockStreamVar::serialize(Block & block) const{
 	tail_info* tail=(tail_info*)((char*)block.getBlock()+block.getsize()-sizeof(tail_info));
 	tail->tuple_count=cur_tuple_size_;
 	return true;
-};
+}
+;
+
+
+BlockStreamBase* BlockStreamVar::createBlockAndDeepCopy() {
+	return 0;
+}

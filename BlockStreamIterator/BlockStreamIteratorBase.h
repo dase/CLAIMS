@@ -10,6 +10,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <string>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Block/ResultSet.h"
 #include "../common/Block/BlockStream.h"
 #include "../common/ids.h"

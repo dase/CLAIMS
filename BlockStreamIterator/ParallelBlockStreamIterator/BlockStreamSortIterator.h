@@ -8,6 +8,11 @@
 #ifndef BLOCKSTREAMSORTITERATOR_H_
 #define BLOCKSTREAMSORTITERATOR_H_
 
+#include <algorithm>
+#include <iterator>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIteratorBase.h"
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Schema/Schema.h"
@@ -15,8 +20,6 @@
 #include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../utility/rdtsc.h"
 
-#include <algorithm>
-#include <iterator>
 using namespace std;
 
 class BlockStreamSortIterator:public BlockStreamIteratorBase{

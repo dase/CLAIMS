@@ -15,6 +15,9 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 
 #include <stdio.h>

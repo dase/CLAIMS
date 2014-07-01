@@ -9,7 +9,6 @@
 #include <iostream>
 using namespace std;
 #include "NValue.hpp"
-int COUNTER::count=0;
 namespace decimal {
 
 TTInt NValue::s_maxDecimalValue("9999999999"   //10 digits

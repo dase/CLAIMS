@@ -9,7 +9,9 @@
 #define EXPORTSERIALIZEIO_H_
 
 #include <cstring>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 namespace decimal {
 
 class ExportSerializeOutput {

@@ -8,6 +8,9 @@
 #ifndef PORTMANAGER_H_
 #define PORTMANAGER_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../utility/lock.h"
 class PortManager {
 public:

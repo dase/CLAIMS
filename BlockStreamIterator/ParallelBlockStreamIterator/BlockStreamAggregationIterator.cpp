@@ -23,14 +23,15 @@
 #include "../../Executor/ExpanderTracker.h"
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
-:state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(3,2){
+:state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
         initialize_expanded_status();
+        assert(state_.hashSchema);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
-:open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(3,2){
+:open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
         sema_open_.set_value(1);
         sema_open_end_.set_value(1);
         initialize_expanded_status();
@@ -71,7 +72,10 @@ BlockStreamAggregationIterator::State::State(
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	barrier_.RegisterOneThread();
 	RegisterNewThreadToAllBarriers();
-	ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Aggregation hash build",0));
+	if(tryEntryIntoSerializedSection(0)){
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Aggregation",0));
+	}
+	barrierArrive(0);
 	state_.child->open(partition_offset);
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 //		printf("<<<<<<<<<<<<<<<<<Aggregation detected call back signal before constructing hash table!>>>>>>>>>>>>>>>>>\n");
@@ -79,8 +83,10 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		return true;
 	}
 
-	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
-	if(tryEntryIntoSerializedSection(0)){
+//	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
+	if(tryEntryIntoSerializedSection(1)){
+
+
 
 		unsigned outputindex=0;
 		for(unsigned i=0;i<state_.groupByIndex.size();i++)
@@ -129,7 +135,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 	}
 
-	barrierArrive(0);
+
+	barrierArrive(1);
 
 	void *cur=0;
 	unsigned bn;
@@ -144,7 +151,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	BasicHashTable::Iterator ht_it=hashtable_->CreateIterator();
 
 	unsigned long long one=1;
-	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
+//	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
+	BlockStreamBase *bsb=BlockStreamBase::createBlock(state_.input,state_.block_size);
 	bsb->setEmpty();
 
 	unsigned consumed_tuples=0;
@@ -299,22 +307,25 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		}
 	}
 
+
 //		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 //			unregisterNewThreadToAllBarriers(1);
 //			return true;
 //		}
+		barrierArrive(2);
 
-		barrierArrive(1);
-
-		if(tryEntryIntoSerializedSection(1)){
+		if(tryEntryIntoSerializedSection(2)){
 //			hashtable_->report_status();
 				it_=hashtable_->CreateIterator();
 				bucket_cur_=0;
 				hashtable_->placeIterator(it_,bucket_cur_);
 				open_finished_end_=true;
-				ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation read",0));
+				ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation",0));
+				perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		}
-		barrierArrive(2);
+		barrierArrive(3);
+
+		delete bsb;
 }
 
 /*
@@ -468,6 +479,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 			}
 			else{
 				ht_cur_lock_.release();
+				perf_info_->processed_one_block();
 				return true;
 			}
 		}
@@ -478,6 +490,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 		   return false;
 	}
 	else{
+		perf_info_->processed_one_block();
 		return true;
 	}
 }
@@ -491,7 +504,7 @@ bool BlockStreamAggregationIterator::close(){
 	open_finished_=false;
 	open_finished_end_=false;
 
-	hashtable_->~BasicHashTable();
+	delete hashtable_;
 	ht_free_block_stream_list_.clear();
 	aggregationFunctions_.clear();
 	inputAggregationToOutput_.clear();

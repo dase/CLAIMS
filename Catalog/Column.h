@@ -7,6 +7,9 @@
 
 #ifndef COLUMN_H_
 #define COLUMN_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Attribute.h"
 #include "../common/ids.h"
 class Column:public Attribute {

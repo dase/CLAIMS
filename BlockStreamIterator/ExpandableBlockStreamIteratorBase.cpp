@@ -92,9 +92,8 @@ void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
 	barrier_[barrier_index].Arrive();
 }
 void ExpandableBlockStreamIteratorBase::destoryAllContext(){
-	for(boost::unordered_map<pthread_t,thread_context>::iterator it=context_list_.begin();it!=context_list_.end();it++){
-		it->second.block_for_asking_->~BlockStreamBase();
-		it->second.block_stream_iterator_->~BlockStreamTraverseIterator();
+	for(boost::unordered_map<pthread_t,thread_context*>::iterator it=context_list_.begin();it!=context_list_.end();it++){
+		delete it->second;
 		context_list_.erase(it);
 	}
 }
@@ -106,29 +105,30 @@ void ExpandableBlockStreamIteratorBase::destorySelfContext(){
 //	thread_context tc;
 //	tc.iterator_=tc.block_for_asking_->createIterator();
 //	assert(tc.iterator_->currentTuple()==0);
-	context_list_[pthread_self()].block_for_asking_->~BlockStreamBase();
-	context_list_[pthread_self()].block_stream_iterator_->~BlockStreamTraverseIterator();
 	context_list_.erase(pthread_self());
 //	printf("Thread %lx is inited!\n",pthread_self());
 	context_lock_.release();
 }
-void ExpandableBlockStreamIteratorBase::initContext(const Schema* const &  schema, const unsigned& blocksize){
+void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 	context_lock_.acquire();
 	/* assert that no context is available for current thread*/
 	assert(context_list_.find(pthread_self())==context_list_.cend());
 
-	thread_context tc;
-	tc.block_for_asking_=BlockStreamBase::createBlock(schema,blocksize);
-	tc.block_stream_iterator_=tc.block_for_asking_->createIterator();
-	assert(tc.block_stream_iterator_->currentTuple()==0);
 	context_list_[pthread_self()]=tc;
 //	printf("Thread %lx is inited!\n",pthread_self());
 	context_lock_.release();
 }
-thread_context& ExpandableBlockStreamIteratorBase::getContext(){
+thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 	context_lock_.acquire();
-	assert(context_list_.find(pthread_self())!=context_list_.cend());
-	thread_context& ret= context_list_[pthread_self()];
+	thread_context* ret;
+	boost::unordered_map<pthread_t,thread_context*>::iterator it;
+	if((it=context_list_.find(pthread_self()))!=context_list_.cend()){
+		ret= it->second;
+	}
+	else
+	{
+		ret=0;
+	}
 //	printf("Thread %lx is poped!\n",pthread_self());
 	context_lock_.release();
 	return ret;

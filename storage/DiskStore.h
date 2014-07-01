@@ -14,6 +14,9 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 
 #include "BlockStore.h"

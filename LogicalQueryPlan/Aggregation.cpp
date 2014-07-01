@@ -168,6 +168,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	switch(fashion_){
 		case no_repartition:{
 			aggregation_state.isPartitionNode=false;
+			changeSchemaforAVG(aggregation_state);
 			ret=new BlockStreamAggregationIterator(aggregation_state);//
 			break;
 		}

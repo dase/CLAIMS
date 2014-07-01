@@ -10,7 +10,9 @@
 #include <string>
 #include "table.h"
 #include <boost/unordered_map.hpp>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "unordered_map.hpp"
 
 

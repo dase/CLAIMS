@@ -7,7 +7,9 @@
 
 #ifndef BLOCKSTREAMTOPN_H_
 #define BLOCKSTREAMTOPN_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStreamIteratorBase.h"
 
 class BlockStreamLimit: public BlockStreamIteratorBase {

@@ -26,9 +26,9 @@ ExchangeTracker::ExchangeTracker() {
 }
 
 ExchangeTracker::~ExchangeTracker() {
-	logging_->~Logging();
-	actor->~Actor();
-	framework->~Framework();
+	delete logging_;
+	delete actor;
+	delete framework;
 	// TODO Auto-generated destructor stub
 }
 bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port){

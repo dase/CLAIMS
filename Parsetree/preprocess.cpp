@@ -379,3 +379,146 @@ void expr_to_str_test(Node *node)
 	expr_to_str_for_groupby(ptree->groupby_list);
 	expr_to_str_for_orderby(ptree->orderby_list);
 }
+void solve_const_value_in_wherecondition(Node *&cur)
+{
+	switch(cur->type)
+	{
+		case t_name:
+		{
+			Columns *col=(Columns *)cur;
+
+		}break;
+		case t_name_name:
+		{
+			Columns *col=(Columns *)cur;
+
+		}break;
+		case t_query_stmt:
+		{
+
+		}break;
+		case t_expr_cal:
+		{
+			Expr_cal *node=(Expr_cal*)cur;
+			solve_const_value_in_wherecondition(node->lnext);
+			solve_const_value_in_wherecondition(node->rnext);
+		}break;
+		case t_expr_func:
+		{
+			Expr_func* node=(Expr_func *)cur;
+			string datestr;
+			date constdate(from_string("1990-10-01"));
+			if(strcmp(node->funname,"FDATE_ADD")==0)
+			{
+				if(node->args->type==t_stringval)
+				{
+					datestr=string(((Expr *)node->args)->data);
+					Expr_func *datefunc=(Expr_func *)node->parameter1;
+
+					assert(((Expr *)datefunc->args)->type==t_intnum);
+
+					if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+					{
+						date_duration dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+					{
+						weeks dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+					{
+						years dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data)*3);
+						constdate=date(from_string(datestr))+dd;
+					}
+					datestr=to_simple_string(constdate);
+					char *datechar=(char *)malloc(datestr.length()+2);
+					strcpy(datechar,datestr.c_str());
+					SQLParse_log("the date result after date_add, string= %s ------------------\n",datechar);
+					//free(cur);
+					cur=(Node *)newExpr(t_dateval,datechar);
+				}
+
+			}
+			else if(strcmp(node->funname,"FDATE_SUB")==0)
+			{
+				if(node->args->type==t_stringval)
+				{
+					datestr=string(((Expr *)node->args)->data);
+					Expr_func *datefunc=(Expr_func *)node->parameter1;
+
+					assert(((Expr *)datefunc->args)->type==t_intnum);
+
+					if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+					{
+						date_duration dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+					{
+						weeks dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+					{
+						years dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data)*3);
+						constdate=date(from_string(datestr))-dd;
+					}
+					datestr=to_simple_string(constdate);
+					char *datechar=(char *)malloc(datestr.length()+2);
+					strcpy(datechar,datestr.c_str());
+					SQLParse_log("the date result after date_sub, string= %s ------------------\n",datechar);
+					//free(cur);
+					cur=(Node *)newExpr(t_dateval,datechar);
+				}
+			}
+			else
+			{
+
+			}
+		}break;
+		case t_expr_list:
+		{
+			Expr_list * node=(Expr_list *)cur;
+
+		}break;
+		default:
+		{
+				SQLParse_elog("solve_const_value_in_wherecondition can't know the type=%d\n",cur->type);
+		}
+	}
+}
+void solve_const_value(Node *node)
+{
+	Query_stmt *ptree=(Query_stmt *)node;
+	if(((Where_list*)ptree->where_list)!=NULL)
+	{
+		solve_const_value_in_wherecondition(((Where_list*)ptree->where_list)->next);
+	}
+}
+void preprocess(Node *node)
+{
+	expr_to_str_test(node);
+	solve_const_value(node);
+}

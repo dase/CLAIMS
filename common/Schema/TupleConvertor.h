@@ -9,6 +9,9 @@
 #ifndef TUPLECONVENTOR_H_
 #define TUPLECONVENTOR_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Schema.h"
 class TupleConvertor {
 public:

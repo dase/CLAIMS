@@ -9,6 +9,9 @@
 #define BLOCKSTREAMPRINT_H_
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
 class BlockStreamPrint:public BlockStreamIteratorBase{

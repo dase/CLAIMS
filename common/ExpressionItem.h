@@ -14,6 +14,10 @@
 
 #include "data_type.h"
 #include "types/NValue.hpp"
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+#include "../common/data_type.h"
 enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast};
 using namespace boost::gregorian;
 using namespace boost::posix_time;

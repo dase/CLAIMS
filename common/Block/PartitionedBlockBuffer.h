@@ -7,9 +7,12 @@
 
 #ifndef PARTITOINEDBLOCKBUFFER_H_
 #define PARTITOINEDBLOCKBUFFER_H_
-#include "Block.h"
 #include <list>
 #include <stdio.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+#include "Block.h"
 #include "../../utility/lock.h"
 class PartitionedBlockBuffer {
 public:

@@ -14,7 +14,9 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
 #include <string>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 #include <pthread.h>
 #include <stdio.h>

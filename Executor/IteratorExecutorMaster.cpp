@@ -22,7 +22,8 @@ IteratorExecutorMaster::IteratorExecutorMaster(){
 }
 
 IteratorExecutorMaster::~IteratorExecutorMaster() {
-	framework->~Framework();
+	_instance=0;
+	delete framework;
 }
 
 IteratorExecutorMaster* IteratorExecutorMaster::getInstance()

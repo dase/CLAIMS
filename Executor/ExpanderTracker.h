@@ -12,11 +12,15 @@
 #include <boost/unordered_map.hpp>
 #include <map>
 #include <stack>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Block/MonitorableBuffer.h"
 #include "../utility/ExpandabilityShrinkability.h"
 #include "../utility/lock.h"
 #include "../common/Logging.h"
 #include "../common/ids.h"
+#include "../common/ExpandedThreadTracker.h"
 typedef pthread_t expanded_thread_id;
 
 
@@ -106,7 +110,7 @@ struct local_stage{
 			printf("Incomplete!\n");
 			return;
 		}
-		printf("%s----->%s, type: %s\n",dataflow_src_.end_point_name.c_str(),dataflow_desc_.end_point_name.c_str(),get_type_name(type_));
+		printf("%s----->%s, type: %s\n",dataflow_src_.end_point_name.c_str(),dataflow_desc_.end_point_name.c_str(),get_type_name(type_).c_str());
 	}
 
 };
@@ -125,6 +129,7 @@ class ExpanderTracker {
 	 * This structure maintains the status of current expander in terms of running stage.
 	 */
 	struct ExpanderStatus{
+		PerformanceInfo perf_info;
 		local_stage current_stage;
 		std::stack<LocalStageEndPoint> pending_endpoints;
 		void addNewEndpoint(LocalStageEndPoint);
@@ -163,6 +168,7 @@ public:
 
 	bool addNewStageEndpoint(expanded_thread_id,LocalStageEndPoint);
 
+	PerformanceInfo* getPerformanceInfo(expanded_thread_id);
 
 	ExpanderID registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink);
 	void unregisterExpander(ExpanderID expander_id);
@@ -174,7 +180,7 @@ private:
 	/*
 	 * The access of current_stage might cause bug if thread-safe is not concerned.
 	 */
-	int decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism);
+	int decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism,bool print=true);
 
 	int expandeIfNotExceedTheMaxDegreeOfParallelism(int current_degree_of_parallelism)const;
 	int shrinkIfNotExceedTheMinDegreeOfParallelims(int current_degree_of_parallelism)const;
@@ -185,11 +191,11 @@ private:
 
 //	ExpanderID expander_id_cur_;
 
-	std::map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
+	boost::unordered_map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
 
-	std::map<ExpanderID,ExpanderStatus> expander_id_to_status_;
+	boost::unordered_map<ExpanderID,ExpanderStatus> expander_id_to_status_;
 
-	std::map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
+	boost::unordered_map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
 
 	/*
 	 * A unordered map from expanded thread id to expanded thread status
