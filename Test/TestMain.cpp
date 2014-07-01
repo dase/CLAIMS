@@ -72,7 +72,7 @@ int main(int argc , char ** argv){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-//	return query_optimization_outputdata();
+	return query_optimization_outputdata();
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
