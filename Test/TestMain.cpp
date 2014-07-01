@@ -58,7 +58,7 @@ int main(int argc , char ** argv){
 //	return ResultCollect_test();
 //	return parser_test();
 //	return sub_tuple_test();
-	return aggregation_test();
+//	return aggregation_test();
 //	return statistic_manager_test();
 //	return query_optimization_based_on_statistics();
 //	return sort_iterator_test();
@@ -94,6 +94,8 @@ int main(int argc , char ** argv){
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test();
 //	hash_table_test();
-//	g_test_main(argc,argv);
+
+//	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
+	g_test_main(argc,argv);
 //	sleep(1000);
 }

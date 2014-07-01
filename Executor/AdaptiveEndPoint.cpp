@@ -15,6 +15,7 @@
 #include "../common/Logging.h"
 #include "../utility/ThreadSafe.h"
 #include "../Config.h"
+#include <errno.h>
 AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::string port)
 :Theron::EndPoint(name, ("tcp://"+ip+":"+port).c_str()){
 	logging_=new AdaptiveEndPointLogging();
