@@ -7,6 +7,9 @@
 
 #ifndef LOGICALQUERYPLANROOT_H_
 #define LOGICALQUERYPLANROOT_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 #include "../common/ids.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
@@ -33,8 +36,8 @@ public:
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned&);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
-private:
 	void print(int level=0)const;
+private:
 	std::vector<std::string> getAttributeName(const Dataflow& dataflow)const;
 private:
 	NodeID collecter_;

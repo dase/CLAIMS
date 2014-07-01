@@ -7,7 +7,9 @@
 
 #ifndef LOGICALPROJECT_H_
 #define LOGICALPROJECT_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Mapping.h"
 #include "../common/ExpressionItem.h"
 #include "../common/TypePromotionMap.h"
@@ -16,6 +18,7 @@
 #include "LogicalOperator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include <vector>
+#include <sstream>
 
 class LogicalProject:public LogicalOperator{
 public:
@@ -26,16 +29,18 @@ public:
 	BlockStreamIteratorBase *getIteratorTree(const unsigned& blocksize);
 
 	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
-	virtual void print(int level=0)const{};
+	void printProjSchema()const;
+	void print(int level=0)const;
 
 private:
 	Mapping getMapping();
 	Schema *getOutputSchema();
 	int getColumnSeq(ExpressionItem &ei);
+	string recovereyName(Expression ei);
 
 private:
 	Mapping mappings_;
-	Dataflow* dataflow_;
+	Dataflow *dataflow_;
 	LogicalOperator *child_;
 	std::vector<Expression> exprArray_;
 };

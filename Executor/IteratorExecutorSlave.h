@@ -12,6 +12,9 @@
 #include <libconfig.h++>
 #include <iostream>
 #include <set>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Message.h"
 #include "../common/Logging.h"
 #include "../utility/lock.h"

@@ -12,7 +12,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 #define INTERMEIDATE_TABLEID 100000;
 

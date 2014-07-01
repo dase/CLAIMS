@@ -19,6 +19,7 @@ PortManager::PortManager() {
 }
 
 PortManager::~PortManager() {
+	_instance=0;
 	// TODO Auto-generated destructor stub
 }
 

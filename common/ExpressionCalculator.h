@@ -10,11 +10,20 @@
 #include <stack>
 #include <list>
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ExpressionItem.h"
 
 typedef std::stack<ExpressionItem> ExpressionItemStack;
 typedef std::vector<ExpressionItem> Expression;
 
+typedef struct{
+	Expression expr;
+	int op;
+}Exp_op;
+
+typedef vector<Exp_op> Exp_op_tmp;
 /**
  * print_expression is a good tool for debug.
  * You can :
@@ -45,25 +54,16 @@ public:
 	ExpressionCalculator();
 	virtual ~ExpressionCalculator();
 	static void calcuate(Expression &exp,ExpressionItem& result){
-//		if(exp.size()<=1){
-//			return;
-//		}
-//		else{
 			ExpressionItemStack stack;
 			calcualte(exp,stack);
 			assert(stack.size()==1);
-//			printf("result:\n");
-//			stack.top().print();
 			result=stack.top();
-//		}
 	}
+
 	static void calcualte(Expression &exp,ExpressionItemStack& stack){
-//		print_expression(exp);
 		for(unsigned i=0;i<exp.size();i++){
 			if(exp[i].type!=ExpressionItem::operator_type){
-
 				stack.push(exp[i]);
-
 			}
 			else{
 				if(isComposeOperator(exp[i].content.op.op_)){
@@ -75,9 +75,6 @@ public:
 						if(exp[j].type==ExpressionItem::operator_type&&exp[j].content.op.op_==compose_op)
 						{
 							unsigned before = stack.size();
-
-//							print_expression(stack);
-
 							assert(stack.size()==before);
 							compute(exp[j],stack);
 							i=j+1;
@@ -96,14 +93,13 @@ public:
 				else{
 					compute(exp[i],stack);
 				}
-
 			}
 		}
 	}
 	static void compute(ExpressionItem operator_item,ExpressionItemStack& stack);
-
 	static void computes(ExpressionItem operator_item,ExpressionItemStack& stack);
 	static data_type getOutputType(vector<ExpressionItem> &exp);
+	static column_type getOutputType_(vector<ExpressionItem> &exp);
 
 private:
 

@@ -10,7 +10,11 @@
 #include <string>
 #include <stdarg.h>
 #include <stdio.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../Debug.h"
+#define SQL_Parser
 
 
 class Logging{
@@ -261,6 +265,25 @@ static void Logging_BlockStreamExchangeLowerBase(const char* format,...){
 	printf("\n");
 	va_end (arg);
 #endif
+}
+
+static void SQLParse_log(const char* format,...){
+#ifdef SQL_Parser
+	printf("[SQLParse_log]: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf (format, arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+static void SQLParse_elog(const char* format,...){
+	printf("[SQLParse_elog]: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf (format, arg);
+	printf("\n");
+	va_end (arg);
 }
 
 #endif /* LOGGING_H_ */

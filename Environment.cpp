@@ -61,22 +61,23 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 }
 
 Environment::~Environment() {
-	logging_->~Logging();
-	portManager->~PortManager();
-	catalog_->~Catalog();
-	coordinator->~Coordinator();
+	_instance=0;
+	delete logging_;
+	delete portManager;
+	delete catalog_;
+	delete coordinator;
 	if(ismaster_){
-		iteratorExecutorMaster->~IteratorExecutorMaster();
-		resourceManagerMaster_->~ResourceManagerMaster();
-		blockManagerMaster_->~BlockManagerMaster();
+		delete iteratorExecutorMaster;
+		delete resourceManagerMaster_;
+		delete blockManagerMaster_;
 	}
-	iteratorExecutorSlave->~IteratorExecutorSlave();
-	exchangeTracker->~ExchangeTracker();
-	resourceManagerSlave_->~ResourceManagerSlave();
-	blockManager_->~BlockManager();
-	bufferManager_->~BufferManager();
-	expander_tracker_->~ExpanderTracker();
-	endpoint->~AdaptiveEndPoint();
+	delete iteratorExecutorSlave;
+	delete exchangeTracker;
+	delete resourceManagerSlave_;
+	delete blockManager_;
+	delete bufferManager_;
+	delete expander_tracker_;
+	delete endpoint;
 }
 Environment* Environment::getInstance(bool ismaster){
 	if(_instance==0){

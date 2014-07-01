@@ -10,12 +10,15 @@
 /*
  * 为storage提供数据，scan操作的是每个
  * */
-#include "BlockManagerId.h"
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 #include <map>
 #include <string>
 #include <list>
 #include <iostream>
+#include "BlockManagerId.h"
 using namespace std;
 
 class BlanceMatcher {

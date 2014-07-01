@@ -7,7 +7,9 @@
 
 #ifndef BLOCKSTREAMCOMBINEDITERATOR_H_
 #define BLOCKSTREAMCOMBINEDITERATOR_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 

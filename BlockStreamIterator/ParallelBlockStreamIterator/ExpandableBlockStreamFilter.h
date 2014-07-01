@@ -8,6 +8,9 @@
 #ifndef EXPANDABLEBLOCKSTREAMFILTER_H_
 #define EXPANDABLEBLOCKSTREAMFILTER_H_
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIteratorBase.h"
 #include "../ExpandableBlockStreamIteratorBase.h"
 #include "../../common/Schema/Schema.h"
@@ -17,7 +20,12 @@
 #include "../../common/AttributeComparator.h"
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
-
+	class filter_thread_context:public thread_context{
+	public:
+		BlockStreamBase* block_for_asking_;
+		BlockStreamBase* temp_block_;
+		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+	};
 	/* struct to hold the remaining data when the next is returned but the block from the child
 	 *  iterator is not exhausted.*/
 	struct remaining_block{

@@ -20,12 +20,12 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <limits.h>
 #include <float.h>
+#include "hash.h"
 
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
 #include "types/NValue.hpp"
-#include "hash.h"
 using namespace decimal;
 #define DATA_TYPE_NUMBER 11
 enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
@@ -55,6 +55,11 @@ template<typename T>
 inline void ADD(void* target, void* increment)
 {
 	*(T*)target+=*(T*)increment;
+}
+template<typename T>
+inline void MULTIPLE(void *target,void *increment)
+{
+	(*(T*)target)=(*(T*)target)*(*(T*)increment);
 }
 template<>
 inline void ADD<char*>(void* target, void* increment)
@@ -132,6 +137,44 @@ inline void IncreaseByOne<NValue*>(void* target,void* increment)
 	NValue nv1 = NValue::getDecimalValueFromString("1");
 	*(NValue*)target = ((NValue*)target)->op_add(nv1);
 }
+template<typename T>//暂时先实现这点
+inline void ADD_IncreaseByOne(void* target,void* increment)
+{
+//	*(T*)target+=*(T*)increment;//add
+//	(*(T*)target)++;//increase
+}
+template<>
+inline void ADD_IncreaseByOne<char*>(void* target,void* increment)
+{
+
+}
+
+template<>
+inline void ADD_IncreaseByOne<NValue*>(void* target,void* increment)
+{
+	*(NValue*)target = ((NValue*)target)->op_add(*(NValue*)increment);//add
+	NValue nv1 = NValue::getDecimalValueFromString("1");
+	*(NValue*)target = ((NValue*)target)->op_add(nv1);
+}
+//template<>
+//inline void ADD_IncreaseByOne<date*>(void* target, void* increment)
+//{
+//	*(date*)target = *(date*)target + *(date_duration*)increment;
+//	(*(date*)target)++;
+//}
+//template<>
+//inline void ADD_IncreaseByOne<ptime*>(void* target, void* increment)
+//{
+//	*(ptime*)target = *(ptime*)target + *(date_duration*)increment;
+//	(*(ptime*)target)++;
+//}
+//template<>
+//inline void ADD_IncreaseByOne<time_duration*>(void* target, void* increment)
+//{
+//	*(time_duration*)target = *(time_duration*)target + *(time_duration*)increment;
+//	(*(time_duration*)target)++;
+//}
+
 
 template<typename T>
 inline void assigns(const void* const& src, void* const &desc){
@@ -159,11 +202,13 @@ public:
 	virtual bool less(const void*& a, const void*& b)const=0;
 	virtual bool greate(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
+	virtual void multiple(void* target, void* increment)=0;
 	virtual int compare(const void* a,const void* b)const=0;
 	virtual fun GetADDFunction()=0;
 	virtual fun GetMINFunction()=0;
 	virtual fun GetMAXFunction()=0;
 	virtual fun GetIncreateByOneFunction()=0;
+	virtual fun GetAVGFunction()=0;
 	void (*assign)(const void* const& src, void* const &desc);
 	virtual Operate* duplicateOperator()const=0;
 
@@ -219,6 +264,10 @@ public:
 	{
 		ADD<int>(target,increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<int>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<int>;
@@ -234,6 +283,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<int>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<int>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(int*)key);
@@ -311,6 +364,10 @@ public:
 	{
 		ADD<float>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<float>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<float>;
@@ -326,6 +383,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<float>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<float>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(float*)key);
@@ -401,6 +462,10 @@ public:
 	{
 		ADD<double>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<double>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<double>;
@@ -416,6 +481,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<double>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<double>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(double*)key);
@@ -491,6 +560,10 @@ public:
 	{
 		ADD<unsigned long>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<unsigned long>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<unsigned long>;
@@ -506,6 +579,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<unsigned long>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<unsigned long>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(unsigned long*)key);
@@ -581,6 +658,11 @@ public:
 		//TODO: throw exception or implement the add for string.
 		printf("The sum for String is not current supported!\n");
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<char*>;
@@ -596,6 +678,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<char*>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<char *>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for char[] type is not implemented yet!\n");
@@ -692,6 +778,11 @@ public:
 	{
 		ADD<date*>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<date*>;
@@ -707,6 +798,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<date*>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<date *>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for date type is not implemented yet!\n");
@@ -785,6 +880,11 @@ public:
 	{
 		ADD<time_duration*>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<time_duration*>;
@@ -800,6 +900,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<time_duration*>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<time_duration*>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for time type is not implemented yet!\n");
@@ -878,6 +982,11 @@ public:
 	{
 		ADD<ptime*>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<ptime*>;
@@ -893,6 +1002,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<ptime*>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<ptime *>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for datetime type is not implemented yet!\n");
@@ -972,6 +1085,10 @@ public:
 	{
 		ADD<short>(target,increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<short>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<short>;
@@ -987,6 +1104,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<short>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<short>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(short*)key);
@@ -1058,6 +1179,10 @@ public:
 	{
 		ADD<unsigned short>(target,increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<unsigned short>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<unsigned short>;
@@ -1073,6 +1198,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<unsigned short>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<unsigned short>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(unsigned short*)key);
@@ -1167,6 +1296,10 @@ public:
 		ADD<NValue*>(target, increment);
 //		((NValue*)target)->op_add(*(NValue*)increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		(*(NValue*)target)=((NValue*)target)->op_multiply(*(NValue*)increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<NValue*>;
@@ -1182,6 +1315,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<NValue*>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<NValue *>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 //		return partition_function->get_partition_value(*(NValue*)key);
@@ -1253,21 +1390,17 @@ public:
 			case t_u_smallInt: operate = new OperateUSmallInt(_nullable);break;
 			default:operate=0;break;
 		}
-		COUNTER::count++;
 	};
 	 column_type(const column_type &r){
 		 this->type=r.type;
 		 this->size=r.size;
 		 this->nullable = r.nullable;
 		 this->operate=r.operate->duplicateOperator();
-		 assert(this->operate!=0);
-		 COUNTER::count++;
 	 }
-	column_type():operate(0){COUNTER::count++;};
+	column_type():operate(0){};
 	~column_type(){
-		operate->~Operate();
+		delete operate;
 		operate=0;
-		COUNTER::count--;
 	};
 	inline unsigned get_length() const
 	{
@@ -1299,9 +1432,11 @@ public:
 	}
 public:
 	Operate* operate;
+	//这个data_type是什么type
 	data_type type;
 	bool nullable;
 private:
+	//且这个data_type的size是多少
 	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>

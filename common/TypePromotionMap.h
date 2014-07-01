@@ -7,8 +7,11 @@
 
 #ifndef TYPEPROMOTIONMAP_H_
 #define TYPEPROMOTIONMAP_H_
-#include "../common/data_type.h"
 #include <memory.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+#include "../common/data_type.h"
 class TypePromotion{
 public:
 	static data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
@@ -50,7 +53,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_int][t_date];
 	TypePromotion::arith_type_promotion_map[t_int][t_time];
 	TypePromotion::arith_type_promotion_map[t_int][t_datetime];
-	TypePromotion::arith_type_promotion_map[t_int][t_decimal];
+	TypePromotion::arith_type_promotion_map[t_int][t_decimal]=t_decimal;
 
 	//t_u_long
 	TypePromotion::arith_type_promotion_map[t_u_long][t_smallInt]=t_u_long;
@@ -141,7 +144,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 
 	//t_decimal
 	TypePromotion::arith_type_promotion_map[t_decimal][t_smallInt];
-	TypePromotion::arith_type_promotion_map[t_decimal][t_int];
+	TypePromotion::arith_type_promotion_map[t_decimal][t_int]=t_decimal;
 	TypePromotion::arith_type_promotion_map[t_decimal][t_u_long];
 	TypePromotion::arith_type_promotion_map[t_decimal][t_float];
 	TypePromotion::arith_type_promotion_map[t_decimal][t_double];

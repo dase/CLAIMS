@@ -8,7 +8,9 @@
 #ifndef ATTRIBUTE_H_
 #define ATTRIBUTE_H_
 #include <string>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #define ATTRIBUTE_NULL -1
@@ -29,7 +31,18 @@ struct Attribute
 		table_id_=att.table_id_;
 		attrName=att.attrName;
 		unique=att.unique;
-		if(att.table_id_<ATTRIBUTE_ANY){
+		if(att.table_id_ < ATTRIBUTE_ANY)
+		{
+//			cout<<"Attribute    ="<<att.table_id_<<endl;
+//			cout<<"ATTRIBUTE_ANY="<<ATTRIBUTE_ANY<<endl;
+//			if(att.table_id_==NULL)
+//			{
+//				puts("att.table_id_ is NULL");
+//			}
+//			if(att.table_id_<-2)
+//			{
+//				puts("0<-2  oh ,my god!!");
+//			}
 			attrType=new column_type(*att.attrType);
 			index=att.index;
 		}

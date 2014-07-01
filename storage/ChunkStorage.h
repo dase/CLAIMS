@@ -9,6 +9,9 @@
 #define CHUNKSTORAGE_H_
 #include <string>
 #include <hdfs.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Block/BlockStream.h"
 #include "StorageLevel.h"
 #include "../utility/lock.h"

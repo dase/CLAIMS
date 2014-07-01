@@ -18,11 +18,12 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <boost/tr1/unordered_map.hpp>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include <boost/config.hpp>
 #include "../ThirdParty/boost/serialization/unordered_collections_save_imp.hpp"
 #include "../ThirdParty/boost/serialization/unordered_collections_load_imp.hpp"
-
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/split_free.hpp>
 
