@@ -16,6 +16,7 @@ Catalog::Catalog() {
 }
 
 Catalog::~Catalog() {
+	instance_=0;
 	logging->~Logging();
 	binding_->~ProjectionBinding();
 }
@@ -33,7 +34,7 @@ bool Catalog::add_table(TableDescriptor* const &table){
 	TableID new_table_id=table->get_table_id();
 	boost::unordered_map<std::string,TableDescriptor*>::iterator it_name_to_table=name_to_table.find(new_table_name);
 	if(it_name_to_table!=name_to_table.cend()){
-		logging->elog("the table named %s is existed!", new_table_name);
+		logging->elog("the table named %s is existed!", new_table_name.c_str());
 		return false;
 	}
 	boost::unordered_map<TableID,TableDescriptor*>::iterator it_tableid_to_table=tableid_to_table.find(new_table_id);

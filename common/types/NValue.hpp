@@ -11,6 +11,9 @@
 #include <cassert>
 #include <stdint.h>
 #include <iostream>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 
 #include <boost/functional/hash.hpp>

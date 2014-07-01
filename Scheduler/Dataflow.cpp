@@ -57,3 +57,15 @@ Attribute Dataflow::getAttribute(std::string name)const{
 	assert(false);
 	return Attribute(ATTRIBUTE_NULL);
 }
+
+Attribute Dataflow::getAttribute(std::string tbname,std::string colname)const{
+	for(unsigned i=0;i<attribute_list_.size();i++){
+		if(attribute_list_[i].attrName==colname){
+			return attribute_list_[i];
+		}
+	}
+	printf("Failed to find attribute [%s]\n",colname.c_str());
+
+	assert(false);
+	return Attribute(ATTRIBUTE_NULL);
+}

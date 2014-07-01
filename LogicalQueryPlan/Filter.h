@@ -8,6 +8,9 @@
 #ifndef FILTER_H_
 #define FILTER_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 #include "../common/AttributeComparator.h"
 class Filter:public LogicalOperator {

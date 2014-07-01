@@ -15,6 +15,9 @@
 #include <map>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/set.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Partitioner.h"
 #include "Attribute.h"
 #include "Column.h"
@@ -135,11 +138,13 @@ public:
 		return attributes[offset];
 	}
 	Attribute getAttribute(const std::string& name)const{
+		stringstream ss;
+		ss<<tableName.c_str()<<"."<<name.c_str();
 		for(unsigned i=0;i<attributes.size();i++){
-			if(attributes[i].attrName==name)
+			if(attributes[i].attrName==ss.str())
 				return attributes[i];
 		}
-		printf("The attribute name [%s] does not match any attribute!\n",name.c_str());
+		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
 		assert(false);
 	}
 	/* the following methods are considered to be deleted.*/
@@ -151,6 +156,8 @@ public:
 	Schema* getSchema()const;
 	inline void setRowNumber(unsigned long row_number) { row_number_ = row_number; }
 	inline unsigned long getRowNumber() { return row_number_; }
+	inline unsigned int getNumberOfAttribute(){ return attributes.size();}	// add by Yu
+
 protected:
 	string tableName;
 	vector<Attribute> attributes;
@@ -164,7 +171,7 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & tableName & attributes & table_id_ & projection_list_;
+		ar & tableName & attributes & table_id_ & projection_list_ & row_number_;
 	}
 
 };

@@ -17,6 +17,9 @@
 #include <vector>
 #include <map>
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../../utility/lock.h"
 #include "../../common/hash.h"
 using namespace std;

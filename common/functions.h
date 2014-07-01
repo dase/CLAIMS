@@ -8,31 +8,44 @@
 #ifndef FUNCTIONS_H_
 #define FUNCTIONS_H_
 
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <functional>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ExpressionCalculator.h"
 #include "TypePromotionMap.h"
 #include "TypeCast.h"
-//extern data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
+using namespace std;
 
 bool check_data_type_for_add(data_type dt){
 	switch(dt){
-	case t_int:{
-		return true;
-	}
-	case t_float:{
-		return true;
-	}
-	case t_double:{
-		return true;
-	}
-	case t_u_long:{
-		return true;
-	}
-	case t_smallInt:{
-		return true;
-	}
-	default:{
-		return false;
-	}
+		case t_int:{
+			return true;
+		}
+		case t_float:{
+			return true;
+		}
+		case t_double:{
+			return true;
+		}
+		case t_decimal:{
+			return true;
+		}
+		case t_u_long:{
+			return true;
+		}
+		case t_smallInt:{
+			return true;
+		}
+		case t_date:{
+			return true;
+		}
+		default:{
+			return false;
+		}
 	}
 }
 
@@ -47,6 +60,18 @@ static void add_in_same_type(const ExpressionItem& left,const ExpressionItem& ri
 		case t_float:{
 			target.return_type=t_float;
 			target.content.data.value._float=left.content.data.value._float+right.content.data.value._float;
+			break;
+		}
+		case t_u_long:{
+			target.return_type=t_u_long;
+			target.content.data.value._ulong=left.content.data.value._ulong+right.content.data.value._ulong;
+			break;
+		}
+		case t_decimal:{
+			target.return_type=t_decimal;
+			NValue l=left._decimal;
+			NValue r=right._decimal;
+			target._decimal=l.op_add(r);
 			break;
 		}
 		default:{
@@ -68,6 +93,49 @@ static void mins_in_same_type(const ExpressionItem& left,const ExpressionItem& r
 			target.content.data.value._float=left.content.data.value._float-right.content.data.value._float;
 			break;
 		}
+		case t_u_long:{
+			target.return_type=t_u_long;
+			target.content.data.value._ulong=left.content.data.value._ulong-right.content.data.value._ulong;
+			break;
+		}
+		case t_decimal:{
+			target.return_type=t_decimal;
+			NValue l=left._decimal;
+			NValue r=right._decimal;
+			target._decimal=l.op_subtract(r);
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
+	}
+}
+
+static void muls_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
+	assert(left.return_type==right.return_type);
+	switch(left.return_type){
+		case t_int:{
+			target.return_type=t_int;
+			target.content.data.value._int=left.content.data.value._int*right.content.data.value._int;
+			break;
+		}
+		case t_float:{
+			target.return_type=t_float;
+			target.content.data.value._float=left.content.data.value._float*right.content.data.value._float;
+			break;
+		}
+		case t_u_long:{
+			target.return_type=t_u_long;
+			target.content.data.value._ulong=left.content.data.value._ulong*right.content.data.value._ulong;
+			break;
+		}
+		case t_decimal:{
+			target.return_type=t_decimal;
+			NValue l=left._decimal;
+			NValue r=right._decimal;
+			target._decimal=l.op_multiply(r);
+			break;
+		}
 		default:{
 			printf("add type not supproted!\n");
 		}
@@ -86,12 +154,10 @@ static void adds(ExpressionItemStack& stack, ExpressionItem& target){
 	if(!check_data_type_for_add(left.return_type)){
 		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
 	}
-//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
 	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 }
 
 static void add(ExpressionItemStack& stack, ExpressionItem& target){
-	//assuming all types are int.
 	assert(stack.size()>=2);
 	ExpressionItem right=stack.top();
 	stack.pop();
@@ -105,11 +171,8 @@ static void add(ExpressionItemStack& stack, ExpressionItem& target){
 		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
 	}
 
-//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
 	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
-
 	if(target.return_type!=left.return_type){
-		//left should be converted into target.return_type if two types are different
 		TypeCast::type_cast_functions[left.return_type][target.return_type](left);
 	}
 	if(target.return_type!=right.return_type){
@@ -124,60 +187,96 @@ static void minss(ExpressionItemStack& stack, ExpressionItem& target){
 	ExpressionItem right=stack.top();
 	stack.pop();
 	if(!check_data_type_for_add(right.return_type)){
-		printf("%s is not supported for +!\n",getReturnTypeName(right.return_type).c_str());
+		printf("%s is not supported for -s r!\n",getReturnTypeName(right.return_type).c_str());
 	}
 	ExpressionItem left=stack.top();
 	stack.pop();
 	if(!check_data_type_for_add(left.return_type)){
-		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
+		printf("%s is not supported for -s l!\n",getReturnTypeName(left.return_type).c_str());
 	}
-//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
 	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 }
 
 static void mins(ExpressionItemStack& stack, ExpressionItem& target){
-	//assuming all types are int.
+	assert(stack.size()>=2);
+
+	ExpressionItem right=stack.top();
+	stack.pop();
+	if(!check_data_type_for_add(right.return_type)){
+		printf("%s is not supported for - r!\n",getReturnTypeName(right.return_type).c_str());
+	}
+
+	ExpressionItem left=stack.top();
+	stack.pop();
+	if(!check_data_type_for_add(left.return_type)){
+		printf("%s is not supported for - l!\n",getReturnTypeName(left.return_type).c_str());
+	}
+
+	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	if(target.return_type!=left.return_type){
+		TypeCast::type_cast_functions[left.return_type][target.return_type](left);
+	}
+	if(target.return_type!=right.return_type){
+		TypeCast::type_cast_functions[right.return_type][target.return_type](right);
+	}
+	mins_in_same_type(left,right,target);
+}
+
+static void muls(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=2);
 	ExpressionItem right=stack.top();
 	stack.pop();
 	if(!check_data_type_for_add(right.return_type)){
-		printf("%s is not supported for +!\n",getReturnTypeName(right.return_type).c_str());
+		printf("%s is not supported for *!\n",getReturnTypeName(right.return_type).c_str());
 	}
 	ExpressionItem left=stack.top();
 	stack.pop();
 	if(!check_data_type_for_add(left.return_type)){
-		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
+		printf("%s is not supported for *!\n",getReturnTypeName(left.return_type).c_str());
 	}
-//	target.return_type=right.return_type>left.return_type?right.return_type:left.return_type;
+	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+}
+
+static void mul(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem right=stack.top();
+	stack.pop();
+	if(!check_data_type_for_add(right.return_type)){
+		printf("%s is not supported for *!\n",getReturnTypeName(right.return_type).c_str());
+	}
+	ExpressionItem left=stack.top();
+	stack.pop();
+	if(!check_data_type_for_add(left.return_type)){
+		printf("%s is not supported for *!\n",getReturnTypeName(left.return_type).c_str());
+	}
+
 	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 
 	if(target.return_type!=left.return_type){
-		//left should be converted into target.return_type if two types are different
 		TypeCast::type_cast_functions[left.return_type][target.return_type](left);
 	}
 	if(target.return_type!=right.return_type){
 		TypeCast::type_cast_functions[right.return_type][target.return_type](right);
 	}
 
-	mins_in_same_type(left,right,target);
+	muls_in_same_type(left,right,target);
 }
 
 static void compare_less_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
 	assert(left.return_type==right.return_type);
 	target.return_type=t_boolean;
 	switch(left.return_type){
-	case t_int:{
-		target.content.data.value._bool=left.content.data.value._int<right.content.data.value._int;
-		break;
-	}
-	case t_float:{
-
-		target.content.data.value._bool=(left.content.data.value._float<right.content.data.value._float);
-		break;
-	}
-	defalut:{
-		printf("add type not supproted!\n");
-	}
+		case t_int:{
+			target.content.data.value._bool=left.content.data.value._int<right.content.data.value._int;
+			break;
+		}
+		case t_float:{
+			target.content.data.value._bool=(left.content.data.value._float<right.content.data.value._float);
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
 	}
 }
 
@@ -187,7 +286,6 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 
 	right=stack.top();
 	stack.pop();
-
 	left=stack.top();
 	stack.pop();
 
@@ -197,7 +295,6 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
-		//left should be converted into tpromoted_type if two types are different
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
 	}
 	if(promoted_type!=right.return_type){
@@ -206,8 +303,6 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 
 	target.type=ExpressionItem::const_type;
 	compare_less_in_same_type(left,right,target);
-
-
 }
 
 static void compare_lesss(ExpressionItemStack& stack, ExpressionItem& target){
@@ -226,7 +321,6 @@ static void compare_lesss(ExpressionItemStack& stack, ExpressionItem& target){
 	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
-		//left should be converted into tpromoted_type if two types are different
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
 	}
 	if(promoted_type!=right.return_type){
@@ -234,50 +328,50 @@ static void compare_lesss(ExpressionItemStack& stack, ExpressionItem& target){
 	}
 
 	target.type=ExpressionItem::const_type;
-
-
 }
 
 inline bool search_for_and_construct_else_exp(ExpressionItemStack& stack,Expression& case_exp){
 	bool finished=false;
 	while((!stack.empty())){
 		switch(stack.top().type){
-		case ExpressionItem::const_type:{
-			case_exp.push_back(stack.top());
-			stack.pop();
-			break;
-		}
-		case ExpressionItem::operator_type:{
-			op_type tp=stack.top().content.op.op_;
-			if(tp==op_case_else){
+			case ExpressionItem::const_type:{
 				case_exp.push_back(stack.top());
 				stack.pop();
-				finished=true;
 				break;
 			}
-			else if(tp==op_case_when||tp==op_case){
-				finished=true;
-			}
-			else{
-				case_exp.push_back(stack.top());
-				stack.pop();
+
+			case ExpressionItem::operator_type:{
+				op_type tp=stack.top().content.op.op_;
+				if(tp==op_case_else){
+					case_exp.push_back(stack.top());
+					stack.pop();
+					finished=true;
+					break;
+				}
+				else if(tp==op_case_when||tp==op_case){
+					finished=true;
+				}
+				else{
+					case_exp.push_back(stack.top());
+					stack.pop();
+				}
+
+				break;
 			}
 
-			break;
-		}
-		case ExpressionItem::variable_type:{
-			case_exp.push_back(stack.top());
-			stack.pop();
-			break;
-		}
-		defalut:{
-			assert(false);
-		}
+			case ExpressionItem::variable_type:{
+				case_exp.push_back(stack.top());
+				stack.pop();
+				break;
+			}
+
+			default:{
+				assert(false);
+			}
 		}
 		if(finished)
 			break;
 	}
-
 	/**check if the top of stack_when is when. If it is not, it means that we fails
 	 * to find a when cause, so we recovery the original stack as it was.
 	 */
@@ -329,7 +423,6 @@ inline bool search_for_and_construct_then_exp(ExpressionItemStack& stack,Express
 		if(finished)
 			break;
 	}
-
 	/**check if the top of stack_when is when. If it is not, it means that we fails
 	 * to find a when cause, so we recovery the original stack as it was.
 	 */
@@ -382,7 +475,6 @@ inline bool search_for_and_construct_when_exp(ExpressionItemStack& stack, Expres
 		if(finished)
 			break;
 	}
-
 	/**check if the top of stack_when is when. If it is not, it means that we fails
 	 * to find a when cause, so we recovery the original stack as it was.
 	 */
@@ -393,15 +485,10 @@ inline bool search_for_and_construct_when_exp(ExpressionItemStack& stack, Expres
 		return false;
 	}
 	return true;
-
-
 }
 
 static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 	//The bottom of the stack is the begin symbol of case operator,
-
-
-
 	/**     the stack for
 	 * 						case
 	 * 							when x<60 then "FAIL"
@@ -427,8 +514,6 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 	 * 			ELSE
 	 * 			CASE
 	 */
-
-
 	stack.pop();// drop the top element ----> CASE
 
 	Expression when_exp;
@@ -463,9 +548,6 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 			}
 			target=then_result;
 			return;
-
-
-
 		}
 		else{
 //			when_exp.clear();
@@ -473,7 +555,6 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 		}
 
 	}
-
 	/* no when cause is true */
 	Expression else_exp;
 	bool found=search_for_and_construct_else_exp(stack,else_exp);
@@ -489,10 +570,106 @@ static void do_case(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()==0);
 	target=else_result;
 	return;
+}
 
+static void upper(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=1);
 
+	ExpressionItem uppered_string;
 
+	uppered_string=stack.top();
+	stack.pop();
 
+	target.return_type=t_string;
+	target.type=ExpressionItem::const_type;
+
+	string str=uppered_string._string;
+	transform(str.begin(),str.end(),str.begin(),::toupper);
+
+	target._string=str;
+
+}
+
+static void substring(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=3);
+
+	ExpressionItem Str;
+	ExpressionItem Begin;
+	ExpressionItem Length;
+
+	Length=stack.top();
+	stack.pop();
+	Begin=stack.top();
+	stack.pop();
+	Str=stack.top();
+	stack.pop();
+
+	unsigned begin=Begin.content.data.value._int;
+	unsigned length=Length.content.data.value._int;
+
+	string subed_str=Str._string.substr(begin,length);
+
+	target.return_type=t_string;
+	target.type=ExpressionItem::const_type;
+	target._string=subed_str;
+}
+
+static string& lTrim(string &ss){
+    string::iterator p=find_if(ss.begin(),ss.end(),not1(ptr_fun(::isspace)));
+    ss.erase(ss.begin(),p);
+    return ss;
+}
+
+static string& rTrim(string &ss){
+    string::reverse_iterator p=find_if(ss.rbegin(),ss.rend(),not1(ptr_fun(::isspace)));
+    ss.erase(p.base(),ss.end());
+    return ss;
+}
+
+static string& atrim(string &st){
+    lTrim(rTrim(st));
+    return st;
+}
+
+static void trim(ExpressionItemStack& stack, ExpressionItem& target){
+	/*
+	 * now the trim function only support deleting space on head and tail.
+	 * */
+	assert(stack.size()>=3);
+	ExpressionItem Str;
+	ExpressionItem mode;
+	ExpressionItem subStr;
+	Str=stack.top();
+	stack.pop();
+	mode=stack.top();
+	stack.pop();
+	subStr=stack.top();
+	stack.pop();
+
+	if(mode.content.data.value._int==0){
+		string str=Str._string;
+		string rt=atrim(str);
+		target._string=rt;
+		target.return_type=t_string;
+		target.type=ExpressionItem::const_type;
+	}
+}
+
+static void cast(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+
+	ExpressionItem type;
+	ExpressionItem variable;
+
+	type=stack.top();
+	stack.pop();
+	variable=stack.top();
+	stack.pop();
+
+	type.getType(type._string.c_str());
+	TypeCast::type_cast_functions[variable.return_type][type.return_type](variable);
+
+	target=variable;
 }
 
 #endif /* FUNCTIONS_H_ */

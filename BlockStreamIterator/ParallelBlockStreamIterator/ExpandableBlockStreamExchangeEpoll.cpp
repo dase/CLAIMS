@@ -48,6 +48,7 @@ ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 }
 ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 	// TODO Auto-generated destructor stub
+	delete logging_;
 }
 
 bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
@@ -67,6 +68,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 		buffer=new BlockStreamBuffer(state.block_size,BUFFER_SIZE_IN_EXCHANGE,state.schema);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
+		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -145,12 +147,19 @@ bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 
 	while(nexhausted_lowers<nlowers){
 		if(buffer->getBlock(*block)){
+			perf_info_->processed_one_block();
 			return true;
 		}
 		usleep(1);
 	}
 	/* all the lowers exchange are exhausted.*/
-	return buffer->getBlock(*block);
+	if(buffer->getBlock(*block)){
+		perf_info_->processed_one_block();
+		return true;
+	}
+	else{
+		return false;
+	}
 
 }
 
@@ -171,7 +180,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 	for(unsigned i=0;i<nlowers;i++){
 //		FileClose(this->socket_fd_lower_list[i]);
-		block_for_socket_[i]->~BlockContainer();
+		delete block_for_socket_[i];;
 	}
 
 //	sleep(1);
@@ -180,8 +189,8 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 		FileClose(it->first);
 	}
 
-	received_block_stream_->~BlockStreamBase();
-	buffer->~BlockStreamBuffer();
+	delete received_block_stream_;
+	delete buffer;
 //	printf("Buffer is freed in Exchange!\n");
 	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
@@ -319,7 +328,8 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 			return false;
 		}
 //		printf("***************************** send iterator to %d,%d*********************************\n",state.exchange_id,i);
-		EIEL->~BlockStreamIteratorBase();
+//		EIEL->~BlockStreamIteratorBase();
+		delete EIEL;
 	}
 //	printf("AVG::%f\n",getSecond(start)/times);
 	return true;

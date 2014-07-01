@@ -38,6 +38,7 @@
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../utility/rdtsc.h"
 #include "../../common/AttributeComparator.h"
+#include "../../Test/set_up_environment.h"
 
 //#define DEBUG_TestForSerialize
 
@@ -1440,4 +1441,118 @@ static int query_optimization_based_on_statistics(){
 		}
 	}
 	return 0;
+}
+static int query_optimization_outputdata()
+{
+	int master;
+//	cout<<"Master(0) or Slave(others)"<<endl;
+//	cin>>master;
+	printf("~!OKOKO!!!!!\n");
+	printf("Master(0) or Slave(others)??\n");
+	scanf("%d",&master);
+	getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+	if(master!=0)
+	{
+		Environment::getInstance(false);
+	}
+	else
+	{
+		Environment::getInstance(true);
+		startup_multiple_node_environment_of_tpch();
+//		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+//		Catalog* catalog=Environment::getInstance()->getCatalog();
+////		TableDescriptor* table_1=new TableDescriptor("PART",0);
+////		table_1->addAttribute("row_id", data_type(t_u_long),0,true);
+////		table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
+////		table_1->addAttribute("P_NAME",data_type(t_string),55);
+////		table_1->addAttribute("P_MFGR",data_type(t_string),25);
+////		table_1->addAttribute("P_BRAND",data_type(t_string),10);
+////		table_1->addAttribute("P_TYPE",data_type(t_string),25);
+////		table_1->addAttribute("P_SIZE",data_type(t_int));
+////		table_1->addAttribute("P_CONTAINER",data_type(t_string),10);
+////		table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
+////		table_1->addAttribute("P_COMMENT",data_type(t_string),23);
+////
+////		table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",1);//should be 4
+////
+////		catalog->add_table(table_1);
+////
+////		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+////
+////			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
+////		}
+//
+//
+//		TableDescriptor* table_1=new TableDescriptor("LINEITEM",0);
+//		table_1->addAttribute("row_id", data_type(t_u_long));
+//		table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));  				//0
+//		table_1->addAttribute("L_PARTKEY",data_type(t_u_long));
+//		table_1->addAttribute("L_SUPPKEY",data_type(t_u_long));
+//		table_1->addAttribute("L_LINENUMBER",data_type(t_u_long));
+//		table_1->addAttribute("L_QUANTITY",data_type(t_decimal));
+//		table_1->addAttribute("L_EXTENDEDPRICE",data_type(t_decimal));
+//		table_1->addAttribute("L_DISCOUNT",data_type(t_decimal));
+//		table_1->addAttribute("L_TEX",data_type(t_decimal));
+//		table_1->addAttribute("L_RETURNFLAG",data_type(t_string),1);
+//		table_1->addAttribute("L_LINESTATUS",data_type(t_string),1);
+//		table_1->addAttribute("L_SHIPDATE",data_type(t_date));
+//		table_1->addAttribute("L_COMMITDATE",data_type(t_date));
+//		table_1->addAttribute("L_RECEIPTDATE",data_type(t_date));
+//		table_1->addAttribute("L_SHIPINSTRUCT",data_type(t_string),25);
+//		table_1->addAttribute("L_SHIPMODE",data_type(t_string),10);
+//		table_1->addAttribute("L_COMMENT",data_type(t_string),44);
+//
+//		table_1->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",1);
+///*
+//row_id,L_ORDERKEY,L_PARTKEY,L_SUPPKEY,L_LINENUMBER,L_QUANTITY,L_EXTENDEDPRICE,L_DISCOUNT
+// */
+//		catalog->add_table(table_1);
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+//
+//			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,5);
+//		}
+
+
+//		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+//		/**
+//		 * @li: I change the following code such that the scheme matches those in cj's first projection
+//		 */
+//		table_1->addAttribute("row_id",data_type(t_u_long));  				//0
+//		table_1->addAttribute("trade_date",data_type(t_int));
+//		table_1->addAttribute("order_no",data_type(t_u_long));
+//		table_1->addAttribute("sec_code",data_type(t_int));
+//		table_1->addAttribute("trade_dir",data_type(t_int));
+//		table_1->addAttribute("order_type",data_type(t_int));
+//
+//		vector<ColumnOffset> cj_proj0;
+//		cj_proj0.push_back(0);
+//		cj_proj0.push_back(1);
+//		cj_proj0.push_back(2);
+//		cj_proj0.push_back(3);
+//		cj_proj0.push_back(4);
+//		cj_proj0.push_back(5);
+//		const int partition_key_index_1=0;
+//		table_1->createHashPartitionedProjection(cj_proj0,"row_id",1);	//G0
+//		catalog->add_table(table_1);
+//
+//		for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++)
+//		{
+//
+//			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
+//		}
+
+
+
+		ExecuteLogicalQueryPlan();
+		printf("ready(?)\n");
+		int input;
+		scanf("%d",&input);
+
+		cout<<"Waiting~~~!~"<<endl;
+		while(true)
+		{
+			sleep(1);
+		}
+	}
 }

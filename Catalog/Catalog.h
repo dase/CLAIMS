@@ -10,7 +10,9 @@
 #include <string>
 #include "table.h"
 #include <boost/unordered_map.hpp>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "unordered_map.hpp"
 
 
@@ -46,7 +48,8 @@ public:
 	ProjectionDescriptor* getProjection(const ProjectionID&) const;
 	ProjectionBinding* getBindingModele()const;
 
-	void saveCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---save as a fileby Yu
+	unsigned getTableCount()const {return table_id_allocator.table_id_curosr;};
+	void saveCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---save as a file---by Yu
 	void restoreCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu
 	void saveCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---save as a fileby Yu
 	void restoreCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu

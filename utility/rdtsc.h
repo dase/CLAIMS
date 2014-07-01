@@ -23,7 +23,7 @@
 
 #ifndef RDTSC_H_
 #define RDTSC_H_
-
+typedef unsigned long long int ticks;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,7 +61,10 @@ static __inline__ double getSecond(unsigned long long start_time)
 {
 	return (curtick()-start_time)/(double)CPU_FRE;
 }
-
+static __inline__ double getSecondDuratoin(unsigned long long start_time, ticks end)
+{
+	return (end-start_time)/(double)CPU_FRE;
+}
 static __inline__ double getMilliSecond(unsigned long long start_time)
 {
 	return (curtick()-start_time)/(double)CPU_FRE*1000;

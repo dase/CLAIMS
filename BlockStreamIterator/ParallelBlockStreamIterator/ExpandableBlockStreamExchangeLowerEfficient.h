@@ -25,6 +25,11 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <pthread.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+
+
 #include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
 #include "../../Executor/IteratorExecutorMaster.h"

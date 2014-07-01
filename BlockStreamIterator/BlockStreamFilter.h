@@ -7,6 +7,9 @@
 
 #ifndef BLOCKSTREAMFILTER_H_
 #define BLOCKSTREAMFILTER_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
 #include "../common/Comparator.h"

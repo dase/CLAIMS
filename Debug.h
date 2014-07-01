@@ -10,6 +10,7 @@
 
 #define COOR "/home/imdb/config/wangli/coor.conf"
 
+
 /* CONFIG is now specified in Config.cpp
 //#define CONFIG "/home/imdb/config/wangli/config"
 

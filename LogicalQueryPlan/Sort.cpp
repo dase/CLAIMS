@@ -6,8 +6,7 @@
  */
 
 #include "Sort.h"
-
-LogicalSort::LogicalSort(LogicalOperator *child, OrderByAttr *oba)
+LogicalSort::LogicalSort(LogicalOperator *child,std::vector<LogicalSort::OrderByAttr*>oba)
 :child_(child),oba_(oba){
 
 }
@@ -27,18 +26,44 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize)
 	BlockStreamSortIterator::State state;
 	state.block_size_=blocksize;
 	state.child_=child;
-	state.orderbyKey_=getOrderByKey(oba_->tbl_,oba_->attr_);
-	Dataflow dataflow=child_->getDataflow();
+	for(unsigned i=0;i<oba_.size();i++){
+//		state.orderbyKey_.push_back(getOrderByKey(oba_[i]->tbl_,oba_[i]->attr_));
+		state.orderbyKey_.push_back(getOrderByKey(oba_[i]->ta_));
+	}
 	state.input_=getSchema(dataflow_.attribute_list_);
 	return new BlockStreamSortIterator(state);
 }
 
-int LogicalSort::getOrderByKey(const char *tbl,const char *attr){
+
+int LogicalSort::getOrderByKey(const char *tbe, const char *attr){
 	for(unsigned i=0;i<dataflow_.attribute_list_.size();i++){
 		TableDescriptor *table=Catalog::getInstance()->getTable(dataflow_.attribute_list_[i].table_id_);
 		string tablename=table->getTableName();
-		if((tablename.compare(tbl)==0)&&(dataflow_.attribute_list_[i].attrName.compare(attr)==0)){
+		if((tablename.compare(tbe)==0)&&(dataflow_.attribute_list_[i].attrName.compare(attr)==0)){
 			return i;
 		}
 	}
+}
+
+int LogicalSort::getOrderByKey(const char *ta){
+	for(unsigned i=0;i<dataflow_.attribute_list_.size();i++){
+		string _ta(ta);
+		if(_ta.compare(dataflow_.attribute_list_[i].attrName)==0){
+			return i;
+		}
+	}
+}
+void LogicalSort::printOrderByAttr()const
+{
+	cout<<"OrderByAttr:"<<endl;
+	for(int i=0;i<oba_.size();i++ )
+	{
+		printf("                        %s\n",(const char *)oba_[i]->ta_);
+
+	}
+}
+void LogicalSort::print(int level)const
+{
+	printOrderByAttr();
+	child_->print(level+1);
 }

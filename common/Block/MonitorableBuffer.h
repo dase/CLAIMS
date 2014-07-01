@@ -7,7 +7,9 @@
 
 #ifndef MONITORABLEBUFFER_H_
 #define MONITORABLEBUFFER_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 class MonitorableBuffer {
 public:
 	MonitorableBuffer();

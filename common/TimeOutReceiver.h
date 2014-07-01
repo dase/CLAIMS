@@ -5,6 +5,9 @@
  *      Author: wangli
  */
 #include <Theron/Theron.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #ifndef TIMEOUTRECEIVER_H_
 #define TIMEOUTRECEIVER_H_
 

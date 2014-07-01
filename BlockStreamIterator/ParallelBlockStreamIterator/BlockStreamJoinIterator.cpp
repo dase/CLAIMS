@@ -8,7 +8,7 @@
 #include "BlockStreamJoinIterator.h"
 #include "../../Executor/ExpanderTracker.h"
 
-#define DISABLE_HASH_TABLE
+//#define _DEBUG_
 
 BlockStreamJoinIterator::BlockStreamJoinIterator(State state)
 :state_(state),hash(0),hashtable(0),reached_end(0),ExpandableBlockStreamIteratorBase(barrier_number(2),serialized_section_number(1)){
@@ -88,11 +88,13 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		}
 
 		hash=PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets);
-		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
+//		PartitionFunction* hash_test=PartitionFunctionFactory::createBoostHashFunction(4);
 		unsigned long long hash_table_build=curtick();
 		hashtable=new BasicHashTable(state_.ht_nbuckets,state_.ht_bucketsize,state_.input_schema_left->getTupleMaxSize());
 //		printf("Hash table construction time:%4.4f\n",getSecond(hash_table_build));
+#ifdef	_DEBUG_
 		consumed_tuples_from_left=0;
+#endif
 	}
 
 
@@ -112,8 +114,13 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	void *key_in_hashtable;
 	void *value_in_input;
 	void *value_in_hashtable;
-	initContext(state_.input_schema_left,state_.block_size_);
-	thread_context& ct=getContext();
+
+//	initContext(state_.input_schema_left,state_.block_size_);
+
+	join_thread_context* jtc=new join_thread_context();
+	jtc->block_for_asking_=BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_);
+	jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
+//	thread_context& ct=getContext();
 //	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
 
 	const Schema* input_schema=state_.input_schema_left->duplicateSchema();
@@ -131,25 +138,28 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 
 
-	while(state_.child_left->next(ct.block_for_asking_)){
+
+	while(state_.child_left->next(jtc->block_for_asking_)){
 //		continue;
 //		BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
-		ct.block_stream_iterator_->~BlockStreamTraverseIterator();
-		ct.block_stream_iterator_=ct.block_for_asking_->createIterator();
+		jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
+		jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
 
 //		bsti->reset();
-		while(cur=ct.block_stream_iterator_->nextTuple()){
+		while(cur=jtc->block_stream_iterator_->nextTuple()){
 //			hashtable->atomicAllocate(0);
 //			continue;
+#ifdef	_DEBUG_
 			processed_tuple_count++;
 			lock_.acquire();
 			consumed_tuples_from_left++;
 			lock_.release();
+#endif
 //			continue;
 			const void* key_addr=input_schema->getColumnAddess(state_.joinIndex_left[0],cur);
 			bn=op->getPartitionValue(key_addr,buckets);
 //			printf("%d\t",bn);
-//			if(bn!=-1){
+//			if(bn!=0){
 //				continue;
 //			}
 			tuple_in_hashtable=hashtable->atomicAllocate(bn);
@@ -173,7 +183,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //			lock_.release();
 		}
 //		bsb->setEmpty();
-		ct.block_for_asking_->setEmpty();
+		jtc->block_for_asking_->setEmpty();
 //		bsti->~BlockStreamTraverseIterator();
 	}
 //	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
@@ -184,11 +194,12 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 
 
 	unsigned tmp=0;
+#ifdef	_DEBUG_
 	tuples_in_hashtable=0;
 
 	produced_tuples=0;
 	consumed_tuples_from_right=0;
-
+#endif
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterNewThreadToAllBarriers(1);
 //		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
@@ -201,9 +212,17 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //		hashtable->~BasicHashTable();
 	}
 	/* destory the context for the left child*/
-	destorySelfContext();
+	jtc->block_for_asking_->~Block();
+	jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
+
+
+
+//	destorySelfContext();
 	/* create and initialized the context for the right child*/
-	initContext(state_.input_schema_right,state_.block_size_);
+
+	jtc->block_for_asking_=BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_);
+	jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
+	initContext(jtc);
 
 //	printf("join open consume %d tuples\n",consumed_tuples_from_left);
 
@@ -224,16 +243,16 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 	bool key_exit;
 
 //	remaining_block rb;
-	thread_context& ct=getContext();
+	join_thread_context* jtc=(join_thread_context*)getContext();
 
 	while(true){
 //		if(atomicPopRemainingBlock(rb)){
-			while((tuple_from_right_child=ct.block_stream_iterator_->currentTuple())>0){
-//				ct.block_stream_iterator_->increase_cur_();
+			while((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())>0){
+//				jtc->block_stream_iterator_->increase_cur_();
 //				bn=0;
 //				continue;
 				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
-				while((tuple_in_hashtable=ct.hashtable_iterator_.readCurrent())>0){
+				while((tuple_in_hashtable=jtc->hashtable_iterator_.readCurrent())>0){
 					key_exit=true;
 					for(unsigned i=0;i<state_.joinIndex_right.size();i++){
 						key_in_input=state_.input_schema_right->getColumnAddess(state_.joinIndex_right[i],tuple_from_right_child);
@@ -256,27 +275,28 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 						}
 					}
 //					BasicHashTable::Iterator tmp=rb.hashtable_iterator_;
-					ct.hashtable_iterator_.increase_cur_();
+					jtc->hashtable_iterator_.increase_cur_();
 //					rb.hashtable_iterator_.increase_cur_();
 				}
-				ct.block_stream_iterator_->increase_cur_();
+				jtc->block_stream_iterator_->increase_cur_();
 //				rb.blockstream_iterator->increase_cur_();
+#ifdef	_DEBUG_
 				consumed_tuples_from_right++;
-
-				if((tuple_from_right_child=ct.block_stream_iterator_->currentTuple())){
+#endif
+				if((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())){
 					bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
-					hashtable->placeIterator(ct.hashtable_iterator_,bn);
+					hashtable->placeIterator(jtc->hashtable_iterator_,bn);
 				}
 			}
 //			AtomicPushFreeBlockStream(rb.bsb_right_);
 //		}
 //		rb.bsb_right_=AtomicPopFreeBlockStream();//1 1 1
-		ct.block_for_asking_->setEmpty();
+		jtc->block_for_asking_->setEmpty();
 //		rb.bsb_right_->setEmpty();
 
-		ct.hashtable_iterator_=hashtable->CreateIterator();
+		jtc->hashtable_iterator_=hashtable->CreateIterator();
 //		rb.hashtable_iterator_=hashtable->CreateIterator();
-		if(state_.child_right->next(ct.block_for_asking_)==false){
+		if(state_.child_right->next(jtc->block_for_asking_)==false){
 			if(block->Empty()==true){
 //				AtomicPushFreeBlockStream(rb.bsb_right_);
 				free(joinedTuple);
@@ -288,12 +308,12 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 				return true;
 			}
 		}
-		ct.block_stream_iterator_->~BlockStreamTraverseIterator();
-		ct.block_stream_iterator_=ct.block_for_asking_->createIterator();
+		jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
+		jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
 //		rb.blockstream_iterator=rb.bsb_right_->createIterator();
-		if((tuple_from_right_child=ct.block_stream_iterator_->currentTuple())){
+		if((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())){
 			bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
-			hashtable->placeIterator(ct.hashtable_iterator_,bn);
+			hashtable->placeIterator(jtc->hashtable_iterator_,bn);
 		}
 //		atomicPushRemainingBlock(rb);
 	}

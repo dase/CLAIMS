@@ -19,6 +19,7 @@
 %glr-parser%expect 9
 %expect-rr 79
 
+
 %defines
 
 %{
@@ -43,9 +44,9 @@ char linebuf[500];
 
 %locations
 
-%union {		// TODO:2014-3-9---新增一个支持最大数字的类型，dicimal，将所有识别到的整数和浮点数存为该类型，若要存入某个表中，再根据这个列的类型进行转化。 ！！！！！
-	int intval;
-	double floatval;
+%union {
+	int intval;		// no used ---4-28
+	double floatval;	// no used ---4-28
 	char *strval;
 	int subtok;
 	struct Node * ast_node;
@@ -55,9 +56,9 @@ char linebuf[500];
 
 %token <strval> NAME
 %token <strval> STRING
-%token <intval> INTNUM
-%token <intval> BOOL
-%token <floatval> APPROXNUM
+%token <strval> INTNUM
+%token <strval> BOOL
+%token <strval> APPROXNUM
 
        /* user @abc names */
 
@@ -123,6 +124,7 @@ char linebuf[500];
 %token DATE
 %token DATETIME
 %token DAY_HOUR
+%token DAY  //---5.26fzh---
 %token DAY_MICROSECOND
 %token DAY_MINUTE
 %token DAY_SECOND
@@ -227,6 +229,7 @@ char linebuf[500];
 %token PROJECTION	// 2014-2-24---增加对这个词的识别---by余楷
 %token PURGE
 %token QUICK
+%token QUARTER //---5.26fzh---
 %token READ
 %token READS
 %token REAL
@@ -304,6 +307,8 @@ char linebuf[500];
 %token YEAR_MONTH
 %token ZEROFILL
 
+%token WEEK //---5.26fzh---
+
 /** added by yukai **/
 %token DO
 %token MAX_QUERIES_PER_HOUR
@@ -377,12 +382,17 @@ char linebuf[500];
 %token BDB
 %token OPEN
 %token FULL
-
  /* functions with special syntax */
 %token FSUBSTRING
 %token FTRIM
 %token FDATE_ADD FDATE_SUB
 %token FCOUNT
+//---3.25fzh----
+%token FUPPER
+%token FCAST
+%token FCOALESCE
+%token FCONVERT
+
 //---2.18 add aggrection function
 %token FSUM
 %token FAVG
@@ -394,8 +404,8 @@ char linebuf[500];
 
 %type <intval> select_opts opt_with_rollup opt_asc_desc opt_inner_cross left_or_right 
 %type <intval> opt_left_or_right_outer opt_outer  insert_opts
-%type <strval>  opt_as_alias  
-%type <ast_node> stmt_list
+%type <strval>  opt_as_alias  trim_ltb //---3.25fzh---
+%type <ast_node> stmt_list date_type //---3.25fzh---
 %type <ast_node> select_expr_list opt_where select_stmt stmt opt_groupby select_expr
 %type <ast_node> expr_list opt_expr_list  case_list  opt_having opt_orderby expr
 %type <ast_node> groupby_list opt_limit table_reference table_factor
@@ -410,7 +420,13 @@ char linebuf[500];
 
 %type <intval> update_opts	// 2014-3-24---更改位置到此---by Yu
 
+%type <ast_node> opt_ondupupdate insert_stmt	// 2014-4-17---add---by Yu
+
+%type <ast_node>interval_exp //---5.26fzh----
+
 /** add by yukai **/
+
+%type <strval> opt_from opt_like_string	// 2014-5-4---add---by Yu
 %type <ast_node> create_database_stmt create_table_stmt  create_select_statement
 %type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc	
 %type <ast_node> alter_list alter_def data_type create_projection_stmt
@@ -418,6 +434,7 @@ char linebuf[500];
 %type <ast_node> create_index_stmt index_col_list drop_index_stmt	// 2014-3-24---增加---by Yu
 %type <ast_node> drop_database_stmt drop_table_stmt table_list	// 2014-3-24---增加---by Yu
 %type <ast_node> load_table_stmt	// 2014-3-27---增加---by Yu
+%type <ast_node> show_stmt	// 2014-5-4---add---by Yu
 %type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		// 2014-3-24---增加---by Yu
 %type <intval> opt_col index_att index_type rename_list
 %type <intval> opt_chain opt_release opt_read_write
@@ -538,7 +555,7 @@ opt_having: /* nil */ { $$=NULL; /*puts("opt_having is null");*/ }
 opt_orderby: /* nil */ { $$=NULL; /*puts("opt_orederby is null");*/ }
 	| ORDER BY groupby_list 
 	{
-		$$=newOrderbyList(t_groupby_list, NULL, $3);
+		$$=newOrderbyList(t_orderby_list, NULL, $3);
 		/*puts("opt_orederby2");*/
 	}
 	;
@@ -549,7 +566,7 @@ opt_limit: /* nil */ {$$ = NULL; /*puts("opt_limit is null");*/ }
 	; 
 
 opt_into_list: /* nil */ { $$=NULL; /*puts("opt_into_list is null");*/ }//no
-   | INTO column_list {  }											//-------------------------------------------------------------------------------------------
+   | INTO column_list {  }							//-----------------------
    ;
 
 column_list: NAME { $$ = newColumn(t_column, $1, NULL, NULL); }
@@ -598,7 +615,6 @@ table_factor:
   	| table_subquery opt_as NAME 
   	{
 		$$=newTable(t_table, NULL, NULL, $3, 1, $1);
-		/*puts("table_factor3");*/
 	}
 	| '(' table_references ')' { $$=$2; }
   	;
@@ -701,7 +717,7 @@ index_list: NAME  { emit("INDEX %s", $1);  }////////////////////////////////////
    | index_list ',' NAME { emit("INDEX %s", $3); }//////////////////////////////////////////////////////////////////////////
    ;
 
-table_subquery: '(' select_stmt ')' {  }
+table_subquery: '(' select_stmt ')' { $$=$2; }//---3.14fzh---
    ;
 
    /* statements: delete statement */
@@ -737,19 +753,19 @@ delete_stmt: DELETE delete_opts FROM delete_list USING table_references opt_wher
    { emit("DELETEMULTI %d %d %d", $2, $4, $6); }
    ;
 
-   /* statements: insert statement */
+   /* statements: insert statement */	//2014-4-17---add---by Yu
 
-stmt: insert_stmt { emit("STMT"); }
+stmt: insert_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a insert statement"); }	//2014-4-16---add---by Yu
    ;
 
 insert_stmt: INSERT insert_opts opt_into NAME
      opt_col_names
      VALUES insert_vals_list
-     opt_ondupupdate { emit("INSERTVALS %d %d %s", $2, $7, $4); free($4) }
+     opt_ondupupdate { $$ = newInsertStmt($2, $4, $5, $7, $8, NULL, NULL); }
    ;
 
-opt_ondupupdate: /* nil */
-   | ON DUPLICATE KEY UPDATE insert_asgn_list { emit("DUPUPDATE %d", $5); }
+opt_ondupupdate: /* nil */				{ $$ = NULL; }
+   | ON DUPLICATE KEY UPDATE insert_asgn_list	{ $$ = $5; }
    ;
 
 insert_opts: /* nil */			{ $$ = 0; }
@@ -762,44 +778,42 @@ insert_opts: /* nil */			{ $$ = 0; }
 opt_into: INTO | /* nil */
 	;
 
-opt_col_names: /* nil */	{}
-   | '(' column_list ')' {  }
+opt_col_names: /* nil */	{ $$ = NULL; }
+   | '(' column_list ')'	{ $$ = $2; }
    ;
 
-insert_vals_list: '(' insert_vals ')' /*{ emit("VALUES %d", $2); }*/
-   | insert_vals_list ',' '(' insert_vals ')' /*{ emit("VALUES %d", $4);}*/
-;
+insert_vals_list: '(' insert_vals ')'		{ $$ = newInsertValueList($2, NULL); }
+   | insert_vals_list ',' '(' insert_vals ')'	{ $$ = newInsertValueList($4, $1); }	//2014-4-17---Attention: the order can be reversed---by Yu
+   ;
+   
 insert_vals:
-     expr //{ $$ = 1; }
-   | DEFAULT// { emit("DEFAULT"); $$ = 1; }
-   | insert_vals ',' expr //{ $$ = $1 + 1; }
-   | insert_vals ',' DEFAULT //{ emit("DE//没什么用，因为limit只有一项FAULT"); $$ = $1 + 1; }
+     expr		{ $$ = newInsertVals(0, $1, NULL); }
+   | DEFAULT	{ $$ = newInsertVals(1, NULL, NULL); }
+   | expr ',' insert_vals	{ $$ = newInsertVals(0, $1, $3); }
+   | DEFAULT ',' insert_vals	{ $$ = newInsertVals(1, NULL, $3); }
    ;
 
-insert_stmt: INSERT insert_opts opt_into NAME
-    SET insert_asgn_list
-    opt_ondupupdate
-     { emit("INSERTASGN %d %d %s", $2, $6, $4); free($4) }
+insert_stmt: INSERT insert_opts opt_into NAME 
+	SET insert_asgn_list opt_ondupupdate	{ $$ = newInsertStmt($2, $4, NULL, NULL, $7, $6, NULL); }
    ;
 
 insert_stmt: INSERT insert_opts opt_into NAME opt_col_names
-    select_stmt
-    opt_ondupupdate { emit("INSERTSELECT %d %s", $2, $4); free($4); }
+    select_stmt opt_ondupupdate { $$ = newInsertStmt($2, $4, $5, NULL, $7, NULL, $6); }
   ;
 
 insert_asgn_list:
-     NAME COMPARISON expr 
-    // { if ($2 != 4) yyerror("bad insert assignment to %s", $1);
-     //  emit("ASSIGN %s", $1); free($1); $$ = 1; }
-   | NAME COMPARISON DEFAULT
-               //{ if ($2 != 4) yyerror("bad insert assignment to %s", $1);
-              //   emit("DEFAULT"); emit("ASSIGN %s", $1); free($1); $$ = 1; }
-   | insert_asgn_list ',' NAME COMPARISON expr
-              // { if ($4 != 4) yyerror("bad insert assignment to %s", $1);
-             //    emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
-   | insert_asgn_list ',' NAME COMPARISON DEFAULT
-             //  { if ($4 != 4) yyerror("bad insert assignment to %s", $1);
-             //    emit("DEFAULT"); emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
+	NAME COMPARISON expr { 
+		if($2 != 4) yyerror("bad insert assignment to %s", $1); 
+		else $$ = newInsertAssignList($1, 0, $3, NULL); }
+	| NAME COMPARISON DEFAULT { 
+		if ($2 != 4) yyerror("bad insert assignment to %s", $1);
+ 		else $$ = newInsertAssignList($1, 1, NULL, NULL); }
+	| insert_asgn_list ',' NAME COMPARISON expr { 
+		if ($4 != 4) yyerror("bad insert assignment to %s", $1);		 
+		else $$ = newInsertAssignList($3, 0, $5, $1); }
+	| insert_asgn_list ',' NAME COMPARISON DEFAULT { 
+		if ($4 != 4) yyerror("bad insert assignment to %s", $1);
+		else $$ = newInsertAssignList($3, 1, NULL, $1); }
    ;
 
    /** replace just like insert **/
@@ -934,7 +948,7 @@ opt_temporary: /* nil */{ $$ = 0; }
 	;
 
 create_col_list: create_definition { $$ = newCreateColList(t_create_col_list, $1, NULL); }
-	| create_col_list ',' create_definition { $$ = newCreateColList(t_create_col_list, $3, $1); }
+	| create_definition ',' create_col_list { $$ = newCreateColList(t_create_col_list, $1, $3); }
 	;
 
 create_definition: 	/* 2-18---增加name属性---by余楷 */
@@ -946,19 +960,20 @@ create_definition: 	/* 2-18---增加name属性---by余楷 */
     | FULLTEXT KEY '(' column_list ')'	{ $$ = newCreateDef( t_create_def, 6, NULL, NULL, NULL, $4); }
      ;
 
+// 2014-4-14---change '+=' to '|=', save data in t->data ---Yu
 column_atts: /* nil */				{ $$ = newColumnAtts(t_column_atts, 0, 0, 0, NULL, NULL); }
-    | column_atts NOT NULLX			{ Column_atts *t = (Column_atts *)$1;t->datatype += 01; $$ = (Node *)t; }
-    | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1;t->datatype += 02; $$ = (Node *)t; }
-    | column_atts DEFAULT STRING        	{ Column_atts *t = (Column_atts *)$1;t->datatype += 04; t->s = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1;t->datatype += 010; t->num1 = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT APPROXNUM 	{ Column_atts *t = (Column_atts *)$1;t->datatype += 020; t->num2 = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT BOOL          	{ Column_atts *t = (Column_atts *)$1;t->datatype += 040; t->num1 = $3; $$ = (Node *)t; }
-    | column_atts AUTO_INCREMENT        	{ Column_atts *t = (Column_atts *)$1;t->datatype += 0100; $$ = (Node *)t; }
-    | column_atts UNIQUE KEY 			{ Column_atts *t = (Column_atts *)$1;t->datatype += 0200; $$ = (Node *)t; }
-    | column_atts PRIMARY KEY			{ Column_atts *t = (Column_atts *)$1;t->datatype += 0400; $$ = (Node *)t; }
-    | column_atts KEY 				{ Column_atts *t = (Column_atts *)$1;t->datatype += 01000; $$ = (Node *)t; }
-    | column_atts COMMENT STRING 		{ Column_atts *t = (Column_atts *)$1;t->datatype += 02000; $$ = (Node *)t; }
-    | column_atts UNIQUE '(' column_list ')'	{ Column_atts *t = (Column_atts *)$1;t->datatype += 04000; t->col_list = $4; $$ = (Node *)t; }	
+    | column_atts NOT NULLX			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 01; $$ = (Node *)t; }
+    | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1; t->datatype |= 02; $$ = (Node *)t; }
+    | column_atts DEFAULT STRING        	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 04; t->s = $3; $$ = (Node *)t; }
+    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1; t->datatype |= 010; t->num1 = atoi($3); $$ = (Node *)t; }
+    | column_atts DEFAULT APPROXNUM 	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 020; t->num2 = atof($3); $$ = (Node *)t; }
+    | column_atts DEFAULT BOOL          	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 040; t->num1 = atoi($3); $$ = (Node *)t; }
+    | column_atts AUTO_INCREMENT        	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0100; $$ = (Node *)t; }
+    | column_atts UNIQUE KEY 			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0200; $$ = (Node *)t; }
+    | column_atts PRIMARY KEY			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0400; $$ = (Node *)t; }
+    | column_atts KEY 				{ Column_atts *t = (Column_atts *)$1; t->datatype |= 01000; $$ = (Node *)t; }
+    | column_atts COMMENT STRING 		{ Column_atts *t = (Column_atts *)$1; t->datatype |= 02000; $$ = (Node *)t; }
+    | column_atts UNIQUE '(' column_list ')'	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 04000; t->col_list = $4; $$ = (Node *)t; }	
     ;
     
 	/** create projection **/	// 2014-2-24---增加对create projection语句的语法识别---by 余楷
@@ -971,7 +986,7 @@ create_projection_stmt: CREATE PROJECTION ON NAME '(' column_list ')' PARTITIONE
 	| CREATE PROJECTION ON NAME '(' column_list ')' NUMBER COMPARISON INTNUM PARTITIONED ON NAME
 	{ 
 		if ($9 != 4) { yyerror("please give a specific number"); } 
-		else { $$ = newCreateProjectionStmt(t_create_projection_stmt, $4, $6, $10, $13); }
+		else { $$ = newCreateProjectionStmt(t_create_projection_stmt, $4, $6, atoi($10), $13); }
 	}
 	;
 	
@@ -1451,11 +1466,10 @@ stmt: restore_table_stmt { emit("STMT"); }
 restore_table_stmt: RESTORE TABLE table_list FROM STRING
    ;
    
-   /** show statement **/
-stmt: show_stmt
-   ;
+stmt: show_stmt { $$ = $1; output($$, 1); puts("SQL parser： This is a show statement"); }
+	;
    
-show_stmt: SHOW CHARACTER SET opt_like_string
+show_stmt: SHOW opt_full TABLES opt_from opt_like_string	{ $$ = newShowStmt(1, $2, $4, $5); }
    | SHOW COLLATION opt_like_string
    | SHOW opt_full COLUMNS FROM NAME opt_from opt_like_string
    | SHOW CREATE DATABASE NAME
@@ -1477,7 +1491,7 @@ show_stmt: SHOW CHARACTER SET opt_like_string
    | SHOW opt_full PROCESSLIST
    | SHOW opt_trans_level STATUS opt_like_string
    | SHOW TABLE STATUS opt_from opt_like_string
-   | SHOW opt_full TABLES opt_from opt_like_string
+   | SHOW CHARACTER SET opt_like_string
    | SHOW TRIGGERS opt_from opt_like_expr
    | SHOW opt_trans_level VARIABLES opt_like_string
    | SHOW WARNINGS opt_limit
@@ -1488,12 +1502,12 @@ opt_full: /* nil */	{ $$ = 0; }
    | FULL	{ $$ = 1; }
    ;
    
-opt_from: /* nil */
-   | FROM NAME
+opt_from: /* nil */	{ $$ = NULL; }
+   | FROM NAME	{ $$ = $2; }
    ;
    
-opt_like_string: /* nil */
-   | LIKE STRING
+opt_like_string: /* nil */	{ $$ = NULL; }
+   | LIKE STRING	{ $$ = $2; }
    ;
    
 opt_like_expr: /* nil */
@@ -1635,8 +1649,8 @@ set_expr:
     
 
 opt_length: /* nil */		{ $$ = NULL; }
-   | '(' INTNUM ')' 		{ $$ = newLength (t_length, $2, 0); }
-   | '(' INTNUM ',' INTNUM ')'	{ $$ = newLength (t_length, $2, $4); }
+   | '(' INTNUM ')' 		{ $$ = newLength (t_length, atoi($2), 0); }
+   | '(' INTNUM ',' INTNUM ')'	{ $$ = newLength (t_length, atoi($2), atoi($4)); }
    ;
 
 opt_binary: /* nil */	{ $$ = 0; }
@@ -1673,9 +1687,9 @@ data_type:		// 2-18---修改各类别的表示从按位区分到按大小区分-
    | DATETIME 				{ $$ = newDatatype (t_datatype, 15, NULL, 0, NULL, 0, NULL); }
    | YEAR 					{ $$ = newDatatype (t_datatype, 16, NULL, 0, NULL, 0, NULL); }
    | CHAR opt_length opt_csc	 	{ $$ = newDatatype (t_datatype, 17, $2, 0, $3, 0, NULL); }
-   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, $3, NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL); }
+   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL); }
    | BINARY opt_length 			{ $$ = newDatatype (t_datatype, 19, $2, 0, NULL, 0, NULL); }
-   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, $3, NULL); $$ = newDatatype (t_datatype, 20, t, 0, NULL, 0, NULL); }
+   | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 20, t, 0, NULL, 0, NULL); }
    | TINYBLOB 				{ $$ = newDatatype (t_datatype, 21, NULL, 0, NULL, 0, NULL); }
    | BLOB 					{ $$ = newDatatype (t_datatype, 22, NULL, 0, NULL, 0, NULL); }
    | MEDIUMBLOB				{ $$ = newDatatype (t_datatype, 23, NULL, 0, NULL, 0, NULL); }
@@ -1693,15 +1707,15 @@ enum_list: STRING 		{ $$ = newEnumList( t_enum_list, $1, NULL); }
    ;
 
 
-   /**** expressions ****/
+   /**** expressions ****/	// 2014-4-14---modify because of the change of value type---by Yu
 expr: NAME         { $$ = newColumn(t_name, NULL, $1, NULL); /*puts("expr1");*/ }//---3.5fzh---
-   | USERVAR       { dataval d; d.string_val = $1; $$ = newExpr(t_name, d); }
+   | USERVAR       { $$ = newExpr(t_name, $1); }
    | NAME '.' NAME { $$ = newColumn(t_name_name, $1, $3, NULL); /*puts("expr2");*/ }
    | NAME '.' '*'  { $$ = newColumn(t_name_name, $1, "*", NULL);/* puts("expr22");*/}//---3.6fzh---
-   | STRING        { dataval d; d.string_val = $1; $$ = newExpr(t_stringval, d); /*puts("expr3");*/ }
-   | INTNUM        { dataval d; d.int_val=$1; $$ = newExpr(t_intnum, d); /*puts("expr4");*/ }
-   | APPROXNUM     { dataval d; d.double_val = $1; $$ = newExpr(t_approxnum, d); }
-   | BOOL          { dataval d; d.bool_val = $1; $$ = newExpr(t_bool, d); }
+   | STRING        { $$ = newExpr(t_stringval, $1); /*puts("expr3");*/ }
+   | INTNUM        { $$ = newExpr(t_intnum, $1); /*puts("expr4");*/ }	
+   | APPROXNUM     { $$ = newExpr(t_approxnum, $1); }	
+   | BOOL          { $$ = newExpr(t_bool, $1); }
    ;
 
 expr: expr '+' expr 		{ $$=newExprCal(t_expr_cal, "+", NULL, 0, $1, $3); }
@@ -1740,14 +1754,19 @@ expr: expr BETWEEN expr AND expr %prec BETWEEN { $$=newExprFunc(t_expr_func, "BA
    ;
 
 
+
 expr_list: expr		{ $$ = newExprList(t_expr_list, $1, NULL); }
+
    | expr ',' expr_list { $$ = newExprList(t_expr_list, $1, $3); }
+
    | '(' expr ',' expr_list ')'	{ $$ = newExprList(t_expr_list, $2, $4); }	// 2014-3-14---新增规则---by余楷
+
    ;
 
 opt_expr_list: /* nil */
    | expr_list {$$=$1;}
    ;
+
 
 expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
    | '(' expr_list ')' IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $2, $6); }
@@ -1774,33 +1793,47 @@ expr: FCOUNT '(' '*' ')'	{ $$=newExprFunc(t_expr_func, "FCOUNTALL", NULL, NULL, 
 	|FMAX '(' expr ')' { $$=newExprFunc(t_expr_func, "FMAX", NULL, $3, NULL, NULL); }
    
    ;
-   
-expr: FSUBSTRING '(' expr_list ')'			{ $$=newExprFunc(t_expr_func, "FSUBSTRING", NULL, $3, NULL, NULL); }
-   | FSUBSTRING '(' expr FROM expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING2", NULL, $3, $5, NULL);}
-   | FSUBSTRING '(' expr FROM expr FOR expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING3", $7, $3, $5, NULL); }
-   | FTRIM '(' expr_list ')'				{ $$=newExprFunc(t_expr_func, "FTRIM", NULL, $3, NULL, NULL); }
-   | FTRIM '(' trim_ltb expr FROM expr_list ')'	{ }			//--------------------------------------------------
-   ;
 
-trim_ltb: LEADING  { emit("INT 1"); }
-   | TRAILING { emit("INT 2"); }
-   | BOTH { emit("INT 3"); }
+   //---3.25fzh---sds
+expr: FSUBSTRING'(' expr ',' expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING0", $3, $5, NULL, NULL); }
+   | FSUBSTRING'(' expr FROM expr ')'		{ $$=newExprFunc(t_expr_func, "FSUBSTRING0", $3, $5, NULL, NULL);}
+   | FSUBSTRING'(' expr ',' expr ',' expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING1", $3, $5, $7, NULL); }
+   | FSUBSTRING'(' expr FROM expr FOR expr ')' { $$=newExprFunc(t_expr_func, "FSUBSTRING1", $3, $5, $7, NULL); }
+   | FTRIM'(' expr ')'						{ $$=newExprFunc(t_expr_func, "FTRIM3", NULL, $3, NULL, NULL); }
+   | FTRIM'(' trim_ltb expr FROM expr ')'	{ $$=newExprFunc(t_expr_func,$3, NULL, $4, $6, NULL); }
+   | FUPPER'(' expr ')'   					{ $$=newExprFunc(t_expr_func,"FUPPER", NULL, $3, NULL, NULL); }
+   | FCAST '(' expr AS date_type ')'        {$$=newExprFunc(t_expr_func,"FCAST", NULL, $3, $5, NULL); }
+   | FCOALESCE'(' expr_list ')'             { $$=newExprFunc(t_expr_func,"FCOALESCE", NULL, $3,NULL, NULL); }
    ;
+trim_ltb: LEADING   { $$="FTRIM1"; }
+   | TRAILING 		{ $$="FTRIM2"; }
+   | BOTH 			{ $$="FTRIM0"; }
+   ;
+date_type:     {$$=NULL;} 
+   | INTEGER   { char d[10]="int"; $$ = newExpr(t_stringval, d);}
+   | STRING    { char d[10] = "string"; $$ = newExpr(t_stringval, d);}
+   | DOUBLE    { char d[10] = "double"; $$ = newExpr(t_stringval, d);}
+   | FLOAT     { char d[10] = "float"; $$ = newExpr(t_stringval, d);}
+   | CHAR      { char d[10] = "char"; $$ = newExpr(t_stringval, d);}
+   ;
+//////////////////
+//---5.26fzh---
 
-expr: FDATE_ADD '(' expr ',' interval_exp ')' //71{ emit("CALL 3 DATE_ADD"); }
-   |  FDATE_SUB '(' expr ',' interval_exp ')' //72{ emit("CALL 3 DATE_SUB"); }
+expr: FDATE_ADD '(' expr ',' interval_exp ')' { $$=newExprFunc(t_expr_func, "FDATE_ADD", $3, $5, NULL, NULL); }
+   |  FDATE_SUB '(' expr ',' interval_exp ')' { $$=newExprFunc(t_expr_func, "FDATE_SUB", $3, $5, NULL, NULL); }
    ;
-
-interval_exp: INTERVAL expr DAY_HOUR { emit("NUMBER 1"); }
-   | INTERVAL expr DAY_MICROSECOND { emit("NUMBER 2"); }
-   | INTERVAL expr DAY_MINUTE { emit("NUMBER 3"); }
-   | INTERVAL expr DAY_SECOND { emit("NUMBER 4"); }
-   | INTERVAL expr YEAR_MONTH { emit("NUMBER 5"); }
-   | INTERVAL expr YEAR       { emit("NUMBER 6"); }
-   | INTERVAL expr HOUR_MICROSECOND { emit("NUMBER 7"); }
-   | INTERVAL expr HOUR_MINUTE { emit("NUMBER 8"); }
-   | INTERVAL expr HOUR_SECOND { emit("NUMBER 9"); }
+interval_exp: 
+	INTERVAL expr DAY_HOUR         	   { $$=newExprFunc(t_expr_func, "INTERVAL_HOUR",        $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY_MICROSECOND     { $$=newExprFunc(t_expr_func, "INTERVAL_MICROSECOND", $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY_MINUTE          { $$=newExprFunc(t_expr_func, "INTERVAL_MINUTE",      $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY_SECOND          { $$=newExprFunc(t_expr_func, "INTERVAL_SECOND",      $2, NULL, NULL, NULL);  }
+   | INTERVAL expr DAY                 { $$=newExprFunc(t_expr_func, "INTERVAL_DAY",         $2, NULL, NULL, NULL);  }
+   | INTERVAL expr YEAR_MONTH          { $$=newExprFunc(t_expr_func, "INTERVAL_MONTH",       $2, NULL, NULL, NULL);  }
+   | INTERVAL expr YEAR                { $$=newExprFunc(t_expr_func, "INTERVAL_YEAR",        $2, NULL, NULL, NULL);  }
+   | INTERVAL expr WEEK                { $$=newExprFunc(t_expr_func, "INTERVAL_WEEK",        $2, NULL, NULL, NULL);  }
+   | INTERVAL expr QUARTER             { $$=newExprFunc(t_expr_func, "INTERVAL_QUARTER",     $2, NULL, NULL, NULL);  }
    ;
+//---5.26fzh---
 	
 expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE1", $2, $3, NULL, NULL); }//---3.8fzh---
    |  CASE expr case_list ELSE expr END	{ $$=newExprFunc(t_expr_func, "CASE2", $2, $3, $5, NULL); }

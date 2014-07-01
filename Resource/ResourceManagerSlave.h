@@ -8,6 +8,9 @@
 #ifndef RESOURCEMANAGERSLAVE_H_
 #define RESOURCEMANAGERSLAVE_H_
 #include <Theron/Theron.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Message.h"
 #include "../common/Logging.h"
 typedef int NodeID;
