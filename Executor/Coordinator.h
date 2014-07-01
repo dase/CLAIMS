@@ -11,6 +11,9 @@
 #include <Theron/Theron.h>
 #include <string>
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Logging.h"
 
 class Coordinator {

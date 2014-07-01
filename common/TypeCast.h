@@ -7,7 +7,9 @@
 
 #ifndef TYPECAST_H_
 #define TYPECAST_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "ExpressionItem.h"
 
 #include <sstream>

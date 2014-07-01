@@ -103,7 +103,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				if (new_table != NULL)
 				{
 //					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
-					ASTParserLogging::elog("The table %s has existed!", tablename);
+					ASTParserLogging::elog("The table %s has existed!", tablename.c_str());
 					break;
 				}
 
@@ -225,7 +225,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				if((table = catalog->getTable(tablename)) == NULL)	// 2014-4-30---add check---by Yu
 				{
-					ASTParserLogging::elog("There is no table named %s", tablename);
+					ASTParserLogging::elog("There is no table named %s", tablename.c_str());
 					is_correct = false;
 					break;
 				}
@@ -256,7 +256,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						index.push_back(table->getAttribute(colname).index);
 					else
 					{
-						ASTParserLogging::elog("The column %s is not existed!", colname);
+						ASTParserLogging::elog("The column %s is not existed!", colname.c_str());
 						is_correct = false;
 						break;
 					}
@@ -280,7 +280,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
 				if (!semantic_analysis(node,false))//---3.22fzh---
 					SQLParse_elog("semantic_analysis error");
-				expr_to_str_test(node);
+				preprocess(node);
 #ifdef SQL_Parser
 				output(node,0);
 #endif
@@ -328,7 +328,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				// 2014-4-17---check the exist of table---by Yu
 				if(table == NULL)
 				{
-					ASTParserLogging::elog("the table %s does not exist!", table_name);
+					ASTParserLogging::elog("the table %s does not exist!", table_name.c_str());
 					break;
 				}
 				string column_separator(new_node->column_separator);

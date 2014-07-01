@@ -8,13 +8,16 @@
 #ifndef FUNCTIONS_H_
 #define FUNCTIONS_H_
 
-#include "ExpressionCalculator.h"
-#include "TypePromotionMap.h"
-#include "TypeCast.h"
 #include <algorithm>
 #include <string>
 #include <vector>
 #include <functional>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+#include "ExpressionCalculator.h"
+#include "TypePromotionMap.h"
+#include "TypeCast.h"
 using namespace std;
 
 bool check_data_type_for_add(data_type dt){

@@ -20,6 +20,7 @@
 #include "../../utility/rdtsc.h"
 #include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../../common/AttributeComparator.h"
+#include "../set_up_environment.h"
 
 static void query_1(){
 	unsigned long long int start=curtick();
@@ -103,7 +104,7 @@ static void query_2(){
 
 
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(s_ps_join->getDataflow().getAttribute("PS_SUPPLYCOST"));
+	aggregation_attributes.push_back(s_ps_join->getDataflow().getAttribute("PARTSUPP.PS_SUPPLYCOST"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 	LogicalOperator* aggregation=new Aggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
@@ -218,12 +219,12 @@ static void query_3(){
 
 
 	std::vector<Attribute> groupby_attributes;
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("L_ORDERKEY"));
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("O_ORDERDATE"));
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("O_SHIPPRIORITY"));
+	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_ORDERKEY"));
+	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("ORDERS.O_ORDERDATE"));
+	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("ORDERS.O_SHIPPRIORITY"));
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("L_EXTENDEDPRICE"));
-	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("L_DISCOUNT"));
+	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_EXTENDEDPRICE"));
+	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_DISCOUNT"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
@@ -452,374 +453,6 @@ static void load_tpc_h_4_partition(){
 }
 
 
-static void init_single_node_tpc_h_envoriment(bool master=true){
-	Environment::getInstance(master);
-//	printf("Press any key to continue!\n");
-//	int input;
-//	scanf("%d",&input);
-	sleep(1);
-	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
-	Catalog* catalog=Environment::getInstance()->getCatalog();
-
-
-	/////////////////////////////// PART TABLE //////////////////////////////////
-//	TableDescriptor* table_1=new TableDescriptor("PART",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-	TableDescriptor* table_1=new TableDescriptor("PART",0);
-	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
-	table_1->addAttribute("P_NAME",data_type(t_string),55);
-	table_1->addAttribute("P_MFGR",data_type(t_string),25);
-	table_1->addAttribute("P_BRAND",data_type(t_string),10);
-	table_1->addAttribute("P_TYPE",data_type(t_string),25);
-	table_1->addAttribute("P_SIZE",data_type(t_int));
-	table_1->addAttribute("P_CONTAINER",data_type(t_string),10);
-	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
-	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
-
-	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",1);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// SUPPLIER TABLE //////////////////////////////////
-	TableDescriptor* table_2=new TableDescriptor("SUPPLIER",1);
-	table_2->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_2->addAttribute("S_SUPPKEY",data_type(t_u_long),0,true);  				//0
-	table_2->addAttribute("S_NAME",data_type(t_string),55);
-	table_2->addAttribute("S_ADDRESS",data_type(t_string),40);
-	table_2->addAttribute("S_NATIONKEY",data_type(t_u_long));
-	table_2->addAttribute("S_PHONE",data_type(t_string),15);
-	table_2->addAttribute("S_ACCTBAL",data_type(t_decimal),4);
-	table_2->addAttribute("S_COMMENT",data_type(t_string),101);
-
-	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",1);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// PARTSUPP TABLE //////////////////////////////////
-	TableDescriptor* table_3=new TableDescriptor("PARTSUPP",2);
-	table_3->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_3->addAttribute("PS_PARTKEY",data_type(t_u_long),0,true);  				//0
-	table_3->addAttribute("PS_SUPPKEY",data_type(t_u_long));
-	table_3->addAttribute("PS_AVAILQTY",data_type(t_int));
-	table_3->addAttribute("PS_SUPPLYCOST",data_type(t_decimal),2);
-	table_3->addAttribute("PS_COMMENT",data_type(t_string),199);
-
-	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",1);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// CUSTOM TABLE //////////////////////////////////
-	TableDescriptor* table_4=new TableDescriptor("CUSTOMER",3);
-	table_4->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_4->addAttribute("C_CUSTKEY",data_type(t_u_long),0,true);  				//0
-	table_4->addAttribute("C_NAME",data_type(t_string),25);
-	table_4->addAttribute("C_ADDRESS",data_type(t_string),40);
-	table_4->addAttribute("C_NATIONKEY",data_type(t_u_long));
-	table_4->addAttribute("C_PHONE",data_type(t_string),15);
-	table_4->addAttribute("C_ACCTBAL",data_type(t_decimal),4);
-	table_4->addAttribute("C_MKTSEGMENT",data_type(t_string),10);
-	table_4->addAttribute("C_COMMENT",data_type(t_string),117);
-
-	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",1);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// ORDERS TABLE //////////////////////////////////
-	TableDescriptor* table_5=new TableDescriptor("ORDERS",4);
-	table_5->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_5->addAttribute("O_ORDERKEY",data_type(t_u_long),0,true);  				//0
-	table_5->addAttribute("O_CUSTKEY",data_type(t_u_long));
-	table_5->addAttribute("O_ORDERSTATUS",data_type(t_string),1);
-	table_5->addAttribute("O_TOTALPRICE",data_type(t_decimal),4);
-	table_5->addAttribute("O_ORDERDATE",data_type(t_date),15);
-	table_5->addAttribute("O_ORDERPRIORITY",data_type(t_string),15);
-	table_5->addAttribute("O_CLERK",data_type(t_string),15);
-	table_5->addAttribute("O_SHIPPRIORITY",data_type(t_int));
-	table_5->addAttribute("O_COMMENT",data_type(t_string),79);
-
-	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",1);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////// LINEITEM TABLE //////////////////////////////////
-	TableDescriptor* table_6=new TableDescriptor("LINEITEM",5);
-	table_6->addAttribute("row_id", data_type(t_u_long),0,true);			//0
-	table_6->addAttribute("L_ORDERKEY",data_type(t_u_long),0,true);
-	table_6->addAttribute("L_PARTKEY",data_type(t_u_long));
-	table_6->addAttribute("L_SUPPKEY",data_type(t_u_long));
-	table_6->addAttribute("L_LINENUMBER",data_type(t_u_long));
-	table_6->addAttribute("L_QUANTITY",data_type(t_decimal)); 		//5
-	table_6->addAttribute("L_EXTENDEDPRICE",data_type(t_decimal),4);
-	table_6->addAttribute("L_DISCOUNT",data_type(t_decimal));
-	table_6->addAttribute("L_TEX",data_type(t_decimal),4);
-	table_6->addAttribute("L_RETURNFLAG",data_type(t_string),1);
-	table_6->addAttribute("L_LINESTATUS",data_type(t_string),1);	//10
-	table_6->addAttribute("L_SHIPDATE",data_type(t_date));
-	table_6->addAttribute("L_COMMITDATE",data_type(t_date));
-	table_6->addAttribute("L_RECEIPTDATE",data_type(t_date));
-	table_6->addAttribute("L_SHIPINSTRUCT",data_type(t_string),25);
-	table_6->addAttribute("L_SHIPMODE",data_type(t_string),10);
-	table_6->addAttribute("L_COMMENT",data_type(t_string),44);
-
-	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",1); // the number of partition should be 4.
-	///////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////// NATION TABLE //////////////////////////////////
-	TableDescriptor* table_7=new TableDescriptor("NATION",6);
-	table_7->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_7->addAttribute("N_NATIONKEY",data_type(t_u_long),0,true);  				//0
-	table_7->addAttribute("N_NAME",data_type(t_string),25);
-	table_7->addAttribute("N_REGIONKEY",data_type(t_u_long));
-	table_7->addAttribute("N_COMMENT",data_type(t_string),152);
-
-	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
-	///////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////// REGION TABLE //////////////////////////////////
-	TableDescriptor* table_8=new TableDescriptor("REGION",7);
-	table_8->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_8->addAttribute("R_REGIONKEY",data_type(t_u_long),0,true);  				//0
-	table_8->addAttribute("R_NAME",data_type(t_string),25);
-	table_8->addAttribute("R_COMMENT",data_type(t_string),152);
-
-	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
-	///////////////////////////////////////////////////////////////////////////////
-
-
-
-	catalog->add_table(table_1);
-	catalog->add_table(table_2);
-	catalog->add_table(table_3);
-	catalog->add_table(table_4);
-	catalog->add_table(table_5);
-	catalog->add_table(table_6);
-	catalog->add_table(table_7);
-	catalog->add_table(table_8);
-
-
-	//T0
-	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
-	}
-
-	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-
-	for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(2)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,15);
-	}
-	//T3
-	for(unsigned i=0;i<table_4->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
-	}
-
-	for(unsigned i=0;i<table_5->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(4)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,19);
-	}
-
-	//T6
-	for(unsigned i=0;i<table_6->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		table_6->getProjectoin(0)->getPartitioner()->RegisterPartition(i,93);
-	}
-	for(unsigned i=0;i<table_7->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		table_7->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-	for(unsigned i=0;i<table_8->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		table_8->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-}
-
-static void init_multi_node_tpc_h_envoriment(bool master=true){
-	Environment::getInstance(master);
-	printf("Press any key to continue!\n");
-	int input;
-	scanf("%d",&input);
-	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
-	Catalog* catalog=Environment::getInstance()->getCatalog();
-
-
-	/////////////////////////////// PART TABLE //////////////////////////////////
-//	TableDescriptor* table_1=new TableDescriptor("PART",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-	TableDescriptor* table_1=new TableDescriptor("PART",0);
-	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
-	table_1->addAttribute("P_NAME",data_type(t_string),55);
-	table_1->addAttribute("P_MFGR",data_type(t_string),25);
-	table_1->addAttribute("P_BRAND",data_type(t_string),10);
-	table_1->addAttribute("P_TYPE",data_type(t_string),25);
-	table_1->addAttribute("P_SIZE",data_type(t_int));
-	table_1->addAttribute("P_CONTAINER",data_type(t_string),10);
-	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
-	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
-
-	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// SUPPLIER TABLE //////////////////////////////////
-	TableDescriptor* table_2=new TableDescriptor("SUPPLIER",1);
-	table_2->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_2->addAttribute("S_SUPPKEY",data_type(t_u_long),0,true);  				//0
-	table_2->addAttribute("S_NAME",data_type(t_string),55);
-	table_2->addAttribute("S_ADDRESS",data_type(t_string),40);
-	table_2->addAttribute("S_NATIONKEY",data_type(t_u_long));
-	table_2->addAttribute("S_PHONE",data_type(t_string),15);
-	table_2->addAttribute("S_ACCTBAL",data_type(t_decimal),4);
-	table_2->addAttribute("S_COMMENT",data_type(t_string),101);
-
-	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",4);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// PARTSUPP TABLE //////////////////////////////////
-	TableDescriptor* table_3=new TableDescriptor("PARTSUPP",2);
-	table_3->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_3->addAttribute("PS_PARTKEY",data_type(t_u_long),0,true);  				//0
-	table_3->addAttribute("PS_SUPPKEY",data_type(t_u_long));
-	table_3->addAttribute("PS_AVAILQTY",data_type(t_int));
-	table_3->addAttribute("PS_SUPPLYCOST",data_type(t_decimal),2);
-	table_3->addAttribute("PS_COMMENT",data_type(t_string),199);
-
-	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",4);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// CUSTOM TABLE //////////////////////////////////
-	TableDescriptor* table_4=new TableDescriptor("CUSTOMER",3);
-	table_4->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_4->addAttribute("C_CUSTKEY",data_type(t_u_long),0,true);  				//0
-	table_4->addAttribute("C_NAME",data_type(t_string),25);
-	table_4->addAttribute("C_ADDRESS",data_type(t_string),40);
-	table_4->addAttribute("C_NATIONKEY",data_type(t_u_long));
-	table_4->addAttribute("C_PHONE",data_type(t_string),15);
-	table_4->addAttribute("C_ACCTBAL",data_type(t_decimal),4);
-	table_4->addAttribute("C_MKTSEGMENT",data_type(t_string),10);
-	table_4->addAttribute("C_COMMENT",data_type(t_string),117);
-
-	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",4);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-
-	/////////////////////////////// ORDERS TABLE //////////////////////////////////
-	TableDescriptor* table_5=new TableDescriptor("ORDERS",4);
-	table_5->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_5->addAttribute("O_ORDERKEY",data_type(t_u_long),0,true);  				//0
-	table_5->addAttribute("O_CUSTKEY",data_type(t_u_long));
-	table_5->addAttribute("O_ORDERSTATUS",data_type(t_string),1);
-	table_5->addAttribute("O_TOTALPRICE",data_type(t_decimal),4);
-	table_5->addAttribute("O_ORDERDATE",data_type(t_date),15);
-	table_5->addAttribute("O_ORDERPRIORITY",data_type(t_string),15);
-	table_5->addAttribute("O_CLERK",data_type(t_string),15);
-	table_5->addAttribute("O_SHIPPRIORITY",data_type(t_int));
-	table_5->addAttribute("O_COMMENT",data_type(t_string),79);
-
-	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",4);//should be 4
-	///////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////// LINEITEM TABLE //////////////////////////////////
-	TableDescriptor* table_6=new TableDescriptor("LINEITEM",5);
-	table_6->addAttribute("row_id", data_type(t_u_long),0,true);			//0
-	table_6->addAttribute("L_ORDERKEY",data_type(t_u_long),0,true);
-	table_6->addAttribute("L_PARTKEY",data_type(t_u_long));
-	table_6->addAttribute("L_SUPPKEY",data_type(t_u_long));
-	table_6->addAttribute("L_LINENUMBER",data_type(t_u_long));
-	table_6->addAttribute("L_QUANTITY",data_type(t_decimal)); 		//5
-	table_6->addAttribute("L_EXTENDEDPRICE",data_type(t_decimal),4);
-	table_6->addAttribute("L_DISCOUNT",data_type(t_decimal));
-	table_6->addAttribute("L_TEX",data_type(t_decimal),4);
-	table_6->addAttribute("L_RETURNFLAG",data_type(t_string),1);
-	table_6->addAttribute("L_LINESTATUS",data_type(t_string),1);	//10
-	table_6->addAttribute("L_SHIPDATE",data_type(t_date));
-	table_6->addAttribute("L_COMMITDATE",data_type(t_date));
-	table_6->addAttribute("L_RECEIPTDATE",data_type(t_date));
-	table_6->addAttribute("L_SHIPINSTRUCT",data_type(t_string),25);
-	table_6->addAttribute("L_SHIPMODE",data_type(t_string),10);
-	table_6->addAttribute("L_COMMENT",data_type(t_string),44);
-
-	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",4); // the number of partition should be 4.
-	///////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////// NATION TABLE //////////////////////////////////
-	TableDescriptor* table_7=new TableDescriptor("NATION",6);
-	table_7->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_7->addAttribute("N_NATIONKEY",data_type(t_u_long),0,true);  				//0
-	table_7->addAttribute("N_NAME",data_type(t_string),25);
-	table_7->addAttribute("N_REGIONKEY",data_type(t_u_long));
-	table_7->addAttribute("N_COMMENT",data_type(t_string),152);
-
-	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
-	///////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////// REGION TABLE //////////////////////////////////
-	TableDescriptor* table_8=new TableDescriptor("REGION",7);
-	table_8->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_8->addAttribute("R_REGIONKEY",data_type(t_u_long),0,true);  				//0
-	table_8->addAttribute("R_NAME",data_type(t_string),25);
-	table_8->addAttribute("R_COMMENT",data_type(t_string),152);
-
-	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
-	///////////////////////////////////////////////////////////////////////////////
-
-
-
-	catalog->add_table(table_1);
-	catalog->add_table(table_2);
-	catalog->add_table(table_3);
-	catalog->add_table(table_4);
-	catalog->add_table(table_5);
-	catalog->add_table(table_6);
-	catalog->add_table(table_7);
-	catalog->add_table(table_8);
-
-
-	//T0
-	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
-	}
-
-	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-
-	for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(2)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,15);
-	}
-	//T3
-	for(unsigned i=0;i<table_4->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
-	}
-
-	for(unsigned i=0;i<table_5->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(4)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,19);
-	}
-
-	//T6
-	for(unsigned i=0;i<table_6->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		table_6->getProjectoin(0)->getPartitioner()->RegisterPartition(i,93);
-	}
-	for(unsigned i=0;i<table_7->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		table_7->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-	for(unsigned i=0;i<table_8->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		table_8->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-}
-
-
 
 
 
@@ -830,7 +463,7 @@ static int tcp_h_test_single_node(){
 
 	unsigned repeated_times=1;
 
-	init_single_node_tpc_h_envoriment();
+	startup_single_node_environment_of_tpch();
 	for(unsigned i=0;i<repeated_times;i++){
 		query_1();
 	}
@@ -841,18 +474,19 @@ static int tcp_h_test_single_node(){
 		query_3();
 	}
 
+	sleep(1);
 
 	Environment::getInstance()->~Environment();
 
 }
 static int tcp_h_test_multi_nodes(){
-
 	unsigned repeated_times=3;
+
 	printf("Master or slave?\n");
 	int input;
 	scanf("%d",&input);
 	if(input==0){
-		init_multi_node_tpc_h_envoriment(true);
+		startup_multiple_node_environment_of_tpch(true);
 		for(unsigned i=0;i<repeated_times;i++){
 			query_1();
 		}
@@ -864,7 +498,7 @@ static int tcp_h_test_multi_nodes(){
 		}
 	}
 	else{
-		init_multi_node_tpc_h_envoriment(false);
+		startup_multiple_node_environment_of_tpch(false);
 	}
 
 

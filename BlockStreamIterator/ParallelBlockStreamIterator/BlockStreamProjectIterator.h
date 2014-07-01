@@ -18,6 +18,9 @@
 #include <vector>
 #include <map>
 #include <list>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 using namespace std;
 
 typedef vector<ExpressionItem> ExpressItem_List;

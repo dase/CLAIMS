@@ -9,6 +9,10 @@
 #define ADAPTIVEENDPOINT_H_
 #include <Theron/Theron.h>
 #include <string>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+
 #include "../common/Logging.h"
 #include "../common/Message.h"
 class AdaptiveEndPoint:public Theron::EndPoint {

@@ -7,8 +7,11 @@
 
 #ifndef TYPEPROMOTIONMAP_H_
 #define TYPEPROMOTIONMAP_H_
-#include "../common/data_type.h"
 #include <memory.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+#include "../common/data_type.h"
 class TypePromotion{
 public:
 	static data_type arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];

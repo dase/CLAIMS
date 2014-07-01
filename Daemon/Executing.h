@@ -8,6 +8,9 @@
 #ifndef EXECUTING_H_
 #define EXECUTING_H_
 #include <string>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Block/ResultSet.h"
 class Executing {
 public:

@@ -15,6 +15,9 @@
 #include <map>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/set.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Partitioner.h"
 #include "Attribute.h"
 #include "Column.h"

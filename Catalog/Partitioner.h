@@ -11,6 +11,9 @@
 #include <string>
 #include <map>
 #include <boost/unordered_map.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "Attribute.h"
 
 #include "Column.h"

@@ -44,9 +44,9 @@ Coordinator::Coordinator() {
 
 Coordinator::~Coordinator() {
 	pthread_cancel(prochaseId);
-
-	framework->~Framework();
-	endpoint->~EndPoint();
+	close(socket_fd);
+	delete framework;
+	delete endpoint;
 }
 bool Coordinator::PrepareTheSocket() {
 	libconfig::Config cfg;

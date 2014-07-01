@@ -8,6 +8,9 @@
 #ifndef EQUALJOIN_H_
 #define EQUALJOIN_H_
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 #include "../Catalog/Attribute.h"
 class EqualJoin:public LogicalOperator {

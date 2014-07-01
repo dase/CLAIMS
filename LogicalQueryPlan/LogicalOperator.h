@@ -9,6 +9,9 @@
 #define LOGICALOPERATOR_H_
 #include <stdio.h>
 #include <vector>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../Scheduler/Dataflow.h"
 #include "../common/Schema/SchemaFix.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"

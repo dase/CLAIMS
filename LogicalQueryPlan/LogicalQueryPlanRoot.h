@@ -7,6 +7,9 @@
 
 #ifndef LOGICALQUERYPLANROOT_H_
 #define LOGICALQUERYPLANROOT_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "LogicalOperator.h"
 #include "../common/ids.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"

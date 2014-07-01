@@ -7,6 +7,9 @@
 
 #ifndef BLOCKMESSAGE_H_
 #define BLOCKMESSAGE_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 /*
  * 此类将被外层message吸收
  * */

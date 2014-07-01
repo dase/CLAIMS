@@ -67,7 +67,9 @@ static void query_select_sort() {
 
 	//============================sort==========================
 	vector<LogicalSort::OrderByAttr*> vo;
-	vo.push_back(&LogicalSort::OrderByAttr("LINEITEM.L_ORDERKEY+1"));
+
+	LogicalSort::OrderByAttr tmp=LogicalSort::OrderByAttr("LINEITEM.L_ORDERKEY+1");
+	vo.push_back(&tmp);
 	LogicalOperator* sort=new LogicalSort(project1,vo);
 
 	//===========================root===========================
@@ -87,8 +89,10 @@ static void get_orderby_att(vector<LogicalSort::OrderByAttr * >  & vo)
 	string orderstr2="LINEITEM.L_RETURNFLAG";
 
 //	LogicalSort::OrderByAttr * ob1=new LogicalSort::OrderByAttr(orderstr1.c_str());
-	vo.push_back(&LogicalSort::OrderByAttr(string(orderstr1).c_str()));
-	vo.push_back(&LogicalSort::OrderByAttr(string(orderstr2).c_str()));
+	LogicalSort::OrderByAttr tmp1(string(orderstr1).c_str());
+	LogicalSort::OrderByAttr tmp2(string(orderstr2).c_str());
+	vo.push_back(&tmp1);
+	vo.push_back(&tmp2);
 //	vo.push_back(ob1);
 //	LogicalSort::OrderByAttr * ob2=new LogicalSort::OrderByAttr(orderstr2.c_str());
 //	printf("ob1=%x ob2=%x\n",ob1,ob2);
@@ -182,8 +186,10 @@ static void query_select_sort_string() {
 	//get_orderby_att(vo);
 //	char * orderstr1="LINEITEM.L_LINESTATUS";
 //	char * orderstr2="LINEITEM.L_RETURNFLAG";
-	vo.push_back(&LogicalSort::OrderByAttr("LINEITEM.L_LINESTATUS"));
-	vo.push_back(&LogicalSort::OrderByAttr("LINEITEM.L_RETURNFLAG"));
+	LogicalSort::OrderByAttr tmp1("LINEITEM.L_LINESTATUS");
+	LogicalSort::OrderByAttr tmp2("LINEITEM.L_RETURNFLAG");
+	vo.push_back(&tmp1);
+	vo.push_back(&tmp2);
 	for(int i=0;i<vo.size();i++)
 	{
 		printf("vo[%d]= %s len=%d  aa=%x  sa=%x\n",i,(vo[i])->ta_,strlen(vo[i]->ta_) ,vo[i],vo[i]->ta_);

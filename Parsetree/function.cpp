@@ -1112,7 +1112,13 @@ void output(Node * oldnode, int floor)
 			cout<<"t_bool: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
 			break;
 		}	
-		
+		case t_dateval:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_dateval: "<<node->data<<endl;	//---2014.6.22fzh---
+			break;
+		}
 		case t_expr_list:
 		{
 			Expr_list * node = (Expr_list *) oldnode;
@@ -1439,6 +1445,7 @@ void output(Node * oldnode, int floor)
 			cout<<"joincondition:   ctype= "<<node->conditiontype<<endl;
 			output(node->args,floor+1);
 		}break;
+
 		default:
 		{
 			printf("output type not exist!!!\n");

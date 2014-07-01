@@ -30,7 +30,7 @@ static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
 	SQLParse_log("getfiltercondition   ");
 	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
-	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
+//	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
 	switch(wcexpr->type)
 	{
 		case t_expr_cal:
@@ -98,202 +98,41 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 					case 1://"<"
 					{
 						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=atof(expr->data);
-								std::ostringstream str;
-								str<<temp;
-							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data;
-							//	cout<<"attribute:  "<<attribute<<"  temp    "<<temp<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,string(temp));
 
 					}break;
 					case 2://">"
 					{
 						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=atof(expr->data);
-							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
-								std::ostringstream str;
-								str<<temp;
-							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
-
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,string(temp));
 					}break;
 					case 3://"<>"
 					{
 						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=atof(expr->data);
-								std::ostringstream str;
-								str<<temp;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
-
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,string(temp));
 					}break;
 					case 4://"="
 					{
 						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=atof(expr->data);
-								std::ostringstream str;
-								str<<temp;
-						//		cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,str.str());
-							//	filter_condition.add(Environment::getInstance()->getCatalog()->getTable(tablename)->getAttribute(attribute),AttributeComparator::EQ,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
-
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,string(temp));
 					}break;
 					case 5://"<="
 					{
 						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=atof(expr->data);
-							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
-								std::ostringstream str;
-								str<<temp;
-							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,temp);
-							}break;
-							default:
-							{
-
-							}
-						}
-
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,string(temp));
 					}break;
 					case 6://">="
 					{
 						Expr *expr=(Expr *)(node->rnext);
-						switch(expr->type)//获得右边的属性
-						{
-							case t_intnum:
-							{
-								int temp=atof(expr->data);
-							//	cout<<"attribute:  "<<attribute<<"  temp   "<<temp<<endl;
-								std::ostringstream str;
-								str<<temp;
-							//	cout<<str.str()<<endl;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,str.str());
-							}break;
-							case t_approxnum:
-							{
-								double temp=atof(expr->data);
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,&temp);
-							}break;
-							case t_name:
-							case t_stringval ://////////////////////
-							{
-								char * temp=expr->data;
-								filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,temp);
-
-							}break;
-							default:
-							{
-
-							}
-						}
-
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,string(temp));
 					}break;
-					default:
-					{
-						SQLParse_elog("getfiltercondition type sign cmp error");
-					}
+
 				}
 			}
 		}break;
