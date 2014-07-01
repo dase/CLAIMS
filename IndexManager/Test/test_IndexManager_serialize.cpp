@@ -8,7 +8,7 @@
 #include "../../Environment.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../../ids.h"
+#include "../../common/ids.h"
 #include "../../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalCSBIndexBuilding.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
@@ -17,9 +17,10 @@
 #include "../../utility/test_tool.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../../PerformanceMonitor/BlockStreamPerformanceMonitorTop.h"
+#include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 #include "../CSBPlusTree.h"
 #include "../../utility/rdtsc.h"
+#include "../../common/AttributeComparator.h"
 
 static void init_poc_environment()
 {
@@ -172,8 +173,8 @@ static void test_scan_filter_performance(int value)
 	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::GEQ,std::string("10107"));
-	filter_condition_1.add(table->getAttribute(3),FilterIterator::AttributeComparator::L,(void*)&value);
+	filter_condition_1.add(table->getAttribute(3),AttributeComparator::GEQ,std::string("10107"));
+	filter_condition_1.add(table->getAttribute(3),AttributeComparator::L,(void*)&value);
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_scan);
 
 	const NodeID collector_node_id=0;
