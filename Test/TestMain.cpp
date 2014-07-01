@@ -97,7 +97,7 @@ int main(int argc , char ** argv){
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
 //	return test_index_scan_iterator();
-//	return test_index_manager();
+	return test_index_manager();
 
 //	in_test();
 //	test_expanderFramework_single_node(5);
@@ -109,16 +109,19 @@ int main(int argc , char ** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-	test_expanderFramework_single_node(5);
-
-
 //	test_expanderFramework_single_node(5);
+
+
+	test_expanderFramework_single_node(5);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test(10);
 //	hash_table_test();
+
+//	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
+	g_test_main(argc,argv);
 //	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
