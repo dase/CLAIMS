@@ -13,6 +13,9 @@
 #include <vector>
 #include <string>
 #include <libconfig.h++>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../common/Logging.h"
 class IteratorExecutorMaster {

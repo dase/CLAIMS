@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 #include <boost/unordered_map.hpp>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 typedef std::string NodeIP;//TODO: may use ip + port to support multiple instances on a single node.
 typedef int NodeID;
 class NodeTracker {

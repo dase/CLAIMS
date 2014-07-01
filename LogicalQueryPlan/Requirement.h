@@ -8,7 +8,9 @@
 #ifndef REQUIREMENT_H_
 #define REQUIREMENT_H_
 #include <vector>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/ids.h"
 #include "../common/hash.h"
 #include "../Catalog/Attribute.h"

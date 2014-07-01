@@ -12,7 +12,9 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 #include "../../common/Schema/SchemaFix.h"
 template<class Archive>

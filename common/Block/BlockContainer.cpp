@@ -6,6 +6,7 @@
  */
 #include <assert.h>
 #include "BlockContainer.h"
+#include <string.h>
 
 BlockContainer::BlockContainer(unsigned block_size)
 :Block(block_size),actual_size_(0){
@@ -31,4 +32,11 @@ void BlockContainer::reset(){
 void BlockContainer::IncreaseActualSize(unsigned size){
 	assert(size+actual_size_<=this->getsize());
 	actual_size_+=size;
+}
+
+void BlockContainer::copy(BlockContainer& block) {
+	assert(this->getsize()==block.getsize());
+	memcpy(this->getBlock(),block.getBlock(),block.getsize());
+	actual_size_=block.GetCurSize();
+
 }

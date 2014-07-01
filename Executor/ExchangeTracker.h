@@ -15,6 +15,10 @@
 #include <map>
 #include <boost/unordered_map.hpp>
 #include <Theron/Theron.h>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
+
 #include "../common/Logging.h"
 #include "../utility/lock.h"
 #include "../common/ids.h"

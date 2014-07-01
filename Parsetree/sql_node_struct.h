@@ -31,7 +31,7 @@ extern int yylineno;
 enum nodetype
 {
 	t_none,
- 	t_name,t_uservar,t_name_name,t_stringval,t_intnum,t_approxnum,t_bool,
+ 	t_name,t_uservar,t_name_name,t_stringval,t_intnum,t_approxnum,t_bool,   t_dateval,t_timeval,t_datatimeval,//---6.21fzh---
 	t_table,t_column,t_join,t_subquery,t_condition,
 	t_query_stmt,t_stmt,t_do_stmt,t_truncate_stmt,
 	t_select_list,t_select_opts,t_select_expr,t_expr_list_header,
@@ -772,5 +772,5 @@ void departwc(struct Node *  wherecondition,struct Node * fromlist);
 bool semantic_analysis(Node *parsetree,bool issubquery);//---3.22fzh--
 
 int solve_join_condition(Node * fromnode);//---3.22fzh---
-void expr_to_str_test(Node *node);//---5.23fzh---
+void preprocess(Node *node);//---5.23fzh---
 #endif /* NODES_H_ */

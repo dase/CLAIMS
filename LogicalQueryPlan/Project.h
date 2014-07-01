@@ -7,7 +7,9 @@
 
 #ifndef LOGICALPROJECT_H_
 #define LOGICALPROJECT_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/Mapping.h"
 #include "../common/ExpressionItem.h"
 #include "../common/TypePromotionMap.h"

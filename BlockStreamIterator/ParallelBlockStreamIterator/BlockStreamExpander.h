@@ -10,6 +10,9 @@
 #include <pthread.h>
 #include <vector>
 #include <set>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../BlockStreamIteratorBase.h"
 #include "../../common/Schema/Schema.h"
 #include "../../common/Block/BlockStreamBuffer.h"
@@ -77,6 +80,7 @@ private:
 
 	ExpanderID expander_id_;
 
+	Lock exclusive_expanding_;
 	/*
 	 * The set of threads that have been called back but have not
 	 * finished the remaining work yet.
@@ -93,6 +97,13 @@ private:
 	volatile bool input_data_complete_;
 
 	volatile bool one_thread_finished_;
+
+	/*
+	 * this is a map storing the semaphore pointer for each thread to shrink.
+	 * the shrink() is blocked by sema until the thread is successful shrunk.
+	 */
+	std::map<pthread_t,semaphore*> tid_to_shrink_semaphore;
+
 	Lock lock_;
 	/*
 	 * The following code is for boost serialization.

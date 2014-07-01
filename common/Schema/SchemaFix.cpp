@@ -9,7 +9,7 @@
 #include "SchemaFix.h"
 
 
-SchemaFix::SchemaFix(std::vector<column_type> col):Schema(col) {
+SchemaFix::SchemaFix(const std::vector<column_type>& col):Schema(col) {
 
 //	accum_offsets=new unsigned[columns.size()];
 	totalsize=0;
@@ -27,6 +27,7 @@ SchemaFix::SchemaFix(const SchemaFix& r):Schema(r){
 	this->totalsize=r.totalsize;
 }
 SchemaFix::~SchemaFix() {
+//	accum_offsets.~vector();
 }
 
 unsigned SchemaFix::getTupleMaxSize()const

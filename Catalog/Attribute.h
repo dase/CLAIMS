@@ -8,7 +8,9 @@
 #ifndef ATTRIBUTE_H_
 #define ATTRIBUTE_H_
 #include <string>
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #define ATTRIBUTE_NULL -1

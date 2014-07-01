@@ -7,7 +7,9 @@
 
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 /*
  * Message.h
  *
@@ -452,7 +454,6 @@ private:
 	void serialize(Archive & ar, const unsigned int version)
 	{
 		Register_Schemas(ar);
-	//	Register_Tuple_Stream_Iterators(ar);
 		Register_Block_Stream_Iterator(ar);
 		ar  & block_stream_iterator_root_;
 //		ar & block_stream_iterator_root_;

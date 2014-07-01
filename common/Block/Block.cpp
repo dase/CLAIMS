@@ -15,7 +15,7 @@ Block::Block(unsigned BlockSize)
 //	start=(char*)memalign(cacheline_size,BlockSize);
 	start=(char*)malloc(BlockSize);
 	/*the following memset is just for debugging the memory leak*/
-	memset(start,0,BlockSize);
+//	memset(start,0,BlockSize);
 }
 Block::Block(const unsigned& size,const void* start)
 :BlockSize(size),start((char*)start),isReference_(true){

@@ -31,6 +31,9 @@ public:
         pthread_mutex_lock(&m);
     }
 
+    bool try_acquire(){
+    	return pthread_mutex_trylock(&m)==0;
+    }
     void release() {
         pthread_mutex_unlock(&m);
     }
@@ -103,7 +106,7 @@ public:
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nThreads--;
 		assert(m_nThreads>=0);
-		if(m_nThreads==m_nSyncCount){
+		if(m_nThreads<=m_nSyncCount){
 			pthread_cond_broadcast(&m_cv_SyncCV);
 		}
 		pthread_mutex_unlock(&m_l_SyncLock);
@@ -128,7 +131,7 @@ public:
 		pthread_mutex_lock(&m_l_SyncLock);
 		m_nSyncCount++;
 //		printf("cpu processor test: %d\n",m_nSyncCount);
-		if(m_nSyncCount == m_nThreads) {
+		if(m_nSyncCount >= m_nThreads) {
 //			printf("arrive the nthreads\n");
 //			printf("arrive the broadcast\n");
 			pthread_cond_broadcast(&m_cv_SyncCV);
@@ -157,7 +160,7 @@ class SpineLock {
 	SpineLock() : _l(0) { }
 
 		/** Call blocks and retunrs only when it has the lock. */
-		inline void lock()
+		inline void acquire()
 		{
 			while(tas(&_l)) {
 #if defined(__i386__) || defined(__x86_64__)
@@ -180,7 +183,7 @@ class SpineLock {
 		}
 
 		/** Unlocks the lock object. */
-		inline void unlock()
+		inline void release()
 		{
 			_l = 0;
 		}
@@ -198,8 +201,8 @@ class SpineLock {
 #elif defined(__sparc__)
 			__asm__ __volatile__ (
 					"ldstub [%2], %0"
-					: "=r"(res), "+m"(*lock)
-					: "r"(lock)
+					: "=r"(res), "+m"(*acquire)
+					: "r"(acquire)
 					: "memory");
 #else
 #error TAS not defined for this architecture.
@@ -207,7 +210,7 @@ class SpineLock {
 			return res;
 		}
 
-		volatile char _l ;//__attribute__((aligned(64)));
+		volatile char _l ;//__attribute__((aligned(64)))
 
 };
 #endif /* LOCK_H_ */

@@ -24,10 +24,10 @@ public:
 
 static hostent* gethostbyname_ts(hostent& v,const char* host){
 		struct hostent* shared;
-		gethostbyname_lock_.lock();
+		gethostbyname_lock_.acquire();
 		shared=gethostbyname(host);
 		v=*shared;
-		gethostbyname_lock_.unlock();
+		gethostbyname_lock_.release();
 		return shared;
 	}
 private:

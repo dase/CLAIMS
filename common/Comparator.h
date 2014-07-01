@@ -7,6 +7,9 @@
 
 #ifndef COMPARATOR_H_
 #define COMPARATOR_H_
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <map>

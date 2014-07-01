@@ -39,8 +39,8 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
-#define DEBUG_ASTParser
-#define SQL_Parser
+//#define DEBUG_ASTParser
+//#define SQL_Parser
 
 #endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){

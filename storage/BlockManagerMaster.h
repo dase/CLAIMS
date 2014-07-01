@@ -14,6 +14,9 @@
 #include <Theron/Defines.h>
 #include <string>
 #include <iostream>
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 
 #include "BlockManagerId.h"
 #include "AllBlockInfo.h"

@@ -19,7 +19,7 @@ BlockStreamPerformanceMonitorTop::BlockStreamPerformanceMonitorTop(){
 }
 BlockStreamPerformanceMonitorTop::~BlockStreamPerformanceMonitorTop() {
 	// TODO Auto-generated destructor stub
-	logging_->~Logging();
+	delete logging_;
 }
 
 bool BlockStreamPerformanceMonitorTop::open(const PartitionOffset& partition_offset){
@@ -69,7 +69,7 @@ bool BlockStreamPerformanceMonitorTop::close(){
 }
 
 void BlockStreamPerformanceMonitorTop::print(){
-	printf("Top");
+	printf("Performance Top");
 	printf("-------------\n");
 	state_.child_->print();
 

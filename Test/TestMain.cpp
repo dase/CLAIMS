@@ -52,6 +52,8 @@
 #include "TestSuit/in_segment_scalability_test.cpp"
 #include "TestSuit/hash_table_test.h"
 #include "gtest.h"
+#include "../common/ExpandedThreadTracker_test.cpp"
+#include "memory_leak_test.h"
 int main(int argc , char ** argv){
 
 //	return testGenerateIteratorTree();
@@ -69,7 +71,8 @@ int main(int argc , char ** argv){
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
-	return query_optimization_outputdata();
+
+//	return query_optimization_outputdata();
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
@@ -106,7 +109,7 @@ int main(int argc , char ** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-//	test_expanderFramework_single_node(5);
+	test_expanderFramework_single_node(5);
 
 
 //	test_expanderFramework_single_node(5);
@@ -114,8 +117,13 @@ int main(int argc , char ** argv){
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
 //	tcp_h_test_multi_nodes();
-//	in_segment_scalability_test();
+//	in_segment_scalability_test(10);
 //	hash_table_test();
 //	g_test_main(argc,argv);
+
+//	test_ExpandedThreadTracker();
+
 //	sleep(1000);
+//	insert_optimziaed_hash_table_test();
+//	memory_leak_test();
 }

@@ -7,7 +7,9 @@
 
 #ifndef LOGICALSORT_H_
 #define LOGICALSORT_H_
-
+#ifdef DMALLOC
+#include "dmalloc.h"
+#endif
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../Scheduler/Dataflow.h"
 #include "../Catalog/Catalog.h"
