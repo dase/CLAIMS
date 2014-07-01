@@ -10,12 +10,12 @@
 #include <boost/serialization/base_object.hpp>
 #include <map>
 #include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
-#include "../common/ids.h"
-#include "../common/Schema/Schema.h"
+#include "../ids.h"
+#include "../Schema/Schema.h"
 #include "../storage/PartitionStorage.h"
-#include "../common/Block/BlockStream.h"
+#include "../Block/BlockStream.h"
 #include "../storage/ChunkStorage.h"
-#include "../common/data_type.h"
+#include "../data_type.h"
 #include "CSBPlusTree.h"
 
 template<typename T>
