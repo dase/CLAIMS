@@ -11,7 +11,9 @@
 #include "../BlockStreamIteratorBase.h"
 #include "../../Debug.h"
 #include "../../utility/rdtsc.h"
+#include "../../utility/lock.h"
 #include "../../common/hashtable.h"
+#include "../../common/hash.h"
 
 #include <iostream>
 #include <vector>
@@ -20,8 +22,6 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
-#include "../../utility/lock.h"
-#include "../../common/hash.h"
 using namespace std;
 
 class BlockStreamInIterator :public BlockStreamIteratorBase {

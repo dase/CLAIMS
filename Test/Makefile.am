@@ -1,0 +1,47 @@
+AM_CPPFLAGS= -fPIC \
+-I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
+-I/home/NewHadoop/java/jdk1.7.0_45/include\
+-I/home/NewHadoop/java/jdk1.7.0_45/include/linux \
+-I/home/imdb/supports/boost_1_53_0 \
+-I/home/imdb/supports/boost_1_53_0/boost/serialization \
+-I/home/imdb/supports/Theron-5.01.01/Include \
+-I/home/imdb/supports/gtest-1.7.0/include
+
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
+
+LDADD =	TestSuit/libtestsuit.a \
+		../Executor/libexecutor.a \
+		../Executor/Test/libtest.a \
+		../Parsetree/Test/libtest.a \
+		../LogicalQueryPlan/Test/libtest.a \
+		../Daemon/Test/libtest.a \
+		../Client/Test/libtest.a \
+		../Loader/Test/libtest.a \
+		../IndexManager/Test/libtest.a \
+		../BlockStreamIterator/libblockstreamiterator.a \
+		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
+		../BlockStreamIterator/ParallelBlockStreamIterator/Test/libtest.a \
+		../Catalog/Test/libtest.a \
+		../common/libcommon.a \
+		../common/Schema/libschema.a \
+		../common/Block/libblock.a \
+		../common/types/libtypes.a \
+		../utility/libutility.a \
+		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a\
+		/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
+		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a  \
+		/home/imdb/supports/gtest-1.7.0/libgtest.a
+
+noinst_LIBRARIES=libtest.a
+libtest_a_SOURCES = \
+	Environment_test.cpp 		MultiToMulti.cpp \
+	TestMain.cpp 			block_stream_iterator_serilaization_test.cpp \
+	block_stream_test.cpp 		gtest.h \
+	memory_leak_test.h 		set_up_environment.h \
+	test_adaptiveendpoint.cpp 	test_coordinator.cpp \
+	test_scdong.cpp
+
+SUBDIRS = TestSuit common utility
+DIST_SUBDIRS = TestSuit common utility

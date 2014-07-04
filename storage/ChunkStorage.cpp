@@ -6,8 +6,9 @@
  */
 #include <hdfs.h>
 #include "ChunkStorage.h"
-#include "../Debug.h"
 #include "BlockManager.h"
+
+#include "../Debug.h"
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
 

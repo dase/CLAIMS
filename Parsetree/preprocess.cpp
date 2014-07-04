@@ -9,16 +9,21 @@
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
+
 #include "../common/Comparator.h"
+#include "../common/Logging.h"
+
+#include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include"sql_node_struct.h"
+
+#include "sql_node_struct.h"
 #include "../Environment.h"
-#include "../LogicalQueryPlan/Aggregation.h"
-#include "../common/Logging.h"
+
 int getlevel(Expr_cal *calnode)
 {
 	int level=0;

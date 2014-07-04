@@ -7,15 +7,20 @@
 #include <vector>
 #include <iostream>
 #include "../../Environment.h"
+
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../Catalog/ProjectionBinding.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
-#include "../../utility/rdtsc.h"
+
+#include "../../Catalog/ProjectionBinding.h"
+
 #include "../../Catalog/stat/Analyzer.h"
+
+#include "../../utility/rdtsc.h"
+
 #include "../../Parsetree/sql_node_struct.h"
 #include "../../Parsetree/parsetree2logicalplan.cpp"
 #include "../../Parsetree/runparsetree.cpp"

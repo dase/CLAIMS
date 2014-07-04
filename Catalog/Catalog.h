@@ -14,11 +14,10 @@
 #include "dmalloc.h"
 #endif
 #include "unordered_map.hpp"
-
-
+#include "ProjectionBinding.h"
 
 #include "../common/Logging.h"
-#include "ProjectionBinding.h"
+
 struct TableIDAllocator{
 	TableIDAllocator(){
 		table_id_curosr=0;

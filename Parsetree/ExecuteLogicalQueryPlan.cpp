@@ -11,18 +11,23 @@
 #include <iostream>
 #include <cstring>
 #include "../Environment.h"
+
 #include "../Catalog/stat/Analyzer.h"
+
 #include "../Catalog/ProjectionBinding.h"
+
 #include "../Parsetree/sql_node_struct.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/runparsetree.cpp"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
+
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Buffer.h"
+
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"

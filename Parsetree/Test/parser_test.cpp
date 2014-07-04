@@ -15,16 +15,21 @@
 #include <vector>
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/Partitioner.h"
 //#include "../../Catalog/ProjectionBinding.h"
 #include "../../Catalog/table.h"
+
 #include "../../common/Comparator.h"
 #include "../../common/data_type.h"
-#include "../../Environment.h"
-#include "../../Executor/IteratorExecutorMaster.h"
 #include "../../common/ids.h"
+
+#include "../../Environment.h"
+
+#include "../../Executor/IteratorExecutorMaster.h"
+
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
@@ -32,7 +37,9 @@
 #include "../../LogicalQueryPlan/LogicalOperator.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Scan.h"
+
 #include "../../utility/rdtsc.h"
+
 #include "../sql_node_struct.h"
 #include "../parsetree2logicalplan.cpp"
 #include "../runparsetree.cpp"

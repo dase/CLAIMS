@@ -16,18 +16,23 @@
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
+#include <fstream>
 
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Executor/IteratorExecutorSlave.h"
+
 #include "../utility/rdtsc.h"
+
 #include "../Environment.h"
+
 #include "../common/Comparator.h"
 #include "../common/Message.h"
-#include "../common/Schema/SchemaFix.h"
 
+#include "../common/Schema/SchemaFix.h"
 
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
+#include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
@@ -38,9 +43,6 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
 
-
-#include <fstream>
-#include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 using namespace std;
 
 /***********************************Pthread && Block at a time*******************************************/

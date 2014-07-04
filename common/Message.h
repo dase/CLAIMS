@@ -37,7 +37,6 @@
 #include "../Debug.h"
 #include "../storage/StorageLevel.h"
 #include "ids.h"
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 //It's better to use fixed length information for implementation concern.
 THERON_DECLARE_REGISTERED_MESSAGE(ExchangeID)
 struct StorageBudgetMessage{
