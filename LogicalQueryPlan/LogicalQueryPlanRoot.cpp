@@ -8,13 +8,16 @@
 #include "LogicalQueryPlanRoot.h"
 #include "../Resource/NodeTracker.h"
 #include "../IDsGenerator.h"
+#include "../Config.h"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+
 #include "../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../BlockStreamIterator/BlockStreamPrint.h"
-#include "../Config.h"
 #include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamIterator/BlockStreamLimit.h"
+
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion,LimitConstraint limit_constraint)
 :collecter_(collecter),child_(child),fashion_(fashion),limit_constraint_(limit_constraint){
 	// TODO Auto-generated constructor stub

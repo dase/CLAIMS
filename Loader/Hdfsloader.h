@@ -13,12 +13,12 @@
 #include<iostream>
 #include<vector>
 #include<string>
+#include <hdfs.h>
 
+#include "../Environment.h"
 #include "../Catalog/table.h"
 #include "../Catalog/Catalog.h"
-#include "../Environment.h"
 #include "../Catalog/ProjectionBinding.h"
-#include <hdfs.h>
 #include "../common/Schema/TupleConvertor.h"
 #include "../common/hash.h"
 

@@ -8,23 +8,27 @@
 #include <string>
 #include <vector>
 
+#include "sql_node_struct.h"
+#include "../Environment.h"
+
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
+
 #include "../common/Comparator.h"
+#include "../common/ExpressionItem.h"
+#include "../common/Logging.h"
+#include "../common/AttributeComparator.h"
+
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "sql_node_struct.h"
-#include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../common/ExpressionItem.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
-#include "../common/Logging.h"
-#include "../common/AttributeComparator.h"
+
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){

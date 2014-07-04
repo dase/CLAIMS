@@ -23,13 +23,13 @@
 #include <vector>
 #include <map>
 #include <boost/unordered_map.hpp>
+#include <boost/pool/pool.hpp>
 #include <iostream>
 using namespace std;
 
 #include "BlockStore.h"
 #include "../common/rename.h"
 #include "../Debug.h"
-#include <boost/pool/pool.hpp>
 #include "../utility/lock.h"
 
 using boost::pool;

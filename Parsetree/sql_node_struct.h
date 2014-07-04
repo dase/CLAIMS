@@ -1,20 +1,16 @@
 /*
  *
- * 14.02.15 已有select语句和create语句，包括select语句连接系统所需的函数
-
- *
  *
  */
 
 #ifndef NODES_H_
 #define NODES_H_
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include <iostream>
 #include <set>
 using namespace std;
-
 
 extern "C" int yylex();
 extern "C" int yyparse();

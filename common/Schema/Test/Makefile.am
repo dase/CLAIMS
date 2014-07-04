@@ -1,0 +1,28 @@
+AM_CPPFLAGS= -fPIC\
+-I/home/imdb/supports/boost_1_53_0 \
+-I/home/imdb/supports/boost_1_53_0/boost/serialization \
+-I/home/imdb/supports/Theron-5.01.01/Include \
+-I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
+-I/home/NewHadoop/java/jdk1.7.0_45/include\
+-I/home/NewHadoop/java/jdk1.7.0_45/include/linux
+
+#<boost/unordered_map.hpp>应该加什么编译选项
+AM_LDFLAGS=-lc -lm -lrt lboost_serialization
+
+LDADD = 	../libschema.a \
+		../../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
+		../../../BlockStreamIterator/libblockstreamiterator.a \
+		../../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../../Catalog/libcatalog.a \
+		../../../common/Block/libblock.a \
+		../../libcommon.a \
+		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a \
+		/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
+		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.so \
+		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a	
+
+noinst_LIBRARIES=libtest.a
+
+libtest_a_SOURCES = 	\
+	SubTuple_test.cpp 		VariableSchema_test.cpp \
+	generateVariableData_test.cpp 		test_suits.cpp

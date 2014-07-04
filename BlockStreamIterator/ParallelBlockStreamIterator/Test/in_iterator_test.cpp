@@ -9,7 +9,9 @@
 #include "../ExpandableBlockStreamSingleColumnScan.h"
 #include "../ExpandableBlockStreamFilter.h"
 #include "../BlockStreamInIterator.h"
+
 #include "../../BlockStreamPrint.h"
+
 #include "../../../common/Schema/SchemaFix.h"
 #include "../../../common/Message.h"
 #include "../../../common/AttributeComparator.h"

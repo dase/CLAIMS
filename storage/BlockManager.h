@@ -1,4 +1,4 @@
-/*
+ /*
  * BlockManager.h
  *
  *  Created on: 2013-10-11
@@ -23,17 +23,18 @@ using namespace std;
 #include <stdio.h>
 
 #include "hdfs.h"
-
-#include "../Debug.h"
 #include "MemoryStore.h"
 #include "DiskStore.h"
 #include "BlockManagerId.h"
 #include "PartitionStorage.h"
+
+#include "../Debug.h"
 #include "../common/ids.h"
 #include "../common/Message.h"
 #include "../common/TimeOutReceiver.h"
-#include "../utility/lock.h"
 #include "../common/Logging.h"
+#include "../utility/lock.h"
+
 struct ChunkInfo{
 	ChunkID chunkId;
 	void * hook;

@@ -9,11 +9,14 @@
 #include <iostream>
 #include "../ExpandableBlockStreamProjectionScan.h"
 #include "../ExpandableBlockStreamBuffer.h"
+#include "../BlockStreamExpander.h"
+
 #include "../../BlockStreamPrint.h"
+#include "../../BlockStreamPerformanceMonitorTop.h"
+
 #include "../../../Environment.h"
 #include "../../../Catalog/ProjectionBinding.h"
-#include "../BlockStreamExpander.h"
-#include "../../BlockStreamPerformanceMonitorTop.h"
+
 using namespace std;
 static int testBuffer(){
 	Environment::getInstance(true);

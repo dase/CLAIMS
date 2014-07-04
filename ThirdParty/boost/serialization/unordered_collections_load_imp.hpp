@@ -37,7 +37,7 @@ inline void load_unordered_collection(Archive & ar, Container &s)
     s.clear();
     collection_size_type count;
     collection_size_type bucket_count;
-    boost::serialization::item_version_type item_version(0);
+    item_version_type item_version(0);
     boost::archive::library_version_type library_version(
         ar.get_library_version()
     );

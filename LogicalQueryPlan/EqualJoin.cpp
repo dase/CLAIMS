@@ -6,10 +6,12 @@
  */
 
 #include "EqualJoin.h"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+
+#include "../IDsGenerator.h"
 #include "../Catalog/stat/StatManager.h"t
 #include "../common/Logging.h"
 #include "../Config.h"

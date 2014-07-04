@@ -37,10 +37,8 @@ template<class Archive, class Container>
 inline void save_unordered_collection(Archive & ar, const Container &s)
 {
     collection_size_type count(s.size());
-    const collection_size_type bucket_count(s.bucket_count());
-    const item_version_type item_version(
-        version<BOOST_DEDUCED_TYPENAME Container::value_type>::value
-    );
+    collection_size_type bucket_count(s.bucket_count());
+    item_version_type item_version(version<BOOST_DEDUCED_TYPENAME Container::value_type>::value);
 
     #if 0
     /* should only be necessary to create archives of previous versions

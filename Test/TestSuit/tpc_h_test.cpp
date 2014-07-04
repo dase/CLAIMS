@@ -8,18 +8,27 @@
 #ifndef TPC_H_TEST_CPP_
 #define TPC_H_TEST_CPP_
 #include "../../Environment.h"
+
 #include "../../Catalog/table.h"
+
 #include "../../Loader/Hdfsloader.h"
+
+#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../common/types/NValue.hpp"
-#include "../../utility/rdtsc.h"
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
 #include "../../common/AttributeComparator.h"
+
+#include "../../common/types/NValue.hpp"
+
+#include "../../utility/rdtsc.h"
+
 #include "../set_up_environment.h"
 
 static void query_1(){

@@ -8,15 +8,18 @@
 #include <vector>
 #include <iostream>
 #include "../../Environment.h"
+
 #include "../Scan.h"
-#include "../LogicalQueryPlanRoot.h"
-#include "../EqualJoin.h"
-#include "../../Catalog/ProjectionBinding.h"
 #include "../Filter.h"
 #include "../Aggregation.h"
 #include "../Buffer.h"
+#include "../LogicalQueryPlanRoot.h"
+#include "../EqualJoin.h"
+
+#include "../../Catalog/ProjectionBinding.h"
 #include "../../utility/rdtsc.h"
 #include "../../common/AttributeComparator.h"
+
 using namespace std;
 static int in_test(){
 	int master;
