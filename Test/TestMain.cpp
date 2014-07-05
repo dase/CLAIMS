@@ -72,7 +72,7 @@ int main(int argc , char ** argv){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-//	return query_optimization_outputdata();
+	return query_optimization_outputdata();
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
@@ -109,7 +109,7 @@ int main(int argc , char ** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-	test_expanderFramework_single_node(5);
+//	test_expanderFramework_single_node(5);
 
 
 //	test_expanderFramework_single_node(5);

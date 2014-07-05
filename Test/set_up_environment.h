@@ -9,7 +9,6 @@
 #define SET_UP_ENVIRONMENT_H_
 #include "../Environment.h"
 
-
 static void startup_single_node_environment_of_poc(){
 //	int master;
 	int master=0;
