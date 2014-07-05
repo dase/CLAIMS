@@ -1542,9 +1542,6 @@ static int query_optimization_outputdata()
 //			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
 //		}
 
-
-
-
 		ExecuteLogicalQueryPlan();
 		printf("ready(?)\n");
 		int input;
