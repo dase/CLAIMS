@@ -4,7 +4,8 @@ AM_CPPFLAGS= -fPIC\
 -I/home/imdb/supports/Theron-5.01.01/Include \
 -I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
 -I/home/NewHadoop/java/jdk1.7.0_45/include\
--I/home/NewHadoop/java/jdk1.7.0_45/include/linux
+-I/home/NewHadoop/java/jdk1.7.0_45/include/linux \
+-I/home/imdb/supports/gtest-1.7.0/include
 
 #<boost/unordered_map.hpp>应该加什么编译选项
 AM_LDFLAGS=-lc -lm -lrt lboost_serialization
@@ -19,7 +20,8 @@ LDADD = 	../libschema.a \
 		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a \
 		/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
 		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.so \
-		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a	
+		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a	\
+				/home/imdb/supports/gtest-1.7.0/libgtest.a
 
 noinst_LIBRARIES=libtest.a
 

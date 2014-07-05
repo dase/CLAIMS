@@ -3,4 +3,6 @@ Default
 .cproject
 .project
 .settings
-缺省值
+Config.cpp
+Debug.h
+install/

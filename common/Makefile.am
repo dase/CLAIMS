@@ -36,12 +36,7 @@ libcommon_a_SOURCES = \
 	hash.cpp 			hash.h \
 	hashtable.cpp 		hashtable.h \
 	ids.cpp 			ids.h \
-	rename.h
-
-
-#libcommon_a_LIBADD = ../utility/libutility.a \
-#/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-#/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so		
+	rename.h	
 
 SUBDIRS = Block Schema types
 DIST_SUBDIRS = Block Schema types

@@ -12,9 +12,9 @@ AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
 LDADD = 	../libtest.a \
 		../../Catalog/libcatalog.a \
 		../../Loader/libloader.a \
+		../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../../BlockStreamIterator/libblockstreamiterator.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
-		../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../../storage/libstorage \
 		../../common/libcommon.a \
 		../../common/types/libtypes.a \

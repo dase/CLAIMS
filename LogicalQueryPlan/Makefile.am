@@ -18,7 +18,7 @@ LDADD = 	../LogicalQueryPlan/liblogicalqueryplan.a \
 		../Resource/libresource.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serializaiton.a \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
 		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a
 
 noinst_LIBRARIES=liblogicalqueryplan.a

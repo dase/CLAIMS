@@ -9,16 +9,15 @@ AM_CPPFLAGS= -fPIC \
 #<boost/unordered_map.hpp>添加编译选项
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system
 
-LDADD =	../Catalog/libcatalog.a \
-		../storage/libstorage.a \
+LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \
 		../Schema/libschema.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \
-		../ThirdParty/boost/serialization/libserialization.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serializaiton.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serializaiton.so \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
 		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so \
 		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a
 
 #DIR = ${shell /bin/pwd}
