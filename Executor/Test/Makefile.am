@@ -6,11 +6,8 @@ AM_CPPFLAGS= -fPIC \
 -I/home/NewHadoop/java/jdk1.7.0_45/include\
 -I/home/NewHadoop/java/jdk1.7.0_45/include/linux
 
-#此文件需要包含boost序列化库
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread
 
-
-#其中iterator可以合并进来,还需要包含blockiterator的库
 LDADD = 	../libexecutor.a \
 		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a\
 		/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\

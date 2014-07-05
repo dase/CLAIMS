@@ -7,12 +7,12 @@ AM_CPPFLAGS= -fPIC \
 -I/home/imdb/supports/Theron-5.01.01/Include \
 -I/home/imdb/supports/gtest-1.7.0/include
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization 
 
 LDADD = 	../../Catalog/libcatalog.a \
 		../../Loader/libloader.a \
-		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../common/libcommon.a \
 		../../common/types/libtypes.a \
 		../../utility/libutility.a \

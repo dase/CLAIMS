@@ -10,11 +10,5 @@ noinst_LIBRARIES=libscheduler.a
 libscheduler_a_SOURCES = \
 	Dataflow.cpp 			Dataflow.h
 
-#libscheduler_a_LIBADD = \
-#		../Catalog/libcatalog.a \
-#		../LogicalQueryPlan/liblogicalqueryplan.a \
-#		../Schema/libschema.a \
-#		../BlockStreamIterator/libblockstreamiterator.a
-
 SUBDIRS = test
 DIST_SUBDIRS = test

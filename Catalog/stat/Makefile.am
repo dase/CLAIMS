@@ -2,7 +2,6 @@ AM_CPPFLAGS= -fPIC\
 -I/home/imdb/supports/boost_1_53_0 \
 -I/home/imdb/supports/boost_1_53_0/boost/serialization
 
-#<boost/unordered_map.hpp>应该加什么编译选项
 AM_LDFLAGS=-lc -lm -lrt lboost_serialization
 
 LDADD = 	../libcatalog.a \
@@ -10,8 +9,10 @@ LDADD = 	../libcatalog.a \
 		../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../../common/Block/libblock.a \
 		../../common/libcommon.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serializaiton.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
+		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so
 
 noinst_LIBRARIES=libstat.a
 

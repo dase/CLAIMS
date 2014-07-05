@@ -6,9 +6,6 @@ AM_CPPFLAGS= -fPIC \
 -I/home/NewHadoop/java/jdk1.7.0_45/include\
 -I/home/NewHadoop/java/jdk1.7.0_45/include/linux
 
-#此文件需要包含boost序列化库
-#本模块最好依赖的是这些库：executor schema block utility common storage
-#其中iterator可以合并进来
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
 
 LDADD = ../Executor/libexecutor.a \
