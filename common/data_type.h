@@ -18,6 +18,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+
 #include "hash.h"
 
 using namespace boost::gregorian;
