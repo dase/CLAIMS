@@ -216,6 +216,14 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					}
 					list = (Create_col_list* )list->next;
 				}
+
+				// add for formal test, create projection default while creating table
+				{
+					std::vector<ColumnOffset> index;
+					index.push_back(0);
+					new_table->createHashPartitionedProjection(index, new_table->getAttribute(0).getName(), 1);
+				}
+
 				catalog->add_table(new_table);
 			}
 			break;
