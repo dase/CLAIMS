@@ -1,0 +1,4 @@
+/usr/local/lib
+/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib
+/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server
+/home/imdb/supports/boost_1_53_0/stage/lib

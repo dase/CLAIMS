@@ -343,7 +343,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				ASTParserLogging::log("load file\'s name:");
 				vector<string> path_names;	// save the name of files which should be loaded
-				//for test: the path name is:	/home/imdb/data/tpc-h/part.tbl
+				//for test: the path name is:	/home/claims/data/tpc-h/part.tbl
 				while(path_node)
 				{
 					Expr *data = (Expr*)path_node->data;

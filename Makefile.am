@@ -1,11 +1,11 @@
 AM_CPPFLAGS=-fPIC\
--I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
--I/home/NewHadoop/java/jdk1.7.0_45/include\
--I/home/NewHadoop/java/jdk1.7.0_45/include/linux \
--I/home/imdb/supports/Theron-5.01.01/Include \
--I/home/imdb/supports/boost_1_53_0/boost/serialization \
--I/home/imdb/supports/boost_1_53_0/ \
--I/home/imdb/supports/gtest-1.7.0/include
+-I${HADOOP_HOME}/src/c++/libhdfs\
+-I${JAVA_HOME}/include\
+-I${JAVA_HOME}/include/linux \
+-I${THERON_HOME}/Include \
+-I${BOOST_HOME}/boost/serialization \
+-I${BOOST_HOME}/ \
+-I${GTEST_HOME}/include
 
 AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs
 
@@ -49,15 +49,15 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so \
-	/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.so \
-	/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a \
-	/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
-	/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a \
-	/home/imdb/supports/gtest-1.7.0/libgtest.a
+	${BOOST_HOME}/stage/lib/libboost_serialization.a \
+	${BOOST_HOME}/stage/lib/libboost_serialization.so \
+	${BOOST_HOME}/stage/lib/libboost_system.a \
+	${BOOST_HOME}/stage/lib/libboost_system.so \
+	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
+	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
+	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
+	${THERON_HOME}/Lib/libtherond.a \
+	${GTEST_HOME}/libgtest.a
 
 include_HEADERS = Config.h \
 				Debug.h \

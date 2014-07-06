@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC \
--I/home/imdb/supports/boost_1_53_0 \
--I/home/imdb/supports/Theron-5.01.01/Include 
+-I${BOOST_HOME} \
+-I${THERON_HOME}/Include 
 
 
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
@@ -9,9 +9,9 @@ LDADD = 	../Catalog/libcatalog.a \
 		../Daemon/libdaemon.a \
 		../common/Block/libblock.a \
 		../common/Schema/libschema.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
-		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a		
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so \
+		${THERON_HOME}/Lib/libtherond.a		
 
 noinst_LIBRARIES=libclient.a
 libclient_a_SOURCES = \
