@@ -33,7 +33,7 @@ static Node * getparsetreeroot()
 	errorNumber = 0;	// 2014-3-6---初始化SQL解析错误个数---by余楷
 	parsetreeroot = NULL;	// 2014-3-4---增加初始化语句---by余楷
 	memset(globalInputText, 0, sizeof(globalInputText));	// 2014-3-4---增加初始化语句---by余楷
-	printf("please input sql: \n");
+	printf("Claims>");
 	while(1)
 	{
 		char c=getchar();

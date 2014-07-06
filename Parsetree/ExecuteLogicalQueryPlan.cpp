@@ -50,9 +50,9 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 
 	int count=1;
-	while(count)
+	while(1)
 	{
-		cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
+		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
 
@@ -63,12 +63,12 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 		if(oldnode == NULL)	// 2014-2-24---增加node为空的判断---by余楷
 		{
-			printf("there are some wrong!\n");
+			printf("[ERROR]there are some wrong in statement! please try again!!\n");
 			FreeAllNode();	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
-			printf("Continue(1) or not (others number)?\n");
-			scanf("%d",&count);
-			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
-			//setbuf(stdin, NULL);	//关闭缓冲
+//			printf("Continue(1) or not (others number)?\n");
+//			scanf("%d",&count);
+//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+//			//setbuf(stdin, NULL);	//关闭缓冲
 			continue;
 		}
 
@@ -530,10 +530,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 		//		FreeAllNode();	//---完成对节点的释放 ！！！！！！！！！！！！！！
 
-		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-		printf("Continue(1) or not (0)?\n");
-		scanf("%d",&count);
-		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+//		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+//		printf("Continue(1) or not (0)?\n");
+//		scanf("%d",&count);
+//		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
 	}
 }
 
