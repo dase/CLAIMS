@@ -69,23 +69,29 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 				cur=rb.bsti_->currentTuple();
 			}
 
-			if((tuple=block->allocateTuple(total_length_))>0){
-				for(unsigned i=0;i<state_.v_ei_.size();i++){
+			if((tuple=block->allocateTuple(total_length_))>0)
+			{
+				for(unsigned i=0;i<state_.v_ei_.size();i++)
+				{
 					ExpressionItem result;
 					ExpressItem_List toCalc;
 					int variable_=0;
-					for(unsigned j=0;j<state_.v_ei_[i].size();j++){
+					for(unsigned j=0;j<state_.v_ei_[i].size();j++)
+					{
 						ExpressionItem ei;
-						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type){
+						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
+						{
 							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
 							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(nth).type);
 							variable_++;
 						}
-						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type){
+						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
+						{
 							ei.return_type=state_.v_ei_[i][j].return_type;
 							ei.setData(state_.v_ei_[i][j].content.data);
 						}
-						else{
+						else
+						{
 							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
 						}
 						toCalc.push_back(ei);

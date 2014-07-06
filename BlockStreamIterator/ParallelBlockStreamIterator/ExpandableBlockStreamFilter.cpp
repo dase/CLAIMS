@@ -9,6 +9,7 @@
 #include "../../utility/warmup.h"
 #include "../../utility/rdtsc.h"
 #include <assert.h>
+#include "../../common/ExpressionCalculator.h"
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
 :state_(state){
@@ -31,6 +32,12 @@ ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBas
 
 }
 
+ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
+		vector<ExpressItem_List> v_ei
+		,Mapping map,unsigned block_size)
+:schema_(schema),child_(child),v_ei_(v_ei),map_(map),block_size_(block_size){
+
+}
 
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 
@@ -67,19 +74,60 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 	bool pass_filter;
 	filter_thread_context* tc=(filter_thread_context*)getContext();
 
-	while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0){
+	while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0)
+	{
 		pass_filter=true;
-		for(unsigned i=0;i<state_.comparator_list_.size();i++){
-
-			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+//		for(unsigned i=0;i<state_.comparator_list_.size();i++)
+//		{
+//
+//			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child)))
+//			{
+//				pass_filter=false;
+//				break;
+//			}
+//		}
+		for(unsigned i=0;i<state_.v_ei_.size();i++)
+		{
+			int variable_=0;
+			ExpressionItem result;
+			ExpressItem_List toCalc;
+			for(unsigned j=0;j<state_.v_ei_[i].size();j++)
+			{
+				ExpressionItem ei;
+				if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
+				{
+					int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
+					ei.setValue(state_.schema_->getColumnAddess(nth,tuple_from_child),state_.schema_->getcolumn(nth).type);
+					variable_++;
+				}
+				else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
+				{
+					ei.return_type=state_.v_ei_[i][j].return_type;
+					ei.setData(state_.v_ei_[i][j].content.data);
+				}
+				else
+				{
+					ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
+				}
+				toCalc.push_back(ei);
+			}
+			ExpressionCalculator::calcuate(toCalc,result);
+			assert(result.return_type==t_int);
+			if(result.content.data.value._int==0)
+			{
 				pass_filter=false;
 				break;
 			}
 		}
-		if(pass_filter){
+
+
+
+		if(pass_filter)
+		{
 
 			const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
-			if((tuple_in_block=block->allocateTuple(bytes))>0){
+			if((tuple_in_block=block->allocateTuple(bytes))>0)
+			{
 				/* the block has space to hold this tuple*/
 //					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
 				/* the block has space to hold this tuple,
@@ -90,12 +138,14 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 				tuple_after_filter_++;
 				tc->block_stream_iterator_->increase_cur_();
 			}
-			else{
+			else
+			{
 				/* the block is full, before we return, we pop the remaining block.*/
 				return true;
 			}
 		}
-		else{
+		else
+		{
 			tc->block_stream_iterator_->increase_cur_();
 		}
 	}
@@ -133,15 +183,53 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 		while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0){
 //			assert((long)tuple_from_child%8==0);
 			pass_filter=true;
-			for(unsigned i=0;i<state_.comparator_list_.size();i++){
-				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+//			for(unsigned i=0;i<state_.comparator_list_.size();i++){
+//				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+//					pass_filter=false;
+//					break;
+//				}
+//			}
+//			if(*(unsigned long*)tuple_from_child!=0){
+//				pass_filter=false;
+//			}
+			for(unsigned i=0;i<state_.v_ei_.size();i++)
+			{
+				int variable_=0;
+				ExpressionItem result;
+				ExpressItem_List toCalc;
+				for(unsigned j=0;j<state_.v_ei_[i].size();j++)
+				{
+					ExpressionItem ei;
+					if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
+					{
+						int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
+						ei.setValue(state_.schema_->getColumnAddess(nth,tuple_from_child),state_.schema_->getcolumn(nth).type);
+						variable_++;
+					}
+					else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
+					{
+						ei.return_type=state_.v_ei_[i][j].return_type;
+						ei.setData(state_.v_ei_[i][j].content.data);
+					}
+					else
+					{
+						ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
+					}
+					toCalc.push_back(ei);
+				}
+				ExpressionCalculator::calcuate(toCalc,result);
+				assert(result.return_type==t_int);
+				if(result.content.data.value._int==0)
+				{
 					pass_filter=false;
 					break;
 				}
 			}
-//			if(*(unsigned long*)tuple_from_child!=0){
-//				pass_filter=false;
-//			}
+
+
+
+
+
 			if(pass_filter){
 
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
@@ -198,7 +286,7 @@ bool ExpandableBlockStreamFilter::close(){
 	return true;
 }
 void ExpandableBlockStreamFilter::print(){
-	printf("Filter size=%d\n",state_.comparator_list_.size());
+	printf("Filter size=%d\n",state_.v_ei_.size());
 
 	printf("---------------\n");
 	state_.child_->print();

@@ -19,6 +19,7 @@
 #include "../../utility/lock.h"
 #include "../../common/AttributeComparator.h"
 #include "../../common/ExpressionItem.h"
+#include "../../common/Mapping.h"
 typedef vector<ExpressionItem> ExpressItem_List;
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
@@ -43,18 +44,22 @@ public:
 	public:
 		friend class ExpandableBlockStreamFilter;
 		State(Schema* s, BlockStreamIteratorBase* child,std::vector<AttributeComparator> comparator_list,unsigned block_size );
+		State(Schema* s, BlockStreamIteratorBase* child,vector<ExpressItem_List> v_ei, Mapping map,unsigned block_size );
+
 		State(){};
 	public:
 		Schema* schema_;
 		std::vector<AttributeComparator> comparator_list_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
+		Mapping map_;
 		vector<ExpressItem_List> v_ei_;
+
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & comparator_list_ & child_ & block_size_;
+			ar & schema_ & comparator_list_ & child_ & block_size_& v_ei_ &map_;
 		}
 	};
 
