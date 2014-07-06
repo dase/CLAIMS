@@ -78,7 +78,7 @@ bool BlockStreamPerformanceTest::close(){
 
 	printf("Scan tuples: %d\t Random tuples: %d\n", tuplecount1_, tuplecount2_);
 
-	ofstream outFile("/home/imdb/mount/dsc/disk_result.dat", ios::app);
+	ofstream outFile("/home/claims/mount/dsc/disk_result.dat", ios::app);
 	if (!outFile)
 	{
 		cout << "Can not open file!\n";

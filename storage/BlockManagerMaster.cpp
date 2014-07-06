@@ -35,13 +35,13 @@ void BlockManagerMaster::initialize(){
 void BlockManagerMaster::testForPoc(){
 	bm_=BlanceMatcher::getInstance();
 //	string file_name="/home/hayue/input/3_64m";
-	string file_name="/home/imdb/cj_/prj2/hs";
+	string file_name="/home/claims/cj_/prj2/hs";
 	list<string> projs;
-	projs.push_back("/home/imdb/cj_/prj2/hs_1");
-	projs.push_back("/home/imdb/cj_/prj2/hs_2");
-	projs.push_back("/home/imdb/cj_/prj2/hs_3");
-	projs.push_back("/home/imdb/cj_/prj2/hs_4");
-	projs.push_back("/home/imdb/cj_/prj2/hs_5");
+	projs.push_back("/home/claims/cj_/prj2/hs_1");
+	projs.push_back("/home/claims/cj_/prj2/hs_2");
+	projs.push_back("/home/claims/cj_/prj2/hs_3");
+	projs.push_back("/home/claims/cj_/prj2/hs_4");
+	projs.push_back("/home/claims/cj_/prj2/hs_5");
 	bm_->projectsInput(file_name.c_str(),projs);
 }
 
