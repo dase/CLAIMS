@@ -15,6 +15,7 @@
 #include "../common/AttributeComparator.h"
 #include "../common/ExpressionCalculator.h"
 #include "../common/ExpressionItem.h"
+#include "../common/Mapping.h"
 class Filter:public LogicalOperator {
 public:
 	class Condition{
@@ -46,12 +47,18 @@ private:
 	bool couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor&)const;
 	float predictSelectivity()const;
 	void generateComparatorList(const Dataflow&);
+
+
+	Mapping getMapping();
+	int getColumnSeq(ExpressionItem &ei);
+
 private:
 	LogicalOperator* child_;
 	Condition condition_;
 	vector<AttributeComparator> comparator_list_;
 
 	std::vector<Expression> exprArray_;
+	Mapping mappings_;
 
 
 };

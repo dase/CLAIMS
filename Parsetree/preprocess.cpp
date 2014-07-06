@@ -388,7 +388,6 @@ void expr_to_str_for_orderby(Node* node)
 	{
 		Groupby_expr *obexpr=(Groupby_expr *)p;
 		expr_to_str(obexpr->args,0);
-		cout<<"======================================"<<endl;
 		p=obexpr->next;
 	}
 }

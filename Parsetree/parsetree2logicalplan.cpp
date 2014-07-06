@@ -151,6 +151,10 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 		case t_expr_cal://目前只支持equaljoin
 		{
 			Expr_cal *node=(Expr_cal *)wcexpr;
+			if(node->lnext->type!=t_name_name||node->rnext->type!=t_name_name)
+			{
+				return 0;
+			}
 			if(strcmp(node->sign,"CMP")==0)
 			{
 				switch (node->cmp)
@@ -218,7 +222,7 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 		}break;
 		default:
 		{
-
+			return 0;
 		}
 	}
 	return 1;
@@ -300,12 +304,13 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				bool hasin=false;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
-					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename,hasin,tablescan);
-//					vector<ExpressionItem>expr;
-//					get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-//					allexpr.push_back(expr);
+//					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename,hasin,tablescan);
+					vector<ExpressionItem>expr;
+					get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+					allexpr.push_back(expr);
 				}
-				LogicalOperator* filter=new Filter(filter_condition,tablescan);
+//				LogicalOperator* filter=new Filter(filter_condition,tablescan);
+				LogicalOperator* filter=new Filter(tablescan,allexpr);
 				if(hasin==true)
 				{
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
@@ -326,21 +331,60 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			From_list *node=(From_list *)parsetree;
 			LogicalOperator * filter_1= where_from2logicalplan(node->args);
 			LogicalOperator * filter_2= where_from2logicalplan(node->next);//maybe NULL
-			if(filter_2==NULL)
+			LogicalOperator * lopfrom=NULL;
+			if(filter_2==NULL)// a join b on c where a.a>0;
 			{
-				return filter_1;
+				Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
+				if(whcdn->header!=NULL)
+				{
+					Node * p;
+					vector<vector<ExpressionItem> >allexpr;
+					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
+					{
+							vector<ExpressionItem>expr;
+							get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+							allexpr.push_back(expr);
+					}
+					if(allexpr.size()>0)
+					{
+						lopfrom=new Filter(filter_1,allexpr);
+					}
+					else
+					{
+						lopfrom=filter_1;
+					}
+					return lopfrom;
+				}
+				else
+				{
+					return filter_1;
+				}
 			}
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
 			{
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
+				vector<vector<ExpressionItem> >allexpr;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
-					getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
+					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
+					if(fg==0)
+					{
+						vector<ExpressionItem>expr;
+						get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+						allexpr.push_back(expr);
+					}
 				}
-				LogicalOperator* join=new EqualJoin(join_pair_list,filter_1,filter_2);
-				return join;
+				if(join_pair_list.size()>0)
+				{
+					lopfrom=new EqualJoin(join_pair_list,filter_1,filter_2);
+				}
+				if(allexpr.size()>0)
+				{
+					lopfrom=new Filter(lopfrom,allexpr);
+				}
+				return lopfrom;
 			}
 			else//没有equaljoin的情况
 			{
@@ -1478,7 +1522,14 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 			case t_expr_func:
 			{
 				Expr_func * func=(Expr_func *)(gbexpr->args);
+				assert(func->str!=NULL);
 				obcol.push_back(new LogicalSort::OrderByAttr(func->str));
+			}break;
+			case t_expr_cal:
+			{
+				Expr_cal *ecal=(Expr_cal *)(gbexpr->args);
+				assert(ecal->str!=NULL);
+				obcol.push_back(new LogicalSort::OrderByAttr(ecal->str));
 			}break;
 			default:
 			{

@@ -341,6 +341,7 @@ int solve_join_condition(Node * fromnode)
 {
 	for(Node *p=fromnode;p!=NULL;)
 	{
+		assert(p->type==t_from_list);
 		From_list * fnode=(From_list *)p;
 		switch(fnode->args->type)
 		{
@@ -366,13 +367,13 @@ int solve_join_condition(Node * fromnode)
 					}
 					else
 					{
-
+						SQLParse_elog("wc2tb line:370 can't support the join type\n");
 					}
 				}
 			}break;
 			default:
 			{
-
+				SQLParse_elog("wc2tb line:377 can't support the join type\n");
 			}
 		}
 		p=fnode->next;

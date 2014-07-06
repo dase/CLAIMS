@@ -299,17 +299,23 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 #endif
 				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
-				Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 				LogicalOperator* root=NULL;
-				if(lexpr->offset==NULL)
+				if(querynode->limit_list!=NULL)
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
+					if(lexpr->offset==NULL)
+					{
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+					}
+					else
+					{
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+					}
 				}
 				else
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
 				}
-
 #ifdef SQL_Parser
 				root->print(0);
 				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
