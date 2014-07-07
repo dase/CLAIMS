@@ -1,4 +1,5 @@
 AM_CPPFLAGS=-fPIC\
+-I/usr/include/easy \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
@@ -65,17 +66,23 @@ include_HEADERS = Config.h \
 				IDsGenerator.h \
 				configure.h
 				
-bin_PROGRAMS =  server 
+bin_PROGRAMS =  server mysqlserver
 
 server_SOURCES = Config.cpp	\
 				Environment.cpp \
 				IDsGenerator.cpp \
 				Server.cpp
 
-SUBDIRS= BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
+mysqlserver_SOURCES = mysqlserver.cpp
+
+mysqlserver_LDADD = cmysql/libcmysql.a \
+				/usr/lib64/libeasy.a \
+				/usr/lib64/libeasy.so
+
+SUBDIRS= BlockStreamIterator BufferManager Catalog Client common cmysql Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource Scheduler \
 storage Test try utility
 
-DIST_SUBDIRS = BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
+DIST_SUBDIRS = BlockStreamIterator BufferManager Catalog Client common cmysql Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource Scheduler \
 storage Test try utility
