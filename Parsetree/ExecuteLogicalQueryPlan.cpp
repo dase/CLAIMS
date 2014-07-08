@@ -130,7 +130,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						primaryname = colname;
 						Column_atts *column_atts = (Column_atts*)data->col_atts;
 
-						/* TODO: Whether column is unique or not null or has default value is not finished,
+						/* TODO: Whether column is unique or has default value is not finished,
 						 *  because there are no supports
 						 */
 						Datatype * datatype = (Datatype *)data->datatype;
@@ -138,13 +138,29 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						{
 						case 3:
 						{
-							new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+							}
 							break;
 						}
 						case 5:
 						case 6:
 						{
-							new_table->addAttribute(colname, data_type(t_int), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_int), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_int), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_int), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -152,7 +168,15 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						{
 							if (datatype->opt_uz & 01 != 0)
 							{
-								new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+								}
 								cout<<colname<<" is created"<<endl;
 							}
 							else
@@ -164,35 +188,84 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						}
 						case 9:
 						{
-							new_table->addAttribute(colname, data_type(t_double), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_double), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_double), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_double), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 10:
 						{
-							new_table->addAttribute(colname, data_type(t_float), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_float), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_float), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_float), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 11:
 						{
-							new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+							}
+							cout<<colname<<" is created"<<endl;
 						}
 						case 12:	// DATE --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_date), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_date), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_date), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_date), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 13:	// TIME --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_time), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_time), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_time), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_time), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 15:	// DATETIME --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -202,11 +275,28 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 							if (datatype->length)	//已指定长度
 							{
 								Length * l = (Length*)datatype->length;
-								new_table->addAttribute(colname, data_type(t_string), l->data1, true);
+
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true);
+								}
 							}
 							else	//未指定长度
 							{
-								new_table->addAttribute(colname, data_type(t_string), 1, true);
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_string), 1, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_string), 1, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_string), 1, true);
+								}
 							}
 							cout<<colname<<" is created"<<endl;
 							break;
