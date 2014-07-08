@@ -66,9 +66,9 @@ include_HEADERS = Config.h \
 				IDsGenerator.h \
 				configure.h
 				
-bin_PROGRAMS =  server mysqlserver
+bin_PROGRAMS =  claimsserver mysqlserver
 
-server_SOURCES = Config.cpp	\
+claimsserver_SOURCES = Config.cpp	\
 				Environment.cpp \
 				IDsGenerator.cpp \
 				Server.cpp
