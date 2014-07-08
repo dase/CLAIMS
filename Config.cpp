@@ -12,7 +12,7 @@
 #include <iostream>
 #define DEBUG_Config
 
-std::string Config::config_file="/home/claims/config/zhanglei/config";
+std::string Config::config_file="./conf/config";
 Config* Config::instance_=0;
 
 /**
