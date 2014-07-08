@@ -466,7 +466,6 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				// split sign should be considered carefully, in case of it may be "||" or "###"
 				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
-
 				loader->load();
 			}
 			break;
