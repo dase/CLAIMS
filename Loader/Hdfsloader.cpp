@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iostream>
 
-//#define HDFS_LOAD
+#define HDFS_LOAD
 
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
@@ -194,7 +194,6 @@ bool HdfsLoader::insertRecords(){
 }
 
 bool HdfsLoader::load(){
-
 #ifdef HDFS_LOAD
 	connector_ = new HdfsConnector(writepath);
 	connector_->op_connect(open_flag_);
