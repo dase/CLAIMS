@@ -114,6 +114,9 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				// 创建新表
 				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+
+				new_table->addAttribute("row_id",data_type(t_u_long),0,true);
+
 				Create_col_list *list = (Create_col_list*)ctnode->list;
 				string primaryname;
 				int colNum = 0;
@@ -217,14 +220,24 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					list = (Create_col_list* )list->next;
 				}
 
-				// add for formal test, create projection default while creating table
-				{
-					std::vector<ColumnOffset> index;
-					index.push_back(0);
-					new_table->createHashPartitionedProjection(index, new_table->getAttribute(0).getName(), 1);
-				}
+				// add for  test, create projection default while creating table
+				std::vector<ColumnOffset> index;
+				index.push_back(1);
+				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
+
+				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 1);
 
 				catalog->add_table(new_table);
+
+				TableID table_id=catalog->getTable(tablename)->get_table_id();
+
+				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+//					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+					catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+				}
+
+				catalog->saveCatalog();
+
 			}
 			break;
 			case t_create_projection_stmt:	// 创建projection的语句

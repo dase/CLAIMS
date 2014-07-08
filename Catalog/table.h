@@ -140,8 +140,10 @@ public:
 	Attribute getAttribute(const std::string& name)const{
 		stringstream ss;
 		ss<<tableName.c_str()<<"."<<name.c_str();
+//		cout<<"partition_name :"<<name<<endl;	// for test--by yu
 		for(unsigned i=0;i<attributes.size();i++){
-			if(attributes[i].attrName==ss.str())
+//			cout<<attributes[i].attrName<<endl;		// for test -- by yu
+			if(attributes[i].attrName==name)		// modify ss.str() to name ---by yu --7.6
 				return attributes[i];
 		}
 		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
