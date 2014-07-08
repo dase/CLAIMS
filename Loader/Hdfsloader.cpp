@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iostream>
 
-#define HDFS_LOAD
+//#define HDFS_LOAD
 
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
@@ -147,7 +147,7 @@ bool HdfsLoader::insertRecords(){
 	column_type* tmp = new column_type(t_u_long);
 	std::string tmp_str = tmp->operate->toString(&row_id);
 	delete tmp;
-	s_record = tmp_str + "|" + s_record;
+	s_record = tmp_str + col_separator + s_record;
 	table_schema->toValue(s_record, tuple_buffer, col_separator);
 	row_id++;
 
@@ -211,7 +211,7 @@ bool HdfsLoader::load(){
 			printf("Cannot open source file:%s , reason: %s\n",(*iter).c_str(),strerror(errno));
 			return false;
 		}
-		while(!InFile.eof()/* for testing*/ && t_count++ < 500 )
+		while(!InFile.eof()/* for testing && t_count++ < 500 */)
 		{
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
@@ -224,6 +224,8 @@ bool HdfsLoader::load(){
 		InFile.close();
 ///*for testing*/	t_count++;
 	}
+
+	cout << "----------------------------"<<endl;
 
 	//flush the last block which is not full of 64*1024Byte
 	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
@@ -268,7 +270,7 @@ bool HdfsLoader::load(){
 
 	//register the table to catalog
 
-	Catalog::getInstance()->add_table(table_descriptor_);
+//	Catalog::getInstance()->add_table(table_descriptor_);
 	//register the number of rows in table to catalog
 	table_descriptor_->setRowNumber(row_id);
 	//register the partition information to catalog

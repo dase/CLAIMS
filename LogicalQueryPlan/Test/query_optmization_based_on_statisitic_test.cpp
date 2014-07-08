@@ -1460,6 +1460,9 @@ static int query_optimization_outputdata()
 	{
 		Environment::getInstance(true);
 		startup_multiple_node_environment_of_tpch();
+
+		Catalog* catalog=Environment::getInstance()->getCatalog();
+		catalog->restoreCatalog();
 //		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 //		Catalog* catalog=Environment::getInstance()->getCatalog();
 ////		TableDescriptor* table_1=new TableDescriptor("PART",0);
