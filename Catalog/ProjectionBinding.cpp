@@ -30,6 +30,7 @@ bool ProjectionBinding::BindingEntireProjection(Partitioner* part,const StorageL
 			/*check whether target node has enough resource*/
 			bool check_passed=false;
 			unsigned buget=part->getPartitionDataSize(i);
+			printf("_____BUDGET:%d\n",buget);
 			unsigned failures=0;
 			while(!check_passed){
 //				if(target==0){

@@ -147,10 +147,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 							else{
 								new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
 							}
+							cout<<colname<<" is created"<<endl;
 							break;
 						}
-						case 5:
-						case 6:
+						case 5: case 6:
 						{
 							if (column_atts && (column_atts->datatype && 01)){
 								new_table->addAttribute(colname, data_type(t_int), 0, true, false);
@@ -315,16 +315,16 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				index.push_back(1);
 				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 1);
+				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
 
 				catalog->add_table(new_table);
 
 				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
-				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-//					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
-					catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
-				}
+//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+////					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+//				}
 
 				catalog->saveCatalog();
 
@@ -466,8 +466,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				// split sign should be considered carefully, in case of it may be "||" or "###"
 				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
-
 				loader->load();
+
+				catalog->saveCatalog();
+
 			}
 			break;
 			case t_insert_stmt:	// 2014-4-19---add---by Yu	// 2014-5-1---modify---by Yu
@@ -604,9 +606,12 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				if (has_warning) ASTParserLogging::log("[WARNING]: The type is not matched!\n");
 				ASTParserLogging::log("the insert content is \n%s\n",ostr.str().c_str());
 
-//				HdfsLoader* Hl = new HdfsLoader(table);
-//				string tmp = ostr.str().c_str();
-//				Hl->append(ostr.str().c_str());
+				HdfsLoader* Hl = new HdfsLoader(table);
+				string tmp = ostr.str().c_str();
+				Hl->append(ostr.str().c_str());
+
+				catalog->saveCatalog();
+
 			}
 			break;
 			case t_show_stmt:

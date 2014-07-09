@@ -18,7 +18,8 @@ ExpressionItem::~ExpressionItem() {
 bool ExpressionItem::setValue(void* value_str,const data_type type){
 	switch(type){
 		case t_int:{
-			setIntValue((const char *)value_str);
+//			setIntValue((const char *)value_str);
+			setIntValue(*(int *)value_str);
 			break;
 		}
 		case t_float:{
