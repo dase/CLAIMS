@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iostream>
 
-//#define HDFS_LOAD
+#define HDFS_LOAD
 
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
@@ -60,7 +60,11 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			if (open_flag_ == APPEND)
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			else
+				tmp_block_num.push_back(0);
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -114,7 +118,12 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			if (open_flag_ == APPEND)
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			else
+				tmp_block_num.push_back(0);
+			//ERROR: the init table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) is wrong!!!
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -149,6 +158,7 @@ bool HdfsLoader::insertRecords(){
 	delete tmp;
 	s_record = tmp_str + col_separator + s_record;
 	table_schema->toValue(s_record, tuple_buffer, col_separator);
+	table_schema->displayTuple(tuple_buffer,"\t"); /*for testing*/
 	row_id++;
 
 ///*for testing begin*/
@@ -194,7 +204,6 @@ bool HdfsLoader::insertRecords(){
 }
 
 bool HdfsLoader::load(){
-
 #ifdef HDFS_LOAD
 	connector_ = new HdfsConnector(writepath);
 	connector_->op_connect(open_flag_);
@@ -279,6 +288,7 @@ bool HdfsLoader::load(){
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
 	cout << "\n\n\n--------------------------Load End!--------------------------\n";
@@ -346,6 +356,7 @@ bool HdfsLoader::append(std::string tuple_string)
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
 	cout << "\n\n\n--------------------------Append End!--------------------------\n";

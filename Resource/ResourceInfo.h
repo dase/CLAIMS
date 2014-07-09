@@ -8,6 +8,7 @@
 #ifndef RESOURCEINFO_H_
 #define RESOURCEINFO_H_
 #include <string>
+#include <iostream>
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -22,6 +23,7 @@ struct memory_info{
 	bool take(int buget){
 		if(allocated_capacity>=used_capacity+buget){
 			used_capacity+=buget;
+			std::cout<<"used_capacity:"<<used_capacity<<std::endl;
 			return true;
 		}
 		return false;

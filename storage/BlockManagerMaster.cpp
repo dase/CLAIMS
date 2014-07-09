@@ -103,7 +103,7 @@ bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, con
 	logging_->log("Sending the binding message to [%s]",generateSlaveActorName(target).c_str());
 	framework_->Send(message,receiver.GetAddress(),Theron::Address(generateSlaveActorName(target).c_str()));
 	if(receiver.TimeOutWait(1,2000)==0){
-		logging_->elog("The node[%s] fails to receiver the partition binding message!",NodeTracker::getInstance()->getNodeIP(target).c_str());
+		logging_->elog("The node[%s] fails to receiver the partition binding message! target actor name=%s",NodeTracker::getInstance()->getNodeIP(target).c_str(),generateSlaveActorName(target).c_str());
 	}
 
 	return true;
