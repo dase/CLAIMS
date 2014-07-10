@@ -110,7 +110,7 @@ void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetRepo
 		rmm_->logging_->elog("Fail to add the budget information to rmm!");
 	}
 //	rmm_->logging_->log("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB",message.nodeid,message.disk_budget,message.memory_budget);
-	printf("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB",message.nodeid,message.disk_budget,message.memory_budget);
+//	printf("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB\n",message.nodeid,message.disk_budget,message.memory_budget);
 //	Send(0,from);
 }
 void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveNewNodeRegister(const NodeRegisterMessage &message,const Theron::Address from){

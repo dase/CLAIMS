@@ -82,9 +82,7 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		printf("**************NUM:%ld\n",number_of_blocks);
 		ar & hdfs_file_name & number_of_blocks & partition_id_;
-		printf("<<<<<<<<<<<<<<<<NUM:%ld\n",number_of_blocks);
 	}
 
 };
