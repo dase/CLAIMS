@@ -145,9 +145,6 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		perf_info->processed_one_block();
 //		printf("[]");
 //		perf_info->report_instance_performance_in_millibytes();
-
-		printf("---------------->%x\n",*((int*)block->getBlock()+8));
-		std::cout<< "<><><><><><><><>"<<*(int*)(block->getBlock()+8)<<std::endl;
 		return true;
 	}
 	else{
