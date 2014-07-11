@@ -18,6 +18,7 @@
 #include "ExpressionCalculator.h"
 #include "TypePromotionMap.h"
 #include "TypeCast.h"
+#include "types/NValue.hpp"
 using namespace std;
 
 bool check_data_type_for_add(data_type dt){
@@ -43,12 +44,29 @@ bool check_data_type_for_add(data_type dt){
 		case t_date:{
 			return true;
 		}
+		case t_boolean:
+		{
+			return true;
+		}
 		default:{
 			return false;
 		}
 	}
 }
-
+bool check_data_type_for_boolean(data_type dt){
+	switch(dt){
+		case t_int:{
+			return true;
+		}
+		case t_boolean:
+		{
+			return true;
+		}
+		default:{
+			return false;
+		}
+	}
+}
 static void add_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
 	assert(left.return_type==right.return_type);
 	switch(left.return_type){
@@ -264,14 +282,199 @@ static void mul(ExpressionItemStack& stack, ExpressionItem& target){
 
 static void compare_less_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
 	assert(left.return_type==right.return_type);
-	target.return_type=t_boolean;
+	target.return_type=t_int;
 	switch(left.return_type){
 		case t_int:{
-			target.content.data.value._bool=left.content.data.value._int<right.content.data.value._int;
+			target.content.data.value._int=(left.content.data.value._int<right.content.data.value._int);
 			break;
 		}
 		case t_float:{
-			target.content.data.value._bool=(left.content.data.value._float<right.content.data.value._float);
+			target.content.data.value._int=(left.content.data.value._float<right.content.data.value._float);
+			break;
+		}
+		case t_double:{
+			target.content.data.value._int=(left.content.data.value._double<right.content.data.value._double);
+			break;
+		}
+		case t_smallInt:{
+			target.content.data.value._int=(left.content.data.value._sint<right.content.data.value._sint);
+			break;
+		}
+		case t_u_long:{
+			target.content.data.value._int=(left.content.data.value._ulong<right.content.data.value._ulong);
+			break;
+		}
+		case t_decimal:{
+			target.content.data.value._int=left._decimal.op_less(right._decimal);
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
+	}
+}
+
+
+static void compare_great_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
+	assert(left.return_type==right.return_type);
+	target.return_type=t_int;
+	switch(left.return_type){
+		case t_int:{
+			target.content.data.value._int=(left.content.data.value._int>right.content.data.value._int);
+			break;
+		}
+		case t_float:{
+			target.content.data.value._int=(left.content.data.value._float>right.content.data.value._float);
+			break;
+		}
+		case t_double:{
+			target.content.data.value._int=(left.content.data.value._double>right.content.data.value._double);
+			break;
+		}
+		case t_smallInt:{
+			target.content.data.value._int=(left.content.data.value._sint>right.content.data.value._sint);
+			break;
+		}
+		case t_u_long:{
+			target.content.data.value._int=(left.content.data.value._ulong>right.content.data.value._ulong);
+			break;
+		}
+		case t_decimal:{
+			target.content.data.value._int=left._decimal.op_great(right._decimal);
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
+	}
+}
+
+static void compare_equal_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
+	assert(left.return_type==right.return_type);
+	target.return_type=t_int;
+	switch(left.return_type){
+		case t_int:{
+			target.content.data.value._int=(left.content.data.value._int==right.content.data.value._int);
+			break;
+		}
+		case t_float:{
+			target.content.data.value._int=(left.content.data.value._float==right.content.data.value._float);
+			break;
+		}
+		case t_double:{
+			target.content.data.value._int=(left.content.data.value._double==right.content.data.value._double);
+			break;
+		}
+		case t_smallInt:{
+			target.content.data.value._int=(left.content.data.value._sint==right.content.data.value._sint);
+			break;
+		}
+		case t_u_long:{
+			target.content.data.value._int=(left.content.data.value._ulong==right.content.data.value._ulong);
+			break;
+		}
+		case t_decimal:{
+			target.content.data.value._int=left._decimal.op_equals(right._decimal);
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
+	}
+}
+
+static void compare_not_equal_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
+	assert(left.return_type==right.return_type);
+	target.return_type=t_int;
+	switch(left.return_type){
+		case t_int:{
+			target.content.data.value._int=(left.content.data.value._int!=right.content.data.value._int);
+			break;
+		}
+		case t_float:{
+			target.content.data.value._int=(left.content.data.value._float!=right.content.data.value._float);
+			break;
+		}
+		case t_double:{
+			target.content.data.value._int=(left.content.data.value._double!=right.content.data.value._double);
+			break;
+		}
+		case t_smallInt:{
+			target.content.data.value._int=(left.content.data.value._sint!=right.content.data.value._sint);
+			break;
+		}
+		case t_u_long:{
+			target.content.data.value._int=(left.content.data.value._ulong!=right.content.data.value._ulong);
+			break;
+		}
+		case t_decimal:{
+			target.content.data.value._int=left._decimal.op_not_equals(right._decimal);
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
+	}
+}
+static void compare_great_equal_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
+	assert(left.return_type==right.return_type);
+	target.return_type=t_int;
+	switch(left.return_type){
+		case t_int:{
+			target.content.data.value._int=(left.content.data.value._int>=right.content.data.value._int);
+			break;
+		}
+		case t_float:{
+			target.content.data.value._int=(left.content.data.value._float>=right.content.data.value._float);
+			break;
+		}
+		case t_double:{
+			target.content.data.value._int=(left.content.data.value._double>=right.content.data.value._double);
+			break;
+		}
+		case t_smallInt:{
+			target.content.data.value._int=(left.content.data.value._sint>=right.content.data.value._sint);
+			break;
+		}
+		case t_u_long:{
+			target.content.data.value._int=(left.content.data.value._ulong>=right.content.data.value._ulong);
+			break;
+		}
+		case t_decimal:{
+			target.content.data.value._int=left._decimal.op_great_equals(right._decimal);///////////////
+			break;
+		}
+		default:{
+			printf("add type not supproted!\n");
+		}
+	}
+}
+static void compare_less_equal_in_same_type(const ExpressionItem& left,const ExpressionItem& right,ExpressionItem& target){
+	assert(left.return_type==right.return_type);
+	target.return_type=t_int;
+	switch(left.return_type){
+		case t_int:{
+			target.content.data.value._int=(left.content.data.value._int<=right.content.data.value._int);
+			break;
+		}
+		case t_float:{
+			target.content.data.value._int=(left.content.data.value._float<=right.content.data.value._float);
+			break;
+		}
+		case t_double:{
+			target.content.data.value._int=(left.content.data.value._double<=right.content.data.value._double);
+			break;
+		}
+		case t_smallInt:{
+			target.content.data.value._int=(left.content.data.value._sint<=right.content.data.value._sint);
+			break;
+		}
+		case t_u_long:{
+			target.content.data.value._int=(left.content.data.value._ulong<=right.content.data.value._ulong);
+			break;
+		}
+		case t_decimal:{
+			target.content.data.value._int=left._decimal.op_less_equals(right._decimal);//////////////
 			break;
 		}
 		default:{
@@ -305,13 +508,12 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 	compare_less_in_same_type(left,right,target);
 }
 
-static void compare_lesss(ExpressionItemStack& stack, ExpressionItem& target){
+static void compare_great(ExpressionItemStack& stack, ExpressionItem& target){
 	assert(stack.size()>=2);
 	ExpressionItem left,right;
 
 	right=stack.top();
 	stack.pop();
-
 	left=stack.top();
 	stack.pop();
 
@@ -327,6 +529,141 @@ static void compare_lesss(ExpressionItemStack& stack, ExpressionItem& target){
 		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
 	}
 
+	target.type=ExpressionItem::const_type;
+	compare_great_in_same_type(left,right,target);
+}
+
+static void compare_equal(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem left,right;
+
+	right=stack.top();
+	stack.pop();
+	left=stack.top();
+	stack.pop();
+
+	/**In the current implementation, arithmetic type promotion map is used.
+	 * TODO: Use specific mapping for compare function if needed.
+	 */
+	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+
+	if(promoted_type!=left.return_type){
+		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
+	}
+	if(promoted_type!=right.return_type){
+		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
+	}
+
+	target.type=ExpressionItem::const_type;
+	compare_equal_in_same_type(left,right,target);
+}
+
+static void compare_not_equal(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem left,right;
+
+	right=stack.top();
+	stack.pop();
+	left=stack.top();
+	stack.pop();
+
+	/**In the current implementation, arithmetic type promotion map is used.
+	 * TODO: Use specific mapping for compare function if needed.
+	 */
+	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+
+	if(promoted_type!=left.return_type){
+		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
+	}
+	if(promoted_type!=right.return_type){
+		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
+	}
+
+	target.type=ExpressionItem::const_type;
+	compare_not_equal_in_same_type(left,right,target);
+}
+
+static void compare_less_equal(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem left,right;
+
+	right=stack.top();
+	stack.pop();
+	left=stack.top();
+	stack.pop();
+
+	/**In the current implementation, arithmetic type promotion map is used.
+	 * TODO: Use specific mapping for compare function if needed.
+	 */
+	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+
+	if(promoted_type!=left.return_type){
+		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
+	}
+	if(promoted_type!=right.return_type){
+		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
+	}
+
+	target.type=ExpressionItem::const_type;
+	compare_less_equal_in_same_type(left,right,target);
+}
+
+static void compare_great_equal(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem left,right;
+
+	right=stack.top();
+	stack.pop();
+	left=stack.top();
+	stack.pop();
+
+	/**In the current implementation, arithmetic type promotion map is used.
+	 * TODO: Use specific mapping for compare function if needed.
+	 */
+	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+
+	if(promoted_type!=left.return_type){
+		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
+	}
+	if(promoted_type!=right.return_type){
+		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
+	}
+
+	target.type=ExpressionItem::const_type;
+	compare_great_equal_in_same_type(left,right,target);
+}
+
+
+static void get_compare_return_type(ExpressionItemStack& stack, ExpressionItem& target,bool isnot)
+{
+	if(isnot)
+	{
+		assert(stack.size()>=1);
+		stack.pop();
+	}
+	else
+	{
+		assert(stack.size()>=2);
+		ExpressionItem left,right;
+
+		right=stack.top();
+		stack.pop();
+
+		left=stack.top();
+		stack.pop();
+	}
+	/**In the current implementation, arithmetic type promotion map is used.
+	 * TODO: Use specific mapping for compare function if needed.
+	 */
+//	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+//
+//	if(promoted_type!=left.return_type){
+//		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
+//	}
+//	if(promoted_type!=right.return_type){
+//		TypeCast::type_cast_functions[right.return_type][promoted_type](right);
+//	}
+	target.return_type=t_int;
 	target.type=ExpressionItem::const_type;
 }
 
@@ -672,4 +1009,81 @@ static void cast(ExpressionItemStack& stack, ExpressionItem& target){
 	target=variable;
 }
 
+
+static void get_boolean_expr(ExpressionItem& expr)
+{
+	bool temp=false;
+
+	switch(expr.return_type)
+	{
+		case t_int:
+		{
+			temp=expr.content.data.value._int!=0?true:false;
+		}break;
+		case t_smallInt:
+		{
+			temp=expr.content.data.value._sint!=0?true:false;
+		}break;
+		case t_double:
+		{
+			temp=expr.content.data.value._double!=0.0?true:false;
+		}break;
+		case t_float:
+		{
+			temp=expr.content.data.value._float!=0.0?true:false;
+		}break;
+		case t_decimal:
+		{
+			temp=expr._decimal.op_not_equals(NValue::getDecimalValueFromString("0"));
+		}break;
+		case t_u_long:
+		{
+			temp=expr.content.data.value._ulong!=0?true:false;
+		}break;
+		default:
+		{
+			printf("not op not support this type/n");
+		}
+	}
+	expr.return_type=t_int;
+	expr.type=ExpressionItem::const_type;
+	expr.content.data.value._int=temp;
+}
+static void andop(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem right=stack.top();
+	stack.pop();
+	get_boolean_expr(right);
+
+	ExpressionItem left=stack.top();
+	stack.pop();
+	get_boolean_expr(left);
+
+	target.return_type=t_int;
+	target.type=ExpressionItem::const_type;
+	target.content.data.value._int=(left.content.data.value._int&&right.content.data.value._int);
+}
+static void orop(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=2);
+	ExpressionItem right=stack.top();
+	stack.pop();
+	get_boolean_expr(right);
+	ExpressionItem left=stack.top();
+	stack.pop();
+	get_boolean_expr(left);
+	target.return_type=t_int;
+	target.type=ExpressionItem::const_type;
+	target.content.data.value._int=(left.content.data.value._int||right.content.data.value._int);
+}
+static void notop(ExpressionItemStack& stack, ExpressionItem& target){
+	assert(stack.size()>=1);
+	ExpressionItem notexpr;
+	notexpr=stack.top();
+	stack.pop();
+	get_boolean_expr(notexpr);
+	target.return_type=t_int;
+	target.type=ExpressionItem::const_type;
+	target.content.data.value._int=!(notexpr.content.data.value._int);
+
+}
 #endif /* FUNCTIONS_H_ */

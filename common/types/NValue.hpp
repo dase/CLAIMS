@@ -81,6 +81,11 @@ public:
     NValue op_min(const NValue rhs) const;
 
     bool op_equals(const NValue rhs) const;
+    bool op_not_equals(const NValue rhs) const;
+    bool op_less(const NValue rhs) const;
+    bool op_less_equals(const NValue rhs) const;
+    bool op_great(const NValue rhs) const;
+    bool op_great_equals(const NValue rhs) const;
 
     int compare(const NValue rhs) const;
 
@@ -285,7 +290,21 @@ inline NValue NValue::op_min(const NValue rhs) const {
 inline bool NValue::op_equals(const NValue rhs) const {
     return compare(rhs) == 0 ? true : false;
 }
-
+inline bool NValue::op_not_equals(const NValue rhs) const {
+    return compare(rhs) == 0 ?  false:true;
+}
+inline bool NValue::op_less(const NValue rhs) const {
+    return compare(rhs) <0 ? true : false;
+}
+inline bool NValue::op_less_equals(const NValue rhs) const {
+    return compare(rhs) > 0 ?false :true;
+}
+inline bool NValue::op_great(const NValue rhs) const {
+    return compare(rhs) > 0 ? true : false;
+}
+inline bool NValue::op_great_equals(const NValue rhs) const {
+    return compare(rhs) < 0 ? false : true;
+}
 inline int NValue::compare(const NValue rhs) const {
 //    switch (getValueType()) {
 //    case VALUE_TYPE_DECIMAL:

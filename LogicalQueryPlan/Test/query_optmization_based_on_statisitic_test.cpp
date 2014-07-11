@@ -1549,9 +1549,11 @@ static int query_optimization_outputdata()
 
 
 
+
 		ExecuteLogicalQueryPlan();
 		printf("ready(?)\n");
 		int input;
+
 		scanf("%d",&input);
 
 		cout<<"Waiting~~~!~"<<endl;

@@ -11,6 +11,7 @@
 #include "../Debug.h"
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
+#include "../Config.h"
 
 
 bool ChunkReaderIterator::nextBlock(){
@@ -192,7 +193,7 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block){
 HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id, unsigned& chunk_size,const unsigned& block_size)
 :ChunkReaderIterator(chunk_id,block_size,chunk_size){
 	block_buffer_=new Block(block_size_);
-	fs_=hdfsConnect(HDFS_N,9000);
+	fs_=hdfsConnect(Config::hdfs_master_ip.c_str(),Config::hdfs_master_port);
 	hdfs_fd_=hdfsOpenFile(fs_,chunk_id.partition_id.getName().c_str(),O_RDONLY,0,0,0);
 	if(!hdfs_fd_){
 		printf("fails to open HDFS file [%s]\n",chunk_id.partition_id.getName().c_str());
