@@ -13,6 +13,8 @@
 #endif
 #include "LogicalOperator.h"
 #include "../common/AttributeComparator.h"
+#include "../common/ExpressionCalculator.h"
+#include "../common/ExpressionItem.h"
 class Filter:public LogicalOperator {
 public:
 	class Condition{
@@ -34,6 +36,7 @@ public:
 	};
 	Filter(std::vector<AttributeComparator> ComparatorList,LogicalOperator* child );
 	Filter(const Condition& condition, LogicalOperator*  child);
+	Filter(LogicalOperator *child,std::vector<std::vector<ExpressionItem> > &exprArray);
 	virtual ~Filter();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
@@ -47,6 +50,8 @@ private:
 	LogicalOperator* child_;
 	Condition condition_;
 	vector<AttributeComparator> comparator_list_;
+
+	std::vector<Expression> exprArray_;
 
 
 };

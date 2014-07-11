@@ -401,6 +401,8 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				output(node,0);
 #endif
 					Query_stmt *querynode=(Query_stmt *)node;
+					if(querynode->from_list!=NULL)
+					int fg=solve_join_condition(querynode->from_list);
 					if(querynode->where_list!=NULL)
 					{
 						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
@@ -408,15 +410,29 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						SQLParse_log("wc2tb");
 						departwc(cur,querynode->from_list);
 					}
-					if(querynode->from_list!=NULL)
-					int fg=solve_join_condition(querynode->from_list);
 #ifdef SQL_Parser
 				output(node,0);
 #endif
 				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
+				LogicalOperator* root=NULL;
+				if(querynode->limit_list!=NULL)
+				{
+					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
+					if(lexpr->offset==NULL)
+					{
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+					}
+					else
+					{
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+					}
+				}
+				else
+				{
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+				}
 
-				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
 #ifdef SQL_Parser
 				root->print(0);
 				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;

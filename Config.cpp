@@ -47,6 +47,10 @@ int Config::initial_degree_of_parallelism;
 
 int Config::scan_batch;
 
+std::string Config::hdfs_master_ip;
+
+int Config::hdfs_master_port;
+
 Config* Config::getInstance() {
 	if(instance_==0){
 		instance_=new Config();
@@ -84,6 +88,10 @@ void Config::initialize() {
 	initial_degree_of_parallelism=getInt("initial_degree_of_parallelism",1);
 
 	scan_batch=getInt("scan_batch",10);
+
+	hdfs_master_ip=getString("hdfs_master_ip","10.11.1.190");
+	hdfs_master_port=getInt("hdfs_master_port",9000);
+
 
 
 #ifdef DEBUG_Config
@@ -132,4 +140,8 @@ void Config::print_configure() const {
 	std::cout<<"expander_adaptivity_check_frequency:"<<expander_adaptivity_check_frequency<<std::endl;
 	std::cout<<"enable_expander_adaptivity:"<<enable_expander_adaptivity<<std::endl;
 	std::cout<<"initial_degree_of_parallelism:"<<initial_degree_of_parallelism<<std::endl;
+	std::cout<<"hdfs master ip:"<<hdfs_master_ip<<std::endl;
+	std::cout<<"hdfs_master_port:"<<hdfs_master_port<<std::endl;
+
+
 }

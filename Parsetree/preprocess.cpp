@@ -35,6 +35,10 @@ int getlevel(Expr_cal *calnode)
 	{
 		level=4;
 	}
+	else if(strcmp(calnode->sign,"!")==0)
+	{
+		level=4;
+	}
 	else
 	{
 		if(strcmp(calnode->sign,"CMP")==0)
@@ -49,13 +53,13 @@ int getlevel(Expr_cal *calnode)
 				{
 					level=1;
 				}break;
-				case 3://"<>"
+				case 3://"!="
 				{
-					level=1;
+					level=0;
 				}break;
 				case 4://"="
 				{
-					level=1;
+					level=0;
 				}break;
 				case 5://"<="
 				{
@@ -80,9 +84,13 @@ int getlevel(Expr_cal *calnode)
 			{
 				level=3;
 			}
-			else
+			else if(strcmp(calnode->sign,"and")==0||strcmp(calnode->sign,"or")==0)
 			{
 				level=-1;
+			}
+			else
+			{
+				level=-10;
 				SQLParse_elog("level is unknown!!!!!!!!!!");
 			}
 
@@ -250,6 +258,10 @@ string expr_to_str(Node * node,int level)
 			{
 				str="+";
 			}
+			else if(strcmp(calnode->sign,"!")==0)
+			{
+				str="!";
+			}
 			else
 			{
 				str=expr_to_str(calnode->lnext,thislevel);
@@ -267,7 +279,7 @@ string expr_to_str(Node * node,int level)
 						}break;
 						case 3://"<>"
 						{
-							str=str+"<>";
+							str=str+"!=";
 						}break;
 						case 4://"="
 						{
@@ -286,9 +298,16 @@ string expr_to_str(Node * node,int level)
 						}
 					}
 				}
+				else if(strcmp(calnode->sign,"ANDOP")==0)
+				{
+					str=str+"and";
+				}
+				else if(strcmp(calnode->sign,"OR")==0)
+				{
+					str=str+"or";
+				}
 				else
 				{
-
 					str=str+calnode->sign;
 				}
 			}
@@ -374,6 +393,7 @@ void expr_to_str_for_orderby(Node* node)
 	{
 		Groupby_expr *obexpr=(Groupby_expr *)p;
 		expr_to_str(obexpr->args,0);
+		cout<<"======================================"<<endl;
 		p=obexpr->next;
 	}
 }

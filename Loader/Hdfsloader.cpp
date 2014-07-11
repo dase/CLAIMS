@@ -158,7 +158,6 @@ bool HdfsLoader::insertRecords(){
 	delete tmp;
 	s_record = tmp_str + col_separator + s_record;
 	table_schema->toValue(s_record, tuple_buffer, col_separator);
-	table_schema->displayTuple(tuple_buffer,"\t"); /*for testing*/
 	row_id++;
 
 ///*for testing begin*/
