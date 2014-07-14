@@ -8,6 +8,9 @@
 
 #include"sql_node_struct.h"
 #include<vector>
+#include<iostream>
+#include "../common/Logging.h"
+#include <assert.h>
 /*
 t_none,
 t_name,t_uservar,t_name_name,t_stringval,t_intnum,t_approxnum,t_bool,
@@ -25,14 +28,34 @@ t_limit_list,t_limit_expr
 
 int judgepos(struct Node *args,set<string>st)//判断fromlist当前节点的值（args）是否是第一次涉及到st中的表，完成定位
 {
-	Table * tnode=(Table *)(args);
-	string tname=tnode->astablename;
-	set<string>::iterator it;
-	for(it=st.begin();it!=st.end();it++)
+	switch(args->type)
 	{
-		if(*it==tname)//string=char * 的支持
+		case t_table:
 		{
-			return 1;
+			assert(args->type==t_table);
+			Table * tnode=(Table *)(args);
+			string tname=tnode->astablename;
+			set<string>::iterator it;
+			for(it=st.begin();it!=st.end();it++)
+			{
+				if(*it==string(tname))//string=char * 的支持
+				{
+					return 1;
+				}
+			}
+
+		}break;
+		case t_join:
+		{
+			Join *jnode=(Join *)args;
+			if(judgepos(jnode->lnext,st)||judgepos(jnode->rnext,st))
+			{
+				return 2;
+			}
+		}break;
+		default:
+		{
+
 		}
 	}
 	return 0;
@@ -47,16 +70,18 @@ void setwcposition(struct Node *wccur,struct Node *flcur,set<string>&st)//在fro
 			int judgeresult=judgepos(node->args,st);
 			if(judgeresult==0)
 			{
+				if(node->next)
 				setwcposition(wccur,node->next,st);
 			}
 			else
 			{
-				if(st.size()==1)//=1定位在单个table上，>1定位在fromlist上
+				if(judgeresult==1&&st.size()==1)//=1定位在单个table上，>1定位在fromlist上
 				{
 					setwcposition(wccur,node->args,st);
 				}
-				else if(st.size()>1)
+				if(judgeresult==2||st.size()>1)
 				{
+					cout<<"~~~~~~~~~~~~~~~~~~~~ once again!"<<endl;
 					Node *p=newExprList(t_expr_list,wccur,NULL);
 					Expr_list_header *whcdn=(Expr_list_header *)(node->whcdn);
 					if(whcdn->header==NULL)
@@ -70,10 +95,7 @@ void setwcposition(struct Node *wccur,struct Node *flcur,set<string>&st)//在fro
 						whcdn->tail=p;
 					}
 				}
-				else
-				{
-					return;
-				}
+				return;
 			}
 		}break;
 		case t_table:
@@ -92,12 +114,12 @@ void setwcposition(struct Node *wccur,struct Node *flcur,set<string>&st)//在fro
 				whcdn->tail=p;
 			}
 		}break;
-		case t_join:
-		{
-			Join * jnode=(Join *)flcur;
-			setwcposition(wccur,jnode->rnext,st);
-			setwcposition(wccur,jnode->lnext,st);
-		}break;
+//		case t_join://应该把join看作一个整体，然后把where中的条件放在这里
+//		{
+//			Join * jnode=(Join *)flcur;
+//			setwcposition(wccur,jnode->rnext,st);
+//			setwcposition(wccur,jnode->lnext,st);
+//		}break;
 		default:
 		{
 	//		puts("setwcposition error!");
@@ -152,7 +174,7 @@ void getwctable(struct Node *cur,set<string>&st)//cur=wcexpr,获得wcexpr中涉�
 	}
 	else
 	{
-		puts("getwctable error!");
+		SQLParse_elog("wc2tb can't konw the type %d\n",cur->type);
 	}
 	return;
 }
@@ -161,6 +183,13 @@ void solvewc(struct Node * wcexpr,struct Node *fromlist)//分两个过程，1.�
 	set<string>st;
 	st.clear();
 	getwctable(wcexpr,st);//过程1
+	set<string>::iterator it;
+//	int i=0;
+//	for(it=st.begin();it!=st.end();it++)
+//	{
+//		cout<<"------------solve wc-----------i= "<<i<<" "<<*it <<"  "<<st.size()<<endl;
+//		i++;
+//	}
 	setwcposition(wcexpr,fromlist,st);//过程2
 
 }
@@ -203,7 +232,7 @@ void departwc(struct Node * wherecondition,struct  Node * fromlist)//对wherecon
 	return;
 }
 
-int setocposition(struct Node *wccur,struct Node *flcur,set<string>&st,vector<Node *>&jcondition)//在fromlist中定位并把wcexpr放入
+int setocposition(struct Node *wccur,struct Node *flcur,set<string>&st,vector<Node *>&jcondition)//在fromlist中定位并把wcexpr放入oc=on condition
 {
 	int judgeresult=judgepos(flcur,st);
 	if(judgeresult==0)

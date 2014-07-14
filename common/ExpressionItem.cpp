@@ -25,6 +25,10 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 			setFloatValue(*(float *)value_str);
 			break;
 		}
+		case t_smallInt:
+		{
+			setSmallIntValue(*(short *)value_str);
+		}
 		case t_double:{
 			setDoubleValue(*(double *)value_str);
 			break;
@@ -43,6 +47,10 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 		}
 		case t_date:{
 			setDateValue((const char *)value_str);
+			break;
+		}
+		case t_boolean:{
+			setBooleanValue(*(bool *)value_str);
 			break;
 		}
 		default:{
@@ -100,6 +108,12 @@ bool ExpressionItem::setFloatValue(float &float_){
 	this->type=const_type;
 	this->return_type=t_float;
 	this->content.data.value._float=float_;
+	return true;
+}
+bool ExpressionItem::setSmallIntValue(short &sint_){
+	this->type=const_type;
+	this->return_type=t_smallInt;
+	this->content.data.value._sint=sint_;
 	return true;
 }
 
@@ -168,6 +182,14 @@ bool ExpressionItem::setDateValue(const char * date_str){
 	return true;
 }
 
+bool ExpressionItem::setBooleanValue(bool value){
+	this->type=const_type;
+	this->return_type=t_boolean;
+	this->content.data.value._bool=value;
+	return true;
+}
+
+
 bool ExpressionItem::setOperator(const char* op_str){
 	type=operator_type;
 	std::string tmp(op_str);
@@ -180,9 +202,7 @@ bool ExpressionItem::setOperator(const char* op_str){
 	else if(tmp=="*"){
 		content.op.op_=op_multiple;
 	}
-	else if(tmp=="<"){
-		content.op.op_=op_com_L;
-	}
+
 	else if(tmp=="case"){
 		content.op.op_=op_case;
 	}
@@ -206,6 +226,33 @@ bool ExpressionItem::setOperator(const char* op_str){
 	}
 	else if(tmp=="cast"){
 		content.op.op_=op_cast;
+	}
+	else if(tmp=="and"){
+		content.op.op_=op_and;
+	}
+	else if(tmp=="or"){
+		content.op.op_=op_or;
+	}
+	else if(tmp=="not"){
+		content.op.op_=op_not;
+	}
+	else if(tmp=="<"){
+		content.op.op_=op_com_L;
+	}
+	else if(tmp==">"){
+		content.op.op_=op_com_G;
+	}
+	else if(tmp=="="){
+		content.op.op_=op_com_EQ;
+	}
+	else if(tmp=="!="){
+		content.op.op_=op_com_NEQ;
+	}
+	else if(tmp==">="){
+		content.op.op_=op_com_GEQ;
+	}
+	else if(tmp=="<="){
+		content.op.op_=op_com_LEQ;
 	}
 	else{
 		printf("[%s] fails to match to any existing operator\n",op_str);

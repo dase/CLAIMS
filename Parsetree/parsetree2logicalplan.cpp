@@ -27,10 +27,13 @@
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
-
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+#include "../common/Logging.h"
+#include "../common/AttributeComparator.h"
+#include <string.h>
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
+static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
 	SQLParse_log("getfiltercondition   ");
 	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
@@ -173,17 +176,28 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 					{
 						Columns *lnode=(Columns *)(node->lnext);
 						Columns *rnode=(Columns *)(node->rnext);
+//						join_pair_list.push_back(EqualJoin::JoinPair(filter_1->getDataflow().getAttribute(lnode->parameter2),filter_2->getDataflow().getAttribute(rnode->parameter2)));
 					//	printf("left %s.%s   right %s.%s\n",lnode->parameter1,lnode->parameter2,rnode->parameter1,rnode->parameter2);
-						if(filter_1->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2)!=NULL&&filter_2->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2)!=NULL)
+						//TODO just select PART.row_id,LINEITEM.row_id from LINEITEM,PART where LINEITEM.row_id=PART.row_id and PART.row_id<20;
+
+						Attribute la=filter_1->getDataflow().getAttribute(lnode->parameter2);
+						Attribute ra=filter_2->getDataflow().getAttribute(rnode->parameter2);
+
+						if(strcmp(la.attrName.c_str(),"NULL")!=0&&strcmp(ra.attrName.c_str(),"NULL")!=0)
 						{
-							join_pair_list.push_back(EqualJoin::JoinPair(filter_1->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2),filter_2->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2)));
+							join_pair_list.push_back(EqualJoin::JoinPair(la,ra));
+							return 1;
 						}
-						else if(filter_1->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2)!=NULL&&filter_2->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2)!=NULL)
+						la=filter_1->getDataflow().getAttribute(rnode->parameter2);
+						ra=filter_2->getDataflow().getAttribute(lnode->parameter2);
+						if(strcmp(la.attrName.c_str(),"NULL")!=0&&strcmp(ra.attrName.c_str(),"NULL")!=0)
 						{
-							join_pair_list.push_back(EqualJoin::JoinPair(filter_1->getDataflow().getAttribute(rnode->parameter1,rnode->parameter2),filter_2->getDataflow().getAttribute(lnode->parameter1,lnode->parameter2)));
+							join_pair_list.push_back(EqualJoin::JoinPair(la,ra));
+							return 1;
 						}
 						else
 						{
+							assert(false);
 							return 0;
 						}
 					}break;
@@ -245,7 +259,7 @@ static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
 						Columns * lcol=(Columns *)lpexpr->data;
 						Select_list *spexpr=(Select_list *)sp;
 						Columns *rcol=(Columns *)spexpr->args;
-						join_pair_list.push_back(EqualJoin::JoinPair(input->getDataflow().getAttribute(lcol->parameter1,lcol->parameter2),sublogicalplan->getDataflow().getAttribute(rcol->parameter1,rcol->parameter2)));
+						join_pair_list.push_back(EqualJoin::JoinPair(input->getDataflow().getAttribute(lcol->parameter2),sublogicalplan->getDataflow().getAttribute(rcol->parameter2)));
 						lp=lpexpr->next;
 						sp=spexpr->next;
 					}
@@ -287,10 +301,14 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				Filter::Condition filter_condition;
 				Node * p;
+				vector<vector<ExpressionItem> >allexpr;
 				bool hasin=false;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
 					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename,hasin,tablescan);
+//					vector<ExpressionItem>expr;
+//					get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+//					allexpr.push_back(expr);
 				}
 				LogicalOperator* filter=new Filter(filter_condition,tablescan);
 				if(hasin==true)
@@ -609,8 +627,10 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 
 }
 
-static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input)
+static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input)
 {
+	if(node==NULL)
+		return;
 	switch(node->type)
 	{
 		case t_expr_func:
@@ -621,7 +641,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setOperator("case");
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("case");
 				expr.push_back(expritem1);
@@ -631,8 +651,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setOperator("case");
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("else");
 				expr.push_back(expritem1);
@@ -643,11 +663,11 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else if(strcmp(funcnode->funname,"WHEN1")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem0;
 				expritem0.setOperator("when");
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("then");
 				expr.push_back(expritem1);
@@ -655,32 +675,32 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else if(strcmp(funcnode->funname,"WHEN2")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem0;
 				expritem0.setOperator("when");
 				expr.push_back(expritem0);
 
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("then");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->args,input);
+				get_a_expression_item(expr,funcnode->args,input);
 				ExpressionItem expritem0;
 				expritem0.setIntValue(0);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("substr");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING1")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->args,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->args,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("substr");
 				expr.push_back(expritem1);
@@ -690,8 +710,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(0);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
@@ -701,8 +721,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(1);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
@@ -712,8 +732,8 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(2);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
@@ -726,29 +746,29 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem;
 				expritem.setStringValue(" ");
 				expr.push_back(expritem);
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("trim");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FUPPER")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("upper");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FCAST")==0)
 			{
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
-				get_a_selectlist_expression_item(expr,funcnode->parameter2,input);
+				get_a_expression_item(expr,funcnode->parameter1,input);
+				get_a_expression_item(expr,funcnode->parameter2,input);
 				ExpressionItem expritem1;
 				expritem1.setOperator("cast");
 				expr.push_back(expritem1);
 			}
 			else if(strcmp(funcnode->funname,"FCOALESCE")==0)
 			{
-				//get_a_selectlist_expression_item(expr,funcnode->parameter1,input,sid);
+				//get_a_expression_item(expr,funcnode->parameter1,input,sid);
 			}
 			else if(strcmp(funcnode->funname,"FCOUNT")==0)
 			{
@@ -767,7 +787,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+					get_a_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
@@ -780,19 +800,20 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+					get_a_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
 					ExpressionItem expritem;
 					expritem.setVariable((const char*)funcnode->str);
 					expr.push_back(expritem);
-				}			}
+				}
+			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+					get_a_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
@@ -805,7 +826,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+					get_a_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
@@ -818,7 +839,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			{
 				if(input==NULL)
 				{
-					get_a_selectlist_expression_item(expr,funcnode->parameter1,input);
+					get_a_expression_item(expr,funcnode->parameter1,input);
 				}
 				else
 				{
@@ -829,7 +850,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else
 			{
-				SQLParse_elog("get_a_selectlist_expression_item: ",funcnode->funname ,"   is null");
+				SQLParse_elog("get_a_expression_item: ",funcnode->funname ,"   is null");
 			}
 		}break;
 		case t_expr_cal:
@@ -840,7 +861,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 				ExpressionItem expritem0;
 				expritem0.setIntValue(0);
 				expr.push_back(expritem0);
-				get_a_selectlist_expression_item(expr,calnode->rnext,input);
+				get_a_expression_item(expr,calnode->rnext,input);
 				ExpressionItem expritem;
 				expritem.setOperator("-");
 				expr.push_back(expritem);
@@ -850,8 +871,9 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 			}
 			else
 			{
-				get_a_selectlist_expression_item(expr,calnode->lnext,input);
-				get_a_selectlist_expression_item(expr,calnode->rnext,input);
+				if(calnode->lnext!=0)
+				get_a_expression_item(expr,calnode->lnext,input);
+				get_a_expression_item(expr,calnode->rnext,input);
 				ExpressionItem expritem;
 				if(strcmp(calnode->sign,"CMP")==0)
 				{
@@ -867,7 +889,7 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 						}break;
 						case 3://"<>"
 						{
-							expritem.setOperator("<>");
+							expritem.setOperator("!=");
 						}break;
 						case 4://"="
 						{
@@ -883,9 +905,21 @@ static void get_a_selectlist_expression_item(vector<ExpressionItem>&expr,Node *n
 						}break;
 						default:
 						{
-							SQLParse_elog("get_a_selectlist_expression_item"," cmp error","");
+							SQLParse_elog("get_a_expression_item"," cmp error","");
 						}
 					}
+				}
+				else if(strcmp(calnode->sign,"ANDOP")==0)
+				{
+					expritem.setOperator("and");
+				}
+				else if(strcmp(calnode->sign,"OR")==0)
+				{
+					expritem.setOperator("or");
+				}
+				else if(strcmp(calnode->sign,"!")==0)
+				{
+					expritem.setOperator("not");
 				}
 				else
 				{
@@ -950,7 +984,7 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 			if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
 			{
 				vector<ExpressionItem>expr;
-				get_a_selectlist_expression_item(expr,funcnode->parameter1,NULL);
+				get_a_expression_item(expr,funcnode->parameter1,NULL);
 				allexpr.push_back(expr);
 				expr.clear();
 			}
@@ -973,6 +1007,7 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 		case t_expr_cal:
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
+			if(calnode->lnext!=0)
 			recurse_get_item_in_expr(calnode->lnext,allexpr);
 			recurse_get_item_in_expr(calnode->rnext,allexpr);
 
@@ -1013,7 +1048,7 @@ static void get_all_selectlist_expression_item(Node * node,vector<vector<Express
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
 		if(proj_type==0)
 		{
-			get_a_selectlist_expression_item(expr,sexpr->colname,NULL);
+			get_a_expression_item(expr,sexpr->colname,NULL);
 			allexpr.push_back(expr);
 			expr.clear();
 		}
@@ -1032,7 +1067,7 @@ static void get_all_selectlist_expression_item(Node * node,vector<vector<Express
 		{
 			if(selectlist->isall==-1)
 			{
-				get_a_selectlist_expression_item(expr,sexpr->colname,input);
+				get_a_expression_item(expr,sexpr->colname,input);
 				allexpr.push_back(expr);
 				expr.clear();
 			}
@@ -1054,7 +1089,7 @@ static void get_all_groupby_expression_item(Node * node,vector<vector<Expression
 	for(Node *p=(Node *)(((Groupby_list*)node)->next);p!=NULL;)
 	{
 		Groupby_expr *gbexpr=(Groupby_expr *)p;
-		get_a_selectlist_expression_item(expr,gbexpr->args,NULL);
+		get_a_expression_item(expr,gbexpr->args,NULL);
 		allexpr.push_back(expr);
 		expr.clear();
 		p=gbexpr->next;
@@ -1264,6 +1299,7 @@ static void dfs_select_args(int flag,int &ans,Node * node)
 			{
 				ans+=2;//agg has expr
 			}
+			if(calnode->lnext!=0)
 			dfs_select_args(-1,ans,calnode->lnext);
 			dfs_select_args(-1,ans,calnode->rnext);
 
@@ -1443,6 +1479,11 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 						}
 					}
 				}
+			}break;
+			case t_expr_func:
+			{
+				Expr_func * func=(Expr_func *)(gbexpr->args);
+				obcol.push_back(new LogicalSort::OrderByAttr(func->str));
 			}break;
 			default:
 			{

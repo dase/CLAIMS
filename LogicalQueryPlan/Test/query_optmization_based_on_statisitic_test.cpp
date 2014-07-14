@@ -1463,6 +1463,7 @@ static int query_optimization_outputdata()
 
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 		catalog->restoreCatalog();
+
 //		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 //		Catalog* catalog=Environment::getInstance()->getCatalog();
 ////		TableDescriptor* table_1=new TableDescriptor("PART",0);
@@ -1548,9 +1549,11 @@ static int query_optimization_outputdata()
 
 
 
+
 		ExecuteLogicalQueryPlan();
 		printf("ready(?)\n");
 		int input;
+
 		scanf("%d",&input);
 
 		cout<<"Waiting~~~!~"<<endl;

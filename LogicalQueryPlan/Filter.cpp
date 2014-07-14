@@ -12,6 +12,16 @@
 #include "../Catalog/stat/StatManager.h"
 #include "../Catalog/stat/Estimation.h"
 #include "../common/AttributeComparator.h"
+#include "../common/TypePromotionMap.h"
+#include "../common/TypeCast.h"
+
+Filter::Filter(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray)
+:child_(child),exprArray_(exprArray){
+	initialize_arithmetic_type_promotion_matrix();
+	initialize_type_cast_functions();
+	setOperatortype(l_filter);
+}
+
 Filter::Filter(std::vector<AttributeComparator> ComparatorList,LogicalOperator* child )
 :comparator_list_(ComparatorList),child_(child){
 	assert(!comparator_list_.empty());
@@ -67,6 +77,7 @@ BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
 	ExpandableBlockStreamFilter::State state;
 	state.block_size_=blocksize;
 	state.child_=child_iterator;
+	state.v_ei_=exprArray_;
 	assert(!comparator_list_.empty());
 	state.comparator_list_=comparator_list_;
 	assert(!state.comparator_list_.empty());
@@ -87,6 +98,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state.block_size_=block_size;
 			state.child_=physical_plan.plan;
 			state.comparator_list_=comparator_list_;
+			state.v_ei_=exprArray_;
 			Dataflow dataflow=getDataflow();
 			state.schema_=getSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
@@ -100,12 +112,12 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			ExpandableBlockStreamFilter::State state_f;
 			state_f.block_size_=block_size;
 			state_f.child_=physical_plan.plan;
+			state_f.v_ei_=exprArray_;
 			state_f.comparator_list_=comparator_list_;
 			Dataflow dataflow=getDataflow();
 			state_f.schema_=getSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state_f);
 			physical_plan.plan=filter;
-
 
 			physical_plan.cost+=physical_plan.dataflow.getAggregatedDatasize();
 
@@ -155,6 +167,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 		ExpandableBlockStreamFilter::State state;
 		state.block_size_=block_size;
 		state.child_=physical_plan.plan;
+		state.v_ei_=exprArray_;
 		state.comparator_list_=comparator_list_;
 		Dataflow dataflow=getDataflow();
 		state.schema_=getSchema(dataflow.attribute_list_);

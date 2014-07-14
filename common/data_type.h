@@ -20,6 +20,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <limits.h>
 #include <float.h>
+
 #include "hash.h"
 
 using namespace boost::gregorian;
