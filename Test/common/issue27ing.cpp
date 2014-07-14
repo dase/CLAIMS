@@ -392,7 +392,6 @@ static int issue27ing_single_node(){
 	for(unsigned i=0;i<repeated_times;i++){
 		query_select_aggregation_ing();
 		cout<<"***************************************************************"<<endl;
-//		query_select_fzh();
 	}
 
 	Environment::getInstance()->~Environment();

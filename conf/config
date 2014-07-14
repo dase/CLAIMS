@@ -18,6 +18,12 @@ coordinator:
 #hadoop上的数据目录
 data="/home/imdb/data/tpc-h/4_partitions/SF-20/"
 
+#hdfs主节点
+hdfs_master_ip="10.11.1.190"
+
+#hdfs主节点端口
+hdfs_master_port=9000
+
 #最大单机算子并行度
 max_degree_of_parallelism=1
 
