@@ -24,7 +24,6 @@ AC_CONFIG_FILES([
   common/types/Makefile 
   common/types/Test/Makefile 
   common/types/ttmath/Makefile 
-  cmysql/Makefile 
   Daemon/Makefile 
   Daemon/Test/Makefile 
   Executor/Makefile 
