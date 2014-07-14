@@ -61,6 +61,17 @@ bool MemoryChunkStore::getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk
 	}
 	return false;
 }
+bool MemoryChunkStore::updateChunkInfo(const ChunkID & chunk_id, const HdfsInMemoryChunk & chunk_info){
+	boost::unordered_map<ChunkID,HdfsInMemoryChunk>::iterator it=chunk_list_.find(chunk_id);
+	if(it==chunk_list_.cend()){
+		return false;
+	}
+	it->second=chunk_info;
+	return true;
+
+
+}
+
 bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info){
 	boost::unordered_map<ChunkID,HdfsInMemoryChunk>::const_iterator it=chunk_list_.find(chunk_id);
 	if(it!=chunk_list_.cend()){

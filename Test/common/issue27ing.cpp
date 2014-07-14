@@ -158,6 +158,7 @@ static void query_select_aggregation_ing(){
 	//==========================project=========================
 	vector< vector<ExpressionItem> >expr_list1;
 
+	vector<ExpressionItem> expr0;
 	vector<ExpressionItem> expr1;
 	vector<ExpressionItem> expr2;
 	vector<ExpressionItem> expr3;
@@ -283,6 +284,9 @@ static void query_select_aggregation_ing(){
 	expr16.push_back(ei16);
 	expr17.push_back(ei17);
 
+	expr0.push_back(ei1);
+
+//	expr_list1.push_back(expr0);
 	expr_list1.push_back(expr10);
 	expr_list1.push_back(expr11);
 	expr_list1.push_back(expr6);
@@ -330,7 +334,7 @@ static void query_select_aggregation_ing(){
 //	vector< vector<ExpressionItem> >expr_list2;
 //	LogicalOperator* project2=new LogicalProject(aggregation,expr_list2);
 	//===========================root===========================
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	cout<<"performance is ok!"<<endl;
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
@@ -370,23 +374,24 @@ static void init_single_node_tpc_h_envoriment_ing(bool master=true){
 	table_1->addAttribute("L_SHIPMODE",data_type(t_string),10);
 	table_1->addAttribute("L_COMMENT",data_type(t_string),44);
 
-	table_1->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",1);
+	table_1->createHashPartitionedProjectionOnAllAttribute(table_1->getAttribute(1).getName(),1);
 
 	catalog->add_table(table_1);
 
 	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,5);
+		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
 	}
 }
 
 static int issue27ing_single_node(){
 
-	unsigned repeated_times=3;
+	unsigned repeated_times=300;
 
 	init_single_node_tpc_h_envoriment_ing();
 	for(unsigned i=0;i<repeated_times;i++){
 		query_select_aggregation_ing();
+		cout<<"***************************************************************"<<endl;
 //		query_select_fzh();
 	}
 
