@@ -15,23 +15,20 @@
 #include <string>
 #include <vector>
 #include<iostream>
-#include	"sql_node_struct.h"
-#include "../Environment.h"
-
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-
 #include "../common/Comparator.h"
-#include "../common/Logging.h"
-
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
-#include "../LogicalQueryPlan/Aggregation.h"
-
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+#include"sql_node_struct.h"
+#include "../Environment.h"
+#include "../LogicalQueryPlan/Aggregation.h"
+#include "../common/Logging.h"
+#include <ostream>
 using namespace std;
 bool semantic_analysis(Node *parsetree,bool issubquery);
 bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable);
@@ -89,26 +86,22 @@ int table_has_column(char *colname,vector<Node *>rtable,char *&tablename)//判�
 }
 int fromlist_has_astablename(char *astablename,vector<Node *>rtable,char *&tablename,Node *&subnode)//根据astablename从fromlist中得到tablename,如果是subquery则返回2，基表返回1
 {
-	for(int i;i<rtable.size();i++)
-//	for(Node *p=node;p!=NULL;)
+	for(int i=0;i<rtable.size();i++)
 	{
-	//	From_list *fromlist=(From_list *)rtable[i];
-		Table *table=(Table *)rtable[i];
-		if(strcmp(table->astablename,astablename)==0)
+		Table *table0=(Table *)rtable[i];
+		if(strcmp(table0->astablename,astablename)==0)
 		{
-			//strcpy(tablename,table->tablename);
-			if(table->issubquery==0)
+			if(table0->issubquery==0)
 			{
-				tablename=table->tablename;
+				tablename=table0->tablename;
 				return 1;
 			}
 			else
 			{
-				subnode=table->subquery;
+				subnode=table0->subquery;
 				return 2;
 			}
 		}
-	//	p=fromlist->next;
 	}
 	return 0;
 }
@@ -228,7 +221,14 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
 			int result=0;
-			result=selectlist_expr_analysis(slnode,qstmt,calnode->lnext,rtable);
+			if(calnode->lnext==0)
+			{
+				result=1;
+			}
+			else
+			{
+				result=selectlist_expr_analysis(slnode,qstmt,calnode->lnext,rtable);
+			}
 			if(result==0)
 			{
 				return false;
@@ -405,7 +405,7 @@ bool selectlist_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 	}
 	return true;
 }
-int oncondition_check(Node *cur,vector<Node *>rtable)
+int oncondition_check(Node *&cur,vector<Node *>rtable)
 {
 	switch(cur->type)
 	{
@@ -417,6 +417,10 @@ int oncondition_check(Node *cur,vector<Node *>rtable)
 			if(result==1)
 			{
 				col->parameter1=astablename;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
 				col->type=t_name_name;
 			}
 			else if(result==0)
@@ -443,6 +447,10 @@ int oncondition_check(Node *cur,vector<Node *>rtable)
 			}
 			else if(fg==1)
 			{
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
 				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
 				{
 					SQLParse_elog("oncondition %s  can't find ",col->parameter2);
@@ -507,7 +515,7 @@ int oncondition_check(Node *cur,vector<Node *>rtable)
 	}
 	return true;
 }
-bool oncondition_analysis(Node *cur,vector<Node *>jointable)
+bool oncondition_analysis(Node *&cur,vector<Node *>jointable)
 {
 	if(cur==NULL)
 	{
@@ -540,7 +548,7 @@ bool oncondition_analysis(Node *cur,vector<Node *>jointable)
 	}
 	return true;
 }
-bool fromlist_analysis(Query_stmt * querynode,Node *qnode,vector<Node *>&rtable)
+bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable)
 {
 	if(qnode==NULL)
 	{
@@ -758,7 +766,6 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
 				col->parameter2=(char *)malloc(ss.str().length()+1);
 				strcpy(col->parameter2,ss.str().c_str());
-
 				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
 				{
 					SQLParse_elog("wherecondition %s  can't find",col->parameter2);
@@ -859,7 +866,7 @@ bool havingcondition_analysis(Node *hctree)
 {
 	return true;
 }
-bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
+bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//需要修改成嵌套迭代形式 TODO
 {
 	Groupby_list * gblist=(Groupby_list *)(qstmt->groupby_list);
 	for(Node *p=(Node *)(gblist->next);p!=NULL;)
@@ -935,96 +942,126 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 	}
 	return true;
 }
-bool orderby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//与groupby处理相同
+bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//与groupby处理相同
 {
-	Orderby_list * gblist=(Orderby_list *)(qstmt->orderby_list);
-	for(Node *p=(Node *)(gblist->next);p!=NULL;)
+	if(node==NULL)
+		return true;
+	switch(node->type)
 	{
-		Groupby_expr *gbexpr=(Groupby_expr *)p;
-		switch(gbexpr->args->type)
+		case t_name:
 		{
-			case t_name:
+			Columns *col=(Columns *)(node);
+			char *astablename;
+			int result=table_has_column(col->parameter2,rtable,astablename);
+			if(result==1)
 			{
-				Columns *col=(Columns *)(gbexpr->args);
-				char *astablename;
-				int result=table_has_column(col->parameter2,rtable,astablename);
-				if(result==1)
+				col->parameter1=astablename;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+	//					char * strtmp=(char *)malloc(strlen(col->parameter1)+strlen(col->parameter2)+10);
+	//					strcpy(strtmp,col->parameter1);
+	//					strcat(strtmp,".");
+	//					strcat(strtmp,col->parameter2);
+	//					col->parameter2=strtmp;
+				col->type=t_name_name;
+			}
+			else if(result==0)//如果fromlist中没有，那么要在selectlisth中寻找
+			{
+				int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
+				if(result==0)
+				{
+					SQLParse_elog("orderbylist",col->parameter2,"can't find in tables and selectlist ");
+					return false;
+				}
+				else if(result==1)
 				{
 					col->parameter1=astablename;
-					stringstream ss;
-					ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
-					col->parameter2=(char *)malloc(ss.str().length()+1);
-					strcpy(col->parameter2,ss.str().c_str());
-//					char * strtmp=(char *)malloc(strlen(col->parameter1)+strlen(col->parameter2)+10);
-//					strcpy(strtmp,col->parameter1);
-//					strcat(strtmp,".");
-//					strcat(strtmp,col->parameter2);
-//					col->parameter2=strtmp;
 					col->type=t_name_name;
-				}
-				else if(result==0)//如果fromlist中没有，那么要在selectlisth中寻找
-				{
-					int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
-					if(result==0)
-					{
-						SQLParse_elog("orderbylist",col->parameter2,"can't find in tables and selectlist ");
-						return false;
-					}
-					else if(result==1)
-					{
-						col->parameter1=astablename;
-						col->type=t_name_name;
-					}
-					else
-					{
-						SQLParse_elog("orderbylist",col->parameter2,"in selectlist is ambiguous");
-						return false;
-					}
 				}
 				else
 				{
-					SQLParse_elog("orderbylist",col->parameter2,"in fromlist is ambiguous");
+					SQLParse_elog("orderbylist",col->parameter2,"in selectlist is ambiguous");
 					return false;
 				}
-			}break;
-			case t_name_name:
+			}
+			else
 			{
-				Columns *col=(Columns *)(gbexpr->args);
-				char *tablename;
-				Node *subnode;
-				int fg=fromlist_has_astablename(col->parameter1,rtable,tablename,subnode);
-				if(fg==0)
-				{
-					SQLParse_elog("orderbylist %s.%s  can't find",col->parameter1,col->parameter2);
-					return false;
-				}
-				else if(fg==1)
-				{
-					stringstream ss;
-					ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
-					col->parameter2=(char *)malloc(ss.str().length()+1);
-					strcpy(col->parameter2,ss.str().c_str());
-
-					if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
-					{
-						SQLParse_elog("orderbylist %s %s can't find ",col->parameter1,col->parameter2);
-						return false;
-					}
-				}
-				else if(fg==2)
-				{
-					int fg=subquery_has_column(col->parameter2,subnode);
-					if(fg>1||fg==0)
-						return false;
-				}
-			}break;
-			default:
-			{
-				SQLParse_elog("orderbylist there is other type in orderby list not the colname ");
+				SQLParse_elog("orderbylist",col->parameter2,"in fromlist is ambiguous");
 				return false;
 			}
+		}break;
+		case t_name_name:
+		{
+			Columns *col=(Columns *)(node);
+			char *tablename;
+			Node *subnode;
+			int fg=fromlist_has_astablename(col->parameter1,rtable,tablename,subnode);
+			if(fg==0)
+			{
+				SQLParse_elog("orderbylist %s.%s  can't find",col->parameter1,col->parameter2);
+				return false;
+			}
+			else if(fg==1)
+			{
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+
+				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
+				{
+					SQLParse_elog("orderbylist %s %s can't find ",col->parameter1,col->parameter2);
+					return false;
+				}
+			}
+			else if(fg==2)
+			{
+				int fg=subquery_has_column(col->parameter2,subnode);
+				if(fg>1||fg==0)
+					return false;
+			}
+		}break;
+		case t_expr_func:
+		{
+			Expr_func * func=(Expr_func *)(node);
+			if(func->parameter1!=NULL)
+			{
+				orderby_analysis(func->parameter1,rtable,qstmt);
+			}
+			else if(func->args!=NULL)
+			{
+				orderby_analysis(func->args,rtable,qstmt);
+			}
+			else
+			{
+				SQLParse_elog("orderbylist func has errors\n");
+			}
+		}break;
+		case t_expr_cal:
+		{
+			Expr_cal * ecal=(Expr_cal *)node;
+			orderby_analysis(ecal->rnext,rtable,qstmt);
+			orderby_analysis(ecal->lnext,rtable,qstmt);
+		}break;
+		case t_orderby_list:
+		{
+			Orderby_list *olist=(Orderby_list *)node;
+			orderby_analysis(olist->next,rtable,qstmt);
+		}break;
+		case t_groupby_expr:
+		{
+			Groupby_expr *gexpr=(Groupby_expr *)node;
+			orderby_analysis(gexpr->args,rtable,qstmt);
+			orderby_analysis(gexpr->next,rtable,qstmt);
+		}break;
+		default:
+		{
+			SQLParse_elog("orderbylist there is other type in orderby list not the colname ");
+			return false;
 		}
-		p=gbexpr->next;
+
 	}
 	return true;
 }
@@ -1076,7 +1113,7 @@ bool semantic_analysis(Node *parsetree,bool issubquery)
 			}
 			if(qstmt->orderby_list!=NULL)
 			{
-				flag=orderby_analysis(qstmt,rtable);
+				flag=orderby_analysis(((Orderby_list *)qstmt->orderby_list)->next,rtable,qstmt);
 				if(flag==false)
 					return false;
 			}

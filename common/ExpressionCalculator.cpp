@@ -32,10 +32,7 @@ void ExpressionCalculator::compute(ExpressionItem operator_item,ExpressionItemSt
 			mul(stack,result);
 			break;
 		}
-		case op_com_L:{
-			compare_less(stack,result);
-			break;
-		}
+
 		case op_case:{
 			reverse_stack(stack);
 			do_case(stack,result);
@@ -55,6 +52,42 @@ void ExpressionCalculator::compute(ExpressionItem operator_item,ExpressionItemSt
 		}
 		case op_cast:{
 			cast(stack,result);
+			break;
+		}
+		case op_and:{
+			andop(stack,result);
+			break;
+		}
+		case op_or:{
+			orop(stack,result);
+			break;
+		}
+		case op_not:{
+			notop(stack,result);
+			break;
+		}
+		case op_com_L:{
+			compare_less(stack,result);
+			break;
+		}
+		case op_com_G:{
+			compare_great(stack,result);
+			break;
+		}
+		case op_com_EQ:{
+			compare_equal(stack,result);
+			break;
+		}
+		case op_com_NEQ:{
+			compare_not_equal(stack,result);
+			break;
+		}
+		case op_com_GEQ:{
+			compare_great_equal(stack,result);
+			break;
+		}
+		case op_com_LEQ:{
+			compare_less_equal(stack,result);
 			break;
 		}
 		default:{
@@ -83,10 +116,6 @@ void ExpressionCalculator::computes(ExpressionItem operator_item, ExpressionItem
 			minss(stack,result);
 			break;
 		}
-		case op_com_L:{
-			compare_lesss(stack,result);
-			break;
-		}
 		case op_case:{
 			reverse_stack(stack);
 			do_case(stack,result);
@@ -108,6 +137,22 @@ void ExpressionCalculator::computes(ExpressionItem operator_item, ExpressionItem
 
 			break;
 		}
+		case op_and:
+		case op_or:
+		case op_com_G:
+		case op_com_EQ:
+		case op_com_NEQ:
+		case op_com_GEQ:
+		case op_com_LEQ:
+		case op_com_L:
+		{
+			get_compare_return_type(stack,result,0);
+			break;
+		}
+		case op_not:
+		{
+			get_compare_return_type(stack,result,1);
+		}break;
 		default:{
 			printf("The operator[%d] is not supported currently!\n",operator_item.content.op.op_);
 		}

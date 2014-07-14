@@ -12,6 +12,7 @@ AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system
 LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \
 		../Schema/libschema.a \
+		../utility/libutility.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
