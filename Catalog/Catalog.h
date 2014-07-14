@@ -17,14 +17,19 @@
 #include "ProjectionBinding.h"
 
 #include "../common/Logging.h"
+#include "../utility/lock.h"
 
 struct TableIDAllocator{
 	TableIDAllocator(){
 		table_id_curosr=0;
 	}
+	Lock lock_;
 	unsigned table_id_curosr;
 	unsigned allocate_unique_table_id(){
-		return table_id_curosr++;
+		lock_.acquire();
+		++table_id_curosr;
+		lock_.release();
+		return table_id_curosr;
 	}
 
 	friend class boost::serialization::access;
