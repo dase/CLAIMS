@@ -1,5 +1,5 @@
 #本机IP地址
-ip = "10.11.1.174";
+ip = "127.0.0.1";
 
 #端口范围（调试用）
 PortManager:
@@ -11,12 +11,12 @@ PortManager:
 #master的IP地址和端口
 coordinator:
 {
-    ip="10.11.1.174"
+    ip="127.0.0.1"
     port="11001"
 }
 
 #hadoop上的数据目录
-data = "/home/claims/data/ndbc-m/bin/350m/"
+data="/home/imdb/data/tpc-h/4_partitions/SF-20/"
 
 #最大单机算子并行度
 max_degree_of_parallelism=1

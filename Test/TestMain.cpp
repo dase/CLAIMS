@@ -82,7 +82,7 @@ int maina(){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-	return query_optimization_outputdata();
+//	return query_optimization_outputdata();
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
@@ -114,7 +114,7 @@ int maina(){
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
-//	issue27ing_single_node();
+	issue27ing_single_node();
 //	issue27_sort_single_node();
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);

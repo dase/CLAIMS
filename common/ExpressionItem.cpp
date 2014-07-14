@@ -18,7 +18,7 @@ ExpressionItem::~ExpressionItem() {
 bool ExpressionItem::setValue(void* value_str,const data_type type){
 	switch(type){
 		case t_int:{
-			setIntValue((const char *)value_str);
+			setIntValue(*(int *)value_str);
 			break;
 		}
 		case t_float:{
@@ -34,7 +34,7 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 			break;
 		}
 		case t_string:{
-			setStringValue((const char *)value_str);
+			setStringValue(string((char *)value_str));
 			break;
 		}
 		case t_decimal:{
@@ -127,7 +127,7 @@ bool ExpressionItem::setULongValue(const char* u_long_str){
 	return true;
 }
 
-bool ExpressionItem::setULongValue(unsigned long &u_long){
+bool ExpressionItem::setULongValue(unsigned long u_long){
 	this->type=const_type;
 	this->return_type=t_u_long;
 	this->content.data.value._ulong=u_long;
@@ -148,7 +148,13 @@ bool ExpressionItem::setStringValue(std::string str){
 	this->type=const_type;
 	this->return_type=t_string;
 	this->_string=str;
-	this->item_name=str;
+	return true;
+}
+
+bool ExpressionItem::setStringValue(const char * str){
+	this->type=const_type;
+	this->return_type=t_string;
+	this->_string=string(str);
 	return true;
 }
 

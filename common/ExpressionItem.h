@@ -144,15 +144,16 @@ public:
 	bool setFloatValue(const char*);
 	bool setFloatValue(float&);
 	bool setDoubleValue(const char*);
-	//currently,decimal only const char * supported!
-	bool setDecimalValue(const char*);
 	bool setDoubleValue(double&);
+	//currently,decimal only const char * supported!
 	bool setULongValue(const char*);
-	bool setULongValue(unsigned long&);
-	bool setOperator(const char*);
+	bool setULongValue(unsigned long);
 	bool setStringValue(std::string);
+	bool setStringValue(const char * str);
 	bool setVariable(const char *,const char *);
 	bool setVariable(const char *);
+	bool setDecimalValue(const char*);
+	bool setOperator(const char*);
 
 	//currently,date only const char * supported!
 	bool setDateValue(const char *);
