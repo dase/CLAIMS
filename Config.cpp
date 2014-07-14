@@ -89,6 +89,7 @@ void Config::initialize() {
 	scan_batch=getInt("scan_batch",10);
 
 	hdfs_master_ip=getString("hdfs_master_ip","10.11.1.190");
+
 	hdfs_master_port=getInt("hdfs_master_port",9000);
 
 
