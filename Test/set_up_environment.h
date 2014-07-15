@@ -867,6 +867,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 
 
 
+	catalog->add_table(table_0);
 	catalog->add_table(table_1);
 	catalog->add_table(table_2);
 	catalog->add_table(table_3);
