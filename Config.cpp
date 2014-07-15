@@ -10,9 +10,20 @@
 #include <libconfig.h++>
 #include <iosfwd>
 #include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <sstream>
+using namespace std;
 #define DEBUG_Config
 
-std::string Config::config_file="./conf/config";
+string gete(){
+	char *p=getenv("CLAIMS_HOME");
+	stringstream sp;
+	sp<<string(p).c_str()<<"/conf/config";
+	return sp.str();
+}
+
+std::string Config::config_file=gete().c_str();
 Config* Config::instance_=0;
 
 /**
@@ -76,7 +87,7 @@ void Config::initialize() {
 	 * The following lines set the search attribute name and default value for each parameter.
 	 */
 
-	data_dir=getString("data","/home/imdb/data/tpc-h/4_partitions/SF-20/");
+	data_dir=getString("data","/home/claims/data/");
 
 	max_degree_of_parallelism=getInt("max_degree_of_parallelism",4);
 
