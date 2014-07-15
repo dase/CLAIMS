@@ -25,11 +25,12 @@ struct TableIDAllocator{
 	}
 	Lock lock_;
 	unsigned table_id_curosr;
-	unsigned allocate_unique_table_id(){
+	unsigned allocate_unique_table_id(){	// add lock, like postgreSQL --- yukai, 07.15
 		lock_.acquire();
+		unsigned id = table_id_curosr;
 		++table_id_curosr;
 		lock_.release();
-		return table_id_curosr;
+		return id;
 	}
 
 	friend class boost::serialization::access;
