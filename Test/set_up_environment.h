@@ -842,7 +842,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_6->addAttribute("L_SHIPMODE",data_type(t_string),10);
 	table_6->addAttribute("L_COMMENT",data_type(t_string),44);
 
-	table_6->createHashPartitionedProjectionOnAllAttribute("row_id",4); // the number of partition should be 4.
+	table_6->createHashPartitionedProjectionOnAllAttribute(table_6->getAttribute(1).getName(),4); // the number of partition should be 4.
 	///////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////// NATION TABLE //////////////////////////////////
 	TableDescriptor* table_7=new TableDescriptor("NATION", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
