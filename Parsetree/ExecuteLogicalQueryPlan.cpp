@@ -35,7 +35,54 @@ const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
 
+LogicalOperator* convert_sql_to_logical_operator_tree(const char* sql)
+{
+	Node* oldnode=getparsetreeroot(sql);
+	Stmt *stmtList = (Stmt *)oldnode;
 
+	while (stmtList != NULL)
+	{
+		Node *node = (Node *)stmtList->data;
+		switch(node->type)
+		{
+			case t_query_stmt:
+			{
+				SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
+				if (!semantic_analysis(node,false))//---3.22fzh---
+				{
+					SQLParse_elog("semantic_analysis error");
+					return NULL;
+				}
+				preprocess(node);
+		#ifdef SQL_Parser
+				output(node,0);
+		#endif
+					Query_stmt *querynode=(Query_stmt *)node;
+					if(querynode->where_list!=NULL)
+					{
+						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
+						struct Node *cur=(struct Node *)(curt->next);
+						SQLParse_log("wc2tb");
+						departwc(cur,querynode->from_list);
+					}
+					if(querynode->from_list!=NULL)
+					int fg=solve_join_condition(querynode->from_list);
+		#ifdef SQL_Parser
+				output(node,0);
+		#endif
+				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
+				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
+				return plan;
+			}break;
+
+			default:
+			{
+				SQLParse_elog("-----------the sql isn't supported!-----------------------");
+				return NULL;
+			}
+		}
+	}
+}
 void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改变，相关代码进行修改---by余楷
 {
 

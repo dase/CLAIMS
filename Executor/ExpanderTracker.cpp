@@ -414,9 +414,9 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
 		bool print=true;
 //		bool print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
-		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);// ----> Agg
+//		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);// ----> Agg
 //		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);  //       ---> Join
-		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
+//		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
 //		printf("return=%d %d print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
 //		bool print=true;
 //		printf("\n");
