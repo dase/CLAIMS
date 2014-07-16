@@ -282,7 +282,7 @@ static void load_tpc_h_4_partition(){
 	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partnames;
-	partnames.push_back("/home/imdb/data/tpc-h/source/SF-5/part.tbl");
+	partnames.push_back("/home/claims/data/tpc-h/source/SF-5/part.tbl");
 	HdfsLoader* Hl = new HdfsLoader('|','\n',partnames,table_1);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -306,7 +306,7 @@ static void load_tpc_h_4_partition(){
 	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> suppliernames;
-	suppliernames.push_back("/home/imdb/data/tpc-h/source/SF-5/supplier.tbl");
+	suppliernames.push_back("/home/claims/data/tpc-h/source/SF-5/supplier.tbl");
 	Hl = new HdfsLoader('|','\n',suppliernames,table_2);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -328,7 +328,7 @@ static void load_tpc_h_4_partition(){
 	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partsuppnames;
-	partsuppnames.push_back("/home/imdb/data/tpc-h/source/SF-5/partsupp.tbl");
+	partsuppnames.push_back("/home/claims/data/tpc-h/source/SF-5/partsupp.tbl");
 	Hl = new HdfsLoader('|','\n',partsuppnames,table_3);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -353,7 +353,7 @@ static void load_tpc_h_4_partition(){
 	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> customernames;
-	customernames.push_back("/home/imdb/data/tpc-h/source/SF-5/customer.tbl");
+	customernames.push_back("/home/claims/data/tpc-h/source/SF-5/customer.tbl");
 	Hl = new HdfsLoader('|','\n',customernames,table_4);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -379,7 +379,7 @@ static void load_tpc_h_4_partition(){
 	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> ordersnames;
-	ordersnames.push_back("/home/imdb/data/tpc-h/source/SF-5/orders.tbl");
+	ordersnames.push_back("/home/claims/data/tpc-h/source/SF-5/orders.tbl");
 	Hl = new HdfsLoader('|','\n',ordersnames,table_5);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -399,7 +399,7 @@ static void load_tpc_h_4_partition(){
 	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> nationnames;
-	nationnames.push_back("/home/imdb/data/tpc-h/source/SF-5/nation.tbl");
+	nationnames.push_back("/home/claims/data/tpc-h/source/SF-5/nation.tbl");
 	Hl = new HdfsLoader('|','\n',nationnames,table_7);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -418,7 +418,7 @@ static void load_tpc_h_4_partition(){
 	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> regionnames;
-	regionnames.push_back("/home/imdb/data/tpc-h/source/SF-5/region.tbl");
+	regionnames.push_back("/home/claims/data/tpc-h/source/SF-5/region.tbl");
 	Hl = new HdfsLoader('|','\n',regionnames,table_8);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -451,7 +451,7 @@ static void load_tpc_h_4_partition(){
 	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> lineitemnames;
-	lineitemnames.push_back("/home/imdb/data/tpc-h/source/SF-5/lineitem.tbl");
+	lineitemnames.push_back("/home/claims/data/tpc-h/source/SF-5/lineitem.tbl");
 	Hl = new HdfsLoader('|','\n',lineitemnames,table_6);
 	Hl->load();
 	Hl->~HdfsLoader();

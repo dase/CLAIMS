@@ -1,18 +1,18 @@
 AM_CPPFLAGS= -fPIC\
--I/home/imdb/supports/boost_1_53_0 \
--I/home/imdb/supports/boost_1_53_0/boost/serialization
+-I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization
 
-AM_LDFLAGS=-lc -lm -lrt lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt lboost_serialization -lxs
 
 LDADD = 	../libcatalog.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../../common/Block/libblock.a \
 		../../common/libcommon.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so \
+		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${BOOST_HOME}/stage/lib/libboost_system.so
 
 noinst_LIBRARIES=libstat.a
 

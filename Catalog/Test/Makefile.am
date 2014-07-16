@@ -1,21 +1,21 @@
 AM_CPPFLAGS= -fPIC \
--I/home/imdb/supports/boost_1_53_0 \
--I/home/imdb/supports/boost_1_53_0/boost/serialization \
--I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
--I/home/NewHadoop/java/jdk1.7.0_45/include\
--I/home/NewHadoop/java/jdk1.7.0_45/include/linux\
--I/home/imdb/supports/Theron-5.01.01/Include
+-I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
+-I${HADOOP_HOME}/src/c++/libhdfs\
+-I${JAVA_HOME}/include\
+-I${JAVA_HOME}/include/linux\
+-I${THERON_HOME}/Include
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system -lxs
 
 LDADD = 	../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../stat/libstat.a \
 		../libcatalog.a \
 		../../common/libcommon.a \
 		../../utility/libutility.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
-		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a
 libtest_a_SOURCES = 	Partitioner_test.cpp 		statistic_manager_test.cpp

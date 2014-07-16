@@ -10,10 +10,20 @@
 #include <libconfig.h++>
 #include <iosfwd>
 #include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <sstream>
+using namespace std;
 #define DEBUG_Config
 
-//std::string Config::config_file="/home/imdb/config/zhanglei/config";
-std::string Config::config_file="/home/imdb/config/yukai/config";
+string gete(){
+	char *p=getenv("CLAIMS_HOME");
+	stringstream sp;
+	sp<<string(p).c_str()<<"/conf/config";
+	return sp.str();
+}
+
+std::string Config::config_file=gete().c_str();
 Config* Config::instance_=0;
 
 /**
@@ -77,8 +87,8 @@ void Config::initialize() {
 	 * The following lines set the search attribute name and default value for each parameter.
 	 */
 
-	data_dir=getString("data","/home/imdb/data/yukai/tpc-h/4_partitions/SF-1");
-//	data_dir=getString("data","/home/imdb/data/yukai");
+	data_dir=getString("data","/home/claims/data/");
+
 	max_degree_of_parallelism=getInt("max_degree_of_parallelism",4);
 
 	expander_adaptivity_check_frequency=getInt("expander_adaptivity_check_frequency",1000);
@@ -90,6 +100,7 @@ void Config::initialize() {
 	scan_batch=getInt("scan_batch",10);
 
 	hdfs_master_ip=getString("hdfs_master_ip","10.11.1.190");
+
 	hdfs_master_port=getInt("hdfs_master_port",9000);
 
 

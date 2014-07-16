@@ -218,7 +218,7 @@ static void query_select_aggregation(){
 	vector< vector<ExpressionItem> >expr_list2;
 	LogicalOperator* project2=new LogicalProject(aggregation,expr_list2);
 	//===========================root===========================
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	cout<<"performance is ok!"<<endl;
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);

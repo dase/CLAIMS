@@ -18,7 +18,6 @@ ExpressionItem::~ExpressionItem() {
 bool ExpressionItem::setValue(void* value_str,const data_type type){
 	switch(type){
 		case t_int:{
-//			setIntValue((const char *)value_str);
 			setIntValue(*(int *)value_str);
 			break;
 		}
@@ -39,15 +38,23 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 			break;
 		}
 		case t_string:{
-			setStringValue((const char *)value_str);
+			setStringValue(string((char *)value_str));
 			break;
 		}
 		case t_decimal:{
 			setDecimalValue((const char *)value_str);
 			break;
 		}
+		case t_datetime:{
+			setDatetimeValue((const char *)value_str);
+			break;
+		}
 		case t_date:{
 			setDateValue((const char *)value_str);
+			break;
+		}
+		case t_time:{
+			setTimeValue((const char *)value_str);
 			break;
 		}
 		case t_boolean:{
@@ -142,7 +149,7 @@ bool ExpressionItem::setULongValue(const char* u_long_str){
 	return true;
 }
 
-bool ExpressionItem::setULongValue(unsigned long &u_long){
+bool ExpressionItem::setULongValue(unsigned long u_long){
 	this->type=const_type;
 	this->return_type=t_u_long;
 	this->content.data.value._ulong=u_long;
@@ -163,7 +170,13 @@ bool ExpressionItem::setStringValue(std::string str){
 	this->type=const_type;
 	this->return_type=t_string;
 	this->_string=str;
-	this->item_name=str;
+	return true;
+}
+
+bool ExpressionItem::setStringValue(const char * str){
+	this->type=const_type;
+	this->return_type=t_string;
+	this->_string=string(str);
 	return true;
 }
 
@@ -173,7 +186,24 @@ bool ExpressionItem::setDateValue(const char * date_str){
 	this->_date=*(date*)date_str;
 	string itemname(date_str);
 	this->item_name=itemname;
-//	strcpy(content.data.value._date,date_str);
+	return true;
+}
+
+bool ExpressionItem::setDatetimeValue(const char * datetime_str){
+	this->type=const_type;
+	this->return_type=t_datetime;
+	this->_datetime=*(ptime*)datetime_str;
+	string itemname(datetime_str);
+	this->item_name=itemname;
+	return true;
+}
+
+bool ExpressionItem::setTimeValue(const char * time_str){
+	this->type=const_type;
+	this->return_type=t_time;
+	this->_time=*(time_duration*)time_str;
+	string itemname(time_str);
+	this->item_name=itemname;
 	return true;
 }
 

@@ -1,13 +1,13 @@
 AM_CPPFLAGS= -fPIC \
--I/home/imdb/supports/boost_1_53_0 \
--I/home/imdb/supports/boost_1_53_0/boost/serialization \
--I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
--I/home/NewHadoop/java/jdk1.7.0_45/include\
--I/home/NewHadoop/java/jdk1.7.0_45/include/linux\
--I/home/imdb/supports/Theron-5.01.01/Include
+-I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
+-I${HADOOP_HOME}/src/c++/libhdfs\
+-I${JAVA_HOME}/include\
+-I${JAVA_HOME}/include/linux\
+-I${THERON_HOME}/Include
 
 #<boost/unordered_map.hpp>添加编译选项
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system -lxs
 
 LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \
@@ -15,11 +15,11 @@ LDADD =	../storage/libstorage.a \
 		../utility/libutility.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so \
-		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so \
+		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${BOOST_HOME}/stage/lib/libboost_system.so \
+		${THERON_HOME}/Lib/libtherond.a
 
 #DIR = ${shell /bin/pwd}
 #INCLUDES = -I${DIR}/ThirdParty
