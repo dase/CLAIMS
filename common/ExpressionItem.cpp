@@ -45,8 +45,16 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 			setDecimalValue((const char *)value_str);
 			break;
 		}
+		case t_datetime:{
+			setDatetimeValue((const char *)value_str);
+			break;
+		}
 		case t_date:{
 			setDateValue((const char *)value_str);
+			break;
+		}
+		case t_time:{
+			setTimeValue((const char *)value_str);
 			break;
 		}
 		case t_boolean:{
@@ -178,7 +186,24 @@ bool ExpressionItem::setDateValue(const char * date_str){
 	this->_date=*(date*)date_str;
 	string itemname(date_str);
 	this->item_name=itemname;
-//	strcpy(content.data.value._date,date_str);
+	return true;
+}
+
+bool ExpressionItem::setDatetimeValue(const char * datetime_str){
+	this->type=const_type;
+	this->return_type=t_datetime;
+	this->_datetime=*(ptime*)datetime_str;
+	string itemname(datetime_str);
+	this->item_name=itemname;
+	return true;
+}
+
+bool ExpressionItem::setTimeValue(const char * time_str){
+	this->type=const_type;
+	this->return_type=t_time;
+	this->_time=*(time_duration*)time_str;
+	string itemname(time_str);
+	this->item_name=itemname;
 	return true;
 }
 

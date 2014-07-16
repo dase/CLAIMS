@@ -182,6 +182,14 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 			memcpy(tuple,&result._date,length);
 			break;
 		}
+		case t_time:{
+			memcpy(tuple,&result._time,length);
+			break;
+		}
+		case t_datetime:{
+			memcpy(tuple,&result._datetime,length);
+			break;
+		}
 		default:{
 			cout<<"missing the operator!!!"<<endl;
 			break;

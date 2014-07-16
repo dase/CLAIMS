@@ -166,6 +166,8 @@ public:
 
 	//currently,date only const char * supported!
 	bool setDateValue(const char *);
+	bool setDatetimeValue(const char *);
+	bool setTimeValue(const char *);
 
 	bool setBooleanValue(bool );////////////
 	bool setSmallIntValue(short &);
@@ -178,7 +180,7 @@ public:
 	ItemType type;
 	date _date;
 	time_duration _time;
-	ptime _datatime;
+	ptime _datetime;
 	NValue _decimal;
 	std::string _string;
 	std::string item_name;
