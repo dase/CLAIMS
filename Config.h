@@ -59,6 +59,7 @@ public:
 	static bool enable_expander_adaptivity;
 	static int expander_adaptivity_check_frequency;
 	static int scan_batch;
+	static std::string logfile;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;

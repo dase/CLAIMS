@@ -54,6 +54,7 @@
 #include "gtest.h"
 #include "../common/ExpandedThreadTracker_test.cpp"
 #include "memory_leak_test.h"
+#include "Parsetree/sql_parser_test.h"
 int main(int argc , char ** argv){
 
 //	return testGenerateIteratorTree();
@@ -97,7 +98,7 @@ int main(int argc , char ** argv){
 //	return test_CSBIndexBuilding();		//for physical iterator testing and IndexManager testing
 //	return test_logical_csb_index_building();
 //	return test_index_scan_iterator();
-	return test_index_manager();
+//	return test_index_manager();
 
 //	in_test();
 //	test_expanderFramework_single_node(5);
@@ -112,7 +113,7 @@ int main(int argc , char ** argv){
 //	test_expanderFramework_single_node(5);
 
 
-	test_expanderFramework_single_node(5);
+//	test_expanderFramework_single_node(5);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
@@ -121,7 +122,7 @@ int main(int argc , char ** argv){
 //	hash_table_test();
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
-	g_test_main(argc,argv);
+//	g_test_main(argc,argv);
 //	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
@@ -129,4 +130,6 @@ int main(int argc , char ** argv){
 //	sleep(1000);
 //	insert_optimziaed_hash_table_test();
 //	memory_leak_test();
+//	sql_parser_test();
+
 }
