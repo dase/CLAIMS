@@ -1455,6 +1455,9 @@ static int query_optimization_outputdata()
 	if(master!=0)
 	{
 		Environment::getInstance(false);
+		while(true){
+			sleep(1);
+		}
 	}
 	else
 	{
