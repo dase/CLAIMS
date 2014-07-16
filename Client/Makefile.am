@@ -3,7 +3,7 @@ AM_CPPFLAGS= -fPIC \
 -I${THERON_HOME}/Include 
 
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lxs
 
 LDADD = 	../Catalog/libcatalog.a \
 		../Daemon/libdaemon.a \

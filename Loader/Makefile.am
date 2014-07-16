@@ -6,7 +6,7 @@ AM_CPPFLAGS= -fPIC\
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include
 
-AM_LDFLAGS=-lc -lm -lrt 
+AM_LDFLAGS=-lc -lm -lrt  -lxs
 
 LDADD = 	../Catalog/libcatalog.a \
 		../Schema/libschema.a \

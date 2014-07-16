@@ -3,7 +3,7 @@ AM_CPPFLAGS= -fPIC\
 -I${BOOST_HOME}/boost/serialization \
 -I${GTEST_HOME}/include
 
-AM_LDFLAGS=-lc -lm -lrt lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt lboost_serialization -lxs
 
 LDADD = 	../../Catalog/libcatalog.a \
 		../../common/libcommon.a \

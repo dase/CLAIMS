@@ -6,7 +6,7 @@ AM_CPPFLAGS= -fPIC \
 -I${JAVA_HOME}/include/linux\
 -I${THERON_HOME}/Include
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system -lxs
 
 LDADD = 	../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../stat/libstat.a \

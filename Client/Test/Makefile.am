@@ -7,7 +7,7 @@ AM_CPPFLAGS= -fPIC\
 -I${THERON_HOME}/Include
 
 #<boost/unordered_map.hpp>应该加什么编译选项
-AM_LDFLAGS=-lc -lm -lrt lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt lboost_serialization -lxs
 
 LDADD = 	../../Catalog/libcatalog.a \
 		../../common/libcommon.a \
