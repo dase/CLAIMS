@@ -126,6 +126,9 @@ void BlockStreamExpander::print(){
 void* BlockStreamExpander::expanded_work(void* arg){
 	const pthread_t pid=pthread_self();
 
+	bool expanding=true;
+	ticks start=curtick();
+
 	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
 	Pthis->addIntoInWorkingExpandedThreadList(pid);
 	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pid,Pthis->expander_id_);
@@ -149,9 +152,15 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		Pthis->tid_to_shrink_semaphore[pid]->post();
 	}
 	else{
+			if(expanding==true){
+				expanding=false;
+//				printf("Expanding time:%f  %ld cycles\n",getSecond(start),curtick()-start);
+			}
 		BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
 		block_for_asking->setEmpty();
 		while(Pthis->state_.child_->next(block_for_asking)){
+
+
 //			assert(!block_for_asking->Empty());
 			if(!block_for_asking->Empty()){
 				Pthis->lock_.acquire();
@@ -364,6 +373,7 @@ bool BlockStreamExpander::Expand(){
 bool BlockStreamExpander::Shrink(){
 //	return true;
 //	bool ret;
+	ticks start=curtick();
 	lock_.acquire();
 	if(in_work_expanded_thread_list_.empty()){
 		lock_.release();
@@ -374,6 +384,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
+		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
 		return true;
 	}
 //	lock_.release();

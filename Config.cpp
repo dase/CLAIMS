@@ -12,7 +12,7 @@
 #include <iostream>
 #define DEBUG_Config
 
-std::string Config::config_file="/home/imdb/config/dsc/config";
+std::string Config::config_file="/home/imdb/config/wangli/config";
 Config* Config::instance_=0;
 
 /**
@@ -45,6 +45,8 @@ int Config::initial_degree_of_parallelism;
 
 
 int Config::scan_batch;
+
+std::string Config::logfile;
 
 Config* Config::getInstance() {
 	if(instance_==0){
@@ -82,6 +84,8 @@ void Config::initialize() {
 	initial_degree_of_parallelism=getInt("initial_degree_of_parallelism",1);
 
 	scan_batch=getInt("scan_batch",10);
+
+	logfile=getString("log","/home/imdb/claims.log");
 
 
 #ifdef DEBUG_Config
@@ -125,9 +129,11 @@ bool Config::getBoolean(std::string attribute_name, bool defalut_value) {
 }
 
 void Config::print_configure() const {
+	std::cout<<"The configure is as follows."<<std::endl;
 	std::cout<<"data:"<<data_dir<<std::endl;
 	std::cout<<"max_degree_of_parallelism:"<<max_degree_of_parallelism<<std::endl;
 	std::cout<<"expander_adaptivity_check_frequency:"<<expander_adaptivity_check_frequency<<std::endl;
 	std::cout<<"enable_expander_adaptivity:"<<enable_expander_adaptivity<<std::endl;
 	std::cout<<"initial_degree_of_parallelism:"<<initial_degree_of_parallelism<<std::endl;
+	std::cout<<"log:"<<logfile<<std::endl;
 }

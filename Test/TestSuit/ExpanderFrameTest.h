@@ -3,6 +3,7 @@
 #include "../../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../set_up_environment.h"
 #include "../../common/AttributeComparator.h"
+#include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 /*
  * ExpanderFrameTest.h
  *
@@ -426,6 +427,11 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 
 
 	startup_single_node_environment_of_poc();
+
+//	LogicalOperator* root=convert_sql_to_logical_operator_tree("selects * from cj;");
+//	if(root!=0){
+//		printf("OK!\n");
+//	}
 
 	printf("This test requires one partition of POC sb and cj\n");
 
