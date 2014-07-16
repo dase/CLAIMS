@@ -1,20 +1,20 @@
 AM_CPPFLAGS= -fPIC\
--I/home/imdb/supports/boost_1_53_0 \
--I/home/imdb/supports/boost_1_53_0/boost/serialization \
--I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
--I/home/NewHadoop/java/jdk1.7.0_45/include\
--I/home/NewHadoop/java/jdk1.7.0_45/include/linux\
--I/home/imdb/supports/Theron-5.01.01/Include
+-I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
+-I${HADOOP_HOME}/src/c++/libhdfs\
+-I${JAVA_HOME}/include\
+-I${JAVA_HOME}/include/linux\
+-I${THERON_HOME}/Include
 
 #<boost/unordered_map.hpp>应该加什么编译选项
-AM_LDFLAGS=-lc -lm -lrt lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt lboost_serialization -lxs
 
 LDADD = 	../../Catalog/libcatalog.a \
 		../../common/libcommon.a \
-		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a \
-		/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
-		/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.so \
-		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a
+		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
+		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
+		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
+		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a
 

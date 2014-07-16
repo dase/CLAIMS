@@ -1,19 +1,19 @@
 AM_CPPFLAGS= -fPIC \
--I/home/imdb/supports/Theron-5.01.01/Include \
--I/home/imdb/supports/boost_1_53_0 \
--I/home/NewHadoop/hadoop/hadoop-1.0.3/src/c++/libhdfs\
--I/home/NewHadoop/java/jdk1.7.0_45/include\
--I/home/NewHadoop/java/jdk1.7.0_45/include/linux
+-I${THERON_HOME}/Include \
+-I${BOOST_HOME} \
+-I${HADOOP_HOME}/src/c++/libhdfs\
+-I${JAVA_HOME}/include\
+-I${JAVA_HOME}/include/linux
 
-AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization -lxs
 
 LDADD = 	../BlockStreamIterator/libblockstreamiterator.a \
 		../common/Block/libblock.a \
 		../common/libcommon.a \
 		../utility/libutility.a \
-		/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-		/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so
+		${THERON_HOME}/Lib/libtherond.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so
 
 noinst_LIBRARIES=libexecutor.a
 libexecutor_a_SOURCES = \
@@ -26,9 +26,9 @@ libexecutor_a_SOURCES = \
 	IteratorExecutorSlave.h 	PortManager.cpp \
 	PortManager.h
 	
-libexecutor_a_LIBADD = 	/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a \
-				/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-				/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so	
+libexecutor_a_LIBADD = 	${THERON_HOME}/Lib/libtherond.a \
+				${BOOST_HOME}/stage/lib/libboost_serialization.a \
+				${BOOST_HOME}/stage/lib/libboost_serialization.so	
 
 SUBDIRS = Test
 DIST_SUBDIRS = Test

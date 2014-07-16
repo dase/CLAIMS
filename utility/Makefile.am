@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC
 
-AM_LDFLAGS=-lc -lm -lrt
+AM_LDFLAGS=-lc -lm -lrt -lxs
 
 LDADD = ../common/Schema/libschema.a 
 

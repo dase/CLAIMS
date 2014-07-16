@@ -42,7 +42,7 @@ Coordinator::~Coordinator() {
 }
 bool Coordinator::PrepareTheSocket(){
 	libconfig::Config cfg;
-	cfg.readFile("/home/imdb/config/wangli/coor.conf");
+	cfg.readFile("/home/claims/config/wangli/coor.conf");
 	std::string master_ip=(const char *)cfg.lookup("coordinator.ip");
 	std::string master_port=(const char*)cfg.lookup("coordinator.port");
 
@@ -83,7 +83,7 @@ bool Coordinator::PrepareTheSocket(){
 }
 bool Coordinator::SetupTheTheron(){
 	libconfig::Config cfg;
-	cfg.readFile("/home/imdb/config/wangli/master.conf");
+	cfg.readFile("/home/claims/config/wangli/master.conf");
 	EndPointPort=(const char *)cfg.lookup("TheronPort.Coordinator");
 	std::string master_ip=(const char *)cfg.lookup("ip");
 	std::string ip_port;

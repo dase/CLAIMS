@@ -70,6 +70,9 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 					}
 //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
 					current_storage_level_=MEMORY;
+
+					/* update the chunk info in the Chunk store in case that the chunk_info is updated.*/
+					BlockManager::getInstance()->getMemoryChunkStore()->updateChunkInfo(chunk_id_,chunk_info);
 //					printf("%lx current is set to memory!\n");
 					ret = new InMemoryChunkReaderItetaor(chunk_info.hook,chunk_info.length,chunk_info.length/block_size_,block_size_,chunk_id_);
 					break;

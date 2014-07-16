@@ -78,6 +78,8 @@ public:
 
 	void returnChunk(const ChunkID& chunk_id);
 
+	bool updateChunkInfo(const ChunkID& chunk_id, const HdfsInMemoryChunk& chunk_info);
+
 	void *getChunk(string blockId){
 		map<string, HdfsBlock>::iterator it_;
 		it_=bufferpool_.find(blockId);
