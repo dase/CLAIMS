@@ -6,7 +6,7 @@ AM_CPPFLAGS= -fPIC\
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization
 
-AM_LDFLAGS=-lc -lm -lrt
+AM_LDFLAGS=-lc -lm -lrt -lxs
 
 LDADD = ../common/libcommon.a
 

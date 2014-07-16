@@ -6,7 +6,7 @@ AM_CPPFLAGS= -fPIC \
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs
 
 LDADD = 	../../Parsetree/libparsetree.a \
 		../../LogicalQueryPlan/liblogicalqueryplan.a \

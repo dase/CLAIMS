@@ -3,7 +3,7 @@ AM_CPPFLAGS= -fPIC \
 -I${THERON_HOME}/Include \
 -I${GTEST_HOME}/include
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs
 
 LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
 		../BlockStreamIterator/libblockstreamiterator.a \

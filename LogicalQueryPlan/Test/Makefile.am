@@ -6,7 +6,7 @@ AM_CPPFLAGS= -fPIC \
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lxs
 
 LDADD = 	../../Test/libtest.a \
 		../liblogicalqueryplan.a \

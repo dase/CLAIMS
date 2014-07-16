@@ -6,7 +6,7 @@ AM_CPPFLAGS= -fPIC \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization
 
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lxs
 
 LDADD = 	../LogicalQueryPlan/liblogicalqueryplan.a \
 		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \

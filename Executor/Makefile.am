@@ -5,7 +5,7 @@ AM_CPPFLAGS= -fPIC \
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
-AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization
+AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization -lxs
 
 LDADD = 	../BlockStreamIterator/libblockstreamiterator.a \
 		../common/Block/libblock.a \

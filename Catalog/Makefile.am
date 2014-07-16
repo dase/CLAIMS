@@ -7,7 +7,7 @@ AM_CPPFLAGS= -fPIC \
 -I${THERON_HOME}/Include
 
 #<boost/unordered_map.hpp>添加编译选项
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system -lxs
 
 LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \
