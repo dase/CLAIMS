@@ -20,6 +20,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <limits.h>
 #include <float.h>
+
 #include "hash.h"
 
 using namespace boost::gregorian;
@@ -187,7 +188,7 @@ inline void assigns<char*>(const void* const& src, void* const &desc){
 class Operate
 {
 public:
-	Operate(bool _nullable = false):nullable(_nullable){};
+	Operate(bool _nullable = true):nullable(_nullable){};
 	virtual ~Operate(){};
 	inline void ass(void* src, void* desc){
 		*(int*)desc=*(int*)src;
@@ -222,7 +223,7 @@ public:
 class OperateInt:public Operate
 {
 public:
-	OperateInt(bool _nullable = false){this->nullable = _nullable; assign=assigns<int>;};
+	OperateInt(bool _nullable = true){this->nullable = _nullable; assign=assigns<int>;};
 	~OperateInt(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -242,7 +243,7 @@ public:
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(int*)target = NULL_INT;
 		else
 			*(int*)target=atoi(string);
@@ -322,7 +323,7 @@ public:
 class OperateFloat:public Operate
 {
 public:
-	OperateFloat(bool _nullable = false){ this->nullable = _nullable; };
+	OperateFloat(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateFloat(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -342,7 +343,7 @@ public:
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(float*)target = NULL_FLOAT;
 		else
 			*(float*)target=atof(string);
@@ -420,7 +421,7 @@ public:
 class OperateDouble:public Operate
 {
 public:
-	OperateDouble(bool _nullable = false){ this->nullable = _nullable; };
+	OperateDouble(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateDouble(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -440,7 +441,7 @@ public:
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(double*)target = NULL_DOUBLE;
 		else
 			*(double*)target=atof(string);
@@ -518,7 +519,7 @@ public:
 class OperateULong:public Operate
 {
 public:
-	OperateULong(bool _nullable = false){ this->nullable = _nullable; };
+	OperateULong(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateULong(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -538,7 +539,7 @@ public:
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(unsigned long*)target = NULL_U_LONG;
 		else
 			*(unsigned long*)target=strtoul(string,0,10);
@@ -616,7 +617,7 @@ public:
 class OperateString:public Operate
 {
 public:
-	OperateString(bool _nullable = false){ this->nullable = _nullable; };
+	OperateString(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateString(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -631,7 +632,7 @@ public:
 			return std::string((char*)value);
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(char*)target = NULL_STRING;
 		else
 			strcpy((char*)target,string);
@@ -718,7 +719,7 @@ public:
 class OperateDate:public Operate
 {
 public:
-	OperateDate(bool _nullable = false){ this->nullable = _nullable; };
+	OperateDate(bool _nullable = true){ this->nullable = _nullable; };
 //	~OperateDate(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -733,14 +734,15 @@ public:
 			return to_iso_extended_string(*(date*)value);
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			setNull(target);
 		else
 		{
 			std::string s(string);
-			bool all_digit = true;
+			bool all_digit = false;
 			if (s.length() == 8)
 			{
+				all_digit = true;
 				for (int i = 0; i < 8; i++)
 				{
 					if (isdigit(s[i]) == 0)
@@ -839,7 +841,7 @@ public:
 class OperateTime:public Operate
 {
 public:
-	OperateTime(bool _nullable = false){ this->nullable = _nullable; };
+	OperateTime(bool _nullable = true){ this->nullable = _nullable; };
 //	~OperateTime(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -854,7 +856,7 @@ public:
 			return to_simple_string(*(time_duration*)value);
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			setNull(target);
 		else
 			*(time_duration*)target = duration_from_string(string);
@@ -941,7 +943,7 @@ public:
 class OperateDatetime:public Operate
 {
 public:
-	OperateDatetime(bool _nullable = false){ this->nullable = _nullable; };
+	OperateDatetime(bool _nullable = true){ this->nullable = _nullable; };
 //	~OperateDatetime(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -956,7 +958,7 @@ public:
 			return to_iso_extended_string(*(ptime*)value);
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			setNull(target);
 		else
 			*(ptime*)target = time_from_string(string);
@@ -1044,7 +1046,7 @@ public:
 class OperateSmallInt:public Operate
 {
 public:
-	OperateSmallInt(bool _nullable = false){ this->nullable = _nullable; assign=assigns<short>;};
+	OperateSmallInt(bool _nullable = true){ this->nullable = _nullable; assign=assigns<short>;};
 //	~OperateSmallInt(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -1063,7 +1065,7 @@ public:
 		}
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(short*)target = NULL_SMALL_INT;
 		else
 			*(short*)target = (short)atoi(string);
@@ -1141,7 +1143,7 @@ public:
 class OperateUSmallInt:public Operate
 {
 public:
-	OperateUSmallInt(bool _nullable = false){ this->nullable = _nullable; assign=assigns<unsigned short>;};
+	OperateUSmallInt(bool _nullable = true){ this->nullable = _nullable; assign=assigns<unsigned short>;};
 //	~OperateSmallInt(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -1157,7 +1159,7 @@ public:
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(unsigned short*)target = NULL_U_SMALL_INT;
 		else
 			*(unsigned short*)target = (unsigned short)atoi(string);
@@ -1235,7 +1237,7 @@ public:
 class OperateDecimal:public Operate
 {
 public:
-	OperateDecimal(unsigned number_of_decimal_digits = 12, bool _nullable = false):number_of_decimal_digits_(number_of_decimal_digits){assign=assigns<int>; this->nullable = _nullable; };
+	OperateDecimal(unsigned number_of_decimal_digits = 12, bool _nullable = true):number_of_decimal_digits_(number_of_decimal_digits){assign=assigns<int>; this->nullable = _nullable; };
 //	~OperateDecimal(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -1259,7 +1261,7 @@ public:
 		return std::string(buf+4);
 	}
 	void toValue(void* target, const char* string){
-		if (string == NULL && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)
 			*(NValue*)target = NULL_DECIMAL;
 		else
 			*(NValue*)target = NValue::getDecimalValueFromString(string);
@@ -1373,7 +1375,7 @@ public:
 class column_type
 {
 public:
-	 column_type(data_type type,unsigned _size=0, bool _nullable=false):type(type),size(_size), nullable(_nullable){
+	 column_type(data_type type,unsigned _size=0, bool _nullable=true):type(type),size(_size), nullable(_nullable){
 		switch(type)
 		{
 			case t_int:operate=new OperateInt(_nullable);break;

@@ -9,20 +9,28 @@
 #include <iostream>
 
 #include "../SchemaVar.h"
+
 #include "../../ids.h"
+#include "../../AttributeComparator.h"
+
 #include "../../../common/Block/BlockStream.h"
+
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
+
 #include "../../../BlockStreamIterator/BlockStreamPrint.h"
+#include "../../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
 #include "../../../LogicalQueryPlan/Scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
-#include "../../../Catalog/ProjectionBinding.h"
 #include "../../../LogicalQueryPlan/Filter.h"
 #include "../../../LogicalQueryPlan/Aggregation.h"
-#include "../../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
+#include "../../../Catalog/ProjectionBinding.h"
+
 #include "../../../Environment.h"
-#include "../../AttributeComparator.h"
+
 using namespace std;
 
 static int variable_schema_test(){

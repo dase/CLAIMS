@@ -55,8 +55,8 @@ class PartitionInfo{
 public:
 
 	friend class Partitioner;
-	explicit PartitionInfo(){};
-	explicit PartitionInfo(PartitionID partition_id):partition_id_(partition_id),number_of_blocks(-1){};
+	explicit PartitionInfo():number_of_blocks(0){};
+	explicit PartitionInfo(PartitionID partition_id):partition_id_(partition_id),number_of_blocks(0){};
 	explicit PartitionInfo(PartitionID partition_id,string file_name)
 	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(0){}
 

@@ -20,14 +20,19 @@
 #include "../ParallelBlockStreamIterator/ExpandableBlockStreamHdfsScan.h"
 #include "../ParallelBlockStreamIterator/ExpandableBlockStreamExchangeMaterialized.h"
 #include "../ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
+#include "../ParallelBlockStreamIterator/ExpandableBlockStreamBuffer.h"
+#include "../ParallelBlockStreamIterator/BlockStreamInIterator.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
+
 #include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 #include "../../BlockStreamIterator/BlockStreamPrint.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../ParallelBlockStreamIterator/ExpandableBlockStreamBuffer.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
+#include "../BlockStreamLimit.h"
+
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../ParallelBlockStreamIterator/BlockStreamInIterator.h"
+
 #include "../../IndexManager/CSBIndexBuilding.h"
 #include "../../IndexManager/IndexScanIterator.h"
 #include "../BlockStreamLimit.h"
@@ -64,6 +69,7 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamAggregationIterator*>(NULL));
 
 	ar.register_type(static_cast<BlockStreamSortIterator*>(NULL));
+
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
 	ar.register_type(static_cast<BlockStreamLimit*>(NULL));
 	ar.register_type(static_cast<BlockStreamProjectIterator*>(NULL));

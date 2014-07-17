@@ -18,11 +18,16 @@ ExpressionItem::~ExpressionItem() {
 bool ExpressionItem::setValue(void* value_str,const data_type type){
 	switch(type){
 		case t_int:{
-			setIntValue((const char *)value_str);
+			setIntValue(*(int *)value_str);
 			break;
 		}
 		case t_float:{
 			setFloatValue(*(float *)value_str);
+			break;
+		}
+		case t_smallInt:
+		{
+			setSmallIntValue(*(short *)value_str);
 			break;
 		}
 		case t_double:{
@@ -34,15 +39,27 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 			break;
 		}
 		case t_string:{
-			setStringValue((const char *)value_str);
+			setStringValue(string((char *)value_str));
 			break;
 		}
 		case t_decimal:{
 			setDecimalValue((const char *)value_str);
 			break;
 		}
+		case t_datetime:{
+			setDatetimeValue((const char *)value_str);
+			break;
+		}
 		case t_date:{
 			setDateValue((const char *)value_str);
+			break;
+		}
+		case t_time:{
+			setTimeValue((const char *)value_str);
+			break;
+		}
+		case t_boolean:{
+			setBooleanValue(*(bool *)value_str);
 			break;
 		}
 		default:{
@@ -102,6 +119,12 @@ bool ExpressionItem::setFloatValue(float &float_){
 	this->content.data.value._float=float_;
 	return true;
 }
+bool ExpressionItem::setSmallIntValue(short &sint_){
+	this->type=const_type;
+	this->return_type=t_smallInt;
+	this->content.data.value._sint=sint_;
+	return true;
+}
 
 bool ExpressionItem::setDoubleValue(const char* double_str){
 	this->type=const_type;
@@ -127,7 +150,7 @@ bool ExpressionItem::setULongValue(const char* u_long_str){
 	return true;
 }
 
-bool ExpressionItem::setULongValue(unsigned long &u_long){
+bool ExpressionItem::setULongValue(unsigned long u_long){
 	this->type=const_type;
 	this->return_type=t_u_long;
 	this->content.data.value._ulong=u_long;
@@ -148,7 +171,13 @@ bool ExpressionItem::setStringValue(std::string str){
 	this->type=const_type;
 	this->return_type=t_string;
 	this->_string=str;
-	this->item_name=str;
+	return true;
+}
+
+bool ExpressionItem::setStringValue(const char * str){
+	this->type=const_type;
+	this->return_type=t_string;
+	this->_string=string(str);
 	return true;
 }
 
@@ -158,9 +187,34 @@ bool ExpressionItem::setDateValue(const char * date_str){
 	this->_date=*(date*)date_str;
 	string itemname(date_str);
 	this->item_name=itemname;
-//	strcpy(content.data.value._date,date_str);
 	return true;
 }
+
+bool ExpressionItem::setDatetimeValue(const char * datetime_str){
+	this->type=const_type;
+	this->return_type=t_datetime;
+	this->_datetime=*(ptime*)datetime_str;
+	string itemname(datetime_str);
+	this->item_name=itemname;
+	return true;
+}
+
+bool ExpressionItem::setTimeValue(const char * time_str){
+	this->type=const_type;
+	this->return_type=t_time;
+	this->_time=*(time_duration*)time_str;
+	string itemname(time_str);
+	this->item_name=itemname;
+	return true;
+}
+
+bool ExpressionItem::setBooleanValue(bool value){
+	this->type=const_type;
+	this->return_type=t_boolean;
+	this->content.data.value._bool=value;
+	return true;
+}
+
 
 bool ExpressionItem::setOperator(const char* op_str){
 	type=operator_type;
@@ -174,9 +228,7 @@ bool ExpressionItem::setOperator(const char* op_str){
 	else if(tmp=="*"){
 		content.op.op_=op_multiple;
 	}
-	else if(tmp=="<"){
-		content.op.op_=op_com_L;
-	}
+
 	else if(tmp=="case"){
 		content.op.op_=op_case;
 	}
@@ -200,6 +252,33 @@ bool ExpressionItem::setOperator(const char* op_str){
 	}
 	else if(tmp=="cast"){
 		content.op.op_=op_cast;
+	}
+	else if(tmp=="and"){
+		content.op.op_=op_and;
+	}
+	else if(tmp=="or"){
+		content.op.op_=op_or;
+	}
+	else if(tmp=="not"){
+		content.op.op_=op_not;
+	}
+	else if(tmp=="<"){
+		content.op.op_=op_com_L;
+	}
+	else if(tmp==">"){
+		content.op.op_=op_com_G;
+	}
+	else if(tmp=="="){
+		content.op.op_=op_com_EQ;
+	}
+	else if(tmp=="!="){
+		content.op.op_=op_com_NEQ;
+	}
+	else if(tmp==">="){
+		content.op.op_=op_com_GEQ;
+	}
+	else if(tmp=="<="){
+		content.op.op_=op_com_LEQ;
 	}
 	else{
 		printf("[%s] fails to match to any existing operator\n",op_str);

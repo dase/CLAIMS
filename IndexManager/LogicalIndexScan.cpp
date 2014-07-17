@@ -6,8 +6,8 @@
  */
 
 #include "LogicalIndexScan.h"
-#include "../Catalog/Catalog.h"
 #include "IndexManager.h"
+#include "../Catalog/Catalog.h"
 
 LogicalIndexScan::LogicalIndexScan() {
 	// TODO Auto-generated constructor stub

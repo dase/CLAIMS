@@ -8,13 +8,13 @@
 #include <vector>
 #include <iostream>
 #include <stdio.h>
+#include "../IndexScanIterator.h"
+#include "../CSBIndexBuilding.h"
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../CSBIndexBuilding.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../IndexScanIterator.h"
 #include "../../BlockStreamIterator/BlockStreamPrint.h"
 
 static int test_index_scan_iterator()

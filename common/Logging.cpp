@@ -13,7 +13,7 @@
 //#define DEBUG_PerformanceTop
 //#define DEBUG_Coordinator
 //#define DEBUG_Environment
-
+//#define DEBUG_AdaptiveEndPoint
 //#define DEBUG_ExchangeIteratorLowerWithWideDependency
 //#define DEBUG_ExchangeIteratorWithWideDependency
 //#define DEBUG_ExchangeIteratorEager
@@ -39,8 +39,8 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
-//#define DEBUG_ASTParser
-//#define SQL_Parser
+#define DEBUG_ASTParser
+#define SQL_Parser
 
 #endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){

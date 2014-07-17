@@ -7,18 +7,24 @@
 
 #include <vector>
 #include <iostream>
-#include "../../BlockStreamPrint.h"
 #include "../BlockStreamSortIterator.h"
 #include "../ExpandableBlockStreamProjectionScan.h"
-#include "../../../common/ids.h"
+
+#include "../../BlockStreamPrint.h"
+
 #include "../../../Environment.h"
+
+#include "../../../common/ids.h"
 #include "../../../common/Block/BlockStream.h"
+
+#include "../../../Catalog/ProjectionBinding.h"
+
 #include "../../../LogicalQueryPlan/Scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
-#include "../../../Catalog/ProjectionBinding.h"
 #include "../../../LogicalQueryPlan/Filter.h"
 #include "../../../LogicalQueryPlan/Aggregation.h"
+
 using namespace std;
 
 static int sort_iterator_test(){

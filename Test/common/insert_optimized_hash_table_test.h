@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include "../../common/InsertOptimizedHashTable.h"
 /*
  * insert_optimized_hash_table_test.cpp
  *
@@ -9,6 +7,7 @@
 
 #ifndef __INSERT_HASHTABLE_TEST__
 #define __INSERT_HASHTABLE_TEST__
+#include <stdio.h>
 #include <gtest/gtest.h>
 #include "../../common/InsertOptimizedHashTable.h"
 #include "../../utility/generator.h"

@@ -6,21 +6,27 @@
  */
 
 #include "../../Environment.h"
+
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
+
 #include "../../common/ids.h"
-#include "../../LogicalQueryPlan/LogicalOperator.h"
+#include "../../common/AttributeComparator.h"
+
 #include "../LogicalCSBIndexBuilding.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../IndexScanIterator.h"
 #include "../LogicalIndexScan.h"
+#include "../CSBPlusTree.h"
+
 #include "../../utility/test_tool.h"
+#include "../../utility/rdtsc.h"
+
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
+#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../../LogicalQueryPlan/LogicalOperator.h"
+
 #include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
-#include "../CSBPlusTree.h"
-#include "../../utility/rdtsc.h"
-#include "../../common/AttributeComparator.h"
 
 static void init_poc_environment()
 {
