@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include "../../common/InsertOptimizedHashTable.h"
 /*
  * insert_optimized_hash_table_test.cpp
  *
@@ -9,6 +7,7 @@
 
 #ifndef __INSERT_HASHTABLE_TEST__
 #define __INSERT_HASHTABLE_TEST__
+#include <stdio.h>
 #include <gtest/gtest.h>
 #include "../../common/InsertOptimizedHashTable.h"
 #include "../../utility/generator.h"
@@ -58,6 +57,7 @@ TEST(INSERT_OPTIMIZED_HASH_TABLE,INSERT){
 	const unsigned tuple_length=32;
 
 	InsertOptimizedHashTable hashtable(nbuckets);
+	hashtable.initialize();
 
 	Schema* schema=generateSchema(tuple_length);
 	DynamicBlockBuffer* buffer=generate_BlockStreamBuffer(schema,data_size_in_MB);

@@ -20,17 +20,19 @@
 #include "../../common/ids.h"
 #include "../../utility/rdtsc.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
-:state(state){
+:state(state),logging_(0){
 	// TODO Auto-generated constructor stub
 	assert(state.partition_key_index<100);
+
 }
 
 ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
 	// TODO Auto-generated destructor stub
+	delete logging_;
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
-
-	ExchangeIteratorEagerLowerLogging::log("[%lld] Exchange lower is created!",state.exchange_id);
+	logging_=new ExchangeIteratorEagerLowerLogging();
+	logging_->log("[%lld] Exchange lower is created!",state.exchange_id);
 	unsigned long long int start=curtick();
 	unsigned long long int step1,step2,step3;
 	step1=curtick();
@@ -88,7 +90,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 		int upper_port;
 		unsigned long long int connect_info=curtick();
 		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id]))==0){
-			ExchangeIteratorEagerLowerLogging::elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
+			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
 			assert(false);
 		}
 //		printf("\n\n\n port=%d\n\n\n",upper_port);
@@ -115,7 +117,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	int error;
 	error=pthread_create(&sender_tid,NULL,sender,this);
 	if(error!=0){
-		ExchangeIteratorEagerLowerLogging::elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
+		logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
 		return false;
 	}
 	else{
@@ -152,7 +154,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 	else{
 		/* the child iterator is exhausted. We add the cur block steram block into the buffer*/
 		for(unsigned i=0;i<nuppers;i++){
-			ExchangeIteratorEagerLowerLogging::log("||||||Fold the last||||||!");
+			logging_->log("||||||Fold the last||||||!");
 			cur_block_stream_list_[i]->serialize(*block_for_inserting_to_buffer_);
 
 
@@ -171,7 +173,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		/*
 		 * waiting until all the block in the buffer has been transformed to the uppers.
 		 */
-		ExchangeIteratorEagerLowerLogging::log("Waiting until all the blocks in the buffer is sent!");
+		logging_->log("Waiting until all the blocks in the buffer is sent!");
 
 		while(!buffer->isEmpty()){
 			usleep(1);
@@ -181,9 +183,9 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		 * waiting until all the uppers send the close notification which means that
 		 * blocks in the uppers' socket buffer have all been consumed.
 		 */
-		ExchangeIteratorEagerLowerLogging::log("Waiting for close notification!");
+		logging_->log("Waiting for close notification!");
 		WaitingForCloseNotification();
-		ExchangeIteratorEagerLowerLogging::log("....passed!");
+		logging_->log("....passed!");
 
 		return false;
 	}
@@ -276,7 +278,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMult
 
 	if((returnvalue=connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
 	{
-		ExchangeIteratorEagerLowerLogging::elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
+		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
 		return false;
 	}
 //	printf("connected to the Master socket %s:%d\n",inet_ntoa(serv_add.sin_addr),port);
@@ -302,7 +304,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMult
 
 	if((connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
 	{
-		ExchangeIteratorEagerLowerLogging::elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
+		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
 		return false;
 	}
 //	printf("connected to the Master socket %s:%d\n",ip.c_str(),port);
@@ -328,7 +330,7 @@ void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
 		FileClose(socket_fd_upper_list[i]);
 //		printf("Lower %d is closed!\n",socket_fd_upper_list[i]);
 //		printf("Receive the close notifaction from the upper[%s], the byte='%c' state=%d\n",state.upper_ip_list[i].c_str(),byte,state.exchange_id);
-		ExchangeIteratorEagerLowerLogging::log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
+		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
 	}
 
 
@@ -364,22 +366,22 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 				else{
 					if(recvbytes<Pthis->block_for_sending->GetRestSize()){
 						/* the block is not entirely sent. */
-						ExchangeIteratorEagerLowerLogging::log("**not entire sent! bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
+						Pthis->logging_->log("**not entire sent! bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
 						Pthis->block_for_sending->IncreaseActualSize(recvbytes);
 						continue;
 					}
 					else{
 //						Pthis->block_for_sending->getBlock()
-						ExchangeIteratorEagerLowerLogging::log("A block is sent bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
+						Pthis->logging_->log("A block is sent bytes=%d, rest size=%d",recvbytes,Pthis->block_for_sending->GetRestSize());
 						Pthis->block_for_sending->IncreaseActualSize(recvbytes);
 						/* the block is sent completely.*/
-						ExchangeIteratorEagerLowerLogging::log("Send the new block to [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
+						Pthis->logging_->log("Send the new block to [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
 						Pthis->sendedblocks++;
 //						Logging_ExchangeIteratorEagerLower("Waiting the connection notification from [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
 						Pthis->readsendedblocks++;
 //						Logging_ExchangeIteratorEagerLower("The block is received the upper[%s].",Pthis->state.upper_ip_list[partition_id].c_str());
 
-						ExchangeIteratorEagerLowerLogging::log("sent blocks=%d",Pthis->readsendedblocks);
+						Pthis->logging_->log("sent blocks=%d",Pthis->readsendedblocks);
 						consumed=true;
 //						const int tuples=*(int*)((char*)Pthis->block_for_sending->getBlock()+Pthis->block_for_sending->getsize()-2*sizeof(int));
 //						printf("Send the new block to [%s,fd=%d], number of tuples=%d\n",Pthis->state.upper_ip_list[partition_id].c_str(),Pthis->socket_fd_upper_list[partition_id],tuples);

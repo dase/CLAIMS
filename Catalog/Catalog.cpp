@@ -17,13 +17,8 @@ Catalog::Catalog() {
 
 Catalog::~Catalog() {
 	instance_=0;
-	boost::unordered_map<TableID,TableDescriptor*>::const_iterator it=tableid_to_table.cbegin();
-	while(it!=tableid_to_table.cend()){
-		delete it->second;
-		it++;
-	}
-	delete logging;
-	delete binding_;
+	logging->~Logging();
+	binding_->~ProjectionBinding();
 }
 Catalog* Catalog::getInstance(){
 	if(instance_==0){

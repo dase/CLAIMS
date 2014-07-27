@@ -43,7 +43,6 @@ LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& se
 
 LogicalScan::~LogicalScan() {
 	// TODO Auto-generated destructor stub
-
 }
 
 //LogicalProjection LogicalScan::getLogcialProjection()const{
@@ -111,7 +110,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 //
 //	ExpandableBlockStreamSingleColumnScan::State state;
 //	state.block_size_=block_size;
-//	state.filename_="/home/imdb/data/wangli/T0G0P0";
+//	state.filename_="/home/claims/data/wangli/T0G0P0";
 //	state.schema_=getSchema(dataflow_.attribute_list_);
 //	return new ExpandableBlockStreamSingleColumnScan(state);
 }

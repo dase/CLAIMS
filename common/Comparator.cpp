@@ -53,7 +53,7 @@ bool LESS<float,char*>(const void* x,const  void* y)
 template<>
 bool LESS<char*,char*>(const void* x,const  void* y)
 {
-	return (strcmp((char*)x,(char*)y) <0);
+	return (strcmp((char*)x,(char*)y) == -1);
 }
 
 template<>
@@ -108,7 +108,7 @@ bool great<float,char*>(const void* x,const  void* y)
 template<>
 bool great<char*,char*>(const void* x,const  void* y)
 {
-	return (strcmp((char*)x,(char*)y) > 0);
+	return (strcmp((char*)x,(char*)y) == 1);
 }
 
 template<>
@@ -204,8 +204,8 @@ void Comparator::initialize_EQ()
 
 //	funs_EQ[Comparator::Pair(t_string,t_int)]=equal<char*,int>;
 //	funs_EQ[Comparator::Pair(t_string,t_float)]=equal<char*,float>;
-	funs_EQ[Comparator::Pair(t_u_long,t_u_long)]=equal<unsigned long,unsigned long>;
 	funs_EQ[Comparator::Pair(t_string,t_string)]=equal<char*,char*>;
+	funs_EQ[Comparator::Pair(t_u_long,t_u_long)]=equal<unsigned long,unsigned long>;
 
 	funs_EQ[Comparator::Pair(t_date,t_date)]=equal<date,date>;
 	funs_EQ[Comparator::Pair(t_time,t_time)]=equal<time_duration,time_duration>;

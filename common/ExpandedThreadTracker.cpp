@@ -38,6 +38,7 @@ double PerformanceInfo::report_instance_performance_in_millibytes(){
 	else{
 		const double size=(nblocks_in_current_slice_)*BLOCK_SIZE/(double)1024/1024;
 		const double duration=getSecondDuratoin(slice_start,cur_tick);
+		printf("%d blocks!\n",nblocks_in_current_slice_);
 		return size/duration;
 	}
 }
@@ -52,3 +53,8 @@ ExpandedThreadTracker::~ExpandedThreadTracker() {
 	// TODO Auto-generated destructor stub
 }
 
+void PerformanceInfo::initialize() {
+	current_time_slice_start_=curtick();
+	nblocks_in_current_slice_=0;
+
+}

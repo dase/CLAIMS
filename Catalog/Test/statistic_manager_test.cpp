@@ -10,15 +10,18 @@
 #include <vector>
 #include <iostream>
 #include "../../Environment.h"
+
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../ProjectionBinding.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
+
 #include "../../utility/rdtsc.h"
 #include "../stat/Analyzer.h"
+
+#include "../ProjectionBinding.h"
 using namespace std;
 static int statistic_manager_test(){
 	int master;

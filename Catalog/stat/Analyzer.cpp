@@ -14,13 +14,18 @@
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../common/Block/ResultSet.h"
+
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../common/data_type.h"
+
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Scan.h"
+
 #include "../Catalog.h"
 #include "../table.h"
+
 #include "StatManager.h"
 
 using std::map;

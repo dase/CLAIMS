@@ -10,6 +10,7 @@
 #include "sql_node_struct.h"
 #include <algorithm>
 #include <vector>
+#include "../common/Logging.h"
 //#include "../Environment.h"
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -25,7 +26,6 @@ extern vector<Node*> NodePointer;	// 2014-4-2---存放节点指针的数组改�
 
 static Node * getparsetreeroot()
 {
-	puts("SQL!!!!!");
 	int charnum=0;
 	globalReadOffset = 0;
 
@@ -33,9 +33,7 @@ static Node * getparsetreeroot()
 	errorNumber = 0;	// 2014-3-6---初始化SQL解析错误个数---by余楷
 	parsetreeroot = NULL;	// 2014-3-4---增加初始化语句---by余楷
 	memset(globalInputText, 0, sizeof(globalInputText));	// 2014-3-4---增加初始化语句---by余楷
-	cout<<"globalInputText:"<<globalInputText;
-
-
+	printf("Claims>");
 	while(1)
 	{
 		char c=getchar();
@@ -47,7 +45,6 @@ static Node * getparsetreeroot()
 			break;
 		}
 	}
-
 	// 2014-3-4---测试数据---by余楷
 //	strcpy(globalInputText,
 //			"select row_id from cj;\n"
@@ -62,7 +59,7 @@ static Node * getparsetreeroot()
 //			"create projection on t(num, f, d) partitioned on num;\n"
 //			"select f,d from t;\n"
 //			);
-	cout<<"globalInputText:"<<globalInputText<<endl;
+	SQLParse_log("globalInputText:\n%s\n",globalInputText);
 
 //	yyclearin;
 //	yychar = YYEMPTY;

@@ -18,7 +18,7 @@ int mainasdfaf234(int argc,const char** argv){
 
 	Schema* input=new SchemaFix(column_list);
 
-	BlockStreamSingleColumnScan::State bsscs_state("/home/imdb/temp/Uniform_0_99.column",input);
+	BlockStreamSingleColumnScan::State bsscs_state("/home/claims/temp/Uniform_0_99.column",input);
 	BlockStreamIteratorBase* bsscs1=new BlockStreamSingleColumnScan(bsscs_state);
 	BlockStreamIteratorBase* bsscs2=new BlockStreamSingleColumnScan(bsscs_state);
 

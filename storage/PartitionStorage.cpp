@@ -16,7 +16,7 @@ PartitionStorage::PartitionStorage(const PartitionID &partition_id,const unsigne
 
 PartitionStorage::~PartitionStorage() {
 	for(unsigned i=0;i<chunk_list_.size();i++){
-		delete chunk_list_[i];
+		chunk_list_[i]->~ChunkStorage();
 	}
 	chunk_list_.clear();
 }

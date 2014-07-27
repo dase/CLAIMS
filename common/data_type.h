@@ -18,16 +18,31 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <limits.h>
+#include <float.h>
+
+#include "hash.h"
 
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
 #include "types/NValue.hpp"
-#include "hash.h"
 using namespace decimal;
 #define DATA_TYPE_NUMBER 11
 enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
 typedef void (*fun)(void*,void*);
+
+#define NULL_SMALL_INT		SHRT_MAX
+#define NULL_INT			INT_MAX
+#define NULL_U_LONG			ULONG_LONG_MAX
+#define NULL_FLOAT			FLT_MAX   //const transfor to int 2139095039
+#define NULL_DOUBLE			DBL_MAX   //const transfor to int -1
+#define NULL_STRING			'7'
+#define NULL_DATE			neg_infin	// is_neg_infinity() return true
+#define NULL_TIME			neg_infin
+#define NULL_DATETIME		neg_infin
+#define NULL_DECIMAL		NValue::getDecimalValueFromString("99999999999999999999999999.999999999999")
+#define NULL_U_SMALL_INT	USHRT_MAX
 
 //static int count_open_for_data_column=0;
 
@@ -41,6 +56,11 @@ template<typename T>
 inline void ADD(void* target, void* increment)
 {
 	*(T*)target+=*(T*)increment;
+}
+template<typename T>
+inline void MULTIPLE(void *target,void *increment)
+{
+	(*(T*)target)=(*(T*)target)*(*(T*)increment);
 }
 template<>
 inline void ADD<char*>(void* target, void* increment)
@@ -60,7 +80,7 @@ inline void ADD<date*>(void* target, void* increment)
 template<>
 inline void ADD<ptime*>(void* target, void* increment)
 {
-	*(ptime*)target = *(ptime*)target + *(date_duration*)increment;
+	*(ptime*)target = *(ptime*)target + *(time_duration*)increment;
 }
 template<>
 inline void ADD<time_duration*>(void* target, void* increment)
@@ -118,6 +138,44 @@ inline void IncreaseByOne<NValue*>(void* target,void* increment)
 	NValue nv1 = NValue::getDecimalValueFromString("1");
 	*(NValue*)target = ((NValue*)target)->op_add(nv1);
 }
+template<typename T>//暂时先实现这点
+inline void ADD_IncreaseByOne(void* target,void* increment)
+{
+//	*(T*)target+=*(T*)increment;//add
+//	(*(T*)target)++;//increase
+}
+template<>
+inline void ADD_IncreaseByOne<char*>(void* target,void* increment)
+{
+
+}
+
+template<>
+inline void ADD_IncreaseByOne<NValue*>(void* target,void* increment)
+{
+	*(NValue*)target = ((NValue*)target)->op_add(*(NValue*)increment);//add
+	NValue nv1 = NValue::getDecimalValueFromString("1");
+	*(NValue*)target = ((NValue*)target)->op_add(nv1);
+}
+//template<>
+//inline void ADD_IncreaseByOne<date*>(void* target, void* increment)
+//{
+//	*(date*)target = *(date*)target + *(date_duration*)increment;
+//	(*(date*)target)++;
+//}
+//template<>
+//inline void ADD_IncreaseByOne<ptime*>(void* target, void* increment)
+//{
+//	*(ptime*)target = *(ptime*)target + *(date_duration*)increment;
+//	(*(ptime*)target)++;
+//}
+//template<>
+//inline void ADD_IncreaseByOne<time_duration*>(void* target, void* increment)
+//{
+//	*(time_duration*)target = *(time_duration*)target + *(time_duration*)increment;
+//	(*(time_duration*)target)++;
+//}
+
 
 template<typename T>
 inline void assigns(const void* const& src, void* const &desc){
@@ -130,7 +188,7 @@ inline void assigns<char*>(const void* const& src, void* const &desc){
 class Operate
 {
 public:
-	Operate(){};
+	Operate(bool _nullable = true):nullable(_nullable){};
 	virtual ~Operate(){};
 	inline void ass(void* src, void* desc){
 		*(int*)desc=*(int*)src;
@@ -145,19 +203,27 @@ public:
 	virtual bool less(const void*& a, const void*& b)const=0;
 	virtual bool greate(const void*& a, const void*& b)const=0;
 	virtual void add(void* target, void* increment)=0;
+	virtual void multiple(void* target, void* increment)=0;
 	virtual int compare(const void* a,const void* b)const=0;
 	virtual fun GetADDFunction()=0;
 	virtual fun GetMINFunction()=0;
 	virtual fun GetMAXFunction()=0;
 	virtual fun GetIncreateByOneFunction()=0;
+	virtual fun GetAVGFunction()=0;
 	void (*assign)(const void* const& src, void* const &desc);
 	virtual Operate* duplicateOperator()const=0;
+
+	inline virtual bool setNull(void* value) = 0;
+	inline virtual bool isNull(void* value) const = 0;
+
+public:
+	bool nullable;
 };
 
 class OperateInt:public Operate
 {
 public:
-	OperateInt(){assign=assigns<int>;};
+	OperateInt(bool _nullable = true){this->nullable = _nullable; assign=assigns<int>;};
 	~OperateInt(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -165,13 +231,22 @@ public:
 	};
 	inline std::string toString( void* value)
 	{
-		std::ostringstream ss;
-		ss<<*(int*)value;
-		std::string ret=ss.str();
+		std::string ret;
+		if (this->nullable == true && (*(int*)value) == NULL_INT)
+			ret = "NULL";
+		else
+		{
+			std::ostringstream ss;
+			ss<<*(int*)value;
+			ret=ss.str();
+		}
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		*(int*)target=atoi(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(int*)target = NULL_INT;
+		else
+			*(int*)target=atoi(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -190,6 +265,10 @@ public:
 	{
 		ADD<int>(target,increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<int>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<int>;
@@ -206,6 +285,10 @@ public:
 	{
 		return IncreaseByOne<int>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<int>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(int*)key);
 	}
@@ -216,15 +299,31 @@ public:
 	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
 		return boost::hash_value(*(int*)key)%mod;
 	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(int*)value = NULL_INT;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(int*)value) == NULL_INT)
+			return true;
+		return false;
+	}
+
 	Operate* duplicateOperator()const{
-		return new OperateInt();
+		return new OperateInt(this->nullable);
 	}
 };
 
 class OperateFloat:public Operate
 {
 public:
-	OperateFloat(){};
+	OperateFloat(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateFloat(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -232,13 +331,22 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		std::ostringstream ss;
-		ss<<*(float*)value;
-		std::string ret=ss.str();
+		std::string ret;
+		if (this->nullable == true && (*(float*)value) == NULL_FLOAT)
+			ret = "NULL";
+		else
+		{
+			std::ostringstream ss;
+			ss<<*(float*)value;
+			ret=ss.str();
+		}
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		*(float*)target=atof(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(float*)target = NULL_FLOAT;
+		else
+			*(float*)target=atof(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -257,6 +365,10 @@ public:
 	{
 		ADD<float>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<float>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<float>;
@@ -273,6 +385,10 @@ public:
 	{
 		return IncreaseByOne<float>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<float>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(float*)key);
 	}
@@ -283,14 +399,29 @@ public:
 		return boost::hash_value(*(float*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateFloat();
+		return new OperateFloat(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(float*)value = NULL_FLOAT;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(int*)value) == (int)NULL_FLOAT)
+			return true;
+		return false;
 	}
 };
 
 class OperateDouble:public Operate
 {
 public:
-	OperateDouble(){};
+	OperateDouble(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateDouble(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -298,13 +429,22 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		std::ostringstream ss;
-		ss<<*(double*)value;
-		std::string ret=ss.str();
+		std::string ret;
+		if (this->nullable == true && (*(double*)value) == NULL_DOUBLE)
+			ret = "NULL";
+		else
+		{
+			std::ostringstream ss;
+			ss<<*(double*)value;
+			ret=ss.str();
+		}
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		*(double*)target=atof(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(double*)target = NULL_DOUBLE;
+		else
+			*(double*)target=atof(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -323,6 +463,10 @@ public:
 	{
 		ADD<double>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<double>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<double>;
@@ -339,6 +483,10 @@ public:
 	{
 		return IncreaseByOne<double>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<double>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(double*)key);
 	}
@@ -349,14 +497,29 @@ public:
 		return boost::hash_value(*(double*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateDouble();
+		return new OperateDouble(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(double*)value = NULL_DOUBLE;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(int*)value) == (int)NULL_DOUBLE)
+			return true;
+		return false;
 	}
 };
 
 class OperateULong:public Operate
 {
 public:
-	OperateULong(){};
+	OperateULong(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateULong(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -364,13 +527,22 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		std::ostringstream ss;
-		ss<<*(unsigned long*)value;
-		std::string ret=ss.str();
+		std::string ret;
+		if (this->nullable == true && (*(unsigned long*)value) == NULL_U_LONG)
+			ret = "NULL";
+		else
+		{
+			std::ostringstream ss;
+			ss<<*(unsigned long*)value;
+			ret=ss.str();
+		}
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		*(unsigned long*)target=strtoul(string,0,10);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(unsigned long*)target = NULL_U_LONG;
+		else
+			*(unsigned long*)target=strtoul(string,0,10);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -389,6 +561,10 @@ public:
 	{
 		ADD<unsigned long>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<unsigned long>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<unsigned long>;
@@ -405,6 +581,10 @@ public:
 	{
 		return IncreaseByOne<unsigned long>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<unsigned long>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(unsigned long*)key);
 	}
@@ -415,14 +595,29 @@ public:
 		return boost::hash_value(*(unsigned long*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateULong();
+		return new OperateULong(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(unsigned long*)value = NULL_U_LONG;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(unsigned long*)value) == NULL_U_LONG)
+			return true;
+		return false;
 	}
 };
 
 class OperateString:public Operate
 {
 public:
-	OperateString(){};
+	OperateString(bool _nullable = true){ this->nullable = _nullable; };
 	~OperateString(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
@@ -431,10 +626,16 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		return std::string((char*)value);
+		if (this->nullable == true && (*(char*)value) == NULL_STRING)
+			return "NULL";
+		else
+			return std::string((char*)value);
 	};
 	void toValue(void* target, const char* string){
-		strcpy((char*)target,string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(char*)target = NULL_STRING;
+		else
+			strcpy((char*)target,string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -458,6 +659,11 @@ public:
 		//TODO: throw exception or implement the add for string.
 		printf("The sum for String is not current supported!\n");
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<char*>;
@@ -474,6 +680,10 @@ public:
 	{
 		return IncreaseByOne<char*>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<char *>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for char[] type is not implemented yet!\n");
 		assert(false);
@@ -487,14 +697,29 @@ public:
 		return boost::hash_value((std::string)((char*)key))%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateString();
+		return new OperateString(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(char*)value = NULL_STRING;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(char*)value) == NULL_STRING)
+			return true;
+		return false;
 	}
 };
 
 class OperateDate:public Operate
 {
 public:
-	OperateDate(){};
+	OperateDate(bool _nullable = true){ this->nullable = _nullable; };
 //	~OperateDate(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -503,14 +728,36 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		return to_simple_string(*(date*)value);
+		if (this->nullable == true && (*(date*)value).is_neg_infinity() == true)
+			return "NULL";
+		else
+			return to_iso_extended_string(*(date*)value);
 	};
 	void toValue(void* target, const char* string){
-		std::string s(string);
-		if (s.length() == 8)
-			*(date*)target = from_undelimited_string(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			setNull(target);
 		else
-			*(date*)target = from_string(string);
+		{
+			std::string s(string);
+			bool all_digit = false;
+			if (s.length() == 8)
+			{
+				all_digit = true;
+				for (int i = 0; i < 8; i++)
+				{
+					if (isdigit(s[i]) == 0)
+					{
+						all_digit = false;
+						break;
+					}
+				}
+
+			}
+			if (all_digit == true)
+				*(date*)target = from_undelimited_string(s);
+			else
+				*(date*)target = from_string(s);
+		}
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -533,6 +780,11 @@ public:
 	{
 		ADD<date*>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<date*>;
@@ -549,6 +801,10 @@ public:
 	{
 		return IncreaseByOne<date*>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<date *>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for date type is not implemented yet!\n");
 		assert(false);
@@ -562,14 +818,30 @@ public:
 		return boost::hash_value((*(boost::gregorian::date*)(key)).julian_day())%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateDate();
+		return new OperateDate(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		date d(NULL_DATE);
+		*(date*)value = d;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(date*)value).is_neg_infinity() == true)
+			return true;
+		return false;
 	}
 };
 
 class OperateTime:public Operate
 {
 public:
-	OperateTime(){};
+	OperateTime(bool _nullable = true){ this->nullable = _nullable; };
 //	~OperateTime(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -578,10 +850,16 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		return to_simple_string(*(time_duration*)value);
+		if (this->nullable == true && (*(time_duration*)value).is_neg_infinity() == true)
+			return "NULL";
+		else
+			return to_simple_string(*(time_duration*)value);
 	};
 	void toValue(void* target, const char* string){
-		*(time_duration*)target = duration_from_string(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			setNull(target);
+		else
+			*(time_duration*)target = duration_from_string(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -604,6 +882,11 @@ public:
 	{
 		ADD<time_duration*>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<time_duration*>;
@@ -620,6 +903,10 @@ public:
 	{
 		return IncreaseByOne<time_duration*>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<time_duration*>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for time type is not implemented yet!\n");
 		assert(false);
@@ -633,14 +920,30 @@ public:
 		return boost::hash_value((*(time_duration*)(key)).total_nanoseconds())%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateTime();
+		return new OperateTime(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		time_duration d(NULL_TIME);
+		*(time_duration*)value = d;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(time_duration*)value).is_neg_infinity() == true)
+			return true;
+		return false;
 	}
 };
 
 class OperateDatetime:public Operate
 {
 public:
-	OperateDatetime(){};
+	OperateDatetime(bool _nullable = true){ this->nullable = _nullable; };
 //	~OperateDatetime(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -649,10 +952,16 @@ public:
 	};
 	inline std::string toString(void* value)
 	{
-		return to_simple_string(*(ptime*)value);
+		if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
+			return "NULL";
+		else
+			return to_iso_extended_string(*(ptime*)value);
 	};
 	void toValue(void* target, const char* string){
-		*(ptime*)target = time_from_string(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			setNull(target);
+		else
+			*(ptime*)target = time_from_string(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -675,6 +984,11 @@ public:
 	{
 		ADD<ptime*>(target, increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		//TODO: throw exception or implement the add for string.
+		printf("The sum for String is not current supported!\n");
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<ptime*>;
@@ -691,6 +1005,10 @@ public:
 	{
 		return IncreaseByOne<ptime*>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<ptime *>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		printf("The hash function for datetime type is not implemented yet!\n");
 		assert(false);
@@ -705,14 +1023,30 @@ public:
 		//TODO: maybe there is a more efficient way.
 	}
 	Operate* duplicateOperator()const{
-		return new OperateDatetime();
+		return new OperateDatetime(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		ptime d(NULL_DATETIME);
+		*(ptime*)value = d;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
+			return true;
+		return false;
 	}
 };
 
 class OperateSmallInt:public Operate
 {
 public:
-	OperateSmallInt(){assign=assigns<short>;};
+	OperateSmallInt(bool _nullable = true){ this->nullable = _nullable; assign=assigns<short>;};
 //	~OperateSmallInt(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -720,13 +1054,21 @@ public:
 	};
 	inline std::string toString( void* value)
 	{
-		std::ostringstream ss;
-		ss<<*(short*)value;
-		std::string ret=ss.str();
-		return ret;
+		if (this->nullable == true && (*(short*)value) == NULL_SMALL_INT)
+			return "NULL";
+		else
+		{
+			std::ostringstream ss;
+			ss<<*(short*)value;
+			std::string ret=ss.str();
+			return ret;
+		}
 	};
 	void toValue(void* target, const char* string){
-		*(short*)target = (short)atoi(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(short*)target = NULL_SMALL_INT;
+		else
+			*(short*)target = (short)atoi(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -745,6 +1087,10 @@ public:
 	{
 		ADD<short>(target,increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<short>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<short>;
@@ -761,6 +1107,10 @@ public:
 	{
 		return IncreaseByOne<short>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<short>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(short*)key);
 	}
@@ -771,14 +1121,29 @@ public:
 		return boost::hash_value(*(short*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateSmallInt();
+		return new OperateSmallInt(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(short*)value = NULL_SMALL_INT;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(short*)value) == NULL_SMALL_INT)
+			return true;
+		return false;
 	}
 };
 
 class OperateUSmallInt:public Operate
 {
 public:
-	OperateUSmallInt(){assign=assigns<unsigned short>;};
+	OperateUSmallInt(bool _nullable = true){ this->nullable = _nullable; assign=assigns<unsigned short>;};
 //	~OperateSmallInt(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -786,13 +1151,18 @@ public:
 	};
 	inline std::string toString( void* value)
 	{
+		if (this->nullable == true && (*(unsigned short*)value) == NULL_U_SMALL_INT)
+			return "NULL";
 		std::ostringstream ss;
 		ss<<*(unsigned short*)value;
 		std::string ret=ss.str();
 		return ret;
 	};
 	void toValue(void* target, const char* string){
-		*(unsigned short*)target = (unsigned short)atoi(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(unsigned short*)target = NULL_U_SMALL_INT;
+		else
+			*(unsigned short*)target = (unsigned short)atoi(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -811,6 +1181,10 @@ public:
 	{
 		ADD<unsigned short>(target,increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<unsigned short>(target, increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<unsigned short>;
@@ -827,6 +1201,10 @@ public:
 	{
 		return IncreaseByOne<unsigned short>;
 	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<unsigned short>;
+	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 		return partition_function->get_partition_value(*(unsigned short*)key);
 	}
@@ -837,14 +1215,29 @@ public:
 		return boost::hash_value(*(unsigned short*)key)%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateUSmallInt();
+		return new OperateUSmallInt(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(unsigned short*)value = NULL_U_SMALL_INT;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(unsigned short*)value) == NULL_U_SMALL_INT)
+			return true;
+		return false;
 	}
 };
 
 class OperateDecimal:public Operate
 {
 public:
-	OperateDecimal(unsigned number_of_decimal_digits = 12):number_of_decimal_digits_(number_of_decimal_digits){assign=assigns<int>;};
+	OperateDecimal(unsigned number_of_decimal_digits = 12, bool _nullable = true):number_of_decimal_digits_(number_of_decimal_digits){assign=assigns<int>; this->nullable = _nullable; };
 //	~OperateDecimal(){};
 	inline void assignment(const void* const &src,void* const &desc)const
 	{
@@ -852,19 +1245,26 @@ public:
 	};
 	inline std::string toString( void* value)
 	{
-		char buf[39] = {"\0"};
-		ExportSerializeOutput out(buf, 39);
+		if (this->nullable == true && compare(value, (void*)(&NULL_DECIMAL)) == 0)
+			return "NULL";
+		char buf[43] = {"\0"};
+		ExportSerializeOutput out(buf, 43);
 		((NValue*)value)->serializeToExport(out,&number_of_decimal_digits_);
 		return std::string(buf+4);
 	};
 	static std::string toString(const NValue v,unsigned n_o_d_d=12){
-		char buf[39] = {"\0"};
-		ExportSerializeOutput out(buf, 39);
+//		if (this->nullable == true && compare(v, (void*)(&NULL_DECIMAL)) == 0)
+//			return "NULL";
+		char buf[43] = {"\0"};
+		ExportSerializeOutput out(buf, 43);
 		(v).serializeToExport(out,&n_o_d_d);
 		return std::string(buf+4);
 	}
 	void toValue(void* target, const char* string){
-		*(NValue*)target = NValue::getDecimalValueFromString(string);
+		if ((strcmp(string,"")==0) && this->nullable == true)
+			*(NValue*)target = NULL_DECIMAL;
+		else
+			*(NValue*)target = NValue::getDecimalValueFromString(string);
 	};
 	inline bool equal(const void* const &a, const void* const & b)const
 	{
@@ -898,6 +1298,10 @@ public:
 		ADD<NValue*>(target, increment);
 //		((NValue*)target)->op_add(*(NValue*)increment);
 	}
+	inline void multiple(void* target, void* increment)
+	{
+		(*(NValue*)target)=((NValue*)target)->op_multiply(*(NValue*)increment);
+	}
 	inline fun GetADDFunction()
 	{
 		return ADD<NValue*>;
@@ -913,6 +1317,10 @@ public:
 	inline fun GetIncreateByOneFunction()
 	{
 		return IncreaseByOne<NValue*>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<NValue *>;
 	}
 	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
 //		return partition_function->get_partition_value(*(NValue*)key);
@@ -942,35 +1350,53 @@ public:
 		return ul1%mod;
 	}
 	Operate* duplicateOperator()const{
-		return new OperateDecimal(number_of_decimal_digits_);
+		return new OperateDecimal(number_of_decimal_digits_, this->nullable);
 	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(NValue*)value = NULL_DECIMAL;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+//		compare(value, (void*)(&NULL_DECIMAL));
+		if (this->nullable == true && compare(value, (void*)(&NULL_DECIMAL)) == 0)
+			return true;
+		return false;
+	}
+
 	unsigned number_of_decimal_digits_;
 };
 
 class column_type
 {
 public:
-	 column_type(data_type type,unsigned _size=0):type(type),size(_size){
+	 column_type(data_type type,unsigned _size=0, bool _nullable=true):type(type),size(_size), nullable(_nullable){
 		switch(type)
 		{
-			case t_int:operate=new OperateInt();break;
-			case t_float:operate=new OperateFloat();break;
-			case t_string:operate=new OperateString();break;
-			case t_double:operate=new OperateDouble();break;
-			case t_u_long:operate=new OperateULong();break;
-			case t_date: operate = new OperateDate();break;
-			case t_time: operate = new OperateTime();break;
-			case t_datetime: operate = new OperateDatetime();break;
+			case t_int:operate=new OperateInt(_nullable);break;
+			case t_float:operate=new OperateFloat(_nullable);break;
+			case t_string:operate=new OperateString(_nullable);break;
+			case t_double:operate=new OperateDouble(_nullable);break;
+			case t_u_long:operate=new OperateULong(_nullable);break;
+			case t_date: operate = new OperateDate(_nullable);break;
+			case t_time: operate = new OperateTime(_nullable);break;
+			case t_datetime: operate = new OperateDatetime(_nullable);break;
 
-			case t_decimal: operate = new OperateDecimal(size);break;
-			case t_smallInt: operate = new OperateSmallInt();break;
-			case t_u_smallInt: operate = new OperateUSmallInt();break;
+			case t_decimal: operate = new OperateDecimal(size, _nullable);break;
+			case t_smallInt: operate = new OperateSmallInt(_nullable);break;
+			case t_u_smallInt: operate = new OperateUSmallInt(_nullable);break;
 			default:operate=0;break;
 		}
 	};
 	 column_type(const column_type &r){
 		 this->type=r.type;
 		 this->size=r.size;
+		 this->nullable = r.nullable;
 		 this->operate=r.operate->duplicateOperator();
 	 }
 	column_type():operate(0){};
@@ -1008,14 +1434,17 @@ public:
 	}
 public:
 	Operate* operate;
+	//这个data_type是什么type
 	data_type type;
+	bool nullable;
 private:
+	//且这个data_type的size是多少
 	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & type & size;
+		ar & type & size & nullable;
 		if(operate==0)
 		{
 			initialize();
@@ -1028,17 +1457,17 @@ private:
 	{
 		switch(type)
 		{
-			case t_int:operate=new OperateInt();break;
-			case t_float:operate=new OperateFloat();break;
-			case t_double:operate=new OperateDouble();break;
-			case t_string:operate=new OperateString();break;
-			case t_u_long:operate=new OperateULong();break;
-			case t_date: operate = new OperateDate();break;
-			case t_time: operate = new OperateTime();break;
-			case t_datetime: operate = new OperateDatetime();break;
-			case t_decimal: operate = new OperateDecimal(size);break;
-			case t_smallInt: operate = new OperateSmallInt();break;
-			case t_u_smallInt: operate = new OperateUSmallInt();break;
+			case t_int:operate=new OperateInt(nullable);break;
+			case t_float:operate=new OperateFloat(nullable);break;
+			case t_double:operate=new OperateDouble(nullable);break;
+			case t_string:operate=new OperateString(nullable);break;
+			case t_u_long:operate=new OperateULong(nullable);break;
+			case t_date: operate = new OperateDate(nullable);break;
+			case t_time: operate = new OperateTime(nullable);break;
+			case t_datetime: operate = new OperateDatetime(nullable);break;
+			case t_decimal: operate = new OperateDecimal(size, nullable);break;
+			case t_smallInt: operate = new OperateSmallInt(nullable);break;
+			case t_u_smallInt: operate = new OperateUSmallInt(nullable);break;
 			default:operate=0;break;
 		}
 	}

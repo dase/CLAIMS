@@ -20,10 +20,10 @@
 #include <list>
 #include <vector>
 #include <utility>
-using namespace std;
-
 #include <malloc.h>
 #include "../../utility/lock.h"
+using namespace std;
+
 
 #define BLOCK_SIZE_CAO 4096
 

@@ -8,17 +8,18 @@
 #include "BlockStreamProjectIterator.h"
 
 BlockStreamProjectIterator::BlockStreamProjectIterator() {
-	// TODO 自动生成的构造函数存根
 	sema_open_.set_value(1);
+	open_finished_=false;
 }
 
 BlockStreamProjectIterator::~BlockStreamProjectIterator() {
-	// TODO 自动生成的析构函数存根
+
 }
 
 BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 :state_(state){
 	sema_open_.set_value(1);
+	open_finished_=false;
 }
 
 BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei)
@@ -27,49 +28,53 @@ BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockSt
 }
 
 bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
-	//first
 	state_.children_->open(partition_offset);
 	if(sema_open_.try_wait()){
 		BlockStreamBase *bsb=new BlockStreamFix(64*1024-sizeof(unsigned),state_.input_->getTupleMaxSize());
 		free_block_stream_list_.push_back(bsb);
-//	for(unsigned i=0;i<state_.children_.size();i++){
-//			if(!state_.children_[i]->open(partition_offset)){
-//					//TODO: handle the failure
-//					return false;
-//			}
-//	}
+		open_finished_=true;
 	}
 	else
 	{
 		while (!open_finished_)
 			usleep(1);
 	}
-
 	return true;
 }
 
+/*
+ * now the expressions computing speed is slow because of the copy between among the expressions
+ * todo: seek the pointer of data and LLVM will be solved by wangli.
+ * */
 bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 	unsigned total_length_=state_.output_->getTupleMaxSize();
-	void *tuple=0;
-	void *column_in_combinedTuple=0;
-	void *combinedTuple_=memalign(cacheline_size,state_.output_->getTupleMaxSize());;
-	void *cur=0;
+//	void *tuple=0;
+//	void *column_in_combinedTuple=0;
+	/* tuple to include the max tuple! */
+//	void *combinedTuple_=memalign(cacheline_size,state_.output_->getTupleMaxSize());;
+//	void *cur=0;
 
 	remaining_block rb;
 	if(atomicPopRemainingBlock(rb)){
 		while(1){
+			void *cur=0;
+			void *tuple=0;
 			if((cur=rb.bsti_->currentTuple())==0){
 				rb.bsb_->setEmpty();
+				/* get a block from downstreams */
 				if(state_.children_->next(rb.bsb_)==false){
+					/* if downstreams has no data and block is not empty, return true */
 					if(!block->Empty()){
 						atomicPushRemainingBlock(rb);
 						return true;
 					}
 					return false;
 				}
+				/* if downstreams has data, reset the cur */
 				rb.bsti_->reset();
 				cur=rb.bsti_->currentTuple();
 			}
+
 			if((tuple=block->allocateTuple(total_length_))>0){
 				for(unsigned i=0;i<state_.v_ei_.size();i++){
 					ExpressionItem result;
@@ -79,12 +84,11 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 						ExpressionItem ei;
 						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type){
 							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
-//							int m=*(int*)state_.input_->getColumnAddess(nth,cur);
-							//put the nth column of the tuple into the Expression and turn it to a const
 							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(nth).type);
 							variable_++;
 						}
 						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type){
+							ei.return_type=state_.v_ei_[i][j].return_type;
 							ei.setData(state_.v_ei_[i][j].content.data);
 						}
 						else{
@@ -93,14 +97,9 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 						toCalc.push_back(ei);
 					}
 					ExpressionCalculator::calcuate(toCalc,result);
-//					result.print_value();
-//					cout<<"state_.output_->getcolumn(i).get_length(): "<<state_.output_->getcolumn(i).get_length();
-//					getchar();
 					copyColumn(tuple,result,state_.output_->getcolumn(i).get_length());
 					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
 				}
-				/* Recently, we can use choosing the first column
-				 * TODO:here we can do some mapping by using the func pointer in Expression*/
 				rb.bsti_->increase_cur_();
 			}
 			else{
@@ -109,7 +108,6 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 			}
 		}
 	}
-
 
 	lock_.acquire();
 	BlockStreamBase * v_bsb;
@@ -124,17 +122,17 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 
 	v_bsb->setEmpty();
 	BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=v_bsb->createIterator();
-
+	traverse_iterator->reset();
 	atomicPushRemainingBlock(remaining_block(v_bsb,traverse_iterator));
-
 	return next(block);
 }
 
 bool BlockStreamProjectIterator::close(){
 	sema_open_.post();
 	open_finished_ =false;
-	state_.children_->close();
-    return true;
+	free_block_stream_list_.clear();
+	remaining_block_list_.clear();
+	return state_.children_->close();
 }
 
 
@@ -177,7 +175,27 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 			break;
 		}
 		case t_decimal:{
-			memcpy(tuple,result.content.data.value._decimal,length);
+			memcpy(tuple,&result._decimal,length);
+			break;
+		}
+		case t_date:{
+			memcpy(tuple,&result._date,length);
+			break;
+		}
+		case t_time:{
+			memcpy(tuple,&result._time,length);
+			break;
+		}
+		case t_datetime:{
+			memcpy(tuple,&result._datetime,length);
+			break;
+		}
+		case t_double:{
+			memcpy(tuple,&result.content.data.value._double,length);
+			break;
+		}
+		case t_smallInt:{
+			memcpy(tuple,&result.content.data.value._sint,length);
 			break;
 		}
 		default:{
@@ -185,4 +203,10 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 			break;
 		}
 	}
+}
+void BlockStreamProjectIterator::print()
+{
+	cout<<"proj: NULL"<<endl;
+			state_.children_->print();
+
 }

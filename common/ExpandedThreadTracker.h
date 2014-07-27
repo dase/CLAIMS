@@ -23,6 +23,7 @@ struct PerformanceInfo{
 	double report_instance_performance_in_millibytes();
 	ticks current_time_slice_start_;
 	unsigned long nblocks_in_current_slice_;
+	void initialize();
 	SpineLock lock_;
 };
 

@@ -11,15 +11,20 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
+
+#include "data_type.h"
+#include "types/NValue.hpp"
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
 #include "../common/data_type.h"
-enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast};
+#include "boost/date_time/gregorian/formatters.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost/date_time/posix_time/time_formatters.hpp"
+enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast,op_and,op_or,op_not,op_com_G,op_com_EQ,op_com_NEQ,op_com_GEQ,op_com_LEQ};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
-	//t_int,t_float,t_string,t_double,t_u_long, t_date, t_time, t_datetime, t_decimal, t_smallInt
 	switch(return_type){
 		case t_int:{
 			return std::string("int");
@@ -52,7 +57,7 @@ static std::string getReturnTypeName(data_type return_type){
 			return std::string("t_boolean");
 		}
 		default:{
-//			assert(false);
+			assert(false);
 			return std::string("Not given");
 		}
 	}
@@ -66,11 +71,15 @@ struct express_operator{
 			case op_add:number_of_parameter=2;break;
 			case op_multiple:number_of_parameter=2;break;
 			case op_cast_int:number_of_parameter=1;break;
+
+			case op_and:number_of_parameter=2;break;
+			case op_or:number_of_parameter=2;break;
+			case op_not:number_of_parameter=1;break;
+
 		}
 	}
 	op_type op_;
 	unsigned num_of_parameter;
-//	data_type return_type;
 };
 
 struct data__{
@@ -80,14 +89,12 @@ struct data__{
 	double _double;
 	unsigned long _ulong;
 	bool _bool;
-	char _date[4];//date
-	char _time[8];//time
-	char _datatime[8];//datetime
-	char _decimal[16];//decimal
+	short _sint;
 	}value;
 };
 
 struct variable{
+	const char* table_column;
 	const char* table_name;
 	const char* column_name;
 };
@@ -140,19 +147,30 @@ public:
 	virtual ~ExpressionItem();
 	bool setValue(void*,data_type);
 	bool setData(data__&);
+	bool setData(data__&,data_type);
 	bool setIntValue(const char *);
 	bool setIntValue(int);
 	bool setFloatValue(const char*);
 	bool setFloatValue(float&);
 	bool setDoubleValue(const char*);
-	//currently,decimal only const char * supported!
-	bool setDecimalValue(const char*);
 	bool setDoubleValue(double&);
+	//currently,decimal only const char * supported!
 	bool setULongValue(const char*);
-	bool setULongValue(unsigned long&);
-	bool setOperator(const char*);
+	bool setULongValue(unsigned long);
 	bool setStringValue(std::string);
+	bool setStringValue(const char * str);
 	bool setVariable(const char *,const char *);
+	bool setVariable(const char *);
+	bool setDecimalValue(const char*);
+	bool setOperator(const char*);
+
+	//currently,date only const char * supported!
+	bool setDateValue(const char *);
+	bool setDatetimeValue(const char *);
+	bool setTimeValue(const char *);
+
+	bool setBooleanValue(bool );////////////
+	bool setSmallIntValue(short &);
 public:
 	union {
 		variable var;
@@ -160,9 +178,14 @@ public:
 		express_operator op;
 	}content;
 	ItemType type;
-	std::string _string;// string cannot be in unoin.
+	date _date;
+	time_duration _time;
+	ptime _datetime;
+	NValue _decimal;
+	std::string _string;
+	std::string item_name;
 	data_type return_type;
-	unsigned size;//add by zhanglei
+	unsigned size;
 
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -173,9 +196,8 @@ public:
 			ar& *start_of_union;
 			start_of_union++;
 		}
-
-
 	}
+
 private:
 	std::string getItemTypeName()const{
 		switch(type){
@@ -191,7 +213,6 @@ private:
 			default:{
 				assert(false);
 			}
-
 		}
 		return std::string();
 	}
@@ -199,7 +220,6 @@ private:
 	std::string data_value_to_string()const{
 		assert(type==const_type);
 		std::stringstream ss;
-
 		switch(return_type){
 			case t_int:{
 				ss<<content.data.value._int;
@@ -222,16 +242,19 @@ private:
 				break;
 			}
 			case t_date:{
-				return std::string("t_date");
+				ss<<to_simple_string(_date);
+				break;
 			}
 			case t_datetime:{
 				return std::string("t_datetime");
 			}
 			case t_decimal:{
-				return std::string("t_decimal");
+				ss<<_decimal.createStringFromDecimal();
+				break;
 			}
 			case t_smallInt:{
-				return std::string("t_smallInt");
+				ss<<content.data.value._sint;
+				break;
 			}
 			case t_boolean:{
 				ss<<content.data.value._bool;
@@ -259,9 +282,6 @@ public:
 		case op_multiple:{
 			return std::string("*");
 		}
-		case op_com_L:{
-			return std::string("<");
-		}
 		case op_case:{
 			return std::string("case");
 		}
@@ -285,6 +305,36 @@ public:
 		}
 		case op_cast:{
 			return std::string("cast");
+		}
+		case op_and:
+		{
+			return std::string("and");
+		}
+		case op_or:
+		{
+			return std::string("or");
+		}
+		case op_not:
+		{
+			return std::string("not");
+		}
+		case op_com_L:{
+			return std::string("<");
+		}
+		case op_com_G:{
+			return std::string(">");
+		}
+		case op_com_EQ:{
+			return std::string("=");
+		}
+		case op_com_NEQ:{
+			return std::string("!=");
+		}
+		case op_com_GEQ:{
+			return std::string(">=");
+		}
+		case op_com_LEQ:{
+			return std::string("<=");
 		}
 		default:{
 			assert(false);

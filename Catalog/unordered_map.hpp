@@ -22,16 +22,88 @@
 #include "dmalloc.h"
 #endif
 #include <boost/config.hpp>
-#include "../ThirdParty/boost/serialization/unordered_collections_save_imp.hpp"
-#include "../ThirdParty/boost/serialization/unordered_collections_load_imp.hpp"
-
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/version.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/split_free.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/collection_size_type.hpp>
+#include <boost/serialization/item_version_type.hpp>
+
+#include <boost/archive/detail/basic_iarchive.hpp>
 
 namespace boost { 
 namespace serialization {
 
 namespace stl {
+
+template<class Archive, class Container, class InputFunction>
+inline void load_unordered_collection(Archive & ar, Container &s)
+{
+    s.clear();
+    collection_size_type count;
+    collection_size_type bucket_count;
+    item_version_type item_version(0);
+    boost::archive::library_version_type library_version(
+        ar.get_library_version()
+    );
+    // retrieve number of elements
+    ar >> BOOST_SERIALIZATION_NVP(count);
+    ar >> BOOST_SERIALIZATION_NVP(bucket_count);
+    if(boost::archive::library_version_type(3) < library_version){
+        ar >> BOOST_SERIALIZATION_NVP(item_version);
+    }
+    s.rehash(bucket_count);
+    InputFunction ifunc;
+    while(count-- > 0){
+        ifunc(ar, s, item_version);
+    }
+}
+
+template<class Archive, class Container>
+inline void save_unordered_collection(Archive & ar, const Container &s)
+{
+    collection_size_type count(s.size());
+    const collection_size_type bucket_count(s.bucket_count());
+    const item_version_type item_version(
+        version<BOOST_DEDUCED_TYPENAME Container::value_type>::value
+    );
+
+    #if 0
+    /* should only be necessary to create archives of previous versions
+     * which is not currently supported.  So for now comment this out
+     */
+    boost::archive::library_version_type library_version(
+        ar.get_library_version()
+    );
+    // retrieve number of elements
+	ar << BOOST_SERIALIZATION_NVP(count);
+	ar << BOOST_SERIALIZATION_NVP(bucket_count);
+    if(boost::archive::library_version_type(3) < library_version){
+        // record number of elements
+        // make sure the target type is registered so we can retrieve
+        // the version when we load
+        ar << BOOST_SERIALIZATION_NVP(item_version);
+    }
+    #else
+        ar << BOOST_SERIALIZATION_NVP(count);
+        ar << BOOST_SERIALIZATION_NVP(bucket_count);
+        ar << BOOST_SERIALIZATION_NVP(item_version);
+    #endif
+
+    BOOST_DEDUCED_TYPENAME Container::const_iterator it = s.begin();
+    while(count-- > 0){
+        // note borland emits a no-op without the explicit namespace
+        boost::serialization::save_construct_data_adl(
+            ar,
+            &(*it),
+            boost::serialization::version<
+                BOOST_DEDUCED_TYPENAME Container::value_type
+            >::value
+        );
+        ar << boost::serialization::make_nvp("item", *it++);
+    }
+}
 
 // map input
 template<class Archive, class Container>
@@ -101,7 +173,7 @@ inline void save(
     > &t,
     const unsigned int /*file_version*/
 ){
-    boost::serialization::stl::save_unordered_collection<
+	boost::serialization::stl::save_unordered_collection<
         Archive, 
         std::tr1::unordered_map<
             Key, HashFcn, EqualKey, Allocator
@@ -171,7 +243,7 @@ inline void save(
     > &t,
     const unsigned int /*file_version*/
 ){
-    boost::serialization::stl::save_unordered_collection<
+	boost::serialization::stl::save_unordered_collection<
         Archive, 
         std::tr1::unordered_multimap<
             Key, HashFcn, EqualKey, Allocator
@@ -193,7 +265,7 @@ inline void load(
     > &t,
     const unsigned int /*file_version*/
 ){
-    boost::serialization::stl::load_unordered_collection<
+	boost::serialization::stl::load_unordered_collection<
         Archive,
         std::tr1::unordered_multimap<
             Key, HashFcn, EqualKey, Allocator

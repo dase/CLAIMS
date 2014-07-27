@@ -39,7 +39,7 @@ using boost::pool;
 #define __HASHTABLE__
 
 
-#define CONTENTION_REDUCTION
+//#define CONTENTION_REDUCTION
 
 inline int get_aligned_space(const unsigned& bucksize)
 {
