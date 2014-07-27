@@ -1,0 +1,30 @@
+#本机IP地址
+ip = "10.11.1.174";
+
+#端口范围（调试用）
+PortManager:
+{
+    start = 19000;
+    end   = 19500;
+}
+
+#master的IP地址和端口
+coordinator:
+{
+    ip="10.11.1.174"
+    port="11001"
+}
+
+#hadoop上的数据目录
+data = "/home/claims/data/ndbc-m/bin/350m/"
+
+#最大单机算子并行度
+max_degree_of_parallelism=1
+
+#初始单机算子并行度
+initial_degree_of_parallelism=1
+
+expander_adaptivity_check_frequency=1000
+
+enable_expander_adaptivity=0
+

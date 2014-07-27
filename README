@@ -1,0 +1,13 @@
+setup steps:
+
+1. ./build.sh init
+2. configure --prefix=/your/install/path 
+3. make
+4. make install
+
+cleanup steps:
+
+1. make distclean
+1. build.sh clean
+
+Claims info:

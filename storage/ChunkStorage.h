@@ -12,10 +12,10 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
-#include "../common/Block/BlockStream.h"
 #include "StorageLevel.h"
 #include "../utility/lock.h"
 #include "../common/ids.h"
+#include "../common/Block/BlockStream.h"
 class ChunkReaderIterator{
 public:
 	/**

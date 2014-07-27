@@ -14,6 +14,7 @@
 #include "dmalloc.h"
 #endif
 #include "../Debug.h"
+//#define SQL_Parser
 
 
 class Logging{
@@ -73,10 +74,9 @@ class ExchangeIteratorEagerLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
 };
-class ExchangeIteratorEagerLowerLogging{
-public:
-	static void log(const char* format,...);
-	static void elog(const char* format,...);
+class ExchangeIteratorEagerLowerLogging:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
 };
 
 class CatalogLogging:public Logging{

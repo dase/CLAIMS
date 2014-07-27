@@ -8,11 +8,11 @@
 #include "table.h"
 #include "../common/Schema/SchemaFix.h"
 // ColumnDescriptor
-ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid),schema_(0){
+ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid):projection_id_(pid){
 }
 
 ProjectionDescriptor::ProjectionDescriptor(const string& name)
-:Projection_name_(name),schema_(0){
+:Projection_name_(name){
 	// Check if hdfsfile already exists
 	// Meanwhile create a hsfsfile to store this column's data.
 }
@@ -57,20 +57,17 @@ std::vector<Attribute> ProjectionDescriptor::getAttributeList()const{
 	}
 	return ret;
 }
-Schema* ProjectionDescriptor::getSchema(){
+Schema* ProjectionDescriptor::getSchema()const{
 	/**
 	 * Only fixed schema is supported now.
 	 * TODO: support other schema.
 	 */
-	if(schema_==0){
-		const vector<Attribute> attributes=getAttributeList();
-		std::vector<column_type> columns;
-		for(unsigned i=0;i<attributes.size();i++){
-			columns.push_back(*attributes[i].attrType);
-		}
-		schema_=new SchemaFix(columns);
+	const vector<Attribute> attributes=getAttributeList();
+	std::vector<column_type> columns;
+	for(unsigned i=0;i<attributes.size();i++){
+		columns.push_back(*attributes[i].attrType);
 	}
-	return schema_;
+	return new SchemaFix(columns);
 }
 int ProjectionDescriptor::getAttributeIndex(const Attribute& att)const{
 	const vector<Attribute> attributes=getAttributeList();
@@ -92,22 +89,22 @@ TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 }
 
 TableDescriptor::~TableDescriptor(){
-	for(unsigned i=0;i<projection_list_.size();i++){
-		delete projection_list_[i];
-	}
+
 }
 
 void TableDescriptor::addAttribute(Attribute attr)
 {
 	attributes.push_back(attr);
 }
-bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length,bool unique){
+bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length,bool unique, bool can_be_null){
 	/*check for attribute rename*/
 	for(unsigned i=0;i<attributes.size();i++){
 		if(attributes[i].attrName==attname)
 			return false;
 	}
-	Attribute att(table_id_,attributes.size(),attname,dt,max_length,unique);
+	stringstream attrintable;
+	attrintable<<tableName.c_str()<<"."<<attname.c_str();
+	Attribute att(table_id_,attributes.size(),attrintable.str(),dt,max_length,unique,can_be_null);
 	attributes.push_back(att);
 	return true;
 }

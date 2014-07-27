@@ -18,6 +18,8 @@
 #include "../../common/Block/BlockStream.h"
 #include "../../utility/lock.h"
 #include "../../common/AttributeComparator.h"
+#include "../../common/ExpressionItem.h"
+typedef vector<ExpressionItem> ExpressItem_List;
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
 	class filter_thread_context:public thread_context{
@@ -47,6 +49,7 @@ public:
 		std::vector<AttributeComparator> comparator_list_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
+		vector<ExpressItem_List> v_ei_;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>

@@ -23,13 +23,13 @@
 #include <vector>
 #include <map>
 #include <boost/unordered_map.hpp>
+#include <boost/pool/pool.hpp>
 #include <iostream>
 using namespace std;
 
 #include "BlockStore.h"
 #include "../common/rename.h"
 #include "../Debug.h"
-#include <boost/pool/pool.hpp>
 #include "../utility/lock.h"
 
 using boost::pool;
@@ -77,6 +77,8 @@ public:
 	bool applyChunk(ChunkID chunk_id,void*& start_address);
 
 	void returnChunk(const ChunkID& chunk_id);
+
+	bool updateChunkInfo(const ChunkID& chunk_id, const HdfsInMemoryChunk& chunk_info);
 
 	void *getChunk(string blockId){
 		map<string, HdfsBlock>::iterator it_;

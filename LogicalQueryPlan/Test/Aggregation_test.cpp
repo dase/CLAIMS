@@ -7,16 +7,18 @@
 
 #include <vector>
 #include <iostream>
-#include "../../Environment.h"
 #include "../Scan.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
-#include "../../Catalog/ProjectionBinding.h"
 #include "../Aggregation.h"
 #include "../Buffer.h"
+#include "../Filter.h"
+
+#include "../../Environment.h"
+#include "../../Catalog/ProjectionBinding.h"
 #include "../../utility/rdtsc.h"
 #include "../../common/AttributeComparator.h"
-#include "../../LogicalQueryPlan/Filter.h"
+
 using namespace std;
 static int aggregation_test(){
 	int master;

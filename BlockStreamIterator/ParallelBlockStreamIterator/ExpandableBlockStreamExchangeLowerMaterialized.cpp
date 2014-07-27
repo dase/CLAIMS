@@ -185,7 +185,7 @@ void ExpandableBlockStreamExchangeLowerMaterialized::Send(){
 	printf("in Send!\n");
 	/* open the file*/
 	Logging_ExpandableBlockStreamExchangeLM("open the file!\n");
-	std::string temp_file_dir="/home/imdb/temp/exchange/";
+	std::string temp_file_dir="/home/claims/temp/exchange/";
 	for(unsigned i=0;i<nuppers_;i++){
 		std::ostringstream file_name;
 		file_name<<temp_file_dir<<"exchange_"<<state_.exchange_id_<<"_"<<i;
@@ -242,7 +242,7 @@ void ExpandableBlockStreamExchangeLowerMaterialized::Send(){
 bool ExpandableBlockStreamExchangeLowerMaterialized::Materialize(){
 
 	/* create the file*/
-	std::string temp_file_dir="/home/imdb/temp/exchange/";
+	std::string temp_file_dir="/home/claims/temp/exchange/";
 	for(unsigned i=0;i<nuppers_;i++){
 		std::ostringstream file_name;
 		file_name<<temp_file_dir<<"exchange_"<<state_.exchange_id_<<"_"<<i;

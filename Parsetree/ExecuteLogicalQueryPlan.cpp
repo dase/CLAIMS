@@ -11,18 +11,23 @@
 #include <iostream>
 #include <cstring>
 #include "../Environment.h"
+
 #include "../Catalog/stat/Analyzer.h"
+
 #include "../Catalog/ProjectionBinding.h"
+
 #include "../Parsetree/sql_node_struct.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/runparsetree.cpp"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
+
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Buffer.h"
+
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"
@@ -35,6 +40,54 @@ const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
 
+LogicalOperator* convert_sql_to_logical_operator_tree(const char* sql)
+{
+	Node* oldnode=getparsetreeroot(sql);
+	Stmt *stmtList = (Stmt *)oldnode;
+
+	while (stmtList != NULL)
+	{
+		Node *node = (Node *)stmtList->data;
+		switch(node->type)
+		{
+			case t_query_stmt:
+			{
+				SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
+				if (!semantic_analysis(node,false))//---3.22fzh---
+				{
+					SQLParse_elog("semantic_analysis error");
+					return NULL;
+				}
+				preprocess(node);
+		#ifdef SQL_Parser
+				output(node,0);
+		#endif
+					Query_stmt *querynode=(Query_stmt *)node;
+					if(querynode->where_list!=NULL)
+					{
+						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
+						struct Node *cur=(struct Node *)(curt->next);
+						SQLParse_log("wc2tb");
+						departwc(cur,querynode->from_list);
+					}
+					if(querynode->from_list!=NULL)
+					int fg=solve_join_condition(querynode->from_list);
+		#ifdef SQL_Parser
+				output(node,0);
+		#endif
+				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
+				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
+				return plan;
+			}break;
+
+			default:
+			{
+				SQLParse_elog("-----------the sql isn't supported!-----------------------");
+				return NULL;
+			}
+		}
+	}
+}
 void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改变，相关代码进行修改---by余楷
 {
 
@@ -44,11 +97,9 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 
 	int count=1;
-	while(count)
+	while(1)
 	{
-		cout<<"SQL start:\n";
-		puts("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
+		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
 
@@ -59,12 +110,12 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 		if(oldnode == NULL)	// 2014-2-24---增加node为空的判断---by余楷
 		{
-			printf("there are some wrong!\n");
+			printf("[ERROR]there are some wrong in statement! please try again!!\n");
 			FreeAllNode();	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
-			printf("Continue(1) or not (others number)?\n");
-			scanf("%d",&count);
-			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
-			//setbuf(stdin, NULL);	//关闭缓冲
+//			printf("Continue(1) or not (others number)?\n");
+//			scanf("%d",&count);
+//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+//			//setbuf(stdin, NULL);	//关闭缓冲
 			continue;
 		}
 
@@ -82,7 +133,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			{
 				/* nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt */
 
-				cout<<"this is create table stmt "<<endl;
+				SQLParse_log("this is create table stmt \n");
 				Create_table_stmt * ctnode = (Create_table_stmt *)node;
 				//获取新建表的表名
 				if(ctnode->name2 != NULL)
@@ -110,6 +161,9 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				// 创建新表
 				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+
+				new_table->addAttribute("row_id",data_type(t_u_long),0,true);
+
 				Create_col_list *list = (Create_col_list*)ctnode->list;
 				string primaryname;
 				int colNum = 0;
@@ -123,7 +177,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						primaryname = colname;
 						Column_atts *column_atts = (Column_atts*)data->col_atts;
 
-						/* TODO: Whether column is unique or not null or has default value is not finished,
+						/* TODO: Whether column is unique or has default value is not finished,
 						 *  because there are no supports
 						 */
 						Datatype * datatype = (Datatype *)data->datatype;
@@ -131,13 +185,29 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						{
 						case 3:
 						{
-							new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+							}
+							cout<<colname<<" is created"<<endl;
 							break;
 						}
-						case 5:
-						case 6:
+						case 5: case 6:
 						{
-							new_table->addAttribute(colname, data_type(t_int), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_int), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_int), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_int), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -145,7 +215,15 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						{
 							if (datatype->opt_uz & 01 != 0)
 							{
-								new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+								}
 								cout<<colname<<" is created"<<endl;
 							}
 							else
@@ -157,35 +235,84 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						}
 						case 9:
 						{
-							new_table->addAttribute(colname, data_type(t_double), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_double), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_double), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_double), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 10:
 						{
-							new_table->addAttribute(colname, data_type(t_float), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_float), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_float), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_float), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 11:
 						{
-							new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+							}
+							cout<<colname<<" is created"<<endl;
 						}
 						case 12:	// DATE --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_date), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_date), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_date), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_date), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 13:	// TIME --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_time), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_time), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_time), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_time), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 15:	// DATETIME --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -195,11 +322,28 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 							if (datatype->length)	//已指定长度
 							{
 								Length * l = (Length*)datatype->length;
-								new_table->addAttribute(colname, data_type(t_string), l->data1, true);
+
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true);
+								}
 							}
 							else	//未指定长度
 							{
-								new_table->addAttribute(colname, data_type(t_string), 1, true);
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_string), 1, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_string), 1, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_string), 1, true);
+								}
 							}
 							cout<<colname<<" is created"<<endl;
 							break;
@@ -212,7 +356,25 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 					}
 					list = (Create_col_list* )list->next;
 				}
+
+				// add for  test, create projection default while creating table
+				std::vector<ColumnOffset> index;
+				index.push_back(1);
+				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
+
+				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
+
 				catalog->add_table(new_table);
+
+				TableID table_id=catalog->getTable(tablename)->get_table_id();
+
+//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+////					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+//				}
+
+				catalog->saveCatalog();
+
 			}
 			break;
 			case t_create_projection_stmt:	// 创建projection的语句
@@ -278,49 +440,61 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			break;
 			case t_query_stmt: // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
 			{
-				SQLParse_log("this is query stmt");
-		//		if (!semantic_analysis(node,false))//---3.22fzh---
-		//			SQLParse_elog("semantic_analysis error");
-				expr_to_str_test(node);
+				SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
+				if (!semantic_analysis(node,false))//---3.22fzh---
+					SQLParse_elog("semantic_analysis error");
+				preprocess(node);
+#ifdef SQL_Parser
 				output(node,0);
-	/*				Query_stmt *querynode=(Query_stmt *)node;
+#endif
+					Query_stmt *querynode=(Query_stmt *)node;
+					if(querynode->from_list!=NULL)
+					int fg=solve_join_condition(querynode->from_list);
 					if(querynode->where_list!=NULL)
 					{
 						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
 						struct Node *cur=(struct Node *)(curt->next);
 						SQLParse_log("wc2tb");
 						departwc(cur,querynode->from_list);
-						SQLParse_log("partree complete!!!!!!!!!!!!!!!!!!!");
 					}
-					if(querynode->from_list!=NULL)
-					int fg=solve_join_condition(querynode->from_list);
+#ifdef SQL_Parser
 				output(node,0);
-				SQLParse_log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-		//		LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
+#endif
+				LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
 				//进行判断，对于不同的语句，比如select,update等选择不同的操作。
-				//const NodeID collector_node_id=0;
-//				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
-//				unsigned long long int timer_start=curtick();
-//
-//
-//				BlockStreamIteratorBase* please=root->getIteratorTree(64*1024);
-//				root->print();
-//
-//				please->print();
-//
-//				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
+				LogicalOperator* root=NULL;
+				if(querynode->limit_list!=NULL)
+				{
+					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
+					if(lexpr->offset==NULL)
+					{
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+					}
+					else
+					{
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+					}
+				}
+				else
+				{
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+				}
 
-
-				LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
-
-				cout<<"performance is ok!"<<endl;
+#ifdef SQL_Parser
+				root->print(0);
+				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
+				getchar();
+				getchar();
+#endif
 				BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				physical_iterator_tree->print();
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));*/
-				SQLParse_log("test output is completed!!");
+			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 			}
 			break;
 			case t_load_table_stmt:	//	导入数据的语句
@@ -343,7 +517,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				ASTParserLogging::log("load file\'s name:");
 				vector<string> path_names;	// save the name of files which should be loaded
-				//for test: the path name is:	/home/imdb/data/tpc-h/part.tbl
+				//for test: the path name is:	/home/claims/data/tpc-h/part.tbl
 				while(path_node)
 				{
 					Expr *data = (Expr*)path_node->data;
@@ -355,8 +529,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				// split sign should be considered carefully, in case of it may be "||" or "###"
 				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
-
 				loader->load();
+
+				catalog->saveCatalog();
+
 			}
 			break;
 			case t_insert_stmt:	// 2014-4-19---add---by Yu	// 2014-5-1---modify---by Yu
@@ -493,9 +669,12 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				if (has_warning) ASTParserLogging::log("[WARNING]: The type is not matched!\n");
 				ASTParserLogging::log("the insert content is \n%s\n",ostr.str().c_str());
 
-//				HdfsLoader* Hl = new HdfsLoader(table);
-//				string tmp = ostr.str().c_str();
-//				Hl->append(ostr.str().c_str());
+				HdfsLoader* Hl = new HdfsLoader(table);
+				string tmp = ostr.str().c_str();
+				Hl->append(ostr.str().c_str());
+
+				catalog->saveCatalog();
+
 			}
 			break;
 			case t_show_stmt:
@@ -530,10 +709,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 		//		FreeAllNode();	//---完成对节点的释放 ！！！！！！！！！！！！！！
 
-		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-		printf("Continue(1) or not (0)?\n");
-		scanf("%d",&count);
-		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+//		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+//		printf("Continue(1) or not (0)?\n");
+//		scanf("%d",&count);
+//		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
 	}
 }
 

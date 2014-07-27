@@ -69,8 +69,15 @@ void SchemaFix::toValue(std::string text_tuple, void* binary_tuple, const char a
 		if(prev_pos <= pos)
 		{
 			columns[i].operate->toValue(binary_tuple+accum_offsets[i],text_tuple.substr(prev_pos,pos-prev_pos).c_str());
+//			cout << "Original: " << text_tuple.substr(prev_pos,pos-prev_pos).c_str() << "\t Transfer: " << columns[i].operate->toString(binary_tuple+accum_offsets[i]) << endl;
 			pos++;
 			prev_pos = pos;
 		}
 	}
+}
+void SchemaFix::addColumn(column_type  ct,unsigned size)
+{
+	accum_offsets.push_back(totalsize);
+	columns.push_back(ct);
+	totalsize+=size;
 }

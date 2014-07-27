@@ -9,16 +9,21 @@
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
+
 #include "../common/Comparator.h"
+#include "../common/Logging.h"
+
+#include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include"sql_node_struct.h"
+
+#include "sql_node_struct.h"
 #include "../Environment.h"
-#include "../LogicalQueryPlan/Aggregation.h"
-#include "../common/Logging.h"
+
 int getlevel(Expr_cal *calnode)
 {
 	int level=0;
@@ -27,6 +32,10 @@ int getlevel(Expr_cal *calnode)
 		level=4;
 	}
 	else if(strcmp(calnode->sign,"++")==0)
+	{
+		level=4;
+	}
+	else if(strcmp(calnode->sign,"!")==0)
 	{
 		level=4;
 	}
@@ -44,13 +53,13 @@ int getlevel(Expr_cal *calnode)
 				{
 					level=1;
 				}break;
-				case 3://"<>"
+				case 3://"!="
 				{
-					level=1;
+					level=0;
 				}break;
 				case 4://"="
 				{
-					level=1;
+					level=0;
 				}break;
 				case 5://"<="
 				{
@@ -75,9 +84,13 @@ int getlevel(Expr_cal *calnode)
 			{
 				level=3;
 			}
-			else
+			else if(strcmp(calnode->sign,"and")==0||strcmp(calnode->sign,"or")==0)
 			{
 				level=-1;
+			}
+			else
+			{
+				level=-10;
 				SQLParse_elog("level is unknown!!!!!!!!!!");
 			}
 
@@ -192,6 +205,10 @@ string expr_to_str(Node * node,int level)
 			{
 
 			}
+			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+				str="count(*)";
+			}
 			else if(strcmp(funcnode->funname,"FCOUNT")==0)
 			{
 				str="count(";
@@ -226,7 +243,7 @@ string expr_to_str(Node * node,int level)
 			{
 				SQLParse_elog("expr_to_str doesn't exist this function !!!");
 			}
-			funcnode->str=(char *)malloc(sizeof(str.c_str()));
+			funcnode->str=(char *)malloc(str.size()+1);
 			strcpy(funcnode->str,str.c_str());
 		}break;
 		case t_expr_cal:
@@ -240,6 +257,10 @@ string expr_to_str(Node * node,int level)
 			else if(strcmp(calnode->sign,"++")==0)
 			{
 				str="+";
+			}
+			else if(strcmp(calnode->sign,"!")==0)
+			{
+				str="!";
 			}
 			else
 			{
@@ -258,7 +279,7 @@ string expr_to_str(Node * node,int level)
 						}break;
 						case 3://"<>"
 						{
-							str=str+"<>";
+							str=str+"!=";
 						}break;
 						case 4://"="
 						{
@@ -277,15 +298,22 @@ string expr_to_str(Node * node,int level)
 						}
 					}
 				}
+				else if(strcmp(calnode->sign,"ANDOP")==0)
+				{
+					str=str+"and";
+				}
+				else if(strcmp(calnode->sign,"OR")==0)
+				{
+					str=str+"or";
+				}
 				else
 				{
-
 					str=str+calnode->sign;
 				}
 			}
 
 	    	str=str+expr_to_str(calnode->rnext,thislevel);
-			calnode->str=(char *)malloc(sizeof(str.c_str()));
+			calnode->str=(char *)malloc(str.size()+1);
 			strcpy(calnode->str,str.c_str());
 			if(thislevel<level)
 			{
@@ -299,29 +327,27 @@ string expr_to_str(Node * node,int level)
 			Columns *col=(Columns *)node;
 			if(col->parameter1==NULL)
 			{
-				str=str+col->parameter2;
+				str=str+string(col->parameter2);
 			}
 			else
 			{
-				str=str+col->parameter1;
-				str=str+".";
-				str=str+col->parameter2;
+				str=str+string(col->parameter2);
 			}
 		}break;
 		case t_stringval:
 		{
 			Expr * exprval=(Expr *)node;
-			str=str+exprval->data;
+			str=str+string(exprval->data);
 		}break;
 		case t_intnum:
 		{
 			Expr * exprval=(Expr *)node;
-			str=str+exprval->data;
+			str=str+string(exprval->data);
 		}break;
 		case t_approxnum:
 		{
 			Expr * exprval=(Expr *)node;
-			str=str+exprval->data;
+			str=str+string(exprval->data);
 		}break;
 		case t_bool:
 		{
@@ -367,6 +393,7 @@ void expr_to_str_for_orderby(Node* node)
 	{
 		Groupby_expr *obexpr=(Groupby_expr *)p;
 		expr_to_str(obexpr->args,0);
+		cout<<"======================================"<<endl;
 		p=obexpr->next;
 	}
 }
@@ -376,4 +403,147 @@ void expr_to_str_test(Node *node)
 	expr_to_str_for_selectlist(ptree->select_list);
 	expr_to_str_for_groupby(ptree->groupby_list);
 	expr_to_str_for_orderby(ptree->orderby_list);
+}
+void solve_const_value_in_wherecondition(Node *&cur)
+{
+	switch(cur->type)
+	{
+		case t_name:
+		{
+			Columns *col=(Columns *)cur;
+
+		}break;
+		case t_name_name:
+		{
+			Columns *col=(Columns *)cur;
+
+		}break;
+		case t_query_stmt:
+		{
+
+		}break;
+		case t_expr_cal:
+		{
+			Expr_cal *node=(Expr_cal*)cur;
+			solve_const_value_in_wherecondition(node->lnext);
+			solve_const_value_in_wherecondition(node->rnext);
+		}break;
+		case t_expr_func:
+		{
+			Expr_func* node=(Expr_func *)cur;
+			string datestr;
+			date constdate(from_string("1990-10-01"));
+			if(strcmp(node->funname,"FDATE_ADD")==0)
+			{
+				if(node->args->type==t_stringval)
+				{
+					datestr=string(((Expr *)node->args)->data);
+					Expr_func *datefunc=(Expr_func *)node->parameter1;
+
+					assert(((Expr *)datefunc->args)->type==t_intnum);
+
+					if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+					{
+						date_duration dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+					{
+						weeks dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+					{
+						years dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))+dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data)*3);
+						constdate=date(from_string(datestr))+dd;
+					}
+					datestr=to_simple_string(constdate);
+					char *datechar=(char *)malloc(datestr.length()+2);
+					strcpy(datechar,datestr.c_str());
+					SQLParse_log("the date result after date_add, string= %s ------------------\n",datechar);
+					//free(cur);
+					cur=(Node *)newExpr(t_dateval,datechar);
+				}
+
+			}
+			else if(strcmp(node->funname,"FDATE_SUB")==0)
+			{
+				if(node->args->type==t_stringval)
+				{
+					datestr=string(((Expr *)node->args)->data);
+					Expr_func *datefunc=(Expr_func *)node->parameter1;
+
+					assert(((Expr *)datefunc->args)->type==t_intnum);
+
+					if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+					{
+						date_duration dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+					{
+						weeks dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+					{
+						years dd(atof(((Expr *)datefunc->args)->data));
+						constdate=date(from_string(datestr))-dd;
+					}
+					else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+					{
+						months dd(atof(((Expr *)datefunc->args)->data)*3);
+						constdate=date(from_string(datestr))-dd;
+					}
+					datestr=to_simple_string(constdate);
+					char *datechar=(char *)malloc(datestr.length()+2);
+					strcpy(datechar,datestr.c_str());
+					SQLParse_log("the date result after date_sub, string= %s ------------------\n",datechar);
+					//free(cur);
+					cur=(Node *)newExpr(t_dateval,datechar);
+				}
+			}
+			else
+			{
+
+			}
+		}break;
+		case t_expr_list:
+		{
+			Expr_list * node=(Expr_list *)cur;
+
+		}break;
+		default:
+		{
+				SQLParse_elog("solve_const_value_in_wherecondition can't know the type=%d\n",cur->type);
+		}
+	}
+}
+void solve_const_value(Node *node)
+{
+	Query_stmt *ptree=(Query_stmt *)node;
+	if(((Where_list*)ptree->where_list)!=NULL)
+	{
+		solve_const_value_in_wherecondition(((Where_list*)ptree->where_list)->next);
+	}
+}
+void preprocess(Node *node)
+{
+	expr_to_str_test(node);
+	solve_const_value(node);
 }

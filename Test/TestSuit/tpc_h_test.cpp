@@ -8,18 +8,27 @@
 #ifndef TPC_H_TEST_CPP_
 #define TPC_H_TEST_CPP_
 #include "../../Environment.h"
+
 #include "../../Catalog/table.h"
+
 #include "../../Loader/Hdfsloader.h"
+
+#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../common/types/NValue.hpp"
-#include "../../utility/rdtsc.h"
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
 #include "../../common/AttributeComparator.h"
+
+#include "../../common/types/NValue.hpp"
+
+#include "../../utility/rdtsc.h"
+
 #include "../set_up_environment.h"
 
 static void query_1(){
@@ -104,7 +113,7 @@ static void query_2(){
 
 
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(s_ps_join->getDataflow().getAttribute("PS_SUPPLYCOST"));
+	aggregation_attributes.push_back(s_ps_join->getDataflow().getAttribute("PARTSUPP.PS_SUPPLYCOST"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 	LogicalOperator* aggregation=new Aggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
@@ -219,12 +228,12 @@ static void query_3(){
 
 
 	std::vector<Attribute> groupby_attributes;
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("L_ORDERKEY"));
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("O_ORDERDATE"));
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("O_SHIPPRIORITY"));
+	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_ORDERKEY"));
+	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("ORDERS.O_ORDERDATE"));
+	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("ORDERS.O_SHIPPRIORITY"));
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("L_EXTENDEDPRICE"));
-	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("L_DISCOUNT"));
+	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_EXTENDEDPRICE"));
+	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_DISCOUNT"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
@@ -273,7 +282,7 @@ static void load_tpc_h_4_partition(){
 	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partnames;
-	partnames.push_back("/home/imdb/data/tpc-h/source/SF-5/part.tbl");
+	partnames.push_back("/home/claims/data/tpc-h/source/SF-5/part.tbl");
 	HdfsLoader* Hl = new HdfsLoader('|','\n',partnames,table_1);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -297,7 +306,7 @@ static void load_tpc_h_4_partition(){
 	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> suppliernames;
-	suppliernames.push_back("/home/imdb/data/tpc-h/source/SF-5/supplier.tbl");
+	suppliernames.push_back("/home/claims/data/tpc-h/source/SF-5/supplier.tbl");
 	Hl = new HdfsLoader('|','\n',suppliernames,table_2);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -319,7 +328,7 @@ static void load_tpc_h_4_partition(){
 	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partsuppnames;
-	partsuppnames.push_back("/home/imdb/data/tpc-h/source/SF-5/partsupp.tbl");
+	partsuppnames.push_back("/home/claims/data/tpc-h/source/SF-5/partsupp.tbl");
 	Hl = new HdfsLoader('|','\n',partsuppnames,table_3);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -344,7 +353,7 @@ static void load_tpc_h_4_partition(){
 	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> customernames;
-	customernames.push_back("/home/imdb/data/tpc-h/source/SF-5/customer.tbl");
+	customernames.push_back("/home/claims/data/tpc-h/source/SF-5/customer.tbl");
 	Hl = new HdfsLoader('|','\n',customernames,table_4);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -370,7 +379,7 @@ static void load_tpc_h_4_partition(){
 	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> ordersnames;
-	ordersnames.push_back("/home/imdb/data/tpc-h/source/SF-5/orders.tbl");
+	ordersnames.push_back("/home/claims/data/tpc-h/source/SF-5/orders.tbl");
 	Hl = new HdfsLoader('|','\n',ordersnames,table_5);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -390,7 +399,7 @@ static void load_tpc_h_4_partition(){
 	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> nationnames;
-	nationnames.push_back("/home/imdb/data/tpc-h/source/SF-5/nation.tbl");
+	nationnames.push_back("/home/claims/data/tpc-h/source/SF-5/nation.tbl");
 	Hl = new HdfsLoader('|','\n',nationnames,table_7);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -409,7 +418,7 @@ static void load_tpc_h_4_partition(){
 	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> regionnames;
-	regionnames.push_back("/home/imdb/data/tpc-h/source/SF-5/region.tbl");
+	regionnames.push_back("/home/claims/data/tpc-h/source/SF-5/region.tbl");
 	Hl = new HdfsLoader('|','\n',regionnames,table_8);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -442,7 +451,7 @@ static void load_tpc_h_4_partition(){
 	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> lineitemnames;
-	lineitemnames.push_back("/home/imdb/data/tpc-h/source/SF-5/lineitem.tbl");
+	lineitemnames.push_back("/home/claims/data/tpc-h/source/SF-5/lineitem.tbl");
 	Hl = new HdfsLoader('|','\n',lineitemnames,table_6);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -474,13 +483,14 @@ static int tcp_h_test_single_node(){
 		query_3();
 	}
 
+	sleep(1);
 
 	Environment::getInstance()->~Environment();
 
 }
 static int tcp_h_test_multi_nodes(){
-
 	unsigned repeated_times=3;
+
 	printf("Master or slave?\n");
 	int input;
 	scanf("%d",&input);

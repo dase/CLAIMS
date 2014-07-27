@@ -21,17 +21,22 @@
 #include <string>
 #include <pthread.h>
 #include <map>
-#include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
-#include "../../common/Block/BlockContainer.h"
+#include "../../utility/lock.h"
 #include "../../Executor/IteratorExecutorMaster.h"
+
+#include "../../common/Logging.h"
+#include "../../common/ExpandedThreadTracker.h"
+
+#include "../../common/Schema/Schema.h"
+
+#include "../../common/Block/BlockContainer.h"
 #include "../../common/Block/PartitionedBlockBuffer.h"
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/BlockStreamBuffer.h"
-#include "../../common/Logging.h"
-#include "../../utility/lock.h"
-#include "../../common/ExpandedThreadTracker.h"
-class ExpandableBlockStreamExchangeEpoll:public BlockStreamIteratorBase {
+#include "../ExpandableBlockStreamIteratorBase.h"
+
+class ExpandableBlockStreamExchangeEpoll:public ExpandableBlockStreamIteratorBase {
 public:
 	struct State{
 		Schema* schema;

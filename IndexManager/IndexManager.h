@@ -9,9 +9,10 @@
 #define INDEXMANAGER_H_
 #include <map>
 #include <vector>
-#include "../common/ids.h"
 #include "CSBPlusTree.h"
 #include "../Catalog/Attribute.h"
+#include "../common/ids.h"
+#include "../common/data_type.h"
 
 struct attr_index_list
 {

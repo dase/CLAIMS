@@ -18,12 +18,12 @@
 
 struct Attribute
 {
-	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0,bool unqiue=false)
+	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0,bool unqiue=false,bool can_be_null=true)
 	{
 		table_id_=tableid;
 		index=pos;
 		attrName = name;
-		attrType = new column_type(type, size);
+		attrType = new column_type(type, size, can_be_null);
 		unique=unqiue;
 
 	}
@@ -31,7 +31,18 @@ struct Attribute
 		table_id_=att.table_id_;
 		attrName=att.attrName;
 		unique=att.unique;
-		if(att.table_id_<ATTRIBUTE_ANY){
+		if(att.table_id_ < ATTRIBUTE_ANY)
+		{
+//			cout<<"Attribute    ="<<att.table_id_<<endl;
+//			cout<<"ATTRIBUTE_ANY="<<ATTRIBUTE_ANY<<endl;
+//			if(att.table_id_==NULL)
+//			{
+//				puts("att.table_id_ is NULL");
+//			}
+//			if(att.table_id_<-2)
+//			{
+//				puts("0<-2  oh ,my god!!");
+//			}
 			attrType=new column_type(*att.attrType);
 			index=att.index;
 		}
@@ -75,7 +86,7 @@ struct Attribute
 	}
 	~Attribute(){
 		if(table_id_<TableID(ATTRIBUTE_ANY)){
-			delete attrType;
+			attrType->~column_type();
 		}
 	}
 	bool operator==(const Attribute& r)const{

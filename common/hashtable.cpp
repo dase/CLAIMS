@@ -18,6 +18,7 @@
 #include "hashtable.h"
 
 #include <malloc.h>
+#define MAX(x,y) (x>y?x:y)
 
 //#define __MOTHER_PAGE__
 
@@ -33,15 +34,17 @@
 BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tuplesize,unsigned expected_number_of_visiting_thread)
 :nbuckets_(nbuckets), tuplesize_(tuplesize)
 {
+	bucksize_=(get_aligned_space(MAX(bucksize,tuplesize)));
+
 #ifdef CONTENTION_REDUCTION
 	expected_number_of_visiting_thread_=expected_number_of_visiting_thread;
 	grandmothers=new pool<>*[expected_number_of_visiting_thread_];
 	for(unsigned i=0;i<expected_number_of_visiting_thread_;i++){
-		grandmothers[i]=new pool<>(get_aligned_space(bucksize));
+		grandmothers[i]=new pool<>(bucksize_);
 	}
 	grandmother_lock_=new SpineLock[expected_number_of_visiting_thread_];
 #else
-	grandmother=new pool<>(get_aligned_space(bucksize));
+	grandmother=new pool<>(bucksize_);
 #endif
 
 #ifdef _DEBUG_
@@ -59,10 +62,6 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize, unsigned tu
 
 		bucket_ = (void**)new char[sizeof(void*) * nbuckets];
 		memset(bucket_,0,sizeof(void*) * nbuckets);
-		bucksize_=get_aligned_space(bucksize);
-		if(bucksize_<tuplesize+2*sizeof(void*)){
-			bucksize_=tuplesize+2*sizeof(void*);
-		}
 		buck_actual_size_=bucksize_-2*sizeof(void*);
 //		pagesize_=(unsigned long)nbuckets*bucksize_<16*1024*(unsigned long)1024?(unsigned long)nbuckets*bucksize_:16*1024*(unsigned long)1024;
 		pagesize_=1024*1024*4;

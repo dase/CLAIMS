@@ -119,6 +119,7 @@ struct local_stage{
 class ExpanderTracker {
 
 
+	enum segment_status {seg_no_producing, seg_normal_producing, seg_over_producing,seg_under_producing};
 
 	struct ExpandedThreadStatus{
 		bool call_back_;
@@ -173,6 +174,7 @@ public:
 	ExpanderID registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink);
 	void unregisterExpander(ExpanderID expander_id);
 
+	static segment_status getSegmentStatus(local_stage&);
 private:
 	ExpanderTracker();
 	static void* monitoringThread(void* arg);

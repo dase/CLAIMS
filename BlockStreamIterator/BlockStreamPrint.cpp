@@ -29,13 +29,15 @@ bool BlockStreamPrint::open(const PartitionOffset& offset){
 bool BlockStreamPrint::next(BlockStreamBase*){
 
 	printf("Query result:\n");
-	printf("================================\n");
+	printf("========================================================================================\n");
 	for(unsigned i=0;i<state_.attribute_name_list_.size();i++){
 		std::string format="%s"+state_.spliter_;
 		printf(format.c_str(),state_.attribute_name_list_[i].c_str());
 	}
 	printf("\n");
 
+//	getchar();
+//	getchar();
 
 	unsigned block_count(0);
 	while(state_.child_->next(block_buffer_)){

@@ -18,9 +18,9 @@ Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vec
 }
 
 Aggregation::~Aggregation() {
-	delete dataflow_;
+	dataflow_->~Dataflow();
 	if(child_>0){
-		delete child_;
+		child_->~LogicalOperator();
 	}
 	// TODO Auto-generated destructor stub
 }
@@ -110,6 +110,41 @@ bool Aggregation::canLeverageHashPartition(const Dataflow& child_dataflow)const{
 	}
 	return false;
 }
+void changeSchemaforAVG(BlockStreamAggregationIterator::State & state_)//for AVG(),change avg to sum,and add one additional count column at the last.
+{
+	state_.avgIndex.clear();
+	for(unsigned i=0;i<state_.aggregations.size();i++)
+	{
+		if(state_.aggregations[i]==BlockStreamAggregationIterator::State::avg)
+		{
+			state_.aggregations[i]=BlockStreamAggregationIterator::State::sum;
+			state_.avgIndex.push_back(i);
+		}
+	}
+	state_.hashSchema=state_.output->duplicateSchema();
+
+	// for partition node,output_schema=hash_schema;but for global node,input_schema=hash_schema
+
+	if(state_.avgIndex.size()>0)
+	{
+		column_type ct=column_type(t_u_long,8);
+		state_.hashSchema->addColumn(ct,8);
+		if(state_.isPartitionNode==true)
+		{
+			state_.aggregations.push_back(BlockStreamAggregationIterator::State::count);
+			state_.aggregationIndex.push_back(state_.aggregationIndex.size()+state_.groupByIndex.size());
+			state_.output=state_.hashSchema->duplicateSchema();
+		}
+		else
+		{
+			state_.aggregations.push_back(BlockStreamAggregationIterator::State::sum);
+			state_.aggregationIndex.push_back(state_.aggregationIndex.size()+state_.groupByIndex.size());
+			state_.input=state_.hashSchema->duplicateSchema();
+		}
+
+	}
+
+}
 BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size){
 	if(dataflow_==0){
 		getDataflow();
@@ -129,12 +164,17 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);
 	aggregation_state.output=getSchema(dataflow_->attribute_list_);
 	aggregation_state.child=child_->getIteratorTree(block_size);
+
 	switch(fashion_){
 		case no_repartition:{
-			ret=new BlockStreamAggregationIterator(aggregation_state);
+			aggregation_state.isPartitionNode=false;
+			changeSchemaforAVG(aggregation_state);
+			ret=new BlockStreamAggregationIterator(aggregation_state);//
 			break;
 		}
 		case hybrid:{
+			aggregation_state.isPartitionNode=true;//as regard to AVG(),for partition node and global node ,we should do some different operations.
+			changeSchemaforAVG(aggregation_state);//
 			BlockStreamAggregationIterator* private_aggregation=new BlockStreamAggregationIterator(aggregation_state);
 
 			BlockStreamExpander::State expander_state;
@@ -142,7 +182,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 			expander_state.child_=private_aggregation;
-			expander_state.schema_=getSchema(dataflow_->attribute_list_);
+			expander_state.schema_=aggregation_state.hashSchema->duplicateSchema();//getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state);
 
 
@@ -161,7 +201,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 //				exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,*dataflow_)[0];
 				exchange_state.partition_key_index=getInvolvedIndexList(getGroupByAttributeAfterAggregation(),*dataflow_)[0];
 			}
-			exchange_state.schema=getSchema(dataflow_->attribute_list_);
+			exchange_state.schema=aggregation_state.hashSchema->duplicateSchema();//getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 
 
@@ -175,12 +215,13 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			global_aggregation_state.input=getSchema(dataflow_->attribute_list_);
 			global_aggregation_state.nbuckets=aggregation_state.nbuckets;
 			global_aggregation_state.output=getSchema(dataflow_->attribute_list_);
-			BlockStreamIteratorBase* global_aggregation=new BlockStreamAggregationIterator(global_aggregation_state);
+			global_aggregation_state.isPartitionNode=false;
+			changeSchemaforAVG(global_aggregation_state);
+			BlockStreamIteratorBase* global_aggregation=new BlockStreamAggregationIterator(global_aggregation_state);//
 			ret=global_aggregation;
 			break;
 		}
 		case repartition:{
-
 			BlockStreamExpander::State expander_state;
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
@@ -188,10 +229,6 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			expander_state.child_=child_->getIteratorTree(block_size);;
 			expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
-
-
-
-
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size=block_size;
 			exchange_state.child=expander;//child_->getIteratorTree(block_size);
@@ -212,8 +249,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			}
 			exchange_state.schema=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
-
-			aggregation_state.child=exchange;
+			aggregation_state.isPartitionNode=false;//as regard to AVG(),for partition node and global node ,we should do some different operations.
+			changeSchemaforAVG(aggregation_state);//			aggregation_state.child=exchange;
 			ret=new BlockStreamAggregationIterator(aggregation_state);
 			break;
 		}
@@ -235,6 +272,10 @@ std::vector<unsigned> Aggregation::getInvolvedIndexList(const std::vector<Attrib
 				ret.push_back(j);
 				break;
 			}
+		}
+		if(found==false)
+		{
+			printf("can't find attrbute in dataflow\n");
 		}
 	}
 	return ret;
@@ -288,7 +329,7 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 				case BlockStreamAggregationIterator::State::count:{
 					if(!(temp.isNULL()||temp.isANY()))
 						temp.attrType->~column_type();
-					temp.attrType=new column_type(data_type(t_u_long));
+					temp.attrType=new column_type(t_u_long,8);
 					temp.attrName="count("+temp.getName()+")";
 					temp.index=aggregation_start_index++;
 					temp.table_id_=INTERMEIDATE_TABLEID;
@@ -312,6 +353,11 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 					temp.table_id_=INTERMEIDATE_TABLEID;
 					break;
 				}
+				case BlockStreamAggregationIterator::State::avg:{
+					temp.attrName="avg("+temp.getName()+")";
+					temp.index=aggregation_start_index++;
+					temp.table_id_=INTERMEIDATE_TABLEID;
+				}break;
 				default:{
 					assert(false);
 				}
@@ -368,7 +414,7 @@ void Aggregation::print(int level)const{
 		printf("not given!\n");
 	}
 	}
-	printf("%*.sgroup-by attributes:\n",level*8," ");
+	printf("group-by attributes:\n");
 	for(unsigned i=0;i<this->group_by_attribute_list_.size();i++){
 		printf("%*.s",level*8," ");
 		printf("%s\n",group_by_attribute_list_[i].attrName.c_str());
@@ -391,6 +437,10 @@ void Aggregation::print(int level)const{
 			}
 			case BlockStreamAggregationIterator::State::sum:{
 				printf("Sum: %s\n",aggregation_attribute_list_[i].attrName.c_str());
+				break;
+			}
+			case BlockStreamAggregationIterator::State::avg:{
+				printf("Avg: %s\n",aggregation_attribute_list_[i].attrName.c_str());
 				break;
 			}
 			default:{
