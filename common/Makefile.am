@@ -22,7 +22,7 @@ libcommon_a_SOURCES = \
 	AttributeComparator.cpp 		AttributeComparator.h \
 	Comparator.cpp 				Comparator.h \
 	ExpandedThreadTracker.cpp 		ExpandedThreadTracker.h \
-	ExpandedThreadTracker_test.cpp 		ExpressionCalculator.cpp \
+	 		ExpressionCalculator.cpp \
 	ExpressionCalculator.h 			ExpressionItem.cpp \
 	ExpressionItem.h 				Expression_item.cpp \
 	InsertOptimizedHashTable.cpp 		InsertOptimizedHashTable.h \
