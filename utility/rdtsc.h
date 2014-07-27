@@ -69,7 +69,9 @@ static __inline__ double getMilliSecond(unsigned long long start_time)
 {
 	return (curtick()-start_time)/(double)CPU_FRE*1000;
 }
-
+static __inline__ double convertCyclesToSecond(ticks tick){
+	return tick/(double)CPU_FRE;
+}
 #ifdef __cplusplus
 }
 #endif

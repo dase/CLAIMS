@@ -171,7 +171,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 				block_count++;
 			}
 		}
-		block_for_asking->~BlockStreamBase();
+		delete block_for_asking;
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
 			Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
@@ -187,7 +187,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		else{
 			Pthis->logging_->log("%lx Produced %d block before finished\n",pthread_self(),block_count);
 //			assert(block_count!=0);
-			block_for_asking->~BlockStreamBase();
+//			block_for_asking->~BlockStreamBase();
 			Pthis->lock_.acquire();
 			Pthis->finished_thread_count_++;
 

@@ -130,6 +130,10 @@ class ExpanderTracker {
 	 * This structure maintains the status of current expander in terms of running stage.
 	 */
 	struct ExpanderStatus{
+		ExpanderStatus(ExpandabilityShrinkability* expand_shrink):perf_info(expand_shrink){
+
+		}
+//		ExpanderStatus(){};
 		PerformanceInfo perf_info;
 		local_stage current_stage;
 		std::stack<LocalStageEndPoint> pending_endpoints;
@@ -195,7 +199,7 @@ private:
 
 	boost::unordered_map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
 
-	boost::unordered_map<ExpanderID,ExpanderStatus> expander_id_to_status_;
+	boost::unordered_map<ExpanderID,ExpanderStatus*> expander_id_to_status_;
 
 	boost::unordered_map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
 
