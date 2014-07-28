@@ -134,6 +134,7 @@ class ExpanderTracker {
 
 		}
 //		ExpanderStatus(){};
+		~ExpanderStatus();
 		PerformanceInfo perf_info;
 		local_stage current_stage;
 		std::stack<LocalStageEndPoint> pending_endpoints;

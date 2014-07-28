@@ -25,6 +25,7 @@ struct PerformanceInfo{
 		entry():performance(0),last_update(0){};
 		float performance;
 		timestamp last_update;
+		bool isUpdateToDate();
 	};
 //	PerformanceInfo();
 	PerformanceInfo(ExpandabilityShrinkability* expand_shrink);
