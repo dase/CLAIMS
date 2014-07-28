@@ -15,13 +15,17 @@
 #define get_time_slice_start(total_cycles) (total_cycles/TIME_SLICE*TIME_SLICE)
 #define NUMOFSLICES 10
 
-#define MONITOR_FRECY (100000*CPU_CYCLES_IN_us)
+#define MONITOR_FRECY (2000*CPU_CYCLES_IN_us)
+
+/* the entry in scalability vector is considered as out of date
+ * if the last update was conducted VALID_FRECY ago. */
+#define VALID_FRECY (50000*CPU_CYCLES_IN_us)
 
 
 PerformanceInfo::PerformanceInfo(ExpandabilityShrinkability* expand_shrink):nblocks_in_current_slice_(0),expand_shrink_(expand_shrink),last_update_(0){
 	current_time_slice_start_=get_time_slice_start(curtick());
 	slices=(unsigned*)calloc(sizeof(unsigned),NUMOFSLICES);
-	scalability_vector_=std::vector<entry>(Config::getInstance()->max_degree_of_parallelism);
+	scalability_vector_=std::vector<entry>(Config::getInstance()->max_degree_of_parallelism+1);
 	/* the performance when Dop=0 is always 0, so we set last_update to be infinity,
 	 * indicating that the value is always up to date*/
 	scalability_vector_[0].performance=0;
@@ -75,9 +79,13 @@ void PerformanceInfo::processed_one_block(){
 		last_update_=cur_tick;
 		scalability_vector_[cur_dop].last_update=cur_tick;
 		scalability_vector_[cur_dop].performance=report_instance_performance_in_millibytes();
-		int max_dop=Config::getInstance()->max_degree_of_parallelism;
-		for(unsigned i=0;i<3;i++){
-			printf("%4f\t",scalability_vector_[i].performance);
+		int max_dop=Config::getInstance()->max_degree_of_parallelism+1;
+		for(unsigned i=0;i<max_dop;i++){
+			if(scalability_vector_[i].isUpdateToDate())
+				printf("%4.0f\t",scalability_vector_[i].performance);
+			else{
+				printf("N/A\t");
+			}
 		}
 		printf("\n");
 	}
@@ -124,6 +132,7 @@ void PerformanceInfo::initialize() {
 	current_time_slice_start_=curtick();
 	nblocks_in_current_slice_=0;
 	init_ticks_=curtick();
+	last_update_=curtick();
 
 }
 
@@ -154,7 +163,7 @@ void PerformanceInfo::updateTimeSlicesToCurrentTicks() {
 }
 
 PerformanceInfo::~PerformanceInfo() {
-	free(slices);
+//	free(slices);
 }
 
 unsigned long PerformanceInfo::getBlockSumInAllSlices() {
@@ -165,4 +174,8 @@ unsigned long PerformanceInfo::getBlockSumInAllSlices() {
 	}
 	lock_.release();
 	return ret;
+}
+
+bool PerformanceInfo::entry::isUpdateToDate() {
+	return last_update>=curtick()-VALID_FRECY;
 }

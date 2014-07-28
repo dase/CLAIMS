@@ -196,13 +196,18 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
 	for(boost::unordered_map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
 		assert(it->second!=expander_id);
 	}
-	delete expander_id_to_status_[expander_id];
+//	delete expander_id_to_status_[expander_id];
 	expander_id_to_status_.erase(expander_id);
 	expander_id_to_expand_shrink_.erase(expander_id);
 	lock_.release();
 
 }
-void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_point){
+
+ExpanderTracker::ExpanderStatus::~ExpanderStatus() {
+}
+
+void ExpanderTracker::ExpanderStatus::addNewEndpoint(
+		LocalStageEndPoint new_end_point) {
 //	lock.acquire();
 //	if(pending_endpoints.empty()){
 //		pending_endpoints.push(new_end_point);
