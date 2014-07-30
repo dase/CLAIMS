@@ -25,8 +25,6 @@ LDADD =  \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
 	try/libtry.a \
-	Scheduler/libscheduler.a \
-	Scheduler/test/libtest.a \
 	BufferManager/libbuffermanager.a \
 	LogicalQueryPlan/Test/libtest.a \
 	LogicalQueryPlan/liblogicalqueryplan.a \
@@ -72,9 +70,9 @@ claimsserver_SOURCES = Config.cpp	\
 				Server.cpp
 
 SUBDIRS= BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource Scheduler \
+Loader LogicalQueryPlan Parsetree Resource \
 storage Test try utility
 
 DIST_SUBDIRS = BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource Scheduler \
+Loader LogicalQueryPlan Parsetree Resource \
 storage Test try utility
