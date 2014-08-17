@@ -13,6 +13,11 @@
 #include <malloc.h>
 #include <iostream>
 #include <set>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 using namespace std;
 
 

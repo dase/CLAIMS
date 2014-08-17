@@ -54,6 +54,8 @@
 #include "gtest.h"
 #include "../common/ExpandedThreadTracker_test.cpp"
 #include "memory_leak_test.h"
+#include "../LogicalQueryPlan/Test/testcrossjoin.cpp"
+
 int main(int argc , char ** argv){
 
 //	return testGenerateIteratorTree();
@@ -71,7 +73,7 @@ int main(int argc , char ** argv){
 //	return variable_schema_test();
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
-
+//	return test_cross_join();
 	return query_optimization_outputdata();
 
 //	return query_optimization_based_on_statistics();

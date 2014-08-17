@@ -14,8 +14,12 @@
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
-#include "../common/Mapping.h"
-
+Filter::Filter(LogicalOperator *child,vector<QNode *>qual)
+:child_(child),qual_(qual)
+{
+	setOperatortype(l_filter);
+	initialize_type_cast_functions();
+}
 Filter::Filter(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray)
 :child_(child),exprArray_(exprArray){
 	initialize_arithmetic_type_promotion_matrix();
@@ -45,7 +49,6 @@ Dataflow Filter::getDataflow(){
 	/** In the currently implementation, we assume that the boolean operator
 	 * between each AttributeComparator is "AND".
 	 */
-	mappings_=getMapping();
 
 	Dataflow dataflow=child_->getDataflow();
 	if(comparator_list_.size()==0)
@@ -70,6 +73,7 @@ Dataflow Filter::getDataflow(){
 			}
 		}
 	}
+	getcolindex(dataflow);
 
 	return dataflow;
 }
@@ -80,7 +84,8 @@ BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
 	state.block_size_=blocksize;
 	state.child_=child_iterator;
 	state.v_ei_=exprArray_;
-	state.map_=mappings_;
+	state.qual_=qual_;
+	state.colindex_=colindex_;
 //	assert(!comparator_list_.empty());
 	state.comparator_list_=comparator_list_;
 //	assert(!state.comparator_list_.empty());
@@ -100,10 +105,10 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			ExpandableBlockStreamFilter::State state;
 			state.block_size_=block_size;
 			state.child_=physical_plan.plan;
+			state.qual_=qual_;
+			state.colindex_=colindex_;
 			state.comparator_list_=comparator_list_;
 			state.v_ei_=exprArray_;
-			state.map_=mappings_;
-
 			Dataflow dataflow=getDataflow();
 			state.schema_=getSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
@@ -118,8 +123,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state_f.block_size_=block_size;
 			state_f.child_=physical_plan.plan;
 			state_f.v_ei_=exprArray_;
-			state_f.map_=mappings_;
-
+			state_f.qual_=qual_;
+			state_f.colindex_=colindex_;
 			state_f.comparator_list_=comparator_list_;
 			Dataflow dataflow=getDataflow();
 			state_f.schema_=getSchema(dataflow.attribute_list_);
@@ -175,8 +180,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 		state.block_size_=block_size;
 		state.child_=physical_plan.plan;
 		state.v_ei_=exprArray_;
-		state.map_=mappings_;
-
+		state.qual_=qual_;
+		state.colindex_=colindex_;
 		state.comparator_list_=comparator_list_;
 		Dataflow dataflow=getDataflow();
 		state.schema_=getSchema(dataflow.attribute_list_);
@@ -194,6 +199,15 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 
 }
 
+
+bool Filter::getcolindex(Dataflow dataflow)
+{
+	for(int i=0;i<dataflow.attribute_list_.size();i++)
+	{
+		colindex_[dataflow.attribute_list_[i].attrName]=i;
+	}
+	return true;
+}
 bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor& part)const{
 //	for(unsigned i=0;i<comparator_list_.size();i++){
 //		const unsigned comparator_attribute_index=comparator_list_[i].get_index();
@@ -322,40 +336,40 @@ void Filter::Condition::add(const Attribute& attr,const AttributeComparator::com
 }
 void Filter::Condition::print(int level)const{
 	printf("%*.sFilter:\n",level*8," ");
-//        for(unsigned i=0;i<attribute_list_.size();i++){
-//        	printf("%*.s",level*8,"    ");
-//                printf("%s",attribute_list_[i].attrName.c_str());
-//                switch(comparison_list_[i]){
-//                        case AttributeComparator::L :{
-//                                printf("<");
-//                                break;
-//                        }
-//                        case AttributeComparator::LEQ:{
-//                                        printf("<=");
-//                                        break;
-//                                }
-//                        case AttributeComparator::EQ:{
-//                                        printf("=");
-//                                        break;
-//                                }
-//                        case AttributeComparator::NEQ:{
-//                                        printf("!=");
-//                                        break;
-//                                }
-//                        case AttributeComparator::G:{
-//                                        printf(">");
-//                                        break;
-//                                }
-//                        case AttributeComparator::GEQ:{
-//                                        printf(">=");
-//                                        break;
-//                                }
-//                        default:{
-//                                printf("?");
-//                        }
-//                }
-//                printf("%s\n",attribute_list_[i].attrType->operate->toString(const_value_list_[i]).c_str());
-//        }
+        for(unsigned i=0;i<attribute_list_.size();i++){
+        	printf("%*.s",level*8,"    ");
+                printf("%s",attribute_list_[i].attrName.c_str());
+                switch(comparison_list_[i]){
+                        case AttributeComparator::L :{
+                                printf("<");
+                                break;
+                        }
+                        case AttributeComparator::LEQ:{
+                                        printf("<=");
+                                        break;
+                                }
+                        case AttributeComparator::EQ:{
+                                        printf("=");
+                                        break;
+                                }
+                        case AttributeComparator::NEQ:{
+                                        printf("!=");
+                                        break;
+                                }
+                        case AttributeComparator::G:{
+                                        printf(">");
+                                        break;
+                                }
+                        case AttributeComparator::GEQ:{
+                                        printf(">=");
+                                        break;
+                                }
+                        default:{
+                                printf("?");
+                        }
+                }
+                printf("%s\n",attribute_list_[i].attrType->operate->toString(const_value_list_[i]).c_str());
+        }
 //        child_->print(level+1);
 }
 
@@ -390,41 +404,4 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 void Filter::print(int level)const{
 	condition_.print(level);
 	child_->print(level+1);
-}
-
-
-
-Mapping Filter::getMapping(){
-	Mapping mappings;
-	for(unsigned i=0;i<exprArray_.size();i++){
-		ExpressionMapping em;
-		for(unsigned j=0;j<exprArray_[i].size();j++){
-			if(exprArray_[i][j].type==ExpressionItem::variable_type)
-				em.push_back(getColumnSeq(exprArray_[i][j]));
-		}
-		mappings.atomicPushExpressionMapping(em);
-	}
-	return mappings;
-}
-
-int Filter::getColumnSeq(ExpressionItem &ei){
-	int rt;
-	/*every time invoke a getColumnSeq, you need to new a catalog--@li: it seams that you actually get
-	 * the reference to the catalog rather than creating one.
-	*/
-	Dataflow child_dataflow=child_->getDataflow();
-	for(unsigned i=0;i<child_dataflow.attribute_list_.size();i++){
-	//		TableDescriptor *table=Catalog::getInstance()->getTable(child_dataflow.attribute_list_[i].table_id_);
-	//		stringstream ss;
-	//		ss<<table->getTableName()<<"."<<child_dataflow.attribute_list_[i].attrName;
-	//		string table_column=ss.str();
-//		if((tablename.compare(ei.content.var.table_name)==0)&&(child_dataflow.attribute_list_[i].attrName.compare(ei.content.var.column_name)==0)){
-//			return i;
-//		}
-		string table_column=child_dataflow.attribute_list_[i].attrName;
-		if(table_column.compare(ei.content.var.table_column)==0)
-			return i;
-	}
-	printf("Variable ExpressItem fails to match any attribute in the dataflow!\n");
-	assert(false);
 }

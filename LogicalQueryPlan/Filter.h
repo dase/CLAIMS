@@ -15,7 +15,8 @@
 #include "../common/AttributeComparator.h"
 #include "../common/ExpressionCalculator.h"
 #include "../common/ExpressionItem.h"
-#include "../common/Mapping.h"
+#include "../Parsetree/expressoin/qnode.h"
+#include <map>
 class Filter:public LogicalOperator {
 public:
 	class Condition{
@@ -35,6 +36,7 @@ public:
 		std::vector<AttributeComparator::comparison> comparison_list_;
 		std::vector<void*> const_value_list_;
 	};
+	Filter(LogicalOperator *child,vector<QNode *>qual);
 	Filter(std::vector<AttributeComparator> ComparatorList,LogicalOperator* child );
 	Filter(const Condition& condition, LogicalOperator*  child);
 	Filter(LogicalOperator *child,std::vector<std::vector<ExpressionItem> > &exprArray);
@@ -47,20 +49,15 @@ private:
 	bool couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor&)const;
 	float predictSelectivity()const;
 	void generateComparatorList(const Dataflow&);
-
-
-	Mapping getMapping();
-	int getColumnSeq(ExpressionItem &ei);
-
+	bool getcolindex(Dataflow dataflow);//get column index
 private:
 	LogicalOperator* child_;
 	Condition condition_;
 	vector<AttributeComparator> comparator_list_;
-
+	map<string,int>colindex_;
 	std::vector<Expression> exprArray_;
-	Mapping mappings_;
 
-
+	vector<QNode *>qual_;
 };
 
 #endif /* FILTER_H_ */

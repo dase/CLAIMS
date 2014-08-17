@@ -20,7 +20,13 @@
 #include "../../common/AttributeComparator.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/Mapping.h"
-typedef vector<ExpressionItem> ExpressItem_List;
+#include "../../Parsetree/expressoin/qnode.h"
+#include "../../Catalog/Attribute.h"
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
+#include <map>
+#include <string>
+#include <boost/serialization/map.hpp>
+//typedef vector<ExpressionItem> ExpressItem_List;
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
 	class filter_thread_context:public thread_context{
@@ -43,23 +49,22 @@ public:
 	class State{
 	public:
 		friend class ExpandableBlockStreamFilter;
+		State(Schema* schema, BlockStreamIteratorBase* child,vector<QNode *>qual,map<string,int>colindex,unsigned block_size );
 		State(Schema* s, BlockStreamIteratorBase* child,std::vector<AttributeComparator> comparator_list,unsigned block_size );
-		State(Schema* s, BlockStreamIteratorBase* child,vector<ExpressItem_List> v_ei, Mapping map,unsigned block_size );
-
 		State(){};
 	public:
 		Schema* schema_;
-		std::vector<AttributeComparator> comparator_list_;
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
-		Mapping map_;
+		vector<QNode *>qual_;
+		std::vector<AttributeComparator> comparator_list_;
 		vector<ExpressItem_List> v_ei_;
-
+		map<string,int>colindex_;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & comparator_list_ & child_ & block_size_& v_ei_ &map_;
+			ar & schema_ &child_ & block_size_ & qual_& comparator_list_&colindex_ ;
 		}
 	};
 
@@ -73,18 +78,15 @@ public:
     void print();
 private:
 	bool atomicPopRemainingBlock(remaining_block & rb);
+
 	void atomicPushRemainingBlock(remaining_block rb);
 	BlockStreamBase* AtomicPopFreeBlockStream();
 	void AtomicPushFreeBlockStream(BlockStreamBase* block);
-
-
 	thread_context popContext();
 	void pushContext(const thread_context& tc);
-
-
 private:
 	State state_;
-
+	map<string,int>colindex;
 /* the following five lines are considered to be deleted*/
 	std::list<remaining_block> remaining_block_list_;
 	std::list<BlockStreamBase*> free_block_stream_list_;
@@ -93,7 +95,7 @@ private:
 	volatile bool open_finished_;
 
 	unsigned long tuple_after_filter_;
-
+//	vector<QNode *>qual_;//store the transfromed Qnode
 	Lock lock_;
 	/* the following code is for boost serialization*/
 private:

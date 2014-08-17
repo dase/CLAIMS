@@ -10,6 +10,10 @@
 #include "../../utility/rdtsc.h"
 #include <assert.h>
 #include "../../common/ExpressionCalculator.h"
+#include "../../Parsetree/expressoin/execfunc.h"
+#include "../../Parsetree/expressoin/qnode.h"
+#include "../../Parsetree/sql_node_struct.h"
+#include "../../Parsetree/expressoin/initquery.h"
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
 :state_(state){
@@ -24,21 +28,17 @@ ExpandableBlockStreamFilter::ExpandableBlockStreamFilter()
 ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {
 	// TODO Auto-generated destructor stub
 }
+ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,vector<QNode *>qual,map<string,int>colindex,unsigned block_size )
+:schema_(schema),child_(child),qual_(qual),colindex_(colindex),block_size_(block_size)
+{
 
+}
 ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
 		std::vector<AttributeComparator> comparator_list
 		,unsigned block_size)
 :schema_(schema),child_(child),comparator_list_(comparator_list),block_size_(block_size){
 
 }
-
-ExpandableBlockStreamFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
-		vector<ExpressItem_List> v_ei
-		,Mapping map,unsigned block_size)
-:schema_(schema),child_(child),v_ei_(v_ei),map_(map),block_size_(block_size){
-
-}
-
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.schema_,state_.block_size_));
@@ -62,6 +62,11 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off){
 		waitForOpenFinished();
 		return state_.child_->open(part_off);
 	}
+
+	for(int i=0;i<state_.qual_.size();i++)
+	{
+		initqual(state_.qual_[i],state_.qual_[i]->actual_type,state_.colindex_);
+	}
 }
 
 
@@ -74,54 +79,11 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 	bool pass_filter;
 	filter_thread_context* tc=(filter_thread_context*)getContext();
 
-	while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0)
+	while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0)//the context is empty at first time,so it can skipped
 	{
 		pass_filter=true;
-//		for(unsigned i=0;i<state_.comparator_list_.size();i++)
-//		{
-//
-//			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child)))
-//			{
-//				pass_filter=false;
-//				break;
-//			}
-//		}
-		for(unsigned i=0;i<state_.v_ei_.size();i++)
-		{
-			int variable_=0;
-			ExpressionItem result;
-			ExpressItem_List toCalc;
-			for(unsigned j=0;j<state_.v_ei_[i].size();j++)
-			{
-				ExpressionItem ei;
-				if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
-				{
-					int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
-					ei.setValue(state_.schema_->getColumnAddess(nth,tuple_from_child),state_.schema_->getcolumn(nth).type);
-					variable_++;
-				}
-				else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
-				{
-					ei.return_type=state_.v_ei_[i][j].return_type;
-					ei.setData(state_.v_ei_[i][j].content.data);
-				}
-				else
-				{
-					ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
-				}
-				toCalc.push_back(ei);
-			}
-			ExpressionCalculator::calcuate(toCalc,result);
-			assert(result.return_type==t_int);
-			if(result.content.data.value._int==0)
-			{
-				pass_filter=false;
-				break;
-			}
-		}
-
-
-
+		if(tuple_from_child!=NULL)
+		pass_filter=ExecEvalQual(state_.qual_,tuple_from_child,state_.schema_);
 		if(pass_filter)
 		{
 
@@ -181,57 +143,8 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block){
 		 * so consider put them into a method.
 		 */
 		while((tuple_from_child=tc->block_stream_iterator_->currentTuple())>0){
-//			assert((long)tuple_from_child%8==0);
-			pass_filter=true;
-//			for(unsigned i=0;i<state_.comparator_list_.size();i++){
-//				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
-//					pass_filter=false;
-//					break;
-//				}
-//			}
-//			if(*(unsigned long*)tuple_from_child!=0){
-//				pass_filter=false;
-//			}
-			for(unsigned i=0;i<state_.v_ei_.size();i++)
-			{
-				int variable_=0;
-				ExpressionItem result;
-				ExpressItem_List toCalc;
-				for(unsigned j=0;j<state_.v_ei_[i].size();j++)
-				{
-					ExpressionItem ei;
-					if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
-					{
-						int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
-						ei.setValue(state_.schema_->getColumnAddess(nth,tuple_from_child),state_.schema_->getcolumn(nth).type);
-						variable_++;
-					}
-					else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
-					{
-						ei.return_type=state_.v_ei_[i][j].return_type;
-						ei.setData(state_.v_ei_[i][j].content.data);
-					}
-					else
-					{
-						ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
-					}
-					toCalc.push_back(ei);
-				}
-				ExpressionCalculator::calcuate(toCalc,result);
-				assert(result.return_type==t_int);
-				if(result.content.data.value._int==0)
-				{
-					pass_filter=false;
-					break;
-				}
-			}
-
-
-
-
-
+			pass_filter=ExecEvalQual(state_.qual_,tuple_from_child,state_.schema_);
 			if(pass_filter){
-
 				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 				if((tuple_in_block=block->allocateTuple(bytes))>0){
 					/* the block has space to hold this tuple*/
@@ -285,8 +198,10 @@ bool ExpandableBlockStreamFilter::close(){
 	state_.child_->close();
 	return true;
 }
+
+
 void ExpandableBlockStreamFilter::print(){
-	printf("Filter size=%d\n",state_.v_ei_.size());
+//	printf("Filter size=%d\n",state_.v_ei_.size());
 
 	printf("---------------\n");
 	state_.child_->print();
