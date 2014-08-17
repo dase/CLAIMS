@@ -17,7 +17,7 @@
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "Requirement.h"
 
-enum operator_type{l_scan,l_filter,l_aggregation,l_equal_join,l_project,l_sort, l_root};
+enum operator_type{l_scan,l_filter,l_aggregation,l_equal_join,l_project,l_sort, l_root,l_cross_join};
 
 typedef BlockStreamIteratorBase* PhysicalPlan;
 typedef struct PhysicalPlanDescriptor{

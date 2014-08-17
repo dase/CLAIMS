@@ -32,6 +32,7 @@
 #include "../../IndexManager/IndexScanIterator.h"
 #include "../BlockStreamLimit.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
+#include "../../Parsetree/expressoin/qnode.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -73,6 +74,10 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<bottomLayerCollecting*>(NULL));
 	ar.register_type(static_cast<bottomLayerSorting*>(NULL));
 	ar.register_type(static_cast<IndexScanIterator*>(NULL));
+	ar.register_type(static_cast<QNode*>(NULL));
+	ar.register_type(static_cast<QExpr_cal*>(NULL));
+	ar.register_type(static_cast<QColcumns*>(NULL));
+	ar.register_type(static_cast<QExpr*>(NULL));
 
 }
 void cheat_the_compiler(){

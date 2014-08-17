@@ -626,7 +626,7 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 					if(fg==false)
 						return false;
 				}
-				else
+				else//using join 的解析有问题，因为相同的列只会保留一列 TODO
 				{
 					Node *tp=newExprList(t_expr_list,NULL,NULL);
 					Node *temp=tp;

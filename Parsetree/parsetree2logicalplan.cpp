@@ -26,6 +26,8 @@
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include <string.h>
+#include "expressoin/initquery.h"
+#include "../common/TypePromotionMap.h"
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
@@ -298,19 +300,23 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
 			{
-				Filter::Condition filter_condition;
+//				Filter::Condition filter_condition;
 				Node * p;
-				vector<vector<ExpressionItem> >allexpr;
+//				vector<vector<ExpressionItem> >allexpr;
 				bool hasin=false;
+				vector<QNode *>v_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
 //					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename,hasin,tablescan);
-					vector<ExpressionItem>expr;
-					get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-					allexpr.push_back(expr);
+//					vector<ExpressionItem>expr;
+//					get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+//					allexpr.push_back(expr);
+					QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+					v_qual.push_back(qual);
 				}
 //				LogicalOperator* filter=new Filter(filter_condition,tablescan);
-				LogicalOperator* filter=new Filter(tablescan,allexpr);
+//				LogicalOperator* filter=new Filter(tablescan,allexpr);
+				LogicalOperator* filter=new Filter(tablescan,v_qual);
 				if(hasin==true)
 				{
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
@@ -338,16 +344,24 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				if(whcdn->header!=NULL)
 				{
 					Node * p;
-					vector<vector<ExpressionItem> >allexpr;
+//					vector<vector<ExpressionItem> >allexpr;
+					vector<QNode *>v_qual;
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 					{
-							vector<ExpressionItem>expr;
-							get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-							allexpr.push_back(expr);
+//							vector<ExpressionItem>expr;
+//							get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+//							allexpr.push_back(expr);
+						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+						v_qual.push_back(qual);
+
 					}
-					if(allexpr.size()>0)
+//					if(allexpr.size()>0)
+//					{
+//						lopfrom=new Filter(filter_1,allexpr);
+//					}
+					if(v_qual.size()>0)
 					{
-						lopfrom=new Filter(filter_1,allexpr);
+						lopfrom=new Filter(filter_1,v_qual);
 					}
 					else
 					{
@@ -365,24 +379,35 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
-				vector<vector<ExpressionItem> >allexpr;
+//				vector<vector<ExpressionItem> >allexpr;
+				vector<QNode *>v_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
 					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
 					if(fg==0)
 					{
-						vector<ExpressionItem>expr;
-						get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-						allexpr.push_back(expr);
+//						vector<ExpressionItem>expr;
+//						get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
+//						allexpr.push_back(expr);
+						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+						v_qual.push_back(qual);
 					}
 				}
 				if(join_pair_list.size()>0)
 				{
 					lopfrom=new EqualJoin(join_pair_list,filter_1,filter_2);
 				}
-				if(allexpr.size()>0)
+				else//除了equaljoin还有其他的join类型
 				{
-					lopfrom=new Filter(lopfrom,allexpr);
+
+				}
+//				if(allexpr.size()>0)
+//				{
+//					lopfrom=new Filter(lopfrom,allexpr);
+//				}
+				if(v_qual.size()>0)
+				{
+					lopfrom=new Filter(lopfrom,v_qual);
 				}
 				return lopfrom;
 			}
@@ -1572,6 +1597,7 @@ static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *&par
 }
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
+	initialize_arithmetic_type_promotion_matrix();
 	LogicalOperator* alllogicalplan=NULL;
 	switch(parsetree->type)
 	{

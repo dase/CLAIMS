@@ -1766,7 +1766,7 @@ expr_list: expr		{ $$ = newExprList(t_expr_list, $1, NULL); }
 opt_expr_list: /* nil */
    | expr_list {$$=$1;}
    ;
-
+//set_operator
 
 expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
    | '(' expr_list ')' IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $2, $6); }

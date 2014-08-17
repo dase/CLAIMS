@@ -279,8 +279,11 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 			{
 				SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
 				if (!semantic_analysis(node,false))//---3.22fzh---
+				{
 					SQLParse_elog("semantic_analysis error");
-				preprocess(node);
+					return;
+				}
+					preprocess(node);
 #ifdef SQL_Parser
 				output(node,0);
 #endif
@@ -326,11 +329,12 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 				physical_iterator_tree->print();
 				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-
+				puts("+++++++++++++++++++++begin time++++++++++++++++");
+				unsigned long long start=curtick();
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
+				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 			}
 			break;
 			case t_load_table_stmt:	//	导入数据的语句
