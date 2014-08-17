@@ -132,7 +132,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
 	Pthis->addIntoInWorkingExpandedThreadList(pid);
 	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pid,Pthis->expander_id_);
-	const unsigned thread_id=rand()%100;
+//	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
 	((ExpanderContext*)arg)->sem.post();
 
@@ -317,7 +317,7 @@ void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
 }
 void BlockStreamExpander::addIntoInWorkingExpandedThreadList(pthread_t pid){
 	lock_.acquire();
-	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
+//	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
 	in_work_expanded_thread_list_.insert(pid);
 	logging_->log("[%ld] %lx is added into in working list!\n",expander_id_,pid);
 	lock_.release();
