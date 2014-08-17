@@ -62,6 +62,9 @@
 //#include "hashtable_test.cpp"
 #include "gtest.h"
 #include "memory_leak_test.h"
+//#include "utility/data_distribution_generator.h"
+#include "../utility/data_distribution_generator.h"
+#include "TestSuit/filter_test.h"
 
 int maina(){
 
@@ -126,7 +129,8 @@ int maina(){
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
-	tcp_h_test_multi_nodes();
+//	test_data_distribution_generator();
+//	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test(10);
 //	hash_table_test();
 
@@ -141,4 +145,5 @@ int maina(){
 //	memory_leak_test();
 //	sql_parser_test();
 
+	filter_test();
 }

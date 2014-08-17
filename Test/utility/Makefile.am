@@ -20,4 +20,4 @@ LDADD = 	../../common/libcommon.a \
 
 noinst_LIBRARIES=libutility.a
 libutility_a_SOURCES = \
-	generator_test.h
+	generator_test.h 
