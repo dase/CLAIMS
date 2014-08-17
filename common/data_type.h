@@ -1399,6 +1399,12 @@ public:
 		 this->nullable = r.nullable;
 		 this->operate=r.operate->duplicateOperator();
 	 }
+	 column_type& operator=(const column_type &r){
+		 this->type=r.type;
+		 this->size=r.size;
+		 this->nullable = r.nullable;
+		 this->operate=r.operate->duplicateOperator();
+	 }
 	column_type():operate(0){};
 	~column_type(){
 		delete operate;

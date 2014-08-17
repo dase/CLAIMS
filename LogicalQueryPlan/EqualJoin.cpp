@@ -12,7 +12,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 
 #include "../IDsGenerator.h"
-#include "../Catalog/stat/StatManager.h"t
+#include "../Catalog/stat/StatManager.h"
 #include "../common/Logging.h"
 #include "../Config.h"
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)
