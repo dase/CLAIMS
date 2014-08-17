@@ -476,7 +476,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
 		int decision=Pthis->decideExpandingOrShrinking(it->second->current_stage,current_degree_of_parallelism,print);
 //		if(current_degree_of_parallelism!=0&&getSegmentStatus(it->second.current_stage)==seg_normal_producing)
-		printf("%s---->%s\t  d=%d\t %lf\n",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism,it->second->perf_info.report_instance_performance_in_millibytes());
+//		printf("%s---->%s\t  d=%d\t %lf\n",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism,it->second->perf_info.report_instance_performance_in_millibytes());
 
 //		printf("Desision=%d\n",decision);
 		SWITCHER(print,Pthis->log_->log("%s---->%s\t\t\t\t  d=%d\t",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism))

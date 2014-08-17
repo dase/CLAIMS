@@ -110,7 +110,7 @@ int maina(){
 //	return test_index_manager();
 
 //	in_test();
-	test_expanderFramework_single_node(5);
+//	test_expanderFramework_single_node(5);
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
@@ -126,7 +126,7 @@ int maina(){
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
-//	tcp_h_test_multi_nodes();
+	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test(10);
 //	hash_table_test();
 
