@@ -20,12 +20,12 @@
 #include "../../common/AttributeComparator.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/Mapping.h"
-#include "../../Parsetree/expressoin/qnode.h"
 #include "../../Catalog/Attribute.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include <map>
 #include <string>
 #include <boost/serialization/map.hpp>
+#include "../../common/Expression/qnode.h"
 //typedef vector<ExpressionItem> ExpressItem_List;
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:

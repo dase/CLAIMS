@@ -26,8 +26,8 @@
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include <string.h>
-#include "expressoin/initquery.h"
 #include "../common/TypePromotionMap.h"
+#include "../common/Expression/initquery.h"
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);

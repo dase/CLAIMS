@@ -164,6 +164,14 @@ void getwctable(struct Node *cur,set<string>&st)//cur=wcexpr,获得wcexpr中涉�
 		{
 			getwctable(node->args,st);
 		}
+		if(node->parameter2!=NULL)
+		{
+			getwctable(node->parameter2,st);
+		}
+		if(node->parameter1!=NULL)
+		{
+			getwctable(node->parameter1,st);
+		}
 	}
 	else if(cur->type==t_expr_list)
 	{

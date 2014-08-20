@@ -24,24 +24,34 @@ bool ExecEvalQual(vector<QNode *>v_qual,void *tuple,Schema *schema)
 
 void *Exec_cal(Node *cinfo,void *tuple,Schema *schema)
 {
-	QExpr_cal *cal=(QExpr_cal *)(cinfo);
+	QExpr_binary *cal=(QExpr_binary *)(cinfo);
 	void *lresult=cal->lnext->FuncId(cal->lnext,tuple,schema);
 	void *rresult=cal->rnext->FuncId(cal->rnext,tuple,schema);
 	FuncCallInfoData finfo;
 	finfo.args[0]=lresult;
 	finfo.args[1]=rresult;
 	finfo.nargs=2;
-	finfo.results=NULL;
+	finfo.results=cal->result_store;
 	cal->function_call(&finfo);
-	return finfo.results;
-
+	return TypeCast::type_cast_func[cal->actual_type][cal->return_type](finfo.results);
+}
+void *Exec_cmp(Node *cinfo,void *tuple,Schema *schema)
+{
+	QExpr_binary *cal=(QExpr_binary *)(cinfo);
+	void *lresult=cal->lnext->FuncId(cal->lnext,tuple,schema);
+	void *rresult=cal->rnext->FuncId(cal->rnext,tuple,schema);
+	FuncCallInfoData finfo;
+	finfo.args[0]=lresult;
+	finfo.args[1]=rresult;
+	finfo.nargs=2;
+	finfo.results=cal->result_store;
+	cal->function_call(&finfo);
+	return finfo.results;//the actual type is bool ,so it needn't change
 }
 void *getConst(Node *cinfo,void *tuple,Schema *schema)//TODO string=>actual_type=>return_type
 {
 	QExpr *qexpr=(QExpr*)(cinfo);
-//	unsigned long val=strtoul(qexpr->value.c_str(),NULL,10);
-//	return &val;
-	return TypeCast::type_cast_func[t_string][qexpr->return_type](&(qexpr->value));
+	return TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->result_store);
 }
 void *getcol(Node *cinfo,void *tuple,Schema *schema)//TODO need actual_type=>return_type
 {

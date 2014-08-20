@@ -281,6 +281,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				if (!semantic_analysis(node,false))//---3.22fzh---
 				{
 					SQLParse_elog("semantic_analysis error");
+					assert(false);
 					return;
 				}
 					preprocess(node);
