@@ -15,8 +15,9 @@
 #include "../common/AttributeComparator.h"
 #include "../common/ExpressionCalculator.h"
 #include "../common/ExpressionItem.h"
-#include "../Parsetree/expressoin/qnode.h"
+
 #include <map>
+#include "../common/Expression/qnode.h"
 class Filter:public LogicalOperator {
 public:
 	class Condition{

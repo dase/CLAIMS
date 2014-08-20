@@ -22,6 +22,7 @@
 using namespace std;
 bool ExecEvalQual(vector<QNode *>v_qual,void *tuple,Schema *schema);
 void *Exec_cal(Node *cinfo,void *tuple,Schema *schema);
+void *Exec_cmp(Node *cinfo,void *tuple,Schema *schema);
 void *getConst(Node *cinfo,void *tuple,Schema *schema);
 void *getcol(Node *cinfo,void *tuple,Schema *schema);
 

@@ -799,9 +799,14 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 		case t_expr_func:
 		{
 			Expr_func* node=(Expr_func *)cur;
-			if(node->args==NULL)
-			return false;
-			return wherecondition_check(qstmt,node->args,rtable);
+			bool flag=true;
+			if(node->args!=NULL)
+				flag= wherecondition_check(qstmt,node->args,rtable);
+			if(node->parameter1!=NULL&&flag)
+				flag*= wherecondition_check(qstmt,node->parameter1,rtable);
+			if(node->parameter2!=NULL&&flag)
+				flag*= wherecondition_check(qstmt,node->parameter2,rtable);
+			return flag;
 		}break;
 		case t_expr_list:
 		{
