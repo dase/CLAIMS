@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include "data_type.h"
 typedef bool (*TypeCastFunction) (ExpressionItem& in);//
-typedef void *(*TypeCastF)(void *value);
+typedef void *(*TypeCastF)(void *value,void *tovalue);
 class TypeCast{
 public:
 	static TypeCastF type_cast_func[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
@@ -70,320 +70,313 @@ inline bool string_to_int(ExpressionItem& in){
 ////////////////////////////
 /***************int****************************/
 
-inline void *int_to_int(void *value)
+inline void *int_to_int(void *value,void * tovalue)
 {
 	if(*(int *)value==NULL_INT)//in order to judge the return result is NULL,so void * is NULL will be simple
 		return NULL;
-	return value;
+	*(int *)tovalue=*(int *)value;
+	return tovalue;
 }
-inline void * int_to_smallint(void * value)
+inline void * int_to_smallint(void * value,void * tovalue)
 {
 	if(*(int *)value==NULL_INT)
 	return NULL;
-	short int tvalue=*(int *)value;
-	return &tvalue;
+	*(short int *)tovalue=*(int *)value;
+	return tovalue;
 }
-inline void *int_to_float(void *value)
+inline void *int_to_float(void *value,void * tovalue)
 {
 	if(*(int *)value==NULL_INT)
 		return NULL;
-	float tvalue=*(int *)value;
-	return &tvalue;
+	*(float *) tovalue=*(int *)value;
+	return tovalue;
 
 }
-inline void *int_to_double(void *value)
+inline void *int_to_double(void *value,void * tovalue)
 {
 	if(*(int *)value==NULL_INT)
 		return NULL;
-	double tvalue=*(int *)value;
-	return &tvalue;
+	*(double *)tovalue=*(int *)value;
+	return tovalue;
 }
-inline void *int_to_ulong(void *value)
+inline void *int_to_ulong(void *value,void * tovalue)
 {
 	if(*(int *)value==NULL_INT)
 		return NULL;
-	unsigned long tvalue=*(int*)value;
-	return &tvalue;
+	*(unsigned long *)tovalue=*(int*)value;
+	return tovalue;
 }
-inline void *int_to_decimal(void *value)
+inline void *int_to_decimal(void *value,void * tovalue)
 {
 	if(*(int *)value==NULL_INT)
 		return NULL;
 	stringstream va;
 	va<<*(int *)value;
-	NValue tvalue=NValue::getDecimalValueFromString(va.str());
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(va.str());
 	va.clear();
-	return &tvalue;
+	return tovalue;
 }
-inline void *int_to_boolean(void *value)
+inline void *int_to_boolean(void *value,void * tovalue)
 {
-	bool ans=1;
-	if(*(int *)value==0)
-		ans=0;
-	return &ans;
+	*(bool *)tovalue=(*(int *)value==0?0:1);
+	return tovalue;
 }
 /***************int****************************/
 /***************string****************************/
 
-inline void * string_to_int(void *value)
+inline void * string_to_int(void *value,void * tovalue)
 {
 //	if(*(string *)value==NULL_STRING)
 //		return NULL;
-	int tvalue=atoi((char *)value);
-	return &tvalue;
+	*(int *)tovalue=atoi((char *)value);
+	return tovalue;
 }
-inline void * string_to_smallint(void *value)
+inline void * string_to_smallint(void *value,void * tovalue)
 {
 //	if(*(string *)value==NULL_STRING)
 //		return NULL;
-	short int tvalue=atoi((char *)value);//???
-	return &tvalue;
+	*(short int *)tovalue=atoi((char *)value);//???
+	return tovalue;
 }
-inline void * string_to_ulong(void * value)
+inline void * string_to_ulong(void * value,void * tovalue)
 {
 //	if(*(string *)value==NULL_STRING)
 //		return NULL;
-	unsigned long tvalue=strtoul((char *)value,NULL,10);
-	return &tvalue;
+	*(unsigned long *)tovalue=strtoul((char *)value,NULL,10);
+	return tovalue;
 }
-inline void *string_to_float(void * value)
+inline void *string_to_float(void * value,void * tovalue)
 {
 //	if(*(string *)value==NULL_STRING)
 //		return NULL;
-	float tvalue=atof((char *)value);
-	return &tvalue;
+	*(float *)tovalue=atof((char *)value);
+	return tovalue;
 }
-inline void *string_to_double(void *value)
+inline void *string_to_double(void *value,void * tovalue)
 {
 //	if(*(string *)value==NULL_STRING)
 //		return NULL;
-	double tvalue=strtod((char *)value,NULL);
-	return &tvalue;
+	*(double *)tovalue=strtod((char *)value,NULL);
+	return tovalue;
 }
-inline void *string_to_string(void *value)
+inline void *string_to_string(void *value,void * tovalue)
 {
 //	if(*(string *)value==NULL_STRING)
 //		return NULL;
-	return value;
+	strcpy((char *)tovalue,(char *)value);
+	return tovalue;
 }
-inline void *string_to_decimal(void *value)
+inline void *string_to_decimal(void *value,void * tovalue)
 {
-	NValue tvalue=NValue::getDecimalValueFromString(string((char *)value));
-	return &tvalue;
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(string((char *)value));
+	return tovalue;
 }
-inline void *string_to_boolean(void *value)
+inline void *string_to_boolean(void *value,void * tovalue)
 {
-	bool ans=1;
-	ans=value==NULL;
-	return &ans;
+	*(bool *)tovalue=((char *)value==NULL);
+	return tovalue;
 }
 /***************string****************************/
 /***************unsigned long****************************/
 
-inline void *ulong_to_ulong(void *value)
+inline void *ulong_to_ulong(void *value,void * tovalue)
 {
-	return value;
+	*(unsigned long *)tovalue=*(unsigned long *)value;
+	return tovalue;
 }
-inline void *ulong_to_float(void *value)
+inline void *ulong_to_float(void *value,void * tovalue)
 {
-	float tvalue=*(unsigned long *)value;
-	return &tvalue;
+	*(float *)tovalue=*(unsigned long *)value;
+	return tovalue;
 }
-inline void *ulong_to_double(void *value)
+inline void *ulong_to_double(void *value,void * tovalue)
 {
-	double tvalue=*(unsigned long *)value;
-	return &tvalue;
+	*(double *)tovalue=*(unsigned long *)value;
+	return tovalue;
 }
-inline void *ulong_to_decimal(void *value)
+inline void *ulong_to_decimal(void *value,void * tovalue)
 {
 	stringstream va;
 	va<<*(unsigned long *)value;
-	NValue tvalue=NValue::getDecimalValueFromString(va.str());
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(va.str());
 	va.clear();
-	return &tvalue;
+	return tovalue;
 }
-inline void *ulong_to_boolean(void *value)
+inline void *ulong_to_boolean(void *value,void * tovalue)
 {
-	bool ans=1;
-	if(*(unsigned long *)value==0)
-		ans=0;
-	return &ans;
+	*(bool *)tovalue=(*(unsigned long *)value==0?0:1);
+	return tovalue;
 }
 
 /***************unsigned long****************************/
 
 /***************smallInt****************************/
-inline void * smallInt_to_smallInt(void *value)
+inline void * smallInt_to_smallInt(void *value,void * tovalue)
 {
-	return value;
+	*(short int *)tovalue=*(short int *)value;
+	return tovalue;
 }
-inline void * smallInt_to_int(void *value)
+inline void * smallInt_to_int(void *value,void * tovalue)
 {
-	int tvalue =*(short int *)value;
-	return &tvalue;
+	*(int *) tovalue =*(short int *)value;
+	return tovalue;
 }
-inline void *smallInt_to_ulong(void *value)
+inline void *smallInt_to_ulong(void *value,void * tovalue)
 {
-	unsigned long tvalue=*(short int *)value;
-	return &tvalue;
+	*(unsigned long *)tovalue=*(short int *)value;
+	return tovalue;
 }
-inline void *smallInt_to_float(void *value)
+inline void *smallInt_to_float(void *value,void * tovalue)
 {
-	float tvalue=*(short int *)value;
-	return &tvalue;
+	*(float *)tovalue=*(short int *)value;
+	return tovalue;
 }
-inline void *smallInt_to_double(void *value)
+inline void *smallInt_to_double(void *value,void * tovalue)
 {
-	double tvalue=*(short int *)value;
-	return &tvalue;
+	*(double *)tovalue=*(short int *)value;
+	return tovalue;
 }
-inline void *smallInt_to_string(void *value)
+inline void *smallInt_to_string(void *value,void * tovalue)
 {
 	short int tvalue=*(short int *)value;
 	stringstream va;
 	va<<tvalue;
-	return &va.str();
+	strcpy((char *)tovalue,va.str().c_str());
+	va.clear();
+	return tovalue;
 }
-inline void *smallInt_to_boolean(void *value)
+inline void *smallInt_to_boolean(void *value,void * tovalue)
 {
-	bool ans=1;
-	if(*(short int *)value==0)
-		ans=0;
-	return &ans;
+	*(bool *)tovalue=(*(short int *)value==0?0:1);
+	return tovalue;
 }
-inline void *smallInt_to_decimal(void *value)
+inline void *smallInt_to_decimal(void *value,void * tovalue)
 {
 	stringstream va;
 	va<<*(short int *)value;
-	NValue tvalue=NValue::getDecimalValueFromString(va.str());
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(va.str());
 	va.clear();
-	return &tvalue;
+	return tovalue;
 }
 /***************smallInt****************************/
 
 /***************float****************************/
-inline void *float_to_float(void *value)
+inline void *float_to_float(void *value,void * tovalue)
 {
-	return value;
+	*(float *)tovalue=*(float *)value;
+	return tovalue;
 }
-inline void *float_to_double(void *value)
+inline void *float_to_double(void *value,void * tovalue)
 {
-	double tvalue=*(float *)value;
-	return &tvalue;
+	*(double *)tovalue=*(float *)value;
+	return tovalue;
 }
-inline void *float_to_string(void *value)
+inline void *float_to_string(void *value,void * tovalue)
 {
 	float tvalue=*(float *)value;
 	stringstream va;
 	va<<tvalue;
-	return &va.str();
+	strcpy((char *)tovalue,va.str().c_str());
+	va.clear();
+	return tovalue;
 }
-inline void *float_to_boolean(void *value)
+inline void *float_to_boolean(void *value,void * tovalue)
 {
-	bool ans=1;
-	if(*(float *)value==0)
-		ans=0;
-	return &ans;
+	*(bool *)tovalue=(*(float *)value==0?0:1);
+	return tovalue;
 }
-inline void *float_to_decimal(void *value)
+inline void *float_to_decimal(void *value,void * tovalue)
 {
 	stringstream va;
 	va<<*(float *)value;
-	NValue tvalue=NValue::getDecimalValueFromString(va.str());
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(va.str());
 	va.clear();
-	return &tvalue;
+	return tovalue;
 }
 /***************float****************************/
 
 
 /***************double****************************/
-inline void *double_to_double(void *value)
+inline void *double_to_double(void *value,void * tovalue)
 {
-	return value;
+	*(double *)tovalue=*(double *)value;
+	return tovalue;
 }
-inline void *double_to_string(void *value)
+inline void *double_to_string(void *value,void * tovalue)
 {
 	double tvalue=*(double *)value;
 	stringstream va;
 	va<<tvalue;
-	return &va.str();
+	strcpy((char *)tovalue,va.str().c_str());
+	va.clear();
+	return tovalue;
 }
-inline void *double_to_boolean(void *value)
+inline void *double_to_boolean(void *value,void * tovalue)
 {
-	bool ans=1;
-	if(*(double *)value==0)
-		ans=0;
-	return &ans;
+	*(bool *)tovalue=(*(double *)value==0?0:1);
+	return tovalue;
 }
-inline void *double_to_decimal(void *value)
+inline void *double_to_decimal(void *value,void * tovalue)
 {
 	stringstream va;
 	va<<*(double *)value;
-	NValue tvalue=NValue::getDecimalValueFromString(va.str());
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(va.str());
 	va.clear();
-	return &tvalue;
+	return tovalue;
 }
 /***************double****************************/
 
 /***************boolean****************************/
-inline void *boolean_to_smallInt(void *value)
+inline void *boolean_to_smallInt(void *value,void * tovalue)
 {
-	short int ans=1;
-	if(*(bool *)value==0)
-		ans=0;
-	return &ans;
+	*(short int *)tovalue=(*(bool *)value);
+	return tovalue;
 }
-inline void *boolean_to_int(void *value)
+inline void *boolean_to_int(void *value,void * tovalue)
 {
-	int ans=1;
-	if(*(bool *)value==0)
-		ans=0;
-	return &ans;
+	*(int *)tovalue=(*(bool *)value);
+	return tovalue;
 }
-inline void *boolean_to_float(void *value)
+inline void *boolean_to_float(void *value,void * tovalue)
 {
-	float ans=1.0;
-	if(*(bool *)value==0)
-		ans=0.0;
-	return &ans;
+	*(float *)tovalue=(*(bool *)value);
+	return tovalue;
 }
-inline void *boolean_to_double(void *value)
+inline void *boolean_to_double(void *value,void * tovalue)
 {
-	double ans=1.0;
-	if(*(bool *)value==0)
-		ans=0.0;
-	return &ans;
+	*(double *)tovalue=(*(bool *)value);
+	return tovalue;
 }
-inline void *boolean_to_boolean(void *value)
+inline void *boolean_to_boolean(void *value,void * tovalue)
 {
-	return value;
+	*(bool *)tovalue=*(bool *)value;
+	return tovalue;
 }
-inline void *boolean_to_ulong(void *value)
+inline void *boolean_to_ulong(void *value,void * tovalue)
 {
-	unsigned long ans=1;
-	if(*(bool *)value==0)
-		ans=0;
-	return &ans;
+	*(unsigned long *)tovalue=(*(bool *)value);
+	return tovalue;
 }
-inline void *boolean_to_decimal(void *value)
+inline void *boolean_to_decimal(void *value,void * tovalue)
 {
 	stringstream va;
 	va<<*(bool *)value;
-	NValue tvalue=NValue::getDecimalValueFromString(va.str());
+	*(NValue *)tovalue=NValue::getDecimalValueFromString(va.str());
 	va.clear();
-	return &tvalue;
+	return tovalue;
 }
 
 /***************boolean****************************/
-inline void *decimal_to_decimal(void *value)
+inline void *decimal_to_decimal(void *value,void * tovalue)
 {
-	return value;
+	*(NValue *)tovalue=*(NValue *)value;
+	return tovalue;
 }
-inline void *decimal_to_boolean(void *value)
+inline void *decimal_to_boolean(void *value,void * tovalue)
 {
 	NValue tvalue=*(NValue *)value;
-	bool ans=tvalue.op_equals(NValue::getDecimalValueFromString("0"));
-	return &ans;
+	*(bool *)tovalue=tvalue.op_equals(NValue::getDecimalValueFromString("0"));
+	return tovalue;
 }
 /***************decimal****************************/
 
@@ -397,7 +390,7 @@ inline void *decimal_to_boolean(void *value)
 
 /***************smallInt****************************/
 
-inline void *errormsg(void *value)
+inline void *errormsg(void *value,void * tovalue)
 {
 	puts("!!!!!!!!!!!!!this TypeCast is not supported now!!!!!!!!!!");
 	assert(false);

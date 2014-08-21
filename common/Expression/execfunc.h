@@ -25,7 +25,7 @@ void *Exec_cal(Node *cinfo,void *tuple,Schema *schema);
 void *Exec_cmp(Node *cinfo,void *tuple,Schema *schema);
 void *getConst(Node *cinfo,void *tuple,Schema *schema);
 void *getcol(Node *cinfo,void *tuple,Schema *schema);
-
-
+void *Exec_unary(Node *cinfo,void *tuple,Schema *schema);
+void *Exec_ternary(Node *cinfo,void *tuple,Schema *schema);
 
 #endif /* EXECFUNC_H_ */
