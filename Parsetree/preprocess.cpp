@@ -400,6 +400,7 @@ void expr_to_str_test(Node *node)
 }
 void solve_const_value_in_wherecondition(Node *&cur)
 {
+	if(cur==NULL)return;
 	switch(cur->type)
 	{
 		case t_name:

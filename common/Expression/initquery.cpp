@@ -18,56 +18,95 @@ QNode * transformqual(Node *node)
 		case t_expr_cal:
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
-			QNode *lnode=transformqual(calnode->lnext);
-			QNode *rnode=transformqual(calnode->rnext);
-			data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 			if(strcmp(calnode->sign,"ANDOP")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,t_boolean,oper_and,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"OR")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,t_boolean,oper_or,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"+")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_add,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"-")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_minus,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"*")==0)
 			{
-				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_multi,t_qexpr_cal);
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
+				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_multiply,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"/")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_divide,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"%")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_mod,t_qexpr_cal);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"LIKE")==0)
 			{
-				QExpr_binary *likenode=new QExpr_binary(lnode,rnode,a_type,oper_like,t_qexpr_cal);
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
+				QExpr_binary *likenode=new QExpr_binary(lnode,rnode,a_type,oper_like,t_qexpr_cmp);
 				return likenode;
 			}
 			else if(strcmp(calnode->sign,"NLIKE")==0)
 			{
-				QExpr_binary *likenode=new QExpr_binary(lnode,rnode,a_type,oper_not_like,t_qexpr_cal);
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
+				QExpr_binary *likenode=new QExpr_binary(lnode,rnode,a_type,oper_not_like,t_qexpr_cmp);
 				return likenode;
+			}
+			else if(strcmp(calnode->sign,"NOT")==0||strcmp(calnode->sign,"!")==0)
+			{
+				QNode *nnode=transformqual(calnode->rnext);
+				QExpr_unary *unode=new QExpr_unary(nnode,t_boolean,oper_not,t_qexpr_unary);
+				return unode;
+			}
+			else if(strcmp(calnode->sign,"--")==0)
+			{
+				QNode *nnode=transformqual(calnode->rnext);
+				QExpr_unary *unode=new QExpr_unary(nnode,nnode->actual_type,oper_negative,t_qexpr_unary);
+				return unode;
 			}
 			else if(strcmp(calnode->sign,"CMP")==0)
 			{
+				QNode *lnode=transformqual(calnode->lnext);
+				QNode *rnode=transformqual(calnode->rnext);
+				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				switch(calnode->cmp)
 				{
 					case 1://"<"
@@ -129,11 +168,21 @@ QNode * transformqual(Node *node)
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)
 			{
-
+				QNode *node0=transformqual(funcnode->args);
+				QNode *node1=transformqual(funcnode->parameter1);
+				QNode *node2=new QExpr("256",t_int);//256 is the size of the qnode->result_store
+				data_type a_type=t_string;
+				QExpr_ternary *substrnode=new QExpr_ternary(node0,node1,node2,a_type,oper_substring,t_qexpr_ternary);
+				return substrnode;
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING1")==0)
 			{
-
+				QNode *node0=transformqual(funcnode->args);
+				QNode *node1=transformqual(funcnode->parameter1);
+				QNode *node2=transformqual(funcnode->parameter2);
+				data_type a_type=t_string;
+				QExpr_ternary *substrnode=new QExpr_ternary(node0,node1,node2,a_type,oper_substring,t_qexpr_ternary);
+				return substrnode;
 			}
 			else if(strcmp(funcnode->funname,"FTRIM0")==0)//both
 			{
@@ -169,7 +218,10 @@ QNode * transformqual(Node *node)
 			}
 			else if(strcmp(funcnode->funname,"FUPPER")==0)
 			{
-
+				QNode *nnext=transformqual(funcnode->parameter1);
+				data_type a_type=t_string;
+				QExpr_unary *uppernode=new QExpr_unary(nnext,a_type,oper_upper,t_qexpr_unary);
+				return uppernode;
 			}
 			else if(strcmp(funcnode->funname,"FCAST")==0)
 			{
@@ -272,6 +324,24 @@ void initqual(QNode *&node,data_type r_type,map<string,int>&colindex)
 			initqual(cmpnode->rnext,cmpnode->actual_type,colindex);
 			cmpnode->function_call=ExectorFunction::operator_function[cmpnode->actual_type][cmpnode->op_type];//TODO
 		}break;
+		case t_qexpr_unary:
+		{
+			QExpr_unary *unode=(QExpr_unary *)node;
+			unode->return_type=r_type;
+			unode->FuncId=Exec_unary;
+			initqual(unode->next,unode->actual_type,colindex);
+			unode->function_call=ExectorFunction::operator_function[unode->actual_type][unode->op_type];
+		}break;
+		case t_qexpr_ternary:
+		{
+			QExpr_ternary *tnode=(QExpr_ternary *)node;
+			tnode->return_type=r_type;
+			tnode->FuncId=Exec_ternary;
+			initqual(tnode->next0,tnode->actual_type,colindex);
+			initqual(tnode->next1,t_int,colindex);
+			initqual(tnode->next2,t_int,colindex);
+			tnode->function_call=ExectorFunction::operator_function[tnode->actual_type][tnode->op_type];
+		}break;
 		case t_qexpr_func:
 		{
 //			QExpr_binary *funcnode=(QExpr_binary *)(node);
@@ -290,6 +360,7 @@ void initqual(QNode *&node,data_type r_type,map<string,int>&colindex)
 			qexpr->FuncId=getConst;
 			qexpr->return_type=r_type;
 			strcpy(qexpr->result_store,qexpr->value.c_str());//change the storage style from string to char *,so store the value in the return_type[]
+			TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->result_store,qexpr->result_store);
 		}break;
 		default:
 		{

@@ -1846,7 +1846,7 @@ case_list: WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN1", NULL, $2, 
    ;
 
 expr: expr LIKE expr	{ $$=newExprCal(t_expr_cal, "LIKE", NULL, 0, $1, $3); }
-   | expr NOT LIKE expr { $$=newExprCal(t_expr_cal, "NLIKE", NULL, 0, NULL, $4); }
+   | expr NOT LIKE expr { $$=newExprCal(t_expr_cal, "NLIKE", NULL, 0, $1, $4); }
    ;
 
 expr: expr REGEXP expr		{ $$=newExprCal(t_expr_cal, "REGEXP", NULL, 0, $1, $3); }

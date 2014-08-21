@@ -787,13 +787,13 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 		case t_expr_cal:
 		{
 			Expr_cal *node=(Expr_cal*)cur;
-			if(node->lnext==NULL||node->rnext==NULL)
+			if(node->lnext==NULL&&node->rnext==NULL)
 			return false;
 			bool flag=true;
+			if(node->lnext!=NULL)
 			flag=wherecondition_check(qstmt,node->lnext,rtable);
-			if(flag==false)
-				return false;
-			flag=wherecondition_check(qstmt,node->rnext,rtable);
+			if(node->rnext!=NULL)
+			flag*=wherecondition_check(qstmt,node->rnext,rtable);
 			return flag;
 		}break;
 		case t_expr_func:
