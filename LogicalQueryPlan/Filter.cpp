@@ -14,6 +14,7 @@
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
+#include "../common/Expression/initquery.h"
 Filter::Filter(LogicalOperator *child,vector<QNode *>qual)
 :child_(child),qual_(qual)
 {
@@ -53,8 +54,6 @@ Dataflow Filter::getDataflow(){
 	Dataflow dataflow=child_->getDataflow();
 	if(comparator_list_.size()==0)
 		generateComparatorList(dataflow);
-
-
 	if(dataflow.isHashPartitioned()){
 		for(unsigned i=0;i<dataflow.property_.partitioner.getNumberOfPartitions();i++){
 			if(couldHashPruned(i,dataflow.property_.partitioner))//is filtered
@@ -74,7 +73,11 @@ Dataflow Filter::getDataflow(){
 		}
 	}
 	getcolindex(dataflow);
-
+	Schema *input_=getSchema(dataflow.attribute_list_);
+	for(int i=0;i<qual_.size();i++)
+	{
+		InitExprAtLogicalPlan(qual_[i],t_boolean,colindex_,input_);
+	}
 	return dataflow;
 }
 BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){

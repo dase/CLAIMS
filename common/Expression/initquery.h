@@ -21,8 +21,9 @@
 #include "../../common/TypePromotionMap.h"
 #include "../../common/Logging.h"
 #include "../../Environment.h"
+#include<algorithm>
 using namespace std;
 QNode * transformqual(Node *node);
-void initqual(QNode *&node,data_type r_type,map<string,int>&colindex);
-
+void InitExprAtPhysicalPlan(QNode *node);
+void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex,Schema *schema);
 #endif /* INITQUERY_H_ */

@@ -6,14 +6,15 @@
  */
 #include"qnode.h"
 #include"execfunc.h"
-QExpr_unary::QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type)
+QExpr_unary::QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias)
 {
 	op_type=op_types;
 	type=q_type;
 	next=arg;
 	actual_type=a_type;
+	alias=string(t_alias);
 }
-QExpr_binary::QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type)
+QExpr_binary::QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias)
 {
 	op_type=op_types;
 	type=q_type;
@@ -22,8 +23,9 @@ QExpr_binary::QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type 
 	actual_type=a_type;
 //	function_call=f_call;
 	FuncId=Exec_cal;
+	alias=string(t_alias);
 }
-QExpr_ternary::QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type)
+QExpr_ternary::QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias)
 {
 	op_type=op_types;
 	type=q_type;
@@ -31,15 +33,18 @@ QExpr_ternary::QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_typ
 	next1=arg1;
 	next2=arg2;
 	actual_type=a_type;
+	alias=string(t_alias);
+
 }
-QExpr::QExpr(char *val,data_type a_type)
+QExpr::QExpr(char *val,data_type a_type,char *t_alias)
 {
 	type=t_qexpr;
-	value=string(val);
+	const_value=string(val);
 	actual_type=a_type;
 	FuncId=getConst;
+	alias=string(t_alias);
 }
-QColcumns::QColcumns(char *tbl,char *coln,data_type a_type)
+QColcumns::QColcumns(char *tbl,char *coln,data_type a_type,char *t_alias)
 {
 	type=t_qcolcumns;
 	id=-1;
@@ -47,6 +52,7 @@ QColcumns::QColcumns(char *tbl,char *coln,data_type a_type)
 	table=string(tbl);
 	col=string(coln);
 	FuncId=getcol;
+	alias=string(t_alias);
 }
 
 

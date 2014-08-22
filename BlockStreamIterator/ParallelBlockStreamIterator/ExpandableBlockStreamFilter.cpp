@@ -69,8 +69,7 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 	}
 
 	for (int i = 0; i < state_.qual_.size(); i++) {
-		initqual(state_.qual_[i], t_boolean,
-				state_.colindex_);
+		InitExprAtPhysicalPlan(state_.qual_[i]);
 	}
 }
 
