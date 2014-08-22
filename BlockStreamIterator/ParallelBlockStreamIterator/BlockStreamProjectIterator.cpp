@@ -22,11 +22,14 @@ BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 	open_finished_=false;
 }
 
+BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei,vector<QNode *>exprTree)
+:input_(input),output_(output),children_(children),block_size_(blocksize),map_(map),v_ei_(v_ei),exprTree_(exprTree){
+
+}
 BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei)
 :input_(input),output_(output),children_(children),block_size_(blocksize),map_(map),v_ei_(v_ei){
 
 }
-
 bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
 	state_.children_->open(partition_offset);
 	if(sema_open_.try_wait()){
@@ -39,6 +42,11 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
 		while (!open_finished_)
 			usleep(1);
 	}
+
+	for (int i = 0; i < state_.exprTree_.size(); i++) {
+		InitExprAtPhysicalPlan(state_.exprTree_[i]);
+	}
+
 	return true;
 }
 
@@ -54,12 +62,17 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 	void *cur=0;
 
 	remaining_block rb;
-	if(atomicPopRemainingBlock(rb)){
-		while(1){
-			if((cur=rb.bsti_->currentTuple())==0){
+	if(atomicPopRemainingBlock(rb))
+	{
+		while(1)
+		{
+			if((cur=rb.bsti_->currentTuple())==0)
+			{
 				rb.bsb_->setEmpty();
-				if(state_.children_->next(rb.bsb_)==false){
-					if(!block->Empty()){
+				if(state_.children_->next(rb.bsb_)==false)
+				{
+					if(!block->Empty())
+					{
 						atomicPushRemainingBlock(rb);
 						return true;
 					}
@@ -71,33 +84,39 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 
 			if((tuple=block->allocateTuple(total_length_))>0)
 			{
-				for(unsigned i=0;i<state_.v_ei_.size();i++)
+//				for(unsigned i=0;i<state_.v_ei_.size();i++)
+//				{
+//					ExpressionItem result;
+//					ExpressItem_List toCalc;
+//					int variable_=0;
+//					for(unsigned j=0;j<state_.v_ei_[i].size();j++)
+//					{
+//						ExpressionItem ei;
+//						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
+//						{
+//							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
+//							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(nth).type);
+//							variable_++;
+//						}
+//						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
+//						{
+//							ei.return_type=state_.v_ei_[i][j].return_type;
+//							ei.setData(state_.v_ei_[i][j].content.data);
+//						}
+//						else
+//						{
+//							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
+//						}
+//						toCalc.push_back(ei);
+//					}
+//					ExpressionCalculator::calcuate(toCalc,result);
+//					copyColumn(tuple,result,state_.output_->getcolumn(i).get_length());
+//					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
+//				}
+				for(int i=0;i<state_.exprTree_.size();i++)
 				{
-					ExpressionItem result;
-					ExpressItem_List toCalc;
-					int variable_=0;
-					for(unsigned j=0;j<state_.v_ei_[i].size();j++)
-					{
-						ExpressionItem ei;
-						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
-						{
-							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
-							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(nth).type);
-							variable_++;
-						}
-						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
-						{
-							ei.return_type=state_.v_ei_[i][j].return_type;
-							ei.setData(state_.v_ei_[i][j].content.data);
-						}
-						else
-						{
-							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
-						}
-						toCalc.push_back(ei);
-					}
-					ExpressionCalculator::calcuate(toCalc,result);
-					copyColumn(tuple,result,state_.output_->getcolumn(i).get_length());
+					void * result=state_.exprTree_[i]->FuncId(state_.exprTree_[i],cur,state_.input_);
+					copyNewValue(tuple,result,state_.output_->getcolumn(i).get_length());
 					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
 				}
 				rb.bsti_->increase_cur_();
@@ -155,7 +174,9 @@ void BlockStreamProjectIterator::atomicPushRemainingBlock(remaining_block rb){
 	remaining_block_list_.push_back(rb);
 	lock_.release();
 }
-
+bool BlockStreamProjectIterator::copyNewValue(void *tuple,void *result,int length){
+	memcpy(tuple,result,length);
+}
 bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,int length){
 	switch(result.return_type){
 		case t_int:{

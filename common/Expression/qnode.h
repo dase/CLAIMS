@@ -18,6 +18,8 @@ using namespace std;
 #include "../../Catalog/Attribute.h"
 #include "../../common/Schema/Schema.h"
 #include "qnode.h"
+#include "../../common/TypeCast.h"
+#define BASE_SIZE 128
 typedef struct FuncCallInfoData
 {
 	int nargs;
@@ -26,7 +28,6 @@ typedef struct FuncCallInfoData
 }*FuncCallInfo;
 typedef  void (*ExecFunc)(FuncCallInfo  fcinfo);
 typedef void* (*FuncCall)(Node *qinfo,void *tuple,Schema *schema);
-typedef void* (*TypeCastFunc)(void * oldvalue,data_type totype);
 enum qnodetype
 {
 	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qname,t_qstring,t_qint,
@@ -47,8 +48,11 @@ public:
 	qnodetype type;
 	FuncCall FuncId;
 	data_type actual_type,return_type;
-	enum{s_size=256};
-	char result_store[s_size];
+	void * value;
+	int length;
+	bool isnull;
+	TypeCastF type_cast_func;
+	string alias;
 	QNode(){};
 	virtual ~QNode(){};
 private:
@@ -56,7 +60,7 @@ private:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar&type &actual_type ;
+		ar & type & actual_type & return_type & length & isnull &alias;
 	}
 };
 class QExpr_unary:public QNode
@@ -67,7 +71,7 @@ public:
 	ExecFunc function_call;
 	QExpr_unary(){};
 	~QExpr_unary(){};
-	QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type);
+	QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -84,7 +88,7 @@ public:
 	ExecFunc function_call;// 通过函数可以知道具体的node类型，因此不需要进行nodetype的判断
 	QExpr_binary(){};
 	~QExpr_binary(){};
-	QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type);
+	QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -101,7 +105,7 @@ public:
 	ExecFunc function_call;
 	QExpr_ternary(){};
 	~QExpr_ternary(){};
-	QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type);
+	QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -115,7 +119,7 @@ class QColcumns:public QNode//getscalarvar
 public:
 	int id;//表示在dataflow_schema中的第几个
 	string table,col;
-	QColcumns(char *tbl,char *coln,data_type a_type);
+	QColcumns(char *tbl,char *coln,data_type a_type,char *t_alias);
 	QColcumns(){};
 	~QColcumns(){};
 private:
@@ -123,15 +127,14 @@ private:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar& boost::serialization::base_object<QNode>(*this) & table & col ;
+		ar& boost::serialization::base_object<QNode>(*this) & table & col & id ;
 	}
 };
 class QExpr:public QNode//getconst
 {
 public:
-	string value;
-	TypeCastFunc CastFunc;
-	QExpr(char *val,data_type r_type);
+	string const_value;
+	QExpr(char *val,data_type r_type,char *t_alias);
 	QExpr(){};
 	~QExpr(){};
 private:
@@ -139,7 +142,7 @@ private:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar& boost::serialization::base_object<QNode>(*this)&value;
+		ar& boost::serialization::base_object<QNode>(*this)&const_value;
 	}
 };
 

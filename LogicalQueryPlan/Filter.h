@@ -55,9 +55,9 @@ private:
 	LogicalOperator* child_;
 	Condition condition_;
 	vector<AttributeComparator> comparator_list_;
-	map<string,int>colindex_;
 	std::vector<Expression> exprArray_;
 
+	map<string,int>colindex_;
 	vector<QNode *>qual_;
 };
 
