@@ -54,5 +54,20 @@ QColcumns::QColcumns(char *tbl,char *coln,data_type a_type,char *t_alias)
 	FuncId=getcol;
 	alias=string(t_alias);
 }
-
+QExpr_case_when::QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,string alias_)
+{
+	type=t_qexpr_case_when;
+	qual=qual_;
+	ans=ans_;
+	alias=string(alias_) ;
+	actual_type=ans[0]->actual_type;
+}
+QExpr_in::QExpr_in(vector<QNode *>&cmpnode_,vector<vector< QNode *> >&rnode_,char * alias_)
+{
+	cmpnode=cmpnode_;
+	rnode=rnode_;
+	actual_type=t_boolean;
+	type=t_qexpr_in;
+	alias=string(alias_);
+}
 

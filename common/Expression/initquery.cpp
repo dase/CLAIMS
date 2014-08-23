@@ -8,6 +8,7 @@
 #include "../../common/TypeCast.h"
 #include "queryfunc.h"
 #include "qnode.h"
+#include "../../Parsetree/sql_node_struct.h"
 QNode * transformqual(Node *node)
 {
 //	memalign(cacheline_size,1024)
@@ -102,6 +103,65 @@ QNode * transformqual(Node *node)
 				QExpr_unary *unode=new QExpr_unary(nnode,nnode->actual_type,oper_negative,t_qexpr_unary,calnode->str);
 				return unode;
 			}
+			else if(strcmp(calnode->sign,"INVS")==0)
+			{
+				vector<QNode *>lnode,tmp;
+				vector< vector<QNode *> >rnode;
+				lnode.push_back(transformqual(calnode->lnext));//only one
+				int index=0;
+				for(Node *tpnode=calnode->rnext;tpnode!=NULL;)
+				{
+					Expr_list *elnode=(Expr_list *)tpnode;
+					tmp.push_back(transformqual(elnode->data));//only one column
+					tpnode=elnode->next;
+					rnode.push_back(tmp);
+					tmp.clear();
+				}
+				vector<QNode *>cmpnode;
+				for(int i=0;i<lnode.size();i++)
+				{
+					data_type a_type=TypePromotion::arith_type_promotion_map[lnode[i]->actual_type][rnode[0][i]->actual_type];
+					QExpr_binary *qcalnode=new QExpr_binary(lnode[i],rnode[0][i],a_type,oper_equal,t_qexpr_cmp,"tempnode");
+					cmpnode.push_back(qcalnode);
+				}
+				QNode *innode=new QExpr_in(cmpnode,rnode,calnode->str);
+				return innode;
+			}
+			else if(strcmp(calnode->sign,"INVM")==0)
+			{
+				vector<QNode *>lnode,tmp;
+				vector< vector<QNode *> >rnode;
+				for(Node *tpnode=calnode->lnext;tpnode!=NULL;)
+				{
+					Expr_list *elnode=(Expr_list *)tpnode;
+					lnode.push_back(transformqual(elnode->data));
+					tpnode=elnode->next;
+				}
+				int index=0;
+				for(Node *tpnode=calnode->rnext;tpnode!=NULL;)
+				{
+					Expr_list *elnode=(Expr_list *)tpnode;
+					for(Node *pnode=elnode->data;pnode!=NULL;)
+					{
+						Expr_list *enode=(Expr_list *)pnode;
+						tmp.push_back(transformqual(enode->data));
+						pnode=enode->next;
+					}
+					rnode.push_back(tmp);
+					tmp.clear();
+					index++;
+					tpnode=elnode->next;
+				}
+				vector<QNode *>cmpnode;
+				for(int i=0;i<lnode.size();i++)
+				{
+					data_type a_type=TypePromotion::arith_type_promotion_map[lnode[i]->actual_type][rnode[0][i]->actual_type];
+					QExpr_binary *qcalnode=new QExpr_binary(lnode[i],rnode[0][i],a_type,oper_equal,t_qexpr_cmp,"tempnode");
+					cmpnode.push_back(qcalnode);
+				}
+				QNode *innode=new QExpr_in(cmpnode,rnode,calnode->str);
+				return innode;
+			}
 			else if(strcmp(calnode->sign,"CMP")==0)
 			{
 				QNode *lnode=transformqual(calnode->lnext);
@@ -152,17 +212,40 @@ QNode * transformqual(Node *node)
 			Expr_func * funcnode=(Expr_func *)node;
 			if(strcmp(funcnode->funname,"CASE3")==0)
 			{
-
+				vector<QNode *>qual;
+				vector<QNode *>ans;
+				for(Node *tnode=funcnode->parameter1;tnode!=NULL;)
+				{
+					Expr_func *tfnode=(Expr_func *)tnode;
+					assert(strcmp(tfnode->funname,"WHEN2")==0);
+					qual.push_back(transformqual(tfnode->parameter1));
+					ans.push_back(transformqual(tfnode->parameter2));
+					tnode=tfnode->next;
+				}
+				QNode *cwnode=new QExpr_case_when(qual,ans,funcnode->str);
+				return cwnode;
 			}
 			else if(strcmp(funcnode->funname,"CASE4")==0)//now just support |case [when expr then expr]* [else expr] end|
 			{
-
+				vector<QNode *>qual;
+				vector<QNode *>ans;
+				for(Node *tnode=funcnode->parameter1;tnode!=NULL;)
+				{
+					Expr_func *tfnode=(Expr_func *)tnode;
+					assert(strcmp(tfnode->funname,"WHEN2")==0);
+					qual.push_back(transformqual(tfnode->parameter1));
+					ans.push_back(transformqual(tfnode->parameter2));
+					tnode=tfnode->next;
+				}
+				ans.push_back(transformqual(funcnode->parameter2));
+				QNode *cwnode=new QExpr_case_when(qual,ans,funcnode->str);
+				return cwnode;
 			}
-			else if(strcmp(funcnode->funname,"WHEN1")==0)
+			else if(strcmp(funcnode->funname,"WHEN1")==0)//no use
 			{
 
 			}
-			else if(strcmp(funcnode->funname,"WHEN2")==0)
+			else if(strcmp(funcnode->funname,"WHEN2")==0)//no use
 			{
 
 			}
@@ -230,29 +313,39 @@ QNode * transformqual(Node *node)
 			else if(strcmp(funcnode->funname,"FCOALESCE")==0)
 			{
 			}
-			else if(strcmp(funcnode->funname,"FCOUNT")==0)
+			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
 			{
-
+				QNode *aggnode=new QColcumns("",funcnode->str,t_u_long,funcnode->str);
+				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FCOUNT")==0)
 			{
-
+				QNode *aggnode=new QColcumns("",funcnode->str,t_u_long,funcnode->str);
+				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
-
+				QNode *anext=transformqual(funcnode->parameter1);
+				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
-
+				QNode *anext=transformqual(funcnode->parameter1);
+				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
-
+				QNode *anext=transformqual(funcnode->parameter1);
+				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
-
+				QNode *anext=transformqual(funcnode->parameter1);
+				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+				return aggnode;
 			}
 			else
 			{
@@ -331,7 +424,7 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 			unode->length=unode->next->length;
 			unode->isnull=unode->next->isnull;
 		}break;
-		case t_qexpr_ternary:
+		case t_qexpr_ternary://now for substring,not for all
 		{
 			QExpr_ternary *tnode=(QExpr_ternary *)node;
 			tnode->return_type=r_type;
@@ -340,6 +433,41 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 			InitExprAtLogicalPlan(tnode->next2,t_int,colindex,schema);
 			tnode->length=max(tnode->next0->length,max(tnode->next1->length,tnode->next2->length));
 			tnode->isnull=(tnode->next0->isnull||tnode->next1->isnull||tnode->next2->isnull);
+		}break;
+		case t_qexpr_case_when:
+		{
+			QExpr_case_when *cwnode=(QExpr_case_when *)node;
+			cwnode->return_type=r_type;
+			cwnode->length=BASE_SIZE;
+			cwnode->isnull=true;
+			for(int i=0;i<cwnode->qual.size();i++)
+			{
+				InitExprAtLogicalPlan(cwnode->qual[i],t_boolean,colindex,schema);
+			}
+			for(int i=0;i<cwnode->ans.size();i++)
+			{
+				InitExprAtLogicalPlan(cwnode->ans[i],cwnode->ans[i]->actual_type,colindex,schema);
+				cwnode->length=max(cwnode->length,cwnode->ans[i]->length);
+				cwnode->isnull=(cwnode->isnull||cwnode->ans[i]->isnull);
+			}
+		}break;
+		case t_qexpr_in:
+		{
+			QExpr_in *innode=(QExpr_in *)node;
+			innode->return_type=r_type;
+			innode->length=BASE_SIZE;
+			innode->isnull=true;
+			for(int i=0;i<innode->cmpnode.size();i++)
+			{
+				InitExprAtLogicalPlan(innode->cmpnode[i],t_boolean,colindex,schema);
+			}
+			for(int i=0;i<innode->rnode.size();i++)
+			{
+				for(int j=0;j<innode->rnode[i].size();j++)
+				{
+					InitExprAtLogicalPlan(innode->rnode[i][j],innode->cmpnode[j]->actual_type,colindex,schema);
+				}
+			}
 		}break;
 		case t_qexpr_func:
 		{
@@ -351,7 +479,7 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 			QColcumns * qcol=(QColcumns *)(node);
 			qcol->id=colindex[qcol->col];//col=A.a or col= a?
 			qcol->return_type=r_type;
-			qcol->length=schema->getcolumn(qcol->id).get_length();
+			qcol->length=max(schema->getcolumn(qcol->id).get_length(),(unsigned int)BASE_SIZE);
 			qcol->isnull=false;//TODO
 		}break;
 		case t_qexpr:
@@ -416,6 +544,39 @@ void InitExprAtPhysicalPlan(QNode *node)
 			tnode->function_call=ExectorFunction::operator_function[tnode->actual_type][tnode->op_type];
 			tnode->type_cast_func=TypeCast::type_cast_func[tnode->actual_type][tnode->return_type];
 			tnode->value=memalign(cacheline_size,tnode->length);
+		}break;
+		case t_qexpr_case_when:
+		{
+			QExpr_case_when *cwnode=(QExpr_case_when *)node;
+			for(int i=0;i<cwnode->qual.size();i++)
+			{
+				InitExprAtPhysicalPlan(cwnode->qual[i]);
+			}
+			for(int i=0;i<cwnode->ans.size();i++)
+			{
+				InitExprAtPhysicalPlan(cwnode->ans[i]);
+			}
+			cwnode->FuncId=Exec_case_when;
+			cwnode->type_cast_func=TypeCast::type_cast_func[cwnode->actual_type][cwnode->return_type];
+			cwnode->value=memalign(cacheline_size,cwnode->length);
+		}break;
+		case t_qexpr_in:
+		{
+			QExpr_in *innode=(QExpr_in *)node;
+			for(int i=0;i<innode->cmpnode.size();i++)
+			{
+				InitExprAtPhysicalPlan(innode->cmpnode[i]);
+			}
+			for(int i=0;i<innode->rnode.size();i++)
+			{
+				for(int j=0;j<innode->rnode[i].size();j++)
+				{
+					InitExprAtPhysicalPlan(innode->rnode[i][j]);
+				}
+			}
+			innode->FuncId=Exec_in;
+			innode->type_cast_func=TypeCast::type_cast_func[innode->actual_type][innode->return_type];
+			innode->value=memalign(cacheline_size,innode->length);
 		}break;
 		case t_qexpr_func:
 		{

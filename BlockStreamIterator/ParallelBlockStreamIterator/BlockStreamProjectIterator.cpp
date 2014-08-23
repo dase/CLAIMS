@@ -20,6 +20,7 @@ BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 :state_(state){
 	sema_open_.set_value(1);
 	open_finished_=false;
+	initialize_operator_function();
 }
 
 BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei,vector<QNode *>exprTree)
@@ -66,7 +67,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 	{
 		while(1)
 		{
-			if((cur=rb.bsti_->currentTuple())==0)
+			while((cur=rb.bsti_->currentTuple())==0)
 			{
 				rb.bsb_->setEmpty();
 				if(state_.children_->next(rb.bsb_)==false)
@@ -84,40 +85,19 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 
 			if((tuple=block->allocateTuple(total_length_))>0)
 			{
-//				for(unsigned i=0;i<state_.v_ei_.size();i++)
-//				{
-//					ExpressionItem result;
-//					ExpressItem_List toCalc;
-//					int variable_=0;
-//					for(unsigned j=0;j<state_.v_ei_[i].size();j++)
-//					{
-//						ExpressionItem ei;
-//						if(state_.v_ei_[i][j].type==ExpressionItem::variable_type)
-//						{
-//							int nth=state_.map_.atomicPopExpressionMapping(i).at(variable_); //n-th column in tuple
-//							ei.setValue(state_.input_->getColumnAddess(nth,cur),state_.input_->getcolumn(nth).type);
-//							variable_++;
-//						}
-//						else if(state_.v_ei_[i][j].type==ExpressionItem::const_type)
-//						{
-//							ei.return_type=state_.v_ei_[i][j].return_type;
-//							ei.setData(state_.v_ei_[i][j].content.data);
-//						}
-//						else
-//						{
-//							ei.setOperator(state_.v_ei_[i][j].getOperatorName().c_str());
-//						}
-//						toCalc.push_back(ei);
-//					}
-//					ExpressionCalculator::calcuate(toCalc,result);
-//					copyColumn(tuple,result,state_.output_->getcolumn(i).get_length());
-//					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
-//				}
-				for(int i=0;i<state_.exprTree_.size();i++)
+				if(cur>0)
 				{
-					void * result=state_.exprTree_[i]->FuncId(state_.exprTree_[i],cur,state_.input_);
-					copyNewValue(tuple,result,state_.output_->getcolumn(i).get_length());
-					tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
+					for(int i=0;i<state_.exprTree_.size();i++)
+					{
+						void * result=state_.exprTree_[i]->FuncId(state_.exprTree_[i],cur,state_.input_);
+						copyNewValue(tuple,result,state_.output_->getcolumn(i).get_length());
+						tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
+					}
+				}
+				else
+				{
+					cout<<"^^^^  the current tuple is null ^^^"<<endl;
+					assert(false);
 				}
 				rb.bsti_->increase_cur_();
 			}

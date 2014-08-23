@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include "data_type.h"
+#include <string.h>
 typedef bool (*TypeCastFunction) (ExpressionItem& in);//
 typedef void *(*TypeCastF)(void *value,void *tovalue);
 class TypeCast{
@@ -174,6 +175,11 @@ inline void *string_to_decimal(void *value,void * tovalue)
 inline void *string_to_boolean(void *value,void * tovalue)
 {
 	*(bool *)tovalue=((char *)value==NULL);
+	return tovalue;
+}
+inline void *string_to_date(void *value,void *tovalue)
+{
+	*(date *)tovalue=(from_string(string((char *)value)));
 	return tovalue;
 }
 /***************string****************************/
@@ -367,6 +373,8 @@ inline void *boolean_to_decimal(void *value,void * tovalue)
 }
 
 /***************boolean****************************/
+
+/***************decimal****************************/
 inline void *decimal_to_decimal(void *value,void * tovalue)
 {
 	*(NValue *)tovalue=*(NValue *)value;
@@ -381,9 +389,24 @@ inline void *decimal_to_boolean(void *value,void * tovalue)
 /***************decimal****************************/
 
 
+/***************date****************************/
+inline void *date_to_date(void *value,void *tovalue)
+{
+	*(date *)tovalue=*(date *)value;
+	return tovalue;
+}
+inline void *date_to_boolean(void *value,void *tovalue)//now return true everytime
+{
+	*(bool *)tovalue=true;
+	return tovalue;
+}
+inline void *date_to_string(void *value,void *tovalue)
+{
+	strcpy((char *)tovalue,to_iso_extended_string(*(date *)value).c_str());
+	return tovalue;
+}
+/***************date****************************/
 
-
-/***************decimal****************************/
 
 
 /***************smallInt****************************/
@@ -478,7 +501,7 @@ inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_func[t_string][t_float]=string_to_float;
 	TypeCast::type_cast_func[t_string][t_double]=string_to_double;
 	TypeCast::type_cast_func[t_string][t_string]=string_to_string;
-	TypeCast::type_cast_func[t_string][t_date]=errormsg;
+	TypeCast::type_cast_func[t_string][t_date]=string_to_date;
 	TypeCast::type_cast_func[t_string][t_time]=errormsg;
 	TypeCast::type_cast_func[t_string][t_datetime]=errormsg;
 	TypeCast::type_cast_func[t_string][t_decimal]=string_to_decimal;
@@ -492,12 +515,12 @@ inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_func[t_date][t_u_long]=errormsg;
 	TypeCast::type_cast_func[t_date][t_float]=errormsg;
 	TypeCast::type_cast_func[t_date][t_double]=errormsg;
-	TypeCast::type_cast_func[t_date][t_string]=errormsg;
-	TypeCast::type_cast_func[t_date][t_date]=errormsg;
+	TypeCast::type_cast_func[t_date][t_string]=date_to_string;
+	TypeCast::type_cast_func[t_date][t_date]=date_to_date;
 	TypeCast::type_cast_func[t_date][t_time]=errormsg;
 	TypeCast::type_cast_func[t_date][t_datetime]=errormsg;
 	TypeCast::type_cast_func[t_date][t_decimal]=errormsg;
-	TypeCast::type_cast_func[t_date][t_boolean]=errormsg;
+	TypeCast::type_cast_func[t_date][t_boolean]=date_to_boolean;
 
 	//
 

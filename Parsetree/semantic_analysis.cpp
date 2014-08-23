@@ -215,6 +215,12 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 					if(result==3||result==0)
 						return result;
 				}
+				if(funcnode->next!=NULL)//there are next in case_list
+				{
+					result=selectlist_expr_analysis(slnode,qstmt,funcnode->next,rtable);
+					if(result==3||result==0)
+						return result;
+				}
 			}
 		}break;
 		case t_expr_cal://需要判断表达式是否正确使用，比如计算符号左右的类型，以及除数是否为零判断等

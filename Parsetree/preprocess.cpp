@@ -462,12 +462,12 @@ void solve_const_value_in_wherecondition(Node *&cur)
 						months dd(atof(((Expr *)datefunc->args)->data)*3);
 						constdate=date(from_string(datestr))+dd;
 					}
-					datestr=to_simple_string(constdate);
+					datestr=to_iso_extended_string(constdate);
 					char *datechar=(char *)malloc(datestr.length()+2);
 					strcpy(datechar,datestr.c_str());
 					SQLParse_log("the date result after date_add, string= %s ------------------\n",datechar);
 					//free(cur);
-					cur=(Node *)newExpr(t_dateval,datechar);
+					cur=(Node *)newExpr(t_stringval,datechar);
 				}
 
 			}
