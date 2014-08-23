@@ -746,9 +746,44 @@ inline void string_substring(FuncCallInfo fcinfo)
 }
 /*****************string********************/
 
+/*****************date********************/
+inline void date_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]==*(date *)fcinfo->args[1]);
+}
+inline void date_not_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]!=*(date *)fcinfo->args[1]);
+}
+inline void date_great(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]>*(date *)fcinfo->args[1]);
+}
+inline void date_great_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]>=*(date *)fcinfo->args[1]);
+}
+inline void date_less(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]<*(date *)fcinfo->args[1]);
+}
+inline void date_less_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]<=*(date *)fcinfo->args[1]);
+}
+/*****************date********************/
+
 /*****************decimal********************/
 /*****************decimal********************/
 
+/*****************decimal********************/
+/*****************decimal********************/
 inline void initialize_operator_function()
 {
 	for(int i=0;i<DATA_TYPE_NUM;i++)
@@ -923,10 +958,27 @@ inline void initialize_operator_function()
 	ExectorFunction::operator_function[t_string][oper_upper]=string_upper;
 	ExectorFunction::operator_function[t_string][oper_substring]=string_substring;
 
-
 	/*****************string********************/
-	/*****************double********************/
-	/*****************double********************/
+
+	/*****************date********************/
+	ExectorFunction::operator_function[t_date][oper_add]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_minus]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_multiply]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_divide]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_mod]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_and]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_or]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_xor]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_not]=oper_not_support;
+	ExectorFunction::operator_function[t_date][oper_equal]=date_equal;
+	ExectorFunction::operator_function[t_date][oper_not_equal]=date_not_equal;
+	ExectorFunction::operator_function[t_date][oper_great]=date_great;
+	ExectorFunction::operator_function[t_date][oper_great_equal]=date_great_equal;
+	ExectorFunction::operator_function[t_date][oper_less]=date_less;
+	ExectorFunction::operator_function[t_date][oper_less_equal]=date_less_equal;
+	ExectorFunction::operator_function[t_date][oper_negative]=oper_not_support;
+	/*****************date********************/
+
 	/*****************double********************/
 	/*****************double********************/
 

@@ -28,124 +28,9 @@
 #include <string.h>
 #include "../common/TypePromotionMap.h"
 #include "../common/Expression/initquery.h"
+#include "../common/Expression/qnode.h"
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
-static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
-static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
-	SQLParse_log("getfiltercondition   ");
-	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
-//	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
-	switch(wcexpr->type)
-	{
-		case t_expr_cal:
-		{
-			Expr_cal * node=(Expr_cal *)wcexpr;
-			if(strcmp(node->sign,"+")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"-")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"*")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"/")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"MOD")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"INS")==0)
-			{
-				hasin=true;
-			}
-			else if(strcmp(node->sign,"ANDOP")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"OR")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"XOR")==0)
-			{
-
-			}
-			else if(strcmp(node->sign,"CMP")==0)
-			{
-				char * attribute;
-				switch((node->lnext)->type)//获得左边的表名
-				{
-					case t_name:
-					{
-						Expr *expr=(Expr *)(node->lnext);
-						attribute=expr->data;
-					}break;
-					case t_name_name:
-					{
-						Columns *col=(Columns *)(node->lnext);
-						attribute=col->parameter2;
-					}break;
-					default:
-					{
-
-					}
-				};
-
-				switch(node->cmp)
-				{
-					case 1://"<"
-					{
-						Expr *expr=(Expr *)(node->rnext);
-						char * temp=expr->data;
-						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,string(temp));
-
-					}break;
-					case 2://">"
-					{
-						Expr *expr=(Expr *)(node->rnext);
-						char * temp=expr->data;
-						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,string(temp));
-					}break;
-					case 3://"<>"
-					{
-						Expr *expr=(Expr *)(node->rnext);
-						char * temp=expr->data;
-						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,string(temp));
-					}break;
-					case 4://"="
-					{
-						Expr *expr=(Expr *)(node->rnext);
-						char * temp=expr->data;
-						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,string(temp));
-					}break;
-					case 5://"<="
-					{
-						Expr *expr=(Expr *)(node->rnext);
-						char * temp=expr->data;
-						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,string(temp));
-					}break;
-					case 6://">="
-					{
-						Expr *expr=(Expr *)(node->rnext);
-						char * temp=expr->data;
-						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,string(temp));
-					}break;
-
-				}
-			}
-		}break;
-		default:
-		{
-			SQLParse_elog("getfiltercondition type error");
-		}
-	}
-}
 static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_list,LogicalOperator *filter_1,LogicalOperator * filter_2)
 {
 	switch(wcexpr->type)
@@ -300,22 +185,14 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
 			{
-//				Filter::Condition filter_condition;
 				Node * p;
-//				vector<vector<ExpressionItem> >allexpr;
 				bool hasin=false;
 				vector<QNode *>v_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
-//					getfiltercondition((Node *)((Expr_list *)p)->data,filter_condition,node->tablename,hasin,tablescan);
-//					vector<ExpressionItem>expr;
-//					get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-//					allexpr.push_back(expr);
 					QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
 					v_qual.push_back(qual);
 				}
-//				LogicalOperator* filter=new Filter(filter_condition,tablescan);
-//				LogicalOperator* filter=new Filter(tablescan,allexpr);
 				LogicalOperator* filter=new Filter(tablescan,v_qual);
 				if(hasin==true)
 				{
@@ -344,21 +221,12 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				if(whcdn->header!=NULL)
 				{
 					Node * p;
-//					vector<vector<ExpressionItem> >allexpr;
 					vector<QNode *>v_qual;
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 					{
-//							vector<ExpressionItem>expr;
-//							get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-//							allexpr.push_back(expr);
 						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
 						v_qual.push_back(qual);
-
 					}
-//					if(allexpr.size()>0)
-//					{
-//						lopfrom=new Filter(filter_1,allexpr);
-//					}
 					if(v_qual.size()>0)
 					{
 						lopfrom=new Filter(filter_1,v_qual);
@@ -379,16 +247,12 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
-//				vector<vector<ExpressionItem> >allexpr;
 				vector<QNode *>v_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
 					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
 					if(fg==0)
 					{
-//						vector<ExpressionItem>expr;
-//						get_a_expression_item(expr,(Node *)((Expr_list *)p)->data,NULL);
-//						allexpr.push_back(expr);
 						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
 						v_qual.push_back(qual);
 					}
@@ -401,10 +265,6 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				{
 
 				}
-//				if(allexpr.size()>0)
-//				{
-//					lopfrom=new Filter(lopfrom,allexpr);
-//				}
 				if(v_qual.size()>0)
 				{
 					lopfrom=new Filter(lopfrom,v_qual);
@@ -578,7 +438,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
-			else if(strcmp(funcnode->funname,"FAVG")==0)///////////////////////////////////底层还未实现
+			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
 				aggregation_function.push_back(BlockStreamAggregationIterator::State::avg);
 				if(input==NULL)
@@ -691,354 +551,12 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 
 }
 
-static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input)
-{
-	if(node==NULL)
-		return;
-	switch(node->type)
-	{
-		case t_expr_func:
-		{
-			Expr_func * funcnode=(Expr_func *)node;
-			if(strcmp(funcnode->funname,"CASE3")==0)
-			{
-				ExpressionItem expritem0;
-				expritem0.setOperator("case");
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("case");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"CASE4")==0)//目前只支持case [when expr then expr]* [else expr] end
-			{
-				ExpressionItem expritem0;
-				expritem0.setOperator("case");
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("else");
-				expr.push_back(expritem1);
-				ExpressionItem expritem2;
-				expritem2.setOperator("case");
-				expr.push_back(expritem2);
 
-			}
-			else if(strcmp(funcnode->funname,"WHEN1")==0)
-			{
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				ExpressionItem expritem0;
-				expritem0.setOperator("when");
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("then");
-				expr.push_back(expritem1);
-
-			}
-			else if(strcmp(funcnode->funname,"WHEN2")==0)
-			{
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				ExpressionItem expritem0;
-				expritem0.setOperator("when");
-				expr.push_back(expritem0);
-
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("then");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)
-			{
-				get_a_expression_item(expr,funcnode->args,input);
-				ExpressionItem expritem0;
-				expritem0.setIntValue(0);
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("substr");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FSUBSTRING1")==0)
-			{
-				get_a_expression_item(expr,funcnode->args,input);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("substr");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FTRIM0")==0)
-			{
-				ExpressionItem expritem0;
-				expritem0.setIntValue(0);
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("trim");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FTRIM1")==0)
-			{
-				ExpressionItem expritem0;
-				expritem0.setIntValue(1);
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("trim");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FTRIM2")==0)
-			{
-				ExpressionItem expritem0;
-				expritem0.setIntValue(2);
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("trim");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FTRIM3")==0)
-			{
-				ExpressionItem expritem0;
-				expritem0.setIntValue(0);
-				expr.push_back(expritem0);
-				ExpressionItem expritem;
-				expritem.setStringValue(" ");
-				expr.push_back(expritem);
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("trim");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FUPPER")==0)
-			{
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("upper");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FCAST")==0)
-			{
-				get_a_expression_item(expr,funcnode->parameter1,input);
-				get_a_expression_item(expr,funcnode->parameter2,input);
-				ExpressionItem expritem1;
-				expritem1.setOperator("cast");
-				expr.push_back(expritem1);
-			}
-			else if(strcmp(funcnode->funname,"FCOALESCE")==0)
-			{
-				//get_a_expression_item(expr,funcnode->parameter1,input,sid);
-			}
-			else if(strcmp(funcnode->funname,"FCOUNT")==0)
-			{
-				if(input==NULL)
-				{
-
-				}
-				else
-				{
-					ExpressionItem expritem;
-					expritem.setVariable("count(*)");
-					expr.push_back(expritem);
-				}
-			}
-			else if(strcmp(funcnode->funname,"FCOUNT")==0)
-			{
-				if(input==NULL)
-				{
-					get_a_expression_item(expr,funcnode->parameter1,input);
-				}
-				else
-				{
-					ExpressionItem expritem;
-					expritem.setVariable((const char*)funcnode->str);
-					expr.push_back(expritem);
-				}
-			}
-			else if(strcmp(funcnode->funname,"FSUM")==0)
-			{
-				if(input==NULL)
-				{
-					get_a_expression_item(expr,funcnode->parameter1,input);
-				}
-				else
-				{
-					ExpressionItem expritem;
-					expritem.setVariable((const char*)funcnode->str);
-					expr.push_back(expritem);
-				}
-			}
-			else if(strcmp(funcnode->funname,"FAVG")==0)
-			{
-				if(input==NULL)
-				{
-					get_a_expression_item(expr,funcnode->parameter1,input);
-				}
-				else
-				{
-					ExpressionItem expritem;
-					expritem.setVariable((const char*)funcnode->str);
-					expr.push_back(expritem);
-				}
-			}
-			else if(strcmp(funcnode->funname,"FMIN")==0)
-			{
-				if(input==NULL)
-				{
-					get_a_expression_item(expr,funcnode->parameter1,input);
-				}
-				else
-				{
-					ExpressionItem expritem;
-					expritem.setVariable((const char*)funcnode->str);
-					expr.push_back(expritem);
-				}
-			}
-			else if(strcmp(funcnode->funname,"FMAX")==0)
-			{
-				if(input==NULL)
-				{
-					get_a_expression_item(expr,funcnode->parameter1,input);
-				}
-				else
-				{
-					ExpressionItem expritem;
-					expritem.setVariable((const char*)funcnode->str);
-					expr.push_back(expritem);
-				}
-			}
-			else
-			{
-				SQLParse_elog("get_a_expression_item: ",funcnode->funname ,"   is null");
-			}
-		}break;
-		case t_expr_cal:
-		{
-			Expr_cal * calnode=(Expr_cal *)node;
-			if(strcmp(calnode->sign,"--")==0)//处理负号的初步方法，处理-的时候，在前面加0，即=（0-expr)
-			{
-				ExpressionItem expritem0;
-				expritem0.setIntValue(0);
-				expr.push_back(expritem0);
-				get_a_expression_item(expr,calnode->rnext,input);
-				ExpressionItem expritem;
-				expritem.setOperator("-");
-				expr.push_back(expritem);
-			}
-			else if(strcmp(calnode->sign,"++")==0)
-			{
-			}
-			else
-			{
-				if(calnode->lnext!=0)
-				get_a_expression_item(expr,calnode->lnext,input);
-				get_a_expression_item(expr,calnode->rnext,input);
-				ExpressionItem expritem;
-				if(strcmp(calnode->sign,"CMP")==0)
-				{
-					switch(calnode->cmp)
-					{
-						case 1://"<"
-						{
-							expritem.setOperator("<");
-						}break;
-						case 2://">"
-						{
-							expritem.setOperator(">");
-						}break;
-						case 3://"<>"
-						{
-							expritem.setOperator("!=");
-						}break;
-						case 4://"="
-						{
-							expritem.setOperator("=");
-						}break;
-						case 5://"<="
-						{
-							expritem.setOperator("<=");
-						}break;
-						case 6://">="
-						{
-							expritem.setOperator(">=");
-						}break;
-						default:
-						{
-							SQLParse_elog("get_a_expression_item"," cmp error","");
-						}
-					}
-				}
-				else if(strcmp(calnode->sign,"ANDOP")==0)
-				{
-					expritem.setOperator("and");
-				}
-				else if(strcmp(calnode->sign,"OR")==0)
-				{
-					expritem.setOperator("or");
-				}
-				else if(strcmp(calnode->sign,"!")==0)
-				{
-					expritem.setOperator("not");
-				}
-				else
-				{
-					expritem.setOperator(calnode->sign);
-				}
-				expr.push_back(expritem);
-			}
-		}break;
-		case t_name:
-		case t_name_name:
-		{
-			Columns *col=(Columns *)node;
-			ExpressionItem expritem;
-			expritem.setVariable(col->parameter2);
-			expr.push_back(expritem);
-		}break;
-		case t_stringval:
-		{
-			Expr * exprval=(Expr *)node;
-			ExpressionItem expritem;
-			expritem.setStringValue(exprval->data);
-			expr.push_back(expritem);
-		}break;
-		case t_intnum:
-		{
-			Expr * exprval=(Expr *)node;
-			ExpressionItem expritem;
-			expritem.setIntValue(exprval->data);
-			expr.push_back(expritem);
-
-		}break;
-		case t_approxnum:
-		{
-			Expr * exprval=(Expr *)node;
-			ExpressionItem expritem;
-			expritem.setDoubleValue(exprval->data);
-			expr.push_back(expritem);
-
-		}break;
-		case t_bool:
-		{
-
-		}break;
-		default:
-		{
-
-		}
-	}
-
-}
 /*
  * 只需要获得agg函数参数的expr并加入到allexpr
  */
 
-static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&allexpr)
+static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 {
 	switch(node->type)
 	{
@@ -1047,10 +565,7 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 			Expr_func * funcnode=(Expr_func *)node;
 			if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
 			{
-				vector<ExpressionItem>expr;
-				get_a_expression_item(expr,funcnode->parameter1,NULL);
-				allexpr.push_back(expr);
-				expr.clear();
+				exprTree.push_back(transformqual(funcnode->parameter1));
 			}
 			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
 			{
@@ -1060,11 +575,11 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 			{
 				if(strcmp(funcnode->funname,"FSUBSTRING0")==0||strcmp(funcnode->funname,"FSUBSTRING1")==0)
 				{
-					recurse_get_item_in_expr(funcnode->args,allexpr);
+					recurse_get_item_in_expr(funcnode->args,exprTree);
 				}
 				else
 				{
-					recurse_get_item_in_expr(funcnode->parameter1,allexpr);
+					recurse_get_item_in_expr(funcnode->parameter1,exprTree);
 				}
 			}
 		}break;
@@ -1072,8 +587,8 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
 			if(calnode->lnext!=0)
-			recurse_get_item_in_expr(calnode->lnext,allexpr);
-			recurse_get_item_in_expr(calnode->rnext,allexpr);
+			recurse_get_item_in_expr(calnode->lnext,exprTree);
+			recurse_get_item_in_expr(calnode->rnext,exprTree);
 
 		}break;
 		case t_name:
@@ -1103,24 +618,21 @@ static void recurse_get_item_in_expr(Node *node,vector<vector<ExpressionItem> >&
 		}
 	}
 }
-static void get_all_selectlist_expression_item(Node * node,vector<vector<ExpressionItem> >&allexpr,LogicalOperator *input,int proj_type)
+static void get_all_selectlist_expression_item(Node * node,LogicalOperator *input,int proj_type,vector<QNode *>&exprTree)
 {
-	vector<ExpressionItem>expr;
 	for(Node *p=node;p!=NULL;)
 	{
 		Select_list *selectlist=(Select_list *)p;
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
 		if(proj_type==0)
 		{
-			get_a_expression_item(expr,sexpr->colname,NULL);
-			allexpr.push_back(expr);
-			expr.clear();
+			exprTree.push_back(transformqual(sexpr->colname));
 		}
 		else if(proj_type==1)
 		{
 			if(selectlist->isall==-1)
 			{
-				recurse_get_item_in_expr(sexpr->colname,allexpr);
+				recurse_get_item_in_expr(sexpr->colname,exprTree);
 			}
 			else if(selectlist->isall==-2)//count(*) 不能参与运算
 			{
@@ -1131,37 +643,29 @@ static void get_all_selectlist_expression_item(Node * node,vector<vector<Express
 		{
 			if(selectlist->isall==-1)
 			{
-				get_a_expression_item(expr,sexpr->colname,input);
-				allexpr.push_back(expr);
-				expr.clear();
+				exprTree.push_back(transformqual(sexpr->colname));
 			}
 			else
 			{
-				ExpressionItem expritem;
-				expritem.setVariable(get_expr_str(sexpr->colname));
- 				expr.push_back(expritem);
- 				allexpr.push_back(expr);
-				expr.clear();
+				exprTree.push_back(transformqual(sexpr->colname));
 			}
 		}
 		p=selectlist->next;
 	}
 }
-static void get_all_groupby_expression_item(Node * node,vector<vector<ExpressionItem> >&allexpr,LogicalOperator *input)
+static void get_all_groupby_expression_item(Node * node,LogicalOperator *input,vector<QNode *>&exprTree)
 {
-	vector<ExpressionItem>expr;
 	for(Node *p=(Node *)(((Groupby_list*)node)->next);p!=NULL;)
 	{
 		Groupby_expr *gbexpr=(Groupby_expr *)p;
-		get_a_expression_item(expr,gbexpr->args,NULL);
-		allexpr.push_back(expr);
-		expr.clear();
+		exprTree.push_back(transformqual(gbexpr->args));
 		p=gbexpr->next;
 	}
 
 }
 static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,int proj_type)
 {
+	vector<QNode *>exprTree;
 	if(parsetree==NULL)
 	{
 		return NULL;
@@ -1169,37 +673,26 @@ static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOpe
 	else
 	{
 		Query_stmt *node=(Query_stmt *)parsetree;
-		vector<vector<ExpressionItem> >allexpr;
-		allexpr.clear();
 		if(proj_type==0)
 		{
-			get_all_selectlist_expression_item(node->select_list,allexpr,NULL,0);
+			get_all_selectlist_expression_item(node->select_list,NULL,0,exprTree);
 		}
 		else if(proj_type==1)
 		{
 			if(node->groupby_list!=NULL)
 			{
-				get_all_groupby_expression_item(node->groupby_list,allexpr,NULL);
+				get_all_groupby_expression_item(node->groupby_list,NULL,exprTree);
 			}
-			get_all_selectlist_expression_item(node->select_list,allexpr,NULL,1);
+			get_all_selectlist_expression_item(node->select_list,NULL,1,exprTree);
 		}
 		else
 		{
-			get_all_selectlist_expression_item(node->select_list,allexpr,last_logicalplan,2);
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,2,exprTree);
 		}
-
-//		cout<<"allexpr.size= "<<allexpr.size()<<endl;
-//		for(unsigned i=0;i<allexpr.size();i++){
-//			cout<<"allexpr "<<i<<"  size ="<<allexpr[i].size()<<endl;
-//			for(unsigned j=0;j<allexpr[i].size();j++){
-//				cout<<"******"<<endl;
-//				allexpr[i][j].print_value();
-//			}
-//		}
 		LogicalOperator* proj=NULL;
-		if(allexpr.size()>0)
+		if(exprTree.size()>0)
 		{
-			proj=new LogicalProject(last_logicalplan,allexpr);
+			proj=new LogicalProject(last_logicalplan,exprTree);
 		}
 		else
 		{

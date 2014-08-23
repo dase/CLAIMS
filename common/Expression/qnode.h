@@ -30,7 +30,7 @@ typedef  void (*ExecFunc)(FuncCallInfo  fcinfo);
 typedef void* (*FuncCall)(Node *qinfo,void *tuple,Schema *schema);
 enum qnodetype
 {
-	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qname,t_qstring,t_qint,
+	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qname,t_qstring,t_qint,t_qexpr_case_when,t_qexpr_in,
 };
 
 enum oper_type
@@ -41,6 +41,7 @@ enum oper_type
 	oper_equal,oper_not_equal,oper_great,oper_great_equal,oper_less,oper_less_equal,
 	oper_both_trim,oper_trailing_trim,oper_leading_trim,oper_like,oper_not_like,oper_upper,oper_substring,
 	oper_negative,
+	oper_case_when,
 };
 class QNode:public Node
 {
@@ -146,6 +147,37 @@ private:
 	}
 };
 
-
-
+class QExpr_case_when:public QNode
+{
+public:
+	vector<QNode *>qual;
+	vector<QNode *>ans;
+	QNode *result;
+	QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,string alias_);
+	QExpr_case_when(){};
+	~QExpr_case_when(){};
+private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar& boost::serialization::base_object<QNode>(*this) & qual & ans & result;
+	}
+};
+class QExpr_in:public QNode
+{
+public:
+	vector<QNode *>cmpnode;
+	vector< vector<QNode *>  >rnode;
+	QExpr_in(vector<QNode *>&cmpnode_,vector<vector<QNode *> >&rnode_,char * alias_);
+	QExpr_in(){};
+	~QExpr_in(){};
+private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar& boost::serialization::base_object<QNode>(*this) & cmpnode & rnode;
+	}
+};
 #endif /* QNode_H_ */

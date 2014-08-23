@@ -1841,7 +1841,7 @@ expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE1", $2, $3, N
    |  CASE case_list ELSE expr END      { $$=newExprFunc(t_expr_func, "CASE4", NULL, $2, $4, NULL); }
    ;
 
-case_list: WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN1", NULL, $2, $4, NULL); }
+case_list: WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN2", NULL, $2, $4, NULL); }
    | case_list WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN2", NULL, $3, $5, $1); }
    ;
 

@@ -80,6 +80,8 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<QExpr*>(NULL));
 	ar.register_type(static_cast<QExpr_unary*>(NULL));
 	ar.register_type(static_cast<QExpr_ternary*>(NULL));
+	ar.register_type(static_cast<QExpr_case_when*>(NULL));
+	ar.register_type(static_cast<QExpr_in*>(NULL));
 
 }
 void cheat_the_compiler(){
