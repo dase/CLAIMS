@@ -9,6 +9,9 @@
 #include "queryfunc.h"
 #include "qnode.h"
 #include "../../Parsetree/sql_node_struct.h"
+/*
+ * the transformqual() transform the ast(the parsetree) to expression tree
+ */
 QNode * transformqual(Node *node)
 {
 //	memalign(cacheline_size,1024)
@@ -19,19 +22,17 @@ QNode * transformqual(Node *node)
 		case t_expr_cal:
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
-			if(strcmp(calnode->sign,"ANDOP")==0)
+			if(strcmp(calnode->sign,"ANDOP")==0)//now in and the two parameter should be boolean,so the a_type = t_boolean
 			{
 				QNode *lnode=transformqual(calnode->lnext);
 				QNode *rnode=transformqual(calnode->rnext);
-				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,t_boolean,oper_and,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
-			else if(strcmp(calnode->sign,"OR")==0)
+			else if(strcmp(calnode->sign,"OR")==0)//now in or the two parameter should be boolean,so the a_type = t_boolean
 			{
 				QNode *lnode=transformqual(calnode->lnext);
 				QNode *rnode=transformqual(calnode->rnext);
-				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,t_boolean,oper_or,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
@@ -103,7 +104,7 @@ QNode * transformqual(Node *node)
 				QExpr_unary *unode=new QExpr_unary(nnode,nnode->actual_type,oper_negative,t_qexpr_unary,calnode->str);
 				return unode;
 			}
-			else if(strcmp(calnode->sign,"INVS")==0)
+			else if(strcmp(calnode->sign,"INVS")==0)//in (2,3),one level list,one comparison parameter
 			{
 				vector<QNode *>lnode,tmp;
 				vector< vector<QNode *> >rnode;
@@ -112,7 +113,7 @@ QNode * transformqual(Node *node)
 				for(Node *tpnode=calnode->rnext;tpnode!=NULL;)
 				{
 					Expr_list *elnode=(Expr_list *)tpnode;
-					tmp.push_back(transformqual(elnode->data));//only one column
+					tmp.push_back(transformqual(elnode->data));//only one column,more rows
 					tpnode=elnode->next;
 					rnode.push_back(tmp);
 					tmp.clear();
@@ -127,21 +128,21 @@ QNode * transformqual(Node *node)
 				QNode *innode=new QExpr_in(cmpnode,rnode,calnode->str);
 				return innode;
 			}
-			else if(strcmp(calnode->sign,"INVM")==0)
+			else if(strcmp(calnode->sign,"INVM")==0)//in ((2,'a'),(3,'b')),two level list,more comparison parameter
 			{
 				vector<QNode *>lnode,tmp;
 				vector< vector<QNode *> >rnode;
-				for(Node *tpnode=calnode->lnext;tpnode!=NULL;)
+				for(Node *tpnode=calnode->lnext;tpnode!=NULL;)//more columns
 				{
 					Expr_list *elnode=(Expr_list *)tpnode;
 					lnode.push_back(transformqual(elnode->data));
 					tpnode=elnode->next;
 				}
 				int index=0;
-				for(Node *tpnode=calnode->rnext;tpnode!=NULL;)
+				for(Node *tpnode=calnode->rnext;tpnode!=NULL;)//more rows
 				{
 					Expr_list *elnode=(Expr_list *)tpnode;
-					for(Node *pnode=elnode->data;pnode!=NULL;)
+					for(Node *pnode=elnode->data;pnode!=NULL;)//more columns
 					{
 						Expr_list *enode=(Expr_list *)pnode;
 						tmp.push_back(transformqual(enode->data));
@@ -153,7 +154,7 @@ QNode * transformqual(Node *node)
 					tpnode=elnode->next;
 				}
 				vector<QNode *>cmpnode;
-				for(int i=0;i<lnode.size();i++)
+				for(int i=0;i<lnode.size();i++)//more comparisons form one list
 				{
 					data_type a_type=TypePromotion::arith_type_promotion_map[lnode[i]->actual_type][rnode[0][i]->actual_type];
 					QExpr_binary *qcalnode=new QExpr_binary(lnode[i],rnode[0][i],a_type,oper_equal,t_qexpr_cmp,"tempnode");
@@ -210,7 +211,7 @@ QNode * transformqual(Node *node)
 		case t_expr_func:
 		{
 			Expr_func * funcnode=(Expr_func *)node;
-			if(strcmp(funcnode->funname,"CASE3")==0)
+			if(strcmp(funcnode->funname,"CASE3")==0)//no END in CASE...WHEN
 			{
 				vector<QNode *>qual;
 				vector<QNode *>ans;
@@ -249,7 +250,7 @@ QNode * transformqual(Node *node)
 			{
 
 			}
-			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)
+			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)//TODO the max length is 128,but it may be larger in practice
 			{
 				QNode *node0=transformqual(funcnode->args);
 				QNode *node1=transformqual(funcnode->parameter1);
@@ -313,7 +314,7 @@ QNode * transformqual(Node *node)
 			else if(strcmp(funcnode->funname,"FCOALESCE")==0)
 			{
 			}
-			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
+			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)//the agg nodes are changed to QColumns node ,only to get value from tuple is ok
 			{
 				QNode *aggnode=new QColcumns("",funcnode->str,t_u_long,funcnode->str);
 				return aggnode;
@@ -346,6 +347,17 @@ QNode * transformqual(Node *node)
 				QNode *anext=transformqual(funcnode->parameter1);
 				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
 				return aggnode;
+			}
+			else if(strcmp(funcnode->funname,"BA")==0)//between...and... transform to arg>=param1 and arg<=param2
+			{
+				QNode *arg=transformqual(funcnode->args);
+				QNode *param1=transformqual(funcnode->parameter1);
+				QNode *param2=transformqual(funcnode->parameter2);
+				data_type a_type=TypePromotion::arith_type_promotion_map[arg->actual_type][param1->actual_type];
+				QNode *lnext=new QExpr_binary(arg,param1,a_type,oper_great_equal,t_qexpr_cmp,"arg>=parma1");
+				QNode *rnext=new QExpr_binary(arg,param2,a_type,oper_less_equal,t_qexpr_cmp,"arg<=parma2");
+				QExpr_binary *banode=new QExpr_binary(lnext,rnext,t_boolean,oper_and,t_qexpr_cal,funcnode->str);
+				return banode;
 			}
 			else
 			{
@@ -392,6 +404,11 @@ QNode * transformqual(Node *node)
 	}
 	return NULL;
 }
+/*
+ * the InitExprAtLogicalPlan() initialize the exprTree nodes at logical plan
+ * set return type
+ * get column reference id in schema
+ */
 void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex,Schema *schema)
 {
 	if(node==NULL)
@@ -429,8 +446,8 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 			QExpr_ternary *tnode=(QExpr_ternary *)node;
 			tnode->return_type=r_type;
 			InitExprAtLogicalPlan(tnode->next0,tnode->actual_type,colindex,schema);
-			InitExprAtLogicalPlan(tnode->next1,t_int,colindex,schema);
-			InitExprAtLogicalPlan(tnode->next2,t_int,colindex,schema);
+			InitExprAtLogicalPlan(tnode->next1,tnode->next1->actual_type,colindex,schema);//parameter return type =actual type
+			InitExprAtLogicalPlan(tnode->next2,tnode->next2->actual_type,colindex,schema);//parameter return type =actual type
 			tnode->length=max(tnode->next0->length,max(tnode->next1->length,tnode->next2->length));
 			tnode->isnull=(tnode->next0->isnull||tnode->next1->isnull||tnode->next2->isnull);
 		}break;
@@ -498,6 +515,12 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 
 	}
 }
+/*
+ * the InitExprAtPhysicalPlan() initialize the exprtree at physical plan
+ * set node->function_call
+ * set node->FuncId
+ * allocate room for storing value
+ */
 void InitExprAtPhysicalPlan(QNode *node)
 {
 	if(node==NULL)
@@ -590,7 +613,7 @@ void InitExprAtPhysicalPlan(QNode *node)
 			qcol->type_cast_func=TypeCast::type_cast_func[qcol->actual_type][qcol->return_type];
 			qcol->value=memalign(cacheline_size,qcol->length);
 		}break;
-		case t_qexpr:
+		case t_qexpr://copy the value from conststring to node->value,and the data type has casted
 		{
 			QExpr *qexpr=(QExpr *)(node);
 			qexpr->FuncId=getConst;

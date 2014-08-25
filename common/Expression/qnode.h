@@ -55,7 +55,11 @@ public:
 	TypeCastF type_cast_func;
 	string alias;
 	QNode(){};
-	virtual ~QNode(){};
+	virtual ~QNode()
+	{
+		if(value!=NULL)
+			free(value);
+	};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -71,7 +75,7 @@ public:
 	QNode *next;
 	ExecFunc function_call;
 	QExpr_unary(){};
-	~QExpr_unary(){};
+	virtual ~QExpr_unary(){};
 	QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 private:
 	friend class boost::serialization::access;
@@ -88,7 +92,7 @@ public:
 	QNode *lnext,*rnext;
 	ExecFunc function_call;// 通过函数可以知道具体的node类型，因此不需要进行nodetype的判断
 	QExpr_binary(){};
-	~QExpr_binary(){};
+	virtual ~QExpr_binary(){};
 	QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 private:
 	friend class boost::serialization::access;
@@ -105,7 +109,7 @@ public:
 	QNode* next0,*next1,*next2;
 	ExecFunc function_call;
 	QExpr_ternary(){};
-	~QExpr_ternary(){};
+	virtual ~QExpr_ternary(){};
 	QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 private:
 	friend class boost::serialization::access;
@@ -122,7 +126,7 @@ public:
 	string table,col;
 	QColcumns(char *tbl,char *coln,data_type a_type,char *t_alias);
 	QColcumns(){};
-	~QColcumns(){};
+	virtual ~QColcumns(){};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -137,7 +141,7 @@ public:
 	string const_value;
 	QExpr(char *val,data_type r_type,char *t_alias);
 	QExpr(){};
-	~QExpr(){};
+	virtual ~QExpr(){};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -155,7 +159,7 @@ public:
 	QNode *result;
 	QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,string alias_);
 	QExpr_case_when(){};
-	~QExpr_case_when(){};
+	virtual ~QExpr_case_when(){};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -171,7 +175,7 @@ public:
 	vector< vector<QNode *>  >rnode;
 	QExpr_in(vector<QNode *>&cmpnode_,vector<vector<QNode *> >&rnode_,char * alias_);
 	QExpr_in(){};
-	~QExpr_in(){};
+	virtual ~QExpr_in(){};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
