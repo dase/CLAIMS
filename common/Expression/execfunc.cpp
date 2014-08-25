@@ -91,7 +91,7 @@ void *Exec_case_when(Node *cinfo,void *tuple,Schema *schema)
 			break;
 		}
 	}
-	if(result==NULL&&(i+1)==cwnode->ans.size())
+	if(result==NULL&&(i+1)==cwnode->ans.size())//no condition satisfied, then result=else node
 	{
 		result=cwnode->ans[i];
 	}
