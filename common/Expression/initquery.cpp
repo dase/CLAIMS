@@ -408,6 +408,8 @@ QNode * transformqual(Node *node)
  * the InitExprAtLogicalPlan() initialize the exprTree nodes at logical plan
  * set return type
  * get column reference id in schema
+ * get isnull
+ * get the storage length
  */
 void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex,Schema *schema)
 {
