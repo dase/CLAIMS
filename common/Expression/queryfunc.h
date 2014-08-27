@@ -13,6 +13,8 @@
 #define OPER_TYPE_NUM 100
 #define DATA_TYPE_NUM 20
 #include<string.h>
+#include <math.h>
+#define DELTA 1e-8
 class ExectorFunction
 {
 public:
@@ -365,12 +367,13 @@ inline void float_divide(FuncCallInfo fcinfo)
 inline void float_equal(FuncCallInfo fcinfo)
 {
 	assert(fcinfo->nargs==2);
-	*(bool *)fcinfo->results=(*(float *)fcinfo->args[0])==(*(float *)fcinfo->args[1]);
+	*(bool *)fcinfo->results=fabs(double((*(float *)fcinfo->args[0])-(*(float *)fcinfo->args[1])))<DELTA;
 }
 inline void float_not_equal(FuncCallInfo fcinfo)
 {
 	assert(fcinfo->nargs==2);
-	*(bool *)fcinfo->results=(*(float *)fcinfo->args[0])!=(*(float *)fcinfo->args[1]);
+	float_equal(fcinfo);
+	*(bool *)fcinfo->results=!(*(bool *)fcinfo->results);
 }
 inline void float_great(FuncCallInfo fcinfo)
 {
@@ -432,12 +435,13 @@ inline void double_divide(FuncCallInfo fcinfo)
 inline void double_equal(FuncCallInfo fcinfo)
 {
 	assert(fcinfo->nargs==2);
-	*(bool *)fcinfo->results=(*(double *)fcinfo->args[0]==*(double *)fcinfo->args[1]);
+	*(bool *)fcinfo->results=fabs(*(double *)fcinfo->args[0]-*(double *)fcinfo->args[1])<DELTA;
 }
 inline void double_not_equal(FuncCallInfo fcinfo)
 {
 	assert(fcinfo->nargs==2);
-	*(bool *)fcinfo->results=(*(double *)fcinfo->args[0]!=*(double *)fcinfo->args[1]);
+	double_equal(fcinfo);
+	*(bool *)fcinfo->results=!(*(bool *)fcinfo->results);
 }
 inline void double_great(FuncCallInfo fcinfo)
 {
