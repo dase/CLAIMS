@@ -982,6 +982,8 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 	}
 	return select_logicalplan;
 }
+
+
 static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector<LogicalSort::OrderByAttr *>&obcol)
 {
 	Orderby_list * gblist=(Orderby_list *)(olnode);
@@ -1057,14 +1059,31 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 		p=gbexpr->next;
 	}
 }
-static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *&parsetree)
+static LogicalOperator* having_select_groupby_where_from2logicalplan(Node *&parsetree)
+{
+	LogicalOperator* having_logicalplan=NULL;
+	LogicalOperator* select_logicalplan= groupby_select_where_from2logicalplan(parsetree);
+	Query_stmt *node=(Query_stmt *)parsetree;
+	if(node->having_list==NULL)
+	{
+		having_logicalplan= select_logicalplan;
+	}
+	else
+	{
+		vector<QNode *>h_qual;
+		h_qual.push_back(transformqual(((Having_list*)node->having_list)->next));
+		having_logicalplan=new Filter(select_logicalplan,h_qual);
+	}
+	return having_logicalplan;
+}
+static LogicalOperator* orderby_having_select_groupby_where_from2logicalplan(Node *&parsetree)
 {
 	LogicalOperator* orderby_logicalplan=NULL;
-	LogicalOperator* select_logicalplan= groupby_select_where_from2logicalplan(parsetree);
+	LogicalOperator* having_logicalplan= having_select_groupby_where_from2logicalplan(parsetree);
 	Query_stmt *node=(Query_stmt *)parsetree;
 	if(node->orderby_list==NULL)
 	{
-		orderby_logicalplan= select_logicalplan;
+		orderby_logicalplan= having_logicalplan;
 	}
 	else
 	{
@@ -1084,7 +1103,7 @@ static LogicalOperator* orderby_select_groupby_where_from2logicalplan(Node *&par
 //			cout<<"orderby att= "<<obcol[i]->ta_ <<endl;
 //		}
 //#endif
-		 orderby_logicalplan=new LogicalSort(select_logicalplan,obcol);
+		 orderby_logicalplan=new LogicalSort(having_logicalplan,obcol);
 	}
 		return orderby_logicalplan;
 }
@@ -1096,7 +1115,7 @@ static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 
 	{
 		case t_query_stmt:
 		{
-			alllogicalplan=orderby_select_groupby_where_from2logicalplan(parsetree);
+			alllogicalplan=orderby_having_select_groupby_where_from2logicalplan(parsetree);
 		}break;
 		default:
 		{

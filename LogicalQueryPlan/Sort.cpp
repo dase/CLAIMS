@@ -6,6 +6,10 @@
  */
 
 #include "Sort.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../Config.h"
+#include "../IDsGenerator.h"
 LogicalSort::LogicalSort(LogicalOperator *child,std::vector<LogicalSort::OrderByAttr*>oba)
 :child_(child),oba_(oba){
 
@@ -27,6 +31,8 @@ Dataflow LogicalSort::getDataflow(){
 	unsigned long data_cardinality=0;
 	PartitionOffset offset=0;
 	DataflowPartition par(offset,data_cardinality,location);
+	vector<DataflowPartition> partition_list;
+	partition_list.push_back(par);
 	ret.property_.partitioner.setPartitionList(partition_list);
 	return ret;
 }
@@ -39,7 +45,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize)
 	expander_state.block_size_=blocksize;
 	expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 	expander_state.child_=child_->getIteratorTree(blocksize);
-	expander_state.schema_=getSchema(dataflow_->attribute_list_);
+	expander_state.schema_=getSchema(dataflow_.attribute_list_);
 	BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state);
 
 	ExpandableBlockStreamExchangeEpoll::State exchange_state;

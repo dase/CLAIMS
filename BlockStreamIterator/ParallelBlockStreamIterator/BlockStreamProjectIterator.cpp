@@ -61,7 +61,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 	void *column_in_combinedTuple=0;
 	void *combinedTuple_=memalign(cacheline_size,state_.output_->getTupleMaxSize());;
 	void *cur=0;
-cout<<"output.maxsize  "<<state_.output_->getTupleMaxSize()<<endl;
+//cout<<"output.maxsize  "<<state_.output_->getTupleMaxSize()<<endl;
 	remaining_block rb;
 	if(atomicPopRemainingBlock(rb))
 	{

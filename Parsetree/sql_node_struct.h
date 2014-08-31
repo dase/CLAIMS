@@ -284,13 +284,7 @@ limit子句
 1.num
 2.num,num
 */
-/*
-struct Limit_list//没什么用，因为limit只有一项
-{
-	nodetype type;
-	char * limitstring;
-	Node *next;
-};*/
+
 
 struct Limit_expr
 {
