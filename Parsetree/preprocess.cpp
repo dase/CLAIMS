@@ -22,7 +22,7 @@
 int getlevel(Expr_cal *calnode)
 {
 	int level=0;
-	if(strcmp(calnode->sign,"--")==0)//处理负号的初步方法，处理-的时候，在前面加0，即=（0-(expr))
+	if(strcmp(calnode->sign,"--")==0)//solve negative，add 0 at the front，namely=（0-(expr)),expr has been solved
 	{
 		level=4;
 	}
@@ -245,7 +245,7 @@ string expr_to_str(Node * node,int level)
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
 			thislevel=getlevel(calnode);
-			if(strcmp(calnode->sign,"--")==0)//处理负号的初步方法，处理-的时候，在前面加0，即=（0-(expr))
+			if(strcmp(calnode->sign,"--")==0)
 			{
 				str="-";
 			}
@@ -397,6 +397,10 @@ void expr_to_str_test(Node *node)
 	expr_to_str_for_selectlist(ptree->select_list);
 	expr_to_str_for_groupby(ptree->groupby_list);
 	expr_to_str_for_orderby(ptree->orderby_list);
+	if(ptree->having_list!=NULL)
+	expr_to_str(((Having_list*)ptree->having_list)->next,0);
+	if(ptree->where_list!=NULL)
+	expr_to_str(((Where_list*)ptree->where_list)->next,0);
 }
 void solve_const_value_in_wherecondition(Node *&cur)
 {

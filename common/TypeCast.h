@@ -174,7 +174,7 @@ inline void *string_to_decimal(void *value,void * tovalue)
 }
 inline void *string_to_boolean(void *value,void * tovalue)
 {
-	*(bool *)tovalue=((char *)value==NULL);
+	*(bool *)tovalue=((char *)value==NULL?0:1);
 	return tovalue;
 }
 inline void *string_to_date(void *value,void *tovalue)
