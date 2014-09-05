@@ -49,15 +49,15 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-	${BOOST_HOME}/stage/lib/libboost_serialization.a \
-	${BOOST_HOME}/stage/lib/libboost_serialization.so \
-	${BOOST_HOME}/stage/lib/libboost_system.a \
-	${BOOST_HOME}/stage/lib/libboost_system.so \
-	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
-	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
-	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
-	${THERON_HOME}/Lib/libtherond.a \
-	${GTEST_HOME}/libgtest.a
+	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
+	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
+	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
+	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so \
+	/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.so \
+	/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a \
+	/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
+	/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a \
+	/home/imdb/supports/gtest-1.7.0/libgtest.a
 
 include_HEADERS = Config.h \
 				Debug.h \
@@ -79,3 +79,16 @@ storage Test try utility
 DIST_SUBDIRS = BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource Scheduler \
 storage Test try utility
+
+
+export BOOST_HOME=/home/imdb/supports/boost_1_53_0
+
+export THERON_HOME=/home/imdb/supports/Theron-5.01.01
+
+export JAVA_HOME=/home/NewHadoop/java/jdk1.7.0_45
+
+export HADOOP_HOME=/home/NewHadoop/hadoop/hadoop-1.0.3
+
+export GTEST_HOME=/home/imdb/supports/gtest-1.7.0
+
+export CLAIMS_HOME=/home/imdb/git/Claims
