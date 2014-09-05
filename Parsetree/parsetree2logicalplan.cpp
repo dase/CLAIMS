@@ -82,7 +82,7 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 			else if(strcmp(node->sign,"CMP")==0)
 			{
 				char * attribute;
-				switch((node->lnext)->type)//获得左边的表名
+				switch((node->lnext)->type)//获得左边的属性名
 				{
 					case t_name:
 					{
@@ -290,7 +290,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			LogicalOperator* tablescan;
 			if(node->issubquery==0)
 			{
-				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));
+				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));//todo
 			}
 			else
 			{

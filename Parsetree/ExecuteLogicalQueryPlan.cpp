@@ -136,16 +136,43 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 						Datatype * datatype = (Datatype *)data->datatype;
 						switch (datatype->datatype)	// add more type --- 2014-4-2
 						{
-						case 3:
+						case 1:
 						{
-							if (column_atts && (column_atts->datatype && 01)){
-								new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
+							if (column_atts && (column_atts->datatype && 01)){	// not null
+								new_table->addAttribute(colname, data_type(t_boolean), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
-								new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
+							else if (column_atts && (column_atts->datatype && 02)){	// can be null
+								new_table->addAttribute(colname, data_type(t_boolean), 0, true, true);
 							}
 							else{
-								new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+								new_table->addAttribute(colname, data_type(t_boolean), 0, true);
+							}
+							cout<<colname<<" is created"<<endl;
+							break;
+						}
+						case 3:
+						{
+							if (datatype->opt_uz & 01 != 0){
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true);
+								}
+							}
+							else{
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+								}
 							}
 							cout<<colname<<" is created"<<endl;
 							break;
@@ -400,16 +427,16 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 #ifdef SQL_Parser
 				output(node,0);
 #endif
-					Query_stmt *querynode=(Query_stmt *)node;
-					if(querynode->from_list!=NULL)
+				Query_stmt *querynode=(Query_stmt *)node;
+				if(querynode->from_list!=NULL)
 					int fg=solve_join_condition(querynode->from_list);
-					if(querynode->where_list!=NULL)
-					{
-						struct Where_list * curt=(struct Where_list *)(querynode->where_list);
-						struct Node *cur=(struct Node *)(curt->next);
-						SQLParse_log("wc2tb");
-						departwc(cur,querynode->from_list);
-					}
+				if(querynode->where_list!=NULL)
+				{
+					struct Where_list * curt=(struct Where_list *)(querynode->where_list);
+					struct Node *cur=(struct Node *)(curt->next);
+					SQLParse_log("wc2tb");
+					departwc(cur,querynode->from_list);
+				}
 #ifdef SQL_Parser
 				output(node,0);
 #endif
