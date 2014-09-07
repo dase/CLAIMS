@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="CLAIMS : ">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>CLAIMS</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/dase/Claims">View on GitHub</a>
+
+          <h1 id="project_title">CLAIMS</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/dase/Claims/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/dase/Claims/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><strong>CLAIMS</strong> is an in-memory parallel database prototype, which runs on clusters of commodity servers and provides fast data analysis on relational dataset. </p>
+
+<h2>
+<a name="highlights" class="anchor" href="#highlights"><span class="octicon octicon-link"></span></a>Highlights</h2>
+
+<h3>
+<a name="1-massively-parallel-execution-engine" class="anchor" href="#1-massively-parallel-execution-engine"><span class="octicon octicon-link"></span></a>1. <strong>Massively parallel execution engine</strong>.</h3>
+
+<p>CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis. Query evaluations are distributed to the clusters and executed in parallel. Furthermore, query evaluations in each node are in a multi-threaded fashion to leverage the computation power of multi-core hardware.  </p>
+
+<h3>
+<a name="2-smart-intra-node-parallelism" class="anchor" href="#2-smart-intra-node-parallelism"><span class="octicon octicon-link"></span></a>2. <strong>Smart intra-node parallelism</strong>.</h3>
+
+<p>Pipelining the query execution among the clusters could effectively improve the query respond time but its benefits will be discounted if the workloads among execution fragments are imbalanced due to the improper intra-node parallelism. To tackle this problem, a novel elastic pipelining is proposed in CLAIMS to automatically adapt the intra-node parallelism of each query according to the runtime workload. Thanks to elastic pipelining, execution fragments which are detected to the performance bottleneck of the whole query will be given more parallelism to accelerate the data processing, while the execution fragments which are detected to be over-producing will decrease the parallelism to avoid unnecessary computation allocation. </p>
+
+<h3>
+<a name="3-efficient-in-memory-data-processing" class="anchor" href="#3-efficient-in-memory-data-processing"><span class="octicon octicon-link"></span></a>3. <strong>Efficient in-memory data processing</strong>.</h3>
+
+<p>CLAIMS employs a large set of optimization techniques to achieve efficient in-memory data processing, including batch-at-a-time processing, cache-sensitive operator, SIMD-based optimization, code generation, lock-free and concurrent structure. Those optimizations enable CLAIMS to process gigabytes data per second in a single thread.</p>
+
+<h3>
+<a name="4-network-communication-optimization" class="anchor" href="#4-network-communication-optimization"><span class="octicon octicon-link"></span></a>4. <strong>Network communication optimization</strong>.</h3>
+
+<p>Distributed query processing inevitably involves in network communication, which is usually the performance bottleneck in parallel in-memory databases because of the relatively slow network bandwidth compared with the efficient in-memory data processing throughput. When compiling a user query into an execution plan, CLAIMS query optimizer leverages sophisticated selectivity propagation system and cost model to generate a physical query plan with minimized network communication cost. Furthermore, CLAIMS is equipped with a new data exchange implementation, which offers efficient, scalable and skew-resilient network data communication among CLAIMS instances. Those optimizations greatly improve the response time of the queries which requires network data communication.</p>
+
+<h2>
+<a name="team-members" class="anchor" href="#team-members"><span class="octicon octicon-link"></span></a>Team members</h2>
+
+<p><strong>Minqi Zhou</strong>, an associate professor in East China Normal University, leads this team.</p>
+
+<p><a href="https://github.com/wangli1426">Li Wang</a>, an Ph.D. student in East China Normal University, is responsible for designing and implementing the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.</p>
+
+<p><strong>Lei Zhang</strong> is responsible for designing and implementing query optimizer, physical operators, persistent data exchange, storage management, etc.</p>
+
+<p><strong>Shaochan Dong</strong> is responsible for designing and implementing in-memory index and index management, as well as data loading and importing.</p>
+
+<p><strong>Xinzhou Zhang</strong> is mainly responsible for web UI design and implementing data importing model.</p>
+
+<p><strong>Zhuhe Fang</strong> is mainly responsible for designing and implementing SQL DML parser and physical operators.</p>
+
+<p><strong>Yu Kai</strong> is mainly responsible for designing and implementing SQL DDL parser, catalog persistence.</p>
+
+<p><strong>Yongfeng Li</strong> was a formal member of CLAIMS, who participated in designing and implementing catalog model.</p>
+
+<p><strong>Lin Gu</strong> is responsible for designing the demo cases of CLAIMS.</p>
+
+<h2>
+<a name="publications" class="anchor" href="#publications"><span class="octicon octicon-link"></span></a>Publications</h2>
+
+<ol>
+<li>Li Wang, Minqi Zhou, Zhenjie Zhang, Yin Yang, Ming-chien Shan, Aoying Zhou. Elastic Pipelining in In-Memory Database Cluster. Submitted to SIGMOD 2015.</li>
+<li>Li Wang, Minqi Zhou, Zhenjie Zhang, Ming-chien Shan, Aoying Zhou. NUMA-aware Scalable and Efficient Aggregation on Large Domains. Accepted by TKDE.</li>
+<li>Li Wang, Lei Zhang, Chengcheng Yu, Aoying Zhou. Optimizing Pipelined Execution for Distributed In-memory OLAY System. In: DaMen 2014. Springer. 2014. pp. 35-56.</li>
+</ol><h3>
+<a name="setup-steps" class="anchor" href="#setup-steps"><span class="octicon octicon-link"></span></a>setup steps:</h3>
+
+<pre><code>1. ./build.sh init
+2. configure --prefix=/your/install/path 
+3. make
+4. make install
+</code></pre>
+
+<h3>
+<a name="cleanup-steps" class="anchor" href="#cleanup-steps"><span class="octicon octicon-link"></span></a>cleanup steps:</h3>
+
+<pre><code>1. make distclean
+1. build.sh clean
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">CLAIMS maintained by <a href="https://github.com/dase">dase</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
