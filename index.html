@@ -39,33 +39,33 @@
 <h3>
 <a name="1-massively-parallel-execution-engine" class="anchor" href="#1-massively-parallel-execution-engine"><span class="octicon octicon-link"></span></a>1. <strong>Massively parallel execution engine</strong>.</h3>
 
-<p>CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis. Query evaluations are distributed to the clusters and executed in parallel. Furthermore, query evaluations in each node are in a multi-threaded fashion to leverage the computation power of multi-core hardware.  </p>
+<p>CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis. Query evaluations are distributed to multiple CLAIMS instances and executed in parallel. Furthermore, query evaluations in each CLAIMS instance are in a multi-threaded fashion to leverage the computation power of multi-core hardware.  </p>
 
 <h3>
 <a name="2-smart-intra-node-parallelism" class="anchor" href="#2-smart-intra-node-parallelism"><span class="octicon octicon-link"></span></a>2. <strong>Smart intra-node parallelism</strong>.</h3>
 
-<p>Pipelining the query execution among the clusters could effectively improve the query respond time but its benefits will be discounted if the workloads among execution fragments are imbalanced due to the improper intra-node parallelism. To tackle this problem, a novel elastic pipelining is proposed in CLAIMS to automatically adapt the intra-node parallelism of each query according to the runtime workload. Thanks to elastic pipelining, execution fragments which are detected to the performance bottleneck of the whole query will be given more parallelism to accelerate the data processing, while the execution fragments which are detected to be over-producing will decrease the parallelism to avoid unnecessary computation allocation. </p>
+<p>Pipelining the query execution among the clusters could effectively improve the query respond time but its benefits will be discounted if the workloads among execution fragments are imbalanced due to the improper intra-node parallelism. To tackle this problem, a novel elastic pipelining is proposed in CLAIMS to automatically adjust the intra-node parallelism of each query according to the runtime workload. Thanks to elastic pipelining, execution fragments which are detected to the performance bottleneck of the whole query will be given more parallelism to accelerate the data processing, while the parallelism of execution fragments that are detected to be over-producing will be decreased to avoid unnecessary computation allocation. </p>
 
 <h3>
 <a name="3-efficient-in-memory-data-processing" class="anchor" href="#3-efficient-in-memory-data-processing"><span class="octicon octicon-link"></span></a>3. <strong>Efficient in-memory data processing</strong>.</h3>
 
-<p>CLAIMS employs a large set of optimization techniques to achieve efficient in-memory data processing, including batch-at-a-time processing, cache-sensitive operator, SIMD-based optimization, code generation, lock-free and concurrent structure. Those optimizations enable CLAIMS to process gigabytes data per second in a single thread.</p>
+<p>CLAIMS employs a large set of optimization techniques to achieve efficient in-memory data processing, including batch-at-a-time processing, cache-sensitive operators, SIMD-based optimizations, code generation, lock-free and concurrent structures. Those optimizations enable CLAIMS to process gigabytes data per second in a single thread.</p>
 
 <h3>
 <a name="4-network-communication-optimization" class="anchor" href="#4-network-communication-optimization"><span class="octicon octicon-link"></span></a>4. <strong>Network communication optimization</strong>.</h3>
 
-<p>Distributed query processing inevitably involves in network communication, which is usually the performance bottleneck in parallel in-memory databases because of the relatively slow network bandwidth compared with the efficient in-memory data processing throughput. When compiling a user query into an execution plan, CLAIMS query optimizer leverages sophisticated selectivity propagation system and cost model to generate a physical query plan with minimized network communication cost. Furthermore, CLAIMS is equipped with a new data exchange implementation, which offers efficient, scalable and skew-resilient network data communication among CLAIMS instances. Those optimizations greatly improve the response time of the queries which requires network data communication.</p>
+<p>Distributed query processing inevitably involves in network communication, which is usually the performance bottleneck in an in-memory parallel databases, due to the relatively slow network bandwidth compared with the efficient in-memory data processing throughput. When compiling a user query into an execution plan, CLAIMS query optimizer leverages the sophisticated selectivity propagation system and cost model to generate a physical query plan with minimized network communication cost. Furthermore, CLAIMS is equipped with a new data exchange implementation, which offers efficient, scalable and skew-resilient network data communication among CLAIMS instances. Those optimizations greatly improve the response time of the queries involving in network data communication.</p>
 
 <h2>
 <a name="team-members" class="anchor" href="#team-members"><span class="octicon octicon-link"></span></a>Team members</h2>
 
-<p><a href="https://github.com/polpo1980">Minqi Zhou</a>, an associate professor in East China Normal University, leads this team.</p>
+<p><a href="https://github.com/polpo1980">Minqi Zhou</a>, an associate professor in East China Normal University, is the person in charge of this project.</p>
 
-<p><a href="https://github.com/wangli1426">Li Wang</a>, an Ph.D. student in East China Normal University, is responsible for designing and implementing the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.</p>
+<p><a href="https://github.com/wangli1426">Li Wang</a>, an Ph.D. student in East China Normal University, manages the master students in this team and is responsible for designing and implementing the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.</p>
 
-<p><a href="https://github.com/egraldlo">Lei Zhang</a> is responsible for designing and implementing query optimizer, physical operators, persistent data exchange, storage management, etc.</p>
+<p><a href="https://github.com/egraldlo">Lei Zhang</a> is responsible for designing and implementing the key components of CLAIMS, including query optimizer, physical operators, persistent data exchange, storage management, etc.</p>
 
-<p><a href="https://github.com/scdong">Shaochan Dong</a> is responsible for designing and implementing in-memory index and index management, as well as data loading and importing.</p>
+<p><a href="https://github.com/scdong">Shaochan Dong</a> is responsible for designing and implementing in-memory index and index management, data types, as well as data loading and importing.</p>
 
 <p><a href="">Xinzhou Zhang</a> is mainly responsible for web UI design and implementing data importing model.</p>
 
