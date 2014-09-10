@@ -46,16 +46,20 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 			setDecimalValue((const char *)value_str);
 			break;
 		}
+		case t_datetime:{
+			setDatetimeValue((const char *)value_str);
+			break;
+		}
+		case t_date:{
+			setDateValue((const char *)value_str);
+			break;
+		}
 		case t_time:{
 			setTimeValue((const char *)value_str);
 			break;
 		}
 		case t_boolean:{
 			setBooleanValue(*(bool *)value_str);
-			break;
-		}
-		case t_date:{
-			setDateValue((const char *)value_str);
 			break;
 		}
 		default:{
@@ -220,9 +224,6 @@ bool ExpressionItem::setOperator(const char* op_str){
 	}
 	else if(tmp=="-"){
 		content.op.op_=op_mins;
-	}
-	else if(tmp=="*"){
-		content.op.op_=op_multiple;
 	}
 	else if(tmp=="*"){
 		content.op.op_=op_multiple;

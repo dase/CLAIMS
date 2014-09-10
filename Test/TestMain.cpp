@@ -120,7 +120,7 @@ int maina(int argc, char** argv){
 //	issue27ing_single_node();
 //	issue27_sort_single_node();
 //	common_project_tcp_h_test_multi_node();
-	test_expanderFramework_single_node(1);
+//	test_expanderFramework_single_node(1);
 
 //	test_expanderFramework_single_node(5);
 
@@ -135,8 +135,7 @@ int maina(int argc, char** argv){
 //	hash_table_test();
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
-//	g_test_main(argc,argv);
-//	g_test_main(argc,argv);
+	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 
@@ -144,6 +143,5 @@ int maina(int argc, char** argv){
 //	insert_optimziaed_hash_table_test();
 //	memory_leak_test();
 //	sql_parser_test();
-
-//	filter_test();
+	filter_test();
 }
