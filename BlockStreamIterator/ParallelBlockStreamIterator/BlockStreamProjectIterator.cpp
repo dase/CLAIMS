@@ -48,23 +48,29 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
  * */
 bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 	unsigned total_length_=state_.output_->getTupleMaxSize();
-	void *tuple=0;
-	void *column_in_combinedTuple=0;
-	void *combinedTuple_=memalign(cacheline_size,state_.output_->getTupleMaxSize());;
-	void *cur=0;
+//	void *tuple=0;
+//	void *column_in_combinedTuple=0;
+	/* tuple to include the max tuple! */
+//	void *combinedTuple_=memalign(cacheline_size,state_.output_->getTupleMaxSize());;
+//	void *cur=0;
 
 	remaining_block rb;
 	if(atomicPopRemainingBlock(rb)){
 		while(1){
+			void *cur=0;
+			void *tuple=0;
 			if((cur=rb.bsti_->currentTuple())==0){
 				rb.bsb_->setEmpty();
+				/* get a block from downstreams */
 				if(state_.children_->next(rb.bsb_)==false){
+					/* if downstreams has no data and block is not empty, return true */
 					if(!block->Empty()){
 						atomicPushRemainingBlock(rb);
 						return true;
 					}
 					return false;
 				}
+				/* if downstreams has data, reset the cur */
 				rb.bsti_->reset();
 				cur=rb.bsti_->currentTuple();
 			}
@@ -116,6 +122,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 
 	v_bsb->setEmpty();
 	BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=v_bsb->createIterator();
+	traverse_iterator->reset();
 	atomicPushRemainingBlock(remaining_block(v_bsb,traverse_iterator));
 	return next(block);
 }
@@ -174,6 +181,22 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 		}
 		case t_date:{
 			memcpy(tuple,&result._date,length);
+			break;
+		}
+		case t_time:{
+			memcpy(tuple,&result._time,length);
+			break;
+		}
+		case t_datetime:{
+			memcpy(tuple,&result._datetime,length);
+			break;
+		}
+		case t_double:{
+			memcpy(tuple,&result.content.data.value._double,length);
+			break;
+		}
+		case t_smallInt:{
+			memcpy(tuple,&result.content.data.value._sint,length);
 			break;
 		}
 		default:{

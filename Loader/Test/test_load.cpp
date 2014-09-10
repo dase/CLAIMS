@@ -1,14 +1,13 @@
-#include "../Hdfsloader.h"
-#include "../Hdfsconnector.h"
-#include "../../Catalog/table.h"
-#include "../../Environment.h"
-
-//#include "HdfsloaderV.h"
-
 #include <vector>
 #include <string>
 #include <iostream>
 
+//#include "HdfsloaderV.h"
+
+#include "../Hdfsloader.h"
+#include "../Hdfsconnector.h"
+#include "../../Catalog/table.h"
+#include "../../Environment.h"
 using namespace std;
 
 static void create_load_test()

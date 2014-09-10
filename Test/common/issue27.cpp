@@ -8,19 +8,26 @@
 #ifndef ISSUE27_CPP_
 #define ISSUE27_CPP_
 #include "../../Environment.h"
+
 #include "../../Catalog/table.h"
+
 #include "../../Loader/Hdfsloader.h"
+
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../common/types/NValue.hpp"
-#include "../../utility/rdtsc.h"
+
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
+
+#include "../../common/types/NValue.hpp"
+
+#include "../../utility/rdtsc.h"
 
 static void query_select_aggregation(){
 	/*
@@ -211,7 +218,7 @@ static void query_select_aggregation(){
 	vector< vector<ExpressionItem> >expr_list2;
 	LogicalOperator* project2=new LogicalProject(aggregation,expr_list2);
 	//===========================root===========================
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	cout<<"performance is ok!"<<endl;
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);

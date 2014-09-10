@@ -166,7 +166,7 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
      *          by using multi-threads to speed up?
      * TODO: whether to store the sorted data into the blockmanager
      * */
-    cout<<"check the memory usage!!!"<<endl;
+//    cout<<"check the memory usage!!!"<<endl;
     unsigned long long int time=curtick();
 //    order(state_.orderbyKey_,tuple_count_sum);
     order();
@@ -195,11 +195,12 @@ bool BlockStreamSortIterator::next(BlockStreamBase* block){
 }
 
 bool BlockStreamSortIterator::close(){
-    DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();
-    BlockStreamBase* block_to_deallocate;
-    while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
-		block_to_deallocate->~BlockStreamBase();
-    }
+	/* */
+//    DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();
+//    BlockStreamBase* block_to_deallocate;
+//    while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
+//		block_to_deallocate->~BlockStreamBase();
+//    }
     state_.child_->close();
     return true;
 }
@@ -207,7 +208,7 @@ bool BlockStreamSortIterator::close(){
 
 bool BlockStreamSortIterator::createBlockStream(BlockStreamBase*& target)const{
         //TODO: the block allocation should apply for the memory budget from the buffer manager first.
-		cout<<"state_.block_size_: "<<state_.block_size_<<endl;
+//		cout<<"state_.block_size_: "<<state_.block_size_<<endl;
         target=BlockStreamBase::createBlock(state_.input_,state_.block_size_);
         return target!=0;
 }

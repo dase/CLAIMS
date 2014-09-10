@@ -6,12 +6,15 @@
  */
 
 #include "../LogicalOperator.h"
-#include "../../Environment.h"
-#include "../../Catalog/ProjectionBinding.h"
 #include "../Scan.h"
 #include "../EqualJoin.h"
 #include "../Filter.h"
+
+#include "../../Environment.h"
+
+#include "../../Catalog/ProjectionBinding.h"
 #include "../../common/AttributeComparator.h"
+
 int main_asdfasdf(){
 	Environment::getInstance(true);
 

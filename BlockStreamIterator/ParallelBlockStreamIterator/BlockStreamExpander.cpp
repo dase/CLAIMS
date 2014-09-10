@@ -132,7 +132,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
 	Pthis->addIntoInWorkingExpandedThreadList(pid);
 	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pid,Pthis->expander_id_);
-	const unsigned thread_id=rand()%100;
+//	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
 	((ExpanderContext*)arg)->sem.post();
 
@@ -171,7 +171,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 				block_count++;
 			}
 		}
-		block_for_asking->~BlockStreamBase();
+		delete block_for_asking;
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
 			Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
@@ -187,7 +187,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		else{
 			Pthis->logging_->log("%lx Produced %d block before finished\n",pthread_self(),block_count);
 //			assert(block_count!=0);
-			block_for_asking->~BlockStreamBase();
+//			block_for_asking->~BlockStreamBase();
 			Pthis->lock_.acquire();
 			Pthis->finished_thread_count_++;
 
@@ -248,7 +248,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 
 	ExpanderContext para;
 	para.pthis=this;
-
+	ticks start=curtick();
 	if(exclusive_expanding_.try_acquire()){
 		const int error=pthread_create(&tid,NULL,expanded_work,&para);
 		if(error!=0){
@@ -264,6 +264,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		thread_count_++;
 		lock_.release();
 	//	in_work_expanded_thread_list_.insert(tid);
+//		printf("Expand time :%lf \n",getSecond(start));
 		return true;
 	}
 	else{
@@ -272,11 +273,34 @@ bool BlockStreamExpander::createNewExpandedThread(){
 	}
 }
 void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
-	if(ExpanderTracker::getInstance()->callbackExpandedThread(pid)){
+//	if(ExpanderTracker::getInstance()->callbackExpandedThread(pid)){
+//		printf("---> shrink+ %lx\n",pid);
+//		semaphore sem;
+//		tid_to_shrink_semaphore[pid]=&sem;
+//		removeFromInWorkingExpandedThreadList(pid);
+//
+//		addIntoBeingCalledBackExpandedThreadList(pid);
+//		printf("---> shrink added %lx\n",pid);
+//		tid_to_shrink_semaphore[pid]->wait();
+//		lock_.acquire();
+//		tid_to_shrink_semaphore.erase(pid);
+//		lock_.release();
+//
+//		lock_.acquire();
+//		thread_count_--;
+//		lock_.release();
+//		logging_->log("[%ld] A thread is called back !******** working_thread_count=%d, being_called_back_thread_count:%d\n",expander_id_,this->in_work_expanded_thread_list_.size(),this->being_called_bacl_expanded_thread_list_.size());
+//	}
+//	else{
+//		logging_->log("[%ld] This thread has already been called back!.\n",expander_id_);
+//	}
+	if(!ExpanderTracker::getInstance()->isExpandedThreadCallBack(pid)){
 		semaphore sem;
 		tid_to_shrink_semaphore[pid]=&sem;
 		removeFromInWorkingExpandedThreadList(pid);
+
 		addIntoBeingCalledBackExpandedThreadList(pid);
+		ExpanderTracker::getInstance()->callbackExpandedThread(pid);
 		tid_to_shrink_semaphore[pid]->wait();
 		lock_.acquire();
 		tid_to_shrink_semaphore.erase(pid);
@@ -293,7 +317,7 @@ void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
 }
 void BlockStreamExpander::addIntoInWorkingExpandedThreadList(pthread_t pid){
 	lock_.acquire();
-	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
+//	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
 	in_work_expanded_thread_list_.insert(pid);
 	logging_->log("[%ld] %lx is added into in working list!\n",expander_id_,pid);
 	lock_.release();
@@ -384,7 +408,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
-		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
+//		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
 		return true;
 	}
 //	lock_.release();

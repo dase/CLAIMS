@@ -92,6 +92,7 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 		open_ret_=true;
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
 		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+		perf_info->initialize();
 		broadcaseOpenFinishedSignal();
 	}
 	else{

@@ -110,7 +110,7 @@ public:
 	virtual ~TableDescriptor();
 
 	void addAttribute(Attribute attr);
-	bool addAttribute(string attname,data_type dt,unsigned max_length=0,bool unique=false);
+	bool addAttribute(string attname,data_type dt,unsigned max_length=0,bool unique=false, bool can_be_null=true);
 
 //	void addProjection(vector<ColumnOffset> id_list);
 	bool createHashPartitionedProjection(vector<ColumnOffset> column_list,ColumnOffset partition_key_index,unsigned number_of_partitions);
@@ -140,8 +140,10 @@ public:
 	Attribute getAttribute(const std::string& name)const{
 		stringstream ss;
 		ss<<tableName.c_str()<<"."<<name.c_str();
+//		cout<<"partition_name :"<<name<<endl;	// for test--by yu
 		for(unsigned i=0;i<attributes.size();i++){
-			if(attributes[i].attrName==ss.str())
+//			cout<<attributes[i].attrName<<endl;		// for test -- by yu
+			if(attributes[i].attrName==name)		// modify ss.str() to name ---by yu --7.6
 				return attributes[i];
 		}
 		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
