@@ -132,8 +132,7 @@ bool BlockStreamProjectIterator::close(){
 	open_finished_ =false;
 	free_block_stream_list_.clear();
 	remaining_block_list_.clear();
-	state_.children_->close();
-    return true;
+	return state_.children_->close();
 }
 
 
