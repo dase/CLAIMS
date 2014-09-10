@@ -18,7 +18,10 @@
 #include "dmalloc.h"
 #endif
 #include "../common/data_type.h"
-enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast};
+#include "boost/date_time/gregorian/formatters.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost/date_time/posix_time/time_formatters.hpp"
+enum op_type{op_add,op_mins,op_multiple,op_cast_int,op_com_L,op_case,op_case_when,op_case_then,op_case_else,op_upper,op_substring,op_trim,op_cast,op_and,op_or,op_not,op_com_G,op_com_EQ,op_com_NEQ,op_com_GEQ,op_com_LEQ};
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 static std::string getReturnTypeName(data_type return_type){
@@ -68,6 +71,11 @@ struct express_operator{
 			case op_add:number_of_parameter=2;break;
 			case op_multiple:number_of_parameter=2;break;
 			case op_cast_int:number_of_parameter=1;break;
+
+			case op_and:number_of_parameter=2;break;
+			case op_or:number_of_parameter=2;break;
+			case op_not:number_of_parameter=1;break;
+
 		}
 	}
 	op_type op_;
@@ -81,6 +89,7 @@ struct data__{
 	double _double;
 	unsigned long _ulong;
 	bool _bool;
+	short _sint;
 	}value;
 };
 
@@ -144,18 +153,24 @@ public:
 	bool setFloatValue(const char*);
 	bool setFloatValue(float&);
 	bool setDoubleValue(const char*);
-	//currently,decimal only const char * supported!
-	bool setDecimalValue(const char*);
 	bool setDoubleValue(double&);
+	//currently,decimal only const char * supported!
 	bool setULongValue(const char*);
-	bool setULongValue(unsigned long&);
-	bool setOperator(const char*);
+	bool setULongValue(unsigned long);
 	bool setStringValue(std::string);
+	bool setStringValue(const char * str);
 	bool setVariable(const char *,const char *);
 	bool setVariable(const char *);
+	bool setDecimalValue(const char*);
+	bool setOperator(const char*);
 
 	//currently,date only const char * supported!
 	bool setDateValue(const char *);
+	bool setDatetimeValue(const char *);
+	bool setTimeValue(const char *);
+
+	bool setBooleanValue(bool );////////////
+	bool setSmallIntValue(short &);
 public:
 	union {
 		variable var;
@@ -165,7 +180,7 @@ public:
 	ItemType type;
 	date _date;
 	time_duration _time;
-	ptime _datatime;
+	ptime _datetime;
 	NValue _decimal;
 	std::string _string;
 	std::string item_name;
@@ -227,17 +242,19 @@ private:
 				break;
 			}
 			case t_date:{
-				return std::string("t_date");
+				ss<<to_simple_string(_date);
+				break;
 			}
 			case t_datetime:{
 				return std::string("t_datetime");
 			}
 			case t_decimal:{
-//				ss<<content.data.value._decimal;
+				ss<<_decimal.createStringFromDecimal();
 				break;
 			}
 			case t_smallInt:{
-				return std::string("t_smallInt");
+				ss<<content.data.value._sint;
+				break;
 			}
 			case t_boolean:{
 				ss<<content.data.value._bool;
@@ -265,9 +282,6 @@ public:
 		case op_multiple:{
 			return std::string("*");
 		}
-		case op_com_L:{
-			return std::string("<");
-		}
 		case op_case:{
 			return std::string("case");
 		}
@@ -291,6 +305,36 @@ public:
 		}
 		case op_cast:{
 			return std::string("cast");
+		}
+		case op_and:
+		{
+			return std::string("and");
+		}
+		case op_or:
+		{
+			return std::string("or");
+		}
+		case op_not:
+		{
+			return std::string("not");
+		}
+		case op_com_L:{
+			return std::string("<");
+		}
+		case op_com_G:{
+			return std::string(">");
+		}
+		case op_com_EQ:{
+			return std::string("=");
+		}
+		case op_com_NEQ:{
+			return std::string("!=");
+		}
+		case op_com_GEQ:{
+			return std::string(">=");
+		}
+		case op_com_LEQ:{
+			return std::string("<=");
 		}
 		default:{
 			assert(false);

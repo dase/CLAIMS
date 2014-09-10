@@ -8,23 +8,31 @@
 #include <vector>
 #include <iostream>
 #include "../../BlockStreamPrint.h"
+
 #include "../BlockStreamProjectIterator.h"
 #include "../ExpandableBlockStreamProjectionScan.h"
-#include "../../../common/ids.h"
+
 #include "../../../Environment.h"
+
+#include "../../../utility/test_tool.h"
+
+#include "../../../Catalog/ProjectionBinding.h"
+
+#include "../../../common/ids.h"
 #include "../../../common/Mapping.h"
 #include "../../../common/ExpressionItem.h"
 #include "../../../common/ExpressionCalculator.h"
 #include "../../../common/TypeCast.h"
 #include "../../../common/TypePromotionMap.h"
-#include "../../../utility/test_tool.h"
+
 #include "../../../common/Block/BlockStream.h"
+
 #include "../../../LogicalQueryPlan/Scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
-#include "../../../Catalog/ProjectionBinding.h"
 #include "../../../LogicalQueryPlan/Filter.h"
 #include "../../../LogicalQueryPlan/Aggregation.h"
+
 using namespace std;
 
 static int Project_test(){

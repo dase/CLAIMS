@@ -6,11 +6,13 @@
  */
 
 #include "EqualJoin.h"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-#include "../Catalog/stat/StatManager.h"t
+
+#include "../IDsGenerator.h"
+#include "../Catalog/stat/StatManager.h"
 #include "../common/Logging.h"
 #include "../Config.h"
 EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_input,LogicalOperator* right_input)

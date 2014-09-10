@@ -11,11 +11,11 @@
 #include <map>
 #include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
 #include "../common/ids.h"
-#include "../common/Schema/Schema.h"
-#include "../storage/PartitionStorage.h"
-#include "../common/Block/BlockStream.h"
-#include "../storage/ChunkStorage.h"
 #include "../common/data_type.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Block/BlockStream.h"
+#include "../storage/PartitionStorage.h"
+#include "../storage/ChunkStorage.h"
 #include "CSBPlusTree.h"
 
 template<typename T>

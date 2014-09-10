@@ -13,7 +13,7 @@
 //#define DEBUG_PerformanceTop
 //#define DEBUG_Coordinator
 //#define DEBUG_Environment
-
+//#define DEBUG_AdaptiveEndPoint
 //#define DEBUG_ExchangeIteratorLowerWithWideDependency
 //#define DEBUG_ExchangeIteratorWithWideDependency
 //#define DEBUG_ExchangeIteratorEager

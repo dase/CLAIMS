@@ -21,7 +21,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	Initialize();
 	portManager=PortManager::getInstance();
 	catalog_=Catalog::getInstance();
-
+//	catalog_->restoreCatalog();
 
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
@@ -98,7 +98,7 @@ void Environment::Initialize(){
 }
 void Environment::InitializeEndPoint(){
 //	libconfig::Config cfg;
-//	cfg.readFile("/home/imdb/config/wangli/config");
+//	cfg.readFile("/home/claims/config/wangli/config");
 //	std::string endpoint_ip=(const char*)cfg.lookup("ip");
 //	std::string endpoint_port=(const char*)cfg.lookup("port");
 	std::string endpoint_ip=ip;

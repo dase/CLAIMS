@@ -14,18 +14,23 @@
 #include "dmalloc.h"
 #endif
 #include "unordered_map.hpp"
-
-
+#include "ProjectionBinding.h"
 
 #include "../common/Logging.h"
-#include "ProjectionBinding.h"
+#include "../utility/lock.h"
+
 struct TableIDAllocator{
 	TableIDAllocator(){
 		table_id_curosr=0;
 	}
+	Lock lock_;
 	unsigned table_id_curosr;
-	unsigned allocate_unique_table_id(){
-		return table_id_curosr++;
+	unsigned allocate_unique_table_id(){	// add lock, like postgreSQL --- yukai, 07.15
+		lock_.acquire();
+		unsigned id = table_id_curosr;
+		++table_id_curosr;
+		lock_.release();
+		return id;
 	}
 
 	friend class boost::serialization::access;

@@ -17,10 +17,13 @@
 #include "../../../LogicalQueryPlan/Aggregation.h"
 #include "../../../LogicalQueryPlan/Buffer.h"
 #include "../../../utility/rdtsc.h"
-#include "../BlockStreamExpander.h"
 #include "../../../Executor/ExpanderTracker.h"
-#include "../../BlockStreamPerformanceMonitorTop.h"
 #include "../../../common/AttributeComparator.h"
+
+#include "../../BlockStreamPerformanceMonitorTop.h"
+
+#include "../BlockStreamExpander.h"
+
 using namespace std;
 static int expanded_iterators_test(){
 	int master;

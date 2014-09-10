@@ -18,12 +18,12 @@
 
 struct Attribute
 {
-	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0,bool unqiue=false)
+	Attribute(TableID tableid,unsigned pos,const std::string& name, data_type type, unsigned size = 0,bool unqiue=false,bool can_be_null=true)
 	{
 		table_id_=tableid;
 		index=pos;
 		attrName = name;
-		attrType = new column_type(type, size);
+		attrType = new column_type(type, size, can_be_null);
 		unique=unqiue;
 
 	}

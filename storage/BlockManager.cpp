@@ -11,6 +11,7 @@
 #include "../common/rename.h"
 #include "../common/Message.h"
 #include "../common/Logging.h"
+#include "../Config.h"
 BlockManager *BlockManager::blockmanager_=0;
 
 BlockManager *BlockManager::getInstance(){
@@ -217,7 +218,7 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name){
 	file_name_former=file_name.substr(0,pos);
 	file_name_latter=file_name.substr(pos+1,file_name.length());
 	int offset=atoi(file_name_latter.c_str());
-	hdfsFS fs=hdfsConnect(HDFS_N,9000);
+	hdfsFS fs=hdfsConnect(Config::hdfs_master_ip.c_str(),Config::hdfs_master_port);
 	hdfsFile readFile=hdfsOpenFile(fs,file_name_former.c_str(),O_RDONLY,0,0,0);
 	hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,file_name_former.c_str());
 	if(!readFile){
@@ -246,7 +247,7 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const 
 	lock.acquire();
 	int ret;
 	int offset=chunk_id.chunk_off;
-	hdfsFS fs=hdfsConnect(HDFS_N,9000);
+	hdfsFS fs=hdfsConnect(Config::hdfs_master_ip.c_str(),Config::hdfs_master_port);
 	hdfsFile readFile=hdfsOpenFile(fs,chunk_id.partition_id.getPathAndName().c_str(),O_RDONLY,0,0,0);
 	hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,chunk_id.partition_id.getPathAndName().c_str());// to be refined after communicating with Zhang Lei
 	if(!readFile){

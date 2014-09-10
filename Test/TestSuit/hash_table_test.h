@@ -7,17 +7,25 @@
 
 #ifndef HASH_TABLE_TEST_H_
 #define HASH_TABLE_TEST_H_
-#include "../../common/Block/BlockStreamBuffer.h"
-#include "../../Catalog/Column.h"
+#include <string.h>
 #include <boost/functional/hash.hpp>
+
+#include "../common/insert_optimized_hash_table_test.h"
+
+#include "../../common/ids.h"
+#include "../../common/hash.h"
+
+#include "../../common/Block/BlockStreamBuffer.h"
+
+#include "../../Catalog/Column.h"
+
 #include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"
-#include "../../common/ids.h"
-#include <string.h>
-#include "../../common/hash.h"
-#include "../common/insert_optimized_hash_table_test.h"
+
 #define block_size (1024*1024)
 void init_alloc_destory();
 static void startup_catalog(){
