@@ -16,13 +16,13 @@
 #include "Resource/ResourceManagerMaster.h"
 #include "Resource/ResourceManagerSlave.h"
 #include "Catalog/Catalog.h"
-#include "BufferManager/BufferManager.h"
 #include "IndexManager/IndexManager.h"
 #include "Executor/ExpanderTracker.h"
 #include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
 #include "Client/ClaimsServer.h"
+#include "Resource/BufferManager.h"
 
 class Environment {
 public:

@@ -11,7 +11,6 @@ AC_CONFIG_FILES([
   BlockStreamIterator/ParallelBlockStreamIterator/Makefile
   BlockStreamIterator/ParallelBlockStreamIterator/Test/Makefile
   BlockStreamIterator/Serialization/Makefile 
-  BufferManager/Makefile 
   Catalog/Makefile
   Catalog/Test/Makefile
   Catalog/stat/Makefile 
