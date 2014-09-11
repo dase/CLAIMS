@@ -58,6 +58,9 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	exchangeTracker =new ExchangeTracker();
 	expander_tracker_=ExpanderTracker::getInstance();
+	if(ismaster){
+		InitializeClientListener();
+	}
 }
 
 Environment::~Environment() {
@@ -70,6 +73,7 @@ Environment::~Environment() {
 		delete iteratorExecutorMaster;
 		delete resourceManagerMaster_;
 		delete blockManagerMaster_;
+		destoryClientListener();
 	}
 	delete iteratorExecutorSlave;
 	delete exchangeTracker;
@@ -168,4 +172,14 @@ NodeID Environment::getNodeID()const{
 }
 Catalog* Environment::getCatalog()const{
 	return catalog_;
+}
+
+void Environment::InitializeClientListener() {
+	listener_=new ClientListener(10000);
+	listener_->configure();
+}
+
+void Environment::destoryClientListener() {
+	listener_->shutdown();
+	delete listener_;
 }

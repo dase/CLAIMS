@@ -22,6 +22,7 @@
 #include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
+#include "Client/ClaimsServer.h"
 
 class Environment {
 public:
@@ -44,6 +45,9 @@ private:
 	void InitializeResourceManager();
 	void InitializeBufferManager();
 	void InitializeIndexManager();
+	void InitializeClientListener();
+
+	void destoryClientListener();
 private:
 	static Environment* _instance;
 	PortManager* portManager;
@@ -66,6 +70,7 @@ private:
 	BufferManager* bufferManager_;
 	IndexManager* indexManager_;
 	ExpanderTracker* expander_tracker_;
+	ClientListener* listener_;
 
 	/**
 	 * TODO: the master and slave pair, such as ResouceManagerMaster and ResourceManagerSlave, should have a

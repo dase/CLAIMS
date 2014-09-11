@@ -13,6 +13,7 @@
 #endif
 #include "../common/Message.h"
 #include "../common/Logging.h"
+#include "ResourceInfo.h"
 typedef int NodeID;
 class ResourceManagerSlave {
 public:
@@ -25,6 +26,7 @@ public:
 private:
 	Theron::Framework *framework_;
 	Logging* logging_;
+	ResourceInfo resource_info_;
 };
 
 #endif /* RESOURCEMANAGERSLAVE_H_ */

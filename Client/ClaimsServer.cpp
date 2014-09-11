@@ -17,8 +17,7 @@
 #include <cstdio>
 #include "../Catalog/Catalog.h"
 #include "../Daemon/Daemon.h"
-
-ClaimsServer::ClaimsServer(int port) {
+ClientListener::ClientListener(int port) {
 
 	m_num = 0;
 	m_clientFds = new int[MAXCONN];
@@ -27,14 +26,15 @@ ClaimsServer::ClaimsServer(int port) {
 	}
 	m_fd = -1;
 	m_port = port;
+
 }
 
-ClaimsServer::~ClaimsServer() {
+ClientListener::~ClientListener() {
 
 	delete m_clientFds;
 }
 
-int ClaimsServer::addClient(const int fd) {
+int ClientListener::addClient(const int fd) {
 
 	if (m_num == MAXCONN) {
 
@@ -52,7 +52,7 @@ int ClaimsServer::addClient(const int fd) {
 	return 0;
 }
 
-int ClaimsServer::removeClient(const int fd) {
+int ClientListener::removeClient(const int fd) {
 
 	int ret = -1;
 	for (int i = 0; i < MAXCONN; ++i) {
@@ -66,7 +66,7 @@ int ClaimsServer::removeClient(const int fd) {
 	return ret;
 }
 
-int ClaimsServer::receiveRequest(const int fd, const char *cmd) {
+int ClientListener::receiveRequest(const int fd, const char *cmd) {
 
 	remote_command rcmd;
 	rcmd.socket_fd = fd;
@@ -80,7 +80,7 @@ int ClaimsServer::receiveRequest(const int fd, const char *cmd) {
  * configure the socket parameter, bind to the specific ip/port
  * startup the send/receive threads
  */
-void ClaimsServer::configure() {
+void ClientListener::configure() {
 
 	int &serverSockFd = m_fd;
 	int clientSockFd;
@@ -133,10 +133,10 @@ void ClaimsServer::configure() {
 
 }
 
-void* ClaimsServer::receiveHandler(void *para) {
+void* ClientListener::receiveHandler(void *para) {
 
 	printf("-Init receive handler.\n");
-	ClaimsServer *server = (ClaimsServer *) para;
+	ClientListener *server = (ClientListener *) para;
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
 
@@ -225,10 +225,12 @@ void* ClaimsServer::receiveHandler(void *para) {
 
 }
 
-void *ClaimsServer::sendHandler(void *para) {
+
+
+void *ClientListener::sendHandler(void *para) {
 
 	printf("-Init send handler!\n");
-	ClaimsServer *server = (ClaimsServer*) para;
+	ClientListener *server = (ClientListener*) para;
 
 	ClientResponse cliRes;
 	while (true) {
@@ -393,7 +395,7 @@ void *ClaimsServer::sendHandler(void *para) {
 /**
  * shut down the server
  */
-void ClaimsServer::shutdown() {
+void ClientListener::shutdown() {
 
 	for (int i = 0; i < MAXCONN; ++i) {
 		if (m_clientFds[i] > 0)
@@ -402,7 +404,7 @@ void ClaimsServer::shutdown() {
 	close(m_fd);
 }
 
-int ClaimsServer::write(const int fd, const ClientResponse& res) const {
+int ClientListener::write(const int fd, const ClientResponse& res) const {
 
 	int ret = 0;
 	char *buffer;

@@ -42,7 +42,6 @@ NodeID ResourceManagerSlave::Register(){
 	}
 }
 void ResourceManagerSlave::ReportStorageBudget(StorageBudgetMessage& message){
-//	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
 	framework_->Send(message,Theron::Address(),Theron::Address(ResourceManagerMasterName));
 }
 void ResourceManagerSlave::RegisterStorageSlave(){

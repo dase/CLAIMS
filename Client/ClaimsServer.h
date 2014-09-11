@@ -12,15 +12,14 @@
 #endif
 #include "ClientResponse.h"
 
-class ClaimsServer {
+class ClientListener {
 public:
-	ClaimsServer(int port);
-	virtual ~ClaimsServer();
+	ClientListener(int port);
+	virtual ~ClientListener();
 
 	void configure();
 //	void run();
 	void shutdown();
-
 private:
 
 	int write(const int fd, const ClientResponse& res) const;

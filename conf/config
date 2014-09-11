@@ -16,7 +16,7 @@ coordinator:
 }
 
 #是否为master. 若为master，则master=1，否则master=0
-master=0
+master=1
 
 #hadoop上的数据目录
 data="/home/imdb/data/wangli/"
