@@ -20,9 +20,8 @@ public:
 	ResourceManagerSlave();
 	virtual ~ResourceManagerSlave();
 	NodeID Register();
-	void RegisterStorageSlave();
 	void ReportStorageBudget(StorageBudgetMessage&);
-
+	void setStorageBudget(unsigned long memory, unsigned long disk);
 private:
 	Theron::Framework *framework_;
 	Logging* logging_;

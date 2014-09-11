@@ -44,6 +44,10 @@ NodeID ResourceManagerSlave::Register(){
 void ResourceManagerSlave::ReportStorageBudget(StorageBudgetMessage& message){
 	framework_->Send(message,Theron::Address(),Theron::Address(ResourceManagerMasterName));
 }
-void ResourceManagerSlave::RegisterStorageSlave(){
+
+
+
+void ResourceManagerSlave::setStorageBudget(unsigned long memory,
+		unsigned long disk) {
 
 }
