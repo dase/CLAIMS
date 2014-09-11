@@ -89,7 +89,7 @@ int maina(int argc, char** argv){
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
-//	return testServerClient();
+	return testServerClient();
 //	return test_data_type();
 
 //	return test_expression_item();
@@ -135,7 +135,7 @@ int maina(int argc, char** argv){
 //	hash_table_test();
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
-	g_test_main(argc,argv);
+//	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 
@@ -143,5 +143,5 @@ int maina(int argc, char** argv){
 //	insert_optimziaed_hash_table_test();
 //	memory_leak_test();
 //	sql_parser_test();
-	filter_test();
+//	filter_test();
 }

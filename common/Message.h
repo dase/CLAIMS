@@ -40,11 +40,6 @@
 //It's better to use fixed length information for implementation concern.
 THERON_DECLARE_REGISTERED_MESSAGE(ExchangeID)
 struct StorageBudgetMessage{
-//	explicit RegisterStorageMessage(const char * const text){
-//		mText[0]='\0';
-//		memcpy(mText,text,REGISTER_MESSAGE_LEN);
-//	}
-//	char mText[REGISTER_MESSAGE_LEN];
 	explicit StorageBudgetMessage(const int &disk_budget,const int & memory_budget,const int & nodeid)
 	:disk_budget(disk_budget),memory_budget(memory_budget),nodeid(nodeid){
 	}
