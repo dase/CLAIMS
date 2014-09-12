@@ -105,6 +105,16 @@ struct Attribute
 		return unique;
 	}
 	std::string getName()const{
+//		int i;
+//		for(i=0;attrName[i]!='.'&&i<attrName.size();i++);
+//		if(i<attrName.size())
+//		{
+//			return string(attrName.substr(i+1,attrName.size()-i-1));
+//		}
+//		else
+//		{
+//			return attrName;
+//		}
 		return attrName;
 	}
 	AttributeID getID()const{

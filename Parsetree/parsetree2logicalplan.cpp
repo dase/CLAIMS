@@ -624,9 +624,14 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 	{
 		Select_list *selectlist=(Select_list *)p;
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
-		if(proj_type==0)
+		if(proj_type==0||proj_type==2)
 		{
-			exprTree.push_back(transformqual(sexpr->colname));
+			QNode * qnode=transformqual(sexpr->colname);
+			if(sexpr->ascolname!=NULL)
+			{
+				qnode->alias=string(sexpr->ascolname);
+			}
+			exprTree.push_back(qnode);
 		}
 		else if(proj_type==1)
 		{
@@ -637,17 +642,6 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 			else if(selectlist->isall==-2)//count(*) 不能参与运算
 			{
 				SQLParse_log("this sql has count(*)");
-			}
-		}
-		else if(proj_type==2)
-		{
-			if(selectlist->isall==-1)
-			{
-				exprTree.push_back(transformqual(sexpr->colname));
-			}
-			else
-			{
-				exprTree.push_back(transformqual(sexpr->colname));
 			}
 		}
 		p=selectlist->next;
