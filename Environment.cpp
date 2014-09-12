@@ -142,7 +142,7 @@ void Environment::InitializeResourceManager(){
 	if(ismaster_){
 		resourceManagerMaster_=new ResourceManagerMaster();
 	}
-	resourceManagerSlave_=new ResourceManagerSlave();
+	resourceManagerSlave_=new InstanceResourceManager();
 	nodeid=resourceManagerSlave_->Register();
 
 }
@@ -164,7 +164,7 @@ ExchangeTracker* Environment::getExchangeTracker(){
 ResourceManagerMaster* Environment::getResourceManagerMaster(){
 	return resourceManagerMaster_;
 }
-ResourceManagerSlave* Environment::getResourceManagerSlave(){
+InstanceResourceManager* Environment::getResourceManagerSlave(){
 	return resourceManagerSlave_;
 }
 NodeID Environment::getNodeID()const{
