@@ -43,6 +43,7 @@ typedef void (*fun)(void*,void*);
 #define NULL_DATETIME		neg_infin
 #define NULL_DECIMAL		NValue::getDecimalValueFromString("99999999999999999999999999.999999999999")
 #define NULL_U_SMALL_INT	USHRT_MAX
+#define NULL_BOOLEAN	    2
 
 //static int count_open_for_data_column=0;
 
@@ -1373,6 +1374,110 @@ public:
 	unsigned number_of_decimal_digits_;
 };
 
+class OperateBool:public Operate{
+public:
+	OperateBool(bool _nullable = true){ this->nullable = _nullable; assign=assigns<int>;};
+	inline void assignment(const void* const &src,void* const &desc)const
+	{
+		*(int *)desc=*(int *)src;
+	};
+	inline std::string toString( void* value)
+	{
+		if (this->nullable == true && (*(int*)value) == NULL_BOOLEAN)
+			return "NULL";
+		else
+		{
+			std::ostringstream ss;
+			if(*(int *)value==0)
+				return "FALSE";
+			else
+				return "TRUE";
+		}
+	}
+	inline void toValue(void* target, const char* string){
+		std::string f="FALSE";
+		std::string t="TRUE";
+		std::string n="NULL";
+		if ((strcmp(string,n.c_str())==0) && this->nullable == true){
+			*(int*)target = NULL_BOOLEAN;
+		}
+		else if(strcmp(f.c_str(),string)==0){
+			*(int *)target = 0;
+		}
+		else{
+			*(int *)target = 1;
+		}
+	}
+	inline bool equal(const void* const &a, const void* const & b)const
+	{
+		return *(int*)a==*(int*)b;
+	}
+	bool less(const void*& a, const void*& b)const{
+		return *(int*)a < *(int*)b;
+	}
+	bool greate(const void*& a, const void*& b)const{
+		return *(int*)a > *(int*)b;
+	}
+	int compare(const void* a,const void* b)const{
+		return *(int*)a - *(int*)b;
+	}
+	inline void add(void* target, void* increment)
+	{
+		ADD<int>(target,increment);
+	}
+	inline void multiple(void* target, void* increment)
+	{
+		MULTIPLE<int>(target, increment);
+	}
+	inline fun GetADDFunction()
+	{
+		return ADD<int>;
+	}
+	inline fun GetMINFunction()
+	{
+		return MIN<int>;
+	}
+	inline fun GetMAXFunction()
+	{
+		return MAX<int>;
+	}
+	inline fun GetIncreateByOneFunction()
+	{
+		return IncreaseByOne<int>;
+	}
+	inline fun 	GetAVGFunction()
+	{
+		return ADD_IncreaseByOne<int>;
+	}
+	unsigned getPartitionValue(const void* key,const PartitionFunction* partition_function)const{
+		return partition_function->get_partition_value(*(int*)key);
+	}
+	unsigned getPartitionValue(const void* key)const{
+		return boost::hash_value(*(int*)key);
+	}
+	unsigned getPartitionValue(const void* key, const unsigned long & mod)const{
+		return boost::hash_value(*(int*)key)%mod;
+	}
+	Operate* duplicateOperator()const{
+		return new OperateBool(this->nullable);
+	}
+
+	inline bool setNull(void* value)
+	{
+		if (this->nullable == false)
+			return false;
+		*(int*)value = NULL_BOOLEAN;
+		return true;
+	}
+
+	inline bool isNull(void* value) const
+	{
+		if (this->nullable == true && (*(int*)value) == NULL_SMALL_INT)
+			return true;
+		return false;
+	}
+};
+
 class column_type
 {
 public:
@@ -1391,6 +1496,7 @@ public:
 			case t_decimal: operate = new OperateDecimal(size, _nullable);break;
 			case t_smallInt: operate = new OperateSmallInt(_nullable);break;
 			case t_u_smallInt: operate = new OperateUSmallInt(_nullable);break;
+			case t_boolean: operate = new OperateBool(_nullable);break;
 			default:operate=0;break;
 		}
 	};
@@ -1426,6 +1532,7 @@ public:
 			case t_decimal: return 16;
 			case t_smallInt: return sizeof(short);
 			case t_u_smallInt: return sizeof(unsigned short);
+			case t_boolean: return sizeof(int);
 			default: return 0;
 
 		}
@@ -1475,6 +1582,7 @@ private:
 			case t_decimal: operate = new OperateDecimal(size, nullable);break;
 			case t_smallInt: operate = new OperateSmallInt(nullable);break;
 			case t_u_smallInt: operate = new OperateUSmallInt(nullable);break;
+			case t_boolean: operate = new OperateBool(nullable);break;
 			default:operate=0;break;
 		}
 	}

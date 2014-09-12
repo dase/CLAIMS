@@ -739,9 +739,6 @@ static void startup_single_node_one_partition_environment_of_tpch(bool master=tr
 
 static void startup_multiple_node_environment_of_tpch(bool master=true){
 	Environment::getInstance(master);
-	int input;
-	printf("continue?\n");
-	scanf("%d",&input);
 
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
@@ -767,6 +764,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 
 	/////////////////////////////// SUPPLIER TABLE //////////////////////////////////
 	TableDescriptor* table_2=new TableDescriptor("SUPPLIER", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+//	TableDescriptor* table_2=new TableDescriptor("SUPPLIER",1);
 	table_2->addAttribute("row_id", data_type(t_u_long),0,true);
 	table_2->addAttribute("S_SUPPKEY",data_type(t_u_long),0,true);  				//0
 	table_2->addAttribute("S_NAME",data_type(t_string),55);
@@ -782,6 +780,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 
 	/////////////////////////////// PARTSUPP TABLE //////////////////////////////////
 	TableDescriptor* table_3=new TableDescriptor("PARTSUPP", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+//	TableDescriptor* table_3=new TableDescriptor("PARTSUPP",2);
 	table_3->addAttribute("row_id", data_type(t_u_long),0,true);
 	table_3->addAttribute("PS_PARTKEY",data_type(t_u_long),0,true);  				//0
 	table_3->addAttribute("PS_SUPPKEY",data_type(t_u_long));
@@ -795,6 +794,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 
 	/////////////////////////////// CUSTOM TABLE //////////////////////////////////
 	TableDescriptor* table_4=new TableDescriptor("CUSTOMER", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+//	TableDescriptor* table_4=new TableDescriptor("CUSTOMER",3);
 	table_4->addAttribute("row_id", data_type(t_u_long),0,true);
 	table_4->addAttribute("C_CUSTKEY",data_type(t_u_long),0,true);  				//0
 	table_4->addAttribute("C_NAME",data_type(t_string),25);

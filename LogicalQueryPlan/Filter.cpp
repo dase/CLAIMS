@@ -14,7 +14,13 @@
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
-
+#include "../common/Expression/initquery.h"
+Filter::Filter(LogicalOperator *child,vector<QNode *>qual)
+:child_(child),qual_(qual)
+{
+	setOperatortype(l_filter);
+	initialize_type_cast_functions();
+}
 Filter::Filter(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray)
 :child_(child),exprArray_(exprArray){
 	initialize_arithmetic_type_promotion_matrix();
@@ -48,8 +54,6 @@ Dataflow Filter::getDataflow(){
 	Dataflow dataflow=child_->getDataflow();
 	if(comparator_list_.size()==0)
 		generateComparatorList(dataflow);
-
-
 	if(dataflow.isHashPartitioned()){
 		for(unsigned i=0;i<dataflow.property_.partitioner.getNumberOfPartitions();i++){
 			if(couldHashPruned(i,dataflow.property_.partitioner))//is filtered
@@ -68,7 +72,12 @@ Dataflow Filter::getDataflow(){
 			}
 		}
 	}
-
+	getcolindex(dataflow);
+	Schema *input_=getSchema(dataflow.attribute_list_);
+	for(int i=0;i<qual_.size();i++)
+	{
+		InitExprAtLogicalPlan(qual_[i],t_boolean,colindex_,input_);
+	}
 	return dataflow;
 }
 BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
@@ -78,9 +87,11 @@ BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
 	state.block_size_=blocksize;
 	state.child_=child_iterator;
 	state.v_ei_=exprArray_;
-	assert(!comparator_list_.empty());
+	state.qual_=qual_;
+	state.colindex_=colindex_;
+//	assert(!comparator_list_.empty());
 	state.comparator_list_=comparator_list_;
-	assert(!state.comparator_list_.empty());
+//	assert(!state.comparator_list_.empty());
 	state.schema_=getSchema(dataflow.attribute_list_);
 	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 	return filter;
@@ -97,6 +108,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			ExpandableBlockStreamFilter::State state;
 			state.block_size_=block_size;
 			state.child_=physical_plan.plan;
+			state.qual_=qual_;
+			state.colindex_=colindex_;
 			state.comparator_list_=comparator_list_;
 			state.v_ei_=exprArray_;
 			Dataflow dataflow=getDataflow();
@@ -113,6 +126,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state_f.block_size_=block_size;
 			state_f.child_=physical_plan.plan;
 			state_f.v_ei_=exprArray_;
+			state_f.qual_=qual_;
+			state_f.colindex_=colindex_;
 			state_f.comparator_list_=comparator_list_;
 			Dataflow dataflow=getDataflow();
 			state_f.schema_=getSchema(dataflow.attribute_list_);
@@ -168,6 +183,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 		state.block_size_=block_size;
 		state.child_=physical_plan.plan;
 		state.v_ei_=exprArray_;
+		state.qual_=qual_;
+		state.colindex_=colindex_;
 		state.comparator_list_=comparator_list_;
 		Dataflow dataflow=getDataflow();
 		state.schema_=getSchema(dataflow.attribute_list_);
@@ -185,6 +202,15 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 
 }
 
+
+bool Filter::getcolindex(Dataflow dataflow)
+{
+	for(int i=0;i<dataflow.attribute_list_.size();i++)
+	{
+		colindex_[dataflow.attribute_list_[i].attrName]=i;
+	}
+	return true;
+}
 bool Filter::couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor& part)const{
 //	for(unsigned i=0;i<comparator_list_.size();i++){
 //		const unsigned comparator_attribute_index=comparator_list_[i].get_index();

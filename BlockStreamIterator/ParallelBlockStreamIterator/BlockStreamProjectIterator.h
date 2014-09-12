@@ -13,6 +13,9 @@
 #include "../../common/ExpressionItem.h"
 #include "../../common/Mapping.h"
 #include "../../configure.h"
+#include "../../common/Expression/qnode.h"
+#include "../../common/Expression/initquery.h"
+#include "../../common/Expression/execfunc.h"
 
 #include <iostream>
 #include <vector>
@@ -38,6 +41,7 @@ public:
 	class State{
 		friend class BlockStreamProjectIterator;
 	public:
+		State(Schema *input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map,vector<ExpressItem_List> v_ei,vector<QNode *>exprTree);
 		State(Schema *input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map,vector<ExpressItem_List> v_ei);
 		State(){};
 	public:
@@ -50,13 +54,16 @@ public:
 		 * */
 		vector<ExpressItem_List> v_ei_;
 		Mapping map_;
+
+
+		vector<QNode *>exprTree_;
 		unsigned block_size_;
 		BlockStreamIteratorBase *children_;
 
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input_ & output_ & children_ & map_ & block_size_ & v_ei_;
+			ar & input_ & output_ & children_ & map_ & block_size_ & v_ei_ &exprTree_;
 		}
 	};
 	BlockStreamProjectIterator(State state);
@@ -70,6 +77,7 @@ void print();
 private:
 	bool atomicPopRemainingBlock(remaining_block & rb);
 	void atomicPushRemainingBlock(remaining_block rb);
+	bool copyNewValue(void *tuple,void *result,int length);
 
 	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
 private:

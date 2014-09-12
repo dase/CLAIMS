@@ -38,5 +38,5 @@ libcommon_a_SOURCES = \
 	ids.cpp 			ids.h \
 	rename.h	
 
-SUBDIRS = Block Schema types
-DIST_SUBDIRS = Block Schema types
+SUBDIRS = Block Schema types Expression
+DIST_SUBDIRS = Block Schema types Expression

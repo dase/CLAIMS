@@ -149,6 +149,16 @@ public:
 		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
 		assert(false);
 	}
+	Attribute getAttribute2(const std::string& name)const{
+		stringstream ss;
+		ss<<name.c_str();
+		for(unsigned i=0;i<attributes.size();i++){
+			if(attributes[i].attrName==ss.str())
+				return attributes[i];
+		}
+		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
+		assert(false);
+	}
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);
 	inline string get_table_name()const{return tableName;}
