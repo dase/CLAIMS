@@ -25,7 +25,7 @@ public:
 private:
 	Theron::Framework *framework_;
 	Logging* logging_;
-	CPUResource cpu_resource_;
+	CPUResourceManager cpu_resource_;
 };
 
 #endif /* RESOURCEMANAGERSLAVE_H_ */
