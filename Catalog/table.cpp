@@ -96,11 +96,12 @@ void TableDescriptor::addAttribute(Attribute attr)
 {
 	attributes.push_back(attr);
 }
-bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length,bool unique){
+bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length,bool unique, bool can_be_null)
+{
 	/*check for attribute rename*/
 	for(unsigned i=0;i<attributes.size();i++){
-		if(attributes[i].attrName==attname)
-			return false;
+	if(attributes[i].attrName==attname)
+	return false;
 	}
 	stringstream attrintable;
 	attrintable<<tableName.c_str()<<"."<<attname.c_str();

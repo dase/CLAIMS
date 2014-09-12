@@ -263,10 +263,10 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 //				strcat(strtmp,col->parameter2);
 //				col->parameter2=strtmp;
 				col->type=t_name_name;
-				if(sexpr->ascolname==NULL)
-				{
-					sexpr->ascolname=col->parameter2;
-				}
+//				if(sexpr->ascolname==NULL)
+//				{
+//					sexpr->ascolname=col->parameter2;
+//				}
 			}
 			else if(result==0)
 			{
@@ -311,10 +311,10 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				}
 				else
 				{
-					if(sexpr->ascolname==NULL)
-					{
-						sexpr->ascolname=col->parameter2;
-					}
+//					if(sexpr->ascolname==NULL)
+//					{
+//						sexpr->ascolname=col->parameter2;
+//					}
 					return 1;
 				}
 			}
@@ -694,7 +694,7 @@ int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//sel
 				Columns *col=(Columns *)node;
 				if(strcmp(sexpr->ascolname,ascolname)==0)
 				{
-					strcpy(ascolname,col->parameter2);
+//					strcpy(ascolname,col->parameter2);
 					astablename=col->parameter1;
 					result++;
 				}
@@ -702,7 +702,12 @@ int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//sel
 			}break;
 			default:
 			{
-
+				if(strcmp(sexpr->ascolname,ascolname)==0)
+				{
+//					strcpy(ascolname,col->parameter2);
+//					astablename=col->parameter1;
+					result++;
+				}
 			}
 		}
 		p=selectlist->next;
@@ -1218,10 +1223,23 @@ bool having_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>&rtable,bool all
 					return false;
 				}
 			}
-			else
+			else//maybe alais,so in selectlist
 			{
-				SQLParse_elog("havingcondition %s can't find in table and selectlist ",col->parameter2);
-				return false;
+				int tres=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
+				if(tres==0)
+				{
+					SQLParse_elog("havingcondition %s can't find in tables and selectlist ",col->parameter2);
+					return false;
+				}
+				else if(tres==1)
+				{
+					return true;
+				}
+				else
+				{
+					SQLParse_elog("havingcondition %s in selectlist is ambiguous",col->parameter2);
+					return false;
+				}
 			}
 		}break;
 		case t_name_name:

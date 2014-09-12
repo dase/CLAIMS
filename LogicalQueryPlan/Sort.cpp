@@ -55,6 +55,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize)
 	exchange_state.schema=getSchema(dataflow_.attribute_list_);
 	vector<NodeID> lower_ip_list=getInvolvedNodeID(dataflow_.property_.partitioner);
 	exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_ip_list);//upper
+	exchange_state.partition_key_index=0;
 	/* todo: compute the upper_ip_list to do reduce side sort */
 	vector<NodeID> upper_ip_list;
 	upper_ip_list.push_back(0);
