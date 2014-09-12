@@ -18,6 +18,7 @@ libresouce_a_SOURCES = \
 	ResourceInfo.cpp 		ResourceInfo.h \
 	ResourceManagerMaster.cpp 		ResourceManagerMaster.h \
 	ResourceManagerSlave.cpp 		ResourceManagerSlave.h \
-	BufferManager.cpp		BufferManager.h 
+	BufferManager.cpp		BufferManager.h \
+	CPUResource.cpp			CPUResource.h
 
 libresouce_a_LIBADD = ${THERON_HOME}/Lib/libtherond.a

@@ -33,7 +33,7 @@ public:
 	AdaptiveEndPoint* getEndPoint();
 	ExchangeTracker* getExchangeTracker();
 	ResourceManagerMaster* getResourceManagerMaster();
-	ResourceManagerSlave* getResourceManagerSlave();
+	InstanceResourceManager* getResourceManagerSlave();
 	NodeID getNodeID()const;
 	Catalog* getCatalog()const;
 	Environment(bool ismaster=false);
@@ -61,7 +61,7 @@ private:
 	Logging* logging_;
 	bool ismaster_;
 	ResourceManagerMaster* resourceManagerMaster_;
-	ResourceManagerSlave* resourceManagerSlave_;
+	InstanceResourceManager* resourceManagerSlave_;
 	Catalog* catalog_;
 	/* the globally unique node id*/
 	NodeID nodeid;
