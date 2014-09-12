@@ -12,7 +12,7 @@
 static void startup_single_node_environment_of_poc(){
 //	int master;
 	int master=0;
-//	printf("Master(0) or Slave(others)??\n");
+	printf("Master(0) or Slave(others)??\n");
 //	scanf("%d",&master);
 	if(master!=0){
 		Environment::getInstance(false);
@@ -54,7 +54,7 @@ static void startup_single_node_environment_of_poc(){
 		cj_proj0_index.push_back(4);
 		cj_proj0_index.push_back(5);
 		const int partition_key_index_1=2;
-		table_1->createHashPartitionedProjection(cj_proj0_index,"row_id",1);	//G0
+		table_1->createHashPartitionedProjection(cj_proj0_index,"cj.row_id",1);	//G0
 //		catalog->add_table(table_1);
 		vector<ColumnOffset> cj_proj1_index;
 		cj_proj1_index.push_back(0);
@@ -73,7 +73,7 @@ static void startup_single_node_environment_of_poc(){
 		cj_proj1_index.push_back(18);
 		cj_proj1_index.push_back(18);
 
-		table_1->createHashPartitionedProjection(cj_proj1_index,"row_id",1);	//G1
+		table_1->createHashPartitionedProjection(cj_proj1_index,"cj.row_id",1);	//G1
 
 
 		catalog->add_table(table_1);
@@ -129,7 +129,7 @@ static void startup_single_node_environment_of_poc(){
 		sb_proj0_index.push_back(4);
 		sb_proj0_index.push_back(5);
 
-		table_2->createHashPartitionedProjection(sb_proj0_index,"row_id",1);	//G0
+		table_2->createHashPartitionedProjection(sb_proj0_index,"sb.row_id",1);	//G0
 
 
 
@@ -159,7 +159,7 @@ static void startup_single_node_environment_of_poc(){
 
 
 
-		table_2->createHashPartitionedProjection(sb_proj1_index,"row_id",1);	//G1
+		table_2->createHashPartitionedProjection(sb_proj1_index,"sb.row_id",1);	//G1
 
 
 		catalog->add_table(table_2);
@@ -391,7 +391,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
 	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
 
-	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);//should be 4
+	table_1->createHashPartitionedProjectionOnAllAttribute("PART.P_PARTKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -406,7 +406,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_2->addAttribute("S_ACCTBAL",data_type(t_decimal),4);
 	table_2->addAttribute("S_COMMENT",data_type(t_string),101);
 
-	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",4);//should be 4
+	table_2->createHashPartitionedProjectionOnAllAttribute("SUPPLIER.S_SUPPKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -419,7 +419,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_3->addAttribute("PS_SUPPLYCOST",data_type(t_decimal),2);
 	table_3->addAttribute("PS_COMMENT",data_type(t_string),199);
 
-	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",4);//should be 4
+	table_3->createHashPartitionedProjectionOnAllAttribute("PARTSUPP.PS_PARTKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -435,7 +435,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_4->addAttribute("C_MKTSEGMENT",data_type(t_string),10);
 	table_4->addAttribute("C_COMMENT",data_type(t_string),117);
 
-	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",4);//should be 4
+	table_4->createHashPartitionedProjectionOnAllAttribute("CUSTOMER.C_CUSTKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -452,7 +452,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_5->addAttribute("O_SHIPPRIORITY",data_type(t_int));
 	table_5->addAttribute("O_COMMENT",data_type(t_string),79);
 
-	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",4);//should be 4
+	table_5->createHashPartitionedProjectionOnAllAttribute("ORDERS.O_ORDERKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////// LINEITEM TABLE //////////////////////////////////
@@ -475,7 +475,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_6->addAttribute("L_SHIPMODE",data_type(t_string),10);
 	table_6->addAttribute("L_COMMENT",data_type(t_string),44);
 
-	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",4); // the number of partition should be 4.
+	table_6->createHashPartitionedProjectionOnAllAttribute("LINEITEM.L_ORDERKEY",4); // the number of partition should be 4.
 	///////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////// NATION TABLE //////////////////////////////////
 	TableDescriptor* table_7=new TableDescriptor("NATION",6);
@@ -485,7 +485,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_7->addAttribute("N_REGIONKEY",data_type(t_u_long));
 	table_7->addAttribute("N_COMMENT",data_type(t_string),152);
 
-	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
+	table_7->createHashPartitionedProjectionOnAllAttribute("NATION.N_NATIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////// REGION TABLE //////////////////////////////////
@@ -495,7 +495,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 	table_8->addAttribute("R_NAME",data_type(t_string),25);
 	table_8->addAttribute("R_COMMENT",data_type(t_string),152);
 
-	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
+	table_8->createHashPartitionedProjectionOnAllAttribute("REGION.R_REGIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -739,6 +739,9 @@ static void startup_single_node_one_partition_environment_of_tpch(bool master=tr
 
 static void startup_multiple_node_environment_of_tpch(bool master=true){
 	Environment::getInstance(master);
+	int input;
+	printf("continue?\n");
+	scanf("%d",&input);
 
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();

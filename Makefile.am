@@ -1,4 +1,4 @@
-AM_CPPFLAGS=-fPIC\
+AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
@@ -6,7 +6,6 @@ AM_CPPFLAGS=-fPIC\
 -I${BOOST_HOME}/boost/serialization \
 -I${BOOST_HOME}/ \
 -I${GTEST_HOME}/include
-
 AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs
 
 LDADD =  \
@@ -26,8 +25,6 @@ LDADD =  \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
 	try/libtry.a \
-	Scheduler/libscheduler.a \
-	Scheduler/test/libtest.a \
 	BufferManager/libbuffermanager.a \
 	LogicalQueryPlan/Test/libtest.a \
 	LogicalQueryPlan/liblogicalqueryplan.a \
@@ -49,15 +46,15 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.a \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_serialization.so \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.a \
-	/home/imdb/supports/boost_1_53_0/stage/lib/libboost_system.so \
-	/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.so \
-	/home/NewHadoop/hadoop/hadoop-1.0.3/c++/Linux-amd64-64/lib/libhdfs.a \
-	/home/NewHadoop/java/jdk1.7.0_45/jre/lib/amd64/server/libjvm.so\
-	/home/imdb/supports/Theron-5.01.01/Lib/libtherond.a \
-	/home/imdb/supports/gtest-1.7.0/libgtest.a
+	${BOOST_HOME}/stage/lib/libboost_serialization.a \
+	${BOOST_HOME}/stage/lib/libboost_serialization.so \
+	${BOOST_HOME}/stage/lib/libboost_system.a \
+	${BOOST_HOME}/stage/lib/libboost_system.so \
+	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
+	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
+	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
+	${THERON_HOME}/Lib/libtherond.a \
+	${GTEST_HOME}/libgtest.a
 
 include_HEADERS = Config.h \
 				Debug.h \
@@ -73,22 +70,9 @@ claimsserver_SOURCES = Config.cpp	\
 				Server.cpp
 
 SUBDIRS= BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource Scheduler \
+Loader LogicalQueryPlan Parsetree Resource \
 storage Test try utility
 
 DIST_SUBDIRS = BlockStreamIterator BufferManager Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource Scheduler \
+Loader LogicalQueryPlan Parsetree Resource \
 storage Test try utility
-
-
-export BOOST_HOME=/home/imdb/supports/boost_1_53_0
-
-export THERON_HOME=/home/imdb/supports/Theron-5.01.01
-
-export JAVA_HOME=/home/NewHadoop/java/jdk1.7.0_45
-
-export HADOOP_HOME=/home/NewHadoop/hadoop/hadoop-1.0.3
-
-export GTEST_HOME=/home/imdb/supports/gtest-1.7.0
-
-export CLAIMS_HOME=/home/imdb/git/Claims

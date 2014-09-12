@@ -6,6 +6,7 @@
  */
 
 #include "ExpandableBlockStreamIteratorBase.h"
+#include "../Executor/ExpanderTracker.h"
 
 ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned number_of_barrier,unsigned number_of_seriliazed_section)
 :number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section){
@@ -132,4 +133,8 @@ thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 //	printf("Thread %lx is poped!\n",pthread_self());
 	context_lock_.release();
 	return ret;
+}
+
+bool ExpandableBlockStreamIteratorBase::checkTerminateRequest() {
+	return  ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self());
 }

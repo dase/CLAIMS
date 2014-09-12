@@ -1,4 +1,5 @@
-AM_CPPFLAGS= -fPIC \
+
+AM_CPPFLAGS= -fPIC -fpermissive \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
@@ -13,7 +14,6 @@ LDADD = 	../LogicalQueryPlan/liblogicalqueryplan.a \
 		../BlockStreamIterator/libblockstreamiterator.a \
 		../Catalog/libcatalog.a \
 		../Catalog/stat/libstat.a \
-		../Scheduler/libscheduler.a \
 		../Schema/libschema.a \
 		../Resource/libresource.a \
 		../common/libcommon.a \
@@ -27,6 +27,7 @@ liblogicalqueryplan_a_SOURCES = \
 	Buffer.cpp 					Buffer.h \
 	DataflowPartition.cpp 			DataflowPartition.h \
 	DataflowPartitionDescriptor.cpp 	DataflowPartitionDescriptor.h \
+	Dataflow.cpp				Dataflow.h\
 	EqualJoin.cpp 				EqualJoin.h \
 	Filter.cpp 					Filter.h \
 	LogicalOperator.cpp 			LogicalOperator.h \

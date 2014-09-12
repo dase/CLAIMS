@@ -7,7 +7,7 @@
 #include "../TupleConvertor.h"
 #include "../SchemaFix.h"
 #pragma pack(4)
-struct tuple{
+struct Tuple{
 	 int32_t a1;
 	 char name[14];
 	 uint64_t a2;
@@ -27,7 +27,7 @@ static int sub_tuple_test(){
 	columns.push_back(c);
 	Schema* schema=new SchemaFix(columns);
 
-	tuple t;
+	Tuple t;
 	t.a1=10;
 	t.a2=11;
 	t.a3=12;

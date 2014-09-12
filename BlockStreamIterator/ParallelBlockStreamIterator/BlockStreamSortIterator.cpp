@@ -162,14 +162,15 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 		}
 	}
 
-	/* phase 2: sort the data in the buffer!
-	 *          by using multi-threads to speed up?
-	 * TODO: whether to store the sorted data into the blockmanager
-	 * */
-	cout<<"check the memory usage!!!"<<endl;
-	unsigned long long int time=curtick();
-	//    order(state_.orderbyKey_,tuple_count_sum);
-	order();
+
+    /* phase 2: sort the data in the buffer!
+     *          by using multi-threads to speed up?
+     * TODO: whether to store the sorted data into the blockmanager
+     * */
+//    cout<<"check the memory usage!!!"<<endl;
+    unsigned long long int time=curtick();
+//    order(state_.orderbyKey_,tuple_count_sum);
+    order();
 
 	cout<<"the tuple_count is: "<<tuple_count_sum<<"Total time: "<<getSecond(time)<<" seconds, the swap num is: "<<swap_num<<endl;
 	return true;
@@ -195,21 +196,24 @@ bool BlockStreamSortIterator::next(BlockStreamBase* block){
 }
 
 bool BlockStreamSortIterator::close(){
-	DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();
-	BlockStreamBase* block_to_deallocate;
-	while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
-		block_to_deallocate->~BlockStreamBase();
-	}
-	state_.child_->close();
-	return true;
+
+	/* */
+//    DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();
+//    BlockStreamBase* block_to_deallocate;
+//    while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
+//		block_to_deallocate->~BlockStreamBase();
+//    }
+    state_.child_->close();
+    return true;
 }
 
 
 bool BlockStreamSortIterator::createBlockStream(BlockStreamBase*& target)const{
-	//TODO: the block allocation should apply for the memory budget from the buffer manager first.
-	cout<<"state_.block_size_: "<<state_.block_size_<<endl;
-	target=BlockStreamBase::createBlock(state_.input_,state_.block_size_);
-	return target!=0;
+
+        //TODO: the block allocation should apply for the memory budget from the buffer manager first.
+//		cout<<"state_.block_size_: "<<state_.block_size_<<endl;
+        target=BlockStreamBase::createBlock(state_.input_,state_.block_size_);
+        return target!=0;
 }
 
 

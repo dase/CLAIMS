@@ -27,7 +27,6 @@
 #include "../Parsetree/Test/parser_test.cpp"
 
 #include "../common/Expression_item.cpp"
-#include "../common/ExpandedThreadTracker_test.cpp"
 
 #include "../common/types/Test/data_type_test.h"
 
@@ -63,8 +62,12 @@
 //#include "hashtable_test.cpp"
 #include "gtest.h"
 #include "memory_leak_test.h"
+//#include "utility/data_distribution_generator.h"
+#include "../utility/data_distribution_generator.h"
+#include "TestSuit/filter_test.h"
 
-int maina(){
+int maina(int argc, char** argv){
+
 
 //	return testGenerateIteratorTree();
 //	return iterator_test();
@@ -82,7 +85,7 @@ int maina(){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-	return query_optimization_outputdata();
+//	return query_optimization_outputdata();
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
@@ -126,17 +129,20 @@ int maina(){
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
+//	test_data_distribution_generator();
 //	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test(10);
 //	hash_table_test();
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
-//	g_test_main(argc,argv);
-//	g_test_main(argc,argv);
+
+	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 
 //	sleep(1000);
 //	insert_optimziaed_hash_table_test();
 //	memory_leak_test();
+//	sql_parser_test();
+	filter_test();
 }

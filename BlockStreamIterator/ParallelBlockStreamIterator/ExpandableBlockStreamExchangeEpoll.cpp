@@ -68,7 +68,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 		buffer=new BlockStreamBuffer(state.block_size,BUFFER_SIZE_IN_EXCHANGE,state.schema);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
-		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		received_block_stream_=BlockStreamBase::createBlock(state.schema,state.block_size);
 		block_for_socket_=new BlockContainer*[nlowers];
 		for(unsigned i=0;i<nlowers;i++){
@@ -90,7 +89,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 //		if(isMaster()){
 		if(partition_offset==0){
 			/*TODO: According to a bug reported by dsc, the master exchangeupper should check whether other
-			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fails to connect to the
+			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fail to connect to the
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
 			 *  have not register the exchange_id to the exchangeTracker.
 			*/
@@ -105,15 +104,13 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		}
 
 
-//		if(WaitForConnectionFromLowerExchanges()==false){
-//			return false;
-//		}
-
 		if(CreateReceiverThread()==false){
 			return false;
 		}
 
 
+		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+		perf_info_->initialize();
 
 		open_finished_=true;
 //		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
@@ -130,9 +127,14 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 }
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
-	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+//		logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+//		printf("exchange received terminate request! %lx\n",pthread_self());
+////		assert(false);
+//		return false;
+//	}
+	if(this->checkTerminateRequest()){
 		logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
-//		assert(false);
 		return false;
 	}
 
@@ -149,6 +151,10 @@ bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 		if(buffer->getBlock(*block)){
 			perf_info_->processed_one_block();
 			return true;
+		}
+		if(this->checkTerminateRequest()){
+			logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
+			return false;
 		}
 		usleep(1);
 	}

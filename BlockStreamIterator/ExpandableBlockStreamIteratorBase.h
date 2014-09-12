@@ -90,6 +90,8 @@ protected:
 	 */
 	void destorySelfContext();
 
+	bool checkTerminateRequest();
+
 protected:
 	/* the return value of open() */
 	volatile bool open_ret_;

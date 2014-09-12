@@ -30,8 +30,8 @@
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <sstream>
 #include <assert.h>
-#include <Theron/Defines.h>
-#include <Theron/Theron.h>
+#include "Theron/Defines.h"
+#include "Theron/Theron.h"
 #include "../BlockStreamIterator/Serialization/RegisterDerivedClass.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../Debug.h"

@@ -1,4 +1,4 @@
-AM_CPPFLAGS= -fPIC \
+AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
 -I${HADOOP_HOME}/src/c++/libhdfs\
@@ -28,7 +28,7 @@ libexecutor_a_SOURCES = \
 	
 libexecutor_a_LIBADD = 	${THERON_HOME}/Lib/libtherond.a \
 				${BOOST_HOME}/stage/lib/libboost_serialization.a \
-				${BOOST_HOME}/stage/lib/libboost_serialization.so	
+				${BOOST_HOME}/stage/lib/libboost_serialization.so
 
 SUBDIRS = Test
 DIST_SUBDIRS = Test

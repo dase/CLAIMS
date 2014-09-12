@@ -3,6 +3,7 @@
 #include "../../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../set_up_environment.h"
 #include "../../common/AttributeComparator.h"
+#include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 /*
  * ExpanderFrameTest.h
  *
@@ -105,7 +106,7 @@ static int test_scan_filter_low_selectivity(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64 );
-	executable_query_plan->print();
+//	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
 	executable_query_plan->close();
@@ -141,7 +142,7 @@ static int test_scan_filter_Aggregation(){
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 	std::vector<Attribute> group_by_attributes;
-	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
+	group_by_attributes.push_back(table_1->getAttribute("cj.sec_code"));
 
 	std::vector<Attribute> aggregation_attributes;
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
@@ -263,7 +264,7 @@ static int test_no_repartition_filtered_join(){
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.row_id"),table_2->getAttribute("sb.row_id")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
@@ -318,9 +319,9 @@ static int test_complete_repartition_filtered_join(){
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.order_no"),table_2->getAttribute("sb.order_no")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.trade_date"),table_2->getAttribute("sb.entry_date")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.trade_dir"),table_2->getAttribute("sb.entry_dir")));
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
@@ -352,12 +353,10 @@ static int test_complete_repartition_scan_join(){
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
-
-
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.order_no"),table_2->getAttribute("sb.order_no")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.trade_date"),table_2->getAttribute("sb.entry_date")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.trade_dir"),table_2->getAttribute("sb.entry_dir")));
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
@@ -394,7 +393,7 @@ static int test_no_repartition_scan_join(){
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("cj.row_id"),table_2->getAttribute("sb.row_id")));
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
@@ -426,6 +425,11 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 
 
 	startup_single_node_environment_of_poc();
+
+//	LogicalOperator* root=convert_sql_to_logical_operator_tree("selects * from cj;");
+//	if(root!=0){
+//		printf("OK!\n");
+//	}
 
 	printf("This test requires one partition of POC sb and cj\n");
 
