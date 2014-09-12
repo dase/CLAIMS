@@ -19,10 +19,14 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include <vector>
 #include <sstream>
+#include <map>
+#include "../common/Expression/qnode.h"
 
 class LogicalProject:public LogicalOperator{
 public:
 	LogicalProject(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray);
+	LogicalProject(LogicalOperator *child, vector<QNode *>exprTree);
+
 	virtual ~LogicalProject();
 
 	Dataflow getDataflow();
@@ -37,12 +41,15 @@ private:
 	Schema *getOutputSchema();
 	int getColumnSeq(ExpressionItem &ei);
 	string recovereyName(Expression ei);
-
+	bool getcolindex(Dataflow dataflow);
 private:
 	Mapping mappings_;
 	Dataflow *dataflow_;
 	LogicalOperator *child_;
 	std::vector<Expression> exprArray_;
+
+	std::vector<QNode *>exprTree_;
+	std::map<std::string,int>colindex_;
 };
 
 #endif /* LOGICALPROJECT_H_ */

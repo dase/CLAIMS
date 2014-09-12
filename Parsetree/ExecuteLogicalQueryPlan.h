@@ -8,6 +8,11 @@
 #ifndef EXECUTELOGICALQUERYPLAN_H_
 #define EXECUTELOGICALQUERYPLAN_H_
 #include <string>
+#include "../common/Block/ResultSet.h"
+#include "sql_node_struct.h"
+#include "../common/data_type.h"
+#include "../Catalog/table.h"
+#include <iosfwd>
 
 
 void ExecuteLogicalQueryPlan();
@@ -15,4 +20,5 @@ bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsi
 
 bool CheckType(const column_type *col_type, Expr *expr);
 LogicalOperator* convert_sql_to_logical_operator_tree(const char* sql);
+void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag,string &error_msg);
 #endif /* EXECUTELOGICALQUERYPLAN_H_ */

@@ -18,7 +18,8 @@
 
 #include "../common/Logging.h"
 #include "../utility/lock.h"
-
+#include "ProjectionBinding.h"
+#include "../Catalog/table.h"
 struct TableIDAllocator{
 	TableIDAllocator(){
 		table_id_curosr=0;
@@ -66,10 +67,10 @@ public:
 
 	vector<PartitionID> getPartitionIDList(const std::string& table_name, const std::string& attribute_name);
 
+	boost::unordered_map<std::string,TableDescriptor*> name_to_table;
 private:
 	Catalog();
 	TableIDAllocator table_id_allocator;
-	boost::unordered_map<std::string,TableDescriptor*> name_to_table;
 	boost::unordered_map<TableID,TableDescriptor*> tableid_to_table;
 
 	Logging* logging;

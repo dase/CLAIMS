@@ -35,7 +35,8 @@ liblogicalqueryplan_a_SOURCES = \
 	Project.cpp 				Project.h \
 	Requirement.cpp 				Requirement.h \
 	Scan.cpp 					Scan.h \
-	Sort.cpp 					Sort.h
+	Sort.cpp 					Sort.h \
+	CrossJoin.cpp				CrossJoin.h
 
 SUBDIRS = Test
 DIST_SUBDIRS = Test
