@@ -313,22 +313,25 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	}
 
 
-	//		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-	//			unregisterNewThreadToAllBarriers(1);
-	//			return true;
-	//		}
-	barrierArrive(2);
 
-	if(tryEntryIntoSerializedSection(2)){
-		//			hashtable_->report_status();
-		it_=hashtable_->CreateIterator();
-		bucket_cur_=0;
-		hashtable_->placeIterator(it_,bucket_cur_);
-		open_finished_end_=true;
-		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation",0));
-		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
-	}
-	barrierArrive(3);
+
+		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+			unregisterNewThreadToAllBarriers(1);
+			return true;
+		}
+		barrierArrive(2);
+
+		if(tryEntryIntoSerializedSection(2)){
+//			hashtable_->report_status();
+				it_=hashtable_->CreateIterator();
+				bucket_cur_=0;
+				hashtable_->placeIterator(it_,bucket_cur_);
+				open_finished_end_=true;
+				ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation  ",0));
+				perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+				perf_info_->initialize();
+		}
+		barrierArrive(3);
 
 	delete bsb;
 }

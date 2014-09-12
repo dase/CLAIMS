@@ -190,6 +190,14 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 			memcpy(tuple,&result._datetime,length);
 			break;
 		}
+		case t_double:{
+			memcpy(tuple,&result.content.data.value._double,length);
+			break;
+		}
+		case t_smallInt:{
+			memcpy(tuple,&result.content.data.value._sint,length);
+			break;
+		}
 		default:{
 			cout<<"missing the operator!!!"<<endl;
 			break;

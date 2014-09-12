@@ -210,7 +210,7 @@ std::string null_value_test(unsigned int size, data_type t)
 {
 	column_type* ct = new column_type(t, 12, true);
 	void* value = malloc(size);
-	ct->operate->toValue(value, NULL);
+	ct->operate->toValue(value, "");
 	std::string ret =  ct->operate->toString(value);
 	ct->~column_type();
 	free(value);

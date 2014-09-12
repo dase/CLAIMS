@@ -28,6 +28,7 @@ bool ExpressionItem::setValue(void* value_str,const data_type type){
 		case t_smallInt:
 		{
 			setSmallIntValue(*(short *)value_str);
+			break;
 		}
 		case t_double:{
 			setDoubleValue(*(double *)value_str);

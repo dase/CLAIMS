@@ -40,7 +40,54 @@ const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
 
+LogicalOperator* convert_sql_to_logical_operator_tree(const char* sql)
+		{
+	Node* oldnode=getparsetreeroot(sql);
+	Stmt *stmtList = (Stmt *)oldnode;
 
+	while (stmtList != NULL)
+	{
+		Node *node = (Node *)stmtList->data;
+		switch(node->type)
+		{
+		case t_query_stmt:
+		{
+			SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
+			if (!semantic_analysis(node,false))//---3.22fzh---
+			{
+				SQLParse_elog("semantic_analysis error");
+				return NULL;
+			}
+			preprocess(node);
+#ifdef SQL_Parser
+			output(node,0);
+#endif
+			Query_stmt *querynode=(Query_stmt *)node;
+			if(querynode->where_list!=NULL)
+			{
+				struct Where_list * curt=(struct Where_list *)(querynode->where_list);
+				struct Node *cur=(struct Node *)(curt->next);
+				SQLParse_log("wc2tb");
+				departwc(cur,querynode->from_list);
+			}
+			if(querynode->from_list!=NULL)
+				int fg=solve_join_condition(querynode->from_list);
+#ifdef SQL_Parser
+			output(node,0);
+#endif
+			LogicalOperator* plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
+			//进行判断，对于不同的语句，比如select,update等选择不同的操作。
+			return plan;
+		}break;
+
+		default:
+		{
+			SQLParse_elog("-----------the sql isn't supported!-----------------------");
+			return NULL;
+		}
+		}
+	}
+		}
 void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改变，相关代码进行修改---by余楷
 {
 
@@ -65,10 +112,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 		{
 			printf("[ERROR]there are some wrong in statement! please try again!!\n");
 			FreeAllNode();	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
-//			printf("Continue(1) or not (others number)?\n");
-//			scanf("%d",&count);
-//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
-//			//setbuf(stdin, NULL);	//关闭缓冲
+			//			printf("Continue(1) or not (others number)?\n");
+			//			scanf("%d",&count);
+			//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+			//			//setbuf(stdin, NULL);	//关闭缓冲
 			continue;
 		}
 
@@ -107,7 +154,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				TableDescriptor *new_table = Environment::getInstance()->getCatalog()->getTable(tablename);
 				if (new_table != NULL)
 				{
-//					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
+					//					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
 					ASTParserLogging::elog("The table %s has existed!", tablename.c_str());
 					break;
 				}
@@ -348,10 +395,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
-//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-////					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
-//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
-//				}
+				//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+				////					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+				//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+				//				}
 
 				catalog->saveCatalog();
 
@@ -474,7 +521,7 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-			//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
+				//	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 			}
 			break;
 			case t_load_table_stmt:	//	导入数据的语句
@@ -662,16 +709,16 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 				Show_stmt *show_stmt = (Show_stmt *)node;
 				switch(show_stmt->show_type)
 				{
-					case 1:
-					{
-						cout<<"Tables:"<<endl;
-						for (unsigned i = 0; i < catalog->getTableCount(); ++i)
-							cout<<catalog->getTable(i)->getTableName()<<endl;
-					}
-					break;
-					default:{
-						ASTParserLogging::elog("Sorry, not supported now!");
-					}
+				case 1:
+				{
+					cout<<"Tables:"<<endl;
+					for (unsigned i = 0; i < catalog->getTableCount(); ++i)
+						cout<<catalog->getTable(i)->getTableName()<<endl;
+				}
+				break;
+				default:{
+					ASTParserLogging::elog("Sorry, not supported now!");
+				}
 				}
 			}
 			break;
@@ -689,10 +736,10 @@ void ExecuteLogicalQueryPlan()	// 2014-3-4---因为根结点的结构已经改�
 
 		//		FreeAllNode();	//---完成对节点的释放 ！！！！！！！！！！！！！！
 
-//		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-//		printf("Continue(1) or not (0)?\n");
-//		scanf("%d",&count);
-//		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+		//		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+		//		printf("Continue(1) or not (0)?\n");
+		//		scanf("%d",&count);
+		//		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
 	}
 }
 

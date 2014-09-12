@@ -35,7 +35,9 @@
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/BlockStreamBuffer.h"
 
-class ExpandableBlockStreamExchangeEpoll:public BlockStreamIteratorBase {
+#include "../ExpandableBlockStreamIteratorBase.h"
+
+class ExpandableBlockStreamExchangeEpoll:public ExpandableBlockStreamIteratorBase {
 public:
 	struct State{
 		Schema* schema;

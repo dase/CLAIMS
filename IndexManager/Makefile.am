@@ -1,4 +1,5 @@
-AM_CPPFLAGS= -fPIC \
+
+AM_CPPFLAGS= -fPIC -fpermissive\
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
 -I${THERON_HOME}/Include \
@@ -11,7 +12,6 @@ AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lxs
 LDADD =	../BlockStreamIterator/libblockstreamiterator.a \
 		../Catalog/libcatalog.a \
 		../LogicalQueryPlan/liblogicalqueryplan.a \
-		../Scheduler/libscheduler.a \
 		../storage/libstorage.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \

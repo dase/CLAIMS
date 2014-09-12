@@ -1,4 +1,5 @@
-AM_CPPFLAGS= -fPIC \
+
+AM_CPPFLAGS= -fPIC -fpermissive\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
@@ -20,4 +21,4 @@ LDADD = 	../../common/libcommon.a \
 
 noinst_LIBRARIES=libutility.a
 libutility_a_SOURCES = \
-	generator_test.h
+	generator_test.h 

@@ -1,4 +1,4 @@
-AM_CPPFLAGS= -fPIC
+AM_CPPFLAGS= -fPIC -fpermissive
 
 AM_LDFLAGS=-lc -lm -lrt -lxs
 
@@ -11,4 +11,5 @@ libutility_a_SOURCES = \
 	Timer.h 							atomics.h \
 	generator.h 						lock.h \
 	rdtsc.h 							test_tool.h \
-	warmup.h
+	warmup.h \
+	data_distribution_generator.cpp 	data_distribution_generator.h 

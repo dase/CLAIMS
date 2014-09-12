@@ -1464,8 +1464,9 @@ static int query_optimization_outputdata()
 		Environment::getInstance(true);
 		startup_multiple_node_environment_of_tpch();
 
-		Catalog* catalog=Environment::getInstance()->getCatalog();
-		catalog->restoreCatalog();
+		/** the following two lines are moved to the initialization code in Environment.*/
+		//Catalog* catalog=Environment::getInstance()->getCatalog();
+		//catalog->restoreCatalog();
 
 //		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 //		Catalog* catalog=Environment::getInstance()->getCatalog();

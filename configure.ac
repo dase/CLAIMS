@@ -1,8 +1,8 @@
 AC_INIT([Claims], [0.3], [imdb@ecnu])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_LIBTOOL
-CPPFLAGS="-w -O0"
-CXXFLAGS=${CXXFLAGS="-g"}
+CPPFLAGS="-w -O0 -DTHERON_XS"
+CXXFLAGS=${CXXFLAGS="-g -std=c++11"}
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
@@ -37,8 +37,6 @@ AC_CONFIG_FILES([
   Parsetree/Makefile 
   Parsetree/Test/Makefile 
   Resource/Makefile 
-  Scheduler/Makefile 
-  Scheduler/test/Makefile 
   storage/Makefile 
   Test/Makefile
   Test/common/Makefile
