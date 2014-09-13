@@ -9,10 +9,11 @@
 #include "queryfunc.h"
 #include "qnode.h"
 #include "../../Parsetree/sql_node_struct.h"
+#include "../../LogicalQueryPlan/LogicalOperator.h"
 /*
  * the transformqual() transform the ast(the parsetree) to expression tree
  */
-QNode * transformqual(Node *node)
+QNode * transformqual(Node *node,LogicalOperator* child)
 {
 //	memalign(cacheline_size,1024)
 	if(node==NULL)
@@ -24,83 +25,83 @@ QNode * transformqual(Node *node)
 			Expr_cal * calnode=(Expr_cal *)node;
 			if(strcmp(calnode->sign,"ANDOP")==0)//now in and the two parameter should be boolean,so the a_type = t_boolean
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,t_boolean,oper_and,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"OR")==0)//now in or the two parameter should be boolean,so the a_type = t_boolean
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,t_boolean,oper_or,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"+")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_add,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"-")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_minus,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"*")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_multiply,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"/")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_divide,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"%")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *qcalnode=new QExpr_binary(lnode,rnode,a_type,oper_mod,t_qexpr_cal,calnode->str);
 				return qcalnode;
 			}
 			else if(strcmp(calnode->sign,"LIKE")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *likenode=new QExpr_binary(lnode,rnode,a_type,oper_like,t_qexpr_cmp,calnode->str);
 				return likenode;
 			}
 			else if(strcmp(calnode->sign,"NLIKE")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				QExpr_binary *likenode=new QExpr_binary(lnode,rnode,a_type,oper_not_like,t_qexpr_cmp,calnode->str);
 				return likenode;
 			}
 			else if(strcmp(calnode->sign,"NOT")==0||strcmp(calnode->sign,"!")==0)
 			{
-				QNode *nnode=transformqual(calnode->rnext);
+				QNode *nnode=transformqual(calnode->rnext,child);
 				QExpr_unary *unode=new QExpr_unary(nnode,t_boolean,oper_not,t_qexpr_unary,calnode->str);
 				return unode;
 			}
 			else if(strcmp(calnode->sign,"--")==0)
 			{
-				QNode *nnode=transformqual(calnode->rnext);
+				QNode *nnode=transformqual(calnode->rnext,child);
 				QExpr_unary *unode=new QExpr_unary(nnode,nnode->actual_type,oper_negative,t_qexpr_unary,calnode->str);
 				return unode;
 			}
@@ -108,12 +109,12 @@ QNode * transformqual(Node *node)
 			{
 				vector<QNode *>lnode,tmp;
 				vector< vector<QNode *> >rnode;
-				lnode.push_back(transformqual(calnode->lnext));//only one
+				lnode.push_back(transformqual(calnode->lnext,child));//only one
 				int index=0;
 				for(Node *tpnode=calnode->rnext;tpnode!=NULL;)
 				{
 					Expr_list *elnode=(Expr_list *)tpnode;
-					tmp.push_back(transformqual(elnode->data));//only one column,more rows
+					tmp.push_back(transformqual(elnode->data,child));//only one column,more rows
 					tpnode=elnode->next;
 					rnode.push_back(tmp);
 					tmp.clear();
@@ -135,7 +136,7 @@ QNode * transformqual(Node *node)
 				for(Node *tpnode=calnode->lnext;tpnode!=NULL;)//more columns
 				{
 					Expr_list *elnode=(Expr_list *)tpnode;
-					lnode.push_back(transformqual(elnode->data));
+					lnode.push_back(transformqual(elnode->data,child));
 					tpnode=elnode->next;
 				}
 				int index=0;
@@ -145,7 +146,7 @@ QNode * transformqual(Node *node)
 					for(Node *pnode=elnode->data;pnode!=NULL;)//more columns
 					{
 						Expr_list *enode=(Expr_list *)pnode;
-						tmp.push_back(transformqual(enode->data));
+						tmp.push_back(transformqual(enode->data,child));
 						pnode=enode->next;
 					}
 					rnode.push_back(tmp);
@@ -165,8 +166,8 @@ QNode * transformqual(Node *node)
 			}
 			else if(strcmp(calnode->sign,"CMP")==0)
 			{
-				QNode *lnode=transformqual(calnode->lnext);
-				QNode *rnode=transformqual(calnode->rnext);
+				QNode *lnode=transformqual(calnode->lnext,child);
+				QNode *rnode=transformqual(calnode->rnext,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[lnode->actual_type][rnode->actual_type];
 				switch(calnode->cmp)
 				{
@@ -219,8 +220,8 @@ QNode * transformqual(Node *node)
 				{
 					Expr_func *tfnode=(Expr_func *)tnode;
 					assert(strcmp(tfnode->funname,"WHEN2")==0);
-					qual.push_back(transformqual(tfnode->parameter1));
-					ans.push_back(transformqual(tfnode->parameter2));
+					qual.push_back(transformqual(tfnode->parameter1,child));
+					ans.push_back(transformqual(tfnode->parameter2,child));
 					tnode=tfnode->next;
 				}
 				QNode *cwnode=new QExpr_case_when(qual,ans,funcnode->str);
@@ -234,11 +235,11 @@ QNode * transformqual(Node *node)
 				{
 					Expr_func *tfnode=(Expr_func *)tnode;
 					assert(strcmp(tfnode->funname,"WHEN2")==0);
-					qual.push_back(transformqual(tfnode->parameter1));
-					ans.push_back(transformqual(tfnode->parameter2));
+					qual.push_back(transformqual(tfnode->parameter1,child));
+					ans.push_back(transformqual(tfnode->parameter2,child));
 					tnode=tfnode->next;
 				}
-				ans.push_back(transformqual(funcnode->parameter2));
+				ans.push_back(transformqual(funcnode->parameter2,child));
 				QNode *cwnode=new QExpr_case_when(qual,ans,funcnode->str);
 				return cwnode;
 			}
@@ -252,8 +253,8 @@ QNode * transformqual(Node *node)
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING0")==0)//TODO the max length is 128,but it may be larger in practice
 			{
-				QNode *node0=transformqual(funcnode->args);
-				QNode *node1=transformqual(funcnode->parameter1);
+				QNode *node0=transformqual(funcnode->args,child);
+				QNode *node1=transformqual(funcnode->parameter1,child);
 				QNode *node2=new QExpr("128",t_int,"t_const_node");//128 is the size of the qnode->value
 				data_type a_type=t_string;
 				QExpr_ternary *substrnode=new QExpr_ternary(node0,node1,node2,a_type,oper_substring,t_qexpr_ternary,funcnode->str);
@@ -261,33 +262,33 @@ QNode * transformqual(Node *node)
 			}
 			else if(strcmp(funcnode->funname,"FSUBSTRING1")==0)
 			{
-				QNode *node0=transformqual(funcnode->args);
-				QNode *node1=transformqual(funcnode->parameter1);
-				QNode *node2=transformqual(funcnode->parameter2);
+				QNode *node0=transformqual(funcnode->args,child);
+				QNode *node1=transformqual(funcnode->parameter1,child);
+				QNode *node2=transformqual(funcnode->parameter2,child);
 				data_type a_type=t_string;
 				QExpr_ternary *substrnode=new QExpr_ternary(node0,node1,node2,a_type,oper_substring,t_qexpr_ternary,funcnode->str);
 				return substrnode;
 			}
 			else if(strcmp(funcnode->funname,"FTRIM0")==0)//both
 			{
-				QNode *lnode=transformqual(funcnode->parameter1);
-				QNode *rnode=transformqual(funcnode->parameter2);
+				QNode *lnode=transformqual(funcnode->parameter1,child);
+				QNode *rnode=transformqual(funcnode->parameter2,child);
 				data_type a_type=t_string;
 				QExpr_binary *trimnode=new QExpr_binary(lnode,rnode,a_type,oper_both_trim,t_qexpr_cal,funcnode->str);
 				return trimnode;
 			}
 			else if(strcmp(funcnode->funname,"FTRIM1")==0)//leading
 			{
-				QNode *lnode=transformqual(funcnode->parameter1);
-				QNode *rnode=transformqual(funcnode->parameter2);
+				QNode *lnode=transformqual(funcnode->parameter1,child);
+				QNode *rnode=transformqual(funcnode->parameter2,child);
 				data_type a_type=t_string;
 				QExpr_binary *trimnode=new QExpr_binary(lnode,rnode,a_type,oper_leading_trim,t_qexpr_cal,funcnode->str);
 				return trimnode;
 			}
 			else if(strcmp(funcnode->funname,"FTRIM2")==0)//trailing
 			{
-				QNode *lnode=transformqual(funcnode->parameter1);
-				QNode *rnode=transformqual(funcnode->parameter2);
+				QNode *lnode=transformqual(funcnode->parameter1,child);
+				QNode *rnode=transformqual(funcnode->parameter2,child);
 				data_type a_type=t_string;
 				QExpr_binary *trimnode=new QExpr_binary(lnode,rnode,a_type,oper_trailing_trim,t_qexpr_cal,funcnode->str);
 				return trimnode;
@@ -295,14 +296,14 @@ QNode * transformqual(Node *node)
 			else if(strcmp(funcnode->funname,"FTRIM3")==0)//both ' '
 			{
 				QNode *lnode=new QExpr(" ",t_string,"t_const_node");//construct the ' ' const node
-				QNode *rnode=transformqual(funcnode->parameter1);
+				QNode *rnode=transformqual(funcnode->parameter1,child);
 				data_type a_type=t_string;
 				QExpr_binary *trimnode=new QExpr_binary(lnode,rnode,a_type,oper_both_trim,t_qexpr_cal,funcnode->str);
 				return trimnode;
 			}
 			else if(strcmp(funcnode->funname,"FUPPER")==0)
 			{
-				QNode *nnext=transformqual(funcnode->parameter1);
+				QNode *nnext=transformqual(funcnode->parameter1,child);
 				data_type a_type=t_string;
 				QExpr_unary *uppernode=new QExpr_unary(nnext,a_type,oper_upper,t_qexpr_unary,funcnode->str);
 				return uppernode;
@@ -326,33 +327,37 @@ QNode * transformqual(Node *node)
 			}
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
-				QNode *anext=transformqual(funcnode->parameter1);
-				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+//				QNode *anext=transformqual(funcnode->parameter1,child);
+				data_type a_type=child->getDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
-				QNode *anext=transformqual(funcnode->parameter1);
-				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+//				QNode *anext=transformqual(funcnode->parameter1,child);
+				data_type a_type=child->getDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
-				QNode *anext=transformqual(funcnode->parameter1);
-				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+//				QNode *anext=transformqual(funcnode->parameter1,child);
+				data_type a_type=child->getDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
-				QNode *anext=transformqual(funcnode->parameter1);
-				QNode *aggnode=new QColcumns("",funcnode->str,anext->actual_type,funcnode->str);
+//				QNode *anext=transformqual(funcnode->parameter1,child);
+				data_type a_type=child->getDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"BA")==0)//between...and... transform to arg>=param1 and arg<=param2
 			{
-				QNode *arg=transformqual(funcnode->args);
-				QNode *param1=transformqual(funcnode->parameter1);
-				QNode *param2=transformqual(funcnode->parameter2);
+				QNode *arg=transformqual(funcnode->args,child);
+				QNode *param1=transformqual(funcnode->parameter1,child);
+				QNode *param2=transformqual(funcnode->parameter2,child);
 				data_type a_type=TypePromotion::arith_type_promotion_map[arg->actual_type][param1->actual_type];
 				QNode *lnext=new QExpr_binary(arg,param1,a_type,oper_great_equal,t_qexpr_cmp,"arg>=parma1");
 				QNode *rnext=new QExpr_binary(arg,param2,a_type,oper_less_equal,t_qexpr_cmp,"arg<=parma2");
@@ -361,7 +366,7 @@ QNode * transformqual(Node *node)
 			}
 			else
 			{
-				SQLParse_elog("get_a_expression_item: ",funcnode->funname ,"   is null");
+				SQLParse_elog("get_a_expression_item: %s is null",funcnode->funname);
 			}
 
 		}break;
@@ -369,7 +374,12 @@ QNode * transformqual(Node *node)
 		case t_name_name:
 		{
 			Columns *col=(Columns *)node;
-			data_type a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+//			data_type a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+			data_type a_type=child->getDataflow().getAttribute(string(col->parameter2)).attrType->type;
+			if(col->parameter1==NULL)//for temporary variable
+			{
+				col->parameter1="";
+			}
 			QColcumns *qcol=new QColcumns(col->parameter1,col->parameter2,a_type,col->parameter2);
 			return qcol;
 		}break;

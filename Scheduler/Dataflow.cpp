@@ -59,12 +59,13 @@ Attribute Dataflow::getAttribute(std::string name)const{
 }
 
 Attribute Dataflow::getAttribute(std::string tbname,std::string colname)const{
+	string newcol=tbname+"."+colname;
 	for(unsigned i=0;i<attribute_list_.size();i++){
-		if(attribute_list_[i].attrName==colname){
+		if(attribute_list_[i].attrName==newcol){
 			return attribute_list_[i];
 		}
 	}
-	printf("Failed to find attribute [%s]\n",colname.c_str());
+	printf("Failed to find attribute [%s]\n",newcol.c_str());
 
 	assert(false);
 	return Attribute(ATTRIBUTE_NULL);
