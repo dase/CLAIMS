@@ -679,6 +679,7 @@ bool fromlist_table_is_unique(vector<Node *>rtable)
 	}
 	return true;
 }
+//
 int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//selectlist has ascolumn?
 {
 	int result=0;
@@ -692,17 +693,26 @@ int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//sel
 			case t_name_name:
 			{
 				Columns *col=(Columns *)node;
-				if(strcmp(sexpr->ascolname,ascolname)==0)
+
+				if(sexpr->ascolname!=NULL&&strcmp(sexpr->ascolname,ascolname)==0)
 				{
 //					strcpy(ascolname,col->parameter2);
 					astablename=col->parameter1;
 					result++;
 				}
+				else
+				{
+					if(strcmp(col->parameter2,ascolname)==0)
+					{
+						astablename=col->parameter1;
+						result++;
+					}
+				}
 
 			}break;
 			default:
 			{
-				if(strcmp(sexpr->ascolname,ascolname)==0)
+				if(sexpr->ascolname!=NULL&&strcmp(sexpr->ascolname,ascolname)==0)
 				{
 //					strcpy(ascolname,col->parameter2);
 //					astablename=col->parameter1;
@@ -1183,6 +1193,10 @@ bool selectlist_has_agg(Node *sltree,Node *fnode)//now just support single item
 	}
 	return result;
 }
+/*
+ * TODO
+ * the basis expr should in dataflow
+ */
 bool having_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>&rtable,bool allflag)
 {
 	if(cur==NULL)

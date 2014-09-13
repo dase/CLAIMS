@@ -418,9 +418,9 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 					SQLParse_log("wc2tb");
 					departwc(cur,querynode->from_list);
 				}
-	#ifdef SQL_Parser
-					output(node,0);
-	#endif
+//	#ifdef SQL_Parser
+//					output(node,0);
+//	#endif
 				LogicalOperator* plan=parsetree2logicalplan(node);
 				LogicalOperator* root=NULL;
 				if(querynode->limit_list!=NULL)

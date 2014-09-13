@@ -22,8 +22,9 @@
 #include "../../common/Logging.h"
 #include "../../Environment.h"
 #include<algorithm>
+#include "../../LogicalQueryPlan/LogicalOperator.h"
 using namespace std;
-QNode * transformqual(Node *node);
+QNode * transformqual(Node *node,LogicalOperator *child);
 void InitExprAtPhysicalPlan(QNode *node);
 void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex,Schema *schema);
 #endif /* INITQUERY_H_ */

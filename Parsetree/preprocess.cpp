@@ -257,6 +257,10 @@ string expr_to_str(Node * node,int level)
 			{
 				str="!";
 			}
+			else if(strcmp(calnode->sign,"NOT")==0)
+			{
+				str="not";
+			}
 			else
 			{
 				str=expr_to_str(calnode->lnext,thislevel);

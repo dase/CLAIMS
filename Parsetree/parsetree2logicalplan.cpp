@@ -29,6 +29,7 @@
 #include "../common/TypePromotionMap.h"
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
+#include <assert.h>
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_list,LogicalOperator *filter_1,LogicalOperator * filter_2)
@@ -185,12 +186,13 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
 			{
+				assert(tablescan!=NULL);
 				Node * p;
 				bool hasin=false;
 				vector<QNode *>v_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
-					QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+					QNode *qual=transformqual((Node *)((Expr_list *)p)->data,tablescan);
 					v_qual.push_back(qual);
 				}
 				LogicalOperator* filter=new Filter(tablescan,v_qual);
@@ -224,7 +226,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 					vector<QNode *>v_qual;
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 					{
-						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+						QNode *qual=transformqual((Node *)((Expr_list *)p)->data,filter_1);
 						v_qual.push_back(qual);
 					}
 					if(v_qual.size()>0)
@@ -248,13 +250,13 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
 				vector<QNode *>v_qual;
+				vector<Node *>raw_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
 					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
-					if(fg==0)
+					if(fg==0)//get raw qualification from whcdn
 					{
-						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
-						v_qual.push_back(qual);
+						raw_qual.push_back((Node *)((Expr_list *)p)->data);
 					}
 				}
 				if(join_pair_list.size()>0)
@@ -263,7 +265,11 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				else//除了equaljoin还有其他的join类型
 				{
-
+					assert(false);
+				}
+				for(int i=0;i<raw_qual.size();i++)
+				{
+					v_qual.push_back(transformqual(raw_qual[i],lopfrom));
 				}
 				if(v_qual.size()>0)
 				{
@@ -556,7 +562,7 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
  * 只需要获得agg函数参数的expr并加入到allexpr
  */
 
-static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
+static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree,LogicalOperator * input)
 {
 	switch(node->type)
 	{
@@ -565,7 +571,7 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 			Expr_func * funcnode=(Expr_func *)node;
 			if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
 			{
-				exprTree.push_back(transformqual(funcnode->parameter1));
+				exprTree.push_back(transformqual(funcnode->parameter1,input));
 			}
 			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
 			{
@@ -575,11 +581,11 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 			{
 				if(strcmp(funcnode->funname,"FSUBSTRING0")==0||strcmp(funcnode->funname,"FSUBSTRING1")==0)
 				{
-					recurse_get_item_in_expr(funcnode->args,exprTree);
+					recurse_get_item_in_expr(funcnode->args,exprTree,input);
 				}
 				else
 				{
-					recurse_get_item_in_expr(funcnode->parameter1,exprTree);
+					recurse_get_item_in_expr(funcnode->parameter1,exprTree,input);
 				}
 			}
 		}break;
@@ -587,8 +593,8 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
 			if(calnode->lnext!=0)
-			recurse_get_item_in_expr(calnode->lnext,exprTree);
-			recurse_get_item_in_expr(calnode->rnext,exprTree);
+			recurse_get_item_in_expr(calnode->lnext,exprTree,input);
+			recurse_get_item_in_expr(calnode->rnext,exprTree,input);
 
 		}break;
 		case t_name:
@@ -626,7 +632,7 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
 		if(proj_type==0||proj_type==2)
 		{
-			QNode * qnode=transformqual(sexpr->colname);
+			QNode * qnode=transformqual(sexpr->colname,input);
 			if(sexpr->ascolname!=NULL)
 			{
 				qnode->alias=string(sexpr->ascolname);
@@ -637,7 +643,7 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 		{
 			if(selectlist->isall==-1)
 			{
-				recurse_get_item_in_expr(sexpr->colname,exprTree);
+				recurse_get_item_in_expr(sexpr->colname,exprTree,input);
 			}
 			else if(selectlist->isall==-2)//count(*) 不能参与运算
 			{
@@ -652,7 +658,7 @@ static void get_all_groupby_expression_item(Node * node,LogicalOperator *input,v
 	for(Node *p=(Node *)(((Groupby_list*)node)->next);p!=NULL;)
 	{
 		Groupby_expr *gbexpr=(Groupby_expr *)p;
-		exprTree.push_back(transformqual(gbexpr->args));
+		exprTree.push_back(transformqual(gbexpr->args,input));
 		p=gbexpr->next;
 	}
 
@@ -669,15 +675,15 @@ static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOpe
 		Query_stmt *node=(Query_stmt *)parsetree;
 		if(proj_type==0)
 		{
-			get_all_selectlist_expression_item(node->select_list,NULL,0,exprTree);
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,0,exprTree);
 		}
 		else if(proj_type==1)
 		{
 			if(node->groupby_list!=NULL)
 			{
-				get_all_groupby_expression_item(node->groupby_list,NULL,exprTree);
+				get_all_groupby_expression_item(node->groupby_list,last_logicalplan,exprTree);
 			}
-			get_all_selectlist_expression_item(node->select_list,NULL,1,exprTree);
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,1,exprTree);
 		}
 		else
 		{
@@ -1065,7 +1071,7 @@ static LogicalOperator* having_select_groupby_where_from2logicalplan(Node *&pars
 	else
 	{
 		vector<QNode *>h_qual;
-		h_qual.push_back(transformqual(((Having_list*)node->having_list)->next));
+		h_qual.push_back(transformqual(((Having_list*)node->having_list)->next,select_logicalplan));
 		having_logicalplan=new Filter(select_logicalplan,h_qual);
 	}
 	return having_logicalplan;
