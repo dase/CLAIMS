@@ -65,6 +65,7 @@
 //#include "utility/data_distribution_generator.h"
 #include "../utility/data_distribution_generator.h"
 #include "TestSuit/filter_test.h"
+#include "Resource/CPUResourceManagerTest.h"
 
 int maina(int argc, char** argv){
 
@@ -89,7 +90,7 @@ int maina(int argc, char** argv){
 
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
-	return testServerClient();
+//	return testServerClient();
 //	return test_data_type();
 
 //	return test_expression_item();
@@ -144,4 +145,5 @@ int maina(int argc, char** argv){
 //	memory_leak_test();
 //	sql_parser_test();
 //	filter_test();
+	cpu_resource_manager_test();
 }
