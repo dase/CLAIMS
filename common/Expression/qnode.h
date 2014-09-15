@@ -124,7 +124,7 @@ class QColcumns:public QNode//getscalarvar
 public:
 	int id;//表示在dataflow_schema中的第几个
 	string table,col;
-	QColcumns(char *tbl,char *coln,data_type a_type,char *t_alias);
+	QColcumns(const char *tbl,const char *coln,data_type a_type,const char *t_alias);
 	QColcumns(){};
 	virtual ~QColcumns(){};
 private:
