@@ -196,7 +196,11 @@ bool ExpandableBlockStreamFilter::close() {
 void ExpandableBlockStreamFilter::print() {
 //	printf("Filter size=%d\n",state_.v_ei_.size());
 
-	printf("---------------\n");
+	printf("filter: \n");
+	for(int i=0;i<state_.qual_.size();i++)
+	{
+		printf("	%s\n",state_.qual_[i]->alias.c_str());
+	}
 	state_.child_->print();
 }
 bool ExpandableBlockStreamFilter::atomicPopRemainingBlock(

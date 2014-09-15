@@ -405,8 +405,11 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 				{
 					error_msg="semantic analysis error";
 					result_flag=false;
-					return;
+//					return;
 				}
+//#ifdef SQL_Parser
+//				output(node,0);
+//#endif
 				preprocess(node);
 				Query_stmt *querynode=(Query_stmt *)node;
 				if(querynode->from_list!=NULL)
@@ -415,12 +418,12 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 				{
 					struct Where_list * curt=(struct Where_list *)(querynode->where_list);
 					struct Node *cur=(struct Node *)(curt->next);
-					SQLParse_log("wc2tb");
+//					SQLParse_log("wc2tb");
 					departwc(cur,querynode->from_list);
 				}
-//	#ifdef SQL_Parser
-//					output(node,0);
-//	#endif
+#ifdef SQL_Parser
+				output(node,0);
+#endif
 				LogicalOperator* plan=parsetree2logicalplan(node);
 				LogicalOperator* root=NULL;
 				if(querynode->limit_list!=NULL)
@@ -440,7 +443,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 				}
 	#ifdef SQL_Parser
-	//				root->print(0);
+//					root->print(0);
 					cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
 					getchar();
 					getchar();
@@ -449,6 +452,9 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 
 //					puts("+++++++++++++++++++++begin time++++++++++++++++");
 				unsigned long long start=curtick();
+//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+//				physical_iterator_tree->print();
+//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
@@ -960,15 +966,15 @@ void ExecuteLogicalQueryPlan()
 					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
 				}
 #ifdef SQL_Parser
-//				root->print(0);
+				root->print(0);
 				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
 				getchar();
 				getchar();
 #endif
 				BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
-//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-//				physical_iterator_tree->print();
-//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				physical_iterator_tree->print();
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 				puts("+++++++++++++++++++++begin time++++++++++++++++");
 				unsigned long long start=curtick();
 				physical_iterator_tree->open();

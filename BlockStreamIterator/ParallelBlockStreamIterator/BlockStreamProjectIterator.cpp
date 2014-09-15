@@ -115,6 +115,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 		free_block_stream_list_.pop_front();
 	}
 	else{
+		lock_.release();//added
 		return false;
 	}
 	lock_.release();
@@ -191,7 +192,11 @@ bool BlockStreamProjectIterator::copyColumn(void *&tuple,ExpressionItem &result,
 }
 void BlockStreamProjectIterator::print()
 {
-	cout<<"proj: NULL"<<endl;
-			state_.children_->print();
+	cout<<"proj:"<<endl;
+	for(int i=0;i<state_.exprTree_.size();i++)
+	{
+		printf("	%s\n",state_.exprTree_[i]->alias.c_str());
+	}
+	state_.children_->print();
 
 }

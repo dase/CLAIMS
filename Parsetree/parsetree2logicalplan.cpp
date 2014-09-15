@@ -179,9 +179,25 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));
 			}
-			else
+			else//need to modify the output_schema_attrname from the subquery to the form of subquery's alias.attrname
 			{
 				tablescan=parsetree2logicalplan(node->subquery);
+				vector<Attribute>output_attribute=tablescan->getDataflow().attribute_list_;
+				vector<QNode *>exprTree;
+				string subquery_alias=string(node->astablename);
+				for(int i=0;i<output_attribute.size();i++)
+				{
+					string attrname=output_attribute[i].attrName;
+					int pos;
+					for(pos=0;pos<attrname.size()&&attrname[pos]!='.';pos++);
+					if(pos<attrname.size())
+					{
+						attrname=attrname.substr(pos+1,attrname.size()-pos-1);
+					}
+					exprTree.push_back(new QColcumns(subquery_alias.c_str(),attrname.c_str(),output_attribute[i].attrType->type,string(subquery_alias+"."+attrname).c_str()));
+					cout<<"The "<<i<<" "<<subquery_alias+"."+attrname<<endl;
+				}
+				tablescan=new LogicalProject(tablescan,exprTree);
 			}
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
@@ -630,7 +646,7 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 	{
 		Select_list *selectlist=(Select_list *)p;
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
-		if(proj_type==0||proj_type==2)
+		if(proj_type==0)
 		{
 			QNode * qnode=transformqual(sexpr->colname,input);
 			if(sexpr->ascolname!=NULL)
@@ -650,6 +666,15 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 				SQLParse_log("this sql has count(*)");
 			}
 		}
+		else if(proj_type==2)//the expression in select clause which dosen't contain aggregation function should be in group by clause as the same form.
+		{
+			QNode * qnode=transformqual(sexpr->colname,input);
+			if(sexpr->ascolname!=NULL)
+			{
+				qnode->alias=string(sexpr->ascolname);
+			}
+			exprTree.push_back(qnode);
+		}
 		p=selectlist->next;
 	}
 }
@@ -663,45 +688,7 @@ static void get_all_groupby_expression_item(Node * node,LogicalOperator *input,v
 	}
 
 }
-static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,int proj_type)
-{
-	vector<QNode *>exprTree;
-	if(parsetree==NULL)
-	{
-		return NULL;
-	}
-	else
-	{
-		Query_stmt *node=(Query_stmt *)parsetree;
-		if(proj_type==0)
-		{
-			get_all_selectlist_expression_item(node->select_list,last_logicalplan,0,exprTree);
-		}
-		else if(proj_type==1)
-		{
-			if(node->groupby_list!=NULL)
-			{
-				get_all_groupby_expression_item(node->groupby_list,last_logicalplan,exprTree);
-			}
-			get_all_selectlist_expression_item(node->select_list,last_logicalplan,1,exprTree);
-		}
-		else
-		{
-			get_all_selectlist_expression_item(node->select_list,last_logicalplan,2,exprTree);
-		}
-		LogicalOperator* proj=NULL;
-		if(exprTree.size()>0)
-		{
-			proj=new LogicalProject(last_logicalplan,exprTree);
-		}
-		else
-		{
-			SQLParse_log("allexpr.size=0");
-			proj=last_logicalplan;
-		}
-		return proj;
-	}
-}
+
 static void dfs_select_args(int flag,int &ans,Node * node)
 {
 	switch(node->type)
@@ -891,6 +878,70 @@ static void dfs_select_args(int flag,int &ans,Node * node)
 		}
 	}
 	return;
+}
+static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,int proj_type)
+{
+	vector<QNode *>exprTree;
+	if(parsetree==NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		Query_stmt *node=(Query_stmt *)parsetree;
+		if(proj_type==0)
+		{
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,0,exprTree);
+		}
+		else if(proj_type==1)
+		{
+			if(node->groupby_list!=NULL)
+			{
+				get_all_groupby_expression_item(node->groupby_list,last_logicalplan,exprTree);
+			}
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,1,exprTree);
+		}
+		else if(proj_type==2)//the expression in select clause which dosen't contain aggregation function should be in group by clause as the same form.
+		{
+			for(Node *p=node->select_list;p!=NULL;)
+			{
+				int ans=0;
+				Node *expr_node;
+				Select_list *selectlist=(Select_list *)p;
+				Select_expr *sexpr=(Select_expr *)selectlist->args;
+				dfs_select_args(0,ans,sexpr->colname);
+				if((ans&1)==1||(ans&8)==8)//if the expression has aggregation function,then skip it
+				{
+					expr_node=sexpr->colname;
+				}
+				else//if the expression doesn't have aggregation function,the expression must be in group_by_clause as the same form
+				{
+					int flag=0;
+					char * expr_name=get_expr_str(sexpr->colname);//TODO need to judge whether the expr_name is in group_by_list
+					expr_node=newColumn(t_name_name,"",expr_name,NULL);//construct temporary node
+				}
+				QNode * qnode=transformqual(expr_node,last_logicalplan);
+				if(sexpr->ascolname!=NULL)
+				{
+					qnode->alias=string(sexpr->ascolname);
+				}
+				exprTree.push_back(qnode);
+				p=selectlist->next;
+			}
+//			get_all_selectlist_expression_item(node->select_list,last_logicalplan,2,exprTree);
+		}
+		LogicalOperator* proj=NULL;
+		if(exprTree.size()>0)
+		{
+			proj=new LogicalProject(last_logicalplan,exprTree);
+		}
+		else
+		{
+			SQLParse_log("allexpr.size=0");
+			proj=last_logicalplan;
+		}
+		return proj;
+	}
 }
 /*判断selectlist的expression中是否存在
  * 聚集函数agg中的参数为表达式expr eg: min(a+b)

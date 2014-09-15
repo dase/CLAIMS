@@ -405,6 +405,11 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 	assert(condition_.comparison_list_.size()==comparator_list_.size());
 }
 void Filter::print(int level)const{
-	condition_.print(level);
+//	condition_.print(level);
+	printf("filter:\n");
+	for(int i=0;i<qual_.size();i++)
+	{
+		printf("	%s\n",qual_[i]->alias.c_str());
+	}
 	child_->print(level+1);
 }

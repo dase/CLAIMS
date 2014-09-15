@@ -42,9 +42,16 @@ int subquery_has_column(char *colname,Node * subquery)
 	{
 		Select_list * slist=(Select_list *)p;
 		Select_expr * sexpr=(Select_expr *)slist->args;
-		if(strcmp(colname,sexpr->ascolname)==0)
+		if(sexpr->ascolname!=NULL)
 		{
-			result++;
+			if(strcmp(colname,sexpr->ascolname)==0)
+			{
+				result++;
+			}
+		}
+		else//TODO
+		{
+
 		}
 		p=slist->next;
 	}
@@ -607,6 +614,19 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 				bool fg= semantic_analysis(table->subquery,true);
 				if(fg==false)
 					return false;
+				//preprocess subquery
+				Node *node=table->subquery;
+				preprocess(node);
+				Query_stmt *querynode=(Query_stmt *)node;
+				if(querynode->from_list!=NULL)
+				int fg=solve_join_condition(querynode->from_list);
+				if(querynode->where_list!=NULL)
+				{
+					struct Where_list * curt=(struct Where_list *)(querynode->where_list);
+					struct Node *cur=(struct Node *)(curt->next);
+					SQLParse_log("wc2tb");
+					departwc(cur,querynode->from_list);
+				}
 			}
 		}break;
 		case t_join:
@@ -733,7 +753,6 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 			Columns *col=(Columns *)cur;
 			char *astablename;
 			int result=table_has_column(col->parameter2,rtable,astablename);
-
 			if(result==1)
 			{
 				col->parameter1=astablename;
@@ -796,7 +815,16 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 			{
 				int fg=subquery_has_column(col->parameter2,subnode);
 				if(fg>1||fg==0)
+				{
 					return false;
+				}
+				else
+				{
+					stringstream ss;
+					ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+					col->parameter2=(char *)malloc(ss.str().length()+1);
+					strcpy(col->parameter2,ss.str().c_str());
+				}
 			}
 
 		}break;
@@ -894,82 +922,154 @@ bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 	}
 	return true;
 }
-bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//need be changed to the form of iteration TODO
+bool groupby_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 {
-	Groupby_list * gblist=(Groupby_list *)(qstmt->groupby_list);
-	for(Node *p=(Node *)(gblist->next);p!=NULL;)
+	switch(cur->type)
 	{
-		Groupby_expr *gbexpr=(Groupby_expr *)p;
-		switch(gbexpr->args->type)
+		case t_name:
 		{
-			case t_name:
+			Columns *col=(Columns *)cur;
+			char *astablename;
+			int result=table_has_column(col->parameter2,rtable,astablename);
+
+			if(result==1)
 			{
-				Columns *col=(Columns *)(gbexpr->args);
-				char *astablename="";
-				int result=table_has_column(col->parameter2,rtable,astablename);
-				if(result==1)
+				col->parameter1=astablename;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+
+				col->type=t_name_name;
+			}
+			else if(result==0)//if not in fromlist,then to search in selectlisth
+			{
+				int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
+				if(result==0)
+				{
+					SQLParse_elog("groupby_analysis %s can't find in tables and selectlist ",col->parameter2);
+					return false;
+				}
+				else if(result==1)
 				{
 					col->parameter1=astablename;
-					stringstream ss;
-					ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
-					col->parameter2=(char *)malloc(ss.str().length()+1);
-					strcpy(col->parameter2,ss.str().c_str());
-
 					col->type=t_name_name;
 				}
 				else
 				{
-					SQLParse_elog("groupbylist: %s can't find",col->parameter2);
+					SQLParse_elog("groupby_analysis %s in selectlist is ambiguous",col->parameter2);
 					return false;
 				}
-			}break;
-			case t_name_name:
+			}
+			else
 			{
-				Columns *col=(Columns *)(gbexpr->args);
-				char *tablename;
-				Node *subnode;
-				int fg=fromlist_has_astablename(col->parameter1,rtable,tablename,subnode);
-				if(fg==0)
-				{
-					SQLParse_elog("groupbylist %s.%s  can't find",col->parameter1,col->parameter2);
-					return false;
-				}
-				else if(fg==1)
-				{
-					stringstream ss;
-					ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
-					col->parameter2=(char *)malloc(ss.str().length()+1);
-					strcpy(col->parameter2,ss.str().c_str());
-
-
-					if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
-					{
-						SQLParse_elog("groupbylist %s %s  can't find",col->parameter1,col->parameter2);
-						return false;
-					}
-				}
-				else if(fg==2)
-				{
-					int fg=subquery_has_column(col->parameter2,subnode);
-					if(fg>1||fg==0)
-						return false;
-				}
-			}break;
-			case t_expr_cal:
-			case t_expr_func:
-			{
-				//TODO
-			}break;
-			default:
-			{
-				SQLParse_elog("groupbylist","there is other type in groupby list","not the colname ");
+				SQLParse_elog("groupby_analysis %s in fromlist is ambiguous",col->parameter2);
 				return false;
 			}
+		}break;
+		case t_name_name:
+		{
+			Columns *col=(Columns *)cur;
+			char *tablename;
+			Node *subnode;
+			int fg=fromlist_has_astablename(col->parameter1,rtable,tablename,subnode);
+			if(fg==0)
+			{
+				SQLParse_elog("groupby_analysis %s.%s can't find",col->parameter1,col->parameter2);
+				return false;
+			}
+			else if(fg==1)
+			{
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
+				{
+					SQLParse_elog("groupby_analysis %s  can't find",col->parameter2);
+					return false;
+				}
+			}
+			else if(fg==2)
+			{
+				int fg=subquery_has_column(col->parameter2,subnode);
+				if(fg>1||fg==0)
+					return false;
+			}
+
+		}break;
+		case t_query_stmt:
+		{
+			return semantic_analysis(cur,true);
+		}break;
+		case t_expr_cal:
+		{
+			Expr_cal *node=(Expr_cal*)cur;
+			if(node->lnext==NULL&&node->rnext==NULL)
+			return false;
+			bool flag=true;
+			if(node->lnext!=NULL)
+			flag=groupby_analysis(qstmt,node->lnext,rtable);
+			if(node->rnext!=NULL)
+			flag*=groupby_analysis(qstmt,node->rnext,rtable);
+			return flag;
+		}break;
+		case t_expr_func:
+		{
+			Expr_func* node=(Expr_func *)cur;
+			bool flag=true;
+			//aggregation function shouldn't occur in where
+			if(strcmp(node->funname,"FCOUNTALL")==0||strcmp(node->funname,"FCOUNT")==0||
+					strcmp(node->funname,"FSUM")==0||strcmp(node->funname,"FMIN")==0||
+					strcmp(node->funname,"FMAX")==0||strcmp(node->funname,"FAVG")==0)
+			{
+				return false;
+			}
+			if(node->args!=NULL)
+				flag= groupby_analysis(qstmt,node->args,rtable);
+			if(node->parameter1!=NULL&&flag)
+				flag*= groupby_analysis(qstmt,node->parameter1,rtable);
+			if(node->parameter2!=NULL&&flag)
+				flag*= groupby_analysis(qstmt,node->parameter2,rtable);
+			return flag;
+		}break;
+		case t_expr_list:
+		{
+			Expr_list * node=(Expr_list *)cur;
+			bool flag=true;
+			if(node->data!=NULL)
+			{
+				flag= groupby_analysis(qstmt,node->data,rtable);
+				if(flag==false)
+					return false;
+			}
+			else
+			{
+				return false;
+			}
+			if(node->next!=NULL)
+			{
+				return groupby_analysis(qstmt,node->next,rtable);
+			}
+		}break;
+		case t_groupby_expr:
+		{
+			Groupby_expr *gexpr=(Groupby_expr *)cur;
+			bool flag=true;
+			if(gexpr->args!=NULL)
+				flag=flag*groupby_analysis(qstmt,gexpr->args,rtable);
+			if(gexpr->next!=NULL)
+				flag=flag*groupby_analysis(qstmt,gexpr->next,rtable);
+			return flag;
+		}break;
+		default:
+		{
+
 		}
-		p=gbexpr->next;
 	}
 	return true;
 }
+
 bool judge_expr_equalto_expr(Node *lnode,Node *rnode)
 {
 	if(lnode==NULL)
@@ -1521,7 +1621,7 @@ bool semantic_analysis(Node *parsetree,bool issubquery)
 			}
 			if(qstmt->groupby_list!=NULL)
 			{
-				flag=groupby_analysis(qstmt,rtable);
+				flag=groupby_analysis(qstmt,((Groupby_list *)qstmt->groupby_list)->next,rtable);
 				if(flag==false)
 					return false;
 			}

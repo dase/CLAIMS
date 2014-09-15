@@ -313,10 +313,14 @@ string LogicalProject::recovereyName(Expression ei) {
 
 void LogicalProject::printProjSchema()const
 {
-	printf("project:\n");
+
 }
 
 void LogicalProject::print(int level)const{
-	printProjSchema();
+	printf("project:\n");
+	for(int i=0;i<exprTree_.size();i++)
+	{
+		printf("	%s\n",exprTree_[i]->alias.c_str());
+	}
 	child_->print(level+1);
 }

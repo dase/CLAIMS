@@ -48,7 +48,7 @@ QExpr::QExpr(char *val,data_type a_type,char *t_alias)
 	value=NULL;
 }
 
-QColcumns::QColcumns(char *tbl,char *coln,data_type a_type,char *t_alias)
+QColcumns::QColcumns(const char *tbl,const char *coln,data_type a_type,const char *t_alias)
 {
 	type=t_qcolcumns;
 	id=-1;

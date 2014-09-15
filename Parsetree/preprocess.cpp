@@ -134,7 +134,7 @@ string expr_to_str(Node * node,int level)
 			{
 				str="substr(";
 				str=str+expr_to_str(funcnode->args,0);
-				str=str+" , ";
+				str=str+",";
 				str=str+expr_to_str(funcnode->parameter1,0);
 				str=str+")";
 			}
@@ -142,9 +142,9 @@ string expr_to_str(Node * node,int level)
 			{
 				str="substr(";
 				str=str+expr_to_str(funcnode->args,0);
-				str=str+" , ";
+				str=str+",";
 				str=str+expr_to_str(funcnode->parameter1,0);
-				str=str+" , ";
+				str=str+",";
 				str=str+expr_to_str(funcnode->parameter2,0);
 				str=str+")";
 			}
