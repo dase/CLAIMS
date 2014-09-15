@@ -71,7 +71,7 @@ BlockStreamAggregationIterator::State::State(
 
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	barrier_.RegisterOneThread();
-	RegisterNewThreadToAllBarriers();
+	RegisterExpandedThreadToAllBarriers();
 	if(tryEntryIntoSerializedSection(0)){
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Aggregation",0));
 	}
@@ -79,7 +79,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	state_.child->open(partition_offset);
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 //		printf("<<<<<<<<<<<<<<<<<Aggregation detected call back signal before constructing hash table!>>>>>>>>>>>>>>>>>\n");
-		unregisterNewThreadToAllBarriers();
+		unregisterExpandedThreadToAllBarriers();
 		return true;
 	}
 
@@ -310,7 +310,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-			unregisterNewThreadToAllBarriers(1);
+			unregisterExpandedThreadToAllBarriers(1);
 			return true;
 		}
 		barrierArrive(2);
@@ -338,7 +338,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
  */
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		unregisterNewThreadToAllBarriers(3);
+		unregisterExpandedThreadToAllBarriers(3);
 		printf("<<<<<<<<<<<<<<<<<Aggregation next detected call back signal!>>>>>>>>>>>>>>>>>\n");
 		return false;
 	}
