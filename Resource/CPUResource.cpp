@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <sched.h>
-
+CPUResourceManager* CPUResourceManager::instance_=0;
 CPUResourceManager::CPUResourceManager() {
 	number_of_sockets_=numa_max_node()+1;
 
@@ -19,7 +19,7 @@ CPUResourceManager::CPUResourceManager() {
 	}
 
 	int number_of_cores=numa_num_configured_cpus();
-
+//	number_of_cores=8;
 	printf("cpus: %d\n",number_of_cores);
 	for(int i=0;i<number_of_cores;i++){
 		int socket_index=numa_node_of_cpu(i);
@@ -100,9 +100,9 @@ int CPUResourceManager::socket::applyCore() {
 
 
 void CPUResourceManager::freeCore(int core_id) {
-	/* the caller does not specify the core id, which means that the
-	 * current thread is bound to the core we want to free.*/
 	if(core_id==-1){
+	/* the caller does not specify the core id, which means that the
+	 * current thread is bound to the core that we want to free.*/
 		core_id=sched_getcpu();
 	}
 	int socket_index=numa_node_of_cpu(core_id);
@@ -135,6 +135,13 @@ bool CPUResourceManager::socket::freeCore(int core_id) {
 	}
 	return false;
 
+}
+
+CPUResourceManager* CPUResourceManager::getInstance() {
+	if(instance_==0){
+		instance_=new CPUResourceManager();
+	}
+	return instance_;
 }
 
 void CPUResourceManager::print() {

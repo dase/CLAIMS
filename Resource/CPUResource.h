@@ -34,7 +34,7 @@ public:
 		void addCore(int core_id);
 		int getNumberOfFreeCores();
 
-		/* apply for a core, return the id of the allocated core or return -1 if no cores is currently available.*/
+		/* apply for a core, return the id of the allocated core or return -1 if no cores are currently available.*/
 		int tryApplyCore();
 
 		/* apply for a core. This function will be blocked until a core is
@@ -49,12 +49,13 @@ public:
 		/* print the availability of the cores on this socket*/
 		void print();
 	};
+	static CPUResourceManager* getInstance();
 	CPUResourceManager();
 	virtual ~CPUResourceManager();
 
 	/** apply for a core available on any socket,
 	 * this function returns the id of the core, or return -1 when there
-	 *  is no cores available. **/
+	 *  is not any core available. **/
 	int tryApplyCore();
 
 	/** apply for a core, return id of allocated core, blocked if no cores are available.*/
@@ -65,11 +66,16 @@ public:
 	 *  not running of the thread bound to the core.
 	 */
 	void freeCore(int core_id=-1);
+
+	/**
+	 * print the status of the cores in an array form.
+	 */
 	void print();
 private:
 	semaphore sem_available_cores_;
 	int number_of_sockets_;
 	std::vector<socket> sockets_;
+	static CPUResourceManager* instance_;
 };
 
 #endif /* CPURESOURCE_H_ */

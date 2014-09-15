@@ -30,6 +30,7 @@
 #include "../../utility/rdtsc.h"
 
 #include "../set_up_environment.h"
+#include "../../Executor/IteratorExecutorSlave.h"
 
 static void query_1(){
 	unsigned long long int start=curtick();
@@ -64,9 +65,10 @@ static void query_1(){
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(physical_iterator_tree));
+//	physical_iterator_tree->open();
+//	while(physical_iterator_tree->next(0));
+//	physical_iterator_tree->close();
 	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 }
 

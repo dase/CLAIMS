@@ -64,7 +64,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		}
 
 		socket_fd_lower_list=new int[nlowers];
-//		lower_ip_array=new std::string[nlowers];
 
 		buffer=new BlockStreamBuffer(state.block_size,BUFFER_SIZE_IN_EXCHANGE,state.schema);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
@@ -86,7 +85,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id);
 		}
 
-//		if(isMaster()){
 		if(partition_offset==0){
 			/*TODO: According to a bug reported by dsc, the master exchangeupper should check whether other
 			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fail to connect to the
@@ -113,7 +111,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		perf_info_->initialize();
 
 		open_finished_=true;
-//		printf("[][][][][][]serialization time:%4.4f[][][][][][][]\n\n\n",getSecond(start));
 		return true;
 	}
 	else{
