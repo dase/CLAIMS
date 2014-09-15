@@ -29,12 +29,12 @@ hdfs_master_ip="10.11.1.190"
 hdfs_master_port=9000
 
 #最大单机算子并行度
-max_degree_of_parallelism=4
+max_degree_of_parallelism=10
 
 #初始单机算子并行度
 initial_degree_of_parallelism=1
 
 expander_adaptivity_check_frequency=10000
 
-enable_expander_adaptivity=0
+enable_expander_adaptivity=1
 

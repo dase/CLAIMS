@@ -57,9 +57,10 @@ public:
     	sem_init(&sem, 0, value);
     }
 
-    void post()
-    {
-        sem_post(&sem);
+    void post(int times=1){
+    	for(int i=0;i<times;i++){
+    		sem_post(&sem);
+    	}
     }
 
     void wait()

@@ -76,6 +76,14 @@ private:
 	void SendBlockAllConsumedNotification(int target_socket_fd);
 	void CloseTheSocket();
 	bool SetSocketNonBlocking(int socket_fd);
+
+	void createPerformanceInfo();
+	/* this function is called to reset status of the iterator instance, so that
+	 * the following calling of open() and next() can act correctly.
+	 */
+	void resetStatus();
+
+
 	static void* receiver(void* arg);
 	static void* debug(void* arg);
 private:
@@ -91,11 +99,11 @@ private:
 	std::vector<std::string>  lower_ip_array;
 	pthread_t receiver_tid;
 	pthread_t debug_tid;
-	semaphore sem_open_;
-	bool open_finished_;
 	unsigned nexhausted_lowers;
 	unsigned partition_offset;
 	BlockStreamBuffer* buffer;
+
+	semaphore sem_new_block_or_eof_;
 
 	/*the lower socket fd to the index*/
 	std::map<int,int> lower_sock_fd_to_index;
@@ -110,9 +118,9 @@ private:
 	}
 private:
 	//debug
-	unsigned consumed_block[100];
-	unsigned received_block[100];
-	unsigned winner_thread;
+	unsigned debug_consumed_block[100];
+	unsigned debug_received_block[100];
+	unsigned debug_winner_thread;
 
 };
 
