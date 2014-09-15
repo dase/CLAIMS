@@ -79,9 +79,9 @@ static int in_iterator_test ()
 	}
 	bsp->close();
 
-	IteratorMessage IM(bsp);
-	Message4K M4K = IteratorMessage::serialize4K(IM);
-	IteratorMessage tmp = IteratorMessage::deserialize4K(M4K);
+	PhysicalQueryPlan IM(bsp);
+	Message4K M4K = PhysicalQueryPlan::serialize4K(IM);
+	PhysicalQueryPlan tmp = PhysicalQueryPlan::deserialize4K(M4K);
 	tmp.run();
 
 

@@ -114,7 +114,7 @@ int maina(int argc, char** argv){
 //	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(5);
+	test_expanderFramework_single_node(5);
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
@@ -145,5 +145,5 @@ int maina(int argc, char** argv){
 //	memory_leak_test();
 //	sql_parser_test();
 //	filter_test();
-	cpu_resource_manager_test();
+//	cpu_resource_manager_test();
 }

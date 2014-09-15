@@ -39,8 +39,9 @@ public:
 	IteratorExecutorSlave();
 
 	virtual ~IteratorExecutorSlave();
+	static void executePhysicalQueryPlan(PhysicalQueryPlan plan);
 protected:
-	void createNewThreadAndRun(IteratorMessage*);
+	void createNewThreadAndRun(PhysicalQueryPlan*);
 private:
 
 	static void* run_iterator(void*);

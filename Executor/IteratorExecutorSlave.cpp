@@ -8,6 +8,7 @@
 #include "IteratorExecutorSlave.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
+#include "../Resource/CPUResource.h"
 
 
 IteratorExecutorSlave::IteratorExecutorSlave(){
@@ -45,8 +46,8 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler256(const Message256 &m
 	ies->logging_->log("New iterator tree received!\n");
 	Message256 msg;
 	Send(msg,from);
-	IteratorMessage im=IteratorMessage::deserialize(message);
-
+	PhysicalQueryPlan im=PhysicalQueryPlan::deserialize(message);
+	printf("_-_\n");
 	im.run();
 
 	ies->logging_->log("iterator tree is successfully executed!");
@@ -67,8 +68,8 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 
 
 	ies->logging_->log("Sent the response message to the Receiver!");
-	IteratorMessage* runable_iterator_message=new IteratorMessage();
-	*runable_iterator_message=IteratorMessage::deserialize4K(message);
+	PhysicalQueryPlan* runable_iterator_message=new PhysicalQueryPlan();
+	*runable_iterator_message=PhysicalQueryPlan::deserialize4K(message);
 	ies->createNewThreadAndRun(runable_iterator_message);
 //	Send(int(0),from);
 	ies->logging_->log("iterator tree is added to the running queue");
@@ -80,7 +81,7 @@ void IteratorExecutorSlave::ExecuteIteratorActor::progation(const int &message,c
 }
 
 
-void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
+void IteratorExecutorSlave::createNewThreadAndRun(PhysicalQueryPlan* it){
 
 	pthread_t thread;
 	void** arg=new void*[2];
@@ -94,14 +95,33 @@ void IteratorExecutorSlave::createNewThreadAndRun(IteratorMessage* it){
 	logging_->log("A new Running thread is created!");
 }
 void* IteratorExecutorSlave::run_iterator(void* arg){
-	IteratorMessage* it=(IteratorMessage*)(*(void**)arg);
+	PhysicalQueryPlan* it=(PhysicalQueryPlan*)(*(void**)arg);
 	IteratorExecutorSlave* Pthis=(IteratorExecutorSlave*)(*((void**)arg+1));
-	it->run();
-	it->~IteratorMessage();
+
+//	printf("--------\n Before apply:");
+//	CPUResourceManager::getInstance()->print();
+//	int core=CPUResourceManager::getInstance()->applyCore();
+//	it->run();
+//	CPUResourceManager::getInstance()->freeCore(core);
+//	printf("--------\n After apply:");
+
+
+	executePhysicalQueryPlan(*it);
+
+	CPUResourceManager::getInstance()->print();
+	it->~PhysicalQueryPlan();
 	Pthis->logging_->log("A iterator tree is successfully executed!\n");
 	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
 	Pthis->lock_.acquire();
 	Pthis->busy_thread_list_.erase(pthread_self());
 	Pthis->lock_.release();
 	free((void**)arg);
+}
+
+void IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan plan) {
+//	int core=CPUResourceManager::getInstance()->applyCore();
+	printf("--------\n After apply:");
+//	CPUResourceManager::getInstance()->print();
+	plan.run();
+//	CPUResourceManager::getInstance()->freeCore(core);
 }

@@ -388,18 +388,18 @@ private:
  * TODO: In the release version, this class should be divided into two
  * classes to make the codes more readable.
  */
-class IteratorMessage
+class PhysicalQueryPlan
 {
 public:
-	IteratorMessage(BlockStreamIteratorBase* it)
+	PhysicalQueryPlan(BlockStreamIteratorBase* it)
 		:block_stream_iterator_root_(it)
 		{};
-	IteratorMessage(const IteratorMessage& r){
+	PhysicalQueryPlan(const PhysicalQueryPlan& r){
 		block_stream_iterator_root_=r.block_stream_iterator_root_;
 	}
 
-	IteratorMessage():block_stream_iterator_root_(0){};
-	~IteratorMessage(){
+	PhysicalQueryPlan():block_stream_iterator_root_(0){};
+	~PhysicalQueryPlan(){
 //		if(tuple_stream_iterator_root_>0)
 //			tuple_stream_iterator_root_->~Iterator();
 //		if(block_stream_iterator_root_>0)
@@ -421,26 +421,27 @@ public:
 
 
 	}
-	static IteratorMessage deserialize(Message256 message)
+	static PhysicalQueryPlan deserialize(Message256 message)
 	{
-		return Deserialize<IteratorMessage>(message);
+		return Deserialize<PhysicalQueryPlan>(message);
 	}
 
-	static Message256 serialize(IteratorMessage input)
+	static Message256 serialize(PhysicalQueryPlan input)
 	{
-		return Serialize<IteratorMessage>(input);
+		return Serialize<PhysicalQueryPlan>(input);
 	}
 
-	static IteratorMessage deserialize4K(Message4K message)
+	static PhysicalQueryPlan deserialize4K(Message4K message)
 	{
-		return Deserialize<IteratorMessage>(message);
+		return Deserialize<PhysicalQueryPlan>(message);
 	}
 
-	static Message4K serialize4K(IteratorMessage& input)
+	static Message4K serialize4K(PhysicalQueryPlan& input)
 	{
 //		std::cout<<"in the serialize4K func!"<<std::endl;
-		return Serialize4K<IteratorMessage>(input);
+		return Serialize4K<PhysicalQueryPlan>(input);
 	}
+
 private:
 	BlockStreamIteratorBase* block_stream_iterator_root_;
 	friend class boost::serialization::access;
