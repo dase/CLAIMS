@@ -80,26 +80,25 @@ private:
 	/* the thread for outputing debug information*/
 	static void* debug(void* arg);
 	unsigned hash(void*);
-	bool ConnectToUpperExchangeWithMulti(int &sock_fd,struct hostent* host,int port);
 	bool ConnectToUpperExchangeWithMulti(int &sock_fd,const std::string ip,int port);
 	void WaitingForNotification(int target_socket_fd);
 	void WaitingForCloseNotification();
-
+	void cancelSenderThread();
 private:
 	State state;
 	unsigned nuppers;
 	int* socket_fd_upper_list;
-	PartitionedBlockBuffer* buffer;
+	PartitionedBlockBuffer* partitioned_data_buffer_;
 
 	/* one BlockStream for each uppers, the tuples from the child
 	 * iterator are fed to the cur_block_stream_list_ according to their
 	 * partition key.
 	 */
-	BlockStreamBase** cur_block_stream_list_;
-	BlockContainer* block_for_sending;
+	BlockStreamBase** partitioned_blockstream_;
+//	BlockContainer* block_for_sending;
 	BlockContainer* block_for_buffer_;
-	PartitionedBlockContainer* buffer_for_sending_;
-	Block* block_for_inserting_to_buffer_;
+	PartitionedBlockContainer* sending_buffer_;
+	Block* block_for_serialization_;
 	BlockStreamBase* block_stream_for_asking_;
 	pthread_t sender_tid;
 	pthread_t debug_tid;
@@ -117,7 +116,7 @@ private:
 
 	unsigned generated_blocks;
 	unsigned sendedblocks;
-	unsigned readsendedblocks;
+	unsigned debug_readsendedblocks;
 
 	unsigned connected_uppers;
 	std::map<std::string,int> connected_uppers_list_;
