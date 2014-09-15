@@ -88,7 +88,6 @@ private:
 	static void* debug(void* arg);
 private:
 	State state;
-//	BlockReadable* curBlock;
 	BlockContainer** block_for_socket_;
 	BlockStreamBase* received_block_stream_;
 	int sock_fd;
