@@ -86,6 +86,8 @@ void* Daemon::worker(void* para) {
 
 		// result is a pointer, which now is NULL and should be assigned in function.
 		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info);
+		ClientLogging::log("after running sql, the result is : status-%d, err-%s, info-%s",
+				result.status, result.error_info.c_str(), result.info.c_str());
 
 		printf("-Worker add result into the queue!\n");
 		pthis->addExecutedResult(result);

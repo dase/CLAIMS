@@ -16,7 +16,7 @@
 
 
 void ExecuteLogicalQueryPlan();
-void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info);
+void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info);
 
 bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsigned position, ostringstream &ostr);
 bool CheckType(const column_type *col_type, Expr *expr);

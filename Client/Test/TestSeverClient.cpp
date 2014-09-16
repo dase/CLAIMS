@@ -412,7 +412,12 @@ static int testServerClient() {
 		}
 		client.shutdown();
 	} else if (cmd == 's') {
-		loadData();	//导致服务器退出是内存泄漏的原因
+//		loadData();	//导致服务器退出是内存泄漏的原因
+		Environment::getInstance(true);
+		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+		Catalog* catalog=Environment::getInstance()->getCatalog();
+		catalog->restoreCatalog();
+
 		ClaimsServer server(8000);
 		server.configure();
 		//		server.run();
