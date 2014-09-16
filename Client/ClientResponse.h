@@ -184,7 +184,8 @@ struct ClientResponse {
 	BlockStreamBase* getDataBlock(Schema* schema) const {
 		assert(status==DATA);
 		Block block(length, content.data());
-		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length-sizeof(int));
+//		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length-sizeof(int));
+		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length);
 		ret->constructFromBlock(block);
 		return ret;
 	}

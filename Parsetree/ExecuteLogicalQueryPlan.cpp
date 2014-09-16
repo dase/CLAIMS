@@ -40,7 +40,7 @@ const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
-void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info)
+void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info)
 {
 	Environment::getInstance(true);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -463,7 +463,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 				root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 			}
 
-#ifndef SQL_Parser
+#ifdef SQL_Parser
 			root->print(0);
 			cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
 			getchar();
@@ -693,6 +693,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 
 			result_flag=true;
 			ostr.clear();
+			ostr.str("");
 			ostr<<"insert data successfully. " <<changed_row_num <<" rows changed.";
 			info = ostr.str();
 			result_set=NULL;
@@ -708,6 +709,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 			case 1:
 			{
 				cout<<"Tables:"<<endl;
+				ostr<<"TABLES:"<<endl;
 				for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
 					cout<<catalog->getTable(i)->getTableName()<<endl;
 					ostr<<catalog->getTable(i)->getTableName()<<endl;
