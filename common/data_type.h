@@ -28,8 +28,8 @@ using namespace boost::posix_time;
 
 #include "types/NValue.hpp"
 using namespace decimal;
-#define DATA_TYPE_NUMBER 11
-enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt};
+#define DATA_TYPE_NUMBER 20
+enum data_type{t_smallInt,t_int,t_u_long,t_float,t_double,t_string, t_date, t_time, t_datetime, t_decimal, t_boolean, t_u_smallInt,t_date_day,t_date_week,t_date_month,t_date_year,t_date_quarter};
 typedef void (*fun)(void*,void*);
 
 #define NULL_SMALL_INT		SHRT_MAX

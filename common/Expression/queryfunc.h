@@ -11,9 +11,12 @@
 #include "../../common/data_type.h"
 #include "../../common/Logging.h"
 #define OPER_TYPE_NUM 100
-#define DATA_TYPE_NUM 20
+#define DATA_TYPE_NUM 30
 #include<string.h>
 #include <math.h>
+#include "boost/date_time/gregorian/parsers.hpp"
+#include <boost/date_time/gregorian/greg_duration.hpp>
+#include "boost/date_time/gregorian/formatters.hpp"
 #define DELTA 1e-8
 class ExectorFunction
 {
@@ -748,6 +751,8 @@ inline void string_substring(FuncCallInfo fcinfo)
 	assert(fcinfo->nargs==3);
 	strncpy((char *)fcinfo->results,((char *)fcinfo->args[0])+(*(int *)fcinfo->args[1]),(*(int *)fcinfo->args[2])-(*(int *)fcinfo->args[1]));
 }
+
+
 /*****************string********************/
 
 /*****************date********************/
@@ -781,6 +786,51 @@ inline void date_less_equal(FuncCallInfo fcinfo)
 	assert(fcinfo->nargs==2);
 	*(bool *)fcinfo->results=(*(date *)fcinfo->args[0]<=*(date *)fcinfo->args[1]);
 }
+
+inline void date_add_day(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])+(*(date_duration *)fcinfo->args[1]);
+}
+inline void date_add_week(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])+(*(weeks *)fcinfo->args[1]);
+}
+
+inline void date_add_month(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])+(*(months *)fcinfo->args[1]);
+}
+
+inline void date_add_year(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])+(*(years *)fcinfo->args[1]);
+}
+
+inline void date_sub_day(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])-(*(date_duration *)fcinfo->args[1]);
+}
+inline void date_sub_week(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])-(*(weeks *)fcinfo->args[1]);
+}
+inline void date_sub_month(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])-(*(months *)fcinfo->args[1]);
+}
+inline void date_sub_year(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(date *)fcinfo->results=(*(date *)fcinfo->args[0])-(*(years *)fcinfo->args[1]);
+}
+
 /*****************date********************/
 
 /*****************decimal********************/
@@ -981,6 +1031,18 @@ inline void initialize_operator_function()
 	ExectorFunction::operator_function[t_date][oper_less]=date_less;
 	ExectorFunction::operator_function[t_date][oper_less_equal]=date_less_equal;
 	ExectorFunction::operator_function[t_date][oper_negative]=oper_not_support;
+
+
+	ExectorFunction::operator_function[t_date][oper_date_add_day]=date_add_day;
+	ExectorFunction::operator_function[t_date][oper_date_add_week]=date_add_week;
+	ExectorFunction::operator_function[t_date][oper_date_add_month]=date_add_month;
+	ExectorFunction::operator_function[t_date][oper_date_add_year]=date_add_year;
+	ExectorFunction::operator_function[t_date][oper_date_sub_day]=date_sub_day;
+	ExectorFunction::operator_function[t_date][oper_date_sub_week]=date_sub_week;
+	ExectorFunction::operator_function[t_date][oper_date_sub_month]=date_sub_month;
+	ExectorFunction::operator_function[t_date][oper_date_sub_year]=date_sub_year;
+
+
 	/*****************date********************/
 
 	/*****************double********************/

@@ -29,4 +29,5 @@ void *Exec_unary(Node *cinfo,void *tuple,Schema *schema);
 void *Exec_ternary(Node *cinfo,void *tuple,Schema *schema);
 void *Exec_case_when(Node *cinfo,void *tuple,Schema *schema);
 void *Exec_in(Node *cinfo,void *tuple,Schema *schema);
+void *Exec_date_add_sub(Node *cinfo,void *tuple,Schema *schema);
 #endif /* EXECFUNC_H_ */

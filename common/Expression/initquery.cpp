@@ -364,6 +364,77 @@ QNode * transformqual(Node *node,LogicalOperator* child)
 				QExpr_binary *banode=new QExpr_binary(lnext,rnext,t_boolean,oper_and,t_qexpr_cal,funcnode->str);
 				return banode;
 			}
+			/*
+			 * special case for solving FDATE_ADD and FDATE_SUB
+			 * FDATE_ADD(date_str,deta)
+			 * the date_str,deta and the return type are all t_string
+			 * so take them as  string_date_add and string_date_sub
+			 * the function above is slow ,so construct special QExpr_date_add_sub node
+			 */
+			else if(strcmp(funcnode->funname,"FDATE_ADD")==0)
+			{
+				QNode *lnext=transformqual(funcnode->args,child);
+				Expr_func *datefunc=(Expr_func *)funcnode->parameter1;
+				QExpr_date_add_sub *date_add;
+				if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_add=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_add_day,t_qexpr_date_add_sub,t_date_day,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_add=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_add_week,t_qexpr_date_add_sub,t_date_week,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_add=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_add_month,t_qexpr_date_add_sub,t_date_month,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_add=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_add_year,t_qexpr_date_add_sub,t_date_year,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_add=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_add_month,t_qexpr_date_add_sub,t_date_quarter,funcnode->str);
+				}
+				return date_add;
+			}
+			else if(strcmp(funcnode->funname,"FDATE_SUB")==0)
+			{
+				QNode *lnext=transformqual(funcnode->args,child);
+				Expr_func *datefunc=(Expr_func *)funcnode->parameter1;
+				QExpr_date_add_sub *date_sub;
+				if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_sub=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_sub_day,t_qexpr_date_add_sub,t_date_day,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_sub=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_sub_week,t_qexpr_date_add_sub,t_date_week,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_sub=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_sub_month,t_qexpr_date_add_sub,t_date_month,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_sub=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_sub_year,t_qexpr_date_add_sub,t_date_year,funcnode->str);
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+				{
+					QNode *rnext=transformqual(datefunc->args,child);
+					date_sub=new QExpr_date_add_sub(lnext,rnext,t_date,oper_date_sub_month,t_qexpr_date_add_sub,t_date_quarter,funcnode->str);
+				}
+				return date_sub;
+			}
 			else
 			{
 				SQLParse_elog("get_a_expression_item: %s is null",funcnode->funname);
@@ -498,6 +569,15 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 				}
 			}
 		}break;
+		case t_qexpr_date_add_sub:
+		{
+			QExpr_date_add_sub * date_node=(QExpr_date_add_sub *)(node);
+			date_node->return_type=r_type;
+			InitExprAtLogicalPlan(date_node->lnext,date_node->actual_type,colindex,schema);
+			InitExprAtLogicalPlan(date_node->rnext,date_node->rnext_type,colindex,schema);//the difference between t_qexpr_date_add_sub and t_qexpr_cal
+			date_node->isnull=(date_node->lnext->isnull||date_node->rnext->isnull);
+			date_node->length=max(date_node->lnext->length,date_node->rnext->length);
+		}break;
 		case t_qexpr_func:
 		{
 //			QExpr_binary *funcnode=(QExpr_binary *)(node);
@@ -612,6 +692,16 @@ void InitExprAtPhysicalPlan(QNode *node)
 			innode->FuncId=Exec_in;
 			innode->type_cast_func=TypeCast::type_cast_func[innode->actual_type][innode->return_type];
 			innode->value=memalign(cacheline_size,innode->length);
+		}break;
+		case t_qexpr_date_add_sub:
+		{
+			QExpr_date_add_sub * date_node=(QExpr_date_add_sub *)(node);
+			date_node->FuncId=Exec_date_add_sub;
+			InitExprAtPhysicalPlan(date_node->lnext);
+			InitExprAtPhysicalPlan(date_node->rnext);
+			date_node->function_call=ExectorFunction::operator_function[date_node->actual_type][date_node->op_type];
+			date_node->type_cast_func=TypeCast::type_cast_func[date_node->actual_type][date_node->return_type];
+			date_node->value=memalign(cacheline_size,date_node->length);
 		}break;
 		case t_qexpr_func:
 		{

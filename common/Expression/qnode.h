@@ -31,6 +31,7 @@ typedef void* (*FuncCall)(Node *qinfo,void *tuple,Schema *schema);
 enum qnodetype
 {
 	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qname,t_qstring,t_qint,t_qexpr_case_when,t_qexpr_in,
+	t_qexpr_date_add_sub,
 };
 
 enum oper_type
@@ -42,6 +43,8 @@ enum oper_type
 	oper_both_trim,oper_trailing_trim,oper_leading_trim,oper_like,oper_not_like,oper_upper,oper_substring,
 	oper_negative,
 	oper_case_when,
+	oper_date_add_day,oper_date_add_week,oper_date_add_month,oper_date_add_year,//quanter type have been changed to month*3 in transfromqual()
+	oper_date_sub_day,oper_date_sub_week,oper_date_sub_month,oper_date_sub_year,
 };
 class QNode:public Node
 {
@@ -85,7 +88,7 @@ private:
 		ar & boost::serialization::base_object<QNode>(*this) & op_type & next ;
 	}
 };
-class QExpr_binary:public QNode//二元计算表达式，先做个测试exec_cal()
+class QExpr_binary:public QNode//
 {
 public:
 	oper_type op_type;
@@ -182,6 +185,24 @@ private:
 	void serialize(Archive &ar, const unsigned int version)
 	{
 		ar& boost::serialization::base_object<QNode>(*this) & cmpnode & rnode;
+	}
+};
+class QExpr_date_add_sub:public QNode
+{
+public:
+	oper_type op_type;
+	QNode *lnext,*rnext;
+	data_type rnext_type;//the return type of the rnext
+	ExecFunc function_call;
+	QExpr_date_add_sub(){};
+	virtual ~QExpr_date_add_sub(){};
+	QExpr_date_add_sub(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,data_type rr_type,char *t_alias);
+private:
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<QNode>(*this) & lnext &rnext & op_type &rnext_type;
 	}
 };
 #endif /* QNode_H_ */
