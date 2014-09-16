@@ -37,7 +37,7 @@ private:
 	}
 
 	int m_port;
-	int m_fd;
+	int m_fd;	//listening fd
 	int *m_clientFds;
 	int m_num;
 	const static int MAXCONN = 100;

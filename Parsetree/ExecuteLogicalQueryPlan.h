@@ -16,9 +16,11 @@
 
 
 void ExecuteLogicalQueryPlan();
-bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsigned position, ostringstream &ostr);
+void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info);
 
+bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsigned position, ostringstream &ostr);
 bool CheckType(const column_type *col_type, Expr *expr);
+
 LogicalOperator* convert_sql_to_logical_operator_tree(const char* sql);
-void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag,string &error_msg);
+
 #endif /* EXECUTELOGICALQUERYPLAN_H_ */
