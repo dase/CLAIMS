@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "data_type.h"
 #include <string.h>
+#include <boost/date_time/gregorian/greg_duration.hpp>
 typedef bool (*TypeCastFunction) (ExpressionItem& in);//
 typedef void *(*TypeCastF)(void *value,void *tovalue);
 class TypeCast{
@@ -122,6 +123,9 @@ inline void *int_to_boolean(void *value,void * tovalue)
 	*(bool *)tovalue=(*(int *)value==0?0:1);
 	return tovalue;
 }
+
+
+
 /***************int****************************/
 /***************string****************************/
 
@@ -180,6 +184,33 @@ inline void *string_to_boolean(void *value,void * tovalue)
 inline void *string_to_date(void *value,void *tovalue)
 {
 	*(date *)tovalue=(from_string(string((char *)value)));
+	return tovalue;
+}
+
+
+inline void *string_to_date_day(void *value,void * tovalue)
+{
+	*(date_duration *)tovalue=date_duration(atof((char *)value));
+	return tovalue;
+}
+inline void *string_to_date_week(void *value,void * tovalue)
+{
+	*(weeks *)tovalue=weeks(atof((char *)value));
+	return tovalue;
+}
+inline void *string_to_date_month(void *value,void * tovalue)
+{
+	*(months *)tovalue=months(atof((char *)value));
+	return tovalue;
+}
+inline void *string_to_date_year(void *value,void * tovalue)
+{
+	*(years *)tovalue=years(atof((char *)value));
+	return tovalue;
+}
+inline void *string_to_date_quarter(void *value,void * tovalue)
+{
+	*(months *)tovalue=months(atof((char *)value)*3);
 	return tovalue;
 }
 /***************string****************************/
@@ -455,6 +486,8 @@ inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_func[t_int][t_decimal]=int_to_decimal;
 	TypeCast::type_cast_func[t_int][t_boolean]=int_to_boolean;
 
+
+
 	//t_u_long
 	TypeCast::type_cast_func[t_u_long][t_smallInt]=errormsg;
 	TypeCast::type_cast_func[t_u_long][t_int]=errormsg;
@@ -507,6 +540,11 @@ inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_func[t_string][t_decimal]=string_to_decimal;
 	TypeCast::type_cast_func[t_string][t_boolean]=string_to_boolean;
 
+	TypeCast::type_cast_func[t_string][t_date_day]=string_to_date_day;
+	TypeCast::type_cast_func[t_string][t_date_week]=string_to_date_week;
+	TypeCast::type_cast_func[t_string][t_date_month]=string_to_date_month;
+	TypeCast::type_cast_func[t_string][t_date_year]=string_to_date_year;
+	TypeCast::type_cast_func[t_string][t_date_quarter]=string_to_date_quarter;
 	//
 
 	//t_date

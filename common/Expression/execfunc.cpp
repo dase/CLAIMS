@@ -139,7 +139,17 @@ void *Exec_in(Node *cinfo,void *tuple,Schema *schema)
 }
 
 
-
+void *Exec_date_add_sub(Node *cinfo,void *tuple,Schema *schema)
+{
+	QExpr_date_add_sub *cal=(QExpr_date_add_sub *)(cinfo);
+	FuncCallInfoData finfo;
+	finfo.args[0]=cal->lnext->FuncId(cal->lnext,tuple,schema);
+	finfo.args[1]=cal->rnext->FuncId(cal->rnext,tuple,schema);
+	finfo.nargs=2;
+	finfo.results=cal->value;
+	cal->function_call(&finfo);
+	return cal->type_cast_func(finfo.results,cal->value);
+}
 
 
 

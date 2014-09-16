@@ -77,4 +77,15 @@ QExpr_in::QExpr_in(vector<QNode *>&cmpnode_,vector<vector< QNode *> >&rnode_,cha
 	alias=string(alias_);
 	value=NULL;
 }
-
+QExpr_date_add_sub::QExpr_date_add_sub(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,data_type rr_type,char *t_alias)
+{
+	op_type=op_types;
+	type=q_type;
+	lnext=l_arg;
+	rnext=r_arg;
+	actual_type=a_type;
+	FuncId=Exec_cal;
+	alias=string(t_alias);
+	value=NULL;
+	rnext_type=rr_type;
+}

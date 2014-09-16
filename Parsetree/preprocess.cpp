@@ -19,6 +19,7 @@
 #include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../common/Logging.h"
+#include <boost/date_time/gregorian/greg_duration.hpp>
 int getlevel(Expr_cal *calnode)
 {
 	int level=0;
@@ -233,6 +234,63 @@ string expr_to_str(Node * node,int level)
 				str="max(";
 				str=str+expr_to_str(funcnode->parameter1,0);
 				str=str+")";
+			}
+			else if(strcmp(funcnode->funname,"FDATE_ADD")==0)
+			{
+				Expr_func *datefunc=(Expr_func *)funcnode->parameter1;
+				str="date_add(";
+				str=str+expr_to_str(funcnode->args,0);
+				str=str+",interval ";
+				str=str+expr_to_str(datefunc->args,0);
+				if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+				{
+					str=str+" day)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+				{
+					str=str+" week)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+				{
+					str=str+" month)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+				{
+					str=str+" year)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+				{
+					str=str+" quarter)";
+				}
+
+			}
+			else if(strcmp(funcnode->funname,"FDATE_SUB")==0)
+			{
+				Expr_func *datefunc=(Expr_func *)funcnode->parameter1;
+				str="date_sub(";
+				str=str+expr_to_str(funcnode->args,0);
+				str=str+",interval ";
+				str=str+expr_to_str(datefunc->args,0);
+				if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+				{
+					str=str+" day)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+				{
+					str=str+" week)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+				{
+					str=str+" month)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+				{
+					str=str+" year)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+				{
+					str=str+" quarter)";
+				}
 			}
 			else
 			{
@@ -449,6 +507,8 @@ void solve_const_value_in_wherecondition(Node *&cur)
 					{
 						date_duration dd(atof(((Expr *)datefunc->args)->data));
 						constdate=date(from_string(datestr))+dd;
+//						date_duration *dd=new date_duration(atof(((Expr *)datefunc->args)->data));
+//						constdate=from_string(datestr)+(*(date_duration *)dd);
 					}
 					else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
 					{
