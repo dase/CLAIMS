@@ -1050,7 +1050,7 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 				Columns *col=(Columns *)(gbexpr->args);
 //				obcol.push_back(col->parameter2);
 				//obcol.push_back(col->parameter2);
-				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2));
+				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2,gbexpr->sorttype));
 			}break;
 			case t_intnum:
 			{
@@ -1081,7 +1081,7 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 						case t_column:
 						{
 							Columns * col=(Columns *)sexpr->colname;
-							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2));
+							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2,gbexpr->sorttype));
 						}break;
 						default:
 						{
@@ -1094,13 +1094,13 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 			{
 				Expr_func * func=(Expr_func *)(gbexpr->args);
 				assert(func->str!=NULL);
-				obcol.push_back(new LogicalSort::OrderByAttr(func->str));
+				obcol.push_back(new LogicalSort::OrderByAttr(func->str,gbexpr->sorttype));
 			}break;
 			case t_expr_cal:
 			{
 				Expr_cal *ecal=(Expr_cal *)(gbexpr->args);
 				assert(ecal->str!=NULL);
-				obcol.push_back(new LogicalSort::OrderByAttr(ecal->str));
+				obcol.push_back(new LogicalSort::OrderByAttr(ecal->str,gbexpr->sorttype));
 			}break;
 			default:
 			{
