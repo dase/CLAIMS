@@ -43,16 +43,15 @@
 
 #include "../../common/hash.h"
 #include "../../common/Logging.h"
+#include "../BlockStreamExchangeLowerBase.h"
 
-class ExpandableBlockStreamExchangeLowerEfficient:public BlockStreamIteratorBase {
+class ExpandableBlockStreamExchangeLowerEfficient:public BlockStreamExchangeLowerBase {
 public:
 	friend class ExpandableBlockStreamExchangeEpoll;
 	struct State{
 		Schema* schema;
 		BlockStreamIteratorBase* child;
 		unsigned long long int exchange_id;
-		//Currently, support give the ip vector.
-		//TODO: support ip vector provided by scheduler
 		std::vector<std::string> upper_ip_list;
 		unsigned block_size;
 		unsigned partition_key_index;
@@ -79,10 +78,7 @@ private:
 
 	/* the thread for outputing debug information*/
 	static void* debug(void* arg);
-	unsigned hash(void*);
-	bool ConnectToUpperExchangeWithMulti(int &sock_fd,const std::string ip,int port);
-	void WaitingForNotification(int target_socket_fd);
-	void WaitingForCloseNotification();
+
 	void cancelSenderThread();
 private:
 	State state;
@@ -95,7 +91,7 @@ private:
 	 * partition key.
 	 */
 	BlockStreamBase** partitioned_blockstream_;
-//	BlockContainer* block_for_sending;
+	BlockContainer* block_for_sending;
 	BlockContainer* block_for_buffer_;
 	PartitionedBlockContainer* sending_buffer_;
 	Block* block_for_serialization_;
@@ -108,21 +104,21 @@ private:
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state;
+	void serialize(Archive & debug_connected_uppers, const unsigned int version){
+		debug_connected_uppers & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state;
 	}
 private:
 	//debug
 
 	unsigned generated_blocks;
 	unsigned sendedblocks;
-	unsigned debug_readsendedblocks;
+	unsigned readsendedblocks;
 
-	unsigned connected_uppers;
-	std::map<std::string,int> connected_uppers_list_;
+	unsigned debug_connected_uppers;
+	std::map<std::string,int> debug_connected_uppers_list_;
 
-	unsigned connected_uppers_in;
-	std::map<std::string,int> connected_uppers_list_in;
+	unsigned debug_connected_uppers_in;
+	std::map<std::string,int> debug_connected_uppers_list_in;
 };
 
 

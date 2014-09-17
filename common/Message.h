@@ -413,14 +413,7 @@ public:
 	void destory(){
 		block_stream_iterator_root_->~BlockStreamIteratorBase();
 	}
-	void run()
-	{
-		block_stream_iterator_root_->open();
-		while(block_stream_iterator_root_->next(0));
-		block_stream_iterator_root_->close();
-
-
-	}
+	void run();
 	static PhysicalQueryPlan deserialize(Message256 message)
 	{
 		return Deserialize<PhysicalQueryPlan>(message);

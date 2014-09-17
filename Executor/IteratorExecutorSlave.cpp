@@ -120,7 +120,7 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 
 void IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan plan) {
 //	int core=CPUResourceManager::getInstance()->applyCore();
-	printf("--------\n After apply:");
+//	printf("--------\n After apply:");
 //	CPUResourceManager::getInstance()->print();
 	plan.run();
 //	CPUResourceManager::getInstance()->freeCore(core);

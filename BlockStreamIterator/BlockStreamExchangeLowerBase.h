@@ -27,6 +27,7 @@ protected:
 	bool ConnectToUpper(const ExchangeID &exchange_id,const std::string &ip,int &sock_fd) const;
 	void WaitingForNotification(const int &target_socket_fd) const;
 	void WaitingForCloseNotification(const int & target_socket_fd) const;
+	unsigned hash(void* input_tuple, Schema* schema, unsigned partition_key_index, unsigned nuppers);
 private:
 
 private:
