@@ -18,7 +18,6 @@
 #include "../ParallelBlockStreamIterator/BlockStreamCombinedIterator.h"
 #include "../ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
 #include "../ParallelBlockStreamIterator/ExpandableBlockStreamHdfsScan.h"
-#include "../ParallelBlockStreamIterator/ExpandableBlockStreamExchangeMaterialized.h"
 #include "../ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../ParallelBlockStreamIterator/ExpandableBlockStreamBuffer.h"
 #include "../ParallelBlockStreamIterator/BlockStreamInIterator.h"
@@ -60,7 +59,6 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<ExpandableBlockStreamHdfsScan*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamExchangeLowerMaterialized*>(NULL));
 //	ar.register_type(static_cast<BlockStreamExchangeBase*>(NULL));
-	ar.register_type(static_cast<ExpandableBlockStreamExchangeMaterialized*>(NULL));
 
 	ar.register_type(static_cast<ExpandableBlockStreamRandomMemAccess*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamProjectionScan*>(NULL));

@@ -161,7 +161,7 @@ static int test_scan_filter_Aggregation(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64 );
-//	executable_query_plan->print();
+	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
@@ -433,30 +433,31 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 ////		printf("-----------------------------------------\n");
 	}
 //
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_high_selectivity();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_low_selectivity();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_Aggregation();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_Scalar_Aggregation();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_no_repartition_filtered_join();
-	}
+//	for(unsigned i=0;i<repeated_times;i++){
+////		test_scan_filter_high_selectivity();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+////		test_scan_filter_low_selectivity();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Aggregation();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Scalar_Aggregation();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_filtered_join();
+//	}
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_complete_repartition_filtered_join();
 	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_complete_repartition_scan_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_no_repartition_scan_join();
-	}
+//	printf("______Repartition scan join_________\n");
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_complete_repartition_scan_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_scan_join();
+//	}
 	printf("__________________FINISHED__________________\n");
 	sleep(1);
 	Environment::getInstance()->~Environment();

@@ -30,6 +30,8 @@
 #include "../../configure.h"
 #include "../../common/rename.h"
 #include "../../utility/rdtsc.h"
+#include "ExpandableBlockStreamExchangeLowerMaterialized.h"
+#include "../../Config.h"
 #define BUFFER_SIZE_IN_EXCHANGE 100
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
@@ -290,18 +292,36 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
-	ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_key_index);
-	for(unsigned i=0;i<state.lower_ip_list.size();i++){
-		/* set the partition offset*/
-		EIELstate.partition_offset=i;
-		BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
+	if(Config::pipelined_exchange){
+		ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_key_index);
+		for(unsigned i=0;i<state.lower_ip_list.size();i++){
+			/* set the partition offset*/
+			EIELstate.partition_offset=i;
+			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
 
-		if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list[i])==false){
-			logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id);
-			return false;
+			if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list[i])==false){
+				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id);
+				return false;
+			}
+			delete EIEL;
 		}
-		delete EIEL;
 	}
+	else{
+		ExpandableBlockStreamExchangeLowerMaterialized::State EIELstate(state.schema,state.child,state.upper_ip_list,state.block_size,state.exchange_id,state.partition_key_index);
+		for(unsigned i=0;i<state.lower_ip_list.size();i++){
+			/* set the partition offset*/
+			EIELstate.partition_offset=i;
+			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerMaterialized(EIELstate);
+
+			if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list[i])==false){
+				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id);
+				return false;
+			}
+			delete EIEL;
+		}
+	}
+
+
 	return true;
 }
 

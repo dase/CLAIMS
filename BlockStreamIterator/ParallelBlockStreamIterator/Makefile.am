@@ -34,7 +34,6 @@ libparallelblockstreamiterator_a_SOURCES = \
 	ExpandableBlockStreamExchangeEpoll.cpp 		ExpandableBlockStreamExchangeEpoll.h \
 	ExpandableBlockStreamExchangeLowerEfficient.cpp 		ExpandableBlockStreamExchangeLowerEfficient.h \
 	ExpandableBlockStreamExchangeLowerMaterialized.cpp 		ExpandableBlockStreamExchangeLowerMaterialized.h \
-	ExpandableBlockStreamExchangeMaterialized.cpp 		ExpandableBlockStreamExchangeMaterialized.h \
 	ExpandableBlockStreamFilter.cpp 		ExpandableBlockStreamFilter.h \
 	ExpandableBlockStreamHdfsScan.cpp 		ExpandableBlockStreamHdfsScan.h \
 	ExpandableBlockStreamProjectionScan.cpp 		ExpandableBlockStreamProjectionScan.h \

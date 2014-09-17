@@ -34,8 +34,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	logging_=new ExchangeIteratorEagerLowerLogging();
 	logging_->log("[%lld] Exchange lower is created!",state.exchange_id);
 
-	connected_uppers=0;
-	connected_uppers_in=0;
+	debug_connected_uppers=0;
+	debug_connected_uppers_in=0;
 	state.child->open(state.partition_offset);
 
 	nuppers=state.upper_ip_list.size();
@@ -70,31 +70,9 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	/** connect to all the mergers **/
 	for(unsigned upper_id=0;upper_id<state.upper_ip_list.size();upper_id++){
 
-		struct hostent host;
-		std::string tmp_before(state.upper_ip_list[upper_id].c_str());
-		if((ThreadSafe::gethostbyname_ts(host,state.upper_ip_list[upper_id].c_str()))==0){
-			perror("gethostbyname errors!\n");
+
+		if(ConnectToUpper(ExchangeID(state.exchange_id,state.partition_offset),state.upper_ip_list[upper_id],socket_fd_upper_list[upper_id])!=true)
 			return false;
-		}
-
-		if((socket_fd_upper_list[upper_id]=socket(AF_INET, SOCK_STREAM,0))==-1){
-			perror("socket creation errors!\n");
-			return false;
-		}
-
-		/** get the merger socket port from exchagne tracker **/
-		ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
-		int upper_port;
-		unsigned long long int connect_info=curtick();
-		if((upper_port=et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id]))==0){
-			logging_->elog("Fails to ask %s for socket connection info, the exchange id=%d",state.upper_ip_list[upper_id].c_str(),state.exchange_id);
-			assert(false);
-		}
-		connected_uppers++;
-
-		if(ConnectToUpperExchangeWithMulti(socket_fd_upper_list[upper_id],state.upper_ip_list[upper_id],upper_port)==false)
-			return false;
-
 	}
 
 	/** create the sender thread **/
@@ -107,7 +85,6 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 
 //	pthread_create(&debug_tid,NULL,debug,this);
 /*debug*/
-	debug_readsendedblocks=0;
 	return true;
 }
 bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
@@ -118,7 +95,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		/** if a blocks is obtained from child, we partition the tuples in the block. **/
 		BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
 		while((tuple_from_child=traverse_iterator->nextTuple())>0){
-			const unsigned partition_id=hash(tuple_from_child);
+//			const unsigned partition_id=hash(tuple_from_child);
+			const unsigned partition_id=hash(tuple_from_child,state.schema,state.partition_key_index,nuppers);
 
 			/** calculate the length of the tuple **/
 			const unsigned bytes=state.schema->getTupleActualSize(tuple_from_child);
@@ -163,18 +141,18 @@ bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 		 * blocks in the uppers' socket buffer have all been consumed.
 		 */
 		logging_->log("Waiting for close notification!");
-		WaitingForCloseNotification();
-		logging_->log("....passed!");
+		for(unsigned i=0;i<nuppers;i++){
+			WaitingForCloseNotification(socket_fd_upper_list[i]);
+		}
 
 		return false;
 	}
 }
 
-unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
-	const void* hash_key_address=state.schema->getColumnAddess(state.partition_key_index,value);
-	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,nuppers);
-}
-
+//unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
+//	const void* hash_key_address=state.schema->getColumnAddess(state.partition_key_index,value);
+//	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,nuppers);
+//}
 bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 
 	cancelSenderThread();
@@ -198,41 +176,6 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 	return true;
 }
 
-bool ExpandableBlockStreamExchangeLowerEfficient::ConnectToUpperExchangeWithMulti(int &sock_fd,const std::string ip,int port){
-	struct sockaddr_in serv_add;
-	serv_add.sin_family=AF_INET;
-	serv_add.sin_port=htons(port);
-	serv_add.sin_addr.s_addr=inet_addr(ip.c_str());
-	bzero(&(serv_add.sin_zero),8);
-
-	if((connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
-	{
-		logging_->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),port);
-		return false;
-	}
-	return true;
-}
-void ExpandableBlockStreamExchangeLowerEfficient::WaitingForNotification(int target_socket_fd){
-	char byte;
-	int recvbytes;
-	if((recvbytes=recv(target_socket_fd,&byte,sizeof(char),0))==-1){
-		perror("recv error!\n");
-	}
-
-}
-void ExpandableBlockStreamExchangeLowerEfficient::WaitingForCloseNotification(){
-	for(unsigned i=0;i<nuppers;i++){
-		char byte;
-		int recvbytes;
-		if((recvbytes=recv(socket_fd_upper_list[i],&byte,sizeof(char),0))==-1){
-			perror("recv error!\n");
-		}
-		FileClose(socket_fd_upper_list[i]);
-		logging_->log("Receive the close notifaction from the upper[%s], the byte='%c'",state.upper_ip_list[i].c_str(),byte);
-	}
-
-
-}
 void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 	ExpandableBlockStreamExchangeLowerEfficient* Pthis=(ExpandableBlockStreamExchangeLowerEfficient*)arg;
 

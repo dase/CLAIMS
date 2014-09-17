@@ -26,6 +26,7 @@ BlockStreamExpander::BlockStreamExpander()
 }
 
 BlockStreamExpander::~BlockStreamExpander() {
+	printf("Expander free!\n");
 	delete logging_;
 }
 
@@ -35,6 +36,10 @@ BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,
 }
 
 bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
+
+//	printf("\n*************%lx****************\n",state_.child_);
+//	state_.child_->print();
+//	printf("*******************************\n\n\n\n");
 	received_tuples_=0;
 	logging_->log("[%ld] Expander open, thread count=%d\n",expander_id_,state_.init_thread_count_);
 	state_.partition_offset=partitoin_offset;
@@ -51,6 +56,8 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 			return false;
 		}
 	}
+
+
 
 	/**
 	 * The following three lines test set callback status to expanded threads.
@@ -111,7 +118,6 @@ bool BlockStreamExpander::close(){
 //	assert(ExpanderTracker::getInstance()->expander_id_to_status_.size()==0);
 	delete block_stream_buffer_;
 	logging_->log("[%ld] Buffer is freed in Expander!\n",expander_id_);
-
 	state_.child_->close();
 	thread_count_=0;
 	logging_->log("[%ld] <<<<<<<Expander closed!>>>>>>>>>>\n",expander_id_);

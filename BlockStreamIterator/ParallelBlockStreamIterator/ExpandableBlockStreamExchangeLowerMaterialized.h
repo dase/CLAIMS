@@ -34,20 +34,19 @@ public:
 		Schema* schema_;
 		BlockStreamIteratorBase* child_;
 		unsigned long long int exchange_id_;
-		//Currently, support give the ip vector.
-		//TODO: support ip vector provided by scheduler
 		std::vector<std::string> upper_ip_list_;
 		unsigned block_size_;
-		PartitionOffset partition_off_;
+		PartitionOffset partition_offset;
+		unsigned partition_key_index_;
 		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<std::string> upper_ip_list, unsigned block_size,
-						unsigned long long int exchange_id=0)
-		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_off_(0)
+						unsigned long long int exchange_id=0,unsigned partition_key_index=0)
+		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_offset(0),partition_key_index_(partition_key_index)
 		{}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_&partition_off_;
+			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_&partition_offset&partition_key_index_;
 		}
 	};
 	ExpandableBlockStreamExchangeLowerMaterialized(State state);
@@ -64,25 +63,28 @@ private:
 	static void* materialize_and_send(void* arg);
 	/* the thread for outputing debug information*/
 	static void* debug(void* arg);
-	unsigned hash(void*);
-	int getBlockFromFile(Block &block);
-//	bool ConnectToUpperExchangeWithMulti(int &sock_fd,struct hostent* host,int port);
-//	void WaitingForNotification(int target_socket_fd);
-//	void WaitingForCloseNotification();
 
+	/** random select one block from the partitioned files and return the partition
+	 *  index. Return -1 if all the partitioned files reach EOF.
+	 */
+	int getBlockFromFile(Block &block);
+	bool createWorkerThread();
+	void cancelWorkerThread();
+	void closeDiskFiles();
+	void deleteDiskFiles();
 private:
 	State state_;
 	unsigned nuppers_;
 	int* socket_fd_upper_list_;
-	PartitionedBlockBuffer* buffer_;
+	PartitionedBlockBuffer* partitioned_data_buffer_;
 
 	/* one BlockStream for each uppers, the tuples from the child
 	 * iterator are fed to the cur_block_stream_list_ according to their
 	 * partition key.
 	 */
-	BlockStreamBase** cur_block_stream_list_;
-	Block* block_for_sending_;//writable
-	Block* block_for_inserting_to_buffer_;//writable
+	BlockStreamBase** partitioned_block_stream_;
+	Block* block_for_sending_;
+	Block* block_for_serialization_;
 	BlockStreamBase* block_stream_for_asking_;
 	pthread_t sender_tid_;
 	pthread_t debug_tid_;
@@ -90,21 +92,13 @@ private:
 	int* disk_fd_list_;
 	unsigned* disk_file_length_list_;
 	unsigned* disk_file_cur_list_;
-//	std::vector<std::ofstream> disk_fd_out_list_;
-//	std::vector<std::ifstream> disk_fd_in_list_;
-	bool child_exhausted_;
+	volatile bool child_exhausted_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
 		ar & boost::serialization::base_object<BlockStreamExchangeLowerBase>(*this) & state_;
 	}
-private:
-	//debug
-
-	unsigned generated_blocks;
-	unsigned sendedblocks;
-	unsigned readsendedblocks;
 };
 
 

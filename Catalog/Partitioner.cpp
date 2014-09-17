@@ -77,6 +77,8 @@ void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_key,uns
 
 	partition_info_list[partition_key]->hdfs_file_name=partition_info_list[partition_key]->partition_id_.getName();
 	partition_info_list[partition_key]->number_of_blocks=number_of_blocks;
+
+
 }
 
 void Partitioner::print(){
