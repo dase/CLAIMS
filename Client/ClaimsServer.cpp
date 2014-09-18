@@ -7,16 +7,6 @@
 
 #include "ClaimsServer.h"
 
-#include <malloc.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/ioctl.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <cstdio>
-#include "../Catalog/Catalog.h"
-#include "../Daemon/Daemon.h"
 
 ClaimsServer::ClaimsServer(int port) {
 
@@ -90,7 +80,7 @@ void ClaimsServer::configure() {
 	sockaddr_in clientSocket;
 
 	serverSocket.sin_family = AF_INET;
-	serverSocket.sin_port = htons(8001);
+	serverSocket.sin_port = htons(m_port);
 	serverSocket.sin_addr.s_addr = INADDR_ANY;
 
 	if ((serverSockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -296,6 +286,10 @@ void *ClaimsServer::sendHandler(void *para) {
 			server->write(result.fd, cliRes);
 		}
 	}
+}
+
+void sendJsonPacket(executed_result res) {
+
 }
 
 /**

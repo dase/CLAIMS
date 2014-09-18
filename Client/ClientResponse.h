@@ -193,7 +193,7 @@ struct ClientResponse {
 	int serialize(char*& buffer) const {
 		int ret = sizeof(int) + sizeof(int) + content.length();
 		buffer = (char *) malloc(ret);
-		*(int*) buffer = status;
+		*(int*) buffer = status;		// 小端字节序
 		*((int*) buffer + 1) = length;
 		void* content_start = buffer + sizeof(int) + sizeof(int);
 		memcpy(content_start, content.data(), content.length());

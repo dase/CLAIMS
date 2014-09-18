@@ -406,7 +406,7 @@ static int testServerClient() {
 				printf("Message: %s\n", response->content.c_str());
 			}
 			else {
-				printf("Client does not get response: %s\n",
+				printf("ERROR: %s\n",
 						response->content.c_str());
 			}
 		}
@@ -418,7 +418,7 @@ static int testServerClient() {
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 		catalog->restoreCatalog();
 
-		ClaimsServer server(8000);
+		ClaimsServer server(8001);
 		server.configure();
 		//		server.run();
 		while(true){
