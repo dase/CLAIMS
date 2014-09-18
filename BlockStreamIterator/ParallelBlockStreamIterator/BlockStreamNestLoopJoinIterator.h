@@ -9,8 +9,10 @@
 #define BLOCKSTREAMNESTLOOPJOINITERATOR_H_
 #include "../ExpandableBlockStreamIteratorBase.h"
 #include <boost/serialization/base_object.hpp>
-
-
+#include "../BlockStreamIteratorBase.h"
+#include "../../Debug.h"
+#include "BlockStreamJoinIterator.h"
+#include "../../Executor/ExpanderTracker.h"
 class BlockStreamNestLoopJoinIterator: public ExpandableBlockStreamIteratorBase {
 public:
 	class join_thread_context:public thread_context{
@@ -18,6 +20,20 @@ public:
 		BlockStreamBase* block_for_asking_;
 		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
 	};
+	struct remaining_block{
+		remaining_block(BlockStreamBase *bsb_right,BlockStreamBase::BlockStreamTraverseIterator *bsti)
+		:bsb_right_(bsb_right),blockstream_iterator(bsti){};
+		remaining_block():bsb_right_(0),blockstream_iterator(0){};
+		remaining_block(const remaining_block&r){
+			bsb_right_=r.bsb_right_;
+			blockstream_iterator=r.blockstream_iterator;
+			hashtable_iterator_=r.hashtable_iterator_;
+		}
+		BlockStreamBase *bsb_right_;
+		BlockStreamBase::BlockStreamTraverseIterator *blockstream_iterator;
+		BasicHashTable::Iterator hashtable_iterator_;
+	};
+
 	class State
 	{
 		friend class BlockStreamNestLoopJoinIterator;
@@ -27,19 +43,28 @@ public:
 				Schema *input_schema_left,
 				Schema *input_schema_right,
 				Schema *output_schema,
+				std::vector<unsigned> joinIndex_left,
+				std::vector<unsigned> joinIndex_right,
+				std::vector<unsigned> payload_left,
+				std::vector<unsigned> payload_right,
 				unsigned block_size
 				);
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema & block_size_;
+			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema & joinIndex_left & joinIndex_right & payload_left & payload_right & block_size_;
 	}
 	public:
 		BlockStreamIteratorBase *child_left,*child_right;
 		Schema *input_schema_left,*input_schema_right;
 		Schema *output_schema;
+		std::vector<unsigned> joinIndex_left;
+		std::vector<unsigned> joinIndex_right;
+		std::vector<unsigned> payload_left;
+		std::vector<unsigned> payload_right;
 		unsigned block_size_;
+
 	};
 	BlockStreamNestLoopJoinIterator();
 	virtual ~BlockStreamNestLoopJoinIterator();
@@ -49,6 +74,21 @@ public:
 	bool close();
 	void print();
 private:
+	bool createBlockStream(BlockStreamBase*&)const;
+	bool atomicPopRemainingBlock(remaining_block & rb);
+	void atomicPushRemainingBlock(remaining_block rb);
+	BlockStreamBase* AtomicPopFreeBlockStream();
+	void AtomicPushFreeBlockStream(BlockStreamBase* block);
+	BlockStreamBase* AtomicPopFreeHtBlockStream();
+	void AtomicPushFreeHtBlockStream(BlockStreamBase* block);
+
+	DynamicBlockBuffer *blockbuffer;
+	std::map<unsigned,unsigned> joinIndex_left_to_output;
+	/* payload_left map to the output*/
+	std::map<unsigned,unsigned> payload_left_to_output;
+	/* payload_right map to the output*/
+	std::map<unsigned,unsigned> payload_right_to_output;
+
 	State state_;
 	Lock lock_;
 	unsigned produced_tuples;

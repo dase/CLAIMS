@@ -10,6 +10,7 @@
 bool ExecEvalQual(vector<QNode *>v_qual,void *tuple,Schema *schema)
 {
 	assert(tuple!=NULL);
+
 	for(int i=0;i<v_qual.size();i++)
 	{
 		QNode *qual=v_qual[i];
