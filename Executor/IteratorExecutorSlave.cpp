@@ -108,7 +108,7 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 
 	executePhysicalQueryPlan(*it);
 
-	CPUResourceManager::getInstance()->print();
+//	CPUResourceManager::getInstance()->print();
 	it->~PhysicalQueryPlan();
 	Pthis->logging_->log("A iterator tree is successfully executed!\n");
 	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());

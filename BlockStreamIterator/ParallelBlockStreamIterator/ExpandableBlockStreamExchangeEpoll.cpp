@@ -86,7 +86,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			return false;
 		}
 
-		logging_->log("[%ld] Open: nexhausted lowers=%d, nlower=%d",state.exchange_id,nexhausted_lowers,nlowers);
+		logging_->log("[%ld,%d] Open: nexhausted lowers=%d, nlower=%d",state.exchange_id,partition_offset,nexhausted_lowers,nlowers);
 
 		if(RegisterExchange()==false){
 			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id);
@@ -98,10 +98,10 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
 			 *  have not register the exchange_id to the exchangeTracker.
 			*/
-			logging_->log("[%ld] Synchronizing....",state.exchange_id);
+			logging_->log("[%ld,%d] Synchronizing....",state.exchange_id,partition_offset);
 			checkOtherUpperRegistered();
-			logging_->log("[%ld] Synchronized!",state.exchange_id);
-			logging_->log("[%ld] This exchange is the master one, serialize the iterator subtree to the children...",state.exchange_id);
+			logging_->log("[%ld,%d] Synchronized!",state.exchange_id,partition_offset);
+			logging_->log("[%ld,%d] This exchange is the master one, serialize the iterator subtree to the children...",state.exchange_id,partition_offset);
 
 			if(SerializeAndSendToMulti()==false)
 				return false;

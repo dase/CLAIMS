@@ -69,7 +69,7 @@ static int test_scan_filter_high_selectivity(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64 );
-//	executable_query_plan->print();
+	executable_query_plan->print();
 
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 //	executable_query_plan->open();
@@ -323,7 +323,7 @@ static int test_complete_repartition_filtered_join(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
 	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
-//	executable_query_plan->print();
+	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -432,12 +432,11 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 ////		sleep(1);
 ////		printf("-----------------------------------------\n");
 	}
-//
 //	for(unsigned i=0;i<repeated_times;i++){
-////		test_scan_filter_high_selectivity();
+//		test_scan_filter_high_selectivity();
 //	}
 //	for(unsigned i=0;i<repeated_times;i++){
-////		test_scan_filter_low_selectivity();
+//		test_scan_filter_low_selectivity();
 //	}
 //	for(unsigned i=0;i<repeated_times;i++){
 //		test_scan_filter_Aggregation();
@@ -448,13 +447,13 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 //	for(unsigned i=0 ; i < repeated_times ; i++){
 //		test_no_repartition_filtered_join();
 //	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_complete_repartition_filtered_join();
-	}
-//	printf("______Repartition scan join_________\n");
 //	for(unsigned i=0 ; i < repeated_times ; i++){
-//		test_complete_repartition_scan_join();
+//		test_complete_repartition_filtered_join();
 //	}
+	printf("______Repartition scan join_________\n");
+	for(unsigned i=0 ; i < repeated_times ; i++){
+		test_complete_repartition_scan_join();
+	}
 //	for(unsigned i=0 ; i < repeated_times ; i++){
 //		test_no_repartition_scan_join();
 //	}

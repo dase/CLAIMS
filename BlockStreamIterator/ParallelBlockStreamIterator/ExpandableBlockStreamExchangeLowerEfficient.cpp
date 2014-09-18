@@ -21,17 +21,20 @@
 #include "../../utility/rdtsc.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
 :state(state),logging_(0){
-	// TODO Auto-generated constructor stub
 	assert(state.partition_key_index<100);
+}
 
+
+ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient() {
+	logging_=new ExchangeIteratorEagerLowerLogging();
 }
 
 ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
 	// TODO Auto-generated destructor stub
 	delete logging_;
 }
+
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
-	logging_=new ExchangeIteratorEagerLowerLogging();
 	logging_->log("[%lld] Exchange lower is created!",state.exchange_id);
 
 	debug_connected_uppers=0;
@@ -70,9 +73,10 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	/** connect to all the mergers **/
 	for(unsigned upper_id=0;upper_id<state.upper_ip_list.size();upper_id++){
 
-
-		if(ConnectToUpper(ExchangeID(state.exchange_id,state.partition_offset),state.upper_ip_list[upper_id],socket_fd_upper_list[upper_id])!=true)
+		logging_->log("[%ld,%d] try to connect to upper (%d) %s\n",state.exchange_id,state.partition_offset,upper_id,state.upper_ip_list[upper_id].c_str());
+		if(ConnectToUpper(ExchangeID(state.exchange_id,upper_id),state.upper_ip_list[upper_id],socket_fd_upper_list[upper_id],logging_)!=true)
 			return false;
+		logging_->log("[%ld,%d] connected to upper (%d) %s\n",state.exchange_id,state.partition_offset,upper_id,state.upper_ip_list[upper_id].c_str());
 	}
 
 	/** create the sender thread **/
@@ -90,62 +94,62 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 bool ExpandableBlockStreamExchangeLowerEfficient::next(BlockStreamBase*){
 	void* tuple_from_child;
 	void* tuple_in_cur_block_stream;
-	block_stream_for_asking_->setEmpty();
-	if(state.child->next(block_stream_for_asking_)){
-		/** if a blocks is obtained from child, we partition the tuples in the block. **/
-		BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
-		while((tuple_from_child=traverse_iterator->nextTuple())>0){
-//			const unsigned partition_id=hash(tuple_from_child);
-			const unsigned partition_id=hash(tuple_from_child,state.schema,state.partition_key_index,nuppers);
+	while(true){
+		block_stream_for_asking_->setEmpty();
+		if(state.child->next(block_stream_for_asking_)){
+			/** if a blocks is obtained from child, we partition the tuples in the block. **/
+			BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
+			while((tuple_from_child=traverse_iterator->nextTuple())>0){
+				const unsigned partition_id=hash(tuple_from_child,state.schema,state.partition_key_index,nuppers);
 
-			/** calculate the length of the tuple **/
-			const unsigned bytes=state.schema->getTupleActualSize(tuple_from_child);
+				/** calculate the length of the tuple **/
+				const unsigned bytes=state.schema->getTupleActualSize(tuple_from_child);
 
-			while(!(tuple_in_cur_block_stream=partitioned_blockstream_[partition_id]->allocateTuple(bytes))){
-				/** if there is not enough space to hold the new tuple, we insert the block into the data buffer **/
-				partitioned_blockstream_[partition_id]->serialize(*block_for_serialization_);
-				partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,partition_id);
-				partitioned_blockstream_[partition_id]->setEmpty();
+				while(!(tuple_in_cur_block_stream=partitioned_blockstream_[partition_id]->allocateTuple(bytes))){
+					/** if there is not enough space to hold the new tuple, we insert the block into the data buffer **/
+					partitioned_blockstream_[partition_id]->serialize(*block_for_serialization_);
+					partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,partition_id);
+					partitioned_blockstream_[partition_id]->setEmpty();
+				}
+				/** Inser the tuple, if there is enough space for the new tuple**/
+				state.schema->copyTuple(tuple_from_child,tuple_in_cur_block_stream);
 			}
-			/** Inser the tuple, if there is enough space for the new tuple**/
-			state.schema->copyTuple(tuple_from_child,tuple_in_cur_block_stream);
 		}
-		return true;
-	}
-	else{
-		/* the child iterator is exhausted. We add the cur block steram block into the buffer*/
-		for(unsigned i=0;i<nuppers;i++){
-			partitioned_blockstream_[i]->serialize(*block_for_serialization_);
-			partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,i);
-
-			/* The following lines send an empty block to the upper, indicating that all
-			 * the data from current sent has been transmit to the uppers.
-			 */
-			if(!partitioned_blockstream_[i]->Empty()){
-				partitioned_blockstream_[i]->setEmpty();
+		else{
+			/* the child iterator is exhausted. We add the cur block steram block into the buffer*/
+			for(unsigned i=0;i<nuppers;i++){
 				partitioned_blockstream_[i]->serialize(*block_for_serialization_);
 				partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,i);
+
+				/* The following lines send an empty block to the upper, indicating that all
+				 * the data from current sent has been transmit to the uppers.
+				 */
+				if(!partitioned_blockstream_[i]->Empty()){
+					partitioned_blockstream_[i]->setEmpty();
+					partitioned_blockstream_[i]->serialize(*block_for_serialization_);
+					partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,i);
+				}
 			}
-		}
 
-		/*
-		 * waiting until all the block in the buffer has been transformed to the uppers.
-		 */
-		logging_->log("Waiting until all the blocks in the buffer is sent!");
-		while(!partitioned_data_buffer_->isEmpty()){
-			usleep(1);
-		}
+			/*
+			 * waiting until all the block in the buffer has been transformed to the uppers.
+			 */
+			logging_->log("Waiting until all the blocks in the buffer is sent!");
+			while(!partitioned_data_buffer_->isEmpty()){
+				usleep(1);
+			}
 
-		/*
-		 * waiting until all the uppers send the close notification which means that
-		 * blocks in the uppers' socket buffer have all been consumed.
-		 */
-		logging_->log("Waiting for close notification!");
-		for(unsigned i=0;i<nuppers;i++){
-			WaitingForCloseNotification(socket_fd_upper_list[i]);
-		}
+			/*
+			 * waiting until all the uppers send the close notification which means that
+			 * blocks in the uppers' socket buffer have all been consumed.
+			 */
+			logging_->log("Waiting for close notification!");
+			for(unsigned i=0;i<nuppers;i++){
+				WaitingForCloseNotification(socket_fd_upper_list[i]);
+			}
 
-		return false;
+			return false;
+		}
 	}
 }
 
@@ -178,7 +182,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::close(){
 
 void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 	ExpandableBlockStreamExchangeLowerEfficient* Pthis=(ExpandableBlockStreamExchangeLowerEfficient*)arg;
-
+	Pthis->logging_->log("[%ld,%d] sender thread created!",Pthis->state.exchange_id,Pthis->state.partition_offset);
 	Pthis->sending_buffer_->Initialized();
 	try{
 		while(true){
@@ -208,9 +212,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg){
 						}
 						else{
 							/** the block is sent in entirety. **/
-							Pthis->logging_->log("A block is sent bytes=%d, rest size=%d",recvbytes,block_for_sending->GetRestSize());
+							Pthis->logging_->log("[%ld,%d]A block is sent bytes=%d, rest size=%d",Pthis->state.exchange_id,Pthis->state.partition_offset,recvbytes,block_for_sending->GetRestSize());
 							block_for_sending->IncreaseActualSize(recvbytes);
-							Pthis->logging_->log("Send the new block to [%s]",Pthis->state.upper_ip_list[partition_id].c_str());
+							Pthis->logging_->log("[%ld,%d]Send the new block to [%s]",Pthis->state.exchange_id,Pthis->state.partition_offset,Pthis->state.upper_ip_list[partition_id].c_str());
 							Pthis->sendedblocks++;
 							consumed=true;
 						}
