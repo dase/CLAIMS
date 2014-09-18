@@ -203,7 +203,7 @@ static void startup_mulitple_node_environment_of_poc(){
 		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 
-		TableDescriptor* table_1=new TableDescriptor("cj",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+		TableDescriptor* table_1=new TableDescriptor("trade",Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 		table_1->addAttribute("row_id",data_type(t_u_long));  				//0
 		table_1->addAttribute("trade_date",data_type(t_int));
 		table_1->addAttribute("order_no",data_type(t_u_long));
@@ -285,21 +285,6 @@ static void startup_mulitple_node_environment_of_poc(){
 		table_2->addAttribute("order_star",data_type(t_int));
 		table_2->addAttribute("order_restr_type",data_type(t_int));
 		table_2->addAttribute("short_sell_flag",data_type(t_int));		//25
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		vector<ColumnOffset> sb_proj0_index;
 		sb_proj0_index.push_back(0);
 		sb_proj0_index.push_back(1);
