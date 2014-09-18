@@ -68,7 +68,7 @@ public:
 		}
 	};
 	ExpandableBlockStreamExchangeLowerEfficient(State state);
-	ExpandableBlockStreamExchangeLowerEfficient(){};
+	ExpandableBlockStreamExchangeLowerEfficient();
 	virtual ~ExpandableBlockStreamExchangeLowerEfficient();
 	bool open(const PartitionOffset& partition_index=0);
 	bool next(BlockStreamBase* );

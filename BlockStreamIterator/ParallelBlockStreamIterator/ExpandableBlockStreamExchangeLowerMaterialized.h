@@ -27,6 +27,7 @@
 #include "../../common/Block/PartitionedBlockBuffer.h"
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/BlockStreamBuffer.h"
+#include "../../common/Logging.h"
 
 class ExpandableBlockStreamExchangeLowerMaterialized:public BlockStreamExchangeLowerBase {
 public:
@@ -50,9 +51,7 @@ public:
 		}
 	};
 	ExpandableBlockStreamExchangeLowerMaterialized(State state);
-	ExpandableBlockStreamExchangeLowerMaterialized(){
-
-	};
+	ExpandableBlockStreamExchangeLowerMaterialized();
 	virtual ~ExpandableBlockStreamExchangeLowerMaterialized();
 	bool open(const PartitionOffset& part_off=0);
 	bool next(BlockStreamBase* );
@@ -72,6 +71,7 @@ private:
 	void cancelWorkerThread();
 	void closeDiskFiles();
 	void deleteDiskFiles();
+	std::string getPartititionedFileName(int partition_index)const;
 private:
 	State state_;
 	unsigned nuppers_;
@@ -89,9 +89,11 @@ private:
 	pthread_t sender_tid_;
 	pthread_t debug_tid_;
 
+	Logging* log_;
+
 	int* disk_fd_list_;
-	unsigned* disk_file_length_list_;
-	unsigned* disk_file_cur_list_;
+//	unsigned* disk_file_length_list_;
+//	unsigned* disk_file_cur_list_;
 	volatile bool child_exhausted_;
 private:
 	friend class boost::serialization::access;

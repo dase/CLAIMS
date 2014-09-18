@@ -40,6 +40,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 //	printf("\n*************%lx****************\n",state_.child_);
 //	state_.child_->print();
 //	printf("*******************************\n\n\n\n");
+
 	received_tuples_=0;
 	logging_->log("[%ld] Expander open, thread count=%d\n",expander_id_,state_.init_thread_count_);
 	state_.partition_offset=partitoin_offset;
@@ -131,6 +132,7 @@ void BlockStreamExpander::print(){
 }
 void* BlockStreamExpander::expanded_work(void* arg){
 	const pthread_t pid=pthread_self();
+
 
 	bool expanding=true;
 	ticks start=curtick();

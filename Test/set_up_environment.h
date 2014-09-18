@@ -8,6 +8,7 @@
 #ifndef SET_UP_ENVIRONMENT_H_
 #define SET_UP_ENVIRONMENT_H_
 #include "../Environment.h"
+#include "../Config.h"
 
 static void create_poc_data_one_partitions(){
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -317,16 +318,22 @@ static void create_poc_data_four_partitions(){
 
 static void startup_single_node_environment_of_poc(){
 //	int master;
-	int master=0;
+	int master=Config::getInstance()->master;
 //	printf("Master(0) or Slave(others)??\n");
 //	scanf("%d",&master);
-	if(master!=0){
+	if(master==0){
 		Environment::getInstance(false);
+		while(1)
+			sleep(1);
 	}
 	else{
 		Environment::getInstance(true);
-		create_poc_data_one_partitions();
-//		create_poc_data_four_partitions();
+//		create_poc_data_one_partitions();
+
+
+		printf("Press any key to continue!\n");
+		getchar();
+		create_poc_data_four_partitions();
 
 
 	}

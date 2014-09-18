@@ -17,7 +17,7 @@ BlockStreamExchangeLowerBase::~BlockStreamExchangeLowerBase() {
 
 }
 
-bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,const std::string &ip,int &sock_fd) const {
+bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,const std::string &ip,int &sock_fd, Logging* log) const {
 	struct hostent* host;
 	if((host=gethostbyname(ip.c_str()))==0){
 		perror("gethostbyname errors!\n");
@@ -31,7 +31,7 @@ bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	int upper_port;
 	if((upper_port=et->AskForSocketConnectionInfo(exchange_id,ip))==0){
-		Logging_BlockStreamExchangeLowerBase("Fails to ask %s for socket connection info, the exchange id=%d\n",ip.c_str(),exchange_id);
+		log->elog("Fails to ask %s for socket connection info, the exchange id=%d\n",ip.c_str(),exchange_id);
 	}
 
 	struct sockaddr_in serv_add;
@@ -44,10 +44,10 @@ bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,
 
 	if((returnvalue=connect(sock_fd,(struct sockaddr *)&serv_add, sizeof(struct sockaddr)))==-1)
 	{
-		Logging_BlockStreamExchangeLowerBase("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),upper_port);
+		log->elog("Fails to connect remote socket: %s:%d",inet_ntoa(serv_add.sin_addr),upper_port);
 		return false;
 	}
-	Logging_BlockStreamExchangeLowerBase("connected to the Master socket :"+returnvalue);
+	log->log("connected to the Master socket :"+returnvalue);
 
 	return true;
 
@@ -71,6 +71,7 @@ void BlockStreamExchangeLowerBase::WaitingForCloseNotification(const int & targe
 		}
 		FileClose(target_socket_fd);
 }
+
 
 unsigned BlockStreamExchangeLowerBase::hash(void* input_tuple, Schema* schema,
 		unsigned partition_key_index, unsigned nuppers) {
