@@ -71,8 +71,6 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Hash join build",0));
 		winning_thread=true;
 		timer=curtick();
-
-
 		unsigned output_index=0;
 		for(unsigned i=0;i<state_.joinIndex_left.size();i++){
 			joinIndex_left_to_output[i]=output_index;
