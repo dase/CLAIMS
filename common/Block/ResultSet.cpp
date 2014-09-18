@@ -24,14 +24,14 @@ void ResultSet::print() const {
 		printf("%s\t",column_header_list_[i].c_str());
 	}
 
-	printf("-------------------------------------------\n");
+	printf("\n-------------------------------------------\n");
 	Iterator it=this->createIterator();
 	BlockStreamBase* block;
 	while(block=it.nextBlock()){
 		BlockStreamBase::BlockStreamTraverseIterator* block_it=block->createIterator();
 		void* tuple;
 		while(tuple=block_it->nextTuple()){
-//			schema_->displayTuple(tuple,"\t");
+			schema_->displayTuple(tuple,"\t");
 		}
 	}
 	printf(" Total tuples:%d  (%4.4f seconds)\n",this->getNumberOftuples(),query_time_);

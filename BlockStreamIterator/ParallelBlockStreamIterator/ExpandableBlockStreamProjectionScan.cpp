@@ -149,15 +149,16 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		return true;
 	}
 	else{
-		if(input_dataset_.atomicGet(stc->assigned_data_,Config::scan_batch))
+		if(input_dataset_.atomicGet(stc->assigned_data_,Config::scan_batch)){
 			return next(block);
-		else
+		}
+		else{
 			delete stc;
 			destorySelfContext();
 //			printf("scan_call %ld cycles\n",curtick()-total_start);
 //			perf_info->report_instance_performance_in_millibytes();
 			return false;
-
+		}
 	}
 
 

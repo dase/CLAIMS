@@ -38,10 +38,11 @@
 
 #define Error 	0
 #define OK 		1
-#define	SCHEMA	2
-#define HEADER 	3
+#define SCHEMA	2
+#define HEADER	3
 #define DATA	4
 #define END		5
+#define CHANGE 6
 struct ColumnHeader {
 	std::vector<std::string> header_list;
 	void add_header(std::string name) {
@@ -183,7 +184,8 @@ struct ClientResponse {
 	BlockStreamBase* getDataBlock(Schema* schema) const {
 		assert(status==DATA);
 		Block block(length, content.data());
-		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length-sizeof(int));
+//		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length-sizeof(int));
+		BlockStreamBase* ret = BlockStreamBase::createBlock(schema, length);
 		ret->constructFromBlock(block);
 		return ret;
 	}
@@ -191,7 +193,7 @@ struct ClientResponse {
 	int serialize(char*& buffer) const {
 		int ret = sizeof(int) + sizeof(int) + content.length();
 		buffer = (char *) malloc(ret);
-		*(int*) buffer = status;
+		*(int*) buffer = status;		// 小端字节序
 		*((int*) buffer + 1) = length;
 		void* content_start = buffer + sizeof(int) + sizeof(int);
 		memcpy(content_start, content.data(), content.length());
@@ -206,6 +208,17 @@ struct ClientResponse {
 		length = len;
 		void* content_start_addr = (char*) received_buffer + sizeof(int) * 2;
 		content = std::string((const char *) content_start_addr, len);
+	}
+
+	void setChange(std::string info) {
+		status = CHANGE;
+		length = info.length();
+		content = info;
+	}
+
+	std::string getChange() const {
+		assert(status == CHANGE);
+		return content;
 	}
 };
 

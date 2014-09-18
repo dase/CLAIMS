@@ -1,3 +1,4 @@
+
 AM_CPPFLAGS= -fPIC -fpermissive\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\

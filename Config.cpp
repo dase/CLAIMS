@@ -175,6 +175,7 @@ void Config::print_configure() const {
 	std::cout<<"initial_degree_of_parallelism:"<<initial_degree_of_parallelism<<std::endl;
 	std::cout<<"hdfs master ip:"<<hdfs_master_ip<<std::endl;
 	std::cout<<"hdfs_master_port:"<<hdfs_master_port<<std::endl;
+
 	std::cout<<"log:"<<logfile<<std::endl;
 	std::cout<<"master:"<<master<<std::endl;
 }

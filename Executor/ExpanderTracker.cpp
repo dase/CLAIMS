@@ -112,7 +112,7 @@ bool ExpanderTracker::deleteExpandedThreadStatus(expanded_thread_id id){
 	return true;
 
 }
-bool ExpanderTracker::isExpandedThreadCallBack(expanded_thread_id id){
+bool ExpanderTracker::isExpandedThreadCallBack(expanded_thread_id id){	// if this thread want to exit, return true
 	lock_.acquire();
 	if(id_to_status_.find(id)!=id_to_status_.end()){
 		bool ret= id_to_status_[id].call_back_;

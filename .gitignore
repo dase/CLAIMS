@@ -4,6 +4,9 @@ Default
 .cproject
 .project
 .settings
+Config.cpp
+Debug.h
+install/
 autom4te.cache/
 claimsserver
 config.guess
@@ -27,3 +30,4 @@ config.h
 config.log
 configure
 claims.log
+doc

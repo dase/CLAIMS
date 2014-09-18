@@ -1,4 +1,5 @@
 #include <Test/TestMain.cpp>
+
 #include <startup.cpp>
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
 #include "/usr/include/assert.h"

@@ -50,7 +50,7 @@ int subquery_has_column(char *colname,Node * subquery)
 	}
 	return result;
 }
-int table_has_column(char *colname,vector<Node *>rtable,char *&tablename)//判断是否是否有table含有column
+int table_has_column(char *colname,vector<Node *>rtable,char *&tablename)//judge the table has column?
 {
 	int result=0;
 	for(int i=0;i<rtable.size();i++)
@@ -71,7 +71,7 @@ int table_has_column(char *colname,vector<Node *>rtable,char *&tablename)//判�
 				result++;
 			}
 		}
-		else if(table->issubquery==1)//判断除了基表之外的子查询中是否有这个属性
+		else if(table->issubquery==1)//judge  the attribute exists in subquery not in basetable
 		{
 			int fg=subquery_has_column(colname,table->subquery);
 			if(fg>0)
@@ -84,7 +84,7 @@ int table_has_column(char *colname,vector<Node *>rtable,char *&tablename)//判�
 	}
 	return result;
 }
-int fromlist_has_astablename(char *astablename,vector<Node *>rtable,char *&tablename,Node *&subnode)//根据astablename从fromlist中得到tablename,如果是subquery则返回2，基表返回1
+int fromlist_has_astablename(char *astablename,vector<Node *>rtable,char *&tablename,Node *&subnode)//according to astablename,getting tablename from fromlist,if subquery then 2，basetabel then 1
 {
 	for(int i=0;i<rtable.size();i++)
 	{
@@ -105,12 +105,12 @@ int fromlist_has_astablename(char *astablename,vector<Node *>rtable,char *&table
 	}
 	return 0;
 }
-Node * get_copy_selectlist_from_subquery(Node *subnode,Node *&tailnode)//传回第一个和最后一个指针
+Node * get_copy_selectlist_from_subquery(Node *subnode,Node *&tailnode)//return the first and the last pointer
 {
 	Select_list *node,*temp;
 	node=temp=(Select_list *)newSelectList(t_select_list,0,NULL,NULL);
 	Query_stmt* subquery=(Query_stmt *)subnode;
-	for(Node *p=subquery->select_list;p!=NULL;)//并不是复制所有，而只是将select_list复制
+	for(Node *p=subquery->select_list;p!=NULL;)//not copy all，just copy select_list
 	{
 		Select_list *slist=(Select_list *)p;
 		Node *q=newSelectList(t_select_list,slist->isall,slist->args,NULL);
@@ -187,7 +187,7 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 
 	switch(node->type)
 	{
-		case t_expr_func://需要判断函数使用是否正确，包括参数及参数类型
+		case t_expr_func://judge using the function is ok ? including the parameter type and number
 		{
 			Expr_func * funcnode=(Expr_func *)node;
 			if(strcmp(funcnode->funname,"FCOUNTALL")==0)
@@ -215,9 +215,15 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 					if(result==3||result==0)
 						return result;
 				}
+				if(funcnode->next!=NULL)//there are next in case_list
+				{
+					result=selectlist_expr_analysis(slnode,qstmt,funcnode->next,rtable);
+					if(result==3||result==0)
+						return result;
+				}
 			}
 		}break;
-		case t_expr_cal://需要判断表达式是否正确使用，比如计算符号左右的类型，以及除数是否为零判断等
+		case t_expr_cal://judge using the expr ok? like the parameter type of the expression ,the divided !=0 etc.
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
 			int result=0;
@@ -257,10 +263,10 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 //				strcat(strtmp,col->parameter2);
 //				col->parameter2=strtmp;
 				col->type=t_name_name;
-				if(sexpr->ascolname==NULL)
-				{
-					sexpr->ascolname=col->parameter2;
-				}
+//				if(sexpr->ascolname==NULL)
+//				{
+//					sexpr->ascolname=col->parameter2;
+//				}
 			}
 			else if(result==0)
 			{
@@ -281,7 +287,6 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 			int fg=fromlist_has_astablename(col->parameter1,rtable,tablename,subnode);
 			if(fg==0)
 			{
-
 				SQLParse_elog("selectlist %s can't find ",col->parameter2);
 				return 0;
 			}
@@ -290,7 +295,7 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				selectlist->isall=1;
 				return 1;
 			}
-			if(fg==1)//基表
+			if(fg==1)//base_table
 			{
 				stringstream ss;
 				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
@@ -306,10 +311,10 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				}
 				else
 				{
-					if(sexpr->ascolname==NULL)
-					{
-						sexpr->ascolname=col->parameter2;
-					}
+//					if(sexpr->ascolname==NULL)
+//					{
+//						sexpr->ascolname=col->parameter2;
+//					}
 					return 1;
 				}
 			}
@@ -347,9 +352,9 @@ bool selectlist_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 			if(selectlist->isall==0)
 			{
 				Select_expr *sexpr=(Select_expr *)selectlist->args;
-				Node *node=(Node *)sexpr->colname;//此处selectexpr包括expr_func,t_name,t_name_name,expr_cal
+				Node *node=(Node *)sexpr->colname;//selectexpr including expr_func,t_name,t_name_name,expr_cal
 				int result=selectlist_expr_analysis(p,qstmt,node,rtable);
-				if(result==3)//特殊判断fcountall情况
+				if(result==3)//special case:fcountall
 				{
 					p=selectlist->next;
 					continue;
@@ -360,7 +365,7 @@ bool selectlist_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 				}
 			}
 			p=selectlist->next;
-			if(selectlist->isall==1)//处理*
+			if(selectlist->isall==1)//solve *
 			{
 				if(selectlist->args==NULL)//*
 				{
@@ -373,8 +378,8 @@ bool selectlist_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 				}
 			}
 		}
-		/*删除isall的节点*/
-		for(Node *p=sltree;p!=NULL;)//处理第一个isall的
+		/*delete the node of isall*/
+		for(Node *p=sltree;p!=NULL;)//solve the first node of isall
 		{
 			Select_list *selectlist=(Select_list *)p;
 			if(selectlist->isall==0)
@@ -383,7 +388,7 @@ bool selectlist_analysis(Query_stmt * qstmt,vector<Node *>rtable)
 				break;
 			}
 			p=selectlist->next;
-		//	free(selectlist);////此处消除貌似有点不规范
+		//	free(selectlist);////is ok?
 		}
 		qstmt->select_list=sltree;
 		Node *frontnode=sltree;
@@ -581,7 +586,7 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 		{
 			Table *table=(Table *)qnode;
 			rtable.push_back(qnode);
-			if(table->issubquery==0)//不是subquery的情况
+			if(table->issubquery==0)//not subquery
 			{
 				if(Environment::getInstance()->getCatalog()->getTable(table->tablename)==NULL)
 				{
@@ -597,7 +602,7 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 					}
 				}
 			}
-			else//是subquery的情况
+			else//subquery
 			{
 				bool fg= semantic_analysis(table->subquery,true);
 				if(fg==false)
@@ -622,11 +627,11 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 				Condition *cnode=(Condition *)jnode->condition;
 				if(cnode->conditiontype==1)
 				{
-					fg=oncondition_analysis(cnode->args,rtable);//应该限定表的范围
+					fg=oncondition_analysis(cnode->args,rtable);//should restrict the scope of table
 					if(fg==false)
 						return false;
 				}
-				else
+				else//using join :if two column is the same ,just keep one TODO
 				{
 					Node *tp=newExprList(t_expr_list,NULL,NULL);
 					Node *temp=tp;
@@ -654,7 +659,7 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 bool fromlist_table_is_unique(vector<Node *>rtable)
 {
 	for(int i;i<rtable.size();i++)
-//	for(Node *p=fltree;p!=NULL;)//表名判重
+//	for(Node *p=fltree;p!=NULL;)//
 	{
 	//	From_list *fromlist=(From_list *)rtable[i];
 		Table *table=(Table *)rtable[i];
@@ -674,14 +679,14 @@ bool fromlist_table_is_unique(vector<Node *>rtable)
 	}
 	return true;
 }
-int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//selectlist中是否有ascolumn
+int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//selectlist has ascolumn?
 {
 	int result=0;
 	for(Node *p=sltree;p!=NULL;)
 	{
 		Select_list *selectlist=(Select_list *)p;
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
-		Node *node=(Node *)sexpr->colname;//不一定是column
+		Node *node=(Node *)sexpr->colname;//not column is possible
 		switch (node->type)
 		{
 			case t_name_name:
@@ -689,7 +694,7 @@ int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//sel
 				Columns *col=(Columns *)node;
 				if(strcmp(sexpr->ascolname,ascolname)==0)
 				{
-					strcpy(ascolname,col->parameter2);
+//					strcpy(ascolname,col->parameter2);
 					astablename=col->parameter1;
 					result++;
 				}
@@ -697,7 +702,12 @@ int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//sel
 			}break;
 			default:
 			{
-
+				if(strcmp(sexpr->ascolname,ascolname)==0)
+				{
+//					strcpy(ascolname,col->parameter2);
+//					astablename=col->parameter1;
+					result++;
+				}
 			}
 		}
 		p=selectlist->next;
@@ -724,7 +734,7 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 
 				col->type=t_name_name;
 			}
-			else if(result==0)//如果fromlist中没有，那么要在selectlisth中寻找
+			else if(result==0)//if not in fromlist,then to search in selectlisth
 			{
 				int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
 				if(result==0)
@@ -787,21 +797,33 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 		case t_expr_cal:
 		{
 			Expr_cal *node=(Expr_cal*)cur;
-			if(node->lnext==NULL||node->rnext==NULL)
+			if(node->lnext==NULL&&node->rnext==NULL)
 			return false;
 			bool flag=true;
+			if(node->lnext!=NULL)
 			flag=wherecondition_check(qstmt,node->lnext,rtable);
-			if(flag==false)
-				return false;
-			flag=wherecondition_check(qstmt,node->rnext,rtable);
+			if(node->rnext!=NULL)
+			flag*=wherecondition_check(qstmt,node->rnext,rtable);
 			return flag;
 		}break;
 		case t_expr_func:
 		{
 			Expr_func* node=(Expr_func *)cur;
-			if(node->args==NULL)
-			return false;
-			return wherecondition_check(qstmt,node->args,rtable);
+			bool flag=true;
+			//aggregation function shouldn't occur in where
+			if(strcmp(node->funname,"FCOUNTALL")==0||strcmp(node->funname,"FCOUNT")==0||
+					strcmp(node->funname,"FSUM")==0||strcmp(node->funname,"FMIN")==0||
+					strcmp(node->funname,"FMAX")==0||strcmp(node->funname,"FAVG")==0)
+			{
+				return false;
+			}
+			if(node->args!=NULL)
+				flag= wherecondition_check(qstmt,node->args,rtable);
+			if(node->parameter1!=NULL&&flag)
+				flag*= wherecondition_check(qstmt,node->parameter1,rtable);
+			if(node->parameter2!=NULL&&flag)
+				flag*= wherecondition_check(qstmt,node->parameter2,rtable);
+			return flag;
 		}break;
 		case t_expr_list:
 		{
@@ -862,11 +884,7 @@ bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 	}
 	return true;
 }
-bool havingcondition_analysis(Node *hctree)
-{
-	return true;
-}
-bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//需要修改成嵌套迭代形式 TODO
+bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//need be changed to the form of iteration TODO
 {
 	Groupby_list * gblist=(Groupby_list *)(qstmt->groupby_list);
 	for(Node *p=(Node *)(gblist->next);p!=NULL;)
@@ -942,7 +960,389 @@ bool groupby_analysis(Query_stmt * qstmt,vector<Node *>rtable)//需要修改成�
 	}
 	return true;
 }
-bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//与groupby处理相同
+bool judge_expr_equalto_expr(Node *lnode,Node *rnode)
+{
+	if(lnode==NULL)
+	{
+		if(rnode!=NULL)
+			return false;
+		return true;
+	}
+	switch(lnode->type)
+	{
+		case t_name:
+		{
+			if(rnode->type!=t_name)
+				return false;
+			Columns *lname=(Columns *)lnode;
+			Columns *rname=(Columns *)rnode;
+			if(strcmp(lname->parameter1,rname->parameter1)!=0)
+				return false;
+			if(strcmp(lname->parameter2,rname->parameter2)!=0)
+				return false;
+			return true;
+		}break;
+		case t_name_name:
+		{
+			if(rnode->type!=t_name_name)
+				return false;
+			Columns *lname=(Columns *)lnode;
+			Columns *rname=(Columns *)rnode;
+			if(strcmp(lname->parameter1,rname->parameter1)!=0)
+				return false;
+			if(strcmp(lname->parameter2,rname->parameter2)!=0)
+				return false;
+			return true;
+		}break;
+		case t_expr_cal:
+		{
+			if(rnode->type!=t_expr_cal)
+				return false;
+			Expr_cal *rcal=(Expr_cal *)rnode;
+			Expr_cal *lcal=(Expr_cal *)lnode;
+			if(rcal->str==NULL)
+			{
+				if(lcal->str!=NULL)
+					return false;
+			}
+			else
+			{
+				if(lcal->str==NULL)
+					return false;
+				if(strcmp(lcal->str,rcal->str)!=0)
+					return false;
+			}
+			if(rcal->sign==NULL)
+			{
+				if(lcal->sign!=NULL)
+					return false;
+			}
+			else
+			{
+				if(lcal->sign==NULL)
+					return false;
+				if(strcmp(rcal->sign,lcal->sign)!=0)
+					return false;
+			}
+			if(rcal->parameter==NULL)
+			{
+				if(lcal->parameter!=NULL)
+					return false;
+			}
+			else
+			{
+				if(lcal->parameter==NULL)
+					return false;
+				if(strcmp(rcal->parameter,lcal->parameter)!=0)
+					return false;
+			}
+			if(rcal->cmp==NULL)
+			{
+				if(lcal->cmp!=NULL)
+					return false;
+			}
+			else
+			{
+				if(lcal->cmp==NULL)
+					return false;
+				if(lcal->cmp!=rcal->cmp)
+					return false;
+			}
+			if(rcal->lnext==NULL)
+			{
+				if(lcal->lnext!=NULL)
+					return false;
+			}
+			else
+			{
+				if(lcal->lnext==NULL)
+					return false;
+				bool fg=judge_expr_equalto_expr(lcal->lnext,rcal->lnext);
+				if(fg==false)
+					return false;
+			}
+			if(rcal->rnext==NULL)
+			{
+				if(lcal->rnext!=NULL)
+					return false;
+			}
+			else
+			{
+				if(lcal->rnext==NULL)
+					return false;
+				bool fg=judge_expr_equalto_expr(lcal->rnext,rcal->rnext);
+				if(fg==false)
+					return false;
+			}
+			return true;
+		}break;
+		case t_expr_func:
+		{
+			if(rnode->type!=t_expr_func)
+				return false;
+			Expr_func *frnode=(Expr_func *)rnode;
+			Expr_func *flnode=(Expr_func *)lnode;
+			bool flag=true;
+			if(frnode->args==NULL)
+			{
+				if(flnode->args!=NULL)
+					return false;
+			}
+			else
+			{
+				if(flnode->args==NULL)
+					return false;
+				flag=judge_expr_equalto_expr(frnode->args,flnode->args);
+				if(flag==false)
+					return false;
+			}
+			if(frnode->funname==NULL)
+			{
+				if(flnode->funname!=NULL)
+					return false;
+			}
+			else
+			{
+				if(flnode->funname==NULL)
+					return false;
+				if(strcmp(flnode->funname,frnode->funname)!=0)
+					return false;
+			}
+			if(frnode->next==NULL)
+			{
+				if(flnode->next!=NULL)
+					return false;
+			}
+			else
+			{
+				if(flnode->next==NULL)
+					return false;
+				flag=judge_expr_equalto_expr(flnode->next,frnode->next);
+				if(flag==false)
+					return false;
+			}
+			if(frnode->parameter1==NULL)
+			{
+				if(flnode->parameter1!=NULL)
+					return false;
+			}
+			else
+			{
+				if(flnode->parameter1==NULL)
+					return false;
+				flag=judge_expr_equalto_expr(flnode->parameter1,frnode->parameter1);
+				if(flag==false)
+					return false;
+			}
+			if(frnode->parameter2==NULL)
+			{
+				if(flnode->parameter2!=NULL)
+					return false;
+			}
+			else
+			{
+				if(flnode->parameter2==NULL)
+					return false;
+				flag=judge_expr_equalto_expr(flnode->parameter2,frnode->parameter2);
+				if(flag==false)
+					return false;
+			}
+			if(frnode->str==NULL)
+			{
+				if(flnode->str!=NULL)
+					return false;
+			}
+			else
+			{
+				if(flnode->str==NULL)
+					return false;
+				if(strcmp(frnode->str,flnode->str)!=0)
+					return false;
+			}
+			return true;
+		}break;
+		default:
+		{
+
+		}
+	}
+	return true;
+}
+bool selectlist_has_agg(Node *sltree,Node *fnode)//now just support single item
+{
+	int result=0;
+	for(Node *p=sltree;p!=NULL;)
+	{
+		Select_list *selectlist=(Select_list *)p;
+		Select_expr *sexpr=(Select_expr *)selectlist->args;
+		Node *node=(Node *)sexpr->colname;//not only column is possible
+		result=judge_expr_equalto_expr(node,fnode);
+		if(result)
+			return true;
+		p=selectlist->next;
+	}
+	return result;
+}
+bool having_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>&rtable,bool allflag)
+{
+	if(cur==NULL)
+		return true;
+	switch(cur->type)
+	{
+		case t_name:
+		{
+			Columns *col=(Columns *)cur;
+			char *astablename;
+			/* first to find the table
+			 * next to find the talbe.column is in selectlist?
+			 */
+			int result=table_has_column(col->parameter2,rtable,astablename);
+			if(result==1)
+			{
+				col->parameter1=astablename;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+				col->type=t_name_name;
+				if(allflag)
+					return true;
+				int tres=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
+				if(tres==0)
+				{
+					SQLParse_elog("havingcondition %s can't find in table.column and selectlist ",col->parameter2);
+					return false;
+				}
+				else if(tres==1)
+				{
+					return true;
+				}
+				else
+				{
+					SQLParse_elog("havingcondition %s in selectlist is ambiguous",col->parameter2);
+					return false;
+				}
+			}
+			else//maybe alais,so in selectlist
+			{
+				int tres=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
+				if(tres==0)
+				{
+					SQLParse_elog("havingcondition %s can't find in tables and selectlist ",col->parameter2);
+					return false;
+				}
+				else if(tres==1)
+				{
+					return true;
+				}
+				else
+				{
+					SQLParse_elog("havingcondition %s in selectlist is ambiguous",col->parameter2);
+					return false;
+				}
+			}
+		}break;
+		case t_name_name:
+		{
+			Columns *col=(Columns *)cur;
+			char *astablename;
+			stringstream ss;
+			ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+			col->parameter2=(char *)malloc(ss.str().length()+1);
+			strcpy(col->parameter2,ss.str().c_str());
+			if(allflag)
+				return true;
+			int tres=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
+			if(tres==0)
+			{
+				SQLParse_elog("havingcondition %s can't find in table.column and selectlist ",col->parameter2);
+				return false;
+			}
+			else if(tres==1)
+			{
+				return true;
+			}
+			else
+			{
+				SQLParse_elog("havingcondition %s in selectlist is ambiguous",col->parameter2);
+				return false;
+			}
+		}break;
+		case t_expr_cal:
+		{
+			Expr_cal *node=(Expr_cal*)cur;
+			if(node->lnext==NULL&&node->rnext==NULL)
+			return false;
+			bool flag=true;
+			if(node->lnext!=NULL)
+			flag=having_analysis(qstmt,node->lnext,rtable,allflag);
+			if(node->rnext!=NULL)
+			flag=flag&&having_analysis(qstmt,node->rnext,rtable,allflag);
+			return flag;
+
+		}break;
+		case t_expr_func:
+		{
+			Expr_func* node=(Expr_func *)cur;
+			bool flag=true;
+			//aggregation function shouldn't occur in where
+			if((strcmp(node->funname,"FCOUNTALL")==0||strcmp(node->funname,"FCOUNT")==0||
+					strcmp(node->funname,"FSUM")==0||strcmp(node->funname,"FMIN")==0||
+					strcmp(node->funname,"FMAX")==0||strcmp(node->funname,"FAVG")==0))
+			{
+				allflag=1;
+				if(node->args!=NULL)
+					flag=flag&& having_analysis(qstmt,node->args,rtable,allflag);
+				if(node->parameter1!=NULL&&flag)
+					flag=flag&& having_analysis(qstmt,node->parameter1,rtable,allflag);
+				if(node->parameter2!=NULL&&flag)
+					flag=flag&& having_analysis(qstmt,node->parameter2,rtable,allflag);
+				flag=flag&&selectlist_has_agg(qstmt->select_list,cur);
+				if(flag==0)
+				{
+					SQLParse_elog("the aggregation function %s of having doesn't exist in selectlist!\n",node->funname);
+				}
+			}
+			else
+			{
+				if(node->args!=NULL)
+					flag=flag&& having_analysis(qstmt,node->args,rtable,allflag);
+				if(node->parameter1!=NULL&&flag)
+					flag=flag&& having_analysis(qstmt,node->parameter1,rtable,allflag);
+				if(node->parameter2!=NULL&&flag)
+					flag=flag&& having_analysis(qstmt,node->parameter2,rtable,allflag);
+			}
+			return flag;
+
+		}
+		case t_expr_list:
+		{
+			Expr_list * node=(Expr_list *)cur;
+			bool flag=true;
+			if(node->data!=NULL)
+			{
+				flag= having_analysis(qstmt,node->data,rtable,allflag);
+				if(flag==false)
+					return false;
+			}
+			else
+			{
+				return false;
+			}
+			if(node->next!=NULL)
+			{
+				return having_analysis(qstmt,node->next,rtable,allflag);
+			}
+		}break;
+		default:
+		{
+
+		}
+
+	}
+	return true;
+}
+bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//like the solving of groupby
 {
 	if(node==NULL)
 		return true;
@@ -967,7 +1367,7 @@ bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//与gr
 	//					col->parameter2=strtmp;
 				col->type=t_name_name;
 			}
-			else if(result==0)//如果fromlist中没有，那么要在selectlisth中寻找
+			else if(result==0)//if not in fromlist,then to search in select_list
 			{
 				int result=selectlist_has_column(col->parameter2,qstmt->select_list,astablename);
 				if(result==0)
@@ -1108,6 +1508,12 @@ bool semantic_analysis(Node *parsetree,bool issubquery)
 			if(qstmt->groupby_list!=NULL)
 			{
 				flag=groupby_analysis(qstmt,rtable);
+				if(flag==false)
+					return false;
+			}
+			if(qstmt->having_list!=NULL)//the item in having_list must be in select_list also
+			{
+				flag=having_analysis(qstmt,((Having_list*)qstmt->having_list)->next,rtable,0);
 				if(flag==false)
 					return false;
 			}

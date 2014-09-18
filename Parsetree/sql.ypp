@@ -16,7 +16,7 @@
  */
  
 
-%glr-parser%expect 9
+%glr-parser%expect 8
 %expect-rr 79
 
 
@@ -1759,19 +1759,19 @@ expr_list: expr		{ $$ = newExprList(t_expr_list, $1, NULL); }
 
    | expr ',' expr_list { $$ = newExprList(t_expr_list, $1, $3); }
 
-   | '(' expr ',' expr_list ')'	{ $$ = newExprList(t_expr_list, $2, $4); }	// 2014-3-14---新增规则---by余楷
+   | '(' expr_list ')'	{ $$ =$2; }	
 
    ;
 
-opt_expr_list: /* nil */
-   | expr_list {$$=$1;}
+opt_expr_list:  expr_list {$$ = newExprList(t_expr_list, $1, NULL);}  //---8.17---fzh---change the list,so some where should changed as it;
+   | expr_list ',' opt_expr_list {$$ = newExprList(t_expr_list, $1, $3);}
    ;
+//set_operator
 
-
-expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $1, $4); }
-   | '(' expr_list ')' IN '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "INV", NULL, 0, $2, $6); }
-   | expr NOT IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $1, $5); }
-   | '(' expr_list ')' NOT IN  '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NIN", NULL, 0, $2, $7); }
+expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INVS", NULL, 0, $1, $4); }
+   | '(' expr_list ')' IN '(' opt_expr_list ')'	{$$=newExprCal(t_expr_cal, "INVM", NULL, 0, $2, $6);}
+   | expr NOT IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
+   | '(' expr_list ')' NOT IN  '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NINM", NULL, 0, $2, $7); }
    | expr IN '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4); }
    | '(' expr_list ')' IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $2, $6); }
    | expr NOT IN '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5); }
@@ -1841,12 +1841,12 @@ expr: CASE expr case_list END			{ $$=newExprFunc(t_expr_func, "CASE1", $2, $3, N
    |  CASE case_list ELSE expr END      { $$=newExprFunc(t_expr_func, "CASE4", NULL, $2, $4, NULL); }
    ;
 
-case_list: WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN1", NULL, $2, $4, NULL); }
+case_list: WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN2", NULL, $2, $4, NULL); }
    | case_list WHEN expr THEN expr	{ $$=newExprFunc(t_expr_func, "WHEN2", NULL, $3, $5, $1); }
    ;
 
 expr: expr LIKE expr	{ $$=newExprCal(t_expr_cal, "LIKE", NULL, 0, $1, $3); }
-   | expr NOT LIKE expr { $$=newExprCal(t_expr_cal, "NLIKE", NULL, 0, NULL, $4); }
+   | expr NOT LIKE expr { $$=newExprCal(t_expr_cal, "NLIKE", NULL, 0, $1, $4); }
    ;
 
 expr: expr REGEXP expr		{ $$=newExprCal(t_expr_cal, "REGEXP", NULL, 0, $1, $3); }
