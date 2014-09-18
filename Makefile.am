@@ -39,6 +39,7 @@ LDADD =  \
 	Loader/Test/libtest.a \
 	common/libcommon.a \
 	common/Block/libblock.a \
+	common/Expression/libexpression.a \
 	common/Schema/libschema.a \
 	common/Schema/Test/libtest.a \
 	common/types/libtypes.a \

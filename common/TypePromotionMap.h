@@ -41,7 +41,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_smallInt][t_date];
 	TypePromotion::arith_type_promotion_map[t_smallInt][t_time];
 	TypePromotion::arith_type_promotion_map[t_smallInt][t_datetime];
-	TypePromotion::arith_type_promotion_map[t_smallInt][t_decimal];
+	TypePromotion::arith_type_promotion_map[t_smallInt][t_decimal]=t_decimal;
 
 	//t_int
 	TypePromotion::arith_type_promotion_map[t_int][t_smallInt]=t_int;
@@ -65,7 +65,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_u_long][t_date];
 	TypePromotion::arith_type_promotion_map[t_u_long][t_time];
 	TypePromotion::arith_type_promotion_map[t_u_long][t_datetime];
-	TypePromotion::arith_type_promotion_map[t_u_long][t_decimal];
+	TypePromotion::arith_type_promotion_map[t_u_long][t_decimal]=t_decimal;
 
 	//t_float
 	TypePromotion::arith_type_promotion_map[t_float][t_smallInt]=t_float;
@@ -77,7 +77,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_float][t_date];
 	TypePromotion::arith_type_promotion_map[t_float][t_time];
 	TypePromotion::arith_type_promotion_map[t_float][t_datetime];
-	TypePromotion::arith_type_promotion_map[t_float][t_decimal];
+	TypePromotion::arith_type_promotion_map[t_float][t_decimal]=t_decimal;
 
 	//t_double
 	TypePromotion::arith_type_promotion_map[t_double][t_smallInt]=t_double;
@@ -89,7 +89,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_double][t_date];
 	TypePromotion::arith_type_promotion_map[t_double][t_time];
 	TypePromotion::arith_type_promotion_map[t_double][t_datetime];
-	TypePromotion::arith_type_promotion_map[t_double][t_decimal];
+	TypePromotion::arith_type_promotion_map[t_double][t_decimal]=t_decimal;
 
 	//t_string
 	TypePromotion::arith_type_promotion_map[t_string][t_smallInt]=t_smallInt;
@@ -98,10 +98,10 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_string][t_float]=t_float;
 	TypePromotion::arith_type_promotion_map[t_string][t_double]=t_double;
 	TypePromotion::arith_type_promotion_map[t_string][t_string]=t_string;
-	TypePromotion::arith_type_promotion_map[t_string][t_date];
-	TypePromotion::arith_type_promotion_map[t_string][t_time];
-	TypePromotion::arith_type_promotion_map[t_string][t_datetime];
-	TypePromotion::arith_type_promotion_map[t_string][t_decimal];
+	TypePromotion::arith_type_promotion_map[t_string][t_date]=t_date;
+	TypePromotion::arith_type_promotion_map[t_string][t_time]=t_time;
+	TypePromotion::arith_type_promotion_map[t_string][t_datetime]=t_datetime;
+	TypePromotion::arith_type_promotion_map[t_string][t_decimal]=t_decimal;
 	//
 
 	//t_string
@@ -110,7 +110,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_date][t_u_long];
 	TypePromotion::arith_type_promotion_map[t_date][t_float];
 	TypePromotion::arith_type_promotion_map[t_date][t_double];
-	TypePromotion::arith_type_promotion_map[t_date][t_string];
+	TypePromotion::arith_type_promotion_map[t_date][t_string]=t_date;
 	TypePromotion::arith_type_promotion_map[t_date][t_date]=t_date;
 	TypePromotion::arith_type_promotion_map[t_date][t_time];
 	TypePromotion::arith_type_promotion_map[t_date][t_datetime];
@@ -123,7 +123,7 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_time][t_u_long];
 	TypePromotion::arith_type_promotion_map[t_time][t_float];
 	TypePromotion::arith_type_promotion_map[t_time][t_double];
-	TypePromotion::arith_type_promotion_map[t_time][t_string];
+	TypePromotion::arith_type_promotion_map[t_time][t_string]=t_time;
 	TypePromotion::arith_type_promotion_map[t_time][t_date];
 	TypePromotion::arith_type_promotion_map[t_time][t_time]=t_time;
 	TypePromotion::arith_type_promotion_map[t_time][t_datetime];
@@ -136,18 +136,18 @@ static void initialize_arithmetic_type_promotion_matrix(){
 	TypePromotion::arith_type_promotion_map[t_datetime][t_u_long];
 	TypePromotion::arith_type_promotion_map[t_datetime][t_float];
 	TypePromotion::arith_type_promotion_map[t_datetime][t_double];
-	TypePromotion::arith_type_promotion_map[t_datetime][t_string];
+	TypePromotion::arith_type_promotion_map[t_datetime][t_string]=t_datetime;
 	TypePromotion::arith_type_promotion_map[t_datetime][t_date];
 	TypePromotion::arith_type_promotion_map[t_datetime][t_time];
 	TypePromotion::arith_type_promotion_map[t_datetime][t_datetime]=t_datetime;
 	TypePromotion::arith_type_promotion_map[t_datetime][t_decimal];
 
 	//t_decimal
-	TypePromotion::arith_type_promotion_map[t_decimal][t_smallInt];
+	TypePromotion::arith_type_promotion_map[t_decimal][t_smallInt]=t_decimal;
 	TypePromotion::arith_type_promotion_map[t_decimal][t_int]=t_decimal;
-	TypePromotion::arith_type_promotion_map[t_decimal][t_u_long];
-	TypePromotion::arith_type_promotion_map[t_decimal][t_float];
-	TypePromotion::arith_type_promotion_map[t_decimal][t_double];
+	TypePromotion::arith_type_promotion_map[t_decimal][t_u_long]=t_decimal;
+	TypePromotion::arith_type_promotion_map[t_decimal][t_float]=t_decimal;
+	TypePromotion::arith_type_promotion_map[t_decimal][t_double]=t_decimal;
 	TypePromotion::arith_type_promotion_map[t_decimal][t_string];
 	TypePromotion::arith_type_promotion_map[t_decimal][t_date];
 	TypePromotion::arith_type_promotion_map[t_decimal][t_time];

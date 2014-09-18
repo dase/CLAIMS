@@ -36,6 +36,7 @@
 #include "../../IndexManager/IndexScanIterator.h"
 #include "../BlockStreamLimit.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
+#include "../../common/Expression/qnode.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -67,6 +68,7 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamAggregationIterator*>(NULL));
 
 	ar.register_type(static_cast<BlockStreamSortIterator*>(NULL));
+
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
 	ar.register_type(static_cast<BlockStreamLimit*>(NULL));
 	ar.register_type(static_cast<BlockStreamProjectIterator*>(NULL));
@@ -75,6 +77,14 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<bottomLayerCollecting*>(NULL));
 	ar.register_type(static_cast<bottomLayerSorting*>(NULL));
 	ar.register_type(static_cast<IndexScanIterator*>(NULL));
+	ar.register_type(static_cast<QNode*>(NULL));
+	ar.register_type(static_cast<QExpr_binary*>(NULL));
+	ar.register_type(static_cast<QColcumns*>(NULL));
+	ar.register_type(static_cast<QExpr*>(NULL));
+	ar.register_type(static_cast<QExpr_unary*>(NULL));
+	ar.register_type(static_cast<QExpr_ternary*>(NULL));
+	ar.register_type(static_cast<QExpr_case_when*>(NULL));
+	ar.register_type(static_cast<QExpr_in*>(NULL));
 
 }
 void cheat_the_compiler(){

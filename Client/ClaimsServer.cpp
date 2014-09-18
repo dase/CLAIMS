@@ -90,7 +90,7 @@ void ClientListener::configure() {
 	sockaddr_in clientSocket;
 
 	serverSocket.sin_family = AF_INET;
-	serverSocket.sin_port = htons(8001);
+	serverSocket.sin_port = htons(m_port);
 	serverSocket.sin_addr.s_addr = INADDR_ANY;
 
 	if ((serverSockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -174,7 +174,7 @@ void* ClientListener::receiveHandler(void *para) {
 
 						printf("open communication with client, %d\n",
 								clientSockFd);
-//						server->m_clientFds[server->m_num++] = clientSockFd;
+						//						server->m_clientFds[server->m_num++] = clientSockFd;
 						server->addClient(clientSockFd);
 						FD_SET(clientSockFd, &watchFds);
 						nfds = (clientSockFd >= nfds ? clientSockFd + 1 : nfds);
@@ -206,14 +206,14 @@ void* ClientListener::receiveHandler(void *para) {
 						printf("Successfully receive query from client %d.\n",
 								server->m_clientFds[i]);
 					}
-//					else if (-1 == retCode) {
-//						server->shutdown();
-//						stop = true;
-//						printf("Shut Down!\n");
-//					} else {
-//						printf("Failed query from client %d.\n",
-//								server->m_clientFds[i]);
-//					}
+					//					else if (-1 == retCode) {
+					//						server->shutdown();
+					//						stop = true;
+					//						printf("Shut Down!\n");
+					//					} else {
+					//						printf("Failed query from client %d.\n",
+					//								server->m_clientFds[i]);
+					//					}
 				}
 			}
 			break;
@@ -238,43 +238,70 @@ void *ClientListener::sendHandler(void *para) {
 		printf("-SendHandler: wait for result!\n");
 		executed_result result = Daemon::getInstance()->getExecutedResult();
 		printf("-SendHandler: get executed_result for %d\n", result.fd);
-		if (result.status == 0) {
+
+
+		if (result.status == true) {
 			//OK
-			cliRes.setOk("Yes Ok");
-			server->write(result.fd, cliRes);
-
-			cliRes.setSchema(result.result->schema_);
-			server->write(result.fd, cliRes);
-
-			std::vector<std::string> list = result.result->column_header_list_;
-			ColumnHeader header;
-			for (int i = 0; i < list.size(); ++i) {
-				header.add_header(list[i]);
-			}
-			cliRes.setAttributeName(header);
-			server->write(result.fd, cliRes);
-
-
-			ResultSet::Iterator it = result.result->createIterator();
-			BlockStreamBase* block;
-
-			Block serialzed_block(64*1024);
-
-			while (block = (BlockStreamBase*) it.atomicNextBlock()) {
-				block->serialize(serialzed_block);
-				cliRes.setDataBlock(serialzed_block);
+			if (result.result == NULL) {
+				// DDL return true
+				cliRes.setChange(result.info);
+				ClientLogging::log("to send change response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
+			else {
+				// query return true
+				cliRes.setOk("Yes Ok");
+				ClientLogging::log("to send ok response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
+				server->write(result.fd, cliRes);
 
-			cliRes.setEnd(result.result->query_time_);
-			server->write(result.fd, cliRes);
+				cliRes.setSchema(result.result->schema_);
+				ClientLogging::log("to send schema response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
+				server->write(result.fd, cliRes);
 
+				std::vector<std::string> list = result.result->column_header_list_;
+				ColumnHeader header;
+				for (int i = 0; i < list.size(); ++i) {
+					header.add_header(list[i]);
+				}
+				cliRes.setAttributeName(header);
+				ClientLogging::log("to send attr response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
+				server->write(result.fd, cliRes);
+
+
+				ResultSet::Iterator it = result.result->createIterator();
+				BlockStreamBase* block;
+
+				Block serialzed_block(64*1024);
+
+				while (block = (BlockStreamBase*) it.atomicNextBlock()) {
+					block->serialize(serialzed_block);
+					cliRes.setDataBlock(serialzed_block);
+					ClientLogging::log("to send data response-- status:%d  length:%d  content:%s",
+									cliRes.status, cliRes.length, cliRes.content.c_str());
+					server->write(result.fd, cliRes);
+				}
+
+				cliRes.setEnd(result.result->query_time_);
+				ClientLogging::log("to send end response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
+				server->write(result.fd, cliRes);
+			}
 		} else {
 			//ERROR
 			cliRes.setError(result.error_info);
+			ClientLogging::log("to send err response-- status:%d  length:%d  content:%s",
+							cliRes.status, cliRes.length, cliRes.content.c_str());
 			server->write(result.fd, cliRes);
 		}
 	}
+}
+
+void sendJsonPacket(executed_result res) {
+
 }
 
 /**
@@ -409,9 +436,9 @@ int ClientListener::write(const int fd, const ClientResponse& res) const {
 	int ret = 0;
 	char *buffer;
 	int length = res.serialize(buffer);
-//	ret = ::write(fd, buffer, length);
+	//	ret = ::write(fd, buffer, length);
 	ret = send(fd,buffer,length,MSG_WAITALL);
-	printf("Server: %d bytes send!\n", ret);
+	printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
 	free(buffer);
 	return ret;
 }

@@ -38,6 +38,7 @@ Daemon::~Daemon() {
 	// TODO Auto-generated destructor stub
 }
 
+/*
 void* Daemon::worker(void* para) {
 	Daemon* pthis = (Daemon*) para;
 	while (true) {
@@ -68,9 +69,33 @@ void* Daemon::worker(void* para) {
 		printf("-Worker add result into the queue!\n");
 		pthis->addExecutedResult(result);
 
-//		pthis->;
+		//		pthis->;
 	}
 }
+*/
+
+void* Daemon::worker(void* para) {
+	Daemon* pthis = (Daemon*) para;
+	while (true) {
+
+		remote_command rc = Daemon::getInstance()->getRemoteCommand();
+
+		//assume all commands are sql commands.
+		executed_result result;
+		result.fd = rc.socket_fd;
+
+		// result is a pointer, which now is NULL and should be assigned in function.
+		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info);
+		ClientLogging::log("after running sql, the result is : status-%d, err-%s, info-%s",
+				result.status, result.error_info.c_str(), result.info.c_str());
+
+		printf("-Worker add result into the queue!\n");
+		pthis->addExecutedResult(result);
+
+	}
+	return NULL;
+}
+
 void Daemon::addRemoteCommand(const remote_command& rc) {
 	lock_.acquire();
 	remote_command_queue_.push_back(rc);
@@ -89,7 +114,7 @@ remote_command Daemon::getRemoteCommand() {
 
 executed_result Daemon::getExecutedResult() {
 	semaphore_result_queue_.wait();
-//	assert(false);
+	//	assert(false);
 	printf("-Worker: acquire the get semphore!\n");
 	executed_result ret;
 	lock_.acquire();

@@ -1,4 +1,4 @@
-AM_CPPFLAGS= -fPIC -fpermissive \
+AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 -I${BOOST_HOME} \
 -I${THERON_HOME}/Include \
 -I${GTEST_HOME}/include
@@ -22,7 +22,7 @@ libcommon_a_SOURCES = \
 	AttributeComparator.cpp 		AttributeComparator.h \
 	Comparator.cpp 				Comparator.h \
 	ExpandedThreadTracker.cpp 		ExpandedThreadTracker.h \
-	 		ExpressionCalculator.cpp \
+	ExpressionCalculator.cpp \
 	ExpressionCalculator.h 			ExpressionItem.cpp \
 	ExpressionItem.h 				Expression_item.cpp \
 	InsertOptimizedHashTable.cpp 		InsertOptimizedHashTable.h \
@@ -38,5 +38,5 @@ libcommon_a_SOURCES = \
 	ids.cpp 			ids.h \
 	rename.h	
 
-SUBDIRS = Block Schema types
-DIST_SUBDIRS = Block Schema types
+SUBDIRS = Block Schema types Expression
+DIST_SUBDIRS = Block Schema types Expression

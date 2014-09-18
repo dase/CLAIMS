@@ -28,7 +28,7 @@
 //#define DEBUG_IteratorExecutorSlave
 //#define DEBUG_IteratorExecutorMaster
 //
-
+#define DEBUG_Client
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorSenderMaterialized
 //#define DEBUG_ExpandableBlockStreamExchangeMaterialized
@@ -40,8 +40,8 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
-//#define DEBUG_ASTParser
-//#define SQL_Parser
+#define DEBUG_ASTParser
+#define SQL_Parser
 
 #endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){
@@ -360,6 +360,26 @@ void ASTParserLogging::log(const char* format,...){
 }
 void ASTParserLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[ASTParser]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+
+void ClientLogging::log(const char* format,...){
+#ifdef DEBUG_Client
+	printf("Client: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ClientLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[Client]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);

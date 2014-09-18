@@ -1,3 +1,4 @@
+
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
@@ -40,7 +41,8 @@ libparallelblockstreamiterator_a_SOURCES = \
 	ExpandableBlockStreamRandomDiskAccess.cpp 		ExpandableBlockStreamRandomDiskAccess.h \
 	ExpandableBlockStreamRandomMemAccess.cpp 		ExpandableBlockStreamRandomMemAccess.h \
 	ExpandableBlockStreamSingleColumnScan.cpp 		ExpandableBlockStreamSingleColumnScan.h \
-	ExpandableBlockStreamSingleColumnScanDisk.cpp 		ExpandableBlockStreamSingleColumnScanDisk.h
+	ExpandableBlockStreamSingleColumnScanDisk.cpp 		ExpandableBlockStreamSingleColumnScanDisk.h \
+	BlockStreamNestLoopJoinIterator.h				BlockStreamNestLoopJoinIterator.cpp
 
 SUBDIRS = Test
 DIST_SUBDIRS = Test

@@ -164,6 +164,14 @@ void getwctable(struct Node *cur,set<string>&st)//cur=wcexpr,获得wcexpr中涉�
 		{
 			getwctable(node->args,st);
 		}
+		if(node->parameter2!=NULL)
+		{
+			getwctable(node->parameter2,st);
+		}
+		if(node->parameter1!=NULL)
+		{
+			getwctable(node->parameter1,st);
+		}
 	}
 	else if(cur->type==t_expr_list)
 	{
@@ -341,6 +349,7 @@ int solve_join_condition(Node * fromnode)
 {
 	for(Node *p=fromnode;p!=NULL;)
 	{
+		assert(p->type==t_from_list);
 		From_list * fnode=(From_list *)p;
 		switch(fnode->args->type)
 		{
@@ -366,13 +375,13 @@ int solve_join_condition(Node * fromnode)
 					}
 					else
 					{
-
+						SQLParse_elog("wc2tb line:370 can't support the join type\n");
 					}
 				}
 			}break;
 			default:
 			{
-
+				SQLParse_elog("wc2tb line:377 can't support the join type\n");
 			}
 		}
 		p=fnode->next;

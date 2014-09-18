@@ -18,6 +18,7 @@ AC_CONFIG_FILES([
   Client/Test/Makefile 
   common/Makefile 
   common/Block/Makefile 
+  common/Expression/Makefile 
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
   common/types/Makefile 

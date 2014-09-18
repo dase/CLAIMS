@@ -66,6 +66,8 @@
 #include "../utility/data_distribution_generator.h"
 #include "TestSuit/filter_test.h"
 #include "Resource/CPUResourceManagerTest.h"
+#include "../LogicalQueryPlan/Test/testcrossjoin.cpp"
+#include "../Parsetree/Test/execute_sql_test.cpp"
 
 int maina(int argc, char** argv){
 
@@ -86,8 +88,12 @@ int maina(int argc, char** argv){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-//	return query_optimization_outputdata();
+	return query_optimization_outputdata();
 
+
+//	return test_cross_join();
+//	return query_optimization_outputdata();
+//	 execute_sql_test();
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
@@ -114,7 +120,7 @@ int maina(int argc, char** argv){
 //	return test_index_manager();
 
 //	in_test();
-	test_expanderFramework_single_node(1);
+//	test_expanderFramework_single_node(1);
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
@@ -136,6 +142,7 @@ int maina(int argc, char** argv){
 //	hash_table_test();
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
+
 //	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();

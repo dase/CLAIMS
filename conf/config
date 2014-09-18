@@ -19,8 +19,8 @@ coordinator:
 master=1
 
 #hadoop上的数据目录
-data="/home/imdb/data/wangli/"
-#data="/home/imdb/data/tpc-h/4_partitions/SF-1/"
+#data="/home/imdb/data/wangli/"
+data="/home/imdb/data/tpc-h/4_partitions/SF-1/"
 
 #hdfs主节点
 hdfs_master_ip="10.11.1.190"
@@ -29,7 +29,7 @@ hdfs_master_ip="10.11.1.190"
 hdfs_master_port=9000
 
 #最大单机算子并行度
-max_degree_of_parallelism=4
+max_degree_of_parallelism=2
 
 #初始单机算子并行度
 initial_degree_of_parallelism=1

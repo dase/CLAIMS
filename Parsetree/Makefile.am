@@ -14,6 +14,7 @@ LDADD = ../Catalog/libcatalog.a \
 		../Loader/libloader.a \
 		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../common/libcommon.a \
+		../common/Expression/libexpression.a \
 		../utility/libutility.a
 
 noinst_LIBRARIES=libparsetree.a

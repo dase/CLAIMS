@@ -8,12 +8,21 @@
 #include "Project.h"
 
 #include "../common/ids.h"
+#include "../common/data_type.h"
+#include "../common/Expression/initquery.h"
 
 LogicalProject::LogicalProject(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray)
 :child_(child),exprArray_(exprArray){
 	initialize_arithmetic_type_promotion_matrix();
 	initialize_type_cast_functions();
 	setOperatortype(l_project);
+}
+LogicalProject::LogicalProject(LogicalOperator *child, vector<QNode *>exprTree)
+:child_(child),exprTree_(exprTree)
+{
+	setOperatortype(l_project);
+	initialize_arithmetic_type_promotion_matrix();
+	initialize_type_cast_functions();
 }
 
 LogicalProject::~LogicalProject(){
@@ -44,7 +53,10 @@ Dataflow LogicalProject::getDataflow(){
 			}
 		}
 	}
-
+/*above:initalize the expr node,get the return_type and get_length
+ *next:construct the dataflow at this level
+ *
+ */
 	for(unsigned i=0;i<mappings_.getMapping().size();i++){
 //		cout<<"mappings_.getMappings().size(): "<<mappings_.getMapping().size()<<endl;
 //		if(exprArray_[i].size()>1){
@@ -62,13 +74,41 @@ Dataflow LogicalProject::getDataflow(){
 //			ret_attrs.push_back(attr);
 //		}
 	}
-
+/////////new exprtree////
+	getcolindex(child_dataflow);
+	for(int i=0;i<exprTree_.size();i++)
+	{
+		InitExprAtLogicalPlan(exprTree_[i],exprTree_[i]->actual_type,colindex_,input_);
+	}
+	ret_attrs.clear();
+	for(int i=0;i<exprTree_.size();i++)
+	{
+		column_type *column=0;
+		if(exprTree_[i]->return_type==t_string)
+		{
+			column=new column_type(exprTree_[i]->return_type,exprTree_[i]->length);
+		}
+		else
+		{
+			column=new column_type(exprTree_[i]->return_type);
+		}
+		const unsigned table_id=INTERMEIDATE_TABLEID;
+		Attribute attr_alais(table_id,i,exprTree_[i]->alias,column->type,column->get_length());
+		ret_attrs.push_back(attr_alais);
+	}
 	ret.attribute_list_=ret_attrs;
 	dataflow_=new Dataflow();
 	*dataflow_=ret;
 	return ret;
 }
-
+bool LogicalProject::getcolindex(Dataflow dataflow)
+{
+	for(int i=0;i<dataflow.attribute_list_.size();i++)
+	{
+		colindex_[dataflow.attribute_list_[i].attrName]=i;
+	}
+	return true;
+}
 BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksize){
 	getDataflow();
 	Dataflow child_dataflow=child_->getDataflow();
@@ -80,6 +120,7 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 	state.input_=getSchema(child_dataflow.attribute_list_);
 	state.map_=mappings_;
 	state.output_=getOutputSchema();
+	state.exprTree_=exprTree_;
 	/*
 	 * the output schema has the column type which has the data type and the data length
 	 * like the column type string, _string and sizeof(_string)
