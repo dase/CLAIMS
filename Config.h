@@ -63,6 +63,7 @@ public:
 	static int hdfs_master_port;
 	static std::string logfile;
 	static bool master;
+	static bool local_disk_mode;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;

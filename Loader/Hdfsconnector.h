@@ -12,29 +12,28 @@
 #include<vector>
 #include<string>
 #include <hdfs.h>
+#include "Connector.h"
 
 using namespace std;
 
-enum open_flag { CREATE, APPEND };
 
-class HdfsConnector {
+
+class HdfsConnector:public Connector {
 public:
 	HdfsConnector(vector<vector<string> > hdfs_writepath);
 	virtual ~HdfsConnector();
 
-	bool op_connect(open_flag open_flag_);
-	bool op_disconnect();
+	bool openFiles(open_flag open_flag_);
+	bool closeFiles();
 
-	hdfsFS get_fs();
-	vector<vector<hdfsFile> > get_writefile();
-
+	int flush(unsigned projection_offset, unsigned partition_offset, void* source, unsigned length);
 private:
 	bool assgin_open_file(open_flag open_flag_);
 
 private:
 	hdfsFS fs;
-	vector<vector<hdfsFile> > writefile;
-	vector<vector<string> > writepath;
+	vector<vector<hdfsFile> > file_handles_;
+
 };
 
 #endif /* HDFSCONNECTOR_H_ */

@@ -71,6 +71,8 @@ int Config::hdfs_master_port;
 
 bool Config::master;
 
+bool Config::local_disk_mode;
+
 Config* Config::getInstance() {
 	if(instance_==0){
 		instance_=new Config();
@@ -116,6 +118,8 @@ void Config::initialize() {
 	logfile=getString("log",get_default_logfile_name().c_str());
 
 	master=getBoolean("master",true);
+
+	local_disk_mode=getBoolean("local_disk_mode","false");
 
 #ifdef DEBUG_Config
 	print_configure();
@@ -170,4 +174,5 @@ void Config::print_configure() const {
 
 	std::cout<<"log:"<<logfile<<std::endl;
 	std::cout<<"master:"<<master<<std::endl;
+	std::cout<<"local disk mode:"<<local_disk_mode<<std::endl;
 }

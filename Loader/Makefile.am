@@ -23,7 +23,8 @@ LDADD = 	../Catalog/libcatalog.a \
 noinst_LIBRARIES=libloader.a
 libloader_a_SOURCES = \
 	Hdfsloader.cpp 		Hdfsloader.h \
-	Hdfsconnector.cpp 	Hdfsconnector.h
+	Hdfsconnector.cpp 	Hdfsconnector.h \
+	LocalDiskConnector.cpp LocalDiskConnector.h
 
 SUBDIRS = Test
 DIST_SUBDIRS = Test
