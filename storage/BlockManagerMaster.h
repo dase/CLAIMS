@@ -67,6 +67,7 @@ public:
 	// 这个函数返回的是blockmanagerId
 //	BlockManagerId getLocations(string blockId){};
 	bool SendBindingMessage(const PartitionID&, const unsigned& number_of_chunks, const StorageLevel&,const NodeID&)const;
+	bool UpdateBindingMessage(const PartitionID&, const unsigned& number_of_blocks, const StorageLevel& desirable_storage_level, const NodeID& target)const;
 private:
 	BlockManagerMaster();
 	std::string generateSlaveActorName(const NodeID &)const;

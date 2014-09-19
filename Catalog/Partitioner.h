@@ -234,8 +234,8 @@ private:
 class Partitioner {
 public:
 	Partitioner(){};
-	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
-	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID projection_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID projection_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
 	virtual ~Partitioner();
 	unsigned getNumberOfPartitions()const;
 
@@ -248,6 +248,7 @@ public:
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,unsigned number_of_chunks);
 	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks);
+	void UpdatePartitionWithNumberOfChunksToBlockManager(unsigned partitoin_offset,unsigned long number_of_blocks);
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 

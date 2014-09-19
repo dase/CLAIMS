@@ -93,6 +93,7 @@ std::string BlockManagerMaster::generateSlaveActorName(const NodeID & node_id)co
 	str<<"blockManagerWorkerActor://"<<NodeTracker::getInstance()->getNodeIP(node_id);
 	return str.str();
 }
+
 bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, const unsigned& number_of_chunks, const StorageLevel& desirable_storage_level,const NodeID& target)const{
 	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
 
@@ -107,4 +108,10 @@ bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, con
 	}
 
 	return true;
+}
+
+//updateBindingMessage {}
+bool BlockManagerMaster::UpdateBindingMessage(const PartitionID&, const unsigned& number_of_blocks, const StorageLevel& desirable_storage_level, const NodeID& target)const
+{
+
 }
