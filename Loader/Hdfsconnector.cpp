@@ -9,7 +9,7 @@
 #include <assert.h>
 #include "../Config.h"
 
-HdfsConnector::HdfsConnector(vector<vector <string> > hdfs_writepath):writepath(hdfs_writepath) {
+HdfsConnector::HdfsConnector(vector<vector <string> > hdfs_writepath):Connector(hdfs_writepath) {
 	hdfsFS hdfsfs = hdfsConnect(Config::hdfs_master_ip.c_str(),Config::hdfs_master_port);
 	fs = hdfsfs;
 
@@ -54,19 +54,19 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_){
 			}
 			}
 		}
-		writefile.push_back(prj_writefile);
+		file_handles_.push_back(prj_writefile);
 	}
 	return true;
 }
 
-bool HdfsConnector::op_connect(open_flag open_flag_){
+bool HdfsConnector::openFiles(open_flag open_flag_){
 	if(!fs)
 	{
 		fprintf(stderr,"[ERROR: Hdfsconnector.cpp->op_connect()]: Failed to connect to hdfs.\n");
 		exit(-1);
 	}
 	assgin_open_file(open_flag_);
-	if(writefile.size()==0)
+	if(file_handles_.size()==0)
 	{
 		cout << "[ERROR: Hdfsconnector.cpp->op_connect()]: the writefile is empty!" << endl;
 		exit(-1);
@@ -78,26 +78,25 @@ bool HdfsConnector::op_connect(open_flag open_flag_){
 	return true;
 }
 
-bool HdfsConnector::op_disconnect(){
+int HdfsConnector::flush(unsigned projection_offset, unsigned partition_offset, void* source, unsigned length)
+{
+	return hdfsWrite(fs, file_handles_[projection_offset][partition_offset], source, length);
+}
+
+bool HdfsConnector::closeFiles(){
 	int result = -1;
-	for(int i = 0; i < writefile.size(); i++)
+	for(int i = 0; i < file_handles_.size(); i++)
 	{
-		for (int j = 0; j < writefile[i].size(); j++)
+		for (int j = 0; j < file_handles_[i].size(); j++)
 		{
-			result = hdfsCloseFile(fs, writefile[i][j]);
+			result = hdfsCloseFile(fs, file_handles_[i][j]);
 		}
-		writefile[i].clear();
+		file_handles_[i].clear();
 	}
-	writefile.clear();
+	file_handles_.clear();
 	if(result == 0)
 		return true;
 	return false;
-}
-hdfsFS HdfsConnector::get_fs(){
-	return fs;
-}
-vector<vector<hdfsFile> > HdfsConnector::get_writefile(){
-	return writefile;
 }
 
 

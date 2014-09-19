@@ -45,7 +45,7 @@ void BlockManager::initialize(){
 	// 读配置文件中的配置，然后根据是否是master注册
 	// 1，建两个存储，一个是内存的，一个磁盘的
 	diskstore_=new DiskStore(DISKDIR);
-	memstore_=new MemoryChunkStore();
+	memstore_=MemoryChunkStore::getInstance();
 
 	///the version written by zhanglei/////////////////////////////////
 //	blockManagerId_=new BlockManagerId();

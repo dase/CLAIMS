@@ -52,6 +52,7 @@ LogicalScan::~LogicalScan() {
 Dataflow LogicalScan::getDataflow(){
 	TableID table_id=scan_attribute_list_[0].table_id_;
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
+	printf("[Catalog(%lx)]Dear lord, Table(%d) for you! %lx\n",Catalog::getInstance(),table_id,table);
 	if(target_projection_==0){
 		ProjectionOffset target_projection_off=-1;
 		for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
