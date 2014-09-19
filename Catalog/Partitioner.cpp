@@ -93,7 +93,7 @@ void Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager(unsigned parti
 	{
 		NodeID node_id = partition_info_list[partition_offset]->get_location();
 		BlockManagerMaster::getInstance()->SendBindingMessage(partition_info_list[partition_offset]->partition_id_, number_of_chunks, MEMORY, node_id);
-		/*testing*/ cout << "--testing--\t update partition with number of blocks!\n";
+		/*testing*/ cout << "--testing--\t update partition with number of blocks! :"<<number_of_chunks<<" chunks>>>>\n";
 	}
 	else
 	{
@@ -132,8 +132,11 @@ unsigned long Partitioner::getPartitionCardinality(unsigned partition_index)cons
 	const unsigned data_size_in_MB=getPartitionDataSize(partition_index);
 	return data_size_in_MB*(unsigned long)1024*1024/tuple_bytes;
 }
-unsigned Partitioner::getPartitionChunks(unsigned partitoin_index)const{
+unsigned Partitioner::getPartitionBlocks(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks;
+}
+unsigned Partitioner::getPartitionChunks(unsigned partition_index) const {
+	return (partition_info_list[partition_index]->number_of_blocks-1)/1024+1;
 }
 NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 	if(partition_info_list[partition_index]->get_mode()==OneToOne){
@@ -165,6 +168,8 @@ bool Partitioner::allPartitionBound()const{
 	}
 	return true;
 }
+
+
 vector<PartitionID> Partitioner::getPartitionIDList()
 {
 	vector<PartitionID> ret;

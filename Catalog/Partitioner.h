@@ -75,7 +75,7 @@ public:
 	virtual NodeID get_location() const=0;
 protected:
 	string hdfs_file_name;//p
-	unsigned long number_of_blocks;//p
+	int long number_of_blocks;//p
 	PartitionID partition_id_;
 
 	friend class boost::serialization::access;
@@ -136,12 +136,6 @@ public:
 private:
 	NodeID binding_node_id_;
 
-	/**
-	 * A strange error happens when serializing derived class without involving any member variable.
-	 *  So when add test member to avoid the error.
-	 *  Note test is meaningless.
-	 */
-	int test;
 
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -149,7 +143,6 @@ private:
 	{
 
 		ar & boost::serialization::base_object<PartitionInfo>(*this);
-		ar & test;// test is meaningless
 	}
 };
 
@@ -254,7 +247,9 @@ public:
 
 	unsigned long getPartitionCardinality(unsigned partitoin_index)const;
 
-	unsigned getPartitionChunks(unsigned partitoin_index)const;
+	unsigned getPartitionBlocks(unsigned partitoin_index)const;
+
+	unsigned getPartitionChunks( unsigned partition_index) const;
 
 	NodeID getPartitionLocation(unsigned partition_index)const;
 	void print();

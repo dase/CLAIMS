@@ -18,9 +18,6 @@ MemoryChunkStore::MemoryChunkStore():chunk_pool_(CHUNK_SIZE),block_pool_(BLOCK_S
 }
 
 MemoryChunkStore::~MemoryChunkStore() {
-
-	printf("~~~~~~~~~~~~~~~~~~~~~~<><><><><><>\n");
-
 	chunk_pool_.purge_memory();
 	block_pool_.purge_memory();
 }
@@ -36,7 +33,6 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address){
 	}
 	if((start_address=chunk_pool_.malloc())!=0){
 		chunk_list_[chunk_id]=HdfsInMemoryChunk(start_address,CHUNK_SIZE);
-		printf("[MemoryChunkStore]: a chunk(%d) is added!\n",chunk_id.chunk_off);
 		return true;
 	}
 	else{
@@ -46,7 +42,6 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address){
 }
 
 void MemoryChunkStore::returnChunk(const ChunkID& chunk_id){
-	printf("list size=%d\n",chunk_list_.size());
 	boost::unordered_map<ChunkID,HdfsInMemoryChunk>::const_iterator it=chunk_list_.find(chunk_id);
 	if(it==chunk_list_.cend()){
 		printf("return fail to find the target chunk id !\n");
@@ -55,7 +50,6 @@ void MemoryChunkStore::returnChunk(const ChunkID& chunk_id){
 	HdfsInMemoryChunk chunk_info=it->second;
 
 	chunk_pool_.free(chunk_info.hook);
-	printf("RETURN ******    %d\n",chunk_id.chunk_off);
 	chunk_list_.erase(it);
 	BufferManager::getInstance()->returnStorageBudget(chunk_info.length);
 }
@@ -85,7 +79,6 @@ bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk
 		printf("The memory chunk is already existed!\n");
 		return false;
 	}
-	printf("[MemoryChunkStore]: Chunk[%s,%d] is added!\n",chunk_id.partition_id.getName().c_str(),chunk_id.chunk_off);
 	chunk_list_[chunk_id]=chunk_info;
 	return true;
 }

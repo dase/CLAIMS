@@ -67,10 +67,10 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
 			if (open_flag_ == APPEND)
-				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			else
 				tmp_block_num.push_back(0);
-/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -128,11 +128,11 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
 			if (open_flag_ == APPEND)
-				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			else
 				tmp_block_num.push_back(0);
 			//ERROR: the init table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) is wrong!!!
-/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
