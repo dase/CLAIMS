@@ -335,7 +335,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 			//				}
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 			result_flag=true;
 			info = "create table successfully";
 			result_set=NULL;
@@ -413,7 +413,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 			}
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 
 			result_flag=true;
 			result_set = NULL;
@@ -466,9 +466,6 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 
 #ifndef SQL_Parser
 			root->print(0);
-			cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
-			getchar();
-			getchar();
 #endif
 			BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 
@@ -526,7 +523,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 			result_set=NULL;
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 		}
 		break;
 		case t_insert_stmt:	// 2014-4-19---add---by Yu	// 2014-5-1---modify---by Yu
@@ -690,7 +687,7 @@ void ExecuteLogicalQueryPlan(string sql,ResultSet *&result_set,bool &result_flag
 			Hl->append(ostr.str());
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog(); // commented by li to solve the dirty read after insert
 
 			result_flag=true;
 			ostr.clear();
