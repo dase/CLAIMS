@@ -204,6 +204,9 @@ public:
 	virtual ~ChunkStorage();
 	ChunkReaderIterator* createChunkReaderIterator();
 	std::string printCurrentStorageLevel()const;
+
+	ChunkID getChunkID() { return chunk_id_; }
+	void setCurrentStorageLevel(const StorageLevel& current_level) { current_storage_level_ = current_level; }
 private:
 	unsigned block_size_;
 	unsigned chunk_size_;

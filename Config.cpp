@@ -17,10 +17,11 @@ using namespace std;
 #define DEBUG_Config
 
 string gete(){
-	char *p=getenv("CLAIMS_HOME");
-	stringstream sp;
-	sp<<string(p).c_str()<<"/conf/config";
-	return sp.str();
+//	char *p=getenv("CLAIMS_HOME");
+//	stringstream sp;
+//	sp<<string(p).c_str()<<"/conf/config";
+//	return sp.str();
+	return "/home/imdb/config/dsc/config";
 }
 string get_default_logfile_name(){
 	char *p=getenv("CLAIMS_HOME");
