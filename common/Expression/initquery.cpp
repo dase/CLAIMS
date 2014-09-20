@@ -369,7 +369,9 @@ QNode * transformqual(Node *node)
 		case t_name_name:
 		{
 			Columns *col=(Columns *)node;
-			data_type a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+			/** the following line is change to avoid exposing name to table of Catalog class*/
+//			data_type a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+			data_type a_type=Environment::getInstance()->getCatalog()->getTable(string(col->parameter1))->getAttribute2(col->parameter2).attrType->type;
 			QColcumns *qcol=new QColcumns(col->parameter1,col->parameter2,a_type,col->parameter2);
 			return qcol;
 		}break;
