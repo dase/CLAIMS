@@ -9,16 +9,16 @@
 #include "../Environment.h"
 #include "../common/TimeOutReceiver.h"
 #define ResourceManagerMasterName "ResourceManagerMaster"
-ResourceManagerSlave::ResourceManagerSlave() {
+InstanceResourceManager::InstanceResourceManager() {
 	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
 	logging_=new ResourceManagerMasterLogging();
 }
 
-ResourceManagerSlave::~ResourceManagerSlave() {
+InstanceResourceManager::~InstanceResourceManager() {
 	delete framework_;
 	delete logging_;
 }
-NodeID ResourceManagerSlave::Register(){
+NodeID InstanceResourceManager::Register(){
 	NodeID ret=10;
 	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
 	Theron::Catcher<NodeID> resultCatcher;
@@ -41,10 +41,11 @@ NodeID ResourceManagerSlave::Register(){
 		return -1;
 	}
 }
-void ResourceManagerSlave::ReportStorageBudget(StorageBudgetMessage& message){
-//	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
+void InstanceResourceManager::ReportStorageBudget(StorageBudgetMessage& message){
 	framework_->Send(message,Theron::Address(),Theron::Address(ResourceManagerMasterName));
 }
-void ResourceManagerSlave::RegisterStorageSlave(){
+
+void InstanceResourceManager::setStorageBudget(unsigned long memory,
+		unsigned long disk) {
 
 }

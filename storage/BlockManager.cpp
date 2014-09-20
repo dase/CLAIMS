@@ -7,7 +7,6 @@
 #include <sstream>
 #include "BlockManager.h"
 #include "../Environment.h"
-#include "../BufferManager/BufferManager.h"
 #include "../common/rename.h"
 #include "../common/Message.h"
 #include "../common/Logging.h"

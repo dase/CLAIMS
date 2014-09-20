@@ -4,11 +4,9 @@ Default
 .cproject
 .project
 .settings
-<<<<<<< HEAD
 Config.cpp
 Debug.h
 install/
-=======
 autom4te.cache/
 claimsserver
 config.guess
@@ -32,4 +30,5 @@ config.h
 config.log
 configure
 claims.log
->>>>>>> refs/remotes/0912/master
+doc
+conf

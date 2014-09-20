@@ -60,6 +60,12 @@ int Config::expander_adaptivity_check_frequency;
  */
 int Config::initial_degree_of_parallelism;
 
+/**
+ * THis parameter determines whether the data transmission in data exchanges
+ * is pipelined.
+ */
+bool Config::pipelined_exchange;
+
 
 int Config::scan_batch;
 
@@ -120,6 +126,9 @@ void Config::initialize() {
 	master=getBoolean("master",true);
 
 	local_disk_mode=getBoolean("local_disk_mode","false");
+
+	pipelined_exchange=getBoolean("pipelined_exchange",true);
+
 
 #ifdef DEBUG_Config
 	print_configure();

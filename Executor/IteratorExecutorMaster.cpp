@@ -38,9 +38,9 @@ IteratorExecutorMaster* IteratorExecutorMaster::getInstance()
 
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamIteratorBase* it, std::vector<std::string> ip_list){
 
-	IteratorMessage im(it);
+	PhysicalQueryPlan im(it);
 
-	Message4K str= IteratorMessage::serialize4K(im);
+	Message4K str= PhysicalQueryPlan::serialize4K(im);
 
 	TimeOutReceiver receiver(endpoint);
 
@@ -66,9 +66,9 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamItera
 	return true;
 }
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,std::string target_ip){
-	IteratorMessage im(it);
+	PhysicalQueryPlan im(it);
 
-	Message4K str= IteratorMessage::serialize4K(im);
+	Message4K str= PhysicalQueryPlan::serialize4K(im);
 
 //	TimeOutReceiver receiver(endpoint);
 //

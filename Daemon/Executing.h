@@ -22,7 +22,7 @@ public:
 	Executing();
 	virtual ~Executing();
 	static ResultSet* run_sql(std::string sql,std::string& error);
-	static void run_sql(std::string cmd, ResultSet *result, bool &status, std::string &error_info, std::string info);
+	static void run_sql(const std::string &cmd, ResultSet *&result, bool &status, std::string &error_info, std::string &info);
 
 };
 

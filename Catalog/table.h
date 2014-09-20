@@ -137,34 +137,8 @@ public:
 		assert(offset<attributes.size());
 		return attributes[offset];
 	}
-	Attribute getAttribute(const std::string& name)const{
-		// format of name is colname, not tablename.colname
-		stringstream ss;
-		ss<<tableName.c_str()<<"."<<name.c_str();
-//		cout<<"partition_name :"<<name<<endl;	// for test--by yu
-		for(unsigned i=0;i<attributes.size();i++){
-//			cout<<attributes[i].attrName<<endl;		// for test -- by yu
-//			cout<<"--"<<attributes[i].attrName<<"--"<<ss.str()<<endl;
-			if(attributes[i].attrName==ss.str()){		// modify ss.str() to name ---by yu --7.6
-				return attributes[i];
-			}
-		}
-		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
-		assert(false);
-	}
-	Attribute getAttribute2(const std::string& name)const{
-		// format of name is tablename.colname
-		stringstream ss;
-		ss<<name.c_str();
-		for(unsigned i=0;i<attributes.size();i++){
-//			cout<<"--"<<attributes[i].attrName<<endl;
-			if(attributes[i].attrName==ss.str()){
-				return attributes[i];
-			}
-		}
-		printf("The attribute name [%s] does not match any attribute!\n",ss.str().c_str());
-		assert(false);
-	}
+	Attribute getAttribute(const std::string& name)const;
+	Attribute getAttribute2(const std::string& name)const;
 	/* the following methods are considered to be deleted.*/
 	void addColumn(ProjectionDescriptor* column);
 	inline string get_table_name()const{return tableName;}

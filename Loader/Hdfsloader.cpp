@@ -383,6 +383,13 @@ bool HdfsLoader::append(std::string tuple_string)
 	{
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
+			printf("Table %d, projection %d ::Partition info:%lx\n", i, j, table_descriptor_->getProjectoin(i)->getPartitioner());
+			if(table_descriptor_->getProjectoin(i)->getPartitioner()->allPartitionBound()){
+				printf("[][][]After append bound!\n");
+			}
+			else {
+				printf("[][][]After append NOT bound!\n");
+			}
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
 			//TODO: update binding infos and chunk storage level by me later.
 			table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);

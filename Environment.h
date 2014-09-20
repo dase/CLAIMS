@@ -16,12 +16,13 @@
 #include "Resource/ResourceManagerMaster.h"
 #include "Resource/ResourceManagerSlave.h"
 #include "Catalog/Catalog.h"
-#include "BufferManager/BufferManager.h"
 #include "IndexManager/IndexManager.h"
 #include "Executor/ExpanderTracker.h"
 #include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
+#include "Client/ClaimsServer.h"
+#include "Resource/BufferManager.h"
 
 class Environment {
 public:
@@ -32,7 +33,7 @@ public:
 	AdaptiveEndPoint* getEndPoint();
 	ExchangeTracker* getExchangeTracker();
 	ResourceManagerMaster* getResourceManagerMaster();
-	ResourceManagerSlave* getResourceManagerSlave();
+	InstanceResourceManager* getResourceManagerSlave();
 	NodeID getNodeID()const;
 	Catalog* getCatalog()const;
 	Environment(bool ismaster=false);
@@ -44,6 +45,9 @@ private:
 	void InitializeResourceManager();
 	void InitializeBufferManager();
 	void InitializeIndexManager();
+	void InitializeClientListener();
+
+	void destoryClientListener();
 private:
 	static Environment* _instance;
 	PortManager* portManager;
@@ -57,7 +61,7 @@ private:
 	Logging* logging_;
 	bool ismaster_;
 	ResourceManagerMaster* resourceManagerMaster_;
-	ResourceManagerSlave* resourceManagerSlave_;
+	InstanceResourceManager* resourceManagerSlave_;
 	Catalog* catalog_;
 	/* the globally unique node id*/
 	NodeID nodeid;
@@ -66,6 +70,7 @@ private:
 	BufferManager* bufferManager_;
 	IndexManager* indexManager_;
 	ExpanderTracker* expander_tracker_;
+	ClientListener* listener_;
 
 	/**
 	 * TODO: the master and slave pair, such as ResouceManagerMaster and ResourceManagerSlave, should have a

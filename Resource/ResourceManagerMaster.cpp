@@ -34,7 +34,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 //		/*The slaveId has already existed.*/
 //		return false;
 //	}
-	node_to_resourceinfo_[new_node_id]=new ResourceInfo();
+	node_to_resourceinfo_[new_node_id]=new InstanceResourceInfo();
 
 	logging_->log("[ip=%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
 
@@ -49,7 +49,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 }
 std::vector<NodeID> ResourceManagerMaster::getSlaveIDList(){
 	std::vector<NodeID> ret;
-	boost::unordered_map<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
+	boost::unordered_map<NodeID,InstanceResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
 	while(it!=node_to_resourceinfo_.end()){
 		ret.push_back(it->first);
 		it++;

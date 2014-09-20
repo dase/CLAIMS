@@ -51,10 +51,11 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	return resultset;
 }
 
-void Executing::run_sql(std::string sql, ResultSet *result_set, bool &status, std::string &error_info, std::string info){
+void Executing::run_sql(const std::string &sql, ResultSet *&result_set, bool &status, std::string &error_info, std::string &info){
 
 	if (sql.length() <= 0) {
-		status = 1;
+		status = false;
+		result_set = NULL;
 		error_info = "sql is NULL";
 		return;
 	}
