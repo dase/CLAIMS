@@ -41,6 +41,7 @@ public:
 private:
 	State state_;
 	BlockStreamBase* block_buffer_;
+	std::vector<int> column_wides;
 
 	unsigned long tuple_count_;
 	/* for boost::serializtion*/
