@@ -335,7 +335,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			//				}
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 			result_flag=true;
 			info = "create table successfully";
 			result_set=NULL;
@@ -363,6 +363,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			string partition_attribute_name = newnode->partition_attribute_name;
 
 			std::vector<ColumnOffset> index;
+			index.push_back(0);		// add by scdong: add row_id column to each projection automatically
 			Columns *col_list = (Columns *)newnode->column_list;
 			string colname;
 			while(col_list)
@@ -412,7 +413,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			}
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 
 			result_flag=true;
 			result_set = NULL;
@@ -465,9 +466,6 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 
 #ifdef SQL_Parser
 			root->print(0);
-			cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
-			getchar();
-			getchar();
 #endif
 			BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 
@@ -525,7 +523,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			result_set=NULL;
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 		}
 		break;
 		case t_insert_stmt:	// 2014-4-19---add---by Yu	// 2014-5-1---modify---by Yu
@@ -689,7 +687,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			Hl->append(ostr.str());
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog(); // commented by li to solve the dirty read after insert
 
 			result_flag=true;
 			ostr.clear();

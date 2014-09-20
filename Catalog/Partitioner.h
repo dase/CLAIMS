@@ -75,7 +75,7 @@ public:
 	virtual NodeID get_location() const=0;
 protected:
 	string hdfs_file_name;//p
-	unsigned long number_of_blocks;//p
+	int long number_of_blocks;//p
 	PartitionID partition_id_;
 
 	friend class boost::serialization::access;
@@ -136,12 +136,6 @@ public:
 private:
 	NodeID binding_node_id_;
 
-	/**
-	 * A strange error happens when serializing derived class without involving any member variable.
-	 *  So when add test member to avoid the error.
-	 *  Note test is meaningless.
-	 */
-	int test;
 
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -149,7 +143,6 @@ private:
 	{
 
 		ar & boost::serialization::base_object<PartitionInfo>(*this);
-		ar & test;// test is meaningless
 	}
 };
 
@@ -234,8 +227,8 @@ private:
 class Partitioner {
 public:
 	Partitioner(){};
-	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
-	Partitioner(ProjectionID partition_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID projection_id,unsigned number_of_partitions,PartitionFunction* partition_functin);
+	Partitioner(ProjectionID projection_id,unsigned number_of_partitions,const Attribute &partition_key,PartitionFunction* partition_functin);
 	virtual ~Partitioner();
 	unsigned getNumberOfPartitions()const;
 
@@ -248,12 +241,15 @@ public:
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,unsigned number_of_chunks);
 	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks);
+	void UpdatePartitionWithNumberOfChunksToBlockManager(unsigned partitoin_offset,unsigned long number_of_blocks);
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
 
 	unsigned long getPartitionCardinality(unsigned partitoin_index)const;
 
-	unsigned getPartitionChunks(unsigned partitoin_index)const;
+	unsigned getPartitionBlocks(unsigned partitoin_index)const;
+
+	unsigned getPartitionChunks( unsigned partition_index) const;
 
 	NodeID getPartitionLocation(unsigned partition_index)const;
 	void print();
