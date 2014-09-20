@@ -35,6 +35,7 @@
 
 #include "../common/Block/BlockStream.h"
 #include "../common/Schema/SchemaFix.h"
+#include "../common/Logging.h"
 
 #define Error 	0
 #define OK 		1
@@ -190,6 +191,12 @@ struct ClientResponse {
 		return ret;
 	}
 
+	void setData(string s) {
+		content = s;
+		status = DATA;
+		length = s.length();
+	}
+
 	int serialize(char*& buffer) const {
 		int ret = sizeof(int) + sizeof(int) + content.length();
 		buffer = (char *) malloc(ret);
@@ -197,6 +204,17 @@ struct ClientResponse {
 		*((int*) buffer + 1) = length;
 		void* content_start = buffer + sizeof(int) + sizeof(int);
 		memcpy(content_start, content.data(), content.length());
+
+		ClientLogging::log("buffer is : %d%d%d%d%d%d%d%d",
+				(int)buffer[0],
+				(int)buffer[1],
+				(int)buffer[2],
+				(int)buffer[3],
+				(int)buffer[4],
+				(int)buffer[5],
+				(int)buffer[6],
+				(int)buffer[7]
+				);
 		return ret;
 	}
 
@@ -208,6 +226,7 @@ struct ClientResponse {
 		length = len;
 		void* content_start_addr = (char*) received_buffer + sizeof(int) * 2;
 		content = std::string((const char *) content_start_addr, len);
+
 	}
 
 	void setChange(std::string info) {

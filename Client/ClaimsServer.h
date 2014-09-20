@@ -21,6 +21,7 @@
 #include "../Catalog/Catalog.h"
 #include "../Daemon/Daemon.h"
 #include "ClientResponse.h"
+#include "json/json.h"
 
 class ClaimsServer {
 public:
@@ -42,7 +43,7 @@ private:
 	static void* receiveHandler(void *);
 	static void* sendHandler(void *);
 
-	void sendJsonPacket(executed_result res);
+	static void sendJsonPacket(ClientResponse &cr, executed_result &res);
 
 	bool isFull() const {
 		return !(m_num < MAXCONN);
