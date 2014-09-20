@@ -134,7 +134,6 @@ void Catalog::restoreCatalog(const char *filename)
 		ia>>*this;
 	}
 
-	printf("<><><><><><> restore\n");
 //	cout<<"================================================================"<<endl<<endl;
 //	outPut();
 //	cout<<"================================================================"<<endl<<endl;

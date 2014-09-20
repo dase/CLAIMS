@@ -53,13 +53,6 @@ bool Partitioner::bindPartitionToNode(PartitionOffset partition_id,NodeID target
 //
 //	partition_node_blockinfo_[partition_id]=tmp;
 //	return true;
-	printf("Partition info:%lx\n",partition_info_list[partition_id]);
-	if(partition_info_list[partition_id]->is_all_blocks_bound()){
-		printf("[][][]bindPartitionToNode bound!\n");
-	}
-	else {
-		printf("[][][]bindPartitionToNode NOT bound!\n");
-	}
 	return partition_info_list[partition_id]->bind_all_blocks(target_node);
 }
 
