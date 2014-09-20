@@ -9,6 +9,8 @@
 #include "Partitioner.h"
 #include "../Catalog/Catalog.h"
 #include "../Environment.h"
+#include "../utility/print_tool.h"
+#include <cmath>
 #define CHUNKSIZE_IN_MB 64
 #define BLOCKSIZE_IN_KB 64
 
@@ -88,12 +90,14 @@ void Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager(unsigned parti
 {
 	assert(partition_offset < partition_function_->getNumberOfPartitions());
 
-	unsigned number_of_chunks = (number_of_blocks-1)/1024+1;
+	unsigned number_of_chunks = ceil((number_of_blocks)/(float)1024);
 	if (mode_ == OneToOne)
 	{
-		NodeID node_id = partition_info_list[partition_offset]->get_location();
-		BlockManagerMaster::getInstance()->SendBindingMessage(partition_info_list[partition_offset]->partition_id_, number_of_chunks, MEMORY, node_id);
-		/*testing*/ cout << "--testing--\t update partition with number of blocks! :"<<number_of_chunks<<" chunks>>>>\n";
+		if(partition_info_list[partition_offset]->is_all_blocks_bound()){
+			NodeID node_id = partition_info_list[partition_offset]->get_location();
+			BlockManagerMaster::getInstance()->SendBindingMessage(partition_info_list[partition_offset]->partition_id_, number_of_chunks, MEMORY, node_id);
+			/*testing*/ cout << "--testing--\t update partition with number of blocks! :"<<number_of_chunks<<" chunks>>>>\n";
+		}
 	}
 	else
 	{
@@ -136,7 +140,7 @@ unsigned Partitioner::getPartitionBlocks(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks;
 }
 unsigned Partitioner::getPartitionChunks(unsigned partition_index) const {
-	return (partition_info_list[partition_index]->number_of_blocks-1)/1024+1;
+	return ceil(partition_info_list[partition_index]->number_of_blocks/(float)1024);
 }
 NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
 	if(partition_info_list[partition_index]->get_mode()==OneToOne){
