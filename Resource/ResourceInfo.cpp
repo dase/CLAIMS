@@ -7,12 +7,12 @@
 
 #include "ResourceInfo.h"
 
-ResourceInfo::ResourceInfo() {
+InstanceResourceInfo::InstanceResourceInfo() {
 	// TODO Auto-generated constructor stub
 
 }
 
-ResourceInfo::~ResourceInfo() {
+InstanceResourceInfo::~InstanceResourceInfo() {
 	// TODO Auto-generated destructor stub
 }
 

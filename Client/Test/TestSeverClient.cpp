@@ -406,14 +406,19 @@ static int testServerClient() {
 				printf("Message: %s\n", response->content.c_str());
 			}
 			else {
-				printf("Client does not get response: %s\n",
+				printf("ERROR: %s\n",
 						response->content.c_str());
 			}
 		}
 		client.shutdown();
 	} else if (cmd == 's') {
-		loadData();	//导致服务器退出是内存泄漏的原因
-		ClaimsServer server(8000);
+//		loadData();	//导致服务器退出是内存泄漏的原因
+		Environment::getInstance(true);
+		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+		Catalog* catalog=Environment::getInstance()->getCatalog();
+		catalog->restoreCatalog();
+
+		ClientListener server(8001);
 		server.configure();
 		//		server.run();
 		while(true){

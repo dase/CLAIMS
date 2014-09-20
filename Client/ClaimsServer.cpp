@@ -17,8 +17,7 @@
 #include <cstdio>
 #include "../Catalog/Catalog.h"
 #include "../Daemon/Daemon.h"
-
-ClaimsServer::ClaimsServer(int port) {
+ClientListener::ClientListener(int port) {
 
 	m_num = 0;
 	m_clientFds = new int[MAXCONN];
@@ -27,14 +26,15 @@ ClaimsServer::ClaimsServer(int port) {
 	}
 	m_fd = -1;
 	m_port = port;
+
 }
 
-ClaimsServer::~ClaimsServer() {
+ClientListener::~ClientListener() {
 
 	delete m_clientFds;
 }
 
-int ClaimsServer::addClient(const int fd) {
+int ClientListener::addClient(const int fd) {
 
 	if (m_num == MAXCONN) {
 
@@ -52,7 +52,7 @@ int ClaimsServer::addClient(const int fd) {
 	return 0;
 }
 
-int ClaimsServer::removeClient(const int fd) {
+int ClientListener::removeClient(const int fd) {
 
 	int ret = -1;
 	for (int i = 0; i < MAXCONN; ++i) {
@@ -66,7 +66,7 @@ int ClaimsServer::removeClient(const int fd) {
 	return ret;
 }
 
-int ClaimsServer::receiveRequest(const int fd, const char *cmd) {
+int ClientListener::receiveRequest(const int fd, const char *cmd) {
 
 	remote_command rcmd;
 	rcmd.socket_fd = fd;
@@ -80,7 +80,7 @@ int ClaimsServer::receiveRequest(const int fd, const char *cmd) {
  * configure the socket parameter, bind to the specific ip/port
  * startup the send/receive threads
  */
-void ClaimsServer::configure() {
+void ClientListener::configure() {
 
 	int &serverSockFd = m_fd;
 	int clientSockFd;
@@ -90,7 +90,7 @@ void ClaimsServer::configure() {
 	sockaddr_in clientSocket;
 
 	serverSocket.sin_family = AF_INET;
-	serverSocket.sin_port = htons(8001);
+	serverSocket.sin_port = htons(m_port);
 	serverSocket.sin_addr.s_addr = INADDR_ANY;
 
 	if ((serverSockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -133,10 +133,10 @@ void ClaimsServer::configure() {
 
 }
 
-void* ClaimsServer::receiveHandler(void *para) {
+void* ClientListener::receiveHandler(void *para) {
 
 	printf("-Init receive handler.\n");
-	ClaimsServer *server = (ClaimsServer *) para;
+	ClientListener *server = (ClientListener *) para;
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
 
@@ -225,10 +225,12 @@ void* ClaimsServer::receiveHandler(void *para) {
 
 }
 
-void *ClaimsServer::sendHandler(void *para) {
+
+
+void *ClientListener::sendHandler(void *para) {
 
 	printf("-Init send handler!\n");
-	ClaimsServer *server = (ClaimsServer*) para;
+	ClientListener *server = (ClientListener*) para;
 
 	ClientResponse cliRes;
 	while (true) {
@@ -236,19 +238,27 @@ void *ClaimsServer::sendHandler(void *para) {
 		printf("-SendHandler: wait for result!\n");
 		executed_result result = Daemon::getInstance()->getExecutedResult();
 		printf("-SendHandler: get executed_result for %d\n", result.fd);
+
+
 		if (result.status == true) {
 			//OK
 			if (result.result == NULL) {
 				// DDL return true
 				cliRes.setChange(result.info);
+				ClientLogging::log("to send change response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
 			else {
 				// query return true
 				cliRes.setOk("Yes Ok");
+				ClientLogging::log("to send ok response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 
 				cliRes.setSchema(result.result->schema_);
+				ClientLogging::log("to send schema response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 
 				std::vector<std::string> list = result.result->column_header_list_;
@@ -257,6 +267,8 @@ void *ClaimsServer::sendHandler(void *para) {
 					header.add_header(list[i]);
 				}
 				cliRes.setAttributeName(header);
+				ClientLogging::log("to send attr response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 
 
@@ -268,18 +280,28 @@ void *ClaimsServer::sendHandler(void *para) {
 				while (block = (BlockStreamBase*) it.atomicNextBlock()) {
 					block->serialize(serialzed_block);
 					cliRes.setDataBlock(serialzed_block);
+					ClientLogging::log("to send data response-- status:%d  length:%d  content:%s",
+									cliRes.status, cliRes.length, cliRes.content.c_str());
 					server->write(result.fd, cliRes);
 				}
 
 				cliRes.setEnd(result.result->query_time_);
+				ClientLogging::log("to send end response-- status:%d  length:%d  content:%s",
+								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
 		} else {
 			//ERROR
 			cliRes.setError(result.error_info);
+			ClientLogging::log("to send err response-- status:%d  length:%d  content:%s",
+							cliRes.status, cliRes.length, cliRes.content.c_str());
 			server->write(result.fd, cliRes);
 		}
 	}
+}
+
+void sendJsonPacket(executed_result res) {
+
 }
 
 /**
@@ -400,7 +422,7 @@ void *ClaimsServer::sendHandler(void *para) {
 /**
  * shut down the server
  */
-void ClaimsServer::shutdown() {
+void ClientListener::shutdown() {
 
 	for (int i = 0; i < MAXCONN; ++i) {
 		if (m_clientFds[i] > 0)
@@ -409,14 +431,14 @@ void ClaimsServer::shutdown() {
 	close(m_fd);
 }
 
-int ClaimsServer::write(const int fd, const ClientResponse& res) const {
+int ClientListener::write(const int fd, const ClientResponse& res) const {
 
 	int ret = 0;
 	char *buffer;
 	int length = res.serialize(buffer);
 	//	ret = ::write(fd, buffer, length);
 	ret = send(fd,buffer,length,MSG_WAITALL);
-	printf("Server: %d bytes:%d\t%d\t%s send!\n", ret, res.status, res.status, res.content.c_str());
+	printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
 	free(buffer);
 	return ret;
 }

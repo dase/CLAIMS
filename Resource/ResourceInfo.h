@@ -57,11 +57,11 @@ struct disk_info{
 
 };
 
-class ResourceInfo {
+class InstanceResourceInfo {
 public:
 	friend class ResourceManagerMaster;
-	ResourceInfo();
-	virtual ~ResourceInfo();
+	InstanceResourceInfo();
+	virtual ~InstanceResourceInfo();
 protected:
 	std::string slave_ip_;
 	memory_info memory;

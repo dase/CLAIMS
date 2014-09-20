@@ -65,6 +65,7 @@
 //#include "utility/data_distribution_generator.h"
 #include "../utility/data_distribution_generator.h"
 #include "TestSuit/filter_test.h"
+#include "Resource/CPUResourceManagerTest.h"
 #include "../LogicalQueryPlan/Test/testcrossjoin.cpp"
 #include "../Parsetree/Test/execute_sql_test.cpp"
 
@@ -92,7 +93,7 @@ int maina(int argc, char** argv){
 
 //	return test_cross_join();
 //	return query_optimization_outputdata();
-	 execute_sql_test();
+//	 execute_sql_test();
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
@@ -119,7 +120,7 @@ int maina(int argc, char** argv){
 //	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(5);
+//	test_expanderFramework_single_node(1);
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
@@ -128,10 +129,7 @@ int maina(int argc, char** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-//	test_expanderFramework_single_node(5);
-
-
-//	test_expanderFramework_single_node(5);
+	test_expanderFramework_single_node(5);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
@@ -151,4 +149,5 @@ int maina(int argc, char** argv){
 //	memory_leak_test();
 //	sql_parser_test();
 //	filter_test();
+//	cpu_resource_manager_test();
 }

@@ -74,15 +74,15 @@ isPartitionNode(isPartitionNode){
 
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	barrier_.RegisterOneThread();
-	RegisterNewThreadToAllBarriers();
+	RegisterExpandedThreadToAllBarriers();
 	if(tryEntryIntoSerializedSection(0)){
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Aggregation",0));
 	}
 	barrierArrive(0);
 	state_.child->open(partition_offset);
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		//		printf("<<<<<<<<<<<<<<<<<Aggregation detected call back signal before constructing hash table!>>>>>>>>>>>>>>>>>\n");
-		unregisterNewThreadToAllBarriers();
+//		printf("<<<<<<<<<<<<<<<<<Aggregation detected call back signal before constructing hash table!>>>>>>>>>>>>>>>>>\n");
+		unregisterExpandedThreadToAllBarriers();
 		return true;
 	}
 
@@ -316,7 +316,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-			unregisterNewThreadToAllBarriers(1);
+			unregisterExpandedThreadToAllBarriers(1);
 			return true;
 		}
 		barrierArrive(2);
@@ -344,7 +344,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
  */
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		unregisterNewThreadToAllBarriers(3);
+		unregisterExpandedThreadToAllBarriers(3);
 		printf("<<<<<<<<<<<<<<<<<Aggregation next detected call back signal!>>>>>>>>>>>>>>>>>\n");
 		return false;
 	}
@@ -440,9 +440,9 @@ bool BlockStreamAggregationIterator::close(){
 	return true;
 }
 void BlockStreamAggregationIterator::print(){
-	printf("Aggregation:  %d buckets in hash table\n",state_.nbuckets);
-	printf("---------------\n");
-	state_.child->print();
+//	printf("Aggregation:  %d buckets in hash table\n",state_.nbuckets);
+//	printf("---------------\n");
+//	state_.child->print();
 }
 BlockStreamBase* BlockStreamAggregationIterator::AtomicPopFreeHtBlockStream(){
 	assert(!ht_free_block_stream_list_.empty());
