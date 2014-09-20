@@ -39,7 +39,7 @@ bool LocalDiskConnector::openFiles(open_flag open_flag_) {
 				}
 				case APPEND:
 				{
-					int fd=FileOpen( (*par_writepath).c_str(),O_RDWR|O_APPEND,S_IWUSR|S_IRUSR);
+					int fd=FileOpen( (*par_writepath).c_str(),O_RDWR|O_CREAT|O_APPEND,S_IWUSR|S_IRUSR);
 					if(fd==-1){
 						printf("Cannot create disk file! Reason: %s",strerror(errno));
 					}
