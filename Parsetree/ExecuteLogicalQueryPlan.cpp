@@ -471,7 +471,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 
 			//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 			unsigned long long start=curtick();
-			physical_iterator_tree->print();
+//			physical_iterator_tree->print();
 			physical_iterator_tree->open();
 			while(physical_iterator_tree->next(0));
 			physical_iterator_tree->close();
@@ -498,7 +498,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			}
 			string column_separator(new_node->column_separator);
 			string tuple_separator(new_node->tuple_separator);
-			printf("wef:%s\n",new_node->tuple_separator);
+//			printf("wef:%s\n",new_node->tuple_separator);
 			Expr_list *path_node = (Expr_list*)new_node->path;
 
 			ASTParserLogging::log("load file\'s name:");
@@ -1179,12 +1179,15 @@ void ExecuteLogicalQueryPlan()
 				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 				//				physical_iterator_tree->print();
 				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-				puts("+++++++++++++++++++++begin time++++++++++++++++");
+//				puts("+++++++++++++++++++++begin time++++++++++++++++");
 				unsigned long long start=curtick();
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
+
+				delete physical_iterator_tree; //add by Li. @fzh,@yukai: pleaes remove this comment after first read.
+				delete root;
+//				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 
 			}
 			break;
@@ -1203,7 +1206,7 @@ void ExecuteLogicalQueryPlan()
 				}
 				string column_separator(new_node->column_separator);
 				string tuple_separator(new_node->tuple_separator);
-				printf("wef:%s\n",new_node->tuple_separator);
+//				printf("wef:%s\n",new_node->tuple_separator);
 				Expr_list *path_node = (Expr_list*)new_node->path;
 
 				ASTParserLogging::log("load file\'s name:");
@@ -1428,6 +1431,20 @@ bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsi
 	else if(insert_value->type == 1) {}	// 设置为default, 暂不支持
 
 	return has_warning;
+}
+
+bool query(const string& sql, query_result& result_set) {
+	bool ret;
+	string msg;
+	string err;
+	ExecuteLogicalQueryPlan(sql,result_set.result_set,ret,err,msg);
+	if(ret){
+		result_set.msg = msg;
+	}
+	else {
+		result_set.msg = err;
+	}
+	return ret;
 }
 
 bool CheckType(const column_type *col_type, Expr *expr)		// check whether the string is digit, can use strtol()

@@ -129,7 +129,7 @@ int maina(int argc, char** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-	test_expanderFramework_single_node(5);
+//	test_expanderFramework_single_node(5);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
@@ -140,7 +140,7 @@ int maina(int argc, char** argv){
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
 
-//	g_test_main(argc,argv);
+	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 
