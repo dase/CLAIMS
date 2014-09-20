@@ -130,7 +130,8 @@ void* ClaimsServer::receiveHandler(void *para) {
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
 
-	char *buf = new char[128];
+	char *buf = new char[1024];
+	memset(buf, 0, sizeof(buf));
 
 	unsigned int sockLen;
 	int nread;
@@ -189,11 +190,14 @@ void* ClaimsServer::receiveHandler(void *para) {
 						server->removeClient(server->m_clientFds[i]);
 						continue;
 					}
-					read(server->m_clientFds[i], buf, nread);
+
+					int read_cout = read(server->m_clientFds[i], buf, nread);
+					buf[read_cout] = '\0';	// fix a bug
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
-					if (1 == retCode) {
-						printf("Successfully receive query from client %d.\n",
+					if (0 == retCode) {
+						printf("Successfully receive query %s from client %d.\n",
+								buf,
 								server->m_clientFds[i]);
 					}
 					//					else if (-1 == retCode) {
@@ -213,6 +217,7 @@ void* ClaimsServer::receiveHandler(void *para) {
 	FD_ZERO(&readFds);
 	delete buf;
 
+	return NULL;
 }
 
 void *ClaimsServer::sendHandler(void *para) {
@@ -227,7 +232,6 @@ void *ClaimsServer::sendHandler(void *para) {
 		executed_result result = Daemon::getInstance()->getExecutedResult();
 		printf("-SendHandler: get executed_result for %d\n", result.fd);
 
-
 		if (result.status == true) {
 			//OK
 			if (result.result == NULL) {
@@ -238,6 +242,9 @@ void *ClaimsServer::sendHandler(void *para) {
 				server->write(result.fd, cliRes);
 			}
 			else {
+				sendJsonPacket(cliRes, result);
+				server->write(result.fd, cliRes);
+				/*
 				// query return true
 				cliRes.setOk("Yes Ok");
 				ClientLogging::log("to send ok response-- status:%d  length:%d  content:%s",
@@ -277,6 +284,7 @@ void *ClaimsServer::sendHandler(void *para) {
 				ClientLogging::log("to send end response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
+			*/
 			}
 		} else {
 			//ERROR
@@ -286,10 +294,45 @@ void *ClaimsServer::sendHandler(void *para) {
 			server->write(result.fd, cliRes);
 		}
 	}
+	return NULL;
 }
 
-void sendJsonPacket(executed_result res) {
+void ClaimsServer::sendJsonPacket(ClientResponse &cr, executed_result &res) {
+//	ClientResponse cr;
+	if (res.status) {
+		if (res.result != NULL) {
+			ResultSet *rs = res.result;
+			vector<string> &col_name_list = rs->column_header_list_;
+			Json::Value root;
+			Json::Value jv_temp;
+			long row = 0;
 
+			DynamicBlockBuffer::Iterator it=rs->createIterator();
+			BlockStreamBase* block;
+			while(block=it.nextBlock()){
+				BlockStreamBase::BlockStreamTraverseIterator* block_it=block->createIterator();
+				void* tuple;
+				while(tuple=block_it->nextTuple()){
+//					rs->schema_->displayTuple(tuple,"\t");
+					for (int i = 0; i < rs->schema_->getncolumns(); ++i) {
+						jv_temp[col_name_list[i]] = Json::Value(rs->schema_->getColumnValue(tuple, i));
+					}
+					ostringstream ostr;
+					ostr<<row++;
+					root[ostr.str()] = jv_temp;
+				}
+			}
+
+//			Json::StyledWriter sw;
+//			cout<<sw.write(root)<<endl;
+
+			Json::FastWriter fw;
+			string buf_to_send = fw.write(root);
+			cout<<buf_to_send<<endl;
+
+			cr.setData(buf_to_send);
+		}
+	}
 }
 
 /**

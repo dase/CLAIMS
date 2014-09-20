@@ -33,6 +33,10 @@ void Schema::displayTuple(const void* tuple_start_address,const char* spliter)co
 //	sleep(1);
 }
 
+std::string Schema::getColumnValue(const void *tuple_start_address, int i) {
+	return columns[i].operate->toString(getColumnAddess(i, tuple_start_address));
+}
+
 bool Schema::hasSameSchema(Schema* schema) {
 	if(this->getSchemaType()!=schema->getSchemaType())
 		return false;

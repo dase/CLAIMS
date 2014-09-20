@@ -81,7 +81,8 @@ static Node * getparsetreeroot()
 
 static Node * getparsetreeroot(const char *sql)
 {
-	puts("SQL!!!!!");
+	assert(sql != NULL);
+	ASTParserLogging::log("sql argument is %s", sql);
 	int charnum=0;
 	globalReadOffset = 0;
 
@@ -89,11 +90,11 @@ static Node * getparsetreeroot(const char *sql)
 	errorNumber = 0;	// 2014-3-6---初始化SQL解析错误个数---by余楷
 	parsetreeroot = NULL;	// 2014-3-4---增加初始化语句---by余楷
 	memset(globalInputText, 0, sizeof(globalInputText));	// 2014-3-4---增加初始化语句---by余楷
-	cout<<"globalInputText:"<<globalInputText;
+//	ASTParserLogging::log("befor copying, globalInputText: %s", globalInputText);
 
 	// 2014-3-4---测试数据---by余楷
 	strcpy(globalInputText,	sql);
-	cout<<"globalInputText:"<<globalInputText<<endl;
+	ASTParserLogging::log("after copying, globalInputText: %s", globalInputText);
 
 	if(!yyparse())	// 2014-3-4---注释冗余代码---by余楷
 	{

@@ -18,7 +18,8 @@ noinst_LIBRARIES=libclient.a
 libclient_a_SOURCES = \
 	ClaimsServer.cpp			ClaimsServer.h \
 	Client.cpp 				Client.h \
-	ClientResponse.cpp 		ClientResponse.h
+	ClientResponse.cpp 		ClientResponse.h \
+	jsoncpp.cpp
 
-SUBDIRS = Test
-DIST_SUBDIRS = Test
+SUBDIRS = Test json
+DIST_SUBDIRS = Test json
