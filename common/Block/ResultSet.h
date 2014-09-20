@@ -22,6 +22,7 @@ public:
 	std::vector<std::string> column_header_list_;
 	double query_time_;
 private:
+	void printNChar(int n, char c)const;
 };
 
 #endif /* RESULTSET_H_ */

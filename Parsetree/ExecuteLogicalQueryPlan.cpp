@@ -754,6 +754,8 @@ void ExecuteLogicalQueryPlan()
 	int count=1;
 	while(1)
 	{
+
+
 		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
@@ -1158,16 +1160,16 @@ void ExecuteLogicalQueryPlan()
 					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 					if(lexpr->offset==NULL)
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 					}
 					else
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 					}
 				}
 				else
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 				}
 #ifdef SQL_Parser
 				//				root->print(0);
@@ -1185,8 +1187,12 @@ void ExecuteLogicalQueryPlan()
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
 
+				ResultSet* result_set=physical_iterator_tree->getResultSet();
+				result_set->print();
+
 				delete physical_iterator_tree; //add by Li. @fzh,@yukai: pleaes remove this comment after first read.
 				delete root;
+				delete result_set;
 //				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 
 			}
