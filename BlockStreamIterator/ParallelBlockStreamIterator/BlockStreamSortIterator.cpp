@@ -8,14 +8,14 @@
 #include "BlockStreamSortIterator.h"
 
 BlockStreamSortIterator::BlockStreamSortIterator(){
-    sema_open_.set_value(1);
-    sema_open_finished_.set_value(0);
+	sema_open_.set_value(1);
+	sema_open_finished_.set_value(0);
 }
 
 BlockStreamSortIterator::BlockStreamSortIterator(State state)
 :finished_thread_count_(0),registered_thread_count_(0),state_(state){
-    sema_open_.set_value(1);
-    sema_open_finished_.set_value(0);
+	sema_open_.set_value(1);
+	sema_open_finished_.set_value(0);
 }
 
 BlockStreamSortIterator::~BlockStreamSortIterator(){
@@ -84,7 +84,7 @@ void BlockStreamSortIterator::cssort(){
 }
 
 bool BlockStreamSortIterator::compare(const SNode *a,const SNode *b){
-//	BlockStreamSortIterator *pthis=(BlockStreamSortIterator*)args;
+	//	BlockStreamSortIterator *pthis=(BlockStreamSortIterator*)args;
 	const void *l=a->state_->input_->getColumnAddess(a->orderKey,a->tuple);
 	const void *r=b->state_->input_->getColumnAddess(b->orderKey,b->tuple);
 	if(a->dir)
@@ -95,7 +95,7 @@ bool BlockStreamSortIterator::compare(const SNode *a,const SNode *b){
 
 void BlockStreamSortIterator::order(unsigned column,unsigned tuple_count){
 	/* tranverse the buffer and apply the space to store the secondaryArray*/
-//	cqsort(0,tuple_count-1,op_);
+	//	cqsort(0,tuple_count-1,op_);
 }
 
 void BlockStreamSortIterator::order(){
@@ -121,14 +121,14 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 	 *    by specifying the column to be sorted
 	 * 3, whether to register the buffer into the blockmanager.
 	 * */
-    BlockStreamBase* block_for_asking;
+	BlockStreamBase* block_for_asking;
 
-    state_.partition_offset_=part_off;
+	state_.partition_offset_=part_off;
 
-    state_.child_->open(state_.partition_offset_);
+	state_.child_->open(state_.partition_offset_);
 
 	if(sema_open_.try_wait()){
-	block_buffer_iterator_=block_buffer_.createIterator();
+		block_buffer_iterator_=block_buffer_.createIterator();
 		open_finished_ = true;
 	}
 	else{
@@ -139,15 +139,15 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 
 
 	if(createBlockStream(block_for_asking)==false)
-    	;
-    /* phase 1: store the data in the buffer!
-     *          by using multi-threads to speed up
-     * */
-    unsigned block_offset=0;
-    unsigned tuple_count_sum=0;
+		;
+	/* phase 1: store the data in the buffer!
+	 *          by using multi-threads to speed up
+	 * */
+	unsigned block_offset=0;
+	unsigned tuple_count_sum=0;
 	BlockStreamBase::BlockStreamTraverseIterator *iterator_for_scan;
-    while(state_.child_->next(block_for_asking)){
-    	tuple_count_sum+=block_for_asking->getTuplesInBlock();
+	while(state_.child_->next(block_for_asking)){
+		tuple_count_sum+=block_for_asking->getTuplesInBlock();
 		block_buffer_.atomicAppendNewBlock(block_for_asking);
 		iterator_for_scan=block_buffer_.getBlock(block_offset)->createIterator();
 		void *tuple_ptr=0;
@@ -165,23 +165,24 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 			cout<<"error in the create block stream!!!"<<endl;
 			return 0;
 		}
-    }
+	}
+
 
     /* phase 2: sort the data in the buffer!
      *          by using multi-threads to speed up?
      * TODO: whether to store the sorted data into the blockmanager
      * */
-    cout<<"check the memory usage!!!"<<endl;
+//    cout<<"check the memory usage!!!"<<endl;
     unsigned long long int time=curtick();
 //    order(state_.orderbyKey_,tuple_count_sum);
     order();
 
 	cout<<"the tuple_count is: "<<tuple_count_sum<<"Total time: "<<getSecond(time)<<" seconds, the swap num is: "<<swap_num<<endl;
-    return true;
+	return true;
 }
 
 bool BlockStreamSortIterator::next(BlockStreamBase* block){
-		/* multi-threads to send the block out*/
+	/* multi-threads to send the block out*/
 	unsigned tuple_size=state_.input_->getTupleMaxSize();
 	while(temp_cur<secondaryArray_.size()){
 		void *desc=0;
@@ -200,19 +201,22 @@ bool BlockStreamSortIterator::next(BlockStreamBase* block){
 }
 
 bool BlockStreamSortIterator::close(){
-    DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();
-    BlockStreamBase* block_to_deallocate;
-    while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
-		block_to_deallocate->~BlockStreamBase();
-    }
+
+	/* */
+//    DynamicBlockBuffer::Iterator it=block_buffer_.createIterator();
+//    BlockStreamBase* block_to_deallocate;
+//    while(block_to_deallocate=(BlockStreamBase*)it.nextBlock()){
+//		block_to_deallocate->~BlockStreamBase();
+//    }
     state_.child_->close();
     return true;
 }
 
 
 bool BlockStreamSortIterator::createBlockStream(BlockStreamBase*& target)const{
+
         //TODO: the block allocation should apply for the memory budget from the buffer manager first.
-		cout<<"state_.block_size_: "<<state_.block_size_<<endl;
+//		cout<<"state_.block_size_: "<<state_.block_size_<<endl;
         target=BlockStreamBase::createBlock(state_.input_,state_.block_size_);
         return target!=0;
 }

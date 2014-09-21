@@ -59,6 +59,11 @@ public:
 	static bool enable_expander_adaptivity;
 	static int expander_adaptivity_check_frequency;
 	static int scan_batch;
+	static std::string hdfs_master_ip;
+	static int hdfs_master_port;
+	static std::string logfile;
+	static bool master;
+	static bool pipelined_exchange;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;

@@ -14,7 +14,7 @@
 #include "../common/ids.h"
 #include "../common/hash.h"
 #include "../Catalog/Attribute.h"
-#include "../Scheduler/Dataflow.h"
+#include "Dataflow.h"
 /**
  * This class describes what properties are required to the child data flow.
  */

@@ -445,7 +445,7 @@ CSBPlusTree<T>* bottomLayerSorting::indexBuilding(vector<compare_node*> chunk_tu
 ///*for testing*/		cout << aray[i]._key << "\t" << aray[i]._block_off << "\t" << aray[i]._tuple_off << endl;
 	}
 	CSBPlusTree<int>* csb_tree = new CSBPlusTree<int>();
-	csb_tree->BulkLoad(aray, chunk_tuples.size());
+//	csb_tree->BulkLoad(aray, chunk_tuples.size());
 	cout << "*************************CSB indexing build successfully!*************************\n";
 	return csb_tree;
 }

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "Partitioner.h"
 #include "../Catalog/Catalog.h"
+#include "../Environment.h"
 #define CHUNKSIZE_IN_MB 64
 #define BLOCKSIZE_IN_KB 64
 
@@ -77,6 +78,8 @@ void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_key,uns
 
 	partition_info_list[partition_key]->hdfs_file_name=partition_info_list[partition_key]->partition_id_.getName();
 	partition_info_list[partition_key]->number_of_blocks=number_of_blocks;
+//	Catalog* catalog=Environment::getInstance()->getCatalog();
+//	catalog->saveCatalog();
 }
 
 void Partitioner::print(){

@@ -6,7 +6,8 @@
  */
 
 #include "BlockStreamNestLoopJoinIterator.h"
-
+#include "BlockStreamJoinIterator.h"
+#include "../../Executor/ExpanderTracker.h"
 BlockStreamNestLoopJoinIterator::BlockStreamNestLoopJoinIterator() {
 	initialize_expanded_status();
 }
@@ -43,7 +44,7 @@ BlockStreamNestLoopJoinIterator::State::State(BlockStreamIteratorBase *child_lef
 		}
 bool BlockStreamNestLoopJoinIterator::open(const PartitionOffset& partition_offset)
 {
-	RegisterNewThreadToAllBarriers();
+//	RegisterNewThreadToAllBarriers();
 //	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 //	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
 	unsigned long long int timer;
@@ -82,7 +83,7 @@ bool BlockStreamNestLoopJoinIterator::open(const PartitionOffset& partition_offs
 	}
 	block_for_asking->~Block();
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		unregisterNewThreadToAllBarriers(1);
+//		unregisterNewThreadToAllBarriers(1);
 		return true;
 	}
 	barrierArrive(1);

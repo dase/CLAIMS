@@ -38,7 +38,7 @@ public:
 	bool ApplyDiskBuget(NodeID target, unsigned size_in_mb);
 	bool ApplyMemoryBuget(NodeID target, unsigned size_in_mb);
 private:
-	boost::unordered_map<NodeID,ResourceInfo*> node_to_resourceinfo_;
+	boost::unordered_map<NodeID,InstanceResourceInfo*> node_to_resourceinfo_;
 	NodeTracker *node_tracker_;
 	Logging* logging_;
 	Theron::EndPoint *endpoint_;

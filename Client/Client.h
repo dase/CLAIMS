@@ -4,7 +4,6 @@
  *  Created on: Feb 18, 2014
  *      Author: volt
  */
-
 #ifndef CLIENT_H_
 #define CLIENT_H_
 

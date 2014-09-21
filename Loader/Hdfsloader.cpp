@@ -60,7 +60,11 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			if (open_flag_ == APPEND)
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			else
+				tmp_block_num.push_back(0);
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -114,7 +118,12 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			if (open_flag_ == APPEND)
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+			else
+				tmp_block_num.push_back(0);
+			//ERROR: the init table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) is wrong!!!
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -147,7 +156,7 @@ bool HdfsLoader::insertRecords(){
 	column_type* tmp = new column_type(t_u_long);
 	std::string tmp_str = tmp->operate->toString(&row_id);
 	delete tmp;
-	s_record = tmp_str + "|" + s_record;
+	s_record = tmp_str + col_separator + s_record;
 	table_schema->toValue(s_record, tuple_buffer, col_separator);
 	row_id++;
 
@@ -194,7 +203,6 @@ bool HdfsLoader::insertRecords(){
 }
 
 bool HdfsLoader::load(){
-
 #ifdef HDFS_LOAD
 	connector_ = new HdfsConnector(writepath);
 	connector_->op_connect(open_flag_);
@@ -211,7 +219,7 @@ bool HdfsLoader::load(){
 			printf("Cannot open source file:%s , reason: %s\n",(*iter).c_str(),strerror(errno));
 			return false;
 		}
-		while(!InFile.eof()/* for testing*/ && t_count++ < 500 )
+		while(!InFile.eof()/* for testing && t_count++ < 500 */)
 		{
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
@@ -224,6 +232,8 @@ bool HdfsLoader::load(){
 		InFile.close();
 ///*for testing*/	t_count++;
 	}
+
+	cout << "----------------------------"<<endl;
 
 	//flush the last block which is not full of 64*1024Byte
 	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
@@ -268,7 +278,7 @@ bool HdfsLoader::load(){
 
 	//register the table to catalog
 
-	Catalog::getInstance()->add_table(table_descriptor_);
+//	Catalog::getInstance()->add_table(table_descriptor_);
 	//register the number of rows in table to catalog
 	table_descriptor_->setRowNumber(row_id);
 	//register the partition information to catalog
@@ -277,6 +287,7 @@ bool HdfsLoader::load(){
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
 	cout << "\n\n\n--------------------------Load End!--------------------------\n";
@@ -344,6 +355,7 @@ bool HdfsLoader::append(std::string tuple_string)
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
 	cout << "\n\n\n--------------------------Append End!--------------------------\n";

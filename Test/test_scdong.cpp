@@ -16,31 +16,32 @@
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
+#include <fstream>
 
 #include "../Executor/IteratorExecutorMaster.h"
 #include "../Executor/IteratorExecutorSlave.h"
+
 #include "../utility/rdtsc.h"
+
 #include "../Environment.h"
+
 #include "../common/Comparator.h"
 #include "../common/Message.h"
-#include "../common/Schema/SchemaFix.h"
 
+#include "../common/Schema/SchemaFix.h"
 
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
+#include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScanDisk.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeMaterialized.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
 
-
-#include <fstream>
-#include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 using namespace std;
 
 /***********************************Pthread && Block at a time*******************************************/
@@ -67,7 +68,7 @@ int main_ld (int argc, char** argv)
 	Schema* i_schema = new SchemaFix(column_list);
 	Schema* d_schema = new SchemaFix(column_list_);
 
-//	ExpandableBlockStreamSingleColumnScan::State ebssc_state1("/home/imdb/temp/6_0.column", d_schema, block_size);
+//	ExpandableBlockStreamSingleColumnScan::State ebssc_state1("/home/claims/temp/6_0.column", d_schema, block_size);
 //	BlockStreamIteratorBase* ebssc1 = new ExpandableBlockStreamSingleColumnScan(ebssc_state1);
 //	ebssc1->open();
 //	BlockStreamBase* block_=BlockStreamBase::createBlock(i_schema,block_size);
@@ -75,16 +76,16 @@ int main_ld (int argc, char** argv)
 //	ebssc1->close();
 //	block_->~BlockStreamBase();
 
-	ExpandableBlockStreamSingleColumnScanDisk::State ebsscsd_state("/home/imdb/temp/5_0.column", d_schema, block_size, scan_size);
+	ExpandableBlockStreamSingleColumnScanDisk::State ebsscsd_state("/home/claims/temp/5_0.column", d_schema, block_size, scan_size);
 	BlockStreamIteratorBase* ebsscsd = new ExpandableBlockStreamSingleColumnScanDisk(ebsscsd_state);
 
-	ExpandableBlockStreamSingleColumnScan::State ebssc_state("/home/imdb/temp/6_0.column", i_schema, block_size, random_size);
+	ExpandableBlockStreamSingleColumnScan::State ebssc_state("/home/claims/temp/6_0.column", i_schema, block_size, random_size);
 	BlockStreamIteratorBase* ebssc = new ExpandableBlockStreamSingleColumnScan(ebssc_state);
 
 //	BlockStreamExpander::State bse_state(i_schema,ebssc,thread_count,block_size,expander_buffer);
 //	BlockStreamIteratorBase* bse=new BlockStreamExpander(bse_state);
 
-	ExpandableBlockStreamRandomDiskAccess::State ebsrda_state("/home/imdb/temp/Uniform_0_9999.column", ebssc, d_schema, i_schema, block_size);
+	ExpandableBlockStreamRandomDiskAccess::State ebsrda_state("/home/claims/temp/Uniform_0_9999.column", ebssc, d_schema, i_schema, block_size);
 	BlockStreamIteratorBase* ebsrda = new ExpandableBlockStreamRandomDiskAccess(ebsrda_state);
 
 	BlockStreamExpander::State bse_state1(d_schema,ebsscsd,thread_count,block_size,expander_buffer);
@@ -153,7 +154,7 @@ int main2342342342 (int argc, char** argv)
 		Schema* d_schema = new SchemaFix(column_list_);
 
 		//Scanning Data
-		ExpandableBlockStreamSingleColumnScan::State ebssc_state("/home/imdb/temp/3_0.column",d_schema,block_size, scan_size);
+		ExpandableBlockStreamSingleColumnScan::State ebssc_state("/home/claims/temp/3_0.column",d_schema,block_size, scan_size);
 		BlockStreamIteratorBase* ebssc=new ExpandableBlockStreamSingleColumnScan(ebssc_state);
 
 		BlockStreamExpander::State bse_state(d_schema,ebssc,thread_count,block_size,expander_buffer);
@@ -166,7 +167,7 @@ int main2342342342 (int argc, char** argv)
 
 
 		//Random Accessing Data
-		ExpandableBlockStreamSingleColumnScan::State ebssc_state1("/home/imdb/temp/6_0.column",i_schema,block_size, random_size);
+		ExpandableBlockStreamSingleColumnScan::State ebssc_state1("/home/claims/temp/6_0.column",i_schema,block_size, random_size);
 		BlockStreamIteratorBase* ebssc1=new ExpandableBlockStreamSingleColumnScan(ebssc_state1);
 
 //		BlockStreamExpander::State bse_state1(i_schema,ebssc1,thread_count,block_size,expander_buffer);
@@ -176,7 +177,7 @@ int main2342342342 (int argc, char** argv)
 		ExpandableBlockStreamExchangeEpoll::State ebse_state1(i_schema,ebssc1,block_size,upper_ip_list,used_lowers,exchange_id1);
 		BlockStreamIteratorBase* ebse1=new ExpandableBlockStreamExchangeEpoll(ebse_state1);
 
-		ExpandableBlockStreamRandomMemAccess::State ebsrma_state("/home/imdb/temp/5_0.column", ebse1, d_schema, i_schema, block_size);
+		ExpandableBlockStreamRandomMemAccess::State ebsrma_state("/home/claims/temp/5_0.column", ebse1, d_schema, i_schema, block_size);
 		BlockStreamIteratorBase* ebsrma = new ExpandableBlockStreamRandomMemAccess(ebsrma_state);
 
 		BlockStreamExpander::State bse_state2(d_schema,ebsrma,thread_count,block_size,expander_buffer);

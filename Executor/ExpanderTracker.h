@@ -119,6 +119,7 @@ struct local_stage{
 class ExpanderTracker {
 
 
+	enum segment_status {seg_no_producing, seg_normal_producing, seg_over_producing,seg_under_producing};
 
 	struct ExpandedThreadStatus{
 		bool call_back_;
@@ -129,6 +130,11 @@ class ExpanderTracker {
 	 * This structure maintains the status of current expander in terms of running stage.
 	 */
 	struct ExpanderStatus{
+		ExpanderStatus(ExpandabilityShrinkability* expand_shrink):perf_info(expand_shrink){
+
+		}
+//		ExpanderStatus(){};
+		~ExpanderStatus();
 		PerformanceInfo perf_info;
 		local_stage current_stage;
 		std::stack<LocalStageEndPoint> pending_endpoints;
@@ -173,6 +179,7 @@ public:
 	ExpanderID registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink);
 	void unregisterExpander(ExpanderID expander_id);
 
+	static segment_status getSegmentStatus(local_stage&);
 private:
 	ExpanderTracker();
 	static void* monitoringThread(void* arg);
@@ -193,7 +200,7 @@ private:
 
 	boost::unordered_map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
 
-	boost::unordered_map<ExpanderID,ExpanderStatus> expander_id_to_status_;
+	boost::unordered_map<ExpanderID,ExpanderStatus*> expander_id_to_status_;
 
 	boost::unordered_map<ExpanderID,ExpandabilityShrinkability*> expander_id_to_expand_shrink_;
 

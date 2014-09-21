@@ -9,7 +9,9 @@
 #include "../ExpandableBlockStreamSingleColumnScan.h"
 #include "../ExpandableBlockStreamFilter.h"
 #include "../BlockStreamInIterator.h"
+
 #include "../../BlockStreamPrint.h"
+
 #include "../../../common/Schema/SchemaFix.h"
 #include "../../../common/Message.h"
 #include "../../../common/AttributeComparator.h"
@@ -30,7 +32,7 @@ static int in_iterator_test ()
 
 	unsigned block_size = 64*1024-sizeof(unsigned);
 
-	ExpandableBlockStreamSingleColumnScan::State ebsscs1_state("/home/imdb/data/wangli/T0G0P0",input, block_size);
+	ExpandableBlockStreamSingleColumnScan::State ebsscs1_state("/home/claims/data/wangli/T0G0P0",input, block_size);
 	BlockStreamIteratorBase* ebssc1=new ExpandableBlockStreamSingleColumnScan(ebsscs1_state);
 
 	unsigned long f = 20000;
@@ -41,7 +43,7 @@ static int in_iterator_test ()
 	BlockStreamIteratorBase* ebfs = new ExpandableBlockStreamFilter(ebsf_state);
 
 
-	ExpandableBlockStreamSingleColumnScan::State ebsscs2_state("/home/imdb/data/wangli/T0G0P0",input, block_size);
+	ExpandableBlockStreamSingleColumnScan::State ebsscs2_state("/home/claims/data/wangli/T0G0P0",input, block_size);
 	BlockStreamIteratorBase* ebssc2=new ExpandableBlockStreamSingleColumnScan(ebsscs1_state);
 
 
@@ -77,9 +79,9 @@ static int in_iterator_test ()
 	}
 	bsp->close();
 
-	IteratorMessage IM(bsp);
-	Message4K M4K = IteratorMessage::serialize4K(IM);
-	IteratorMessage tmp = IteratorMessage::deserialize4K(M4K);
+	PhysicalQueryPlan IM(bsp);
+	Message4K M4K = PhysicalQueryPlan::serialize4K(IM);
+	PhysicalQueryPlan tmp = PhysicalQueryPlan::deserialize4K(M4K);
 	tmp.run();
 
 

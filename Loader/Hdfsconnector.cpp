@@ -7,9 +7,10 @@
 
 #include "Hdfsconnector.h"
 #include <assert.h>
+#include "../Config.h"
 
 HdfsConnector::HdfsConnector(vector<vector <string> > hdfs_writepath):writepath(hdfs_writepath) {
-	hdfsFS hdfsfs = hdfsConnect("10.11.1.190", 9000);
+	hdfsFS hdfsfs = hdfsConnect(Config::hdfs_master_ip.c_str(),Config::hdfs_master_port);
 	fs = hdfsfs;
 
 }
@@ -38,8 +39,10 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_){
 			{
 				if (hdfsExists(fs, (*par_writepath).c_str()) == -1)
 				{
-					cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: The file " << *par_writepath << "is not exits!\n";
-					return false;
+					prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY|O_CREAT, 0, 0, 0));
+					break;
+//					cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: The file " << *par_writepath << "is not exits!\n";
+//					return false;
 				}
 				prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY|O_APPEND, 0, 0, 0));
 				break;

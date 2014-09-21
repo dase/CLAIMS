@@ -1,0 +1,42 @@
+#本机IP地址
+ip = "58.198.176.63";
+
+#端口范围（调试用）
+PortManager:
+{
+    start = 19000;
+    end   = 19500;
+}
+
+#master的IP地址和端口
+coordinator:
+{
+    ip="58.198.176.63"
+    port="11001"
+}
+
+#是否为master. 若为master，则master=1，否则master=0
+master=1
+
+#hadoop上的数据目录
+#data="/home/imdb/data/wangli/"
+#data="/home/imdb/data/tpc-h/4_partitions/SF-1/"
+data="/home/imdb/data/stock/"
+#hdfs主节点
+hdfs_master_ip="58.198.176.63"
+
+#hdfs主节点端口
+hdfs_master_port=9000
+
+#最大单机算子并行度
+max_degree_of_parallelism=2
+
+#初始单机算子并行度
+initial_degree_of_parallelism=1
+
+expander_adaptivity_check_frequency=10000
+
+enable_expander_adaptivity=0
+
+pipelined_exchange=1
+

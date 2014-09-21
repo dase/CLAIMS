@@ -13,7 +13,7 @@
 //#define DEBUG_PerformanceTop
 //#define DEBUG_Coordinator
 //#define DEBUG_Environment
-
+//#define DEBUG_AdaptiveEndPoint
 //#define DEBUG_ExchangeIteratorLowerWithWideDependency
 //#define DEBUG_ExchangeIteratorWithWideDependency
 //#define DEBUG_ExchangeIteratorEager
@@ -28,8 +28,9 @@
 //#define DEBUG_IteratorExecutorSlave
 //#define DEBUG_IteratorExecutorMaster
 //
-
+#define DEBUG_Client
 //#define DEBUG_ExchangeIteratorEager
+//#define DEBUG_ExchangeIteratorSenderMaterialized
 //#define DEBUG_ExpandableBlockStreamExchangeMaterialized
 //#define DEBUG_BlockStreamExchangeLowerBase
 //#define DEBUG_ExpandableBlockStreamExchangeLM
@@ -39,8 +40,8 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
-//#define DEBUG_ASTParser
-//#define SQL_Parser
+#define DEBUG_ASTParser
+#define SQL_Parser
 
 #endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){
@@ -207,7 +208,26 @@ void ExchangeIteratorEagerLowerLogging::log(const char* format,...){
 #endif
 }
 void ExchangeIteratorEagerLowerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ExchangeEagerLowerr]: ");
+	fprintf(stderr,"Error[ExchangeEagerLower]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void ExchangeIteratorSenderMaterialized::log(const char* format,...){
+#ifdef DEBUG_ExchangeIteratorSenderMaterialized
+	printf("ExchangeEagerLowerMaterialized: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ExchangeIteratorSenderMaterialized::elog(const char* format,...){
+	fprintf(stderr,"Error[ExchangeEagerLowerMaterialized]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
@@ -340,6 +360,26 @@ void ASTParserLogging::log(const char* format,...){
 }
 void ASTParserLogging::elog(const char* format,...){
 	fprintf(stderr,"Error[ASTParser]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+
+void ClientLogging::log(const char* format,...){
+#ifdef DEBUG_Client
+	printf("Client: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+void ClientLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[Client]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);

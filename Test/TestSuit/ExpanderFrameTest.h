@@ -3,6 +3,8 @@
 #include "../../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../set_up_environment.h"
 #include "../../common/AttributeComparator.h"
+#include "../../Parsetree/ExecuteLogicalQueryPlan.h"
+#include "../../Executor/IteratorExecutorSlave.h"
 /*
  * ExpanderFrameTest.h
  *
@@ -51,6 +53,9 @@ static int test_scan(){
 }
 static int test_scan_filter_high_selectivity(){
 
+
+
+
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
@@ -67,10 +72,12 @@ static int test_scan_filter_high_selectivity(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64 );
-//	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->print();
+
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
+//	executable_query_plan->open();
+//	while(executable_query_plan->next(0));
+//	executable_query_plan->close();
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -92,6 +99,12 @@ static int test_scan_filter_low_selectivity(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
+
+//	QColcumns *qcol=new QColcumns("cj","row_id",t_u_long,"cj.row_id");//table_name,column_name,actual_type,alias
+//	QExpr *qexpr=new QExpr("1",t_u_long,"1");//data(string),type,alias
+//	QExpr_binary *qcalnode=new QExpr_binary(qcol,qexpr,t_u_long,oper_equal,t_qexpr_cmp,"cj.row_id=1");
+//	vector<QNode *>qual;
+//	qual.push_back(qcalnode);
 	Filter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
@@ -105,10 +118,8 @@ static int test_scan_filter_low_selectivity(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64 );
-	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+//	executable_query_plan->print();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -159,10 +170,8 @@ static int test_scan_filter_Aggregation(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64 );
-//	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->print();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -212,9 +221,7 @@ static int test_scan_filter_Scalar_Aggregation(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
 	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -250,6 +257,8 @@ static int test_no_repartition_filtered_join(){
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
+
+
 	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
 
 	Filter::Condition filter_condition_2;
@@ -273,9 +282,7 @@ static int test_no_repartition_filtered_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -327,10 +334,8 @@ static int test_complete_repartition_filtered_join(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
 	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
-//	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->print();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -352,8 +357,6 @@ static int test_complete_repartition_scan_join(){
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
-
-
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
 	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
 	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
@@ -365,9 +368,7 @@ static int test_complete_repartition_scan_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -402,9 +403,7 @@ static int test_no_repartition_scan_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
 	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -427,6 +426,11 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 
 	startup_single_node_environment_of_poc();
 
+//	LogicalOperator* root=convert_sql_to_logical_operator_tree("selects * from cj;");
+//	if(root!=0){
+//		printf("OK!\n");
+//	}
+
 	printf("This test requires one partition of POC sb and cj\n");
 
 	printf("This test requires one partition of POC sb and cj\n");
@@ -439,7 +443,6 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 ////		sleep(1);
 ////		printf("-----------------------------------------\n");
 	}
-//
 	for(unsigned i=0;i<repeated_times;i++){
 		test_scan_filter_high_selectivity();
 	}
@@ -458,6 +461,7 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_complete_repartition_filtered_join();
 	}
+	printf("______Repartition scan join_________\n");
 	for(unsigned i=0 ; i < repeated_times ; i++){
 		test_complete_repartition_scan_join();
 	}

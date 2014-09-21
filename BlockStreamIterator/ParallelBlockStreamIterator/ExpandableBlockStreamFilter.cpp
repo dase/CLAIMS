@@ -17,6 +17,8 @@
 #include "../../common/Expression/queryfunc.h"
 #include "../../common/data_type.h"
 
+#define NEWCONDITION
+
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state) :
 		state_(state) {
 	initialize_expanded_status();
@@ -83,9 +85,20 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) //the context is empty at first time,so it can skipped
 	{
 		pass_filter = true;
+#ifdef NEWCONDITION
 		if (tuple_from_child != NULL)
 			pass_filter = ExecEvalQual(state_.qual_, tuple_from_child,
 					state_.schema_);
+#else
+		pass_filter=true;
+		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+
+			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+				pass_filter=false;
+				break;
+			}
+		}
+#endif
 		if (pass_filter) {
 
 			const unsigned bytes = state_.schema_->getTupleActualSize(
@@ -138,8 +151,20 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 		 */
 		while ((tuple_from_child = tc->block_stream_iterator_->currentTuple())
 				> 0) {
+
+#ifdef NEWCONDITION
 			pass_filter = ExecEvalQual(state_.qual_, tuple_from_child,
 					state_.schema_);
+#else
+		pass_filter=true;
+		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+
+			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+				pass_filter=false;
+				break;
+			}
+		}
+#endif
 			if (pass_filter) {
 				const unsigned bytes = state_.schema_->getTupleActualSize(
 						tuple_from_child);

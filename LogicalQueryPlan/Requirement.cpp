@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "Requirement.h"
 
+
 Requirement::Requirement():partition_function_(0),cost_limit_(0) {
 	// TODO Auto-generated constructor stub
 

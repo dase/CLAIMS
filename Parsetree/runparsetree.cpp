@@ -29,11 +29,12 @@ static Node * getparsetreeroot()
 	int charnum=0;
 	globalReadOffset = 0;
 
-	NodePointer.clear();
-	errorNumber = 0;
-	parsetreeroot = NULL;
-	memset(globalInputText, 0, sizeof(globalInputText));
-	printf("please input sql: \n");
+
+	NodePointer.clear();	// 2014-3-7---初始化---by余楷	// 2014-4-2---存放节点指针的数组改为vector---by Yu
+	errorNumber = 0;	// 2014-3-6---初始化SQL解析错误个数---by余楷
+	parsetreeroot = NULL;	// 2014-3-4---增加初始化语句---by余楷
+	memset(globalInputText, 0, sizeof(globalInputText));	// 2014-3-4---增加初始化语句---by余楷
+	printf("Claims>");
 	while(1)
 	{
 		char c=getchar();

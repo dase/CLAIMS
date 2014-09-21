@@ -87,11 +87,12 @@ bool ExpandableBlockStreamProjectionScan::open(const PartitionOffset& partition_
 				input_dataset_.input_data_blocks.push_back(ba);
 			}
 		}
-		printf("%lf seconds for initializing!\n",getSecond(start));
+//		printf("%lf seconds for initializing!\n",getSecond(start));
 #endif
 		open_ret_=true;
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Scan",0));
 		perf_info=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+		perf_info->initialize();
 		broadcaseOpenFinishedSignal();
 	}
 	else{
@@ -148,15 +149,16 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 		return true;
 	}
 	else{
-		if(input_dataset_.atomicGet(stc->assigned_data_,Config::scan_batch))
+		if(input_dataset_.atomicGet(stc->assigned_data_,Config::scan_batch)){
 			return next(block);
-		else
+		}
+		else{
 			delete stc;
 			destorySelfContext();
 //			printf("scan_call %ld cycles\n",curtick()-total_start);
 //			perf_info->report_instance_performance_in_millibytes();
 			return false;
-
+		}
 	}
 
 

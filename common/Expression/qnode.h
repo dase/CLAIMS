@@ -30,7 +30,7 @@ typedef  void (*ExecFunc)(FuncCallInfo  fcinfo);
 typedef void* (*FuncCall)(Node *qinfo,void *tuple,Schema *schema);
 enum qnodetype
 {
-	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qname,t_qstring,t_qint,t_qexpr_case_when,t_qexpr_in,
+	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qexpr_case_when,t_qexpr_in,
 	t_qexpr_date_add_sub,
 };
 
@@ -78,8 +78,13 @@ public:
 	QNode *next;
 	ExecFunc function_call;
 	QExpr_unary(){};
-	virtual ~QExpr_unary(){};
+	virtual ~QExpr_unary()
+	{
+		if(next!=NULL)
+			next->~QNode();
+	};
 	QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
+	QExpr_unary(QExpr_unary *node);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -95,8 +100,15 @@ public:
 	QNode *lnext,*rnext;
 	ExecFunc function_call;// 通过函数可以知道具体的node类型，因此不需要进行nodetype的判断
 	QExpr_binary(){};
-	virtual ~QExpr_binary(){};
+	virtual ~QExpr_binary()
+	{
+		if(lnext!=NULL)
+			lnext->~QNode();
+		if(rnext!=NULL)
+			rnext->~QNode();
+	};
 	QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
+	QExpr_binary(QExpr_binary *node);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -112,8 +124,17 @@ public:
 	QNode* next0,*next1,*next2;
 	ExecFunc function_call;
 	QExpr_ternary(){};
-	virtual ~QExpr_ternary(){};
+	virtual ~QExpr_ternary()
+	{
+		if(next0!=NULL)
+			next0->~QNode();
+		if(next1!=NULL)
+			next1->~QNode();
+		if(next2!=NULL)
+			next2->~QNode();
+	};
 	QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
+	QExpr_ternary(QExpr_ternary *node);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -128,6 +149,7 @@ public:
 	int id;//表示在dataflow_schema中的第几个
 	string table,col;
 	QColcumns(const char *tbl,const char *coln,data_type a_type,const char *t_alias);
+	QColcumns(QColcumns *node);
 	QColcumns(){};
 	virtual ~QColcumns(){};
 private:
@@ -143,6 +165,7 @@ class QExpr:public QNode//getconst
 public:
 	string const_value;
 	QExpr(char *val,data_type r_type,char *t_alias);
+	QExpr(QExpr *node);
 	QExpr(){};
 	virtual ~QExpr(){};
 private:
@@ -161,8 +184,21 @@ public:
 	vector<QNode *>ans;
 	QNode *result;
 	QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,string alias_);
+	QExpr_case_when(QExpr_case_when *node);
 	QExpr_case_when(){};
-	virtual ~QExpr_case_when(){};
+	virtual ~QExpr_case_when()
+	{
+		for(int i=0;i<qual.size();i++)
+		{
+			if(qual[i]!=NULL)
+				qual[i]->~QNode();
+		}
+		for(int i=0;i<ans.size();i++)
+		{
+			if(ans[i]!=NULL)
+				ans[i]->~QNode();
+		}
+	};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -177,8 +213,27 @@ public:
 	vector<QNode *>cmpnode;
 	vector< vector<QNode *>  >rnode;
 	QExpr_in(vector<QNode *>&cmpnode_,vector<vector<QNode *> >&rnode_,char * alias_);
+	QExpr_in(QExpr_in *node);
 	QExpr_in(){};
-	virtual ~QExpr_in(){};
+	virtual ~QExpr_in()
+	{
+		for(int i=0;i<cmpnode.size();i++)
+		{
+			if(cmpnode[i]!=NULL)
+				cmpnode[i]->~QNode();
+		}
+		for(int i=0;i<rnode.size();i++)
+		{
+//			if(rnode[i]!=NULL)
+			{
+				for(int j=0;j<rnode[i].size();j++)
+				{
+					if(rnode[i][j]!=NULL)
+						rnode[i][j]->~QNode();
+				}
+			}
+		}
+	};
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -195,8 +250,19 @@ public:
 	data_type rnext_type;//the return type of the rnext
 	ExecFunc function_call;
 	QExpr_date_add_sub(){};
-	virtual ~QExpr_date_add_sub(){};
+	virtual ~QExpr_date_add_sub()
+	{
+		if(lnext!=NULL)
+		{
+			lnext->~QNode();
+		}
+		if(rnext!=NULL)
+		{
+			rnext->~QNode();
+		}
+	};
 	QExpr_date_add_sub(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,data_type rr_type,char *t_alias);
+	QExpr_date_add_sub(QExpr_date_add_sub *node);
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

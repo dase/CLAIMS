@@ -66,14 +66,14 @@ protected:
 	 * Register to all the barriers that a new thread has been registered. Accordingly, barriers
 	 * could increase the expected number of threads by 1.
 	 */
-	void RegisterNewThreadToAllBarriers();
+	void RegisterExpandedThreadToAllBarriers();
 
 	/*
 	 * When an expanded thread is about to exit, call this method before exit to remove the count
 	 * in barriers.
 	 * Please note that
 	 */
-	void unregisterNewThreadToAllBarriers(unsigned barrier_index=0);
+	void unregisterExpandedThreadToAllBarriers(unsigned barrier_index=0);
 
 	void barrierArrive(unsigned barrier_index=0);
 
@@ -90,6 +90,8 @@ protected:
 	 */
 	void destorySelfContext();
 
+	bool checkTerminateRequest();
+
 protected:
 	/* the return value of open() */
 	volatile bool open_ret_;
@@ -99,6 +101,7 @@ protected:
 
 	pthread_mutex_t sync_lock_;
 	pthread_cond_t  sync_cv_;
+
 	/* the semaphore used to guarantee that only the first thread does the real initialization work.*/
 	semaphore* seriliazed_section_entry_key_;
 
@@ -107,9 +110,13 @@ protected:
 	unsigned number_of_barrier_;
 	unsigned number_of_seriliazed_section_;
 
+	unsigned number_of_registered_expanded_threads_;
+	Lock lock_number_of_registered_expanded_threads_;
+
 
 	boost::unordered_map<pthread_t,thread_context*> context_list_;
 	Lock context_lock_;
+
 
 private:
 	friend class boost::serialization::access;

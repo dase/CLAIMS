@@ -17,11 +17,17 @@ using namespace std;
 static void execute_sql_test()
 {
 	Environment::getInstance(true);
-	startup_multiple_node_environment_of_tpch();
-	ResultSet *result_set;
+//	startup_multiple_node_environment_of_stock();
+
+	Catalog* catalog=Environment::getInstance()->getCatalog();
+//	catalog->saveCatalog();
+	catalog->restoreCatalog();	/* restore Catalog*/
+
+	ResultSet *result_set = NULL;
 	bool result_flag=true;
 	string error_msg;
-	char sql[1000];
+	string info;
+	char sql[10000];
 	cout<<"please input  sql:"<<endl;
 	int charnum=0;
 	int count=1;
@@ -38,7 +44,8 @@ static void execute_sql_test()
 			}
 		}
 		result_flag=true;
-		ExecuteLogicalQueryPlan(string(sql),result_set,result_flag,error_msg);
+
+		ExecuteLogicalQueryPlan(string(sql),result_set,result_flag,error_msg, info);
 		if(result_flag==false)
 		{
 			cout<<"[ERROR] "<<error_msg<<endl;
@@ -46,12 +53,10 @@ static void execute_sql_test()
 		else
 		{
 			if(result_set!=NULL)
-			result_set->print();
+				result_set->print();
 		}
 		memset(sql,0,sizeof(0));
 		charnum=0;
-		printf("please input 1 to continue or 0 to end\n");
-		scanf("%d\n",&count);
 	}
 	while(true)
 	{
