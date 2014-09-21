@@ -153,7 +153,6 @@ bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 			return false;
 		}
 		sem_new_block_or_eof_.wait();
-//		usleep(1);
 	}
 
 	/* thread arrives here means that all the lowers exchange are exhausted so that the buffer will not receive new block.

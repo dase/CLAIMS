@@ -131,9 +131,9 @@ void Catalog::restoreCatalog(const char *filename)
 	{
 		std::ifstream ifs(filename);
 		boost::archive::text_iarchive ia(ifs);
-
 		ia>>*this;
 	}
+
 //	cout<<"================================================================"<<endl<<endl;
 //	outPut();
 //	cout<<"================================================================"<<endl<<endl;
@@ -143,7 +143,6 @@ void Catalog::saveCatalog(Catalog &catalog_, const char *filename)
 {
 	std::ofstream ofs(filename);
 	boost::archive::text_oarchive oa(ofs);
-
 	oa<<catalog_;
 	ofs.close();
 }
@@ -157,10 +156,9 @@ void Catalog::restoreCatalog(Catalog &catalog_, const char *filename)
 
 	std::ifstream ifs(filename);
 	boost::archive::text_iarchive ia(ifs);
-
 	ia>>catalog_;
 	ifs.close();
-
+	printf("<><><><><><> restore\n");
 //	cout<<"================================================================"<<endl<<endl;
 //	outPut();
 //	cout<<"================================================================"<<endl<<endl;

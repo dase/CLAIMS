@@ -34,7 +34,8 @@ bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
 	state_.partition_offset_=part_off;
 
 	if (sema_open_.try_wait()) {
-		block_buffer_iterator_=block_buffer_.createIterator();
+		block_buffer_=new ResultSet();
+		block_buffer_iterator_=block_buffer_->createIterator();
 		open_finished_ = true;
 	} else {
 		while (!open_finished_) {
@@ -51,7 +52,7 @@ bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
 //		usleep(1);
 //	}x
 	sema_input_complete_.wait();
-	block_buffer_.query_time_=getSecond(start);
+	block_buffer_->query_time_=getSecond(start);
 	return true;
 }
 bool BlockStreamResultCollector::next(BlockStreamBase* block){
@@ -89,7 +90,7 @@ ResultSet* BlockStreamResultCollector::getResultSet(){
 	while(!ChildExhausted()){
 		usleep(1);
 	}
-	return &block_buffer_;
+	return block_buffer_;
 }
 
 bool BlockStreamResultCollector::createBlockStream(BlockStreamBase*& target)const{
@@ -112,13 +113,13 @@ void* BlockStreamResultCollector::worker(void* arg){
 		assert(false);
 		return 0;
 	}
-	Pthis->block_buffer_.column_header_list_=Pthis->state_.column_header_;
+	Pthis->block_buffer_->column_header_list_=Pthis->state_.column_header_;
 
 	unsigned long long start = 0;
 	start = curtick();
 
 	while(Pthis->state_.child_->next(block_for_asking)){
-		Pthis->block_buffer_.atomicAppendNewBlock(block_for_asking);
+		Pthis->block_buffer_->atomicAppendNewBlock(block_for_asking);
 		if(Pthis->createBlockStream(block_for_asking)==false){
 			assert(false);
 			return 0;
@@ -126,8 +127,8 @@ void* BlockStreamResultCollector::worker(void* arg){
 	}
 	Pthis->sema_input_complete_.post();
 	double eclipsed_seconds = getSecond(start);
-	Pthis->block_buffer_.query_time_=eclipsed_seconds;
-	Pthis->block_buffer_.schema_=Pthis->state_.input_->duplicateSchema();
+	Pthis->block_buffer_->query_time_=eclipsed_seconds;
+	Pthis->block_buffer_->schema_=Pthis->state_.input_->duplicateSchema();
 	Pthis->finished_thread_count_++;
 
 	return 0;
@@ -141,7 +142,7 @@ bool BlockStreamResultCollector::ChildExhausted(){
 
 unsigned long BlockStreamResultCollector::getNumberOftuples()const{
 	unsigned long ret=0;
-	ResultSet::Iterator it=block_buffer_.createIterator();
+	ResultSet::Iterator it=block_buffer_->createIterator();
 	BlockStreamBase* block;
 	while(block=(BlockStreamBase*)it.nextBlock()){
 		ret+=block->getTuplesInBlock();

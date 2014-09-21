@@ -11,13 +11,19 @@
 #include "../Debug.h"
 #include <fstream>
 #include <iostream>
+#include "LocalDiskConnector.h"
+#include "../Config.h"
+#include "Hdfsconnector.h"
 
 #define HDFS_LOAD
 
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
 {
-	row_id = table_descriptor_->getRowNumber();
+	if (open_flag_ == APPEND)
+		row_id = table_descriptor_->getRowNumber();
+	else
+		row_id = 0;
 
 	table_schema = table_descriptor_->getSchema();
 	vector <unsigned> prj_index;
@@ -61,10 +67,10 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
 			if (open_flag_ == APPEND)
-				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			else
 				tmp_block_num.push_back(0);
-/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -75,7 +81,10 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), file_list(file_name), open_flag_(open_flag_), block_size(64*1024)
 {
-	row_id = table_descriptor_->getRowNumber();
+	if (open_flag_ == APPEND)
+		row_id = table_descriptor_->getRowNumber();
+	else
+		row_id = 0;
 
 	table_schema = table_descriptor_->getSchema();
 	vector <unsigned> prj_index;
@@ -119,11 +128,11 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
 			if (open_flag_ == APPEND)
-				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j));
+				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			else
 				tmp_block_num.push_back(0);
 			//ERROR: the init table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) is wrong!!!
-/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) << endl;
+/*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
@@ -185,7 +194,8 @@ bool HdfsLoader::insertRecords(){
 
 #ifdef HDFS_LOAD
 			pj_buffer[i][part]->serialize(*sblock);
-			tSize num_written_every64k_bytes = hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][part], (void*)sblock->getBlock(), sblock->getsize());
+//			tSize num_written_every64k_bytes = hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][part], (void*)sblock->getBlock(), sblock->getsize());
+			tSize num_written_every64k_bytes = connector_->flush(i, part, sblock->getBlock(), sblock->getsize());
 #endif
 
 			cout << row_id << "\t64KB has been written to HDFS!\n";
@@ -204,11 +214,19 @@ bool HdfsLoader::insertRecords(){
 
 bool HdfsLoader::load(){
 #ifdef HDFS_LOAD
-	connector_ = new HdfsConnector(writepath);
-	connector_->op_connect(open_flag_);
+	if(Config::local_disk_mode) {
+		connector_ = new LocalDiskConnector(writepath);
+	}
+	else {
+		connector_ = new HdfsConnector(writepath);
+	}
+	connector_->openFiles(open_flag_);
 #endif
 
-	cout << "\n\n\n--------------------------Load Begin!--------------------------\n";
+	if (open_flag_ == CREATE)
+		cout << "\n\n\n--------------------------Load Begin!--------------------------\n";
+	else
+		cout << "\n\n\n--------------------------Append Begin!--------------------------\n";
 
 	vector<string>::iterator iter;
 /*for testing*/	int t_count = 1;
@@ -245,7 +263,8 @@ bool HdfsLoader::load(){
 				pj_buffer[i][j]->serialize(*sblock);
 
 #ifdef HDFS_LOAD
-				tSize num_written_every64k_bytes = hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][j], (void*)sblock->getBlock(), sblock->getsize());
+				tSize num_written_every64k_bytes = connector_->flush(i, j, sblock->getBlock(), sblock->getsize());
+				//hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][j], (void*)sblock->getBlock(), sblock->getsize());
 #endif
 				cout << row_id << "\tThe last block has written to HDFS!\n";
 
@@ -268,7 +287,7 @@ bool HdfsLoader::load(){
 ///*for testing end*/
 
 #ifdef HDFS_LOAD
-	if(connector_->op_disconnect() == false)
+	if(connector_->closeFiles() == false)
 	{
 		cout << "Failed to close HDFS." << endl;
 		exit(-1);
@@ -276,9 +295,6 @@ bool HdfsLoader::load(){
  		cout << "HDFS close successfully." << endl;
 #endif
 
-	//register the table to catalog
-
-//	Catalog::getInstance()->add_table(table_descriptor_);
 	//register the number of rows in table to catalog
 	table_descriptor_->setRowNumber(row_id);
 	//register the partition information to catalog
@@ -287,21 +303,33 @@ bool HdfsLoader::load(){
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			if (open_flag_ == APPEND)
+			{
+				//TODO: update binding infos and chunk storage level by me later.
+			}
 			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
-	cout << "\n\n\n--------------------------Load End!--------------------------\n";
+	if (open_flag_ == CREATE)
+		cout << "\n\n\n--------------------------Load End!--------------------------\n";
+	else
+		cout << "\n\n\n--------------------------Append End!--------------------------\n";
  	return true;
 }
 
 bool HdfsLoader::append(std::string tuple_string)
 {
 #ifdef HDFS_LOAD
-	connector_ = new HdfsConnector(writepath);
-	connector_->op_connect(open_flag_);
+	if(Config::local_disk_mode) {
+		connector_ = new LocalDiskConnector(writepath);
+	}
+	else {
+		connector_ = new HdfsConnector(writepath);
+	}
+	connector_->openFiles(open_flag_);
 #endif
 
-	cout << "\n\n\n--------------------------Append Begin!--------------------------\n";
+	cout << "\n\n\n--------------------------Insert Begin!--------------------------\n";
 
 	while (tuple_string.length() != 0)
 	{
@@ -327,7 +355,8 @@ bool HdfsLoader::append(std::string tuple_string)
 				pj_buffer[i][j]->serialize(*sblock);
 
 #ifdef HDFS_LOAD
-				tSize num_written_every64k_bytes = hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][j], (void*)sblock->getBlock(), sblock->getsize());
+				tSize num_written_every64k_bytes = connector_->flush(i, j, (void*)sblock->getBlock(), sblock->getsize());
+//						hdfsWrite(connector_->get_fs(), connector_->get_writefile()[i][j], (void*)sblock->getBlock(), sblock->getsize());
 #endif
 				cout << row_id << "The last block has written to HDFS!\n";
 
@@ -339,7 +368,7 @@ bool HdfsLoader::append(std::string tuple_string)
 	}
 
 #ifdef HDFS_LOAD
-	if(connector_->op_disconnect() == false)
+	if(connector_->closeFiles() == false)
 	{
 		cout << "Failed to close HDFS." << endl;
 		exit(-1);
@@ -354,11 +383,23 @@ bool HdfsLoader::append(std::string tuple_string)
 	{
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
+			printf("Table %d, projection %d ::Partition info:%lx\n", i, j, table_descriptor_->getProjectoin(i)->getPartitioner());
+			if(table_descriptor_->getProjectoin(i)->getPartitioner()->allPartitionBound()){
+				printf("[][][]After append bound!\n");
+			}
+			else {
+				printf("[][][]After append NOT bound!\n");
+			}
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			//TODO: update binding infos and chunk storage level by me later.
+			table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);
+
+
+
 			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
-	cout << "\n\n\n--------------------------Append End!--------------------------\n";
+	cout << "\n\n\n--------------------------Insert End!--------------------------\n";
  	return true;
 }
 

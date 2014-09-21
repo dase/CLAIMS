@@ -7,6 +7,7 @@
 
 #include "PartitionStorage.h"
 #include "../Debug.h"
+#include "MemoryStore.h"
 PartitionStorage::PartitionStorage(const PartitionID &partition_id,const unsigned &number_of_chunks,const StorageLevel& storage_level)
 :partition_id_(partition_id),number_of_chunks_(number_of_chunks),desirable_storage_level_(storage_level){
 	for(unsigned i=0;i<number_of_chunks_;i++){
@@ -24,6 +25,20 @@ PartitionStorage::~PartitionStorage() {
 void PartitionStorage::addNewChunk(){
 	number_of_chunks_++;
 }
+
+void PartitionStorage::updateChunksWithInsertOrAppend(const PartitionID &partition_id, const unsigned &number_of_chunks, const StorageLevel& storage_level)
+{
+//	std::vector<ChunkStorage*>::iterator iter = chunk_list_.back();
+	if(!chunk_list_.empty()){
+		MemoryChunkStore::getInstance()->returnChunk(chunk_list_.back()->getChunkID());
+		chunk_list_.back()->setCurrentStorageLevel(HDFS);
+	}
+	for (unsigned i = number_of_chunks_; i < number_of_chunks; i++)
+		chunk_list_.push_back(new ChunkStorage(ChunkID(partition_id, i), BLOCK_SIZE, storage_level));
+	number_of_chunks_ = number_of_chunks;
+	/*testing*/ cout << "--testing--\t append new chunks!\n" << number_of_chunks_ << "blocks total. \n";
+}
+
 PartitionStorage::PartitionReaderItetaor* PartitionStorage::createReaderIterator(){
 	return new PartitionReaderItetaor(this);
 }

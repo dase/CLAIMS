@@ -8,7 +8,6 @@
 #ifndef HDFSLOADER_H_
 #define HDFSLOADER_H_
 
-#include "Hdfsconnector.h"
 
 #include<iostream>
 #include<vector>
@@ -21,6 +20,7 @@
 #include "../Catalog/ProjectionBinding.h"
 #include "../common/Schema/TupleConvertor.h"
 #include "../common/hash.h"
+#include "Connector.h"
 
 using namespace std;
 
@@ -51,7 +51,7 @@ public:
 
 
 private:
-	HdfsConnector* connector_;
+	Connector* connector_;
 	unsigned block_size;
 	const char col_separator;
 	const char row_separator;

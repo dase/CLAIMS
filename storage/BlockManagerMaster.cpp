@@ -11,6 +11,7 @@
 #include "../Environment.h"
 #include "../common/TimeOutReceiver.h"
 #include "../common/Message.h"
+#include "../utility/print_tool.h"
 BlockManagerMaster *BlockManagerMaster::master_=0;
 
 BlockManagerMaster::BlockManagerMaster() {
@@ -93,6 +94,7 @@ std::string BlockManagerMaster::generateSlaveActorName(const NodeID & node_id)co
 	str<<"blockManagerWorkerActor://"<<NodeTracker::getInstance()->getNodeIP(node_id);
 	return str.str();
 }
+
 bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, const unsigned& number_of_chunks, const StorageLevel& desirable_storage_level,const NodeID& target)const{
 	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
 
@@ -102,9 +104,15 @@ bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, con
 	PartitionBindingMessage message(partition_id,number_of_chunks,desirable_storage_level);
 	logging_->log("Sending the binding message to [%s]",generateSlaveActorName(target).c_str());
 	framework_->Send(message,receiver.GetAddress(),Theron::Address(generateSlaveActorName(target).c_str()));
-	if(receiver.TimeOutWait(1,2000)==0){
+	if(receiver.TimeOutWait(1,200000)==0){
 		logging_->elog("The node[%s] fails to receiver the partition binding message! target actor name=%s",NodeTracker::getInstance()->getNodeIP(target).c_str(),generateSlaveActorName(target).c_str());
 	}
 
 	return true;
+}
+
+//updateBindingMessage {}
+bool BlockManagerMaster::UpdateBindingMessage(const PartitionID&, const unsigned& number_of_blocks, const StorageLevel& desirable_storage_level, const NodeID& target)const
+{
+
 }

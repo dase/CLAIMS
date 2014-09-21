@@ -14,6 +14,17 @@
 #include "../Catalog/table.h"
 #include <iosfwd>
 
+struct query_result{
+	query_result():result_set(0){};
+	~query_result(){
+		delete result_set;
+	}
+	string msg;
+	ResultSet* result_set;
+};
+
+bool query(const string & sql,query_result &result_set);
+
 
 void ExecuteLogicalQueryPlan();
 
