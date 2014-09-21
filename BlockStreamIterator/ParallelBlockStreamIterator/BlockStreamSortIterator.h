@@ -14,9 +14,9 @@
 #include "dmalloc.h"
 #endif
 #include "../BlockStreamIteratorBase.h"
-#include "../../common/Block/BlockStream.h"
 #include "../../common/Schema/Schema.h"
 #include "../../configure.h"
+#include "../../common/Block/BlockStream.h"
 #include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../utility/rdtsc.h"
 

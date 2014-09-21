@@ -6,9 +6,10 @@
  */
 
 #include "ExpandableBlockStreamIteratorBase.h"
+#include "../Executor/ExpanderTracker.h"
 
 ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned number_of_barrier,unsigned number_of_seriliazed_section)
-:number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section){
+:number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section),number_of_registered_expanded_threads_(0){
 	// TODO Auto-generated constructor stub
 	barrier_=new Barrier[number_of_barrier_];
 	seriliazed_section_entry_key_=new semaphore[number_of_seriliazed_section_];
@@ -73,15 +74,18 @@ void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
 bool ExpandableBlockStreamIteratorBase::getOpenReturnValue()const{
 	return open_ret_;
 }
-void ExpandableBlockStreamIteratorBase::RegisterNewThreadToAllBarriers(){
-//	assert(barrier_index<number_of_barrier_);
+void ExpandableBlockStreamIteratorBase::RegisterExpandedThreadToAllBarriers(){
+	lock_number_of_registered_expanded_threads_.acquire();
+	number_of_registered_expanded_threads_++;
+	lock_number_of_registered_expanded_threads_.release();
 	for(unsigned i=0;i<number_of_barrier_;i++){
 		barrier_[i].RegisterOneThread();
 	}
 }
 
-void ExpandableBlockStreamIteratorBase::unregisterNewThreadToAllBarriers(unsigned barrier_index){
-//	assert(barrier_index<number_of_barrier_);
+void ExpandableBlockStreamIteratorBase::unregisterExpandedThreadToAllBarriers(unsigned barrier_index){
+	number_of_registered_expanded_threads_--;
+	lock_number_of_registered_expanded_threads_.release();
 	for(unsigned i=barrier_index;i<number_of_barrier_;i++){
 		barrier_[i].UnregisterOneThread();
 	}
@@ -132,4 +136,8 @@ thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 //	printf("Thread %lx is poped!\n",pthread_self());
 	context_lock_.release();
 	return ret;
+}
+
+bool ExpandableBlockStreamIteratorBase::checkTerminateRequest() {
+	return  ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self());
 }

@@ -8,19 +8,29 @@
 #ifndef TPC_H_TEST_CPP_
 #define TPC_H_TEST_CPP_
 #include "../../Environment.h"
+
 #include "../../Catalog/table.h"
+
 #include "../../Loader/Hdfsloader.h"
+
+#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../common/types/NValue.hpp"
-#include "../../utility/rdtsc.h"
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+
 #include "../../common/AttributeComparator.h"
+
+#include "../../common/types/NValue.hpp"
+
+#include "../../utility/rdtsc.h"
+
 #include "../set_up_environment.h"
+#include "../../Executor/IteratorExecutorSlave.h"
 
 static void query_1(){
 	unsigned long long int start=curtick();
@@ -30,17 +40,17 @@ static void query_1(){
 
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(table->getAttribute("L_SHIPDATE"),AttributeComparator::L,std::string("1998-12-01"));
+	filter_condition_1.add(table->getAttribute("LINEITEM.L_SHIPDATE"),AttributeComparator::L,std::string("1998-12-01"));
 	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 //	LogicalOperator* filter=new Filter();
 
 	std::vector<Attribute> group_by_attributes;
-	group_by_attributes.push_back(table->getAttribute("L_RETURNFLAG"));
-	group_by_attributes.push_back(table->getAttribute("L_LINESTATUS"));
+	group_by_attributes.push_back(table->getAttribute("LINEITEM.L_RETURNFLAG"));
+	group_by_attributes.push_back(table->getAttribute("LINEITEM.L_LINESTATUS"));
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(table->getAttribute("L_QUANTITY"));
-	aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
-	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
+	aggregation_attributes.push_back(table->getAttribute("LINEITEM.L_QUANTITY"));
+	aggregation_attributes.push_back(table->getAttribute("LINEITEM.L_EXTENDEDPRICE"));
+	aggregation_attributes.push_back(table->getAttribute("LINEITEM.L_DISCOUNT"));
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
@@ -51,13 +61,14 @@ static void query_1(){
 	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::PERFORMANCE);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(physical_iterator_tree));
+//	physical_iterator_tree->open();
+//	while(physical_iterator_tree->next(0));
+//	physical_iterator_tree->close();
 	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 }
 
@@ -82,23 +93,23 @@ static void query_2(){
 
 
 	Filter::Condition filter_condition_1;
-	filter_condition_1.add(region->getAttribute("R_NAME"),AttributeComparator::EQ,std::string("EUROPE"));
+	filter_condition_1.add(region->getAttribute("REGION.R_NAME"),AttributeComparator::EQ,std::string("EUROPE"));
 	LogicalOperator* r_filter=new Filter(filter_condition_1,r_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_join_condition;
-	r_n_join_condition.push_back(EqualJoin::JoinPair(region->getAttribute("R_REGIONKEY"),nation->getAttribute("N_REGIONKEY")));
+	r_n_join_condition.push_back(EqualJoin::JoinPair(region->getAttribute("REGION.R_REGIONKEY"),nation->getAttribute("NATION.N_REGIONKEY")));
 	LogicalOperator* r_n_join=new EqualJoin(r_n_join_condition,r_scan,n_scan);
 
 	std::vector<EqualJoin::JoinPair> n_s_join_condition;
-	n_s_join_condition.push_back(EqualJoin::JoinPair(nation->getAttribute("N_NATIONKEY"),supplier->getAttribute("S_NATIONKEY")));
+	n_s_join_condition.push_back(EqualJoin::JoinPair(nation->getAttribute("NATION.N_NATIONKEY"),supplier->getAttribute("SUPPLIER.S_NATIONKEY")));
 	LogicalOperator* n_s_join=new EqualJoin(n_s_join_condition,r_n_join,s_scan);
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(supplier->getAttribute("S_SUPPKEY"),partsupp->getAttribute("PS_SUPPKEY")));
+	s_ps_join_condition.push_back(EqualJoin::JoinPair(supplier->getAttribute("SUPPLIER.S_SUPPKEY"),partsupp->getAttribute("PARTSUPP.PS_SUPPKEY")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,n_s_join,ps_scan);
 
 	std::vector<EqualJoin::JoinPair> p_ps_join_condition;
-	p_ps_join_condition.push_back(EqualJoin::JoinPair(partsupp->getAttribute("PS_PARTKEY"),part->getAttribute("P_PARTKEY")));
+	p_ps_join_condition.push_back(EqualJoin::JoinPair(partsupp->getAttribute("PARTSUPP.PS_PARTKEY"),part->getAttribute("PART.P_PARTKEY")));
 	LogicalOperator* s_ps_n_join=new EqualJoin(p_ps_join_condition,s_ps_join,p_scan);
 
 
@@ -125,17 +136,17 @@ static void query_2(){
 	sub_physical_iterator_tree->~BlockStreamIteratorBase();
 
 	Filter::Condition p_filter_condition_1;
-	p_filter_condition_1.add(part->getAttribute("P_SIZE"),AttributeComparator::EQ,std::string("15"));//randomly 0~50
+	p_filter_condition_1.add(part->getAttribute("PART.P_SIZE"),AttributeComparator::EQ,std::string("15"));//randomly 0~50
 	//TODO like predicates
 	LogicalOperator* p_filter=new Filter(p_filter_condition_1,p_scan);
 
 	Filter::Condition ps_filter_condition_1;
-	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),AttributeComparator::EQ,OperateDecimal::toString(sub_query_result));
+	ps_filter_condition_1.add(partsupp->getAttribute("PARTSUPP.PS_SUPPLYCOST"),AttributeComparator::EQ,OperateDecimal::toString(sub_query_result));
 //	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),AttributeComparator::EQ,std::string("1.00"));
 	LogicalOperator* ps_filter=new Filter(ps_filter_condition_1,ps_scan);
 
 	std::vector<EqualJoin::JoinPair> p_ps_farther_join_condition;
-	p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(part->getAttribute("P_PARTKEY"),partsupp->getAttribute("PS_PARTKEY")));
+	p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(part->getAttribute("PART.P_PARTKEY"),partsupp->getAttribute("PARTSUPP.PS_PARTKEY")));
 	LogicalOperator* p_ps_farther_join=new EqualJoin(p_ps_farther_join_condition,p_scan,ps_filter);
 
 
@@ -143,19 +154,19 @@ static void query_2(){
 	///////////////////////////
 
 	Filter::Condition r_filter_father_condition;
-	r_filter_father_condition.add(region->getAttribute("R_NAME"),AttributeComparator::EQ,std::string("AFRICA"));
+	r_filter_father_condition.add(region->getAttribute("REGION.R_NAME"),AttributeComparator::EQ,std::string("AFRICA"));
 	LogicalOperator* r_filter_father=new Filter(r_filter_father_condition,r_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_farther_join_condition;
-	r_n_farther_join_condition.push_back(EqualJoin::JoinPair(region->getAttribute("R_REGIONKEY"),nation->getAttribute("N_REGIONKEY")));
+	r_n_farther_join_condition.push_back(EqualJoin::JoinPair(region->getAttribute("REGION.R_REGIONKEY"),nation->getAttribute("NATION.N_REGIONKEY")));
 	LogicalOperator* r_n_farther_join=new EqualJoin(r_n_farther_join_condition,r_scan,n_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_s_farther_join_condition;
-	r_n_s_farther_join_condition.push_back(EqualJoin::JoinPair(nation->getAttribute("N_NATIONKEY"),supplier->getAttribute("S_NATIONKEY")));
+	r_n_s_farther_join_condition.push_back(EqualJoin::JoinPair(nation->getAttribute("NATION.N_NATIONKEY"),supplier->getAttribute("SUPPLIER.S_NATIONKEY")));
 	LogicalOperator* r_n_s_farther_join=new EqualJoin(r_n_s_farther_join_condition,r_n_farther_join,s_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_s_p_ps_farther_join_condition;
-	r_n_s_p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(supplier->getAttribute("S_SUPPKEY"),partsupp->getAttribute("PS_SUPPKEY")));
+	r_n_s_p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(supplier->getAttribute("SUPPLIER.S_SUPPKEY"),partsupp->getAttribute("PARTSUPP.PS_SUPPKEY")));
 	LogicalOperator* r_n_s_p_ps_farther_join=new EqualJoin(r_n_s_p_ps_farther_join_condition,r_n_s_farther_join,p_ps_farther_join);
 
 
@@ -197,24 +208,24 @@ static void query_3(){
 
 
 	Filter::Condition c_filter_condition;
-	c_filter_condition.add(customer->getAttribute("C_MKTSEGMENT"),AttributeComparator::EQ,std::string("BUILDING"));
+	c_filter_condition.add(customer->getAttribute("CUSTOMER.C_MKTSEGMENT"),AttributeComparator::EQ,std::string("BUILDING"));
 	LogicalOperator* c_filter=new Filter(c_filter_condition,c_scan);
 
 	Filter::Condition o_filter_condition;
-	o_filter_condition.add(orders->getAttribute("O_ORDERDATE"),AttributeComparator::L,std::string("1995-3-15"));
+	o_filter_condition.add(orders->getAttribute("ORDERS.O_ORDERDATE"),AttributeComparator::L,std::string("1995-3-15"));
 	LogicalOperator* o_filter=new Filter(o_filter_condition,o_scan);
 
 
 	std::vector<EqualJoin::JoinPair> c_o_join_condition;
-	c_o_join_condition.push_back(EqualJoin::JoinPair(customer->getAttribute("C_CUSTKEY"),orders->getAttribute("O_CUSTKEY")));
+	c_o_join_condition.push_back(EqualJoin::JoinPair(customer->getAttribute("CUSTOMER.C_CUSTKEY"),orders->getAttribute("ORDERS.O_CUSTKEY")));
 	LogicalOperator* c_o_join=new EqualJoin(c_o_join_condition,c_filter,o_filter);
 
 	Filter::Condition l_filter_condition;
-	l_filter_condition.add(lineitem->getAttribute("L_SHIPDATE"),AttributeComparator::GEQ,std::string("1995-3-15"));
+	l_filter_condition.add(lineitem->getAttribute("LINEITEM.L_SHIPDATE"),AttributeComparator::GEQ,std::string("1995-3-15"));
 	LogicalOperator* l_filter=new Filter(l_filter_condition,l_scan);
 
 	std::vector<EqualJoin::JoinPair> c_o_l_join_condition;
-	c_o_l_join_condition.push_back(EqualJoin::JoinPair(orders->getAttribute("O_ORDERKEY"),lineitem->getAttribute("L_ORDERKEY")));
+	c_o_l_join_condition.push_back(EqualJoin::JoinPair(orders->getAttribute("ORDERS.O_ORDERKEY"),lineitem->getAttribute("LINEITEM.L_ORDERKEY")));
 	LogicalOperator* c_o_l_join=new EqualJoin(c_o_l_join_condition,c_o_join,l_filter);
 
 
@@ -273,7 +284,7 @@ static void load_tpc_h_4_partition(){
 	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partnames;
-	partnames.push_back("/home/imdb/data/tpc-h/source/SF-5/part.tbl");
+	partnames.push_back("/home/claims/data/tpc-h/source/SF-5/part.tbl");
 	HdfsLoader* Hl = new HdfsLoader('|','\n',partnames,table_1);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -297,7 +308,7 @@ static void load_tpc_h_4_partition(){
 	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> suppliernames;
-	suppliernames.push_back("/home/imdb/data/tpc-h/source/SF-5/supplier.tbl");
+	suppliernames.push_back("/home/claims/data/tpc-h/source/SF-5/supplier.tbl");
 	Hl = new HdfsLoader('|','\n',suppliernames,table_2);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -319,7 +330,7 @@ static void load_tpc_h_4_partition(){
 	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> partsuppnames;
-	partsuppnames.push_back("/home/imdb/data/tpc-h/source/SF-5/partsupp.tbl");
+	partsuppnames.push_back("/home/claims/data/tpc-h/source/SF-5/partsupp.tbl");
 	Hl = new HdfsLoader('|','\n',partsuppnames,table_3);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -344,7 +355,7 @@ static void load_tpc_h_4_partition(){
 	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> customernames;
-	customernames.push_back("/home/imdb/data/tpc-h/source/SF-5/customer.tbl");
+	customernames.push_back("/home/claims/data/tpc-h/source/SF-5/customer.tbl");
 	Hl = new HdfsLoader('|','\n',customernames,table_4);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -370,7 +381,7 @@ static void load_tpc_h_4_partition(){
 	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> ordersnames;
-	ordersnames.push_back("/home/imdb/data/tpc-h/source/SF-5/orders.tbl");
+	ordersnames.push_back("/home/claims/data/tpc-h/source/SF-5/orders.tbl");
 	Hl = new HdfsLoader('|','\n',ordersnames,table_5);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -390,7 +401,7 @@ static void load_tpc_h_4_partition(){
 	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> nationnames;
-	nationnames.push_back("/home/imdb/data/tpc-h/source/SF-5/nation.tbl");
+	nationnames.push_back("/home/claims/data/tpc-h/source/SF-5/nation.tbl");
 	Hl = new HdfsLoader('|','\n',nationnames,table_7);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -409,7 +420,7 @@ static void load_tpc_h_4_partition(){
 	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> regionnames;
-	regionnames.push_back("/home/imdb/data/tpc-h/source/SF-5/region.tbl");
+	regionnames.push_back("/home/claims/data/tpc-h/source/SF-5/region.tbl");
 	Hl = new HdfsLoader('|','\n',regionnames,table_8);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -442,7 +453,7 @@ static void load_tpc_h_4_partition(){
 	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",4);
 	///////////////////////////////////////////////////////////////////////////////
 	std::vector<std::string> lineitemnames;
-	lineitemnames.push_back("/home/imdb/data/tpc-h/source/SF-5/lineitem.tbl");
+	lineitemnames.push_back("/home/claims/data/tpc-h/source/SF-5/lineitem.tbl");
 	Hl = new HdfsLoader('|','\n',lineitemnames,table_6);
 	Hl->load();
 	Hl->~HdfsLoader();
@@ -486,7 +497,9 @@ static int tcp_h_test_multi_nodes(){
 	int input;
 	scanf("%d",&input);
 	if(input==0){
+
 		startup_multiple_node_environment_of_tpch(true);
+
 		for(unsigned i=0;i<repeated_times;i++){
 			query_1();
 		}
@@ -501,6 +514,7 @@ static int tcp_h_test_multi_nodes(){
 		startup_multiple_node_environment_of_tpch(false);
 	}
 
+	while(true) sleep(1);
 
 	Environment::getInstance()->~Environment();
 

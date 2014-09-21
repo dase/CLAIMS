@@ -26,6 +26,7 @@ BlockStreamExpander::BlockStreamExpander()
 }
 
 BlockStreamExpander::~BlockStreamExpander() {
+	printf("Expander free!\n");
 	delete logging_;
 }
 
@@ -35,6 +36,11 @@ BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,
 }
 
 bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
+
+//	printf("\n*************%lx****************\n",state_.child_);
+//	state_.child_->print();
+//	printf("*******************************\n\n\n\n");
+
 	received_tuples_=0;
 	logging_->log("[%ld] Expander open, thread count=%d\n",expander_id_,state_.init_thread_count_);
 	state_.partition_offset=partitoin_offset;
@@ -51,6 +57,8 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 			return false;
 		}
 	}
+
+
 
 	/**
 	 * The following three lines test set callback status to expanded threads.
@@ -111,7 +119,6 @@ bool BlockStreamExpander::close(){
 //	assert(ExpanderTracker::getInstance()->expander_id_to_status_.size()==0);
 	delete block_stream_buffer_;
 	logging_->log("[%ld] Buffer is freed in Expander!\n",expander_id_);
-
 	state_.child_->close();
 	thread_count_=0;
 	logging_->log("[%ld] <<<<<<<Expander closed!>>>>>>>>>>\n",expander_id_);
@@ -126,10 +133,14 @@ void BlockStreamExpander::print(){
 void* BlockStreamExpander::expanded_work(void* arg){
 	const pthread_t pid=pthread_self();
 
+
+	bool expanding=true;
+	ticks start=curtick();
+
 	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
 	Pthis->addIntoInWorkingExpandedThreadList(pid);
 	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pid,Pthis->expander_id_);
-	const unsigned thread_id=rand()%100;
+//	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
 	((ExpanderContext*)arg)->sem.post();
 
@@ -149,9 +160,15 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		Pthis->tid_to_shrink_semaphore[pid]->post();
 	}
 	else{
+			if(expanding==true){
+				expanding=false;
+//				printf("Expanding time:%f  %ld cycles\n",getSecond(start),curtick()-start);
+			}
 		BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
 		block_for_asking->setEmpty();
 		while(Pthis->state_.child_->next(block_for_asking)){
+
+
 //			assert(!block_for_asking->Empty());
 			if(!block_for_asking->Empty()){
 				Pthis->lock_.acquire();
@@ -162,7 +179,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 				block_count++;
 			}
 		}
-		block_for_asking->~BlockStreamBase();
+		delete block_for_asking;
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
 			Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
@@ -178,7 +195,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		else{
 			Pthis->logging_->log("%lx Produced %d block before finished\n",pthread_self(),block_count);
 //			assert(block_count!=0);
-			block_for_asking->~BlockStreamBase();
+//			block_for_asking->~BlockStreamBase();
 			Pthis->lock_.acquire();
 			Pthis->finished_thread_count_++;
 
@@ -239,7 +256,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 
 	ExpanderContext para;
 	para.pthis=this;
-
+	ticks start=curtick();
 	if(exclusive_expanding_.try_acquire()){
 		const int error=pthread_create(&tid,NULL,expanded_work,&para);
 		if(error!=0){
@@ -255,6 +272,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		thread_count_++;
 		lock_.release();
 	//	in_work_expanded_thread_list_.insert(tid);
+//		printf("Expand time :%lf \n",getSecond(start));
 		return true;
 	}
 	else{
@@ -263,11 +281,34 @@ bool BlockStreamExpander::createNewExpandedThread(){
 	}
 }
 void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
-	if(ExpanderTracker::getInstance()->callbackExpandedThread(pid)){
+//	if(ExpanderTracker::getInstance()->callbackExpandedThread(pid)){
+//		printf("---> shrink+ %lx\n",pid);
+//		semaphore sem;
+//		tid_to_shrink_semaphore[pid]=&sem;
+//		removeFromInWorkingExpandedThreadList(pid);
+//
+//		addIntoBeingCalledBackExpandedThreadList(pid);
+//		printf("---> shrink added %lx\n",pid);
+//		tid_to_shrink_semaphore[pid]->wait();
+//		lock_.acquire();
+//		tid_to_shrink_semaphore.erase(pid);
+//		lock_.release();
+//
+//		lock_.acquire();
+//		thread_count_--;
+//		lock_.release();
+//		logging_->log("[%ld] A thread is called back !******** working_thread_count=%d, being_called_back_thread_count:%d\n",expander_id_,this->in_work_expanded_thread_list_.size(),this->being_called_bacl_expanded_thread_list_.size());
+//	}
+//	else{
+//		logging_->log("[%ld] This thread has already been called back!.\n",expander_id_);
+//	}
+	if(!ExpanderTracker::getInstance()->isExpandedThreadCallBack(pid)){
 		semaphore sem;
 		tid_to_shrink_semaphore[pid]=&sem;
 		removeFromInWorkingExpandedThreadList(pid);
+
 		addIntoBeingCalledBackExpandedThreadList(pid);
+		ExpanderTracker::getInstance()->callbackExpandedThread(pid);
 		tid_to_shrink_semaphore[pid]->wait();
 		lock_.acquire();
 		tid_to_shrink_semaphore.erase(pid);
@@ -284,7 +325,7 @@ void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
 }
 void BlockStreamExpander::addIntoInWorkingExpandedThreadList(pthread_t pid){
 	lock_.acquire();
-	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
+//	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
 	in_work_expanded_thread_list_.insert(pid);
 	logging_->log("[%ld] %lx is added into in working list!\n",expander_id_,pid);
 	lock_.release();
@@ -364,6 +405,7 @@ bool BlockStreamExpander::Expand(){
 bool BlockStreamExpander::Shrink(){
 //	return true;
 //	bool ret;
+	ticks start=curtick();
 	lock_.acquire();
 	if(in_work_expanded_thread_list_.empty()){
 		lock_.release();
@@ -374,6 +416,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
+//		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
 		return true;
 	}
 //	lock_.release();

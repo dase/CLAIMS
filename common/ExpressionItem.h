@@ -153,18 +153,21 @@ public:
 	bool setFloatValue(const char*);
 	bool setFloatValue(float&);
 	bool setDoubleValue(const char*);
-	//currently,decimal only const char * supported!
-	bool setDecimalValue(const char*);
 	bool setDoubleValue(double&);
+	//currently,decimal only const char * supported!
 	bool setULongValue(const char*);
-	bool setULongValue(unsigned long&);
-	bool setOperator(const char*);
+	bool setULongValue(unsigned long);
 	bool setStringValue(std::string);
+	bool setStringValue(const char * str);
 	bool setVariable(const char *,const char *);
 	bool setVariable(const char *);
+	bool setDecimalValue(const char*);
+	bool setOperator(const char*);
 
 	//currently,date only const char * supported!
 	bool setDateValue(const char *);
+	bool setDatetimeValue(const char *);
+	bool setTimeValue(const char *);
 
 	bool setBooleanValue(bool );////////////
 	bool setSmallIntValue(short &);
@@ -177,7 +180,7 @@ public:
 	ItemType type;
 	date _date;
 	time_duration _time;
-	ptime _datatime;
+	ptime _datetime;
 	NValue _decimal;
 	std::string _string;
 	std::string item_name;

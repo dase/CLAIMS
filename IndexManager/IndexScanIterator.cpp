@@ -210,7 +210,7 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 			map<index_offset, vector<index_offset>* >* result_set;
 			for (vector<query_range>::iterator iter = state_.query_range_.begin(); iter != state_.query_range_.end(); iter++)
 			{
-				result_set = csb_tree->rangeQuery(*(int*)iter->value_low, iter->comp_low, *(int*)iter->value_high, iter->comp_high);
+//				result_set = csb_tree->rangeQuery(*(int*)iter->value_low, iter->comp_low, *(int*)iter->value_high, iter->comp_high);
 				if (result_set->size() != 0)
 				{
 					for (map<index_offset, vector<index_offset>* >::iterator iter_map = result_set->begin(); iter_map != result_set->end(); iter_map++)
@@ -233,6 +233,7 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 				for (rb.iter_result_vector = rb.iter_result_map->second->begin(); rb.iter_result_vector != rb.iter_result_map->second->end(); rb.iter_result_vector++)
 				{
 ///*for testing*/					count++;
+///*for testing*/					cout << "<" << rb.iter_result_map->first << ", " << *rb.iter_result_vector << ">\t";
 					assert(*rb.iter_result_vector<2047);
 				}
 			}

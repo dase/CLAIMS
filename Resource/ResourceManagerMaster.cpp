@@ -34,7 +34,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 //		/*The slaveId has already existed.*/
 //		return false;
 //	}
-	node_to_resourceinfo_[new_node_id]=new ResourceInfo();
+	node_to_resourceinfo_[new_node_id]=new InstanceResourceInfo();
 
 	logging_->log("[ip=%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
 
@@ -49,7 +49,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 }
 std::vector<NodeID> ResourceManagerMaster::getSlaveIDList(){
 	std::vector<NodeID> ret;
-	boost::unordered_map<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
+	boost::unordered_map<NodeID,InstanceResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
 	while(it!=node_to_resourceinfo_.end()){
 		ret.push_back(it->first);
 		it++;
@@ -67,11 +67,13 @@ bool ResourceManagerMaster::ApplyDiskBuget(NodeID target, unsigned size_in_mb){
 }
 bool ResourceManagerMaster::ApplyMemoryBuget(NodeID target, unsigned size_in_mb){
 	if(node_to_resourceinfo_.find(target)==node_to_resourceinfo_.cend()){
+
 		/* target slave does not exist.*/
 		return false;
 	}
 	if(node_to_resourceinfo_[target]->memory.take(size_in_mb))
 		return true;
+	cout<<"no memory"<<endl;
 	return false;
 }
 bool ResourceManagerMaster::RegisterDiskBuget(NodeID report_node_id, unsigned size_in_mb){
@@ -101,9 +103,14 @@ ResourceManagerMaster::ResourceManagerMasterActor::ResourceManagerMasterActor(Th
 }
 
 void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetReport(const StorageBudgetMessage &message,const Theron::Address from){
-	rmm_->RegisterDiskBuget(message.nodeid,message.disk_budget);
-	rmm_->RegisterMemoryBuget(message.nodeid,message.memory_budget);
-	rmm_->logging_->log("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB",message.nodeid,message.disk_budget,message.memory_budget);
+	if(!rmm_->RegisterDiskBuget(message.nodeid,message.disk_budget)){
+		rmm_->logging_->elog("Fail to add the budget information to rmm!");
+	}
+	if(!rmm_->RegisterMemoryBuget(message.nodeid,message.memory_budget)){
+		rmm_->logging_->elog("Fail to add the budget information to rmm!");
+	}
+//	rmm_->logging_->log("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB",message.nodeid,message.disk_budget,message.memory_budget);
+//	printf("The storage of Slave[%d] has been registered, the disk=[%d]MB, memory=[%d]MB\n",message.nodeid,message.disk_budget,message.memory_budget);
 //	Send(0,from);
 }
 void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveNewNodeRegister(const NodeRegisterMessage &message,const Theron::Address from){

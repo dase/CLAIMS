@@ -22,6 +22,8 @@
 
 #define SWITCHER(SWITCH,CAUSE) if (SWITCH) CAUSE;
 
+
+
 ///**
 // * Ideally, this should be guaranteed by resource manager.
 // */
@@ -110,7 +112,7 @@ bool ExpanderTracker::deleteExpandedThreadStatus(expanded_thread_id id){
 	return true;
 
 }
-bool ExpanderTracker::isExpandedThreadCallBack(expanded_thread_id id){
+bool ExpanderTracker::isExpandedThreadCallBack(expanded_thread_id id){	// if this thread want to exit, return true
 	lock_.acquire();
 	if(id_to_status_.find(id)!=id_to_status_.end()){
 		bool ret= id_to_status_[id].call_back_;
@@ -153,7 +155,7 @@ bool ExpanderTracker::addNewStageEndpoint(expanded_thread_id tid ,LocalStageEndP
 		assert(false);
 		return false;
 	}
-	expander_id_to_status_[expender_id].addNewEndpoint(endpoint);
+	expander_id_to_status_[expender_id]->addNewEndpoint(endpoint);
 	lock_.release();
 	return true;
 }
@@ -171,7 +173,7 @@ PerformanceInfo* ExpanderTracker::getPerformanceInfo(expanded_thread_id tid){
 		assert(false);
 //		return false;
 	}
-	PerformanceInfo* ret=&expander_id_to_status_[expender_id].perf_info;
+	PerformanceInfo* ret=&expander_id_to_status_[expender_id]->perf_info;
 	lock_.release();
 	return ret;
 }
@@ -179,8 +181,8 @@ ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer,Expand
 	ExpanderID expander_id;
 	lock_.acquire();
 	expander_id=IDsGenerator::getInstance()->getUniqueExpanderID();
-	expander_id_to_status_[expander_id]=ExpanderStatus();
-	expander_id_to_status_[expander_id].addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
+	expander_id_to_status_[expander_id]=new ExpanderStatus(expand_shrink);
+	expander_id_to_status_[expander_id]->addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
 	expander_id_to_expand_shrink_[expander_id]=expand_shrink;
 	assert(expand_shrink!=0);
 	lock_.release();
@@ -194,12 +196,18 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
 	for(boost::unordered_map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
 		assert(it->second!=expander_id);
 	}
+//	delete expander_id_to_status_[expander_id];
 	expander_id_to_status_.erase(expander_id);
 	expander_id_to_expand_shrink_.erase(expander_id);
 	lock_.release();
 
 }
-void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_point){
+
+ExpanderTracker::ExpanderStatus::~ExpanderStatus() {
+}
+
+void ExpanderTracker::ExpanderStatus::addNewEndpoint(
+		LocalStageEndPoint new_end_point) {
 //	lock.acquire();
 //	if(pending_endpoints.empty()){
 //		pending_endpoints.push(new_end_point);
@@ -241,10 +249,51 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(LocalStageEndPoint new_end_
 		LocalStageEndPoint top=pending_endpoints.top();
 		pending_endpoints.pop();
 		current_stage=local_stage(new_end_point,top);
-		perf_info=PerformanceInfo();
+//		perf_info=PerformanceInfo();
 //		printf("The execution is in a new stage: %s ---> %s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
 	}
 	lock.release();
+}
+ExpanderTracker::segment_status ExpanderTracker::getSegmentStatus(local_stage& current_stage){
+#define refine 0.05
+	switch(current_stage.type_){
+	case local_stage::incomplete:{
+		return seg_no_producing;
+	}
+	case local_stage::no_buffer:{
+		return seg_under_producing;
+	}
+	case local_stage::from_buffer:{
+		double utilization_ratio=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
+		if(utilization_ratio>THRESHOLD_FULL+refine)
+			return seg_under_producing;
+		else if(utilization_ratio<THRESHOLD_EMPTY-refine)
+			return seg_over_producing;
+		return seg_normal_producing;
+	}
+	case local_stage::to_buffer:{
+		double utilization_ratio=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
+		if(utilization_ratio>THRESHOLD_FULL+refine)
+			return seg_over_producing;
+		else if(utilization_ratio<THRESHOLD_EMPTY-refine)
+			return seg_under_producing;
+		return seg_normal_producing;
+	}
+	case local_stage::buffer_to_buffer:{
+		double src_ratio=current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
+		double desc_ratio=current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
+		if(src_ratio<THRESHOLD_EMPTY-refine||desc_ratio>THRESHOLD_FULL+refine)
+			return seg_over_producing;
+		else if(src_ratio>THRESHOLD_FULL-refine&&desc_ratio<THRESHOLD_EMPTY+refine)
+			return seg_under_producing;
+		else
+			return seg_normal_producing;
+	}
+	default:{
+		assert(false);
+		return seg_no_producing;
+	}
+	}
 }
 int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsigned int current_degree_of_parallelism,bool print){
 	/**
@@ -403,7 +452,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			continue;
 		}
 
-		boost::unordered_map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
+		boost::unordered_map<ExpanderID,ExpanderStatus*>::iterator it=Pthis->expander_id_to_status_.begin();
 		for(int tmp=0;tmp<cur;tmp++)
 			it++;
 		ExpanderID id=it->first;
@@ -414,22 +463,26 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
 		bool print=true;
 //		bool print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
-		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);// ----> Agg
+//		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);// ----> Agg
 //		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);  //       ---> Join
-		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
+//		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
 //		printf("return=%d %d print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
 //		bool print=true;
 //		printf("\n");
 		SWITCHER(print,Pthis->log_->log("--------%d---------",id))
 
-		SWITCHER(print,Pthis->log_->log("Instance throughput: %lf Mbytes",it->second.perf_info.report_instance_performance_in_millibytes()))
-
+//		if(Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()!=0)
+		SWITCHER(print,Pthis->log_->log("Instance throughput: %lf Mbytes",it->second->perf_info.report_instance_performance_in_millibytes()))
 		const unsigned int current_degree_of_parallelism=Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
-		int decision=Pthis->decideExpandingOrShrinking(it->second.current_stage,current_degree_of_parallelism,print);
+		int decision=Pthis->decideExpandingOrShrinking(it->second->current_stage,current_degree_of_parallelism,print);
+//		if(current_degree_of_parallelism!=0&&getSegmentStatus(it->second.current_stage)==seg_normal_producing)
+//		printf("%s---->%s\t  d=%d\t %lf\n",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism,it->second->perf_info.report_instance_performance_in_millibytes());
+
 //		printf("Desision=%d\n",decision);
-		SWITCHER(print,Pthis->log_->log("%s---->%s\t  d=%d\t",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism))
+		SWITCHER(print,Pthis->log_->log("%s---->%s\t\t\t\t  d=%d\t",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism))
 		ExpanderID exp_id=it->first;
 		Pthis->lock_.release();
+
 		switch(decision){
 		case DECISION_EXPAND:{
 			if(Pthis->expander_id_to_expand_shrink_[it->first]->Expand()){
@@ -456,7 +509,6 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		}
 //		Pthis->lock_.release();
 		cur++;
-
 //
 //
 //		for(std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();it!=Pthis->expander_id_to_status_.end();it++){

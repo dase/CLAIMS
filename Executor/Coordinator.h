@@ -8,7 +8,7 @@
 #ifndef COORDINATOR_H_
 #define COORDINATOR_H_
 
-#include <Theron/Theron.h>
+#include "Theron/Theron.h"
 #include <string>
 #include <vector>
 #ifdef DMALLOC

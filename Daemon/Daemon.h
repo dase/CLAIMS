@@ -24,10 +24,11 @@ struct remote_command{
 	int socket_fd;
 };
 struct executed_result{
-	int status;
+	bool status;	// ture is OK
 	int fd;
 	ResultSet* result;
 	std::string error_info;
+	std::string info;
 };
 class Daemon {
 public:

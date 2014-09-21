@@ -10,17 +10,26 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
+#include <malloc.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <cstdio>
+#include "../Catalog/Catalog.h"
+#include "../Daemon/Daemon.h"
 #include "ClientResponse.h"
 
-class ClaimsServer {
+class ClientListener {
 public:
-	ClaimsServer(int port);
-	virtual ~ClaimsServer();
+	ClientListener(int port);
+	virtual ~ClientListener();
 
 	void configure();
 //	void run();
 	void shutdown();
-
 private:
 
 	int write(const int fd, const ClientResponse& res) const;
@@ -32,12 +41,14 @@ private:
 	static void* receiveHandler(void *);
 	static void* sendHandler(void *);
 
+	void sendJsonPacket(executed_result res);
+
 	bool isFull() const {
 		return !(m_num < MAXCONN);
 	}
 
 	int m_port;
-	int m_fd;
+	int m_fd;	//listening fd
 	int *m_clientFds;
 	int m_num;
 	const static int MAXCONN = 100;

@@ -15,6 +15,13 @@ QExpr_unary::QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodety
 	alias=string(t_alias);
 	value=NULL;
 }
+QExpr_unary::QExpr_unary(QExpr_unary *node)
+{
+	this->op_type=node->op_type;
+	this->type=node->type;
+	this->actual_type=node->actual_type;
+	this->alias=node->alias;
+}
 QExpr_binary::QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias)
 {
 	op_type=op_types;
@@ -22,10 +29,15 @@ QExpr_binary::QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type 
 	lnext=l_arg;
 	rnext=r_arg;
 	actual_type=a_type;
-//	function_call=f_call;
-	FuncId=Exec_cal;
 	alias=string(t_alias);
 	value=NULL;
+}
+QExpr_binary::QExpr_binary(QExpr_binary *node)
+{
+	this->op_type=node->op_type;
+	this->type=node->type;
+	this->actual_type=node->actual_type;
+	this->alias=node->alias;
 }
 QExpr_ternary::QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias)
 {
@@ -38,16 +50,28 @@ QExpr_ternary::QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_typ
 	alias=string(t_alias);
 	value=NULL;
 }
+QExpr_ternary::QExpr_ternary(QExpr_ternary *node)
+{
+	this->op_type=node->op_type;
+	this->type=node->type;
+	this->actual_type=node->actual_type;
+	this->alias=node->alias;
+}
 QExpr::QExpr(char *val,data_type a_type,char *t_alias)
 {
 	type=t_qexpr;
 	const_value=string(val);
 	actual_type=a_type;
-	FuncId=getConst;
 	alias=string(t_alias);
 	value=NULL;
 }
-
+QExpr::QExpr(QExpr *node)
+{
+	this->type=node->type;
+	this->const_value=node->const_value;
+	this->actual_type=node->actual_type;
+	this->alias=node->alias;
+}
 QColcumns::QColcumns(const char *tbl,const char *coln,data_type a_type,const char *t_alias)
 {
 	type=t_qcolcumns;
@@ -55,9 +79,17 @@ QColcumns::QColcumns(const char *tbl,const char *coln,data_type a_type,const cha
 	actual_type=a_type;
 	table=string(tbl);
 	col=string(coln);
-	FuncId=getcol;
 	alias=string(t_alias);
 	value=NULL;
+}
+QColcumns::QColcumns(QColcumns *node)
+{
+	this->type=node->type;
+	this->id=node->id;
+	this->actual_type=node->actual_type;
+	this->table=node->table;
+	this->col=node->col;
+	this->alias=node->alias;
 }
 QExpr_case_when::QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,string alias_)
 {
@@ -68,6 +100,12 @@ QExpr_case_when::QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,stri
 	actual_type=ans[0]->actual_type;
 	value=NULL;
 }
+QExpr_case_when::QExpr_case_when(QExpr_case_when *node)
+{
+	this->type=node->type;
+	this->alias=node->alias;
+	this->actual_type=node->actual_type;
+}
 QExpr_in::QExpr_in(vector<QNode *>&cmpnode_,vector<vector< QNode *> >&rnode_,char * alias_)
 {
 	cmpnode=cmpnode_;
@@ -77,6 +115,12 @@ QExpr_in::QExpr_in(vector<QNode *>&cmpnode_,vector<vector< QNode *> >&rnode_,cha
 	alias=string(alias_);
 	value=NULL;
 }
+QExpr_in::QExpr_in(QExpr_in *node)
+{
+	this->actual_type=node->actual_type;
+	this->type=node->type;
+	this->alias=node->alias;
+}
 QExpr_date_add_sub::QExpr_date_add_sub(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,data_type rr_type,char *t_alias)
 {
 	op_type=op_types;
@@ -84,8 +128,15 @@ QExpr_date_add_sub::QExpr_date_add_sub(QNode *l_arg,QNode *r_arg,data_type a_typ
 	lnext=l_arg;
 	rnext=r_arg;
 	actual_type=a_type;
-	FuncId=Exec_cal;
 	alias=string(t_alias);
 	value=NULL;
 	rnext_type=rr_type;
+}
+QExpr_date_add_sub::QExpr_date_add_sub(QExpr_date_add_sub *node)
+{
+	this->op_type=node->op_type;
+	this->type=node->type;
+	this->actual_type=node->actual_type;
+	this->alias=node->alias;
+	this->rnext_type=node->rnext_type;
 }

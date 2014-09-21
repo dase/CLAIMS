@@ -833,8 +833,38 @@ inline void date_sub_year(FuncCallInfo fcinfo)
 
 /*****************date********************/
 
-/*****************decimal********************/
-/*****************decimal********************/
+/*****************time********************/
+inline void time_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(time_duration *)fcinfo->args[0]==*(time_duration *)fcinfo->args[1]);
+}
+inline void time_not_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(time_duration *)fcinfo->args[0]!=*(time_duration *)fcinfo->args[1]);
+}
+inline void time_great(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(time_duration *)fcinfo->args[0]>*(time_duration *)fcinfo->args[1]);
+}
+inline void time_great_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(time_duration *)fcinfo->args[0]>=*(time_duration *)fcinfo->args[1]);
+}
+inline void time_less(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(time_duration *)fcinfo->args[0]<*(time_duration *)fcinfo->args[1]);
+}
+inline void time_less_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(time_duration *)fcinfo->args[0]<=*(time_duration *)fcinfo->args[1]);
+}
+/*****************time********************/
 
 /*****************decimal********************/
 /*****************decimal********************/
@@ -1045,9 +1075,18 @@ inline void initialize_operator_function()
 
 	/*****************date********************/
 
-	/*****************double********************/
-	/*****************double********************/
+	/*****************time********************/
+	ExectorFunction::operator_function[t_time][oper_equal]=time_equal;
+	ExectorFunction::operator_function[t_time][oper_not_equal]=time_not_equal;
+	ExectorFunction::operator_function[t_time][oper_great]=time_great;
+	ExectorFunction::operator_function[t_time][oper_great_equal]=time_great_equal;
+	ExectorFunction::operator_function[t_time][oper_less]=time_less;
+	ExectorFunction::operator_function[t_time][oper_less_equal]=time_less_equal;
 
+	/*****************time********************/
+
+	/*****************double********************/
+	/*****************double********************/
 
 
 

@@ -97,15 +97,16 @@ void TableDescriptor::addAttribute(Attribute attr)
 	attributes.push_back(attr);
 }
 bool TableDescriptor::addAttribute(string attname,data_type dt,unsigned max_length,bool unique, bool can_be_null)
+	// make sure the format of attname is colname
 {
+	attname = tableName + '.' + attname;
 	/*check for attribute rename*/
+
 	for(unsigned i=0;i<attributes.size();i++){
 	if(attributes[i].attrName==attname)
-	return false;
+		return false;
 	}
-	stringstream attrintable;
-	attrintable<<tableName.c_str()<<"."<<attname.c_str();
-	Attribute att(table_id_,attributes.size(),attrintable.str(),dt,max_length,unique);
+	Attribute att(table_id_,attributes.size(),attname,dt,max_length,unique,can_be_null);
 	attributes.push_back(att);
 	return true;
 }

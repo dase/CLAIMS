@@ -5,41 +5,24 @@
  *      Author: wangli
  */
 
-
-
-
 #include <stdio.h>
-
 #include <stdlib.h>
-
 #include <unistd.h>
-
 #include <errno.h>
-
 #include <string.h>
-
 #include <sys/types.h>
-
 #include <sys/socket.h>
-
 #include <netinet/in.h>
-
 #include <arpa/inet.h>
 #include <pthread.h>
-#include "../utility/rdtsc.h"
 
+#include "../utility/rdtsc.h"
 
 #define MYPORT 1234    // the port users will be connecting to
 
-
-
 #define BACKLOG 20     // how many pending connections queue will hold
 
-
-
 #define BUF_SIZE 50000
-
-
 
 int fd_A[BACKLOG];    // accepted connection fd
 

@@ -8,18 +8,25 @@
 #ifndef ISSUE27_SORT_CPP_
 #define ISSUE27_SORT_CPP_
 #include "../../Environment.h"
+
 #include "../../Catalog/table.h"
+
 #include "../../Loader/Hdfsloader.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
+
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Sort.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
+#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../../LogicalQueryPlan/Aggregation.h"
+
 #include "../../common/types/NValue.hpp"
+
 #include "../../utility/rdtsc.h"
+
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
 

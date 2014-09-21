@@ -22,9 +22,10 @@
 #include "../../Catalog/stat/Statistic.h"
 #include "../../Catalog/stat/StatManager.h"
 #include "../../Catalog/table.h"
-#include "../../common/data_type.h"
 #include "../../Environment.h"
 #include "../../common/ids.h"
+#include "../../common/data_type.h"
+#include "../../common/AttributeComparator.h"
 
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
@@ -32,12 +33,12 @@
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Scan.h"
+
 #include "../../Parsetree/parsetree2logicalplan.cpp"
 #include "../../Parsetree/runparsetree.cpp"
 #include "../../Parsetree/sql_node_struct.h"
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../utility/rdtsc.h"
-#include "../../common/AttributeComparator.h"
 #include "../../Test/set_up_environment.h"
 
 //#define DEBUG_TestForSerialize
@@ -1454,11 +1455,19 @@ static int query_optimization_outputdata()
 	if(master!=0)
 	{
 		Environment::getInstance(false);
+		while(true){
+			sleep(1);
+		}
 	}
 	else
 	{
 		Environment::getInstance(true);
 		startup_multiple_node_environment_of_tpch();
+
+		/** the following two lines are moved to the initialization code in Environment.*/
+		//Catalog* catalog=Environment::getInstance()->getCatalog();
+		//catalog->restoreCatalog();
+
 //		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 //		Catalog* catalog=Environment::getInstance()->getCatalog();
 ////		TableDescriptor* table_1=new TableDescriptor("PART",0);

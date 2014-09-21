@@ -21,17 +21,23 @@
 #include <string>
 #include <pthread.h>
 #include <map>
-#include "../../common/Schema/Schema.h"
 #include "../BlockStreamIteratorBase.h"
-#include "../../common/Block/BlockContainer.h"
+#include "../../utility/lock.h"
 #include "../../Executor/IteratorExecutorMaster.h"
+
+#include "../../common/Logging.h"
+#include "../../common/ExpandedThreadTracker.h"
+
+#include "../../common/Schema/Schema.h"
+
+#include "../../common/Block/BlockContainer.h"
 #include "../../common/Block/PartitionedBlockBuffer.h"
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/BlockStreamBuffer.h"
-#include "../../common/Logging.h"
-#include "../../utility/lock.h"
-#include "../../common/ExpandedThreadTracker.h"
-class ExpandableBlockStreamExchangeEpoll:public BlockStreamIteratorBase {
+
+#include "../ExpandableBlockStreamIteratorBase.h"
+
+class ExpandableBlockStreamExchangeEpoll:public ExpandableBlockStreamIteratorBase {
 public:
 	struct State{
 		Schema* schema;
@@ -71,11 +77,18 @@ private:
 	void SendBlockAllConsumedNotification(int target_socket_fd);
 	void CloseTheSocket();
 	bool SetSocketNonBlocking(int socket_fd);
+
+	void createPerformanceInfo();
+	/* this function is called to reset status of the iterator instance, so that
+	 * the following calling of open() and next() can act correctly.
+	 */
+	void resetStatus();
+
+
 	static void* receiver(void* arg);
 	static void* debug(void* arg);
 private:
 	State state;
-//	BlockReadable* curBlock;
 	BlockContainer** block_for_socket_;
 	BlockStreamBase* received_block_stream_;
 	int sock_fd;
@@ -86,11 +99,11 @@ private:
 	std::vector<std::string>  lower_ip_array;
 	pthread_t receiver_tid;
 	pthread_t debug_tid;
-	semaphore sem_open_;
-	bool open_finished_;
 	unsigned nexhausted_lowers;
 	unsigned partition_offset;
 	BlockStreamBuffer* buffer;
+
+	semaphore sem_new_block_or_eof_;
 
 	/*the lower socket fd to the index*/
 	std::map<int,int> lower_sock_fd_to_index;
@@ -101,13 +114,13 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state;
+		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state;
 	}
 private:
 	//debug
-	unsigned consumed_block[100];
-	unsigned received_block[100];
-	unsigned winner_thread;
+	unsigned debug_consumed_block[100];
+	unsigned debug_received_block[100];
+	unsigned debug_winner_thread;
 
 };
 

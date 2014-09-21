@@ -12,7 +12,7 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
-#include "../Scheduler/Dataflow.h"
+#include "Dataflow.h"
 #include "../common/Schema/SchemaFix.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "Requirement.h"

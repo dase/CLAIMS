@@ -60,7 +60,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	startTimer(&timer);
 #endif
 
-	RegisterNewThreadToAllBarriers();
+	RegisterExpandedThreadToAllBarriers();
 
 	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
@@ -199,7 +199,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	consumed_tuples_from_right=0;
 #endif
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-		unregisterNewThreadToAllBarriers(1);
+		unregisterExpandedThreadToAllBarriers(1);
 //		printf("<<<<<<<<<<<<<<<<<Join open detected call back signal!>>>>>>>>>>>>>>>>>\n");
 		return true;
 	}

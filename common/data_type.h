@@ -619,7 +619,7 @@ class OperateString:public Operate
 {
 public:
 	OperateString(bool _nullable = true){ this->nullable = _nullable; };
-//	~OperateString(){};
+	~OperateString(){};
 	inline void assignment(const void* const& src, void* const &desc)const
 	{
 		assert(desc!=0&&src!=0);
@@ -1066,7 +1066,8 @@ public:
 		}
 	};
 	void toValue(void* target, const char* string){
-		if ((strcmp(string,"")==0) && this->nullable == true)
+		if ((strcmp(string,"")==0) && this->nullable == true)//modified by Li Wang in Sep.10th
+//		if(string==0 && this->nullable ==true)
 			*(short*)target = NULL_SMALL_INT;
 		else
 			*(short*)target = (short)atoi(string);
@@ -1500,6 +1501,12 @@ public:
 		}
 	};
 	 column_type(const column_type &r){
+		 this->type=r.type;
+		 this->size=r.size;
+		 this->nullable = r.nullable;
+		 this->operate=r.operate->duplicateOperator();
+	 }
+	 column_type& operator=(const column_type &r){
 		 this->type=r.type;
 		 this->size=r.size;
 		 this->nullable = r.nullable;

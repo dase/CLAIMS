@@ -7,20 +7,31 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <string.h>
+
+#include "sql_node_struct.h"
+#include "../Environment.h"
 
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
+
 #include "../common/Comparator.h"
+#include "../common/ExpressionItem.h"
+#include "../common/Logging.h"
+#include "../common/AttributeComparator.h"
+#include "../common/Logging.h"
+#include "../common/AttributeComparator.h"
+#include "../common/TypePromotionMap.h"
+
+#include "../common/Expression/initquery.h"
+#include "../common/Expression/qnode.h"
+
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "sql_node_struct.h"
-#include "../Environment.h"
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../common/ExpressionItem.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
 #include "../common/Logging.h"
@@ -30,8 +41,126 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 #include <assert.h>
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
+static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
+static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
+	SQLParse_log("getfiltercondition   ");
+	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
+//	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
+	switch(wcexpr->type)
+	{
+		case t_expr_cal:
+		{
+			Expr_cal * node=(Expr_cal *)wcexpr;
+			if(strcmp(node->sign,"+")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"-")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"*")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"/")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"MOD")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"INS")==0)
+			{
+				hasin=true;
+			}
+			else if(strcmp(node->sign,"ANDOP")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"OR")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"XOR")==0)
+			{
+
+			}
+			else if(strcmp(node->sign,"CMP")==0)
+			{
+				char * attribute;
+				switch((node->lnext)->type)//获得左边的属性名
+				{
+					case t_name:
+					{
+						Expr *expr=(Expr *)(node->lnext);
+						attribute=expr->data;
+					}break;
+					case t_name_name:
+					{
+						Columns *col=(Columns *)(node->lnext);
+						attribute=col->parameter2;
+					}break;
+					default:
+					{
+
+					}
+				};
+
+				switch(node->cmp)
+				{
+					case 1://"<"
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::L,string(temp));
+
+					}break;
+					case 2://">"
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::G,string(temp));
+					}break;
+					case 3://"<>"
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::NEQ,string(temp));
+					}break;
+					case 4://"="
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::EQ,string(temp));
+					}break;
+					case 5://"<="
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::LEQ,string(temp));
+					}break;
+					case 6://">="
+					{
+						Expr *expr=(Expr *)(node->rnext);
+						char * temp=expr->data;
+						filter_condition.add(loperator->getDataflow().getAttribute(attribute),AttributeComparator::GEQ,string(temp));
+					}break;
+
+				}
+			}
+		}break;
+		default:
+		{
+			SQLParse_elog("getfiltercondition type error");
+		}
+	}
+}
 static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_list,LogicalOperator *filter_1,LogicalOperator * filter_2)
 {
 	switch(wcexpr->type)
@@ -177,7 +306,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			LogicalOperator* tablescan;
 			if(node->issubquery==0)
 			{
-				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));
+				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));//todo
 			}
 			else//need to modify the output_schema_attrname from the subquery to the form of subquery's alias.attrname
 			{

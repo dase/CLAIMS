@@ -8,23 +8,30 @@
 #include <vector>
 #include <iostream>
 #include "../../BlockStreamIterator/BlockStreamPrint.h"
+
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../../common/ids.h"
+
 #include "../../Environment.h"
+
+#include "../../common/ids.h"
 #include "../../common/Mapping.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
 #include "../../common/TypeCast.h"
 #include "../../common/TypePromotionMap.h"
+
+#include "../../common/Block/BlockStream.h"
+
 #include "../../utility/test_tool.h"
 #include "../../utility/rdtsc.h"
-#include "../../common/Block/BlockStream.h"
+
+#include "../../Catalog/ProjectionBinding.h"
+
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/Project.h"
-#include "../../Catalog/ProjectionBinding.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
 

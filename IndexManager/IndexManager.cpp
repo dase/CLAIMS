@@ -28,7 +28,6 @@ IndexManager::IndexManager() {
 
 IndexManager::~IndexManager() {
 	// TODO Auto-generated destructor stub
-	instance_=0;
 }
 
 IndexManager* IndexManager::getInstance()
