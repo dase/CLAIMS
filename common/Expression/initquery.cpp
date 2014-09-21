@@ -451,6 +451,7 @@ QNode * transformqual(Node *node,LogicalOperator* child)
 			{
 				col->parameter1="";
 			}
+
 			QColcumns *qcol=new QColcumns(col->parameter1,col->parameter2,a_type,col->parameter2);
 			return qcol;
 		}break;

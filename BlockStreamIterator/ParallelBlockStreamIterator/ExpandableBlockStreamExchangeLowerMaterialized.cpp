@@ -163,7 +163,7 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::close(){
 	/* close the files*/
 	closeDiskFiles();
 	/* Delete the files */
-//	deleteDiskFiles();
+	deleteDiskFiles();
 
 	state_.child_->close();
 

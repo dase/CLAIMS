@@ -44,7 +44,7 @@ void BlockManager::initialize(){
 	// 读配置文件中的配置，然后根据是否是master注册
 	// 1，建两个存储，一个是内存的，一个磁盘的
 	diskstore_=new DiskStore(DISKDIR);
-	memstore_=new MemoryChunkStore();
+	memstore_=MemoryChunkStore::getInstance();
 
 	///the version written by zhanglei/////////////////////////////////
 //	blockManagerId_=new BlockManagerId();
@@ -315,13 +315,29 @@ bool BlockManager::containsPartition(const PartitionID& part)const{
 bool BlockManager::addPartition(const PartitionID& partition_id, const unsigned & number_of_chunks,const StorageLevel& desirable_storage_level){
 	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(partition_id);
 	if(it!=partition_id_to_storage_.cend()){
-		logging_->elog("Failed to add partition[%s], as it is already existed!",partition_id.getName().c_str());
-		return false;
+//		logging_->elog("Failed to add partition[%s], as it is already existed!",partition_id.getName().c_str());
+//		return false;
+		partition_id_to_storage_[partition_id]->updateChunksWithInsertOrAppend(partition_id, number_of_chunks, desirable_storage_level);
+		logging_->log("Successfully updated partition[%s](desriable_storage_level = %d)!", partition_id.getName().c_str(), desirable_storage_level);
+		/*testing*/ cout << "--testing--\t adding partitions!\n";
+		return true;
 	}
 	partition_id_to_storage_[partition_id]=new PartitionStorage(partition_id,number_of_chunks,desirable_storage_level);
 	logging_->log("Successfully added partition[%s](desriable_storage_level=%d)!",partition_id.getName().c_str(),desirable_storage_level);
 	return true;
 }
+
+bool BlockManager::updatePartition(const PartitionID& partition_id, const unsigned & number_of_blocks, const StorageLevel& desirable_storage_level)
+{
+//	boost::unordered_map<PartitionID, PartitionStorage*>::const_iterator it = partition_id_to_storage_.find(partition_id);
+//	if (it != partition_id_to_storage_.cend())
+//	{
+//		partition_id_to_storage_[partition_id]->appendNewChunks(partition_id, number_of_blocks, desirable_storage_level);
+//		logging_->log("Successfully updated partition[%s](desriable_storage_level = %d)!", partition_id.getName().c_str(), desirable_storage_level);
+//	}
+	return true;
+}
+
 PartitionStorage* BlockManager::getPartitionHandle(const PartitionID& partition_id)const{
 	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(partition_id);
 	if(it==partition_id_to_storage_.cend()){
@@ -334,6 +350,7 @@ BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor(Theron::Framework
 	RegisterHandler(this,&BlockManagerWorkerActor::getBlock);
 	RegisterHandler(this,&BlockManagerWorkerActor::putBlock);
 	RegisterHandler(this,&BlockManagerWorkerActor::BindingPartition);
+//	RegisterHandler(this, &BlockManagerWorkerActor::UpdateBindingPartition);
 }
 
 BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor() {
@@ -417,4 +434,10 @@ string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,Block
 void BlockManager::BlockManagerWorkerActor::BindingPartition(const PartitionBindingMessage& message,const Theron::Address from){
 	bm_->addPartition(message.partition_id,message.number_of_chunks,message.storage_level);
 	Send(int(0),from);
+}
+
+void BlockManager::BlockManagerWorkerActor::UpdateBindingPartition(const PartitionBindingMessage& message, const Theron::Address from)
+{
+//	bm_->updatePartition(message.partition_id, message.number_of_chunks, message.storage_level);
+//	Send(int(0), from);
 }

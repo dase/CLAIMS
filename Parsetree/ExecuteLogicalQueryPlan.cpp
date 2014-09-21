@@ -335,7 +335,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			//				}
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 			result_flag=true;
 			info = "create table successfully";
 			result_set=NULL;
@@ -363,6 +363,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			string partition_attribute_name = newnode->partition_attribute_name;
 
 			std::vector<ColumnOffset> index;
+			index.push_back(0);		// add by scdong: add row_id column to each projection automatically
 			Columns *col_list = (Columns *)newnode->column_list;
 			string colname;
 			while(col_list)
@@ -412,7 +413,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			}
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 
 			result_flag=true;
 			result_set = NULL;
@@ -465,15 +466,12 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 
 #ifdef SQL_Parser
 			root->print(0);
-			cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
-			getchar();
-			getchar();
 #endif
 			BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 
 			//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 			unsigned long long start=curtick();
-			physical_iterator_tree->print();
+//			physical_iterator_tree->print();
 			physical_iterator_tree->open();
 			while(physical_iterator_tree->next(0));
 			physical_iterator_tree->close();
@@ -500,7 +498,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			}
 			string column_separator(new_node->column_separator);
 			string tuple_separator(new_node->tuple_separator);
-			printf("wef:%s\n",new_node->tuple_separator);
+//			printf("wef:%s\n",new_node->tuple_separator);
 			Expr_list *path_node = (Expr_list*)new_node->path;
 
 			ASTParserLogging::log("load file\'s name:");
@@ -525,7 +523,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			result_set=NULL;
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 		}
 		break;
 		case t_insert_stmt:	// 2014-4-19---add---by Yu	// 2014-5-1---modify---by Yu
@@ -689,7 +687,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			Hl->append(ostr.str());
 
 			catalog->saveCatalog();
-			catalog->restoreCatalog();
+//			catalog->restoreCatalog(); // commented by li to solve the dirty read after insert
 
 			result_flag=true;
 			ostr.clear();
@@ -757,7 +755,7 @@ void ExecuteLogicalQueryPlan()
 	int count=1;
 	while(count)
 	{
-		cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
+//		cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
 
@@ -1024,16 +1022,16 @@ void ExecuteLogicalQueryPlan()
 					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 					if(lexpr->offset==NULL)
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 					}
 					else
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 					}
 				}
 				else
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 				}
 #ifdef SQL_Parser
 //				root->print(0);
@@ -1046,13 +1044,20 @@ void ExecuteLogicalQueryPlan()
 //				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 //				physical_iterator_tree->print();
 //				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+//				puts("+++++++++++++++++++++begin time++++++++++++++++");
 
-				puts("+++++++++++++++++++++begin time++++++++++++++++");
 				unsigned long long start=curtick();
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
+
+				ResultSet* result_set=physical_iterator_tree->getResultSet();
+				result_set->print();
+
+				delete physical_iterator_tree; //add by Li. @fzh,@yukai: pleaes remove this comment after first read.
+				delete root;
+				delete result_set;
+//				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 
 			}
 			break;
@@ -1071,7 +1076,7 @@ void ExecuteLogicalQueryPlan()
 				}
 				string column_separator(new_node->column_separator);
 				string tuple_separator(new_node->tuple_separator);
-				printf("wef:%s\n",new_node->tuple_separator);
+//				printf("wef:%s\n",new_node->tuple_separator);
 				Expr_list *path_node = (Expr_list*)new_node->path;
 
 				ASTParserLogging::log("load file\'s name:");
@@ -1296,6 +1301,20 @@ bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsi
 	else if(insert_value->type == 1) {}	// 设置为default, 暂不支持
 
 	return has_warning;
+}
+
+bool query(const string& sql, query_result& result_set) {
+	bool ret;
+	string msg;
+	string err;
+	ExecuteLogicalQueryPlan(sql,result_set.result_set,ret,err,msg);
+	if(ret){
+		result_set.msg = msg;
+	}
+	else {
+		result_set.msg = err;
+	}
+	return ret;
 }
 
 bool CheckType(const column_type *col_type, Expr *expr)		// check whether the string is digit, can use strtol()
