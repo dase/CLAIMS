@@ -8,6 +8,7 @@
 #include "BlockStreamNestLoopJoinIterator.h"
 #include "BlockStreamJoinIterator.h"
 #include "../../Executor/ExpanderTracker.h"
+#include "../../common/Block/BlockStream.h"
 BlockStreamNestLoopJoinIterator::BlockStreamNestLoopJoinIterator() {
 	initialize_expanded_status();
 }
@@ -16,7 +17,7 @@ BlockStreamNestLoopJoinIterator::~BlockStreamNestLoopJoinIterator() {
 	// TODO Auto-generated destructor stub
 }
 BlockStreamNestLoopJoinIterator::BlockStreamNestLoopJoinIterator(State state)
-:state_(state){
+:state_(state),ExpandableBlockStreamIteratorBase(2,1){
 	initialize_expanded_status();
 }
 BlockStreamNestLoopJoinIterator::State::State(BlockStreamIteratorBase *child_left,
@@ -75,7 +76,7 @@ bool BlockStreamNestLoopJoinIterator::open(const PartitionOffset& partition_offs
 		unregisterExpandedThreadToAllBarriers(1);
 		return true;
 	}
-//	barrierArrive(1);//??ERROR
+	barrierArrive(1);//??ERROR
 //	join_thread_context* jtc=new join_thread_context();
 	jtc->block_for_asking_=BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_);
 	jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
@@ -88,19 +89,38 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 	void *tuple_from_buffer_child;
 	void *tuple_from_right_child;
 	void *result_tuple;
+	BlockStreamBase* buffer_block;
 	join_thread_context* jtc=(join_thread_context*)getContext();
 	while(1)
 	{
 		while((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())>0)
 		{
-//			while((jtc->buffer_iterator_.nextBlock())>0)
+//			for(int i=0;i<state_.input_schema_right->columns.size();i++)
+//			{
+//				cout<<state_.input_schema_right->getcolumn(i).operate->toString(state_.input_schema_right->getColumnAddess(i,tuple_from_right_child))<<endl;
+//			}
+//			cout<<endl;
+			jtc->buffer_iterator_=blockbuffer->createIterator();
+			while((buffer_block=jtc->buffer_iterator_.nextBlock())>0)
 			{
-				while((tuple_from_buffer_child=jtc->buffer_iterator_.nextBlock()->createIterator()->nextTuple())>0)
+				jtc->buffer_stream_iterator_->~BlockStreamTraverseIterator();
+				jtc->buffer_stream_iterator_=buffer_block->createIterator();
+				while((tuple_from_buffer_child=jtc->buffer_stream_iterator_->currentTuple())>0)
 				{
+//					for(int i=0;i<state_.input_schema_left->columns.size();i++)
+//					{
+//						cout<<state_.input_schema_left->getcolumn(i).operate->toString(state_.input_schema_left->getColumnAddess(i,tuple_from_buffer_child))<<endl;
+//					}
+//					cout<<endl;
 					if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0)
 					{
 						const unsigned copyed_bytes=state_.input_schema_left->copyTuple(tuple_from_buffer_child,result_tuple);
 						state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
+						for(int i=0;i<state_.output_schema->columns.size();i++)
+						{
+							cout<<state_.output_schema->getcolumn(i).operate->toString(state_.output_schema->getColumnAddess(i,result_tuple))<<" | ";
+						}
+						cout<<endl;
 					}
 					else
 					{
@@ -109,10 +129,10 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 					jtc->buffer_stream_iterator_->increase_cur_();
 				}
 			}
+
 			jtc->block_stream_iterator_->increase_cur_();
 		}
 		jtc->block_for_asking_->setEmpty();
-		jtc->buffer_iterator_=blockbuffer->createIterator();
 
 		if(state_.child_right->next(jtc->block_for_asking_)==false)
 		{

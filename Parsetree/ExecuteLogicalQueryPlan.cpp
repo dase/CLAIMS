@@ -787,10 +787,7 @@ void ExecuteLogicalQueryPlan()
 			case t_create_table_stmt:	// 创建表的语句
 			{
 				/* nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt */
-
-				SQLParse_log("this is create table stmt \n");
 				Create_table_stmt * ctnode = (Create_table_stmt *)node;
-				//获取新建表的表名
 				if(ctnode->name2 != NULL)
 				{
 					tablename = ctnode->name2;
@@ -801,49 +798,95 @@ void ExecuteLogicalQueryPlan()
 				}
 				else
 				{
-					ASTParserLogging::elog("No table name!");
+					result_flag=false;
+					result_set = NULL;
 					break;
 				}
 
-				// 2014-3-25---检查表是否已存在---by Yu
+
 				TableDescriptor *new_table = Environment::getInstance()->getCatalog()->getTable(tablename);
 				if (new_table != NULL)
 				{
-//					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
-					ASTParserLogging::elog("The table %s has existed!", tablename.c_str());
+					result_flag=false;
+					result_set = NULL;
 					break;
 				}
-
-				// 创建新表
 				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+
+
+				new_table->addAttribute("row_id",data_type(t_u_long),0,true);
+
 				Create_col_list *list = (Create_col_list*)ctnode->list;
 				string primaryname;
 				int colNum = 0;
 				while (list)
 				{
 					Create_def *data = (Create_def*) list->data;
-					if (data->deftype == 1)	//若为这个语法：NAME data_type column_atts
+					if (data->deftype == 1)
 					{
-						++colNum;	// 2014-2-24---移动位置到if语句内
-						string colname = data->name;	// 2014-2-24---移动位置到if语句内
+						++colNum;
+						string colname = data->name;
 						primaryname = colname;
 						Column_atts *column_atts = (Column_atts*)data->col_atts;
 
-						/* TODO: Whether column is unique or not null or has default value is not finished,
+						/* TODO: Whether column is unique or has default value is not finished,
 						 *  because there are no supports
 						 */
 						Datatype * datatype = (Datatype *)data->datatype;
 						switch (datatype->datatype)	// add more type --- 2014-4-2
 						{
-						case 3:
+						case 1:
 						{
-							new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){	// not null
+								new_table->addAttribute(colname, data_type(t_boolean), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){	// can be null
+								new_table->addAttribute(colname, data_type(t_boolean), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_boolean), 0, true);
+							}
+							cout<<colname<<" is created"<<endl;
 							break;
 						}
-						case 5:
-						case 6:
+						case 3:
 						{
-							new_table->addAttribute(colname, data_type(t_int), 0, true);
+							if (datatype->opt_uz & 01 != 0){
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true);
+								}
+							}
+							else{
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
+								}
+							}
+							cout<<colname<<" is created"<<endl;
+							break;
+						}
+						case 5: case 6:
+						{
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_int), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_int), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_int), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
@@ -851,75 +894,171 @@ void ExecuteLogicalQueryPlan()
 						{
 							if (datatype->opt_uz & 01 != 0)
 							{
-								new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+								}
 								cout<<colname<<" is created"<<endl;
 							}
 							else
 							{
 								//TODO:no supports
-								ASTParserLogging::log("This type is not supported!");
+								result_flag=false;
+								result_set = NULL;
 							}
 							break;
 						}
 						case 9:
 						{
-							new_table->addAttribute(colname, data_type(t_double), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_double), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_double), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_double), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 10:
 						{
-							new_table->addAttribute(colname, data_type(t_float), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_float), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_float), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_float), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 11:
 						{
-							new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+							}
+							cout<<colname<<" is created"<<endl;
 						}
 						case 12:	// DATE --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_date), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_date), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_date), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_date), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 13:	// TIME --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_time), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_time), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_time), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_time), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						case 15:	// DATETIME --- 2014-4-1
 						{
-							new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							if (column_atts && (column_atts->datatype && 01)){
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true, false);
+							}
+							else if (column_atts && (column_atts->datatype && 02)){
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true, true);
+							}
+							else{
+								new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 
 						case 17: case 18:
 						{
-							if (datatype->length)	//已指定长度
+							if (datatype->length)
 							{
 								Length * l = (Length*)datatype->length;
-								new_table->addAttribute(colname, data_type(t_string), l->data1, true);
+
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_string), l->data1, true);
+								}
 							}
-							else	//未指定长度
+							else
 							{
-								new_table->addAttribute(colname, data_type(t_string), 1, true);
+								if (column_atts && (column_atts->datatype && 01)){
+									new_table->addAttribute(colname, data_type(t_string), 1, true, false);
+								}
+								else if (column_atts && (column_atts->datatype && 02)){
+									new_table->addAttribute(colname, data_type(t_string), 1, true, true);
+								}
+								else{
+									new_table->addAttribute(colname, data_type(t_string), 1, true);
+								}
 							}
 							cout<<colname<<" is created"<<endl;
 							break;
 						}
 						default:
 						{
-							ASTParserLogging::log("This type is not supported now!");
+							result_flag=false;
+							result_set = NULL;
 						}
 						}
 					}
 					list = (Create_col_list* )list->next;
 				}
+				if(result_flag==false)
+					return;
+
+				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
+
+				//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
+
 				catalog->add_table(new_table);
 
+				//				TableID table_id=catalog->getTable(tablename)->get_table_id();
+
+				//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+				//					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+				//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+				//				}
+
+				catalog->saveCatalog();
+	//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
+				result_flag=true;
+				info = "create table successfully";
+				result_set=NULL;
+				return;
 			}
 			break;
 			case t_create_projection_stmt:	// 创建projection的语句
