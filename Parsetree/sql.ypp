@@ -418,9 +418,9 @@ char linebuf[500];
 %type <ast_node> opt_length  enum_list
 %type <ast_node> column_atts create_col_list
 
-%type <intval> update_opts	// 2014-3-24---更改位置到此---by Yu
+%type <intval> update_opts	// 2014-3-24---change position at here---by Yu
 
-%type <ast_node> opt_ondupupdate insert_stmt	// 2014-4-17---add---by Yu
+%type <ast_node> opt_ondupupdate insert_stmt	
 
 %type <ast_node>interval_exp //---5.26fzh----
 
@@ -431,11 +431,11 @@ char linebuf[500];
 %type <ast_node> create_definition alter_database_stmt alter_table_stmt opt_csc	
 %type <ast_node> alter_list alter_def data_type create_projection_stmt
 %type <ast_node> truncate_stmt
-%type <ast_node> create_index_stmt index_col_list drop_index_stmt	// 2014-3-24---增加---by Yu
-%type <ast_node> drop_database_stmt drop_table_stmt table_list	// 2014-3-24---增加---by Yu
-%type <ast_node> load_table_stmt	// 2014-3-27---增加---by Yu
+%type <ast_node> create_index_stmt index_col_list drop_index_stmt	
+%type <ast_node> drop_database_stmt drop_table_stmt table_list	
+%type <ast_node> load_table_stmt	
 %type <ast_node> show_stmt	// 2014-5-4---add---by Yu
-%type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		// 2014-3-24---增加---by Yu
+%type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		
 %type <intval> opt_col index_att index_type rename_list
 %type <intval> opt_chain opt_release opt_read_write
 %type <intval> opt_trans_level trans_att priv_database_type priv_table_type
@@ -452,7 +452,7 @@ char linebuf[500];
 
 %%
 
-stmt_list: stmt ';'		{ 		// 2014-3-4---增加对多条指令的识别支持---by余楷		// 2014-3-6---解析错误后置根结点为空---by余楷
+stmt_list: stmt ';'		{ 	
   						printf("> \n"); 
   						$$ = newStmt(t_stmt, NULL, $1); 
   						if (errorNumber == 0) 
@@ -465,7 +465,7 @@ stmt_list: stmt ';'		{ 		// 2014-3-4---增加对多条指令的识别支持---by
   						} 
   						/* output($$, 1);*/ 
   					}	
-	| stmt_list stmt ';'	{ 		// 2014-3-4---增加对多条指令的识别支持---by余楷		// 2014-3-6---解析错误后置根结点为空---by余楷
+	| stmt_list stmt ';'	{ 	
 	  					printf(">> \n"); 
 	  					$$ = newStmt(t_stmt, $1, $2); 
 	  					if (errorNumber == 0)
@@ -480,8 +480,8 @@ stmt_list: stmt ';'		{ 		// 2014-3-4---增加对多条指令的识别支持---by
 	  				}		
   	| error ';'			{ 
   						printf("> \n");
-  						parsetreeroot = NULL;	// 2014-3-6---解析错误后置根结点为空---by余楷
-  						errorNumber++;		// 2014-3-6---错误数加1---by余楷
+  						parsetreeroot = NULL;	
+  						errorNumber++;	
   						//yyerror("First statement discarded, input new statement"); 
   						yyclearin;
   						yyerrok; 				
@@ -498,7 +498,7 @@ stmt_list: stmt ';'		{ 		// 2014-3-4---增加对多条指令的识别支持---by
 
    /* statements: select statement */
 
-stmt: select_stmt { $$=$1; /*output($$, 1);*/ puts("SQL parser： This is a select statement"); }		// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: select_stmt { $$=$1; /*output($$, 1);puts("SQL parser： This is a select statement"); */ }		// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 
 select_stmt: 
@@ -755,7 +755,7 @@ delete_stmt: DELETE delete_opts FROM delete_list USING table_references opt_wher
 
    /* statements: insert statement */	//2014-4-17---add---by Yu
 
-stmt: insert_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a insert statement"); }	//2014-4-16---add---by Yu
+stmt: insert_stmt { $$=$1; /*output($$, 1); puts("SQL parser： This is a insert statement");*/ }	//2014-4-16---add---by Yu
    ;
 
 insert_stmt: INSERT insert_opts opt_into NAME
@@ -887,7 +887,7 @@ update_asgn_list:
 
    /** create database **/
 
-stmt: create_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_database statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: create_database_stmt { $$=$1;/* output($$, 1); puts("SQL parser： This is a create_database statement");*/ }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
    ;
 
 create_database_stmt: 
@@ -903,7 +903,7 @@ opt_if_not_exists:  /* nil */ { $$ = 0; }
 
    /** create table **/
    
-stmt: create_table_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_table statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: create_table_stmt { $$=$1;/* output($$, 1); puts("SQL parser： This is a create_table statement"); */}	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
    ;
 
 create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
@@ -977,7 +977,7 @@ column_atts: /* nil */				{ $$ = newColumnAtts(t_column_atts, 0, 0, 0, NULL, NUL
     ;
     
 	/** create projection **/	// 2014-2-24---增加对create projection语句的语法识别---by 余楷
-stmt: create_projection_stmt	{ $$ = $1; puts("SQL parser： This is a create_projection statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: create_projection_stmt	{ $$ = $1;/* puts("SQL parser： This is a create_projection statement");*/ }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 	
 	// 2014-2-24---增加对create projection语句的语法识别---by 余楷
@@ -994,11 +994,11 @@ create_projection_stmt: CREATE PROJECTION ON NAME '(' column_list ')' PARTITIONE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** do expr **/
-stmt: DO expr_list { $$ = newDoStmt(t_do_stmt,$2); puts("SQL parser： This is a do expr statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: DO expr_list { $$ = newDoStmt(t_do_stmt,$2);/* puts("SQL parser： This is a do expr statement");*/ }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
     ;
     
 	/** truncate stmt **/
-stmt: truncate_stmt { $$ = $1; puts("SQL parser： This is a truncate_stmt statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: truncate_stmt { $$ = $1; /*puts("SQL parser： This is a truncate_stmt statement");*/ }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
     ;
 	
 truncate_stmt: TRUNCATE NAME	{ $$ = newTruncateStmt(t_truncate_stmt, $2); }
@@ -1006,7 +1006,7 @@ truncate_stmt: TRUNCATE NAME	{ $$ = newTruncateStmt(t_truncate_stmt, $2); }
     ;
 
    /** alter database **/
-stmt: alter_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a alter_database statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: alter_database_stmt { $$=$1;/* output($$, 1); puts("SQL parser： This is a alter_database statement");*/ }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 
 alter_database_stmt:	// 2-19---修改函数名---by余楷
@@ -1015,7 +1015,7 @@ alter_database_stmt:	// 2-19---修改函数名---by余楷
 	;
    
    /** alter table **/	// 2-19---修改alter table 语句语法结构---by余楷
-stmt: alter_table_stmt	{ $$=$1; output($$, 1); puts("SQL parser： This is a alter_table statement"); }	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
+stmt: alter_table_stmt	{ $$=$1; /*output($$, 1); puts("SQL parser： This is a alter_table statement"); */}	// 2014-3-5---优化输出信息，指明来自SQL parser---by余楷
 	;
 	
 /*MySQL可以在一个ALTER TABLE语句里写入多个ADD, ALTER, DROP和CHANGE子句，中间用逗号分开*/   
@@ -1050,7 +1050,7 @@ opt_ignore: /* nil */ { $$ = 0; }
    ;
 	
     /** create index **/	// 2014-3-24---增加---by Yu
-stmt: create_index_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a create_index statement"); }
+stmt: create_index_stmt { $$=$1;/* output($$, 1); puts("SQL parser： This is a create_index statement");*/ }
 	;
 	
 create_index_stmt:
@@ -1077,14 +1077,14 @@ index_col_list: NAME opt_length opt_asc_desc			{ $$ = newIndexColList(t_index_co
 	;
 	
 	/** drop index **/	// 2014-3-24---增加---by Yu
-stmt: drop_index_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_index statement"); }
+stmt: drop_index_stmt { $$=$1; /*output($$, 1); puts("SQL parser： This is a drop_index statement");*/ }
     ;
 	
 drop_index_stmt: DROP INDEX NAME ON NAME	{ $$ = newDropIndex(t_drop_index, $3, $5); }
     ;
 	
 	/**	drop database **/		// 2014-3-24---增加---by Yu
-stmt: drop_database_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_database statement"); }
+stmt: drop_database_stmt { $$=$1;/* output($$, 1); puts("SQL parser： This is a drop_database statement");*/ }
 	;
 	
 drop_database_stmt: 
@@ -1097,7 +1097,7 @@ opt_if_exists: /* nil */	{ $$ = 0; }
    ;
    
    /** drop table **/	// 2014-3-24---增加---by Yu
-stmt: drop_table_stmt { $$=$1; output($$, 1); puts("SQL parser： This is a drop_table statement"); }
+stmt: drop_table_stmt { $$=$1; /*output($$, 1); puts("SQL parser： This is a drop_table statement"); */}
 
 drop_table_stmt:
 	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	{ $$ = newDropTable(t_drop_table_stmt, $2, $4, $6, $5); }
@@ -1115,7 +1115,7 @@ opt_rc: /* nil */ 	{ $$ = 0; }
    ;
    
    /** load table **/	// 2014-3-27---增加---by Yu
-stmt: load_table_stmt	{ $$=$1; output($$, 1); puts("SQL parser： This is a load_table statement"); }
+stmt: load_table_stmt	{ $$=$1;/* output($$, 1); puts("SQL parser： This is a load_table statement");*/ }
 	;
 	
 load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING	{ $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9);}
@@ -1466,7 +1466,7 @@ stmt: restore_table_stmt { emit("STMT"); }
 restore_table_stmt: RESTORE TABLE table_list FROM STRING
    ;
    
-stmt: show_stmt { $$ = $1; output($$, 1); puts("SQL parser： This is a show statement"); }
+stmt: show_stmt { $$ = $1; /*output($$, 1); puts("SQL parser： This is a show statement");*/ }
 	;
    
 show_stmt: SHOW opt_full TABLES opt_from opt_like_string	{ $$ = newShowStmt(1, $2, $4, $5); }

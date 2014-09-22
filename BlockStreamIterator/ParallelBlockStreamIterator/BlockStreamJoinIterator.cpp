@@ -245,12 +245,14 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 
 	while(true){
 //		if(atomicPopRemainingBlock(rb)){
-			while((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())>0){
+			while((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())>0)
+			{
 //				jtc->block_stream_iterator_->increase_cur_();
 //				bn=0;
 //				continue;
 				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
-				while((tuple_in_hashtable=jtc->hashtable_iterator_.readCurrent())>0){
+				while((tuple_in_hashtable=jtc->hashtable_iterator_.readCurrent())>0)
+				{
 					key_exit=true;
 					for(unsigned i=0;i<state_.joinIndex_right.size();i++){
 						key_in_input=state_.input_schema_right->getColumnAddess(state_.joinIndex_right[i],tuple_from_right_child);

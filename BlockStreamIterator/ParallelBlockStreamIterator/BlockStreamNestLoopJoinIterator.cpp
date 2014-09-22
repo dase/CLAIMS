@@ -24,70 +24,62 @@ BlockStreamNestLoopJoinIterator::State::State(BlockStreamIteratorBase *child_lef
 				       Schema *input_schema_left,
 				       Schema *input_schema_right,
 				       Schema *output_schema,
-						std::vector<unsigned> joinIndex_left,
-						std::vector<unsigned> joinIndex_right,
-						std::vector<unsigned> payload_left,
-						std::vector<unsigned> payload_right,
 				       unsigned block_size)
 		:child_left(child_left),
 		 child_right(child_right),
 		 input_schema_left(input_schema_left),
 		 input_schema_right(input_schema_right),
 		 output_schema(output_schema),
-		 joinIndex_left(joinIndex_left),
-		 joinIndex_right(joinIndex_right),
-		 payload_left(payload_left),
-		 payload_right(payload_right),
-
 		 block_size_(block_size){
 
 		}
 bool BlockStreamNestLoopJoinIterator::open(const PartitionOffset& partition_offset)
 {
-//	RegisterNewThreadToAllBarriers();
+	RegisterExpandedThreadToAllBarriers();
 //	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
 //	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
 	unsigned long long int timer;
 	bool winning_thread=false;
-	if(tryEntryIntoSerializedSection(0))//what's for?
+	if(tryEntryIntoSerializedSection(0))//the first thread of all need to do
 	{
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"nest loop build",0));
 		winning_thread=true;
 		timer=curtick();
-		unsigned output_index=0;
-		for(unsigned i=0;i<state_.joinIndex_left.size();i++){
-			joinIndex_left_to_output[i]=output_index;
-			output_index++;
-		}
-		for(unsigned i=0;i<state_.payload_left.size();i++){
-			payload_left_to_output[i]=output_index;
-			output_index++;
-		}
-		for(unsigned i=0;i<state_.payload_right.size();i++){
-			payload_right_to_output[i]=output_index;
-			output_index++;
-		}
+//		unsigned output_index=0;
+//		for(unsigned i=0;i<state_.joinIndex_left.size();i++){
+//			joinIndex_left_to_output[i]=output_index;
+//			output_index++;
+//		}
+//		for(unsigned i=0;i<state_.payload_left.size();i++){
+//			payload_left_to_output[i]=output_index;
+//			output_index++;
+//		}
+//		for(unsigned i=0;i<state_.payload_right.size();i++){
+//			payload_right_to_output[i]=output_index;
+//			output_index++;
+//		}
+		blockbuffer=new DynamicBlockBuffer();
 
 	}
-	blockbuffer=new DynamicBlockBuffer();
 	state_.child_left->open(partition_offset);
 	barrierArrive(0);
-
-	BlockStreamBase* block_for_asking;
-	createBlockStream(block_for_asking);
-
-	while(state_.child_left->next(block_for_asking))
+	join_thread_context* jtc=new join_thread_context();
+	createBlockStream(jtc->block_for_asking_);
+	while(state_.child_left->next(jtc->block_for_asking_))
 	{
-		blockbuffer->atomicAppendNewBlock(block_for_asking);
-		createBlockStream(block_for_asking);
+		blockbuffer->atomicAppendNewBlock(jtc->block_for_asking_);
+		createBlockStream(jtc->block_for_asking_);
 	}
-	block_for_asking->~Block();
+	jtc->block_for_asking_->~Block();
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-//		unregisterNewThreadToAllBarriers(1);
+		unregisterExpandedThreadToAllBarriers(1);
 		return true;
 	}
-	barrierArrive(1);
-
+//	barrierArrive(1);//??ERROR
+//	join_thread_context* jtc=new join_thread_context();
+	jtc->block_for_asking_=BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_);
+	jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
+	initContext(jtc);
 	state_.child_right->open(partition_offset);
 	return true;
 }
@@ -96,20 +88,14 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 	void *tuple_from_buffer_child;
 	void *tuple_from_right_child;
 	void *result_tuple;
-	join_thread_context* jtc_buffer=new join_thread_context();
-
-	join_thread_context* jtc_right=new join_thread_context();
-	jtc_right->block_for_asking_=BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_);
-	jtc_right->block_stream_iterator_=jtc_right->block_for_asking_->createIterator();
-
-	while(state_.child_right->next(jtc_right->block_for_asking_))
+	join_thread_context* jtc=(join_thread_context*)getContext();
+	while(1)
 	{
-		while((tuple_from_right_child=jtc_right->block_stream_iterator_->currentTuple())>0)
+		while((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())>0)
 		{
-			while(jtc_buffer->block_for_asking_=blockbuffer->createIterator().nextBlock())
+//			while((jtc->buffer_iterator_.nextBlock())>0)
 			{
-				jtc_buffer->block_stream_iterator_=jtc_buffer->block_for_asking_->createIterator();
-				while(tuple_from_buffer_child=jtc_buffer->block_stream_iterator_->currentTuple())
+				while((tuple_from_buffer_child=jtc->buffer_iterator_.nextBlock()->createIterator()->nextTuple())>0)
 				{
 					if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0)
 					{
@@ -120,34 +106,35 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 					{
 						return true;
 					}
+					jtc->buffer_stream_iterator_->increase_cur_();
 				}
 			}
-			jtc_right->block_stream_iterator_->increase_cur_();
+			jtc->block_stream_iterator_->increase_cur_();
 		}
-		jtc_right->block_for_asking_->setEmpty();
-	}
-//	jtc_buffer->block_for_asking_->~Block();
-//	jtc_buffer->block_stream_iterator_->~BlockStreamTraverseIterator();
-//	jtc_right->block_for_asking_->~Block();
-//	jtc_right->block_stream_iterator_->~BlockStreamTraverseIterator();
+		jtc->block_for_asking_->setEmpty();
+		jtc->buffer_iterator_=blockbuffer->createIterator();
 
-	if(state_.child_right->next(jtc_right->block_for_asking_)==false)
-	{
-		if(block->Empty()==true)
+		if(state_.child_right->next(jtc->block_for_asking_)==false)
 		{
-			return false;
+			if(block->Empty()==true)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
 		}
-		else
-		{
-			return true;
-		}
+		jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
+		jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
 	}
 	return next(block);
 }
 bool BlockStreamNestLoopJoinIterator::close()
 {
-//	initialize_expanded_status();
-//	destoryAllContext();
+	initialize_expanded_status();
+	destoryAllContext();
+	blockbuffer->~DynamicBlockBuffer();
 	state_.child_left->close();
 	state_.child_right->close();
 	return true;

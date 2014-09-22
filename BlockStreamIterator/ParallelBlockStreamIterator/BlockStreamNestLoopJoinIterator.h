@@ -19,6 +19,8 @@ public:
 	public:
 		BlockStreamBase* block_for_asking_;
 		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+		DynamicBlockBuffer::Iterator buffer_iterator_;
+		BlockStreamBase::BlockStreamTraverseIterator* buffer_stream_iterator_;
 	};
 	struct remaining_block{
 		remaining_block(BlockStreamBase *bsb_right,BlockStreamBase::BlockStreamTraverseIterator *bsti)
@@ -27,11 +29,13 @@ public:
 		remaining_block(const remaining_block&r){
 			bsb_right_=r.bsb_right_;
 			blockstream_iterator=r.blockstream_iterator;
-			hashtable_iterator_=r.hashtable_iterator_;
+			buffer_iterator_=r.buffer_iterator_;
+			buffer_stream_iterator_=r.buffer_stream_iterator_;
 		}
 		BlockStreamBase *bsb_right_;
 		BlockStreamBase::BlockStreamTraverseIterator *blockstream_iterator;
-		BasicHashTable::Iterator hashtable_iterator_;
+		DynamicBlockBuffer::Iterator *buffer_iterator_;
+		BlockStreamBase::BlockStreamTraverseIterator* buffer_stream_iterator_;
 	};
 
 	class State
@@ -43,26 +47,18 @@ public:
 				Schema *input_schema_left,
 				Schema *input_schema_right,
 				Schema *output_schema,
-				std::vector<unsigned> joinIndex_left,
-				std::vector<unsigned> joinIndex_right,
-				std::vector<unsigned> payload_left,
-				std::vector<unsigned> payload_right,
 				unsigned block_size
 				);
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema & joinIndex_left & joinIndex_right & payload_left & payload_right & block_size_;
+			ar & child_left & child_right & input_schema_left & input_schema_right & output_schema  & block_size_;
 	}
 	public:
 		BlockStreamIteratorBase *child_left,*child_right;
 		Schema *input_schema_left,*input_schema_right;
 		Schema *output_schema;
-		std::vector<unsigned> joinIndex_left;
-		std::vector<unsigned> joinIndex_right;
-		std::vector<unsigned> payload_left;
-		std::vector<unsigned> payload_right;
 		unsigned block_size_;
 
 	};

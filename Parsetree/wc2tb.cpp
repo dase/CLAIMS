@@ -81,7 +81,7 @@ void setwcposition(struct Node *wccur,struct Node *flcur,set<string>&st)//在fro
 				}
 				if(judgeresult==2||st.size()>1)
 				{
-					cout<<"~~~~~~~~~~~~~~~~~~~~ once again!"<<endl;
+//					cout<<"~~~~~~~~~~~~~~~~~~~~ once again!"<<endl;
 					Node *p=newExprList(t_expr_list,wccur,NULL);
 					Expr_list_header *whcdn=(Expr_list_header *)(node->whcdn);
 					if(whcdn->header==NULL)
@@ -182,7 +182,7 @@ void getwctable(struct Node *cur,set<string>&st)//cur=wcexpr,获得wcexpr中涉�
 	}
 	else
 	{
-		SQLParse_elog("wc2tb can't konw the type %d\n",cur->type);
+		SQLParse_log("wc2tb can't konw the type %d\n",cur->type);
 	}
 	return;
 }
@@ -375,13 +375,13 @@ int solve_join_condition(Node * fromnode)
 					}
 					else
 					{
-						SQLParse_elog("wc2tb line:370 can't support the join type\n");
+						SQLParse_log("wc2tb line:370 can't support the join type\n");
 					}
 				}
 			}break;
 			default:
 			{
-				SQLParse_elog("wc2tb line:377 can't support the join type\n");
+				SQLParse_log("wc2tb line:377 can't support the join type\n");
 			}
 		}
 		p=fnode->next;
