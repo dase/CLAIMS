@@ -975,7 +975,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
 
 //	table_1->createHashPartitionedProjectionOnAllAttribute(table_1->getAttribute(1).getName(),4);//should be 4
-	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);//should be 4
+	table_1->createHashPartitionedProjectionOnAllAttribute("PART.P_PARTKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -991,7 +991,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_2->addAttribute("S_ACCTBAL",data_type(t_decimal),4);
 	table_2->addAttribute("S_COMMENT",data_type(t_string),101);
 
-	table_2->createHashPartitionedProjectionOnAllAttribute("S_SUPPKEY",4);//should be 4
+	table_2->createHashPartitionedProjectionOnAllAttribute("SUPPLIER.S_SUPPKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -1005,7 +1005,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_3->addAttribute("PS_SUPPLYCOST",data_type(t_decimal),2);
 	table_3->addAttribute("PS_COMMENT",data_type(t_string),199);
 
-	table_3->createHashPartitionedProjectionOnAllAttribute("PS_PARTKEY",4);//should be 4
+	table_3->createHashPartitionedProjectionOnAllAttribute("PARTSUPP.PS_PARTKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -1022,7 +1022,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_4->addAttribute("C_MKTSEGMENT",data_type(t_string),10);
 	table_4->addAttribute("C_COMMENT",data_type(t_string),117);
 
-	table_4->createHashPartitionedProjectionOnAllAttribute("C_CUSTKEY",4);//should be 4
+	table_4->createHashPartitionedProjectionOnAllAttribute("CUSTOMER.C_CUSTKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -1039,7 +1039,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_5->addAttribute("O_SHIPPRIORITY",data_type(t_int));
 	table_5->addAttribute("O_COMMENT",data_type(t_string),79);
 
-	table_5->createHashPartitionedProjectionOnAllAttribute("O_ORDERKEY",4);//should be 4
+	table_5->createHashPartitionedProjectionOnAllAttribute("ORDERS.O_ORDERKEY",4);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////// LINEITEM TABLE //////////////////////////////////
@@ -1062,7 +1062,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_6->addAttribute("L_SHIPMODE",data_type(t_string),10);
 	table_6->addAttribute("L_COMMENT",data_type(t_string),44);
 
-	table_6->createHashPartitionedProjectionOnAllAttribute("L_ORDERKEY",4); // the number of partition should be 4.
+	table_6->createHashPartitionedProjectionOnAllAttribute("LINEITEM.L_ORDERKEY",4); // the number of partition should be 4.
 	///////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////// NATION TABLE //////////////////////////////////
 	TableDescriptor* table_7=new TableDescriptor("NATION", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
@@ -1072,7 +1072,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_7->addAttribute("N_REGIONKEY",data_type(t_u_long));
 	table_7->addAttribute("N_COMMENT",data_type(t_string),152);
 
-	table_7->createHashPartitionedProjectionOnAllAttribute("N_NATIONKEY",1);
+	table_7->createHashPartitionedProjectionOnAllAttribute("NATION.N_NATIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////// REGION TABLE //////////////////////////////////
@@ -1082,7 +1082,7 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 	table_8->addAttribute("R_NAME",data_type(t_string),25);
 	table_8->addAttribute("R_COMMENT",data_type(t_string),152);
 
-	table_8->createHashPartitionedProjectionOnAllAttribute("R_REGIONKEY",1);
+	table_8->createHashPartitionedProjectionOnAllAttribute("REGION.R_REGIONKEY",1);
 	///////////////////////////////////////////////////////////////////////////////
 //create table REGION(regionkey bigint unsigned,rname varchar(25),rcomment varchar(200));
 

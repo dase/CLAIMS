@@ -1462,7 +1462,7 @@ static int query_optimization_outputdata()
 	else
 	{
 		Environment::getInstance(true);
-//		startup_multiple_node_environment_of_tpch();
+		startup_multiple_node_environment_of_tpch();
 
 		/** the following two lines are moved to the initialization code in Environment.*/
 		//Catalog* catalog=Environment::getInstance()->getCatalog();

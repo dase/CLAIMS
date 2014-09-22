@@ -752,12 +752,11 @@ void ExecuteLogicalQueryPlan()
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 
 	int count=1;
-	while(count)
+	while(1)
 	{
-//		cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
+		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
-
 		// get parser time	//2014-5-4---add---by Yu
 		timeval finish_parser_time;
 		gettimeofday(&finish_parser_time, NULL);
@@ -765,12 +764,12 @@ void ExecuteLogicalQueryPlan()
 
 		if(oldnode == NULL)	// 2014-2-24---增加node为空的判断---by余楷
 		{
-			printf("there are some wrong!\n");
+			printf("[ERROR]there are some wrong in statement! please try again!!\n");
 			FreeAllNode();	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
-			printf("Continue(1) or not (others number)?\n");
-			scanf("%d",&count);
-			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
-			//setbuf(stdin, NULL);	//关闭缓冲
+			//			printf("Continue(1) or not (others number)?\n");
+			//			scanf("%d",&count);
+			//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
+			//			//setbuf(stdin, NULL);	//关闭缓冲
 			continue;
 		}
 
@@ -798,8 +797,7 @@ void ExecuteLogicalQueryPlan()
 				}
 				else
 				{
-					result_flag=false;
-					result_set = NULL;
+					ASTParserLogging::elog("No table name!");
 					break;
 				}
 
@@ -807,12 +805,12 @@ void ExecuteLogicalQueryPlan()
 				TableDescriptor *new_table = Environment::getInstance()->getCatalog()->getTable(tablename);
 				if (new_table != NULL)
 				{
-					result_flag=false;
-					result_set = NULL;
+
+					//					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
+					ASTParserLogging::elog("The table %s has existed!", tablename.c_str());
 					break;
 				}
 				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-
 
 				new_table->addAttribute("row_id",data_type(t_u_long),0,true);
 
@@ -908,8 +906,7 @@ void ExecuteLogicalQueryPlan()
 							else
 							{
 								//TODO:no supports
-								result_flag=false;
-								result_set = NULL;
+								ASTParserLogging::log("This type is not supported!");
 							}
 							break;
 						}
@@ -1030,35 +1027,30 @@ void ExecuteLogicalQueryPlan()
 						}
 						default:
 						{
-							result_flag=false;
-							result_set = NULL;
+							ASTParserLogging::log("This type is not supported now!");
 						}
 						}
 					}
 					list = (Create_col_list* )list->next;
 				}
-				if(result_flag==false)
-					return;
 
+				// add for  test, create projection default while creating table
+				std::vector<ColumnOffset> index;
+				index.push_back(1);
 				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-				//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
+				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
 
 				catalog->add_table(new_table);
 
-				//				TableID table_id=catalog->getTable(tablename)->get_table_id();
+				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
 				//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-				//					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+				////					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
 				//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
 				//				}
 
 				catalog->saveCatalog();
-	//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
-				result_flag=true;
-				info = "create table successfully";
-				result_set=NULL;
-				return;
 			}
 			break;
 			case t_create_projection_stmt:	// 创建projection的语句
@@ -1160,30 +1152,28 @@ void ExecuteLogicalQueryPlan()
 					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 					if(lexpr->offset==NULL)
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 					}
 					else
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 					}
 				}
 				else
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 				}
 #ifdef SQL_Parser
-//				root->print(0);
-
+				//				root->print(0);
 				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
 				getchar();
 				getchar();
 #endif
 				BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
-//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-//				physical_iterator_tree->print();
-//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				//				physical_iterator_tree->print();
+				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 //				puts("+++++++++++++++++++++begin time++++++++++++++++");
-
 				unsigned long long start=curtick();
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
