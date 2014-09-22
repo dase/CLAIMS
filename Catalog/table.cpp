@@ -156,7 +156,7 @@ bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
 
 	PartitionFunction* hash_function=PartitionFunctionFactory::createGeneralModuloFunction(number_of_partitions);
 //	projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
-	projection->DefinePartitonier(number_of_partitions,getAttribute(partition_attribute_name),hash_function);
+	projection->DefinePartitonier(number_of_partitions,getAttribute2(partition_attribute_name),hash_function);
 
 
 	projection_list_.push_back(projection);
