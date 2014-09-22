@@ -94,7 +94,7 @@ int getlevel(Expr_cal *calnode)
 			else
 			{
 				level=-10;
-				SQLParse_elog("level is unknown!!!!!!!!!!");
+				SQLParse_log("level is unknown!!!!!!!!!!");
 			}
 
 		}
@@ -600,7 +600,7 @@ void solve_const_value_in_wherecondition(Node *&cur)
 		}break;
 		default:
 		{
-				SQLParse_elog("solve_const_value_in_wherecondition can't know the type=%d\n",cur->type);
+				SQLParse_log("solve_const_value_in_wherecondition can't know the type=%d\n",cur->type);
 		}
 	}
 }

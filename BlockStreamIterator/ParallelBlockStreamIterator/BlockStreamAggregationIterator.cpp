@@ -380,12 +380,82 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 								// TODO: precision of avg result is not enough
 								switch(state_.hashSchema->columns[inputAggregationToOutput_[i]].type)
 								{
-								case t_int:
-								{
-									int  tmp=*(int *)unknowntype;
-									tmp=(tmp/fm);
-									key_in_hash_tuple=&tmp;
-								}break;
+									case t_int:
+									{
+										int  tmp=*(int *)unknowntype;
+										if(fm!=0)
+										tmp=(tmp/fm);
+										key_in_hash_tuple=&tmp;
+									}break;
+									case t_float:
+									{
+										float  tmp=*(float *)unknowntype;
+										if(fm!=0)
+										tmp=(tmp/fm);
+										key_in_hash_tuple=&tmp;
+									}break;
+									case t_double:
+									{
+										double  tmp=*(double *)unknowntype;
+										if(fm!=0)
+										tmp=(tmp/fm);
+										key_in_hash_tuple=&tmp;
+									}break;
+									case t_u_long:
+									{
+										unsigned long  tmp=*(unsigned long *)unknowntype;
+										if(fm!=0)
+										tmp=(tmp/fm);
+										key_in_hash_tuple=&tmp;
+									}break;
+									case t_string:
+									{
+										key_in_hash_tuple=unknowntype;
+									}break;
+									case t_date:
+									{
+										key_in_hash_tuple=unknowntype;
+									}break;
+									case t_time:
+									{
+										key_in_hash_tuple=unknowntype;
+									}break;
+									case t_datetime:
+									{
+										key_in_hash_tuple=unknowntype;
+									}break;
+									case t_decimal:
+									{
+										NValue  tmp=*(NValue *)unknowntype;
+										if(fm!=0)
+										{
+											stringstream ss;
+											ss<<fm;
+											tmp=tmp.op_divide(tmp.getDecimalValueFromString(ss.str()));
+										}
+									//	cout<<"agg---iterator---next tmp=  "<<tmp<<"  z= "<<tmp<<"  m=  "<<fm<<endl;
+										key_in_hash_tuple=&tmp;
+									}break;
+									case t_smallInt:
+									{
+										short  tmp=*(short *)unknowntype;
+										if(fm!=0)
+										tmp=(tmp/fm);
+	//										cout<<"agg---iterator---next tmp=  "<<tmp<<"  z= "<<tmp<<"  m=  "<<fm<<endl;
+										key_in_hash_tuple=&tmp;
+									}break;
+									case t_u_smallInt:
+									{
+										unsigned short  tmp=*(unsigned short *)unknowntype;
+										if(fm!=0)
+										tmp=(tmp/fm);
+	//										cout<<"agg---iterator---next tmp=  "<<tmp<<"  z= "<<tmp<<"  m=  "<<fm<<endl;
+										key_in_hash_tuple=&tmp;
+									}break;
+									default:
+									{
+										printf("BlockStreamAggregation.cpp unknown type\n");
+									}
 								}
 							}
 						}

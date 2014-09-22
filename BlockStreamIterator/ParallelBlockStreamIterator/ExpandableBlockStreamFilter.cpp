@@ -57,7 +57,12 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 	ftc->temp_block_ = BlockStreamBase::createBlock(state_.schema_,
 			state_.block_size_);
 	ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
-
+	ftc->thread_qual_=state_.qual_;
+	for(int i=0;i<state_.qual_.size();i++)
+	{
+		Expr_copy(state_.qual_[i],ftc->thread_qual_[i]);
+		InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
+	}
 	initContext(ftc);
 
 	if (tryEntryIntoSerializedSection()) {
@@ -70,9 +75,9 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 		return state_.child_->open(part_off);
 	}
 
-	for (int i = 0; i < state_.qual_.size(); i++) {
-		InitExprAtPhysicalPlan(state_.qual_[i]);
-	}
+//	for (int i = 0; i < state_.qual_.size(); i++) {
+//		InitExprAtPhysicalPlan(state_.qual_[i]);
+//	}
 }
 
 bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
@@ -87,7 +92,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 		pass_filter = true;
 #ifdef NEWCONDITION
 		if (tuple_from_child != NULL)
-			pass_filter = ExecEvalQual(state_.qual_, tuple_from_child,
+			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
 					state_.schema_);
 #else
 		pass_filter=true;
@@ -153,7 +158,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 				> 0) {
 
 #ifdef NEWCONDITION
-			pass_filter = ExecEvalQual(state_.qual_, tuple_from_child,
+			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
 					state_.schema_);
 #else
 		pass_filter=true;

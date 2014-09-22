@@ -439,10 +439,9 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			{
 				struct Where_list * curt=(struct Where_list *)(querynode->where_list);
 				struct Node *cur=(struct Node *)(curt->next);
-				SQLParse_log("wc2tb");
 				departwc(cur,querynode->from_list);
 			}
-#ifndef SQL_Parser
+#ifdef SQL_Parser
 			output(node,0);
 #endif
 			LogicalOperator* plan=parsetree2logicalplan(node);
@@ -1022,16 +1021,16 @@ void ExecuteLogicalQueryPlan()
 					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 					if(lexpr->offset==NULL)
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 					}
 					else
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 					}
 				}
 				else
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
 				}
 #ifdef SQL_Parser
 //				root->print(0);

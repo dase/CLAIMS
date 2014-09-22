@@ -183,7 +183,7 @@ inline void *string_to_boolean(void *value,void * tovalue)
 }
 inline void *string_to_date(void *value,void *tovalue)
 {
-	*(date *)tovalue=(from_string(string((char *)value)));
+	*(date *)tovalue=from_string(string((char *)value));
 	return tovalue;
 }
 inline void *string_to_time(void *value,void *tovalue)
