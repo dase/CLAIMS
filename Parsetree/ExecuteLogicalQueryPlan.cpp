@@ -1039,7 +1039,7 @@ void ExecuteLogicalQueryPlan()
 				index.push_back(1);
 				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
+//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
 
 				catalog->add_table(new_table);
 
@@ -1072,6 +1072,7 @@ void ExecuteLogicalQueryPlan()
 				string partition_attribute_name = newnode->partition_attribute_name;
 
 				std::vector<ColumnOffset> index;
+				index.push_back(0);		// add by scdong: add row_id column to each projection automatically
 				Columns *col_list = (Columns *)newnode->column_list;
 				string colname;
 				while(col_list)
