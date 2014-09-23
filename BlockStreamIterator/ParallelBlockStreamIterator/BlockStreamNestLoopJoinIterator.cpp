@@ -89,7 +89,7 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 	void *tuple_from_buffer_child;
 	void *tuple_from_right_child;
 	void *result_tuple;
-	BlockStreamBase* buffer_block;
+	BlockStreamBase* buffer_block=NULL;
 	join_thread_context* jtc=(join_thread_context*)getContext();
 	while(1)
 	{
@@ -112,15 +112,16 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 //						cout<<state_.input_schema_left->getcolumn(i).operate->toString(state_.input_schema_left->getColumnAddess(i,tuple_from_buffer_child))<<endl;
 //					}
 //					cout<<endl;
+
 					if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0)
 					{
 						const unsigned copyed_bytes=state_.input_schema_left->copyTuple(tuple_from_buffer_child,result_tuple);
 						state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
-						for(int i=0;i<state_.output_schema->columns.size();i++)
-						{
-							cout<<state_.output_schema->getcolumn(i).operate->toString(state_.output_schema->getColumnAddess(i,result_tuple))<<" | ";
-						}
-						cout<<endl;
+//						for(int i=0;i<state_.output_schema->columns.size();i++)
+//						{
+//							cout<<state_.output_schema->getcolumn(i).operate->toString(state_.output_schema->getColumnAddess(i,result_tuple))<<" | "<<endl;
+//						}
+//						cout<<endl;
 					}
 					else
 					{
@@ -154,7 +155,7 @@ bool BlockStreamNestLoopJoinIterator::close()
 {
 	initialize_expanded_status();
 	destoryAllContext();
-	blockbuffer->~DynamicBlockBuffer();
+	delete blockbuffer;
 	state_.child_left->close();
 	state_.child_right->close();
 	return true;

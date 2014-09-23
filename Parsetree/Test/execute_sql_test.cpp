@@ -17,10 +17,10 @@ using namespace std;
 static void execute_sql_test()
 {
 	Environment::getInstance(true);
-//	startup_multiple_node_environment_of_stock();
+	startup_multiple_node_environment_of_stock();
 
 	Catalog* catalog=Environment::getInstance()->getCatalog();
-//	catalog->saveCatalog();
+	catalog->saveCatalog();
 	catalog->restoreCatalog();	/* restore Catalog*/
 
 	ResultSet *result_set = NULL;
