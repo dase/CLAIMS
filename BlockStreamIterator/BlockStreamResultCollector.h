@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 
-#ifndef EXPANDABLEBLOCKSTREAMBUFFER_H_
-#define EXPANDABLEBLOCKSTREAMBUFFER_H_
+#ifndef BLOCKSTREAMRESULTCOLLECTOR_H_
+#define BLOCKSTREAMRESULTCOLLECTOR_H_
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -59,10 +59,11 @@ private:
 //	DynamicBlockBuffer::Iterator block_buffer_iterator_;
 
 
-	/**
-	 * block_buffer_ will automatically be freed when the destructor of this class is called.
-	 */
-	ResultSet block_buffer_;
+//	/**
+//	 * block_buffer_ will automatically be freed when the destructor of this class is called.
+//	 */
+	/** It is the resposibility of the user to free the resultset **/
+	ResultSet *block_buffer_;
 
 	ResultSet::Iterator block_buffer_iterator_;
 	unsigned finished_thread_count_;
@@ -80,4 +81,4 @@ private:
 	}
 };
 
-#endif /* EXPANDABLEBLOCKSTREAMBUFFER_H_ */
+#endif /* BLOCKSTREAMRESULTCOLLECTOR_H_ */

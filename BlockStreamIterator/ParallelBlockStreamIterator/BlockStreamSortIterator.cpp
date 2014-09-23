@@ -23,12 +23,12 @@ BlockStreamSortIterator::~BlockStreamSortIterator(){
 }
 
 BlockStreamSortIterator::State::State()
-:input_(0),orderbyKey_(0),child_(0),block_size_(0),partition_offset_(0){
+:input_(0),child_(0),block_size_(0),partition_offset_(0){
 
 }
 
-BlockStreamSortIterator::State::State(Schema* input,unsigned orderbyKey,BlockStreamIteratorBase* child,const unsigned block_size,const PartitionOffset partition_offset)
-:input_(input),orderbyKey_(orderbyKey),child_(child),block_size_(block_size),partition_offset_(partition_offset){
+BlockStreamSortIterator::State::State(Schema* input,vector<unsigned> orderbyKey,BlockStreamIteratorBase* child,const unsigned block_size,vector<int> direction,const PartitionOffset partition_offset)
+:input_(input),orderbyKey_(orderbyKey),child_(child),block_size_(block_size),partition_offset_(partition_offset),direction_(direction){
 
 }
 
@@ -87,7 +87,10 @@ bool BlockStreamSortIterator::compare(const SNode *a,const SNode *b){
 	//	BlockStreamSortIterator *pthis=(BlockStreamSortIterator*)args;
 	const void *l=a->state_->input_->getColumnAddess(a->orderKey,a->tuple);
 	const void *r=b->state_->input_->getColumnAddess(b->orderKey,b->tuple);
-	return a->op->less(l,r);
+	if(a->dir)
+		return a->op->greate(l,r);
+	else
+		return a->op->less(l,r);
 }
 
 void BlockStreamSortIterator::order(unsigned column,unsigned tuple_count){
@@ -101,6 +104,7 @@ void BlockStreamSortIterator::order(){
 		for(unsigned j=0;j<secondaryArray_.size();j++){
 			secondaryArray_[j]->orderKey=state_.orderbyKey_[i];
 			secondaryArray_[j]->op=op_;
+			secondaryArray_[j]->dir=state_.direction_[i];
 		}
 		cssort();
 	}
@@ -153,6 +157,7 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 			snode->state_=&state_;
 			snode->op=0;
 			snode->orderKey=0;
+			snode->dir=0;
 			secondaryArray_.push_back(snode);
 		}
 		block_offset++;

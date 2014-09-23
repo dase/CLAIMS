@@ -19,20 +19,21 @@ extern "C" int yyparse();
 extern Node * parsetreeroot;
 extern char globalInputText[10000];
 extern int globalReadOffset;
-extern int errorNumber;		// 2014-3-6---声明errorNumber变量---by余楷
-extern timeval start_time;	//2014-5-4---add---by Yu
+extern int errorNumber;
+extern timeval start_time;
 
-extern vector<Node*> NodePointer;	// 2014-4-2---存放节点指针的数组改为vector---by Yu
+extern vector<Node*> NodePointer;
 
 static Node * getparsetreeroot()
 {
 	int charnum=0;
 	globalReadOffset = 0;
 
-	NodePointer.clear();	// 2014-3-7---初始化---by余楷	// 2014-4-2---存放节点指针的数组改为vector---by Yu
-	errorNumber = 0;	// 2014-3-6---初始化SQL解析错误个数---by余楷
-	parsetreeroot = NULL;	// 2014-3-4---增加初始化语句---by余楷
-	memset(globalInputText, 0, sizeof(globalInputText));	// 2014-3-4---增加初始化语句---by余楷
+
+	NodePointer.clear();
+	errorNumber = 0;
+	parsetreeroot = NULL;
+	memset(globalInputText, 0, sizeof(globalInputText));
 	printf("Claims>");
 	while(1)
 	{
@@ -68,7 +69,7 @@ static Node * getparsetreeroot()
 
 	gettimeofday(&start_time, NULL);//2014-5-4---add---by Yu
 
-	if(!yyparse())	// 2014-3-4---注释冗余代码---by余楷
+	if(!yyparse())
 	{
 		return parsetreeroot;
 	}
@@ -96,7 +97,8 @@ static Node * getparsetreeroot(const char *sql)
 	strcpy(globalInputText,	sql);
 	ASTParserLogging::log("after copying, globalInputText: %s", globalInputText);
 
-	if(!yyparse())	// 2014-3-4---注释冗余代码---by余楷
+
+	if(!yyparse())
 	{
 		return parsetreeroot;
 	}

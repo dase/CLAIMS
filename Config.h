@@ -64,6 +64,7 @@ public:
 	static std::string logfile;
 	static bool master;
 	static bool local_disk_mode;
+	static bool pipelined_exchange;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;

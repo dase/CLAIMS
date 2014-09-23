@@ -17,11 +17,11 @@ using namespace std;
 #define DEBUG_Config
 
 string gete(){
-//	char *p=getenv("CLAIMS_HOME");
-//	stringstream sp;
-//	sp<<string(p).c_str()<<"/conf/config";
-//	return sp.str();
-	return "/home/imdb/config/wangli/config";
+	char *p=getenv("CLAIMS_HOME");
+	stringstream sp;
+	sp<<string(p).c_str()<<"/conf/config";
+	return sp.str();
+//	return "/home/imdb/config/wangli/config";
 }
 string get_default_logfile_name(){
 	char *p=getenv("CLAIMS_HOME");
@@ -59,6 +59,12 @@ int Config::expander_adaptivity_check_frequency;
  * This parameter sets the initial degree of parallelism for each segment.
  */
 int Config::initial_degree_of_parallelism;
+
+/**
+ * THis parameter determines whether the data transmission in data exchanges
+ * is pipelined.
+ */
+bool Config::pipelined_exchange;
 
 
 int Config::scan_batch;
@@ -119,7 +125,10 @@ void Config::initialize() {
 
 	master=getBoolean("master",true);
 
-	local_disk_mode=getBoolean("local_disk_mode","false");
+	local_disk_mode=getBoolean("local_disk_mode",false);
+
+	pipelined_exchange=getBoolean("pipelined_exchange",true);
+
 
 #ifdef DEBUG_Config
 	print_configure();

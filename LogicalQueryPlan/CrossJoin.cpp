@@ -37,8 +37,23 @@ Dataflow CrossJoin::getDataflow()
 	Dataflow left_dataflow=left_child_->getDataflow();
 	Dataflow right_dataflow=right_child_->getDataflow();
 	Dataflow ret;
+	const Attribute left_partition_key=left_dataflow.property_.partitioner.getPartitionKey();
+	const Attribute right_partition_key=right_dataflow.property_.partitioner.getPartitionKey();
 	ret.attribute_list_.insert(ret.attribute_list_.end(),left_dataflow.attribute_list_.begin(),left_dataflow.attribute_list_.end());
 	ret.attribute_list_.insert(ret.attribute_list_.end(),right_dataflow.attribute_list_.begin(),right_dataflow.attribute_list_.end());
+	ret.property_.partitioner.setPartitionList(left_dataflow.property_.partitioner.getPartitionList());
+	ret.property_.partitioner.setPartitionFunction(left_dataflow.property_.partitioner.getPartitionFunction());
+	ret.property_.partitioner.setPartitionKey(left_partition_key);
+	ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+
+	for(unsigned i=0;i<ret.property_.partitioner.getNumberOfPartitions();i++){
+		const unsigned l_cardinality=left_dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+		const unsigned r_cardinality=right_dataflow.property_.partitioner.getPartition(i)->getDataCardinality();
+		ret.property_.partitioner.getPartition(i)->setDataCardinality(l_cardinality+r_cardinality);
+	}
+
+	ret.property_.commnication_cost=left_dataflow.property_.commnication_cost+right_dataflow.property_.commnication_cost;
+
 	dataflow_=new Dataflow();
 	*dataflow_=ret;
 	return ret;
@@ -68,7 +83,7 @@ BlockStreamIteratorBase* CrossJoin::getIteratorTree(const unsigned & block_size)
 
 void CrossJoin::print(int level) const
 {
-	printf("%*.sCrossJoin:\n",level*8," ");
+	printf("CrossJoin:\n",level*8," ");
 	left_child_->print(level+1);
 	right_child_->print(level+1);
 }

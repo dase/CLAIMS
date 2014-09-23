@@ -418,7 +418,7 @@ static int testServerClient() {
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 		catalog->restoreCatalog();
 
-		ClaimsServer server(8001);
+		ClientListener server(8001);
 		server.configure();
 		//		server.run();
 		while(true){

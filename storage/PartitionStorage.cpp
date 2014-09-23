@@ -29,8 +29,10 @@ void PartitionStorage::addNewChunk(){
 void PartitionStorage::updateChunksWithInsertOrAppend(const PartitionID &partition_id, const unsigned &number_of_chunks, const StorageLevel& storage_level)
 {
 //	std::vector<ChunkStorage*>::iterator iter = chunk_list_.back();
-	MemoryChunkStore::getInstance()->returnChunk(chunk_list_.back()->getChunkID());
-	chunk_list_.back()->setCurrentStorageLevel(HDFS);
+	if(!chunk_list_.empty()){
+		MemoryChunkStore::getInstance()->returnChunk(chunk_list_.back()->getChunkID());
+		chunk_list_.back()->setCurrentStorageLevel(HDFS);
+	}
 	for (unsigned i = number_of_chunks_; i < number_of_chunks; i++)
 		chunk_list_.push_back(new ChunkStorage(ChunkID(partition_id, i), BLOCK_SIZE, storage_level));
 	number_of_chunks_ = number_of_chunks;

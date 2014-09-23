@@ -439,10 +439,9 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			{
 				struct Where_list * curt=(struct Where_list *)(querynode->where_list);
 				struct Node *cur=(struct Node *)(curt->next);
-				SQLParse_log("wc2tb");
 				departwc(cur,querynode->from_list);
 			}
-#ifndef SQL_Parser
+#ifdef SQL_Parser
 			output(node,0);
 #endif
 			LogicalOperator* plan=parsetree2logicalplan(node);
@@ -471,7 +470,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 
 			//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 			unsigned long long start=curtick();
-			physical_iterator_tree->print();
+//			physical_iterator_tree->print();
 			physical_iterator_tree->open();
 			while(physical_iterator_tree->next(0));
 			physical_iterator_tree->close();
@@ -498,7 +497,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			}
 			string column_separator(new_node->column_separator);
 			string tuple_separator(new_node->tuple_separator);
-			printf("wef:%s\n",new_node->tuple_separator);
+//			printf("wef:%s\n",new_node->tuple_separator);
 			Expr_list *path_node = (Expr_list*)new_node->path;
 
 			ASTParserLogging::log("load file\'s name:");
@@ -743,6 +742,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 
 }
 
+
 void ExecuteLogicalQueryPlan()
 {
 
@@ -757,7 +757,6 @@ void ExecuteLogicalQueryPlan()
 		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
 		Node* oldnode=getparsetreeroot();
-
 		// get parser time	//2014-5-4---add---by Yu
 		timeval finish_parser_time;
 		gettimeofday(&finish_parser_time, NULL);
@@ -787,10 +786,7 @@ void ExecuteLogicalQueryPlan()
 			case t_create_table_stmt:	// 创建表的语句
 			{
 				/* nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt */
-
-				SQLParse_log("this is create table stmt \n");
 				Create_table_stmt * ctnode = (Create_table_stmt *)node;
-				//获取新建表的表名
 				if(ctnode->name2 != NULL)
 				{
 					tablename = ctnode->name2;
@@ -805,16 +801,15 @@ void ExecuteLogicalQueryPlan()
 					break;
 				}
 
-				// 2014-3-25---检查表是否已存在---by Yu
+
 				TableDescriptor *new_table = Environment::getInstance()->getCatalog()->getTable(tablename);
 				if (new_table != NULL)
 				{
+
 					//					cout<<"[ERROR]: The table "<<tablename<<" has existed!"<<endl;
 					ASTParserLogging::elog("The table %s has existed!", tablename.c_str());
 					break;
 				}
-
-				// 创建新表
 				new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 
 				new_table->addAttribute("row_id",data_type(t_u_long),0,true);
@@ -825,10 +820,10 @@ void ExecuteLogicalQueryPlan()
 				while (list)
 				{
 					Create_def *data = (Create_def*) list->data;
-					if (data->deftype == 1)	//若为这个语法：NAME data_type column_atts
+					if (data->deftype == 1)
 					{
-						++colNum;	// 2014-2-24---移动位置到if语句内
-						string colname = data->name;	// 2014-2-24---移动位置到if语句内
+						++colNum;
+						string colname = data->name;
 						primaryname = colname;
 						Column_atts *column_atts = (Column_atts*)data->col_atts;
 
@@ -1001,7 +996,7 @@ void ExecuteLogicalQueryPlan()
 
 						case 17: case 18:
 						{
-							if (datatype->length)	//已指定长度
+							if (datatype->length)
 							{
 								Length * l = (Length*)datatype->length;
 
@@ -1015,7 +1010,7 @@ void ExecuteLogicalQueryPlan()
 									new_table->addAttribute(colname, data_type(t_string), l->data1, true);
 								}
 							}
-							else	//未指定长度
+							else
 							{
 								if (column_atts && (column_atts->datatype && 01)){
 									new_table->addAttribute(colname, data_type(t_string), 1, true, false);
@@ -1056,7 +1051,6 @@ void ExecuteLogicalQueryPlan()
 				//				}
 
 				catalog->saveCatalog();
-
 			}
 			break;
 			case t_create_projection_stmt:	// 创建projection的语句
@@ -1158,16 +1152,16 @@ void ExecuteLogicalQueryPlan()
 					Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 					if(lexpr->offset==NULL)
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 					}
 					else
 					{
-						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+						root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 					}
 				}
 				else
 				{
-					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PRINT);
+					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 				}
 #ifdef SQL_Parser
 				//				root->print(0);
@@ -1179,12 +1173,19 @@ void ExecuteLogicalQueryPlan()
 				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
 				//				physical_iterator_tree->print();
 				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-				puts("+++++++++++++++++++++begin time++++++++++++++++");
+//				puts("+++++++++++++++++++++begin time++++++++++++++++");
 				unsigned long long start=curtick();
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
+
+				ResultSet* result_set=physical_iterator_tree->getResultSet();
+				result_set->print();
+
+				delete physical_iterator_tree; //add by Li. @fzh,@yukai: pleaes remove this comment after first read.
+				delete root;
+				delete result_set;
+//				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 
 			}
 			break;
@@ -1203,7 +1204,7 @@ void ExecuteLogicalQueryPlan()
 				}
 				string column_separator(new_node->column_separator);
 				string tuple_separator(new_node->tuple_separator);
-				printf("wef:%s\n",new_node->tuple_separator);
+//				printf("wef:%s\n",new_node->tuple_separator);
 				Expr_list *path_node = (Expr_list*)new_node->path;
 
 				ASTParserLogging::log("load file\'s name:");
@@ -1428,6 +1429,20 @@ bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsi
 	else if(insert_value->type == 1) {}	// 设置为default, 暂不支持
 
 	return has_warning;
+}
+
+bool query(const string& sql, query_result& result_set) {
+	bool ret;
+	string msg;
+	string err;
+	ExecuteLogicalQueryPlan(sql,result_set.result_set,ret,err,msg);
+	if(ret){
+		result_set.msg = msg;
+	}
+	else {
+		result_set.msg = err;
+	}
+	return ret;
 }
 
 bool CheckType(const column_type *col_type, Expr *expr)		// check whether the string is digit, can use strtol()

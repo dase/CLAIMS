@@ -23,6 +23,9 @@
 
 #include "sql_node_struct.h"
 #include "../Environment.h"
+#include "../LogicalQueryPlan/Aggregation.h"
+#include "../common/Logging.h"
+#include <boost/date_time/gregorian/greg_duration.hpp>
 
 int getlevel(Expr_cal *calnode)
 {
@@ -91,7 +94,7 @@ int getlevel(Expr_cal *calnode)
 			else
 			{
 				level=-10;
-				SQLParse_elog("level is unknown!!!!!!!!!!");
+				SQLParse_log("level is unknown!!!!!!!!!!");
 			}
 
 		}
@@ -139,7 +142,7 @@ string expr_to_str(Node * node,int level)
 			{
 				str="substr(";
 				str=str+expr_to_str(funcnode->args,0);
-				str=str+" , ";
+				str=str+",";
 				str=str+expr_to_str(funcnode->parameter1,0);
 				str=str+")";
 			}
@@ -147,9 +150,9 @@ string expr_to_str(Node * node,int level)
 			{
 				str="substr(";
 				str=str+expr_to_str(funcnode->args,0);
-				str=str+" , ";
+				str=str+",";
 				str=str+expr_to_str(funcnode->parameter1,0);
-				str=str+" , ";
+				str=str+",";
 				str=str+expr_to_str(funcnode->parameter2,0);
 				str=str+")";
 			}
@@ -239,6 +242,63 @@ string expr_to_str(Node * node,int level)
 				str=str+expr_to_str(funcnode->parameter1,0);
 				str=str+")";
 			}
+			else if(strcmp(funcnode->funname,"FDATE_ADD")==0)
+			{
+				Expr_func *datefunc=(Expr_func *)funcnode->parameter1;
+				str="date_add(";
+				str=str+expr_to_str(funcnode->args,0);
+				str=str+",interval ";
+				str=str+expr_to_str(datefunc->args,0);
+				if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+				{
+					str=str+" day)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+				{
+					str=str+" week)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+				{
+					str=str+" month)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+				{
+					str=str+" year)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+				{
+					str=str+" quarter)";
+				}
+
+			}
+			else if(strcmp(funcnode->funname,"FDATE_SUB")==0)
+			{
+				Expr_func *datefunc=(Expr_func *)funcnode->parameter1;
+				str="date_sub(";
+				str=str+expr_to_str(funcnode->args,0);
+				str=str+",interval ";
+				str=str+expr_to_str(datefunc->args,0);
+				if(strcmp(datefunc->funname,"INTERVAL_DAY")==0)
+				{
+					str=str+" day)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
+				{
+					str=str+" week)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_MONTH")==0)
+				{
+					str=str+" month)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_YEAR")==0)
+				{
+					str=str+" year)";
+				}
+				else if(strcmp(datefunc->funname,"INTERVAL_QUARTER")==0)
+				{
+					str=str+" quarter)";
+				}
+			}
 			else
 			{
 				SQLParse_elog("expr_to_str doesn't exist this function !!!");
@@ -261,6 +321,10 @@ string expr_to_str(Node * node,int level)
 			else if(strcmp(calnode->sign,"!")==0)
 			{
 				str="!";
+			}
+			else if(strcmp(calnode->sign,"NOT")==0)
+			{
+				str="not";
 			}
 			else
 			{
@@ -450,6 +514,8 @@ void solve_const_value_in_wherecondition(Node *&cur)
 					{
 						date_duration dd(atof(((Expr *)datefunc->args)->data));
 						constdate=date(from_string(datestr))+dd;
+//						date_duration *dd=new date_duration(atof(((Expr *)datefunc->args)->data));
+//						constdate=from_string(datestr)+(*(date_duration *)dd);
 					}
 					else if(strcmp(datefunc->funname,"INTERVAL_WEEK")==0)
 					{
@@ -534,7 +600,7 @@ void solve_const_value_in_wherecondition(Node *&cur)
 		}break;
 		default:
 		{
-				SQLParse_elog("solve_const_value_in_wherecondition can't know the type=%d\n",cur->type);
+				SQLParse_log("solve_const_value_in_wherecondition can't know the type=%d\n",cur->type);
 		}
 	}
 }

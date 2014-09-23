@@ -11,6 +11,7 @@
 #include "../Environment.h"
 #include "../common/TimeOutReceiver.h"
 #include "../common/Message.h"
+#include "../utility/print_tool.h"
 BlockManagerMaster *BlockManagerMaster::master_=0;
 
 BlockManagerMaster::BlockManagerMaster() {

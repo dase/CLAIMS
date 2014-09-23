@@ -9,13 +9,17 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 
 AM_LDFLAGS=-lc -lm -lrt -lxs
 
-LDADD = ../common/libcommon.a
+LDADD = ../common/libcommon.a \
+		../storage/libstorage.a \
+		../utility/libutility.a 
 
 noinst_LIBRARIES=libresouce.a
 libresouce_a_SOURCES = \
 	NodeTracker.cpp 		NodeTracker.h \
 	ResourceInfo.cpp 		ResourceInfo.h \
 	ResourceManagerMaster.cpp 		ResourceManagerMaster.h \
-	ResourceManagerSlave.cpp 		ResourceManagerSlave.h
+	ResourceManagerSlave.cpp 		ResourceManagerSlave.h \
+	BufferManager.cpp		BufferManager.h \
+	CPUResource.cpp			CPUResource.h
 
 libresouce_a_LIBADD = ${THERON_HOME}/Lib/libtherond.a
