@@ -17,7 +17,7 @@
 #include "../../common/Expression/queryfunc.h"
 #include "../../common/data_type.h"
 
-#define NEWCONDITION
+//#define NEWCONDITION
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state) :
 		state_(state) {
