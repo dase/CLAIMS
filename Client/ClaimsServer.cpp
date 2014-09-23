@@ -207,10 +207,10 @@ void* ClientListener::receiveHandler(void *para) {
 					buf[read_count] = '\0';	// fix a bug
 					cout<<"buf: "<<buf<<endl;
 
-//					int sql_type = buf[0]-48;	// '1' - 48 = 1
-//					ClientLogging::log("sql_type is %d", sql_type);
-//
-//					generateSqlStmt(sql_type, buf);
+					int sql_type = buf[0]-48;	// '1' - 48 = 1
+					ClientLogging::log("sql_type is %d", sql_type);
+
+					generateSqlStmt(sql_type, buf);
 //					strcpy(buf, "select row_id from trade limit 100;\0");
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
@@ -347,7 +347,6 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 			vector<string> &col_name_list = rs->column_header_list_;
 			Json::Value root;
 			Json::Value jv_temp;
-			long row = 0;
 
 			DynamicBlockBuffer::Iterator it=rs->createIterator();
 			BlockStreamBase* block;
@@ -359,9 +358,7 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 					for (int i = 0; i < rs->schema_->getncolumns(); ++i) {
 						jv_temp[col_name_list[i]] = Json::Value(rs->schema_->getColumnValue(tuple, i));
 					}
-					ostringstream ostr;
-					ostr<<row++;
-					root[ostr.str()] = jv_temp;
+					root.append(jv_temp);
 				}
 			}
 
