@@ -55,13 +55,13 @@ class PartitionInfo{
 public:
 
 	friend class Partitioner;
-	explicit PartitionInfo():number_of_blocks(0){};
-	explicit PartitionInfo(PartitionID partition_id):partition_id_(partition_id),number_of_blocks(0){};
+	explicit PartitionInfo():number_of_blocks(0),number_of_tuples_(0){};
+	explicit PartitionInfo(PartitionID partition_id):partition_id_(partition_id),number_of_blocks(0),number_of_tuples_(0){};
 	explicit PartitionInfo(PartitionID partition_id,string file_name)
-	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(0){}
+	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(0),number_of_tuples_(0){}
 
-	explicit PartitionInfo(PartitionID partition_id,string file_name,int number_of_blocks)
-	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(number_of_blocks){}
+	explicit PartitionInfo(PartitionID partition_id,string file_name,int number_of_blocks,unsigned long number_of_tuples)
+	:partition_id_(partition_id),hdfs_file_name(file_name),number_of_blocks(number_of_blocks),number_of_tuples_(number_of_tuples){}
 
 	virtual binding_mode get_mode()const=0;
 	virtual void add_one_block()=0;//p
@@ -78,11 +78,13 @@ protected:
 	int long number_of_blocks;//p
 	PartitionID partition_id_;
 
+	int long number_of_tuples_;
+
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & hdfs_file_name & number_of_blocks & partition_id_;
+		ar & hdfs_file_name & number_of_blocks & partition_id_ & number_of_tuples_;
 	}
 
 };
@@ -92,7 +94,7 @@ public:
 	OneToOnePartitionInfo():binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid):PartitionInfo(pid),binding_node_id_(-1){};
 	OneToOnePartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name),binding_node_id_(-1){};
-	OneToOnePartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks),binding_node_id_(-1){};
+	OneToOnePartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks,unsigned number_of_tuples):PartitionInfo(pid,file_name,number_of_blocks,number_of_tuples),binding_node_id_(-1){};
 	binding_mode get_mode()const{
 		return OneToOne;
 	}
@@ -150,7 +152,7 @@ class OneToManyPartitionInfo:public PartitionInfo{
 public:
 	OneToManyPartitionInfo(){};
 	OneToManyPartitionInfo(PartitionID pid,string file_name):PartitionInfo(pid,file_name){};
-	OneToManyPartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks):PartitionInfo(pid,file_name,number_of_blocks){
+	OneToManyPartitionInfo(PartitionID pid,string file_name,unsigned number_of_blocks,unsigned long number_of_tuples):PartitionInfo(pid,file_name,number_of_blocks, number_of_tuples){
 		for(int i=0;i<number_of_blocks;i++){
 			block_to_node[i]=-1;
 		}
@@ -240,7 +242,7 @@ public:
 
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,unsigned number_of_chunks);
-	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks);
+	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks, unsigned long number_of_tuples);
 	void UpdatePartitionWithNumberOfChunksToBlockManager(unsigned partitoin_offset,unsigned long number_of_blocks);
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
