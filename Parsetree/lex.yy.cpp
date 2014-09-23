@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.cpp"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1513,7 +1513,7 @@ extern char linebuf[500];
 
 
 
-#line 1517 "lex.yy.cpp"
+#line 1517 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -1702,7 +1702,7 @@ YY_DECL
 
   /* keywords */
 
-#line 1706 "lex.yy.cpp"
+#line 1706 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -3307,7 +3307,7 @@ YY_RULE_SETUP
 #line 410 "sql.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 3311 "lex.yy.cpp"
+#line 3311 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(BTWMODE):
 	yyterminate();

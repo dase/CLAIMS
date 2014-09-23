@@ -19,20 +19,100 @@ ResultSet::ResultSet(const ResultSet& r)
 }
 
 void ResultSet::print() const {
-	printf("\n");
-	for(unsigned i=0;i<column_header_list_.size();i++){
-		printf("%s\t",column_header_list_[i].c_str());
+
+	std::vector<int> column_wides;
+	unsigned space_per_column=0; // two spaces and one "|"
+
+	for(int i=0;i<schema_->getncolumns();i++){
+		column_wides.push_back(column_header_list_[i].size());
 	}
 
-	printf("\n-------------------------------------------\n");
+//	unsigned sample_budget=20>this->getNumberOftuples()?20:this->getNumberOftuples();
+	unsigned sample_budget=20;
+
 	Iterator it=this->createIterator();
 	BlockStreamBase* block;
-	while(block=it.nextBlock()){
-		BlockStreamBase::BlockStreamTraverseIterator* block_it=block->createIterator();
-		void* tuple;
-		while(tuple=block_it->nextTuple()){
-			schema_->displayTuple(tuple,"\t");
+	BlockStreamBase::BlockStreamTraverseIterator* tuple_it;
+	unsigned sample_times=0;
+	while(block=it.nextBlock()) {
+		bool finish=false;
+		tuple_it=block->createIterator();
+		void * tuple;
+		while(tuple=tuple_it->nextTuple()){
+			for(unsigned i=0;i<column_header_list_.size();i++){
+				int wide=schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)).size()+space_per_column;
+				column_wides[i]=max(column_wides[i],wide);
+			}
+			sample_times++;
+			if(sample_times>=sample_budget){
+				finish=true;
+			}
 		}
+		delete tuple_it;
+		if(finish)
+			break;
 	}
-	printf(" Total tuples:%d  (%4.4f seconds)\n",this->getNumberOftuples(),query_time_);
+
+	/* print header*/
+
+	printf("\n");
+
+	/* print horizontal line */
+	for(unsigned i=0;i<column_header_list_.size();i++){
+		printf("+");
+		printNChar(column_wides[i]+2,'-');
+	}
+	printf("+\n");
+
+	for(unsigned i=0;i<column_header_list_.size();i++){
+		printf("| ",column_header_list_[i].c_str());
+
+		printNChar((column_wides[i]-column_header_list_[i].size())/2, ' ');
+		printf("%s",column_header_list_[i].c_str());
+		printNChar(column_wides[i]-column_header_list_[i].size()-(column_wides[i]-column_header_list_[i].size())/2,' ');
+		printf(" ");
+
+	}
+	printf("|\n");
+
+	/* print horizontal line */
+	for(unsigned i=0;i<column_header_list_.size();i++){
+		printf("+");
+		printNChar(column_wides[i]+2,'-');
+	}
+	printf("+\n");
+
+	it=this->createIterator();
+	while(block=it.nextBlock()) {
+		tuple_it=block->createIterator();
+		void * tuple;
+		while(tuple=tuple_it->nextTuple()){
+			for(unsigned i=0;i<column_header_list_.size();i++){
+				int current_value_length=schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)).length();
+				column_wides[i]=max(column_wides[i],current_value_length);
+				printf("| ");
+				printNChar((column_wides[i]-current_value_length)/2, ' ');
+				printf("%s",schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)).c_str());
+				printNChar(column_wides[i]-current_value_length-(column_wides[i]-current_value_length)/2,' ');
+				printf(" ");
+			}
+			printf("|\n");
+		}
+		delete tuple_it;
+	}
+
+	/* print horizontal line */
+	for(unsigned i=0;i<column_header_list_.size();i++){
+		printf("+");
+		printNChar(column_wides[i]+2,'-');
+	}
+	printf("+\n");
+
+	printf("%d tuples (%6.4f seconds)\n\n",this->getNumberOftuples(),query_time_);
+}
+
+void ResultSet::printNChar(int n, char c) const {
+	for(int i=0;i<n;i++){
+		printf("%c",c);
+	}
 }

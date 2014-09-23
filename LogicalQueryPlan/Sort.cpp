@@ -67,6 +67,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize)
 	reducer_state.child_=exchange;
 	for(unsigned i=0;i<oba_.size();i++){
 		reducer_state.orderbyKey_.push_back(getOrderByKey(oba_[i]->ta_));
+		reducer_state.direction_.push_back(oba_[i]->direction_);
 	}
 	reducer_state.input_=getSchema(dataflow_.attribute_list_);
 	BlockStreamIteratorBase *reducer_sort=new BlockStreamSortIterator(reducer_state);

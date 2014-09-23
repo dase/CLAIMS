@@ -13,18 +13,19 @@
 #endif
 #include "../common/Message.h"
 #include "../common/Logging.h"
+#include "CPUResource.h"
 typedef int NodeID;
-class ResourceManagerSlave {
+class InstanceResourceManager {
 public:
-	ResourceManagerSlave();
-	virtual ~ResourceManagerSlave();
+	InstanceResourceManager();
+	virtual ~InstanceResourceManager();
 	NodeID Register();
-	void RegisterStorageSlave();
 	void ReportStorageBudget(StorageBudgetMessage&);
-
+	void setStorageBudget(unsigned long memory, unsigned long disk);
 private:
 	Theron::Framework *framework_;
 	Logging* logging_;
+	CPUResourceManager cpu_resource_;
 };
 
 #endif /* RESOURCEMANAGERSLAVE_H_ */

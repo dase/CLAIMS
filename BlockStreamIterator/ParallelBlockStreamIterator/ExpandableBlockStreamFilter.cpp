@@ -17,6 +17,8 @@
 #include "../../common/Expression/queryfunc.h"
 #include "../../common/data_type.h"
 
+#define NEWCONDITION
+
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state) :
 		state_(state) {
 	initialize_expanded_status();
@@ -55,7 +57,12 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 	ftc->temp_block_ = BlockStreamBase::createBlock(state_.schema_,
 			state_.block_size_);
 	ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
-
+	ftc->thread_qual_=state_.qual_;
+	for(int i=0;i<state_.qual_.size();i++)
+	{
+		Expr_copy(state_.qual_[i],ftc->thread_qual_[i]);
+		InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
+	}
 	initContext(ftc);
 
 	if (tryEntryIntoSerializedSection()) {
@@ -68,9 +75,9 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 		return state_.child_->open(part_off);
 	}
 
-	for (int i = 0; i < state_.qual_.size(); i++) {
-		InitExprAtPhysicalPlan(state_.qual_[i]);
-	}
+//	for (int i = 0; i < state_.qual_.size(); i++) {
+//		InitExprAtPhysicalPlan(state_.qual_[i]);
+//	}
 }
 
 bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
@@ -83,9 +90,20 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) //the context is empty at first time,so it can skipped
 	{
 		pass_filter = true;
+#ifdef NEWCONDITION
 		if (tuple_from_child != NULL)
-			pass_filter = ExecEvalQual(state_.qual_, tuple_from_child,
+			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
 					state_.schema_);
+#else
+		pass_filter=true;
+		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+
+			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+				pass_filter=false;
+				break;
+			}
+		}
+#endif
 		if (pass_filter) {
 
 			const unsigned bytes = state_.schema_->getTupleActualSize(
@@ -138,8 +156,20 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 		 */
 		while ((tuple_from_child = tc->block_stream_iterator_->currentTuple())
 				> 0) {
-			pass_filter = ExecEvalQual(state_.qual_, tuple_from_child,
+
+#ifdef NEWCONDITION
+			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
 					state_.schema_);
+#else
+		pass_filter=true;
+		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+
+			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+				pass_filter=false;
+				break;
+			}
+		}
+#endif
 			if (pass_filter) {
 				const unsigned bytes = state_.schema_->getTupleActualSize(
 						tuple_from_child);
@@ -196,7 +226,11 @@ bool ExpandableBlockStreamFilter::close() {
 void ExpandableBlockStreamFilter::print() {
 //	printf("Filter size=%d\n",state_.v_ei_.size());
 
-	printf("---------------\n");
+	printf("filter: \n");
+	for(int i=0;i<state_.qual_.size();i++)
+	{
+		printf("	%s\n",state_.qual_[i]->alias.c_str());
+	}
 	state_.child_->print();
 }
 bool ExpandableBlockStreamFilter::atomicPopRemainingBlock(

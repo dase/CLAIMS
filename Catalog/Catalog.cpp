@@ -133,6 +133,7 @@ void Catalog::restoreCatalog(const char *filename)
 		boost::archive::text_iarchive ia(ifs);
 		ia>>*this;
 	}
+
 //	cout<<"================================================================"<<endl<<endl;
 //	outPut();
 //	cout<<"================================================================"<<endl<<endl;
@@ -157,7 +158,7 @@ void Catalog::restoreCatalog(Catalog &catalog_, const char *filename)
 	boost::archive::text_iarchive ia(ifs);
 	ia>>catalog_;
 	ifs.close();
-
+	printf("<><><><><><> restore\n");
 //	cout<<"================================================================"<<endl<<endl;
 //	outPut();
 //	cout<<"================================================================"<<endl<<endl;

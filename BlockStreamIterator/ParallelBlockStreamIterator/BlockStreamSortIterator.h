@@ -28,7 +28,7 @@ public:
 		friend class BlockStreamSortIterator;
 	public:
 		State();
-		State(Schema* input,unsigned orderbyKey,BlockStreamIteratorBase* child,const unsigned block_size,const PartitionOffset partitoin_offset=0);
+		State(Schema* input,vector<unsigned> orderbyKey,BlockStreamIteratorBase* child,const unsigned block_size,vector<int> direction,const PartitionOffset partitoin_offset=0);
 	public:
 		//TODO: fixed and varible schema both needed!
 		Schema* input_;
@@ -37,11 +37,12 @@ public:
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 		PartitionOffset partition_offset_;
+		vector<int> direction_;
 	private:
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input_ & orderbyKey_ & child_ & block_size_ & partition_offset_;
+			ar & input_ & orderbyKey_ & child_ & block_size_ & partition_offset_ & direction_;
 		}
 	};
 
@@ -50,6 +51,7 @@ public:
 		void * tuple;
 		Operate *op;
 		int orderKey;
+		int dir;
 	}SNode;
 
 	BlockStreamSortIterator();

@@ -23,11 +23,13 @@ public:
 //		const char *tbl_;
 //		const char *attr_;
 		const char *ta_;
+		int direction_;
 		OrderByAttr(const char *t,const char *a){
 	///		tbl_=t;attr_=a;
 		}
-		OrderByAttr(const char *ta){
+		OrderByAttr(const char *ta, int direction){
 			ta_=ta;
+			direction_=direction;
 	//		printf("ta=%x len=%d ta_=%x len=%d\n",ta,strlen(ta),ta_,strlen(ta_));
 		//	cout<<"order by att str ta=  "<<ta<<" @@@ta_= "<<ta_<<endl;
 		}

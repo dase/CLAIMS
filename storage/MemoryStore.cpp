@@ -8,8 +8,8 @@
 #include <iostream>
 #include <memory.h>
 #include "MemoryStore.h"
-#include "../BufferManager/BufferManager.h"
 #include "../configure.h"
+#include "../Resource/BufferManager.h"
 using namespace std;
 MemoryChunkStore* MemoryChunkStore::instance_=0;
 MemoryChunkStore::MemoryChunkStore():chunk_pool_(CHUNK_SIZE),block_pool_(BLOCK_SIZE){

@@ -21,7 +21,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	Initialize();
 	portManager=PortManager::getInstance();
 	catalog_=Catalog::getInstance();
-//	catalog_->restoreCatalog();
+	catalog_->restoreCatalog();
 
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
@@ -58,6 +58,9 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	exchangeTracker =new ExchangeTracker();
 	expander_tracker_=ExpanderTracker::getInstance();
+	if(ismaster){
+		InitializeClientListener();
+	}
 }
 
 Environment::~Environment() {
@@ -70,6 +73,7 @@ Environment::~Environment() {
 		delete iteratorExecutorMaster;
 		delete resourceManagerMaster_;
 		delete blockManagerMaster_;
+		destoryClientListener();
 	}
 	delete iteratorExecutorSlave;
 	delete exchangeTracker;
@@ -138,7 +142,7 @@ void Environment::InitializeResourceManager(){
 	if(ismaster_){
 		resourceManagerMaster_=new ResourceManagerMaster();
 	}
-	resourceManagerSlave_=new ResourceManagerSlave();
+	resourceManagerSlave_=new InstanceResourceManager();
 	nodeid=resourceManagerSlave_->Register();
 
 }
@@ -160,7 +164,7 @@ ExchangeTracker* Environment::getExchangeTracker(){
 ResourceManagerMaster* Environment::getResourceManagerMaster(){
 	return resourceManagerMaster_;
 }
-ResourceManagerSlave* Environment::getResourceManagerSlave(){
+InstanceResourceManager* Environment::getResourceManagerSlave(){
 	return resourceManagerSlave_;
 }
 NodeID Environment::getNodeID()const{
@@ -168,4 +172,14 @@ NodeID Environment::getNodeID()const{
 }
 Catalog* Environment::getCatalog()const{
 	return catalog_;
+}
+
+void Environment::InitializeClientListener() {
+	listener_=new ClientListener(10000);
+	listener_->configure();
+}
+
+void Environment::destoryClientListener() {
+	listener_->shutdown();
+	delete listener_;
 }

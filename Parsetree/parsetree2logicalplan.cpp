@@ -34,7 +34,13 @@
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
-
+#include "../common/Logging.h"
+#include "../common/AttributeComparator.h"
+#include <string.h>
+#include "../common/TypePromotionMap.h"
+#include "../common/Expression/initquery.h"
+#include "../common/Expression/qnode.h"
+#include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
 
@@ -302,19 +308,36 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));//todo
 			}
-			else
+			else//need to modify the output_schema_attrname from the subquery to the form of subquery's alias.attrname
 			{
 				tablescan=parsetree2logicalplan(node->subquery);
+				vector<Attribute>output_attribute=tablescan->getDataflow().attribute_list_;
+				vector<QNode *>exprTree;
+				string subquery_alias=string(node->astablename);
+				for(int i=0;i<output_attribute.size();i++)
+				{
+					string attrname=output_attribute[i].attrName;
+					int pos;
+					for(pos=0;pos<attrname.size()&&attrname[pos]!='.';pos++);
+					if(pos<attrname.size())
+					{
+						attrname=attrname.substr(pos+1,attrname.size()-pos-1);
+					}
+					exprTree.push_back(new QColcumns(subquery_alias.c_str(),attrname.c_str(),output_attribute[i].attrType->type,string(subquery_alias+"."+attrname).c_str()));
+					cout<<"The "<<i<<" "<<subquery_alias+"."+attrname<<endl;
+				}
+				tablescan=new LogicalProject(tablescan,exprTree);
 			}
 			Expr_list_header * whcdn=(Expr_list_header *)node->whcdn;
 			if(whcdn->header!=NULL)
 			{
+				assert(tablescan!=NULL);
 				Node * p;
 				bool hasin=false;
 				vector<QNode *>v_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
-					QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+					QNode *qual=transformqual((Node *)((Expr_list *)p)->data,tablescan);
 					v_qual.push_back(qual);
 				}
 				LogicalOperator* filter=new Filter(tablescan,v_qual);
@@ -348,7 +371,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 					vector<QNode *>v_qual;
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 					{
-						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
+						QNode *qual=transformqual((Node *)((Expr_list *)p)->data,filter_1);
 						v_qual.push_back(qual);
 					}
 					if(v_qual.size()>0)
@@ -372,13 +395,13 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
 				vector<QNode *>v_qual;
+				vector<Node *>raw_qual;
 				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
 				{
 					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
-					if(fg==0)
+					if(fg==0)//get raw qualification from whcdn
 					{
-						QNode *qual=transformqual((Node *)((Expr_list *)p)->data);
-						v_qual.push_back(qual);
+						raw_qual.push_back((Node *)((Expr_list *)p)->data);
 					}
 				}
 				if(join_pair_list.size()>0)
@@ -387,7 +410,11 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				else//除了equaljoin还有其他的join类型
 				{
-
+					assert(false);
+				}
+				for(int i=0;i<raw_qual.size();i++)
+				{
+					v_qual.push_back(transformqual(raw_qual[i],lopfrom));
 				}
 				if(v_qual.size()>0)
 				{
@@ -680,7 +707,7 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
  * 只需要获得agg函数参数的expr并加入到allexpr
  */
 
-static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
+static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree,LogicalOperator * input)
 {
 	switch(node->type)
 	{
@@ -689,7 +716,7 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 			Expr_func * funcnode=(Expr_func *)node;
 			if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
 			{
-				exprTree.push_back(transformqual(funcnode->parameter1));
+				exprTree.push_back(transformqual(funcnode->parameter1,input));
 			}
 			else if(strcmp(funcnode->funname,"FCOUNTALL")==0)
 			{
@@ -699,11 +726,11 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 			{
 				if(strcmp(funcnode->funname,"FSUBSTRING0")==0||strcmp(funcnode->funname,"FSUBSTRING1")==0)
 				{
-					recurse_get_item_in_expr(funcnode->args,exprTree);
+					recurse_get_item_in_expr(funcnode->args,exprTree,input);
 				}
 				else
 				{
-					recurse_get_item_in_expr(funcnode->parameter1,exprTree);
+					recurse_get_item_in_expr(funcnode->parameter1,exprTree,input);
 				}
 			}
 		}break;
@@ -711,8 +738,8 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree)
 		{
 			Expr_cal * calnode=(Expr_cal *)node;
 			if(calnode->lnext!=0)
-			recurse_get_item_in_expr(calnode->lnext,exprTree);
-			recurse_get_item_in_expr(calnode->rnext,exprTree);
+			recurse_get_item_in_expr(calnode->lnext,exprTree,input);
+			recurse_get_item_in_expr(calnode->rnext,exprTree,input);
 
 		}break;
 		case t_name:
@@ -748,9 +775,9 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 	{
 		Select_list *selectlist=(Select_list *)p;
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
-		if(proj_type==0||proj_type==2)
+		if(proj_type==0)
 		{
-			QNode * qnode=transformqual(sexpr->colname);
+			QNode * qnode=transformqual(sexpr->colname,input);
 			if(sexpr->ascolname!=NULL)
 			{
 				qnode->alias=string(sexpr->ascolname);
@@ -761,12 +788,21 @@ static void get_all_selectlist_expression_item(Node * node,LogicalOperator *inpu
 		{
 			if(selectlist->isall==-1)
 			{
-				recurse_get_item_in_expr(sexpr->colname,exprTree);
+				recurse_get_item_in_expr(sexpr->colname,exprTree,input);
 			}
 			else if(selectlist->isall==-2)//count(*) 不能参与运算
 			{
 				SQLParse_log("this sql has count(*)");
 			}
+		}
+		else if(proj_type==2)//the expression in select clause which dosen't contain aggregation function should be in group by clause as the same form.
+		{
+			QNode * qnode=transformqual(sexpr->colname,input);
+			if(sexpr->ascolname!=NULL)
+			{
+				qnode->alias=string(sexpr->ascolname);
+			}
+			exprTree.push_back(qnode);
 		}
 		p=selectlist->next;
 	}
@@ -776,50 +812,12 @@ static void get_all_groupby_expression_item(Node * node,LogicalOperator *input,v
 	for(Node *p=(Node *)(((Groupby_list*)node)->next);p!=NULL;)
 	{
 		Groupby_expr *gbexpr=(Groupby_expr *)p;
-		exprTree.push_back(transformqual(gbexpr->args));
+		exprTree.push_back(transformqual(gbexpr->args,input));
 		p=gbexpr->next;
 	}
 
 }
-static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,int proj_type)
-{
-	vector<QNode *>exprTree;
-	if(parsetree==NULL)
-	{
-		return NULL;
-	}
-	else
-	{
-		Query_stmt *node=(Query_stmt *)parsetree;
-		if(proj_type==0)
-		{
-			get_all_selectlist_expression_item(node->select_list,NULL,0,exprTree);
-		}
-		else if(proj_type==1)
-		{
-			if(node->groupby_list!=NULL)
-			{
-				get_all_groupby_expression_item(node->groupby_list,NULL,exprTree);
-			}
-			get_all_selectlist_expression_item(node->select_list,NULL,1,exprTree);
-		}
-		else
-		{
-			get_all_selectlist_expression_item(node->select_list,last_logicalplan,2,exprTree);
-		}
-		LogicalOperator* proj=NULL;
-		if(exprTree.size()>0)
-		{
-			proj=new LogicalProject(last_logicalplan,exprTree);
-		}
-		else
-		{
-			SQLParse_log("allexpr.size=0");
-			proj=last_logicalplan;
-		}
-		return proj;
-	}
-}
+
 static void dfs_select_args(int flag,int &ans,Node * node)
 {
 	switch(node->type)
@@ -1010,6 +1008,70 @@ static void dfs_select_args(int flag,int &ans,Node * node)
 	}
 	return;
 }
+static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOperator * last_logicalplan,int proj_type)
+{
+	vector<QNode *>exprTree;
+	if(parsetree==NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		Query_stmt *node=(Query_stmt *)parsetree;
+		if(proj_type==0)
+		{
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,0,exprTree);
+		}
+		else if(proj_type==1)
+		{
+			if(node->groupby_list!=NULL)
+			{
+				get_all_groupby_expression_item(node->groupby_list,last_logicalplan,exprTree);
+			}
+			get_all_selectlist_expression_item(node->select_list,last_logicalplan,1,exprTree);
+		}
+		else if(proj_type==2)//the expression in select clause which dosen't contain aggregation function should be in group by clause as the same form.
+		{
+			for(Node *p=node->select_list;p!=NULL;)
+			{
+				int ans=0;
+				Node *expr_node;
+				Select_list *selectlist=(Select_list *)p;
+				Select_expr *sexpr=(Select_expr *)selectlist->args;
+				dfs_select_args(0,ans,sexpr->colname);
+				if((ans&1)==1||(ans&8)==8)//if the expression has aggregation function,then skip it
+				{
+					expr_node=sexpr->colname;
+				}
+				else//if the expression doesn't have aggregation function,the expression must be in group_by_clause as the same form
+				{
+					int flag=0;
+					char * expr_name=get_expr_str(sexpr->colname);//TODO need to judge whether the expr_name is in group_by_list
+					expr_node=newColumn(t_name_name,"",expr_name,NULL);//construct temporary node
+				}
+				QNode * qnode=transformqual(expr_node,last_logicalplan);
+				if(sexpr->ascolname!=NULL)
+				{
+					qnode->alias=string(sexpr->ascolname);
+				}
+				exprTree.push_back(qnode);
+				p=selectlist->next;
+			}
+//			get_all_selectlist_expression_item(node->select_list,last_logicalplan,2,exprTree);
+		}
+		LogicalOperator* proj=NULL;
+		if(exprTree.size()>0)
+		{
+			proj=new LogicalProject(last_logicalplan,exprTree);
+		}
+		else
+		{
+			SQLParse_log("allexpr.size=0");
+			proj=last_logicalplan;
+		}
+		return proj;
+	}
+}
 /*判断selectlist的expression中是否存在
  * 聚集函数agg中的参数为表达式expr eg: min(a+b)
  * 或者聚集函数agg包含在表达式中 eg:min(a)+max(b)
@@ -1117,7 +1179,7 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 				Columns *col=(Columns *)(gbexpr->args);
 //				obcol.push_back(col->parameter2);
 				//obcol.push_back(col->parameter2);
-				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2));
+				obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2,gbexpr->sorttype));
 			}break;
 			case t_intnum:
 			{
@@ -1148,7 +1210,7 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 						case t_column:
 						{
 							Columns * col=(Columns *)sexpr->colname;
-							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2));
+							obcol.push_back(new LogicalSort::OrderByAttr(col->parameter2,gbexpr->sorttype));
 						}break;
 						default:
 						{
@@ -1161,13 +1223,13 @@ static void get_orderby_column_from_selectlist(Node * olnode,Node *slnode,vector
 			{
 				Expr_func * func=(Expr_func *)(gbexpr->args);
 				assert(func->str!=NULL);
-				obcol.push_back(new LogicalSort::OrderByAttr(func->str));
+				obcol.push_back(new LogicalSort::OrderByAttr(func->str,gbexpr->sorttype));
 			}break;
 			case t_expr_cal:
 			{
 				Expr_cal *ecal=(Expr_cal *)(gbexpr->args);
 				assert(ecal->str!=NULL);
-				obcol.push_back(new LogicalSort::OrderByAttr(ecal->str));
+				obcol.push_back(new LogicalSort::OrderByAttr(ecal->str,gbexpr->sorttype));
 			}break;
 			default:
 			{
@@ -1189,7 +1251,7 @@ static LogicalOperator* having_select_groupby_where_from2logicalplan(Node *&pars
 	else
 	{
 		vector<QNode *>h_qual;
-		h_qual.push_back(transformqual(((Having_list*)node->having_list)->next));
+		h_qual.push_back(transformqual(((Having_list*)node->having_list)->next,select_logicalplan));
 		having_logicalplan=new Filter(select_logicalplan,h_qual);
 	}
 	return having_logicalplan;

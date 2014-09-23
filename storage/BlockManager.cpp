@@ -7,7 +7,6 @@
 #include <sstream>
 #include "BlockManager.h"
 #include "../Environment.h"
-#include "../BufferManager/BufferManager.h"
 #include "../common/rename.h"
 #include "../common/Message.h"
 #include "../common/Logging.h"
@@ -434,7 +433,6 @@ string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,Block
 }
 void BlockManager::BlockManagerWorkerActor::BindingPartition(const PartitionBindingMessage& message,const Theron::Address from){
 	bm_->addPartition(message.partition_id,message.number_of_chunks,message.storage_level);
-	/*testing*/ cout << "--testing--\t update binding partition!\n";
 	Send(int(0),from);
 }
 

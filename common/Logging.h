@@ -78,6 +78,10 @@ class ExchangeIteratorEagerLowerLogging:public Logging{
 	void log(const char* format,...);
 	void elog(const char* format,...);
 };
+class ExchangeIteratorSenderMaterialized:public Logging{
+	void log(const char* format,...);
+	void elog(const char* format,...);
+};
 
 class CatalogLogging:public Logging{
 	void log(const char* format,...);
@@ -263,14 +267,14 @@ static void Logging_ExpandableBlockStreamExchangeLM(const char* format,...){
 }
 
 static void Logging_BlockStreamExchangeLowerBase(const char* format,...){
-#ifdef DEBUG_BlockStreamExchangeLowerBase
+//#ifdef DEBUG_BlockStreamExchangeLowerBase
 	printf("[BlockStreamExchangeLowerBase]: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf (format, arg);
 	printf("\n");
 	va_end (arg);
-#endif
+//#endif
 }
 
 static void SQLParse_log(const char* format,...){
