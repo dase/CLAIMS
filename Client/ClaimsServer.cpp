@@ -201,10 +201,17 @@ void* ClientListener::receiveHandler(void *para) {
 						continue;
 					}
 
-					int sql_type = read(server->m_clientFds[i], buf, sizeof(int));
+//					cout<<"nread:"<<nread<<endl;
 					memset(buf, 0, sizeof(buf));
-					int read_cout = read(server->m_clientFds[i], buf, nread-sizeof(int));
-					buf[read_cout] = '\0';	// fix a bug
+					int read_count = read(server->m_clientFds[i], buf, nread);
+					buf[read_count] = '\0';	// fix a bug
+					cout<<"buf: "<<buf<<endl;
+
+//					int sql_type = buf[0]-48;	// '1' - 48 = 1
+//					ClientLogging::log("sql_type is %d", sql_type);
+//
+//					generateSqlStmt(sql_type, buf);
+//					strcpy(buf, "select row_id from trade limit 100;\0");
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
 					if (0 == retCode) {
@@ -232,6 +239,27 @@ void* ClientListener::receiveHandler(void *para) {
 	return NULL;
 }
 
+void ClientListener::generateSqlStmt(int type, char *buf) {
+	ClientLogging::log("in generateSqlStmt function:type argument is %d, buf argument is %s", type, buf);
+	// the first byte of buf is type, other are argument
+	string arg(buf+1);
+	cout<<"arg is :"<<arg<<endl;
+	switch(type) {
+	case 1: {
+		string sql = "select avg(Trade_Price), substr(Trade_Date,0,7) as months from trade where Sec_Code = \'";
+		sql += arg;
+		sql += "\' group by substr(Trade_Date,0,7)  order by months; ";
+		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+	}
+	break;
+	default: {
+		ClientLogging::elog("No supported");
+	}
+	}
+}
 
 
 void *ClientListener::sendHandler(void *para) {
