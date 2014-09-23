@@ -959,7 +959,7 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	//T0
 	for(unsigned i=0;i<table_0->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
+			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,24);
 	}
 	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
@@ -973,7 +973,7 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 
 	for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
+		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,223);
 	}
 
 	catalog->saveCatalog();
