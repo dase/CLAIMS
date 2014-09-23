@@ -137,13 +137,13 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		physical_plan_descriptor.cost+=dataflow.getAggregatedDatasize();
 
 		ExpandableBlockStreamExchangeEpoll::State state;
-		state.block_size=block_size;
-		state.child=scan;//child_iterator;
-		state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema=getSchema(dataflow.attribute_list_);
+		state.block_size_=block_size;
+		state.child_=scan;//child_iterator;
+		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+		state.schema_=getSchema(dataflow.attribute_list_);
 
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
-		state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+		state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
 
 		std::vector<NodeID> upper_id_list;
 		if(requirement.hasRequiredLocations()){
@@ -161,20 +161,20 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 			}
 		}
 
-		state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+		state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
-		state.partition_key_index=getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey());
-		assert(state.partition_key_index>=0);
+		state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey()));
+		assert(state.partition_schema_.partition_key_index>=0);
 
 		BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
 
 		Dataflow new_dataflow;
 		new_dataflow.attribute_list_=dataflow.attribute_list_;
 		new_dataflow.property_.partitioner.setPartitionKey(requirement.getPartitionKey());
-		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_ip_list.size()));
+		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_ip_list_.size()));
 
 		const unsigned total_size=dataflow.getAggregatedDatasize();
-		const unsigned degree_of_parallelism=state.upper_ip_list.size();
+		const unsigned degree_of_parallelism=state.upper_ip_list_.size();
 		std::vector<DataflowPartition> dataflow_partition_list;
 			for(unsigned i=0;i<degree_of_parallelism;i++){
 				const NodeID location=upper_id_list[i];
