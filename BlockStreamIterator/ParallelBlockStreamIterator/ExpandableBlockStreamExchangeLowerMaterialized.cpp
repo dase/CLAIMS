@@ -91,30 +91,34 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::next(BlockStreamBase*){
 		block_stream_for_asking_->setEmpty();
 		if(state_.child_->next(block_stream_for_asking_)){
 			/** a new block is obtained from child iterator **/
-			BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
-			while((tuple_from_child=traverse_iterator->nextTuple())>0){
-				/** for each tuple in the newly obtained block, insert the tuple to one partitioned block according to the
-				 * partition hash value**/
-				const unsigned partition_id=hash(tuple_from_child,state_.schema_,state_.partition_key_index_,nuppers_);
+			if(state_.partition_schema_.isHashPartition()){
+				BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=block_stream_for_asking_->createIterator();
+				while((tuple_from_child=traverse_iterator->nextTuple())>0){
+					/** for each tuple in the newly obtained block, insert the tuple to one partitioned block according to the
+					 * partition hash value**/
+					const unsigned partition_id=hash(tuple_from_child,state_.schema_,state_.partition_schema_.partition_key_index,nuppers_);
 
-				/** calculate the tuple size for the current tuple **/
-				const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
+					/** calculate the tuple size for the current tuple **/
+					const unsigned bytes=state_.schema_->getTupleActualSize(tuple_from_child);
 
-				/** insert the tuple into the corresponding partitioned block **/
-				while(!(tuple_in_cur_block_stream=partitioned_block_stream_[partition_id]->allocateTuple(bytes))){
-					/** if the destination block is full, we insert the block into the buffer **/
+					/** insert the tuple into the corresponding partitioned block **/
+					while(!(tuple_in_cur_block_stream=partitioned_block_stream_[partition_id]->allocateTuple(bytes))){
+						/** if the destination block is full, we insert the block into the buffer **/
 
-					partitioned_block_stream_[partition_id]->serialize(*block_for_serialization_);
-					partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,partition_id);
-					partitioned_block_stream_[partition_id]->setEmpty();
+						partitioned_block_stream_[partition_id]->serialize(*block_for_serialization_);
+						partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,partition_id);
+						partitioned_block_stream_[partition_id]->setEmpty();
+					}
+					/** thread arriving here means that the space for the tuple is successfully allocated, so we copy the tuple **/
+					state_.schema_->copyTuple(tuple_from_child,tuple_in_cur_block_stream);
 				}
-				/** thread arriving here means that the space for the tuple is successfully allocated, so we copy the tuple **/
-				state_.schema_->copyTuple(tuple_from_child,tuple_in_cur_block_stream);
 			}
-//			block_stream_for_asking_->serialize(*block_for_serialization_);
-//			for(unsigned i=0;i<nuppers_;i++){
-//				partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,i);
-//			}
+			else if(state_.partition_schema_.isBoardcastPartition()){
+				block_stream_for_asking_->serialize(*block_for_serialization_);
+				for(unsigned i=0;i<nuppers_;i++){
+					partitioned_data_buffer_->insertBlockToPartitionedList(block_for_serialization_,i);
+				}
+			}
 		}
 		else{
 			/* the child iterator is exhausted. We add the remaining data in partitioned data blocks into the buffer*/

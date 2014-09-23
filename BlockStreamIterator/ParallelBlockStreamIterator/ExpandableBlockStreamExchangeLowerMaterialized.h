@@ -28,6 +28,7 @@
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/BlockStreamBuffer.h"
 #include "../../common/Logging.h"
+#include "../../common/partition_functions.h"
 
 class ExpandableBlockStreamExchangeLowerMaterialized:public BlockStreamExchangeLowerBase {
 public:
@@ -38,16 +39,16 @@ public:
 		std::vector<std::string> upper_ip_list_;
 		unsigned block_size_;
 		PartitionOffset partition_offset;
-		unsigned partition_key_index_;
+		partition_schema partition_schema_;
 		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<std::string> upper_ip_list, unsigned block_size,
-						unsigned long long int exchange_id=0,unsigned partition_key_index=0)
-		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_offset(0),partition_key_index_(partition_key_index)
+						unsigned long long int exchange_id=0,partition_schema partition_key_index=partition_schema::set_hash_partition())
+		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_offset(0),partition_schema_(partition_key_index)
 		{}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_&partition_offset&partition_key_index_;
+			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_&partition_offset&partition_schema_;
 		}
 	};
 	ExpandableBlockStreamExchangeLowerMaterialized(State state);
