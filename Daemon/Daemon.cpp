@@ -83,6 +83,7 @@ void* Daemon::worker(void* para) {
 		//assume all commands are sql commands.
 		executed_result result;
 		result.fd = rc.socket_fd;
+		result.status = true;
 
 		// result is a pointer, which now is NULL and should be assigned in function.
 		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info);
