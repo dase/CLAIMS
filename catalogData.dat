@@ -2,109 +2,109 @@
 0 5 trade 0 0 21 0 1 0
 1 12 trade.row_id 7 1 0
 2 2 0 1 0 2 1
-3 14 trade.Trade_No 7
+3 14 trade.trade_no 7
 4 9 18 1 1 2 0
-5 16 trade.Trade_Date 7
+5 16 trade.trade_date 7
 6 6 0 1 2 2 0
-7 16 trade.Trade_Time 7
+7 16 trade.trade_time 7
 8 7 0 1 3 2 0
-9 20 trade.Trade_Time_Dec 7
+9 20 trade.trade_time_dec 7
 10 9 8 1 4 2 0
-11 16 trade.Order_Time 7
+11 16 trade.order_time 7
 12 7 0 1 5 2 0
-13 20 trade.Order_Time_Dec 7
+13 20 trade.order_time_dec 7
 14 9 8 1 6 2 0
-15 14 trade.Order_No 7
+15 14 trade.order_no 7
 16 9 18 1 7 2 0
-17 17 trade.Trade_Price 7
+17 17 trade.trade_price 7
 18 9 18 1 8 2 0
-19 15 trade.Trade_Amt 7
+19 15 trade.trade_amt 7
 20 9 18 1 9 2 0
-21 15 trade.Trade_Vol 7
+21 15 trade.trade_vol 7
 22 1 0 1 10 2 0
-23 14 trade.Sec_Code 7
+23 14 trade.sec_code 7
 24 5 6 1 11 2 0
-25 12 trade.PBU_ID 7
+25 12 trade.pbu_id 7
 26 5 5 1 12 2 0
-27 13 trade.Acct_ID 7
+27 13 trade.acct_id 7
 28 5 10 1 13 2 0
-29 15 trade.Trade_Dir 7
+29 15 trade.trade_dir 7
 30 5 1 1 14 2 0
-31 23 trade.Order_PrtFil_Code 7
+31 23 trade.Order_prtfil_code 7
 32 5 1 1 15 2 0
-33 15 trade.Tran_Type 7
+33 15 trade.tran_type 7
 34 5 3 1 16 2 0
-35 16 trade.Trade_Type 7
+35 16 trade.trade_type 7
 36 5 1 1 17 2 0
-37 15 trade.Proc_Type 7
+37 15 trade.proc_type 7
 38 5 1 1 18 2 0
-39 16 trade.Order_Type 7
+39 16 trade.order_type 7
 40 5 2 1 19 2 0
-41 17 trade.Stat_PBU_ID 7
+41 17 trade.stat_pbu_id 7
 42 5 5 1 20 2 0 2 0 0 1 0 9 1 0
 43 0 0 2 0 0 0 21 0 1 0
 44
 45 12 trade.row_id 7
 46 2 0 1 0 2 1 0 0 2 0 0
 47
-48 14 trade.Trade_No 7
+48 14 trade.trade_no 7
 49 9 18 1 1 2 0 2 0 1
 50
-51 16 trade.Trade_Date 7
+51 16 trade.trade_date 7
 52 6 0 1 2 2 0 2 0 2
 53
-54 16 trade.Trade_Time 7
+54 16 trade.trade_time 7
 55 7 0 1 3 2 0 2 0 3
 56
-57 20 trade.Trade_Time_Dec 7
+57 20 trade.trade_time_dec 7
 58 9 8 1 4 2 0 2 0 4
 59
-60 16 trade.Order_Time 7
+60 16 trade.order_time 7
 61 7 0 1 5 2 0 2 0 5
 62
-63 20 trade.Order_Time_Dec 7
+63 20 trade.order_time_dec 7
 64 9 8 1 6 2 0 2 0 6
 65
-66 14 trade.Order_No 7
+66 14 trade.order_no 7
 67 9 18 1 7 2 0 2 0 7
 68
-69 17 trade.Trade_Price 7
+69 17 trade.trade_price 7
 70 9 18 1 8 2 0 2 0 8
 71
-72 15 trade.Trade_Amt 7
+72 15 trade.trade_amt 7
 73 9 18 1 9 2 0 2 0 9
 74
-75 15 trade.Trade_Vol 7
+75 15 trade.trade_vol 7
 76 1 0 1 10 2 0 2 0 10
 77
-78 14 trade.Sec_Code 7
+78 14 trade.sec_code 7
 79 5 6 1 11 2 0 2 0 11
 80
-81 12 trade.PBU_ID 7
+81 12 trade.pbu_id 7
 82 5 5 1 12 2 0 2 0 12
 83
-84 13 trade.Acct_ID 7
+84 13 trade.acct_id 7
 85 5 10 1 13 2 0 2 0 13
 86
-87 15 trade.Trade_Dir 7
+87 15 trade.trade_dir 7
 88 5 1 1 14 2 0 2 0 14
 89
-90 23 trade.Order_PrtFil_Code 7
+90 23 trade.Order_prtfil_code 7
 91 5 1 1 15 2 0 2 0 15
 92
-93 15 trade.Tran_Type 7
+93 15 trade.tran_type 7
 94 5 3 1 16 2 0 2 0 16
 95
-96 16 trade.Trade_Type 7
+96 16 trade.trade_type 7
 97 5 1 1 17 2 0 2 0 17
 98
-99 15 trade.Proc_Type 7
+99 15 trade.proc_type 7
 100 5 1 1 18 2 0 2 0 18
 101
-102 16 trade.Order_Type 7
+102 16 trade.order_type 7
 103 5 2 1 19 2 0 2 0 19
 104
-105 17 trade.Stat_PBU_ID 7
+105 17 trade.stat_pbu_id 7
 106 5 5 1 20 2 0 2 0 20 14 1 0
 107 6
 108 12 trade.row_id 7
