@@ -62,6 +62,7 @@ private:
 	vector < vector<BlockStreamBase*> > pj_buffer;
 
 	vector<vector <unsigned long> > blocks_per_partition;
+	vector<vector <unsigned long> > tuples_per_partition;
 	vector<SubTuple*> sub_tuple_generator;
 
 	Schema* table_schema;
