@@ -31,10 +31,10 @@ void PartitionStorage::updateChunksWithInsertOrAppend(const PartitionID &partiti
 {
 	if(!chunk_list_.empty()){
 		MemoryChunkStore::getInstance()->returnChunk(chunk_list_.back()->getChunkID());
-		if (Config::local_disk_mode == 0)
+//		if (Config::local_disk_mode == 0)
 			chunk_list_.back()->setCurrentStorageLevel(HDFS);
-		else
-			chunk_list_.back()->setCurrentStorageLevel(DISK);
+//		else
+//			chunk_list_.back()->setCurrentStorageLevel(DISK);
 	}
 	for (unsigned i = number_of_chunks_; i < number_of_chunks; i++)
 		chunk_list_.push_back(new ChunkStorage(ChunkID(partition_id, i), BLOCK_SIZE, storage_level));
