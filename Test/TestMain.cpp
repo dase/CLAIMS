@@ -91,9 +91,9 @@ int maina(int argc, char** argv){
 
 //	return query_optimization_outputdata();
 
-	return test_cross_join();
+//	return test_cross_join();
+//	return test_cross_join();
 //	return query_optimization_outputdata();
-
 //	 execute_sql_test();
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
@@ -130,7 +130,7 @@ int maina(int argc, char** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-//	test_expanderFramework_single_node(5);
+	test_expanderFramework_single_node(5);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();

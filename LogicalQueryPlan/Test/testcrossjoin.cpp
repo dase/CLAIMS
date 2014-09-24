@@ -23,7 +23,7 @@ static int test_cross_join()
 	else
 	{
 		Environment::getInstance(true);
-//		startup_multiple_node_environment_of_tpch();
+		startup_multiple_node_environment_of_stock();
 
 		LogicalOperator* scan_field=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string("a"))->getProjectoin(0));
 		LogicalOperator* scan_area=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string("b"))->getProjectoin(0));
@@ -34,6 +34,13 @@ static int test_cross_join()
 //		exprTree0.push_back(qcalnode0);
 //		LogicalOperator *filter_field=new Filter(scan_field,exprTree0);
 //
+//		vector<QNode *>exprTree1;
+//		QColcumns *cal1=new QColcumns("area","area.row_id",t_u_long,"area.row_id");
+//		QExpr *qexpr1=new QExpr("2",t_string,"2");
+//		QExpr_binary *qcalnode1=new QExpr_binary(cal1,qexpr1,t_u_long,oper_less,t_qexpr_cmp,"area.row_id<2");
+//		exprTree1.push_back(qcalnode1);
+//		LogicalOperator *filter_area=new Filter(scan_area,exprTree1);
+
 //		vector<QNode *>exprTree1;
 //		QColcumns *cal1=new QColcumns("area","area.row_id",t_u_long,"area.row_id");
 //		QExpr *qexpr1=new QExpr("2",t_string,"2");
