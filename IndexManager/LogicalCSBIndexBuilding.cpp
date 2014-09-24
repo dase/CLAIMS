@@ -22,7 +22,7 @@ LogicalCSBIndexBuilding::~LogicalCSBIndexBuilding() {
 Dataflow LogicalCSBIndexBuilding::getDataflow()
 {
 	if(!scan_projection_->AllPartitionBound()){
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),MEMORY);
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
 	}
 
 	blc_dataflow_.attribute_list_ = scan_projection_->getAttributeList();

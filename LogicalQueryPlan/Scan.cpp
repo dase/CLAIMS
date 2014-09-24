@@ -81,7 +81,7 @@ Dataflow LogicalScan::getDataflow(){
 
 	}
 	if(!target_projection_->AllPartitionBound()){
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),MEMORY);
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
 	}
 
 	/*build the data flow*/

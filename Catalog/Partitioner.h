@@ -251,12 +251,12 @@ public:
 
 	unsigned getPartitionChunks( unsigned partition_index) const;
 
-	NodeID getPartitionLocation(unsigned partition_index)const;
+	NodeID getPartitionLocation(unsigned partition_offset)const;
 	void print();
 
 	bool hasSamePartitionLocation(const Partitioner & target_partition )const;
 
-	binding_mode get_bing_mode_()const{
+	binding_mode get_binding_mode_()const{
 		return mode_;
 	}
 	PartitionFunction::partition_fashion getPartitionFashion()const;

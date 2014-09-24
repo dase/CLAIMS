@@ -74,7 +74,7 @@ public:
 		void getBlock(const Message256 &message,const Theron::Address from){};
 		void putBlock(const Message256 &message,const Theron::Address from){};
 		void BindingPartition(const PartitionBindingMessage& message,const Theron::Address from);
-		void UpdateBindingPartition(const PartitionBindingMessage& message, const Theron::Address from);
+		void UnbindingPartition(const PartitionUnbindingMessage& message, const Theron::Address from);
 	private:
 		TimeOutReceiver *tor_;
 		string receiverId_;
@@ -121,7 +121,7 @@ public:
 	string askForMatch(string filename, BlockManagerId bmi);
 	bool containsPartition(const PartitionID& part)const;
 	bool addPartition(const PartitionID&, const unsigned & number_of_chunks,const StorageLevel& desirable_storage_level);
-	bool updatePartition(const PartitionID&, const unsigned & number_of_blocks, const StorageLevel& desirable_storage_level);
+	bool removePartition(const PartitionID&);
 	PartitionStorage* getPartitionHandle(const PartitionID& partition_id)const;
 private:
 	BlockManager();

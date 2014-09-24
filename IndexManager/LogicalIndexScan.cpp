@@ -29,7 +29,7 @@ Dataflow LogicalIndexScan::getDataflow()
 {
 	if(!scan_projection_->AllPartitionBound()){
 		printf("Binded!\n");
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),MEMORY);
+		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
 	}
 
 	dataflow_.attribute_list_ = scan_projection_->getAttributeList();
