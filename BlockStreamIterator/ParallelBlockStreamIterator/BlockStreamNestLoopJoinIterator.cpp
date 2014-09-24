@@ -9,7 +9,7 @@
 #include "BlockStreamJoinIterator.h"
 #include "../../Executor/ExpanderTracker.h"
 #include "../../common/Block/BlockStream.h"
-BlockStreamNestLoopJoinIterator::BlockStreamNestLoopJoinIterator() {
+BlockStreamNestLoopJoinIterator::BlockStreamNestLoopJoinIterator():ExpandableBlockStreamIteratorBase(2,1) {
 	initialize_expanded_status();
 }
 
@@ -120,6 +120,7 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 //						for(int i=0;i<state_.output_schema->columns.size();i++)
 //						{
 //							cout<<state_.output_schema->getcolumn(i).operate->toString(state_.output_schema->getColumnAddess(i,result_tuple))<<" | "<<endl;
+
 //						}
 //						cout<<endl;
 					}

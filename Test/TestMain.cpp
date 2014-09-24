@@ -68,7 +68,8 @@
 #include "Resource/CPUResourceManagerTest.h"
 #include "../LogicalQueryPlan/Test/testcrossjoin.cpp"
 #include "../Parsetree/Test/execute_sql_test.cpp"
-
+#include <stdio.h>
+#include <string>
 int maina(int argc, char** argv){
 
 
@@ -89,7 +90,6 @@ int maina(int argc, char** argv){
 //	return query_optimization_based_on_statistics_aggregation();
 
 //	return query_optimization_outputdata();
-
 
 //	return test_cross_join();
 //	return query_optimization_outputdata();

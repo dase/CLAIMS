@@ -54,18 +54,18 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
 		data_exchange_used=true;
 		ExpandableBlockStreamExchangeEpoll::State state;
-		state.block_size=block_size;
+		state.block_size_=block_size;
 		BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state_lower);
-		state.child=expander_lower;//child_iterator;
-		state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema=schema;
-		state.upper_ip_list.push_back(node_tracker->getNodeIP(collecter_));
-		state.partition_key_index=0;
+		state.child_=expander_lower;//child_iterator;
+		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+		state.schema_=schema;
+		state.upper_ip_list_.push_back(node_tracker->getNodeIP(collecter_));
+		state.partition_schema_=partition_schema::set_hash_partition(0);
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(child_dataflow.property_.partitioner);
 		for(unsigned i=0;i<lower_id_list.size();i++){
 			const std::string ip=node_tracker->getNodeIP(lower_id_list[i]);
 			assert(ip!="");
-			state.lower_ip_list.push_back(ip);
+			state.lower_ip_list_.push_back(ip);
 		}
 		child_iterator=new ExpandableBlockStreamExchangeEpoll(state);
 	}
@@ -159,17 +159,17 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 			physical_plan.cost+=physical_plan.dataflow.getAggregatedDatasize();
 
 			ExpandableBlockStreamExchangeEpoll::State state;
-			state.block_size=block_size;
-			state.child=physical_plan.plan;//child_iterator;
-			state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			state.schema=getSchema(physical_plan.dataflow.attribute_list_);
-			state.upper_ip_list.push_back(NodeTracker::getInstance()->getNodeIP(collecter_));
-			state.partition_key_index=0;
+			state.block_size_=block_size;
+			state.child_=physical_plan.plan;//child_iterator;
+			state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			state.schema_=getSchema(physical_plan.dataflow.attribute_list_);
+			state.upper_ip_list_.push_back(NodeTracker::getInstance()->getNodeIP(collecter_));
+			state.partition_schema_=partition_schema::set_hash_partition(0);
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
 			for(unsigned i=0;i<lower_id_list.size();i++){
 				const std::string ip=NodeTracker::getInstance()->getNodeIP(lower_id_list[i]);
 				assert(ip!="");
-				state.lower_ip_list.push_back(ip);
+				state.lower_ip_list_.push_back(ip);
 			}
 
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
@@ -218,10 +218,10 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 			 * */
 
 			ExpandableBlockStreamExchangeEpoll::State state;
-			state.block_size=block_size;
-			state.child=best_plan.plan;//child_iterator;
-			state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			state.schema=getSchema(best_plan.dataflow.attribute_list_);
+			state.block_size_=block_size;
+			state.child_=best_plan.plan;//child_iterator;
+			state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			state.schema_=getSchema(best_plan.dataflow.attribute_list_);
 			std::vector<NodeID> upper_id_list;
 			if(requirement.hasRequiredLocations()){
 				upper_id_list=requirement.getRequiredLocations();
@@ -238,16 +238,17 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 				}
 			}
 
-			state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+			state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
 			assert(requirement.hasReuiredPartitionKey());
 
-			state.partition_key_index=this->getIndexInAttributeList(best_plan.dataflow.attribute_list_,requirement.getPartitionKey());
-			assert(state.partition_key_index>=0);
+			state.partition_schema_=partition_schema::set_hash_partition(this->getIndexInAttributeList(best_plan.dataflow.attribute_list_,requirement.getPartitionKey()));
+			assert(state.partition_schema_.partition_key_index>=0);
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(best_plan.dataflow.property_.partitioner);
 
-			state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+			state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+
 
 
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);

@@ -35,7 +35,7 @@ private:
 //	Dataflow* dataflow_;
 	std::vector<Attribute> scan_attribute_list_;
 	ProjectionDescriptor* target_projection_;
-	Dataflow dataflow_;
+	Dataflow* dataflow_;
 	float sample_rate_;
 
 };

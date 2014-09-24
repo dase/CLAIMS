@@ -6,6 +6,7 @@
  */
 
 #include "DataflowPartitionDescriptor.h"
+#include "../utility/print_tool.h"
 
 DataflowPartitioningDescriptor::DataflowPartitioningDescriptor(const Partitioner& partitioner){
 	partition_function_=partitioner.getPartitionFunction();
