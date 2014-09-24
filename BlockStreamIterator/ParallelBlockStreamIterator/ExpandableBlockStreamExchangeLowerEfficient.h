@@ -44,27 +44,28 @@
 #include "../../common/hash.h"
 #include "../../common/Logging.h"
 #include "../BlockStreamExchangeLowerBase.h"
+#include "../../common/partition_functions.h"
 
 class ExpandableBlockStreamExchangeLowerEfficient:public BlockStreamExchangeLowerBase {
 public:
 	friend class ExpandableBlockStreamExchangeEpoll;
 	struct State{
-		Schema* schema;
-		BlockStreamIteratorBase* child;
-		unsigned long long int exchange_id;
-		std::vector<std::string> upper_ip_list;
-		unsigned block_size;
-		unsigned partition_key_index;
-		PartitionOffset partition_offset;
+		Schema* schema_;
+		BlockStreamIteratorBase* child_;
+		unsigned long long int exchange_id_;
+		std::vector<std::string> upper_ip_list_;
+		unsigned block_size_;
+		partition_schema partition_schema_;
+		PartitionOffset partition_offset_;
 		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<std::string> upper_ip_list, unsigned block_size,
-						unsigned long long int exchange_id=0,unsigned partition_index=0)
-		:schema(schema),child(child),upper_ip_list(upper_ip_list),block_size(block_size),exchange_id(exchange_id),partition_key_index(partition_index),partition_offset(0)
+						unsigned long long int exchange_id=0,partition_schema partition_schema=partition_schema::set_hash_partition())
+		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_schema_(partition_schema),partition_offset_(0)
 		{}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema & child & exchange_id & upper_ip_list &block_size& partition_key_index&partition_offset;
+			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_& partition_schema_&partition_offset_;
 		}
 	};
 	ExpandableBlockStreamExchangeLowerEfficient(State state);
@@ -81,8 +82,8 @@ private:
 
 	void cancelSenderThread();
 private:
-	State state;
-	unsigned nuppers;
+	State state_;
+	unsigned nuppers_;
 	int* socket_fd_upper_list;
 	PartitionedBlockBuffer* partitioned_data_buffer_;
 
@@ -90,7 +91,7 @@ private:
 	 * iterator are fed to the cur_block_stream_list_ according to their
 	 * partition key.
 	 */
-	BlockStreamBase** partitioned_blockstream_;
+	BlockStreamBase** partitioned_block_stream_;
 	BlockContainer* block_for_sending;
 	BlockContainer* block_for_buffer_;
 	PartitionedBlockContainer* sending_buffer_;
@@ -105,7 +106,7 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & debug_connected_uppers, const unsigned int version){
-		debug_connected_uppers & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state;
+		debug_connected_uppers & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state_;
 	}
 private:
 	//debug

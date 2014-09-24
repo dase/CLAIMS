@@ -275,3 +275,8 @@ Schema* TableDescriptor::getSchema()const
 	}
 	return new SchemaFix(columns);
 }
+
+long int ProjectionDescriptor::getNumberOfTuplesOnPartition(
+		const unsigned partition_off) const {
+	return partitioner->getPartitionCardinality(partition_off);
+}

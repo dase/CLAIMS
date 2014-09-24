@@ -25,8 +25,8 @@ static int test_cross_join()
 		Environment::getInstance(true);
 		startup_multiple_node_environment_of_stock();
 
-		LogicalOperator* scan_field=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string("field"))->getProjectoin(0));
-		LogicalOperator* scan_area=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string("area"))->getProjectoin(0));
+		LogicalOperator* scan_field=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string("a"))->getProjectoin(0));
+		LogicalOperator* scan_area=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string("b"))->getProjectoin(0));
 		vector<QNode *>exprTree0;
 		QColcumns *cal0=new QColcumns("field","field.row_id",t_u_long,"field.row_id");
 		QExpr *qexpr0=new QExpr("3",t_string,"3");
@@ -41,7 +41,9 @@ static int test_cross_join()
 		exprTree1.push_back(qcalnode1);
 		LogicalOperator *filter_area=new Filter(scan_area,exprTree1);
 
+
 		LogicalOperator* cross_join=new CrossJoin(filter_field,filter_area);
+
 		LogicalOperator* root=new LogicalQueryPlanRoot(0,cross_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 		cout<<"~~~~~~~~~logical plan~~~~~~~~~~~~~~"<<endl;
 		root->print(0);
@@ -56,7 +58,7 @@ static int test_cross_join()
 		ResultSet* result=physical_iterator_tree->getResultSet();
 		result->print();
 		delete result;
-		Environment::getInstance(true)->~Environment();
+		delete Environment::getInstance(true);
 	}
 	return 0;
 }

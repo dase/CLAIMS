@@ -187,21 +187,21 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 
 
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
-			exchange_state.block_size=block_size;
+			exchange_state.block_size_=block_size;
 //			exchange_state.child=private_aggregation;
-			exchange_state.child=expander_lower;
-			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
-			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
+			exchange_state.child_=expander_lower;
+			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
+			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
 //			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
 
 			if(group_by_attribute_list_.empty())
-				exchange_state.partition_key_index=0;
+				exchange_state.partition_schema_=partition_schema::set_hash_partition(0);
 			else{
 //				exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,*dataflow_)[0];
-				exchange_state.partition_key_index=getInvolvedIndexList(getGroupByAttributeAfterAggregation(),*dataflow_)[0];
+				exchange_state.partition_schema_=partition_schema::set_hash_partition(getInvolvedIndexList(getGroupByAttributeAfterAggregation(),*dataflow_)[0]);
 			}
-			exchange_state.schema=aggregation_state.hashSchema->duplicateSchema();//getSchema(dataflow_->attribute_list_);
+			exchange_state.schema_=aggregation_state.hashSchema->duplicateSchema();//getSchema(dataflow_->attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 
 
@@ -230,11 +230,11 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
-			exchange_state.block_size=block_size;
-			exchange_state.child=expander;//child_->getIteratorTree(block_size);
-			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
-			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
+			exchange_state.block_size_=block_size;
+			exchange_state.child_=expander;//child_->getIteratorTree(block_size);
+			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
+			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
 			if(group_by_attribute_list_.empty()){
 				/**
 				 * scalar aggregation allows parallel partitions to be partitioned in any fashion.
@@ -242,12 +242,12 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 				 * partition attribute.
 				 * TODO: select the proper partition attribute by considering the cardinality and load balance.
 				 */
-				exchange_state.partition_key_index=getInvolvedIndexList(aggregation_attribute_list_,child_dataflow)[0];
+				exchange_state.partition_schema_=partition_schema::set_hash_partition(getInvolvedIndexList(aggregation_attribute_list_,child_dataflow)[0]);
 			}
 			else{
-				exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
+				exchange_state.partition_schema_=partition_schema::set_hash_partition(getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0]);
 			}
-			exchange_state.schema=getSchema(child_dataflow.attribute_list_);
+			exchange_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			aggregation_state.isPartitionNode=false;//as regard to AVG(),for partition node and global node ,we should do some different operations.
 			changeSchemaforAVG(aggregation_state);//			aggregation_state.child=exchange;
