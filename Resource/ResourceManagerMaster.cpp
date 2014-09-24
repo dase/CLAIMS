@@ -65,6 +65,15 @@ bool ResourceManagerMaster::ApplyDiskBuget(NodeID target, unsigned size_in_mb){
 		return true;
 	return false;
 }
+
+bool ResourceManagerMaster::ReturnDiskBuget(NodeID target, unsigned size_in_mb)
+{
+	if(node_to_resourceinfo_.find(target) == node_to_resourceinfo_.cend())
+		return false;
+	node_to_resourceinfo_[target]->disk.put(size_in_mb);
+	return true;
+}
+
 bool ResourceManagerMaster::ApplyMemoryBuget(NodeID target, unsigned size_in_mb){
 	if(node_to_resourceinfo_.find(target)==node_to_resourceinfo_.cend()){
 
@@ -76,6 +85,15 @@ bool ResourceManagerMaster::ApplyMemoryBuget(NodeID target, unsigned size_in_mb)
 	cout<<"no memory"<<endl;
 	return false;
 }
+
+bool ResourceManagerMaster::ReturnMemoryBuget(NodeID target, unsigned size_in_mb)
+{
+	if(node_to_resourceinfo_.find(target) == node_to_resourceinfo_.cend())
+		return false;
+	node_to_resourceinfo_[target]->memory.put(size_in_mb);
+	return true;
+}
+
 bool ResourceManagerMaster::RegisterDiskBuget(NodeID report_node_id, unsigned size_in_mb){
 	if(node_to_resourceinfo_.find(report_node_id)==node_to_resourceinfo_.end()){
 		/* target slave does not exists*/

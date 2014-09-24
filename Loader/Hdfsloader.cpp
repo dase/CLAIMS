@@ -224,7 +224,20 @@ bool HdfsLoader::load(){
 #endif
 
 	if (open_flag_ == CREATE)
+	{
+		//TODO: for reloading after select, unbinding the original data
+		if (table_descriptor_->getProjectoin(0)->getPartitioner()->allPartitionBound())
+		{
+			for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+			{
+				for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
+				{
+					Catalog::getInstance()->getBindingModele()->UnbindingEntireProjection(table_descriptor_->getProjectoin(i)->getPartitioner());
+				}
+			}
+		}
 		cout << "\n\n\n--------------------------Load Begin!--------------------------\n";
+	}
 	else
 		cout << "\n\n\n--------------------------Append Begin!--------------------------\n";
 
@@ -305,7 +318,7 @@ bool HdfsLoader::load(){
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
 			if (open_flag_ == APPEND)
 			{
-				//TODO: update binding infos and chunk storage level by me later.
+				table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);
 			}
 			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
@@ -384,18 +397,8 @@ bool HdfsLoader::append(std::string tuple_string)
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			printf("Table %d, projection %d ::Partition info:%lx\n", i, j, table_descriptor_->getProjectoin(i)->getPartitioner());
-			if(table_descriptor_->getProjectoin(i)->getPartitioner()->allPartitionBound()){
-				printf("[][][]After append bound!\n");
-			}
-			else {
-				printf("[][][]After append NOT bound!\n");
-			}
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
-			//TODO: update binding infos and chunk storage level by me later.
 			table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);
-
-
-
 			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}

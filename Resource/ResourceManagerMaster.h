@@ -36,7 +36,9 @@ public:
 	bool RegisterMemoryBuget(NodeID report_node_id, unsigned size_in_mb);
 	std::vector<NodeID> getSlaveIDList();
 	bool ApplyDiskBuget(NodeID target, unsigned size_in_mb);
+	bool ReturnDiskBuget(NodeID target, unsigned size_in_mb);
 	bool ApplyMemoryBuget(NodeID target, unsigned size_in_mb);
+	bool ReturnMemoryBuget(NodeID target, unsigned size_in_mb);
 private:
 	boost::unordered_map<NodeID,InstanceResourceInfo*> node_to_resourceinfo_;
 	NodeTracker *node_tracker_;
