@@ -137,11 +137,10 @@ bool ProjectionBinding::UnbindingEntireProjection(Partitioner* part)
 				break;
 			}
 
-			part->unbindPartitionToNode(i);
-
 			PartitionID partition_id(part->getProejctionID(),i);
 			NodeID node_id = part->getPartitionLocation(i);
 			BlockManagerMaster::getInstance()->SendUnbindingMessage(partition_id, node_id);
+			part->unbindPartitionToNode(i);
 		}
 		return true;
 	}

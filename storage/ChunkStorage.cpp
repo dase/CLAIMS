@@ -47,10 +47,12 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator(){
 				ret =0;
 			break;
 		}
-		case DISK:{
+		case DISK: {
+			printf("Currently, current storage level should not be DISK~! -_-\n");
+			assert(false);
 			break;
 		}
-		case HDFS:{
+		case HDFS: {
 //			printf("%lx current storage level for %d %d: HDFS\n",this,this->chunk_id_.partition_id.partition_off,this->chunk_id_.chunk_off);
 			if(desirable_storage_level_==MEMORY){
 				HdfsInMemoryChunk chunk_info;
