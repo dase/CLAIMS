@@ -1123,14 +1123,13 @@ void ExecuteLogicalQueryPlan()
 				if (!semantic_analysis(node,false))//---3.22fzh---
 				{
 					SQLParse_elog("semantic_analysis error");
-
 					assert(false);
 					return;
 				}
 				preprocess(node);
-				//#ifdef SQL_Parser
-				//				output(node,0);
-				//#endif
+//#ifdef SQL_Parser
+//				output(node,0);
+//#endif
 				Query_stmt *querynode=(Query_stmt *)node;
 				if(querynode->from_list!=NULL)
 					int fg=solve_join_condition(querynode->from_list);
@@ -1138,7 +1137,6 @@ void ExecuteLogicalQueryPlan()
 				{
 					struct Where_list * curt=(struct Where_list *)(querynode->where_list);
 					struct Node *cur=(struct Node *)(curt->next);
-					SQLParse_log("wc2tb");
 					departwc(cur,querynode->from_list);
 				}
 #ifdef SQL_Parser
@@ -1165,16 +1163,18 @@ void ExecuteLogicalQueryPlan()
 					root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 				}
 #ifdef SQL_Parser
-				//				root->print(0);
+				root->print(0);
 				cout<<"performance is ok!the data will come in,please enter any char to continue!!"<<endl;
 				getchar();
 				getchar();
 #endif
 				BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
-				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-				//				physical_iterator_tree->print();
-				//				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-//				puts("+++++++++++++++++++++begin time++++++++++++++++");
+#ifdef SQL_Parser
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				physical_iterator_tree->print();
+				cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+				puts("+++++++++++++++++++++begin time++++++++++++++++");
+#endif
 				unsigned long long start=curtick();
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));

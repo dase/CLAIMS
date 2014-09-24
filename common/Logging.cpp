@@ -5,7 +5,7 @@
  *      Author: wangli
  */
 #include "Logging.h"
-#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
+#ifdef CLAIMS_QUEIT //If defined, all the output information is binded.
 //#define DEBUG_Config
 //#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
