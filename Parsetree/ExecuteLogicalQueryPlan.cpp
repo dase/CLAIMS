@@ -427,9 +427,9 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			if (!semantic_analysis(node,false))
 			{
 				error_msg="semantic analysis error";
-//				result_flag=false;
-//				result_set = NULL;
-//				return;
+				result_flag=false;
+				result_set = NULL;
+				return;
 			}
 			preprocess(node);
 			Query_stmt *querynode=(Query_stmt *)node;
