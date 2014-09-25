@@ -51,7 +51,37 @@ int subquery_has_column(char *colname,Node * subquery)
 		}
 		else//TODO
 		{
-			SQLParse_elog("the column in subquery should be aliased");
+			if(sexpr->colname->type==t_name)
+			{
+				Columns *col=(Columns *)sexpr->colname;
+				if(strcmp(col->parameter2,sexpr->ascolname)==0)
+				{
+					result++;
+				}
+			}
+			else if(sexpr->colname->type==t_name_name)
+			{
+				Columns *col=(Columns *)sexpr->colname;
+				char temp_name[100];
+				int i;
+				for(i=0;i<strlen(col->parameter2)&&col->parameter2[i]!='.';i++);
+				if(i<strlen(col->parameter2))
+				{
+					strcpy(temp_name,col->parameter2+i+1);
+				}
+				else
+				{
+					strcpy(temp_name,col->parameter2);
+				}
+				if(strcmp(temp_name,colname)==0)
+				{
+					result++;
+				}
+			}
+			else
+			{
+//				SQLParse_elog("the column in subquery should be aliased");
+			}
 		}
 		p=slist->next;
 	}
