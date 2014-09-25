@@ -461,3 +461,23 @@ void BlockStreamJoinLogging::elog(const char* format,...) {
 	printf("\n");
 	va_end (arg);
 }
+
+void SQLParse_log(const char* format,...) {
+#ifdef SQL_Parser
+	printf("[SQLParse_log]: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf (format, arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+
+void SQLParse_elog(const char* format,...) {
+	printf("[SQLParse_elog]: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf (format, arg);
+	printf("\n");
+	va_end (arg);
+}
