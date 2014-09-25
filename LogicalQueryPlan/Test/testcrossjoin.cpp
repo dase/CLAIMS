@@ -41,14 +41,9 @@ static int test_cross_join()
 //		exprTree1.push_back(qcalnode1);
 //		LogicalOperator *filter_area=new Filter(scan_area,exprTree1);
 
-//		vector<QNode *>exprTree1;
-//		QColcumns *cal1=new QColcumns("area","area.row_id",t_u_long,"area.row_id");
-//		QExpr *qexpr1=new QExpr("2",t_string,"2");
-//		QExpr_binary *qcalnode1=new QExpr_binary(cal1,qexpr1,t_u_long,oper_less,t_qexpr_cmp,"area.row_id<2");
-//		exprTree1.push_back(qcalnode1);
-//		LogicalOperator *filter_area=new Filter(scan_area,exprTree1);
 
 		LogicalOperator* cross_join=new CrossJoin(scan_field,scan_area);
+
 		LogicalOperator* root=new LogicalQueryPlanRoot(0,cross_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 		cout<<"~~~~~~~~~logical plan~~~~~~~~~~~~~~"<<endl;
 		root->print(0);
