@@ -125,7 +125,7 @@ void Config::initialize() {
 
 	master=getBoolean("master",true);
 
-	local_disk_mode=getBoolean("local_disk_mode","false");
+	local_disk_mode=getBoolean("local_disk_mode",false);
 
 	pipelined_exchange=getBoolean("pipelined_exchange",true);
 

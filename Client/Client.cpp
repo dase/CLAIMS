@@ -16,6 +16,7 @@
 #include <cstring>
 
 #include "ClientResponse.h"
+#include "../common/Logging.h"
 
 Client::Client() {
 	m_clientFd = -1;
@@ -55,7 +56,7 @@ ClientResponse* Client::submitQuery(std::string args) {
 	ClientResponse *ret = new ClientResponse();
 
 	write(m_clientFd, args.c_str(), args.length() + 1);
-	printf("Client: message from server!\n");
+	ClientLogging::log("Client: message from server!\n");
 
 	const int maxBytes = 65535;
 	char *buf = new char[maxBytes];
@@ -73,7 +74,7 @@ ClientResponse* Client::submitQuery(std::string args) {
 		perror(
 				"Client: submit query error, has problem with the communication!\n");
 	}else {
-		printf("receive %d bytes from server.\n", receivedBytesNum);
+		ClientLogging::log("receive %d bytes from server.\n", receivedBytesNum);
 	}
 	ret->deserialize(buf, receivedBytesNum);
 	delete buf;
@@ -105,7 +106,7 @@ ClientResponse* Client::receive() {
 		perror(
 				"Client: receive result error, has problem with the communication!\n");
 	}else {
-		printf("receive %d bytes from server.\n", receivedBytesNum);
+		ClientLogging::log("receive %d bytes from server.\n", receivedBytesNum);
 	}
 	ret->deserialize(buf, receivedBytesNum);
 	delete buf;

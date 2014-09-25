@@ -86,10 +86,9 @@ void* Daemon::worker(void* para) {
 
 		// result is a pointer, which now is NULL and should be assigned in function.
 		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info);
-		ClientLogging::log("after running sql, the result is : status-%d, err-%s, info-%s",
+		ClientListenerLogging::log("after running sql, the result is : status-%d, err-%s, info-%s",
 				result.status, result.error_info.c_str(), result.info.c_str());
 
-		printf("-Worker add result into the queue!\n");
 		pthis->addExecutedResult(result);
 
 	}
@@ -115,13 +114,11 @@ remote_command Daemon::getRemoteCommand() {
 executed_result Daemon::getExecutedResult() {
 	semaphore_result_queue_.wait();
 	//	assert(false);
-	printf("-Worker: acquire the get semphore!\n");
 	executed_result ret;
 	lock_.acquire();
 	ret = executed_result_queue_.front();
 	executed_result_queue_.pop_front();
 	lock_.release();
-	printf("------ has been fucked!\n");
 	return ret;
 }
 void Daemon::addExecutedResult(const executed_result& item) {
@@ -129,6 +126,5 @@ void Daemon::addExecutedResult(const executed_result& item) {
 	executed_result_queue_.push_back(item);
 	lock_.release();
 	semaphore_result_queue_.post();
-	printf("-----------------------------------Added! current size:%d\n",executed_result_queue_.size());
 
 }

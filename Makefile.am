@@ -62,7 +62,10 @@ include_HEADERS = Config.h \
 				IDsGenerator.h \
 				configure.h
 				
-bin_PROGRAMS =  claimsserver
+bin_PROGRAMS =  claimsserver \
+				client
+				
+client_SOURCES = Client.cpp
 
 claimsserver_SOURCES = Config.cpp	\
 				Environment.cpp \
