@@ -140,7 +140,7 @@ void* ClientListener::receiveHandler(void *para) {
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
 
-	char *buf = new char[1024];
+	char *buf = new char[2048];
 	memset(buf, 0, sizeof(buf));
 
 	unsigned int sockLen;
@@ -201,7 +201,7 @@ void* ClientListener::receiveHandler(void *para) {
 						continue;
 					}
 
-//					cout<<"nread:"<<nread<<endl;
+					//					cout<<"nread:"<<nread<<endl;
 					memset(buf, 0, sizeof(buf));
 					int read_count = read(server->m_clientFds[i], buf, nread);
 					buf[read_count] = '\0';	// fix a bug
@@ -211,7 +211,7 @@ void* ClientListener::receiveHandler(void *para) {
 					ClientLogging::log("sql_type is %d", sql_type);
 
 					generateSqlStmt(sql_type, buf);
-//					strcpy(buf, "select row_id from trade limit 100;\0");
+					//					strcpy(buf, "select row_id from trade limit 100;\0");
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
 					if (0 == retCode) {
@@ -240,21 +240,289 @@ void* ClientListener::receiveHandler(void *para) {
 }
 
 void ClientListener::generateSqlStmt(int type, char *buf) {
+	assert(buf != NULL);
 	ClientLogging::log("in generateSqlStmt function:type argument is %d, buf argument is %s", type, buf);
 	// the first byte of buf is type, other are argument
-	string arg(buf+1);
-	cout<<"arg is :"<<arg<<endl;
+	string arg1;
+	string arg2;
+	string arg3;
+
 	switch(type) {
-	case 1: {
-		string sql = "select avg(Trade_Price), substr(Trade_Date,0,7) as months from trade where Sec_Code = \'";
-		sql += arg;
-		sql += "\' group by substr(Trade_Date,0,7)  order by months; ";
-		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+	case 0: {
+		arg1 = string(buf+1, 6);
+		cout<<"arg is :"<<arg1<<endl;
+		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
+		string sql = "select avg(trade_price), trade_date from trade where sec_code = \'" + arg1 + "\' group by substr(trade_date,0,7)  order by months; ";
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
 		ClientLogging::log("sql buf is %s\n", buf);
+		break;
 	}
-	break;
+	case 1: {
+			arg1 = string(buf+1, 6);
+			arg2 = string(buf+7, 10);
+			arg3 = string(buf+17, 10);
+			cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+	//		select max(trade_price), min(trade_price) from trade where sec_code = '600036' and trade_date  between '2010-09-10' and '2010-09-10';
+			string sql = "select max(trade_price), min(trade_price) from trade where sec_code = \'" + arg1
+					+ "\'  and trade_date  between \' " + arg2 + "\' and \'" + arg3 +" \' ;";
+			//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+			memset(buf, 0, sizeof(buf));
+			strcpy(buf, sql.c_str());
+			ClientLogging::log("sql buf is %s\n", buf);
+			break;
+		}
+	case 2: {
+			arg1 = string(buf+1, 6);
+			arg2 = string(buf+7, 10);
+			arg3 = string(buf+17, 10);
+			cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+	//		select trade_vol/100, count(*) as frequency from trade where sec_code = '600036' group by trade_vol/100 order by frequency desc
+			string sql = "select trade_vol/100, count(*) as frequency from trade where sec_code = \'" + arg1 + "\' group by trade_vol/100 order by frequency desc";
+			//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+			memset(buf, 0, sizeof(buf));
+			strcpy(buf, sql.c_str());
+			ClientLogging::log("sql buf is %s\n", buf);
+			break;
+		}
+	case 3: {
+
+		arg1 = string(buf+1, 6);
+		arg2 = string(buf+7, 10);
+		arg3 = string(buf+17, 10);
+		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+		//
+		string sql = "select afield/total as proportion, sec_field "
+				"from ( "
+				"select sum(trade_amt)  total "
+				"from trade "
+				"where trade_date between '"+arg2+"' and '"+arg3+"' "
+				") as amt_total, "
+				" ( "
+				"select sum(trade_amt) afield, sec_field sec_field "
+				"from trade, field "
+				"where trade.sec_code = field.sec_code "
+				"and trade_date between '"+arg2+"' and '"+arg3+"' "
+				"group by sec_field "
+				") as amt_field "
+				"order by proportion desc; ";
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
+	case 4: {
+
+		arg2 = string(buf+1, 10);
+		arg3 = string(buf+11, 10);
+		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+		//
+		string sql = "select code_amt/total as proportion, sec_code "
+				"from  "
+				"     ( "
+				"        select sum(trade_amt) as total  "
+				"        from trade, field  "
+				"        where trade.sec_code = field.sec_code "
+				"             and field.sec_field = '房地产'                     "
+				"             and trade.trade_date between '"+arg2+"' and '"+arg3+"'      "
+				"     ) as field_total, "
+				"     ( "
+				"         select sum(trade_amt) as code_amt, sec_code as sec_code "
+				"         from trade "
+				"         where trade_date between '"+arg2+"' and '"+arg3+"'           "
+				"         group by sec_code "
+				"      ) as field_amt "
+				"order by proportion desc; ";
+
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
+	case 5: {
+
+		arg2 = string(buf+1, 10);
+		arg3 = string(buf+11, 10);
+		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+		//
+		string sql = "select sum(flow) as flow_sum, sec_field "
+				"from  "
+				"     ( "
+				"				select TT1.flow_in - TT2.flow_out as flow, "
+				"					   TT1.sec_code sec_code , "
+				"					   TT1.sec_field sec_field "
+				"				from  "
+				"				     ( "
+				"						select sum(trade.trade_vol  * t1.avg_price) as flow_in, "
+				"							   trade.sec_code sec_code, "
+				"							   t1.sec_field sec_field "
+				"						from  "
+				"							( "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
+				"									field.sec_field sec_field "
+				"								from trade, field "
+				"								where trade.sec_code = field.sec_code "
+				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
+				"								group by trade.trade_no, trade.sec_code, field.sec_field "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'S' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_field "
+				"					) TT1, "
+				"                    ( "
+				"						select sum(trade.trade_vol * t1.avg_price) as flow_out, "
+				"							   trade.sec_code sec_code, "
+				"							   t1.sec_field sec_field "
+				"						from  "
+				"							( "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
+				"									field.sec_field sec_field "
+				"								from trade, field "
+				"								where trade.sec_code = field.sec_code "
+				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
+				"								group by trade.trade_no, trade.sec_code, field.sec_field "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'B' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_field "
+				"					) TT2 "
+				"				where TT1.sec_code = TT2.sec_code "
+				"	              and TT1.sec_field = TT2.sec_field	 "
+				"	 ) TT3 "
+				"group by sec_field "
+				"order by flow_sum desc; ";
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
+	case 6: {
+
+		arg2 = string(buf+1, 10);
+		arg3 = string(buf+11, 10);
+		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+		//
+		string sql = "select sum(flow) as flow_sum, sec_area "
+				"from  "
+				"     ( "
+				"				select TT1.flow_in - TT2.flow_out as flow, "
+				"					   TT1.sec_code sec_code , "
+				"					   TT1.sec_area sec_area "
+				"				from  "
+				"				     ( "
+				"						select sum(trade.trade_vol  * t1.avg_price) as flow_in, "
+				"							   trade.sec_code sec_code, "
+				"							   t1.sec_area sec_area "
+				"						from  "
+				"							( "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
+				"									area.sec_area sec_area "
+				"								from trade, area "
+				"								where trade.sec_code = area.sec_code "
+				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
+				"								group by trade.trade_no, trade.sec_code, area.sec_area "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'S' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_area "
+				"					) TT1, "
+				"                    ( "
+				"						select sum(trade.trade_vol * t1.avg_price) as flow_out, "
+				"							   trade.sec_code sec_code, "
+				"							   t1.sec_area sec_area "
+				"						from  "
+				"							( "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
+				"									area.sec_area sec_area "
+				"								from trade, area "
+				"								where trade.sec_code = area.sec_code "
+				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
+				"								group by trade.trade_no, trade.sec_code, area.sec_area "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'B' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_area "
+				"					) TT2 "
+				"				where TT1.sec_code = TT2.sec_code "
+				"	              and TT1.sec_area = TT2.sec_area	 "
+				"	 ) TT3 "
+				"group by sec_area "
+				"order by flow_sum desc; ";
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
+	case 7: {
+
+		arg2 = string(buf+1, 10);
+		arg3 = string(buf+11, 10);
+		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+
+		string sql = "select (avg(t2.trade_price) - avg(t1.trade_price))/avg(t2.trade_price) as prop, t1.sec_code, t3.sec_name "
+				"from trade t1, trade t2, field t3 "
+				"where DATE_ADD(t1.trade_date, interval 1 day) = t2.trade_date "
+				"and t1.sec_code = t3.sec_code "
+				"and t1.trade_time between '14:59:50' and '15:00:00' "
+				"and t2.trade_time between '09:00:00' and '09:01:00' "
+				"and t1.trade_date between \'" + arg2 + "\' and \'" + arg3 + "\' "
+				"and t2.trade_date between \'" + arg2 + "\' and \'" + arg3 + "\' "
+				"group by t1.sec_code, t3.sec_name "
+				"order by prop desc "
+				"limit 20;";
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
+	case 8: {
+
+		arg2 = string(buf+1, 10);
+		arg3 = string(buf+11, 10);
+		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
+
+		string sql = "select sum(trade_vol) as vol, sec_code "
+				"from trade "
+				"where trade.trade_date between '"+arg2+"' and '"+arg3+"' "
+				"group by sec_code "
+				"order by vol desc "
+				"limit 20 ";
+		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
 	default: {
 		ClientLogging::elog("No supported");
 	}
@@ -280,7 +548,7 @@ void *ClientListener::sendHandler(void *para) {
 				// DDL return true
 				cliRes.setChange(result.info);
 				ClientLogging::log("to send change response-- status:%d  length:%d  content:%s",
-								cliRes.status, cliRes.length, cliRes.content.c_str());
+						cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
 			else {
@@ -326,13 +594,13 @@ void *ClientListener::sendHandler(void *para) {
 				ClientLogging::log("to send end response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
-			*/
+				 */
 			}
 		} else {
 			//ERROR
 			cliRes.setError(result.error_info);
 			ClientLogging::log("to send err response-- status:%d  length:%d  content:%s",
-							cliRes.status, cliRes.length, cliRes.content.c_str());
+					cliRes.status, cliRes.length, cliRes.content.c_str());
 			server->write(result.fd, cliRes);
 		}
 	}
@@ -340,7 +608,7 @@ void *ClientListener::sendHandler(void *para) {
 }
 
 void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
-//	ClientResponse cr;
+	//	ClientResponse cr;
 	if (res.status) {
 		if (res.result != NULL) {
 			ResultSet *rs = res.result;
@@ -354,7 +622,7 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 				BlockStreamBase::BlockStreamTraverseIterator* block_it=block->createIterator();
 				void* tuple;
 				while(tuple=block_it->nextTuple()){
-//					rs->schema_->displayTuple(tuple,"\t");
+					//					rs->schema_->displayTuple(tuple,"\t");
 					for (int i = 0; i < rs->schema_->getncolumns(); ++i) {
 						jv_temp[col_name_list[i]] = Json::Value(rs->schema_->getColumnValue(tuple, i));
 					}
@@ -362,11 +630,12 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 				}
 			}
 
-//			Json::StyledWriter sw;
-//			cout<<sw.write(root)<<endl;
+			//			Json::StyledWriter sw;
+			//			cout<<sw.write(root)<<endl;
 
 			Json::FastWriter fw;
 			string buf_to_send = fw.write(root);
+			buf_to_send += '\n';
 			cout<<buf_to_send<<endl;
 
 			cr.setData(buf_to_send);
