@@ -74,12 +74,13 @@ void Partitioner::RegisterPartition(unsigned partition_key,unsigned number_of_ch
 	partition_info_list[partition_key]->number_of_blocks=number_of_chunks*1024;
 }
 
-void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_offset,unsigned long number_of_blocks)
+void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_offset,unsigned long number_of_blocks, unsigned long number_of_tuples)
 {
 	assert(partition_offset < partition_function_->getNumberOfPartitions());
 
 	partition_info_list[partition_offset]->hdfs_file_name=partition_info_list[partition_offset]->partition_id_.getName();
 	partition_info_list[partition_offset]->number_of_blocks=number_of_blocks;
+	partition_info_list[partition_offset]->number_of_tuples_=number_of_tuples;
 //	Catalog* catalog=Environment::getInstance()->getCatalog();
 //	catalog->saveCatalog();
 }
@@ -132,9 +133,10 @@ unsigned Partitioner::getPartitionDataSize(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks*BLOCKSIZE_IN_KB/1024;
 }
 unsigned long Partitioner::getPartitionCardinality(unsigned partition_index)const{
-	unsigned tuple_bytes=Catalog::getInstance()->getProjection(projection_id_)->getSchema()->getTupleMaxSize();
-	const unsigned data_size_in_MB=getPartitionDataSize(partition_index);
-	return data_size_in_MB*(unsigned long)1024*1024/tuple_bytes;
+//	unsigned tuple_bytes=Catalog::getInstance()->getProjection(projection_id_)->getSchema()->getTupleMaxSize();
+//	const unsigned data_size_in_MB=getPartitionDataSize(partition_index);
+//	return data_size_in_MB*(unsigned long)1024*1024/tuple_bytes;
+	return partition_info_list[partition_index]->number_of_tuples_;
 }
 unsigned Partitioner::getPartitionBlocks(unsigned partitoin_index)const{
 	return partition_info_list[partitoin_index]->number_of_blocks;

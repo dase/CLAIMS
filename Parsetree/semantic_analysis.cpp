@@ -51,7 +51,37 @@ int subquery_has_column(char *colname,Node * subquery)
 		}
 		else//TODO
 		{
-
+			if(sexpr->colname->type==t_name)
+			{
+				Columns *col=(Columns *)sexpr->colname;
+				if(strcmp(col->parameter2,sexpr->ascolname)==0)
+				{
+					result++;
+				}
+			}
+			else if(sexpr->colname->type==t_name_name)
+			{
+				Columns *col=(Columns *)sexpr->colname;
+				char temp_name[100];
+				int i;
+				for(i=0;i<strlen(col->parameter2)&&col->parameter2[i]!='.';i++);
+				if(i<strlen(col->parameter2))
+				{
+					strcpy(temp_name,col->parameter2+i+1);
+				}
+				else
+				{
+					strcpy(temp_name,col->parameter2);
+				}
+				if(strcmp(temp_name,colname)==0)
+				{
+					result++;
+				}
+			}
+			else
+			{
+//				SQLParse_elog("the column in subquery should be aliased");
+			}
 		}
 		p=slist->next;
 	}
@@ -330,6 +360,10 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				int fg=subquery_has_column(col->parameter2,subnode);
 				if(fg>1)
 					return 0;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
 				return fg;
 			}
 		}break;
@@ -678,24 +712,18 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 }
 bool fromlist_table_is_unique(vector<Node *>rtable)
 {
-	for(int i;i<rtable.size();i++)
-//	for(Node *p=fltree;p!=NULL;)//
+	for(int i=0;i<rtable.size();i++)
 	{
-	//	From_list *fromlist=(From_list *)rtable[i];
 		Table *table=(Table *)rtable[i];
-		for(int j;j<rtable.size();j++)
-	//	for(Node *q=fromlist->next;q!=NULL;)
+		for(int j=i+1;j<rtable.size();j++)
 		{
-		//	From_list *fromlist1=(From_list *)rtable[j];
-			Table *table1=(Table *)rtable[i];
+			Table *table1=(Table *)rtable[j];
 			if(strcmp(table->astablename,table1->astablename)==0)
 			{
 				SQLParse_elog("fromlist %s is ambiguous",table->astablename);
 				return false;
 			}
-		//	q=fromlist1->next;
 		}
-	//	p=fromlist->next;
 	}
 	return true;
 }
@@ -824,6 +852,7 @@ bool wherecondition_check(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 					ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
 					col->parameter2=(char *)malloc(ss.str().length()+1);
 					strcpy(col->parameter2,ss.str().c_str());
+					return true;
 				}
 			}
 
@@ -984,17 +1013,23 @@ bool groupby_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
 				col->parameter2=(char *)malloc(ss.str().length()+1);
 				strcpy(col->parameter2,ss.str().c_str());
-				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
-				{
-					SQLParse_elog("groupby_analysis %s  can't find",col->parameter2);
-					return false;
-				}
+//				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
+//				{
+//					SQLParse_elog("groupby_analysis %s  can't find",col->parameter2);
+//					return false;
+//				}
 			}
 			else if(fg==2)
 			{
 				int fg=subquery_has_column(col->parameter2,subnode);
+
 				if(fg>1||fg==0)
 					return false;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+				return true;
 			}
 
 		}break;

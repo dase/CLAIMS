@@ -42,6 +42,7 @@
 #include "../common/Expression/qnode.h"
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+#include "../LogicalQueryPlan/CrossJoin.h"
 
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
@@ -242,7 +243,7 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 			return 0;
 		}
 	}
-	return 1;
+	return 0;
 }
 static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
 {
@@ -324,7 +325,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 						attrname=attrname.substr(pos+1,attrname.size()-pos-1);
 					}
 					exprTree.push_back(new QColcumns(subquery_alias.c_str(),attrname.c_str(),output_attribute[i].attrType->type,string(subquery_alias+"."+attrname).c_str()));
-					cout<<"The "<<i<<" "<<subquery_alias+"."+attrname<<endl;
+//					cout<<"The "<<i<<" "<<subquery_alias+"."+attrname<<endl;
 				}
 				tablescan=new LogicalProject(tablescan,exprTree);
 			}
@@ -396,7 +397,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				Node * p;
 				vector<QNode *>v_qual;
 				vector<Node *>raw_qual;
-				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
+				for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
 				{
 					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
 					if(fg==0)//get raw qualification from whcdn
@@ -408,9 +409,9 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				{
 					lopfrom=new EqualJoin(join_pair_list,filter_1,filter_2);
 				}
-				else//除了equaljoin还有其他的join类型
+				else//other join
 				{
-					assert(false);
+					lopfrom=new CrossJoin(filter_1,filter_2);
 				}
 				for(int i=0;i<raw_qual.size();i++)
 				{
@@ -422,10 +423,10 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				return lopfrom;
 			}
-			else//没有equaljoin的情况
+			else//other to crossjoin
 			{
-				SQLParse_log("fromlist no equaljoin");
-				return NULL;
+				lopfrom=new CrossJoin(filter_1,filter_2);
+				return lopfrom;
 			}
 
 		}break;
@@ -438,17 +439,40 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			{
 				vector<EqualJoin::JoinPair> join_pair_list;
 				Node * p;
-				for(p=node->condition;p!=NULL;p=((Expr_list *)p)->next)//应该根据getdataflow的信息确定joinpair跟filter1/2是否一致
+				vector<QNode *>v_qual;
+				vector<Node *>raw_qual;
+				for(p=node->condition;p!=NULL;p=((Expr_list *)p)->next)
 				{
-					getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
+					int fg=getjoinpairlist((Node *)((Expr_list *)p)->data,join_pair_list,filter_1,filter_2);
+					if(fg==0)//get raw qualification from whcdn
+					{
+						raw_qual.push_back((Node *)((Expr_list *)p)->data);
+					}
 				}
-				LogicalOperator* join=new EqualJoin(join_pair_list,filter_1,filter_2);
+
+				LogicalOperator* join;
+				if(join_pair_list.size()>0)
+				{
+					join=new EqualJoin(join_pair_list,filter_1,filter_2);
+				}
+				else//other join
+				{
+					join=new CrossJoin(filter_1,filter_2);
+				}
+				for(int i=0;i<raw_qual.size();i++)
+				{
+					v_qual.push_back(transformqual(raw_qual[i],join));
+				}
+				if(v_qual.size()>0)
+				{
+					join=new Filter(join,v_qual);
+				}
 				return join;
 			}
-			else//没有equaljoin的情况
+			else//other to crossjoin
 			{
-				SQLParse_log("fromlist no equaljoin");
-				return NULL;
+				LogicalOperator* join=new CrossJoin(filter_1,filter_2);
+				return join;
 			}
 
 		}break;

@@ -12,11 +12,11 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
-:scan_attribute_list_(attribute_list),target_projection_(0) {
+:scan_attribute_list_(attribute_list),target_projection_(0),dataflow_(0) {
 	// TODO Auto-generated constructor stub
 	setOperatortype(l_scan);
 }
-LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
+LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0),dataflow_(0) {
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
 	if(table==0){
 		printf("Table[id=%d] does not exists!\n",table_id);
@@ -24,13 +24,13 @@ LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0) {
 	scan_attribute_list_=table->getAttributes();
 	setOperatortype(l_scan);
 }
-LogicalScan::LogicalScan(ProjectionDescriptor* projection,const float sample_rate):sample_rate_(sample_rate){
+LogicalScan::LogicalScan(ProjectionDescriptor* projection,const float sample_rate):sample_rate_(sample_rate),dataflow_(0){
 	scan_attribute_list_=projection->getAttributeList();
 	target_projection_=projection;
 	setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& selected_attribute_index_list)
-:target_projection_(0) {
+:target_projection_(0),dataflow_(0) {
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
 	if(table==0){
 		printf("Table[id=%d] does not exists!\n",table_id);
@@ -43,6 +43,7 @@ LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& se
 
 LogicalScan::~LogicalScan() {
 	// TODO Auto-generated destructor stub
+	delete dataflow_;
 }
 
 //LogicalProjection LogicalScan::getLogcialProjection()const{
@@ -50,6 +51,10 @@ LogicalScan::~LogicalScan() {
 //}
 
 Dataflow LogicalScan::getDataflow(){
+	if(dataflow_==0)
+		dataflow_=new Dataflow();
+	else
+		return *dataflow_;
 	TableID table_id=scan_attribute_list_[0].table_id_;
 	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
 
@@ -87,12 +92,12 @@ Dataflow LogicalScan::getDataflow(){
 	/*build the data flow*/
 
 
-	dataflow_.attribute_list_=scan_attribute_list_; /*attribute_list*/
+	dataflow_->attribute_list_=scan_attribute_list_; /*attribute_list*/
 
 	Partitioner* par=target_projection_->getPartitioner();
-	dataflow_.property_.partitioner=DataflowPartitioningDescriptor(*par);
-	dataflow_.property_.commnication_cost=0;
-	return dataflow_;
+	dataflow_->property_.partitioner=DataflowPartitioningDescriptor(*par);
+	dataflow_->property_.commnication_cost=0;
+	return *dataflow_;
 
 }
 BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size){
@@ -104,7 +109,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 	ExpandableBlockStreamProjectionScan::State state;
 	state.block_size_=block_size;
 	state.projection_id_=target_projection_->getProjectionID();
-	state.schema_=getSchema(dataflow_.attribute_list_);
+	state.schema_=getSchema(dataflow_->attribute_list_);
 	state.sample_rate_=sample_rate_;
 	return new ExpandableBlockStreamProjectionScan(state);
 
@@ -112,7 +117,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 //	ExpandableBlockStreamSingleColumnScan::State state;
 //	state.block_size_=block_size;
 //	state.filename_="/home/claims/data/wangli/T0G0P0";
-//	state.schema_=getSchema(dataflow_.attribute_list_);
+//	state.schema_=getSchema(dataflow_->attribute_list_);
 //	return new ExpandableBlockStreamSingleColumnScan(state);
 }
 bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
@@ -122,7 +127,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 	ExpandableBlockStreamProjectionScan::State state;
 	state.block_size_=block_size;
 	state.projection_id_=target_projection_->getProjectionID();
-	state.schema_=getSchema(dataflow_.attribute_list_);
+	state.schema_=getSchema(dataflow_->attribute_list_);
 	state.sample_rate_=sample_rate_;
 
 	PhysicalPlan scan=new ExpandableBlockStreamProjectionScan(state);
@@ -137,13 +142,13 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		physical_plan_descriptor.cost+=dataflow.getAggregatedDatasize();
 
 		ExpandableBlockStreamExchangeEpoll::State state;
-		state.block_size=block_size;
-		state.child=scan;//child_iterator;
-		state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema=getSchema(dataflow.attribute_list_);
+		state.block_size_=block_size;
+		state.child_=scan;//child_iterator;
+		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
+		state.schema_=getSchema(dataflow.attribute_list_);
 
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
-		state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+		state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
 
 		std::vector<NodeID> upper_id_list;
 		if(requirement.hasRequiredLocations()){
@@ -161,20 +166,20 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 			}
 		}
 
-		state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+		state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
-		state.partition_key_index=getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey());
-		assert(state.partition_key_index>=0);
+		state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey()));
+		assert(state.partition_schema_.partition_key_index>=0);
 
 		BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
 
 		Dataflow new_dataflow;
 		new_dataflow.attribute_list_=dataflow.attribute_list_;
 		new_dataflow.property_.partitioner.setPartitionKey(requirement.getPartitionKey());
-		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_ip_list.size()));
+		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_ip_list_.size()));
 
 		const unsigned total_size=dataflow.getAggregatedDatasize();
-		const unsigned degree_of_parallelism=state.upper_ip_list.size();
+		const unsigned degree_of_parallelism=state.upper_ip_list_.size();
 		std::vector<DataflowPartition> dataflow_partition_list;
 			for(unsigned i=0;i<degree_of_parallelism;i++){
 				const NodeID location=upper_id_list[i];

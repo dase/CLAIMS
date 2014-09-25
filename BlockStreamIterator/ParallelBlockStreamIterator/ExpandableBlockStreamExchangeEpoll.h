@@ -21,6 +21,7 @@
 #include <string>
 #include <pthread.h>
 #include <map>
+#include <assert.h>
 #include "../BlockStreamIteratorBase.h"
 #include "../../utility/lock.h"
 #include "../../Executor/IteratorExecutorMaster.h"
@@ -36,24 +37,27 @@
 #include "../../common/Block/BlockStreamBuffer.h"
 
 #include "../ExpandableBlockStreamIteratorBase.h"
+#include "../../common/partition_functions.h"
+
+
 
 class ExpandableBlockStreamExchangeEpoll:public ExpandableBlockStreamIteratorBase {
 public:
 	struct State{
-		Schema* schema;
-		BlockStreamIteratorBase* child;
-		unsigned block_size;
-		unsigned long long int exchange_id;
-		std::vector<std::string> lower_ip_list;
-		std::vector<std::string> upper_ip_list;
-		unsigned partition_key_index;
-		State(Schema* schema, BlockStreamIteratorBase* child,unsigned block_size,std::vector<std::string> lower_ip_list,std::vector<std::string> upper_ip_list,unsigned long long int exchange_id,unsigned partition_index=0)
-		:schema(schema),child(child),block_size(block_size),exchange_id(exchange_id),lower_ip_list(lower_ip_list),upper_ip_list(upper_ip_list),partition_key_index(partition_index){}
+		Schema* schema_;
+		BlockStreamIteratorBase* child_;
+		unsigned block_size_;
+		unsigned long long int exchange_id_;
+		std::vector<std::string> lower_ip_list_;
+		std::vector<std::string> upper_ip_list_;
+		partition_schema partition_schema_;
+		State(Schema* schema, BlockStreamIteratorBase* child,unsigned block_size,std::vector<std::string> lower_ip_list,std::vector<std::string> upper_ip_list,unsigned long long int exchange_id,partition_schema partition_index=partition_schema::set_hash_partition())
+		:schema_(schema),child_(child),block_size_(block_size),exchange_id_(exchange_id),lower_ip_list_(lower_ip_list),upper_ip_list_(upper_ip_list),partition_schema_(partition_index){}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema & child & block_size & exchange_id & lower_ip_list & upper_ip_list & partition_key_index;
+			ar & schema_ & child_ & block_size_ & exchange_id_ & lower_ip_list_ & upper_ip_list_ & partition_schema_;
 		}
 
 	};
