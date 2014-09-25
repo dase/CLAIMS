@@ -73,6 +73,7 @@ public:
 	std::vector<Attribute> getAttributeList()const;
 	Schema* getSchema()const;
 	int getAttributeIndex(const Attribute& att)const;
+	int long getNumberOfTuplesOnPartition(const unsigned partition_off) const;
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;

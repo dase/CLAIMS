@@ -37,6 +37,7 @@
 #include "../BlockStreamLimit.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
 #include "../../common/Expression/qnode.h"
+#include "../ParallelBlockStreamIterator/BlockStreamNestLoopJoinIterator.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Tuple_Stream_Iterators(Archive & ar)
@@ -86,6 +87,8 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<QExpr_case_when*>(NULL));
 	ar.register_type(static_cast<QExpr_in*>(NULL));
 	ar.register_type(static_cast<QExpr_date_add_sub*>(NULL));
+	ar.register_type(static_cast<BlockStreamNestLoopJoinIterator*>(NULL));
+
 
 }
 void cheat_the_compiler(){

@@ -23,6 +23,7 @@ EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_i
 	}
 //	print();
 	setOperatortype(l_equal_join);
+
 }
 
 EqualJoin::~EqualJoin() {
@@ -281,15 +282,15 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 
 			NodeTracker* node_tracker=NodeTracker::getInstance();
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
-			exchange_state.block_size=block_size;
-			exchange_state.child=expander;//child_iterator_left;
-			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			exchange_state.block_size_=block_size;
+			exchange_state.child_=expander;//child_iterator_left;
+			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
-			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
 
 
 			const Attribute right_partition_key=dataflow_->property_.partitioner.getPartitionKey();
@@ -297,11 +298,11 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			/* get the left attribute that is corresponding to the partition key.*/
 			Attribute left_partition_key=joinkey_pair_list_[getIndexInRightJoinKeyList(right_partition_key)].first;
 
-			exchange_state.partition_key_index=getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key);
+			exchange_state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key));
 
 
 //			exchange_state.schema=getSchema(dataflow_left.attribute_list_,dataflow_right.attribute_list_);
-			exchange_state.schema=getSchema(dataflow_left.attribute_list_);
+			exchange_state.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			state.child_left=exchange;
 			state.child_right=child_iterator_right;
@@ -323,15 +324,15 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 
 			NodeTracker* node_tracker=NodeTracker::getInstance();
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
-			exchange_state.block_size=block_size;
-			exchange_state.child=expander;
-			exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			exchange_state.block_size_=block_size;
+			exchange_state.child_=expander;
+			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
-			exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
 
 
 			const Attribute output_partition_key=dataflow_->property_.partitioner.getPartitionKey();
@@ -346,10 +347,10 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			}
 
 
-			exchange_state.partition_key_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_repartition_key);
+			exchange_state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow_right.attribute_list_,right_repartition_key));
 
 
-			exchange_state.schema=getSchema(dataflow_right.attribute_list_);
+			exchange_state.schema_=getSchema(dataflow_right.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			state.child_left=child_iterator_left;
 			state.child_right=exchange;
@@ -369,19 +370,19 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 
 
 			ExpandableBlockStreamExchangeEpoll::State l_exchange_state;
-			l_exchange_state.block_size=block_size;
-			l_exchange_state.child=expander_l;
-			l_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			l_exchange_state.block_size_=block_size;
+			l_exchange_state.child_=expander_l;
+			l_exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
-			l_exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+			l_exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			l_exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+			l_exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
 			const Attribute left_partition_key=dataflow_->property_.partitioner.getPartitionKey();
-			l_exchange_state.partition_key_index=getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key);
-			l_exchange_state.schema=getSchema(dataflow_left.attribute_list_);
+			l_exchange_state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key));
+			l_exchange_state.schema_=getSchema(dataflow_left.attribute_list_);
 			BlockStreamIteratorBase* l_exchange=new ExpandableBlockStreamExchangeEpoll(l_exchange_state);
 
 			/*build right input*/
@@ -395,19 +396,19 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			BlockStreamIteratorBase* expander_r=new BlockStreamExpander(expander_state_r);
 
 			ExpandableBlockStreamExchangeEpoll::State r_exchange_state;
-			r_exchange_state.block_size=block_size;
-			r_exchange_state.child=expander_r;
-			r_exchange_state.exchange_id=IDsGenerator::getInstance()->generateUniqueExchangeID();
+			r_exchange_state.block_size_=block_size;
+			r_exchange_state.child_=expander_r;
+			r_exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
-			r_exchange_state.lower_ip_list=convertNodeIDListToNodeIPList(lower_id_list);
+			r_exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
 
 			upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			r_exchange_state.upper_ip_list=convertNodeIDListToNodeIPList(upper_id_list);
+			r_exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
 
 			const Attribute right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
-			r_exchange_state.partition_key_index=getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key);
-			r_exchange_state.schema=getSchema(dataflow_right.attribute_list_);
+			r_exchange_state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key));
+			r_exchange_state.schema_=getSchema(dataflow_right.attribute_list_);
 			BlockStreamIteratorBase* r_exchange=new ExpandableBlockStreamExchangeEpoll(r_exchange_state);
 
 			/* finally  build the join iterator itself*/

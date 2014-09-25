@@ -63,17 +63,23 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 	{
 		vector<BlockStreamBase*> temp_v;
 		vector<unsigned long> tmp_block_num;
+		vector<unsigned long> tmp_tuple_count;
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			if (open_flag_ == APPEND)
+			if (open_flag_ == APPEND){
+				tmp_tuple_count.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionCardinality(j));
 				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
-			else
+			}
+			else {
+				tmp_tuple_count.push_back(0);
 				tmp_block_num.push_back(0);
+			}
 /*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
+		tuples_per_partition.push_back(tmp_tuple_count);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 }
@@ -124,18 +130,24 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 	{
 		vector<BlockStreamBase*> temp_v;
 		vector<unsigned long> tmp_block_num;
+		vector<unsigned long> tmp_tuple_count;
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			if (open_flag_ == APPEND)
+			if (open_flag_ == APPEND) {
+				tmp_tuple_count.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionCardinality(j));
 				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
-			else
+			}
+			else {
+				tmp_tuple_count.push_back(0);
 				tmp_block_num.push_back(0);
+			}
 			//ERROR: the init table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionChunks(j) is wrong!!!
 /*for testing*/			cout << "init number of partitions " << i << "\t" << j << "\t:" << table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j) << endl;
 		}
 		pj_buffer.push_back(temp_v);
 		blocks_per_partition.push_back(tmp_block_num);
+		tuples_per_partition.push_back(tmp_tuple_count);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 }
@@ -187,7 +199,7 @@ bool HdfsLoader::insertRecords(){
 		const int partition_key_local_index=partition_key_index[i];
 		void* partition_key_addr=projection_schema[i]->getColumnAddess(partition_key_local_index,target);
 		part=projection_schema[i]->getcolumn(partition_key_local_index).operate->getPartitionValue(partition_key_addr, partition_functin_list_[i]->getNumberOfPartitions());
-
+		tuples_per_partition[i][part]++;
 		void* block_tuple_addr = pj_buffer[i][part]->allocateTuple(projection_schema[i]->getTupleMaxSize());
 		if(block_tuple_addr == 0)
 		{
@@ -302,7 +314,7 @@ bool HdfsLoader::load(){
 	{
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
-			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j],tuples_per_partition[i][j]);
 			if (open_flag_ == APPEND)
 			{
 				//TODO: update binding infos and chunk storage level by me later.
@@ -390,7 +402,7 @@ bool HdfsLoader::append(std::string tuple_string)
 			else {
 				printf("[][][]After append NOT bound!\n");
 			}
-			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j],tuples_per_partition[i][j]);
 			//TODO: update binding infos and chunk storage level by me later.
 			table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);
 

@@ -5,7 +5,7 @@
  *      Author: wangli
  */
 #include "Logging.h"
-#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
+#ifdef CLAIMS_QUEIT //If defined, all the output information is binded.
 //#define DEBUG_Config
 //#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
@@ -458,6 +458,26 @@ void BlockStreamJoinLogging::elog(const char* format,...) {
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void SQLParse_log(const char* format,...) {
+#ifdef SQL_Parser
+	printf("[SQLParse_log]: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf (format, arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+
+void SQLParse_elog(const char* format,...) {
+	printf("[SQLParse_elog]: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf (format, arg);
 	printf("\n");
 	va_end (arg);
 }

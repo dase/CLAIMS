@@ -154,13 +154,13 @@ struct Message256
 	}
 };
 THERON_DECLARE_REGISTERED_MESSAGE(Message256)
-struct Message4K
+struct Message4K//temporary ways to expand the the serialization capacity
 {
 	unsigned length;
-	char message[4096*3-sizeof(unsigned)];
+	char message[4096*50-sizeof(unsigned)];
 	static unsigned Capacity()
 	{
-		return 4096*3-sizeof(unsigned);
+		return 4096*50-sizeof(unsigned);
 	}
 };
 THERON_DECLARE_REGISTERED_MESSAGE(Message4K)

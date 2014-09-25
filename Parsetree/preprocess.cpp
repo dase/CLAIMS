@@ -299,6 +299,14 @@ string expr_to_str(Node * node,int level)
 					str=str+" quarter)";
 				}
 			}
+			else if(strcmp(funcnode->funname,"BA")==0)
+			{
+				str=expr_to_str(funcnode->args,0);
+				str=str+" between ";
+				str=str+expr_to_str(funcnode->parameter1,0);
+				str=str+" and ";
+				str=str+expr_to_str(funcnode->parameter2,0);
+			}
 			else
 			{
 				SQLParse_elog("expr_to_str doesn't exist this function !!!");
