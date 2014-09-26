@@ -17,6 +17,7 @@
 #include <cstdio>
 #include "../Catalog/Catalog.h"
 #include "../Daemon/Daemon.h"
+#include "../common/Logging.h"
 ClientListener::ClientListener(int port) {
 
 	m_num = 0;
@@ -129,13 +130,13 @@ void ClientListener::configure() {
 		std::cout << "cannot create send thread!" << std::endl;
 	}
 
-	printf("sender thread id=%x\n",t_Sender);
+	ClientListenerLogging::log("sender thread id=%x\n",t_Sender);
 
 }
 
 void* ClientListener::receiveHandler(void *para) {
 
-	printf("-Init receive handler.\n");
+	ClientListenerLogging::log("-Init receive handler.\n");
 	ClientListener *server = (ClientListener *) para;
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
@@ -229,15 +230,15 @@ void* ClientListener::receiveHandler(void *para) {
 
 void *ClientListener::sendHandler(void *para) {
 
-	printf("-Init send handler!\n");
+	ClientListenerLogging::log("-Init send handler!\n");
 	ClientListener *server = (ClientListener*) para;
 
 	ClientResponse cliRes;
 	while (true) {
 		usleep(1);
-		printf("-SendHandler: wait for result!\n");
+		ClientListenerLogging::log("-SendHandler: wait for result!\n");
 		executed_result result = Daemon::getInstance()->getExecutedResult();
-		printf("-SendHandler: get executed_result for %d\n", result.fd);
+		ClientListenerLogging::log("-SendHandler: get executed_result for %d\n", result.fd);
 
 
 		if (result.status == true) {
@@ -245,19 +246,19 @@ void *ClientListener::sendHandler(void *para) {
 			if (result.result == NULL) {
 				// DDL return true
 				cliRes.setChange(result.info);
-				ClientLogging::log("to send change response-- status:%d  length:%d  content:%s",
+				ClientListenerLogging::log("to send change response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
 			else {
 				// query return true
 				cliRes.setOk("Yes Ok");
-				ClientLogging::log("to send ok response-- status:%d  length:%d  content:%s",
+				ClientListenerLogging::log("to send ok response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 
 				cliRes.setSchema(result.result->schema_);
-				ClientLogging::log("to send schema response-- status:%d  length:%d  content:%s",
+				ClientListenerLogging::log("to send schema response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 
@@ -267,7 +268,7 @@ void *ClientListener::sendHandler(void *para) {
 					header.add_header(list[i]);
 				}
 				cliRes.setAttributeName(header);
-				ClientLogging::log("to send attr response-- status:%d  length:%d  content:%s",
+				ClientListenerLogging::log("to send attr response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 
@@ -280,20 +281,20 @@ void *ClientListener::sendHandler(void *para) {
 				while (block = (BlockStreamBase*) it.atomicNextBlock()) {
 					block->serialize(serialzed_block);
 					cliRes.setDataBlock(serialzed_block);
-					ClientLogging::log("to send data response-- status:%d  length:%d  content:%s",
+					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s",
 									cliRes.status, cliRes.length, cliRes.content.c_str());
 					server->write(result.fd, cliRes);
 				}
 
 				cliRes.setEnd(result.result->query_time_);
-				ClientLogging::log("to send end response-- status:%d  length:%d  content:%s",
+				ClientListenerLogging::log("to send end response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
 		} else {
 			//ERROR
 			cliRes.setError(result.error_info);
-			ClientLogging::log("to send err response-- status:%d  length:%d  content:%s",
+			ClientListenerLogging::log("to send err response-- status:%d  length:%d  content:%s",
 							cliRes.status, cliRes.length, cliRes.content.c_str());
 			server->write(result.fd, cliRes);
 		}
@@ -438,7 +439,7 @@ int ClientListener::write(const int fd, const ClientResponse& res) const {
 	int length = res.serialize(buffer);
 	//	ret = ::write(fd, buffer, length);
 	ret = send(fd,buffer,length,MSG_WAITALL);
-	printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
+	ClientListenerLogging::log("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
 	free(buffer);
 	return ret;
 }

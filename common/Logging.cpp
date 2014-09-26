@@ -29,6 +29,8 @@
 //#define DEBUG_IteratorExecutorMaster
 //
 #define DEBUG_Client
+#define DEBUG_ClientLinster
+
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorSenderMaterialized
 //#define DEBUG_ExpandableBlockStreamExchangeMaterialized
@@ -368,9 +370,9 @@ void ASTParserLogging::elog(const char* format,...){
 }
 
 
-void ClientLogging::log(const char* format,...){
-#ifdef DEBUG_Client
-	printf("Client: ");
+void ClientListenerLogging::log(const char* format,...){
+#ifdef DEBUG_ClientLinsener
+	printf("[ClientListener]: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
@@ -378,8 +380,8 @@ void ClientLogging::log(const char* format,...){
 	va_end (arg);
 #endif
 }
-void ClientLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[Client]: ");
+void ClientListenerLogging::elog(const char* format,...){
+	fprintf(stderr,"Error[ClientLinster]: ");
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
@@ -478,6 +480,26 @@ void SQLParse_elog(const char* format,...) {
 	va_list arg;
 	va_start (arg, format);
 	vprintf (format, arg);
+	printf("\n");
+	va_end (arg);
+}
+
+void ClientLogging::log(const char* format,...) {
+#ifdef DEBUG_Client
+	printf("Client: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	printf("\n");
+	va_end (arg);
+#endif
+}
+
+void ClientLogging::elog(const char* format,...) {
+	fprintf(stderr,"Error[Client]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
 	printf("\n");
 	va_end (arg);
 }

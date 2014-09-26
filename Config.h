@@ -65,6 +65,7 @@ public:
 	static bool master;
 	static bool local_disk_mode;
 	static bool pipelined_exchange;
+	static int client_listener_port;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;

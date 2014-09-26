@@ -79,6 +79,9 @@ bool Config::master;
 
 bool Config::local_disk_mode;
 
+/* the port of the ClientListener in the master */
+int Config::client_listener_port;
+
 Config* Config::getInstance() {
 	if(instance_==0){
 		instance_=new Config();
@@ -125,11 +128,11 @@ void Config::initialize() {
 
 	master=getBoolean("master",true);
 
-	local_disk_mode=getBoolean("local_disk_mode","false");
+	local_disk_mode=getBoolean("local_disk_mode",false);
 
 	pipelined_exchange=getBoolean("pipelined_exchange",true);
 
-
+	client_listener_port=getInt("client_listener_port",10001);
 #ifdef DEBUG_Config
 	print_configure();
 #endif
@@ -184,4 +187,5 @@ void Config::print_configure() const {
 	std::cout<<"log:"<<logfile<<std::endl;
 	std::cout<<"master:"<<master<<std::endl;
 	std::cout<<"local disk mode:"<<local_disk_mode<<std::endl;
+	std::cout<<"client_lisener_port:"<<client_listener_port<<std::endl;
 }

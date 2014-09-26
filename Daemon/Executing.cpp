@@ -60,12 +60,12 @@ void Executing::run_sql(const std::string &sql, ResultSet *&result_set, bool &st
 		return;
 	}
 	ExecuteLogicalQueryPlan(sql, result_set, status, error_info, info);
-	if(status==false) {
-		cout<<"[ERROR] "<<error_info<<endl;
-	}
-	else {
-		if(result_set!=NULL)
-			result_set->print();
-	}
+//	if(status==false) {
+//		cout<<"[ERROR] "<<error_info<<endl;
+//	}
+//	else {
+//		if(result_set!=NULL)
+////			result_set->print();
+//	}
 
 }

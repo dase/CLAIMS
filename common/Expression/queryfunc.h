@@ -866,8 +866,38 @@ inline void time_less_equal(FuncCallInfo fcinfo)
 }
 /*****************time********************/
 
-/*****************decimal********************/
-/*****************decimal********************/
+/*****************datetime********************/
+inline void datetime_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(ptime *)fcinfo->args[0]==*(ptime *)fcinfo->args[1]);
+}
+inline void datetime_not_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(ptime *)fcinfo->args[0]!=*(ptime *)fcinfo->args[1]);
+}
+inline void datetime_great(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(ptime *)fcinfo->args[0]>*(ptime *)fcinfo->args[1]);
+}
+inline void datetime_great_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(ptime *)fcinfo->args[0]>=*(ptime *)fcinfo->args[1]);
+}
+inline void datetime_less(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(ptime *)fcinfo->args[0]<*(ptime *)fcinfo->args[1]);
+}
+inline void datetime_less_equal(FuncCallInfo fcinfo)
+{
+	assert(fcinfo->nargs==2);
+	*(bool *)fcinfo->results=(*(ptime *)fcinfo->args[0]<=*(ptime *)fcinfo->args[1]);
+}
+/*****************datetime********************/
 inline void initialize_operator_function()
 {
 	for(int i=0;i<DATA_TYPE_NUM;i++)
@@ -1085,8 +1115,14 @@ inline void initialize_operator_function()
 
 	/*****************time********************/
 
-	/*****************double********************/
-	/*****************double********************/
+	/*****************datetime********************/
+	ExectorFunction::operator_function[t_datetime][oper_equal]=datetime_equal;
+	ExectorFunction::operator_function[t_datetime][oper_not_equal]=datetime_not_equal;
+	ExectorFunction::operator_function[t_datetime][oper_great]=datetime_great;
+	ExectorFunction::operator_function[t_datetime][oper_great_equal]=datetime_great_equal;
+	ExectorFunction::operator_function[t_datetime][oper_less]=datetime_less;
+	ExectorFunction::operator_function[t_datetime][oper_less_equal]=datetime_less_equal;
+	/*****************datetime********************/
 
 
 
