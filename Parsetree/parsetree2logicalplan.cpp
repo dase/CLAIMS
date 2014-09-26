@@ -1313,7 +1313,7 @@ static LogicalOperator* orderby_having_select_groupby_where_from2logicalplan(Nod
 }
 static LogicalOperator* parsetree2logicalplan(Node *parsetree)//实现parsetree 到logicalplan的转换，
 {
-	initialize_arithmetic_type_promotion_matrix();
+//	initialize_arithmetic_type_promotion_matrix();
 	LogicalOperator* alllogicalplan=NULL;
 	switch(parsetree->type)
 	{

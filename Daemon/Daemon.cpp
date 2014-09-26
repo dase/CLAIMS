@@ -98,6 +98,7 @@ void* Daemon::worker(void* para) {
 void Daemon::addRemoteCommand(const remote_command& rc) {
 	lock_.acquire();
 	remote_command_queue_.push_back(rc);
+	printf("%s\n",rc.cmd.c_str());
 	lock_.release();
 	semaphore_command_queue_.post();
 }

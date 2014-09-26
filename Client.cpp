@@ -25,10 +25,31 @@ int main(int argc, char** argv){
 	while(1){
 		std::cout<<">";
 		std::string query;
-		char *args = new char[65535];
-		std::cin.getline(args, 65535);
-		query.append(args);
-		delete args;
+
+
+
+		std::string input;
+		while(true){
+			std::cin.clear();
+			std::cin.sync();
+			std::string str;
+			if(getline(std::cin,str)){
+				bool finish=false;
+				for(unsigned i=0;i<str.length();i++){
+					if(str[i]==';'){
+						input+=str.substr(0,i+1);
+						finish=true;
+						break;
+					}
+
+				}
+				if(finish)
+					break;
+				input+=str+" ";
+			}
+		}
+
+		query.append(input.c_str());
 		if( query == "exit" ){
 			break;
 		}else if( query.empty() ){

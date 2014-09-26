@@ -13,24 +13,28 @@
 #include "Debug.h"
 #include "Config.h"
 #include "common/Logging.h"
+#include "common/TypePromotionMap.h"
+#include "common/TypeCast.h"
+#include "common/Expression/queryfunc.h"
 Environment* Environment::_instance=0;
 Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	_instance=this;
 	Config::getInstance();
 	logging_=new EnvironmentLogging();
-	Initialize();
+	readConfigFile();
+	initializeExpressionSystem();
 	portManager=PortManager::getInstance();
-	catalog_=Catalog::getInstance();
-	catalog_->restoreCatalog();
 
 	if(ismaster){
 		logging_->log("Initializing the Coordinator...");
-		InitializeCoordinator();
+		initializeCoordinator();
+		catalog_=Catalog::getInstance();
+		catalog_->restoreCatalog();
 
 	}
 
 	logging_->log("Initializing the AdaptiveEndPoint...");
-	InitializeEndPoint();
+	initializeEndPoint();
 /**
  * TODO:
  * DO something in AdaptiveEndPoint such that the construction function does
@@ -42,12 +46,12 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	/*Before initializing Resource Manager, the instance ip and port should be decided.*/
 
-	InitializeResourceManager();
+	initializeResourceManager();
 //		return;
 
-	InitializeStorage();
+	initializeStorage();
 
-	InitializeBufferManager();
+	initializeBufferManager();
 
 
 	logging_->log("Initializing the ExecutorMaster...");
@@ -59,7 +63,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	exchangeTracker =new ExchangeTracker();
 	expander_tracker_=ExpanderTracker::getInstance();
 	if(ismaster){
-		InitializeClientListener();
+		initializeClientListener();
 	}
 }
 
@@ -95,12 +99,12 @@ std::string Environment::getIp(){
 unsigned Environment::getPort(){
 	return port;
 }
-void Environment::Initialize(){
+void Environment::readConfigFile(){
 	libconfig::Config cfg;
 	cfg.readFile(Config::config_file.c_str());
 	ip=(const char*)cfg.lookup("ip");
 }
-void Environment::InitializeEndPoint(){
+void Environment::initializeEndPoint(){
 //	libconfig::Config cfg;
 //	cfg.readFile("/home/claims/config/wangli/config");
 //	std::string endpoint_ip=(const char*)cfg.lookup("ip");
@@ -118,10 +122,10 @@ void Environment::InitializeEndPoint(){
 
 	endpoint=new AdaptiveEndPoint(name.str().c_str(),endpoint_ip,port.str());
 }
-void Environment::InitializeCoordinator(){
+void Environment::initializeCoordinator(){
 	coordinator=new Coordinator();
 }
-void Environment::InitializeStorage(){
+void Environment::initializeStorage(){
 
 	if(ismaster_){
 		blockManagerMaster_=BlockManagerMaster::getInstance();
@@ -138,7 +142,7 @@ void Environment::InitializeStorage(){
 
 }
 
-void Environment::InitializeResourceManager(){
+void Environment::initializeResourceManager(){
 	if(ismaster_){
 		resourceManagerMaster_=new ResourceManagerMaster();
 	}
@@ -146,11 +150,11 @@ void Environment::InitializeResourceManager(){
 	nodeid=resourceManagerSlave_->Register();
 
 }
-void Environment::InitializeBufferManager(){
+void Environment::initializeBufferManager(){
 	bufferManager_=BufferManager::getInstance();
 }
 
-void Environment::InitializeIndexManager()
+void Environment::initializeIndexManager()
 {
 	indexManager_ = IndexManager::getInstance();
 }
@@ -174,9 +178,15 @@ Catalog* Environment::getCatalog()const{
 	return catalog_;
 }
 
-void Environment::InitializeClientListener() {
+void Environment::initializeClientListener() {
 	listener_=new ClientListener(Config::client_listener_port);
 	listener_->configure();
+}
+
+void Environment::initializeExpressionSystem() {
+	initialize_arithmetic_type_promotion_matrix();
+	initialize_type_cast_functions();
+	initialize_operator_function();
 }
 
 void Environment::destoryClientListener() {

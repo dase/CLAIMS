@@ -38,15 +38,15 @@ public:
 	Catalog* getCatalog()const;
 	Environment(bool ismaster=false);
 private:
-	void Initialize();
-	void InitializeEndPoint();
-	void InitializeCoordinator();
-	void InitializeStorage();
-	void InitializeResourceManager();
-	void InitializeBufferManager();
-	void InitializeIndexManager();
-	void InitializeClientListener();
-
+	void readConfigFile();
+	void initializeEndPoint();
+	void initializeCoordinator();
+	void initializeStorage();
+	void initializeResourceManager();
+	void initializeBufferManager();
+	void initializeIndexManager();
+	void initializeClientListener();
+	void initializeExpressionSystem();
 	void destoryClientListener();
 private:
 	static Environment* _instance;
