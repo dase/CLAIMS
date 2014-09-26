@@ -9,6 +9,7 @@
 #include "../Environment.h"
 #include "../common/Logging.h"
 #include "../Resource/CPUResource.h"
+#include "../utility/print_tool.h"
 
 
 IteratorExecutorSlave::IteratorExecutorSlave(){
@@ -98,6 +99,7 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 	PhysicalQueryPlan* it=(PhysicalQueryPlan*)(*(void**)arg);
 	IteratorExecutorSlave* Pthis=(IteratorExecutorSlave*)(*((void**)arg+1));
 
+//	p_green("A new thread (%lx) is created.\n",pthread_self());
 //	printf("--------\n Before apply:");
 //	CPUResourceManager::getInstance()->print();
 //	int core=CPUResourceManager::getInstance()->applyCore();
@@ -115,6 +117,7 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 	Pthis->lock_.acquire();
 	Pthis->busy_thread_list_.erase(pthread_self());
 	Pthis->lock_.release();
+//	p_green("Job in thread (%lx) finished.\n",pthread_self());
 	free((void**)arg);
 }
 

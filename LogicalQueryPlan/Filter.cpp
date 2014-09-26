@@ -19,12 +19,12 @@ Filter::Filter(LogicalOperator *child,vector<QNode *>qual)
 :child_(child),qual_(qual)
 {
 	setOperatortype(l_filter);
-	initialize_type_cast_functions();
+//	initialize_type_cast_functions();
 }
 Filter::Filter(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray)
 :child_(child),exprArray_(exprArray){
-	initialize_arithmetic_type_promotion_matrix();
-	initialize_type_cast_functions();
+//	initialize_arithmetic_type_promotion_matrix();
+//	initialize_type_cast_functions();
 	setOperatortype(l_filter);
 }
 
