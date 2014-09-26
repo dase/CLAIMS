@@ -15,6 +15,11 @@ coordinator:
     port="11001"
 }
 
+client_listener_port = 10000
+
+# whether this instance is the master.
+master = 1
+
 #hadoop上的数据目录
 data = "/home/claims/data/ndbc-m/bin/350m/"
 
@@ -27,4 +32,7 @@ initial_degree_of_parallelism=1
 expander_adaptivity_check_frequency=1000
 
 enable_expander_adaptivity=0
+
+#
+local_disk_mode = 1
 
