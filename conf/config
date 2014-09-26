@@ -21,8 +21,8 @@ master=1
 #hadoop上的数据目录
 #data="/home/imdb/data/wangli/"
 #data="/home/imdb/data/tpc-h/4_partitions/SF-1/"
-#data="/home/imdb/data/stock/"
-data="/home/imdb/data/tmpfzh/"
+data="/home/imdb/data/stock/"
+#data="/home/imdb/data/tmpfzh/"
 #hdfs主节点
 hdfs_master_ip="58.198.176.132"
 
