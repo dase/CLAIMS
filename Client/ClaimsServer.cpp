@@ -71,7 +71,10 @@ int ClientListener::receiveRequest(const int fd, const char *cmd) {
 
 	remote_command rcmd;
 	rcmd.socket_fd = fd;
-	rcmd.cmd.append(cmd);
+//	rcmd.cmd.append(cmd);
+	printf("before append: %d %s\n",strlen(cmd),cmd);
+	rcmd.cmd=std::string(cmd);
+	printf("append: %d %s\n",rcmd.cmd.length(),rcmd.cmd.c_str());
 
 	Daemon::getInstance()->addRemoteCommand(rcmd);
 	return 0;
@@ -86,7 +89,6 @@ void ClientListener::configure() {
 	int &serverSockFd = m_fd;
 	int clientSockFd;
 	unsigned int nread;
-	char *buf = new char[128];
 	sockaddr_in serverSocket;
 	sockaddr_in clientSocket;
 
@@ -141,7 +143,9 @@ void* ClientListener::receiveHandler(void *para) {
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
 
-	char *buf = new char[128];
+	const int buffer_size=1000;
+
+	char *buf = new char[buffer_size];
 
 	unsigned int sockLen;
 	int nread;
@@ -201,6 +205,11 @@ void* ClientListener::receiveHandler(void *para) {
 						continue;
 					}
 					read(server->m_clientFds[i], buf, nread);
+
+					assert(buffer_size>nread);
+
+					printf("Receives %d bytes from clients: %s\n", nread, buf);
+
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
 					if (1 == retCode) {

@@ -203,7 +203,10 @@ struct ClientResponse {
 	void deserialize(const char* received_buffer, int recieved_bytes_length) {
 		const int st = *(int*) received_buffer;
 		const int len = *((int*) received_buffer + 1);
-		assert(recieved_bytes_length == sizeof(int) + sizeof(int) + len);
+		if(!(recieved_bytes_length == sizeof(int) + sizeof(int) + len)){
+			printf("recieved_bytes_length %d, len %d\n",recieved_bytes_length, len);
+			assert(false);
+		}
 		status = st;
 		length = len;
 		void* content_start_addr = (char*) received_buffer + sizeof(int) * 2;
