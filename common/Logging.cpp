@@ -5,6 +5,7 @@
  *      Author: wangli
  */
 #include "Logging.h"
+#define CLAIMS_QUEIT
 #ifdef CLAIMS_QUEIT //If defined, all the output information is binded.
 //#define DEBUG_Config
 //#define DEBUG_ExpanderTracker
@@ -41,7 +42,7 @@
 //#define DEBUG_BufferManager
 
 #define DEBUG_ASTParser
-#define SQL_Parser
+//#define SQL_Parser
 
 #endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){

@@ -24,7 +24,7 @@ master=1
 #data="/home/imdb/data/stock/"
 data="/home/imdb/data/tmpfzh/"
 #hdfs主节点
-hdfs_master_ip="58.198.176.132"
+hdfs_master_ip="10.11.1.190"
 
 #hdfs主节点端口
 hdfs_master_port=9000
