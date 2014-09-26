@@ -879,26 +879,26 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 
 	TableDescriptor* table_0=new TableDescriptor("trade_less", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 	table_0->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_0->addAttribute("Trade_No",data_type(t_decimal),18);  				//0
-	table_0->addAttribute("Trade_Date",data_type(t_date));
-	table_0->addAttribute("Trade_Time",data_type(t_time));
-	table_0->addAttribute("Trade_Time_Dec",data_type(t_decimal),8);
-	table_0->addAttribute("Order_Time",data_type(t_time));
-	table_0->addAttribute("Order_Time_Dec",data_type(t_decimal),8);
-	table_0->addAttribute("Order_No",data_type(t_decimal),18);
-	table_0->addAttribute("Trade_Price",data_type(t_decimal),18);
-	table_0->addAttribute("Trade_Amt",data_type(t_decimal),18);
-	table_0->addAttribute("Trade_Vol",data_type(t_int));
-	table_0->addAttribute("Sec_Code",data_type(t_string),6);
-	table_0->addAttribute("PBU_ID",data_type(t_string),5);
-	table_0->addAttribute("Acct_ID",data_type(t_string),10);
-	table_0->addAttribute("Trade_Dir",data_type(t_string),1);
-	table_0->addAttribute("Order_PrtFil_Code",data_type(t_string),1);
-	table_0->addAttribute("Tran_Type",data_type(t_string),3);
-	table_0->addAttribute("Trade_Type",data_type(t_string),1);
-	table_0->addAttribute("Proc_Type",data_type(t_string),1);
-	table_0->addAttribute("Order_Type",data_type(t_string),2);
-	table_0->addAttribute("Stat_PBU_ID",data_type(t_string),5);
+	table_0->addAttribute("trade_no",data_type(t_decimal),18);  				//0
+	table_0->addAttribute("trade_date",data_type(t_date));
+	table_0->addAttribute("trade_time",data_type(t_time));
+	table_0->addAttribute("trade_time_dec",data_type(t_decimal),8);
+	table_0->addAttribute("order_time",data_type(t_time));
+	table_0->addAttribute("order_time_dec",data_type(t_decimal),8);
+	table_0->addAttribute("order_no",data_type(t_decimal),18);
+	table_0->addAttribute("trade_price",data_type(t_decimal),18);
+	table_0->addAttribute("trade_amt",data_type(t_decimal),18);
+	table_0->addAttribute("trade_vol",data_type(t_int));
+	table_0->addAttribute("sec_code",data_type(t_string),6);
+	table_0->addAttribute("pbu_id",data_type(t_string),5);
+	table_0->addAttribute("acct_id",data_type(t_string),10);
+	table_0->addAttribute("trade_dir",data_type(t_string),1);
+	table_0->addAttribute("Order_prtfil_code",data_type(t_string),1);
+	table_0->addAttribute("tran_type",data_type(t_string),3);
+	table_0->addAttribute("trade_type",data_type(t_string),1);
+	table_0->addAttribute("proc_type",data_type(t_string),1);
+	table_0->addAttribute("order_type",data_type(t_string),2);
+	table_0->addAttribute("stat_pbu_id",data_type(t_string),5);
 	table_0->createHashPartitionedProjectionOnAllAttribute("trade_less.row_id",1);
 
 	/////////////////////////////// PART TABLE //////////////////////////////////
@@ -973,7 +973,7 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 
 	for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
-		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,223);
+		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,445);
 	}
 
 	catalog->saveCatalog();

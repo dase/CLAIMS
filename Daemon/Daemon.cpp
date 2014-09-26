@@ -85,6 +85,22 @@ void* Daemon::worker(void* para) {
 		result.fd = rc.socket_fd;
 		result.status = true;
 
+		// must be delete after loading
+//		rc.cmd = "load table field from \"/home/imdb/data/stock/field\" with '\t','\n';\n\n"
+//				"load table area from \"/home/imdb/data/stock/area\" with '\t','\n';\n\n"
+//				"load table trade from "
+//				"\"/home/imdb/data/poc/CJ/CJ20100901.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100902.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100903.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100906.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100907.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100908.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100909.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100910.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100913.txt\","
+//				"\"/home/imdb/data/poc/CJ/CJ20100914.txt\" with '|','\n';\n\n"
+				;
+
 		// result is a pointer, which now is NULL and should be assigned in function.
 		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info);
 		ClientLogging::log("after running sql, the result is : status-%d, err-%s, info-%s",
