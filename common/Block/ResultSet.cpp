@@ -7,6 +7,25 @@
 
 #include "ResultSet.h"
 
+int utf8_strlen(const std::string & str)
+{
+	char* s=str.c_str();
+    int i, j;
+    int len = 0;
+    for(i = 0; s[i] != 0; i++){
+		if(s[i] & 0x80){
+			j = 1;
+			while((s[++i] & 0x80) && !(s[i] & 0x40))
+				j++;
+			len += 2;
+			i--;
+		 }
+		else{
+			len++;
+		}
+    }
+    return len;
+}
 ResultSet::~ResultSet() {
 	delete schema_;
 }
@@ -40,7 +59,7 @@ void ResultSet::print() const {
 		void * tuple;
 		while(tuple=tuple_it->nextTuple()){
 			for(unsigned i=0;i<column_header_list_.size();i++){
-				int wide=schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)).size()+space_per_column;
+				int wide=utf8_strlen(schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)))+space_per_column;
 				column_wides[i]=max(column_wides[i],wide);
 			}
 			sample_times++;
@@ -88,7 +107,7 @@ void ResultSet::print() const {
 		void * tuple;
 		while(tuple=tuple_it->nextTuple()){
 			for(unsigned i=0;i<column_header_list_.size();i++){
-				int current_value_length=schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)).length();
+				int current_value_length=utf8_strlen(schema_->getcolumn(i).operate->toString(schema_->getColumnAddess(i,tuple)));
 				column_wides[i]=max(column_wides[i],current_value_length);
 				printf("| ");
 				printNChar((column_wides[i]-current_value_length)/2, ' ');

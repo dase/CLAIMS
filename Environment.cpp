@@ -175,7 +175,7 @@ Catalog* Environment::getCatalog()const{
 }
 
 void Environment::InitializeClientListener() {
-	listener_=new ClientListener(10000);
+	listener_=new ClientListener(Config::client_listener_port);
 	listener_->configure();
 }
 

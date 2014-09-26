@@ -136,11 +136,19 @@ public:
 	static void elog(const char* format,...);
 };
 
+class ClientListenerLogging {
+public:
+	static void log(const char* format,...);
+	static void elog(const char* format,...);
+};
+
 class ClientLogging {
 public:
 	static void log(const char* format,...);
 	static void elog(const char* format,...);
 };
+
+
 
 static void Logging_ExchangeIteratorLowerWithWideDependency(const char* format,...){
 #ifdef DEBUG_ExchangeIteratorWithWideDependency

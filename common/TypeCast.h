@@ -217,6 +217,11 @@ inline void *string_to_date_quarter(void *value,void * tovalue)
 	*(months *)tovalue=months(atof((char *)value)*3);
 	return tovalue;
 }
+inline void *string_to_datetime(void *value,void *tovalue)
+{
+	*(ptime*)tovalue = time_from_string(string((char *)value));
+	return tovalue;
+}
 /***************string****************************/
 /***************unsigned long****************************/
 
@@ -458,9 +463,19 @@ inline void *time_to_string(void *value,void *tovalue)
 }
 /***************time****************************/
 
-/***************smallInt****************************/
+/***************datetime****************************/
+inline void *datetime_to_datetime(void *value,void *tovalue)
+{
+	*(ptime *)tovalue=*(ptime *)value;
+	return tovalue;
+}
+inline void *datetime_to_string(void *value,void *tovalue)
+{
+	strcpy((char *)tovalue,to_iso_extended_string(*(ptime*)value).c_str());
+	return tovalue;
+}
 
-/***************smallInt****************************/
+/***************datetime****************************/
 
 inline void *errormsg(void *value,void * tovalue)
 {
@@ -554,7 +569,7 @@ inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_func[t_string][t_string]=string_to_string;
 	TypeCast::type_cast_func[t_string][t_date]=string_to_date;
 	TypeCast::type_cast_func[t_string][t_time]=string_to_time;
-	TypeCast::type_cast_func[t_string][t_datetime]=errormsg;
+	TypeCast::type_cast_func[t_string][t_datetime]=string_to_datetime;
 	TypeCast::type_cast_func[t_string][t_decimal]=string_to_decimal;
 	TypeCast::type_cast_func[t_string][t_boolean]=string_to_boolean;
 
@@ -601,10 +616,10 @@ inline void initialize_type_cast_functions(){
 	TypeCast::type_cast_func[t_datetime][t_u_long]=errormsg;
 	TypeCast::type_cast_func[t_datetime][t_float]=errormsg;
 	TypeCast::type_cast_func[t_datetime][t_double]=errormsg;
-	TypeCast::type_cast_func[t_datetime][t_string]=errormsg;
+	TypeCast::type_cast_func[t_datetime][t_string]=datetime_to_string;
 	TypeCast::type_cast_func[t_datetime][t_date]=errormsg;
 	TypeCast::type_cast_func[t_datetime][t_time]=errormsg;
-	TypeCast::type_cast_func[t_datetime][t_datetime]=errormsg;
+	TypeCast::type_cast_func[t_datetime][t_datetime]=datetime_to_datetime;
 	TypeCast::type_cast_func[t_datetime][t_decimal]=errormsg;
 	TypeCast::type_cast_func[t_datetime][t_boolean]=errormsg;
 

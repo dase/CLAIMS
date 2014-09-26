@@ -31,5 +31,6 @@ config.log
 configure
 claims.log
 doc
+conf
 conf/config
 catalogData.dat
