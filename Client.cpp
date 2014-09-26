@@ -10,10 +10,17 @@
 #include "common/Block/ResultSet.h"
 #include "Client/Client.h"
 #include "common/Logging.h"
-int main(){
+int main(int argc, char** argv){
 	/* Client */
+
+	if(argc!=3){
+		printf("argc=%d, Illegal input. \nPlease use client master_ip client_listener_port.\n",argc);
+		printf("HINT: the master ip and the client_listener_port can be found in the configure file.\n");
+		return 0;
+	}
+
 	Client client;
-	client.connection("127.0.0.1", 10000);
+	client.connection(argv[1], atoi(argv[2]));
 	std::cout << "Please input the query cmd!" << std::endl;
 	while(1){
 		std::cout<<">";

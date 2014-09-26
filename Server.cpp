@@ -4,10 +4,12 @@
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
 #include "/usr/include/assert.h"
 #include "Test/set_up_environment.h"
-int main(int argc, char** argv){
 
 #define AUTU_MASTER
 //#define FORK
+
+int main(int argc, char** argv){
+
 	bool master;
 #ifndef AUTU_MASTER
 	printf("If Master, please print 1!\n");
