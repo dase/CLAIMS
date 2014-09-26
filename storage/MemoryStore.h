@@ -87,7 +87,7 @@ public:
 			return it_->second.hook;
 		}
 	};
-	bool getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info)const;
+	bool getChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info);
 
 	bool putChunk(const ChunkID& chunk_id,HdfsInMemoryChunk& chunk_info);
 

@@ -219,7 +219,7 @@ bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 	//sock_fd is the socket of this node
 	if((sock_fd=socket(AF_INET, SOCK_STREAM, 0))==-1)
 	{
-		perror("socket creation error!\n");
+		logging_->elog("socket creation error!\n");
 		return false;
 	}
 	my_addr.sin_family=AF_INET;
@@ -240,13 +240,13 @@ bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 
 	if(bind(sock_fd,(struct sockaddr *)&my_addr, sizeof(struct sockaddr))==-1)
 	{
-		perror("bind errors!\n");
+		logging_->elog("bind errors!\n");
 		return false;
 	}
 
 	if(listen(sock_fd, nlowers)==-1)
 	{
-		perror("listen errors!\n");
+		logging_->elog("listen errors!\n");
 		return false;
 	}
 
@@ -423,7 +423,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 							break;
 						}
 						else{
-							perror("accept error!  ");
+							Pthis->logging_->elog("accept error!  ");
 							break;
 						}
 					}
@@ -443,7 +443,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					event.events=EPOLLIN|EPOLLET;
 					status=epoll_ctl(Pthis->epoll_fd_,EPOLL_CTL_ADD, infd,&event);
 					if(status==-1){
-						perror("epoll_ctl");
+						Pthis->logging_->elog("epoll_ctl");
 						return 0;
 					}
 				}
@@ -462,7 +462,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 							/*We have read all the data,so go back to the loop.*/
 							break;
 						}
-						perror("read error!\n");
+						Pthis->logging_->elog("read error!\n");
 						done=1;
 					}
 					else if(byte_received==0){
@@ -564,16 +564,16 @@ bool ExpandableBlockStreamExchangeEpoll::SetSocketNonBlocking(int socket_fd){
 	flags = fcntl (socket_fd, F_GETFL, 0);
 	if (flags == -1)
 	{
-	  perror ("fcntl");
-	  return false;
+		logging_->elog ("fcntl");
+		return false;
 	}
 
 	flags |= O_NONBLOCK;
 	s = fcntl (socket_fd, F_SETFL, flags);
 	if (s == -1)
 	{
-	  perror ("fcntl");
-	  return false;
+		logging_->elog ("fcntl");
+		return false;
 	}
 
 	return true;
