@@ -205,15 +205,15 @@ struct ClientResponse {
 		void* content_start = buffer + sizeof(int) + sizeof(int);
 		memcpy(content_start, content.data(), content.length());
 
-		ClientLogging::log("buffer is : %d%d%d%d%d%d%d%d",
-				(int)buffer[0],
-				(int)buffer[1],
-				(int)buffer[2],
-				(int)buffer[3],
-				(int)buffer[4],
-				(int)buffer[5],
-				(int)buffer[6],
-				(int)buffer[7]
+		ClientLogging::log("buffer is : %d-%d-%d-%d-%d-%d-%d-%d",
+				(unsigned int)buffer[0],
+				(unsigned int)buffer[1],
+				(unsigned int)buffer[2],
+				(unsigned int)buffer[3],
+				(unsigned int)buffer[4],
+				(unsigned int)buffer[5],
+				(unsigned int)buffer[6],
+				(unsigned int)buffer[7]
 				);
 		return ret;
 	}

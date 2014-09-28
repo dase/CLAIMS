@@ -243,9 +243,9 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 	assert(buf != NULL);
 	ClientLogging::log("in generateSqlStmt function:type argument is %d, buf argument is %s", type, buf);
 	// the first byte of buf is type, other are argument
-	string arg1;
-	string arg2;
-	string arg3;
+	string arg1 = "";
+	string arg2 = "";
+	string arg3 = "";
 
 	switch(type) {
 	case 0: {
@@ -286,7 +286,6 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 			break;
 		}
 	case 3: {
-
 		arg2 = string(buf+1, 10);
 		arg3 = string(buf+11, 10);
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
@@ -312,7 +311,6 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		break;
 	}
 	case 4: {
-
 		arg2 = string(buf+1, 10);
 		arg3 = string(buf+11, 10);
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
@@ -341,7 +339,6 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		break;
 	}
 	case 5: {
-
 		arg2 = string(buf+1, 10);
 		arg3 = string(buf+11, 10);
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
@@ -411,7 +408,6 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		break;
 	}
 	case 6: {
-
 		arg2 = string(buf+1, 10);
 		arg3 = string(buf+11, 10);
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
@@ -481,7 +477,6 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		break;
 	}
 	case 7: {
-
 		arg2 = string(buf+1, 10);
 		arg3 = string(buf+11, 10);
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
@@ -504,7 +499,6 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		break;
 	}
 	case 8: {
-
 		arg2 = string(buf+1, 10);
 		arg3 = string(buf+11, 10);
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
@@ -546,8 +540,14 @@ void *ClientListener::sendHandler(void *para) {
 			if (result.result == NULL) {
 				// DDL return true
 				cliRes.setChange(result.info);
-				ClientLogging::log("to send change response-- status:%d  length:%d  content:%s",
+				if (cliRes.content.length() <= 1000) {
+					ClientLogging::log("to send change response-- status:%d  length:%d  content:%s",
 						cliRes.status, cliRes.length, cliRes.content.c_str());
+				}
+				else {
+					ClientLogging::log("to send change response-- status:%d  length:%d  content:%s...",
+						cliRes.status, cliRes.length, cliRes.content.substr(0,1000).c_str());
+				}
 				server->write(result.fd, cliRes);
 			}
 			else {
@@ -635,8 +635,12 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 			Json::FastWriter fw;
 			string buf_to_send = fw.write(root);
 			buf_to_send += '\n';
-			cout<<buf_to_send<<endl;
-
+//			if (buf_to_send.length() <= 1000) {
+//				ClientLogging::log("%s", buf_to_send.c_str());
+//			}
+//			else {
+//				ClientLogging::log("%s...", buf_to_send.substr(0, 1000).c_str());
+//			}
 			cr.setData(buf_to_send);
 		}
 	}
@@ -776,7 +780,12 @@ int ClientListener::write(const int fd, const ClientResponse& res) const {
 	int length = res.serialize(buffer);
 	//	ret = ::write(fd, buffer, length);
 	ret = send(fd,buffer,length,MSG_WAITALL);
-	printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
+	if (length <= 1000) {
+		printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
+	}
+	else {
+		printf("Server: %d bytes:%d\t%d\t %s... is send!\n", ret, res.status, res.length, res.content.substr(0,1000).c_str());
+	}
 	free(buffer);
 	return ret;
 }
