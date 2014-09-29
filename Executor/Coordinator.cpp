@@ -44,6 +44,11 @@ Coordinator::Coordinator() {
 
 Coordinator::~Coordinator() {
 	pthread_cancel(prochaseId);
+	void *res=0;
+	while(res!=PTHREAD_CANCELED){
+		pthread_join(prochaseId,&res);
+	}
+
 	close(socket_fd);
 	delete framework;
 	delete endpoint;

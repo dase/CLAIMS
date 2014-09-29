@@ -72,9 +72,7 @@ int ClientListener::receiveRequest(const int fd, const char *cmd) {
 	remote_command rcmd;
 	rcmd.socket_fd = fd;
 //	rcmd.cmd.append(cmd);
-	printf("before append: %d %s\n",strlen(cmd),cmd);
 	rcmd.cmd=std::string(cmd);
-	printf("append: %d %s\n",rcmd.cmd.length(),rcmd.cmd.c_str());
 
 	Daemon::getInstance()->addRemoteCommand(rcmd);
 	return 0;
@@ -198,7 +196,6 @@ void* ClientListener::receiveHandler(void *para) {
 					ioctl(server->m_clientFds[i], FIONREAD, &nread);
 					if (0 == nread) {
 						//TODO does here means a client close the connection with server?
-						printf("close connection on socket %d!\n", server->m_clientFds[i]);
 						FD_CLR(server->m_clientFds[i], &watchFds);
 						::close(server->m_clientFds[i]);
 						server->removeClient(server->m_clientFds[i]);
@@ -208,7 +205,6 @@ void* ClientListener::receiveHandler(void *para) {
 
 					assert(buffer_size>nread);
 
-					printf("Receives %d bytes from clients: %s\n", nread, buf);
 
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
