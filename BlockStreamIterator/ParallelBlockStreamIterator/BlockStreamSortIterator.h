@@ -62,7 +62,7 @@ public:
 	bool close();
 
 	void cssort();
-
+	void print();
 private:
 	void swap(void *& desc,void *& src);
 	//TODO:	just quick sort, and maybe other sort algorithms

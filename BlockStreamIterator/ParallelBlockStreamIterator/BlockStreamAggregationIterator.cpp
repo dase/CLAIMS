@@ -510,9 +510,9 @@ bool BlockStreamAggregationIterator::close(){
 	return true;
 }
 void BlockStreamAggregationIterator::print(){
-//	printf("Aggregation:  %d buckets in hash table\n",state_.nbuckets);
-//	printf("---------------\n");
-//	state_.child->print();
+	printf("Aggregation:  %d buckets in hash table\n",state_.nbuckets);
+	printf("---------------\n");
+	state_.child->print();
 }
 BlockStreamBase* BlockStreamAggregationIterator::AtomicPopFreeHtBlockStream(){
 	assert(!ht_free_block_stream_list_.empty());

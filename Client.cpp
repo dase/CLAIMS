@@ -10,6 +10,7 @@
 #include "common/Block/ResultSet.h"
 #include "Client/Client.h"
 #include "common/Logging.h"
+#include "startup.h"
 int main(int argc, char** argv){
 	/* Client */
 
@@ -18,6 +19,8 @@ int main(int argc, char** argv){
 		printf("HINT: the master ip and the client_listener_port can be found in the configure file.\n");
 		return 0;
 	}
+
+	print_welcome();
 
 	Client client;
 	client.connection(argv[1], atoi(argv[2]));

@@ -177,7 +177,7 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 //    order(state_.orderbyKey_,tuple_count_sum);
     order();
 
-	cout<<"the tuple_count is: "<<tuple_count_sum<<"Total time: "<<getSecond(time)<<" seconds, the swap num is: "<<swap_num<<endl;
+//	cout<<"the tuple_count is: "<<tuple_count_sum<<"Total time: "<<getSecond(time)<<" seconds, the swap num is: "<<swap_num<<endl;
 	return true;
 }
 
@@ -212,6 +212,10 @@ bool BlockStreamSortIterator::close(){
     return true;
 }
 
+void BlockStreamSortIterator::print() {
+	printf("Sort\n");
+	state_.child_->print();
+}
 
 bool BlockStreamSortIterator::createBlockStream(BlockStreamBase*& target)const{
 

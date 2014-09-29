@@ -470,13 +470,17 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 
 			//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 			unsigned long long start=curtick();
-//			physical_iterator_tree->print();
+			physical_iterator_tree->print();
 			physical_iterator_tree->open();
 			while(physical_iterator_tree->next(0));
 			physical_iterator_tree->close();
 			//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 			result_set=physical_iterator_tree->getResultSet();
+
+			printf("Query is executed!\n");
 			result_flag=true;
+			delete physical_iterator_tree;
+			delete root;
 			return;
 		}
 		break;
@@ -1179,7 +1183,7 @@ void ExecuteLogicalQueryPlan()
 				physical_iterator_tree->open();
 				while(physical_iterator_tree->next(0));
 				physical_iterator_tree->close();
-
+				physical_iterator_tree->print();
 				ResultSet* result_set=physical_iterator_tree->getResultSet();
 				result_set->print();
 

@@ -1,6 +1,6 @@
 #include <Test/TestMain.cpp>
 
-#include <startup.cpp>
+#include <startup.h>
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
 #include "/usr/include/assert.h"
 #include "Test/set_up_environment.h"
@@ -28,7 +28,8 @@ int main(int argc, char** argv){
 #ifndef FORK
 	if(master){
 		Environment::getInstance(master);
-		print_welcome();
+//		create_poc_data_four_partitions();
+//		print_welcome();
 //		ExecuteLogicalQueryPlan();
 		while(true)
 			sleep(1);
