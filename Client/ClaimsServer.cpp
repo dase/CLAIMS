@@ -211,7 +211,7 @@ void* ClientListener::receiveHandler(void *para) {
 					ClientLogging::log("sql_type is %d", sql_type);
 
 					generateSqlStmt(sql_type, buf);
-					//					strcpy(buf, "select row_id from trade_lesslimit 100;\0");
+					//					strcpy(buf, "select row_id from tradelimit 100;\0");
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
 					if (0 == retCode) {
@@ -239,7 +239,7 @@ void* ClientListener::receiveHandler(void *para) {
 	return NULL;
 }
 
-void ClientListener::generateSqlStmt(int type, char *buf) {
+void ClientListener::generateSqlStmt(int type, char *&buf) {
 	assert(buf != NULL);
 	ClientLogging::log("in generateSqlStmt function:type argument is %d, buf argument is %s", type, buf);
 	// the first byte of buf is type, other are argument
@@ -251,9 +251,9 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 	case 0: {
 		arg1 = string(buf+1, 6);
 		cout<<"arg is :"<<arg1<<endl;
-		// select avg(trade_price), trade_date from trade_less where sec_code = '600036' group by trade_date order by trade_date;
-		// select avg(trade_price), trade_date from trade_less where sec_code = '600036' group by trade_date order by trade_date;
-		string sql = "select avg(trade_price), trade_date from trade_less where sec_code = \'" + arg1 + "\' group by trade_date order by trade_date; ";
+		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
+		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
+		string sql = "select avg(trade_price), trade_date from trade where sec_code = \'" + arg1 + "\' group by trade_date order by trade_date; ";
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
@@ -265,8 +265,8 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 			arg2 = string(buf+7, 10);
 			arg3 = string(buf+17, 10);
 			cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
-	//		select max(trade_price), min(trade_price) from trade_less where sec_code = '600036' and trade_date  between '2010-09-10' and '2010-09-10';
-			string sql = "select max(trade_price), min(trade_price) from trade_less where sec_code = \'" + arg1
+	//		select max(trade_price), min(trade_price) from trade where sec_code = '600036' and trade_date  between '2010-09-10' and '2010-09-10';
+			string sql = "select max(trade_price), min(trade_price) from trade where sec_code = \'" + arg1
 					+ "\'  and trade_date  between \' " + arg2 + "\' and \'" + arg3 +" \' ;";
 			//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 			memset(buf, 0, sizeof(buf));
@@ -277,8 +277,8 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 	case 2: {
 			arg1 = string(buf+1, 6);
 			cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
-	//		select trade_vol/100, count(*) as frequency from trade_less where sec_code = '600036' group by trade_vol/100 order by frequency desc
-			string sql = "select trade_vol/100, count(*) as frequency from trade_less where sec_code = \'" + arg1 + "\' group by trade_vol/100 order by frequency desc;";
+	//		select trade_vol/100, count(*) as frequency from trade where sec_code = '600036' group by trade_vol/100 order by frequency desc
+			string sql = "select count(*) as frequency, trade_vol/100 from trade where sec_code = \'" + arg1 + "\' group by trade_vol/100 order by frequency desc;";
 			//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 			memset(buf, 0, sizeof(buf));
 			strcpy(buf, sql.c_str());
@@ -293,13 +293,13 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		string sql = "select afield/total as proportion, sec_field "
 				"from ( "
 				"select sum(trade_amt)  total "
-				"from trade_less "
+				"from trade "
 				"where trade_date between '"+arg2+"' and '"+arg3+"' "
 				") as amt_total, "
 				" ( "
 				"select sum(trade_amt) afield, sec_field sec_field "
-				"from trade_less, field "
-				"where trade_less.sec_code = field.sec_code "
+				"from trade, field "
+				"where trade.sec_code = field.sec_code "
 				"and trade_date between '"+arg2+"' and '"+arg3+"' "
 				"group by sec_field "
 				") as amt_field "
@@ -319,14 +319,14 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 				"from  "
 				"     ( "
 				"        select sum(trade_amt) as total  "
-				"        from trade_less, field  "
-				"        where trade_less.sec_code = field.sec_code "
+				"        from trade, field  "
+				"        where trade.sec_code = field.sec_code "
 				"             and field.sec_field = '房地产'                     "
-				"             and trade_less.trade_date between '"+arg2+"' and '"+arg3+"'      "
+				"             and trade.trade_date between '"+arg2+"' and '"+arg3+"'      "
 				"     ) as field_total, "
 				"     ( "
 				"         select sum(trade_amt) as code_amt, sec_code as sec_code "
-				"         from trade_less "
+				"         from trade "
 				"         where trade_date between '"+arg2+"' and '"+arg3+"'           "
 				"         group by sec_code "
 				"      ) as field_amt "
@@ -351,50 +351,50 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 				"					   TT1.sec_field sec_field "
 				"				from  "
 				"				     ( "
-				"						select sum(trade_less.trade_vol  * t1.avg_price) as flow_in, "
-				"							   trade_less.sec_code sec_code, "
+				"						select sum(trade.trade_vol  * t1.avg_price) as flow_in, "
+				"							   trade.sec_code sec_code, "
 				"							   t1.sec_field sec_field "
 				"						from  "
 				"							( "
-				"								select min(trade_less.order_time) as min_time,  "
-				"                                    avg(trade_less.trade_price) as avg_price, "
-				"									trade_less.trade_no trade_no,  "
-				"									trade_less.sec_code sec_code, "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
 				"									field.sec_field sec_field "
-				"								from trade_less, field "
-				"								where trade_less.sec_code = field.sec_code "
+				"								from trade, field "
+				"								where trade.sec_code = field.sec_code "
 				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
-				"								group by trade_less.trade_no, trade_less.sec_code, field.sec_field "
-				"							) t1, trade_less "
-				"						where t1.trade_no = trade_less.trade_no "
-				"						and t1.sec_code = trade_less.sec_code "
-				"						and t1.min_time = trade_less.order_time "
-				"						and trade_less.trade_dir = 'S' "
-				"						and trade_less.trade_date between '"+arg2+"' and '"+arg3+"'         "
-				"						group by trade_less.sec_code, t1.sec_field "
+				"								group by trade.trade_no, trade.sec_code, field.sec_field "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'S' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_field "
 				"					) TT1, "
 				"                    ( "
-				"						select sum(trade_less.trade_vol * t1.avg_price) as flow_out, "
-				"							   trade_less.sec_code sec_code, "
+				"						select sum(trade.trade_vol * t1.avg_price) as flow_out, "
+				"							   trade.sec_code sec_code, "
 				"							   t1.sec_field sec_field "
 				"						from  "
 				"							( "
-				"								select min(trade_less.order_time) as min_time,  "
-				"                                    avg(trade_less.trade_price) as avg_price, "
-				"									trade_less.trade_no trade_no,  "
-				"									trade_less.sec_code sec_code, "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
 				"									field.sec_field sec_field "
-				"								from trade_less, field "
-				"								where trade_less.sec_code = field.sec_code "
+				"								from trade, field "
+				"								where trade.sec_code = field.sec_code "
 				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
-				"								group by trade_less.trade_no, trade_less.sec_code, field.sec_field "
-				"							) t1, trade_less "
-				"						where t1.trade_no = trade_less.trade_no "
-				"						and t1.sec_code = trade_less.sec_code "
-				"						and t1.min_time = trade_less.order_time "
-				"						and trade_less.trade_dir = 'B' "
-				"						and trade_less.trade_date between '"+arg2+"' and '"+arg3+"'         "
-				"						group by trade_less.sec_code, t1.sec_field "
+				"								group by trade.trade_no, trade.sec_code, field.sec_field "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'B' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_field "
 				"					) TT2 "
 				"				where TT1.sec_code = TT2.sec_code "
 				"	              and TT1.sec_field = TT2.sec_field	 "
@@ -420,50 +420,50 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 				"					   TT1.sec_area sec_area "
 				"				from  "
 				"				     ( "
-				"						select sum(trade_less.trade_vol  * t1.avg_price) as flow_in, "
-				"							   trade_less.sec_code sec_code, "
+				"						select sum(trade.trade_vol  * t1.avg_price) as flow_in, "
+				"							   trade.sec_code sec_code, "
 				"							   t1.sec_area sec_area "
 				"						from  "
 				"							( "
-				"								select min(trade_less.order_time) as min_time,  "
-				"                                    avg(trade_less.trade_price) as avg_price, "
-				"									trade_less.trade_no trade_no,  "
-				"									trade_less.sec_code sec_code, "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
 				"									area.sec_area sec_area "
-				"								from trade_less, area "
-				"								where trade_less.sec_code = area.sec_code "
+				"								from trade, area "
+				"								where trade.sec_code = area.sec_code "
 				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
-				"								group by trade_less.trade_no, trade_less.sec_code, area.sec_area "
-				"							) t1, trade_less "
-				"						where t1.trade_no = trade_less.trade_no "
-				"						and t1.sec_code = trade_less.sec_code "
-				"						and t1.min_time = trade_less.order_time "
-				"						and trade_less.trade_dir = 'S' "
-				"						and trade_less.trade_date between '"+arg2+"' and '"+arg3+"'         "
-				"						group by trade_less.sec_code, t1.sec_area "
+				"								group by trade.trade_no, trade.sec_code, area.sec_area "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'S' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_area "
 				"					) TT1, "
 				"                    ( "
-				"						select sum(trade_less.trade_vol * t1.avg_price) as flow_out, "
-				"							   trade_less.sec_code sec_code, "
+				"						select sum(trade.trade_vol * t1.avg_price) as flow_out, "
+				"							   trade.sec_code sec_code, "
 				"							   t1.sec_area sec_area "
 				"						from  "
 				"							( "
-				"								select min(trade_less.order_time) as min_time,  "
-				"                                    avg(trade_less.trade_price) as avg_price, "
-				"									trade_less.trade_no trade_no,  "
-				"									trade_less.sec_code sec_code, "
+				"								select min(trade.order_time) as min_time,  "
+				"                                    avg(trade.trade_price) as avg_price, "
+				"									trade.trade_no trade_no,  "
+				"									trade.sec_code sec_code, "
 				"									area.sec_area sec_area "
-				"								from trade_less, area "
-				"								where trade_less.sec_code = area.sec_code "
+				"								from trade, area "
+				"								where trade.sec_code = area.sec_code "
 				"								  and trade_date between '"+arg2+"' and '"+arg3+"'     "
-				"								group by trade_less.trade_no, trade_less.sec_code, area.sec_area "
-				"							) t1, trade_less "
-				"						where t1.trade_no = trade_less.trade_no "
-				"						and t1.sec_code = trade_less.sec_code "
-				"						and t1.min_time = trade_less.order_time "
-				"						and trade_less.trade_dir = 'B' "
-				"						and trade_less.trade_date between '"+arg2+"' and '"+arg3+"'         "
-				"						group by trade_less.sec_code, t1.sec_area "
+				"								group by trade.trade_no, trade.sec_code, area.sec_area "
+				"							) t1, trade "
+				"						where t1.trade_no = trade.trade_no "
+				"						and t1.sec_code = trade.sec_code "
+				"						and t1.min_time = trade.order_time "
+				"						and trade.trade_dir = 'B' "
+				"						and trade.trade_date between '"+arg2+"' and '"+arg3+"'         "
+				"						group by trade.sec_code, t1.sec_area "
 				"					) TT2 "
 				"				where TT1.sec_code = TT2.sec_code "
 				"	              and TT1.sec_area = TT2.sec_area	 "
@@ -482,7 +482,7 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
 
 		string sql = "select (avg(t2.trade_price) - avg(t1.trade_price))/avg(t2.trade_price) as prop, t1.sec_code, t3.sec_name "
-				"from trade_lesst1, trade_less t2, field t3 "
+				"from tradet1, trade t2, field t3 "
 				"where DATE_ADD(t1.trade_date, interval 1 day) = t2.trade_date "
 				"and t1.sec_code = t3.sec_code "
 				"and t1.trade_time between '14:59:50' and '15:00:00' "
@@ -504,14 +504,19 @@ void ClientListener::generateSqlStmt(int type, char *buf) {
 		cout<<"arg is :"<<arg1<<"--"<<arg2<<"--"<<arg3<<endl;
 
 		string sql = "select sum(trade_vol) as vol, sec_code "
-				"from trade_less"
-				"where trade_less.trade_date between '"+arg2+"' and '"+arg3+"' "
+				"from trade"
+				"where trade.trade_date between '"+arg2+"' and '"+arg3+"' "
 				"group by sec_code "
 				"order by vol desc "
 				"limit 20 ";
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
+		ClientLogging::log("sql buf is %s\n", buf);
+		break;
+	}
+	case 9: {
+		buf += 1;	// ignore the number in the front of buf
 		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}

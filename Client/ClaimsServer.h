@@ -43,7 +43,7 @@ private:
 	static void* sendHandler(void *);
 
 	static void sendJsonPacket(ClientResponse &cr, executed_result &res);
-	static void generateSqlStmt(int type, char *buf);
+	static void generateSqlStmt(int type, char *&buf);
 
 	bool isFull() const {
 		return !(m_num < MAXCONN);

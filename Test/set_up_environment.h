@@ -877,37 +877,13 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 
-	TableDescriptor* table_0=new TableDescriptor("trade_less", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-	table_0->addAttribute("row_id", data_type(t_u_long),0,true);
-	table_0->addAttribute("trade_no",data_type(t_decimal),18);  				//0
-	table_0->addAttribute("trade_date",data_type(t_date));
-	table_0->addAttribute("trade_time",data_type(t_time));
-	table_0->addAttribute("trade_time_dec",data_type(t_decimal),8);
-	table_0->addAttribute("order_time",data_type(t_time));
-	table_0->addAttribute("order_time_dec",data_type(t_decimal),8);
-	table_0->addAttribute("order_no",data_type(t_decimal),18);
-	table_0->addAttribute("trade_price",data_type(t_decimal),18);
-	table_0->addAttribute("trade_amt",data_type(t_decimal),18);
-	table_0->addAttribute("trade_vol",data_type(t_int));
-	table_0->addAttribute("sec_code",data_type(t_string),6);
-	table_0->addAttribute("pbu_id",data_type(t_string),5);
-	table_0->addAttribute("acct_id",data_type(t_string),10);
-	table_0->addAttribute("trade_dir",data_type(t_string),1);
-	table_0->addAttribute("Order_prtfil_code",data_type(t_string),1);
-	table_0->addAttribute("tran_type",data_type(t_string),3);
-	table_0->addAttribute("trade_type",data_type(t_string),1);
-	table_0->addAttribute("proc_type",data_type(t_string),1);
-	table_0->addAttribute("order_type",data_type(t_string),2);
-	table_0->addAttribute("stat_pbu_id",data_type(t_string),5);
-	table_0->createHashPartitionedProjectionOnAllAttribute("trade_less.row_id",1);
-
 	/////////////////////////////// PART TABLE //////////////////////////////////
 	TableDescriptor* table_1=new TableDescriptor("field", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
 	table_1->addAttribute("sec_code",data_type(t_string),10);
 	table_1->addAttribute("sec_name",data_type(t_string),40);
 	table_1->addAttribute("sec_field",data_type(t_string),40);
-	table_1->createHashPartitionedProjectionOnAllAttribute("field.row_id",1);
+//	table_1->createHashPartitionedProjectionOnAllAttribute("field.row_id",1);
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -917,7 +893,7 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	table_2->addAttribute("sec_code",data_type(t_string),10);
 	table_2->addAttribute("sec_name",data_type(t_string),40);
 	table_2->addAttribute("sec_area",data_type(t_string),40);
-	table_2->createHashPartitionedProjectionOnAllAttribute("area.row_id",1);	///////////////////////////////////////////////////////////////////////////////
+//	table_2->createHashPartitionedProjectionOnAllAttribute("area.row_id",1);	///////////////////////////////////////////////////////////////////////////////
 
 
 	/////////////////////////////// PARTSUPP TABLE //////////////////////////////////
@@ -945,22 +921,16 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	table_3->addAttribute("order_type",data_type(t_string),2);
 	table_3->addAttribute("stat_pbu_id",data_type(t_string),5);
 
-	table_3->createHashPartitionedProjectionOnAllAttribute("trade.row_id",1);//should be 4
+//	table_3->createHashPartitionedProjectionOnAllAttribute("trade.row_id",1);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
-	catalog->add_table(table_0);
 	catalog->add_table(table_1);
 	catalog->add_table(table_2);
 	catalog->add_table(table_3);
 
 
 
-	//T0
-	for(unsigned i=0;i<table_0->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-			catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,24);
-	}
 	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
 		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
