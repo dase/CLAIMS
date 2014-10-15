@@ -126,10 +126,13 @@ bool ExpandableBlockStreamSingleColumnScan::close() {
 //	free(data_);
 	data_ = 0;
 	munmap(base_, file_length_);
-	if (FileClose(fd_) == 0)
+	if (FileClose(fd_) == 0) {
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", fd_);
 		return true;
-	else
+	}
+	else {
 		return false;
+	}
 }
 
 bool ExpandableBlockStreamSingleColumnScan::atomicIncreaseCursor(unsigned bytes,

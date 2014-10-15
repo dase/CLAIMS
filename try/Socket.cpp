@@ -89,6 +89,7 @@ int mainSocket()
 
 			}
 			close(client_fd);
+			 printf("in %s:%d", __FILE__, __LINE__);printf("-----for debug: fd %d is closed\n", client_fd);
 		}
 	}
 	else
@@ -134,6 +135,7 @@ int mainSocket()
 			sleep(1);
 		}
 		close(sock_fd);
+		 printf("in %s:%d", __FILE__, __LINE__);printf("-----for debug: fd %d is closed\n", sock_fd);
 
 	}
 

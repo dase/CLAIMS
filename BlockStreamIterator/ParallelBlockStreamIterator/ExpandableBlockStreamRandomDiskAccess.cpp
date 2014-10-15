@@ -141,10 +141,13 @@ bool ExpandableBlockStreamRandomDiskAccess::close() {
 	remaining_block_list.clear();
 	free_block_stream_list_.clear();
 	state_.child_->close();
-	if (fclose(fd_) == 0)
+	if (fclose(fd_) == 0) {
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", fd_);
 		return true;
-	else
+	}
+	else {
 		return false;
+	}
 }
 
 bool ExpandableBlockStreamRandomDiskAccess::atomicPopRemainingBlock(remaining_block & rb){

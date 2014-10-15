@@ -17,6 +17,12 @@
 #include <cstdio>
 #include "../Catalog/Catalog.h"
 #include "../Daemon/Daemon.h"
+
+//ClientListener::standard_input = dup(STD)
+int ClientListener::standard_input = dup(STDIN_FILENO);
+int ClientListener::standard_output = dup(STDOUT_FILENO);
+int ClientListener::standard_err = dup(STDERR_FILENO);
+
 ClientListener::ClientListener(int port) {
 
 	m_num = 0;
@@ -76,6 +82,31 @@ int ClientListener::receiveRequest(const int fd, const char *cmd) {
 	return 0;
 }
 
+
+//void ClientListener::backupStd() {
+//	// backup the input and output--Yu
+//	dup2(STDIN_FILENO, standard_input);
+//	dup2(STDOUT_FILENO, standard_output);
+//	dup2(STDERR_FILENO, standard_err);
+//}
+
+void ClientListener::restoreStd() {
+	// backup the input and output--Yu
+	dup2(standard_input, STDIN_FILENO);
+	dup2(standard_output, STDOUT_FILENO);
+	dup2(standard_err, STDERR_FILENO);
+}
+
+void ClientListener::checkFdValid(int fd) {
+// check whether the file descriptor is closed
+	int status = fcntl(fd, F_GETFL);
+	if (-1 == status) {
+		ClientLogging::elog("fd %d is invalid.%s", fd, strerror(errno));
+	}
+	else {
+		ClientLogging::log("fd %d is valid.", fd);
+	}
+}
 /**
  * configure the socket parameter, bind to the specific ip/port
  * startup the send/receive threads
@@ -136,6 +167,18 @@ void ClientListener::configure() {
 void* ClientListener::receiveHandler(void *para) {
 
 	printf("-Init receive handler.\n");
+
+	/**		redirect input/output to console		**/
+//	freopen("/dev/console", "r", stdin);
+//	freopen("/dev/tty", "r", stdin);
+//	freopen("/dev/tty", "a", stdout);
+//	close(stdin);
+//	char c;
+//	c = getchar();
+//	cout<<c<<endl;
+
+	restoreStd();
+
 	ClientListener *server = (ClientListener *) para;
 	int &serverSockFd = server->m_fd;
 	int clientSockFd;
@@ -157,9 +200,26 @@ void* ClientListener::receiveHandler(void *para) {
 	while (!stop) {
 		usleep(1);
 		readFds = watchFds;
+
+		{//OutputFdsInfo
+			bool isok = true;
+			for (int i = 0; i < MAXCONN; ++i) {
+				if (server->m_clientFds[i] >=0 && !FD_ISSET(server->m_clientFds[i], &readFds)) {
+					ClientLogging::log("---%s is not in readFds", server->m_clientFds[i]);
+					isok = false;
+				}
+			}
+			if (isok) {
+				ClientLogging::log("---all is in readFds");
+			}
+		}
+
 		switch (select(nfds, &readFds, NULL, NULL, (timeval *) 0)) {
-		case -1:
+		case -1: {
+			ClientLogging::elog("select failed. %s", strerror(errno));
+			stop = true;
 			break;
+		}
 		case 0:
 			break;
 		default:
@@ -169,18 +229,32 @@ void* ClientListener::receiveHandler(void *para) {
 				sockaddr_in clientSocket;
 				sockLen = sizeof(sockaddr_in);
 
+				restoreStd();
+
+				{	// Yu
+					cout<<endl<<"clientFds:"<<endl;
+					for (int i = 0; i < MAXCONN ; ++i) {
+						cout<<server->m_clientFds[i]<<" ";
+					}
+					cout<<endl;
+				}
+
 				if (!server->isFull()) {
 					if ((clientSockFd = accept(serverSockFd,
 							(sockaddr *) &clientSocket, &sockLen)) >= 0) {
 
+						checkFdValid(clientSockFd);
+
 						printf("open communication with client, %d\n",
 								clientSockFd);
+
 						//						server->m_clientFds[server->m_num++] = clientSockFd;
 						server->addClient(clientSockFd);
 						FD_SET(clientSockFd, &watchFds);
 						nfds = (clientSockFd >= nfds ? clientSockFd + 1 : nfds);
 					} else {
 						printf("Accept Error!\n");
+						perror("");
 					}
 				}
 			}
@@ -196,7 +270,8 @@ void* ClientListener::receiveHandler(void *para) {
 						//TODO does here means a client close the connection with server?
 						printf("close connection on socket %d!\n", server->m_clientFds[i]);
 						FD_CLR(server->m_clientFds[i], &watchFds);
-						::close(server->m_clientFds[i]);
+						close(server->m_clientFds[i]);
+						ClientLogging::log("-----for debug:close fd %d.", server->m_clientFds[i]);
 						server->removeClient(server->m_clientFds[i]);
 						continue;
 					}
@@ -241,7 +316,7 @@ void* ClientListener::receiveHandler(void *para) {
 
 void ClientListener::generateSqlStmt(int type, char *&buf) {
 	assert(buf != NULL);
-	ClientLogging::log("in generateSqlStmt function:type argument is %d, buf argument is %s", type, buf);
+	ClientLogging::log("in generateSqlStmt():type argument is %d, buf argument is %s", type, buf);
 	// the first byte of buf is type, other are argument
 	string arg1 = "";
 	string arg2 = "";
@@ -250,10 +325,10 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 	switch(type) {
 	case 0: {
 		arg1 = string(buf+1, 6);
-		cout<<"arg is :"<<arg1<<endl;
+		ClientLogging::log("arg1 is %s", arg1.c_str());
 		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
 		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
-		string sql = "select avg(trade_price), trade_date from trade where sec_code = \'" + arg1 + "\' group by trade_date order by trade_date; ";
+		string sql = "select avg(trade_price) as trade_price, trade_date as trade_date from trade where sec_code = \'" + arg1 + "\' group by trade_date order by trade_date; ";
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
@@ -540,6 +615,8 @@ void *ClientListener::sendHandler(void *para) {
 		executed_result result = Daemon::getInstance()->getExecutedResult();
 		printf("-SendHandler: get executed_result for %d\n", result.fd);
 
+		checkFdValid(result.fd);
+
 		if (result.status == true) {
 			//OK
 			if (result.result == NULL) {
@@ -772,10 +849,16 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 void ClientListener::shutdown() {
 
 	for (int i = 0; i < MAXCONN; ++i) {
-		if (m_clientFds[i] > 0)
+		if (m_clientFds[i] > 0) {
 			close(m_clientFds[i]);
+			ClientLogging::log("-----for debug:close fd %d.\n", m_clientFds[i]);
+		}
 	}
+	close(standard_err);
+	close(standard_input);
+	close(standard_output);
 	close(m_fd);
+	ClientLogging::log("-----for debug:close fd %d", m_fd);
 }
 
 int ClientListener::write(const int fd, const ClientResponse& res) const {
@@ -783,13 +866,27 @@ int ClientListener::write(const int fd, const ClientResponse& res) const {
 	int ret = 0;
 	char *buffer;
 	int length = res.serialize(buffer);
+
+	checkFdValid(fd);
+
 	//	ret = ::write(fd, buffer, length);
 	ret = send(fd,buffer,length,MSG_WAITALL);
-	if (length <= 1000) {
-		printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
+//	ret = ::write(fd,buffer,length);
+	if (ret < 0) {
+		ClientLogging::elog("when send to fd %d, send buffer failed.%s", fd, strerror(errno));
+		if (EBADF == errno) {
+			close(fd);
+			removeClient(fd);
+			ClientLogging::log("-----for debug:close fd %d in write()\n", fd);
+		}
+	}
+	else if (length <= 1000) {
+//		printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret, res.status, res.length, res.content.c_str());
+		printf("Server: %d bytes:%d\t%d\t is send!\n", ret, res.status, res.length);
 	}
 	else {
-		printf("Server: %d bytes:%d\t%d\t %s... is send!\n", ret, res.status, res.length, res.content.substr(0,1000).c_str());
+//		printf("Server: %d bytes:%d\t%d\t %s... is send!\n", ret, res.status, res.length, res.content.substr(0,1000).c_str());
+		printf("Server: %d bytes:%d\t%d\t is send!\n", ret, res.status, res.length);
 	}
 	free(buffer);
 	return ret;
