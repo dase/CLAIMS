@@ -78,8 +78,11 @@ bool BlockStreamSingleColumnScan::close(){
 	free(data_);
 	data_=0;
 //	munmap(base,length);
-	if(FileClose(fd_)==0)
+	if(FileClose(fd_)==0) {
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", fd_);
 		return true;
-	else
+	}
+	else {
 		return false;
+	}
 }

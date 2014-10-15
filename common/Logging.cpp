@@ -371,7 +371,7 @@ void ASTParserLogging::elog(const char* format,...){
 
 void ClientLogging::log(const char* format,...){
 #ifdef DEBUG_Client
-	printf("Client: ");
+	printf("Info[Client]: ");
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);

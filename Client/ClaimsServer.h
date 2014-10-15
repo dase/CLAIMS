@@ -31,7 +31,11 @@ public:
 	void configure();
 //	void run();
 	void shutdown();
+	static void checkFdValid(int fd);
 private:
+
+//	static void backupStd();
+	static void restoreStd();
 
 	int write(const int fd, const ClientResponse& res) const;
 	int addClient(const int fd);
@@ -54,6 +58,10 @@ private:
 	int *m_clientFds;
 	int m_num;
 	const static int MAXCONN = 100;
+
+	static int standard_input;
+	static int standard_output;
+	static int standard_err;
 
 };
 

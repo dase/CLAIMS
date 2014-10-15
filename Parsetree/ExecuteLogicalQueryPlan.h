@@ -28,7 +28,14 @@ bool query(const string & sql,query_result &result_set);
 
 void ExecuteLogicalQueryPlan();
 
-void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info);
+void ExecuteLogicalQueryPlan(
+		const string &sql,
+		ResultSet *&result_set,
+		bool &result_flag,
+		string &error_msg,
+		string &info,
+		int fd = 0
+		);
 
 bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsigned position, ostringstream &ostr);
 bool CheckType(const column_type *col_type, Expr *expr);

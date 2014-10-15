@@ -105,10 +105,12 @@ void BlockStreamExchangeBase::CloseTheSocket(){
 	/* colse the sockets of the lowers*/
 	for(unsigned i=0;i<nlowers_;i++){
 		FileClose(socket_fd_lower_list_[i]);
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", socket_fd_lower_list_[i]);
 	}
 
 	/* close the socket of this exchange*/
 	FileClose(sock_fd_);
+	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", sock_fd_);
 
 	/* return the applied port to the port manager*/
 	PortManager::getInstance()->returnPort(socket_port_);

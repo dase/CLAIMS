@@ -420,8 +420,9 @@ static int testServerClient() {
 		catalog->restoreCatalog();
 //		startup_multiple_node_environment_of_stock();
 
-		ClientListener server(8001);
-		server.configure();
+		// in Environment.cpp:177, create a ClientListener
+//		ClientListener server(8001);
+//		server.configure();
 		//		server.run();
 		while(true){
 			sleep(10);

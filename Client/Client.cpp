@@ -89,7 +89,7 @@ ClientResponse* Client::receive() {
 
 	ClientResponse* ret = new ClientResponse();
 
-	const int maxBytes = 65535;
+	const int maxBytes = 75535;
 	char *buf = new char[maxBytes];
 	memset(buf, 0, sizeof(buf));
 
@@ -115,4 +115,5 @@ ClientResponse* Client::receive() {
 void Client::shutdown() {
 //	::shutdown(m_clientFd, 2);
 	close(m_clientFd);
+	ClientLogging::log("-----for debug:	close fd %d", m_clientFd);
 }

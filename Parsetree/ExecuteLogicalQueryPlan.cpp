@@ -33,6 +33,8 @@
 
 #include "../Loader/Hdfsloader.h"
 
+#include "../Client/ClaimsServer.h"
+
 using namespace std;
 
 const int INT_LENGTH = 10;
@@ -40,7 +42,7 @@ const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
-void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info)
+void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd = 0)
 {
 	Environment::getInstance(true);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -431,6 +433,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 				result_set = NULL;
 				return;
 			}
+
 			preprocess(node);
 			Query_stmt *querynode=(Query_stmt *)node;
 			if(querynode->from_list!=NULL)
@@ -444,7 +447,9 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 #ifdef SQL_Parser
 			output(node,0);
 #endif
+
 			LogicalOperator* plan=parsetree2logicalplan(node);
+
 			LogicalOperator* root=NULL;
 			if(querynode->limit_list!=NULL)
 			{
@@ -466,16 +471,40 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 #ifdef SQL_Parser
 			root->print(0);
 #endif
-			BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 
+			BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+			{
+				cout<<"in ExecuteLogicalQueryPlan.cpp: "<<__LINE__;
+				ClientListener::checkFdValid(fd);
+			}
 			//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 			unsigned long long start=curtick();
 //			physical_iterator_tree->print();
+			{
+				cout<<"in ExecuteLogicalQueryPlan.cpp: "<<__LINE__;
+				ClientListener::checkFdValid(fd);
+			}
 			physical_iterator_tree->open();
+			{
+				cout<<"in ExecuteLogicalQueryPlan.cpp: "<<__LINE__;
+				ClientListener::checkFdValid(fd);
+			}
 			while(physical_iterator_tree->next(0));
+			{
+				cout<<"in ExecuteLogicalQueryPlan.cpp: "<<__LINE__;
+				ClientListener::checkFdValid(fd);
+			}
 			physical_iterator_tree->close();
+			{
+				cout<<"in ExecuteLogicalQueryPlan.cpp: "<<__LINE__;
+				ClientListener::checkFdValid(fd);
+			}
 			//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 			result_set=physical_iterator_tree->getResultSet();
+			{
+				cout<<"in ExecuteLogicalQueryPlan.cpp: "<<__LINE__;
+				ClientListener::checkFdValid(fd);
+			}
 			result_flag=true;
 			return;
 		}
@@ -739,7 +768,6 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			return;
 		stmtList = (Stmt *)stmtList->next;
 	}
-
 }
 
 

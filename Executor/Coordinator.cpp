@@ -45,6 +45,8 @@ Coordinator::Coordinator() {
 Coordinator::~Coordinator() {
 	pthread_cancel(prochaseId);
 	close(socket_fd);
+//	logging->elog("-----for debug: fd %d is closed", socket_fd);
+	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd);
 	delete framework;
 	delete endpoint;
 }
@@ -152,6 +154,8 @@ void* Coordinator::ListeningNewNode(void *arg) {
 					<< " has connected, but the receiving the information times out!"
 					<< std::endl;
 			close(socket_fd_new);
+//			logging->elog("-----for debug: fd %d is closed", socket_fd_new);
+			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd_new);
 			continue;
 			//return false;
 		}
@@ -159,6 +163,8 @@ void* Coordinator::ListeningNewNode(void *arg) {
 			std::cout << "Information received, but the length is not right!"
 					<< std::endl;
 			close(socket_fd_new);
+//			logging->elog("-----for debug: fd %d is closed", socket_fd_new);
+			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd_new);
 			continue;
 		}
 
@@ -245,6 +251,8 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		Cthis->SendReadyNotificationToNewNode(socket_fd_new);
 
 		close(socket_fd_new);
+//		logging->elog("-----for debug: fd %d is closed", socket_fd_new);
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd_new);
 		receiver->~TimeOutReceiver();
 	}
 }

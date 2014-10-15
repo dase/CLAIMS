@@ -92,7 +92,6 @@ int main_aaa(int argc, char** argv){
 		freopen(Config::logfile.c_str(),"a",stderr);
 		while(true)
 			sleep(1);
-
 	}
 }
 

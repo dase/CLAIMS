@@ -69,6 +69,10 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		}
 
 		socket_fd_lower_list=new int[nlowers];
+		//init -1 ---Yu
+		for (int i = 0; i < nlowers; ++i) {
+			socket_fd_lower_list[i] = -1;
+		}
 
 		buffer=new BlockStreamBuffer(state.block_size_,BUFFER_SIZE_IN_EXCHANGE,state.schema_);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
@@ -258,14 +262,19 @@ bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 	/* close the epoll fd */
 	FileClose(epoll_fd_);
+	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", epoll_fd_);
 
 	/* colse the sockets of the lowers*/
 	for(unsigned i=0;i<nlowers;i++){
-		FileClose(socket_fd_lower_list[i]);
+		if (socket_fd_lower_list[i] > 0){
+			FileClose(socket_fd_lower_list[i]);
+			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", socket_fd_lower_list[i]);
+		}
 	}
 
 	/* close the socket of this exchange*/
 	FileClose(sock_fd);
+	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", sock_fd);
 
 	/* return the applied port to the port manager*/
 	PortManager::getInstance()->returnPort(socket_port);
@@ -344,6 +353,7 @@ bool ExpandableBlockStreamExchangeEpoll::WaitForConnectionFromLowerExchanges(){
 		{
 			lower_ip_array.push_back(inet_ntoa(remote_addr.sin_addr));
 			logging_->log("[%ld] The lower exchange <%s> is connected to the socket.",state.exchange_id_,lower_ip_array[count].c_str());
+			cout<<"-----for Yu debug:accept return fd "<<socket_fd_lower_list[count]<<endl;
 			count++;
 		}
 	}
@@ -405,6 +415,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 				}
 				Pthis->logging_->elog("[%ld] epoll error,reason:%s\n",Pthis->state.exchange_id_,strerror(errno));
 				FileClose(events[i].data.fd);
+				std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", events[i].data.fd);
 				continue;
 			}
 			else if(Pthis->sock_fd==events[i].data.fd){

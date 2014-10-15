@@ -102,10 +102,13 @@ void* Daemon::worker(void* para) {
 				;
 
 		// result is a pointer, which now is NULL and should be assigned in function.
-		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info);
+
+		ClientListener::checkFdValid(result.fd);
+
+		Executing::run_sql(rc.cmd, result.result, result.status, result.error_info, result.info, result.fd);
 		ClientLogging::log("after running sql, the result is : status-%d, err-%s, info-%s",
 				result.status, result.error_info.c_str(), result.info.c_str());
-
+		ClientListener::checkFdValid(result.fd);
 		printf("-Worker add result into the queue!\n");
 		pthis->addExecutedResult(result);
 
@@ -118,9 +121,11 @@ void Daemon::addRemoteCommand(const remote_command& rc) {
 	remote_command_queue_.push_back(rc);
 	lock_.release();
 	semaphore_command_queue_.post();
+//	cout<<"post command queue semaphore"<<endl;
 }
 remote_command Daemon::getRemoteCommand() {
 	semaphore_command_queue_.wait();
+//	cout<<"minus command queue semaphore "<<endl;
 	remote_command ret;
 	lock_.acquire();
 	ret = remote_command_queue_.front();
