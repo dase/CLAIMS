@@ -258,13 +258,13 @@ void *ClientListener::sendHandler(void *para) {
 			else {
 				// query return true
 				cliRes.setOk("Yes Ok");
-				ClientListenerLogging::log("to send ok response-- status:%d  length:%d  content:%s",
-								cliRes.status, cliRes.length, cliRes.content.c_str());
+				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 				server->write(result.fd, cliRes);
 
 				cliRes.setSchema(result.result->schema_);
-				ClientListenerLogging::log("to send schema response-- status:%d  length:%d  content:%s",
-								cliRes.status, cliRes.length, cliRes.content.c_str());
+				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 				server->write(result.fd, cliRes);
 
 				std::vector<std::string> list = result.result->column_header_list_;
@@ -273,11 +273,11 @@ void *ClientListener::sendHandler(void *para) {
 					header.add_header(list[i]);
 				}
 				cliRes.setAttributeName(header);
-				ClientListenerLogging::log("to send attr response-- status:%d  length:%d  content:%s",
-								cliRes.status, cliRes.length, cliRes.content.c_str());
+				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 				server->write(result.fd, cliRes);
 
-
+				result.result->print();
 				ResultSet::Iterator it = result.result->createIterator();
 				BlockStreamBase* block;
 
@@ -286,8 +286,8 @@ void *ClientListener::sendHandler(void *para) {
 				while (block = (BlockStreamBase*) it.atomicNextBlock()) {
 					block->serialize(serialzed_block);
 					cliRes.setDataBlock(serialzed_block);
-					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s",
-									cliRes.status, cliRes.length, cliRes.content.c_str());
+					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+									cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 					server->write(result.fd, cliRes);
 				}
 

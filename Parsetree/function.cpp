@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <vector>
 #include "sql_node_struct.h"
+#include <assert.h>
 using namespace std;
 
 extern Node * parsetreeroot;
@@ -23,7 +24,7 @@ struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = t;
@@ -49,7 +50,7 @@ struct Node * newExpr(nodetype t, char *d)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = t;
@@ -85,7 +86,7 @@ struct Node * newExprList(nodetype t, Node * data, Node * next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = t;
@@ -102,7 +103,7 @@ struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * 
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = t;
@@ -122,7 +123,7 @@ struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->str="";
 	a->type = type;
@@ -143,7 +144,7 @@ struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 	struct Expr_func * a= (struct Expr_func *)malloc(sizeof(struct Expr_func));
 	if(!a) {
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->str="";
 	a->type = type;
@@ -173,7 +174,7 @@ struct Node * newTable(nodetype type, char * dbname, char *tablename,
 	struct Table * a= (struct Table *)malloc(sizeof(struct Table)+10);
 	if(!a) {
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	
 	a->type = type;
@@ -195,7 +196,7 @@ struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node
 	struct Join * a= (struct Join *)malloc(sizeof(struct Join));
 	if(!a) {
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = type;
@@ -214,7 +215,7 @@ struct Node * newCondition(nodetype type, int conditiontype, Node * args)
 	struct Condition * a= (struct Condition *)malloc(sizeof(struct Condition));
 	if(!a) {
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = type;
@@ -231,7 +232,7 @@ struct Node * newSubquery(nodetype type, char * querystring, Node *next)
 	struct Subquery * a= (struct Subquery *)malloc(sizeof(struct Subquery));
 	if(!a) {
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = type;
@@ -251,7 +252,7 @@ struct Node * newQueryStmt(nodetype t, char * querystring, int select_opts,
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 
 	a->type = t;
@@ -278,7 +279,7 @@ struct Node * newSelectList(nodetype type,int isall,Node * args,Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->isall = isall;
@@ -297,7 +298,7 @@ struct Node * newSelectExpr(nodetype type, char *ascolname, Node * colname)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->ascolname = ascolname;
@@ -316,7 +317,7 @@ struct Node *  newFromList(nodetype type, Node * args, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->args = args;
@@ -336,7 +337,7 @@ struct Node * newFromExpr( nodetype type, char * astablename, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->astablename = astablename;
@@ -354,7 +355,7 @@ struct Node * newWhereList(nodetype type, char * wherestring, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->wherestring = wherestring;
@@ -372,7 +373,7 @@ struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, in
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->groupbystring = groupbystring;
@@ -391,7 +392,7 @@ struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->args = args;
@@ -410,7 +411,7 @@ struct Node * newHavingList(nodetype type, char * havingstring, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->havingstring = havingstring;
@@ -429,7 +430,7 @@ struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->orderbystring = orderbystring;
@@ -447,7 +448,7 @@ struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *n
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->args = args;
@@ -466,7 +467,7 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->offset = offset;
@@ -486,7 +487,7 @@ Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = t_insert_stmt;
 	a->insert_opt = insert_opt;
@@ -510,7 +511,7 @@ Node* newInsertValueList(Node *insert_vals, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = t_insert_val_list;
 	a->insert_vals = insert_vals;
@@ -530,7 +531,7 @@ Node* newInsertVals(int value_type, Node *expr, Node *next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = t_insert_vals;
 	a->value_type = value_type;
@@ -549,7 +550,7 @@ Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = t_insert_assign;
 	a->col_name = col_name;
@@ -572,7 +573,7 @@ struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, c
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->create_type = create_type;
@@ -592,7 +593,7 @@ struct Node * newCreateTableStmt
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->create_type = create_type;
@@ -614,7 +615,7 @@ struct Node * newCreateColList(nodetype type, Node * data, Node * next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->data = data;
@@ -633,7 +634,7 @@ struct Node * newCreateDef(nodetype type, int deftype, char * name,
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->deftype = deftype;
@@ -654,7 +655,7 @@ struct Node * newColumnAtts(nodetype type, int datatype, int num1, double num2, 
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->datatype = datatype;
@@ -675,7 +676,7 @@ struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int tempora
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->ignore_replace = ignore_replace;
@@ -697,7 +698,7 @@ struct Node *newCreateProjectionStmt(nodetype type, char *tablename, Node *colum
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->tablename = tablename;
@@ -718,7 +719,7 @@ struct Node * newDoStmt(nodetype type, Node * data)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->data = data;
@@ -736,7 +737,7 @@ struct Node * newTruncateStmt(nodetype type, char * name)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->name = name;
@@ -755,7 +756,7 @@ struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, N
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->createtype = createtype;
@@ -774,7 +775,7 @@ struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->datatype = datatype;
@@ -793,7 +794,7 @@ struct Node * newAlterTableStmt(nodetype type, int isignore, char * name, Node *
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->isignore = isignore;
@@ -813,7 +814,7 @@ struct Node * newAlterDef (nodetype type, int altertype, char * name1, char * na
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->altertype = altertype;
@@ -837,7 +838,7 @@ struct Node * newDatatype (nodetype type, int datatype, Node* length, int opt_uz
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->datatype = datatype;
@@ -859,7 +860,7 @@ struct Node * newLength (nodetype type, int data1, int data2)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->data1 = data1;
@@ -877,7 +878,7 @@ struct Node * newEnumList (nodetype type, char * s, Node * next)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->s = s;
@@ -896,7 +897,7 @@ struct Node* newCreateIndex(nodetype type, int index_att, char* index_name, int 
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->index_att = index_att;
@@ -918,7 +919,7 @@ struct Node* newIndexColList(nodetype type, char * name, Node* length, int asc_d
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->name = name;
@@ -939,7 +940,7 @@ struct Node* newDropIndex(nodetype type, char* index_name, char* table_name)
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->index_name = index_name;
@@ -958,7 +959,7 @@ struct Node* newDropDatabase(nodetype type, int drop_type, int check, char* name
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->droptype = drop_type;
@@ -978,7 +979,7 @@ struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, 
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->is_temp = is_temp;
@@ -1000,7 +1001,7 @@ struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *col
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->table_name = table_name;
@@ -1022,7 +1023,7 @@ struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = type;
 	a->name1 = name1;
@@ -1040,7 +1041,7 @@ Node *newShowStmt(int show_type, bool full, char *database_name, char *like_stri
 	if(!a)
 	{
 		yyerror("out of space!");
-		exit(0);
+		assert(false);
 	}
 	a->type = t_show_stmt;
 	a->show_type = show_type;

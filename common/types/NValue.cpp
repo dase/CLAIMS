@@ -9,6 +9,7 @@
 #include <iostream>
 using namespace std;
 #include "NValue.hpp"
+#include <assert.h>
 namespace decimal {
 
 TTInt NValue::s_maxDecimalValue("9999999999"   //10 digits
@@ -27,7 +28,7 @@ TTInt NValue::s_minDecimalValue("-9999999999"   //10 digits
 void NValue::createDecimalFromString(const string &txt) {
     if (txt.length() == 0) {
         cout << "Can not create Decimal with String NULL!\n";
-        exit(-1);
+        assert(false);
     }
     bool setSign = false;
     if (txt[0] == '-') {
@@ -41,7 +42,7 @@ void NValue::createDecimalFromString(const string &txt) {
     for (int ii = (setSign ? 1 : 0); ii < static_cast<int>(txt.size()); ii++) {
     	if ((txt[ii] < '0' || txt[ii] > '9') && txt[ii] != '.') {
             cout << "Invalid characters in decimal string: " << txt.c_str() << endl;
-            exit(-1);
+            assert(false);
         }
     }
 
@@ -63,14 +64,14 @@ void NValue::createDecimalFromString(const string &txt) {
 
     if (txt.find( '.', separatorPos + 1) != string::npos) {
         cout << "Too many decimal points\n";
-        exit(-1);
+        assert(false);
     }
 
     const string wholeString = txt.substr( setSign ? 1 : 0, separatorPos - (setSign ? 1 : 0));
     const size_t wholeStringSize = wholeString.size();
     if (wholeStringSize > 26) {
         cout << "Maximum precision exceeded. Maximum of 26 digits to the left of the decimal point\n";
-        exit(-1);
+        assert(false);
     }
     TTInt whole(wholeString);
     string fractionalString = txt.substr( separatorPos + 1, txt.size() - (separatorPos + 1));
@@ -80,7 +81,7 @@ void NValue::createDecimalFromString(const string &txt) {
     // check if too many decimal places
     if (fractionalString.size() > 12) {
         cout << "Maximum scale exceeded. Maximum of 12 digits to the right of the decimal point\n";
-        exit(-1);
+        assert(false);
     }
     while(fractionalString.size() < NValue::kMaxDecScale) {
         fractionalString.push_back('0');
@@ -136,7 +137,7 @@ NValue NValue::opMultiplyDecimals(const NValue &lhs, const NValue &rhs) const {
 //        (rhs.getValueType() != VALUE_TYPE_DECIMAL))
 //    {
 //        cout << "Non-decimal NValue in decimal multiply\n";
-//        exit(-1);
+//        assert(false);
 //    }
 
     if (lhs.isNull() || rhs.isNull()) {
@@ -151,7 +152,7 @@ NValue NValue::opMultiplyDecimals(const NValue &lhs, const NValue &rhs) const {
 	TTInt retval;
 	if (retval.FromInt(calc)  || retval > s_maxDecimalValue || retval < s_minDecimalValue) {
 		cout << "Attempted to multiply " << lhs.createStringFromDecimal(12).c_str() << " by " << rhs.createStringFromDecimal(12).c_str() << " causing overflow/underflow. Unscaled result was " << calc.ToString(10).c_str() << endl;
-		exit(-1);
+		assert(false);
 	}
 	return getDecimalValue(retval);
 }
@@ -161,7 +162,7 @@ NValue NValue::opDivideDecimals(const NValue lhs, const NValue rhs) const {
 //        (rhs.getValueType() != VALUE_TYPE_DECIMAL))
 //    {
 //    	cout << "Non-decimal NValue in decimal divide\n";
-//    	exit(-1);
+//    	assert(false);
 //    }
 
     if (lhs.isNull() || rhs.isNull()) {
@@ -176,13 +177,13 @@ NValue NValue::opDivideDecimals(const NValue lhs, const NValue rhs) const {
     if (calc.Div(rhs.getDecimal())) {
         char message[4096];
         cout << "Attempted to divide " << lhs.createStringFromDecimal(12).c_str() << " by " << rhs.createStringFromDecimal(12).c_str() << "causing overflow/underflow (or divide by zero)\n";
-        exit(-1);
+        assert(false);
     }
     TTInt retval;
     if (retval.FromInt(calc)  || retval > s_maxDecimalValue || retval < s_minDecimalValue) {
         char message[4096];
         cout << "Attempted to divide " << lhs.createStringFromDecimal(12).c_str() << " by " << rhs.createStringFromDecimal(12).c_str() << " causing overflow. Unscaled result was " << calc.ToString(10).c_str() << endl;
-        exit(-1);
+        assert(false);
     }
     return getDecimalValue(retval);
 }
