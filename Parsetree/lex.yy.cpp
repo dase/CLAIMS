@@ -1525,6 +1525,7 @@ extern char linebuf[500];
  * The user has a chance to override it with an option.
  */
 #include <unistd.h>
+#include <assert.h>
 #endif
 
 #ifndef YY_EXTRA_TYPE
@@ -4117,6 +4118,7 @@ YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
 static void yy_fatal_error (yyconst char* msg )
 {
     	(void) fprintf( stderr, "%s\n", msg );
+    	assert(false);
 	exit( YY_EXIT_FAILURE );
 }
 

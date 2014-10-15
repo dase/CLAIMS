@@ -10,7 +10,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-//#include <sys/types.h>
 #include <unistd.h>
 #include <cstdio>
 #include <cstring>
@@ -58,7 +57,7 @@ ClientResponse* Client::submitQuery(std::string args) {
 	write(m_clientFd, args.c_str(), args.length() + 1);
 	ClientLogging::log("Client: message from server!\n");
 
-	const int maxBytes = 65535;
+	const int maxBytes = 10000L;
 	char *buf = new char[maxBytes];
 	memset(buf, 0, sizeof(buf));
 
@@ -76,6 +75,7 @@ ClientResponse* Client::submitQuery(std::string args) {
 	}else {
 		ClientLogging::log("receive %d bytes from server.\n", receivedBytesNum);
 	}
+	assert(maxBytes>=receivedBytesNum);
 	ret->deserialize(buf, receivedBytesNum);
 	delete buf;
 	return ret;
@@ -90,7 +90,7 @@ ClientResponse* Client::receive() {
 
 	ClientResponse* ret = new ClientResponse();
 
-	const int maxBytes = 65535;
+	const int maxBytes = 75536+sizeof(int)*2;
 	char *buf = new char[maxBytes];
 	memset(buf, 0, sizeof(buf));
 
@@ -104,10 +104,12 @@ ClientResponse* Client::receive() {
 
 	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
 		perror(
-				"Client: receive result error, has problem with the communication!\n");
+				"Client: receive result error, has problem with the communication! \n");
+		printf("ERROR: %s",strerror(errno));
 	}else {
 		ClientLogging::log("receive %d bytes from server.\n", receivedBytesNum);
 	}
+	assert(maxBytes>=receivedBytesNum);
 	ret->deserialize(buf, receivedBytesNum);
 	delete buf;
 	return ret;

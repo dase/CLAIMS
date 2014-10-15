@@ -5,7 +5,7 @@
  *      Author: wangli
  */
 #include "Logging.h"
-#ifdef CLAIMS_QUEIT //If defined, all the output information is binded.
+#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
 //#define DEBUG_Config
 //#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
@@ -28,8 +28,10 @@
 //#define DEBUG_IteratorExecutorSlave
 //#define DEBUG_IteratorExecutorMaster
 //
-#define DEBUG_Client
-#define DEBUG_ClientLinster
+
+//#define DEBUG_Client
+//#define DEBUG_ClientLinsener
+
 
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorSenderMaterialized

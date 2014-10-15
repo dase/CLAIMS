@@ -29,6 +29,7 @@ int main(int argc, char** argv){
 	if(master){
 		Environment::getInstance(master);
 //		create_poc_data_four_partitions();
+//		create_poc_data_one_partitions();
 //		print_welcome();
 //		ExecuteLogicalQueryPlan();
 		while(true)
@@ -44,7 +45,7 @@ int main(int argc, char** argv){
 		if(pid!=0){
 			printf("Daemon process id is %d\n",pid);
 			sleep(1);
-			exit(0);
+			return 0;
 		}
 		Config::getInstance();
 		printf("Creating %s daemon...\n",actor.c_str());
