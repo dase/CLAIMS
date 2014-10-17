@@ -59,19 +59,7 @@ void Executing::run_sql(const std::string &sql, ResultSet *&result_set, bool &st
 		error_info = "sql is NULL";
 		return;
 	}
-
-	{
-		cout<<"in Executing.cpp: "<<__LINE__<<"	";
-		ClientListener::checkFdValid(fd);
-	}
-
 	ExecuteLogicalQueryPlan(sql, result_set, status, error_info, info, fd);
-
-	{
-		cout<<"in Executing.cpp: "<<__LINE__;
-		ClientListener::checkFdValid(fd);
-	}
-
 	if(status==false) {
 		cout<<"[ERROR] "<<error_info<<endl;
 	}
