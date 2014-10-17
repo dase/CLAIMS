@@ -37,6 +37,72 @@ void ExecuteLogicalQueryPlan(
 		int fd = 0
 		);
 
+void CreateTable(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+void CreateProjection(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+
+void Query(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+void LoadData(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+void InsertData(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+void ShowTable(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+void DropTable(
+		Catalog *catalog,
+		Node *node,
+		ResultSet *&result_set,
+		bool result_flag,
+		string &error_msg,
+		string &info
+		);
+
+
+
 bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsigned position, ostringstream &ostr);
 bool CheckType(const column_type *col_type, Expr *expr);
 
