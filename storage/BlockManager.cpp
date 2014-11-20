@@ -315,11 +315,8 @@ bool BlockManager::containsPartition(const PartitionID& part)const{
 bool BlockManager::addPartition(const PartitionID& partition_id, const unsigned & number_of_chunks,const StorageLevel& desirable_storage_level){
 	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(partition_id);
 	if(it!=partition_id_to_storage_.cend()){
-//		logging_->elog("Failed to add partition[%s], as it is already existed!",partition_id.getName().c_str());
-//		return false;
 		partition_id_to_storage_[partition_id]->updateChunksWithInsertOrAppend(partition_id, number_of_chunks, desirable_storage_level);
 		logging_->log("Successfully updated partition[%s](desriable_storage_level = %d)!", partition_id.getName().c_str(), desirable_storage_level);
-		/*testing*/ cout << "--testing--\t adding partitions!\n";
 		return true;
 	}
 	partition_id_to_storage_[partition_id]=new PartitionStorage(partition_id,number_of_chunks,desirable_storage_level);
@@ -327,14 +324,16 @@ bool BlockManager::addPartition(const PartitionID& partition_id, const unsigned 
 	return true;
 }
 
-bool BlockManager::updatePartition(const PartitionID& partition_id, const unsigned & number_of_blocks, const StorageLevel& desirable_storage_level)
+bool BlockManager::removePartition(const PartitionID &partition_id)
 {
-//	boost::unordered_map<PartitionID, PartitionStorage*>::const_iterator it = partition_id_to_storage_.find(partition_id);
-//	if (it != partition_id_to_storage_.cend())
-//	{
-//		partition_id_to_storage_[partition_id]->appendNewChunks(partition_id, number_of_blocks, desirable_storage_level);
-//		logging_->log("Successfully updated partition[%s](desriable_storage_level = %d)!", partition_id.getName().c_str(), desirable_storage_level);
-//	}
+	boost::unordered_map<PartitionID, PartitionStorage*>::iterator it = partition_id_to_storage_.find(partition_id);
+	if (it == partition_id_to_storage_.cend())
+	{
+		logging_->elog("Fail to unbinding partition [%s].", partition_id.getName().c_str());
+		return false;
+	}
+	it->second->removeAllChunks(it->first);
+	partition_id_to_storage_.erase(it);
 	return true;
 }
 
@@ -350,7 +349,7 @@ BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor(Theron::Framework
 	RegisterHandler(this,&BlockManagerWorkerActor::getBlock);
 	RegisterHandler(this,&BlockManagerWorkerActor::putBlock);
 	RegisterHandler(this,&BlockManagerWorkerActor::BindingPartition);
-//	RegisterHandler(this, &BlockManagerWorkerActor::UpdateBindingPartition);
+	RegisterHandler(this, &BlockManagerWorkerActor::UnbindingPartition);
 }
 
 BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor() {
@@ -436,8 +435,8 @@ void BlockManager::BlockManagerWorkerActor::BindingPartition(const PartitionBind
 	Send(int(0),from);
 }
 
-void BlockManager::BlockManagerWorkerActor::UpdateBindingPartition(const PartitionBindingMessage& message, const Theron::Address from)
+void BlockManager::BlockManagerWorkerActor::UnbindingPartition(const PartitionUnbindingMessage& message, const Theron::Address from)
 {
-//	bm_->updatePartition(message.partition_id, message.number_of_chunks, message.storage_level);
-//	Send(int(0), from);
+	bm_->removePartition(message.partition_id);
+	Send(int(0), from);
 }

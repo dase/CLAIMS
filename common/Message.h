@@ -58,6 +58,14 @@ struct PartitionBindingMessage{
 	StorageLevel storage_level;
 };
 THERON_DECLARE_REGISTERED_MESSAGE(PartitionBindingMessage)
+
+struct PartitionUnbindingMessage{
+	PartitionUnbindingMessage(const PartitionID& pid)
+	:partition_id(pid){};
+	PartitionID partition_id;
+};
+THERON_DECLARE_REGISTERED_MESSAGE(PartitionUnbindingMessage)
+
 struct RegisterStorageRespond{
 	explicit RegisterStorageRespond(const char * const text){
 		mText[0]='\0';

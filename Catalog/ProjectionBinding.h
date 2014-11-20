@@ -19,6 +19,7 @@ public:
 
 	/*binding an entire projection independently*/
 	bool BindingEntireProjection(Partitioner*,const StorageLevel& desriable_storage_level=MEMORY);
+	bool UnbindingEntireProjection(Partitioner* part);
 };
 
 #endif /* PROJECTIONBINDING_H_ */

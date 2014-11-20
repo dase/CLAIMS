@@ -15,4 +15,6 @@ typedef unsigned StorageLevel;
 #define DISK 1
 #define HDFS 2
 
+#define DESIRIABLE_STORAGE_LEVEL MEMORY
+
 #endif /* STORAGELEVEL_H_ */
