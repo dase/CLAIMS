@@ -14,7 +14,7 @@
 #include "dmalloc.h"
 #endif
 #include "../Debug.h"
-
+//#define SQL_Parser
 //#define SQL_Parser This macro is moved to Logging.cpp.
 
 

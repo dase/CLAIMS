@@ -7,9 +7,10 @@
 
 #define AUTU_MASTER
 //#define FORK
+#define DEBUG_MODE
 
 int main(int argc, char** argv){
-
+#ifndef DEBUG_MODE
 	bool master;
 #ifndef AUTU_MASTER
 	printf("If Master, please print 1!\n");
@@ -71,6 +72,8 @@ int main(int argc, char** argv){
 		while(true)
 			sleep(1);
 #endif
-//	maina(argc, argv);
+#else
+	maina(argc, argv);
 	return 0;
+#endif
 }

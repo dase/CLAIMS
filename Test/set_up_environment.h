@@ -877,14 +877,13 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 
-
 	/////////////////////////////// PART TABLE //////////////////////////////////
 	TableDescriptor* table_1=new TableDescriptor("field", Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
 	table_1->addAttribute("sec_code",data_type(t_string),10);
 	table_1->addAttribute("sec_name",data_type(t_string),40);
 	table_1->addAttribute("sec_field",data_type(t_string),40);
-	table_1->createHashPartitionedProjectionOnAllAttribute("field.row_id",1);
+//	table_1->createHashPartitionedProjectionOnAllAttribute("field.row_id",1);
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -894,7 +893,7 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	table_2->addAttribute("sec_code",data_type(t_string),10);
 	table_2->addAttribute("sec_name",data_type(t_string),40);
 	table_2->addAttribute("sec_area",data_type(t_string),40);
-	table_2->createHashPartitionedProjectionOnAllAttribute("area.row_id",1);	///////////////////////////////////////////////////////////////////////////////
+//	table_2->createHashPartitionedProjectionOnAllAttribute("area.row_id",1);	///////////////////////////////////////////////////////////////////////////////
 
 
 	/////////////////////////////// PARTSUPP TABLE //////////////////////////////////
@@ -922,7 +921,7 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 	table_3->addAttribute("order_type",data_type(t_string),2);
 	table_3->addAttribute("stat_pbu_id",data_type(t_string),5);
 
-	table_3->createHashPartitionedProjectionOnAllAttribute("trade.row_id",1);//should be 4
+//	table_3->createHashPartitionedProjectionOnAllAttribute("trade.row_id",1);//should be 4
 	///////////////////////////////////////////////////////////////////////////////
 
 
@@ -932,22 +931,22 @@ static void startup_multiple_node_environment_of_stock(bool master=true){
 
 
 
-	//T0
 	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-
-		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
-	}
-
-	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
 		catalog->getTable(1)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
 	}
 
-	for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+	for(unsigned i=0;i<table_2->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 
 		catalog->getTable(2)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
 	}
 
+	for(unsigned i=0;i<table_3->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+
+		catalog->getTable(3)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,445);
+	}
+
+	catalog->saveCatalog();
 }
 
 

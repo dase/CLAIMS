@@ -316,6 +316,7 @@ void ExpandableBlockStreamExchangeLowerMaterialized::cancelWorkerThread() {
 void ExpandableBlockStreamExchangeLowerMaterialized::closeDiskFiles() {
 	for(unsigned i=0;i<nuppers_;i++){
 		FileClose(disk_fd_list_[i]);
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", disk_fd_list_[i]);
 	}
 }
 

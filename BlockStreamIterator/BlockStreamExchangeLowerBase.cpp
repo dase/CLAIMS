@@ -38,6 +38,7 @@ bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,
 	serv_add.sin_family=AF_INET;
 	serv_add.sin_port=htons(upper_port);
 	serv_add.sin_addr=*((struct in_addr*)host->h_addr);
+//	serv_add.sin_addr.s_addr=inet_addr(host->h_name);
 	bzero(&(serv_add.sin_zero),8);
 
 	int returnvalue;
@@ -70,6 +71,7 @@ void BlockStreamExchangeLowerBase::WaitingForCloseNotification(const int & targe
 			perror("recv error!\n");
 		}
 		FileClose(target_socket_fd);
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", target_socket_fd);
 }
 
 

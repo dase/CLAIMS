@@ -254,13 +254,13 @@ bool HdfsLoader::load(){
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
 
-///*for testing*/ if(row_id/t_count > 500)
-///*for testing*/		break;
+/*for testing*/ if(row_id/t_count > 100000)
+/*for testing*/		break;
 
 			insertRecords();
 		}
 		InFile.close();
-///*for testing*/	t_count++;
+/*for testing*/	t_count++;
 	}
 
 	cout << "----------------------------"<<endl;

@@ -17,7 +17,10 @@
 
 typedef int (f)(int);
 
-static f * FileClose=close;
+//static f * FileClose=close;
+static int FileClose(int fd){
+	close(fd);
+}
 
 typedef void (f1)(void*);
 static f1 * memory_free=free;

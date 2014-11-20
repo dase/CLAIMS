@@ -15,6 +15,7 @@
 #include "../../Catalog/table.h"
 #include "../../common/data_type.h"
 #include "../../Environment.h"
+#include "../../Test/set_up_environment.h"
 
 using namespace std;
 
@@ -417,9 +418,11 @@ static int testServerClient() {
 		ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 		Catalog* catalog=Environment::getInstance()->getCatalog();
 		catalog->restoreCatalog();
+//		startup_multiple_node_environment_of_stock();
 
-		ClientListener server(8001);
-		server.configure();
+		// in Environment.cpp:177, create a ClientListener
+//		ClientListener server(8001);
+//		server.configure();
 		//		server.run();
 		while(true){
 			sleep(10);

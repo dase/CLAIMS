@@ -118,4 +118,5 @@ ClientResponse* Client::receive() {
 void Client::shutdown() {
 //	::shutdown(m_clientFd, 2);
 	close(m_clientFd);
+	ClientLogging::log("-----for debug:	close fd %d", m_clientFd);
 }
