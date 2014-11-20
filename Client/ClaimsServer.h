@@ -21,6 +21,7 @@
 #include "../Catalog/Catalog.h"
 #include "../Daemon/Daemon.h"
 #include "ClientResponse.h"
+#include "json/json.h"
 
 class ClientListener {
 public:
@@ -30,7 +31,11 @@ public:
 	void configure();
 //	void run();
 	void shutdown();
+	static void checkFdValid(int fd);
 private:
+
+//	static void backupStd();
+	static void restoreStd();
 
 	int write(const int fd, const ClientResponse& res) const;
 	int addClient(const int fd);
@@ -41,7 +46,8 @@ private:
 	static void* receiveHandler(void *);
 	static void* sendHandler(void *);
 
-	void sendJsonPacket(executed_result res);
+	static void sendJsonPacket(ClientResponse &cr, executed_result &res);
+	static void generateSqlStmt(int type, char *&buf);
 
 	bool isFull() const {
 		return !(m_num < MAXCONN);
@@ -52,6 +58,10 @@ private:
 	int *m_clientFds;
 	int m_num;
 	const static int MAXCONN = 100;
+
+	static int standard_input;
+	static int standard_output;
+	static int standard_err;
 
 };
 

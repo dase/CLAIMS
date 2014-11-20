@@ -96,8 +96,10 @@ bool BlockStreamRandomMemAccess::close()
 	data_ = 0;
 //	munmap(base, length);
 
-	if(0 == FileClose(fd_));
+	if(0 == FileClose(fd_)) {
+		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", fd_);
 		return true;
+	}
 	return false;
 }
 

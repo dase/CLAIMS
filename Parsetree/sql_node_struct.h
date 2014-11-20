@@ -52,6 +52,7 @@ enum nodetype
 	t_drop_database_stmt,t_drop_table_stmt, t_table_list,	// 2014-3-24---增加---by Yu
 	t_load_table_stmt,	// 2014-3-24---add---by Yu
 	t_show_stmt,	// 2014-5-4---add---by Yu
+	t_drop_stmt
 };
 
 // 2014-4-14---delete union dataval, because only char* is need---by Yu

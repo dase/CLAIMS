@@ -44,6 +44,8 @@ public:
 	inline virtual void showAccum_off(){};
 	bool hasSameSchema(Schema* schema);
 	std::vector<column_type> columns;
+
+	virtual std::string getColumnValue(const void *tuple_start_address, int i);
 protected:
 
 private:

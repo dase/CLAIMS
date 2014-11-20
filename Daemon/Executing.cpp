@@ -51,7 +51,7 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	return resultset;
 }
 
-void Executing::run_sql(const std::string &sql, ResultSet *&result_set, bool &status, std::string &error_info, std::string &info){
+void Executing::run_sql(const std::string &sql, ResultSet *&result_set, bool &status, std::string &error_info, std::string &info, int fd){
 
 	if (sql.length() <= 0) {
 		status = false;
@@ -59,13 +59,13 @@ void Executing::run_sql(const std::string &sql, ResultSet *&result_set, bool &st
 		error_info = "sql is NULL";
 		return;
 	}
-	ExecuteLogicalQueryPlan(sql, result_set, status, error_info, info);
-//	if(status==false) {
-//		cout<<"[ERROR] "<<error_info<<endl;
-//	}
-//	else {
+	ExecuteLogicalQueryPlan(sql, result_set, status, error_info, info, fd);
+	if(status==false) {
+		cout<<"[ERROR] "<<error_info<<endl;
+	}
+	else {
 //		if(result_set!=NULL)
-////			result_set->print();
-//	}
+//			result_set->print();
+	}
 
 }

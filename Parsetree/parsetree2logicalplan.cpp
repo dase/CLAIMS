@@ -325,7 +325,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 						attrname=attrname.substr(pos+1,attrname.size()-pos-1);
 					}
 					exprTree.push_back(new QColcumns(subquery_alias.c_str(),attrname.c_str(),output_attribute[i].attrType->type,string(subquery_alias+"."+attrname).c_str()));
-					cout<<"The "<<i<<" "<<subquery_alias+"."+attrname<<endl;
+//					cout<<"The "<<i<<" "<<subquery_alias+"."+attrname<<endl;
 				}
 				tablescan=new LogicalProject(tablescan,exprTree);
 			}

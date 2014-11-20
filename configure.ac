@@ -16,6 +16,7 @@ AC_CONFIG_FILES([
   Catalog/stat/Makefile 
   Client/Makefile 
   Client/Test/Makefile 
+  Client/json/Makefile
   common/Makefile 
   common/Block/Makefile 
   common/Expression/Makefile 
