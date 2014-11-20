@@ -27,7 +27,6 @@ data="/home/imdb/data/wangli/"
 #data="/home/imdb/data/tmp/"
 #data="/home/imdb/data/POC/"
 
-
 #hdfs主节点
 hdfs_master_ip="10.11.1.190"
 
