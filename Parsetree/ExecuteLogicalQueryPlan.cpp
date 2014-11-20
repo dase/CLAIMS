@@ -406,8 +406,6 @@ void ExecuteLogicalQueryPlan()
 				}
 
 				// add for  test, create projection default while creating table
-				std::vector<ColumnOffset> index;
-				index.push_back(1);
 				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
 				//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
@@ -595,7 +593,7 @@ void ExecuteLogicalQueryPlan()
 				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
 				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
 				loader->load();
-
+				catalog->saveCatalog();
 			}
 			break;
 			case t_insert_stmt:	// 2014-4-19---add---by Yu	// 2014-5-1---modify---by Yu

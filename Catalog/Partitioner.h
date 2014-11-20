@@ -242,7 +242,7 @@ public:
 
 	/* notify partitioner that a file is created on distributed file system for a specific partition*/
 	void RegisterPartition(unsigned partitoin_key,unsigned number_of_chunks);
-	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks, unsigned long number_of_tuples);
+	void RegisterPartitionWithNumberOfBlocks(unsigned partitoin_key,unsigned long number_of_blocks);
 	void UpdatePartitionWithNumberOfChunksToBlockManager(unsigned partitoin_offset,unsigned long number_of_blocks);
 
 	unsigned getPartitionDataSize(unsigned partitoin_index)const;
@@ -253,12 +253,12 @@ public:
 
 	unsigned getPartitionChunks( unsigned partition_index) const;
 
-	NodeID getPartitionLocation(unsigned partition_index)const;
+	NodeID getPartitionLocation(unsigned partition_offset)const;
 	void print();
 
 	bool hasSamePartitionLocation(const Partitioner & target_partition )const;
 
-	binding_mode get_bing_mode_()const{
+	binding_mode get_binding_mode_()const{
 		return mode_;
 	}
 	PartitionFunction::partition_fashion getPartitionFashion()const;

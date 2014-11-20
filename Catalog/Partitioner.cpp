@@ -74,19 +74,14 @@ void Partitioner::RegisterPartition(unsigned partition_key,unsigned number_of_ch
 	partition_info_list[partition_key]->number_of_blocks=number_of_chunks*1024;
 }
 
-void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_offset,unsigned long number_of_blocks, unsigned long number_of_tuples)
+void Partitioner::RegisterPartitionWithNumberOfBlocks(unsigned partition_offset,unsigned long number_of_blocks)
 {
 	assert(partition_offset < partition_function_->getNumberOfPartitions());
 
 	partition_info_list[partition_offset]->hdfs_file_name=partition_info_list[partition_offset]->partition_id_.getName();
 	partition_info_list[partition_offset]->number_of_blocks=number_of_blocks;
-	partition_info_list[partition_offset]->number_of_tuples_=number_of_tuples;
-//	Catalog* catalog=Environment::getInstance()->getCatalog();
-//	catalog->saveCatalog();
 }
 
-//update Partition ......
-//bonding
 void Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager(unsigned partition_offset,unsigned long number_of_blocks)
 {
 	assert(partition_offset < partition_function_->getNumberOfPartitions());
@@ -97,7 +92,6 @@ void Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager(unsigned parti
 		if(partition_info_list[partition_offset]->is_all_blocks_bound()){
 			NodeID node_id = partition_info_list[partition_offset]->get_location();
 			BlockManagerMaster::getInstance()->SendBindingMessage(partition_info_list[partition_offset]->partition_id_, number_of_chunks, MEMORY, node_id);
-			/*testing*/ cout << "--testing--\t update partition with number of blocks! :"<<number_of_chunks<<" chunks>>>>\n";
 		}
 	}
 	else
@@ -116,7 +110,7 @@ void Partitioner::print(){
 //	}
 }
 bool Partitioner::hasSamePartitionLocation(const Partitioner & target_partition )const{
-	if(mode_==OneToMany||target_partition.get_bing_mode_()==OneToMany){
+	if(mode_==OneToMany||target_partition.get_binding_mode_()==OneToMany){
 		/** in the current version, any the location detection in OneToMany mode is ommited.*/
 		return false;
 	}
@@ -144,10 +138,10 @@ unsigned Partitioner::getPartitionBlocks(unsigned partitoin_index)const{
 unsigned Partitioner::getPartitionChunks(unsigned partition_index) const {
 	return ceil(partition_info_list[partition_index]->number_of_blocks/(float)1024);
 }
-NodeID Partitioner::getPartitionLocation(unsigned partition_index)const{
-	if(partition_info_list[partition_index]->get_mode()==OneToOne){
+NodeID Partitioner::getPartitionLocation(unsigned partition_offset)const{
+	if(partition_info_list[partition_offset]->get_mode()==OneToOne){
 //		return (*(OneToOnePartitionInfo*)&partition_info_list[partition_index]).get_location();
-		return partition_info_list[partition_index]->get_location();
+		return partition_info_list[partition_offset]->get_location();
 	}
 	else{
 		return -1;

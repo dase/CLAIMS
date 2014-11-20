@@ -22,6 +22,7 @@ THERON_DEFINE_REGISTERED_MESSAGE(unsigned long long int)
 THERON_DEFINE_REGISTERED_MESSAGE(NodeRegisterMessage)
 THERON_DEFINE_REGISTERED_MESSAGE(PartitionBindingMessage)
 THERON_DEFINE_REGISTERED_MESSAGE(ExchangeID)
+THERON_DEFINE_REGISTERED_MESSAGE(PartitionUnbindingMessage)
 
 void PhysicalQueryPlan::run()
 {

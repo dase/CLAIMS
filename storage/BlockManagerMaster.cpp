@@ -111,8 +111,18 @@ bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, con
 	return true;
 }
 
-//updateBindingMessage {}
-bool BlockManagerMaster::UpdateBindingMessage(const PartitionID&, const unsigned& number_of_blocks, const StorageLevel& desirable_storage_level, const NodeID& target)const
+bool BlockManagerMaster::SendUnbindingMessage(const PartitionID &partition_id, NodeID &target) const
 {
+	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
 
+	Theron::Catcher<int> resultCatcher;
+	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<int>::Push);
+
+	PartitionUnbindingMessage message(partition_id);
+	logging_->log("Sending the unbinding message to [%s]",generateSlaveActorName(target).c_str());
+	framework_->Send(message,receiver.GetAddress(),Theron::Address(generateSlaveActorName(target).c_str()));
+	if(receiver.TimeOutWait(1,200000)==0){
+		logging_->elog("The node[%s] fails to receiver the partition unbinding message! target actor name=%s",NodeTracker::getInstance()->getNodeIP(target).c_str(),generateSlaveActorName(target).c_str());
+	}
+	return true;
 }

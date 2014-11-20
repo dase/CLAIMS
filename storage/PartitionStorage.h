@@ -46,6 +46,7 @@ public:
 	virtual ~PartitionStorage();
 	void addNewChunk();
 	void updateChunksWithInsertOrAppend(const PartitionID &partition_id, const unsigned &number_of_chunks, const StorageLevel& storage_level);
+	void removeAllChunks(const PartitionID &partition_id);
 	PartitionReaderItetaor* createReaderIterator();
 	PartitionReaderItetaor* createAtomicReaderIterator();
 protected:
