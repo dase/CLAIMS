@@ -127,47 +127,37 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 
-	/*
-	 * As Exchange merger is a local pipeline beginner, exchange::next will return false in order to
-	 * shrink the current work thread, if the termination request is detected.
-	 */
-	if(this->checkTerminateRequest()){
-		logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
-		return false;
-	}
-
-/**
- * In the initial implementation, busy waiting is used in while(), and consequently consumes
- * large CPU usage. I add usleep(1) in the while to release this problem. Perhaps, a better way
- * is to use conditioned wait.
- * TODO: better implementation based on conditioned wait.
- * --Li.
- * Mar. 30th, 2014.
- *
- * I use a semaphore (sem_new_block_or_eof_) to avoid the busy wait.
- */
-
-	while(nexhausted_lowers<nlowers){
-		if(buffer->getBlock(*block)){
-			perf_info_->processed_one_block();
-			return true;
-		}
+	while(true){
+		/*
+		 * As Exchange merger is a local stage beginner, exchange::next will return false in order to
+		 * shrink the current work thread, if the termination request is detected.
+		 */
 		if(this->checkTerminateRequest()){
 			logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
 			return false;
 		}
-		sem_new_block_or_eof_.wait();
+
+		if(sem_new_block_or_eof_.timed_wait(1)){
+			if(buffer->getBlock(*block)){
+				perf_info_->processed_one_block();
+				return true;
+			}
+			else if(nexhausted_lowers==nlowers){
+				return false;
+			}
+			assert(false);
+		}
 	}
 
-	/* thread arrives here means that all the lowers exchange are exhausted so that the buffer will not receive new block.
-	 * next() return false until all the remaining blocks in the buffer are returned to the callers.*/
-	if(buffer->getBlock(*block)){
-		perf_info_->processed_one_block();
-		return true;
-	}
-	else{
-		return false;
-	}
+//	/* thread arrives here means that all the lowers exchange are exhausted so that the buffer will not receive new block.
+//	 * next() return false until all the remaining blocks in the buffer are returned to the callers.*/
+//	if(buffer->getBlock(*block)){
+//		perf_info_->processed_one_block();
+//		return true;
+//	}
+//	else{
+//		return false;
+//	}
 
 }
 
@@ -443,7 +433,6 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					status=getnameinfo(&in_addr,in_len,hbuf,sizeof(hbuf),sbuf,sizeof(sbuf),NI_NUMERICHOST|NI_NUMERICSERV);
 					if(status==0){
 						Pthis->logging_->log("[%ld] Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n",Pthis->state.exchange_id_, infd, hbuf, sbuf,Pthis->state.exchange_id_);
-						Pthis->logging_->log("[%ld] Accepted connection on descriptor %d (host=%s, port=%s)\n",Pthis->state.exchange_id_, infd, hbuf, sbuf);
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
 						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_ip_list_.size());
@@ -504,8 +493,8 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					Pthis->block_for_socket_[socket_fd_index]->reset();
 
 					/** In the current implementation, a empty block stream means End-Of-File**/
-					const bool isLastBlock=Pthis->received_block_stream_->Empty();
-					if(!isLastBlock){
+					const bool eof=Pthis->received_block_stream_->Empty();
+					if(!eof){
 						/** the newly obtained data block is validate, so we insert it into the buffer and post
 						 * sem_new_block_or_eof_ so that all the threads waiting for the semaphore continue. **/
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
