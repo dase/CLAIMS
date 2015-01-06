@@ -444,9 +444,6 @@ void* ExpanderTracker::monitoringThread(void* arg){
 	int cur=0;
 	unsigned long long  start_cycles=curtick();
 	while(true){
-//		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
-//		sleep(1000);
-		printf("Time: %8.8f\n",getMilliSecond(start_cycles));
 		usleep(Config::expander_adaptivity_check_frequency);
 		Pthis->lock_.acquire();
 		if(Pthis->expander_id_to_status_.size()<=cur){
@@ -455,15 +452,11 @@ void* ExpanderTracker::monitoringThread(void* arg){
 			usleep(1000);
 			continue;
 		}
-		Pthis->printStatus();
+//		Pthis->printStatus();
 		boost::unordered_map<ExpanderID,ExpanderStatus*>::iterator it=Pthis->expander_id_to_status_.begin();
 		for(int tmp=0;tmp<cur;tmp++)
 			it++;
 		ExpanderID id=it->first;
-
-//		Pthis->lock_.release();
-//		Pthis->lock_.acquire();
-//		printf("id=%d \n",id);
 
 
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
