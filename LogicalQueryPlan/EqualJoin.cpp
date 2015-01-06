@@ -82,6 +82,7 @@ Dataflow EqualJoin::getDataflow(){
 	}
 
 
+
 	/**finally, construct the output data flow according to the join police**/
 	switch(join_police_){
 		case no_repartition:{

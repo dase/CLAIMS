@@ -160,8 +160,8 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 //			if(bn!=0){
 //				continue;
 //			}
-			tuple_in_hashtable=hashtable->atomicAllocate(bn);
 //			continue;
+			tuple_in_hashtable=hashtable->atomicAllocate(bn);
 //			tuple_in_hashtable=hashtable->allocate(bn);
 			/* copy join index columns*/
 //			for(unsigned i=0;i<state_.joinIndex_left.size();i++){
@@ -214,6 +214,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
 
 
+//	hashtable->report_status();
 
 //	destorySelfContext();
 	/* create and initialized the context for the right child*/
@@ -244,13 +245,13 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 	join_thread_context* jtc=(join_thread_context*)getContext();
 
 	while(true){
-//		if(atomicPopRemainingBlock(rb)){
 			while((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())>0)
 			{
-//				jtc->block_stream_iterator_->increase_cur_();
-//				bn=0;
-//				continue;
 				unsigned bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
+
+//				jtc->block_stream_iterator_->increase_cur_();
+//				continue;
+
 				while((tuple_in_hashtable=jtc->hashtable_iterator_.readCurrent())>0)
 				{
 					key_exit=true;
@@ -269,17 +270,13 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 							state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
 						}
 						else{
-//							atomicPushRemainingBlock(rb);
 							free(joinedTuple);
 							return true;
 						}
 					}
-//					BasicHashTable::Iterator tmp=rb.hashtable_iterator_;
 					jtc->hashtable_iterator_.increase_cur_();
-//					rb.hashtable_iterator_.increase_cur_();
 				}
 				jtc->block_stream_iterator_->increase_cur_();
-//				rb.blockstream_iterator->increase_cur_();
 #ifdef	_DEBUG_
 				consumed_tuples_from_right++;
 #endif
@@ -288,34 +285,25 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 					hashtable->placeIterator(jtc->hashtable_iterator_,bn);
 				}
 			}
-//			AtomicPushFreeBlockStream(rb.bsb_right_);
-//		}
-//		rb.bsb_right_=AtomicPopFreeBlockStream();//1 1 1
 		jtc->block_for_asking_->setEmpty();
-//		rb.bsb_right_->setEmpty();
 
 		jtc->hashtable_iterator_=hashtable->CreateIterator();
-//		rb.hashtable_iterator_=hashtable->CreateIterator();
 		if(state_.child_right->next(jtc->block_for_asking_)==false){
 			if(block->Empty()==true){
-//				AtomicPushFreeBlockStream(rb.bsb_right_);
 				free(joinedTuple);
 				return false;
 			}
 			else{
-//				AtomicPushFreeBlockStream(rb.bsb_right_);
 				free(joinedTuple);
 				return true;
 			}
 		}
 		jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
 		jtc->block_stream_iterator_=jtc->block_for_asking_->createIterator();
-//		rb.blockstream_iterator=rb.bsb_right_->createIterator();
 		if((tuple_from_right_child=jtc->block_stream_iterator_->currentTuple())){
 			bn=state_.input_schema_right->getcolumn(state_.joinIndex_right[0]).operate->getPartitionValue(state_.input_schema_right->getColumnAddess(state_.joinIndex_right[0],tuple_from_right_child),state_.ht_nbuckets);
 			hashtable->placeIterator(jtc->hashtable_iterator_,bn);
 		}
-//		atomicPushRemainingBlock(rb);
 	}
 	return next(block);
 }

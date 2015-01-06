@@ -32,7 +32,7 @@
 #include "../../utility/rdtsc.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../Config.h"
-#define BUFFER_SIZE_IN_EXCHANGE 100
+#define BUFFER_SIZE_IN_EXCHANGE 1000
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
@@ -142,22 +142,11 @@ bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 				perf_info_->processed_one_block();
 				return true;
 			}
-			else if(nexhausted_lowers==nlowers){
-				return false;
-			}
-			assert(false);
+		}
+		if(nexhausted_lowers==nlowers){
+			return false;
 		}
 	}
-
-//	/* thread arrives here means that all the lowers exchange are exhausted so that the buffer will not receive new block.
-//	 * next() return false until all the remaining blocks in the buffer are returned to the callers.*/
-//	if(buffer->getBlock(*block)){
-//		perf_info_->processed_one_block();
-//		return true;
-//	}
-//	else{
-//		return false;
-//	}
 
 }
 

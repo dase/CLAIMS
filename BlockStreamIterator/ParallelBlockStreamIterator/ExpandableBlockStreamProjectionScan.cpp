@@ -252,7 +252,12 @@ bool ExpandableBlockStreamProjectionScan::atomicPopChunkReaderIterator(ChunkRead
 	chunk_reader_container_lock_.release();
 	return ret;
 }
-bool ExpandableBlockStreamProjectionScan::passSample()const{
+
+void ExpandableBlockStreamProjectionScan::print() {
+	printf("Scan (ID=%d)\n",state_.projection_id_.table_id);
+}
+
+bool ExpandableBlockStreamProjectionScan::passSample() const {
 	//	const float ram=(float)rand()/(float)RAND_MAX;
 	if((rand()/(float)RAND_MAX)<state_.sample_rate_)
 		return true;
