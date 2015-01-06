@@ -74,7 +74,6 @@ private:
 	bool checkOtherUpperRegistered();
 	bool isMaster();
 	bool SerializeAndSendToMulti();
-	bool WaitForConnectionFromLowerExchanges();
 	bool CreateReceiverThread();
 	void CancelReceiverThread();
 	void SendBlockBufferedNotification(int target_socket_fd);

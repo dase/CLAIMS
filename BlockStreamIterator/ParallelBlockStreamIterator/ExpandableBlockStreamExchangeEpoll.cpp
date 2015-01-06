@@ -68,12 +68,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			debug_received_block[i]=0;
 		}
 
-//		socket_fd_lower_list=new int[nlowers];
-		//init -1 ---Yu
-//		for (int i = 0; i < nlowers; ++i) {
-//			socket_fd_lower_list[i] = -1;
-//		}
-
 		buffer=new BlockStreamBuffer(state.block_size_,BUFFER_SIZE_IN_EXCHANGE,state.schema_);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
 		received_block_stream_=BlockStreamBase::createBlock(state.schema_,state.block_size_);
@@ -96,7 +90,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id_);
 		}
 
-		if(partition_offset==0){
+		if(isMaster()){
 			/*  According to a bug reported by dsc, the master exchangeupper should check whether other
 			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fail to connect to the
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
@@ -120,7 +114,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 	}
 
-	/* A synchronization barrier, in case of multiple expanded thread*/
+	/* A synchronization barrier, in case of multiple expanded threads*/
 	barrier_->Arrive();
 	return true;
 }
@@ -163,7 +157,6 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 	}
 	delete received_block_stream_;
 	delete buffer;
-//	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
 
 	/* rest the status of this iterator instance, such that the following calling of open() and next() can
@@ -241,19 +234,9 @@ bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 	/* close the epoll fd */
 	FileClose(epoll_fd_);
-//	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", epoll_fd_);
-
-	/* colse the sockets of the lowers*/
-	for(unsigned i=0;i<nlowers;i++){
-//		if (socket_fd_lower_list[i] > 0){
-//			FileClose(socket_fd_lower_list[i]);
-//			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", socket_fd_lower_list[i]);
-//		}
-	}
 
 	/* close the socket of this exchange*/
 	FileClose(sock_fd);
-//	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", sock_fd);
 
 	/* return the applied port to the port manager*/
 	PortManager::getInstance()->returnPort(socket_port);
@@ -312,34 +295,8 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 			delete EIEL;
 		}
 	}
-
-
 	return true;
 }
-
-bool ExpandableBlockStreamExchangeEpoll::WaitForConnectionFromLowerExchanges(){
-	/** This method returns when all the senders have been connected*/
-/*
-	socklen_t sin_size=sizeof(struct sockaddr_in);
-	struct sockaddr_in remote_addr;
-	unsigned count=0;
-	while(1){
-		if(count>=nlowers){
-			return true;
-		}
-		logging_->log("[%ld] Waiting for the socket connection from the lower exchange..",state.exchange_id_);
-		if((socket_fd_lower_list[count]=accept(sock_fd,(struct sockaddr*)&remote_addr,&sin_size))!=-1)
-		{
-			lower_ip_array.push_back(inet_ntoa(remote_addr.sin_addr));
-			logging_->log("[%ld] The lower exchange <%s> is connected to the socket.",state.exchange_id_,lower_ip_array[count].c_str());
-			cout<<"-----for Yu debug:accept return fd "<<socket_fd_lower_list[count]<<endl;
-			count++;
-		}
-	}
-	return true;
-	*/
-}
-
 
 bool ExpandableBlockStreamExchangeEpoll::CreateReceiverThread(){
 	int error;
