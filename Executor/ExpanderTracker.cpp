@@ -531,5 +531,26 @@ int ExpanderTracker::shrinkIfNotExceedTheMinDegreeOfParallelims(
 
 void ExpanderTracker::printStatus() {
 	printf("Num. of Expanders: %d\n",expander_id_to_status_.size());
+	printf("expanded_thread_id : ExpanderID\n");
+	for(boost::unordered_map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
+		printf("(%llx,%ld) ",it->first,it->second);
+	}
+	printf("\n");
+	printf("ExpanderID : ExpanderStatus*\n");
+	for(boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it=expander_id_to_status_.begin();it!=expander_id_to_status_.end();it++){
+		printf("(%ld,%llx) ",it->first,it->second);
+	}
+	printf("\n");
 
+	printf("ExpanderID : ExpandabilitySrinkability*\n");
+	for(boost::unordered_map<ExpanderID,ExpandabilityShrinkability*>::iterator it=expander_id_to_expand_shrink_.begin();it!=expander_id_to_expand_shrink_.end();it++){
+		printf("(%ld,%llx) ",it->first,it->second);
+	}
+	printf("\n");
+
+	printf("expanded thread id: ExpandedThreadStatus\n");
+	for(std::map<expanded_thread_id,ExpandedThreadStatus>::iterator it=id_to_status_.begin();it!=id_to_status_.end();it++){
+		printf("(%ld, %llx)", it->first,&it->second);
+	}
+	printf("\n");
 }

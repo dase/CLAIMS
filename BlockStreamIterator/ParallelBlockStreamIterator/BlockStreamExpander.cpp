@@ -47,7 +47,7 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 	input_data_complete_=false;
 	one_thread_finished_=false;
 	finished_thread_count_=0;
-	block_stream_buffer_=new BlockStreamBuffer(state_.block_size_,state_.block_count_in_buffer_,state_.schema_);
+	block_stream_buffer_=new BlockStreamBuffer(state_.block_size_,state_.block_count_in_buffer_*10,state_.schema_);
 
 	in_work_expanded_thread_list_.clear();
 	expander_id_=ExpanderTracker::getInstance()->registerNewExpander(block_stream_buffer_,this);

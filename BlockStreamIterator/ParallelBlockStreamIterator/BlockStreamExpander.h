@@ -20,7 +20,7 @@
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"
 
-#define EXPANDER_BUFFER_SIZE 100
+#define EXPANDER_BUFFER_SIZE 1000
 
 class BlockStreamExpander:public BlockStreamIteratorBase,public ExpandabilityShrinkability {
 public:
