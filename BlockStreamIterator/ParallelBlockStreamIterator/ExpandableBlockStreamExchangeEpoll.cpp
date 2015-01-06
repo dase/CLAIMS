@@ -68,7 +68,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			debug_received_block[i]=0;
 		}
 
-		socket_fd_lower_list=new int[nlowers];
+//		socket_fd_lower_list=new int[nlowers];
 		//init -1 ---Yu
 //		for (int i = 0; i < nlowers; ++i) {
 //			socket_fd_lower_list[i] = -1;
@@ -184,7 +184,7 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 	}
 	delete received_block_stream_;
 	delete buffer;
-	delete[] socket_fd_lower_list;
+//	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
 
 	/* rest the status of this iterator instance, such that the following calling of open() and next() can
@@ -267,7 +267,7 @@ void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 	/* colse the sockets of the lowers*/
 	for(unsigned i=0;i<nlowers;i++){
 //		if (socket_fd_lower_list[i] > 0){
-			FileClose(socket_fd_lower_list[i]);
+//			FileClose(socket_fd_lower_list[i]);
 //			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", socket_fd_lower_list[i]);
 //		}
 	}
@@ -340,7 +340,7 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 
 bool ExpandableBlockStreamExchangeEpoll::WaitForConnectionFromLowerExchanges(){
 	/** This method returns when all the senders have been connected*/
-
+/*
 	socklen_t sin_size=sizeof(struct sockaddr_in);
 	struct sockaddr_in remote_addr;
 	unsigned count=0;
@@ -358,7 +358,9 @@ bool ExpandableBlockStreamExchangeEpoll::WaitForConnectionFromLowerExchanges(){
 		}
 	}
 	return true;
+	*/
 }
+
 
 bool ExpandableBlockStreamExchangeEpoll::CreateReceiverThread(){
 	int error;

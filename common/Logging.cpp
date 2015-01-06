@@ -8,7 +8,7 @@
 #define CLAIMS_QUEIT
 #ifdef CLAIMS_QUEIT //If defined, all the output information is binded.
 //#define DEBUG_Config
-//#define DEBUG_ExpanderTracker
+#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
 //#define DEBUG_BlockStreamJoin
 //#define DEBUG_PerformanceTop

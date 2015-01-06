@@ -51,7 +51,7 @@ Coordinator::~Coordinator() {
 
 	close(socket_fd);
 //	logging->elog("-----for debug: fd %d is closed", socket_fd);
-	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd);
+//	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd);
 	delete framework;
 	delete endpoint;
 }
