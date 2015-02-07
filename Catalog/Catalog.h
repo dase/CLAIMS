@@ -54,7 +54,14 @@ public:
 	ProjectionDescriptor* getProjection(const ProjectionID&) const;
 	ProjectionBinding* getBindingModele()const;
 
-	unsigned getTableCount()const {return table_id_allocator.table_id_curosr;};
+	/*
+	 *  fix a bug:
+	 *   If a new table is created using allocate_unique_table_id(), but actually failed to add, e.g, table name is duplicate.
+	 *   It should returns tableid_to_table.size() rather than table_id_allocator.table_id_curosr.
+	 *   -- Yu 2015.2.7
+	 */
+	unsigned getTableCount()const {return tableid_to_table.size();};
+
 	void saveCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---save as a file---by Yu
 	void restoreCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu
 	void saveCatalog(Catalog &catalog_, const char* filename = "catalogData.dat");	// 2014-3-20---save as a fileby Yu

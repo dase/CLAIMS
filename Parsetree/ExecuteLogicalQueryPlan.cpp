@@ -140,7 +140,7 @@ void ExecuteLogicalQueryPlan()
 			//			printf("Continue(1) or not (others number)?\n");
 			//			scanf("%d",&count);
 			//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
-			//			//setbuf(stdin, NULL);	//关闭缓冲
+			//			setbuf(stdin, NULL);	//关闭缓冲
 			continue;
 		}
 

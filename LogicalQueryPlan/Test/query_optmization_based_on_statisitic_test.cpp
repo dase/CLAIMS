@@ -1448,7 +1448,7 @@ static int query_optimization_outputdata()
 	int master;
 //	cout<<"Master(0) or Slave(others)"<<endl;
 //	cin>>master;
-	printf("~!OKOKO!!!!!\n");
+	printf("start\n");
 	printf("Master(0) or Slave(others)??\n");
 	scanf("%d",&master);
 	getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
