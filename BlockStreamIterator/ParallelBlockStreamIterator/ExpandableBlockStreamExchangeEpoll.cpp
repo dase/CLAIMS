@@ -70,9 +70,9 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 		socket_fd_lower_list=new int[nlowers];
 		//init -1 ---Yu
-//		for (int i = 0; i < nlowers; ++i) {
-//			socket_fd_lower_list[i] = -1;
-//		}
+		for (int i = 0; i < nlowers; ++i) {
+			socket_fd_lower_list[i] = -1;
+		}
 
 		buffer=new BlockStreamBuffer(state.block_size_,BUFFER_SIZE_IN_EXCHANGE,state.schema_);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
@@ -266,10 +266,10 @@ void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 
 	/* colse the sockets of the lowers*/
 	for(unsigned i=0;i<nlowers;i++){
-//		if (socket_fd_lower_list[i] > 0){
+		if (socket_fd_lower_list[i] > 2){
 			FileClose(socket_fd_lower_list[i]);
 //			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", socket_fd_lower_list[i]);
-//		}
+		}
 	}
 
 	/* close the socket of this exchange*/

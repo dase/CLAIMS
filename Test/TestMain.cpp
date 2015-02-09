@@ -89,7 +89,7 @@ int maina(int argc, char** argv){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-	return query_optimization_outputdata();
+	return query_optimization_outputdata();	// 2-8
 
 //	return test_cross_join();
 //	return test_cross_join();
@@ -98,7 +98,7 @@ int maina(int argc, char** argv){
 //	 execute_sql_test();
 //	return query_optimization_based_on_statistics();
 //	return daemon_test();
-//	return testServerClient();
+//	return testServerClient();	// test for java client
 //	return test_data_type();
 
 //	return test_expression_item();

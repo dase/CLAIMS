@@ -71,7 +71,7 @@ void BlockStreamExchangeLowerBase::WaitingForCloseNotification(const int & targe
 			perror("recv error!\n");
 		}
 		FileClose(target_socket_fd);
-		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", target_socket_fd);
+		//std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", target_socket_fd);
 }
 
 
