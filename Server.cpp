@@ -7,7 +7,7 @@
 
 #define AUTU_MASTER
 //#define FORK
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 int main(int argc, char** argv){
 #ifndef DEBUG_MODE
