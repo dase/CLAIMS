@@ -273,7 +273,7 @@ void* ClientListener::receiveHandler(void *para) {
 					if (0 == nread) {
 						//TODO does here means a client close the connection with server?
 						FD_CLR(server->m_clientFds[i], &watchFds);
-						close(server->m_clientFds[i]);
+						FileClose(server->m_clientFds[i]);
 						ClientLogging::log("-----for debug:close fd %d.", server->m_clientFds[i]);
 						server->removeClient(server->m_clientFds[i]);
 						continue;
@@ -851,14 +851,14 @@ void ClientListener::shutdown() {
 
 	for (int i = 0; i < MAXCONN; ++i) {
 		if (m_clientFds[i] > 0) {
-			close(m_clientFds[i]);
+			FileClose(m_clientFds[i]);
 			ClientLogging::log("-----for debug:close fd %d.\n", m_clientFds[i]);
 		}
 	}
-	close(standard_err);
-	close(standard_input);
-	close(standard_output);
-	close(m_fd);
+	FileClose(standard_err);
+	FileClose(standard_input);
+	FileClose(standard_output);
+	FileClose(m_fd);
 	ClientLogging::log("-----for debug:close fd %d", m_fd);
 }
 
@@ -877,7 +877,7 @@ int ClientListener::write(const int fd, const ClientResponse& res) const {
 //	if (ret < 0) {
 //		ClientLogging::elog("when send to fd %d, send buffer failed.%s", fd, strerror(errno));
 //		if (EBADF == errno) {
-//			close(fd);
+//			FileClose(fd);
 //			removeClient(fd);
 //			ClientLogging::log("-----for debug:close fd %d in write()\n", fd);
 //		}

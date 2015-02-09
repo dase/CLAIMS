@@ -34,6 +34,12 @@ struct TableIDAllocator{
 		return id;
 	}
 
+	void decrease_table_id() {
+		lock_.acquire();
+		--table_id_curosr;
+		lock_.release();
+	}
+
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int file_version)
@@ -54,13 +60,7 @@ public:
 	ProjectionDescriptor* getProjection(const ProjectionID&) const;
 	ProjectionBinding* getBindingModele()const;
 
-	/*
-	 *  fix a bug:
-	 *   If a new table is created using allocate_unique_table_id(), but actually failed to add, e.g, table name is duplicate.
-	 *   It should returns tableid_to_table.size() rather than table_id_allocator.table_id_curosr.
-	 *   -- Yu 2015.2.7
-	 */
-	unsigned getTableCount()const {return tableid_to_table.size();};
+	unsigned getTableCount()const {return table_id_allocator.table_id_curosr;};
 
 	void saveCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---save as a file---by Yu
 	void restoreCatalog(const char* filename = "catalogData.dat");	// 2014-3-20---restore from a file---by Yu

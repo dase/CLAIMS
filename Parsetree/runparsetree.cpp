@@ -29,22 +29,26 @@ static Node * getparsetreeroot()
 	int charnum=0;
 	globalReadOffset = 0;
 
-
 	NodePointer.clear();
 	errorNumber = 0;
 	parsetreeroot = NULL;
 	memset(globalInputText, 0, sizeof(globalInputText));
+//	setbuf(stdin, NULL);	//TODO: can be replaced by setvbuf
 	printf("Claims>");
 	while(1)
 	{
 		char c=getchar();
+//		if (c == '\n')
+//		isspace();
+
 		globalInputText[charnum++]=c;
 		if(c==';')
 		{
 			globalInputText[charnum++]='\0';
-//			getchar();
+//			getchar();	// eliminate '\n'
 			break;
 		}
+//		setbuf(stdin, NULL);
 	}
 	// 2014-3-4---测试数据---by余楷
 //	strcpy(globalInputText,
