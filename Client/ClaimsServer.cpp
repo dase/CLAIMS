@@ -235,13 +235,13 @@ void* ClientListener::receiveHandler(void *para) {
 
 				restoreStd();
 
-				{	// Yu
-					cout<<endl<<"clientFds:"<<endl;
-					for (int i = 0; i < MAXCONN ; ++i) {
-						cout<<server->m_clientFds[i]<<" ";
-					}
-					cout<<endl;
-				}
+//				{	// Yu
+//					cout<<endl<<"clientFds:"<<endl;
+//					for (int i = 0; i < MAXCONN ; ++i) {
+//						cout<<server->m_clientFds[i]<<" ";
+//					}
+//					cout<<endl;
+//				}
 
 				if (!server->isFull()) {
 					if ((clientSockFd = accept(serverSockFd,
@@ -288,7 +288,7 @@ void* ClientListener::receiveHandler(void *para) {
 					int sql_type = buf[0]-48;	// '1' - 48 = 1
 					ClientLogging::log("sql_type is %d", sql_type);
 
-					generateSqlStmt(sql_type, buf);
+//					generateSqlStmt(sql_type, buf);
 					//					strcpy(buf, "select row_id from tradelimit 100;\0");
 
 					assert(buffer_size>nread);
@@ -297,9 +297,9 @@ void* ClientListener::receiveHandler(void *para) {
 
 					int retCode = server->receiveRequest(server->m_clientFds[i], buf);
 					if (0 == retCode) {
-						printf("Successfully receive query %s from client %d.\n",
-								buf,
-								server->m_clientFds[i]);
+//						printf("Successfully receive query %s from client %d.\n",
+//								buf,
+//								server->m_clientFds[i]);
 					}
 					//					else if (-1 == retCode) {
 					//						server->shutdown();
@@ -634,9 +634,9 @@ void *ClientListener::sendHandler(void *para) {
 				server->write(result.fd, cliRes);
 			}
 			else {
-				sendJsonPacket(cliRes, result);
-				server->write(result.fd, cliRes);
-				/*
+//				sendJsonPacket(cliRes, result);
+//				server->write(result.fd, cliRes);
+
 				// query return true
 				cliRes.setOk("Yes Ok");
 				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
@@ -658,7 +658,7 @@ void *ClientListener::sendHandler(void *para) {
 								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 				server->write(result.fd, cliRes);
 
-				result.result->print();
+//				result.result->print();
 				ResultSet::Iterator it = result.result->createIterator();
 				BlockStreamBase* block;
 
@@ -676,7 +676,7 @@ void *ClientListener::sendHandler(void *para) {
 				ClientListenerLogging::log("to send end response-- status:%d  length:%d  content:%s",
 								cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
-				 */
+
 			}
 		} else {
 			//ERROR

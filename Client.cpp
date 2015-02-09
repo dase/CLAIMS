@@ -11,6 +11,29 @@
 #include "Client/Client.h"
 #include "common/Logging.h"
 #include "startup.h"
+
+void readStrigFromTerminal(string & input){
+	while(true){
+		std::cin.clear();
+		std::cin.sync();
+		std::string str;
+		if(getline(std::cin,str)){
+			bool finish=false;
+			for(unsigned i=0;i<str.length();i++){
+				if(str[i]==';'){
+					input+=str.substr(0,i+1);
+					finish=true;
+					break;
+				}
+
+			}
+			if(finish)
+				break;
+			input+=str+" ";
+		}
+	}
+}
+
 int main(int argc, char** argv){
 	/* Client */
 
@@ -32,25 +55,9 @@ int main(int argc, char** argv){
 
 
 		std::string input;
-		while(true){
-			std::cin.clear();
-			std::cin.sync();
-			std::string str;
-			if(getline(std::cin,str)){
-				bool finish=false;
-				for(unsigned i=0;i<str.length();i++){
-					if(str[i]==';'){
-						input+=str.substr(0,i+1);
-						finish=true;
-						break;
-					}
+		readStrigFromTerminal(input);
+//		input = "select sec_code ,count(*) from cj group by sec_code;";
 
-				}
-				if(finish)
-					break;
-				input+=str+" ";
-			}
-		}
 
 		query.append(input.c_str());
 		if( query == "exit" ){
