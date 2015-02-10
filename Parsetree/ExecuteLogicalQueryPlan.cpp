@@ -408,16 +408,14 @@ void ExecuteLogicalQueryPlan()
 				// add for  test, create projection default while creating table
 				cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-				//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
-
 				catalog->add_table(new_table);
 
 				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
 				/*
-				 * note!!
+				 * note:
 				 * after creating a new table,
-				 * 	a projection with partition number = 8 will be created
+				 * 	a projection with 18 partition number will be created
 				 * 	--Yu,2015-2-9
 				 */
 				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
@@ -1103,11 +1101,9 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 
 	cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-	//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
-
 	catalog->add_table(new_table);
 
-	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 1);
+	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
 	//				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
 	//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
