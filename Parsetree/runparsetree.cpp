@@ -33,7 +33,7 @@ static Node * getparsetreeroot()
 	errorNumber = 0;
 	parsetreeroot = NULL;
 	memset(globalInputText, 0, sizeof(globalInputText));
-//	setbuf(stdin, NULL);	//TODO: can be replaced by setvbuf
+	printf("stdin buffer has:%d char\n", cin.rdbuf()->in_avail());
 	printf("Claims>");
 	while(1)
 	{
