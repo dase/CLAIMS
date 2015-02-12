@@ -295,22 +295,29 @@ void* ExpandableBlockStreamExchangeLowerMaterialized::debug(void* arg){
 }
 
 bool ExpandableBlockStreamExchangeLowerMaterialized::createWorkerThread() {
-	int error;
-	error=pthread_create(&sender_tid_,NULL,materialize_and_send,this);
-	if(error!=0){
-		log_->elog("Failed to create the sender thread.");
-		return false;
+	if (true == g_thread_pool_used) {
+		Environment::getInstance()->getThreadPool()->add_task(materialize_and_send, this);
+	}
+	else{
+		int error;
+		error=pthread_create(&sender_tid_,NULL,materialize_and_send,this);
+		if(error!=0){
+			log_->elog("Failed to create the sender thread.");
+			return false;
+		}
 	}
 	return true;
 }
 
 void ExpandableBlockStreamExchangeLowerMaterialized::cancelWorkerThread() {
-	pthread_cancel(sender_tid_);
-	void* res;
-	pthread_join(sender_tid_,&res);
-	if(res!=PTHREAD_CANCELED||res!=0)
-		log_->elog("thread is not canceled!\n");
-	sender_tid_=0;
+	if (false == g_thread_pool_used) {
+		pthread_cancel(sender_tid_);
+		void* res;
+		pthread_join(sender_tid_,&res);
+		if(res!=PTHREAD_CANCELED||res!=0)
+			log_->elog("thread is not canceled!\n");
+		sender_tid_=0;
+	}
 }
 
 void ExpandableBlockStreamExchangeLowerMaterialized::closeDiskFiles() {

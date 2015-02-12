@@ -12,4 +12,5 @@ libutility_a_SOURCES = \
 	generator.h 						lock.h \
 	rdtsc.h 							test_tool.h \
 	warmup.h \
+	ThreadPool.h					ThreadPool.cpp \
 	data_distribution_generator.cpp 	data_distribution_generator.h 

@@ -4,27 +4,24 @@
  *  Created on: 2014年1月21日
  *      Author: imdb
  */
-#ifndef __RUNPARSER__
-#define __RUNPARSER__
-#include <sys/time.h>
-#include "sql_node_struct.h"
-#include <algorithm>
-#include <vector>
-#include "../common/Logging.h"
-//#include "../Environment.h"
-extern "C" int yylex();
-extern "C" int yyparse();
-//extern "C" int yyclearin();
-//extern "C" int yyerrok();
-extern Node * parsetreeroot;
-extern char globalInputText[10000];
-extern int globalReadOffset;
-extern int errorNumber;
-extern timeval start_time;
 
-extern vector<Node*> NodePointer;
+#include "runparsetree.h"
 
-static Node * getparsetreeroot()
+/*
+ * 利用StreamBuffer类作为缓冲，获取标准输入，处理后放入desc中，送给解析器解析
+ * @param stream_buffer: StreamBuffer类的一个实例
+ * @param desc 存放即将交给解析器的sql语句
+ */
+void GetInputSQL(StreamBuffer* stream_buffer, char *desc) {
+	assert(stream_buffer != NULL && desc != NULL);
+	if (stream_buffer->IsEmpty()) {
+//		getline(cin, stream_buffer->GetCurrent());
+		cin.getline(stream_buffer->GetCurrent(), stream_buffer->GetFreedBufferCount(),'\n');
+		stream_buffer->MoveForwardEnd(cin.gcount());
+	}
+}
+
+Node * getparsetreeroot()
 {
 	int charnum=0;
 	globalReadOffset = 0;
@@ -33,11 +30,11 @@ static Node * getparsetreeroot()
 	errorNumber = 0;
 	parsetreeroot = NULL;
 	memset(globalInputText, 0, sizeof(globalInputText));
-	printf("stdin buffer has:%d char\n", cin.rdbuf()->in_avail());
+//	printf("stdin buffer has:%d char\n", cin.rdbuf()->in_avail());
 	printf("Claims>");
 	while(1)
 	{
-		char c=getchar();
+		int c=getchar();
 //		if (c == '\n')
 //		isspace();
 
@@ -64,12 +61,9 @@ static Node * getparsetreeroot()
 //			"create projection on t(num, f, d) partitioned on num;\n"
 //			"select f,d from t;\n"
 //			);
-	SQLParse_log("globalInputText:\n%s\n",globalInputText);
 
-//	yyclearin;
-//	yychar = YYEMPTY;
-//	yyerrok;
-//	cleanSQLparse();
+//	strcpy(globalInputText,"show tables;show");
+	SQLParse_log("globalInputText:\n%s\n",globalInputText);
 
 	gettimeofday(&start_time, NULL);//2014-5-4---add---by Yu
 
@@ -84,7 +78,7 @@ static Node * getparsetreeroot()
 	}
 }
 
-static Node * getparsetreeroot(const char *sql)
+Node * getparsetreeroot(const char *sql)
 {
 	assert(sql != NULL);
 	ASTParserLogging::log("sql argument is %s", sql);
@@ -113,5 +107,3 @@ static Node * getparsetreeroot(const char *sql)
 	}
 }
 
-
-#endif

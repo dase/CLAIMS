@@ -153,12 +153,12 @@ void ClientListener::configure() {
 
 	const int error1 = pthread_create(&t_Receiver, NULL, receiveHandler, this);
 	if (error1 != 0) {
-		std::cout << "cannot create receive thread!" << std::endl;
+		std::cout << "cannot create receive thread!" << strerror(errno) << std::endl;
 	}
 
 	const int error2 = pthread_create(&t_Sender, NULL, sendHandler, this);
 	if (error2 != 0) {
-		std::cout << "cannot create send thread!" << std::endl;
+		std::cout << "cannot create send thread!" << strerror(errno) << std::endl;
 	}
 
 	ClientListenerLogging::log("sender thread id=%x\n",t_Sender);

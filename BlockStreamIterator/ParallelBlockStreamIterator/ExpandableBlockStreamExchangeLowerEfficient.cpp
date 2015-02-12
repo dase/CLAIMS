@@ -80,13 +80,17 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 	}
 
 	/** create the sender thread **/
-	int error;
-	error=pthread_create(&sender_tid,NULL,sender,this);
-	if(error!=0){
-		logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
-		return false;
-	}
-
+//	if (true == g_thread_pool_used) {
+//		Environment::getInstance()->getThreadPool()->add_task(sender, this);
+//	}
+//	else {
+		int error;
+		error=pthread_create(&sender_tid,NULL,sender,this);
+		if(error!=0){
+			logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
+			return false;
+		}
+//	}
 //	pthread_create(&debug_tid,NULL,debug,this);
 /*debug*/
 	return true;
