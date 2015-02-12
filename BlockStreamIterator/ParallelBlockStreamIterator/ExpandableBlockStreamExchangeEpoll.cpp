@@ -362,11 +362,16 @@ bool ExpandableBlockStreamExchangeEpoll::WaitForConnectionFromLowerExchanges(){
 
 bool ExpandableBlockStreamExchangeEpoll::CreateReceiverThread(){
 	int error;
-	error=pthread_create(&receiver_tid,NULL,receiver,this);
-	if(error!=0){
-		logging_->elog("[%ld] Failed to create receiver thread.",state.exchange_id_);
-		return false;
-	}
+//	if (true == g_thread_pool_used) {
+//		Environment::getInstance()->getThreadPool()->add_task(receiver, this);
+//	}
+//	else{
+		error=pthread_create(&receiver_tid,NULL,receiver,this);
+		if(error!=0){
+			logging_->elog("[%ld] Failed to create receiver thread.",state.exchange_id_);
+			return false;
+		}
+//	}
 //	pthread_create(&debug_tid,NULL,debug,this);
 	return true;
 }

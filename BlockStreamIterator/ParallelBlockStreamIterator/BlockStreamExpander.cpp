@@ -258,11 +258,16 @@ bool BlockStreamExpander::createNewExpandedThread(){
 	para.pthis=this;
 	ticks start=curtick();
 	if(exclusive_expanding_.try_acquire()){
-		const int error=pthread_create(&tid,NULL,expanded_work,&para);
+//		if (true == g_thread_pool_used){
+//			Environment::getInstance()->getThreadPool()->add_task(expanded_work, &para);
+//		}
+//		else {
+			const int error=pthread_create(&tid,NULL,expanded_work,&para);
 		if(error!=0){
 			std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
 			return false;
 		}
+//		}
 		para.sem.wait();
 		exclusive_expanding_.release();
 	//	printf("[Expander %d ]Expanded!\n",expander_id_);

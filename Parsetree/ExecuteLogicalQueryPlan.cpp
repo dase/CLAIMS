@@ -19,7 +19,7 @@
 
 #include "../Parsetree/sql_node_struct.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
-#include "../Parsetree/runparsetree.cpp"
+#include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
 #include "../LogicalQueryPlan/Scan.h"
@@ -497,8 +497,8 @@ void ExecuteLogicalQueryPlan()
 				if (!semantic_analysis(node,false))//---3.22fzh---
 				{
 					SQLParse_elog("semantic_analysis error");
-					assert(false);
-					return;
+//					assert(false);
+					break;
 				}
 				preprocess(node);
 				//#ifdef SQL_Parser

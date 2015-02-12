@@ -13,6 +13,7 @@
 #include "BlockStreamIteratorBase.h"
 #include "../common/Schema/Schema.h"
 #include "../common/Block/DynamicBlockBuffer.h"
+#include "../Environment.h"
 class BlockStreamResultCollector:public BlockStreamIteratorBase {
 public:
 

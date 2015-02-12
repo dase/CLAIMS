@@ -21,6 +21,7 @@
 #include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
+#include "utility/ThreadPool.h"
 #include "Client/ClaimsServer.h"
 #include "Resource/BufferManager.h"
 
@@ -36,6 +37,7 @@ public:
 	InstanceResourceManager* getResourceManagerSlave();
 	NodeID getNodeID()const;
 	Catalog* getCatalog()const;
+	ThreadPool* getThreadPool() const;
 	Environment(bool ismaster=false);
 private:
 	void readConfigFile();
@@ -48,6 +50,7 @@ private:
 	void initializeClientListener();
 	void initializeExpressionSystem();
 	void destoryClientListener();
+	bool initializeThreadPool();
 private:
 	static Environment* _instance;
 	PortManager* portManager;
@@ -71,6 +74,8 @@ private:
 	IndexManager* indexManager_;
 	ExpanderTracker* expander_tracker_;
 	ClientListener* listener_;
+
+	ThreadPool *thread_pool_;
 
 	/**
 	 * TODO: the master and slave pair, such as ResouceManagerMaster and ResourceManagerSlave, should have a

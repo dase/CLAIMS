@@ -45,8 +45,13 @@ bool BlockStreamResultCollector::open(const PartitionOffset& part_off){
 
 
 	registered_thread_count_++;
-	pthread_t tid;
-	pthread_create(&tid,NULL,worker,this);
+	if (true == g_thread_pool_used) {
+		Environment::getInstance()->getThreadPool()->add_task(worker, this);
+	}
+	else {
+		pthread_t tid;
+		pthread_create(&tid,NULL,worker,this);
+	}
 	unsigned long long int start=curtick();
 //	while(!ChildExhausted()){
 //		usleep(1);
