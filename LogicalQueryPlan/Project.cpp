@@ -26,10 +26,8 @@ LogicalProject::LogicalProject(LogicalOperator *child, vector<QNode *>exprTree)
 }
 
 LogicalProject::~LogicalProject(){
-	dataflow_->~Dataflow();
-	if(child_>0){
-		child_->~LogicalOperator();
-	}
+	delete dataflow_;
+	delete child_;
 }
 
 Dataflow LogicalProject::getDataflow(){

@@ -41,7 +41,10 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
-
+	delete state_.input;
+	delete state_.hashSchema;
+	delete state_.output;
+	delete state_.child;
 }
 
 BlockStreamAggregationIterator::State::State(
@@ -168,6 +171,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	{
 		while(state_.child->next(bsb))	// get every block from child
 		{
+			bsb->setEmpty();
+			continue;
 			BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
 			bsti->reset();
 			while((cur=bsti->currentTuple())!=0)	// get every tuple from block
@@ -334,6 +339,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		barrierArrive(3);
 
 	delete bsb;
+	hashtable_->report_status();
 }
 
 /*

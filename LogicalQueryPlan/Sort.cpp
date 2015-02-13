@@ -16,7 +16,8 @@ LogicalSort::LogicalSort(LogicalOperator *child,std::vector<LogicalSort::OrderBy
 }
 
 LogicalSort::~LogicalSort() {
-
+	if(child_>0)
+		delete child_;
 }
 
 Dataflow LogicalSort::getDataflow(){

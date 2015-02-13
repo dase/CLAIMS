@@ -18,11 +18,8 @@ Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vec
 }
 
 Aggregation::~Aggregation() {
-	dataflow_->~Dataflow();
-	if(child_>0){
-		child_->~LogicalOperator();
-	}
-	// TODO Auto-generated destructor stub
+	delete dataflow_;
+	delete  child_;
 }
 Dataflow Aggregation::getDataflow(){
 	if(dataflow_!=0)

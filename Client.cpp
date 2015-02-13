@@ -56,7 +56,8 @@ int main(int argc, char** argv){
 
 		std::string input;
 		readStrigFromTerminal(input);
-//		input = "select sec_code ,count(*) from cj group by sec_code;";
+//		sleep(3);
+//		input = "select count(*) from (select row_id ,count(*) from cj group by row_id order by sec_code) as b;";
 
 
 		query.append(input.c_str());

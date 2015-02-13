@@ -158,7 +158,7 @@ BasicHashTable::~BasicHashTable()
 	delete[] grandmother_lock_;
 #else
 	grandmother->purge_memory();
-	grandmother->~pool();
+	delete grandmother;
 #endif
 #endif
 	delete[] bucket_;

@@ -34,7 +34,7 @@ ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan()
 }
 
 ExpandableBlockStreamProjectionScan::~ExpandableBlockStreamProjectionScan() {
-	// TODO Auto-generated destructor stub
+	delete state_.schema_;
 }
 
 
