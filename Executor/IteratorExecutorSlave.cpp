@@ -111,14 +111,14 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 	executePhysicalQueryPlan(*it);
 
 //	CPUResourceManager::getInstance()->print();
-	it->~PhysicalQueryPlan();
+	delete it;
 	Pthis->logging_->log("A iterator tree is successfully executed!\n");
 	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
 	Pthis->lock_.acquire();
 	Pthis->busy_thread_list_.erase(pthread_self());
 	Pthis->lock_.release();
 //	p_green("Job in thread (%lx) finished.\n",pthread_self());
-	free((void**)arg);
+	delete[] ((void**)arg);
 }
 
 void IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan plan) {

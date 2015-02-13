@@ -41,7 +41,7 @@ initial_degree_of_parallelism=1
 
 expander_adaptivity_check_frequency=5000
 
-enable_expander_adaptivity=1
+enable_expander_adaptivity=0
 
 pipelined_exchange=1
 

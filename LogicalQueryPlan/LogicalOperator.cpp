@@ -23,7 +23,6 @@ Schema* LogicalOperator::getSchema(const std::vector<Attribute> &attributes)cons
 		columns.push_back(*attributes[i].attrType);
 	}
 	return new SchemaFix(columns);
-
 }
 Schema* LogicalOperator::getSchema(const std::vector<Attribute>& attributes_left,const std::vector<Attribute>& attributes_right)const{
 	std::vector<column_type> columns;
@@ -67,6 +66,7 @@ int LogicalOperator::getIndexInAttributeList(const std::vector<Attribute>& attri
 	}
 	return -1;
 }
+
 
 //bool LogicalOperator::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor){
 //	assert(false);

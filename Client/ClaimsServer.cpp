@@ -38,7 +38,7 @@ ClientListener::ClientListener(int port) {
 
 ClientListener::~ClientListener() {
 
-	delete m_clientFds;
+	delete[] m_clientFds;
 }
 
 int ClientListener::addClient(const int fd) {

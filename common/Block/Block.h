@@ -25,9 +25,7 @@ public:
 		return isReference_;
 	}
 
-	void setIsReference(bool isReference) {
-		isReference_ = isReference;
-	}
+	void setIsReference(bool isReference);
 
 protected:
 	unsigned BlockSize;

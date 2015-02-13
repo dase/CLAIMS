@@ -18,7 +18,6 @@ BlockStreamPrint::BlockStreamPrint(State state)
 }
 
 BlockStreamPrint::~BlockStreamPrint() {
-	// TODO Auto-generated destructor stub
 }
 bool BlockStreamPrint::open(const PartitionOffset& offset){
 	block_buffer_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
@@ -65,4 +64,10 @@ bool BlockStreamPrint::close(){
 void BlockStreamPrint::print(){
 	printf("Print:\n");
 	state_.child_->print();
+}
+
+BlockStreamPrint::State::~State() {
+	delete schema_;
+	if(child_>0)
+		delete child_;
 }

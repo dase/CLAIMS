@@ -28,6 +28,8 @@ BlockStreamExpander::BlockStreamExpander()
 BlockStreamExpander::~BlockStreamExpander() {
 	printf("Expander free!\n");
 	delete logging_;
+	delete state_.child_;
+	delete state_.schema_;
 }
 
 BlockStreamExpander::State::State(Schema* schema,BlockStreamIteratorBase* child,unsigned thread_count,unsigned block_size, unsigned block_count_in_buffer)

@@ -21,6 +21,7 @@ public:
 	public:
 		State(Schema* input,BlockStreamIteratorBase* child,const unsigned block_size,std::vector<std::string> column_header=std::vector<std::string>(),const PartitionOffset partitoin_offset=0);
 		State();
+		~State();
 	private:
 		Schema* input_;
 		BlockStreamIteratorBase* child_;

@@ -136,7 +136,93 @@ static int test_scan_filter_low_selectivity(){
 
 
 }
+static int test_scan_Aggregation_small_Groups(){
 
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+
+
+
+	std::vector<Attribute> group_by_attributes;
+	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
+
+	std::vector<Attribute> aggregation_attributes;
+	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+
+
+	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+
+	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+
+
+
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
+//	executable_query_plan->print();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
+
+//	executable_query_plan
+	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
+	if(!print_test_name_result(number_of_tuples==1022,"Scan Aggregation small groups")){
+		printf("\tExpected:870 actual: %d\n",number_of_tuples);
+	}
+	delete executable_query_plan;
+	delete root;
+	delete result_set;
+
+	return 1;
+
+
+}
+static int test_scan_Aggregation_large_Groups(){
+
+	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
+	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
+
+
+
+	std::vector<Attribute> group_by_attributes;
+	group_by_attributes.push_back(table_1->getAttribute("row_id"));
+
+	std::vector<Attribute> aggregation_attributes;
+	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+
+
+	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+
+	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+
+
+
+
+	const NodeID collector_node_id=0;
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+
+	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64 );
+//	executable_query_plan->print();
+	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
+
+	ResultSet *result_set=executable_query_plan->getResultSet();
+
+	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
+	if(!print_test_name_result(number_of_tuples==3966020,"Scan Aggregation large groups")){
+		printf("\tExpected:870 actual: %d\n",number_of_tuples);
+	}
+	delete executable_query_plan;
+	delete root;
+	delete result_set;
+
+	return 1;
+
+
+}
 static int test_scan_filter_Aggregation(){
 
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
@@ -440,36 +526,53 @@ static int test_expanderFramework_single_node(int repeated_times=20){
 
 	printf("This test requires one partition of POC sb and cj\n");
 
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan();
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_high_selectivity();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_low_selectivity();
+//	}
+//	while(true){
+		int input;
+		scanf("%d",&input);
+	for(unsigned i=0;i<input;i++){
+		test_scan_Aggregation_small_Groups();
 	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_high_selectivity();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_low_selectivity();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_Aggregation();
-	}
-	for(unsigned i=0;i<repeated_times;i++){
-		test_scan_filter_Scalar_Aggregation();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_no_repartition_filtered_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_complete_repartition_filtered_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_complete_repartition_scan_join();
-	}
-	for(unsigned i=0 ; i < repeated_times ; i++){
-		test_no_repartition_scan_join();
-	}
+//	for(unsigned i=0;i<input;i++){
+//		test_scan_Aggregation_large_Groups();
+//	}
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_Aggregation_large_Groups();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_low_selectivity();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Aggregation();
+//	}
+//	for(unsigned i=0;i<repeated_times;i++){
+//		test_scan_filter_Scalar_Aggregation();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_filtered_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_complete_repartition_filtered_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_complete_repartition_scan_join();
+//	}
+//	for(unsigned i=0 ; i < repeated_times ; i++){
+//		test_no_repartition_scan_join();
+//	}
 	printf("__________________FINISHED__________________\n");
 //	sleep(1);
-	Environment::getInstance()->~Environment();
+	delete Environment::getInstance();
+//	sleep(100000000);
 //
 }
 static void startup_multiple_node_environment(){
