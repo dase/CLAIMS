@@ -66,10 +66,10 @@ bool ExpandableBlockStreamSingleColumnScan::open(const PartitionOffset& part_off
 		}
 
 		data_=base_;
-//		data_ = (char*) malloc(file_length_);
+//		data_ = (char*) malloc(file_length_);		//newmalloc
 //
 //		if (data_ == 0) {
-//			printf("malloc errors!\n");
+//			printf("malloc errors!\n");		//newmalloc
 //			return false;
 //		}
 //		memcpy(data_, base_, file_length_);

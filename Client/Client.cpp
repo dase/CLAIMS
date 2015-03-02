@@ -58,7 +58,7 @@ ClientResponse* Client::submitQuery(std::string args) {
 	ClientLogging::log("Client: message from server!\n");
 
 	const int maxBytes = 10000L;
-	char *buf = new char[maxBytes];
+	char *buf = new char[maxBytes];	//new
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
@@ -91,7 +91,7 @@ ClientResponse* Client::receive() {
 	ClientResponse* ret = new ClientResponse();
 
 	const int maxBytes = 75536+sizeof(int)*2;
-	char *buf = new char[maxBytes];
+	char *buf = new char[maxBytes];	//new
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;

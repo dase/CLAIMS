@@ -783,7 +783,7 @@ opt_col_names: /* nil */	{ $$ = NULL; }
    ;
 
 insert_vals_list: '(' insert_vals ')'		{ $$ = newInsertValueList($2, NULL); }
-   | insert_vals_list ',' '(' insert_vals ')'	{ $$ = newInsertValueList($4, $1); }	//2014-4-17---Attention: the order can be reversed---by Yu
+   | '(' insert_vals ')' ',' insert_vals_list	{ $$ = newInsertValueList($2, $5); }	//2014-4-17---Attention: the order can be reversed---by Yu
    ;
    
 insert_vals:

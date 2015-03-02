@@ -42,7 +42,7 @@ static int sub_tuple_test(){
 
 	SubTuple st(schema,schema_new,index);
 
-	void* new_tuple=malloc(schema_new->getTupleMaxSize());
+	void* new_tuple=malloc(schema_new->getTupleMaxSize());		//newmalloc
 	void* orignal_tuple=&t;
 	st.getSubTuple(orignal_tuple,new_tuple);
 	schema->displayTuple(orignal_tuple);

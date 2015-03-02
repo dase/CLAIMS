@@ -499,7 +499,7 @@ static int ResultCollect_test(){
 
 		unsigned long valueCount = resultset->getNumberOftuples();
 		unsigned long tupleCount = 0;
-		void* *list = new void*[valueCount];
+		void* *list = new void*[valueCount];	//new
 		unsigned long i = 0;
 		while (block = (BlockStreamBase*) it.atomicNextBlock()) {
 			block_it = block->createIterator();
