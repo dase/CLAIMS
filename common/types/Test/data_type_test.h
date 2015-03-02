@@ -89,8 +89,8 @@ std::string test_decimal_add(char* left,char* right,int number_of_fractions){
 	column_list.push_back(column_type(t_decimal, number_of_fractions));
 	Schema* schema = new SchemaFix(column_list);
 
-	void* left_ = malloc(16);
-	void* right_ = malloc(16);
+	void* left_ = malloc(16);		//newmalloc
+	void* right_ = malloc(16);		//newmalloc
 	schema->getcolumn(0).operate->toValue(left_, left);
 	schema->getcolumn(0).operate->toValue(right_, right);
 	schema->getcolumn(0).operate->add(left_, right_);
@@ -161,7 +161,7 @@ std::string test_date_computation(std::string dt, std::string d, data_type d_t)
 	{
 	case t_date:
 	{
-		void* value = malloc(sizeof(date));
+		void* value = malloc(sizeof(date));		//newmalloc
 		Operate* op = new OperateDate();
 		op->toValue(value, dt.c_str());
 		date_duration dd(atoi(d.c_str()));
@@ -173,8 +173,8 @@ std::string test_date_computation(std::string dt, std::string d, data_type d_t)
 	}
 	case t_time:
 	{
-		void* value = malloc(sizeof(time_duration));
-		void* increament = malloc(sizeof(time_duration));
+		void* value = malloc(sizeof(time_duration));		//newmalloc
+		void* increament = malloc(sizeof(time_duration));		//newmalloc
 		Operate* op = new OperateTime();
 		op->toValue(value, dt.c_str());
 		op->toValue(increament, d.c_str());
@@ -187,7 +187,7 @@ std::string test_date_computation(std::string dt, std::string d, data_type d_t)
 	}
 	case t_datetime:
 	{
-		void* value = malloc(sizeof(ptime));
+		void* value = malloc(sizeof(ptime));		//newmalloc
 		Operate* op = new OperateDatetime();
 		op->toValue(value, dt.c_str());
 		time_duration td(duration_from_string(d));
@@ -209,7 +209,7 @@ TEST(DATE_TYPE, DATE_COMPUTATION)
 std::string null_value_test(unsigned int size, data_type t)
 {
 	column_type* ct = new column_type(t, 12, true);
-	void* value = malloc(size);
+	void* value = malloc(size);		//newmalloc
 	ct->operate->toValue(value, "");
 	std::string ret =  ct->operate->toString(value);
 	ct->~column_type();
@@ -234,7 +234,7 @@ TEST(DATA_TYPE, NULL_VALUE_TEST)
 std::string set_null_test(unsigned int size, data_type t)
 {
 	column_type* ct = new column_type(t, 12, true);
-	void* value = malloc(size);
+	void* value = malloc(size);		//newmalloc
 	ct->operate->setNull(value);
 	std::string ret =  ct->operate->toString(value);
 	ct->~column_type();

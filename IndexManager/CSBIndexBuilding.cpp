@@ -274,9 +274,9 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 				 vector<compare_node*> tmp;
 				 tuples_in_chunk_[*(ChunkOffset*)current_chunk] = tmp;
 			}
-			compare_node* c_node = (compare_node*)malloc(sizeof(compare_node));
+			compare_node* c_node = (compare_node*)malloc(sizeof(compare_node));		//newmalloc
 			c_node->vector_schema_ = vector_schema_;
-			c_node->tuple_ = malloc(vector_schema_->getTupleMaxSize());
+			c_node->tuple_ = malloc(vector_schema_->getTupleMaxSize());		//newmalloc
 			vector_schema_->copyTuple(current_tuple+state_.schema_->getcolumn(0).get_length(),c_node->tuple_);
 //			c_node->tuple_ = current_tuple+state_.schema_->getcolumn(0).get_length();
 //			c_node->op_ = state_.schema_->getcolumn(1).operate->duplicateOperator();

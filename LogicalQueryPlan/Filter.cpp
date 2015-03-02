@@ -325,7 +325,7 @@ void Filter::Condition::add(const Attribute& attr,const AttributeComparator::com
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
 	const unsigned value_length=attr.attrType->get_length();
-	void* value=malloc(value_length);
+	void* value=malloc(value_length);		//newmalloc
 	attr.attrType->operate->assignment(const_value,value);
 	const_value_list_.push_back(value);
 }
@@ -333,7 +333,7 @@ void Filter::Condition::add(const Attribute& attr,const AttributeComparator::com
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
 	const unsigned value_length=attr.attrType->get_length();
-	void* value=malloc(value_length);
+	void* value=malloc(value_length);		//newmalloc
 	attr.attrType->operate->toValue(value,str_exp.c_str());
 	const_value_list_.push_back(value);
 }

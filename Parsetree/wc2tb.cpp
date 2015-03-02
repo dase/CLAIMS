@@ -381,7 +381,7 @@ int solve_join_condition(Node * fromnode)
 			}break;
 			default:
 			{
-				SQLParse_log("wc2tb line:377 can't support the join type\n");
+//				SQLParse_log("wc2tb line:377 can't support the join type\n");
 			}
 		}
 		p=fnode->next;

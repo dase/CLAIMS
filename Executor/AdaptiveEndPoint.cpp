@@ -47,7 +47,7 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 		logging_->elog("Error occurs when waiting for the coordinator EndPoint");
 	}
 	FileClose(socket_coor);
-	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_coor);
+//	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_coor);
 
 }
 

@@ -20,7 +20,7 @@ inline void insertNodePointer(Node *a)	// 2014-3-7---增加将节点指针存入
 // 2014-3-4---增加新建语句列表函数---by余楷
 struct Node *newStmt(nodetype t, Node *list, Node *newNode)
 {
-	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
+	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));		//newmalloc
 	if(!a)
 	{
 		yyerror("out of space!");
@@ -518,7 +518,6 @@ Node* newInsertValueList(Node *insert_vals, Node *next)
 	a->next = next;
 
 	//cout<<"Insert_val_list is created"<<endl;
-
 
 	insertNodePointer((Node*)a);	// 2014-3-7---将节点指针存入指针数组---by余楷
 	return (Node*)a;

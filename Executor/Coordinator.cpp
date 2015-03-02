@@ -257,7 +257,7 @@ void* Coordinator::ListeningNewNode(void *arg) {
 
 		FileClose(socket_fd_new);
 //		logging->elog("-----for debug: fd %d is closed", socket_fd_new);
-		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd_new);
+//		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_fd_new);
 		receiver->~TimeOutReceiver();
 	}
 }

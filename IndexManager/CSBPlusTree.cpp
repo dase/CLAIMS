@@ -924,8 +924,8 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::Search(T key)
 //	vector<search_result*> ret;
 	ret->clear();
 	int i = 0;
-/*for testing*/	char* sPath = (char*)malloc(1024);
-/*for testing*/	memset((void*)sPath, 0, 1024);
+/*for testing*/	char* sPath = (char*)malloc(1024);		//newmalloc
+/*for testing*/	memset((void*)sPath, 0, 1024);		//newmalloc
 
 //For testing begin
 	int offset = 0;
@@ -1047,8 +1047,8 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 	if (lower_key > upper_key)
 		return ret;
 	int i = 0;
-/*for testing*/	char* sPath = (char*)malloc(1024);
-/*for testing*/	memset((void*)sPath, 0, 1024);
+/*for testing*/	char* sPath = (char*)malloc(1024);		//newmalloc
+/*for testing*/	memset((void*)sPath, 0, 1024);		//newmalloc
 
 //For testing begin
 	int offset = 0;
@@ -1185,8 +1185,8 @@ map<index_offset, vector<index_offset>* >* CSBPlusTree<T>::rangeQuery(T lower_ke
 	if (lower_key > upper_key)
 		return ret;
 	int i = 0;
-/*for testing*/	char* sPath = (char*)malloc(1024);
-/*for testing*/	memset((void*)sPath, 0, 1024);
+/*for testing*/	char* sPath = (char*)malloc(1024);		//newmalloc
+/*for testing*/	memset((void*)sPath, 0, 1024);		//newmalloc
 
 //For testing begin
 	int offset = 0;

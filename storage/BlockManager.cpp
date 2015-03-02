@@ -187,7 +187,7 @@ bool BlockManager::put(string blockId,storageLevel level,void* value){
 //		int offset=0;
 //		while(length<hdfsfile->mSize){
 //			ChunkInfo ci;
-//			void *rt=malloc(CHUNK_SIZE);
+//			void *rt=malloc(CHUNK_SIZE);		//newmalloc
 //			tSize bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
 //			cout<<"split interface: "<<bytes_num<<endl;
 //			ostringstream chunkid;
@@ -226,7 +226,7 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name){
 	unsigned length=0;
 	length=length+CHUNK_SIZE*offset;
 	if(length<hdfsfile->mSize){
-		void *rt=malloc(CHUNK_SIZE);
+		void *rt=malloc(CHUNK_SIZE);		//newmalloc
 		tSize bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
 		ostringstream chunkid;
 		chunkid<<file_name.c_str()<<"$"<<offset;

@@ -27,7 +27,7 @@ int ClientListener::standard_err = dup(STDERR_FILENO);
 ClientListener::ClientListener(int port) {
 
 	m_num = 0;
-	m_clientFds = new int[MAXCONN];
+	m_clientFds = new int[MAXCONN];	//new
 	for (int i = 0; i < MAXCONN; ++i) {
 		m_clientFds[i] = -1;
 	}
@@ -187,7 +187,7 @@ void* ClientListener::receiveHandler(void *para) {
 
 	const int buffer_size=10240;
 
-	char *buf = new char[buffer_size];
+	char *buf = new char[buffer_size];	//new
 	memset(buf, 0, sizeof(buf));
 
 	unsigned int sockLen;
@@ -737,7 +737,7 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 //	int &serverSockFd = m_fd;
 //	int clientSockFd;
 //	unsigned int nread;
-//	char *buf = new char[128];
+//	char *buf = new char[128];	//new
 //	sockaddr_in serverSocket;
 //	sockaddr_in clientSocket;
 //

@@ -13,7 +13,7 @@ Block::Block(unsigned BlockSize)
 :BlockSize(BlockSize),isReference_(false)
 {
 //	start=(char*)memalign(cacheline_size,BlockSize);
-	start=(char*)malloc(BlockSize);
+	start=(char*)malloc(BlockSize);		//newmalloc
 	/*the following memset is just for debugging the memory leak*/
 //	memset(start,0,BlockSize);
 }

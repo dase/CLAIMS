@@ -26,7 +26,7 @@ private:
 public:
 	StreamBuffer();
 	StreamBuffer(unsigned length = 10000):cur_(0),end_(0),length_(length){
-		buffer_ = new char[length_];
+		buffer_ = new char[length_];	//new
 	}
 
 	~StreamBuffer(){
