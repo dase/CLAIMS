@@ -109,7 +109,6 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 		}
 		if(result_flag==false){
 			FreeAllNode();	// -Yu 2015-3-2
-			return;
 		}
 		stmtList = (Stmt *)stmtList->next;
 	}
@@ -192,8 +191,8 @@ void ExecuteLogicalQueryPlan()
 			}//end switch
 			if(result_flag==false){
 				FreeAllNode();	// -Yu 2015-3-2
-				return;
 			}
+//			malloc_stats();
 			stmtList = (Stmt *)stmtList->next;
 		}
 
@@ -541,10 +540,11 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 	result_set=NULL;
 	return;
 }
+/*
 
 void CreateTable(Catalog *catalog, Node *node) {
 	string tablename;
-	/* nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt */
+	 nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt
 	Create_table_stmt * ctnode = (Create_table_stmt *)node;
 	if(ctnode->name2 != NULL) {
 		tablename = ctnode->name2;
@@ -579,9 +579,9 @@ void CreateTable(Catalog *catalog, Node *node) {
 			primaryname = colname;
 			Column_atts *column_atts = (Column_atts*)data->col_atts;
 
-			/* TODO: Whether column is unique or has default value is not finished,
+			 TODO: Whether column is unique or has default value is not finished,
 			 *  because there are no supports
-			 */
+
 			Datatype * datatype = (Datatype *)data->datatype;
 			switch (datatype->datatype)	// add more type --- 2014-4-2
 			{
@@ -793,12 +793,12 @@ void CreateTable(Catalog *catalog, Node *node) {
 
 	TableID table_id=catalog->getTable(tablename)->get_table_id();
 
-	/*
+
 	 * note:
 	 * after creating a new table,
 	 * 	a projection with 18 partition number will be created
 	 * 	--Yu,2015-2-9
-	 */
+
 	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
 	//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 	////					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
@@ -807,6 +807,7 @@ void CreateTable(Catalog *catalog, Node *node) {
 
 	catalog->saveCatalog();
 }
+*/
 
 void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set, bool & result_flag,  string &error_msg, string &info) {
 	bool is_correct = true;
@@ -886,6 +887,7 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set, bool
 	result_set=NULL;
 	return;
 }
+/*
 
 void CreateProjection(Catalog *catalog, Node *node) {
 	ASTParserLogging::log("this is create projection");
@@ -938,6 +940,7 @@ void CreateProjection(Catalog *catalog, Node *node) {
 
 	catalog->saveCatalog();
 }
+*/
 
 void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_flag, string &error_msg, string &info, const bool local_mode) {
 	if (!semantic_analysis(node,false))
@@ -997,16 +1000,18 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	physical_iterator_tree->close();
 	//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 	result_set=physical_iterator_tree->getResultSet();
+	cout<<"execute "<<result_set->query_time_<<" s"<<endl;
 	result_flag=true;
 
 	if (local_mode){
-		result_set->print();
+//		result_set->print();
 		delete physical_iterator_tree;
 		delete root;
 		delete result_set;
 	}
 	return;
 }
+/*
 
 void Query(Catalog *catalog, Node *node) {
 	SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
@@ -1079,6 +1084,7 @@ void Query(Catalog *catalog, Node *node) {
 	delete result_set;
 	//				printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 }
+*/
 
 void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info) {
 	Loadtable_stmt *new_node = (Loadtable_stmt*)node;
@@ -1123,6 +1129,7 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result
 	catalog->saveCatalog();
 	//	catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 }
+/*
 
 void LoadData(Catalog *catalog, Node *node) {
 	Loadtable_stmt *new_node = (Loadtable_stmt*)node;
@@ -1158,6 +1165,7 @@ void LoadData(Catalog *catalog, Node *node) {
 	loader->load();
 	catalog->saveCatalog();
 }
+*/
 
 void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info) {
 	bool has_warning = false;
@@ -1328,6 +1336,7 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &resu
 	info = ostr.str();
 	result_set=NULL;
 }
+/*
 
 void InsertData(Catalog *catalog, Node *node) {
 
@@ -1461,6 +1470,7 @@ void InsertData(Catalog *catalog, Node *node) {
 
 	catalog->saveCatalog();
 }
+*/
 
 void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info) {
 	Show_stmt *show_stmt = (Show_stmt *)node;
@@ -1488,6 +1498,7 @@ void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &resul
 	}
 	}
 }
+/*
 
 void ShowTable(Catalog *catalog, Node *node) {
 	Show_stmt *show_stmt = (Show_stmt *)node;
@@ -1506,6 +1517,7 @@ void ShowTable(Catalog *catalog, Node *node) {
 	}
 	}
 }
+*/
 
 void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool&result_flag, string &error_msg, string &info) {
 	assert(node != NULL);
