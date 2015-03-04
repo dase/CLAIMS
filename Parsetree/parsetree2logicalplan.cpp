@@ -1071,7 +1071,7 @@ static LogicalOperator* select_where_from2logicalplan(Node *parsetree,LogicalOpe
 				{
 					int flag=0;
 					char * expr_name=get_expr_str(sexpr->colname);//TODO need to judge whether the expr_name is in group_by_list
-					expr_node=newColumn(t_name_name,"",expr_name,NULL);//construct temporary node
+					expr_node=newColumn(t_name_name,"",expr_name,NULL,NULL);//construct temporary node
 				}
 				QNode * qnode=transformqual(expr_node,last_logicalplan);
 				if(sexpr->ascolname!=NULL)

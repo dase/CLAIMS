@@ -23,7 +23,7 @@ using namespace std;
 #include "../../Debug.h"
 #include "../../utility/lock.h"
 #include "../../common/Schema/Schema.h"
-
+#include "../../common/Expression/queryfunc.h"
 class BlockStreamAggregationIterator:public ExpandableBlockStreamIteratorBase{
 public:
 	class State{

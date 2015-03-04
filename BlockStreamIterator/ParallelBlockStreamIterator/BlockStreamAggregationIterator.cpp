@@ -24,13 +24,13 @@
 #include "../../Debug.h"
 #include "../../utility/rdtsc.h"
 #include "../../Executor/ExpanderTracker.h"
-
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
 	sema_open_.set_value(1);
 	sema_open_end_.set_value(1);
 	initialize_expanded_status();
 	assert(state_.hashSchema);
+	InitAvgDivide();
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
@@ -38,6 +38,7 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 	sema_open_.set_value(1);
 	sema_open_end_.set_value(1);
 	initialize_expanded_status();
+	InitAvgDivide();
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
@@ -87,10 +88,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	}
 
 	//	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
-	if(tryEntryIntoSerializedSection(1)){
-
-
-
+	if(tryEntryIntoSerializedSection(1))
+	{
 		unsigned outputindex=0;
 		for(unsigned i=0;i<state_.groupByIndex.size();i++)
 		{
@@ -135,12 +134,8 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		hash_=PartitionFunctionFactory::createGeneralModuloFunction(state_.nbuckets);
 		hashtable_=new BasicHashTable(state_.nbuckets,state_.bucketsize,state_.hashSchema->getTupleMaxSize());//
 		open_finished_=true;
-
 	}
-
-
 	barrierArrive(1);
-
 	void *cur=0;
 	unsigned bn;
 	bool key_exist;
@@ -354,19 +349,22 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 	void *key_in_output_tuple;
 	ht_cur_lock_.acquire();
 	while(it_.readCurrent()!=0||(hashtable_->placeIterator(it_,bucket_cur_))!=false){
-		while((cur_in_ht=it_.readCurrent())!=0){
-			if((tuple=block->allocateTuple(state_.output->getTupleMaxSize()))!=0){//??
-				if(state_.avgIndex.size()>0&&state_.isPartitionNode==false)
+		while((cur_in_ht=it_.readCurrent())!=0)
+		{
+			if((tuple=block->allocateTuple(state_.output->getTupleMaxSize()))!=0)//the tuple is empty??
+			{
+				if(state_.avgIndex.size()>0&&state_.isPartitionNode==false)//avg=sum/tuple_size
 				{
-					for(unsigned i=0;i<state_.groupByIndex.size();i++){
+					for(unsigned i=0;i<state_.groupByIndex.size();i++)//in one tuple that are produced from aggregation statement, the groupby attributes is at the head, the rest attributes belong to the aggregation part.
+					{
 						key_in_hash_tuple=state_.hashSchema->getColumnAddess(inputGroupByToOutput_[i],cur_in_ht);
 						key_in_output_tuple=state_.output->getColumnAddess(inputGroupByToOutput_[i],tuple);
 						state_.output->getcolumn(inputGroupByToOutput_[i]).operate->assignment(key_in_hash_tuple,key_in_output_tuple);
 					}
-					state_.avgIndex.push_back(-1);//边界点
+					state_.avgIndex.push_back(-1);//boundary point,
 					int aggsize=state_.aggregationIndex.size()-1;
 					unsigned i=0,j=0;
-					unsigned long  fm=(*(unsigned long *)state_.hashSchema->getColumnAddess(inputAggregationToOutput_[aggsize],cur_in_ht));
+					unsigned long  tuple_number=(*(unsigned long *)state_.hashSchema->getColumnAddess(inputAggregationToOutput_[aggsize],cur_in_ht));
 					for(;i<aggsize;i++)
 					{
 						if(state_.avgIndex[j]==i)	//avgIndex save the index of avg in aggregations,see Aggregation.cpp:116
@@ -374,99 +372,25 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 							assert(state_.aggregations[i]==State::sum);
 							j++;
 							void *unknowntype=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],cur_in_ht); //get the value in hash table
-							if(fm==0){
+
+							if(tuple_number==0)
+							{
 								key_in_hash_tuple=unknowntype;
-							}else{
-								// TODO: precision of avg result is not enough
-								switch(state_.hashSchema->columns[inputAggregationToOutput_[i]].type)
-								{
-									case t_int:
-									{
-										int  tmp=*(int *)unknowntype;
-										if(fm!=0)
-										tmp=(tmp/fm);
-										key_in_hash_tuple=&tmp;
-									}break;
-									case t_float:
-									{
-										float  tmp=*(float *)unknowntype;
-										if(fm!=0)
-										tmp=(tmp/fm);
-										key_in_hash_tuple=&tmp;
-									}break;
-									case t_double:
-									{
-										double  tmp=*(double *)unknowntype;
-										if(fm!=0)
-										tmp=(tmp/fm);
-										key_in_hash_tuple=&tmp;
-									}break;
-									case t_u_long:
-									{
-										unsigned long  tmp=*(unsigned long *)unknowntype;
-										if(fm!=0)
-										tmp=(tmp/fm);
-										key_in_hash_tuple=&tmp;
-									}break;
-									case t_string:
-									{
-										key_in_hash_tuple=unknowntype;
-									}break;
-									case t_date:
-									{
-										key_in_hash_tuple=unknowntype;
-									}break;
-									case t_time:
-									{
-										key_in_hash_tuple=unknowntype;
-									}break;
-									case t_datetime:
-									{
-										key_in_hash_tuple=unknowntype;
-									}break;
-									case t_decimal:
-									{
-										NValue  tmp=*(NValue *)unknowntype;
-										if(fm!=0)
-										{
-											stringstream ss;
-											ss<<fm;
-											tmp=tmp.op_divide(tmp.getDecimalValueFromString(ss.str()));
-										}
-									//	cout<<"agg---iterator---next tmp=  "<<tmp<<"  z= "<<tmp<<"  m=  "<<fm<<endl;
-										key_in_hash_tuple=&tmp;
-									}break;
-									case t_smallInt:
-									{
-										short  tmp=*(short *)unknowntype;
-										if(fm!=0)
-										tmp=(tmp/fm);
-	//										cout<<"agg---iterator---next tmp=  "<<tmp<<"  z= "<<tmp<<"  m=  "<<fm<<endl;
-										key_in_hash_tuple=&tmp;
-									}break;
-									case t_u_smallInt:
-									{
-										unsigned short  tmp=*(unsigned short *)unknowntype;
-										if(fm!=0)
-										tmp=(tmp/fm);
-	//										cout<<"agg---iterator---next tmp=  "<<tmp<<"  z= "<<tmp<<"  m=  "<<fm<<endl;
-										key_in_hash_tuple=&tmp;
-									}break;
-									default:
-									{
-										printf("BlockStreamAggregation.cpp unknown type\n");
-									}
-								}
+							}
+							else
+							{// TODO: precision of avg result is not enough
+
+								key_in_hash_tuple=unknowntype;//the room is enough?
+								ExectorFunction::avg_divide[state_.hashSchema->columns[inputAggregationToOutput_[i]].type](unknowntype,tuple_number,key_in_hash_tuple);
 							}
 						}
-						else{
+						else
+						{
 							key_in_hash_tuple=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],cur_in_ht);
 						}
 						key_in_output_tuple=state_.output->getColumnAddess(inputAggregationToOutput_[i],tuple);
-						//	cout<<"assign  i="<<i<<"   hash_value=   "<<*(unsigned long *)key_in_hash_tuple<<endl;
 						state_.output->getcolumn(inputAggregationToOutput_[i]).operate->assignment(key_in_hash_tuple,key_in_output_tuple);
 					}
-					//	cout<<"agg val partition node i="<<i<<" mpvalue= "<<state_.aggregationIndex[i]<<" value=  "<<(*(unsigned long*)state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],cur_in_ht))<<endl;
 				}
 				else{
 					memcpy(tuple,cur_in_ht,state_.output->getTupleMaxSize());

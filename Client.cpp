@@ -68,15 +68,15 @@ int main(int argc, char** argv){
 			ResultSet rs;
 			ClientLogging::log("Client get server response ok: %s\n",
 					response->content.c_str());
-			if(response->status == CHANGE){
+			if(response->status == CHANGEDD){
 				printf("%s\n",
 						response->content.c_str());
 			}
 			else{
-				while (response->status != END) {
+				while (response->status != ENDED) {
 
 					switch(response->status){
-					case SCHEMA:
+					case SCHEMASS:
 						rs.schema_=response->getSchema();
 						break;
 					case HEADER:

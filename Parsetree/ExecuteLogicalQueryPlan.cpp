@@ -48,10 +48,12 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 	string tablename;
-	Node* oldnode=getparsetreeroot(sql.c_str());
+    vector<Node *>allnode;
+	struct ParseResult presult={NULL,NULL,sql.c_str(),0,&allnode};
+	Node* oldnode=getparsetreeroot(&presult,sql.c_str());
 	if(oldnode == NULL)
 	{
-		FreeAllNode();
+		FreeAllNode(presult.node_pointer);
 		error_msg="There are some errors during parsing time";
 		result_flag=false;
 		result_set = NULL;
@@ -127,7 +129,9 @@ void ExecuteLogicalQueryPlan()
 	{
 		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
 		string tablename;
-		Node* oldnode=getparsetreeroot();
+	    vector<Node *>allnode;
+		struct ParseResult presult={NULL,NULL,NULL,0,&allnode};
+		Node* oldnode=getparsetreeroot(&presult);
 		// get parser time	//2014-5-4---add---by Yu
 		timeval finish_parser_time;
 		gettimeofday(&finish_parser_time, NULL);
@@ -136,7 +140,7 @@ void ExecuteLogicalQueryPlan()
 		if(oldnode == NULL)	// 2014-2-24---增加node为空的判断---by余楷
 		{
 			printf("[ERROR]there are some wrong in statement! please try again!!\n");
-			FreeAllNode();	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
+			FreeAllNode(presult.node_pointer);	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
 			//			printf("Continue(1) or not (others number)?\n");
 			//			scanf("%d",&count);
 			//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷

@@ -370,9 +370,9 @@ typedef union YYSTYPE
 {
 
 /* Line 2638 of glr.c  */
-#line 47 "sql.ypp"
+#line 23 "sql.ypp"
 
-	int intval;		// no used ---4-28
+	int intval;		
 	double floatval;	// no used ---4-28
 	char *strval;
 	int subtok;
@@ -390,10 +390,7 @@ typedef union YYSTYPE
 typedef struct YYLTYPE
 {
 
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
+  char yydummy;
 
 } YYLTYPE;
 # define YYLTYPE_IS_DECLARED 1
@@ -402,8 +399,7 @@ typedef struct YYLTYPE
 
 
 
-extern YYSTYPE yylval;
 
-extern YYLTYPE yylloc;
+
 
 

@@ -28,7 +28,7 @@ class HdfsLoader {
 public:
 	HdfsLoader();
 	HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator = '|', const char r_separator = '\n', open_flag open_flag_=APPEND);
-	HdfsLoader(const char c_separator, const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_=CREATE);
+	HdfsLoader(const char c_separator, const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_=CREATEE);
 	virtual ~HdfsLoader();
 
 	const char get_c_separator();

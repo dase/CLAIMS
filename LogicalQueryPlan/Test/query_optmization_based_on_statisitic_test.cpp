@@ -35,7 +35,7 @@
 #include "../../LogicalQueryPlan/Scan.h"
 
 #include "../../Parsetree/parsetree2logicalplan.cpp"
-#include "../../Parsetree/runparsetree.cpp"
+//#include "../../Parsetree/runparsetree.cpp"
 #include "../../Parsetree/sql_node_struct.h"
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../utility/rdtsc.h"

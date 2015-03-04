@@ -82,7 +82,7 @@ void setwcposition(struct Node *wccur,struct Node *flcur,set<string>&st)//在fro
 				if(judgeresult==2||st.size()>1)
 				{
 //					cout<<"~~~~~~~~~~~~~~~~~~~~ once again!"<<endl;
-					Node *p=newExprList(t_expr_list,wccur,NULL);
+					Node *p=newExprList(t_expr_list,wccur,NULL,NULL);
 					Expr_list_header *whcdn=(Expr_list_header *)(node->whcdn);
 					if(whcdn->header==NULL)
 					{
@@ -101,7 +101,7 @@ void setwcposition(struct Node *wccur,struct Node *flcur,set<string>&st)//在fro
 		case t_table:
 		{
 			Table * node=(Table *)flcur;
-			Node *p=newExprList(t_expr_list,wccur,NULL);
+			Node *p=newExprList(t_expr_list,wccur,NULL,NULL);
 			Expr_list_header *whcdn=(Expr_list_header *)(node->whcdn);
 			if(whcdn->header==NULL)
 			{
@@ -252,7 +252,7 @@ int setocposition(struct Node *wccur,struct Node *flcur,set<string>&st,vector<No
 			if(st.size()==1)
 			{
 				Table * node=(Table *)flcur;
-				Node *p=newExprList(t_expr_list,wccur,NULL);
+				Node *p=newExprList(t_expr_list,wccur,NULL,NULL);
 				Expr_list_header *whcdn=(Expr_list_header *)(node->whcdn);
 				if(whcdn->header==NULL)
 				{
@@ -364,11 +364,11 @@ int solve_join_condition(Node * fromnode)
 						vector<Node *>jcondition;
 						jcondition.clear();
 						depart_join_condition(node,cnode->args,jcondition);
-						Node *p=newExprList(t_expr_list,jcondition[0],NULL);
+						Node *p=newExprList(t_expr_list,jcondition[0],NULL,NULL);
 						node->condition=p;
 						for(int i=1;i<jcondition.size();i++)
 						{
-							Node *q=newExprList(t_expr_list,jcondition[i],NULL);
+							Node *q=newExprList(t_expr_list,jcondition[i],NULL,NULL);
 							((Expr_list *)p)->next=q;
 							p=q;
 						}
@@ -381,7 +381,7 @@ int solve_join_condition(Node * fromnode)
 			}break;
 			default:
 			{
-				SQLParse_log("wc2tb line:377 can't support the join type\n");
+			//	SQLParse_log("wc2tb line:377 can't support the join type\n");
 			}
 		}
 		p=fnode->next;

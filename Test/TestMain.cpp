@@ -93,10 +93,9 @@ int maina(int argc, char** argv){
 
 //	return test_cross_join();
 //	return test_cross_join();
-//	return query_optimization_outputdata();
 
 //	 execute_sql_test();
-//	return query_optimization_based_on_statistics();
+	return query_optimization_based_on_statistics();
 //	return daemon_test();
 //	return testServerClient();
 //	return test_data_type();
@@ -142,7 +141,7 @@ int maina(int argc, char** argv){
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
 
-	g_test_main(argc,argv);
+//	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 

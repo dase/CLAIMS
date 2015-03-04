@@ -49,7 +49,7 @@ LogicalScan::~LogicalScan() {
 //LogicalProjection LogicalScan::getLogcialProjection()const{
 //	return logical_projection_;
 //}
-
+//can only scan all attributes in a projection
 Dataflow LogicalScan::getDataflow(){
 	if(dataflow_==0)
 		dataflow_=new Dataflow();

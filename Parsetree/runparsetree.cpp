@@ -11,75 +11,93 @@
 #include <algorithm>
 #include <vector>
 #include "../common/Logging.h"
-//#include "../Environment.h"
-extern "C" int yylex();
-extern "C" int yyparse();
-//extern "C" int yyclearin();
-//extern "C" int yyerrok();
-extern Node * parsetreeroot;
-extern char globalInputText[10000];
-extern int globalReadOffset;
-extern int errorNumber;
+#include <string.h>
+#include "sql.tab.hpp"
+#include "sql.lex.h"
 extern timeval start_time;
-
-extern vector<Node*> NodePointer;
+extern int yyparse (struct ParseResult* result);
 
 static Node * getparsetreeroot()
 {
+	char InputStr[10000];
+	puts("SQL!!!!!");
 	int charnum=0;
-	globalReadOffset = 0;
-
-
-	NodePointer.clear();
-	errorNumber = 0;
-	parsetreeroot = NULL;
-	memset(globalInputText, 0, sizeof(globalInputText));
-	printf("Claims>");
-	while(1)
+    while(1)
+    {
+        char c=getchar();
+        InputStr[charnum++]=c;
+        if(c==';')
+        {
+            InputStr[charnum++]='\0';
+            break;
+        }
+    }
+    vector<Node *>allnode;
+	struct ParseResult presult={NULL,NULL,InputStr,0,&allnode};
+//reference to the example of "purecal"
+	if(yylex_init_extra(&presult, &presult.yyscan_info_))
 	{
-		char c=getchar();
-		globalInputText[charnum++]=c;
-		if(c==';')
-		{
-			globalInputText[charnum++]='\0';
-//			getchar();
-			break;
-		}
+    		perror("init alloc failed");
+    		return NULL;
+  	}
+	YY_BUFFER_STATE bp;
+	int len = strlen(InputStr);
+	printf("%s  %d\n",InputStr,len);
+	  //bp = yy_scan_string(buf, p->yyscan_info_);
+	bp = yy_scan_bytes(InputStr, len, presult.yyscan_info_);
+	yy_switch_to_buffer(bp,presult.yyscan_info_);
+  	if(!yyparse(&presult))
+  	{
+		return presult.ast;
 	}
-	// 2014-3-4---测试数据---by余楷
-//	strcpy(globalInputText,
-//			"select row_id from cj;\n"
-//			"create table tt(num int not null, s int, ss int primary key, c int, vc varchar(15));\n"
-//			"create projection on tt(num, s, c) partitioned on num;\n"
-//			"select s from tt;\n"
-//			"create projection on tt(ss, c) partitioned on ss;\n"
-//			"select ss from tt;\n"
-//			"create table t(num int, d double, f float);\n"
-//			"create table tt(num int, d double, f float);\n"
-//			"create table ttt(num int, d double, f float);\n"
-//			"create projection on t(num, f, d) partitioned on num;\n"
-//			"select f,d from t;\n"
-//			);
-	SQLParse_log("globalInputText:\n%s\n",globalInputText);
-
-//	yyclearin;
-//	yychar = YYEMPTY;
-//	yyerrok;
-//	cleanSQLparse();
-
-	gettimeofday(&start_time, NULL);//2014-5-4---add---by Yu
-
-	if(!yyparse())
+  	else
+  	{
+   	 	printf("SQL parse failed\n");
+   	 	return NULL;
+	}
+	yy_delete_buffer(bp, presult.yyscan_info_);
+}
+static Node * getparsetreeroot(struct ParseResult * presult)
+{
+	char InputStr[10000];
+	puts("SQL!!!!!");
+	int charnum=0;
+    while(1)
+    {
+        char c=getchar();
+        InputStr[charnum++]=c;
+        if(c==';')
+        {
+            InputStr[charnum++]='\0';
+            break;
+        }
+    }
+    presult->sql_clause=InputStr;
+//reference to the example of "purecal"
+	if(yylex_init_extra(presult, &presult->yyscan_info_))
 	{
-		return parsetreeroot;
+    		perror("init alloc failed");
+    		return NULL;
+  	}
+	YY_BUFFER_STATE bp;
+	int len = strlen(InputStr);
+	printf("%s  %d\n",InputStr,len);
+	  //bp = yy_scan_string(buf, p->yyscan_info_);
+	bp = yy_scan_bytes(InputStr, len, presult->yyscan_info_);
+	yy_switch_to_buffer(bp,presult->yyscan_info_);
+  	if(!yyparse(presult))
+  	{
+		return presult->ast;
 	}
-	else
-	{
-		printf("SQL parse failed\n");
-		return NULL;
+  	else
+  	{
+   	 	printf("SQL parse failed\n");
+   	 	return NULL;
 	}
+	yy_delete_buffer(bp, presult->yyscan_info_);
 }
 
+/*
 static Node * getparsetreeroot(const char *sql)
 {
 	assert(sql != NULL);
@@ -108,6 +126,72 @@ static Node * getparsetreeroot(const char *sql)
 		return NULL;
 	}
 }
+*/
+static Node * getparsetreeroot(const char * InputStr)
+{
+/*	char InputStr[10000];
+	puts("SQL!!!!!");
+	int charnum=0;
+    while(1)
+    {
+        char c=getchar();
+        InputStr[charnum++]=c;
+        if(c==';')
+        {
+            InputStr[charnum++]='\0';
+            break;
+        }
+    }
 
-
+	strcpy(InputStr,str);
+*/
+    vector<Node *>allnode;
+	struct ParseResult presult={NULL,NULL,InputStr,0,&allnode};
+//reference to the example of "purecal"
+	if(yylex_init_extra(&presult, &presult.yyscan_info_))
+	{
+    		perror("init alloc failed");
+    		return NULL;
+  	}
+	YY_BUFFER_STATE bp;
+	int len = strlen(InputStr);
+	printf("%s  %d\n",InputStr,len);
+	  //bp = yy_scan_string(buf, p->yyscan_info_);
+	bp = yy_scan_bytes(InputStr, len, presult.yyscan_info_);
+	yy_switch_to_buffer(bp,presult.yyscan_info_);
+  	if(!yyparse(&presult))
+  	{
+		return presult.ast;
+	}
+  	else
+  	{
+   	 	printf("SQL parse failed\n");
+   	 	return NULL;
+	}
+	yy_delete_buffer(bp, presult.yyscan_info_);
+}
+static Node * getparsetreeroot(struct ParseResult * presult,const char * InputStr)
+{
+	if(yylex_init_extra(presult, &presult->yyscan_info_))
+	{
+    		perror("init alloc failed");
+    		return NULL;
+  	}
+	YY_BUFFER_STATE bp;
+	int len = strlen(InputStr);
+	printf("%s  %d\n",InputStr,len);
+	  //bp = yy_scan_string(buf, p->yyscan_info_);
+	bp = yy_scan_bytes(InputStr, len, presult->yyscan_info_);
+	yy_switch_to_buffer(bp,presult->yyscan_info_);
+  	if(!yyparse(presult))
+  	{
+		return presult->ast;
+	}
+  	else
+  	{
+   	 	printf("SQL parse failed\n");
+   	 	return NULL;
+	}
+	yy_delete_buffer(bp, presult->yyscan_info_);
+}
 #endif

@@ -235,7 +235,7 @@ bool HdfsLoader::load(){
 	connector_->openFiles(open_flag_);
 #endif
 
-	if (open_flag_ == CREATE)
+	if (open_flag_ == CREATEE)
 	{
 		//TODO: for reloading after select, unbinding the original data
 		if (table_descriptor_->getProjectoin(0)->getPartitioner()->allPartitionBound())
@@ -336,7 +336,7 @@ bool HdfsLoader::load(){
 			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
-	if (open_flag_ == CREATE)
+	if (open_flag_ == CREATEE)
 		cout << "\n\n\n--------------------------Load End!--------------------------\n";
 	else
 		cout << "\n\n\n--------------------------Append End!--------------------------\n";

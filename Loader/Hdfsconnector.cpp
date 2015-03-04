@@ -28,7 +28,7 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_){
 		{
 			switch (open_flag_)
 			{
-			case CREATE:
+			case CREATEE:
 			{
 				if (hdfsExists(fs, (*par_writepath).c_str()) == 0)
 					cout << "[WARNINIG: Hdfsconnector.cpp->assgin_open_file()]: The file " << *par_writepath << " is already exits! It will be override!\n";

@@ -380,10 +380,10 @@ static int testServerClient() {
 				printf("Client get server response ok: %s\n",
 						response->content.c_str());
 
-				while (response->status != END) {
+				while (response->status != ENDED) {
 
 					switch(response->status){
-					case SCHEMA:
+					case SCHEMASS:
 						rs.schema_=response->getSchema();
 						break;
 					case HEADER:
@@ -403,7 +403,7 @@ static int testServerClient() {
 				rs.print();
 
 			}
-			else if (response->status == CHANGE){
+			else if (response->status == CHANGEDD){
 				printf("Message: %s\n", response->content.c_str());
 			}
 			else {

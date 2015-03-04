@@ -21,9 +21,9 @@
 
 #include "../../utility/rdtsc.h"
 
-#include "../../Parsetree/sql_node_struct.h"
-#include "../../Parsetree/parsetree2logicalplan.cpp"
-#include "../../Parsetree/runparsetree.cpp"
+//#include "../../Parsetree/sql_node_struct.h"
+//#include "../../Parsetree/parsetree2logicalplan.cpp"
+//#include "../../Parsetree/runparsetree.cpp"
 
 #include "../Executing.h"
 

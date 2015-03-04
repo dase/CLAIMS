@@ -1,41 +1,29 @@
-/* Companion source code for "flex & bison", published by O'Reilly
- * Media, ISBN 978-0-596-15597-1
- * Copyright (c) 2009, Taughannock Networks. All rights reserved.
- * See the README file for license conditions and contact info.
- * $Header: /home/johnl/flnb/code/sql/RCS/glrmysql.l,v 2.1 2009/11/08 02:53:39 johnl Exp $
- */
 /*
  * Scanner for mysql subset, GLR version
  */
 
-%option noyywrap nodefault yylineno case-insensitive
-
+%option noyywrap nodefault yylineno case-insensitive 
+%option reentrant bison-bridge 
+%option header-file="sql.lex.h" 
 %{
-#include "sql_node_struct.h"
-#include "sql.tab.hpp"
-
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <malloc.h>
-
-extern "C" int yylex();
-extern char globalInputText[10000];
-extern int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
+#include "sql.tab.hpp"
+#include "sql_node_struct.h"
 int oldstate;
-extern char linebuf[500];
-
-#undef YY_INPUT
-#define YY_INPUT(b,r,s) readInputForLexer(b,&r,s)
-
+extern void yyerror(struct ParseResult *pp,const char *s, ...);
 %}
 
 %x COMMENT
 %s BTWMODE
 
 %%
-
+%{
+struct ParseResult *pp =(struct ParseResult *) yyextra;
+%}
   /* keywords */
 
 ADD	{ return ADD; }
@@ -83,13 +71,13 @@ CURRENT_USER	{ return CURRENT_USER; }
 CURSOR	{ return CURSOR; }
 DATABASE	{ return DATABASE; }
 DATABASES	{ return DATABASES; }
-DAY   { return DAY;}//---5.26fzh---
+DAY   { return DAY;}
 DATE	{ return DATE; }
 DATETIME	{ return DATETIME; }
-HOUR	{ return DAY_HOUR; }//---5.26fzh---
-MICROSECOND	{ return DAY_MICROSECOND; }//---5.26fzh---
-MINUTE	{ return DAY_MINUTE; }//---5.26fzh---
-SECOND	{ return DAY_SECOND; }//---5.26fzh---
+HOUR	{ return DAY_HOUR; }
+MICROSECOND	{ return DAY_MICROSECOND; }
+MINUTE	{ return DAY_MINUTE; }
+SECOND	{ return DAY_SECOND; }
 NUMERIC|DEC|DECIMAL	{ return DECIMAL; }
 DECLARE	{ return DECLARE; }
 DEFAULT	{ return DEFAULT; }
@@ -122,7 +110,7 @@ FROM	{ return FROM; }
 FULLTEXT	{ return FULLTEXT; }
 GRANT	{ return GRANT; }
 GROUP	{ return GROUP; }
-HASH	{ return HASH; }	// 2014-3-24---增加---by Yu
+HASH	{ return HASH; }	
 HAVING	{ return HAVING; }
 HIGH_PRIORITY	{ return HIGH_PRIORITY; }
 HOUR_MICROSECOND	{ return HOUR_MICROSECOND; }
@@ -142,8 +130,8 @@ INTO	{ return INTO; }
 IS	{ return IS; }
 ITERATE	{ return ITERATE; }
 JOIN	{ return JOIN; }
-INDEX	{ return INDEX; }	// 2014-3-24---增加---by Yu
-KEY	{ return KEY; }	// 2014-3-24---修改---by Yu
+INDEX	{ return INDEX; }	
+KEY	{ return KEY; }
 KEYS	{ return KEYS; }
 KILL	{ return KILL; }
 LEADING	{ return LEADING; }
@@ -184,11 +172,11 @@ ORDER	{ return ORDER; }
 OUT	{ return OUT; }
 OUTER	{ return OUTER; }
 OUTFILE	{ return OUTFILE; }
-PARTITIONED	{ return PARTITIONED; }	// 2014-2-24---增加对这个词的识别---by余楷
+PARTITIONED	{ return PARTITIONED; }	
 PRECISION	{ return PRECISION; }
 PRIMARY	{ return PRIMARY; }
 PROCEDURE	{ return PROCEDURE; }
-PROJECTION	{ return PROJECTION; }	// 2014-2-24---增加对这个词的识别---by余楷
+PROJECTION	{ return PROJECTION; }	
 PURGE	{ return PURGE; }
 QUICK	{ return QUICK; }
 QUARTER { return QUARTER;}
@@ -261,20 +249,20 @@ VARCHAR(ACTER)?	{ return VARCHAR; }
 VARYING	{ return VARYING; }
 WHEN	{ return WHEN; }
 WHERE	{ return WHERE; }
-WEEK    { return WEEK;}//---5.26fzh---
+WEEK    { return WEEK;}
 WHILE	{ return WHILE; }
 WITH	{ return WITH; }
 WRITE	{ return WRITE; }
 XOR	{ return XOR; }
 YEAR	{ return YEAR; }
-MONTH	{ return YEAR_MONTH; }//---5.26fzh---
+MONTH	{ return YEAR_MONTH; }
 ZEROFILL	{ return ZEROFILL; }
 BEGIN		{ return BEGINT; }
 
    /* numbers */
 
 
-[0-9]+	{ yylval.strval = strdup(yytext); return INTNUM; } 	// 2014-4-14---save int value in string type
+[0-9]+	{ yylval->strval = strdup(yytext); return INTNUM; } 	// 2014-4-14---save int value in string type
 
 
 [0-9]+"."[0-9]* |
@@ -282,12 +270,12 @@ BEGIN		{ return BEGINT; }
 [0-9]+E[-+]?[0-9]+	|
 [0-9]+"."[0-9]*E[-+]?[0-9]+ |
 
-"."[0-9]*E[-+]?[0-9]+	{ yylval.strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
+"."[0-9]*E[-+]?[0-9]+	{ yylval->strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
 
     /* booleans */	// 2014-4-14---save bool value in string type
-TRUE	{ yylval.strval = "1"; return BOOL; }
-UNKNOWN	{ yylval.strval = "-1"; return BOOL; }	// 2014-4-14---not supported now---Yu
-FALSE	{ yylval.strval = "0"; return BOOL; }
+TRUE	{ yylval->strval = "1"; return BOOL; }
+UNKNOWN	{ yylval->strval = "-1"; return BOOL; }	// 2014-4-14---not supported now---Yu
+FALSE	{ yylval->strval = "0"; return BOOL; }
 
 
    /* strings */
@@ -296,26 +284,26 @@ FALSE	{ yylval.strval = "0"; return BOOL; }
 \"(\\.|\"\"|[^"\n])*\"  {
 				char *temp = strdup(yytext); 
 				//printf("temp:%s\n",temp);
-				yylval.strval = strdup(yytext);
+				yylval->strval = strdup(yytext);
 				
-				//2014-4-3---处理转义字符以及消去首尾的引号---by Yu
-				GetCorrectString(yylval.strval, temp);
+				//2014-4-3--- solve the character of transferred meaning and move the "" ---by Yu
+				GetCorrectString(yylval->strval, temp);
 				
-				//printf("the string is %s\n",yylval.strval);
+				//printf("the string is %s\n",yylval->strval);
 				return STRING;
 			}
 
-'(\\.|[^'\n])*$		{ yyerror("Unterminated string %s", yytext); }
-\"(\\.|[^"\n])*$		{ yyerror("Unterminated string %s", yytext); }
+'(\\.|[^'\n])*$		{ yyerror(pp,"Unterminated string %s", yytext); }
+\"(\\.|[^"\n])*$		{ yyerror(pp,"Unterminated string %s", yytext); }
 
    /* hex strings */
 X'[0-9A-F]+' |  
-0X[0-9A-F]+  	{ yylval.strval = strdup(yytext); return STRING; }
+0X[0-9A-F]+  	{ yylval->strval = strdup(yytext); return STRING; }
 
    /* bit strings */
 
 0B[01]+      |
-B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
+B'[01]+'     { yylval->strval = strdup(yytext); return STRING; }
 
 
    /* operators */
@@ -324,17 +312,17 @@ B'[01]+'     { yylval.strval = strdup(yytext); return STRING; }
 "&&"	{ return ANDOP; }
 "||"	{ return OR; }
 
-"<"	{ yylval.subtok = 1; return COMPARISON; }
-">"	{ yylval.subtok = 2; return COMPARISON; }
+"<"	{ yylval->subtok = 1; return COMPARISON; }
+">"	{ yylval->subtok = 2; return COMPARISON; }
 "!="	|
-"<>"	{ yylval.subtok = 3; return COMPARISON; }
-"="	{ yylval.subtok = 4; return COMPARISON; }
-"<="	{ yylval.subtok = 5; return COMPARISON; }
-">="	{ yylval.subtok = 6; return COMPARISON; }
-"<=>"	{ yylval.subtok = 12; return COMPARISON; }
+"<>"	{ yylval->subtok = 3; return COMPARISON; }
+"="	{ yylval->subtok = 4; return COMPARISON; }
+"<="	{ yylval->subtok = 5; return COMPARISON; }
+">="	{ yylval->subtok = 6; return COMPARISON; }
+"<=>"	{ yylval->subtok = 12; return COMPARISON; }
 
-"<<"	{ yylval.subtok = 1; return SHIFT; }
-">>"	{ yylval.subtok = 2; return SHIFT; }
+"<<"	{ yylval->subtok = 1; return SHIFT; }
+">>"	{ yylval->subtok = 2; return SHIFT; }
 
         /* functions */
 
@@ -352,44 +340,44 @@ CONVERT/"(" { return FCONVERT; }
 	/* 
         ---2.18add aggrection functions
          */
-COUNT    { int c = yyinput(); unput(c);
+COUNT    { int c = yyinput(pp->yyscan_info_); unput(c);
            if(c == '(') return FCOUNT;
-           yylval.strval = strdup(yytext);
+           yylval->strval = strdup(yytext);
            return NAME; }
-SUM    { int c = yyinput(); unput(c);
+SUM    { int c = yyinput(pp->yyscan_info_); unput(c);
            if(c == '(') return FSUM;
-           yylval.strval = strdup(yytext);
+           yylval->strval = strdup(yytext);
            return NAME; }           
-AVG    { int c = yyinput(); unput(c);
+AVG    { int c = yyinput(pp->yyscan_info_); unput(c);
            if(c == '(') return FAVG;
-           yylval.strval = strdup(yytext);
+           yylval->strval = strdup(yytext);
            return NAME; }
-MIN    { int c = yyinput(); unput(c);
+MIN    { int c = yyinput(pp->yyscan_info_); unput(c);
            if(c == '(') return FMIN;
-           yylval.strval = strdup(yytext);
+           yylval->strval = strdup(yytext);
            return NAME; }
-MAX    { int c = yyinput(); unput(c);
+MAX    { int c = yyinput(pp->yyscan_info_); unput(c);
            if(c == '(') return FMAX;
-           yylval.strval = strdup(yytext);
+           yylval->strval = strdup(yytext);
            return NAME; } 
            
-[A-Za-z][A-Za-z0-9_]*	{ yylval.strval = strdup(yytext);
+[A-Za-z][A-Za-z0-9_]*	{ yylval->strval = strdup(yytext);
                           return NAME; }
-`[^`/\\.\n]+`           { yylval.strval = strdup(yytext+1);
-                          yylval.strval[yyleng-2] = 0;
+`[^`/\\.\n]+`           { yylval->strval = strdup(yytext+1);
+                          yylval->strval[yyleng-2] = 0;
                           return NAME; }
 
-`[^`\n]*$               { yyerror("unterminated quoted name %s", yytext); }
+`[^`\n]*$               { yyerror(pp,"unterminated quoted name %s", yytext); }
 
 	/* user variables */
 @[0-9a-z_.$]+ |
 @\"[^"\n]+\" |
 @`[^`\n]+` |
-@'[^'\n]+' { yylval.strval = strdup(yytext+1); return USERVAR; }
+@'[^'\n]+' { yylval->strval = strdup(yytext+1); return USERVAR; }
 
-@\"[^"\n]*$ { yyerror("unterminated quoted user variable %s", yytext); }
-@`[^`\n]*$ { yyerror("unterminated quoted user variable %s", yytext); }
-@'[^'\n]*$ { yyerror("unterminated quoted user variable %s", yytext); }
+@\"[^"\n]*$ { yyerror(pp,"unterminated quoted user variable %s", yytext); }
+@`[^`\n]*$ { yyerror(pp,"unterminated quoted user variable %s", yytext); }
+@'[^'\n]*$ { yyerror(pp,"unterminated quoted user variable %s", yytext); }
 
 
 ":="     { return ASSIGN; }
@@ -401,11 +389,11 @@ MAX    { int c = yyinput(); unput(c);
 "/*"            { oldstate = YY_START; BEGIN COMMENT; }
 <COMMENT>"*/"   { BEGIN oldstate; }
 <COMMENT>.|\n   ;
-<COMMENT><<EOF>> { yyerror("unclosed comment"); }
+<COMMENT><<EOF>> { yyerror(pp,"unclosed comment"); }
 
 	/* everything else */
 [ \t\n]         /* white space */
-.               { yyerror("mystery character '%c'", *yytext); }
+.               { yyerror(pp,"mystery character '%c'", *yytext); }
 
 %%
 

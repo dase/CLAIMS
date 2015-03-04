@@ -12,7 +12,7 @@
 
 using std::vector;
 using std::string;
-enum open_flag { CREATE, APPEND };
+enum open_flag { CREATEE, APPEND };
 class Connector {
 public:
 	Connector(vector<vector<string> > writepath):writepath(writepath){

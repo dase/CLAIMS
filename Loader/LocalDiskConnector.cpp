@@ -28,7 +28,7 @@ bool LocalDiskConnector::openFiles(open_flag open_flag_) {
 			{
 				switch (open_flag_)
 				{
-				case CREATE:
+				case CREATEE:
 				{
 					int fd=FileOpen( (*par_writepath).c_str(),O_RDWR|O_TRUNC|O_CREAT,S_IWUSR|S_IRUSR);
 					if(fd==-1){
