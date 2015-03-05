@@ -19,6 +19,8 @@
 #include "../../utility/ExpandabilityShrinkability.h"
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"
+#include "../../utility/ThreadPool.h"
+#include "../../Environment.h"
 
 #define EXPANDER_BUFFER_SIZE 100
 

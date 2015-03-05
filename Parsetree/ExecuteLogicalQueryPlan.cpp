@@ -190,6 +190,7 @@ void ExecuteLogicalQueryPlan()
 			}
 			}//end switch
 			if(result_flag==false){
+				ASTParserLogging::elog("%s", error_msg.c_str());
 				FreeAllNode();	// -Yu 2015-3-2
 			}
 //			malloc_stats();
@@ -1004,7 +1005,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	result_flag=true;
 
 	if (local_mode){
-//		result_set->print();
+		result_set->print();
 		delete physical_iterator_tree;
 		delete root;
 		delete result_set;
