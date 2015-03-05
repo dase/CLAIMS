@@ -98,13 +98,18 @@ bool BlockStreamExpander::close(){
 //	void* res;
 //	pthread_join(coordinate_pid_,&res);
 	ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
-	for(std::set<pthread_t>::iterator it=in_work_expanded_thread_list_.begin();it!=in_work_expanded_thread_list_.end();it++){
-//		pthread_cancel(*it);
-		void* res;
+	if (true == g_thread_pool_used){
+		//do nothing
+	}
+	else{
+		for(std::set<pthread_t>::iterator it=in_work_expanded_thread_list_.begin();it!=in_work_expanded_thread_list_.end();it++){
+			//		pthread_cancel(*it);
+			void* res;
 
-		pthread_join(*it,&res);
-		assert(res==0);
-		logging_->elog("[%ld] A expander thread is killed before close!\n",expander_id_);
+			pthread_join(*it,&res);
+			assert(res==0);
+			logging_->elog("[%ld] A expander thread is killed before close!\n",expander_id_);
+		}
 	}
 //	while(!in_work_expanded_thread_list_.empty()){
 //		in_work_expanded_thread_list_.begin();
@@ -160,10 +165,10 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		Pthis->tid_to_shrink_semaphore[pid]->post();
 	}
 	else{
-			if(expanding==true){
-				expanding=false;
-//				printf("Expanding time:%f  %ld cycles\n",getSecond(start),curtick()-start);
-			}
+		if(expanding==true){
+			expanding=false;
+			//				printf("Expanding time:%f  %ld cycles\n",getSecond(start),curtick()-start);
+		}
 		BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
 		block_for_asking->setEmpty();
 		while(Pthis->state_.child_->next(block_for_asking)){
@@ -258,16 +263,17 @@ bool BlockStreamExpander::createNewExpandedThread(){
 	para.pthis=this;
 	ticks start=curtick();
 	if(exclusive_expanding_.try_acquire()){
-//		if (true == g_thread_pool_used){
-//			Environment::getInstance()->getThreadPool()->add_task(expanded_work, &para);
-//		}
-//		else {
-			const int error=pthread_create(&tid,NULL,expanded_work,&para);
-		if(error!=0){
-			std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
-			return false;
+		if (true == g_thread_pool_used){
+			Environment::getInstance()->getThreadPool()->add_task(expanded_work, &para);
+			logging_->log("[%ld] use thread [%lx] in thread pool!\n",expander_id_,tid);
 		}
-//		}
+		else {
+			const int error=pthread_create(&tid,NULL,expanded_work,&para);
+			if(error!=0){
+				std::cout<<"cannot create thread!!!!!!!!!!!!!!!"<<std::endl;
+				return false;
+			}
+		}
 		para.sem.wait();
 		exclusive_expanding_.release();
 	//	printf("[Expander %d ]Expanded!\n",expander_id_);
@@ -421,7 +427,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
-//		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
+		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
 		return true;
 	}
 //	lock_.release();
