@@ -224,7 +224,7 @@ bool HdfsLoader::insertRecords(){
 	return true;
 }
 
-bool HdfsLoader::load(){
+bool HdfsLoader::load(double sample_rate){
 #ifdef HDFS_LOAD
 	if(Config::local_disk_mode) {
 		connector_ = new LocalDiskConnector(writepath);
@@ -266,9 +266,10 @@ bool HdfsLoader::load(){
 		{
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
-
-/*for testing*/ if(row_id/t_count > 100000)
-/*for testing*/		break;
+			if((double)rand()/RAND_MAX>sample_rate)
+				continue;
+///*for testing*/ if(row_id/t_count > 100000)
+///*for testing*/		break;
 
 			insertRecords();
 		}

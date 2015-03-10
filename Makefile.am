@@ -5,8 +5,10 @@ AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME}/boost/serialization \
 -I${BOOST_HOME}/ \
--I${GTEST_HOME}/include
-AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma 
+-I${GTEST_HOME}/include 
+#-L/usr/local/lib \
+#-I/usr/local/include
+AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory
 
 LDADD =  \
 	Test/libtest.a \
@@ -53,7 +55,9 @@ LDADD =  \
 	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 	${THERON_HOME}/Lib/libtherond.a \
-	${GTEST_HOME}/libgtest.a
+	${GTEST_HOME}/libgtest.a 
+
+
 
 include_HEADERS = Config.h \
 				Debug.h \
@@ -62,7 +66,7 @@ include_HEADERS = Config.h \
 				configure.h
 				
 bin_PROGRAMS =  claimsserver \
-				client
+				client 
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -73,6 +77,8 @@ claimsserver_SOURCES = Config.cpp	\
 				Environment.cpp \
 				IDsGenerator.cpp \
 				Server.cpp
+				
+
 
 SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \

@@ -590,9 +590,9 @@ void ExecuteLogicalQueryPlan()
 				}
 
 				// split sign should be considered carefully, in case of it may be "||" or "###"
-				ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
-				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
-				loader->load();
+				ASTParserLogging::log("The separator are :%c,%c, The sample is %lf\n", column_separator[0], tuple_separator[0], new_node->sample);
+				HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, new_node->mode);
+				loader->load(new_node->sample);
 				catalog->saveCatalog();
 			}
 			break;
@@ -1096,7 +1096,7 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 
 	cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-	//				new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
+					new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
 
 	catalog->add_table(new_table);
 
@@ -1287,10 +1287,11 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result
 	}
 
 	// split sign should be considered carefully, in case of it may be "||" or "###"
-	ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
-	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
+	ASTParserLogging::log("The separator are :%c,%c, The sample is %lf, mode is %d\n",
+			column_separator[0], tuple_separator[0], new_node->sample, new_node->mode);
+	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, new_node->mode);
+	loader->load(new_node->sample);
 
-	loader->load();
 	result_flag=true;
 	result_set = NULL;
 	info = "load data successfully";

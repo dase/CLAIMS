@@ -37,7 +37,7 @@ public:
 
 	bool insertRecords();
 
-	bool load();
+	bool load(double sample_rate=1);
 
 	bool append(std::string tuple_string);
 
