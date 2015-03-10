@@ -88,6 +88,7 @@ char linebuf[500];
 %token ANALYZE
 %token AND
 %token ANY
+%token APPEND
 %token AS
 %token ASC
 %token AUTO_INCREMENT
@@ -245,6 +246,7 @@ char linebuf[500];
 %token REVOKE
 %token RIGHT
 %token ROLLUP
+%token SAMPLE
 %token SCHEMA
 %token SCHEMAS
 %token SECOND_MICROSECOND
@@ -1118,7 +1120,17 @@ opt_rc: /* nil */ 	{ $$ = 0; }
 stmt: load_table_stmt	{ $$=$1;/* output($$, 1); puts("SQL parser： This is a load_table statement");*/ }
 	;
 	
-load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING	{ $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9);}
+load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING SAMPLE COMPARISON APPROXNUM
+		{
+		 if ($11 != 4) { yyerror("please give a specific number"); } 
+		 else {$$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, atof($12), 0);}
+		}
+	| LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, 1.0, 0);}
+	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, 1.0, 1);}
+	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING SAMPLE COMPARISON APPROXNUM 
+		{ if ($11 != 4) { yyerror("please give a specific number"); } 
+		 else {$$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, atof($12), 1);}
+		}
 	;
    
    /** rename table **/

@@ -49,6 +49,7 @@ ANALYZE	{ return ANALYZE; }
 <BTWMODE>AND	{ BEGIN INITIAL; return AND; }
 AND	{ return ANDOP; }
 ANY	{ return ANY; }
+APPEND	{ return APPEND; }
 AS	{ return AS; }
 ASC	{ return ASC; }
 AUTO_INCREMENT	{ return AUTO_INCREMENT; }
@@ -207,6 +208,7 @@ RETURN	{ return RETURN; }
 REVOKE	{ return REVOKE; }
 RIGHT	{ return RIGHT; }
 ROLLUP	{ return ROLLUP; }
+SAMPLE	{ return SAMPLE; }
 SCHEMA	{ return SCHEMA; }
 SCHEMAS	{ return SCHEMAS; }
 SECOND_MICROSECOND	{ return SECOND_MICROSECOND; }
@@ -281,7 +283,6 @@ BEGIN		{ return BEGINT; }
 "."[0-9]+	|
 [0-9]+E[-+]?[0-9]+	|
 [0-9]+"."[0-9]*E[-+]?[0-9]+ |
-
 "."[0-9]*E[-+]?[0-9]+	{ yylval.strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
 
     /* booleans */	// 2014-4-14---save bool value in string type

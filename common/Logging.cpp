@@ -45,7 +45,7 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
-//#define DEBUG_ASTParser
+#define DEBUG_ASTParser
 //#define SQL_Parser
 
 #endif  //CLAIMS_QUEIT

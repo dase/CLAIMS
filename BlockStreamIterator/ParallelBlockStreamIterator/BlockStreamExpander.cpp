@@ -26,7 +26,6 @@ BlockStreamExpander::BlockStreamExpander()
 }
 
 BlockStreamExpander::~BlockStreamExpander() {
-	printf("Expander free!\n");
 	delete logging_;
 	delete state_.child_;
 	delete state_.schema_;
