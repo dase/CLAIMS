@@ -42,7 +42,6 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 //	printf("*******************************\n\n\n\n");
 
 	received_tuples_=0;
-	logging_->log("[%ld] Expander open, thread count=%d\n",expander_id_,state_.init_thread_count_);
 	state_.partition_offset=partitoin_offset;
 	input_data_complete_=false;
 	one_thread_finished_=false;
@@ -51,6 +50,8 @@ bool BlockStreamExpander::open(const PartitionOffset& partitoin_offset){
 
 	in_work_expanded_thread_list_.clear();
 	expander_id_=ExpanderTracker::getInstance()->registerNewExpander(block_stream_buffer_,this);
+	logging_->log("[%ld] Expander open, thread count=%d\n",expander_id_,state_.init_thread_count_);
+
 	for(unsigned i=0;i<state_.init_thread_count_;i++){
 		if(createNewExpandedThread()==false){
 			logging_->log("[%ld] Failed to create initial expanded thread********\n",expander_id_);
@@ -138,7 +139,6 @@ void BlockStreamExpander::print(){
 void* BlockStreamExpander::expanded_work(void* arg){
 	const pthread_t pid=pthread_self();
 
-
 	bool expanding=true;
 	ticks start=curtick();
 
@@ -148,7 +148,6 @@ void* BlockStreamExpander::expanded_work(void* arg){
 //	const unsigned thread_id=rand()%100;
 	unsigned block_count=0;
 	((ExpanderContext*)arg)->sem.post();
-
 
 
 	if(Pthis->ChildExhausted()){
@@ -213,7 +212,7 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			 */
 				Pthis->block_stream_buffer_->setInputComplete();
 //			}
-			Pthis->logging_->log("Thread %x generated %d blocks.\n",pthread_self(),block_count);
+			Pthis->logging_->log("Thread %lx generated %d blocks.\n",pthread_self(),block_count);
 			Pthis->lock_.release();
 
 			if(!Pthis->removeFromInWorkingExpandedThreadList(pthread_self())){
@@ -256,7 +255,7 @@ bool BlockStreamExpander::ChildExhausted(){
 	return ret;
 }
 bool BlockStreamExpander::createNewExpandedThread(){
-	pthread_t tid;
+	pthread_t tid = 0;
 
 
 	ExpanderContext para;
@@ -265,7 +264,6 @@ bool BlockStreamExpander::createNewExpandedThread(){
 	if(exclusive_expanding_.try_acquire()){
 		if (true == g_thread_pool_used){
 			Environment::getInstance()->getThreadPool()->add_task(expanded_work, &para);
-			logging_->log("[%ld] use thread [%lx] in thread pool!\n",expander_id_,tid);
 		}
 		else {
 			const int error=pthread_create(&tid,NULL,expanded_work,&para);
@@ -277,7 +275,11 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		para.sem.wait();
 		exclusive_expanding_.release();
 	//	printf("[Expander %d ]Expanded!\n",expander_id_);
-		logging_->log("[%ld] New expanded thread [%lx] created!\n",expander_id_,tid);
+		if (true == g_thread_pool_used){
+		}
+		else{
+			logging_->log("[%ld] New expanded thread [%lx] created!\n",expander_id_,tid);
+		}
 
 		lock_.acquire();
 		thread_count_++;

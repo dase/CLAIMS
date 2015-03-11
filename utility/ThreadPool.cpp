@@ -26,7 +26,7 @@ ThreadPool::~ThreadPool(){
 bool ThreadPool::Thread_Pool_init(int thread_count_in_pool_){
 	bool success = true;
 	thread_count = thread_count_in_pool_;
-	free_thread_count = thread_count;
+	free_thread_count = 0;
 	undo_task_count = 0;
 
 	pthread_mutex_init(&free_thread_count_lock, NULL);
@@ -48,6 +48,8 @@ bool ThreadPool::Thread_Pool_init(int thread_count_in_pool_){
 		}
 		++free_thread_count;
 	}
+	assert(free_thread_count=thread_count);
+//	ThreadPoolLogging::log("thread pool init %d free thread\n", free_thread_count);
 	return success;
 }
 
@@ -82,8 +84,9 @@ void *ThreadPool::thread_exec(void *arg){
 		if (task != NULL){
 			if (task->end)	//it means destory this thread
 				break;
-
+			ThreadPoolLogging::log("thread (id=%ld,offset=%lx) in thread pool is executing..\n", syscall(__NR_gettid), pthread_self());
 			(*(task->func))(task->arg);
+			ThreadPoolLogging::log("thread (id=%ld,offset=%lx) in thread pool finished executing..\n", syscall(__NR_gettid), pthread_self());
 
 			Task::destroy_task(task);		//TODO: consider whether destroy task
 			task = NULL;
@@ -140,10 +143,12 @@ void ThreadPool::bind_cpu(){
 	CPU_SET(insert_cpu, &mask);
 	int ret = pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask);
 	if (ret == -1){
-		ThreadPoolLogging::elog("bind cpu failed.%s", strerror(errno));
+		ThreadPoolLogging::elog("thread %ld bind cpu failed,ret = %d. %s\n", syscall(__NR_gettid), ret, strerror(errno));
 	}
-	ThreadPoolLogging::log("thread setaffinity tid=%ld ret=%d cpu=%ld start=%ld end=%ld",
-			syscall(__NR_gettid), ret, insert_cpu, 0, cpu_count);
+	else {
+		ThreadPoolLogging::log("thread (tid=%ld offset=%lx) stiffened cpu=%ld (start=%ld end=%ld)\n",
+			syscall(__NR_gettid), pthread_self(), insert_cpu, 0, cpu_count);
+	}
 }
 
 void ThreadPool::destroy_pool(ThreadPool *tp){

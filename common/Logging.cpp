@@ -20,7 +20,7 @@
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorEagerLower
 
-//#define DEBUG_BlockStreamExpander
+#define DEBUG_BlockStreamExpander
 
 //#define DEBUG_ExchangeRegister
 //#define DEBUG_ExchangeTracker
@@ -515,7 +515,6 @@ void ThreadPoolLogging::log(const char* format,...) {
 	va_list arg;
 	va_start (arg, format);
 	vprintf(format,arg);
-	printf("\n");
 	va_end (arg);
 #endif
 }
@@ -525,6 +524,5 @@ void ThreadPoolLogging::elog(const char* format,...) {
 	va_list arg;
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
-	printf("\n");
 	va_end (arg);
 }
