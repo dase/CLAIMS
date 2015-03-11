@@ -33,11 +33,12 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	}
 
-	logging_->log("Initializing the ThreadPool...");
-	if (false == initializeThreadPool()) {
-		logging_->elog("initialize ThreadPool failed");
+	if (true == g_thread_pool_used){
+		logging_->log("Initializing the ThreadPool...");
+		if (false == initializeThreadPool()) {
+			logging_->elog("initialize ThreadPool failed");
+		}
 	}
-
 	logging_->log("Initializing the AdaptiveEndPoint...");
 	initializeEndPoint();
 /**
@@ -207,5 +208,7 @@ void Environment::destoryClientListener() {
 
 bool Environment::initializeThreadPool() {
 	thread_pool_ = new ThreadPool();
-	return thread_pool_->Thread_Pool_init(2*sysconf(_SC_NPROCESSORS_CONF));
+//	return thread_pool_->Thread_Pool_init(2*sysconf(_SC_NPROCESSORS_CONF));
+	return thread_pool_->Thread_Pool_init(100);
+
 }

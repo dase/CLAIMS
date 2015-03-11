@@ -16,11 +16,13 @@
 #include <errno.h>
 #include <string.h>
 #include <malloc.h>
+#include <assert.h>
 #include "./common/Logging.h"
 
 using namespace std;
 
 static bool g_thread_pool_used = true;
+//static bool g_thread_pool_used = false;
 
 class ThreadPool
 {

@@ -254,7 +254,7 @@ bool HdfsLoader::load(){
 		cout << "\n\n\n--------------------------Append Begin!--------------------------\n";
 
 	vector<string>::iterator iter;
-///*for testing*/	int t_count = 1;
+/*for testing*/	int t_count = 1;
 	for (iter = file_list.begin(); iter != file_list.end(); iter++)
 	{
 		ifstream InFile((*iter).c_str());
@@ -267,13 +267,13 @@ bool HdfsLoader::load(){
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
 
-///*for testing*/ if(row_id/t_count > 100000)
-///*for testing*/		break;
+/*for testing*/ if(row_id/t_count > 100000)
+/*for testing*/		break;
 
 			insertRecords();
 		}
 		InFile.close();
-///*for testing*/	t_count++;
+/*for testing*/	t_count++;
 	}
 
 	cout << "----------------------------"<<endl;
