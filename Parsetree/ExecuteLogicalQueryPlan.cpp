@@ -206,10 +206,10 @@ void ExecuteLogicalQueryPlan()
 						{
 						case 1:
 						{
-							if (column_atts && (column_atts->datatype && 01)){	// not null
+							if (column_atts && (column_atts->datatype & 01)){	// not null
 								new_table->addAttribute(colname, data_type(t_boolean), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){	// can be null
+							else if (column_atts && (column_atts->datatype & 02)){	// can be null
 								new_table->addAttribute(colname, data_type(t_boolean), 0, true, true);
 							}
 							else{
@@ -221,10 +221,10 @@ void ExecuteLogicalQueryPlan()
 						case 3:
 						{
 							if (datatype->opt_uz & 01 != 0){
-								if (column_atts && (column_atts->datatype && 01)){
+								if (column_atts && (column_atts->datatype & 01)){
 									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, false);
 								}
-								else if (column_atts && (column_atts->datatype && 02)){
+								else if (column_atts && (column_atts->datatype & 02)){
 									new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, true);
 								}
 								else{
@@ -232,10 +232,10 @@ void ExecuteLogicalQueryPlan()
 								}
 							}
 							else{
-								if (column_atts && (column_atts->datatype && 01)){
+								if (column_atts && (column_atts->datatype & 01)){
 									new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
 								}
-								else if (column_atts && (column_atts->datatype && 02)){
+								else if (column_atts && (column_atts->datatype & 02)){
 									new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
 								}
 								else{
@@ -247,10 +247,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 5: case 6:
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_int), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_int), 0, true, true);
 							}
 							else{
@@ -263,10 +263,10 @@ void ExecuteLogicalQueryPlan()
 						{
 							if (datatype->opt_uz & 01 != 0)
 							{
-								if (column_atts && (column_atts->datatype && 01)){
+								if (column_atts && (column_atts->datatype & 01)){
 									new_table->addAttribute(colname, data_type(t_u_long), 0, true, false);
 								}
-								else if (column_atts && (column_atts->datatype && 02)){
+								else if (column_atts && (column_atts->datatype & 02)){
 									new_table->addAttribute(colname, data_type(t_u_long), 0, true, true);
 								}
 								else{
@@ -283,10 +283,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 9:
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_double), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_double), 0, true, true);
 							}
 							else{
@@ -297,10 +297,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 10:
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_float), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_float), 0, true, true);
 							}
 							else{
@@ -311,10 +311,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 11:
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_decimal), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_decimal), 0, true, true);
 							}
 							else{
@@ -324,10 +324,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 12:	// DATE --- 2014-4-1
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_date), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_date), 0, true, true);
 							}
 							else{
@@ -338,10 +338,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 13:	// TIME --- 2014-4-1
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_time), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_time), 0, true, true);
 							}
 							else{
@@ -352,10 +352,10 @@ void ExecuteLogicalQueryPlan()
 						}
 						case 15:	// DATETIME --- 2014-4-1
 						{
-							if (column_atts && (column_atts->datatype && 01)){
+							if (column_atts && (column_atts->datatype & 01)){
 								new_table->addAttribute(colname, data_type(t_datetime), 0, true, false);
 							}
-							else if (column_atts && (column_atts->datatype && 02)){
+							else if (column_atts && (column_atts->datatype & 02)){
 								new_table->addAttribute(colname, data_type(t_datetime), 0, true, true);
 							}
 							else{
@@ -371,10 +371,10 @@ void ExecuteLogicalQueryPlan()
 							{
 								Length * l = (Length*)datatype->length;
 
-								if (column_atts && (column_atts->datatype && 01)){
+								if (column_atts && (column_atts->datatype & 01)){
 									new_table->addAttribute(colname, data_type(t_string), l->data1, true, false);
 								}
-								else if (column_atts && (column_atts->datatype && 02)){
+								else if (column_atts && (column_atts->datatype & 02)){
 									new_table->addAttribute(colname, data_type(t_string), l->data1, true, true);
 								}
 								else{
@@ -383,10 +383,10 @@ void ExecuteLogicalQueryPlan()
 							}
 							else
 							{
-								if (column_atts && (column_atts->datatype && 01)){
+								if (column_atts && (column_atts->datatype & 01)){
 									new_table->addAttribute(colname, data_type(t_string), 1, true, false);
 								}
-								else if (column_atts && (column_atts->datatype && 02)){
+								else if (column_atts && (column_atts->datatype & 02)){
 									new_table->addAttribute(colname, data_type(t_string), 1, true, true);
 								}
 								else{
@@ -889,10 +889,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			{
 			case 1:
 			{
-				if (column_atts && (column_atts->datatype && 01)){	// not null
+				if (column_atts && (column_atts->datatype & 01)){	// not null
 					new_table->addAttribute(colname, data_type(t_boolean), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){	// can be null
+				else if (column_atts && (column_atts->datatype & 02)){	// can be null
 					new_table->addAttribute(colname, data_type(t_boolean), 0, true, true);
 				}
 				else{
@@ -904,10 +904,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			case 3:
 			{
 				if (datatype->opt_uz & 01 != 0){
-					if (column_atts && (column_atts->datatype && 01)){
+					if (column_atts && (column_atts->datatype & 01)){
 						new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, false);
 					}
-					else if (column_atts && (column_atts->datatype && 02)){
+					else if (column_atts && (column_atts->datatype & 02)){
 						new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true, true);
 					}
 					else{
@@ -915,10 +915,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 					}
 				}
 				else{
-					if (column_atts && (column_atts->datatype && 01)){
+					if (column_atts && (column_atts->datatype & 01)){
 						new_table->addAttribute(colname, data_type(t_smallInt), 0, true, false);
 					}
-					else if (column_atts && (column_atts->datatype && 02)){
+					else if (column_atts && (column_atts->datatype & 02)){
 						new_table->addAttribute(colname, data_type(t_smallInt), 0, true, true);
 					}
 					else{
@@ -930,10 +930,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			}
 			case 5: case 6:
 			{
-				if (column_atts && (column_atts->datatype && 01)){
+				if (column_atts && (column_atts->datatype & 01)){
 					new_table->addAttribute(colname, data_type(t_int), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){
+				else if (column_atts && (column_atts->datatype & 02)){
 					new_table->addAttribute(colname, data_type(t_int), 0, true, true);
 				}
 				else{
@@ -946,10 +946,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			{
 				if (datatype->opt_uz & 01 != 0)
 				{
-					if (column_atts && (column_atts->datatype && 01)){
+					if (column_atts && (column_atts->datatype & 01)){
 						new_table->addAttribute(colname, data_type(t_u_long), 0, true, false);
 					}
-					else if (column_atts && (column_atts->datatype && 02)){
+					else if (column_atts && (column_atts->datatype & 02)){
 						new_table->addAttribute(colname, data_type(t_u_long), 0, true, true);
 					}
 					else{
@@ -968,10 +968,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			}
 			case 9:
 			{
-				if (column_atts && (column_atts->datatype && 01)){
+				if (column_atts && (column_atts->datatype & 01)){
 					new_table->addAttribute(colname, data_type(t_double), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){
+				else if (column_atts && (column_atts->datatype & 02)){
 					new_table->addAttribute(colname, data_type(t_double), 0, true, true);
 				}
 				else{
@@ -982,10 +982,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			}
 			case 10:
 			{
-				if (column_atts && (column_atts->datatype && 01)){
+				if (column_atts && (column_atts->datatype & 01)){
 					new_table->addAttribute(colname, data_type(t_float), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){
+				else if (column_atts && (column_atts->datatype & 02)){
 					new_table->addAttribute(colname, data_type(t_float), 0, true, true);
 				}
 				else{
@@ -996,23 +996,40 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			}
 			case 11:
 			{
-				if (column_atts && (column_atts->datatype && 01)){
-					new_table->addAttribute(colname, data_type(t_decimal), 0, true, false);
-				}
-				else if (column_atts && (column_atts->datatype && 02)){
-					new_table->addAttribute(colname, data_type(t_decimal), 0, true, true);
+				if(datatype->length){
+					Length * l = (Length*)datatype->length;
+
+					if (column_atts && (column_atts->datatype & 01)){
+						new_table->addAttribute(colname, data_type(t_decimal), l->data1, true, false);
+					}
+					else if (column_atts && (column_atts->datatype & 02)){
+						new_table->addAttribute(colname, data_type(t_decimal), l->data1, true, true);
+					}
+					else{
+						new_table->addAttribute(colname, data_type(t_decimal), l->data1, true);
+					}
+					cout<<colname<<" is created"<<endl;
 				}
 				else{
-					new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+					if (column_atts && (column_atts->datatype & 01)){
+						new_table->addAttribute(colname, data_type(t_decimal), 0, true, false);
+					}
+					else if (column_atts && (column_atts->datatype & 02)){
+						new_table->addAttribute(colname, data_type(t_decimal), 0, true, true);
+					}
+					else{
+						new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+					}
+					cout<<colname<<" is created"<<endl;
 				}
-				cout<<colname<<" is created"<<endl;
+				break;
 			}
 			case 12:	// DATE --- 2014-4-1
 			{
-				if (column_atts && (column_atts->datatype && 01)){
+				if (column_atts && (column_atts->datatype & 01)){
 					new_table->addAttribute(colname, data_type(t_date), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){
+				else if (column_atts && (column_atts->datatype & 02)){
 					new_table->addAttribute(colname, data_type(t_date), 0, true, true);
 				}
 				else{
@@ -1023,10 +1040,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			}
 			case 13:	// TIME --- 2014-4-1
 			{
-				if (column_atts && (column_atts->datatype && 01)){
+				if (column_atts && (column_atts->datatype & 01)){
 					new_table->addAttribute(colname, data_type(t_time), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){
+				else if (column_atts && (column_atts->datatype & 02)){
 					new_table->addAttribute(colname, data_type(t_time), 0, true, true);
 				}
 				else{
@@ -1037,10 +1054,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 			}
 			case 15:	// DATETIME --- 2014-4-1
 			{
-				if (column_atts && (column_atts->datatype && 01)){
+				if (column_atts && (column_atts->datatype & 01)){
 					new_table->addAttribute(colname, data_type(t_datetime), 0, true, false);
 				}
-				else if (column_atts && (column_atts->datatype && 02)){
+				else if (column_atts && (column_atts->datatype & 02)){
 					new_table->addAttribute(colname, data_type(t_datetime), 0, true, true);
 				}
 				else{
@@ -1056,10 +1073,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 				{
 					Length * l = (Length*)datatype->length;
 
-					if (column_atts && (column_atts->datatype && 01)){
+					if (column_atts && (column_atts->datatype & 01)){
 						new_table->addAttribute(colname, data_type(t_string), l->data1, true, false);
 					}
-					else if (column_atts && (column_atts->datatype && 02)){
+					else if (column_atts && (column_atts->datatype & 02)){
 						new_table->addAttribute(colname, data_type(t_string), l->data1, true, true);
 					}
 					else{
@@ -1068,10 +1085,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 				}
 				else
 				{
-					if (column_atts && (column_atts->datatype && 01)){
+					if (column_atts && (column_atts->datatype & 01)){
 						new_table->addAttribute(colname, data_type(t_string), 1, true, false);
 					}
-					else if (column_atts && (column_atts->datatype && 02)){
+					else if (column_atts && (column_atts->datatype & 02)){
 						new_table->addAttribute(colname, data_type(t_string), 1, true, true);
 					}
 					else{
@@ -1252,6 +1269,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	physical_iterator_tree->close();
 	//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 	result_set=physical_iterator_tree->getResultSet();
+	result_set->print();
 	result_flag=true;
 	return;
 }

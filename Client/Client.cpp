@@ -56,20 +56,15 @@ ClientResponse* Client::submitQuery(std::string args) {
 
 	write(m_clientFd, args.c_str(), args.length() + 1);
 	ClientLogging::log("Client: message from server!\n");
-
 	const int maxBytes = 10000L;
 	char *buf = new char[maxBytes];
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
-
 	//compute the length of ClientResponse object
-	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL | MSG_PEEK);
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
 	int len = *((int*) buf + 1);
-
-	len += sizeof(int) + sizeof(int);
-
-	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
+	if ((receivedBytesNum = recv(m_clientFd, buf+sizeof(int) + sizeof(int), len, MSG_WAITALL)) < 0) {
 		perror(
 				"Client: submit query error, has problem with the communication!\n");
 	}else {
@@ -97,12 +92,11 @@ ClientResponse* Client::receive() {
 	int receivedBytesNum;
 
 	//compute the length of the ClientResponse object
-	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL | MSG_PEEK);
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
 	int len = *((int*) buf + 1);
 
-	len += sizeof(int) + sizeof(int);
 
-	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
+	if ((receivedBytesNum = recv(m_clientFd, buf+2*sizeof(int), len, MSG_WAITALL)) < 0) {
 		perror(
 				"Client: receive result error, has problem with the communication! \n");
 		printf("ERROR: %s",strerror(errno));
@@ -116,7 +110,6 @@ ClientResponse* Client::receive() {
 }
 
 void Client::shutdown() {
-//	::shutdown(m_clientFd, 2);
 	close(m_clientFd);
 	ClientLogging::log("-----for debug:	close fd %d", m_clientFd);
 }

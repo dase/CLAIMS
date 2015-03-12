@@ -615,6 +615,25 @@ public:
 	}
 };
 
+inline std::string trimSpecialCharactor(string str){
+	int l=0,r=str.length()-1;
+	for(int p=0;p<r;p++){
+		if(str[p]=='\r' ||str[p]=='\n' ){
+			l=p+1;
+			continue;
+		}
+		break;
+	}
+	for(int p=r;p>l;p--){
+		if(str[p]=='\r' ||str[p]=='\n' ){
+			r=p-1;
+			continue;
+		}
+		break;
+	}
+	return str.substr(l,r-l+1);
+}
+
 class OperateString:public Operate
 {
 public:
@@ -630,7 +649,7 @@ public:
 		if (this->nullable == true && (*(char*)value) == NULL_STRING)
 			return "NULL";
 		else
-			return std::string((char*)value);
+			return trimSpecialCharactor(std::string((char*)value));
 	};
 	void toValue(void* target, const char* string){
 		if ((strcmp(string,"")==0) && this->nullable == true)
@@ -1551,9 +1570,9 @@ public:
 	//这个data_type是什么type
 	data_type type;
 	bool nullable;
+	unsigned size;
 private:
 	//且这个data_type的size是多少
-	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)

@@ -8,7 +8,7 @@ AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
 -I${GTEST_HOME}/include 
 #-L/usr/local/lib \
 #-I/usr/local/include
-AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory
+AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory 
 
 LDADD =  \
 	Test/libtest.a \

@@ -589,7 +589,10 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 			QColcumns * qcol=(QColcumns *)(node);
 			qcol->id=colindex[qcol->col];//col=A.a or col= a?
 			qcol->return_type=r_type;
-			qcol->length=max(schema->getcolumn(qcol->id).get_length(),(unsigned int)BASE_SIZE);
+			if(qcol->return_type ==t_string)
+				qcol->length=max(schema->getcolumn(qcol->id).get_length(),(unsigned int)BASE_SIZE);
+			else
+				qcol->length=schema->getcolumn(qcol->id).size;
 			qcol->isnull=false;//TODO
 		}break;
 		case t_qexpr:
