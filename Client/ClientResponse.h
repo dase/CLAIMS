@@ -223,7 +223,7 @@ struct ClientResponse {
 	void deserialize(const char* received_buffer, int recieved_bytes_length) {
 		const int st = *(int*) received_buffer;
 		const int len = *((int*) received_buffer + 1);
-		if(!(recieved_bytes_length == sizeof(int) + sizeof(int) + len)){
+		if(!(recieved_bytes_length == len)){
 			printf("recieved_bytes_length %d, len %d\n",recieved_bytes_length, len);
 			assert(false);
 		}

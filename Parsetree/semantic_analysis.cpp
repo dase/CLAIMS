@@ -941,12 +941,12 @@ bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable)
 			}
 			else
 			{
-				wherecondition_check(qstmt,cur,rtable);
+				return wherecondition_check(qstmt,cur,rtable);
 			}
 		}break;
 		default:
 		{
-			wherecondition_check(qstmt,cur,rtable);
+			return wherecondition_check(qstmt,cur,rtable);
 		}
 	}
 	return true;
