@@ -54,7 +54,7 @@ Attribute Dataflow::getAttribute(std::string name)const{
 		}
 	}
 	printf("Failed to find attribute [%s]\n",name.c_str());
-	assert(false);
+//	assert(false);
 	return Attribute(ATTRIBUTE_NULL);
 }
 

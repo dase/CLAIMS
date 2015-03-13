@@ -1261,7 +1261,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-	//			physical_iterator_tree->print();
+//				physical_iterator_tree->print();
 
 	physical_iterator_tree->open();
 
@@ -1269,7 +1269,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	physical_iterator_tree->close();
 	//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 	result_set=physical_iterator_tree->getResultSet();
-	result_set->print();
+//	result_set->print();
 	result_flag=true;
 	return;
 }
