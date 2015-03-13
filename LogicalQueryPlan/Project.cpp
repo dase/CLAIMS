@@ -31,7 +31,7 @@ LogicalProject::~LogicalProject(){
 }
 
 Dataflow LogicalProject::getDataflow(){
-	if(!dataflow_)
+	if(dataflow_!=NULL)
 		return *dataflow_;
 	mappings_=getMapping();
 	Dataflow ret;

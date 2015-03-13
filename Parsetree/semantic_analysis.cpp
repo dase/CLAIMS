@@ -1570,6 +1570,11 @@ bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//like 
 				int fg=subquery_has_column(col->parameter2,subnode);
 				if(fg>1||fg==0)
 					return false;
+				stringstream ss;
+				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
+				col->parameter2=(char *)malloc(ss.str().length()+1);
+				strcpy(col->parameter2,ss.str().c_str());
+				return true;
 			}
 		}break;
 		case t_expr_func:
@@ -1577,11 +1582,11 @@ bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//like 
 			Expr_func * func=(Expr_func *)(node);
 			if(func->parameter1!=NULL)
 			{
-				orderby_analysis(func->parameter1,rtable,qstmt);
+				return orderby_analysis(func->parameter1,rtable,qstmt);
 			}
 			else if(func->args!=NULL)
 			{
-				orderby_analysis(func->args,rtable,qstmt);
+				return orderby_analysis(func->args,rtable,qstmt);
 			}
 			else
 			{
@@ -1591,19 +1596,23 @@ bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//like 
 		case t_expr_cal:
 		{
 			Expr_cal * ecal=(Expr_cal *)node;
-			orderby_analysis(ecal->rnext,rtable,qstmt);
-			orderby_analysis(ecal->lnext,rtable,qstmt);
+			bool flag=orderby_analysis(ecal->rnext,rtable,qstmt);
+			if(flag==false)
+				return false;
+			return orderby_analysis(ecal->lnext,rtable,qstmt);
 		}break;
 		case t_orderby_list:
 		{
 			Orderby_list *olist=(Orderby_list *)node;
-			orderby_analysis(olist->next,rtable,qstmt);
+			return orderby_analysis(olist->next,rtable,qstmt);
 		}break;
 		case t_groupby_expr:
 		{
 			Groupby_expr *gexpr=(Groupby_expr *)node;
-			orderby_analysis(gexpr->args,rtable,qstmt);
-			orderby_analysis(gexpr->next,rtable,qstmt);
+			bool flag=orderby_analysis(gexpr->args,rtable,qstmt);
+			if(flag==false)
+				return false;
+			return orderby_analysis(gexpr->next,rtable,qstmt);
 		}break;
 		default:
 		{
