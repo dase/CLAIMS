@@ -22,7 +22,8 @@ BlockStreamResultCollector::BlockStreamResultCollector(State state)
 	sema_input_complete_.set_value(0);
 }
 BlockStreamResultCollector::~BlockStreamResultCollector() {
-	// TODO Auto-generated destructor stub
+	delete state_.input_;
+	delete state_.child_;
 }
 BlockStreamResultCollector::State::State():input_(0),child_(0),block_size_(0),partition_offset_(0){}
 BlockStreamResultCollector::State::State(Schema* input,BlockStreamIteratorBase* child,const unsigned block_size,std::vector<std::string> column_header,const PartitionOffset partitoin_offset)
@@ -153,4 +154,9 @@ unsigned long BlockStreamResultCollector::getNumberOftuples()const{
 		ret+=block->getTuplesInBlock();
 	}
 	return ret;
+}
+
+BlockStreamResultCollector::State::~State() {
+//	delete input_;
+//	delete child_;
 }

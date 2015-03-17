@@ -18,9 +18,9 @@ ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned nu
 ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
 	pthread_mutex_destroy(&sync_lock_);
 	pthread_cond_destroy(&sync_cv_);
-	for(unsigned i=0;i<number_of_barrier_;i++){
-		barrier_[i].~Barrier();
-	}
+//	for(unsigned i=0;i<number_of_barrier_;i++){
+//		barrier_[i].~Barrier();
+//	}
 	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
 		seriliazed_section_entry_key_[i].destroy();
 	}

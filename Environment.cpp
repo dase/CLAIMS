@@ -75,6 +75,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 Environment::~Environment() {
 	_instance=0;
+	delete expander_tracker_;
 	delete logging_;
 	delete portManager;
 	delete catalog_;
@@ -90,7 +91,6 @@ Environment::~Environment() {
 	delete resourceManagerSlave_;
 	delete blockManager_;
 	delete bufferManager_;
-	delete expander_tracker_;
 	delete endpoint;
 }
 Environment* Environment::getInstance(bool ismaster){

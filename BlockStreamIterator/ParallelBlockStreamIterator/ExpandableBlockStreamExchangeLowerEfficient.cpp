@@ -32,6 +32,8 @@ ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerE
 ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
 	// TODO Auto-generated destructor stub
 	delete logging_;
+	delete state_.schema_;
+	delete state_.child_;
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){

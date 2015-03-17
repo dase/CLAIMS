@@ -41,7 +41,10 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
-
+	delete state_.input;
+	delete state_.hashSchema;
+	delete state_.output;
+	delete state_.child;
 }
 
 BlockStreamAggregationIterator::State::State(
@@ -334,6 +337,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		barrierArrive(3);
 
 	delete bsb;
+//	hashtable_->report_status();
 }
 
 /*

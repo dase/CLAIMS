@@ -34,12 +34,13 @@ ExpanderTracker* ExpanderTracker::instance_=0;
 ExpanderTracker::ExpanderTracker(){
 	// TODO Auto-generated constructor stub
 	log_=new ExpanderTrackerLogging();
-	pthread_t pid;
-	pthread_create(&pid,0,monitoringThread,this);
-	log_->log("************Monitoring thread id=%lx\n",pid);
+
+	pthread_create(&monitor_thread_id_,0,monitoringThread,this);
+	log_->log("************Monitoring thread id=%lx\n",monitor_thread_id_);
 }
 
 ExpanderTracker::~ExpanderTracker() {
+	pthread_cancel(monitor_thread_id_);
 	instance_=0;
 	delete log_;
 }
@@ -441,23 +442,21 @@ void* ExpanderTracker::monitoringThread(void* arg){
 	}
 	ExpanderTracker* Pthis=(ExpanderTracker*)arg;
 	int cur=0;
+	unsigned long long  start_cycles=curtick();
 	while(true){
-//		std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();
 		usleep(Config::expander_adaptivity_check_frequency);
-//		sleep(1000);
 		Pthis->lock_.acquire();
 		if(Pthis->expander_id_to_status_.size()<=cur){
 			cur=0;
 			Pthis->lock_.release();
+			usleep(1000);
 			continue;
 		}
-
+//		Pthis->printStatus();
 		boost::unordered_map<ExpanderID,ExpanderStatus*>::iterator it=Pthis->expander_id_to_status_.begin();
 		for(int tmp=0;tmp<cur;tmp++)
 			it++;
 		ExpanderID id=it->first;
-
-//		printf("id=%d \n",id);
 
 
 		assert(!Pthis->expander_id_to_expand_shrink_.empty());
@@ -509,20 +508,7 @@ void* ExpanderTracker::monitoringThread(void* arg){
 		}
 //		Pthis->lock_.release();
 		cur++;
-//
-//
-//		for(std::map<ExpanderID,ExpanderStatus>::iterator it=Pthis->expander_id_to_status_.begin();it!=Pthis->expander_id_to_status_.end();it++){
-//			Pthis->lock_.acquire();
-//			if(Pthis->expander_id_to_status_.find(it->first)==Pthis->expander_id_to_status_.end()){
-//				Pthis->lock_.release();
-//				continue;
-//			}
-//
-//			log_->log("%s---->%s",it->second.current_stage.dataflow_src_.end_point_name.c_str(),it->second.current_stage.dataflow_desc_.end_point_name.c_str());
-//			Pthis->decideExpandingOrShrinking(it->second.current_stage);
-//			Pthis->lock_.release();
-//b			usleep(10000);
-//		}
+
 	}
 }
 
@@ -541,4 +527,30 @@ int ExpanderTracker::shrinkIfNotExceedTheMinDegreeOfParallelims(
 		return DECISION_SHRINK;
 	}
 	return DECISION_KEEP;
+}
+
+void ExpanderTracker::printStatus() {
+	printf("Num. of Expanders: %d\n",expander_id_to_status_.size());
+	printf("expanded_thread_id : ExpanderID\n");
+	for(boost::unordered_map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
+		printf("(%llx,%ld) ",it->first,it->second);
+	}
+	printf("\n");
+	printf("ExpanderID : ExpanderStatus*\n");
+	for(boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it=expander_id_to_status_.begin();it!=expander_id_to_status_.end();it++){
+		printf("(%ld,%llx) ",it->first,it->second);
+	}
+	printf("\n");
+
+	printf("ExpanderID : ExpandabilitySrinkability*\n");
+	for(boost::unordered_map<ExpanderID,ExpandabilityShrinkability*>::iterator it=expander_id_to_expand_shrink_.begin();it!=expander_id_to_expand_shrink_.end();it++){
+		printf("(%ld,%llx) ",it->first,it->second);
+	}
+	printf("\n");
+
+	printf("expanded thread id: ExpandedThreadStatus\n");
+	for(std::map<expanded_thread_id,ExpandedThreadStatus>::iterator it=id_to_status_.begin();it!=id_to_status_.end();it++){
+		printf("(%ld, %llx)", it->first,&it->second);
+	}
+	printf("\n");
 }

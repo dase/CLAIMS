@@ -18,11 +18,8 @@ Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vec
 }
 
 Aggregation::~Aggregation() {
-	dataflow_->~Dataflow();
-	if(child_>0){
-		child_->~LogicalOperator();
-	}
-	// TODO Auto-generated destructor stub
+	delete dataflow_;
+	delete  child_;
 }
 Dataflow Aggregation::getDataflow(){
 	if(dataflow_!=0)
@@ -368,7 +365,7 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
 	const unsigned long max_limits=1024*1024;
-	const unsigned long min_limits=1024*4;
+	const unsigned long min_limits=1024*512;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();
 	unsigned long ret;
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
@@ -382,7 +379,7 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
 		AttributeStatistics* attr_stat=StatManager::getInstance()->getAttributeStatistic(group_by_attribute_list_[i]);
 		if(attr_stat==0){
-			group_by_domain_size*=100;
+			group_by_domain_size*=1000;
 		}
 		else{
 			group_by_domain_size*=attr_stat->getDistinctCardinality();

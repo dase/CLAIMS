@@ -22,7 +22,7 @@
 #include "../../utility/ThreadPool.h"
 #include "../../Environment.h"
 
-#define EXPANDER_BUFFER_SIZE 100
+#define EXPANDER_BUFFER_SIZE 1000
 
 class BlockStreamExpander:public BlockStreamIteratorBase,public ExpandabilityShrinkability {
 public:
