@@ -40,9 +40,8 @@ Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(co
 	setOperatortype(l_filter);
 }
 Filter::~Filter() {
-	// TODO Auto-generated destructor stub
 	if(child_>0){
-		child_->~LogicalOperator();
+		delete child_;
 	}
 }
 

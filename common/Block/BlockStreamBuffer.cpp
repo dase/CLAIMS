@@ -69,9 +69,10 @@ bool BlockStreamBuffer::getBlock(BlockStreamBase &block){
 	if(!block_stream_used_list_.empty()){
 		BlockStreamBase* fetched_block=block_stream_used_list_.front();
 		block_stream_used_list_.pop_front();
-
+		lock_.release();
 
 		fetched_block->switchBlock(block);
+		lock_.acquire();
 		block_stream_empty_list_.push_back(fetched_block);
 		sema_empty_block_.post();
 //		assert(block_stream_empty_list_.size()==sema_empty_block_.get_value());

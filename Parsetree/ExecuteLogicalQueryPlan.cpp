@@ -193,11 +193,14 @@ void ExecuteLogicalQueryPlan()
 				ASTParserLogging::elog("%s", error_msg.c_str());
 				FreeAllNode();	// -Yu 2015-3-2
 			}
+			else {
+				cout<<info<<endl;
+			}
 //			malloc_stats();
 			stmtList = (Stmt *)stmtList->next;
 		}
 
-		//		FreeAllNode();	//---完成对节点的释放 ！！！！！！！！！！！！！！
+		FreeAllNode();
 
 		//		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 		//		printf("Continue(1) or not (0)?\n");
@@ -522,11 +525,10 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 	if(result_flag==false)
 		return;
 
-	cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
-
-	catalog->add_table(new_table);
+//	cout<<"the first attribute Name:"<<new_table->getAttribute(0).getName()<<endl;
 
 	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
+	catalog->add_table(new_table);
 	//				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
 	//				for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
@@ -993,7 +995,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-	//			physical_iterator_tree->print();
+				physical_iterator_tree->print();
 
 	physical_iterator_tree->open();
 
@@ -1118,10 +1120,11 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result
 	}
 
 	// split sign should be considered carefully, in case of it may be "||" or "###"
-	ASTParserLogging::log("The separator are :%c,%c", column_separator[0], tuple_separator[0]);
-	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table);
+	ASTParserLogging::log("The separator are :%c,%c, The sample is %lf, mode is %d\n",
+			column_separator[0], tuple_separator[0], new_node->sample, new_node->mode);
+	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, new_node->mode);
+	loader->load(new_node->sample);
 
-	loader->load();
 	result_flag=true;
 	result_set = NULL;
 	info = "load data successfully";
@@ -1480,10 +1483,8 @@ void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &resul
 	{
 	case 1:
 	{
-		cout<<"Tables:"<<endl;
 		ostr<<"TABLES:"<<endl;
 		for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
-			cout<<catalog->getTable(i)->getTableName()<<endl;
 			ostr<<catalog->getTable(i)->getTableName()<<endl;
 		}
 		info = ostr.str();

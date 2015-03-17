@@ -16,9 +16,12 @@ Catalog::Catalog() {
 }
 
 Catalog::~Catalog() {
+	for( boost::unordered_map<std::string,TableDescriptor*>::iterator it = name_to_table.begin();it!=name_to_table.end();it++){
+		delete it->second;
+	}
 	instance_=0;
-	logging->~Logging();
-	binding_->~ProjectionBinding();
+	delete logging;
+	delete binding_;
 }
 Catalog* Catalog::getInstance(){
 	if(instance_==0){

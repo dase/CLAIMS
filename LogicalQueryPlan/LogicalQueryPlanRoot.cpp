@@ -27,7 +27,7 @@ LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* chi
 
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
 	if(child_>0){
-		child_->~LogicalOperator();
+		delete child_;
 	}
 }
 
@@ -35,7 +35,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	getDataflow();
 	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(block_size);
 	Dataflow child_dataflow=child_->getDataflow();
-	Schema* schema=getSchema(child_dataflow.attribute_list_);
+//	Schema* schema=getSchema(child_dataflow.attribute_list_);
 	NodeTracker* node_tracker=NodeTracker::getInstance();
 
 	BlockStreamExpander::State expander_state_lower;
@@ -58,7 +58,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state_lower);
 		state.child_=expander_lower;//child_iterator;
 		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema_=schema;
+		state.schema_=getSchema(child_dataflow.attribute_list_);
 		state.upper_ip_list_.push_back(node_tracker->getNodeIP(collecter_));
 		state.partition_schema_=partition_schema::set_hash_partition(0);
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(child_dataflow.property_.partitioner);
@@ -87,7 +87,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamIteratorBase* middle_tier;
 	if(!limit_constraint_.canBeOmitted()){
 		/* we should add a limit operator*/
-		BlockStreamLimit::State limit_state(expander_state.schema_,expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
+		BlockStreamLimit::State limit_state(expander_state.schema_->duplicateSchema(),expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
 		BlockStreamIteratorBase* limit=new BlockStreamLimit(limit_state);
 		middle_tier=limit;
 	}
@@ -99,12 +99,12 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	switch(fashion_){
 		case PRINT:{
 
-			BlockStreamPrint::State print_state(schema,middle_tier,block_size,getAttributeName(child_dataflow));
+			BlockStreamPrint::State print_state(getSchema(child_dataflow.attribute_list_),middle_tier,block_size,getAttributeName(child_dataflow));
 			ret=new BlockStreamPrint(print_state);
 			break;
 		}
 		case PERFORMANCE:{
-			BlockStreamPerformanceMonitorTop::State performance_state(schema,middle_tier,block_size);
+			BlockStreamPerformanceMonitorTop::State performance_state(getSchema(child_dataflow.attribute_list_),middle_tier,block_size);
 			ret=new BlockStreamPerformanceMonitorTop(performance_state);
 			break;
 		}
@@ -113,14 +113,13 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 			for(unsigned i=0;i<child_dataflow.attribute_list_.size();i++){
 				column_header.push_back(child_dataflow.attribute_list_[i].getName());
 			}
-			BlockStreamResultCollector::State result_state(schema,middle_tier,block_size,column_header);
+			BlockStreamResultCollector::State result_state(getSchema(child_dataflow.attribute_list_),middle_tier,block_size,column_header);
 			ret=new BlockStreamResultCollector(result_state);
 			break;
 		}
 	}
 
 
-//	schema->~Schema();
 	return ret;
 }
 Dataflow LogicalQueryPlanRoot::getDataflow(){

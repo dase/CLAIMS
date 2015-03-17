@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
 #include "hashtable.h"
 
 #include <malloc.h>
@@ -157,7 +158,7 @@ BasicHashTable::~BasicHashTable()
 	delete[] grandmother_lock_;
 #else
 	grandmother->purge_memory();
-	grandmother->~pool();
+	delete grandmother;
 #endif
 #endif
 	delete[] bucket_;
@@ -221,7 +222,7 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 	void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
 	*new_buck_freeloc = (ret)+tuplesize_ ;
 	*new_buck_nextloc = data;
-//	overflow_count_[offset]++;
+	overflow_count_[offset]++;
 	bucket_[offset]=ret;
 #ifdef __MOTHER_PAGE__
 	mother_page_lock_.release();
@@ -230,8 +231,9 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 }
 
 void BasicHashTable::report_status() {
-//	printf("-----------Hash table status--------------\n");
+	printf("-----------Hash table status--------------\n");
 	printf("Bucket size: %d\n",bucksize_);
+	printf("tuple size: %d\n",tuplesize_);
 	printf("#. of buckets: %d\n",nbuckets_);
 //	printf("Number of Mother pages:%d\n",mother_page_list_.size());
 #ifdef _DEBUG_
@@ -251,9 +253,41 @@ void BasicHashTable::report_status() {
 		while(it.readnext()){
 			tuple_count++;
 		}
+
 	}
-//	printf("Total tuples in hash table:%lld\n",tuple_count);
 //	printf("------------------------------------------\n");
+
+	vector<unsigned> tuples;
+	double agv_tuples_per_bucket=tuple_count/(double)(nbuckets_);
+	printf("Total tuples in hash table:%lld\n  %3.3f tuple per bucket index\n",tuple_count,agv_tuples_per_bucket);
+	double var=0;
+	for(unsigned i=0;i<nbuckets_;i++){
+		Iterator it=this->CreateIterator();
+		int count=0;
+		this->placeIterator(it,i);
+		while(it.readnext()){
+			count++;
+		}
+		tuples.push_back(count);
+		var+=(count-agv_tuples_per_bucket)*(count-agv_tuples_per_bucket);
+	}
+	printf("VAR: %4.4f\n",var/nbuckets_);
+
+	sort(tuples.begin(),tuples.end(),std::greater<int>());
+
+
+	int last=-1, last_index=0;
+	for(int i=0;i<tuples.size();i++){
+		if(last!=tuples[i]){
+			if(last!=-1)
+				printf("%d repeated %d times \n",last,i-last_index);
+			last=tuples[i];
+			last_index=i;
+		}
+	}
+	printf("%d repeated %d times \n",last,nbuckets_-last_index);
+	printf("\n");
+
 
 }
 

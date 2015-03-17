@@ -191,12 +191,13 @@ private:
 
 	int expandeIfNotExceedTheMaxDegreeOfParallelism(int current_degree_of_parallelism)const;
 	int shrinkIfNotExceedTheMinDegreeOfParallelims(int current_degree_of_parallelism)const;
+
+	void printStatus();
 private:
 	static ExpanderTracker* instance_;
 
 	Lock lock_;
 
-//	ExpanderID expander_id_cur_;
 
 	boost::unordered_map<expanded_thread_id,ExpanderID> thread_id_to_expander_id_;
 
@@ -211,6 +212,8 @@ public://for debug, this should be private!
 	std::map<expanded_thread_id,ExpandedThreadStatus> id_to_status_;
 
 	Logging* log_;
+
+	pthread_t monitor_thread_id_;
 
 };
 

@@ -32,7 +32,7 @@
 #include "../../utility/rdtsc.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../Config.h"
-#define BUFFER_SIZE_IN_EXCHANGE 100
+#define BUFFER_SIZE_IN_EXCHANGE 1000
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
@@ -50,6 +50,8 @@ ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 }
 ExpandableBlockStreamExchangeEpoll::~ExpandableBlockStreamExchangeEpoll() {
 	delete logging_;
+	delete state.schema_;
+	delete state.child_;
 }
 
 bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_offset){
@@ -73,7 +75,6 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 		for (int i = 0; i < nlowers; ++i) {
 			socket_fd_lower_list[i] = -1;
 		}
-
 		buffer=new BlockStreamBuffer(state.block_size_,BUFFER_SIZE_IN_EXCHANGE,state.schema_);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
 		received_block_stream_=BlockStreamBase::createBlock(state.schema_,state.block_size_);
@@ -96,7 +97,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			logging_->elog("Register Exchange with ID=%d fails!",state.exchange_id_);
 		}
 
-		if(partition_offset==0){
+		if(isMaster()){
 			/*  According to a bug reported by dsc, the master exchangeupper should check whether other
 			 *  uppers have registered to exchangeTracker. Otherwise, the lower may fail to connect to the
 			 *  exchangeTracker of some uppers when the lower nodes receive the exchagnelower, as some uppers
@@ -120,53 +121,32 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 	}
 
-	/* A synchronization barrier, in case of multiple expanded thread*/
+	/* A synchronization barrier, in case of multiple expanded threads*/
 	barrier_->Arrive();
 	return true;
 }
 
 bool ExpandableBlockStreamExchangeEpoll::next(BlockStreamBase* block){
 
-	/*
-	 * As Exchange merger is a local pipeline beginner, exchange::next will return false in order to
-	 * shrink the current work thread, if the termination request is detected.
-	 */
-	if(this->checkTerminateRequest()){
-		logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
-		return false;
-	}
-
-/**
- * In the initial implementation, busy waiting is used in while(), and consequently consumes
- * large CPU usage. I add usleep(1) in the while to release this problem. Perhaps, a better way
- * is to use conditioned wait.
- * TODO: better implementation based on conditioned wait.
- * --Li.
- * Mar. 30th, 2014.
- *
- * I use a semaphore (sem_new_block_or_eof_) to avoid the busy wait.
- */
-
-	while(nexhausted_lowers<nlowers){
-		if(buffer->getBlock(*block)){
-			perf_info_->processed_one_block();
-			return true;
-		}
+	while(true){
+		/*
+		 * As Exchange merger is a local stage beginner, exchange::next will return false in order to
+		 * shrink the current work thread, if the termination request is detected.
+		 */
 		if(this->checkTerminateRequest()){
 			logging_->log("<<<<<<<<<<<<<<<<<Exchange detected call back signal!>>>>>>%lx>>>>>>>>>>>\n",pthread_self());
 			return false;
 		}
-		sem_new_block_or_eof_.wait();
-	}
 
-	/* thread arrives here means that all the lowers exchange are exhausted so that the buffer will not receive new block.
-	 * next() return false until all the remaining blocks in the buffer are returned to the callers.*/
-	if(buffer->getBlock(*block)){
-		perf_info_->processed_one_block();
-		return true;
-	}
-	else{
-		return false;
+		if(sem_new_block_or_eof_.timed_wait(1)){
+			if(buffer->getBlock(*block)){
+				perf_info_->processed_one_block();
+				return true;
+			}
+		}
+		if(nexhausted_lowers==nlowers){
+			return false;
+		}
 	}
 
 }
@@ -184,7 +164,6 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 	}
 	delete received_block_stream_;
 	delete buffer;
-	delete[] socket_fd_lower_list;
 	delete[] block_for_socket_;
 
 	/* rest the status of this iterator instance, such that the following calling of open() and next() can
@@ -274,7 +253,6 @@ void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 
 	/* close the socket of this exchange*/
 	FileClose(sock_fd);
-//	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", sock_fd);
 
 	/* return the applied port to the port manager*/
 	PortManager::getInstance()->returnPort(socket_port);
@@ -306,8 +284,8 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 	if(Config::pipelined_exchange){
-		ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema_,state.child_,state.upper_ip_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
 		for(unsigned i=0;i<state.lower_ip_list_.size();i++){
+			ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema_->duplicateSchema(),state.child_,state.upper_ip_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
 			/* set the partition offset*/
 			EIELstate.partition_offset_=i;
 			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
@@ -316,12 +294,13 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id_);
 				return false;
 			}
+			((ExpandableBlockStreamExchangeLowerEfficient*)EIEL)->state_.child_=0;
 			delete EIEL;
 		}
 	}
 	else{
-		ExpandableBlockStreamExchangeLowerMaterialized::State EIELstate(state.schema_,state.child_,state.upper_ip_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
 		for(unsigned i=0;i<state.lower_ip_list_.size();i++){
+			ExpandableBlockStreamExchangeLowerMaterialized::State EIELstate(state.schema_->duplicateSchema(),state.child_,state.upper_ip_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
 			/* set the partition offset*/
 			EIELstate.partition_offset=i;
 			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerMaterialized(EIELstate);
@@ -330,31 +309,8 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id_);
 				return false;
 			}
+			((ExpandableBlockStreamExchangeLowerEfficient*)EIEL)->state_.child_=0;
 			delete EIEL;
-		}
-	}
-
-
-	return true;
-}
-
-bool ExpandableBlockStreamExchangeEpoll::WaitForConnectionFromLowerExchanges(){
-	/** This method returns when all the senders have been connected*/
-
-	socklen_t sin_size=sizeof(struct sockaddr_in);
-	struct sockaddr_in remote_addr;
-	unsigned count=0;
-	while(1){
-		if(count>=nlowers){
-			return true;
-		}
-		logging_->log("[%ld] Waiting for the socket connection from the lower exchange..",state.exchange_id_);
-		if((socket_fd_lower_list[count]=accept(sock_fd,(struct sockaddr*)&remote_addr,&sin_size))!=-1)
-		{
-			lower_ip_array.push_back(inet_ntoa(remote_addr.sin_addr));
-			logging_->log("[%ld] The lower exchange <%s> is connected to the socket.",state.exchange_id_,lower_ip_array[count].c_str());
-			cout<<"-----for Yu debug:accept return fd "<<socket_fd_lower_list[count]<<endl;
-			count++;
 		}
 	}
 	return true;
@@ -446,7 +402,6 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					status=getnameinfo(&in_addr,in_len,hbuf,sizeof(hbuf),sbuf,sizeof(sbuf),NI_NUMERICHOST|NI_NUMERICSERV);
 					if(status==0){
 						Pthis->logging_->log("[%ld] Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n",Pthis->state.exchange_id_, infd, hbuf, sbuf,Pthis->state.exchange_id_);
-						Pthis->logging_->log("[%ld] Accepted connection on descriptor %d (host=%s, port=%s)\n",Pthis->state.exchange_id_, infd, hbuf, sbuf);
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
 						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_ip_list_.size());
@@ -507,8 +462,8 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					Pthis->block_for_socket_[socket_fd_index]->reset();
 
 					/** In the current implementation, a empty block stream means End-Of-File**/
-					const bool isLastBlock=Pthis->received_block_stream_->Empty();
-					if(!isLastBlock){
+					const bool eof=Pthis->received_block_stream_->Empty();
+					if(!eof){
 						/** the newly obtained data block is validate, so we insert it into the buffer and post
 						 * sem_new_block_or_eof_ so that all the threads waiting for the semaphore continue. **/
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);

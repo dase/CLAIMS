@@ -16,8 +16,9 @@ xclean)
         echo 'cleaning...'
         make distclean >/dev/null 2>&1
         rm -rf autom4te.cache
-		rm -rf install
-        for fn in aclocal.m4 configure config.guess config.sub depcomp install-sh \
+	  rm -rf install
+	  rm -rf bin
+ 	        for fn in aclocal.m4 configure config.guess config.sub depcomp install-sh \
                 ltmain.sh libtool missing mkinstalldirs config.log config.status Makefile; do
                 rm -f $fn
         done

@@ -507,6 +507,8 @@ struct Loadtable_stmt{	// 2014-4-1---修改---by Yu
 	Node *path;
 	char *column_separator;
 	char *tuple_separator;
+	double sample;
+	int mode;	// 0 is load, 1 is append
 };
 
 struct Rename_stmt
@@ -737,7 +739,13 @@ struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, 
 struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next);
 
 // 2014-3-27---增加---by Yu
-struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator);
+struct Node* newLoadTable(nodetype type,
+		char *table_name,
+		Node *path,
+		char *column_separator,
+		char *tuple_separator,
+		double sample,
+		int mode);
 
 Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string);	//2014-5-4---add ---by Yu
 

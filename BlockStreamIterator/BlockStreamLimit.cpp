@@ -98,3 +98,10 @@ bool BlockStreamLimit::close(){
 	return true;
 }
 
+void BlockStreamLimit::print(){
+	printf("LIMIT:\n");
+	state_.child_->print();
+}
+
+
+

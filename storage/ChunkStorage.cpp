@@ -322,7 +322,7 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
 
 void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& block) const {
 
-//#define MEMORY_COPY
+#define MEMORY_COPY
 #ifdef MEMORY_COPY
 
 	/* Create a block, which will not free block_start_address when destructed.*/
