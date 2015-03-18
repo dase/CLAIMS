@@ -43,8 +43,8 @@
 #define HEADER	3
 #define DATA	4
 #define END		5
-#define CHANGE 6
 struct ColumnHeader {
+#define CHANGE 6
 	std::vector<std::string> header_list;
 	void add_header(std::string name) {
 		header_list.push_back(name);

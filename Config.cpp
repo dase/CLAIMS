@@ -29,7 +29,7 @@ string get_default_logfile_name(){
 	sp<<string(p).c_str()<<"/log/claims.log";
 	return sp.str();
 }
-std::string Config::config_file=gete().c_str();
+std::string Config::config_file;
 Config* Config::instance_=0;
 
 /**
@@ -98,6 +98,9 @@ Config::~Config() {
 }
 
 void Config::initialize() {
+
+	if(config_file.empty())
+		config_file=gete().c_str();
 
 	/**
 	 * open configure file, which path is specified in CONFIG.
@@ -188,4 +191,8 @@ void Config::print_configure() const {
 	std::cout<<"master:"<<master<<std::endl;
 	std::cout<<"local disk mode:"<<local_disk_mode<<std::endl;
 	std::cout<<"client_lisener_port:"<<client_listener_port<<std::endl;
+}
+
+void Config::setConfigFile(std::string file_name) {
+	config_file=file_name;
 }

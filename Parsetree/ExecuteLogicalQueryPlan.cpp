@@ -34,7 +34,7 @@
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
-
+#define SQL_Parser
 using namespace std;
 
 const int INT_LENGTH = 10;
