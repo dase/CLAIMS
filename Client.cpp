@@ -82,6 +82,43 @@ int main(int argc, char** argv){
 			break;
 		}
 
+		switch(response->status == OK){
+			case Error:{
+				printf("ERROR>%s\n",response->content.c_str());
+				break;
+			}
+			case OK:{
+				ResultSet rs;
+				while (response->status != END) {
+					switch(response->status){
+					case SCHEMA:
+						rs.schema_=response->getSchema();
+						break;
+					case HEADER:
+						rs.column_header_list_=response->getAttributeName().header_list;
+						break;
+					case DATA:
+						assert(rs.schema_!=0);
+						rs.appendNewBlock(response->getDataBlock(rs.schema_));
+						break;
+					}
+					response = client.receive();
+						ClientLogging::log("Message: %s\n", response->getMessage().c_str());
+				}
+				rs.query_time_=atof(response->content.c_str());
+				rs.print();
+				break;
+			}
+			case CHANGE:{
+				printf("%s\n",response->content.c_str());
+				break;
+			}
+			default:{
+				printf("Unexpected response from server!n");
+				assert(false);
+			}
+		}
+		continue;
 		if (response->status == OK) {
 			ResultSet rs;
 			ClientLogging::log("Client get server response ok: %s\n",
