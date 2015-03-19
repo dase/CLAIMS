@@ -12,15 +12,17 @@
 #include "../Environment.h"
 #include "../common/TimeOutReceiver.h"
 #include "../utility/rdtsc.h"
+#include "../common/ids.h"
+#include <iosfwd>
 ExchangeTracker::ExchangeTracker() {
 	endpoint=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint);
 	framework->SetMaxThreads(1);
 	logging_=new ExchangeTrackerLogging();
 	std::ostringstream name;
-	name<<"ExchangeTrackerActor://"+Environment::getInstance()->getIp();
+	name<<"ExchangeTrackerActor://"<<Environment::getInstance()->getNodeID();
 	actor=new ExchangeTrackerActor(this,framework,name.str().c_str());
-	logging_->log("ExchangeTrackerActor with name %s created!",name.str().c_str());
+	logging_->log("%s created!",name.str().c_str());
 
 
 }
@@ -57,15 +59,17 @@ void ExchangeTracker::LogoutExchange(const ExchangeID &id){
 	logging_->log("Exchange with id=(%d,%d) is logged out!",id.exchange_id,id.partition_offset);
 }
 
-int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::string target_ip){
+NodeAddress ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,NodeID target_id){
 	unsigned long long int step1,step2;
 //	return 17002;
 	step1=curtick();
 	step2=curtick();
 	TimeOutReceiver* receiver=new TimeOutReceiver(endpoint);
-	Theron::Catcher<int> ResultCatcher;
-	receiver->RegisterHandler(&ResultCatcher,&Theron::Catcher<int>::Push);
-	bool send_result=framework->Send(exchange_id,receiver->GetAddress(),Theron::Address(("ExchangeTrackerActor://"+target_ip).c_str()));
+	Theron::Catcher<NodeRegisterMessage> ResultCatcher;
+	receiver->RegisterHandler(&ResultCatcher,&Theron::Catcher<NodeRegisterMessage>::Push);
+	std::ostringstream str;
+	str<<"ExchangeTrackerActor://"<<target_id;
+	bool send_result=framework->Send(exchange_id,receiver->GetAddress(),Theron::Address(str.str().c_str()));
 	unsigned Timeout=30000;	//timeout in millisecond
 
 //	if(receiver->TimeOutWait(1,Timeout)==0){
@@ -83,11 +87,16 @@ int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::stri
 //	receiver.Wait(1);
 
 	Message256 feedback;
-	int port;
+	NodeAddress node_addr;
 	Theron::Address from;
 //	ResultCatcher.Pop(feedback,from);
+	NodeRegisterMessage received("0",0);
 //	printf("OOOOOOOOOOOO step 1:%4.4f\n",getSecond(step1));
-	while(!ResultCatcher.Pop(port,from));
+	while(!ResultCatcher.Pop(received,from));
+	node_addr.ip=received.get_ip();
+	std::ostringstream str1;
+	str1<<received.port;
+	node_addr.port=str1.str();
 //	ResultCatcher.Pop(port,from);
 //	NodeConnectionMessage NCM=NodeConnectionMessage::deserialize(feedback);
 //	logging_->log("Receive Socket connection info from <%s>, content: %s:%s",from.AsString(),NCM.ip.c_str(),NCM.port.c_str());
@@ -95,7 +104,7 @@ int ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,std::stri
 //	return atoi(NCM.port.c_str());
 //	printf("OOOOOOOOOOOO step 2:%4.4f\n",getSecond(step2));
 	receiver->~TimeOutReceiver();
-	return port;
+	return node_addr;
 }
 
 ExchangeTracker::ExchangeTrackerActor::ExchangeTrackerActor(ExchangeTracker* et,Theron::Framework* framework,const char* Name)
@@ -106,17 +115,20 @@ ExchangeTracker::ExchangeTrackerActor::ExchangeTrackerActor(ExchangeTracker* et,
 void ExchangeTracker::ExchangeTrackerActor::AskForConnectionInfo(const ExchangeID &exchange_id, const Theron::Address from){
 	et->logging_->log("%s is asking for the socket connecton info!",from.AsString());
 	et->lock_.acquire();
+	NodeRegisterMessage node_addr("0",0);
 	if(et->id_to_port.find(exchange_id)!=et->id_to_port.cend()){
 
 //		NodeConnectionMessage myNCM(Environment::getInstance()->getIp(),et->id_to_port[exchange_id]);
-		Send(atoi(et->id_to_port[exchange_id].c_str()),from);
+		node_addr.set_ip(Environment::getInstance()->getIp());
+		node_addr.port=atoi(et->id_to_port[exchange_id].c_str());
+		Send(node_addr,from);
 //		Send(NodeConnectionMessage::serialize(myNCM),from);
 		et->logging_->log("The ask is answered!");
 	}
 	else{
 
 //		Send(NodeConnectionMessage::serialize(NodeConnectionMessage("0","0")),from);
-		Send(int(0),from);
+		Send(node_addr,from);
 		et->logging_->log("No exchange matched for %lld!",exchange_id.exchange_id);
 	}
 	et->lock_.release();

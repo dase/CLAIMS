@@ -59,14 +59,10 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		state.child_=expander_lower;//child_iterator;
 		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 		state.schema_=getSchema(child_dataflow.attribute_list_);
-		state.upper_ip_list_.push_back(node_tracker->getNodeIP(collecter_));
+		state.upper_id_list_.push_back(collecter_);
 		state.partition_schema_=partition_schema::set_hash_partition(0);
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(child_dataflow.property_.partitioner);
-		for(unsigned i=0;i<lower_id_list.size();i++){
-			const std::string ip=node_tracker->getNodeIP(lower_id_list[i]);
-			assert(ip!="");
-			state.lower_ip_list_.push_back(ip);
-		}
+		state.lower_id_list_=lower_id_list;
 		child_iterator=new ExpandableBlockStreamExchangeEpoll(state);
 	}
 
@@ -162,15 +158,10 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 			state.child_=physical_plan.plan;//child_iterator;
 			state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 			state.schema_=getSchema(physical_plan.dataflow.attribute_list_);
-			state.upper_ip_list_.push_back(NodeTracker::getInstance()->getNodeIP(collecter_));
+			state.upper_id_list_.push_back(collecter_);
 			state.partition_schema_=partition_schema::set_hash_partition(0);
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
-			for(unsigned i=0;i<lower_id_list.size();i++){
-				const std::string ip=NodeTracker::getInstance()->getNodeIP(lower_id_list[i]);
-				assert(ip!="");
-				state.lower_ip_list_.push_back(ip);
-			}
-
+			state.lower_id_list_=lower_id_list;
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
 			physical_plan.plan=exchange;
 
@@ -237,7 +228,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 				}
 			}
 
-			state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			state.upper_id_list_=upper_id_list;
 
 			assert(requirement.hasReuiredPartitionKey());
 
@@ -246,7 +237,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(best_plan.dataflow.property_.partitioner);
 
-			state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			state.lower_id_list_=lower_id_list;
 
 
 

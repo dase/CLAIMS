@@ -9,13 +9,15 @@
 #define AUTU_MASTER
 //#define FORK
 //#define DEBUG_MODE
-  struct option long_options[] = {
+
+
+struct option long_options[] = {
    {"config-file", required_argument, 0, 'c'},
    {"help", no_argument, 0, 'h'},
  };
 
 std::string help_info=std::string("-c --config-file FILE_NAME\n\t\tSpecify the configure file\n")+
-		"-h --help\n\t\t Print the help info\n";
+		"-h --help\n\t\tPrint the help info\n";
 
 
 void handle_parameters(int argc, char** argv){

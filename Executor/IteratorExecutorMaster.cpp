@@ -65,7 +65,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamItera
 
 	return true;
 }
-bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,std::string target_ip){
+bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_id){
 	PhysicalQueryPlan im(it);
 
 	Message4K str= PhysicalQueryPlan::serialize4K(im);
@@ -74,13 +74,13 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIterat
 //
 //	Theron::Catcher<Message256> resultCatcher;
 //	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<Message256>::Push);
-	ostringstream ip_port;
+	ostringstream actor_name;
 
-	ip_port<<"IteratorExecutorActor://"<<target_ip;
+	actor_name<<"IteratorExecutorActor://"<<target_id;
 //	cout<<"actname: "<<ip_port.str()<<endl;
 //	framework->Send(str,receiver.GetAddress(),Theron::Address(ip_port.str().c_str()));
-	framework->Send(str,Theron::Address(),Theron::Address(ip_port.str().c_str()));
-	logging_->log("The serialized iterator tree has been sent to %s.\n",ip_port.str().c_str());
+	framework->Send(str,Theron::Address(),Theron::Address(actor_name.str().c_str()));
+	logging_->log("The serialized iterator tree has been sent to %s.\n",actor_name.str().c_str());
 //
 //	unsigned feedback_count=0;
 //	feedback_count=receiver.TimeOutWait(1,5000);
@@ -91,10 +91,6 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIterat
 //	}
 //	logging_->log("Received the confirm feedback from %s",ip_port.str().c_str());
 	return true;
-}
-bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_id){
-	std::string node_ip=NodeTracker::getInstance()->getNodeIP(target_id);
-	ExecuteBlockStreamIteratorsOnSite(it,node_ip);
 }
 bool IteratorExecutorMaster::Propogation(const int count,std::string target){
 	printf("Master:%d\n",count);
