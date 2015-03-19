@@ -1113,7 +1113,7 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 
 	cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-					new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
+					new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 4);
 
 	catalog->add_table(new_table);
 
@@ -1261,7 +1261,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-//				physical_iterator_tree->print();
+//	physical_iterator_tree->print();
 
 	physical_iterator_tree->open();
 

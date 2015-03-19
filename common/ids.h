@@ -12,6 +12,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
+#include <string>
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -29,6 +30,25 @@ typedef int ChunkOffset;
 typedef unsigned long ExpanderID;
 /*the following ids are based on the assumption that the TableOffset is globally unique.*/
 
+struct NodeAddress {
+	NodeAddress(){};
+	NodeAddress(std::string ip, std::string port) :
+			ip(ip), port(port) {
+	}
+	;
+	bool operator ==(const NodeAddress & r) const {
+		return this->ip == r.ip && this->port == r.port;
+	}
+	std::string ip;
+	std::string port;
+};
+/* for boost::unordered_map*/
+static size_t hash_value(const NodeAddress& node_addr){
+	size_t seed=0;
+	boost::hash_combine(seed,boost::hash_value(node_addr.ip));
+	boost::hash_combine(seed,boost::hash_value(node_addr.port));
+	return seed;
+}
 
 /**
  * AttributeID: an attribute in a table has an unique AttributeID*/

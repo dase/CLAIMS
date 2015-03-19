@@ -30,7 +30,7 @@ public:
 	};
 	ResourceManagerMaster();
 	virtual ~ResourceManagerMaster();
-	NodeID RegisterNewSlave(NodeIP);
+	NodeID RegisterNewSlave(NodeAddress);
 	/* notify the ResourceManager how large the budget is for a target node*/
 	bool RegisterDiskBuget(NodeID report_node_id, unsigned size_in_mb);
 	bool RegisterMemoryBuget(NodeID report_node_id, unsigned size_in_mb);

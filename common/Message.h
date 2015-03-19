@@ -139,6 +139,9 @@ struct NodeRegisterMessage{
 		port=node_port;
 		ip=inet_addr(node_ip.c_str());
 	}
+	void set_ip(std::string _ip){
+		ip=inet_addr(_ip.c_str());
+	}
 	std::string get_ip()const{
 		in_addr add;
 		add.s_addr=ip;

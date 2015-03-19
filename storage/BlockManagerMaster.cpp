@@ -91,7 +91,7 @@ void BlockManagerMaster::BlockManagerMasterActor::matcherReceiver(const MatcherM
 }
 std::string BlockManagerMaster::generateSlaveActorName(const NodeID & node_id)const{
 	std::ostringstream str;
-	str<<"blockManagerWorkerActor://"<<NodeTracker::getInstance()->getNodeIP(node_id);
+	str<<"blockManagerWorkerActor://"<<node_id;
 	return str.str();
 }
 

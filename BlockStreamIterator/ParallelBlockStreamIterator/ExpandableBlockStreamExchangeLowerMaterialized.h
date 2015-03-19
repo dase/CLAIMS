@@ -36,19 +36,19 @@ public:
 		Schema* schema_;
 		BlockStreamIteratorBase* child_;
 		unsigned long long int exchange_id_;
-		std::vector<std::string> upper_ip_list_;
+		std::vector<NodeID> upper_id_list_;
 		unsigned block_size_;
 		PartitionOffset partition_offset;
 		partition_schema partition_schema_;
-		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<std::string> upper_ip_list, unsigned block_size,
+		State(Schema *schema, BlockStreamIteratorBase* child, std::vector<NodeID> upper_id_list, unsigned block_size,
 						unsigned long long int exchange_id=0,partition_schema partition_key_index=partition_schema::set_hash_partition())
-		:schema_(schema),child_(child),upper_ip_list_(upper_ip_list),block_size_(block_size),exchange_id_(exchange_id),partition_offset(0),partition_schema_(partition_key_index)
+		:schema_(schema),child_(child),upper_id_list_(upper_id_list),block_size_(block_size),exchange_id_(exchange_id),partition_offset(0),partition_schema_(partition_key_index)
 		{}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ & exchange_id_ & upper_ip_list_ &block_size_&partition_offset&partition_schema_;
+			ar & schema_ & child_ & exchange_id_ & upper_id_list_ &block_size_&partition_offset&partition_schema_;
 		}
 	};
 	ExpandableBlockStreamExchangeLowerMaterialized(State state);

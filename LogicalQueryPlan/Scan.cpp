@@ -148,7 +148,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		state.schema_=getSchema(dataflow.attribute_list_);
 
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
-		state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+		state.lower_id_list_=lower_id_list;
 
 		std::vector<NodeID> upper_id_list;
 		if(requirement.hasRequiredLocations()){
@@ -166,7 +166,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 			}
 		}
 
-		state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+		state.upper_id_list_=upper_id_list;
 
 		state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey()));
 		assert(state.partition_schema_.partition_key_index>=0);
@@ -176,10 +176,10 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		Dataflow new_dataflow;
 		new_dataflow.attribute_list_=dataflow.attribute_list_;
 		new_dataflow.property_.partitioner.setPartitionKey(requirement.getPartitionKey());
-		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_ip_list_.size()));
+		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_id_list_.size()));
 
 		const unsigned total_size=dataflow.getAggregatedDatasize();
-		const unsigned degree_of_parallelism=state.upper_ip_list_.size();
+		const unsigned degree_of_parallelism=state.upper_id_list_.size();
 		std::vector<DataflowPartition> dataflow_partition_list;
 			for(unsigned i=0;i<degree_of_parallelism;i++){
 				const NodeID location=upper_id_list[i];
