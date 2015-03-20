@@ -82,7 +82,7 @@ int main(int argc, char** argv){
 			break;
 		}
 
-		switch(response->status == OK){
+		switch(response->status){
 			case Error:{
 				printf("ERROR>%s\n",response->content.c_str());
 				break;

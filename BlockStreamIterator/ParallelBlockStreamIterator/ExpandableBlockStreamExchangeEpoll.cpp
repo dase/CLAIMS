@@ -257,7 +257,8 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 		/* Repeatedly ask node with ip for port information untill the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
 		int wait_time_in_millisecond=1;
-		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id_,i),id).ip==""){
+		NodeAddress node_addr;
+		while(!et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id_,i),id,node_addr)){
 			usleep(wait_time_in_millisecond);
 			wait_time_in_millisecond=wait_time_in_millisecond<200?wait_time_in_millisecond+20:200;
 		}
@@ -265,7 +266,7 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 }
 bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 	logging_->log("[%ld] master ip=%s, self ip=%s",state.exchange_id_,state.upper_id_list_[0],Environment::getInstance()->getIp().c_str());
-	return Environment::getInstance()->getNodeID()==state.upper_id_list_[0];
+	return partition_offset==0;
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();

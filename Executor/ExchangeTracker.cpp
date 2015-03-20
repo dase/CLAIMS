@@ -59,7 +59,7 @@ void ExchangeTracker::LogoutExchange(const ExchangeID &id){
 	logging_->log("Exchange with id=(%d,%d) is logged out!",id.exchange_id,id.partition_offset);
 }
 
-NodeAddress ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,NodeID target_id){
+bool ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,NodeID target_id,NodeAddress & node_addr){
 	unsigned long long int step1,step2;
 //	return 17002;
 	step1=curtick();
@@ -87,7 +87,6 @@ NodeAddress ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,N
 //	receiver.Wait(1);
 
 	Message256 feedback;
-	NodeAddress node_addr;
 	Theron::Address from;
 //	ResultCatcher.Pop(feedback,from);
 	NodeRegisterMessage received("0",0);
@@ -104,7 +103,7 @@ NodeAddress ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,N
 //	return atoi(NCM.port.c_str());
 //	printf("OOOOOOOOOOOO step 2:%4.4f\n",getSecond(step2));
 	receiver->~TimeOutReceiver();
-	return node_addr;
+	return received.ip!=0;
 }
 
 ExchangeTracker::ExchangeTrackerActor::ExchangeTrackerActor(ExchangeTracker* et,Theron::Framework* framework,const char* Name)
