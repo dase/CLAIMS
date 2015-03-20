@@ -73,12 +73,12 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&){
 
 
 	/** connect to all the mergers **/
-	for(unsigned upper_id=0;upper_id<state_.upper_id_list_.size();upper_id++){
+	for(unsigned upper_offset=0;upper_offset<state_.upper_id_list_.size();upper_offset++){
 
-		logging_->log("[%ld,%d] try to connect to upper (%d) %s\n",state_.exchange_id_,state_.partition_offset_,upper_id,state_.upper_id_list_[upper_id]);
-		if(ConnectToUpper(ExchangeID(state_.exchange_id_,upper_id),state_.upper_id_list_[upper_id],socket_fd_upper_list[upper_id],logging_)!=true)
+		logging_->log("[%ld,%d] try to connect to upper (%d) %s\n",state_.exchange_id_,state_.partition_offset_,upper_offset,state_.upper_id_list_[upper_offset]);
+		if(ConnectToUpper(ExchangeID(state_.exchange_id_,upper_offset),state_.upper_id_list_[upper_offset],socket_fd_upper_list[upper_offset],logging_)!=true)
 			return false;
-		logging_->log("[%ld,%d] connected to upper (%d) %s\n",state_.exchange_id_,state_.partition_offset_,upper_id,state_.upper_id_list_[upper_id]);
+		printf("[%ld,%d] connected to upper [%d,%d] on Node %d\n",state_.exchange_id_,state_.partition_offset_,state_.exchange_id_,upper_offset,state_.upper_id_list_[upper_offset]);
 	}
 
 	/** create the sender thread **/

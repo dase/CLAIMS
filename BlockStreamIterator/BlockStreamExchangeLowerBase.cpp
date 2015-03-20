@@ -23,8 +23,9 @@ bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	int upper_port;
 	NodeAddress upper_addr;
-	if((upper_addr=et->AskForSocketConnectionInfo(exchange_id,id)).ip==""){
+	if(!(et->AskForSocketConnectionInfo(exchange_id,id,upper_addr))){
 		log->elog("Fails to ask Node %d for socket connection info, the exchange id=%d\n",id,exchange_id);
+		return false;
 	}
 
 	if((host=gethostbyname(upper_addr.ip.c_str()))==0){
@@ -51,6 +52,7 @@ bool BlockStreamExchangeLowerBase::ConnectToUpper(const ExchangeID &exchange_id,
 		return false;
 	}
 	log->log("connected to the Master socket :"+returnvalue);
+//	printf("Lower [%ld,%d] will be connect to Upper with target port %s\n",exchange_id.exchange_id,exchange_id.partition_offset,upper_addr.port.c_str());
 
 	return true;
 

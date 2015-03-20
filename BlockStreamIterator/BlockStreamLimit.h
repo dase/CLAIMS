@@ -38,6 +38,7 @@ public:
 	bool open(const PartitionOffset&);
 	bool next(BlockStreamBase*);
 	bool close();
+	void print();
 private:
 	inline bool limitExhausted()const{
 		return received_tuples_>=state_.limits_;
