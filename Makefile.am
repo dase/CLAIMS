@@ -8,9 +8,10 @@ AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
 -I${GTEST_HOME}/include 
 #-L/usr/local/lib \
 #-I/usr/local/include
-AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory 
+AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -ldl 
 
 LDADD =  \
+    codegen/libcodegen.a\
 	Test/libtest.a \
 	Test/common/libcommon.a \
 	Test/TestSuit/libtestsuit.a \
@@ -55,7 +56,9 @@ LDADD =  \
 	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 	${THERON_HOME}/Lib/libtherond.a \
-	${GTEST_HOME}/libgtest.a 
+	${GTEST_HOME}/libgtest.a \
+	-lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter -lLLVMMCParser -lLLVMCodeGen -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils -lLLVMipa -lLLVMAnalysis -lLLVMX86Desc -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMMCJIT -lLLVMTarget -lLLVMRuntimeDyld -lLLVMExecutionEngine -lLLVMMC -lLLVMObject -lLLVMBitReader -lLLVMCore -lLLVMSupport
+		
 
 
 
@@ -66,7 +69,8 @@ include_HEADERS = Config.h \
 				configure.h
 				
 bin_PROGRAMS =  claimsserver \
-				client 
+				client \
+				test_codegen
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -77,13 +81,15 @@ claimsserver_SOURCES = Config.cpp	\
 				Environment.cpp \
 				IDsGenerator.cpp \
 				Server.cpp
+
+test_codegen_SOURCES = codegen/main.cpp
 				
 
 
 SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
-storage Test utility
+storage Test utility codegen
 
 DIST_SUBDIRS = BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
-storage Test utility
+storage Test utility codegen

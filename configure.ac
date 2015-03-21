@@ -44,6 +44,7 @@ AC_CONFIG_FILES([
   Test/TestSuit/Makefile
   Test/utility/Makefile
   utility/Makefile
+  codegen/Makefile 
 ])
 AC_OUTPUT
 
