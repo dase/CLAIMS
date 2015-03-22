@@ -58,6 +58,8 @@ CodeGenerator::CodeGenerator() {
 }
 
 CodeGenerator::~CodeGenerator() {
-	// TODO Auto-generated destructor stub
+	delete builder_;
+	delete module_;
+	delete fpm_;
 }
 

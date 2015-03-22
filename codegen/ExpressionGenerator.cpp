@@ -48,8 +48,12 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 	llvm::Value* return_addr=AI++;
 	tuple_addr->setName("return_addr");
 
-    /* generate the code and get the return value */
+    /* try to generate the code and get the return value
+     * If we cannot generate the code, return_value is NULL*/
 	llvm::Value* return_value=codegen(qnode,schema,tuple_addr);
+
+	if(return_value==NULL)
+		return NULL;
 
 	/* store the value to the return address */
 	storeTheReturnValue(return_value,return_addr,qnode);
@@ -86,6 +90,8 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 
 llvm::Value* codegen_binary_cal(llvm::Value* l, llvm::Value* r,
 		QExpr_binary* node) {
+	if(l==0||r==0)
+		return NULL;
 	switch(node->op_type){
 	case oper_add:
 		assert(node->return_type==t_int);
@@ -120,7 +126,6 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		return builder->CreateLoad(column_addr);
 
 	default:{
-		assert(false);
 		return 0;
 	}
 
