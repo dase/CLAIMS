@@ -32,6 +32,16 @@ llvm::Value* createAdd(llvm::Value* l,llvm::Value* r, data_type type);
  */
 llvm::Value* createMinus(llvm::Value* l,llvm::Value* r,data_type type);
 
+/* create multiply instruction
+ * Note: l and r should be in the same type.
+ */
+llvm::Value* createMultiply(llvm::Value* l, llvm::Value* r, data_type type);
+
+/* create divide instruction
+ * Note: l and r should be in the same type.
+ */
+llvm::Value* createDivide(llvm::Value* l, llvm::Value* r ,data_type type);
+
 /* conduct the type promotion and return the promoted value */
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
 
