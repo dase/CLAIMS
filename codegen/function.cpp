@@ -1,4 +1,5 @@
 #include <function.h>
+namespace test{
  int test_llvm(){
   InitializeNativeTarget();
   InitializeNativeTargetAsmPrinter();
@@ -315,3 +316,4 @@
    return 0;
  }
 
+}

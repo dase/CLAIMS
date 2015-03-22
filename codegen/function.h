@@ -19,6 +19,7 @@
 #include <map>
 #include <string>
 #include <vector>
+namespace test{
 using namespace llvm;
 
 //===----------------------------------------------------------------------===//
@@ -554,3 +555,4 @@ extern "C" inline double putchard(double X) {
 
 int test_llvm();
 #endif
+}
