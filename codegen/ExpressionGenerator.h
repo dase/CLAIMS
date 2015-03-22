@@ -27,6 +27,11 @@ bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_prt,QNode* node);
  * Note: l and r  must be in the same type. */
 llvm::Value* createAdd(llvm::Value* l,llvm::Value* r, data_type type);
 
+/* create minus instruction
+ * Note: l and r must be in the same type .
+ */
+llvm::Value* createMinus(llvm::Value* l,llvm::Value* r,data_type type);
+
 /* conduct the type promotion and return the promoted value */
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
 

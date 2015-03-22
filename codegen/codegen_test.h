@@ -217,4 +217,79 @@ TEST_F(CodeGenerationTest,AddFloatPromote2){
 	delete op2;
 	EXPECT_LE(abs(ret-2.8),0.00001);
 }
+TEST_F(CodeGenerationTest,AddLongPromote){
+	/* #      #1    |#2    |#3
+	 * Tuple: int   |int   |long
+	 *         1     -1     200
+	 * Express: #1 + #2 + #3
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_u_long));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	column_index["#3"]=2;
+	QColcumns* a=new QColcumns("T","#1",t_int,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_int,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_u_long,"#3");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_int,oper_add,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,c,t_u_long,oper_add,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_u_long,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*(int*)tuple=1;
+	*((int*)s->getColumnAddess(1,tuple))=-1;
+	*((long*)s->getColumnAddess(2,tuple))=200;
+	long ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(ret,200);
+}
+TEST_F(CodeGenerationTest,SUB){
+	/* #      #1    |#2    |#3
+	 * Tuple: int   |int   |long
+	 *         1     -1     200
+	 * Express: #1 + #2 + #3
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_u_long));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	column_index["#3"]=2;
+	QColcumns* a=new QColcumns("T","#1",t_int,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_int,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_u_long,"#3");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_int,oper_minus,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,c,t_u_long,oper_minus,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_u_long,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*(int*)tuple=1;
+	*((int*)s->getColumnAddess(1,tuple))=-1;
+	*((long*)s->getColumnAddess(2,tuple))=200;
+	long ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(ret,-198);
+}
+
 #endif /* CODEGEN_TEST_H_ */
