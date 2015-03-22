@@ -30,7 +30,7 @@ protected:
 	}
 };
 
-TEST_F(CodeGenerationTest,Add1){
+TEST_F(CodeGenerationTest,AddInt){
 
 	/* #      1# |2#
 	 * Tuple: int|int
@@ -68,7 +68,7 @@ TEST_F(CodeGenerationTest,Add1){
 }
 
 
-TEST_F(CodeGenerationTest,Add2){
+TEST_F(CodeGenerationTest,AddInt2){
 	/* #      #1 |#2 |#3
 	 * Tuple: int|int|int
 	 *         -1   2   3
@@ -105,5 +105,116 @@ TEST_F(CodeGenerationTest,Add2){
 	delete s;
 	delete op2;
 	EXPECT_EQ(ret,4);
+}
+TEST_F(CodeGenerationTest,AddFloat){
+	/* #      #1    |#2    |#3
+	 * Tuple: float |float |float
+	 *         0     -1.2    3.8
+	 * Express: #1 + #2 + #3
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_float));
+	columns.push_back(data_type(t_float));
+	columns.push_back(data_type(t_float));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	column_index["#3"]=2;
+	QColcumns* a=new QColcumns("T","#1",t_float,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_float,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_float,"#3");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_float,oper_add,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,c,t_float,oper_add,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_float,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*(float*)tuple=0;
+	*((float*)tuple+1)=-1.2;
+	*((float*)tuple+2)=3.8;
+	float ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(abs(ret-2.6),0.00001);
+}
+TEST_F(CodeGenerationTest,AddFloatPromote){
+	/* #      #1    |#2    |#3
+	 * Tuple: int |float |float
+	 *         1     -1.2    3.8
+	 * Express: #1 + #2 + #3
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_float));
+	columns.push_back(data_type(t_float));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	column_index["#3"]=2;
+	QColcumns* a=new QColcumns("T","#1",t_int,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_float,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_float,"#3");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_float,oper_add,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,c,t_float,oper_add,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_float,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*(int*)tuple=1;
+	*((float*)tuple+1)=-1.2;
+	*((float*)tuple+2)=3.8;
+	float ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(abs(ret-3.6),0.00001);
+}
+TEST_F(CodeGenerationTest,AddFloatPromote2){
+	/* #      #1    |#2    |#3
+	 * Tuple: int |float |float
+	 *         1     -1.2    3.8
+	 * Express: #1 + #2 + #3
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_float));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	column_index["#3"]=2;
+	QColcumns* a=new QColcumns("T","#1",t_int,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_int,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_float,"#3");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_int,oper_add,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,c,t_float,oper_add,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_float,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*(int*)tuple=1;
+	*((int*)tuple+1)=-2;
+	*((float*)tuple+2)=3.8;
+	float ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(abs(ret-2.8),0.00001);
 }
 #endif /* CODEGEN_TEST_H_ */
