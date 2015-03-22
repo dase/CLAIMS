@@ -29,6 +29,13 @@ public:
 
 	inline virtual unsigned getTupleActualSize(void* tuple) const=0;
 	virtual void getColumnValue(unsigned index,void* src, void* desc)=0;
+
+	/*get the offset of the specified tuple
+	 * Note this function is only applicable for the fixed schema, since the offset
+	 * for a given column in variable schema could varies from tuples to tuples.
+	 */
+	virtual int getColumnOffset(unsigned index)const =0;
+
 	inline virtual void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline)) =0;
 	inline virtual unsigned copyTuple(void* src, void* desc) const =0;
 	unsigned getncolumns()const;

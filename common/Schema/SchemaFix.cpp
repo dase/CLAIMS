@@ -58,6 +58,10 @@ Schema* SchemaFix::duplicateSchema()const{
 	return new SchemaFix(columns);
 }
 
+int SchemaFix::getColumnOffset(unsigned index) const {
+	return accum_offsets[index];
+}
+
 void SchemaFix::toValue(std::string text_tuple, void* binary_tuple, const char attr_separator)
 {
 	string::size_type prev_pos = 0;

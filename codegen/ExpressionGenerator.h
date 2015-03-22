@@ -1,0 +1,24 @@
+/*
+ * ExpressionGenerator.h
+ *
+ *  Created on: Mar 21, 2015
+ *      Author: wangli
+ */
+
+#ifndef EXPRESSIONGENERATOR_H_
+#define EXPRESSIONGENERATOR_H_
+#include "../common/Expression/qnode.h"
+#include "../common/Schema/Schema.h"
+#include "llvm/ExecutionEngine/ExecutionEngine.h"
+
+using namespace std;
+typedef void (*expr_func_prototype)(void*,void*);
+
+expr_func_prototype getExprFunc(QNode* qnode, Schema* schema);
+
+llvm::Value* codegen_binary_cal(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_binary* node);
+llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_addr);
+llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr);
+
+
+#endif /* EXPRESSIONGENERATOR_H_ */
