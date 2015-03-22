@@ -105,7 +105,8 @@ llvm::Value* codegen_binary_cal(llvm::Value* l, llvm::Value* r,
 	switch(node->op_type){
 	case oper_add:
 		return createAdd(l,r,node->actual_type);
-//	case oper_minus:
+	case oper_minus:
+		return createMinus(l,r,node->actual_type);
 //		return builder->CreateSub(l,r,"-");
 //	case oper_multiply:
 //		return builder->CreateMul(l,r,"*");
@@ -137,8 +138,6 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 
 	switch(node->actual_type){
 	case t_int:
-
-
 		// cast from LLVM::Int64 to LLVM::PtrInt32
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(llvm::getGlobalContext())));
 
@@ -148,7 +147,14 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	case t_float:
 		// cast LLVM::Int64 to LLVM::PtrFloat
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getFloatTy(llvm::getGlobalContext())));
+		// create a LLVM::Float and return
 		value= builder->CreateLoad(column_addr);
+		break;
+	case t_u_long:
+		//cast LLVM:LINT64 to LLVM::int64Ptr
+		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt64Ty(llvm::getGlobalContext())));
+		// create a LLVM::Int64 and return
+		value=builder->CreateLoad(column_addr);
 		break;
 	default:
 		return 0;
@@ -185,6 +191,13 @@ bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		//flush the return value
 		builder->CreateStore(value,dest_ptr);
 		return true;
+	case t_u_long:
+		//cast return_addr to LLVM::int64Ptr
+		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getInt64Ty(llvm::getGlobalContext())));
+
+		//fluash the return value
+		builder->CreateStore(value,dest_ptr);
+		return true;
 	default:
 		return false;
 	}
@@ -194,9 +207,23 @@ llvm::Value* createAdd(llvm::Value* l, llvm::Value* r, data_type type) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	switch(type){
 	case t_int:
+	case t_u_long:
 		return builder->CreateAdd(l,r,"+");
 	case t_float:
 		return builder->CreateFAdd(l,r,"+");
+	default:
+		return NULL;
+	}
+}
+
+llvm::Value* createMinus(llvm::Value* l, llvm::Value* r, data_type type) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(type){
+	case t_int:
+	case t_u_long:
+		return builder->CreateSub(l,r,"-");
+	case t_float:
+		return builder->CreateFSub(l,r,"-");
 	default:
 		return NULL;
 	}
@@ -210,7 +237,9 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		switch(target_ty){
 		case t_float:
 			return builder->CreateSIToFP(v,llvm::Type::getFloatTy(llvm::getGlobalContext()));
-
+		case t_u_long:
+//			builder->CreateIntCast()
+			return builder->CreateIntCast(v,llvm::Type::getInt64Ty(llvm::getGlobalContext()),true,"long");
 		default:
 			return NULL;
 		}
