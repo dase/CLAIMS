@@ -21,7 +21,16 @@ llvm::Value* codegen_binary_cal(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_
 llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_addr);
 llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr);
 llvm::FunctionType* createFunctionPrototype();
-void storeTheReturnValue(llvm::Value* value, llvm::Value* dest_prt,QNode* node);
+bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_prt,QNode* node);
+
+/* create add instruction
+ * Note: l and r  must be in the same type. */
+llvm::Value* createAdd(llvm::Value* l,llvm::Value* r, data_type type);
+
+/* conduct the type promotion and return the promoted value */
+llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
+
+
 
 
 #endif /* EXPRESSIONGENERATOR_H_ */

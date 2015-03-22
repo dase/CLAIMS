@@ -52,52 +52,67 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
      * If we cannot generate the code, return_value is NULL*/
 	llvm::Value* return_value=codegen(qnode,schema,tuple_addr);
 
-	if(return_value==NULL)
+	if(!return_value)
 		return NULL;
 
 	/* store the value to the return address */
-	storeTheReturnValue(return_value,return_addr,qnode);
+	if(!storeTheReturnValue(return_value,return_addr,qnode))
+		return NULL;
 
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
-	F->dump();
-	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
-		llvm::outs()<<"errors!";
-	 }
+//		F->dump();
+//	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
+//		llvm::outs()<<"errors!";
+//	 }
 	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-	 llvm::outs()<<*CodeGenerator::getInstance()->getModule()<<"\n";
+//	 llvm::outs()<<*CodeGenerator::getInstance()->getModule()<<"\n";
 	 return CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 }
 
 llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
+	llvm::Value* value;
 	switch(qnode->type){
 	case t_qexpr_cal:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
 		assert(node->lnext->return_type==node->rnext->return_type);
 		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
 		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
-		return codegen_binary_cal(lvalue,rvalue,node);
+		value= codegen_binary_cal(lvalue,rvalue,node);
+		break;
 	}
 	case t_qcolcumns:{
 		QColcumns* node=(QColcumns*)qnode;
-		return codegen_column(node,schema,tuple_addr);
+		value= codegen_column(node,schema,tuple_addr);
+		break;
 	}
 	default:
 		return 0;
 	}
+	// conduct the type promotion if needed
+	if(qnode->actual_type!=qnode->return_type){
+		value=typePromotion(value,qnode->actual_type,qnode->return_type);
+	}
+	return value;
 }
 
 llvm::Value* codegen_binary_cal(llvm::Value* l, llvm::Value* r,
 		QExpr_binary* node) {
 	if(l==0||r==0)
 		return NULL;
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	switch(node->op_type){
 	case oper_add:
-		assert(node->return_type==t_int);
-		return CodeGenerator::getInstance()->getBuilder()->CreateAdd(l, r, "+");
+		return createAdd(l,r,node->actual_type);
+//	case oper_minus:
+//		return builder->CreateSub(l,r,"-");
+//	case oper_multiply:
+//		return builder->CreateMul(l,r,"*");
+//	case oper_divide:
+//		return builder->CreateDi
 	default:
-		return 0;
+		return NULL;
 	}
 }
 
@@ -105,7 +120,9 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	/* If the following assert does not hold, we should conduct
 	 * the type promotion.
 	 */
-	assert(schema->getcolumn(node->id).type==node->actual_type);
+
+	llvm::Value* value;
+
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	unsigned offset = schema->getColumnOffset(node->id);
 
@@ -113,23 +130,32 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	llvm::Value* value_off=ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (int64_t)offset,"generate LLVM::Int64Const");
 
 	// cast tuple_addr from LLVM::PtrInt1 to LLVM::Int64
-	tuple_addr=tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()),"Cast LLVM::PtrInt1 to LLVM::Int64");
+	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()),"Cast LLVM::PtrInt1 to LLVM::Int64");
 
 	// add LLVM::Int64 with LLVM::Int64
 	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr,"Calculate the offset");
+
 	switch(node->actual_type){
 	case t_int:
+
+
 		// cast from LLVM::Int64 to LLVM::PtrInt32
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(llvm::getGlobalContext())));
 
 		// create a LLVM::Int32 and return
-		return builder->CreateLoad(column_addr);
-
-	default:{
+		value= builder->CreateLoad(column_addr);
+		break;
+	case t_float:
+		// cast LLVM::Int64 to LLVM::PtrFloat
+		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getFloatTy(llvm::getGlobalContext())));
+		value= builder->CreateLoad(column_addr);
+		break;
+	default:
 		return 0;
-	}
 
 	}
+
+	return value;
 }
 
 llvm::FunctionType* createFunctionPrototype() {
@@ -141,8 +167,55 @@ llvm::FunctionType* createFunctionPrototype() {
     return FT;
 }
 
-void storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
+bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		QNode* node) {
-	//TODO case when for different qnode type
-	CodeGenerator::getInstance()->getBuilder()->CreateStore(value,dest_ptr);
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(node->actual_type){
+	case t_int:
+		//cast return_addr to LLVM::Int32Ptr
+		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(llvm::getGlobalContext())));
+
+		//flush the return value
+		builder->CreateStore(value,dest_ptr);
+		return true;
+	case t_float:
+		//cast return_addr to LLVM::Int32Ptr
+		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getFloatTy(llvm::getGlobalContext())));
+
+		//flush the return value
+		builder->CreateStore(value,dest_ptr);
+		return true;
+	default:
+		return false;
+	}
+}
+
+llvm::Value* createAdd(llvm::Value* l, llvm::Value* r, data_type type) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(type){
+	case t_int:
+		return builder->CreateAdd(l,r,"+");
+	case t_float:
+		return builder->CreateFAdd(l,r,"+");
+	default:
+		return NULL;
+	}
+}
+
+llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
+		data_type target_ty) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(old_ty){
+	case t_int:
+		switch(target_ty){
+		case t_float:
+			return builder->CreateSIToFP(v,llvm::Type::getFloatTy(llvm::getGlobalContext()));
+
+		default:
+			return NULL;
+		}
+		break;
+	default:
+		return NULL;
+	}
 }
