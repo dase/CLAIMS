@@ -18,9 +18,8 @@ LDADD = ../common/libcommon.a \
 
 noinst_LIBRARIES=libcodegen.a
 libcodegen_a_SOURCES = \
-    function.h function.cpp\
     CodeGenerator.h			CodeGenerator.cpp\
     ExpressionGenerator.h	ExpressionGenerator.cpp
-
+#    function.h function.cpp\
 SUBDIRS = 
 DIST_SUBDIRS = 
