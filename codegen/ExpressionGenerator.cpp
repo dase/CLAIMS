@@ -107,11 +107,10 @@ llvm::Value* codegen_binary_cal(llvm::Value* l, llvm::Value* r,
 		return createAdd(l,r,node->actual_type);
 	case oper_minus:
 		return createMinus(l,r,node->actual_type);
-//		return builder->CreateSub(l,r,"-");
-//	case oper_multiply:
-//		return builder->CreateMul(l,r,"*");
-//	case oper_divide:
-//		return builder->CreateDi
+	case oper_multiply:
+		return createMultiply(l,r,node->actual_type);
+	case oper_divide:
+		return createDivide(l,r,node->actual_type);
 	default:
 		return NULL;
 	}
@@ -229,21 +228,54 @@ llvm::Value* createMinus(llvm::Value* l, llvm::Value* r, data_type type) {
 	}
 }
 
+llvm::Value* createMultiply(llvm::Value* l, llvm::Value* r, data_type type) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(type){
+	case t_int:
+	case t_u_long:
+		return builder->CreateMul(l,r);
+	case t_float:
+		return builder->CreateFMul(l,r);
+	default:
+		return NULL;
+	}
+}
+
+llvm::Value* createDivide(llvm::Value* l, llvm::Value* r, data_type type) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(type){
+	case t_int:
+	case t_u_long:
+		return builder->CreateUDiv(l,r);
+	case t_float:
+		return builder->CreateFDiv(l,r);
+	}
+}
+
 llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		data_type target_ty) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	switch(old_ty){
-	case t_int:
+	case t_int:{
 		switch(target_ty){
 		case t_float:
 			return builder->CreateSIToFP(v,llvm::Type::getFloatTy(llvm::getGlobalContext()));
 		case t_u_long:
-//			builder->CreateIntCast()
 			return builder->CreateIntCast(v,llvm::Type::getInt64Ty(llvm::getGlobalContext()),true,"long");
 		default:
 			return NULL;
 		}
 		break;
+	}
+	case t_u_long:{
+		switch(target_ty){
+		case t_float:
+			return builder->CreateSIToFP(v,llvm::Type::getFloatTy(llvm::getGlobalContext()));
+		default:
+			return NULL;
+		}
+		break;
+	}
 	default:
 		return NULL;
 	}
