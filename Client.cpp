@@ -83,7 +83,7 @@ int main(int argc, char** argv){
 		}
 
 		switch(response->status){
-			case Error:{
+			case ERROR:{
 				printf("ERROR>%s\n",response->content.c_str());
 				break;
 			}

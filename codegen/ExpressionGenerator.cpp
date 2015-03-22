@@ -8,7 +8,6 @@
 #include <assert.h>
 #include "ExpressionGenerator.h"
 #include "CodeGenerator.h"
-
 #include "llvm/Analysis/Passes.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/JIT.h"
@@ -30,37 +29,32 @@ using llvm::InitializeNativeTarget;
 
 
 expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
-	/*	TODO: create a function prototype first
-	 * 	The function prototype is very likely to be "void FunctionName(void* tuple, void* ret_value)"
-	 */
 
-	std::vector<llvm::Type *> parameter_types;
-	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
-	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::get(llvm::getGlobalContext(),32)));
-    llvm::FunctionType *FT =
-    llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	/* create a function prototype:
+	 * void Function(void* tuple_addr, void* return)
+	 * */
+    llvm::FunctionType *FT =createFunctionPrototype();
     llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
 
+    /* create function entry */
     llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
     CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
 
 
+    /* get the parameter value of the function */
     llvm::Function::arg_iterator AI = F->arg_begin();
-
-
-
 	llvm::Value* tuple_addr=AI++;//@ assume we have got the tuple addr.
 	tuple_addr->setName("tuple_addr");
 	llvm::Value* return_addr=AI++;
 	tuple_addr->setName("return_addr");
 
+    /* generate the code and get the return value */
 	llvm::Value* return_value=codegen(qnode,schema,tuple_addr);
 
-	// switch case is needed here. assume return int for now!
+	/* store the value to the return address */
+	storeTheReturnValue(return_value,return_addr,qnode);
 
-//	llvm::PointerType::getUnqual(llvm::IntegerType::getInt32Ty(llvm::getGlobalContext()));
-	CodeGenerator::getInstance()->getBuilder()->CreateStore(return_value,return_addr);
-
+	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
 	F->dump();
@@ -131,4 +125,19 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	}
 
 	}
+}
+
+llvm::FunctionType* createFunctionPrototype() {
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::get(llvm::getGlobalContext(),32)));
+    llvm::FunctionType *FT =
+    llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+    return FT;
+}
+
+void storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
+		QNode* node) {
+	//TODO case when for different qnode type
+	CodeGenerator::getInstance()->getBuilder()->CreateStore(value,dest_ptr);
 }
