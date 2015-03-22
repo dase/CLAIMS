@@ -3,8 +3,11 @@
 #include <iostream>
 using namespace std;
 #include "generating_expr.cpp"
-int main(){
+#include "../Test/gtest.h"
+#include "codegen_test.h"
+int main(int argc, char** argv){
 //	return test::test_llvm();
-	get_one();
+	g_test_main(argc, argv);
+//	get_one();
 }
 #endif
