@@ -16,10 +16,12 @@
 #include "common/TypePromotionMap.h"
 #include "common/TypeCast.h"
 #include "common/Expression/queryfunc.h"
+#include "codegen/CodeGenerator.h"
 Environment* Environment::_instance=0;
 Environment::Environment(bool ismaster):ismaster_(ismaster) {
 	_instance=this;
 	Config::getInstance();
+	CodeGenerator::getInstance();
 	logging_=new EnvironmentLogging();
 	readConfigFile();
 	initializeExpressionSystem();

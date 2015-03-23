@@ -18,6 +18,7 @@
 #include "llvm/Support/TargetSelect.h"
 #include <llvm/ExecutionEngine/JIT.h>
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
+#include "../utility/lock.h"
 
 using llvm::Module;
 using llvm::legacy::FunctionPassManager;
@@ -30,14 +31,17 @@ public:
 	llvm::IRBuilder<>* getBuilder()const;
 	FunctionPassManager* getFunctionPassManager()const;
 	ExecutionEngine* getExecutionEngine()const;
+	void lock();
+	void release();
 private:
 	CodeGenerator();
 	static llvm::IRBuilder<>* builder_;
 	static Module* module_;
 	static FunctionPassManager* fpm_;
-private:
 	static CodeGenerator* instance_;
 	static ExecutionEngine* engine_;
+private:
+	Lock lock_;
 
 };
 

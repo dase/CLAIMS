@@ -30,6 +30,7 @@ using llvm::InitializeNativeTarget;
 
 expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 
+	CodeGenerator::getInstance()->lock();
 	/* create a function prototype:
 	 * void Function(void* tuple_addr, void* return)
 	 * */
@@ -46,34 +47,41 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 	llvm::Value* tuple_addr=AI++;//@ assume we have got the tuple addr.
 	tuple_addr->setName("tuple_addr");
 	llvm::Value* return_addr=AI++;
-	tuple_addr->setName("return_addr");
+	return_addr->setName("return_addr");
 
     /* try to generate the code and get the return value
      * If we cannot generate the code, return_value is NULL*/
 	llvm::Value* return_value=codegen(qnode,schema,tuple_addr);
 
-	if(!return_value)
+	if(!return_value){
+		CodeGenerator::getInstance()->release();
 		return NULL;
+	}
 
 	/* store the value to the return address */
-	if(!storeTheReturnValue(return_value,return_addr,qnode))
+	if(!storeTheReturnValue(return_value,return_addr,qnode)){
+		CodeGenerator::getInstance()->release();
 		return NULL;
+	}
 
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
-//		F->dump();
+		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
 	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
 //	 llvm::outs()<<*CodeGenerator::getInstance()->getModule()<<"\n";
-	 return CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	 expr_func_prototype ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	 CodeGenerator::getInstance()->release();
+	 return ret;
 }
 
 llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 	llvm::Value* value;
 	switch(qnode->type){
+	case t_qexpr_cmp:
 	case t_qexpr_cal:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
 		assert(node->lnext->return_type==node->rnext->return_type);
@@ -85,6 +93,11 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 	case t_qcolcumns:{
 		QColcumns* node=(QColcumns*)qnode;
 		value= codegen_column(node,schema,tuple_addr);
+		break;
+	}
+	case t_qexpr:{
+		QExpr * node=(QExpr*)qnode;
+		value=codegen_const(node);
 		break;
 	}
 	default:
@@ -111,6 +124,8 @@ llvm::Value* codegen_binary_cal(llvm::Value* l, llvm::Value* r,
 		return createMultiply(l,r,node->actual_type);
 	case oper_divide:
 		return createDivide(l,r,node->actual_type);
+	case oper_less:
+		return createLess(l,r,node->actual_type);
 	default:
 		return NULL;
 	}
@@ -155,6 +170,12 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		// create a LLVM::Int64 and return
 		value=builder->CreateLoad(column_addr);
 		break;
+	case t_double:
+		//cast LLVM:INT64 to LLVM::DoublePtr
+		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getDoubleTy(llvm::getGlobalContext())));
+		//create a LLVM::Double and return
+		value=builder->CreateLoad(column_addr);
+		break;
 	default:
 		return 0;
 
@@ -197,6 +218,20 @@ bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		//fluash the return value
 		builder->CreateStore(value,dest_ptr);
 		return true;
+	case t_double:
+		//cast return_addr to LLVM::DoublePtr
+		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getDoubleTy(llvm::getGlobalContext())));
+
+		//flush the result
+		builder->CreateStore(value,dest_ptr);
+		return true;
+	case t_bool:
+		//cast return_addr to LLVM::Int1
+		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getInt1Ty(llvm::getGlobalContext())));
+
+		//flush the result
+		builder->CreateStore(value,dest_ptr);
+		return true;
 	default:
 		return false;
 	}
@@ -209,6 +244,7 @@ llvm::Value* createAdd(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_u_long:
 		return builder->CreateAdd(l,r,"+");
 	case t_float:
+	case t_double:
 		return builder->CreateFAdd(l,r,"+");
 	default:
 		return NULL;
@@ -222,6 +258,7 @@ llvm::Value* createMinus(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_u_long:
 		return builder->CreateSub(l,r,"-");
 	case t_float:
+	case t_double:
 		return builder->CreateFSub(l,r,"-");
 	default:
 		return NULL;
@@ -235,6 +272,7 @@ llvm::Value* createMultiply(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_u_long:
 		return builder->CreateMul(l,r);
 	case t_float:
+	case t_double:
 		return builder->CreateFMul(l,r);
 	default:
 		return NULL;
@@ -248,9 +286,40 @@ llvm::Value* createDivide(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_u_long:
 		return builder->CreateUDiv(l,r);
 	case t_float:
+	case t_double:
 		return builder->CreateFDiv(l,r);
 	}
 }
+
+llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(type){
+	case t_int:
+	case t_u_long:
+		return builder->CreateICmpSLT(l,r,"<");
+	case t_float:
+	case t_double:
+		return builder->CreateFCmpOLT(l,r,"<");
+	default:
+		return NULL;
+	}
+}
+llvm::Value* codegen_const(QExpr* node) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(node->actual_type){
+	case t_int:
+		return llvm::ConstantInt::get(llvm::Type::getInt32Ty(llvm::getGlobalContext()),atoi(node->const_value.c_str()),true);
+	case t_u_long:
+		return llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()),atoi(node->const_value.c_str()),true);
+	case t_float:
+		return llvm::ConstantFP::get(llvm::Type::getFloatTy(llvm::getGlobalContext()),atof(node->const_value.c_str()));
+	case t_double:
+		return llvm::ConstantFP::get(llvm::Type::getDoubleTy(llvm::getGlobalContext()),atof(node->const_value.c_str()));
+	default:
+		return NULL;
+	}
+}
+
 
 llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		data_type target_ty) {
@@ -262,6 +331,8 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 			return builder->CreateSIToFP(v,llvm::Type::getFloatTy(llvm::getGlobalContext()));
 		case t_u_long:
 			return builder->CreateIntCast(v,llvm::Type::getInt64Ty(llvm::getGlobalContext()),true,"long");
+		case t_double:
+			return builder->CreateSIToFP(v,llvm::Type::getDoubleTy(llvm::getGlobalContext()));
 		default:
 			return NULL;
 		}
@@ -271,6 +342,17 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		switch(target_ty){
 		case t_float:
 			return builder->CreateSIToFP(v,llvm::Type::getFloatTy(llvm::getGlobalContext()));
+		case t_double:
+			return builder->CreateSIToFP(v,llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+		default:
+			return NULL;
+		}
+		break;
+	}
+	case t_float:{
+		switch(target_ty){
+		case t_double:
+			return builder->CreateFPCast(v,llvm::Type::getDoubleTy(llvm::getGlobalContext()));
 		default:
 			return NULL;
 		}

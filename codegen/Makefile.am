@@ -20,6 +20,5 @@ noinst_LIBRARIES=libcodegen.a
 libcodegen_a_SOURCES = \
     CodeGenerator.h			CodeGenerator.cpp\
     ExpressionGenerator.h	ExpressionGenerator.cpp
-#    function.h function.cpp\
 SUBDIRS = 
 DIST_SUBDIRS = 

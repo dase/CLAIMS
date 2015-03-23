@@ -45,6 +45,14 @@ ExecutionEngine* CodeGenerator::getExecutionEngine() const {
 	return engine_;
 }
 
+void CodeGenerator::lock() {
+	lock_.acquire();
+}
+
+void CodeGenerator::release() {
+	lock_.release();
+}
+
 CodeGenerator::CodeGenerator() {
 	 InitializeNativeTarget();
 	builder_=new IRBuilder<>(llvm::getGlobalContext());
