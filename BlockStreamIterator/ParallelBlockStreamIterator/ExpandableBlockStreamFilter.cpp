@@ -20,12 +20,12 @@
 #define NEWCONDITION
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state) :
-		state_(state) {
+		state_(state),generated_filter_function_(0) {
 	initialize_expanded_status();
 	initialize_operator_function();
 }
 
-ExpandableBlockStreamFilter::ExpandableBlockStreamFilter() {
+ExpandableBlockStreamFilter::ExpandableBlockStreamFilter():generated_filter_function_(0) {
 	initialize_expanded_status();
 }
 
@@ -74,6 +74,15 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 		waitForOpenFinished();
 		return state_.child_->open(part_off);
 	}
+	generated_filter_function_=getExprFunc(state_.qual_[0],state_.schema_);
+	if(generated_filter_function_){
+		ff_=computeFilterwithGeneratedCode;
+		printf("CodeGen succeeds!\n\n\n");
+	}
+	else{
+		ff_=computeFilter;
+		printf("CodeGen fails!\n\n\n");
+	}
 
 //	for (int i = 0; i < state_.qual_.size(); i++) {
 //		InitExprAtPhysicalPlan(state_.qual_[i]);
@@ -92,8 +101,9 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 		pass_filter = true;
 #ifdef NEWCONDITION
 		if (tuple_from_child != NULL)
-			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
-					state_.schema_);
+//			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
+//					state_.schema_);
+			ff_(pass_filter,tuple_from_child,state_.schema_,tc->thread_qual_);
 #else
 		pass_filter=true;
 		for(unsigned i=0;i<state_.comparator_list_.size();i++){
@@ -158,8 +168,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 				> 0) {
 
 #ifdef NEWCONDITION
-			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
-					state_.schema_);
+			ff_(pass_filter,tuple_from_child,state_.schema_,tc->thread_qual_);
 #else
 		pass_filter=true;
 		for(unsigned i=0;i<state_.comparator_list_.size();i++){
@@ -300,3 +309,10 @@ void ExpandableBlockStreamFilter::pushContext(const thread_context& tc) {
 ////	tc->iterator_->~BlockStreamTraverseIterator();
 //}
 
+void ExpandableBlockStreamFilter::computeFilter(bool& ret, void* tuple,expr_func_prototype func_gen, Schema* schema, vector<QNode*> thread_qual_) {
+	ret=ExecEvalQual(thread_qual_, tuple,	schema);
+}
+
+void ExpandableBlockStreamFilter::computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func_prototype func_gen, Schema* schema, vector<QNode*> allocator) {
+	func_gen(tuple,&ret);
+}

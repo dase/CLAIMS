@@ -19,6 +19,7 @@ expr_func_prototype getExprFunc(QNode* qnode, Schema* schema);
 
 llvm::Value* codegen_binary_cal(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_binary* node);
 llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_addr);
+llvm::Value* codegen_const(QExpr* node);
 llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr);
 llvm::FunctionType* createFunctionPrototype();
 bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_prt,QNode* node);
@@ -42,9 +43,13 @@ llvm::Value* createMultiply(llvm::Value* l, llvm::Value* r, data_type type);
  */
 llvm::Value* createDivide(llvm::Value* l, llvm::Value* r ,data_type type);
 
+/* create less instruction
+ * Note: l and r should be in the same type.
+ */
+llvm::Value* createLess(llvm::Value* l, llvm::Value* r ,data_type type);
+
 /* conduct the type promotion and return the promoted value */
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
-
 
 
 

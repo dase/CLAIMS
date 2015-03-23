@@ -5,13 +5,13 @@ AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME}/boost/serialization \
 -I${BOOST_HOME}/ \
--I${GTEST_HOME}/include 
+-I${GTEST_HOME}/include
+
 #-L/usr/local/lib \
 #-I/usr/local/include
 AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -ldl 
 
 LDADD =  \
-    codegen/libcodegen.a\
 	Test/libtest.a \
 	Test/common/libcommon.a \
 	Test/TestSuit/libtestsuit.a \
@@ -48,6 +48,7 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
+    codegen/libcodegen.a\
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \

@@ -402,5 +402,72 @@ TEST_F(CodeGenerationTest,Divide){
 	delete op2;
 	EXPECT_LE(abs(ret-2),0.0001);
 }
+TEST_F(CodeGenerationTest,Divide2){
+	/* #      #1    |#2    |#3
+	 * Tuple: int   |float |double
+	 *         4     0.5     -0.5
+	 * Express: #1 / #2 / #3 = -16
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_float));
+	columns.push_back(data_type(t_double));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	column_index["#3"]=2;
+	QColcumns* a=new QColcumns("T","#1",t_int,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_float,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_double,"#3");
 
+	QExpr_binary* op1=new QExpr_binary(a,b,t_float,oper_divide,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,c,t_double,oper_divide,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_double,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*(int*)tuple=4;
+	*((float*)s->getColumnAddess(1,tuple))=0.5;
+	*((double*)s->getColumnAddess(2,tuple))=-0.5;
+	double ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(abs(ret+16),0.0001);
+}
+TEST_F(CodeGenerationTest,Const){
+	/* #      #1
+	 * Tuple: double
+	 *        -0.5
+	 * Express: (int)4*(float)0.5*#1 = -1.0
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_double));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	QExpr* a=new QExpr("4",t_int,"#1");
+	QExpr* b=new QExpr("0.5",t_float,"#2");
+	QColcumns* c=new QColcumns("T","#3",t_double,"#3");
+
+	QExpr_binary* op1=new QExpr_binary(a,c,t_double,oper_multiply,t_qexpr_cal,"result");
+	QExpr_binary* op2=new QExpr_binary(op1,b,t_double,oper_multiply,t_qexpr_cal,"result");
+
+	InitExprAtLogicalPlan(op2,t_double,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op2,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((double*)s->getColumnAddess(0,tuple))=-0.5;
+	double ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op2;
+	EXPECT_LE(abs(ret+1),0.0001);
+}
 #endif /* CODEGEN_TEST_H_ */
