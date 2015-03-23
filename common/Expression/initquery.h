@@ -26,5 +26,5 @@
 using namespace std;
 QNode * transformqual(Node *node,LogicalOperator *child);
 void InitExprAtPhysicalPlan(QNode *node);
-void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex,Schema *schema);
+void InitExprAtLogicalPlan(QNode *node,data_type actual_type,map<string,int>&colindex,Schema *schema);
 #endif /* INITQUERY_H_ */

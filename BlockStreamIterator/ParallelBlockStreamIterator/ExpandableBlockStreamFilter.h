@@ -96,7 +96,7 @@ private:
 	void pushContext(const thread_context& tc);
 private:
 	//ExecEvalQual(tc->thread_qual_, tuple_from_child,	state_.schema_);
-	typedef void(*filter_func)(bool& ret, void* tuple, Schema* schema,vector<QNode *> thread_qual_);
+	typedef void(*filter_func)(bool& ret, void* tuple,expr_func_prototype func_gen, Schema* schema,vector<QNode *> thread_qual_);
 	static void computeFilter(bool& ret, void* tuple, expr_func_prototype func_gen, Schema* schema,vector<QNode *> thread_qual_);
 	static void computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func_prototype func_gen, Schema* schema,vector<QNode *>);
 private:

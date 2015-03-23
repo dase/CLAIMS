@@ -67,7 +67,7 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
-		F->dump();
+//		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
@@ -80,14 +80,21 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 
 llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 	llvm::Value* value;
+	data_type actual_type=qnode->actual_type,return_type=qnode->return_type;
 	switch(qnode->type){
-	case t_qexpr_cmp:
-	case t_qexpr_cal:{
+	case t_qexpr_cmp:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
-		assert(node->lnext->return_type==node->rnext->return_type);
 		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
 		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
-		value= codegen_binary_cal(lvalue,rvalue,node);
+		value= codegen_binary_op(lvalue,rvalue,node);
+		actual_type=t_boolean; // for boolean compression, the actual type is always boolean.
+		break;
+	}
+	case t_qexpr_cal:{
+		QExpr_binary* node=(QExpr_binary*)qnode;
+		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
+		value= codegen_binary_op(lvalue,rvalue,node);
 		break;
 	}
 	case t_qcolcumns:{
@@ -104,13 +111,13 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 		return 0;
 	}
 	// conduct the type promotion if needed
-	if(qnode->actual_type!=qnode->return_type){
-		value=typePromotion(value,qnode->actual_type,qnode->return_type);
+	if(actual_type!=return_type){
+		value=typePromotion(value,actual_type,return_type);
 	}
 	return value;
 }
 
-llvm::Value* codegen_binary_cal(llvm::Value* l, llvm::Value* r,
+llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		QExpr_binary* node) {
 	if(l==0||r==0)
 		return NULL;
@@ -196,7 +203,7 @@ llvm::FunctionType* createFunctionPrototype() {
 bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		QNode* node) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
-	switch(node->actual_type){
+	switch(node->return_type){
 	case t_int:
 		//cast return_addr to LLVM::Int32Ptr
 		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(llvm::getGlobalContext())));
@@ -225,7 +232,7 @@ bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		//flush the result
 		builder->CreateStore(value,dest_ptr);
 		return true;
-	case t_bool:
+	case t_boolean:
 		//cast return_addr to LLVM::Int1
 		dest_ptr=builder->CreatePointerCast(dest_ptr,llvm::PointerType::getUnqual(llvm::Type::getInt1Ty(llvm::getGlobalContext())));
 

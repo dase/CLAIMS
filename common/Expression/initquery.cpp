@@ -511,7 +511,7 @@ void InitExprAtLogicalPlan(QNode *node,data_type r_type,map<string,int>&colindex
 		case t_qexpr_cmp://binary comparison node
 		{
 			QExpr_binary * cmpnode=(QExpr_binary *)(node);
-			cmpnode->return_type=r_type;
+			cmpnode->return_type=r_type; // Li: I believe the return type for compare expression should be t_boolean
 			InitExprAtLogicalPlan(cmpnode->lnext,cmpnode->actual_type,colindex,schema);
 			InitExprAtLogicalPlan(cmpnode->rnext,cmpnode->actual_type,colindex,schema);
 			cmpnode->length=max(cmpnode->lnext->length,cmpnode->rnext->length);
