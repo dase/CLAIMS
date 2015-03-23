@@ -17,7 +17,7 @@ typedef void (*expr_func_prototype)(void*,void*);
 
 expr_func_prototype getExprFunc(QNode* qnode, Schema* schema);
 
-llvm::Value* codegen_binary_cal(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_binary* node);
+llvm::Value* codegen_binary_op(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_binary* node);
 llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_addr);
 llvm::Value* codegen_const(QExpr* node);
 llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr);

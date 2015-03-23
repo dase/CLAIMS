@@ -67,21 +67,21 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 
 	if (tryEntryIntoSerializedSection()) {
 		tuple_after_filter_ = 0;
+		generated_filter_function_=getExprFunc(state_.qual_[0],state_.schema_);
+		if(generated_filter_function_){
+			ff_=computeFilterwithGeneratedCode;
+			printf("CodeGen succeeds!\n");
+		}
+		else{
+			ff_=computeFilter;
+			printf("CodeGen fails!\n");
+		}
 		const bool child_open_return = state_.child_->open(part_off);
 		setOpenReturnValue(child_open_return);
 		broadcaseOpenFinishedSignal();
 	} else {
 		waitForOpenFinished();
 		return state_.child_->open(part_off);
-	}
-	generated_filter_function_=getExprFunc(state_.qual_[0],state_.schema_);
-	if(generated_filter_function_){
-		ff_=computeFilterwithGeneratedCode;
-		printf("CodeGen succeeds!\n\n\n");
-	}
-	else{
-		ff_=computeFilter;
-		printf("CodeGen fails!\n\n\n");
 	}
 
 //	for (int i = 0; i < state_.qual_.size(); i++) {
@@ -103,7 +103,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 		if (tuple_from_child != NULL)
 //			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
 //					state_.schema_);
-			ff_(pass_filter,tuple_from_child,state_.schema_,tc->thread_qual_);
+			ff_(pass_filter,tuple_from_child,generated_filter_function_,state_.schema_,tc->thread_qual_);
 #else
 		pass_filter=true;
 		for(unsigned i=0;i<state_.comparator_list_.size();i++){
@@ -168,7 +168,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 				> 0) {
 
 #ifdef NEWCONDITION
-			ff_(pass_filter,tuple_from_child,state_.schema_,tc->thread_qual_);
+			ff_(pass_filter,tuple_from_child,generated_filter_function_,state_.schema_,tc->thread_qual_);
 #else
 		pass_filter=true;
 		for(unsigned i=0;i<state_.comparator_list_.size();i++){

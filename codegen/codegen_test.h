@@ -15,6 +15,7 @@
 #include "../common/Expression/qnode.h"
 #include "../common/Expression/initquery.h"
 #include "ExpressionGenerator.h"
+#include "../Environment.h"
 
 using std::map;
 
@@ -23,6 +24,9 @@ protected:
 
 	static void SetUpTestCase() {
 		CodeGenerator::getInstance();
+		initialize_arithmetic_type_promotion_matrix();
+		initialize_type_cast_functions();
+		initialize_operator_function();
 	}
 
 	static void TearDownTestCase() {
@@ -470,4 +474,38 @@ TEST_F(CodeGenerationTest,Const){
 	delete op2;
 	EXPECT_LE(abs(ret+1),0.0001);
 }
+
+TEST_F(CodeGenerationTest,Compare){
+	/* #      #1    | #2
+	 * Tuple: long  | long
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_u_long));
+	columns.push_back(data_type(t_u_long));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_u_long,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_u_long,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_u_long,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func_prototype f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((long*)s->getColumnAddess(0,tuple))=3;
+	*((long*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+
 #endif /* CODEGEN_TEST_H_ */
