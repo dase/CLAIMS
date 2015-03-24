@@ -56,6 +56,13 @@ public:
 			cur=0;
 		}
 
+		inline unsigned get_cur()const {
+			return cur;
+		}
+		inline void set_cur(unsigned c){
+			cur=c;
+		}
+
 	private:
 		BlockStreamBase* block_stream_base_;
 		unsigned cur;

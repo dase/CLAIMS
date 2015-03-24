@@ -37,6 +37,8 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
     llvm::FunctionType *FT =createFunctionPrototype();
     llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
 
+
+
     /* create function entry */
     llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
     CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
@@ -48,6 +50,7 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 	tuple_addr->setName("tuple_addr");
 	llvm::Value* return_addr=AI++;
 	return_addr->setName("return_addr");
+
 
     /* try to generate the code and get the return value
      * If we cannot generate the code, return_value is NULL*/

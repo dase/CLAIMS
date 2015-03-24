@@ -31,7 +31,6 @@ ExpandableBlockStreamFilter::ExpandableBlockStreamFilter():generated_filter_func
 }
 
 ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {
-	// TODO Auto-generated destructor stub
 }
 ExpandableBlockStreamFilter::State::State(Schema* schema,
 		BlockStreamIteratorBase* child, vector<QNode *> qual,
@@ -95,126 +94,52 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 
 	void* tuple_from_child;
 	void* tuple_in_block;
-	bool pass_filter;
 	filter_thread_context* tc = (filter_thread_context*) getContext();
-
-	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) //the context is empty at first time,so it can skipped
-	{
-		pass_filter = true;
-#ifdef NEWCONDITION
-		if (tuple_from_child != NULL)
-//			pass_filter = ExecEvalQual(tc->thread_qual_, tuple_from_child,
-//					state_.schema_);
+	while(true){
+		if(tc->block_stream_iterator_->currentTuple()==0){
+			if(state_.child_->next(tc->block_for_asking_)){
+				delete tc->block_stream_iterator_;
+				tc->block_stream_iterator_=tc->block_for_asking_->createIterator();
+			}
+			else
+			{
+				if (!block->Empty()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) {
+			bool pass_filter = true;
+	#ifdef NEWCONDITION
 			ff_(pass_filter,tuple_from_child,generated_filter_function_,state_.schema_,tc->thread_qual_);
-#else
-		pass_filter=true;
-		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+	#else
+			pass_filter=true;
+			for(unsigned i=0;i<state_.comparator_list_.size();i++){
 
-			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
-				pass_filter=false;
-				break;
+				if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+					pass_filter=false;
+					break;
+				}
 			}
-		}
-#endif
-		if (pass_filter) {
-
-			const unsigned bytes = state_.schema_->getTupleActualSize(
-					tuple_from_child);
-			if ((tuple_in_block = block->allocateTuple(bytes)) > 0) {
-				/* the block has space to hold this tuple*/
-//					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
-				/* the block has space to hold this tuple,
-				 * copyTuple can be used in the hashtable,
-				 * but here we must use the block insert
-				 * modified by zhanglei for the variable supported!*/
-				block->insert(tuple_in_block, tuple_from_child, bytes);
-				tuple_after_filter_++;
-				tc->block_stream_iterator_->increase_cur_();
-			} else {
-				/* the block is full, before we return, we pop the remaining block.*/
-				return true;
-			}
-		} else {
-			tc->block_stream_iterator_->increase_cur_();
-		}
-	}
-
-	/* When the program arrivals here, it means that there is no remaining block or the remaining block
-	 * is exhausted, so we read a new block from the child.
-	 */
-
-	tc->block_for_asking_->setEmpty();
-	tc->block_stream_iterator_->~BlockStreamTraverseIterator();
-
-	while (state_.child_->next(tc->block_for_asking_)) {
-//		continue;
-//		tc->temp_block_->deepCopy(tc->block_for_asking_);
-//		memcpy(tc->temp_block_->getBlock(),tc->block_for_asking_->getBlock(),tc->block_for_asking_->getSerializedBlockSize());
-//		((BlockStreamFix*)tc->temp_block_)->free_=(char*)((BlockStreamFix*)tc->temp_block_)->getBlock()+state_.schema_->getTupleMaxSize()*((BlockStreamFix*)tc->block_for_asking_)->getTuplesInBlock();
-//		continue;
-//
-//		unsigned long long int warmup_tick=curtick();
-//		Unit temp=warmup(tc->block_for_asking_,tc->block_for_asking_->getSerializedBlockSize());
-//		printf("%ld cycles for warmup\n",curtick()-warmup_tick,temp);
-
-//		unsigned long long int process_block=curtick();
-
-		tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
-//		tc->block_stream_iterator_=tc->temp_block_->createIterator();
-
-		/*
-		 * TODO: The following lines are the same as the some lines above,
-		 * so consider put them into a method.
-		 */
-		while ((tuple_from_child = tc->block_stream_iterator_->currentTuple())
-				> 0) {
-
-#ifdef NEWCONDITION
-			ff_(pass_filter,tuple_from_child,generated_filter_function_,state_.schema_,tc->thread_qual_);
-#else
-		pass_filter=true;
-		for(unsigned i=0;i<state_.comparator_list_.size();i++){
-
-			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
-				pass_filter=false;
-				break;
-			}
-		}
-#endif
+	#endif
 			if (pass_filter) {
 				const unsigned bytes = state_.schema_->getTupleActualSize(
 						tuple_from_child);
 				if ((tuple_in_block = block->allocateTuple(bytes)) > 0) {
-					/* the block has space to hold this tuple*/
-//					state_.schema_->copyTuple(tuple_from_child,tuple_in_block);
-					/* the block has space to hold this tuple,
-					 * copyTuple can be used in the hashtable,
-					 * but here we must use the block insert
-					 * modified by zhanglei for the variable supported!*/
 					block->insert(tuple_in_block, tuple_from_child, bytes);
 					tuple_after_filter_++;
-					tc->block_stream_iterator_->increase_cur_();
 				} else {
-					/* the block is full, before we return, we pop the remaining block.*/
+					/* we have got a block full of result tuples*/
 					return true;
 				}
-			} else {
-				tc->block_stream_iterator_->increase_cur_();
 			}
-
+			/* point the iterator to the next tuple */
+			tc->block_stream_iterator_->increase_cur_();
 		}
-//		printf("block processing cycles: %ld\n",curtick()-process_block);
-		/* the block_for_asking is exhausted, but the block is not full*/
-		tc->block_stream_iterator_->~BlockStreamTraverseIterator();
+		/* mark the block as processed by setting it empty*/
 		tc->block_for_asking_->setEmpty();
-	}
-	/* the child iterator is exhausted, but the block is not full.*/
-
-	if (!block->Empty()) {
-		return true;
-	} else {
-//		delete tc;
-		return false;
 	}
 }
 
