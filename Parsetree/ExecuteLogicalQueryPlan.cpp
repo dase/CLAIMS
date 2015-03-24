@@ -495,9 +495,9 @@ void ExecuteLogicalQueryPlan()
 					assert(false);
 					return;
 				}
+								output(node,0);
 				preprocess(node);
 				//#ifdef SQL_Parser
-				//				output(node,0);
 				//#endif
 				Query_stmt *querynode=(Query_stmt *)node;
 				if(querynode->from_list!=NULL)
@@ -1219,7 +1219,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 		result_set = NULL;
 		return;
 	}
-
+	output(node,0);
 	preprocess(node);
 	Query_stmt *querynode=(Query_stmt *)node;
 	if(querynode->from_list!=NULL)
