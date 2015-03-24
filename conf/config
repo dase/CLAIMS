@@ -47,3 +47,4 @@ enable_expander_adaptivity=0
 pipelined_exchange=1
 
 local_disk_mode=1
+

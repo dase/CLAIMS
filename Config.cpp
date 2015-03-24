@@ -82,6 +82,8 @@ bool Config::local_disk_mode;
 /* the port of the ClientListener in the master */
 int Config::client_listener_port;
 
+bool Config::enable_codegen = true ;
+
 Config* Config::getInstance() {
 	if(instance_==0){
 		instance_=new Config();
@@ -136,6 +138,7 @@ void Config::initialize() {
 	pipelined_exchange=getBoolean("pipelined_exchange",true);
 
 	client_listener_port=getInt("client_listener_port",10001);
+
 #ifdef DEBUG_Config
 	print_configure();
 #endif

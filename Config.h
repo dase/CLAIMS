@@ -68,6 +68,7 @@ public:
 	static bool local_disk_mode;
 	static bool pipelined_exchange;
 	static int client_listener_port;
+	static bool enable_codegen;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;
