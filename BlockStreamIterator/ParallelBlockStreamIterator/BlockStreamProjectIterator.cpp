@@ -20,7 +20,6 @@ BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 :state_(state){
 	sema_open_.set_value(1);
 	open_finished_=false;
-	initialize_operator_function();
 }
 
 BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei,vector<QNode *>exprTree)
@@ -38,8 +37,7 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
 		free_block_stream_list_.push_back(bsb);
 		open_finished_=true;
 	}
-	else
-	{
+	else{
 		while (!open_finished_)
 			usleep(1);
 	}
