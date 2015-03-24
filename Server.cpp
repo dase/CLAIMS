@@ -14,6 +14,7 @@
 struct option long_options[] = {
    {"config-file", required_argument, 0, 'c'},
    {"help", no_argument, 0, 'h'},
+   {"disable-codegen",no_argument,0,'d'}
  };
 
 std::string help_info=std::string("-c --config-file FILE_NAME\n\t\tSpecify the configure file\n")+
@@ -32,7 +33,9 @@ void handle_parameters(int argc, char** argv){
 			printf("%s",help_info.c_str());
 			exit(1);
 			break;
-
+		case 'd':
+			Config::enable_codegen=false;
+			break;
 		default:
 			printf("Invalid parameters! Try -h/--help\n");
 			exit(1);
