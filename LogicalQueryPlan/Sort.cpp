@@ -99,7 +99,7 @@ void LogicalSort::printOrderByAttr()const
 	cout<<"OrderByAttr:"<<endl;
 	for(int i=0;i<oba_.size();i++ )
 	{
-		printf("                        %s\n",(const char *)oba_[i]->ta_);
+		printf("%s  %s\n",(const char *)oba_[i]->ta_,oba_[i]->direction_==0?"ASC":"DESC");
 
 	}
 }

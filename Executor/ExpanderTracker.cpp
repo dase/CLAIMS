@@ -195,7 +195,7 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id){
 	lock_.acquire();
 
 	for(boost::unordered_map<expanded_thread_id,ExpanderID>::iterator it=thread_id_to_expander_id_.begin();it!=thread_id_to_expander_id_.end();it++){
-		assert(it->second!=expander_id);
+//		assert(it->second!=expander_id);
 	}
 //	delete expander_id_to_status_[expander_id];
 	expander_id_to_status_.erase(expander_id);
