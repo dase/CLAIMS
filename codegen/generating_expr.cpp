@@ -26,7 +26,7 @@ static QNode* get_one(){
 	InitExprAtLogicalPlan(op,t_int,column_index,s);
 	CodeGenerator::getInstance();
 
-	expr_func_prototype f=getExprFunc(op,s);
+	expr_func f=getExprFunc(op,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;

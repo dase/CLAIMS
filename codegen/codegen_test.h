@@ -58,7 +58,7 @@ TEST_F(CodeGenerationTest,AddInt){
 	InitExprAtLogicalPlan(op,t_int,column_index,s);
 	CodeGenerator::getInstance();
 
-	expr_func_prototype f=getExprFunc(op,s);
+	expr_func f=getExprFunc(op,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;
@@ -97,7 +97,7 @@ TEST_F(CodeGenerationTest,AddInt2){
 	InitExprAtLogicalPlan(op2,t_int,column_index,s);
 	CodeGenerator::getInstance();
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=-1;
@@ -134,7 +134,7 @@ TEST_F(CodeGenerationTest,AddFloat){
 
 	InitExprAtLogicalPlan(op2,t_float,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(float*)tuple=0;
@@ -171,7 +171,7 @@ TEST_F(CodeGenerationTest,AddFloatPromote){
 
 	InitExprAtLogicalPlan(op2,t_float,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;
@@ -208,7 +208,7 @@ TEST_F(CodeGenerationTest,AddFloatPromote2){
 
 	InitExprAtLogicalPlan(op2,t_float,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;
@@ -245,7 +245,7 @@ TEST_F(CodeGenerationTest,AddLongPromote){
 
 	InitExprAtLogicalPlan(op2,t_u_long,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;
@@ -282,7 +282,7 @@ TEST_F(CodeGenerationTest,SUB){
 
 	InitExprAtLogicalPlan(op2,t_u_long,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;
@@ -319,7 +319,7 @@ TEST_F(CodeGenerationTest,Multiply){
 
 	InitExprAtLogicalPlan(op2,t_u_long,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=1;
@@ -356,7 +356,7 @@ TEST_F(CodeGenerationTest,Multiply1){
 
 	InitExprAtLogicalPlan(op2,t_float,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=2;
@@ -393,7 +393,7 @@ TEST_F(CodeGenerationTest,Divide){
 
 	InitExprAtLogicalPlan(op2,t_float,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=4;
@@ -430,7 +430,7 @@ TEST_F(CodeGenerationTest,Divide2){
 
 	InitExprAtLogicalPlan(op2,t_double,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*(int*)tuple=4;
@@ -463,7 +463,7 @@ TEST_F(CodeGenerationTest,Const){
 
 	InitExprAtLogicalPlan(op2,t_double,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op2,s);
+	expr_func f=getExprFunc(op2,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*((double*)s->getColumnAddess(0,tuple))=-0.5;
@@ -495,7 +495,7 @@ TEST_F(CodeGenerationTest,Compare){
 
 	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
 
-	expr_func_prototype f=getExprFunc(op1,s);
+	expr_func f=getExprFunc(op1,s);
 
 	void* tuple=malloc(s->getTupleMaxSize());
 	*((long*)s->getColumnAddess(0,tuple))=3;

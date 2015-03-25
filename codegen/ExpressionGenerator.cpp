@@ -26,34 +26,78 @@ using llvm::IRBuilderBase;
 using llvm::ConstantInt;
 using llvm::InitializeNativeTarget;
 
+filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
+
+//	llvm::LLVMContext& context=llvm::getGlobalContext();
+//
+//	llvm::Function* exr_fuc=getExprFunc(qnode,schema);
+//
+//	/* create function prototype */
+//	std::vector<llvm::Type *> parameter_types;
+//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
+//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(context)));
+//	parameter_types.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
+//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
+//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(context)));
+//	parameter_types.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
+//	llvm::FunctionType *FT= llvm::FunctionType::get(llvm::Type::getVoidTy(context), parameter_types,false);
+//
+//	llvm::Function *F=llvm::Function::Create(FT,llvm::Function::ExternalLinkage,"a",CodeGenerator::getInstance()->getModule());
+//
+//
+//	/* create function entry */
+//	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+//	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+//
+//	/* get the parameters of the function */
+//	llvm::Function::arg_iterator AI = F->arg_begin();
+//	llvm::Value* b_start = AI++;
+//	b_start->setName("b_start");
+//	llvm::Value* b_cur_addr = AI++;
+//	b_cur_addr->setName("b_cur_addr");
+//	llvm::Value* b_tuple_count = AI++;
+//	b_tuple_count->setName("b_tuple_count");
+//	llvm::Value* c_start = AI++;
+//	c_start->setName("c_start");
+//	llvm::Value* c_cur_addr = AI++;
+//	c_cur_addr->setName("c_cur_addr");
+//	llvm::Value* c_tuple_count = AI++;
+//	c_tuple_count->setName("c_tuple_count");
+//
+//
+//	llvm::Value* tuple_size=llvm::ConstantInt::get(llvm::Type::getInt32Ty(context),schema->getTupleMaxSize());
 
 
-expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
+}
 
-	CodeGenerator::getInstance()->lock();
+llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 	/* create a function prototype:
 	 * void Function(void* tuple_addr, void* return)
 	 * */
-    llvm::FunctionType *FT =createFunctionPrototype();
-    llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::get(llvm::getGlobalContext(),32)));
+    llvm::FunctionType *FT =
+    llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
 
 
 
-    /* create function entry */
-    llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
-    CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
 
 
-    /* get the parameter value of the function */
-    llvm::Function::arg_iterator AI = F->arg_begin();
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
 	llvm::Value* tuple_addr=AI++;//@ assume we have got the tuple addr.
 	tuple_addr->setName("tuple_addr");
 	llvm::Value* return_addr=AI++;
 	return_addr->setName("return_addr");
 
 
-    /* try to generate the code and get the return value
-     * If we cannot generate the code, return_value is NULL*/
+	/* try to generate the code and get the return value
+	 * If we cannot generate the code, return_value is NULL*/
 	llvm::Value* return_value=codegen(qnode,schema,tuple_addr);
 
 	if(!return_value){
@@ -75,10 +119,16 @@ expr_func_prototype getExprFunc(QNode* qnode,Schema* schema) {
 //		llvm::outs()<<"errors!";
 //	 }
 	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-//	 llvm::outs()<<*CodeGenerator::getInstance()->getModule()<<"\n";
-	 expr_func_prototype ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
-	 CodeGenerator::getInstance()->release();
-	 return ret;
+	 return F;
+}
+
+expr_func getExprFunc(QNode* qnode,Schema* schema) {
+
+	CodeGenerator::getInstance()->lock();
+
+	expr_func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(getExprLLVMFucn(qnode,schema));
+	CodeGenerator::getInstance()->release();
+	return ret;
 }
 
 llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
@@ -194,14 +244,6 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	return value;
 }
 
-llvm::FunctionType* createFunctionPrototype() {
-	std::vector<llvm::Type *> parameter_types;
-	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
-	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::get(llvm::getGlobalContext(),32)));
-    llvm::FunctionType *FT =
-    llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
-    return FT;
-}
 
 bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		QNode* node) {
@@ -371,4 +413,284 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 	default:
 		return NULL;
 	}
+}
+
+using namespace llvm;
+
+
+
+//Module* makeLLVMModule() {
+// // Module Construction
+// Module* mod = new Module("/tmp/webcompile/_31804_0.bc", getGlobalContext());
+// mod->setDataLayout("0x3f54b40");
+// mod->setTargetTriple("x86_64-ellcc-linux");
+//
+// // Type Definitions
+// std::vector<Type*>FuncTy_0_args;
+// PointerType* Int32PtrType = PointerType::get(IntegerType::get(mod->getContext(), 32), 0);
+//
+// FuncTy_0_args.push_back(Int32PtrType);
+// FunctionType* FuncTy_0 = FunctionType::get(
+//  /*Result=*/Type::getVoidTy(mod->getContext()),
+//  /*Params=*/FuncTy_0_args,
+//  /*isVarArg=*/false);
+//
+//
+// // Function Declarations
+//
+// Function* func__Z4fuckRi = mod->getFunction("_Z4fuckRi");
+// if (!func__Z4fuckRi) {
+// func__Z4fuckRi = Function::Create(
+//  /*Type=*/FuncTy_0,
+//  /*Linkage=*/GlobalValue::ExternalLinkage,
+//  /*Name=*/"_Z4fuckRi", mod);
+// func__Z4fuckRi->setCallingConv(CallingConv::C);
+// }
+// AttributeSet func__Z4fuckRi_PAL;
+// {
+//  SmallVector<AttributeSet, 4> Attrs;
+//  AttributeSet PAS;
+//   {
+//    AttrBuilder B;
+//    PAS = AttributeSet::get(mod->getContext(), 1U, B);
+//   }
+//
+//  Attrs.push_back(PAS);
+//  {
+//   AttrBuilder B;
+//   B.addAttribute(Attribute::NoUnwind);
+//   PAS = AttributeSet::get(mod->getContext(), ~0U, B);
+//  }
+//
+// Attrs.push_back(PAS);
+// func__Z4fuckRi_PAL = AttributeSet::get(mod->getContext(), Attrs);
+//
+//}
+//func__Z4fuckRi->setAttributes(func__Z4fuckRi_PAL);
+//
+//// Global Variable Declarations
+//
+//
+//// Constant Definitions
+//ConstantInt* const10 = ConstantInt::get(mod->getContext(), APInt(32, StringRef("1"), 10));
+//
+//// Global Variable Definitions
+//
+//// Function Definitions
+//
+//// Function: _Z4fuckRi (func__Z4fuckRi)
+//{
+// Function::arg_iterator args = func__Z4fuckRi->arg_begin();
+// Value* ptr_a = args++;
+// ptr_a->setName("a");
+//
+// BasicBlock* label_entry = BasicBlock::Create(mod->getContext(), "entry",func__Z4fuckRi,0);
+//
+// // Block entry (label_entry)
+// AllocaInst* ptr_a_addr = new AllocaInst(Int32PtrType, "a.addr", label_entry);
+// ptr_a_addr->setAlignment(8);
+// StoreInst* void_4 = new StoreInst(ptr_a, ptr_a_addr, false, label_entry);
+// void_4->setAlignment(8);
+// LoadInst* ptr_5 = new LoadInst(ptr_a_addr, "", false, label_entry);
+// ptr_5->setAlignment(8);
+// StoreInst* void_6 = new StoreInst(const10, ptr_5, false, label_entry);
+// void_6->setAlignment(4);
+// ReturnInst::Create(mod->getContext(), label_entry);
+//
+//}
+//
+//return mod;
+//}
+void test_reference(){
+	llvm::IRBuilder<> * builder=CodeGenerator::getInstance()->getBuilder();
+
+    llvm::FunctionType *FT =FunctionType::get(
+    		  /*Result=*/Type::getVoidTy(llvm::getGlobalContext()),
+    		  /*Params=*/PointerType::get(IntegerType::get(llvm::getGlobalContext(), 32), 0),
+    		  /*isVarArg=*/false);
+    llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+    ConstantInt* const10 = ConstantInt::get(llvm::getGlobalContext(), APInt(32, StringRef("1"), 10));
+
+    BasicBlock* label_entry = BasicBlock::Create(llvm::getGlobalContext(), "entry",F,0);
+    builder->SetInsertPoint(label_entry);
+
+
+    llvm::Function::arg_iterator args = F->arg_begin();
+    Value* ptr_a = args++;
+    ptr_a->setName("a");
+
+    llvm::AllocaInst* ptr_a_addr=builder->CreateAlloca(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(llvm::getGlobalContext())));
+
+    builder->CreateStore(ptr_a,ptr_a_addr);
+
+    Value* ptr_5 = builder->CreateLoad(ptr_a_addr,"");
+
+    builder->CreateStore(const10,ptr_5);
+
+    builder->CreateRetVoid();
+
+	verifyFunction(*F);
+		F->dump();
+//	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
+//		llvm::outs()<<"errors!";
+//	 }
+	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+//	 llvm::outs()<<*CodeGenerator::getInstance()->getModule()<<"\n";
+
+	 typedef void (*func)(int &);
+
+	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	 int a=1024;
+	 ret(a);
+	 printf("result %d!\n",a);
+
+
+}
+void test_while(){
+//	llvm::IRBuilder<> * builder=CodeGenerator::getInstance()->getBuilder();
+//
+//    llvm::FunctionType *FT =FunctionType::get(
+//    		  /*Result=*/Type::getInt32Ty(llvm::getGlobalContext()),
+//    		  	  	  	 Type::getInt32Ty(llvm::getGlobalContext()),
+//    		  /*isVarArg=*/false);
+//    llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+//
+//
+//    BasicBlock* label_entry = BasicBlock::Create(llvm::getGlobalContext(), "entry",F,0);
+//    builder->SetInsertPoint(label_entry);
+//
+//
+//    llvm::Function::arg_iterator args = F->arg_begin();
+//    llvm::Value* a=args++;
+//    a->setName("a");
+//
+//    llvm::Value* tmp=ConstantInt::get(llvm::getGlobalContext(), APInt(32, StringRef("2"), 10));
+//
+//
+//
+//
+//    builder->CreateRet(tmp);
+//
+//	verifyFunction(*F);
+//		F->dump();
+////	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
+////		llvm::outs()<<"errors!";
+////	 }
+//	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+////	 llvm::outs()<<*CodeGenerator::getInstance()->getModule()<<"\n";
+//
+//	 typedef void (*func)(int &);
+//
+//	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+//	 int a=1024;
+//	 ret(a);
+//	 printf("result %d!\n",a);
+
+
+}
+
+void myllvm::test(){
+	// Type Definitions
+	Module* mod=CodeGenerator::getInstance()->getModule();
+	 std::vector<Type*>FuncTy_0_args;
+	 FuncTy_0_args.push_back(IntegerType::get(mod->getContext(), 32));
+	 FunctionType* FuncTy_0 = FunctionType::get(
+	  /*Result=*/IntegerType::get(mod->getContext(), 32),
+	  /*Params=*/FuncTy_0_args,
+	  /*isVarArg=*/false);
+
+	 PointerType* PointerTy_1 = PointerType::get(IntegerType::get(mod->getContext(), 32), 0);
+
+
+	 // Function Declarations
+
+	 Function* func__Z4funci = mod->getFunction("_Z4funci");
+	 if (!func__Z4funci) {
+	 func__Z4funci = Function::Create(
+	  /*Type=*/FuncTy_0,
+	  /*Linkage=*/GlobalValue::ExternalLinkage,
+	  /*Name=*/"_Z4funci", mod);
+	 func__Z4funci->setCallingConv(CallingConv::C);
+	 }
+	 AttributeSet func__Z4funci_PAL;
+	 {
+	  SmallVector<AttributeSet, 4> Attrs;
+	  AttributeSet PAS;
+	   {
+	    AttrBuilder B;
+	    B.addAttribute(llvm::Attribute::NoUnwind);
+	    PAS = AttributeSet::get(mod->getContext(), ~0U, B);
+	   }
+
+	  Attrs.push_back(PAS);
+	  func__Z4funci_PAL = AttributeSet::get(mod->getContext(), Attrs);
+
+	 }
+	 func__Z4funci->setAttributes(func__Z4funci_PAL);
+
+	 // Global Variable Declarations
+
+
+	 // Constant Definitions
+	 ConstantInt* const_int32_2 = ConstantInt::get(mod->getContext(), APInt(32, StringRef("1"), 10));
+	 ConstantInt* const_int32_3 = ConstantInt::get(mod->getContext(), APInt(32, StringRef("10"), 10));
+
+	 // Global Variable Definitions
+
+	 // Function Definitions
+
+	 // Function: _Z4funci (func__Z4funci)
+	 {
+	  Function::arg_iterator args = func__Z4funci->arg_begin();
+	  Value* int32_c = args++;
+	  int32_c->setName("c");
+
+	  BasicBlock* label_entry = BasicBlock::Create(mod->getContext(), "entry",func__Z4funci,0);
+	  BasicBlock* label_while_cond = BasicBlock::Create(mod->getContext(), "while.cond",func__Z4funci,0);
+	  BasicBlock* label_while_body = BasicBlock::Create(mod->getContext(), "while.body",func__Z4funci,0);
+	  BasicBlock* label_while_end = BasicBlock::Create(mod->getContext(), "while.end",func__Z4funci,0);
+
+	  // Block entry (label_entry)
+	  AllocaInst* ptr_c_addr = new AllocaInst(IntegerType::get(mod->getContext(), 32), "c.addr", label_entry);
+	  ptr_c_addr->setAlignment(4);
+	  AllocaInst* ptr_b = new AllocaInst(IntegerType::get(mod->getContext(), 32), "b", label_entry);
+	  ptr_b->setAlignment(4);
+	  StoreInst* void_4 = new StoreInst(int32_c, ptr_c_addr, false, label_entry);
+	  void_4->setAlignment(4);
+	  StoreInst* void_5 = new StoreInst(const_int32_3, ptr_b, false, label_entry);
+	  void_5->setAlignment(4);
+	  BranchInst::Create(label_while_cond, label_entry);
+
+	  // Block while.cond (label_while_cond)
+	  LoadInst* int32_7 = new LoadInst(ptr_b, "", false, label_while_cond);
+	  int32_7->setAlignment(4);
+	  LoadInst* int32_8 = new LoadInst(ptr_c_addr, "", false, label_while_cond);
+	  int32_8->setAlignment(4);
+	  ICmpInst* int1_cmp = new ICmpInst(*label_while_cond, ICmpInst::ICMP_SLT, int32_7, int32_8, "cmp");
+	  BranchInst::Create(label_while_body, label_while_end, int1_cmp, label_while_cond);
+
+	  // Block while.body (label_while_body)
+	  LoadInst* int32_10 = new LoadInst(ptr_b, "", false, label_while_body);
+	  int32_10->setAlignment(4);
+	  LoadInst* int32_11 = new LoadInst(ptr_b, "", false, label_while_body);
+	  int32_11->setAlignment(4);
+	  BinaryOperator* int32_mul = BinaryOperator::Create(Instruction::Mul, int32_10, int32_11, "mul", label_while_body);
+	  StoreInst* void_12 = new StoreInst(int32_mul, ptr_b, false, label_while_body);
+	  void_12->setAlignment(4);
+	  BranchInst::Create(label_while_cond, label_while_body);
+
+	  // Block while.end (label_while_end)
+	  LoadInst* int32_14 = new LoadInst(ptr_b, "", false, label_while_end);
+	  int32_14->setAlignment(4);
+	  ReturnInst::Create(mod->getContext(), int32_14, label_while_end);
+
+	 }
+	 verifyFunction(*func__Z4funci);
+	 	 typedef int (*func)(int);
+
+	 	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
+
+	 	 printf("f(%d)=%d\n",50,ret(50));
+
 }

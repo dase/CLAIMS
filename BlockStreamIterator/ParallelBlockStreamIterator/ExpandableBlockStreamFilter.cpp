@@ -236,10 +236,10 @@ void ExpandableBlockStreamFilter::pushContext(const thread_context& tc) {
 ////	tc->iterator_->~BlockStreamTraverseIterator();
 //}
 
-void ExpandableBlockStreamFilter::computeFilter(bool& ret, void* tuple,expr_func_prototype func_gen, Schema* schema, vector<QNode*> thread_qual_) {
+void ExpandableBlockStreamFilter::computeFilter(bool& ret, void* tuple,expr_func func_gen, Schema* schema, vector<QNode*> thread_qual_) {
 	ret=ExecEvalQual(thread_qual_, tuple,	schema);
 }
 
-void ExpandableBlockStreamFilter::computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func_prototype func_gen, Schema* schema, vector<QNode*> allocator) {
+void ExpandableBlockStreamFilter::computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func func_gen, Schema* schema, vector<QNode*> allocator) {
 	func_gen(tuple,&ret);
 }
