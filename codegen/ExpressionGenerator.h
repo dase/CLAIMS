@@ -13,15 +13,23 @@
 #include "llvm/IR/DerivedTypes.h"
 
 using namespace std;
-typedef void (*expr_func_prototype)(void*,void*);
+typedef void (*expr_func)(void*,void*);
 
-expr_func_prototype getExprFunc(QNode* qnode, Schema* schema);
+typedef void (*filter_process_func)(void*,int*,int,void*,int*,int);
+namespace myllvm{
+using namespace llvm;
+void test();
+}
+expr_func getExprFunc(QNode* qnode, Schema* schema);
+
+filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema);
+
+llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema);
 
 llvm::Value* codegen_binary_op(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_binary* node);
 llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_addr);
 llvm::Value* codegen_const(QExpr* node);
 llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr);
-llvm::FunctionType* createFunctionPrototype();
 bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_prt,QNode* node);
 
 /* create add instruction
@@ -52,5 +60,7 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r ,data_type type);
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
 
 
+
+void test_reference();
 
 #endif /* EXPRESSIONGENERATOR_H_ */

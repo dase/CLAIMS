@@ -96,9 +96,9 @@ private:
 	void pushContext(const thread_context& tc);
 private:
 	//ExecEvalQual(tc->thread_qual_, tuple_from_child,	state_.schema_);
-	typedef void(*filter_func)(bool& ret, void* tuple,expr_func_prototype func_gen, Schema* schema,vector<QNode *> thread_qual_);
-	static void computeFilter(bool& ret, void* tuple, expr_func_prototype func_gen, Schema* schema,vector<QNode *> thread_qual_);
-	static void computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func_prototype func_gen, Schema* schema,vector<QNode *>);
+	typedef void(*filter_func)(bool& ret, void* tuple,expr_func func_gen, Schema* schema,vector<QNode *> thread_qual_);
+	static void computeFilter(bool& ret, void* tuple, expr_func func_gen, Schema* schema,vector<QNode *> thread_qual_);
+	static void computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func func_gen, Schema* schema,vector<QNode *>);
 private:
 	State state_;
 	map<string,int>colindex;
@@ -113,7 +113,7 @@ private:
 //	vector<QNode *>qual_;//store the transfromed Qnode
 	Lock lock_;
 	filter_func ff_;
-	expr_func_prototype generated_filter_function_;
+	expr_func generated_filter_function_;
 	/* the following code is for boost serialization*/
 private:
 	friend class boost::serialization::access;
