@@ -143,6 +143,11 @@ public:
 		}
 		return 0;
 	}
+	inline void setTuplesInBlock(unsigned n){
+		free_=start+n*tuple_size_;
+		assert(free_<=start+BlockSize-sizeof(tail_info));
+
+	}
 	void setEmpty();
 
 	/* get [offset]-th tuple of the block */

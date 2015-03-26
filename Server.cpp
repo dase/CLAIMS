@@ -18,7 +18,8 @@ struct option long_options[] = {
  };
 
 std::string help_info=std::string("-c --config-file FILE_NAME\n\t\tSpecify the configure file\n")+
-		"-h --help\n\t\tPrint the help info\n";
+		"-h --help\n\t\tPrint the help info\n"+
+		"-d --disable-codegen\n\t\t disable code generation feature\n";
 
 
 void handle_parameters(int argc, char** argv){

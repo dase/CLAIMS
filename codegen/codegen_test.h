@@ -509,29 +509,7 @@ TEST_F(CodeGenerationTest,Compare){
 }
 
 
-static  void process_func(char* b_start, int * b_cur_addr, int b_tuple_count, char* c_start,int * c_cur_addr, int c_tuple_count,const int length,expr_func ff){
-	 int b_cur=*b_cur_addr;
-	 int c_cur=*c_cur_addr;
-	 while(c_cur<c_tuple_count){
-		 bool ret;
-		 char* c_tuple_addr= c_start+length*c_cur;
-		 ff(c_tuple_addr,&ret);
-		 bool pass=ret;
-		 if(pass){
-			 if(b_cur<b_tuple_count){
-				 char* b_tuple_addr=b_start+length*b_cur;
-				 b_cur=b_cur+1;
-				 memcpy(b_tuple_addr,c_tuple_addr,length);
-			 }
-			 else{
-				 break;
-			 }
-		 }
-		 c_cur=c_cur+1;
-	 }
-	 *b_cur_addr=b_cur;
-	 *c_cur_addr=c_cur;
- }
+
 
 
 
