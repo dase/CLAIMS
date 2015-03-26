@@ -57,7 +57,7 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 	 */
 
 	llvm::LLVMContext& context=llvm::getGlobalContext();
-
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	llvm::Function* expression_fucnction=getExprLLVMFucn(qnode,schema);
 
 	/* create function prototype */
@@ -106,11 +106,15 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 	llvm::Value* const_int_32_1=llvm::ConstantInt::get(llvm::Type::getInt32Ty(context),1);
 
 	//store two values from pointers
-	llvm::Value* b_cur=new llvm::LoadInst(b_cur_addr,"",false,entry_block);
-	llvm::Value* c_cur=new llvm::LoadInst(c_cur_addr,"",false,entry_block);
+	builder->SetInsertPoint(entry_block);
+	llvm::Value* b_cur = builder->CreateLoad(b_cur_addr);
+	llvm::Value* c_cur=builder->CreateLoad(c_cur_addr);
+	builder->CreateBr(while_cond);
 
 	//where condition
-	llvm::BranchInst::Create(while_cond,entry_block);
+	builder->SetInsertPoint(while_cond);
+	builder->CreateICmpSLT(c_cur,c_tuple_count);
+
 	llvm::ICmpInst* while_cond_result = new llvm::ICmpInst(*while_cond, llvm::ICmpInst::ICMP_SLT, c_cur, c_tuple_count, "cmp");
 	llvm::BranchInst::Create(while_body, exit_block, while_cond_result, while_cond);
 
@@ -119,12 +123,13 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 		llvm::Value* pass_addr = new llvm::AllocaInst(llvm::Type::getInt1Ty(context),"",while_body);
 		llvm::Value* c_offset = llvm::BinaryOperator::Create(llvm::Instruction::Mul, c_cur, tuple_size, "mul", while_body);
 		llvm::Value* c_offset_64=llvm::CastInst::CreateIntegerCast(c_offset,llvm::Type::getInt64Ty(context),false,"",while_body);
-		llvm::Value* c_start_64=llvm::PtrToIntInst(c_start,llvm::Type::getInt64Ty(context),"",while_body);
+		llvm::Value* c_start_64=new llvm::PtrToIntInst(c_start,llvm::Type::getInt64Ty(context),"",while_body);
 		llvm::Value* c_tuple_addr=llvm::BinaryOperator::Create(llvm::Instruction::Add,c_start_64,c_offset_64,"add",while_body);
-		llvm::Value* c_tuple_addr=llvm::IntToPtrInst(c_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)),"",while_body);
+		c_tuple_addr=new llvm::IntToPtrInst(c_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(context)),"",while_body);
+		llvm::Value* pass_addr_int8 = llvm::CastInst::CreatePointerCast(pass_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
 		std::vector<llvm::Value*> paras;
 		paras.push_back(c_tuple_addr);
-		paras.push_back(pass_addr);
+		paras.push_back(pass_addr_int8);
 		llvm::CallInst* call_expr=llvm::CallInst::Create(expression_fucnction,paras,"",while_body);
 		call_expr->setTailCall();
 
@@ -144,11 +149,13 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 			{
 				llvm::Value* b_offset = llvm::BinaryOperator::Create(llvm::Instruction::Mul,b_cur,tuple_size,"mul",if_has_space);
 				llvm::Value* b_offset_64=llvm::CastInst::CreateIntegerCast(b_offset,llvm::Type::getInt64Ty(context),false,"",if_has_space);
-				llvm::Value* b_start_64=llvm::PtrToIntInst(b_start,llvm::Type::getInt64Ty(context),"",if_has_space);
+				llvm::Value* b_start_64=new llvm::PtrToIntInst(b_start,llvm::Type::getInt64Ty(context),"",if_has_space);
 				llvm::Value* b_tuple_addr=llvm::BinaryOperator::Create(llvm::Instruction::Add,b_start_64,b_offset_64,"add",if_has_space);
-				llvm::Value* b_tuple_addr=llvm::IntToPtrInst(b_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)),"",if_has_space);
+				b_tuple_addr=new llvm::IntToPtrInst(b_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)),"",if_has_space);
 				llvm::Value* b_cur=llvm::BinaryOperator::Create(llvm::Instruction::Add,b_cur,const_int_32_1,"add",if_has_space);
 				//memcpy
+				llvm::Function* memcpy_func = CodeGenerator::getInstance()->getModule()->getFunction("llvm.memcpy");
+				std::cout<<"Memcpy function is found"<<std::endl;
 				llvm::BranchInst::Create(while_end,if_has_space);
 			}
 		}
@@ -164,6 +171,8 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
     llvm::verifyFunction(*F);
 
 
+
+
 }
 
 llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
@@ -172,7 +181,7 @@ llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 	 * */
 	std::vector<llvm::Type *> parameter_types;
 	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
-	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::get(llvm::getGlobalContext(),32)));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
     llvm::FunctionType *FT =
     llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
 	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
@@ -782,6 +791,133 @@ void myllvm::test(){
 	  LoadInst* int32_14 = new LoadInst(ptr_b, "", false, label_while_end);
 	  int32_14->setAlignment(4);
 	  ReturnInst::Create(mod->getContext(), int32_14, label_while_end);
+
+	 }
+	 verifyFunction(*func__Z4funci);
+	 	 typedef int (*func)(int);
+
+	 	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
+
+	 	 printf("f(%d)=%d\n",50,ret(50));
+
+}
+
+void myllvm::test1(){
+	// Type Definitions
+	Module* mod=CodeGenerator::getInstance()->getModule();
+	IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	 std::vector<Type*>FuncTy_0_args;
+	 FuncTy_0_args.push_back(IntegerType::get(mod->getContext(), 32));
+	 FunctionType* FuncTy_0 = FunctionType::get(
+	  /*Result=*/IntegerType::get(mod->getContext(), 32),
+	  /*Params=*/FuncTy_0_args,
+	  /*isVarArg=*/false);
+
+	 PointerType* PointerTy_1 = PointerType::get(IntegerType::get(mod->getContext(), 32), 0);
+
+
+	 // Function Declarations
+
+	 Function* func__Z4funci = mod->getFunction("_Z4funci");
+	 if (!func__Z4funci) {
+	 func__Z4funci = Function::Create(
+	  /*Type=*/FuncTy_0,
+	  /*Linkage=*/GlobalValue::ExternalLinkage,
+	  /*Name=*/"_Z4funci", mod);
+	 func__Z4funci->setCallingConv(CallingConv::C);
+	 }
+	 AttributeSet func__Z4funci_PAL;
+	 {
+	  SmallVector<AttributeSet, 4> Attrs;
+	  AttributeSet PAS;
+	   {
+	    AttrBuilder B;
+	    B.addAttribute(llvm::Attribute::NoUnwind);
+	    PAS = AttributeSet::get(mod->getContext(), ~0U, B);
+	   }
+
+	  Attrs.push_back(PAS);
+	  func__Z4funci_PAL = AttributeSet::get(mod->getContext(), Attrs);
+
+	 }
+	 func__Z4funci->setAttributes(func__Z4funci_PAL);
+
+	 // Global Variable Declarations
+
+
+	 // Constant Definitions
+	 ConstantInt* const_int32_2 = ConstantInt::get(mod->getContext(), APInt(32, StringRef("1"), 10));
+	 ConstantInt* const_int32_3 = ConstantInt::get(mod->getContext(), APInt(32, StringRef("10"), 10));
+
+	 // Global Variable Definitions
+
+	 // Function Definitions
+
+	 // Function: _Z4funci (func__Z4funci)
+	 {
+	  Function::arg_iterator args = func__Z4funci->arg_begin();
+	  Value* int32_c = args++;
+	  int32_c->setName("c");
+
+	  BasicBlock* label_entry = BasicBlock::Create(mod->getContext(), "entry",func__Z4funci,0);
+	  BasicBlock* label_while_cond = BasicBlock::Create(mod->getContext(), "while.cond",func__Z4funci,0);
+	  BasicBlock* label_while_body = BasicBlock::Create(mod->getContext(), "while.body",func__Z4funci,0);
+	  BasicBlock* label_while_end = BasicBlock::Create(mod->getContext(), "while.end",func__Z4funci,0);
+	  builder->SetInsertPoint(label_entry);
+
+	  // Block entry (label_entry)
+
+
+	  AllocaInst* ptr_c_addr = builder->CreateAlloca(IntegerType::get(mod->getContext(), 32));
+	  ptr_c_addr->setAlignment(4);
+	  AllocaInst* ptr_b = builder->CreateAlloca(IntegerType::get(mod->getContext(), 32));
+	  ptr_b->setAlignment(4);
+	  builder->CreateStore(int32_c,ptr_c_addr);
+	  builder->CreateStore(const_int32_3,ptr_b);
+//	  StoreInst* void_4 = new StoreInst(int32_c, ptr_c_addr, false, label_entry);
+//	  void_4->setAlignment(4);
+//	  StoreInst* void_5 = new StoreInst(const_int32_3, ptr_b, false, label_entry);
+//	  void_5->setAlignment(4);
+	  builder->CreateBr(label_while_cond);
+//	  BranchInst::Create(label_while_cond, label_entry);
+
+	  // Block while.cond (label_while_cond)
+	  builder->SetInsertPoint(label_while_cond);
+	  LoadInst* int32_7 = builder->CreateLoad(ptr_b);
+	  LoadInst* int32_8 = builder->CreateLoad(ptr_c_addr);
+	  ICmpInst* int1_cmp = builder->CreateICmpSLT(int32_7,int32_8);
+	  builder->CreateCondBr(int1_cmp,label_while_body,label_while_end);
+//	  LoadInst* int32_7 = new LoadInst(ptr_b, "", false, label_while_cond);
+//	  int32_7->setAlignment(4);
+//	  LoadInst* int32_8 = new LoadInst(ptr_c_addr, "", false, label_while_cond);
+//	  int32_8->setAlignment(4);
+//	  ICmpInst* int1_cmp = new ICmpInst(*label_while_cond, ICmpInst::ICMP_SLT, int32_7, int32_8, "cmp");
+//	  BranchInst::Create(label_while_body, label_while_end, int1_cmp, label_while_cond);
+
+	  // Block while.body (label_while_body)
+
+	  builder->SetInsertPoint(label_while_body);
+	  LoadInst* int32_10 = builder->CreateLoad(ptr_b);
+	  LoadInst* int32_11 = builder->CreateLoad(ptr_b);
+	  BinaryOperator* int32_mul = builder->CreateMul(int32_10,int32_11);
+	  builder->CreateStore(int32_mul,ptr_b);
+	  builder->CreateBr(label_while_cond);
+//	  LoadInst* int32_10 = new LoadInst(ptr_b, "", false, label_while_body);
+//	  int32_10->setAlignment(4);
+//	  LoadInst* int32_11 = new LoadInst(ptr_b, "", false, label_while_body);
+//	  int32_11->setAlignment(4);
+//	  BinaryOperator* int32_mul = BinaryOperator::Create(Instruction::Mul, int32_10, int32_11, "mul", label_while_body);
+//	  StoreInst* void_12 = new StoreInst(int32_mul, ptr_b, false, label_while_body);
+//	  void_12->setAlignment(4);
+//	  BranchInst::Create(label_while_cond, label_while_body);
+
+	  // Block while.end (label_while_end)
+	  builder->SetInsertPoint(label_while_end);
+	  LoadInst* int32_14 = builder->CreateLoad(ptr_b);
+	  builder->CreateRet(int32_14);
+//	  LoadInst* int32_14 = new LoadInst(ptr_b, "", false, label_while_end);
+//	  int32_14->setAlignment(4);
+//	  ReturnInst::Create(mod->getContext(), int32_14, label_while_end);
 
 	 }
 	 verifyFunction(*func__Z4funci);
