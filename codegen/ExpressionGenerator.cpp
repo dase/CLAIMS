@@ -108,10 +108,6 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 	llvm::Value* const_true=llvm::ConstantInt::get(llvm::Type::getInt1Ty(context),1);
 
 
-//	builder->CreateStore(const_int_32_3,c_cur_addr);
-//	builder->CreateStore(const_int_32_3,b_cur_addr);
-//	builder->CreateBr(exit_block);
-
 	//store two values from pointers
 
 	llvm::Value* b_cur = builder->CreateLoad(b_cur_addr);
@@ -120,15 +116,15 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 
 	//where condition
 	builder->SetInsertPoint(while_cond);
+	c_cur=builder->CreateLoad(c_cur_addr);
 	llvm::ICmpInst* while_cond_result = builder->CreateICmpSLT(c_cur,c_tuple_count);
 	builder->CreateCondBr(while_cond_result,while_body,exit_block);
-//	llvm::ICmpInst* while_cond_result = new llvm::ICmpInst(*while_cond, llvm::ICmpInst::ICMP_SLT, c_cur, c_tuple_count, "cmp");
-//	llvm::BranchInst::Create(while_body, exit_block, while_cond_result, while_cond);
 
 	//where body
 	{
 		builder->SetInsertPoint(while_body);
 		llvm::Value* pass_addr = builder->CreateAlloca(llvm::Type::getInt1Ty(context));
+		c_cur=builder->CreateLoad(c_cur_addr);
 		llvm::Value* c_offset = builder->CreateMul(c_cur,tuple_size);
 		llvm::Value* c_offset_64 = builder->CreateIntCast(c_offset,llvm::Type::getInt64Ty(context),true);
 		llvm::Value* c_start_64 = builder->CreatePtrToInt(c_start,llvm::Type::getInt64Ty(context));
@@ -138,82 +134,47 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 		std::vector<llvm::Value*> paras;
 		paras.push_back(c_tuple_addr);
 		paras.push_back(pass_addr_int8);
-		builder->CreateStore(const_true,pass_addr);
-//		builder->CreateCall(expression_function,paras,"");
-
-
-//		llvm::Value* pass_addr = new llvm::AllocaInst(llvm::Type::getInt1Ty(context),"",while_body);
-//		llvm::Value* c_offset = llvm::BinaryOperator::Create(llvm::Instruction::Mul, c_cur, tuple_size, "mul", while_body);
-//		llvm::Value* c_offset_64=llvm::CastInst::CreateIntegerCast(c_offset,llvm::Type::getInt64Ty(context),false,"",while_body);
-//		llvm::Value* c_start_64=new llvm::PtrToIntInst(c_start,llvm::Type::getInt64Ty(context),"",while_body);
-//		llvm::Value* c_tuple_addr=llvm::BinaryOperator::Create(llvm::Instruction::Add,c_start_64,c_offset_64,"add",while_body);
-//		c_tuple_addr=new llvm::IntToPtrInst(c_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(context)),"",while_body);
-//		llvm::Value* pass_addr_int8 = llvm::CastInst::CreatePointerCast(pass_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
-//		std::vector<llvm::Value*> paras;
-//		paras.push_back(c_tuple_addr);
-//		paras.push_back(pass_addr_int8);
-//		llvm::CallInst* call_expr=llvm::CallInst::Create(expression_function,paras,"",while_body);
-//		call_expr->setTailCall();
-
+//		builder->CreateStore(const_true,pass_addr);
+		builder->CreateCall(expression_function,paras);
 		//if condition
 		{
 			llvm::Value* pass=builder->CreateLoad(pass_addr);
 			builder->CreateCondBr(pass,if_passed,while_end);
-//			llvm::Value* pass=new llvm::LoadInst(pass_addr, "", false, while_body);
-//			llvm::BranchInst::Create(if_passed,while_end,pass,while_body);
 		}
 		//if body
 		{
 			//if condition
 			{
 				builder->SetInsertPoint(if_passed);
+				b_cur=builder->CreateLoad(b_cur_addr);
 				llvm::Value* has_space=builder->CreateICmpSLT(b_cur,b_tuple_count);
 				builder->CreateCondBr(has_space,if_has_space,exit_block);
-//				llvm::BranchInst::Create(if_has_space,exit_block,has_space,if_passed);
-//				llvm::Value* has_space=new llvm::ICmpInst(*if_passed,llvm::ICmpInst::ICMP_SLT,b_cur,b_tuple_count,"cmp");
-//				llvm::BranchInst::Create(if_has_space,exit_block,has_space,if_passed);
 			}
 			//if body
 			{
 				builder->SetInsertPoint(if_has_space);
+				b_cur=builder->CreateLoad(b_cur_addr);
 				llvm::Value* b_offset = builder->CreateMul(b_cur,tuple_size);
 				llvm::Value* b_offset_64=builder->CreateIntCast(b_offset,llvm::Type::getInt64Ty(context),true);
 				llvm::Value* b_start_64=builder->CreatePtrToInt(b_start,llvm::Type::getInt64Ty(context));
 				llvm::Value* b_tuple_addr=builder->CreateAdd(b_start_64,b_offset_64);
-				b_tuple_addr=builder->CreateIntToPtr(b_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)));
+				b_tuple_addr=builder->CreateIntToPtr(b_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
 				b_cur=builder->CreateAdd(b_cur,const_int_32_1);
 				builder->CreateStore(b_cur,b_cur_addr);
 				builder->CreateMemCpy(b_tuple_addr,c_tuple_addr,tuple_size,4);
 				builder->CreateBr(while_end);
 
-
-//				llvm::Value* b_offset = llvm::BinaryOperator::Create(llvm::Instruction::Mul,b_cur,tuple_size,"mul",if_has_space);
-//				llvm::Value* b_offset_64=llvm::CastInst::CreateIntegerCast(b_offset,llvm::Type::getInt64Ty(context),false,"",if_has_space);
-//				llvm::Value* b_start_64=new llvm::PtrToIntInst(b_start,llvm::Type::getInt64Ty(context),"",if_has_space);
-//				llvm::Value* b_tuple_addr=llvm::BinaryOperator::Create(llvm::Instruction::Add,b_start_64,b_offset_64,"add",if_has_space);
-//				b_tuple_addr=new llvm::IntToPtrInst(b_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)),"",if_has_space);
-//				llvm::Value* b_cur=llvm::BinaryOperator::Create(llvm::Instruction::Add,b_cur,const_int_32_1,"add",if_has_space);
-//				//memcpy
-//				llvm::Function* memcpy_func = CodeGenerator::getInstance()->getModule()->getFunction("llvm.memcpy");
-//				std::cout<<"Memcpy function is found"<<std::endl;
-//				llvm::BranchInst::Create(while_end,if_has_space);
 			}
 		}
 		builder->SetInsertPoint(while_end);
+		c_cur=builder->CreateLoad(c_cur_addr);
 		c_cur=builder->CreateAdd(c_cur,const_int_32_1);
 		builder->CreateStore(c_cur,c_cur_addr);
 		builder->CreateBr(while_cond);
-//		llvm::Value* c_cur=llvm::BinaryOperator::Create(llvm::Instruction::Add,c_cur,const_int_32_1,"add",while_end);
-//		llvm::BranchInst::Create(while_cond,while_end);
 	}
     //exit block
 	builder->SetInsertPoint(exit_block);
-//	builder->CreateStore(c_cur,c_cur_addr);
-//	builder->CreateStore(b_cur,b_cur_addr);
 	builder->CreateRetVoid();
-//    new llvm::StoreInst(c_cur,c_cur_addr,exit_block);
-//    new llvm::StoreInst(b_cur,b_cur_addr,exit_block);
-//    llvm::ReturnInst::Create(context,exit_block);
 
     llvm::verifyFunction(*F);
     F->dump();

@@ -554,24 +554,177 @@ TEST_F(CodeGenerationTest,FilterLogic){
 
 	filter_process_func gen_func=getFilterProcessFunc(op,s);
 
-	const unsigned b_tuple_count=100;
+	const unsigned b_tuple_count=10;
 	int b_cur=0;
-	void* b_start= malloc(s->getTupleMaxSize()*b_tuple_count);
-
-	const unsigned c_tuple_count=100;
 	int c_cur=0;
-	void* c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
-	memset(c_start,0,s->getTupleMaxSize()*b_tuple_count);
-	*(int*)s->getColumnAddess(1,c_start)=10;
+	void* b_start;
+	void* c_start;
 
-//	gen_func(b_start,&b_cur,b_tuple_count,c_start,&c_cur,c_tuple_count);
+	b_start = malloc(s->getTupleMaxSize()*b_tuple_count);
+	memset(b_start,255,s->getTupleMaxSize()*b_tuple_count);
 
-	expr_func f=getExprFunc(op,s);
-	process_func((char*)b_start,&b_cur,b_tuple_count,(char*)c_start,&c_cur,c_tuple_count,8,f);
+	const unsigned c_tuple_count=10;
 
-	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==1);
-	printf("b_cur = %d c_cur = %d\n",b_cur,c_cur);
+	/* populate the block beginning at c_start with tuples such that only
+	 * the first tuple can pass the filter
+	 */
+	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
+	char* c=c_start;
+	for(int i=0;i<c_tuple_count;i++){
+		*(int*)s->getColumnAddess(0,c)=5+i*5;
+		*(int*)s->getColumnAddess(1,c)=10;
+		c+=s->getTupleMaxSize();
+	}
 
 
+	gen_func(b_start,&b_cur,b_tuple_count,c_start,&c_cur,c_tuple_count);
+
+
+	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==1&&*(int*)s->getColumnAddess(1,b_start)==10);
+
+
+}
+TEST_F(CodeGenerationTest,FilterLogic1){
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	Schema* s=new SchemaFix(columns);
+	map<string,int> column_index;
+	column_index["a"]=0;
+	column_index["b"]=1;
+
+	QColcumns* a=new QColcumns("T","a",t_int,"a");
+	QColcumns* b=new QColcumns("T","b",t_int,"b");
+
+	QExpr_binary* op=new QExpr_binary(a,b,t_int,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op,t_boolean,column_index,s);
+	CodeGenerator::getInstance();
+
+	filter_process_func gen_func=getFilterProcessFunc(op,s);
+
+	const unsigned b_tuple_count=10;
+	int b_cur=0;
+	int c_cur=0;
+	void* b_start;
+	void* c_start;
+
+	b_start = malloc(s->getTupleMaxSize()*b_tuple_count);
+	memset(b_start,255,s->getTupleMaxSize()*b_tuple_count);
+
+	const unsigned c_tuple_count=10;
+
+	/* populate the block beginning at c_start with tuples such that only
+	 * the first four tuples can pass the filter
+	 */
+	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
+	char* c=c_start;
+	for(int i=0;i<c_tuple_count;i++){
+		*(int*)s->getColumnAddess(0,c)=i*5;
+		*(int*)s->getColumnAddess(1,c)=20;
+		c+=s->getTupleMaxSize();
+	}
+
+
+	gen_func(b_start,&b_cur,b_tuple_count,c_start,&c_cur,c_tuple_count);
+
+
+	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==4);
+}
+
+TEST_F(CodeGenerationTest,FilterLogic2){
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	Schema* s=new SchemaFix(columns);
+	map<string,int> column_index;
+	column_index["a"]=0;
+	column_index["b"]=1;
+
+	QColcumns* a=new QColcumns("T","a",t_int,"a");
+	QColcumns* b=new QColcumns("T","b",t_int,"b");
+
+	QExpr_binary* op=new QExpr_binary(a,b,t_int,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op,t_boolean,column_index,s);
+	CodeGenerator::getInstance();
+
+	filter_process_func gen_func=getFilterProcessFunc(op,s);
+
+	const unsigned b_tuple_count=2;
+	const unsigned c_tuple_count=20;
+	int b_cur=0;
+	int c_cur=0;
+	void* b_start;
+	void* c_start;
+
+	b_start = malloc(s->getTupleMaxSize()*b_tuple_count);
+	memset(b_start,255,s->getTupleMaxSize()*b_tuple_count);
+
+
+	/* populate the block beginning at c_start with tuples such that only
+	 * the first tuple can pass the filter
+	 */
+	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
+	char* c=c_start;
+	for(int i=0;i<c_tuple_count;i++){
+		*(int*)s->getColumnAddess(0,c)=i*5;
+		*(int*)s->getColumnAddess(1,c)=20;
+		c+=s->getTupleMaxSize();
+	}
+
+
+	gen_func(b_start,&b_cur,b_tuple_count,c_start,&c_cur,c_tuple_count);
+
+
+	EXPECT_TRUE(c_cur==b_tuple_count&&b_cur==b_tuple_count);
+}
+
+TEST_F(CodeGenerationTest,FilterLogic3){
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	Schema* s=new SchemaFix(columns);
+	map<string,int> column_index;
+	column_index["a"]=0;
+	column_index["b"]=1;
+
+	QColcumns* a=new QColcumns("T","a",t_int,"a");
+	QColcumns* b=new QColcumns("T","b",t_int,"b");
+
+	QExpr_binary* op=new QExpr_binary(a,b,t_int,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op,t_boolean,column_index,s);
+	CodeGenerator::getInstance();
+
+	filter_process_func gen_func=getFilterProcessFunc(op,s);
+
+	const unsigned b_tuple_count=5;
+	const unsigned c_tuple_count=3;
+	int b_cur=0;
+	int c_cur=0;
+	void* b_start;
+	void* c_start;
+
+	b_start = malloc(s->getTupleMaxSize()*b_tuple_count);
+	memset(b_start,255,s->getTupleMaxSize()*b_tuple_count);
+
+
+	/* populate the block beginning at c_start with tuples such that only
+	 * the first four tuples can pass the filter
+	 */
+	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
+	char* c=c_start;
+	for(int i=0;i<c_tuple_count;i++){
+		*(int*)s->getColumnAddess(0,c)=i*5;
+		*(int*)s->getColumnAddess(1,c)=20;
+		c+=s->getTupleMaxSize();
+	}
+
+
+	gen_func(b_start,&b_cur,b_tuple_count,c_start,&c_cur,c_tuple_count);
+
+
+	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==c_tuple_count);
 }
 #endif /* CODEGEN_TEST_H_ */

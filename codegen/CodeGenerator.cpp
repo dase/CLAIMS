@@ -58,8 +58,9 @@ CodeGenerator::CodeGenerator() {
 	builder_=new IRBuilder<>(llvm::getGlobalContext());
 	module_=new Module("my cool jit", llvm::getGlobalContext());
     fpm_=new FunctionPassManager (module_);
-	fpm_->add(createCFGSimplificationPass());
-	fpm_->add(createDeadCodeEliminationPass());
+	fpm_->add(llvm::createCFGSimplificationPass());
+	fpm_->add(llvm::createDeadCodeEliminationPass());
+	fpm_->add(llvm::createMemCpyOptPass());
 	engine_ = EngineBuilder(module_).create();
 	assert(engine_);
 
