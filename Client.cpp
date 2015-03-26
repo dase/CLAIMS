@@ -72,6 +72,7 @@ int main(int argc, char** argv){
 		}else if( query.empty() ){
 			continue;
 		}
+		query = "#"+query;
 		ClientResponse* response = client.submitQuery(query);
 
 		if( query == "shutdown" ){

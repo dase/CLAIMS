@@ -17,7 +17,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <assert.h>
-#include "./common/Logging.h"
+#include "../common/Logging.h"
 
 using namespace std;
 
