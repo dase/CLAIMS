@@ -508,4 +508,70 @@ TEST_F(CodeGenerationTest,Compare){
 	EXPECT_TRUE(ret);
 }
 
+
+static  void process_func(char* b_start, int * b_cur_addr, int b_tuple_count, char* c_start,int * c_cur_addr, int c_tuple_count,const int length,expr_func ff){
+	 int b_cur=*b_cur_addr;
+	 int c_cur=*c_cur_addr;
+	 while(c_cur<c_tuple_count){
+		 bool ret;
+		 char* c_tuple_addr= c_start+length*c_cur;
+		 ff(c_tuple_addr,&ret);
+		 bool pass=ret;
+		 if(pass){
+			 if(b_cur<b_tuple_count){
+				 char* b_tuple_addr=b_start+length*b_cur;
+				 b_cur=b_cur+1;
+				 memcpy(b_tuple_addr,c_tuple_addr,length);
+			 }
+			 else{
+				 break;
+			 }
+		 }
+		 c_cur=c_cur+1;
+	 }
+	 *b_cur_addr=b_cur;
+	 *c_cur_addr=c_cur;
+ }
+
+
+
+TEST_F(CodeGenerationTest,FilterLogic){
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_int));
+	columns.push_back(data_type(t_int));
+	Schema* s=new SchemaFix(columns);
+	map<string,int> column_index;
+	column_index["a"]=0;
+	column_index["b"]=1;
+
+	QColcumns* a=new QColcumns("T","a",t_int,"a");
+	QColcumns* b=new QColcumns("T","b",t_int,"b");
+
+	QExpr_binary* op=new QExpr_binary(a,b,t_int,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op,t_boolean,column_index,s);
+	CodeGenerator::getInstance();
+
+	filter_process_func gen_func=getFilterProcessFunc(op,s);
+
+	const unsigned b_tuple_count=100;
+	int b_cur=0;
+	void* b_start= malloc(s->getTupleMaxSize()*b_tuple_count);
+
+	const unsigned c_tuple_count=100;
+	int c_cur=0;
+	void* c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
+	memset(c_start,0,s->getTupleMaxSize()*b_tuple_count);
+	*(int*)s->getColumnAddess(1,c_start)=10;
+
+//	gen_func(b_start,&b_cur,b_tuple_count,c_start,&c_cur,c_tuple_count);
+
+	expr_func f=getExprFunc(op,s);
+	process_func((char*)b_start,&b_cur,b_tuple_count,(char*)c_start,&c_cur,c_tuple_count,8,f);
+
+	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==1);
+	printf("b_cur = %d c_cur = %d\n",b_cur,c_cur);
+
+
+}
 #endif /* CODEGEN_TEST_H_ */

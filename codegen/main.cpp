@@ -8,11 +8,11 @@ using namespace std;
 #include "ExpressionGenerator.h"
 int main(int argc, char** argv){
 //	return test::test_llvm();
-//	g_test_main(argc, argv);
+	g_test_main(argc, argv);
 //	get_one();
 //	get_another_one();
 //	test_reference();
 //	myllvm::test();
-	myllvm::test1();
+//	myllvm::test1();
 }
 #endif
