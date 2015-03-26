@@ -30,7 +30,7 @@
 //#define DEBUG_IteratorExecutorMaster
 //
 
-//#define DEBUG_Client
+#define DEBUG_Client
 //#define DEBUG_ClientLinsener
 
 
