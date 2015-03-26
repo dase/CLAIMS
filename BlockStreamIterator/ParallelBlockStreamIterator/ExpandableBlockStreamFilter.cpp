@@ -85,9 +85,6 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 		return state_.child_->open(part_off);
 	}
 
-//	for (int i = 0; i < state_.qual_.size(); i++) {
-//		InitExprAtPhysicalPlan(state_.qual_[i]);
-//	}
 }
 
 bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
@@ -97,6 +94,8 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 	filter_thread_context* tc = (filter_thread_context*) getContext();
 	while(true){
 		if(tc->block_stream_iterator_->currentTuple()==0){
+			/* mark the block as processed by setting it empty*/
+			tc->block_for_asking_->setEmpty();
 			if(state_.child_->next(tc->block_for_asking_)){
 				delete tc->block_stream_iterator_;
 				tc->block_stream_iterator_=tc->block_for_asking_->createIterator();
@@ -138,9 +137,50 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 			/* point the iterator to the next tuple */
 			tc->block_stream_iterator_->increase_cur_();
 		}
-		/* mark the block as processed by setting it empty*/
-		tc->block_for_asking_->setEmpty();
+		/* there are totally two reasons for the end of the while loop.
+		 * (1) block is full of tuples satisfying filter (should return true to the caller)
+		 * (2) block_for_asking_ is exhausted (should fetch a new block from child and continue to process)
+		 */
+		if(block->Full())
+			// for case (1)
+			return true;
+		else{
+		}
 	}
+}
+void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,filter_thread_context* tc) {
+	void* tuple_from_child;
+	void* tuple_in_block;
+	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) {
+		bool pass_filter = true;
+#ifdef NEWCONDITION
+		ff_(pass_filter,tuple_from_child,generated_filter_function_,state_.schema_,tc->thread_qual_);
+#else
+		pass_filter=true;
+		for(unsigned i=0;i<state_.comparator_list_.size();i++){
+
+			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
+				pass_filter=false;
+				break;
+			}
+		}
+#endif
+		if (pass_filter) {
+			const unsigned bytes = state_.schema_->getTupleActualSize(
+					tuple_from_child);
+			if ((tuple_in_block = block->allocateTuple(bytes)) > 0) {
+				block->insert(tuple_in_block, tuple_from_child, bytes);
+				tuple_after_filter_++;
+			} else {
+				/* we have got a block full of result tuples*/
+				return;
+			}
+		}
+		/* point the iterator to the next tuple */
+		tc->block_stream_iterator_->increase_cur_();
+	}
+	/* mark the block as processed by setting it empty*/
+	tc->block_for_asking_->setEmpty();
 }
 
 bool ExpandableBlockStreamFilter::close() {
@@ -239,6 +279,7 @@ void ExpandableBlockStreamFilter::pushContext(const thread_context& tc) {
 void ExpandableBlockStreamFilter::computeFilter(bool& ret, void* tuple,expr_func func_gen, Schema* schema, vector<QNode*> thread_qual_) {
 	ret=ExecEvalQual(thread_qual_, tuple,	schema);
 }
+
 
 void ExpandableBlockStreamFilter::computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func func_gen, Schema* schema, vector<QNode*> allocator) {
 	func_gen(tuple,&ret);
