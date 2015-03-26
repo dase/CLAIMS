@@ -17,16 +17,17 @@
 #include "../../common/Expression/queryfunc.h"
 #include "../../common/data_type.h"
 #include "../../Config.h"
+#include "../../codegen/ExpressionGenerator.h"
 
 #define NEWCONDITION
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state) :
-		state_(state),generated_filter_function_(0) {
+		state_(state),generated_filter_function_(0),generated_filter_processing_fucntoin_(0) {
 	initialize_expanded_status();
 	initialize_operator_function();
 }
 
-ExpandableBlockStreamFilter::ExpandableBlockStreamFilter():generated_filter_function_(0) {
+ExpandableBlockStreamFilter::ExpandableBlockStreamFilter():generated_filter_function_(0),generated_filter_processing_fucntoin_(0) {
 	initialize_expanded_status();
 }
 
@@ -67,16 +68,24 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 
 	if (tryEntryIntoSerializedSection()) {
 		tuple_after_filter_ = 0;
-		if(Config::enable_codegen)
+		if(Config::enable_codegen){
 			generated_filter_function_=getExprFunc(state_.qual_[0],state_.schema_);
-		if(generated_filter_function_){
-			ff_=computeFilterwithGeneratedCode;
-			printf("CodeGen succeeds!\n");
+			ticks start=curtick();
+			generated_filter_processing_fucntoin_=getFilterProcessFunc(state_.qual_[0],state_.schema_);
+			if(generated_filter_processing_fucntoin_)
+				printf("CodeGen succeeds!(%f8.4ms)\n",getMilliSecond(start));
+			else
+				printf("CodeGen fails!\n");
 		}
 		else{
 			ff_=computeFilter;
-			printf("CodeGen fails!\n");
 		}
+//		if(generated_filter_function_){
+//			ff_=computeFilterwithGeneratedCode;
+//		}
+//		else{
+//			printf("CodeGen fails!\n");
+//		}
 		const bool child_open_return = state_.child_->open(part_off);
 		setOpenReturnValue(child_open_return);
 		broadcaseOpenFinishedSignal();
@@ -109,6 +118,33 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 				}
 			}
 		}
+		process_logic(block,tc);
+		/* there are totally two reasons for the end of the while loop.
+		 * (1) block is full of tuples satisfying filter (should return true to the caller)
+		 * (2) block_for_asking_ is exhausted (should fetch a new block from child and continue to process)
+		 */
+		if(block->Full())
+			// for case (1)
+			return true;
+		else{
+		}
+	}
+}
+void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,filter_thread_context* tc) {
+	if(generated_filter_processing_fucntoin_){
+		int b_cur=block->getTuplesInBlock();
+		int c_cur=tc->block_stream_iterator_->get_cur();
+		const int b_tuple_count=block->getBlockCapacityInTuples();
+		const int c_tuple_count=tc->block_for_asking_->getTuplesInBlock();
+
+		generated_filter_processing_fucntoin_(block->getBlock(),&b_cur,b_tuple_count,tc->block_for_asking_->getBlock(),&c_cur,c_tuple_count);
+//		process_func(block->getBlock(),&b_cur,b_tuple_count,tc->block_for_asking_->getBlock(),&c_cur,c_tuple_count,state_.schema_->getTupleMaxSize(),generated_filter_function_);
+		((BlockStreamFix*)block)->setTuplesInBlock(b_cur);
+		tc->block_stream_iterator_->set_cur(c_cur);
+	}
+	else{
+		void* tuple_from_child;
+		void* tuple_in_block;
 		while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) {
 			bool pass_filter = true;
 	#ifdef NEWCONDITION
@@ -131,56 +167,15 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 					tuple_after_filter_++;
 				} else {
 					/* we have got a block full of result tuples*/
-					return true;
+					return;
 				}
 			}
 			/* point the iterator to the next tuple */
 			tc->block_stream_iterator_->increase_cur_();
 		}
-		/* there are totally two reasons for the end of the while loop.
-		 * (1) block is full of tuples satisfying filter (should return true to the caller)
-		 * (2) block_for_asking_ is exhausted (should fetch a new block from child and continue to process)
-		 */
-		if(block->Full())
-			// for case (1)
-			return true;
-		else{
-		}
+		/* mark the block as processed by setting it empty*/
+		tc->block_for_asking_->setEmpty();
 	}
-}
-void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,filter_thread_context* tc) {
-	void* tuple_from_child;
-	void* tuple_in_block;
-	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) {
-		bool pass_filter = true;
-#ifdef NEWCONDITION
-		ff_(pass_filter,tuple_from_child,generated_filter_function_,state_.schema_,tc->thread_qual_);
-#else
-		pass_filter=true;
-		for(unsigned i=0;i<state_.comparator_list_.size();i++){
-
-			if(!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))){
-				pass_filter=false;
-				break;
-			}
-		}
-#endif
-		if (pass_filter) {
-			const unsigned bytes = state_.schema_->getTupleActualSize(
-					tuple_from_child);
-			if ((tuple_in_block = block->allocateTuple(bytes)) > 0) {
-				block->insert(tuple_in_block, tuple_from_child, bytes);
-				tuple_after_filter_++;
-			} else {
-				/* we have got a block full of result tuples*/
-				return;
-			}
-		}
-		/* point the iterator to the next tuple */
-		tc->block_stream_iterator_->increase_cur_();
-	}
-	/* mark the block as processed by setting it empty*/
-	tc->block_for_asking_->setEmpty();
 }
 
 bool ExpandableBlockStreamFilter::close() {

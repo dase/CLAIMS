@@ -1113,7 +1113,7 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 
 	cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-					new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 4);
+					new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(1).getName(), 1);
 
 	catalog->add_table(new_table);
 

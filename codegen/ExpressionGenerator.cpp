@@ -58,7 +58,9 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 
 	llvm::LLVMContext& context=llvm::getGlobalContext();
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	CodeGenerator::getInstance()->lock();
 	llvm::Function* expression_function=getExprLLVMFucn(qnode,schema);
+
 
 	/* create function prototype */
 	std::vector<llvm::Type *> parameter_types;
@@ -177,9 +179,11 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 	builder->CreateRetVoid();
 
     llvm::verifyFunction(*F);
-    F->dump();
+//    F->dump();
     CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-    return CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+    filter_process_func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+    CodeGenerator::getInstance()->release();
+    return ret;
 
 }
 
