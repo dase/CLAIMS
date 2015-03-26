@@ -19,6 +19,7 @@ typedef void (*filter_process_func)(void*,int*,int,void*,int*,int);
 namespace myllvm{
 using namespace llvm;
 void test();
+void test1();
 }
 expr_func getExprFunc(QNode* qnode, Schema* schema);
 
