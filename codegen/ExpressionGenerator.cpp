@@ -21,6 +21,7 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
+#include "llvm/IR/IntrinsicInst.h"
 
 using llvm::IRBuilderBase;
 using llvm::ConstantInt;
@@ -28,44 +29,139 @@ using llvm::InitializeNativeTarget;
 
 filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 
-//	llvm::LLVMContext& context=llvm::getGlobalContext();
-//
-//	llvm::Function* exr_fuc=getExprFunc(qnode,schema);
-//
-//	/* create function prototype */
-//	std::vector<llvm::Type *> parameter_types;
-//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
-//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(context)));
-//	parameter_types.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
-//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
-//	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(context)));
-//	parameter_types.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
-//	llvm::FunctionType *FT= llvm::FunctionType::get(llvm::Type::getVoidTy(context), parameter_types,false);
-//
-//	llvm::Function *F=llvm::Function::Create(FT,llvm::Function::ExternalLinkage,"a",CodeGenerator::getInstance()->getModule());
-//
-//
-//	/* create function entry */
-//	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
-//	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
-//
-//	/* get the parameters of the function */
-//	llvm::Function::arg_iterator AI = F->arg_begin();
-//	llvm::Value* b_start = AI++;
-//	b_start->setName("b_start");
-//	llvm::Value* b_cur_addr = AI++;
-//	b_cur_addr->setName("b_cur_addr");
-//	llvm::Value* b_tuple_count = AI++;
-//	b_tuple_count->setName("b_tuple_count");
-//	llvm::Value* c_start = AI++;
-//	c_start->setName("c_start");
-//	llvm::Value* c_cur_addr = AI++;
-//	c_cur_addr->setName("c_cur_addr");
-//	llvm::Value* c_tuple_count = AI++;
-//	c_tuple_count->setName("c_tuple_count");
-//
-//
-//	llvm::Value* tuple_size=llvm::ConstantInt::get(llvm::Type::getInt32Ty(context),schema->getTupleMaxSize());
+	/*
+	 *    int process_func(char* b_start, int & b_cur_addr, int b_tuple_count, char* c_start,int & c_cur_addr, int c_tuple_count){
+	 *        int b_cur=*b_cur_addr;
+	 *        int c_cur=*c_cur_addr;
+	 *        while(c_cur<c_tuple_count){
+	 *            bool ret*=alloc;
+	 *            char* c_tuple_addr= c_start+length*c_cur;
+	 *            f(c_tuple_addr,ret);
+	 *            bool pass=*ret;
+	 *            if(pass){
+	 *                if(b_cur<b_tuple_count){
+	 *                    char* b_tuple_addr=b_start+length*b_cur;
+	 *                    b_cur=b_cur+1;
+	 *                    memcpy(b_typle_addr,c_tuple_addr,length);
+	 *                }
+	 *                else{
+	 *                    break;
+	 *                }
+	 *            }
+	 *            c_cur=c_cur+1;
+	 *        }
+	 *        *b_cur_addr=b_cur;
+	 *        *c_cur_addr=c_cur;
+	 *    }
+	 *
+	 */
+
+	llvm::LLVMContext& context=llvm::getGlobalContext();
+
+	llvm::Function* expression_fucnction=getExprLLVMFucn(qnode,schema);
+
+	/* create function prototype */
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(context)));
+	parameter_types.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::Type::getInt32Ty(context)));
+	parameter_types.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
+	llvm::FunctionType *FT= llvm::FunctionType::get(llvm::Type::getVoidTy(context), parameter_types,false);
+
+	llvm::Function *F=llvm::Function::Create(FT,llvm::Function::ExternalLinkage,"a",CodeGenerator::getInstance()->getModule());
+
+
+
+	/* create function entry */
+	llvm::BasicBlock *entry_block = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry_block", F);
+	llvm::BasicBlock *while_cond = llvm::BasicBlock::Create(llvm::getGlobalContext(), "while_cond", F);
+	llvm::BasicBlock *while_body = llvm::BasicBlock::Create(llvm::getGlobalContext(), "while_body", F);
+	llvm::BasicBlock *while_end = llvm::BasicBlock::Create(llvm::getGlobalContext(), "while_end", F);
+	llvm::BasicBlock *if_passed = llvm::BasicBlock::Create(llvm::getGlobalContext(), "if_passed", F);
+	llvm::BasicBlock *if_has_space = llvm::BasicBlock::Create(llvm::getGlobalContext(), "if_has_space", F);
+	llvm::BasicBlock* exit_block = llvm::BasicBlock::Create(context,"exit_block",F);
+
+
+
+	/* get the parameters of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* b_start = AI++;
+	b_start->setName("b_start");
+	llvm::Value* b_cur_addr = AI++;
+	b_cur_addr->setName("b_cur_addr");
+	llvm::Value* b_tuple_count = AI++;
+	b_tuple_count->setName("b_tuple_count");
+	llvm::Value* c_start = AI++;
+	c_start->setName("c_start");
+	llvm::Value* c_cur_addr = AI++;
+	c_cur_addr->setName("c_cur_addr");
+	llvm::Value* c_tuple_count = AI++;
+	c_tuple_count->setName("c_tuple_count");
+
+
+	//construct two constants
+	llvm::Value* tuple_size=llvm::ConstantInt::get(llvm::Type::getInt32Ty(context),schema->getTupleMaxSize());
+	llvm::Value* const_int_32_1=llvm::ConstantInt::get(llvm::Type::getInt32Ty(context),1);
+
+	//store two values from pointers
+	llvm::Value* b_cur=new llvm::LoadInst(b_cur_addr,"",false,entry_block);
+	llvm::Value* c_cur=new llvm::LoadInst(c_cur_addr,"",false,entry_block);
+
+	//where condition
+	llvm::BranchInst::Create(while_cond,entry_block);
+	llvm::ICmpInst* while_cond_result = new llvm::ICmpInst(*while_cond, llvm::ICmpInst::ICMP_SLT, c_cur, c_tuple_count, "cmp");
+	llvm::BranchInst::Create(while_body, exit_block, while_cond_result, while_cond);
+
+	//where body
+	{
+		llvm::Value* pass_addr = new llvm::AllocaInst(llvm::Type::getInt1Ty(context),"",while_body);
+		llvm::Value* c_offset = llvm::BinaryOperator::Create(llvm::Instruction::Mul, c_cur, tuple_size, "mul", while_body);
+		llvm::Value* c_offset_64=llvm::CastInst::CreateIntegerCast(c_offset,llvm::Type::getInt64Ty(context),false,"",while_body);
+		llvm::Value* c_start_64=llvm::PtrToIntInst(c_start,llvm::Type::getInt64Ty(context),"",while_body);
+		llvm::Value* c_tuple_addr=llvm::BinaryOperator::Create(llvm::Instruction::Add,c_start_64,c_offset_64,"add",while_body);
+		llvm::Value* c_tuple_addr=llvm::IntToPtrInst(c_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)),"",while_body);
+		std::vector<llvm::Value*> paras;
+		paras.push_back(c_tuple_addr);
+		paras.push_back(pass_addr);
+		llvm::CallInst* call_expr=llvm::CallInst::Create(expression_fucnction,paras,"",while_body);
+		call_expr->setTailCall();
+
+		//if condition
+		{
+			llvm::Value* pass=new llvm::LoadInst(pass_addr, "", false, while_body);
+			llvm::BranchInst::Create(if_passed,while_end,pass,while_body);
+		}
+		//if body
+		{
+			//if condition
+			{
+				llvm::Value* has_space=new llvm::ICmpInst(*if_passed,llvm::ICmpInst::ICMP_SLT,b_cur,b_tuple_count,"cmp");
+				llvm::BranchInst::Create(if_has_space,exit_block,has_space,if_passed);
+			}
+			//if body
+			{
+				llvm::Value* b_offset = llvm::BinaryOperator::Create(llvm::Instruction::Mul,b_cur,tuple_size,"mul",if_has_space);
+				llvm::Value* b_offset_64=llvm::CastInst::CreateIntegerCast(b_offset,llvm::Type::getInt64Ty(context),false,"",if_has_space);
+				llvm::Value* b_start_64=llvm::PtrToIntInst(b_start,llvm::Type::getInt64Ty(context),"",if_has_space);
+				llvm::Value* b_tuple_addr=llvm::BinaryOperator::Create(llvm::Instruction::Add,b_start_64,b_offset_64,"add",if_has_space);
+				llvm::Value* b_tuple_addr=llvm::IntToPtrInst(b_tuple_addr,llvm::PointerType::getUnqual(llvm::Type::getInt32PtrTy(context)),"",if_has_space);
+				llvm::Value* b_cur=llvm::BinaryOperator::Create(llvm::Instruction::Add,b_cur,const_int_32_1,"add",if_has_space);
+				//memcpy
+				llvm::BranchInst::Create(while_end,if_has_space);
+			}
+		}
+
+		llvm::Value* c_cur=llvm::BinaryOperator::Create(llvm::Instruction::Add,c_cur,const_int_32_1,"add",while_end);
+		llvm::BranchInst::Create(while_cond,while_end);
+	}
+    //exit block
+    new llvm::StoreInst(c_cur,c_cur_addr,exit_block);
+    new llvm::StoreInst(b_cur,b_cur_addr,exit_block);
+    llvm::ReturnInst::Create(context,exit_block);
+
+    llvm::verifyFunction(*F);
 
 
 }
@@ -94,6 +190,7 @@ llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 	tuple_addr->setName("tuple_addr");
 	llvm::Value* return_addr=AI++;
 	return_addr->setName("return_addr");
+
 
 
 	/* try to generate the code and get the return value
@@ -206,6 +303,7 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 
 	// cast tuple_addr from LLVM::PtrInt1 to LLVM::Int64
 	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()),"Cast LLVM::PtrInt1 to LLVM::Int64");
+
 
 	// add LLVM::Int64 with LLVM::Int64
 	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr,"Calculate the offset");
