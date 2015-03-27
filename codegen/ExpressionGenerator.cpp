@@ -60,6 +60,8 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	CodeGenerator::getInstance()->lock();
 	llvm::Function* expression_function=getExprLLVMFucn(qnode,schema);
+	if(expression_function==NULL)
+		return NULL;
 
 
 	/* create function prototype */
@@ -243,10 +245,16 @@ llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 expr_func getExprFunc(QNode* qnode,Schema* schema) {
 
 	CodeGenerator::getInstance()->lock();
-
-	expr_func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(getExprLLVMFucn(qnode,schema));
-	CodeGenerator::getInstance()->release();
-	return ret;
+	llvm::Function* fun=getExprLLVMFucn(qnode,schema);
+	if(fun==0){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+	else{
+		expr_func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
+		CodeGenerator::getInstance()->release();
+		return ret;
+	}
 }
 
 llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {

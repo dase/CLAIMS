@@ -69,16 +69,25 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 	if (tryEntryIntoSerializedSection()) {
 		tuple_after_filter_ = 0;
 		if(Config::enable_codegen){
-			generated_filter_function_=getExprFunc(state_.qual_[0],state_.schema_);
 			ticks start=curtick();
 			generated_filter_processing_fucntoin_=getFilterProcessFunc(state_.qual_[0],state_.schema_);
 			if(generated_filter_processing_fucntoin_)
-				printf("CodeGen succeeds!(%f8.4ms)\n",getMilliSecond(start));
-			else
-				printf("CodeGen fails!\n");
+				printf("CodeGen (full feature) succeeds!(%f8.4ms)\n",getMilliSecond(start));
+			else{
+				generated_filter_function_=getExprFunc(state_.qual_[0],state_.schema_);
+				if(generated_filter_function_){
+					ff_=computeFilterwithGeneratedCode;
+					printf("CodeGen (partial feature) succeeds!(%f8.4ms)\n",getMilliSecond(start));
+				}
+				else{
+					ff_=computeFilter;
+					printf("CodeGen fails!\n");
+				}
+			}
 		}
 		else{
 			ff_=computeFilter;
+			printf("CodeGen fails!\n");
 		}
 //		if(generated_filter_function_){
 //			ff_=computeFilterwithGeneratedCode;
