@@ -234,7 +234,7 @@ llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
-//		F->dump();
+		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
@@ -287,6 +287,7 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 		break;
 	}
 	default:
+		printf("no supported\n");
 		return 0;
 	}
 	// conduct the type promotion if needed
@@ -312,7 +313,10 @@ llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		return createDivide(l,r,node->actual_type);
 	case oper_less:
 		return createLess(l,r,node->actual_type);
+	case oper_great:
+		return createGreat(l, r, node->actual_type);
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
@@ -328,14 +332,14 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	unsigned offset = schema->getColumnOffset(node->id);
 
 	// cast offset from unsigned to LLVM::Int64
-	llvm::Value* value_off=ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (int64_t)offset,"generate LLVM::Int64Const");
+	llvm::Value* value_off=ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (int64_t)offset, false);
 
 	// cast tuple_addr from LLVM::PtrInt1 to LLVM::Int64
-	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()),"Cast LLVM::PtrInt1 to LLVM::Int64");
+	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext())," [Cast LLVM::PtrInt1 to LLVM::Int64] ");
 
 
 	// add LLVM::Int64 with LLVM::Int64
-	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr,"Calculate the offset");
+	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr," [Calculate the offset] ");
 
 	switch(node->actual_type){
 	case t_int:
@@ -364,6 +368,7 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		value=builder->CreateLoad(column_addr);
 		break;
 	default:
+		printf("no supported\n");
 		return 0;
 
 	}
@@ -412,6 +417,7 @@ bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_ptr,
 		builder->CreateStore(value,dest_ptr);
 		return true;
 	default:
+		printf("no supported\n");
 		return false;
 	}
 }
@@ -426,6 +432,7 @@ llvm::Value* createAdd(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_double:
 		return builder->CreateFAdd(l,r,"+");
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
@@ -440,6 +447,7 @@ llvm::Value* createMinus(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_double:
 		return builder->CreateFSub(l,r,"-");
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
@@ -454,6 +462,7 @@ llvm::Value* createMultiply(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_double:
 		return builder->CreateFMul(l,r);
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
@@ -480,9 +489,24 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_double:
 		return builder->CreateFCmpOLT(l,r,"<");
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
+
+llvm::Value *createGreat(llvm::Value *l, llvm::Value *r, data_type type) {
+	llvm::IRBuilder<>* builder = CodeGenerator::getInstance()->getBuilder();
+	switch(type) {
+	case t_int: case t_u_long:
+		return builder->CreateICmpSGT(l, r, ">");
+	case t_float: case t_double:
+		return builder->CreateFCmpOGT(l, r, ">");
+	default:
+		printf("no supported\n");
+		return NULL;
+	}
+}
+
 llvm::Value* codegen_const(QExpr* node) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	switch(node->actual_type){
@@ -495,6 +519,7 @@ llvm::Value* codegen_const(QExpr* node) {
 	case t_double:
 		return llvm::ConstantFP::get(llvm::Type::getDoubleTy(llvm::getGlobalContext()),atof(node->const_value.c_str()));
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
@@ -513,6 +538,7 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		case t_double:
 			return builder->CreateSIToFP(v,llvm::Type::getDoubleTy(llvm::getGlobalContext()));
 		default:
+			printf("no supported\n");
 			return NULL;
 		}
 		break;
@@ -524,6 +550,7 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		case t_double:
 			return builder->CreateSIToFP(v,llvm::Type::getDoubleTy(llvm::getGlobalContext()));
 		default:
+			printf("no supported\n");
 			return NULL;
 		}
 		break;
@@ -533,17 +560,18 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 		case t_double:
 			return builder->CreateFPCast(v,llvm::Type::getDoubleTy(llvm::getGlobalContext()));
 		default:
+			printf("no supported\n");
 			return NULL;
 		}
 		break;
 	}
 	default:
+		printf("no supported\n");
 		return NULL;
 	}
 }
 
 using namespace llvm;
-
 
 
 //Module* makeLLVMModule() {
