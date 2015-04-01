@@ -20,7 +20,6 @@
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorEagerLower
 
-#define DEBUG_BlockStreamExpander
 
 //#define DEBUG_ExchangeRegister
 //#define DEBUG_ExchangeTracker
@@ -30,7 +29,7 @@
 //#define DEBUG_IteratorExecutorMaster
 //
 
-#define DEBUG_Client
+//#define DEBUG_Client
 //#define DEBUG_ClientLinsener
 
 
@@ -46,7 +45,7 @@
 //#define DEBUG_BufferManager
 
 //#define DEBUG_ASTParser
-#define DEBUG_ThreadPool
+//#define DEBUG_ThreadPool
 #define SQL_Parser
 
 #endif  //CLAIMS_QUEIT

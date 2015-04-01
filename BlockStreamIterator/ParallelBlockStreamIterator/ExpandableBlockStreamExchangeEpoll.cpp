@@ -268,7 +268,7 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	for(unsigned i=0;i<state.upper_ip_list_.size();i++){
 		std::string ip=state.upper_ip_list_[i];
-		/* Repeatedly ask node with ip for port information untill the received port is other than 0, which means
+		/* Repeatedly ask node with ip for port information until the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
 		int wait_time_in_millisecond=1;
 		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id_,i),ip)==0){
@@ -340,6 +340,7 @@ void ExpandableBlockStreamExchangeEpoll::CancelReceiverThread(){
 //	pthread_cancel(debug_tid);
 }
 
+// receive each one block from all sender
 void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 	ExpandableBlockStreamExchangeEpoll* Pthis=(ExpandableBlockStreamExchangeEpoll*)arg;
 
@@ -467,7 +468,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						/** the newly obtained data block is validate, so we insert it into the buffer and post
 						 * sem_new_block_or_eof_ so that all the threads waiting for the semaphore continue. **/
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
-						Pthis->sem_new_block_or_eof_.post(Pthis->number_of_registered_expanded_threads_);
+						Pthis->sem_new_block_or_eof_.post(Pthis->number_of_registered_expanded_threads_);	//??? why is all ,not 1
 					}
 					else{
 						/** The newly obtained data block is the end-of-file.  **/
