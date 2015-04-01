@@ -37,6 +37,8 @@
 
 using namespace std;
 
+#define SQL_Parser
+
 const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
