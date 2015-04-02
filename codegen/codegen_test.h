@@ -507,6 +507,41 @@ TEST_F(CodeGenerationTest,CompareLT){
 	delete op1;
 	EXPECT_TRUE(ret);
 }
+
+
+TEST_F(CodeGenerationTest,AND){
+	/* #      #1    | #2
+	 * Tuple: bool  | bool
+	 *        1     | 0
+	 * Express: #1 AND #2 = false
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_boolean));
+	columns.push_back(data_type(t_boolean));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_boolean,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_boolean,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_boolean,oper_and,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((bool*)s->getColumnAddess(0,tuple))=true;
+	*((bool*)s->getColumnAddess(1,tuple))=false;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_FALSE(ret);
+}
+
 TEST_F(CodeGenerationTest,CompareEQ){
 	/* #      #1    | #2
 	 * Tuple: long  | long
@@ -666,9 +701,8 @@ TEST_F(CodeGenerationTest,FilterLogic){
 
 
 	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==1&&*(int*)s->getColumnAddess(1,b_start)==10);
-
-
 }
+
 TEST_F(CodeGenerationTest,FilterLogic1){
 	std::vector<column_type> columns;
 	columns.push_back(data_type(t_int));
