@@ -329,6 +329,8 @@ llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		return createLess(l,r,node->actual_type);
 	case oper_equal:
 		return createEqual(l,r,node->actual_type);
+	case oper_and:
+		return builder->CreateAnd(l,r);
 	default:
 		return NULL;
 	}
@@ -378,6 +380,12 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		//cast LLVM:INT64 to LLVM::DoublePtr
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getDoubleTy(llvm::getGlobalContext())));
 		//create a LLVM::Double and return
+		value=builder->CreateLoad(column_addr);
+		break;
+	case t_boolean:
+		//cast LLVM:INT64 to LLVM::Int1Ptr
+		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt1Ty(llvm::getGlobalContext())));
+		//create a LLVM::Int1 and return
 		value=builder->CreateLoad(column_addr);
 		break;
 	default:
