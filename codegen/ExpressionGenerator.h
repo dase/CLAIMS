@@ -14,6 +14,7 @@
 
 using namespace std;
 typedef void (*expr_func)(void*,void*);
+typedef void (*expr_func_two_tuples)(void*,void*,void*);
 
 typedef void (*filter_process_func)(void*,int*,int,void*,int*,int);
 namespace myllvm{
@@ -47,14 +48,18 @@ static  void process_func(char* b_start, int * b_cur_addr, int b_tuple_count, ch
 
 expr_func getExprFunc(QNode* qnode, Schema* schema);
 
+expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema, Schema* r_schema);
+
 filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema);
 
 llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema);
 
+llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Schema* r_schema);
+
 llvm::Value* codegen_binary_op(llvm::Value* lvalue, llvm::Value* rvalue, QExpr_binary* node);
 llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_addr);
 llvm::Value* codegen_const(QExpr* node);
-llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr);
+llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr, Schema* r_schema=0, llvm::Value* r_tuple_addr=0);
 bool storeTheReturnValue(llvm::Value* value, llvm::Value* dest_prt,QNode* node);
 
 /* create add instruction
@@ -80,6 +85,11 @@ llvm::Value* createDivide(llvm::Value* l, llvm::Value* r ,data_type type);
  * Note: l and r should be in the same type.
  */
 llvm::Value* createLess(llvm::Value* l, llvm::Value* r ,data_type type);
+
+/* create equal instruction
+ * Note l and r should be in the same type.
+ */
+llvm::Value* createEqual(llvm::Value* l, llvm::Value* r, data_type type);
 
 /* conduct the type promotion and return the promoted value */
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
