@@ -22,6 +22,7 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/IR/IntrinsicInst.h"
+#include "../common/TypePromotionMap.h"
 
 using llvm::IRBuilderBase;
 using llvm::ConstantInt;
@@ -276,22 +277,25 @@ llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr, Sche
 	switch(qnode->type){
 	case t_qexpr_cmp:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
-		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
-		llvm::Value* rvalue=codegen(node->rnext,r_tuple_addr==0?schema:r_schema,r_tuple_addr==0?tuple_addr:r_tuple_addr);
+		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr,r_schema,r_tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr,r_schema,r_tuple_addr);
 		value= codegen_binary_op(lvalue,rvalue,node);
 		actual_type=t_boolean; // for boolean compression, the actual type is always boolean.
 		break;
 	}
 	case t_qexpr_cal:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
-		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
-		llvm::Value* rvalue=codegen(node->rnext,r_tuple_addr==0?schema:r_schema,r_tuple_addr==0?tuple_addr:r_tuple_addr);
+		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr,r_schema,r_tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr,r_schema,r_tuple_addr);
 		value= codegen_binary_op(lvalue,rvalue,node);
 		break;
 	}
 	case t_qcolcumns:{
 		QColcumns* node=(QColcumns*)qnode;
-		value= codegen_column(node,schema,tuple_addr);
+		if(node->tab_index==0)
+			value = codegen_column(node,schema,tuple_addr);
+		else
+			value = codegen_column(node,r_schema,r_tuple_addr);
 		break;
 	}
 	case t_qexpr:{
@@ -347,14 +351,14 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	unsigned offset = schema->getColumnOffset(node->id);
 
 	// cast offset from unsigned to LLVM::Int64
-	llvm::Value* value_off=ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (int64_t)offset,"generate LLVM::Int64Const");
+	llvm::Value* value_off=ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (int64_t)offset);
 
 	// cast tuple_addr from LLVM::PtrInt1 to LLVM::Int64
-	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()),"Cast LLVM::PtrInt1 to LLVM::Int64");
+	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()));
 
 
 	// add LLVM::Int64 with LLVM::Int64
-	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr,"Calculate the offset");
+	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr);
 
 	switch(node->actual_type){
 	case t_int:
@@ -446,10 +450,10 @@ llvm::Value* createAdd(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateAdd(l,r,"+");
+		return builder->CreateAdd(l,r);
 	case t_float:
 	case t_double:
-		return builder->CreateFAdd(l,r,"+");
+		return builder->CreateFAdd(l,r);
 	default:
 		return NULL;
 	}
@@ -460,10 +464,10 @@ llvm::Value* createMinus(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateSub(l,r,"-");
+		return builder->CreateSub(l,r);
 	case t_float:
 	case t_double:
-		return builder->CreateFSub(l,r,"-");
+		return builder->CreateFSub(l,r);
 	default:
 		return NULL;
 	}
@@ -500,10 +504,10 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateICmpSLT(l,r,"<");
+		return builder->CreateICmpSLT(l,r);
 	case t_float:
 	case t_double:
-		return builder->CreateFCmpOLT(l,r,"<");
+		return builder->CreateFCmpOLT(l,r);
 	default:
 		return NULL;
 	}
@@ -513,10 +517,10 @@ llvm::Value* createEqual(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateICmpEQ(l,r,"==");
+		return builder->CreateICmpEQ(l,r);
 	case t_float:
 	case t_double:
-		return builder->CreateFCmpOEQ(l,r,"==");
+		return builder->CreateFCmpOEQ(l,r);
 	default:
 		return NULL;
 	}
@@ -604,7 +608,7 @@ llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Sche
 	llvm::Value* l_tuple_addr=AI++;
 	l_tuple_addr->setName("l_tuple_addr");
 	llvm::Value* r_tuple_addr=AI++;
-	l_tuple_addr->setName("r_tuple_addr");
+	r_tuple_addr->setName("r_tuple_addr");
 	llvm::Value* return_addr=AI++;
 	return_addr->setName("return_addr");
 
@@ -628,7 +632,7 @@ llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Sche
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
-//		F->dump();
+		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
@@ -636,7 +640,32 @@ llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Sche
 	 return F;
 }
 
+QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<int> l_join_index, std::vector<int> r_join_index) {
+	assert(l_join_index.size()==r_join_index.size()&& l_join_index.size()>0);
+	QNode* ret=0;
+	for(int i=0;i<l_join_index.size();i++){
+		QColcumns* l_column = new QColcumns("L","L.A",l_s->getcolumn(l_join_index[i]).type,"L.A");
+		l_column->id= l_join_index[i];
+		l_column->tab_index=0;
+		QColcumns* r_column = new QColcumns("R","R.A",r_s->getcolumn(r_join_index[i]).type,"R.A");
+		r_column->id = r_join_index[i];
+		r_column->tab_index=1;
+		data_type return_type = TypePromotion::arith_type_promotion_map[l_s->getcolumn(l_join_index[i]).type][r_s->getcolumn(r_join_index[i]).type];
+		l_column->return_type=return_type;
+		r_column->return_type=return_type;
 
+		QExpr_binary* AND = new QExpr_binary(l_column, r_column,return_type,oper_equal,t_qexpr_cmp,"==");
+		AND->return_type=t_boolean;
+		if(ret==0)
+			ret=AND;
+		else{
+			QExpr_binary* Upper_AND = new QExpr_binary(AND,ret,t_boolean,oper_and,t_qexpr_cmp,"AND");
+			Upper_AND->return_type=t_boolean;
+			ret=Upper_AND;
+		}
+	}
+	return ret;
+}
 
 //Module* makeLLVMModule() {
 // // Module Construction

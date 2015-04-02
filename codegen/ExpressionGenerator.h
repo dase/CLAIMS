@@ -94,7 +94,8 @@ llvm::Value* createEqual(llvm::Value* l, llvm::Value* r, data_type type);
 /* conduct the type promotion and return the promoted value */
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
 
-
+/* create expression representing the equal join logic*/
+QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<int> l_join_index, std::vector<int> r_join_index );
 
 void test_reference();
 

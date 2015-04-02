@@ -184,7 +184,6 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 		jtc->block_for_asking_->setEmpty();
 //		bsti->~BlockStreamTraverseIterator();
 	}
-//	printf("<<<<<<<<<<<<<<<<Join Open consumes %d tuples\n",consumed_tuples_from_left);
 
 //	BasicHashTable::Iterator it=hashtable->CreateIterator();//disable
 
