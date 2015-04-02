@@ -653,6 +653,51 @@ TEST_F(CodeGenerationTest,CompareEQ3){
 	EXPECT_FALSE(ret);
 }
 
+TEST_F(CodeGenerationTest,EqualJoinCompare){
+	/* #        #1    | #2
+	 * Tuple1: long  | long
+	 *         3     | 4
+	 * Tuple2: long  | long
+	 *         4     | 3
+	 * Expression Tuple1.#1 == Tuple2.#2 AND Tuple1.#2 == Tuple1.#1 = true
+	 */
+	std::vector<column_type> columns1;
+	columns1.push_back(data_type(t_u_long));
+	columns1.push_back(data_type(t_u_long));
+	Schema* s1=new SchemaFix(columns1);
+
+	std::vector<column_type> columns2;
+	columns2.push_back(data_type(t_u_long));
+	columns2.push_back(data_type(t_u_long));
+	Schema* s2=new SchemaFix(columns2);
+
+	std::vector<int> l_join_index,r_join_index;
+	l_join_index.push_back(0);
+	l_join_index.push_back(1);
+	r_join_index.push_back(1);
+	r_join_index.push_back(0);
+
+	QNode* expr = createEqualJoinExpression(s1,s2,l_join_index,r_join_index);
+
+//	InitExprAtLogicalPlan(expr,t_boolean,column_index,s1);
+
+	expr_func_two_tuples f=getExprFuncTwoTuples(expr,s1,s2);
+
+	void* tuple1=malloc(s1->getTupleMaxSize());
+	*((long*)s1->getColumnAddess(0,tuple1))=3;
+	*((long*)s1->getColumnAddess(1,tuple1))=4;
+
+	void* tuple2=malloc(s2->getTupleMaxSize());
+	*((long*)s2->getColumnAddess(0,tuple2))=4;
+	*((long*)s2->getColumnAddess(1,tuple2))=3;
+
+	bool ret;
+	f(tuple1,tuple2,&ret);
+	delete tuple1;
+	delete s1;
+	delete expr;
+	EXPECT_TRUE(ret);
+}
 
 
 TEST_F(CodeGenerationTest,FilterLogic){
@@ -846,4 +891,5 @@ TEST_F(CodeGenerationTest,FilterLogic3){
 
 	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==c_tuple_count);
 }
+
 #endif /* CODEGEN_TEST_H_ */

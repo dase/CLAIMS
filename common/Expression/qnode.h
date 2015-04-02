@@ -148,6 +148,7 @@ class QColcumns:public QNode//getscalarvar
 public:
 	int id;//表示在dataflow_schema中的第几个
 	string table,col;
+	int tab_index; // represent the logical index of the table this column belongs to.
 	QColcumns(const char *tbl,const char *coln,data_type a_type,const char *t_alias);
 	QColcumns(QColcumns *node);
 	QColcumns(){};
