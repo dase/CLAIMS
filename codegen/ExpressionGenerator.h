@@ -15,6 +15,8 @@
 using namespace std;
 typedef void (*expr_func)(void*,void*);
 typedef void (*expr_func_two_tuples)(void*,void*,void*);
+typedef void (*llvm_memcpy)(void* desc, void* src);
+typedef void (*llvm_memcat)(void* desc, void* src1, void* src2);
 
 typedef void (*filter_process_func)(void*,int*,int,void*,int*,int);
 namespace myllvm{
@@ -45,6 +47,10 @@ static  void process_func(char* b_start, int * b_cur_addr, int b_tuple_count, ch
 	 *b_cur_addr=b_cur;
 	 *c_cur_addr=c_cur;
  }
+
+llvm_memcpy getMemcpy(unsigned length);
+
+llvm_memcat getMemcat(unsigned length1, unsigned length2);
 
 expr_func getExprFunc(QNode* qnode, Schema* schema);
 
@@ -95,7 +101,7 @@ llvm::Value* createEqual(llvm::Value* l, llvm::Value* r, data_type type);
 llvm::Value* typePromotion(llvm::Value* v,data_type old_ty, data_type target_ty);
 
 /* create expression representing the equal join logic*/
-QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<int> l_join_index, std::vector<int> r_join_index );
+QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<unsigned>& l_join_index, std::vector<unsigned>& r_join_index );
 
 void test_reference();
 
