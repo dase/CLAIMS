@@ -256,15 +256,28 @@ expr_func getExprFunc(QNode* qnode,Schema* schema) {
 		return ret;
 	}
 }
+expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema, Schema* r_schema) {
+	CodeGenerator::getInstance()->lock();
+	llvm::Function* fun=getExprLLVMFuncForTwoTuples(qnode,l_schema,r_schema);
+	if(fun==0){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+	else{
+		expr_func_two_tuples ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
+		CodeGenerator::getInstance()->release();
+		return ret;
+	}
+}
 
-llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
+llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr, Schema* r_schema, llvm::Value* r_tuple_addr) {
 	llvm::Value* value;
 	data_type actual_type=qnode->actual_type,return_type=qnode->return_type;
 	switch(qnode->type){
 	case t_qexpr_cmp:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
 		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
-		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,r_tuple_addr==0?schema:r_schema,r_tuple_addr==0?tuple_addr:r_tuple_addr);
 		value= codegen_binary_op(lvalue,rvalue,node);
 		actual_type=t_boolean; // for boolean compression, the actual type is always boolean.
 		break;
@@ -272,7 +285,7 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 	case t_qexpr_cal:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
 		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
-		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,r_tuple_addr==0?schema:r_schema,r_tuple_addr==0?tuple_addr:r_tuple_addr);
 		value= codegen_binary_op(lvalue,rvalue,node);
 		break;
 	}
@@ -296,6 +309,8 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 	return value;
 }
 
+
+
 llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		QExpr_binary* node) {
 	if(l==0||r==0)
@@ -312,6 +327,8 @@ llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		return createDivide(l,r,node->actual_type);
 	case oper_less:
 		return createLess(l,r,node->actual_type);
+	case oper_equal:
+		return createEqual(l,r,node->actual_type);
 	default:
 		return NULL;
 	}
@@ -483,6 +500,19 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 		return NULL;
 	}
 }
+llvm::Value* createEqual(llvm::Value* l, llvm::Value* r, data_type type) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	switch(type){
+	case t_int:
+	case t_u_long:
+		return builder->CreateICmpEQ(l,r,"==");
+	case t_float:
+	case t_double:
+		return builder->CreateFCmpOEQ(l,r,"==");
+	default:
+		return NULL;
+	}
+}
 llvm::Value* codegen_const(QExpr* node) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	switch(node->actual_type){
@@ -543,6 +573,60 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 }
 
 using namespace llvm;
+
+llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Schema* r_schema) {
+/* create a function prototype:
+	 * void Function(void* l_tuple_addr, void* r_tuple_addr, void* return)
+	 * */
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	llvm::FunctionType *FT =
+	llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+
+
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* l_tuple_addr=AI++;
+	l_tuple_addr->setName("l_tuple_addr");
+	llvm::Value* r_tuple_addr=AI++;
+	l_tuple_addr->setName("r_tuple_addr");
+	llvm::Value* return_addr=AI++;
+	return_addr->setName("return_addr");
+
+
+
+	/* try to generate the code and get the return value
+	 * If we cannot generate the code, return_value is NULL*/
+	llvm::Value* return_value=codegen(qnode,l_schema,l_tuple_addr,r_schema,r_tuple_addr);
+
+	if(!return_value){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+
+	/* store the value to the return address */
+	if(!storeTheReturnValue(return_value,return_addr,qnode)){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+
+	/* create return block for the function */
+	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
+	verifyFunction(*F);
+//		F->dump();
+//	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
+//		llvm::outs()<<"errors!";
+//	 }
+	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+	 return F;
+}
 
 
 
