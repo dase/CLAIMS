@@ -671,7 +671,7 @@ TEST_F(CodeGenerationTest,EqualJoinCompare){
 	columns2.push_back(data_type(t_u_long));
 	Schema* s2=new SchemaFix(columns2);
 
-	std::vector<int> l_join_index,r_join_index;
+	std::vector<unsigned> l_join_index,r_join_index;
 	l_join_index.push_back(0);
 	l_join_index.push_back(1);
 	r_join_index.push_back(1);
@@ -890,6 +890,21 @@ TEST_F(CodeGenerationTest,FilterLogic3){
 
 
 	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==c_tuple_count);
+}
+TEST_F(CodeGenerationTest,Memcpy){
+	void* a=malloc(sizeof(long));
+	long v=100;
+	llvm_memcpy f=getMemcpy(sizeof(long));
+	f(a,&v);
+	EXPECT_TRUE(*(long*)a==100);
+}
+TEST_F(CodeGenerationTest,Memcat){
+	void* a=malloc(sizeof(long)*2);
+	long v1=100;
+	long v2=200;
+	llvm_memcat f=getMemcat(sizeof(long),sizeof(long));
+	f(a,&v1,&v2);
+	EXPECT_TRUE(*(long*)a==100&&*((long*)a+1)==200);
 }
 
 #endif /* CODEGEN_TEST_H_ */

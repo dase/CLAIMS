@@ -632,7 +632,7 @@ llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Sche
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
 	verifyFunction(*F);
-		F->dump();
+//		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
@@ -640,7 +640,7 @@ llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Sche
 	 return F;
 }
 
-QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<int> l_join_index, std::vector<int> r_join_index) {
+QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<unsigned>& l_join_index, std::vector<unsigned>& r_join_index) {
 	assert(l_join_index.size()==r_join_index.size()&& l_join_index.size()>0);
 	QNode* ret=0;
 	for(int i=0;i<l_join_index.size();i++){
@@ -664,6 +664,84 @@ QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<int> l_jo
 			ret=Upper_AND;
 		}
 	}
+	return ret;
+}
+
+llvm_memcpy getMemcpy(unsigned length) {
+
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	CodeGenerator::getInstance()->lock();
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	llvm::FunctionType *FT =
+	llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+
+
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* desc=AI++;//@ assume we have got the tuple addr.
+	desc->setName("desc");
+	llvm::Value* src=AI++;
+	src->setName("src");
+
+	builder->CreateMemCpy(desc,src,length,4);
+
+	builder->CreateRetVoid();
+
+	verifyFunction(*F);
+	F->dump();
+	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+	llvm_memcpy ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	CodeGenerator::getInstance()->release();
+	return ret;
+
+}
+
+llvm_memcat getMemcat(unsigned length1, unsigned length2) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	CodeGenerator::getInstance()->lock();
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	llvm::FunctionType *FT =
+	llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+
+
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* desc=AI++;//@ assume we have got the tuple addr.
+	desc->setName("desc");
+	llvm::Value* src1=AI++;
+	src1->setName("src1");
+	llvm::Value* src2=AI++;
+	src2->setName("src2");
+
+	builder->CreateMemCpy(desc,src1,length1,4);
+
+	desc=builder->CreatePtrToInt(desc,llvm::Type::getInt64Ty(llvm::getGlobalContext()));
+	llvm::Value* const_length2=llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()),length2);
+	desc=builder->CreateAdd(desc,const_length2);
+	desc=builder->CreateIntToPtr(desc,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(llvm::getGlobalContext())));
+	builder->CreateMemCpy(desc,src2,length2,4);
+	builder->CreateRetVoid();
+
+	verifyFunction(*F);
+	F->dump();
+	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+	llvm_memcat ret= CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	CodeGenerator::getInstance()->release();
 	return ret;
 }
 
@@ -779,7 +857,7 @@ void test_reference(){
     builder->CreateRetVoid();
 
 	verifyFunction(*F);
-		F->dump();
+//		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
