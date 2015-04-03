@@ -23,11 +23,19 @@ using namespace std;
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/IR/IntrinsicInst.h"
+#include "../common/types/NValue.hpp"
 
 extern "C"
-int myprint(int a){
+struct bit128{
+	int64_t a;
+	int64_t b;
+};
+float myprint(int a){
 	printf("OK--->%d\n",a);
-	return a*a;
+	float ret;
+	int* ret_addr=(int*)&ret;
+	*ret_addr=a*a;
+	return ret;
 }
 void test_call(){
 	llvm::IRBuilder<> * builder=CodeGenerator::getInstance()->getBuilder();
@@ -66,9 +74,17 @@ void test_call(){
 	myfunc generated_func = CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 	printf("2*2=%d\n",generated_func(2));
 	printf("3*3=%d\n",generated_func(3));
+//	llvm::Type::getIntNTy(llvm::getGlobalContext(),128);
 }
 
+//extern "C"
+//int64_t decimal_less(void* a, void* b){
+//	((NValue*)a)->op_add((*(NValue*)b);
+//}
 
+void test_decimal_comparison(){
+
+}
 
 int main(int argc, char** argv){
 //	return test::test_llvm();
