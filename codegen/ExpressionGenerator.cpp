@@ -1147,3 +1147,6 @@ void myllvm::test1(){
 	 	 printf("f(%d)=%d\n",50,ret(50));
 
 }
+
+
+

@@ -7,7 +7,9 @@
 
 #ifndef MATH_H_
 #define MATH_H_
-#include <math.h>
+
+#include <vector>
+#include <cmath>
 
 double get_stddev(std::vector<int> input){
 	double sum=0,squre_sum=0;
@@ -21,7 +23,8 @@ double get_stddev(std::vector<int> input){
 		var+=(input[i]-mean)*(input[i]-mean);
 	}
 	var=var/input.size();
-	return sqrt(var);
+	return std::sqrt((double)var);
+//	return 1;
 }
 
 
