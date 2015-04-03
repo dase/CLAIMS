@@ -105,4 +105,5 @@ QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<unsigned>
 
 void test_reference();
 
+
 #endif /* EXPRESSIONGENERATOR_H_ */

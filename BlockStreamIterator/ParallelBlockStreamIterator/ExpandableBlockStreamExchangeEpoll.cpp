@@ -32,7 +32,7 @@
 #include "../../utility/rdtsc.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../Config.h"
-#include "../../utility/math.h"
+#include "../../utility/maths.h"
 #define BUFFER_SIZE_IN_EXCHANGE 1000
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
