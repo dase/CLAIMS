@@ -8,6 +8,7 @@
 #include "CodeGenerator.h"
 
 #include <assert.h>
+#include <iostream>
 
 using llvm::IRBuilder;
 using llvm::legacy::FunctionPassManager;
@@ -29,7 +30,7 @@ CodeGenerator* CodeGenerator::getInstance() {
 	return instance_;
 }
 
-Module* CodeGenerator::getModule() const {
+const Module* CodeGenerator::getModule() const {
 	return module_;
 }
 
@@ -47,17 +48,19 @@ ExecutionEngine* CodeGenerator::getExecutionEngine() const {
 
 void CodeGenerator::lock() {
 	lock_.acquire();
+//	std::cout<<"    lock    "<<std::endl;
 }
 
 void CodeGenerator::release() {
 	lock_.release();
+//	std::cout<<"    unlock    "<<std::endl;
 }
 
 CodeGenerator::CodeGenerator() {
-	 InitializeNativeTarget();
+	InitializeNativeTarget();
 	builder_=new IRBuilder<>(llvm::getGlobalContext());
 	module_=new Module("my cool jit", llvm::getGlobalContext());
-    fpm_=new FunctionPassManager (module_);
+   fpm_=new FunctionPassManager (module_);
 	fpm_->add(llvm::createCFGSimplificationPass());
 	fpm_->add(llvm::createDeadCodeEliminationPass());
 	fpm_->add(llvm::createMemCpyOptPass());
@@ -68,7 +71,10 @@ CodeGenerator::CodeGenerator() {
 
 CodeGenerator::~CodeGenerator() {
 	delete builder_;
+	builder_ = NULL;
 	delete module_;
+	module_ = NULL;
 	delete fpm_;
+	fpm_ = NULL;
 }
 

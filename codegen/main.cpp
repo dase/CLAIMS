@@ -6,9 +6,12 @@ using namespace std;
 #include "../Test/gtest.h"
 #include "codegen_test.h"
 #include "ExpressionGenerator.h"
+#include "NValueExpressionGenTest.h"
+
 int main(int argc, char** argv){
 //	return test::test_llvm();
-	g_test_main(argc, argv);
+	testing::AddGlobalTestEnvironment(new CodeGenTestEnvironment);
+	return g_test_main(argc, argv);
 //	get_one();
 //	get_another_one();
 //	test_reference();

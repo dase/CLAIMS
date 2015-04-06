@@ -8,7 +8,7 @@ AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 -fPIC -Woverloaded-virtual -ffunction-sections \
 -fdata-sections -Wcast-qual
 #-fno-rtti -fno-exceptions
-AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs -L/usr/local/lib
+AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs -L/usr/local/lib 
 
 LDADD = ../common/libcommon.a \
 		../utility/libutility.a \
@@ -18,7 +18,9 @@ LDADD = ../common/libcommon.a \
 
 noinst_LIBRARIES=libcodegen.a
 libcodegen_a_SOURCES = \
-    CodeGenerator.h			CodeGenerator.cpp\
-    ExpressionGenerator.h	ExpressionGenerator.cpp
+    CodeGenerator.h			CodeGenerator.cpp \
+    ExpressionGenerator.h	ExpressionGenerator.cpp \
+    NValueExpressionGenTest.h NValueExpressionGenerator.h \
+    NValueExpressionGenerator.cpp
 SUBDIRS = 
 DIST_SUBDIRS = 

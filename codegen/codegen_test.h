@@ -19,18 +19,26 @@
 
 using std::map;
 
-class CodeGenerationTest : public ::testing::Test{
-protected:
 
-	static void SetUpTestCase() {
+class CodeGenTestEnvironment : public testing::Environment
+{
+public:
+	virtual void SetUp() {
 		CodeGenerator::getInstance();
 		initialize_arithmetic_type_promotion_matrix();
 		initialize_type_cast_functions();
 		initialize_operator_function();
 	}
-
-	static void TearDownTestCase() {
+	virtual void TearDown() {
 		delete CodeGenerator::getInstance();
+	}
+};
+
+class CodeGenerationTest : public ::testing::Test{
+protected:
+	static void SetUpTestCase() {
+	}
+	static void TearDownTestCase() {
 	}
 };
 

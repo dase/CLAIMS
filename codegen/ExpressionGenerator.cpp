@@ -22,6 +22,7 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/IR/IntrinsicInst.h"
+#include "NValueExpressionGenerator.h"
 
 using llvm::IRBuilderBase;
 using llvm::ConstantInt;
@@ -126,6 +127,12 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 
 	//where body
 	{
+		/*
+		 *            bool ret*=alloc;
+		 *            char* c_tuple_addr= c_start+length*c_cur;
+		 *            f(c_tuple_addr,ret);
+		 *            bool pass=*ret;
+		 */
 		builder->SetInsertPoint(while_body);
 		llvm::Value* pass_addr = builder->CreateAlloca(llvm::Type::getInt1Ty(context));
 		c_cur=builder->CreateLoad(c_cur_addr);
@@ -193,6 +200,7 @@ llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 	/* create a function prototype:
 	 * void Function(void* tuple_addr, void* return)
 	 * */
+
 	std::vector<llvm::Type *> parameter_types;
 	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
 	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
@@ -231,10 +239,13 @@ llvm::Function* getExprLLVMFucn(QNode* qnode, Schema* schema) {
 		return NULL;
 	}
 
+//	llvm::raw_ostream* rstream = new llvm::raw_fd_ostream(2, false);
+
 	/* create return block for the function */
 	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
+//	verifyFunction(*F, rstream);
 	verifyFunction(*F);
-		F->dump();
+//	F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
@@ -315,6 +326,8 @@ llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		return createLess(l,r,node->actual_type);
 	case oper_great:
 		return createGreat(l, r, node->actual_type);
+	case oper_equal:
+		return createEqual(l, r, node->actual_type);
 	default:
 		printf("no supported\n");
 		return NULL;
@@ -366,6 +379,11 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getDoubleTy(llvm::getGlobalContext())));
 		//create a LLVM::Double and return
 		value=builder->CreateLoad(column_addr);
+		break;
+	case t_decimal:
+		//cast LLVM:INT64 to LLVM::INT8Ptr
+		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(llvm::getGlobalContext())));
+		value = column_addr;
 		break;
 	default:
 		printf("no supported\n");
@@ -479,6 +497,7 @@ llvm::Value* createDivide(llvm::Value* l, llvm::Value* r, data_type type) {
 	}
 }
 
+
 llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
 	switch(type){
@@ -488,6 +507,14 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_float:
 	case t_double:
 		return builder->CreateFCmpOLT(l,r,"<");
+	case t_decimal: {
+		llvm::Function* ff = CreateNValueCompareFunc(LESS);
+
+		std::vector<lv*> args;
+		args.push_back(l);
+		args.push_back(r);
+		return builder->CreateCall(ff, args);
+	}
 	default:
 		printf("no supported\n");
 		return NULL;
@@ -501,6 +528,35 @@ llvm::Value *createGreat(llvm::Value *l, llvm::Value *r, data_type type) {
 		return builder->CreateICmpSGT(l, r, ">");
 	case t_float: case t_double:
 		return builder->CreateFCmpOGT(l, r, ">");
+	case t_decimal: {
+		llvm::Function* ff = CreateNValueCompareFunc(GREAT);
+
+		std::vector<lv*> args;
+		args.push_back(l);
+		args.push_back(r);
+		return builder->CreateCall(ff, args);
+	}
+	default:
+		printf("no supported\n");
+		return NULL;
+	}
+}
+
+llvm::Value *createEqual(llvm::Value *l, llvm::Value *r, data_type type) {
+	llvm::IRBuilder<>* builder = CodeGenerator::getInstance()->getBuilder();
+	switch(type) {
+	case t_int: case t_u_long:
+		return builder->CreateICmpEQ(l, r, "=");
+	case t_float: case t_double:
+		return builder->CreateICmpEQ(l, r, "=");
+	case t_decimal: {
+		llvm::Function* ff = CreateNValueCompareFunc(EQUAL);
+
+		std::vector<lv*> args;
+		args.push_back(l);
+		args.push_back(r);
+		return builder->CreateCall(ff, args);
+	}
 	default:
 		printf("no supported\n");
 		return NULL;
