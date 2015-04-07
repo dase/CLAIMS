@@ -23,6 +23,7 @@
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/IR/IntrinsicInst.h"
 #include "NValueExpressionGenerator.h"
+#include "../common/TypePromotionMap.h"
 
 using llvm::IRBuilderBase;
 using llvm::ConstantInt;
@@ -267,29 +268,45 @@ expr_func getExprFunc(QNode* qnode,Schema* schema) {
 		return ret;
 	}
 }
+expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema, Schema* r_schema) {
+	CodeGenerator::getInstance()->lock();
+	llvm::Function* fun=getExprLLVMFuncForTwoTuples(qnode,l_schema,r_schema);
+	if(fun==0){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+	else{
+		expr_func_two_tuples ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
+		CodeGenerator::getInstance()->release();
+		return ret;
+	}
+}
 
-llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
+llvm::Value* codegen(QNode* qnode, Schema* schema, llvm::Value* tuple_addr, Schema* r_schema, llvm::Value* r_tuple_addr) {
 	llvm::Value* value;
 	data_type actual_type=qnode->actual_type,return_type=qnode->return_type;
 	switch(qnode->type){
 	case t_qexpr_cmp:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
-		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
-		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
+		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr,r_schema,r_tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr,r_schema,r_tuple_addr);
 		value= codegen_binary_op(lvalue,rvalue,node);
 		actual_type=t_boolean; // for boolean compression, the actual type is always boolean.
 		break;
 	}
 	case t_qexpr_cal:{
 		QExpr_binary* node=(QExpr_binary*)qnode;
-		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr);
-		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr);
+		llvm::Value* lvalue=codegen(node->lnext,schema,tuple_addr,r_schema,r_tuple_addr);
+		llvm::Value* rvalue=codegen(node->rnext,schema,tuple_addr,r_schema,r_tuple_addr);
 		value= codegen_binary_op(lvalue,rvalue,node);
 		break;
 	}
 	case t_qcolcumns:{
 		QColcumns* node=(QColcumns*)qnode;
-		value= codegen_column(node,schema,tuple_addr);
+		if(node->tab_index==0)
+			value = codegen_column(node,schema,tuple_addr);
+		else
+			value = codegen_column(node,r_schema,r_tuple_addr);
 		break;
 	}
 	case t_qexpr:{
@@ -307,6 +324,8 @@ llvm::Value* codegen(QNode* qnode, Schema* schema,llvm::Value* tuple_addr) {
 	}
 	return value;
 }
+
+
 
 llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 		QExpr_binary* node) {
@@ -327,7 +346,9 @@ llvm::Value* codegen_binary_op(llvm::Value* l, llvm::Value* r,
 	case oper_great:
 		return createGreat(l, r, node->actual_type);
 	case oper_equal:
-		return createEqual(l, r, node->actual_type);
+		return createEqual(l,r,node->actual_type);
+	case oper_and:
+		return builder->CreateAnd(l,r);
 	default:
 		printf("no supported\n");
 		return NULL;
@@ -348,11 +369,10 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 	llvm::Value* value_off=ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (int64_t)offset, false);
 
 	// cast tuple_addr from LLVM::PtrInt1 to LLVM::Int64
-	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext())," [Cast LLVM::PtrInt1 to LLVM::Int64] ");
-
+	tuple_addr=builder->CreatePtrToInt(tuple_addr,llvm::Type::getInt64Ty(llvm::getGlobalContext()));
 
 	// add LLVM::Int64 with LLVM::Int64
-	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr," [Calculate the offset] ");
+	llvm::Value* column_addr=builder->CreateAdd(value_off,tuple_addr);
 
 	switch(node->actual_type){
 	case t_int:
@@ -378,6 +398,12 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		//cast LLVM:INT64 to LLVM::DoublePtr
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getDoubleTy(llvm::getGlobalContext())));
 		//create a LLVM::Double and return
+		value=builder->CreateLoad(column_addr);
+		break;
+	case t_boolean:
+		//cast LLVM:INT64 to LLVM::Int1Ptr
+		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt1Ty(llvm::getGlobalContext())));
+		//create a LLVM::Int1 and return
 		value=builder->CreateLoad(column_addr);
 		break;
 	case t_decimal:
@@ -445,10 +471,10 @@ llvm::Value* createAdd(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateAdd(l,r,"+");
+		return builder->CreateAdd(l,r);
 	case t_float:
 	case t_double:
-		return builder->CreateFAdd(l,r,"+");
+		return builder->CreateFAdd(l,r);
 	default:
 		printf("no supported\n");
 		return NULL;
@@ -460,10 +486,10 @@ llvm::Value* createMinus(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateSub(l,r,"-");
+		return builder->CreateSub(l,r);
 	case t_float:
 	case t_double:
-		return builder->CreateFSub(l,r,"-");
+		return builder->CreateFSub(l,r);
 	default:
 		printf("no supported\n");
 		return NULL;
@@ -503,7 +529,7 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 	switch(type){
 	case t_int:
 	case t_u_long:
-		return builder->CreateICmpSLT(l,r,"<");
+		return builder->CreateICmpSLT(l,r);
 	case t_float:
 	case t_double:
 		return builder->CreateFCmpOLT(l,r,"<");
@@ -516,7 +542,6 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 		return builder->CreateCall(ff, args);
 	}
 	default:
-		printf("no supported\n");
 		return NULL;
 	}
 }
@@ -629,6 +654,164 @@ llvm::Value* typePromotion(llvm::Value* v, data_type old_ty,
 
 using namespace llvm;
 
+llvm::Function* getExprLLVMFuncForTwoTuples(QNode* qnode, Schema* l_schema, Schema* r_schema) {
+/* create a function prototype:
+	 * void Function(void* l_tuple_addr, void* r_tuple_addr, void* return)
+	 * */
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	llvm::FunctionType *FT =
+	llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+
+
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* l_tuple_addr=AI++;
+	l_tuple_addr->setName("l_tuple_addr");
+	llvm::Value* r_tuple_addr=AI++;
+	r_tuple_addr->setName("r_tuple_addr");
+	llvm::Value* return_addr=AI++;
+	return_addr->setName("return_addr");
+
+
+
+	/* try to generate the code and get the return value
+	 * If we cannot generate the code, return_value is NULL*/
+	llvm::Value* return_value=codegen(qnode,l_schema,l_tuple_addr,r_schema,r_tuple_addr);
+
+	if(!return_value){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+
+	/* store the value to the return address */
+	if(!storeTheReturnValue(return_value,return_addr,qnode)){
+		CodeGenerator::getInstance()->release();
+		return NULL;
+	}
+
+	/* create return block for the function */
+	CodeGenerator::getInstance()->getBuilder()->CreateRetVoid();
+	verifyFunction(*F);
+//		F->dump();
+//	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
+//		llvm::outs()<<"errors!";
+//	 }
+	 CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+	 return F;
+}
+
+QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s, std::vector<unsigned>& l_join_index, std::vector<unsigned>& r_join_index) {
+	assert(l_join_index.size()==r_join_index.size()&& l_join_index.size()>0);
+	QNode* ret=0;
+	for(int i=0;i<l_join_index.size();i++){
+		QColcumns* l_column = new QColcumns("L","L.A",l_s->getcolumn(l_join_index[i]).type,"L.A");
+		l_column->id= l_join_index[i];
+		l_column->tab_index=0;
+		QColcumns* r_column = new QColcumns("R","R.A",r_s->getcolumn(r_join_index[i]).type,"R.A");
+		r_column->id = r_join_index[i];
+		r_column->tab_index=1;
+		data_type return_type = TypePromotion::arith_type_promotion_map[l_s->getcolumn(l_join_index[i]).type][r_s->getcolumn(r_join_index[i]).type];
+		l_column->return_type=return_type;
+		r_column->return_type=return_type;
+
+		QExpr_binary* AND = new QExpr_binary(l_column, r_column,return_type,oper_equal,t_qexpr_cmp,"==");
+		AND->return_type=t_boolean;
+		if(ret==0)
+			ret=AND;
+		else{
+			QExpr_binary* Upper_AND = new QExpr_binary(AND,ret,t_boolean,oper_and,t_qexpr_cmp,"AND");
+			Upper_AND->return_type=t_boolean;
+			ret=Upper_AND;
+		}
+	}
+	return ret;
+}
+
+llvm_memcpy getMemcpy(unsigned length) {
+
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	CodeGenerator::getInstance()->lock();
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	llvm::FunctionType *FT =
+	llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+
+
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* desc=AI++;//@ assume we have got the tuple addr.
+	desc->setName("desc");
+	llvm::Value* src=AI++;
+	src->setName("src");
+
+	builder->CreateMemCpy(desc,src,length,4);
+
+	builder->CreateRetVoid();
+
+	verifyFunction(*F);
+	F->dump();
+	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+	llvm_memcpy ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	CodeGenerator::getInstance()->release();
+	return ret;
+
+}
+
+llvm_memcat getMemcat(unsigned length1, unsigned length2) {
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	CodeGenerator::getInstance()->lock();
+	std::vector<llvm::Type *> parameter_types;
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	parameter_types.push_back(llvm::PointerType::getUnqual(llvm::IntegerType::getInt8Ty(llvm::getGlobalContext())));
+	llvm::FunctionType *FT =
+	llvm::FunctionType::get(llvm::Type::getVoidTy(llvm::getGlobalContext()), parameter_types,false);
+	llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "a", CodeGenerator::getInstance()->getModule());
+
+	/* create function entry */
+	llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+	CodeGenerator::getInstance()->getBuilder()->SetInsertPoint(BB);
+
+
+	/* get the parameter value of the function */
+	llvm::Function::arg_iterator AI = F->arg_begin();
+	llvm::Value* desc=AI++;//@ assume we have got the tuple addr.
+	desc->setName("desc");
+	llvm::Value* src1=AI++;
+	src1->setName("src1");
+	llvm::Value* src2=AI++;
+	src2->setName("src2");
+
+	builder->CreateMemCpy(desc,src1,length1,4);
+
+	desc=builder->CreatePtrToInt(desc,llvm::Type::getInt64Ty(llvm::getGlobalContext()));
+	llvm::Value* const_length2=llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()),length2);
+	desc=builder->CreateAdd(desc,const_length2);
+	desc=builder->CreateIntToPtr(desc,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(llvm::getGlobalContext())));
+	builder->CreateMemCpy(desc,src2,length2,4);
+	builder->CreateRetVoid();
+
+	verifyFunction(*F);
+	F->dump();
+	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
+	llvm_memcat ret= CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	CodeGenerator::getInstance()->release();
+	return ret;
+}
 
 //Module* makeLLVMModule() {
 // // Module Construction
@@ -742,7 +925,7 @@ void test_reference(){
     builder->CreateRetVoid();
 
 	verifyFunction(*F);
-		F->dump();
+//		F->dump();
 //	 if(verifyModule(*CodeGenerator::getInstance()->getModule())){
 //		llvm::outs()<<"errors!";
 //	 }
@@ -1032,3 +1215,6 @@ void myllvm::test1(){
 	 	 printf("f(%d)=%d\n",50,ret(50));
 
 }
+
+
+

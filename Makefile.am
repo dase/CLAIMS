@@ -48,7 +48,7 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-    codegen/libcodegen.a\
+      codegen/libcodegen.a\
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -62,6 +62,7 @@ LDADD =  \
 
 
 
+ 
 include_HEADERS = Config.h \
 				Debug.h \
 				Environment.h \

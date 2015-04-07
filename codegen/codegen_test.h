@@ -483,7 +483,7 @@ TEST_F(CodeGenerationTest,Const){
 	EXPECT_LE(abs(ret+1),0.0001);
 }
 
-TEST_F(CodeGenerationTest,Compare){
+TEST_F(CodeGenerationTest,CompareLT){
 	/* #      #1    | #2
 	 * Tuple: long  | long
 	 *        3     | 4
@@ -550,7 +550,195 @@ TEST_F(CodeGenerationTest,GreatCompare){
 	EXPECT_FALSE(ret);
 }
 
+TEST_F(CodeGenerationTest,AND){
+	/* #      #1    | #2
+	 * Tuple: bool  | bool
+	 *        1     | 0
+	 * Express: #1 AND #2 = false
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_boolean));
+	columns.push_back(data_type(t_boolean));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_boolean,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_boolean,"#2");
 
+	QExpr_binary* op1=new QExpr_binary(a,b,t_boolean,oper_and,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((bool*)s->getColumnAddess(0,tuple))=true;
+	*((bool*)s->getColumnAddess(1,tuple))=false;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_FALSE(ret);
+}
+
+TEST_F(CodeGenerationTest,CompareEQ){
+	/* #      #1    | #2
+	 * Tuple: long  | long
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_u_long));
+	columns.push_back(data_type(t_u_long));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_u_long,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_u_long,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_u_long,oper_equal,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((long*)s->getColumnAddess(0,tuple))=3;
+	*((long*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_FALSE(ret);
+}
+TEST_F(CodeGenerationTest,CompareEQ1){
+	/* #      #1    | #2
+	 * Tuple: long  | long
+	 *        4     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_u_long));
+	columns.push_back(data_type(t_u_long));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_u_long,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_u_long,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_u_long,oper_equal,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((long*)s->getColumnAddess(0,tuple))=4;
+	*((long*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest,CompareEQ3){
+	/* #        #1    | #2
+	 * Tuple1: long  | long
+	 *         6     | 4
+	 * Tuple2: int   | double
+	 *         3     | 6.3
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns1;
+	columns1.push_back(data_type(t_u_long));
+	columns1.push_back(data_type(t_u_long));
+	Schema* s1=new SchemaFix(columns1);
+
+	std::vector<column_type> columns2;
+	columns2.push_back(data_type(t_int));
+	columns2.push_back(data_type(t_double));
+	Schema* s2=new SchemaFix(columns2);
+
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_u_long,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_u_long,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_u_long,oper_equal,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s1);
+
+	expr_func_two_tuples f=getExprFuncTwoTuples(op1,s1,s2);
+
+	void* tuple1=malloc(s1->getTupleMaxSize());
+	*((long*)s1->getColumnAddess(0,tuple1))=6;
+	*((long*)s1->getColumnAddess(1,tuple1))=4;
+
+	void* tuple2=malloc(s2->getTupleMaxSize());
+	*((int*)s2->getColumnAddess(0,tuple2))=3;
+	*((double*)s2->getColumnAddess(1,tuple2))=6.3;
+
+	bool ret;
+	f(tuple1,tuple2,&ret);
+	delete tuple1;
+	delete s1;
+	delete op1;
+	EXPECT_FALSE(ret);
+}
+
+TEST_F(CodeGenerationTest,EqualJoinCompare){
+	/* #        #1    | #2
+	 * Tuple1: long  | long
+	 *         3     | 4
+	 * Tuple2: long  | long
+	 *         4     | 3
+	 * Expression Tuple1.#1 == Tuple2.#2 AND Tuple1.#2 == Tuple1.#1 = true
+	 */
+	std::vector<column_type> columns1;
+	columns1.push_back(data_type(t_u_long));
+	columns1.push_back(data_type(t_u_long));
+	Schema* s1=new SchemaFix(columns1);
+
+	std::vector<column_type> columns2;
+	columns2.push_back(data_type(t_u_long));
+	columns2.push_back(data_type(t_u_long));
+	Schema* s2=new SchemaFix(columns2);
+
+	std::vector<unsigned> l_join_index,r_join_index;
+	l_join_index.push_back(0);
+	l_join_index.push_back(1);
+	r_join_index.push_back(1);
+	r_join_index.push_back(0);
+
+	QNode* expr = createEqualJoinExpression(s1,s2,l_join_index,r_join_index);
+
+//	InitExprAtLogicalPlan(expr,t_boolean,column_index,s1);
+
+	expr_func_two_tuples f=getExprFuncTwoTuples(expr,s1,s2);
+
+	void* tuple1=malloc(s1->getTupleMaxSize());
+	*((long*)s1->getColumnAddess(0,tuple1))=3;
+	*((long*)s1->getColumnAddess(1,tuple1))=4;
+
+	void* tuple2=malloc(s2->getTupleMaxSize());
+	*((long*)s2->getColumnAddess(0,tuple2))=4;
+	*((long*)s2->getColumnAddess(1,tuple2))=3;
+
+	bool ret;
+	f(tuple1,tuple2,&ret);
+	delete tuple1;
+	delete s1;
+	delete expr;
+	EXPECT_TRUE(ret);
+}
 
 
 TEST_F(CodeGenerationTest,FilterLogic){
@@ -599,9 +787,8 @@ TEST_F(CodeGenerationTest,FilterLogic){
 
 
 	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==1&&*(int*)s->getColumnAddess(1,b_start)==10);
-
-
 }
+
 TEST_F(CodeGenerationTest,FilterLogic1){
 	std::vector<column_type> columns;
 	columns.push_back(data_type(t_int));
@@ -745,4 +932,20 @@ TEST_F(CodeGenerationTest,FilterLogic3){
 
 	EXPECT_TRUE(c_cur==c_tuple_count&&b_cur==c_tuple_count);
 }
+TEST_F(CodeGenerationTest,Memcpy){
+	void* a=malloc(sizeof(long));
+	long v=100;
+	llvm_memcpy f=getMemcpy(sizeof(long));
+	f(a,&v);
+	EXPECT_TRUE(*(long*)a==100);
+}
+TEST_F(CodeGenerationTest,Memcat){
+	void* a=malloc(sizeof(long)*2);
+	long v1=100;
+	long v2=200;
+	llvm_memcat f=getMemcat(sizeof(long),sizeof(long));
+	f(a,&v1,&v2);
+	EXPECT_TRUE(*(long*)a==100&&*((long*)a+1)==200);
+}
+
 #endif /* CODEGEN_TEST_H_ */
