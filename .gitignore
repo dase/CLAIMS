@@ -35,3 +35,6 @@ conf
 conf/config
 catalogData.dat
 build
+Build
+*.dat.*
+.history
