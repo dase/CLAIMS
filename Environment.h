@@ -38,6 +38,7 @@ public:
 	NodeID getNodeID()const;
 	Catalog* getCatalog()const;
 	ThreadPool* getThreadPool() const;
+	IteratorExecutorSlave* getIteratorExecutorSlave() const;
 	Environment(bool ismaster=false);
 private:
 	void readConfigFile();

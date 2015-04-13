@@ -31,6 +31,7 @@
 #include "../../common/partition_functions.h"
 
 class ExpandableBlockStreamExchangeLowerMaterialized:public BlockStreamExchangeLowerBase {
+	friend class ExpandableBlockStreamExchangeEpoll;
 public:
 	struct State{
 		Schema* schema_;

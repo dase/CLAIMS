@@ -30,6 +30,7 @@
 #include "../../configure.h"
 #include "../../common/rename.h"
 #include "../../utility/rdtsc.h"
+#include "../../utility/Timer.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../Config.h"
 #define BUFFER_SIZE_IN_EXCHANGE 1000
@@ -283,9 +284,17 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
+//	GETCURRENTTIME(start);
 	if(Config::pipelined_exchange){
 		for(unsigned i=0;i<state.lower_ip_list_.size();i++){
-			ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema_->duplicateSchema(),state.child_,state.upper_ip_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
+			ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(
+					state.schema_->duplicateSchema(),
+					state.child_,
+					state.upper_ip_list_,
+					state.block_size_,
+					state.exchange_id_,
+					state.partition_schema_);
+
 			/* set the partition offset*/
 			EIELstate.partition_offset_=i;
 			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
@@ -309,10 +318,11 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id_);
 				return false;
 			}
-			((ExpandableBlockStreamExchangeLowerEfficient*)EIEL)->state_.child_=0;
+			((ExpandableBlockStreamExchangeLowerMaterialized*)EIEL)->state_.child_=0;
 			delete EIEL;
 		}
 	}
+//	logging_->log("SerializeAndSendToMulti() call used %.3lf ms", GetElapsedTime(start));
 	return true;
 }
 
@@ -468,7 +478,10 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						/** the newly obtained data block is validate, so we insert it into the buffer and post
 						 * sem_new_block_or_eof_ so that all the threads waiting for the semaphore continue. **/
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
-						Pthis->sem_new_block_or_eof_.post(Pthis->number_of_registered_expanded_threads_);	//??? why is all ,not 1
+
+						//??? why is all ,not 1
+						// multiple threads will still compete with lock
+						Pthis->sem_new_block_or_eof_.post(Pthis->number_of_registered_expanded_threads_);
 					}
 					else{
 						/** The newly obtained data block is the end-of-file.  **/

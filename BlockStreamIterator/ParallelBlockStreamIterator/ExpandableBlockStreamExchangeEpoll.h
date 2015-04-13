@@ -28,6 +28,7 @@
 
 #include "../../common/Logging.h"
 #include "../../common/ExpandedThreadTracker.h"
+#include "../../common/partition_functions.h"
 
 #include "../../common/Schema/Schema.h"
 
@@ -37,7 +38,6 @@
 #include "../../common/Block/BlockStreamBuffer.h"
 
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../../common/partition_functions.h"
 
 
 
