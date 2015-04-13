@@ -138,12 +138,14 @@ void BlockStreamExpander::print(){
 
 }
 void* BlockStreamExpander::expanded_work(void* arg){
+
+	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
 	const pthread_t pid=pthread_self();
+	Pthis->logging_->log("[%ld]thread %lx is created! BlockStreamExpander address is %lx", Pthis->expander_id_, pid, Pthis);
 
 	bool expanding=true;
 	ticks start=curtick();
 
-	BlockStreamExpander* Pthis=((ExpanderContext*)arg)->pthis;
 	Pthis->addIntoInWorkingExpandedThreadList(pid);
 	ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(pid,Pthis->expander_id_);
 //	const unsigned thread_id=rand()%100;
@@ -185,6 +187,8 @@ void* BlockStreamExpander::expanded_work(void* arg){
 			}
 		}
 		delete block_for_asking;
+		// ??? 无法在向child要数据的过程中控制线程，直到取完数据才会执行到这里
+		// 其实在child的next()中都有检测callback，检测到则直接返回false
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
 			Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
@@ -339,9 +343,11 @@ void BlockStreamExpander::terminateExpandedThread(pthread_t pid){
 }
 void BlockStreamExpander::addIntoInWorkingExpandedThreadList(pthread_t pid){
 	lock_.acquire();
-//	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end());
+//	assert(in_work_expanded_thread_list_.find(pid)==in_work_expanded_thread_list_.end() && "in work list must not contain this pid");
+
 	in_work_expanded_thread_list_.insert(pid);
-	logging_->log("[%ld] %lx is added into in working list!\n",expander_id_,pid);
+	logging_->log("[%ld] %lx is added into in working list, whose address is %lx!\n",expander_id_,pid, &in_work_expanded_thread_list_);
+	assert(in_work_expanded_thread_list_.find(pid)!=in_work_expanded_thread_list_.end());
 	lock_.release();
 }
 bool BlockStreamExpander::removeFromInWorkingExpandedThreadList(pthread_t pid){
@@ -353,22 +359,25 @@ bool BlockStreamExpander::removeFromInWorkingExpandedThreadList(pthread_t pid){
 		return true;
 	}
 	else{
+		logging_->log("[%ld] %lx has already been removed from in working list!\n",expander_id_,pid);
 		lock_.release();
 		return false;
 	}
 }
 void BlockStreamExpander::addIntoBeingCalledBackExpandedThreadList(pthread_t pid){
 	lock_.acquire();
-	assert(being_called_bacl_expanded_thread_list_.find(pid)==being_called_bacl_expanded_thread_list_.end());
+//	logging_->log("[%ld] %lx is to be add into being called back list!\n",expander_id_,pid);
+//	assert(being_called_bacl_expanded_thread_list_.find(pid)==being_called_bacl_expanded_thread_list_.end());
 	being_called_bacl_expanded_thread_list_.insert(pid);
-//	logging_->log("[%ld] %lx is added into being called back list!\n",expander_id_,pid);
+	logging_->log("[%ld] %lx is added into being called back list!\n",expander_id_,pid);
 	lock_.release();
 }
 void BlockStreamExpander::removeFromBeingCalledBackExpandedThreadList(pthread_t pid){
 	lock_.acquire();
-	assert(being_called_bacl_expanded_thread_list_.find(pid)!=being_called_bacl_expanded_thread_list_.end());
+//	logging_->log("[%ld] %lx is to be remove from being called back list!\n",expander_id_,pid);
+//	assert(being_called_bacl_expanded_thread_list_.find(pid)!=being_called_bacl_expanded_thread_list_.end());
 	being_called_bacl_expanded_thread_list_.erase(pid);
-//	logging_->log("[%ld] %lx is removed from being called back list!\n",expander_id_,pid);
+	logging_->log("[%ld] %lx is removed from being called back list!\n",expander_id_,pid);
 	lock_.release();
 }
 unsigned BlockStreamExpander::getDegreeOfParallelism(){

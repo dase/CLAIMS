@@ -33,7 +33,7 @@ ExpandableBlockStreamExchangeLowerMaterialized::ExpandableBlockStreamExchangeLow
 }
 
 ExpandableBlockStreamExchangeLowerMaterialized::~ExpandableBlockStreamExchangeLowerMaterialized() {
-	log_=new ExchangeIteratorSenderMaterialized();
+	delete log_;
 }
 
 ExpandableBlockStreamExchangeLowerMaterialized::ExpandableBlockStreamExchangeLowerMaterialized() {
@@ -336,7 +336,8 @@ void ExpandableBlockStreamExchangeLowerMaterialized::deleteDiskFiles() {
 
 std::string ExpandableBlockStreamExchangeLowerMaterialized::getPartititionedFileName(
 		int partition_index) const {
-	std::string temp_file_dir="/home/claims/exchange/";
+//	std::string temp_file_dir="/home/claims/exchange/";
+	std::string temp_file_dir = "/home/imdb/exchange_for_claims/";
 	std::ostringstream file_name;
 	file_name<<temp_file_dir<<"exchange_"<<state_.exchange_id_<<"_"<<state_.partition_offset<<"_"<<partition_index;
 	return file_name.str();

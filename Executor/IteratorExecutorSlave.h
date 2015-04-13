@@ -18,6 +18,8 @@
 #include "../common/Message.h"
 #include "../common/Logging.h"
 #include "../utility/lock.h"
+#include "../utility/Timer.h"
+
 using namespace std;
 
 
@@ -40,7 +42,7 @@ public:
 
 	virtual ~IteratorExecutorSlave();
 	static void executePhysicalQueryPlan(PhysicalQueryPlan plan);
-protected:
+public:
 	void createNewThreadAndRun(PhysicalQueryPlan*);
 private:
 

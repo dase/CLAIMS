@@ -20,7 +20,8 @@
 #include "../../common/ids.h"
 #include "../../utility/rdtsc.h"
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
-:state_(state),logging_(0){
+:state_(state){
+	logging_=new ExchangeIteratorEagerLowerLogging();
 	assert(state.partition_schema_.partition_key_index<100);
 }
 

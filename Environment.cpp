@@ -212,3 +212,8 @@ bool Environment::initializeThreadPool() {
 	return thread_pool_->Thread_Pool_init(100);
 
 }
+
+IteratorExecutorSlave* Environment::getIteratorExecutorSlave() const {
+	return iteratorExecutorSlave;
+}
+

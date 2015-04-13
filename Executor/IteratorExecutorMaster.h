@@ -18,6 +18,7 @@
 #endif
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../common/Logging.h"
+#include "../utility/Timer.h"
 class IteratorExecutorMaster {
 public:
 	IteratorExecutorMaster();

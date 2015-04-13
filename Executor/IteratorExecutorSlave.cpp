@@ -69,8 +69,13 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 
 
 	ies->logging_->log("Sent the response message to the Receiver!");
+//	GETCURRENTTIME(s);
+//	printf("Yu debug:time when received message: %ld.%ld\n", s.tv_sec, s.tv_usec);
 	PhysicalQueryPlan* runable_iterator_message=new PhysicalQueryPlan();
+
+//	GETCURRENTTIME(t);
 	*runable_iterator_message=PhysicalQueryPlan::deserialize4K(message);
+//	cout<<"Yu debug:deserialize message use :"<<GetElapsedTime(t)<<endl;
 	ies->createNewThreadAndRun(runable_iterator_message);
 //	Send(int(0),from);
 	ies->logging_->log("iterator tree is added to the running queue");
