@@ -6,6 +6,7 @@
  */
 
 #include "Catalog.h"
+#include "../Config.h"
 Catalog* Catalog::instance_=0;
 
 Catalog::Catalog() {
@@ -114,25 +115,25 @@ vector<PartitionID> Catalog::getPartitionIDList(const std::string& table_name, c
 //}
 
 // 2014-3-20---save as a file---by Yu
-void Catalog::saveCatalog(const char *filename)
+void Catalog::saveCatalog()
 {
-	std::ofstream ofs(filename);
+	std::ofstream ofs(Config::catalog_file.c_str());
 	boost::archive::text_oarchive oa(ofs);
 
 	oa<<*this;
 }
 
 // 2014-3-20---restore from a file---by Yu
-void Catalog::restoreCatalog(const char *filename)
+void Catalog::restoreCatalog()
 {
-	if(access(filename,0) != 0)
+	if(access(Config::catalog_file.c_str(),0) != 0)
 	{
-		logging->elog("the file %s is not existed!", filename);
+		logging->elog("the file %s is not existed!", Config::catalog_file.c_str());
 	}
 //	assert(access(filename, 0) == 0);
 	else
 	{
-		std::ifstream ifs(filename);
+		std::ifstream ifs(Config::catalog_file.c_str());
 		boost::archive::text_iarchive ia(ifs);
 		ia>>*this;
 	}
@@ -142,28 +143,4 @@ void Catalog::restoreCatalog(const char *filename)
 //	cout<<"================================================================"<<endl<<endl;
 }
 
-void Catalog::saveCatalog(Catalog &catalog_, const char *filename)
-{
-	std::ofstream ofs(filename);
-	boost::archive::text_oarchive oa(ofs);
-	oa<<catalog_;
-	ofs.close();
-}
-
-// 2014-3-20---restore from a file---by Yu
-void Catalog::restoreCatalog(Catalog &catalog_, const char *filename)
-{
-	//	if(access(filename,0) != 0)
-	//		logging->elog("the file %s is not existed!", filename);
-	assert(access(filename, 0) == 0);
-
-	std::ifstream ifs(filename);
-	boost::archive::text_iarchive ia(ifs);
-	ia>>catalog_;
-	ifs.close();
-	printf("<><><><><><> restore\n");
-//	cout<<"================================================================"<<endl<<endl;
-//	outPut();
-//	cout<<"================================================================"<<endl<<endl;
-}
 
