@@ -37,8 +37,13 @@ public:
 class CodeGenerationTest : public ::testing::Test{
 protected:
 	static void SetUpTestCase() {
+		CodeGenerator::getInstance();
+		initialize_arithmetic_type_promotion_matrix();
+		initialize_type_cast_functions();
+		initialize_operator_function();
 	}
 	static void TearDownTestCase() {
+		delete CodeGenerator::getInstance();
 	}
 };
 
