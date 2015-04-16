@@ -48,7 +48,6 @@ ExecutionEngine* CodeGenerator::getExecutionEngine() const {
 
 void CodeGenerator::lock() {
 	lock_.acquire();
-//	std::cout<<"    lock    "<<std::endl;
 }
 
 void CodeGenerator::release() {
@@ -76,5 +75,6 @@ CodeGenerator::~CodeGenerator() {
 	module_ = NULL;
 	delete fpm_;
 	fpm_ = NULL;
+	instance_=0;
 }
 
