@@ -69,6 +69,7 @@ public:
 	static bool pipelined_exchange;
 	static int client_listener_port;
 	static bool enable_codegen;
+	static std::string catalog_file;
 private:
 	static Config* instance_;
 	libconfig::Config cfg;
