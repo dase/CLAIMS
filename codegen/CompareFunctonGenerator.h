@@ -10,9 +10,9 @@
 
 #include "CodeGenerator.h"
 #include "../common/types/NValue.hpp"
+#include "../common/Expression/qnode.h"
 
 typedef llvm::Value lv;
-enum NValueCompareType{LESS, GREAT, EQUAL, GREAT_EQUAL, LESS_EQUAL};
 
 extern "C"
 bool NValueLess(void* l, void* r);
@@ -29,6 +29,14 @@ bool NValueLessEqual(void *l, void *r);
 extern "C"
 bool NValueGreatEqual(void *l, void *r);
 
-llvm::Function* CreateNValueCompareFunc(enum NValueCompareType compare_type);
+extern "C"
+bool DateGreat(void* l, void *r);
+extern "C"
+bool DateLess(void* l, void *r);
+
+llvm::Function* CreateNValueCompareFunc(enum oper_type compare_type);
+
+llvm::Function* CreateDateCompareFunc(enum oper_type compare_type);
+
 
 #endif /* NVALUEEXPRESSIONGENERATOR_H_ */

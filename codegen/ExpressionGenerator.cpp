@@ -22,7 +22,7 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/IR/IntrinsicInst.h"
-#include "NValueExpressionGenerator.h"
+#include "CompareFunctonGenerator.h"
 #include "../common/TypePromotionMap.h"
 
 using llvm::IRBuilderBase;
@@ -407,10 +407,13 @@ llvm::Value* codegen_column(QColcumns* node, Schema* schema,llvm::Value* tuple_a
 		value=builder->CreateLoad(column_addr);
 		break;
 	case t_decimal:
+	case t_date:
 		//cast LLVM:INT64 to LLVM::INT8Ptr
 		column_addr=builder->CreateIntToPtr(column_addr,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(llvm::getGlobalContext())));
 		value = column_addr;
 		break;
+
+
 	default:
 		printf("no supported\n");
 		return 0;
@@ -534,8 +537,15 @@ llvm::Value* createLess(llvm::Value* l, llvm::Value* r, data_type type) {
 	case t_double:
 		return builder->CreateFCmpOLT(l,r,"<");
 	case t_decimal: {
-		llvm::Function* ff = CreateNValueCompareFunc(LESS);
+		llvm::Function* ff = CreateNValueCompareFunc(oper_less);
 
+		std::vector<lv*> args;
+		args.push_back(l);
+		args.push_back(r);
+		return builder->CreateCall(ff, args);
+	}
+	case t_date:{
+		llvm::Function* ff = CreateDateCompareFunc(oper_less);
 		std::vector<lv*> args;
 		args.push_back(l);
 		args.push_back(r);
@@ -554,7 +564,15 @@ llvm::Value *createGreat(llvm::Value *l, llvm::Value *r, data_type type) {
 	case t_float: case t_double:
 		return builder->CreateFCmpOGT(l, r, ">");
 	case t_decimal: {
-		llvm::Function* ff = CreateNValueCompareFunc(GREAT);
+		llvm::Function* ff = CreateNValueCompareFunc(oper_great);
+
+		std::vector<lv*> args;
+		args.push_back(l);
+		args.push_back(r);
+		return builder->CreateCall(ff, args);
+	}
+	case t_date: {
+		llvm::Function* ff = CreateDateCompareFunc(oper_great);
 
 		std::vector<lv*> args;
 		args.push_back(l);
@@ -575,7 +593,7 @@ llvm::Value *createEqual(llvm::Value *l, llvm::Value *r, data_type type) {
 	case t_float: case t_double:
 		return builder->CreateICmpEQ(l, r, "=");
 	case t_decimal: {
-		llvm::Function* ff = CreateNValueCompareFunc(EQUAL);
+		llvm::Function* ff = CreateNValueCompareFunc(oper_equal);
 
 		std::vector<lv*> args;
 		args.push_back(l);
