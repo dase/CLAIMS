@@ -18,16 +18,19 @@ struct option long_options[] = {
    {"catalog",required_argument,0,256},
    {"elastic",no_argument,0,'e'},
    {"init-dop",required_argument,0,257},
-   {"max-dop",required_argument,0,258}
+   {"max-dop",required_argument,0,258},
+   {"datadir",required_argument,0,259}
+
  };
 
-std::string help_info=std::string("-c --config-file FILE_NAME\n\t\tSpecify the configure file\n")+
-		"-h --help\n\t\tPrint the help info\n"+
+std::string help_info=std::string("-c --config-file FILE_NAME\n\t\t Specify the configure file\n")+
+		"-h --help\n\t\t Print the help info\n"+
 		"-d --disable-codegen\n\t\t disable code generation feature\n"+
 		"-e --elastic \n\t\t enable elasticity feature\n"+
 		"   --catalog CATALOG_FILE\n\t\t specified the catalog file\n"+
 		"   --init-dop VALUE\n\t\t specified the initial degree of parallelism for each segment\n"+
-		"   --max-dop  VALUE\n\t\t specified the max degree of parallelism for each segment\n";
+		"   --max-dop  VALUE\n\t\t specified the max degree of parallelism for each segment\n"+
+		"   --datadir  VALUE\n\t\t specified the data directory.\n";
 
 void handle_parameters(int argc, char** argv){
 	int opt;
@@ -54,6 +57,9 @@ void handle_parameters(int argc, char** argv){
 			break;
 		case 258:
 			Config::max_degree_of_parallelism=atoi(optarg);
+			break;
+		case 259:
+			Config::data_dir=std::string(optarg);
 			break;
 		default:
 			printf("Invalid parameters! Try -h/--help\n");
