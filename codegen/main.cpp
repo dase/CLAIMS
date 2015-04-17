@@ -6,7 +6,7 @@ using namespace std;
 #include "../Test/gtest.h"
 #include "codegen_test.h"
 #include "ExpressionGenerator.h"
-#include "NValueExpressionGenTest.h"
+#include "CompareFunctonGenerator.h"
 #include "CodeGenerator.h"
 #include "llvm/Analysis/Passes.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"

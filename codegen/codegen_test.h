@@ -16,6 +16,9 @@
 #include "../common/Expression/initquery.h"
 #include "ExpressionGenerator.h"
 #include "../Environment.h"
+#include "CompareFunctonGenerator.h"
+#include <llvm/ExecutionEngine/GenericValue.h>
+#include "boost/date_time/gregorian/parsers.hpp"
 
 using std::map;
 
@@ -951,6 +954,348 @@ TEST_F(CodeGenerationTest,Memcat){
 	llvm_memcat f=getMemcat(sizeof(long),sizeof(long));
 	f(a,&v1,&v2);
 	EXPECT_TRUE(*(long*)a==100&&*((long*)a+1)==200);
+}
+
+TEST_F(CodeGenerationTest, LessCompare1) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	NValue* l_class = new NValue;
+	l_class->createDecimalFromString("23");
+	NValue* r_class = new NValue;
+	r_class->createDecimalFromString("34");
+
+	// this sentence is necessary to make sure compiler know and compile this method
+	std::cout<<"expected result is :"<<NValueLess(l_class, r_class)<<endl;
+
+	llvm::IRBuilder<>* builder=CodeGenerator::getInstance()->getBuilder();
+	llvm::Function* ff = CreateNValueCompareFunc(oper_less);
+//	verifyFunction(*ff);
+//	ff->dump();
+
+	llvm::Constant* l_const_int = llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (uint64_t)l_class);
+	lv* l_const_ptr = builder->CreateIntToPtr(l_const_int, llvm::PointerType::getUnqual(llvm::Type::getInt64Ty(llvm::getGlobalContext())));//Type::getInt64PtrTy(builder->getContext())//);
+	llvm::Constant* r_const_int = llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()), (uint64_t)r_class);
+	lv* r_const_ptr = builder->CreateIntToPtr(r_const_int, llvm::PointerType::getUnqual(llvm::Type::getInt64Ty(llvm::getGlobalContext())));
+
+	std::vector<llvm::GenericValue> args(2);
+//	args[0].PointerVal = l_const_ptr;	//error
+//	args[1].PointerVal = r_const_ptr;	// but
+//	args[0].PointerVal = l_const_int;	// i don't
+//	args[1].PointerVal = r_const_int;	// know why
+
+	//one way to call llvm function
+	args[0].PointerVal = l_class;
+	args[1].PointerVal = r_class;
+	llvm::GenericValue ret_value = CodeGenerator::getInstance()->getExecutionEngine()->runFunction(ff, args);
+	bool ret = ret_value.IntVal.getBoolValue();
+
+	// another way to call llvm function
+//	int (*create_less)(int*, int*) = CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(ff);
+//	bool ret = create_less((int*)l_class, (int*)r_class);
+
+	delete l_class;
+	delete r_class;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest, LessCompare2) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	NValue* l_class = new NValue;
+	l_class->createDecimalFromString("23");
+	NValue* r_class = new NValue;
+	r_class->createDecimalFromString("34");
+
+	// this sentence is necessary to make sure compiler know and compile this method
+	std::cout<<"expected result is :"<<NValueLess(l_class, r_class)<<endl;
+
+
+	llvm::Function* ff = CreateNValueCompareFunc(oper_less);
+//	verifyFunction(*ff);
+//	ff->dump();
+
+	// another way to call llvm Function
+	int (*create_less)(int*, int*) = CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(ff);
+	bool ret = create_less((int*)l_class, (int*)r_class);
+
+	delete l_class;
+	delete r_class;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest, LessCompare3) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_decimal));
+	columns.push_back(data_type(t_decimal));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_decimal,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_decimal,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_decimal,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	((NValue*)s->getColumnAddess(0,tuple))->createDecimalFromString("3");
+	((NValue*)s->getColumnAddess(1,tuple))->createDecimalFromString("4");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+TEST_F(CodeGenerationTest, LessCompare4) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_decimal));
+	columns.push_back(data_type(t_decimal));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_decimal,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_decimal,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_decimal,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	((NValue*)s->getColumnAddess(0,tuple))->createDecimalFromString("4");
+	((NValue*)s->getColumnAddess(1,tuple))->createDecimalFromString("4");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_FALSE(ret);
+}
+TEST_F(CodeGenerationTest, LessCompare5) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_decimal));
+	columns.push_back(data_type(t_decimal));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_decimal,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_decimal,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_decimal,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	((NValue*)s->getColumnAddess(0,tuple))->createDecimalFromString("4000000000000000");
+	((NValue*)s->getColumnAddess(1,tuple))->createDecimalFromString("4999999999999999");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest, LessCompare6) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_decimal));
+	columns.push_back(data_type(t_decimal));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_decimal,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_decimal,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_decimal,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	((NValue*)s->getColumnAddess(0,tuple))->createDecimalFromString("4000000000000000");
+	((NValue*)s->getColumnAddess(1,tuple))->createDecimalFromString("3999999999999999");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_FALSE(ret);
+}
+
+TEST_F(CodeGenerationTest, GreatCompareDecimal) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_decimal));
+	columns.push_back(data_type(t_decimal));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_decimal,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_decimal,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_decimal,oper_great,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	((NValue*)s->getColumnAddess(0,tuple))->createDecimalFromString("400000000000000000");
+	((NValue*)s->getColumnAddess(1,tuple))->createDecimalFromString("399999999999999999");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest, EqualCompare) {
+	/* #      #1    | #2
+	 * Tuple: decimal  | decimal
+	 *        3     | 4
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_decimal));
+	columns.push_back(data_type(t_decimal));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_decimal,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_decimal,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_decimal,oper_equal,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	((NValue*)s->getColumnAddess(0,tuple))->createDecimalFromString("3992345766342542999");
+	((NValue*)s->getColumnAddess(1,tuple))->createDecimalFromString("3992345766342542999");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest, LessCompareDate) {
+	/* #      #1             | #2
+	 * Tuple: date           | date
+	 *        2011-11-11     | 2011-11-12
+	 * Express: #1 < #2 = true
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_date));
+	columns.push_back(data_type(t_date));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_date,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_date,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_date,oper_less,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((date*)s->getColumnAddess(0,tuple))=from_string("2010-11-11");
+	*((date*)s->getColumnAddess(1,tuple))=from_string("2010-11-12");
+//	*((NValue*)s->getColumnAddess(1,tuple))=4;
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_TRUE(ret);
+}
+
+TEST_F(CodeGenerationTest, GreatCompareDate) {
+	/* #      #1             | #2
+	 * Tuple: date           | date
+	 *        2011-11-11     | 2011-11-12
+	 * Express: #1 > #2 = false
+	 */
+	std::vector<column_type> columns;
+	columns.push_back(data_type(t_date));
+	columns.push_back(data_type(t_date));
+	Schema* s=new SchemaFix(columns);
+	map<std::string,int> column_index;
+	column_index["#1"]=0;
+	column_index["#2"]=1;
+	QColcumns* a=new QColcumns("T","#1",t_date,"#1");
+	QColcumns* b=new QColcumns("T","#2",t_date,"#2");
+
+	QExpr_binary* op1=new QExpr_binary(a,b,t_date,oper_great,t_qexpr_cmp,"result");
+
+	InitExprAtLogicalPlan(op1,t_boolean,column_index,s);
+
+	expr_func f=getExprFunc(op1,s);
+
+	void* tuple=malloc(s->getTupleMaxSize());
+	*((date*)s->getColumnAddess(0,tuple))=from_string("2010-11-11");
+	*((date*)s->getColumnAddess(1,tuple))=from_string("2010-11-12");
+	bool ret;
+	f(tuple,&ret);
+	delete tuple;
+	delete s;
+	delete op1;
+	EXPECT_FALSE(ret);
 }
 
 #endif /* CODEGEN_TEST_H_ */

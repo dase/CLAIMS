@@ -20,7 +20,6 @@ noinst_LIBRARIES=libcodegen.a
 libcodegen_a_SOURCES = \
     CodeGenerator.h			CodeGenerator.cpp \
     ExpressionGenerator.h	ExpressionGenerator.cpp \
-    NValueExpressionGenTest.h NValueExpressionGenerator.h \
-    NValueExpressionGenerator.cpp
+    CompareFunctonGenerator.h CompareFunctonGenerator.cpp 
 SUBDIRS = 
 DIST_SUBDIRS = 
