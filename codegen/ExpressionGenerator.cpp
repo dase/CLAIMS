@@ -799,7 +799,7 @@ llvm_memcat getMemcat(unsigned length1, unsigned length2) {
 	builder->CreateMemCpy(desc,src1,length1,4);
 
 	desc=builder->CreatePtrToInt(desc,llvm::Type::getInt64Ty(llvm::getGlobalContext()));
-	llvm::Value* const_length2=llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()),length2);
+	llvm::Value* const_length2=llvm::ConstantInt::get(llvm::Type::getInt64Ty(llvm::getGlobalContext()),length1);
 	desc=builder->CreateAdd(desc,const_length2);
 	desc=builder->CreateIntToPtr(desc,llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(llvm::getGlobalContext())));
 	builder->CreateMemCpy(desc,src2,length2,4);
