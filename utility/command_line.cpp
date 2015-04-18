@@ -6,6 +6,9 @@
  */
 #include "command_line.h"
 #include <stdio.h>
+#include <iosfwd>
+
+#include "string_process.h"
 
 bool input_struct::append(const char* str) {
     while(*str)
@@ -104,10 +107,11 @@ int get_one_command(string& str) {
 		free(input_line);
 	}
 
+	str=trimSpecialCharactor(std::string(is.string));
 	// Add input to history.
-	add_history(is.string);
-	store_history(is.string);
-
-	str=string(is.string);
-
+	if(last_command!=str){
+		add_history(str.c_str());
+		store_history((char*)str.c_str());
+		last_command=str;
+	}
 }
