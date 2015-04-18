@@ -72,6 +72,13 @@ public:
 	bool next(BlockStreamBase *block);
 	bool close();
 	void print();
+private:
+	/* prepare all sorts of indices to facilitate aggregate*/
+	void prepareIndex();
+
+	/* prepare the aggregation functions */
+	void prepareAggregateFunctions();
+
 	BlockStreamBase* AtomicPopFreeHtBlockStream();
 	void AtomicPushFreeHtBlockStream(BlockStreamBase* block);
 
