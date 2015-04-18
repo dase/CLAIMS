@@ -22,6 +22,7 @@
 #include <float.h>
 
 #include "hash.h"
+#include "../utility/string_process.h"
 
 using namespace boost::gregorian;
 using namespace boost::posix_time;
@@ -615,24 +616,7 @@ public:
 	}
 };
 
-inline std::string trimSpecialCharactor(string str){
-	int l=0,r=str.length()-1;
-	for(int p=0;p<r;p++){
-		if(str[p]=='\r' ||str[p]=='\n' ){
-			l=p+1;
-			continue;
-		}
-		break;
-	}
-	for(int p=r;p>l;p--){
-		if(str[p]=='\r' ||str[p]=='\n' ){
-			r=p-1;
-			continue;
-		}
-		break;
-	}
-	return str.substr(l,r-l+1);
-}
+
 
 class OperateString:public Operate
 {
