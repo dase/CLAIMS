@@ -33,6 +33,7 @@ std::string help_info=std::string("-c --config-file FILE_NAME\n\t\t Specify the 
 		"   --datadir  VALUE\n\t\t specified the data directory.\n";
 
 void handle_parameters(int argc, char** argv){
+	optind=0;
 	int opt;
 	while ((opt = getopt_long(argc, argv, "c:h", long_options, NULL)) != -1) {
 		switch (opt) {
@@ -70,6 +71,7 @@ void handle_parameters(int argc, char** argv){
 
 }
 int main(int argc, char** argv){
+	handle_parameters(argc,argv);
 	Config::getInstance();
 	handle_parameters(argc,argv);
 	Config::getInstance()->print_configure();

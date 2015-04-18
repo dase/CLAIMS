@@ -14,4 +14,5 @@ libutility_a_SOURCES = \
 	rdtsc.h 							test_tool.h \
 	warmup.h \
 	data_distribution_generator.cpp 	data_distribution_generator.h \
-	command_line.cpp 					command_line.h
+	command_line.cpp 					command_line.h\
+	string_process.cpp					string_process.h

@@ -131,7 +131,7 @@ int maina(int argc, char** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-//	test_expanderFramework_single_node(1);
+	test_expanderFramework_single_node(1);
 
 //	test_multiple_expanderFramework_single_node(3);
 	tcp_h_test_single_node();
