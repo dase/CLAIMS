@@ -24,17 +24,19 @@ public:
 	void connection(std::string host, int port);
 	ClientResponse* submitQuery(std::string args);
 
-	query_result submit(std::string& command, std::string& message, ResultSet& rt);
+	query_result submit(std::string command, std::string& message, ResultSet& rt);
 
 
 	ClientResponse* receive();
 
 	void shutdown();
 
+	bool connected()const;
+
 	virtual ~Client();
 
 private:
-
+	bool connected_;
 	int m_clientFd;
 };
 

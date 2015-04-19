@@ -87,7 +87,6 @@ void test_decimal_comparison(){
 
 int main(int argc, char** argv){
 //	return test::test_llvm();
-	testing::AddGlobalTestEnvironment(new CodeGenTestEnvironment);
 	return g_test_main(argc, argv);
 //	get_one();
 //	get_another_one();

@@ -71,7 +71,7 @@ include_HEADERS = Config.h \
 				
 bin_PROGRAMS =  claimsserver \
 				client \
-				test_codegen
+				test
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -83,7 +83,7 @@ claimsserver_SOURCES = Config.cpp	\
 				IDsGenerator.cpp \
 				Server.cpp
 
-test_codegen_SOURCES = codegen/main.cpp\
+test_SOURCES = Test/gtest_main.cpp\
 				Environment.cpp \
 				IDsGenerator.cpp \
 				Config.cpp
