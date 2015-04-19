@@ -23,19 +23,19 @@
 using std::map;
 
 
-class CodeGenTestEnvironment : public testing::Environment
-{
-public:
-	virtual void SetUp() {
-		CodeGenerator::getInstance();
-		initialize_arithmetic_type_promotion_matrix();
-		initialize_type_cast_functions();
-		initialize_operator_function();
-	}
-	virtual void TearDown() {
-		delete CodeGenerator::getInstance();
-	}
-};
+//class CodeGenTestEnvironment : public testing::Environment
+//{
+//public:
+//	virtual void SetUp() {
+//		CodeGenerator::getInstance();
+//		initialize_arithmetic_type_promotion_matrix();
+//		initialize_type_cast_functions();
+//		initialize_operator_function();
+//	}
+//	virtual void TearDown() {
+//		delete CodeGenerator::getInstance();
+//	}
+//};
 
 class CodeGenerationTest : public ::testing::Test{
 protected:

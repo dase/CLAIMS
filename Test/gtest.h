@@ -7,6 +7,8 @@
 #ifndef __G_TEST_MAIN__
 #define __G_TEST_MAIN__
 #include <gtest/gtest.h>
+
+
 //#include "utility/generator_test.h"
 //#include "common/insert_optimized_hash_table_test.h"
 //#include "TestSuit/sql_query_test.h"

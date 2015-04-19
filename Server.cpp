@@ -19,8 +19,8 @@ struct option long_options[] = {
    {"elastic",no_argument,0,'e'},
    {"init-dop",required_argument,0,257},
    {"max-dop",required_argument,0,258},
-   {"datadir",required_argument,0,259}
-
+   {"datadir",required_argument,0,259},
+   {"scheduler_cycle",required_argument,0,260}
  };
 
 std::string help_info=std::string("-c --config-file FILE_NAME\n\t\t Specify the configure file\n")+
@@ -30,7 +30,8 @@ std::string help_info=std::string("-c --config-file FILE_NAME\n\t\t Specify the 
 		"   --catalog CATALOG_FILE\n\t\t specified the catalog file\n"+
 		"   --init-dop VALUE\n\t\t specified the initial degree of parallelism for each segment\n"+
 		"   --max-dop  VALUE\n\t\t specified the max degree of parallelism for each segment\n"+
-		"   --datadir  VALUE\n\t\t specified the data directory.\n";
+		"   --datadir  VALUE\n\t\t specified the data directory.\n"+
+		"   --scheduler_cycle VALUE\n\t\t specified the cycle(in us) for the elastic scheduler\n";
 
 void handle_parameters(int argc, char** argv){
 	optind=0;
@@ -61,6 +62,9 @@ void handle_parameters(int argc, char** argv){
 			break;
 		case 259:
 			Config::data_dir=std::string(optarg);
+			break;
+		case 260:
+			Config::expander_adaptivity_check_frequency=atoi(optarg);
 			break;
 		default:
 			printf("Invalid parameters! Try -h/--help\n");
