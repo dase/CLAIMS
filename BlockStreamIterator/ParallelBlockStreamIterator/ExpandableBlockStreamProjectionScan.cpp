@@ -125,6 +125,9 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 	}
 
 	if(!stc->assigned_data_.empty()){
+		if(rand()%100==0)
+			printf("%llx \n",pthread_self());
+
 		ChunkReaderIterator::block_accessor* ba=stc->assigned_data_.front();
 		stc->assigned_data_.pop_front();
 //		const unsigned long long int start=curtick();

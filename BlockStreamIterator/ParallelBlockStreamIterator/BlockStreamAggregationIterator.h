@@ -90,7 +90,8 @@ private:
 	PartitionFunction *hash_;
 	std::map<unsigned,unsigned> inputGroupByToOutput_;
 	std::map<unsigned,unsigned> inputAggregationToOutput_;
-	std::vector<fun> aggregationFunctions_;
+	std::vector<fun> globalAggregationFunctions_;
+	std::vector<fun> privateAggregationFunctions_;
 
 	//in the open func and build the hashtable
 	std::list<BlockStreamBase *> ht_free_block_stream_list_;
