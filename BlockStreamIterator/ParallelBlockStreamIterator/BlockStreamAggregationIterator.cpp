@@ -100,12 +100,9 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	BasicHashTable::Iterator ht_it=hashtable_->CreateIterator();
 
 	unsigned long long one=1;
-	//	BlockStreamBase *bsb=AtomicPopFreeHtBlockStream();
 	BlockStreamBase *bsb=BlockStreamBase::createBlock(state_.input,state_.block_size);
 	bsb->setEmpty();
 
-	unsigned consumed_tuples=0;
-	unsigned matched_tuples=0;
 
 	while(state_.child->next(bsb))	// traverse every block from child
 	{
@@ -113,7 +110,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		bsti->reset();
 		while((cur=bsti->currentTuple())!=0)	// traverse every tuple from block
 		{
-			consumed_tuples++;
 
 			/* get the corresponding bucket index according to the first column in
 			 * group-by attributes.
@@ -145,13 +141,14 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 				}
 				if(key_exist)	// hash table have the key (the value in group-by attribute)
 				{
-					matched_tuples++;
 					for(unsigned i=0;i<state_.aggregationIndex.size();i++)
 					{
 						value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
 						value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],tuple_in_hashtable);
 						hashtable_->UpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
 					}
+					bsti->increase_cur_();
+					hashtable_->unlockBlock(bn);
 					break;
 				}
 				else
@@ -161,12 +158,9 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 			}
 			if(key_exist)
 			{
-				bsti->increase_cur_();
-				hashtable_->unlockBlock(bn);
 				continue;
 			}
 			new_tuple_in_hash_table=hashtable_->allocate(bn);
-			hashtable_->unlockBlock(bn);
 			allocated_tuples_in_hashtable++;
 			for(unsigned i=0;i<state_.groupByIndex.size();i++)
 			{
@@ -192,6 +186,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 				value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
 				state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
 			}
+			hashtable_->unlockBlock(bn);
 			bsti->increase_cur_();
 		}
 		bsb->setEmpty();
@@ -204,19 +199,18 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	barrierArrive(2);
 
 	if(tryEntryIntoSerializedSection(2)){
-//			hashtable_->report_status();
-			it_=hashtable_->CreateIterator();
-			bucket_cur_=0;
-			hashtable_->placeIterator(it_,bucket_cur_);
-			open_finished_end_=true;
-			ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation  ",0));
-			perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
-			perf_info_->initialize();
+//		hashtable_->report_status();
+		it_=hashtable_->CreateIterator();
+		bucket_cur_=0;
+		hashtable_->placeIterator(it_,bucket_cur_);
+		open_finished_end_=true;
+		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation  ",0));
+		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+		perf_info_->initialize();
 	}
 	barrierArrive(3);
 
 	delete bsb;
-//	hashtable_->report_status();
 }
 
 /*
