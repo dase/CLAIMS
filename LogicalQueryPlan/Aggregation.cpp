@@ -95,6 +95,10 @@ Dataflow Aggregation::getDataflow(){
 }
 
 bool Aggregation::canLeverageHashPartition(const Dataflow& child_dataflow)const{
+
+	if(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartition(0)->getLocation()==0)
+		return true;
+
 	const Attribute partition_key=child_dataflow.property_.partitioner.getPartitionKey();
 	if(!child_dataflow.isHashPartitioned())
 		return false;
@@ -364,6 +368,9 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 		return ret;
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
+	if(group_by_attribute_list_.size()==0){
+		return 1;
+	}
 	const unsigned long max_limits=1024*1024;
 	const unsigned long min_limits=1024*512;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();

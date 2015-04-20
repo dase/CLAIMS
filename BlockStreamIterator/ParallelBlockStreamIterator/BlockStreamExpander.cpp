@@ -273,7 +273,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		thread_count_++;
 		lock_.release();
 	//	in_work_expanded_thread_list_.insert(tid);
-//		printf("Expand time :%lf \n",getSecond(start));
+		printf("Expand time :%lf \n",getSecond(start));
 		return true;
 	}
 	else{

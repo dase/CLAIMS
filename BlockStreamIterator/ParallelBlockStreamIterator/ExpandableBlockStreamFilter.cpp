@@ -102,7 +102,6 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 		waitForOpenFinished();
 		return state_.child_->open(part_off);
 	}
-
 }
 
 bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
@@ -115,6 +114,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 			/* mark the block as processed by setting it empty*/
 			tc->block_for_asking_->setEmpty();
 			if(state_.child_->next(tc->block_for_asking_)){
+//				printf("%lld\n",pthread_self());
 				delete tc->block_stream_iterator_;
 				tc->block_stream_iterator_=tc->block_for_asking_->createIterator();
 			}
