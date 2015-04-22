@@ -316,6 +316,9 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
  *
  */
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
+	block->setEmpty();
+	unregisterExpandedThreadToAllBarriers(3);
+	return false;
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterExpandedThreadToAllBarriers(3);
 		printf("<<<<<<<<<<<<<<<<<Aggregation next detected call back signal!>>>>>>>>>>>>>>>>>\n");
