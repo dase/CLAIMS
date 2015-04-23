@@ -19,9 +19,6 @@
 
 using boost::unordered::unordered_map;
 class thread_context{
-//	BlockStreamBase* block_for_asking_;
-//	BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
-//	BasicHashTable::Iterator hashtable_iterator_;
 public:
 	virtual ~thread_context(){
 
@@ -44,15 +41,7 @@ public:
 	virtual bool close(){assert(false);};
 
 protected:
-	/* this function is called by the threads which wait for the finish of the open call
-	 *  by other threads*/
-	void waitForOpenFinished();
 
-	/**
-	 * Thin method is called when the thread which takes the responsibility of initializing
-	 * finished the open to wake up all the pending threads waiting for the open finishing.
-	 */
-	void broadcaseOpenFinishedSignal();
 
 	/* this function initialize the state of expanded iterator.
 	 * Should be called in the constructor and close() of the expanded iterator implementation.
@@ -62,9 +51,6 @@ protected:
 	/* Return true, if not any thread has obtain the entry into the serialized section
 	 * with id=tserialized_section_id; otherwise, return false*/
 	bool tryEntryIntoSerializedSection(unsigned serialized_section_id=0);
-
-	void setOpenReturnValue(bool value);
-	bool getOpenReturnValue()const;
 
 	/*
 	 * Register to all the barriers that a new thread has been registered. Accordingly, barriers
@@ -96,12 +82,21 @@ protected:
 
 	bool checkTerminateRequest();
 
+	/*
+	 * This function may be called by multiple expanded threads to update the return value
+	 * for the open function.
+	 * If any error happens at any error, the open_ret_ should be false.
+	 */
+	void setReturnStatus(bool ret);
+
+	bool getReturnStatus()const;
 protected:
+	unsigned number_of_registered_expanded_threads_;
+
+private:
 	/* the return value of open() */
 	volatile bool open_ret_;
 
-	/* whether open is finished or not*/
-	volatile bool open_finished_;
 
 	pthread_mutex_t sync_lock_;
 	pthread_cond_t  sync_cv_;
@@ -114,7 +109,6 @@ protected:
 	unsigned number_of_barrier_;
 	unsigned number_of_seriliazed_section_;
 
-	unsigned number_of_registered_expanded_threads_;
 	Lock lock_number_of_registered_expanded_threads_;
 
 

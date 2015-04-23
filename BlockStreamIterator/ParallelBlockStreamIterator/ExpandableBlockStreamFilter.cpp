@@ -24,7 +24,6 @@
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state) :
 		state_(state),generated_filter_function_(0),generated_filter_processing_fucntoin_(0) {
 	initialize_expanded_status();
-	initialize_operator_function();
 }
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter():generated_filter_function_(0),generated_filter_processing_fucntoin_(0) {
@@ -49,9 +48,6 @@ ExpandableBlockStreamFilter::State::State(Schema* schema,
 }
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 
-	AtomicPushFreeBlockStream(
-			BlockStreamBase::createBlock(state_.schema_, state_.block_size_));
-
 	filter_thread_context* ftc = new filter_thread_context();
 	ftc->block_for_asking_ = BlockStreamBase::createBlock(state_.schema_,
 			state_.block_size_);
@@ -67,7 +63,6 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 	initContext(ftc);
 
 	if (tryEntryIntoSerializedSection()) {
-		tuple_after_filter_ = 0;
 		if(Config::enable_codegen){
 			ticks start=curtick();
 			generated_filter_processing_fucntoin_=getFilterProcessFunc(state_.qual_[0],state_.schema_);
@@ -89,19 +84,11 @@ bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 			ff_=computeFilter;
 			printf("CodeGen fails!\n");
 		}
-//		if(generated_filter_function_){
-//			ff_=computeFilterwithGeneratedCode;
-//		}
-//		else{
-//			printf("CodeGen fails!\n");
-//		}
-		const bool child_open_return = state_.child_->open(part_off);
-		setOpenReturnValue(child_open_return);
-		broadcaseOpenFinishedSignal();
-	} else {
-		waitForOpenFinished();
-		return state_.child_->open(part_off);
 	}
+	bool ret=state_.child_->open(part_off);
+	setReturnStatus(ret);
+	barrierArrive();
+	return getReturnStatus();
 }
 
 bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
@@ -147,7 +134,6 @@ void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,filter_th
 		const int c_tuple_count=tc->block_for_asking_->getTuplesInBlock();
 
 		generated_filter_processing_fucntoin_(block->getBlock(),&b_cur,b_tuple_count,tc->block_for_asking_->getBlock(),&c_cur,c_tuple_count);
-//		process_func(block->getBlock(),&b_cur,b_tuple_count,tc->block_for_asking_->getBlock(),&c_cur,c_tuple_count,state_.schema_->getTupleMaxSize(),generated_filter_function_);
 		((BlockStreamFix*)block)->setTuplesInBlock(b_cur);
 		tc->block_stream_iterator_->set_cur(c_cur);
 	}

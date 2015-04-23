@@ -47,13 +47,6 @@ public:
 			}
 		}
 	};
-	struct remaining_block{
-		remaining_block(BlockStreamBase * bsb,BlockStreamBase::BlockStreamTraverseIterator * bsti)
-		:bsb_(bsb),bsti_(bsti){};
-		remaining_block():bsb_(0),bsti_(0){};
-        BlockStreamBase * bsb_;
-        BlockStreamBase::BlockStreamTraverseIterator * bsti_;
-	};
 
 	class State{
 		friend class BlockStreamProjectIterator;
@@ -92,22 +85,14 @@ public:
 	bool close();
 void print();
 private:
-	bool atomicPopRemainingBlock(remaining_block & rb);
-	void atomicPushRemainingBlock(remaining_block rb);
 	bool copyNewValue(void *tuple,void *result,int length);
 
 	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
 	void process_logic(BlockStreamBase* block, project_thread_context* tc);
 private:
-	semaphore sema_open_;
-	volatile bool open_finished_;
 
 	State state_;
 
-	std::list<remaining_block> remaining_block_list_;
-	std::list<BlockStreamBase *> free_block_stream_list_;
-
-	Lock lock_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

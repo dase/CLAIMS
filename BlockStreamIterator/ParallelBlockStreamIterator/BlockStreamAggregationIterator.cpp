@@ -95,8 +95,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	start=curtick();
 	barrierArrive(1);
 
-
-
 	void *cur=0;
 	unsigned bn;
 	bool key_exist;
@@ -263,15 +261,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 			for(unsigned i=0;i<state_.aggregationIndex.size();i++)
 			{
-//				/**
-//				 * use if-else here is a kind of ugly.
-//				 * TODO: use a function which is initialized according to the aggregation function.
-//				 */
-//				if(state_.aggregations[i]==State::count)
-//				{
-//					value_in_input_tuple=&one;
-//				}
-//				else
 				value_in_input_tuple=state_.hashSchema->getColumnAddess(i+state_.groupByIndex.size(),cur);
 				value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
 				state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
