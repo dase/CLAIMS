@@ -18,21 +18,11 @@ ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned nu
 ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
 	pthread_mutex_destroy(&sync_lock_);
 	pthread_cond_destroy(&sync_cv_);
-//	for(unsigned i=0;i<number_of_barrier_;i++){
-//		barrier_[i].~Barrier();
-//	}
 	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
 		seriliazed_section_entry_key_[i].destroy();
 	}
 	delete[] barrier_;
 	delete[] seriliazed_section_entry_key_;
-}
-void ExpandableBlockStreamIteratorBase::waitForOpenFinished(){
-	pthread_mutex_lock(&sync_lock_);
-	if(open_finished_==false){
-		pthread_cond_wait(&sync_cv_, &sync_lock_);
-	}
-	pthread_mutex_unlock(&sync_lock_);
 }
 void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 	int ret;
@@ -43,10 +33,6 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 	if(ret!=0)
 		printf("pthread_cond_init failed at barrier creation.\n");
 
-	open_finished_=false;
-	/* only one thread wins when complete for the job of initialization*/
-
-
 	for(unsigned i=0;i<number_of_barrier_;i++){
 		barrier_[i].setEmpty();
 	}
@@ -55,24 +41,9 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 		seriliazed_section_entry_key_[i].set_value(1);
 	}
 }
-void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
-	pthread_mutex_lock(&sync_lock_);
-	open_finished_=true;
-
-	/*wake up all the waiting thread*/
-	pthread_cond_broadcast(&sync_cv_);
-
-	pthread_mutex_unlock(&sync_lock_);
-}
 bool ExpandableBlockStreamIteratorBase::tryEntryIntoSerializedSection(unsigned phase_id){
 	assert(phase_id<number_of_seriliazed_section_);
 	return seriliazed_section_entry_key_[phase_id].try_wait();
-}
-void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
-	open_ret_=value;
-}
-bool ExpandableBlockStreamIteratorBase::getOpenReturnValue()const{
-	return open_ret_;
 }
 void ExpandableBlockStreamIteratorBase::RegisterExpandedThreadToAllBarriers(){
 	lock_number_of_registered_expanded_threads_.acquire();
@@ -123,9 +94,9 @@ void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 	context_lock_.release();
 }
 thread_context* ExpandableBlockStreamIteratorBase::getContext(){
-	context_lock_.acquire();
 	thread_context* ret;
 	boost::unordered_map<pthread_t,thread_context*>::iterator it;
+	context_lock_.acquire();
 	if((it=context_list_.find(pthread_self()))!=context_list_.cend()){
 		ret= it->second;
 	}
@@ -141,3 +112,12 @@ thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 bool ExpandableBlockStreamIteratorBase::checkTerminateRequest() {
 	return  ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self());
 }
+
+void ExpandableBlockStreamIteratorBase::setReturnStatus(bool ret) {
+	ret=open_ret_&ret;
+}
+
+bool ExpandableBlockStreamIteratorBase::getReturnStatus() const {
+	return open_ret_;
+}
+

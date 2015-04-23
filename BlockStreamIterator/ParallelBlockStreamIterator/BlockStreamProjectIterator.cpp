@@ -9,8 +9,6 @@
 
 BlockStreamProjectIterator::BlockStreamProjectIterator() {
 	initialize_expanded_status();
-	sema_open_.set_value(1);
-	open_finished_=false;
 }
 
 BlockStreamProjectIterator::~BlockStreamProjectIterator() {
@@ -20,8 +18,6 @@ BlockStreamProjectIterator::~BlockStreamProjectIterator() {
 BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
 :state_(state){
 	initialize_expanded_status();
-	sema_open_.set_value(1);
-	open_finished_=false;
 }
 
 BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei,vector<QNode *>exprTree)
@@ -44,26 +40,10 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
 	}
 	initContext(ptc);
 
-	state_.child_->open(partition_offset);
-	if(tryEntryIntoSerializedSection()){
-
-	}
-	barrier_->Arrive();
-//	if(sema_open_.try_wait()){
-//		BlockStreamBase *bsb=new BlockStreamFix(64*1024-sizeof(unsigned),state_.input_->getTupleMaxSize());
-//		free_block_stream_list_.push_back(bsb);
-//		open_finished_=true;
-//	}
-//	else{
-//		while (!open_finished_)
-//			usleep(1);
-//	}
-//
-//	for (int i = 0; i < state_.exprTree_.size(); i++) {
-//		InitExprAtPhysicalPlan(state_.exprTree_[i]);
-//	}
-
-	return true;
+	bool ret=state_.child_->open(partition_offset);
+	setReturnStatus(ret);
+	barrierArrive();
+	return getReturnStatus();
 }
 
 /*
@@ -72,11 +52,6 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
  * */
 bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 	unsigned total_length_=state_.output_->getTupleMaxSize();
-//	void *tuple=0;
-//	void *column_in_combinedTuple=0;
-	/* tuple to include the max tuple! */
-//	void *combinedTuple_=memalign(cacheline_size,state_.output_->getTupleMaxSize());;
-//	void *cur=0;
 
 	void* tuple_from_child;
 	void* tuple_in_block;
@@ -111,101 +86,15 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 		}
 	}
 
-//	remaining_block rb;
-//	if(atomicPopRemainingBlock(rb)){
-//		while(1){
-//			void *cur=0;
-//			void *tuple=0;
-//			if((cur=rb.bsti_->currentTuple())==0){
-//				rb.bsb_->setEmpty();
-//				/* get a block from downstreams */
-//				if(state_.children_->next(rb.bsb_)==false){
-//					/* if downstreams has no data and block is not empty, return true */
-//					if(!block->Empty()){
-//						atomicPushRemainingBlock(rb);
-//						return true;
-//					}
-//					return false;
-//				}
-//				/* if downstreams has data, reset the cur */
-//				rb.bsti_->reset();
-//				cur=rb.bsti_->currentTuple();
-//			}
-//
-//			if((tuple=block->allocateTuple(total_length_))>0)
-//			{
-//				if(cur>0)
-//				{
-//					for(int i=0;i<state_.exprTree_.size();i++)
-//					{
-//						void * result=state_.exprTree_[i]->FuncId(state_.exprTree_[i],cur,state_.input_);
-//						copyNewValue(tuple,result,state_.output_->getcolumn(i).get_length());
-//						tuple=(char *)tuple+state_.output_->getcolumn(i).get_length();
-//					}
-//				}
-//				else
-//				{
-//					cout<<"^^^^  the current tuple is null ^^^"<<endl;
-//					assert(false);
-//				}
-//				rb.bsti_->increase_cur_();
-//			}
-//			else{
-//				atomicPushRemainingBlock(rb);
-//				return true;
-//			}
-//		}
-//	}
-//
-//	lock_.acquire();
-//	BlockStreamBase * v_bsb;
-//	if(!free_block_stream_list_.empty()){
-//		v_bsb=free_block_stream_list_.front();
-//		free_block_stream_list_.pop_front();
-//	}
-//	else{
-//		lock_.release();//added
-//		return false;
-//	}
-//	lock_.release();
-//
-//	v_bsb->setEmpty();
-//	BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator=v_bsb->createIterator();
-//	traverse_iterator->reset();
-//	atomicPushRemainingBlock(remaining_block(v_bsb,traverse_iterator));
-//	return next(block);
 }
 
 bool BlockStreamProjectIterator::close(){
 	initialize_expanded_status();
-	sema_open_.post();
-	open_finished_ =false;
-	free_block_stream_list_.clear();
-	remaining_block_list_.clear();
 	destoryAllContext();
 	return state_.child_->close();
 }
 
 
-bool BlockStreamProjectIterator::atomicPopRemainingBlock(remaining_block & rb){
-	lock_.acquire();
-	if(remaining_block_list_.size()>0){
-		rb=remaining_block_list_.front();
-		remaining_block_list_.pop_front();
-		lock_.release();
-		return true;
-	}
-	else{
-		lock_.release();
-		return false;
-	}
-}
-
-void BlockStreamProjectIterator::atomicPushRemainingBlock(remaining_block rb){
-	lock_.acquire();
-	remaining_block_list_.push_back(rb);
-	lock_.release();
-}
 bool BlockStreamProjectIterator::copyNewValue(void *tuple,void *result,int length){
 	memcpy(tuple,result,length);
 }

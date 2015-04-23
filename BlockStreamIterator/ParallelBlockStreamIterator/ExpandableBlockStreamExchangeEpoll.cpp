@@ -39,14 +39,12 @@
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
 	initialize_expanded_status();
-	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	assert(state.partition_schema_.partition_key_index<100);
 	debug_winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 	initialize_expanded_status();
-	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	debug_winner_thread=0;
 }
@@ -124,7 +122,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 	}
 
 	/* A synchronization barrier, in case of multiple expanded threads*/
-	barrier_->Arrive();
+	barrierArrive();
 	return true;
 }
 
