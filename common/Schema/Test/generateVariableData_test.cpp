@@ -25,7 +25,7 @@ static int generateVariableData_test(){
 			double col_2=2;
 			char* col_3="string1";
 			while((start=blockstreambase->allocateTuple(24))!=0){
-				void *tuple=malloc(24);
+				void *tuple=malloc(24);		//newmalloc
 				*(int *)tuple=8;
 				*((int *)tuple+1)=col_1;
 				*((double *)((char *)tuple+8))=col_2;
@@ -46,7 +46,7 @@ static int generateVariableData_test(){
 			double col_2=2;
 			char* col_4="string123";
 			while((start=blockstreambase->allocateTuple(26))!=0){
-				void *tuple=malloc(26);
+				void *tuple=malloc(26);		//newmalloc
 				*(int *)tuple=10;
 				*((int *)tuple+1)=col_1;
 				*((double *)((char *)tuple+8))=col_2;

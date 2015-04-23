@@ -74,6 +74,9 @@ public:
 	Schema* getSchema()const;
 	int getAttributeIndex(const Attribute& att)const;
 	int long getNumberOfTuplesOnPartition(const unsigned partition_off) const;
+
+	// return the sum of all attribute's length in projection, as this projection's cost
+	unsigned int getProjectionCost() const;
 private:
 //	ProjectionOffset projection_offset_;
 	ProjectionID projection_id_;

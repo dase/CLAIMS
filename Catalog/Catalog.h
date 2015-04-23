@@ -34,6 +34,12 @@ struct TableIDAllocator{
 		return id;
 	}
 
+	void decrease_table_id() {
+		lock_.acquire();
+		--table_id_curosr;
+		lock_.release();
+	}
+
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int file_version)

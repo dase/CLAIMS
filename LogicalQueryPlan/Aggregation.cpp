@@ -251,7 +251,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			exchange_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			aggregation_state.isPartitionNode=false;//as regard to AVG(),for partition node and global node ,we should do some different operations.
-			changeSchemaforAVG(aggregation_state);//			aggregation_state.child=exchange;
+			changeSchemaforAVG(aggregation_state);
+			aggregation_state.child=exchange;
 			ret=new BlockStreamAggregationIterator(aggregation_state);
 			break;
 		}

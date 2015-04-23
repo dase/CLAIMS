@@ -13,7 +13,7 @@
 #endif
 #include "../common/Block/ResultSet.h"
 
-#include "../Parsetree/runparsetree.cpp"
+#include "../Parsetree/runparsetree.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
