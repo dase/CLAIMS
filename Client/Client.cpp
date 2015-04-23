@@ -59,6 +59,8 @@ Client::query_result Client::submit(std::string command, std::string& message,
 	}
 	ClientResponse *response = new ClientResponse();
 
+	command="#"+command;
+
 	write(m_clientFd, command.c_str(), command.length() + 1);
 	ClientLogging::log("Client: message from server!\n");
 	const int maxBytes = 10000L;
@@ -128,7 +130,7 @@ ClientResponse* Client::submitQuery(std::string args) {
 	write(m_clientFd, args.c_str(), args.length() + 1);
 	ClientLogging::log("Client: message from server!\n");
 	const int maxBytes = 10000L;
-	char *buf = new char[maxBytes];
+	char *buf = new char[maxBytes];	//new
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
@@ -157,7 +159,7 @@ ClientResponse* Client::receive() {
 	ClientResponse* ret = new ClientResponse();
 
 	const int maxBytes = 75536+sizeof(int)*2;
-	char *buf = new char[maxBytes];
+	char *buf = new char[maxBytes];	//new
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;

@@ -46,6 +46,8 @@ void CreateTable(
 		string &info
 		);
 
+void CreateTable(Catalog *catalog, Node *node);
+
 void CreateProjection(
 		Catalog *catalog,
 		Node *node,
@@ -55,6 +57,7 @@ void CreateProjection(
 		string &info
 		);
 
+void CreateProjection(Catalog *catalog, Node *node);
 
 void Query(
 		Catalog *catalog,
@@ -62,8 +65,11 @@ void Query(
 		ResultSet *&result_set,
 		bool& result_flag,
 		string &error_msg,
-		string &info
+		string &info,
+		const bool local_mode	// true表示将结果输出到本机标准输出，非C/S模式
 		);
+
+void Query(Catalog *catalog, Node *node);
 
 void LoadData(
 		Catalog *catalog,
@@ -74,6 +80,8 @@ void LoadData(
 		string &info
 		);
 
+void LoadData(Catalog *catalog, Node *node);
+
 void InsertData(
 		Catalog *catalog,
 		Node *node,
@@ -83,6 +91,8 @@ void InsertData(
 		string &info
 		);
 
+void InsertData(Catalog *catalog, Node *node);
+
 void ShowTable(
 		Catalog *catalog,
 		Node *node,
@@ -91,6 +101,8 @@ void ShowTable(
 		string &error_msg,
 		string &info
 		);
+
+void ShowTable(Catalog *catalog, Node *node);
 
 void DropTable(
 		Catalog *catalog,

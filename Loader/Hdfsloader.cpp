@@ -171,7 +171,7 @@ bool HdfsLoader::insertRecords(){
 //		assert(false);
 		return false;
 	}
-	void *tuple_buffer = malloc(table_schema->getTupleMaxSize());
+	void *tuple_buffer = malloc(table_schema->getTupleMaxSize());		//newmalloc
 
 	//add the row_id column
 	column_type* tmp = new column_type(t_u_long);
@@ -191,7 +191,7 @@ bool HdfsLoader::insertRecords(){
 	for (int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
 	{
 		//extract the sub tuple according to the projection schema  <target>
-		void* target = malloc(projection_schema[i]->getTupleMaxSize());
+		void* target = malloc(projection_schema[i]->getTupleMaxSize());		//newmalloc
 		sub_tuple_generator[i]->getSubTuple(tuple_buffer, target);
 
 		//determine the partition to write the tuple "target"

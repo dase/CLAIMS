@@ -785,7 +785,7 @@ opt_col_names: /* nil */	{ $$ = NULL; }
    ;
 
 insert_vals_list: '(' insert_vals ')'		{ $$ = newInsertValueList($2, NULL); }
-   | insert_vals_list ',' '(' insert_vals ')'	{ $$ = newInsertValueList($4, $1); }	//2014-4-17---Attention: the order can be reversed---by Yu
+   | '(' insert_vals ')' ',' insert_vals_list	{ $$ = newInsertValueList($2, $5); }	//2014-4-17---Attention: the order can be reversed---by Yu
    ;
    
 insert_vals:
@@ -1701,7 +1701,8 @@ data_type:		// 2-18---修改各类别的表示从按位区分到按大小区分-
    | DATETIME 				{ $$ = newDatatype (t_datatype, 15, NULL, 0, NULL, 0, NULL); }
    | YEAR 					{ $$ = newDatatype (t_datatype, 16, NULL, 0, NULL, 0, NULL); }
    | CHAR opt_length opt_csc	 	{ $$ = newDatatype (t_datatype, 17, $2, 0, $3, 0, NULL); }
-   | VARCHAR '(' INTNUM ')' opt_csc	{ Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL); }
+   | VARCHAR opt_length opt_csc	{ /*Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 18, t, 0, $5, 0, NULL);*/
+   							$$ = newDatatype(t_datatype, 18, $2, 0, $3, 0, NULL); }
    | BINARY opt_length 			{ $$ = newDatatype (t_datatype, 19, $2, 0, NULL, 0, NULL); }
    | VARBINARY '(' INTNUM ')' 	{  Node * t = newLength(t_datatype, atoi($3), NULL); $$ = newDatatype (t_datatype, 20, t, 0, NULL, 0, NULL); }
    | TINYBLOB 				{ $$ = newDatatype (t_datatype, 21, NULL, 0, NULL, 0, NULL); }

@@ -35,6 +35,12 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	}
 
+	if (true == g_thread_pool_used){
+		logging_->log("Initializing the ThreadPool...");
+		if (false == initializeThreadPool()) {
+			logging_->elog("initialize ThreadPool failed");
+		}
+	}
 	logging_->log("Initializing the AdaptiveEndPoint...");
 	initializeEndPoint();
 /**
@@ -101,6 +107,11 @@ std::string Environment::getIp(){
 unsigned Environment::getPort(){
 	return port;
 }
+
+ThreadPool* Environment::getThreadPool() const{
+	return thread_pool_;
+}
+
 void Environment::readConfigFile(){
 	libconfig::Config cfg;
 	cfg.readFile(Config::config_file.c_str());
@@ -180,6 +191,7 @@ Catalog* Environment::getCatalog()const{
 	return catalog_;
 }
 
+
 void Environment::initializeClientListener() {
 	listener_=new ClientListener(Config::client_listener_port);
 	listener_->configure();
@@ -195,3 +207,15 @@ void Environment::destoryClientListener() {
 	listener_->shutdown();
 	delete listener_;
 }
+
+bool Environment::initializeThreadPool() {
+	thread_pool_ = new ThreadPool();
+//	return thread_pool_->Thread_Pool_init(2*sysconf(_SC_NPROCESSORS_CONF));
+	return thread_pool_->Thread_Pool_init(100);
+
+}
+
+IteratorExecutorSlave* Environment::getIteratorExecutorSlave() const {
+	return iteratorExecutorSlave;
+}
+

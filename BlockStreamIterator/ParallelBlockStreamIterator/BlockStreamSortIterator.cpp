@@ -152,7 +152,7 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 		iterator_for_scan=block_buffer_.getBlock(block_offset)->createIterator();
 		void *tuple_ptr=0;
 		while((tuple_ptr=iterator_for_scan->nextTuple())!=0){
-			SNode *snode=(SNode*)malloc(sizeof(SNode));
+			SNode *snode=(SNode*)malloc(sizeof(SNode));		//newmalloc
 			snode->tuple=tuple_ptr;
 			snode->state_=&state_;
 			snode->op=0;

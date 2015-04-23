@@ -112,20 +112,20 @@ static int test_index_scan_iterator()
 			int value_high = 10110;
 
 			IndexScanIterator::query_range q1;
-			q1.value_low = malloc(sizeof(int));
+			q1.value_low = malloc(sizeof(int));		//newmalloc
 			q1.value_low = (void*)(&value_low);
 			q1.comp_low = EQ;
-			q1.value_high = malloc(sizeof(int));
+			q1.value_high = malloc(sizeof(int));		//newmalloc
 			q1.value_high = (void*)(&value_low);
 			q1.comp_high = EQ;
 			q1.c_type = t_int;
 			q_range.push_back(q1);
 
 			IndexScanIterator::query_range q2;
-			q2.value_low = malloc(sizeof(int));
+			q2.value_low = malloc(sizeof(int));		//newmalloc
 			q2.value_low = (void*)(&value_high);
 			q2.comp_low = EQ;
-			q2.value_high = malloc(sizeof(int));
+			q2.value_high = malloc(sizeof(int));		//newmalloc
 			q2.value_high = (void*)(&value_high);
 			q2.comp_high = EQ;
 			q2.c_type = t_int;

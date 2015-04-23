@@ -58,6 +58,8 @@ private:
 	int *m_clientFds;
 	int m_num;
 	const static int MAXCONN = 100;
+	enum client_type{java, c};
+	client_type client_type_;
 
 	static int standard_input;
 	static int standard_output;

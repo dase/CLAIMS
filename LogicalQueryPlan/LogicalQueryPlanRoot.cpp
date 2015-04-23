@@ -38,14 +38,6 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 //	Schema* schema=getSchema(child_dataflow.attribute_list_);
 	NodeTracker* node_tracker=NodeTracker::getInstance();
 
-	BlockStreamExpander::State expander_state_lower;
-	expander_state_lower.block_count_in_buffer_=10;
-	expander_state_lower.block_size_=block_size;
-	expander_state_lower.init_thread_count_=Config::initial_degree_of_parallelism;
-	expander_state_lower.child_=child_iterator;
-	expander_state_lower.schema_=getSchema(child_dataflow.attribute_list_);
-
-
 	bool data_exchange_used=false;
 	/**
 	 * If the number of partitions in the child dataflow is 1 and the the location is right in the collector,
@@ -53,9 +45,17 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	 */
 	if(!(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartitionList()[0].getLocation()==collecter_)){
 		data_exchange_used=true;
+
+		BlockStreamExpander::State expander_state_lower;
+		expander_state_lower.block_count_in_buffer_=10;
+		expander_state_lower.block_size_=block_size;
+		expander_state_lower.init_thread_count_=Config::initial_degree_of_parallelism;
+		expander_state_lower.child_=child_iterator;
+		expander_state_lower.schema_=getSchema(child_dataflow.attribute_list_);
+		BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state_lower);
+
 		ExpandableBlockStreamExchangeEpoll::State state;
 		state.block_size_=block_size;
-		BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state_lower);
 		state.child_=expander_lower;//child_iterator;
 		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 		state.schema_=getSchema(child_dataflow.attribute_list_);
@@ -83,7 +83,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamIteratorBase* middle_tier;
 	if(!limit_constraint_.canBeOmitted()){
 		/* we should add a limit operator*/
-		BlockStreamLimit::State limit_state(expander_state.schema_,expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
+		BlockStreamLimit::State limit_state(expander_state.schema_->duplicateSchema(),expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
 		BlockStreamIteratorBase* limit=new BlockStreamLimit(limit_state);
 		middle_tier=limit;
 	}
