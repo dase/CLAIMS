@@ -52,6 +52,7 @@ public:
 
 	class scan_thread_context:public thread_context{
 	public:
+		~scan_thread_context(){};
 		assigned_data assigned_data_;
 	};
 

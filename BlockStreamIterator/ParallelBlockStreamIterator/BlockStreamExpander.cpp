@@ -152,7 +152,9 @@ void* BlockStreamExpander::expanded_work(void* arg){
 	}
 
 	Pthis->logging_->log("[%ld] %lx begins to open child\n",Pthis->expander_id_,pid);
+	ticks start_open=curtick();
 	Pthis->state_.child_->open(Pthis->state_.partition_offset);
+	printf("worker thread open time: %4.4f s\n",getSecond(start_open));
 	Pthis->logging_->log("[%ld] %lx finished opening child\n",Pthis->expander_id_,pid);
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pid)){
 //		unregisterNewThreadToAllBarriers();
