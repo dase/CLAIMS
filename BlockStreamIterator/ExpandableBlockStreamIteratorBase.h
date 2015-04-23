@@ -22,6 +22,10 @@ class thread_context{
 //	BlockStreamBase* block_for_asking_;
 //	BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
 //	BasicHashTable::Iterator hashtable_iterator_;
+public:
+	virtual ~thread_context(){
+
+	}
 };
 typedef int barrier_number;
 typedef int serialized_section_number;

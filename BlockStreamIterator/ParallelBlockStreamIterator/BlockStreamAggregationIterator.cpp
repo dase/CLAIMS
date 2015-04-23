@@ -84,7 +84,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		open_finished_=true;
 
 	}
-	printf("Prepare time: %4.4f ms\n",getMilliSecond(start));
 	start=curtick();
 	/* A private hash table is allocated for each thread to buffer the local results. All the private hash table should be merged
 	 * at the final phase to complete the aggregation. Aggregation using private hash tables is called private aggregation. Although
@@ -93,7 +92,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	 */
 	BasicHashTable* private_hashtable=new BasicHashTable(state_.nbuckets,state_.bucketsize,state_.hashSchema->getTupleMaxSize());
 
-	printf("private hash table init time: %4.4f ms\n",getMilliSecond(start));
 	start=curtick();
 	barrierArrive(1);
 
@@ -200,8 +198,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		bsb->setEmpty();
 	}
 
-	printf("private phase: %4.4f ms\n",getMilliSecond(start));
-	start=curtick();
 	for(int i=0;i<state_.nbuckets;i++)
 	{
 		private_hashtable->placeIterator(pht_it,i);
@@ -283,9 +279,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 			hashtable_->unlockBlock(bn);
 			pht_it.increase_cur_();
 		}
-		bsb->setEmpty();
 	}
-	printf("merge time: %4.4f ms\n",getMilliSecond(start));
 
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterExpandedThreadToAllBarriers(1);
@@ -316,9 +310,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
  *
  */
 bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
-	block->setEmpty();
-	unregisterExpandedThreadToAllBarriers(3);
-	return false;
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterExpandedThreadToAllBarriers(3);
 		printf("<<<<<<<<<<<<<<<<<Aggregation next detected call back signal!>>>>>>>>>>>>>>>>>\n");

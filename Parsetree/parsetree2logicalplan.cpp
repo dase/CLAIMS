@@ -872,10 +872,59 @@ static void ExprCanCancelProject1(Node *node,int flag,bool& ans)
 		}
 	}
 }
+static void ExprCanCancelProject2(Node *node,int flag,bool& ans)
+{
+	switch(node->type)
+	{
+		case t_expr_func:
+		{
+			Expr_func * funcnode=(Expr_func *)node;
+			if(strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
+			{
+			}
+			else if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+			}
+			else
+			{
+				ans=0;
+			}
+		}break;
+		case t_expr_cal:
+		{
+			ans=0;
+		}break;
+		case t_name:
+		case t_name_name:
+		{
+			ans=0;
+		}break;
+		case t_stringval:
+		{
+
+		}break;
+		case t_intnum:
+		{
+
+		}break;
+		case t_approxnum:
+		{
+
+		}break;
+		case t_bool:
+		{
+
+		}break;
+		default:
+		{
+		}
+	}
+	return;
+}
 static bool CanCancelProject1(Node* node)
 {
 	bool result=1;
-	for(Node *p=node;p!=NULL;)
+	for(Node *p=node;p!=NULL&&result;)
 	{
 		Select_list *selectlist=(Select_list *)p;
 		Select_expr *sexpr=(Select_expr *)selectlist->args;
@@ -887,6 +936,20 @@ static bool CanCancelProject1(Node* node)
 		{
 			SQLParse_log("this sql has count(*)");
 		}
+		p=selectlist->next;
+	}
+	return result;
+}
+static bool CanCancelProject2(Node* node)
+{
+	bool result=1;
+	for(Node *p=node;p!=NULL&&result;)
+	{
+		Select_list *selectlist=(Select_list *)p;
+		Select_expr *sexpr=(Select_expr *)selectlist->args;
+
+		ExprCanCancelProject2(sexpr->colname,0,result);
+
 		p=selectlist->next;
 	}
 	return result;
@@ -1252,7 +1315,14 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 //	SQLParse_log("has_agg= %d,agg_has_expr=%d,agg_in_expr=%d",has_agg,agg_has_expr,agg_in_expr);
 	if(has_agg==0&&node->groupby_list==NULL)
 	{
-		select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,0);
+		if(!CanCancelProject2(((Query_stmt *)parsetree)->select_list))
+		{
+			select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,0);
+		}
+		else
+		{
+			select_logicalplan=where_from_logicalplan;
+		}
 	}
 	else
 	{
@@ -1287,7 +1357,14 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 //#endif
 		}
 		LogicalOperator* projection_or_aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_logicalplan);
-		select_logicalplan= select_where_from2logicalplan(parsetree,projection_or_aggregation,2);
+		if(!CanCancelProject2(((Query_stmt *)parsetree)->select_list))
+		{
+			select_logicalplan= select_where_from2logicalplan(parsetree,projection_or_aggregation,2);
+		}
+		else
+		{
+			select_logicalplan=projection_or_aggregation;
+		}
 	}
 	return select_logicalplan;
 }

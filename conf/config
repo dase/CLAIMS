@@ -49,3 +49,4 @@ pipelined_exchange=1
 
 local_disk_mode=1
 
+scan_batch=100
