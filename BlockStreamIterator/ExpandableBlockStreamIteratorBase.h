@@ -75,10 +75,10 @@ protected:
 	 */
 	void destoryAllContext( );
 
-	/*
-	 * This method is call when a thread wants to destroy its own context
-	 */
-	void destorySelfContext();
+//	/*
+//	 * This method is call when a thread wants to destroy its own context
+//	 */
+//	void destorySelfContext();
 
 	bool checkTerminateRequest();
 

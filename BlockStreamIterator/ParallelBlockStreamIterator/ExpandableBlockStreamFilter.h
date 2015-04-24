@@ -36,14 +36,7 @@ public:
 		BlockStreamBase* temp_block_;
 		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
 		vector<QNode *>thread_qual_;
-		~filter_thread_context(){
-			delete block_for_asking_;
-			delete temp_block_;
-			delete block_stream_iterator_;
-			for (int i =0 ;i<thread_qual_.size();i++){
-				delete thread_qual_[i];
-			}
-		}
+		~filter_thread_context();
 	};
 	/* struct to hold the remaining data when the next is returned but the block from the child
 	 *  iterator is not exhausted.*/

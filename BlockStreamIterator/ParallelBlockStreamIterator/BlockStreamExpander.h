@@ -54,7 +54,6 @@ public:
 	void print();
 private:
 	static void* expanded_work(void* arg);
-	static void* coordinate_work(void* arg);
 	bool ChildExhausted();
 	bool createNewExpandedThread();
 	void terminateExpandedThread(pthread_t pid);

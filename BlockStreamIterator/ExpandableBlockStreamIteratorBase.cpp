@@ -72,18 +72,18 @@ void ExpandableBlockStreamIteratorBase::destoryAllContext(){
 		context_list_.erase(it);
 	}
 }
-void ExpandableBlockStreamIteratorBase::destorySelfContext(){
-	context_lock_.acquire();
-	/* assert that no context is available for current thread*/
-	assert(context_list_.find(pthread_self())!=context_list_.cend());
-
-//	thread_context tc;
-//	tc.iterator_=tc.block_for_asking_->createIterator();
-//	assert(tc.iterator_->currentTuple()==0);
-	context_list_.erase(pthread_self());
-//	printf("Thread %lx is inited!\n",pthread_self());
-	context_lock_.release();
-}
+//void ExpandableBlockStreamIteratorBase::destorySelfContext(){
+//	context_lock_.acquire();
+//	/* assert that no context is available for current thread*/
+//	assert(context_list_.find(pthread_self())!=context_list_.cend());
+//
+////	thread_context tc;
+////	tc.iterator_=tc.block_for_asking_->createIterator();
+////	assert(tc.iterator_->currentTuple()==0);
+//	context_list_.erase(pthread_self());
+////	printf("Thread %lx is inited!\n",pthread_self());
+//	context_lock_.release();
+//}
 void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 	context_lock_.acquire();
 	/* assert that no context is available for current thread*/
@@ -114,7 +114,7 @@ bool ExpandableBlockStreamIteratorBase::checkTerminateRequest() {
 }
 
 void ExpandableBlockStreamIteratorBase::setReturnStatus(bool ret) {
-	ret=open_ret_&ret;
+	ret=open_ret_&&ret;
 }
 
 bool ExpandableBlockStreamIteratorBase::getReturnStatus() const {

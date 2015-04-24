@@ -11,17 +11,13 @@
 #include "../../Executor/ExpanderTracker.h"
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
-:state_(state),open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
-	sema_open_.set_value(1);
-	sema_open_end_.set_value(1);
+:state_(state),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
 	initialize_expanded_status();
 	assert(state_.hashSchema);
 }
 
 BlockStreamAggregationIterator::BlockStreamAggregationIterator()
-:open_finished_(false), open_finished_end_(false),hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
-	sema_open_.set_value(1);
-	sema_open_end_.set_value(1);
+:hashtable_(0),hash_(0),bucket_cur_(0),ExpandableBlockStreamIteratorBase(4,3){
 	initialize_expanded_status();
 }
 
@@ -61,7 +57,6 @@ isPartitionNode(isPartitionNode){
 }
 
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
-	barrier_.RegisterOneThread();
 	RegisterExpandedThreadToAllBarriers();
 
 	if(tryEntryIntoSerializedSection(0)){
@@ -81,8 +76,6 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		prepareAggregateFunctions();
 		hash_=PartitionFunctionFactory::createGeneralModuloFunction(state_.nbuckets);
 		hashtable_=new BasicHashTable(state_.nbuckets,state_.bucketsize,state_.hashSchema->getTupleMaxSize());//
-		open_finished_=true;
-
 	}
 	start=curtick();
 	/* A private hash table is allocated for each thread to buffer the local results. All the private hash table should be merged
@@ -281,7 +274,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 		it_=hashtable_->CreateIterator();
 		bucket_cur_=0;
 		hashtable_->placeIterator(it_,bucket_cur_);
-		open_finished_end_=true;
+		setReturnStatus(true);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation  ",0));
 		perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
 		perf_info_->initialize();
@@ -290,6 +283,7 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 
 	delete bsb;
 	delete private_hashtable;
+	return getReturnStatus();
 }
 
 /*
@@ -450,14 +444,8 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 bool BlockStreamAggregationIterator::close(){
 
 	initialize_expanded_status();
-	sema_open_.post();
-	sema_open_end_.post();
-
-	open_finished_=false;
-	open_finished_end_=false;
 
 	delete hashtable_;
-	ht_free_block_stream_list_.clear();
 	globalAggregationFunctions_.clear();
 	inputAggregationToOutput_.clear();
 	inputGroupByToOutput_.clear();
@@ -469,20 +457,6 @@ void BlockStreamAggregationIterator::print(){
 	printf("Aggregation:  %d buckets in hash table\n",state_.nbuckets);
 	printf("---------------\n");
 	state_.child->print();
-}
-BlockStreamBase* BlockStreamAggregationIterator::AtomicPopFreeHtBlockStream(){
-	assert(!ht_free_block_stream_list_.empty());
-	lock_.acquire();
-	BlockStreamBase *block=ht_free_block_stream_list_.front();
-	ht_free_block_stream_list_.pop_front();
-	lock_.release();
-	return block;
-}
-
-void BlockStreamAggregationIterator::AtomicPushFreeHtBlockStream(BlockStreamBase* block){
-	lock_.acquire();
-	ht_free_block_stream_list_.push_back(block);
-	lock_.release();
 }
 
 void BlockStreamAggregationIterator::prepareIndex() {

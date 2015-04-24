@@ -274,3 +274,12 @@ void ExpandableBlockStreamFilter::computeFilter(bool& ret, void* tuple,expr_func
 void ExpandableBlockStreamFilter::computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func func_gen, Schema* schema, vector<QNode*> allocator) {
 	func_gen(tuple,&ret);
 }
+
+ExpandableBlockStreamFilter::filter_thread_context::~filter_thread_context() {
+	delete block_for_asking_;
+	delete temp_block_;
+	delete block_stream_iterator_;
+	for (int i =0 ;i<thread_qual_.size();i++){
+		delete thread_qual_[i];
+	}
+}
