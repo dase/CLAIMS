@@ -5,6 +5,10 @@
  *      Author: wangli
  */
 #include "command_line.h"
+#include <stdio.h>
+#include <iosfwd>
+
+#include "string_process.h"
 
 bool input_struct::append(const char* str) {
     while(*str)
@@ -73,6 +77,7 @@ void store_history(char* command) {
     string str(command);
     ofstream output_file("./.history",std::ofstream::out | std::ofstream::app);
     output_file<<str<<endl;
+    output_file.close();
 }
 
 int get_one_command(string& str) {
@@ -81,14 +86,18 @@ int get_one_command(string& str) {
 
 	// Create prompt string from user name and current working directory.
 	snprintf(shell_prompt, sizeof(shell_prompt), "CLAIMS>");
-
 	// Display prompt and read input (n.b. input must be freed after use)...
 	bool first_line=true;
 	bool last_line=false;
 	input_struct is;
+	usleep(100000);
 	while(true){
+
 		if(!first_line)
 			snprintf(shell_prompt,sizeof(shell_prompt),"     > ");
+		else{
+//			printf("CLAIMS>");
+		}
 		first_line=false;
 		input_line = readline(shell_prompt);
 		is.append_til(input_line,';',last_line);
@@ -98,11 +107,11 @@ int get_one_command(string& str) {
 		free(input_line);
 	}
 
+	str=trimSpecialCharactor(std::string(is.string));
 	// Add input to history.
-	add_history(is.string);
-	store_history(is.string);
-
-	printf("input is %s\n",is.string);
-	str=string(is.string);
-
+	if(last_command!=str){
+		add_history(str.c_str());
+		store_history((char*)str.c_str());
+		last_command=str;
+	}
 }

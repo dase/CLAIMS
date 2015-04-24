@@ -44,7 +44,7 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::open(const PartitionOffset&
 	state_.child_->open(state_.partition_offset);
 
 	/** get the number of mergers **/
-	nuppers_=state_.upper_ip_list_.size();
+	nuppers_=state_.upper_id_list_.size();
 
 	/** set the child exhausted bit **/
 	child_exhausted_=false;
@@ -73,8 +73,8 @@ bool ExpandableBlockStreamExchangeLowerMaterialized::open(const PartitionOffset&
 
 
 	/** connect to the mergers **/
-	for(unsigned upper_id=0;upper_id<state_.upper_ip_list_.size();upper_id++){
-		if(!ConnectToUpper(ExchangeID(state_.exchange_id_,upper_id),state_.upper_ip_list_[upper_id],socket_fd_upper_list_[upper_id],log_)){
+	for(unsigned upper_id=0;upper_id<state_.upper_id_list_.size();upper_id++){
+		if(!ConnectToUpper(ExchangeID(state_.exchange_id_,upper_id),state_.upper_id_list_[upper_id],socket_fd_upper_list_[upper_id],log_)){
 			return false;
 		}
 	}
@@ -229,8 +229,8 @@ void ExpandableBlockStreamExchangeLowerMaterialized::Send(){
 			}
 			sendtotal+=recvbytes;
 		}
-		log_->log("Waiting the connection notification from [%s]",state_.upper_ip_list_[partition_id].c_str());
-		log_->log("The block is received the upper[%s].",state_.upper_ip_list_[partition_id].c_str());
+		log_->log("Waiting the connection notification from [%d]",state_.upper_id_list_[partition_id]);
+		log_->log("The block is received the upper[%d].",state_.upper_id_list_[partition_id]);
 	}
 }
 bool ExpandableBlockStreamExchangeLowerMaterialized::Materialize(){

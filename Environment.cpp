@@ -127,11 +127,11 @@ void Environment::initializeEndPoint(){
 	}
 	port=endpoint_port;
 	logging_->log("Initializing the AdaptiveEndPoint as EndPoint://%s:%d.",endpoint_ip.c_str(),endpoint_port);
-	std::ostringstream name,port;
-	port<<endpoint_port;
-	name<<"EndPoint://"<<endpoint_ip<<":"<<port;
+	std::ostringstream name,port_str;
+	port_str<<endpoint_port;
+	name<<"EndPoint://"<<endpoint_ip<<":"<<endpoint_port;
 
-	endpoint=new AdaptiveEndPoint(name.str().c_str(),endpoint_ip,port.str());
+	endpoint=new AdaptiveEndPoint(name.str().c_str(),endpoint_ip,port_str.str());
 }
 void Environment::initializeCoordinator(){
 	coordinator=new Coordinator();

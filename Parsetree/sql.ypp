@@ -1151,8 +1151,10 @@ rename_list: /* nil */	{}
 stmt: describe_stmt { emit("STMT"); }
    ;
    
-describe_stmt: DESCRIBE NAME {}
+describe_stmt: DESCRIBE TABLE NAME {}
+	|DESCRIBE NAME {}
    | DESC NAME {}
+   | DESC TABLE NAME {}
    ;
    
    /** use database **/

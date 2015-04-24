@@ -21,11 +21,11 @@ ResourceManagerMaster::~ResourceManagerMaster() {
 	framework->~Framework();
 	node_tracker_->~NodeTracker();
 }
-NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
-	NodeID new_node_id=node_tracker_->RegisterNode(new_slave_ip_);
+NodeID ResourceManagerMaster::RegisterNewSlave(NodeAddress new_slave_address){
+	NodeID new_node_id=node_tracker_->RegisterNode(new_slave_address);
 	if(new_node_id==-1){
 		/* Node with the given ip has already existed.*/
-		logging_->elog("[%s] has already exists",new_slave_ip_.c_str());
+		logging_->elog("[%s:%s] has already exists",new_slave_address.ip.c_str(),new_slave_address.port.c_str());
 		return false;
 	}
 
@@ -36,7 +36,7 @@ NodeID ResourceManagerMaster::RegisterNewSlave(NodeIP new_slave_ip_){
 //	}
 	node_to_resourceinfo_[new_node_id]=new InstanceResourceInfo();
 
-	logging_->log("[ip=%s, id=%d] is successfully registered.",new_slave_ip_.c_str(),new_node_id);
+	logging_->log("[ip=%s:%s, id=%d] is successfully registered.",new_slave_address.ip.c_str(),new_slave_address.port.c_str(),new_node_id);
 
 //	hashmap<NodeID,ResourceInfo*>::iterator it=node_to_resourceinfo_.begin();
 //	while(it!=node_to_resourceinfo_.end()){
@@ -133,7 +133,12 @@ void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetRepo
 }
 void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveNewNodeRegister(const NodeRegisterMessage &message,const Theron::Address from){
 
-	NodeID assigned_node_id=rmm_->RegisterNewSlave(message.get_ip());
+	NodeAddress node_addr;
+	node_addr.ip=message.get_ip();
+	std::ostringstream str;
+	str<<message.port;
+	node_addr.port=str.str();
+	NodeID assigned_node_id=rmm_->RegisterNewSlave(node_addr);
 	rmm_->logging_->log("Received register request from %s:%d, the allocated NodeID=%d",message.get_ip().c_str(),message.port,assigned_node_id);
 	Send(assigned_node_id,from);
 }

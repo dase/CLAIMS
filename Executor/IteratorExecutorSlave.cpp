@@ -10,6 +10,7 @@
 #include "../common/Logging.h"
 #include "../Resource/CPUResource.h"
 #include "../utility/print_tool.h"
+#include <iosfwd>
 
 
 IteratorExecutorSlave::IteratorExecutorSlave(){
@@ -22,8 +23,10 @@ IteratorExecutorSlave::IteratorExecutorSlave(){
 	framework->SetMaxThreads(1);
 //	framework->SetMinThreads(5);
 	logging_->log("Minimum thread is set to be %d",framework->GetMinThreads());
-	execute_iterator_actor=new ExecuteIteratorActor(this,*framework,("IteratorExecutorActor://"+Environment::getInstance()->getIp()).c_str());
-	logging_->log("Actor created with name: IteratorExecutorActor://%s",Environment::getInstance()->getIp().c_str());
+	std::ostringstream str;
+	str<<"IteratorExecutorActor://"<<Environment::getInstance()->getNodeID();
+	execute_iterator_actor=new ExecuteIteratorActor(this,*framework,str.str().c_str());
+	logging_->log("Actor created with name: IteratorExecutorActor://%d",Environment::getInstance()->getNodeID());
 
 }
 

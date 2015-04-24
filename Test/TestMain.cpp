@@ -122,7 +122,7 @@ int maina(int argc, char** argv){
 //	return test_index_manager();
 
 //	in_test();
-	test_expanderFramework_single_node(100000);
+//	test_expanderFramework_single_node(100000);
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
@@ -131,12 +131,12 @@ int maina(int argc, char** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-//	test_expanderFramework_single_node(1);
+	test_expanderFramework_single_node(1);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
 //	test_data_distribution_generator();
-//	tcp_h_test_multi_nodes();
+	tcp_h_test_multi_nodes();
 //	in_segment_scalability_test(10);
 //	hash_table_test();
 

@@ -22,7 +22,7 @@ BlockManager *BlockManager::getInstance(){
 BlockManager::BlockManager() {
 	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
 	std::ostringstream actor_name;
-	actor_name<<"blockManagerWorkerActor://"<<Environment::getInstance()->getIp();
+	actor_name<<"blockManagerWorkerActor://"<<Environment::getInstance()->getNodeID();
 
 	actor_=new BlockManagerWorkerActor(framework_,actor_name.str().c_str(),this);
 	logging_=new StorageManagerLogging();

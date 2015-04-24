@@ -8,6 +8,9 @@
 #include <string.h>
 using namespace std;
 
+/* An auxiliary structure used for removing duplicated command in the history.*/
+static std::string last_command;
+
 /* The maximum length of a command */
 const int string_length=1024;
 

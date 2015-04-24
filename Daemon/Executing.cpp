@@ -46,7 +46,6 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	collector->next(0);
 	collector->close();
 	resultset = collector->getResultSet();
-	//	resultset->print();
 	root->~LogicalOperator();;
 	return resultset;
 }

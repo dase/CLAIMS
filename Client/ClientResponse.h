@@ -43,8 +43,8 @@
 #define HEADER	3
 #define DATA	4
 #define END		5
-#define CHANGE 6
 struct ColumnHeader {
+#define CHANGE 6
 	std::vector<std::string> header_list;
 	void add_header(std::string name) {
 		header_list.push_back(name);
@@ -223,7 +223,7 @@ struct ClientResponse {
 	void deserialize(const char* received_buffer, int recieved_bytes_length) {
 		const int st = *(int*) received_buffer;
 		const int len = *((int*) received_buffer + 1);
-		if(!(recieved_bytes_length == sizeof(int) + sizeof(int) + len)){
+		if(!(recieved_bytes_length == len)){
 			printf("recieved_bytes_length %d, len %d\n",recieved_bytes_length, len);
 			assert(false);
 		}

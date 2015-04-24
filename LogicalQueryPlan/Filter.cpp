@@ -156,7 +156,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 					upper_id_list=NodeTracker::getInstance()->getNodeIDList();
 				}
 			}
-			state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			state.upper_id_list_=upper_id_list;
 
 			assert(requirement.hasReuiredPartitionKey());
 
@@ -165,7 +165,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
 
-			state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			state.lower_id_list_=lower_id_list;
 
 
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);

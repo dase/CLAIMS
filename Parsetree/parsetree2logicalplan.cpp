@@ -215,6 +215,7 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 						else
 						{
 							assert(false);
+							SQLParse_elog("can't find join attrbutes");
 							return 0;
 						}
 					}break;

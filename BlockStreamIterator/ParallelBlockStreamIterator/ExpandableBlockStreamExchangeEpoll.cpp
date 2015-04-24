@@ -65,7 +65,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 
 		nexhausted_lowers=0;
 		this->partition_offset=partition_offset;
-		nlowers=state.lower_ip_list_.size();
+		nlowers=state.lower_id_list_.size();
 
 		for(unsigned i=0;i<nlowers;i++){
 			debug_received_block[i]=0;
@@ -180,12 +180,12 @@ bool ExpandableBlockStreamExchangeEpoll::close(){
 
 void ExpandableBlockStreamExchangeEpoll::print(){
 	printf("Exchange upper[%ld]:",state.exchange_id_);
-	for(unsigned i=0;i<state.upper_ip_list_.size();i++){
-		printf("%s ",state.upper_ip_list_[i].c_str());
+	for(unsigned i=0;i<state.upper_id_list_.size();i++){
+		printf("%d ",state.upper_id_list_[i]);
 	}
 	printf("\nlower:");
-	for(unsigned i=0;i<state.lower_ip_list_.size();i++){
-		printf("%s ",state.lower_ip_list_[i].c_str());
+	for(unsigned i=0;i<state.lower_id_list_.size();i++){
+		printf("%d ",state.lower_id_list_[i]);
 	}
 	if(state.partition_schema_.mode==partition_schema::hash){
 		printf("Hash partition. ");
@@ -267,30 +267,31 @@ bool ExpandableBlockStreamExchangeEpoll::RegisterExchange(){
 }
 bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
-	for(unsigned i=0;i<state.upper_ip_list_.size();i++){
-		std::string ip=state.upper_ip_list_[i];
+	for(unsigned i=0;i<state.upper_id_list_.size();i++){
+		NodeID id=state.upper_id_list_[i];
 		/* Repeatedly ask node with ip for port information until the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
 		int wait_time_in_millisecond=1;
-		while(et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id_,i),ip)==0){
+		NodeAddress node_addr;
+		while(!et->AskForSocketConnectionInfo(ExchangeID(state.exchange_id_,i),id,node_addr)){
 			usleep(wait_time_in_millisecond);
 			wait_time_in_millisecond=wait_time_in_millisecond<200?wait_time_in_millisecond+20:200;
 		}
 	}
 }
 bool ExpandableBlockStreamExchangeEpoll::isMaster(){
-	logging_->log("[%ld] master ip=%s, self ip=%s",state.exchange_id_,state.upper_ip_list_[0].c_str(),Environment::getInstance()->getIp().c_str());
-	return Environment::getInstance()->getIp()==state.upper_ip_list_[0];
+	logging_->log("[%ld] master ip=%s, self ip=%s",state.exchange_id_,state.upper_id_list_[0],Environment::getInstance()->getIp().c_str());
+	return partition_offset==0;
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
 //	GETCURRENTTIME(start);
 	if(Config::pipelined_exchange){
-		for(unsigned i=0;i<state.lower_ip_list_.size();i++){
+		for(unsigned i=0;i<state.lower_id_list_.size();i++){
 			ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(
 					state.schema_->duplicateSchema(),
 					state.child_,
-					state.upper_ip_list_,
+					state.upper_id_list_,
 					state.block_size_,
 					state.exchange_id_,
 					state.partition_schema_);
@@ -299,7 +300,7 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 			EIELstate.partition_offset_=i;
 			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
 
-			if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list_[i])==false){
+			if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_id_list_[i])==false){
 				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id_);
 				return false;
 			}
@@ -308,13 +309,13 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 		}
 	}
 	else{
-		for(unsigned i=0;i<state.lower_ip_list_.size();i++){
-			ExpandableBlockStreamExchangeLowerMaterialized::State EIELstate(state.schema_->duplicateSchema(),state.child_,state.upper_ip_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
+		for(unsigned i=0;i<state.lower_id_list_.size();i++){
+			ExpandableBlockStreamExchangeLowerMaterialized::State EIELstate(state.schema_->duplicateSchema(),state.child_,state.upper_id_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
 			/* set the partition offset*/
 			EIELstate.partition_offset=i;
 			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerMaterialized(EIELstate);
 
-			if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_ip_list_[i])==false){
+			if(IEM->ExecuteBlockStreamIteratorsOnSite(EIEL,state.lower_id_list_[i])==false){
 				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id_);
 				return false;
 			}
@@ -415,7 +416,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->logging_->log("[%ld] Accepted connection on descriptor %d (host=%s, port=%s),id=%d\n",Pthis->state.exchange_id_, infd, hbuf, sbuf,Pthis->state.exchange_id_);
 						Pthis->lower_ip_array.push_back(hbuf);
 						Pthis->lower_sock_fd_to_index[infd]=Pthis->lower_ip_array.size()-1;
-						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_ip_list_.size());
+						assert(Pthis->lower_ip_array.size()<=Pthis->state.lower_id_list_.size());
 					}
 					/*Make the incoming socket non-blocking and add it to the list of fds to monitor.*/
 					if(!Pthis->SetSocketNonBlocking(infd)){
