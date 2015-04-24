@@ -23,7 +23,7 @@
 
 #include "../../Parsetree/sql_node_struct.h"
 #include "../../Parsetree/parsetree2logicalplan.cpp"
-#include "../../Parsetree/runparsetree.cpp"
+#include "../../Parsetree/runparsetree.h"
 
 #include "../Executing.h"
 

@@ -42,7 +42,7 @@
 
 #include "../sql_node_struct.h"
 #include "../parsetree2logicalplan.cpp"
-#include "../runparsetree.cpp"
+#include "../runparsetree.h"
 
 //struct Node;
 

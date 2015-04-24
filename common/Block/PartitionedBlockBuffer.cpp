@@ -29,7 +29,7 @@ PartitionedBlockBuffer::PartitionedBlockBuffer(unsigned nPartitions,unsigned blo
 		Block* block=new Block(block_size);
 //		 block->~Block();
 		empty_block_list.push_back(block);
-//		void* abc=malloc(block_size);
+//		void* abc=malloc(block_size);		//newmalloc
 //		free(abc);
 //		free(empty_block_list.back()->getBlock());
 	}

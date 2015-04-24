@@ -22,8 +22,10 @@ noinst_LIBRARIES=libparsetree.a
 libparsetree_a_SOURCES = \
 	semantic_analysis.cpp 		ExecuteLogicalQueryPlan.cpp \
 	ExecuteLogicalQueryPlan.h 	function.cpp \
-	lex.yy.cpp 			parsetree2logicalplan.cpp \
-	preprocess.cpp 			runparsetree.cpp \
+	lex.yy.cpp 				parsetree2logicalplan.cpp \
+	preprocess.cpp \
+	StreamBuffer.h			StreamBuffer.cpp \
+	runparsetree.h			runparsetree.cpp \
 	sql.tab.cpp 			sql.tab.hpp \
 	sql_node_struct.h 		wc2tb.cpp
 
