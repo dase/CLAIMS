@@ -1,5 +1,5 @@
 AC_INIT([Claims], [0.3], [imdb@ecnu])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O0 -DTHERON_XS"
 #CPPFLAGS="-w -o2 -DTHERON_XS"

@@ -10,6 +10,7 @@ install/
 autom4te.cache/
 claimsserver
 client
+config.h.in*
 config.guess
 config.status
 config.sub
