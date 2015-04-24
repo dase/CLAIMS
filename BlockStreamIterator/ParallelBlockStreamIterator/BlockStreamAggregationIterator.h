@@ -79,8 +79,6 @@ private:
 	/* prepare the aggregation functions */
 	void prepareAggregateFunctions();
 
-	BlockStreamBase* AtomicPopFreeHtBlockStream();
-	void AtomicPushFreeHtBlockStream(BlockStreamBase* block);
 
 public:
 	State state_;
@@ -93,14 +91,6 @@ private:
 	std::vector<fun> globalAggregationFunctions_;
 	std::vector<fun> privateAggregationFunctions_;
 
-	//in the open func and build the hashtable
-	std::list<BlockStreamBase *> ht_free_block_stream_list_;
-	semaphore sema_open_;
-	semaphore sema_open_end_;
-	bool open_finished_;
-	bool open_finished_end_;
-	Lock lock_;
-	Barrier barrier_;
 
 	//hashtable traverse and in the next func
 	Lock ht_cur_lock_;

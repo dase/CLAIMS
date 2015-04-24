@@ -154,13 +154,13 @@ void* BlockStreamExpander::expanded_work(void* arg){
 
 
 	if(Pthis->ChildExhausted()){
+		ExpanderTracker::getInstance()->deleteExpandedThreadStatus(pthread_self());
 		return 0;
 	}
 
 	Pthis->logging_->log("[%ld] %lx begins to open child\n",Pthis->expander_id_,pid);
 	ticks start_open=curtick();
 	Pthis->state_.child_->open(Pthis->state_.partition_offset);
-	printf("worker thread open time: %4.4f s\n",getSecond(start_open));
 	Pthis->logging_->log("[%ld] %lx finished opening child\n",Pthis->expander_id_,pid);
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pid)){
 //		unregisterNewThreadToAllBarriers();
@@ -176,9 +176,6 @@ void* BlockStreamExpander::expanded_work(void* arg){
 		BlockStreamBase* block_for_asking=BlockStreamBase::createBlock(Pthis->state_.schema_,Pthis->state_.block_size_);
 		block_for_asking->setEmpty();
 		while(Pthis->state_.child_->next(block_for_asking)){
-
-
-//			assert(!block_for_asking->Empty());
 			if(!block_for_asking->Empty()){
 				Pthis->lock_.acquire();
 				Pthis->received_tuples_+=block_for_asking->getTuplesInBlock();
@@ -188,9 +185,13 @@ void* BlockStreamExpander::expanded_work(void* arg){
 				block_count++;
 			}
 		}
+		/*
+		 * When the above loop exits, it means that either the stage beginner has exhausted, or it received termination request.
+		 */
 		delete block_for_asking;
-		// ??? 无法在向child要数据的过程中控制线程，直到取完数据才会执行到这里
-		// 其实在child的next()中都有检测callback，检测到则直接返回false
+
+
+
 		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 	//		unregisterNewThreadToAllBarriers();
 			Pthis->logging_->log("[%ld]<<<<<<<<<<<<<<<<<Expander detected call back signal during next!>>>>>>>>%lx>>>>>>>>>\n",Pthis->expander_id_,pthread_self());
@@ -389,38 +390,13 @@ unsigned BlockStreamExpander::getDegreeOfParallelism(){
 	lock_.release();
 	return ret;
 }
-void* BlockStreamExpander::coordinate_work(void* arg){
-//	logging_->log("coordinate thread is created!!!!!!!!!!!!!\n");
-//	BlockStreamExpander* pthis=static_cast<BlockStreamExpander*>(arg);
-//	while(!pthis->ChildExhausted()){
-//		if(rand()%100>50){
-//			pthis->createNewThread();
-//		}
-//		else{
-//			if(pthis->in_work_expanded_thread_list_.size()<=1){
-////				logging_->log("Coordiante: this is the last working thread, cannot be called back!\n");
-//				continue;
-//			}
-//			int drop_thread_index=rand()%pthis->in_work_expanded_thread_list_.size();
-//			std::set<pthread_t>::iterator it=pthis->in_work_expanded_thread_list_.begin();
-//			for(unsigned i=0;i!=drop_thread_index;i++){
-//				it++;
-//			}
-//			pthis->callBackThread(*it);
-//		}
-//		usleep(100000);
-//		logging_->log("%d thread in expander\n",pthis->in_work_expanded_thread_list_.size());
-////		break;
-//	}
-//	logging_->log("coordinate thread is terminated!!!!!!!!!!!!!\n");
-}
 bool BlockStreamExpander::Expand(){
 	if(input_data_complete_){
-//		/*
-//		 * Expander does not expand when at least one expanded thread has completely processed
-//		 * the input data flow. Otherwise the newly created expanded thread might not be able to
-//		 * work properly if the expander's close is called before its create.
-//		 */
+		/*
+		 * Expander does not expand when at least one expanded thread has completely processed
+		 * the input data flow. Otherwise the newly created expanded thread might not be able to
+		 * work properly if the expander's close is called before its creation.
+		 */
 //		printf("[Expander %d ]Expanding failed because the input data is complete!\n",expander_id_);
 		return false;
 	}
@@ -428,8 +404,6 @@ bool BlockStreamExpander::Expand(){
 }
 
 bool BlockStreamExpander::Shrink(){
-//	return true;
-//	bool ret;
 	ticks start=curtick();
 	lock_.acquire();
 	if(in_work_expanded_thread_list_.empty()){
