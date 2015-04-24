@@ -1143,7 +1143,7 @@ private:
     const unsigned int mallocSize =
         sizeof(BatchInfo) - sizeof(AllocatedType) * objectPerAllocation +
         sizeof(AllocatedType) * objectPerAllocation * objectsPerPage;
-    BatchInfo* batch = static_cast<BatchInfo*>(malloc(mallocSize));
+    BatchInfo* batch = static_cast<BatchInfo*>(malloc(mallocSize));		//newmalloc
     batch->next_ = 0;
     batch->used_ = batch->buffer_;
     batch->end_ = batch->buffer_ + objectsPerPage;
@@ -1528,7 +1528,7 @@ static inline char* duplicateStringValue(const char* value,
   if (length >= (unsigned)Value::maxInt)
     length = Value::maxInt - 1;
 
-  char* newString = static_cast<char*>(malloc(length + 1));
+  char* newString = static_cast<char*>(malloc(length + 1));		//newmalloc
   JSON_ASSERT_MESSAGE(newString != 0,
                       "in Json::Value::duplicateStringValue(): "
                       "Failed to allocate string value buffer");

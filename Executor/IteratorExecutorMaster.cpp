@@ -66,10 +66,19 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamItera
 	return true;
 }
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_id){
-	PhysicalQueryPlan im(it);
+	PhysicalQueryPlan* im = new PhysicalQueryPlan(it);
 
-	Message4K str= PhysicalQueryPlan::serialize4K(im);
+//	GETCURRENTTIME(s);
+	Message4K str= PhysicalQueryPlan::serialize4K(*im);
+//	cout<<"Yu debug: serialize message use:"<<GetElapsedTime(s)<<endl;
 
+	// if target is this node, send plan to Slave directly other than by network
+	if (target_id == 0) {
+		PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(PhysicalQueryPlan::deserialize4K(str));
+		Environment::getInstance()->getIteratorExecutorSlave()->createNewThreadAndRun(new_plan);
+		logging_->log("The iterator tree has been sent to local slave.\n");
+		return true;
+	}
 //	TimeOutReceiver receiver(endpoint);
 //
 //	Theron::Catcher<Message256> resultCatcher;
@@ -79,6 +88,8 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIterat
 	actor_name<<"IteratorExecutorActor://"<<target_id;
 //	cout<<"actname: "<<ip_port.str()<<endl;
 //	framework->Send(str,receiver.GetAddress(),Theron::Address(ip_port.str().c_str()));
+//	GETCURRENTTIME(t);
+//	printf("Yu debug:time when to send message: %ld.%ld\n", t.tv_sec, t.tv_usec);
 	framework->Send(str,Theron::Address(),Theron::Address(actor_name.str().c_str()));
 	logging_->log("The serialized iterator tree has been sent to %s.\n",actor_name.str().c_str());
 //

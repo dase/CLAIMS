@@ -70,6 +70,7 @@ int main(int argc, char** argv){
 			continue;
 		}
 
+		command="#"+command;
 
 		ResultSet rs;
 		switch(client.submit(command,message,rs)){

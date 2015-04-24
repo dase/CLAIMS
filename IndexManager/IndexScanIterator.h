@@ -63,8 +63,8 @@ public:
 
 			if (value_low == 0 || value_high ==0)
 			{
-				value_low = malloc(c_type.get_length());
-				value_high = malloc(c_type.get_length());
+				value_low = malloc(c_type.get_length());		//newmalloc
+				value_high = malloc(c_type.get_length());		//newmalloc
 				for (unsigned i = 0; i < c_type.get_length(); i++)
 				{
 					*((char*)value_low+i)=valuebytes_low[i];
