@@ -306,6 +306,25 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 	 *  there is at least one expanded threads to process the remaining data in buffer.
 	 */
 
+
+	/*
+	 * The following block will make decision randomly, which is very helpful to vervify the
+	 * correctness of the elastic iterator model.
+	 */
+//	{
+//		int ret=rand()%2;// overwrite the decide with a random seed to test the correctness of shrinkage and expansion.
+//
+//		if(ret==DECISION_EXPAND){
+//			return expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
+//		}
+//		if(ret==DECISION_SHRINK){
+//			return shrinkIfNotExceedTheMinDegreeOfParallelims(current_degree_of_parallelism);
+//		}
+//		return ret;
+//	}
+
+
+
 	int ret;
 	switch(current_stage.type_){
 	case local_stage::incomplete:{
@@ -424,6 +443,7 @@ int ExpanderTracker::decideExpandingOrShrinking(local_stage& current_stage,unsig
 		return DECISION_KEEP;
 	}
 	}
+
 
 	if(ret==DECISION_EXPAND){
 		return expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
@@ -553,4 +573,12 @@ void ExpanderTracker::printStatus() {
 		printf("(%ld, %llx)", it->first,&it->second);
 	}
 	printf("\n");
+}
+
+bool ExpanderTracker::trackExpander(ExpanderID id) const {
+	if(expander_id_to_expand_shrink_.find(id)!=expander_id_to_expand_shrink_.end())
+		return true;
+	if(expander_id_to_status_.find(id)!=expander_id_to_status_.end())
+		return true;
+	return false;
 }

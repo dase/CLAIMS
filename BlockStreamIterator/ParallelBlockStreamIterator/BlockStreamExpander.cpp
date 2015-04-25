@@ -123,7 +123,12 @@ bool BlockStreamExpander::close(){
 	assert(being_called_bacl_expanded_thread_list_.empty());
 	finished_thread_count_=0;
 
-//	assert(ExpanderTracker::getInstance()->expander_id_to_status_.size()==0);
+	/*
+	 * check if all the information in ExpanderTrack has properly removed
+	 */
+	assert(!ExpanderTracker::getInstance()->trackExpander(expander_id_));
+
+
 	delete block_stream_buffer_;
 	logging_->log("[%ld] Buffer is freed in Expander!\n",expander_id_);
 	state_.child_->close();

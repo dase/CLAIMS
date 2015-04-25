@@ -90,7 +90,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 
 bool BlockStreamProjectIterator::close(){
 	initialize_expanded_status();
-//	destoryAllContext();
+	destoryAllContext();
 	return state_.child_->close();
 }
 
