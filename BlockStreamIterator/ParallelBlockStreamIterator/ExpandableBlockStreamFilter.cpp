@@ -190,8 +190,6 @@ bool ExpandableBlockStreamFilter::close() {
 }
 
 void ExpandableBlockStreamFilter::print() {
-//	printf("Filter size=%d\n",state_.v_ei_.size());
-
 	printf("filter: \n");
 	for(int i=0;i<state_.qual_.size();i++)
 	{
