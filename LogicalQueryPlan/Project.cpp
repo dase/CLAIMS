@@ -78,19 +78,33 @@ Dataflow LogicalProject::getDataflow(){
 	getcolindex(child_dataflow);
 	for(int i=0;i<exprTree_.size();i++)
 	{
-		InitExprAtLogicalPlan(exprTree_[i],exprTree_[i]->actual_type,colindex_,input_);
+		if(exprTree_[i]->type==t_qexpr_cmp)
+		{
+			InitExprAtLogicalPlan(exprTree_[i],t_boolean,colindex_,input_);
+		}
+		else
+		{
+			InitExprAtLogicalPlan(exprTree_[i],exprTree_[i]->actual_type,colindex_,input_);
+		}
 	}
 	ret_attrs.clear();
 	for(int i=0;i<exprTree_.size();i++)
 	{
 		column_type *column=0;
-		if(exprTree_[i]->return_type==t_string)
+		if(exprTree_[i]->type==t_qexpr_cmp)
 		{
-			column=new column_type(exprTree_[i]->return_type,exprTree_[i]->length);
+			column=new column_type(t_boolean);
 		}
 		else
 		{
-			column=new column_type(exprTree_[i]->return_type);
+			if(exprTree_[i]->return_type==t_string)
+			{
+				column=new column_type(exprTree_[i]->return_type,exprTree_[i]->length);
+			}
+			else
+			{
+				column=new column_type(exprTree_[i]->return_type);
+			}
 		}
 		const unsigned table_id=INTERMEIDATE_TABLEID;
 		Attribute attr_alais(table_id,i,exprTree_[i]->alias,column->type,column->get_length());

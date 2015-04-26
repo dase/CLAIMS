@@ -44,9 +44,26 @@ int subquery_has_column(char *colname,Node * subquery)
 		Select_expr * sexpr=(Select_expr *)slist->args;
 		if(sexpr->ascolname!=NULL)
 		{
-			if(strcmp(colname,sexpr->ascolname)==0)
+			if(strchr(colname,'.')!=NULL&&strchr(sexpr->ascolname,'.')!=NULL)
 			{
-				result++;
+				if(strcmp(strchr(colname,'.')+1,strchr(sexpr->ascolname,'.')+1)==0)//in the form like a.b
+				{
+					result++;
+				}
+			}
+			else if(strchr(colname,'.')==NULL&&strchr(sexpr->ascolname,'.')!=NULL)
+			{
+				if(strcmp(colname,strchr(sexpr->ascolname,'.')+1)==0)//in the form like a.b
+				{
+					result++;
+				}
+			}
+			else
+			{
+				if(strcmp(strchr(colname,'.')+1,sexpr->ascolname)==0)//in the form like a.b
+				{
+					result++;
+				}
 			}
 		}
 		else//TODO
@@ -332,7 +349,7 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				selectlist->isall=1;
 				return 1;
 			}
-			if(fg==1)//base_table
+			if(fg==1)//base_table, if the base_table has alias, how?
 			{
 				stringstream ss;
 				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();

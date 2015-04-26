@@ -40,7 +40,7 @@ using namespace std;
 const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
-
+#define SQL_Parser
 timeval start_time;	//2014-5-4---add---by Yu
 void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd = 0)
 {
@@ -1248,7 +1248,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-	//			physical_iterator_tree->print();
+	physical_iterator_tree->print();
 
 	physical_iterator_tree->open();
 

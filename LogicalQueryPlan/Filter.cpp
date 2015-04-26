@@ -54,7 +54,8 @@ Dataflow Filter::getDataflow(){
 	Dataflow dataflow=child_->getDataflow();
 	if(comparator_list_.size()==0)
 		generateComparatorList(dataflow);
-	if(dataflow.isHashPartitioned()){
+	if(dataflow.isHashPartitioned())
+	{
 		for(unsigned i=0;i<dataflow.property_.partitioner.getNumberOfPartitions();i++){
 			if(couldHashPruned(i,dataflow.property_.partitioner))//is filtered
 			{

@@ -87,7 +87,7 @@ bool ExpandableBlockStreamFilter::next(BlockStreamBase* block) {
 	bool pass_filter;
 	filter_thread_context* tc = (filter_thread_context*) getContext();
 
-	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) //the context is empty at first time,so it can skipped
+	while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) //filter the remaining block and add the filted tuple to the block, if not enough, get next and filter
 	{
 		pass_filter = true;
 #ifdef NEWCONDITION

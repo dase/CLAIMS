@@ -55,7 +55,8 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
  * now the expressions computing speed is slow because of the copy between among the expressions
  * todo: seek the pointer of data and LLVM will be solved by wangli.
  * */
-bool BlockStreamProjectIterator::next(BlockStreamBase *block){
+bool BlockStreamProjectIterator::next(BlockStreamBase *block)
+{
 	unsigned total_length_=state_.output_->getTupleMaxSize();
 //	void *tuple=0;
 //	void *column_in_combinedTuple=0;
@@ -64,14 +65,18 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 //	void *cur=0;
 
 	remaining_block rb;
-	if(atomicPopRemainingBlock(rb)){
-		while(1){
+	if(atomicPopRemainingBlock(rb))
+	{
+		while(1)
+		{
 			void *cur=0;
 			void *tuple=0;
-			if((cur=rb.bsti_->currentTuple())==0){
+			if((cur=rb.bsti_->currentTuple())==0)
+			{
 				rb.bsb_->setEmpty();
 				/* get a block from downstreams */
-				if(state_.children_->next(rb.bsb_)==false){
+				if(state_.children_->next(rb.bsb_)==false)
+				{
 					/* if downstreams has no data and block is not empty, return true */
 					if(!block->Empty()){
 						atomicPushRemainingBlock(rb);
@@ -102,7 +107,8 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 				}
 				rb.bsti_->increase_cur_();
 			}
-			else{
+			else
+			{
 				atomicPushRemainingBlock(rb);
 				return true;
 			}
@@ -115,7 +121,8 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 		v_bsb=free_block_stream_list_.front();
 		free_block_stream_list_.pop_front();
 	}
-	else{
+	else
+	{
 		lock_.release();//added
 		return false;
 	}
