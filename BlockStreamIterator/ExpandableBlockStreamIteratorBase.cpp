@@ -7,7 +7,7 @@
 
 #include "ExpandableBlockStreamIteratorBase.h"
 #include "../Executor/ExpanderTracker.h"
-
+#include "../utility/CpuScheduler.h"
 ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned number_of_barrier,unsigned number_of_seriliazed_section)
 :number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section),number_of_registered_expanded_threads_(0){
 	barrier_=new Barrier[number_of_barrier_];
@@ -69,6 +69,9 @@ void ExpandableBlockStreamIteratorBase::destoryAllContext(){
 	for(boost::unordered_map<pthread_t,thread_context*>::const_iterator it=context_list_.begin();it!=context_list_.cend();it++){
 		delete it->second;
 	}
+	for(int i=0;i<free_context_list_.size();i++){
+		delete free_context_list_[i];
+	}
 }
 //void ExpandableBlockStreamIteratorBase::destorySelfContext(){
 //	context_lock_.acquire();
@@ -88,7 +91,7 @@ void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 	assert(context_list_.find(pthread_self())==context_list_.cend());
 
 	context_list_[pthread_self()]=tc;
-	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
+//	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
 	context_lock_.release();
 }
 thread_context* ExpandableBlockStreamIteratorBase::getContext(){
@@ -115,7 +118,41 @@ void ExpandableBlockStreamIteratorBase::setReturnStatus(bool ret) {
 	ret=open_ret_&&ret;
 }
 
+thread_context* ExpandableBlockStreamIteratorBase::createOrReuseContext(
+		context_reuse_mode crm) {
+	thread_context* target=getFreeContext(crm);
+	if(target!=0)
+		return target;
+	target= createContext();
+	target->set_locality_(getCurrentCpuAffility());
+	initContext(target);
+	return target;
+}
+
 bool ExpandableBlockStreamIteratorBase::getReturnStatus() const {
 	return open_ret_;
 }
 
+thread_context* ExpandableBlockStreamIteratorBase::getFreeContext(
+		context_reuse_mode crm) {
+	int32_t locality=getCurrentCpuAffility();
+	for(int i=0;i<free_context_list_.size();i++){
+		switch(crm){
+		case crm_no_reuse:
+			return 0;
+		case crm_core_sensitive:
+			if(locality==free_context_list_[i]->get_locality_())
+				return free_context_list_[i];
+			break;
+		case crm_numa_sensitive:
+			if(getCurrentSocketAffility()==getSocketAffility(free_context_list_[i]->get_locality_()))
+				return free_context_list_[i];
+			break;
+		case crm_anyway:
+			return free_context_list_[i];
+		default:
+			break;
+		}
+	}
+	return 0;
+}
