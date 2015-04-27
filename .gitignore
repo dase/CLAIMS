@@ -9,6 +9,7 @@ Debug.h
 install/
 autom4te.cache/
 claimsserver
+client
 config.guess
 config.status
 config.sub
@@ -27,11 +28,15 @@ install/
 *.o
 Makefile
 config.h
+config.h.in
 config.log
 configure
 claims.log
 doc
 conf
 conf/config
-catalogData.dat
 build
+Build
+*.dat*
+include/
+.history

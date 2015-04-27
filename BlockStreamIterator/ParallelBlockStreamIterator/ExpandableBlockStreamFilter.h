@@ -26,6 +26,7 @@
 #include <string>
 #include <boost/serialization/map.hpp>
 #include "../../common/Expression/qnode.h"
+#include "../../codegen/ExpressionGenerator.h"
 //typedef vector<ExpressionItem> ExpressItem_List;
 class ExpandableBlockStreamFilter:public ExpandableBlockStreamIteratorBase {
 public:
@@ -35,14 +36,7 @@ public:
 		BlockStreamBase* temp_block_;
 		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
 		vector<QNode *>thread_qual_;
-		~filter_thread_context(){
-			delete block_for_asking_;
-			delete temp_block_;
-			delete block_stream_iterator_;
-			for (int i =0 ;i<thread_qual_.size();i++){
-				delete thread_qual_[i];
-			}
-		}
+		~filter_thread_context();
 	};
 	/* struct to hold the remaining data when the next is returned but the block from the child
 	 *  iterator is not exhausted.*/
@@ -86,26 +80,23 @@ public:
 	bool close();
     void print();
 private:
-	bool atomicPopRemainingBlock(remaining_block & rb);
-
-	void atomicPushRemainingBlock(remaining_block rb);
-	BlockStreamBase* AtomicPopFreeBlockStream();
-	void AtomicPushFreeBlockStream(BlockStreamBase* block);
-	thread_context popContext();
-	void pushContext(const thread_context& tc);
+	void process_logic(BlockStreamBase* block,filter_thread_context * tc);
+private:
+	thread_context* createContext();
+	//ExecEvalQual(tc->thread_qual_, tuple_from_child,	state_.schema_);
+	typedef void(*filter_func)(bool& ret, void* tuple,expr_func func_gen, Schema* schema,vector<QNode *> thread_qual_);
+	static void computeFilter(bool& ret, void* tuple, expr_func func_gen, Schema* schema,vector<QNode *> thread_qual_);
+	static void computeFilterwithGeneratedCode(bool& ret, void* tuple, expr_func func_gen, Schema* schema,vector<QNode *>);
 private:
 	State state_;
 	map<string,int>colindex;
-/* the following five lines are considered to be deleted*/
-	std::list<remaining_block> remaining_block_list_;
-	std::list<BlockStreamBase*> free_block_stream_list_;
-	boost::unordered_map<pthread_t,thread_context> context_list_;
-	semaphore sem_open_;
-	volatile bool open_finished_;
 
 	unsigned long tuple_after_filter_;
 //	vector<QNode *>qual_;//store the transfromed Qnode
 	Lock lock_;
+	filter_func ff_;
+	expr_func generated_filter_function_;
+	filter_process_func generated_filter_processing_fucntoin_;
 	/* the following code is for boost serialization*/
 private:
 	friend class boost::serialization::access;

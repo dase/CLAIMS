@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 #include "Logging.h"
-#define CLAIMS_QUEIT
-#ifdef CLAIMS_QUEIT //If defined, all the output information is binded.
+//#define CLAIMS_QUEIT
+#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
 //#define DEBUG_Config
 //#define DEBUG_ExpanderTracker
 //#define DEBUG_BlockStreamExpander
@@ -20,7 +20,6 @@
 //#define DEBUG_ExchangeIteratorEager
 //#define DEBUG_ExchangeIteratorEagerLower
 
-//#define DEBUG_BlockStreamExpander
 
 //#define DEBUG_ExchangeRegister
 //#define DEBUG_ExchangeTracker
@@ -45,7 +44,8 @@
 //#define DEBUG_Catalog
 //#define DEBUG_BufferManager
 
-#define DEBUG_ASTParser
+//#define DEBUG_ASTParser
+//#define DEBUG_ThreadPool
 #define SQL_Parser
 
 #endif  //CLAIMS_QUEIT
@@ -504,5 +504,24 @@ void ClientLogging::elog(const char* format,...) {
 	va_start (arg, format);
 	vfprintf(stderr,format,arg);
 	printf("\n");
+	va_end (arg);
+}
+
+
+void ThreadPoolLogging::log(const char* format,...) {
+#ifdef DEBUG_ThreadPool
+	printf("ThreadPool: ");
+	va_list arg;
+	va_start (arg, format);
+	vprintf(format,arg);
+	va_end (arg);
+#endif
+}
+
+void ThreadPoolLogging::elog(const char* format,...) {
+	fprintf(stderr,"Error[ThreadPool]: ");
+	va_list arg;
+	va_start (arg, format);
+	vfprintf(stderr,format,arg);
 	va_end (arg);
 }

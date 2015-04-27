@@ -30,21 +30,21 @@
 #include "../../configure.h"
 #include "../../common/rename.h"
 #include "../../utility/rdtsc.h"
+#include "../../utility/Timer.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../Config.h"
+#include "../../utility/maths.h"
 #define BUFFER_SIZE_IN_EXCHANGE 1000
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
 	initialize_expanded_status();
-	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	assert(state.partition_schema_.partition_key_index<100);
 	debug_winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 	initialize_expanded_status();
-	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	debug_winner_thread=0;
 }
@@ -70,6 +70,11 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 			debug_received_block[i]=0;
 		}
 
+		socket_fd_lower_list=new int[nlowers];
+		//init -1 ---Yu
+		for (int i = 0; i < nlowers; ++i) {
+			socket_fd_lower_list[i] = -1;
+		}
 		buffer=new BlockStreamBuffer(state.block_size_,BUFFER_SIZE_IN_EXCHANGE,state.schema_);
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Exchange",buffer));
 		received_block_stream_=BlockStreamBase::createBlock(state.schema_,state.block_size_);
@@ -117,7 +122,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 	}
 
 	/* A synchronization barrier, in case of multiple expanded threads*/
-	barrier_->Arrive();
+	barrierArrive();
 	return true;
 }
 
@@ -236,6 +241,15 @@ bool ExpandableBlockStreamExchangeEpoll::PrepareTheSocket()
 void ExpandableBlockStreamExchangeEpoll::CloseTheSocket(){
 	/* close the epoll fd */
 	FileClose(epoll_fd_);
+//	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", epoll_fd_);
+
+	/* colse the sockets of the lowers*/
+	for(unsigned i=0;i<nlowers;i++){
+		if (socket_fd_lower_list[i] > 2){
+			FileClose(socket_fd_lower_list[i]);
+//			std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug:close fd %d.\n", socket_fd_lower_list[i]);
+		}
+	}
 
 	/* close the socket of this exchange*/
 	FileClose(sock_fd);
@@ -254,7 +268,7 @@ bool ExpandableBlockStreamExchangeEpoll::checkOtherUpperRegistered(){
 	ExchangeTracker* et=Environment::getInstance()->getExchangeTracker();
 	for(unsigned i=0;i<state.upper_id_list_.size();i++){
 		NodeID id=state.upper_id_list_[i];
-		/* Repeatedly ask node with ip for port information untill the received port is other than 0, which means
+		/* Repeatedly ask node with ip for port information until the received port is other than 0, which means
 		 * that the exchangeId on noede ip is registered to the exchangeTracker*/
 		int wait_time_in_millisecond=1;
 		NodeAddress node_addr;
@@ -270,9 +284,17 @@ bool ExpandableBlockStreamExchangeEpoll::isMaster(){
 }
 bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 	IteratorExecutorMaster* IEM=IteratorExecutorMaster::getInstance();
+//	GETCURRENTTIME(start);
 	if(Config::pipelined_exchange){
 		for(unsigned i=0;i<state.lower_id_list_.size();i++){
-			ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(state.schema_->duplicateSchema(),state.child_,state.upper_id_list_,state.block_size_,state.exchange_id_,state.partition_schema_);
+			ExpandableBlockStreamExchangeLowerEfficient::State EIELstate(
+					state.schema_->duplicateSchema(),
+					state.child_,
+					state.upper_id_list_,
+					state.block_size_,
+					state.exchange_id_,
+					state.partition_schema_);
+
 			/* set the partition offset*/
 			EIELstate.partition_offset_=i;
 			BlockStreamIteratorBase *EIEL=new ExpandableBlockStreamExchangeLowerEfficient(EIELstate);
@@ -296,20 +318,26 @@ bool ExpandableBlockStreamExchangeEpoll::SerializeAndSendToMulti(){
 				logging_->elog("[%ld] Cannot send the serialized iterator tree to the remote node!\n",state.exchange_id_);
 				return false;
 			}
-			((ExpandableBlockStreamExchangeLowerEfficient*)EIEL)->state_.child_=0;
+			((ExpandableBlockStreamExchangeLowerMaterialized*)EIEL)->state_.child_=0;
 			delete EIEL;
 		}
 	}
+//	logging_->log("SerializeAndSendToMulti() call used %.3lf ms", GetElapsedTime(start));
 	return true;
 }
 
 bool ExpandableBlockStreamExchangeEpoll::CreateReceiverThread(){
 	int error;
-	error=pthread_create(&receiver_tid,NULL,receiver,this);
-	if(error!=0){
-		logging_->elog("[%ld] Failed to create receiver thread.",state.exchange_id_);
-		return false;
-	}
+//	if (true == g_thread_pool_used) {
+//		Environment::getInstance()->getThreadPool()->add_task(receiver, this);
+//	}
+//	else{
+		error=pthread_create(&receiver_tid,NULL,receiver,this);
+		if(error!=0){
+			logging_->elog("[%ld] Failed to create receiver thread.",state.exchange_id_);
+			return false;
+		}
+//	}
 //	pthread_create(&debug_tid,NULL,debug,this);
 	return true;
 }
@@ -322,6 +350,7 @@ void ExpandableBlockStreamExchangeEpoll::CancelReceiverThread(){
 //	pthread_cancel(debug_tid);
 }
 
+// receive each one block from all sender
 void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 	ExpandableBlockStreamExchangeEpoll* Pthis=(ExpandableBlockStreamExchangeEpoll*)arg;
 
@@ -347,7 +376,8 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 
 	events=(epoll_event*)calloc(Pthis->nlowers,sizeof(epoll_event));
 	int fd_cur=0;
-
+	ticks start=curtick();
+	std::vector<int> finish_times;//in ms
 	while(true){
 		usleep(1);
 		const int event_count=epoll_wait(Pthis->epoll_fd_,events,Pthis->nlowers,-1);
@@ -449,11 +479,16 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						/** the newly obtained data block is validate, so we insert it into the buffer and post
 						 * sem_new_block_or_eof_ so that all the threads waiting for the semaphore continue. **/
 						Pthis->buffer->insertBlock(Pthis->received_block_stream_);
+
+						//??? why is all ,not 1
+						// multiple threads will still compete with lock
 						Pthis->sem_new_block_or_eof_.post(Pthis->number_of_registered_expanded_threads_);
 					}
 					else{
 						/** The newly obtained data block is the end-of-file.  **/
 						Pthis->logging_->log("[%ld] *****This block is the last one.",Pthis->state.exchange_id_);
+
+						finish_times.push_back((int)getMilliSecond(start));
 
 						/** update the exhausted senders count and post sem_new_block_or_eof_ so that all the
 						 * threads waiting for the semaphore continue.
@@ -468,6 +503,12 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 							 * that the input data is completely received.
 							 */
 							Pthis->buffer->setInputComplete();
+
+							/* print the finish times */
+							for(unsigned i=0;i<finish_times.size();i++){
+								printf("%d\t",finish_times[i]);
+							}
+							printf("\t Var:%5.4f\n",get_stddev(finish_times));
 						}
 
 
@@ -477,6 +518,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
 
 						Pthis->logging_->log("[%ld] This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s] exchange=(%d,%d).\n",Pthis->state.exchange_id_,Pthis->lower_ip_array[socket_fd_index].c_str(),Pthis->state.exchange_id_,Pthis->partition_offset);
+
 
 					}
 				}

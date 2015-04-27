@@ -179,7 +179,14 @@ public:
 	ExpanderID registerNewExpander(MonitorableBuffer* buffer,ExpandabilityShrinkability* expand_shrink);
 	void unregisterExpander(ExpanderID expander_id);
 
+	/*
+	 * return true if ExpanderTrack has any record regarding to the
+	 *  expander with specified id.
+	 */
+	bool trackExpander(ExpanderID id)const;
+
 	static segment_status getSegmentStatus(local_stage&);
+
 private:
 	ExpanderTracker();
 	static void* monitoringThread(void* arg);

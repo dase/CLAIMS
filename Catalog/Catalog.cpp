@@ -6,6 +6,7 @@
  */
 
 #include "Catalog.h"
+#include "../Config.h"
 Catalog* Catalog::instance_=0;
 
 Catalog::Catalog() {
@@ -38,6 +39,11 @@ bool Catalog::add_table(TableDescriptor* const &table){
 	boost::unordered_map<std::string,TableDescriptor*>::iterator it_name_to_table=name_to_table.find(new_table_name);
 	if(it_name_to_table!=name_to_table.cend()){
 		logging->elog("the table named %s is existed!", new_table_name.c_str());
+		/*
+		 * bug:if name is duplicate, table can't be added successfully with table_id_cursor increased
+		 * fix:add to eliminate effect on table id;	-- yu, 2015-2-8
+		 */
+		table_id_allocator.decrease_table_id();
 		return false;
 	}
 	boost::unordered_map<TableID,TableDescriptor*>::iterator it_tableid_to_table=tableid_to_table.find(new_table_id);
@@ -114,25 +120,25 @@ vector<PartitionID> Catalog::getPartitionIDList(const std::string& table_name, c
 //}
 
 // 2014-3-20---save as a file---by Yu
-void Catalog::saveCatalog(const char *filename)
+void Catalog::saveCatalog()
 {
-	std::ofstream ofs(filename);
+	std::ofstream ofs(Config::catalog_file.c_str());
 	boost::archive::text_oarchive oa(ofs);
 
 	oa<<*this;
 }
 
 // 2014-3-20---restore from a file---by Yu
-void Catalog::restoreCatalog(const char *filename)
+void Catalog::restoreCatalog()
 {
-	if(access(filename,0) != 0)
+	if(access(Config::catalog_file.c_str(),0) != 0)
 	{
-		logging->elog("the file %s is not existed!", filename);
+		logging->elog("the file %s is not existed!", Config::catalog_file.c_str());
 	}
 //	assert(access(filename, 0) == 0);
 	else
 	{
-		std::ifstream ifs(filename);
+		std::ifstream ifs(Config::catalog_file.c_str());
 		boost::archive::text_iarchive ia(ifs);
 		ia>>*this;
 	}
@@ -142,28 +148,4 @@ void Catalog::restoreCatalog(const char *filename)
 //	cout<<"================================================================"<<endl<<endl;
 }
 
-void Catalog::saveCatalog(Catalog &catalog_, const char *filename)
-{
-	std::ofstream ofs(filename);
-	boost::archive::text_oarchive oa(ofs);
-	oa<<catalog_;
-	ofs.close();
-}
-
-// 2014-3-20---restore from a file---by Yu
-void Catalog::restoreCatalog(Catalog &catalog_, const char *filename)
-{
-	//	if(access(filename,0) != 0)
-	//		logging->elog("the file %s is not existed!", filename);
-	assert(access(filename, 0) == 0);
-
-	std::ifstream ifs(filename);
-	boost::archive::text_iarchive ia(ifs);
-	ia>>catalog_;
-	ifs.close();
-	printf("<><><><><><> restore\n");
-//	cout<<"================================================================"<<endl<<endl;
-//	outPut();
-//	cout<<"================================================================"<<endl<<endl;
-}
 

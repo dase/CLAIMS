@@ -11,7 +11,7 @@
 
 SchemaFix::SchemaFix(const std::vector<column_type>& col):Schema(col) {
 
-//	accum_offsets=new unsigned[columns.size()];
+//	accum_offsets=new unsigned[columns.size()];	//new
 	totalsize=0;
 	unsigned accumu=0;
 	for(unsigned i=0;i<col.size();i++)
@@ -56,6 +56,10 @@ Schema* SchemaFix::getSubSchema(std::vector<unsigned> index)const{
 }
 Schema* SchemaFix::duplicateSchema()const{
 	return new SchemaFix(columns);
+}
+
+int SchemaFix::getColumnOffset(unsigned index) const {
+	return accum_offsets[index];
 }
 
 void SchemaFix::toValue(std::string text_tuple, void* binary_tuple, const char attr_separator)

@@ -15,7 +15,7 @@ Block::Block(unsigned BlockSize)
 :BlockSize(BlockSize),isReference_(false)
 {
 //	start=(char*)memalign(cacheline_size,BlockSize);
-	start=(char*)malloc(BlockSize);
+	start=(char*)malloc(BlockSize);		//newmalloc
 	allocate++;
 //	printf("allocate %d-->%d\n",allocate-1,allocate);
 	/*the following memset is just for debugging the memory leak*/
@@ -28,8 +28,10 @@ Block::Block(const unsigned& size,const void* start)
 
 //zhanglei
 Block::~Block() {
-	if(!isReference_)
+	if(!isReference_){
 		free(start);
+		start=0;
+	}
 	start=0;
 	allocate--;
 //	printf("allocate %d-->%d\n",allocate+1,allocate);
@@ -61,5 +63,5 @@ void Block::setIsReference(bool isReference) {
 	if(!isReference){
 		delete start;
 	}
-	isReference = true;
+	isReference_ = true;
 }

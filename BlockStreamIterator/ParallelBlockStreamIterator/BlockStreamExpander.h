@@ -19,6 +19,8 @@
 #include "../../utility/ExpandabilityShrinkability.h"
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"
+#include "../../utility/ThreadPool.h"
+#include "../../Environment.h"
 
 #define EXPANDER_BUFFER_SIZE 1000
 
@@ -52,7 +54,6 @@ public:
 	void print();
 private:
 	static void* expanded_work(void* arg);
-	static void* coordinate_work(void* arg);
 	bool ChildExhausted();
 	bool createNewExpandedThread();
 	void terminateExpandedThread(pthread_t pid);

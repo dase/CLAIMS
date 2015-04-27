@@ -88,6 +88,7 @@ QColcumns::QColcumns(const char *tbl,const char *coln,data_type a_type,const cha
 {
 	type=t_qcolcumns;
 	id=-1;
+	tab_index=0;
 	actual_type=a_type;
 	table=string(tbl);
 	col=string(coln);
@@ -105,6 +106,7 @@ QColcumns::QColcumns(QColcumns *node)
 	this->return_type=node->return_type;
 	this->isnull=node->isnull;
 	this->length=node->length;
+	tab_index=0;
 }
 QExpr_case_when::QExpr_case_when(vector<QNode *>&qual_,vector<QNode *>&ans_,string alias_)
 {

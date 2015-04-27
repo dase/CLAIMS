@@ -43,7 +43,7 @@ bool BlockStreamRandomMemAccess::open(const PartitionOffset& part_off)
 		return false;
 	}
 
-	data_=(char*)malloc(file_length_);
+	data_=(char*)malloc(file_length_);		//newmalloc
 
 	if(data_==0){
 		printf("malloc errors!\n");

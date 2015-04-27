@@ -95,6 +95,10 @@ Dataflow Aggregation::getDataflow(){
 }
 
 bool Aggregation::canLeverageHashPartition(const Dataflow& child_dataflow)const{
+
+	if(child_dataflow.property_.partitioner.getNumberOfPartitions()==1&&child_dataflow.property_.partitioner.getPartition(0)->getLocation()==0)
+		return true;
+
 	const Attribute partition_key=child_dataflow.property_.partitioner.getPartitionKey();
 	if(!child_dataflow.isHashPartitioned())
 		return false;
@@ -247,7 +251,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			exchange_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			aggregation_state.isPartitionNode=false;//as regard to AVG(),for partition node and global node ,we should do some different operations.
-			changeSchemaforAVG(aggregation_state);//			aggregation_state.child=exchange;
+			changeSchemaforAVG(aggregation_state);
+			aggregation_state.child=exchange;
 			ret=new BlockStreamAggregationIterator(aggregation_state);
 			break;
 		}
@@ -364,6 +369,9 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 		return ret;
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
+	if(group_by_attribute_list_.size()==0){
+		return 1;
+	}
 	const unsigned long max_limits=1024*1024;
 	const unsigned long min_limits=1024*512;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();

@@ -18,12 +18,13 @@ coordinator:
 #是否为master. 若为master，则master=1，否则master=0
 master=1
 
-client_listener = 10000
+client_listener_port = 10000
 
 #hadoop上的数据目录
 #data="/home/imdb/data/wangli/"
-data="/home/imdb/data/POC/sample/"
-#data="/home/imdb/data/tpc-h/4_partitions/SF-1/"
+#data="/home/imdb/data/POC/sample/"
+data="/home/imdb/data/tpc-h/1-partition/sf-1/"
+#data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/stock/"
 #data="/home/imdb/data/tmp/"
 #data="/home/imdb/data/POC/"
@@ -47,3 +48,5 @@ enable_expander_adaptivity=0
 pipelined_exchange=1
 
 local_disk_mode=1
+
+scan_batch=100
