@@ -80,13 +80,6 @@ public:
 	bool close();
     void print();
 private:
-	bool atomicPopRemainingBlock(remaining_block & rb);
-
-	void atomicPushRemainingBlock(remaining_block rb);
-	BlockStreamBase* AtomicPopFreeBlockStream();
-	void AtomicPushFreeBlockStream(BlockStreamBase* block);
-	thread_context popContext();
-	void pushContext(const thread_context& tc);
 	void process_logic(BlockStreamBase* block,filter_thread_context * tc);
 private:
 	//ExecEvalQual(tc->thread_qual_, tuple_from_child,	state_.schema_);
@@ -96,12 +89,6 @@ private:
 private:
 	State state_;
 	map<string,int>colindex;
-/* the following five lines are considered to be deleted*/
-	std::list<remaining_block> remaining_block_list_;
-	std::list<BlockStreamBase*> free_block_stream_list_;
-	boost::unordered_map<pthread_t,thread_context> context_list_;
-	semaphore sem_open_;
-	volatile bool open_finished_;
 
 	unsigned long tuple_after_filter_;
 //	vector<QNode *>qual_;//store the transfromed Qnode
