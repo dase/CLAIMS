@@ -27,14 +27,13 @@ EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,LogicalOperator* left_i
 }
 
 EqualJoin::~EqualJoin() {
-	dataflow_->~Dataflow();
+	delete dataflow_;
 	if(left_child_>0){
-		left_child_->~LogicalOperator();
+		delete left_child_;
 	}
 	if(right_child_>0){
-		right_child_->~LogicalOperator();
+		delete right_child_;
 	}
-	// TODO Auto-generated destructor stub
 }
 
 Dataflow EqualJoin::getDataflow(){
@@ -80,6 +79,7 @@ Dataflow EqualJoin::getDataflow(){
 		if(!left_dataflow_key_partitioned&&!right_dataflow_key_partitioned)
 			join_police_=complete_repartition;
 	}
+
 
 
 	/**finally, construct the output data flow according to the join police**/
@@ -287,10 +287,10 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			exchange_state.upper_id_list_=upper_id_list;
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
-			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			exchange_state.lower_id_list_=lower_id_list;
 
 
 			const Attribute right_partition_key=dataflow_->property_.partitioner.getPartitionKey();
@@ -329,10 +329,10 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			exchange_state.upper_id_list_=upper_id_list;
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
-			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			exchange_state.lower_id_list_=lower_id_list;
 
 
 			const Attribute output_partition_key=dataflow_->property_.partitioner.getPartitionKey();
@@ -375,10 +375,10 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			l_exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_left.property_.partitioner);
-			l_exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			l_exchange_state.lower_id_list_=lower_id_list;
 
 			std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			l_exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			l_exchange_state.upper_id_list_=upper_id_list;
 
 			const Attribute left_partition_key=dataflow_->property_.partitioner.getPartitionKey();
 			l_exchange_state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow_left.attribute_list_,left_partition_key));
@@ -401,10 +401,10 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
 			r_exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 			lower_id_list=getInvolvedNodeID(dataflow_right.property_.partitioner);
-			r_exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			r_exchange_state.lower_id_list_=lower_id_list;
 
 			upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-			r_exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			r_exchange_state.upper_id_list_=upper_id_list;
 
 			const Attribute right_partition_key=joinkey_pair_list_[getIndexInLeftJoinKeyList(left_partition_key)].second;
 			r_exchange_state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow_right.attribute_list_,right_partition_key));

@@ -28,6 +28,7 @@
 
 #include "../../common/Logging.h"
 #include "../../common/ExpandedThreadTracker.h"
+#include "../../common/partition_functions.h"
 
 #include "../../common/Schema/Schema.h"
 
@@ -37,7 +38,6 @@
 #include "../../common/Block/BlockStreamBuffer.h"
 
 #include "../ExpandableBlockStreamIteratorBase.h"
-#include "../../common/partition_functions.h"
 
 
 
@@ -48,16 +48,16 @@ public:
 		BlockStreamIteratorBase* child_;
 		unsigned block_size_;
 		unsigned long long int exchange_id_;
-		std::vector<std::string> lower_ip_list_;
-		std::vector<std::string> upper_ip_list_;
+		std::vector<NodeID> lower_id_list_;
+		std::vector<NodeID> upper_id_list_;
 		partition_schema partition_schema_;
-		State(Schema* schema, BlockStreamIteratorBase* child,unsigned block_size,std::vector<std::string> lower_ip_list,std::vector<std::string> upper_ip_list,unsigned long long int exchange_id,partition_schema partition_index=partition_schema::set_hash_partition())
-		:schema_(schema),child_(child),block_size_(block_size),exchange_id_(exchange_id),lower_ip_list_(lower_ip_list),upper_ip_list_(upper_ip_list),partition_schema_(partition_index){}
+		State(Schema* schema, BlockStreamIteratorBase* child,unsigned block_size,std::vector<NodeID> lower_id_list,std::vector<NodeID> upper_id_list,unsigned long long int exchange_id,partition_schema partition_index=partition_schema::set_hash_partition())
+		:schema_(schema),child_(child),block_size_(block_size),exchange_id_(exchange_id),lower_id_list_(lower_id_list),upper_id_list_(upper_id_list),partition_schema_(partition_index){}
 		State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & schema_ & child_ & block_size_ & exchange_id_ & lower_ip_list_ & upper_ip_list_ & partition_schema_;
+			ar & schema_ & child_ & block_size_ & exchange_id_ & lower_id_list_ & upper_id_list_ & partition_schema_;
 		}
 
 	};
@@ -74,7 +74,6 @@ private:
 	bool checkOtherUpperRegistered();
 	bool isMaster();
 	bool SerializeAndSendToMulti();
-	bool WaitForConnectionFromLowerExchanges();
 	bool CreateReceiverThread();
 	void CancelReceiverThread();
 	void SendBlockBufferedNotification(int target_socket_fd);

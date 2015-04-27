@@ -22,6 +22,7 @@
 #include <float.h>
 
 #include "hash.h"
+#include "../utility/string_process.h"
 
 using namespace boost::gregorian;
 using namespace boost::posix_time;
@@ -615,6 +616,8 @@ public:
 	}
 };
 
+
+
 class OperateString:public Operate
 {
 public:
@@ -630,7 +633,7 @@ public:
 		if (this->nullable == true && (*(char*)value) == NULL_STRING)
 			return "NULL";
 		else
-			return std::string((char*)value);
+			return trimSpecialCharactor(std::string((char*)value));
 	};
 	void toValue(void* target, const char* string){
 		if ((strcmp(string,"")==0) && this->nullable == true)
@@ -1551,9 +1554,9 @@ public:
 	//这个data_type是什么type
 	data_type type;
 	bool nullable;
+	unsigned size;
 private:
 	//且这个data_type的size是多少
-	unsigned size;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)

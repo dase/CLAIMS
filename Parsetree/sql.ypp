@@ -81,6 +81,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %token ANALYZE
 %token AND
 %token ANY
+%token APPEND
 %token AS
 %token ASC
 %token AUTO_INCREMENT
@@ -238,6 +239,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %token REVOKE
 %token RIGHT
 %token ROLLUP
+%token SAMPLE
 %token SCHEMA
 %token SCHEMAS
 %token SECOND_MICROSECOND
@@ -775,8 +777,9 @@ opt_col_names: /* nil */	{ $$ = NULL; }
    | '(' column_list ')'	{ $$ = $2; }
    ;
 
+
 insert_vals_list: '(' insert_vals ')'		{ $$ = newInsertValueList($2, NULL,result->node_pointer); }
-   | insert_vals_list ',' '(' insert_vals ')'	{ $$ = newInsertValueList($4, $1,result->node_pointer); }	//2014-4-17---Attention: the order can be reversed---by Yu
+   | '(' insert_vals ')' ',' insert_vals_list	{ $$ = newInsertValueList($2, $5,result->node_pointer); }	//2014-4-17---Attention: the order can be reversed---by Yu
    ;
    
 insert_vals:
@@ -1111,7 +1114,18 @@ opt_rc: /* nil */ 	{ $$ = 0; }
 stmt: load_table_stmt	{ $$=$1;/* output($$, 1); puts("SQL parser： This is a load_table statement");*/ }
 	;
 	
-load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING	{ $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9,result->node_pointer);}
+
+load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING SAMPLE COMPARISON APPROXNUM
+		{
+		 if ($11 != 4) { yyerror(result,"please give a specific number"); } 
+		 else {$$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, atof($12), 0,result->node_pointer);}
+		}
+	| LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, 1.0, 0,result->node_pointer);}
+	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, 1.0, 1,result->node_pointer);}
+	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING SAMPLE COMPARISON APPROXNUM 
+		{ if ($11 != 4) { yyerror(result,"please give a specific number"); } 
+		 else {$$ = newLoadTable(t_load_table_stmt, $3, $5, $7, $9, atof($12), 1,result->node_pointer);}
+		}
 	;
    
    /** rename table **/
@@ -1132,8 +1146,10 @@ rename_list: /* nil */	{}
 stmt: describe_stmt { emit("STMT"); }
    ;
    
-describe_stmt: DESCRIBE NAME {}
+describe_stmt: DESCRIBE TABLE NAME {}
+	|DESCRIBE NAME {}
    | DESC NAME {}
+   | DESC TABLE NAME {}
    ;
    
    /** use database **/

@@ -18,10 +18,10 @@
 #include "../../utility/ThreadSafe.h"
 #include "../../common/ids.h"
 #include "../../utility/rdtsc.h"
-ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state) :
-		state_(state), logging_(0)
-{
-	assert(state.partition_schema_.partition_key_index < 100);
+ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(State state)
+:state_(state){
+	logging_=new ExchangeIteratorEagerLowerLogging();
+	assert(state.partition_schema_.partition_key_index<100);
 }
 
 ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient()
@@ -33,6 +33,8 @@ ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLower
 {
 	// TODO Auto-generated destructor stub
 	delete logging_;
+	delete state_.schema_;
+	delete state_.child_;
 }
 
 bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&)
@@ -43,9 +45,9 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&)
 	debug_connected_uppers_in = 0;
 	state_.child_->open(state_.partition_offset_);
 
-	nuppers_ = state_.upper_ip_list_.size();
-	partition_function_ = PartitionFunctionFactory::createBoostHashFunction(nuppers_);
-	socket_fd_upper_list = new int[nuppers_];
+	nuppers_=state_.upper_id_list_.size();
+	partition_function_=PartitionFunctionFactory::createBoostHashFunction(nuppers_);
+	socket_fd_upper_list=new int[nuppers_];
 
 	/** initialize the block stream that is used to accumulate the block obtained by calling child iterator's next() **/
 	block_stream_for_asking_ = BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
@@ -73,24 +75,26 @@ bool ExpandableBlockStreamExchangeLowerEfficient::open(const PartitionOffset&)
 	}
 
 	/** connect to all the mergers **/
-	for (unsigned upper_id = 0; upper_id < state_.upper_ip_list_.size(); upper_id++)
-	{
+	for(unsigned upper_offset=0;upper_offset<state_.upper_id_list_.size();upper_offset++){
 
-		logging_->log("[%ld,%d] try to connect to upper (%d) %s\n", state_.exchange_id_, state_.partition_offset_, upper_id, state_.upper_ip_list_[upper_id].c_str());
-		if (ConnectToUpper(ExchangeID(state_.exchange_id_, upper_id), state_.upper_ip_list_[upper_id], socket_fd_upper_list[upper_id], logging_) != true)
+		logging_->log("[%ld,%d] try to connect to upper (%d) %s\n",state_.exchange_id_,state_.partition_offset_,upper_offset,state_.upper_id_list_[upper_offset]);
+		if(ConnectToUpper(ExchangeID(state_.exchange_id_,upper_offset),state_.upper_id_list_[upper_offset],socket_fd_upper_list[upper_offset],logging_)!=true)
 			return false;
-		logging_->log("[%ld,%d] connected to upper (%d) %s\n", state_.exchange_id_, state_.partition_offset_, upper_id, state_.upper_ip_list_[upper_id].c_str());
+		printf("[%ld,%d] connected to upper [%d,%d] on Node %d\n",state_.exchange_id_,state_.partition_offset_,state_.exchange_id_,upper_offset,state_.upper_id_list_[upper_offset]);
 	}
 
 	/** create the sender thread **/
-	int error;
-	error = pthread_create(&sender_tid, NULL, sender, this);
-	if (error != 0)
-	{
-		logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
-		return false;
-	}
-
+//	if (true == g_thread_pool_used) {
+//		Environment::getInstance()->getThreadPool()->add_task(sender, this);
+//	}
+//	else {
+		int error;
+		error=pthread_create(&sender_tid,NULL,sender,this);
+		if(error!=0){
+			logging_->elog("Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
+			return false;
+		}
+//	}
 //	pthread_create(&debug_tid,NULL,debug,this);
 	/*debug*/
 	return true;
@@ -257,8 +261,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg)
 							Pthis->logging_->log("[%ld,%d]A block is sent bytes=%d, rest size=%d", Pthis->state_.exchange_id_, Pthis->state_.partition_offset_, recvbytes,
 									block_for_sending->GetRestSize());
 							block_for_sending->IncreaseActualSize(recvbytes);
-							Pthis->logging_->log("[%ld,%d]Send the new block to [%s]", Pthis->state_.exchange_id_, Pthis->state_.partition_offset_,
-									Pthis->state_.upper_ip_list_[partition_id].c_str());
+							Pthis->logging_->log("[%ld,%d]Send the new block to [%d]",Pthis->state_.exchange_id_,Pthis->state_.partition_offset_,Pthis->state_.upper_id_list_[partition_id]);
 							Pthis->sendedblocks++;
 							consumed = true;
 						}

@@ -22,12 +22,12 @@ CrossJoin::CrossJoin(LogicalOperator* left_input,LogicalOperator* right_input)
 	setOperatortype(l_cross_join);
 }
 CrossJoin::~CrossJoin() {
-	dataflow_->~Dataflow();
+	delete dataflow_;
 	if(left_child_>0){
-		left_child_->~LogicalOperator();
+		delete left_child_;
 	}
 	if(right_child_>0){
-		right_child_->~LogicalOperator();
+		delete right_child_;
 	}
 }
 
@@ -171,9 +171,9 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 		exchange_state.child_=expander;
 		exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 		std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-		exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+		exchange_state.upper_id_list_=upper_id_list;
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(left_dataflow.property_.partitioner);
-		exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+		exchange_state.lower_id_list_=lower_id_list;
 		exchange_state.partition_schema_=partition_schema::set_broadcast_partition();
 		exchange_state.schema_=left_dataflow.getSchema();
 
@@ -205,9 +205,9 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 		exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 
 		std::vector<NodeID> upper_id_list=getInvolvedNodeID(dataflow_->property_.partitioner);
-		exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+		exchange_state.upper_id_list_=upper_id_list;
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(right_dataflow.property_.partitioner);
-		exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+		exchange_state.lower_id_list_=lower_id_list;
 
 		exchange_state.partition_schema_=partition_schema::set_broadcast_partition();
 		exchange_state.schema_=right_dataflow.getSchema();

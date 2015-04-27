@@ -1,16 +1,45 @@
-#include <stdio.h>
 /*
  * Client.cpp
  *
  *  Created on: Sep 25, 2014
  *      Author: wangli
  */
+#include <stdlib.h>
+#include <unistd.h>
+
+#include <fstream>
+#include <string>
 #include <stdio.h>
 #include "Client/ClientResponse.h"
 #include "common/Block/ResultSet.h"
 #include "Client/Client.h"
 #include "common/Logging.h"
 #include "startup.h"
+#include "utility/command_line.h"
+#include "utility/rdtsc.h"
+
+void readStrigFromTerminal(string & input){
+	while(true){
+		std::cin.clear();
+		std::cin.sync();
+		std::string str;
+		if(getline(std::cin,str)){
+			bool finish=false;
+			for(unsigned i=0;i<str.length();i++){
+				if(str[i]==';'){
+					input+=str.substr(0,i+1);
+					finish=true;
+					break;
+				}
+
+			}
+			if(finish)
+				break;
+			input+=str+" ";
+		}
+	}
+}
+
 int main(int argc, char** argv){
 	/* Client */
 
@@ -24,80 +53,39 @@ int main(int argc, char** argv){
 
 	Client client;
 	client.connection(argv[1], atoi(argv[2]));
-	std::cout << "Please input the query cmd!" << std::endl;
+	std::cout << std::endl;
+	init_command_line();
+
+
 	while(1){
-		std::cout<<">";
-		std::string query;
+		std::string command,message;
 
+		get_one_command(command);
 
+		command=trimSpecialCharactor(command);
 
-		std::string input;
-		while(true){
-			std::cin.clear();
-			std::cin.sync();
-			std::string str;
-			if(getline(std::cin,str)){
-				bool finish=false;
-				for(unsigned i=0;i<str.length();i++){
-					if(str[i]==';'){
-						input+=str.substr(0,i+1);
-						finish=true;
-						break;
-					}
-
-				}
-				if(finish)
-					break;
-				input+=str+" ";
-			}
-		}
-
-		query.append(input.c_str());
-		if( query == "exit" ){
+		if( command == "exit;"||command=="shutdown;" ){
 			break;
-		}else if( query.empty() ){
+		}else if( command.empty() ){
 			continue;
 		}
-		ClientResponse* response = client.submitQuery(query);
 
-		if( query == "shutdown" ){
+		command="#"+command;
+
+		ResultSet rs;
+		switch(client.submit(command,message,rs)){
+		case Client::result:
+			rs.print();
 			break;
-		}
-
-		if (response->status == OK) {
-			ResultSet rs;
-			ClientLogging::log("Client get server response ok: %s\n",
-					response->content.c_str());
-			if(response->status == CHANGEDD){
-				printf("%s\n",
-						response->content.c_str());
-			}
-			else{
-				while (response->status != ENDED) {
-
-					switch(response->status){
-					case SCHEMASS:
-						rs.schema_=response->getSchema();
-						break;
-					case HEADER:
-						rs.column_header_list_=response->getAttributeName().header_list;
-						break;
-					case DATA:
-						assert(rs.schema_!=0);
-						rs.appendNewBlock(response->getDataBlock(rs.schema_));
-						break;
-					}
-
-					response = client.receive();
-
-					ClientLogging::log("Message: %s\n", response->getMessage().c_str());
-				}
-				rs.query_time_=atof(response->content.c_str());
-				rs.print();
-			}
-		} else {
-			printf("%s\n",
-					response->content.c_str());
+		case Client::message:
+			printf("%s",message.c_str());
+			break;
+		case Client::error:
+			printf("%s",message.c_str());
+			break;
+		default:
+			assert(false);
+			break;
 		}
 	}
 	client.shutdown();

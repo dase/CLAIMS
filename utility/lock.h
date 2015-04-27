@@ -68,6 +68,20 @@ public:
         sem_wait(&sem);
     }
 
+    /*
+     * The timed_wait() shall return true if the calling process/thread successfully
+     * performed the semaphore lock operation on the semaphore. If the calling is
+     * unsuccessful, the state of the lock shall be unchanged and the function shall
+     * return false.
+     */
+    bool timed_wait(int millisecond){
+    	timespec time;
+    	time.tv_sec=millisecond/1000;
+    	millisecond=millisecond%(1000);
+    	time.tv_nsec=millisecond*(long)1000*1000;
+    	return sem_timedwait(&sem,&time)==0;
+    }
+
     bool try_wait(){
     	return sem_trywait(&sem)==0;//if trywait() is successful, return 0, otherwise return -1.
     }

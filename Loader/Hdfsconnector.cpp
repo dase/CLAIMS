@@ -35,7 +35,7 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_){
 				prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY|O_CREAT, 0, 0, 0));
 				break;
 			}
-			case APPEND:
+			case APPENDD:
 			{
 				if (hdfsExists(fs, (*par_writepath).c_str()) == -1)
 				{

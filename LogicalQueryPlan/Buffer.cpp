@@ -15,7 +15,7 @@ Buffer::Buffer(LogicalOperator* child)
 
 Buffer::~Buffer() {
 	if(child_>0){
-		child_->~LogicalOperator();
+		delete child_;
 	}
 }
 Dataflow Buffer::getDataflow(){

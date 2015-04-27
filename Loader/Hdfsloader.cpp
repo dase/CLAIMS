@@ -20,7 +20,7 @@
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
 {
-	if (open_flag_ == APPEND)
+	if (open_flag_ == APPENDD)
 		row_id = table_descriptor_->getRowNumber();
 	else
 		row_id = 0;
@@ -67,7 +67,7 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			if (open_flag_ == APPEND){
+			if (open_flag_ == APPENDD){
 				tmp_tuple_count.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionCardinality(j));
 				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			}
@@ -87,7 +87,7 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), file_list(file_name), open_flag_(open_flag_), block_size(64*1024)
 {
-	if (open_flag_ == APPEND)
+	if (open_flag_ == APPENDD)
 		row_id = table_descriptor_->getRowNumber();
 	else
 		row_id = 0;
@@ -134,7 +134,7 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			if (open_flag_ == APPEND) {
+			if (open_flag_ == APPENDD) {
 				tmp_tuple_count.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionCardinality(j));
 				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			}
@@ -171,7 +171,7 @@ bool HdfsLoader::insertRecords(){
 //		assert(false);
 		return false;
 	}
-	void *tuple_buffer = malloc(table_schema->getTupleMaxSize());
+	void *tuple_buffer = malloc(table_schema->getTupleMaxSize());		//newmalloc
 
 	//add the row_id column
 	column_type* tmp = new column_type(t_u_long);
@@ -191,7 +191,7 @@ bool HdfsLoader::insertRecords(){
 	for (int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
 	{
 		//extract the sub tuple according to the projection schema  <target>
-		void* target = malloc(projection_schema[i]->getTupleMaxSize());
+		void* target = malloc(projection_schema[i]->getTupleMaxSize());		//newmalloc
 		sub_tuple_generator[i]->getSubTuple(tuple_buffer, target);
 
 		//determine the partition to write the tuple "target"
@@ -224,7 +224,7 @@ bool HdfsLoader::insertRecords(){
 	return true;
 }
 
-bool HdfsLoader::load(){
+bool HdfsLoader::load(double sample_rate){
 #ifdef HDFS_LOAD
 	if(Config::local_disk_mode) {
 		connector_ = new LocalDiskConnector(writepath);
@@ -266,9 +266,10 @@ bool HdfsLoader::load(){
 		{
 			s_record.clear();
 			getline(InFile,s_record,row_separator);
-
-/*for testing*/ if(row_id/t_count > 100000)
-/*for testing*/		break;
+			if((double)rand()/RAND_MAX>sample_rate)
+				continue;
+///*for testing*/ if(row_id/t_count > 100000)
+///*for testing*/		break;
 
 			insertRecords();
 		}
@@ -329,7 +330,7 @@ bool HdfsLoader::load(){
 		{
 //			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j],tuples_per_partition[i][j]);
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
-			if (open_flag_ == APPEND)
+			if (open_flag_ == APPENDD)
 			{
 				table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);
 			}

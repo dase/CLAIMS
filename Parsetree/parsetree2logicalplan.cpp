@@ -215,6 +215,7 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 						else
 						{
 							assert(false);
+							SQLParse_elog("can't find join attrbutes");
 							return 0;
 						}
 					}break;
@@ -308,6 +309,9 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			if(node->issubquery==0)
 			{
 				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->getProjectoin(0));//todo
+
+//				// change for selecting best projection
+//				tablescan=new LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->get_table_id());//
 			}
 			else//need to modify the output_schema_attrname from the subquery to the form of subquery's alias.attrname
 			{

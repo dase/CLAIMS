@@ -45,6 +45,71 @@ void Client::connection(std::string host, int port) {
 	}
 }
 
+Client::query_result Client::submit(std::string& command, std::string& message,
+		ResultSet& rs) {
+	if (m_clientFd < 0) {
+		perror("Client does not connect to the server!\n");
+		return Client::error;
+	}
+	ClientResponse *response = new ClientResponse();
+
+	write(m_clientFd, command.c_str(), command.length() + 1);
+	ClientLogging::log("Client: message from server!\n");
+	const int maxBytes = 10000L;
+	char *buf = new char[maxBytes];
+	memset(buf, 0, sizeof(buf));
+
+	int receivedBytesNum;
+	//compute the length of ClientResponse object
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
+	int len = *((int*) buf + 1);
+	if ((receivedBytesNum = recv(m_clientFd, buf+sizeof(int) + sizeof(int), len, MSG_WAITALL)) < 0) {
+		perror(
+				"Client: submit query error, has problem with the communication!\n");
+	}else {
+		ClientLogging::log("receive %d bytes from server.\n", receivedBytesNum);
+	}
+	assert(maxBytes>=receivedBytesNum);
+	response->deserialize(buf, receivedBytesNum);
+	delete buf;
+
+	switch(response->status){
+		case Error:{
+			message+="ERROR>"+response->content+"\n";
+			return Client::error;
+		}
+		case OK:{
+			while (response->status != ENDED) {
+				switch(response->status){
+				case SCHEMASS:
+					rs.schema_=response->getSchema();
+					break;
+				case HEADER:
+					rs.column_header_list_=response->getAttributeName().header_list;
+					break;
+				case DATA:
+					assert(rs.schema_!=0);
+					rs.appendNewBlock(response->getDataBlock(rs.schema_));
+					break;
+				}
+				response = receive();
+					ClientLogging::log("Message: %s\n", response->getMessage().c_str());
+			}
+			rs.query_time_=atof(response->content.c_str());
+			return Client::result;
+		}
+		case CHANGEDD:{
+			message=response->content+"\n";
+			return Client::message;
+		}
+		default:{
+			printf("Unexpected response from server!n");
+			message="Unexpected response from server!\n";
+			return Client::error;
+		}
+	}
+
+}
 ClientResponse* Client::submitQuery(std::string args) {
 
 	if (m_clientFd < 0) {
@@ -56,20 +121,15 @@ ClientResponse* Client::submitQuery(std::string args) {
 
 	write(m_clientFd, args.c_str(), args.length() + 1);
 	ClientLogging::log("Client: message from server!\n");
-
 	const int maxBytes = 10000L;
-	char *buf = new char[maxBytes];
+	char *buf = new char[maxBytes];	//new
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
-
 	//compute the length of ClientResponse object
-	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL | MSG_PEEK);
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
 	int len = *((int*) buf + 1);
-
-	len += sizeof(int) + sizeof(int);
-
-	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
+	if ((receivedBytesNum = recv(m_clientFd, buf+sizeof(int) + sizeof(int), len, MSG_WAITALL)) < 0) {
 		perror(
 				"Client: submit query error, has problem with the communication!\n");
 	}else {
@@ -91,18 +151,17 @@ ClientResponse* Client::receive() {
 	ClientResponse* ret = new ClientResponse();
 
 	const int maxBytes = 75536+sizeof(int)*2;
-	char *buf = new char[maxBytes];
+	char *buf = new char[maxBytes];	//new
 	memset(buf, 0, sizeof(buf));
 
 	int receivedBytesNum;
 
 	//compute the length of the ClientResponse object
-	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL | MSG_PEEK);
+	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
 	int len = *((int*) buf + 1);
 
-	len += sizeof(int) + sizeof(int);
 
-	if ((receivedBytesNum = recv(m_clientFd, buf, len, MSG_WAITALL)) < 0) {
+	if ((receivedBytesNum = recv(m_clientFd, buf+2*sizeof(int), len, MSG_WAITALL)) < 0) {
 		perror(
 				"Client: receive result error, has problem with the communication! \n");
 		printf("ERROR: %s",strerror(errno));
@@ -116,7 +175,7 @@ ClientResponse* Client::receive() {
 }
 
 void Client::shutdown() {
-//	::shutdown(m_clientFd, 2);
 	close(m_clientFd);
 	ClientLogging::log("-----for debug:	close fd %d", m_clientFd);
 }
+

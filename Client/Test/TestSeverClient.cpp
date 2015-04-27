@@ -360,7 +360,7 @@ static int testServerClient() {
 		while(1){
 			std::cout<<">";
 			std::string query;
-			char *args = new char[65535];
+			char *args = new char[65535];	//new
 			std::cin.getline(args, 65535);
 			query.append(args);
 			delete args;

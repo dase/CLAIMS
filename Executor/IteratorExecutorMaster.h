@@ -18,14 +18,14 @@
 #endif
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../common/Logging.h"
+#include "../utility/Timer.h"
 class IteratorExecutorMaster {
 public:
 	IteratorExecutorMaster();
 	virtual ~IteratorExecutorMaster();
 	static IteratorExecutorMaster* getInstance();
 	bool ExecuteBlockStreamIteratorsOnSites(BlockStreamIteratorBase* it,std::vector<std::string> ip_list);
-	bool ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,std::string target_ip);
-	bool ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_id);
+	bool ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_ip);
 	bool Propogation(const int,std::string target);
 private:
 	static IteratorExecutorMaster* _instance;

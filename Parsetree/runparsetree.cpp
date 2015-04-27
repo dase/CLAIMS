@@ -6,18 +6,25 @@
  */
 #ifndef __RUNPARSER__
 #define __RUNPARSER__
-#include <sys/time.h>
-#include "sql_node_struct.h"
-#include <algorithm>
-#include <vector>
-#include "../common/Logging.h"
-#include <string.h>
-#include "sql.tab.hpp"
-#include "sql.lex.h"
-extern timeval start_time;
-extern int yyparse (struct ParseResult* result);
 
-static Node * getparsetreeroot()
+
+#include "runparsetree.h"
+
+/*
+ * 利用StreamBuffer类作为缓冲，获取标准输入，处理后放入desc中，送给解析器解析
+ * @param stream_buffer: StreamBuffer类的一个实例
+ * @param desc 存放即将交给解析器的sql语句
+ */
+void GetInputSQL(StreamBuffer* stream_buffer, char *desc) {
+	assert(stream_buffer != NULL && desc != NULL);
+	if (stream_buffer->IsEmpty()) {
+//		getline(cin, stream_buffer->GetCurrent());
+		cin.getline(stream_buffer->GetCurrent(), stream_buffer->GetFreedBufferCount(),'\n');
+		stream_buffer->MoveForwardEnd(cin.gcount());
+	}
+}
+
+Node * getparsetreeroot()
 {
 	char InputStr[10000];
 	puts("SQL!!!!!");
@@ -99,6 +106,9 @@ static Node * getparsetreeroot(struct ParseResult * presult)
 
 /*
 static Node * getparsetreeroot(const char *sql)
+=======
+Node * getparsetreeroot(const char *sql)
+>>>>>>> refs/remotes/origin/master150426
 {
 	assert(sql != NULL);
 	ASTParserLogging::log("sql argument is %s", sql);
@@ -127,10 +137,9 @@ static Node * getparsetreeroot(const char *sql)
 	}
 }
 */
-static Node * getparsetreeroot(const char * InputStr)
+static Node * getparsetreeroot(const char * str)
 {
-/*	char InputStr[10000];
-	puts("SQL!!!!!");
+/*	puts("SQL!!!!!");
 	int charnum=0;
     while(1)
     {
@@ -143,8 +152,10 @@ static Node * getparsetreeroot(const char * InputStr)
         }
     }
 
-	strcpy(InputStr,str);
+<<<<<<< HEAD
 */
+	char InputStr[10000];
+	strcpy(InputStr,str);
     vector<Node *>allnode;
 	struct ParseResult presult={NULL,NULL,InputStr,0,&allnode};
 //reference to the example of "purecal"

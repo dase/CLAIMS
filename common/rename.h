@@ -14,11 +14,15 @@
 #include <malloc.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <assert.h>
 
 typedef int (f)(int);
 
 //static f * FileClose=close;
 static int FileClose(int fd){
+	assert(fd != 0);
+	assert(fd != 1);
+	assert(fd != 2);
 	close(fd);
 }
 

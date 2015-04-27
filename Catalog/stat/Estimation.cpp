@@ -95,10 +95,10 @@ double ratio(const void *sourLow, const void *sourUp, const void *paraLow,
 	//TODO ADD support for new data types
 	double ret = 0;
 
-	void *low = new char[type->get_length()];
-	void *up = new char[type->get_length()];
-	void *pLow = new char[type->get_length()];
-	void *pUp = new char[type->get_length()];
+	void *low = new char[type->get_length()];	//new
+	void *up = new char[type->get_length()];	//new
+	void *pLow = new char[type->get_length()];	//new
+	void *pUp = new char[type->get_length()];	//new
 
 	(type->operate->assignment(sourLow, low));
 	(type->operate->assignment)(sourUp, up);

@@ -6,6 +6,11 @@
  */
 
 #include "Executing.h"
+#include "../Parsetree/runparsetree.h"
+#include <iosfwd>
+#include "../Parsetree/sql_node_struct.h"
+
+//using std::string;
 Executing::Executing() {
 	// TODO Auto-generated constructor stub
 
@@ -46,7 +51,6 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	collector->next(0);
 	collector->close();
 	resultset = collector->getResultSet();
-	//	resultset->print();
 	root->~LogicalOperator();;
 	return resultset;
 }

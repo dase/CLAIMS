@@ -44,6 +44,7 @@
 #define DATA	4
 #define ENDED		5
 #define CHANGEDD 6
+
 struct ColumnHeader {
 	std::vector<std::string> header_list;
 	void add_header(std::string name) {
@@ -199,7 +200,7 @@ struct ClientResponse {
 
 	int serialize(char*& buffer) const {
 		int ret = sizeof(int) + sizeof(int) + content.length();
-		buffer = (char *) malloc(ret);
+		buffer = (char *) malloc(ret);		//newmalloc
 		*(int*) buffer = status;		// 小端字节序
 		*((int*) buffer + 1) = length;
 		void* content_start = buffer + sizeof(int) + sizeof(int);
@@ -223,7 +224,7 @@ struct ClientResponse {
 	void deserialize(const char* received_buffer, int recieved_bytes_length) {
 		const int st = *(int*) received_buffer;
 		const int len = *((int*) received_buffer + 1);
-		if(!(recieved_bytes_length == sizeof(int) + sizeof(int) + len)){
+		if(!(recieved_bytes_length == len)){
 			printf("recieved_bytes_length %d, len %d\n",recieved_bytes_length, len);
 			assert(false);
 		}

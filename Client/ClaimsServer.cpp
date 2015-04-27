@@ -27,7 +27,7 @@ int ClientListener::standard_err = dup(STDERR_FILENO);
 ClientListener::ClientListener(int port) {
 
 	m_num = 0;
-	m_clientFds = new int[MAXCONN];
+	m_clientFds = new int[MAXCONN];	//new
 	for (int i = 0; i < MAXCONN; ++i) {
 		m_clientFds[i] = -1;
 	}
@@ -38,7 +38,7 @@ ClientListener::ClientListener(int port) {
 
 ClientListener::~ClientListener() {
 
-	delete m_clientFds;
+	delete[] m_clientFds;
 }
 
 int ClientListener::addClient(const int fd) {
@@ -153,12 +153,12 @@ void ClientListener::configure() {
 
 	const int error1 = pthread_create(&t_Receiver, NULL, receiveHandler, this);
 	if (error1 != 0) {
-		std::cout << "cannot create receive thread!" << std::endl;
+		std::cout << "cannot create receive thread!" << strerror(errno) << std::endl;
 	}
 
 	const int error2 = pthread_create(&t_Sender, NULL, sendHandler, this);
 	if (error2 != 0) {
-		std::cout << "cannot create send thread!" << std::endl;
+		std::cout << "cannot create send thread!" << strerror(errno) << std::endl;
 	}
 
 	ClientListenerLogging::log("sender thread id=%x\n",t_Sender);
@@ -187,7 +187,7 @@ void* ClientListener::receiveHandler(void *para) {
 
 	const int buffer_size=10240;
 
-	char *buf = new char[buffer_size];
+	char *buf = new char[buffer_size];	//new
 	memset(buf, 0, sizeof(buf));
 
 	unsigned int sockLen;
@@ -235,13 +235,13 @@ void* ClientListener::receiveHandler(void *para) {
 
 				restoreStd();
 
-				{	// Yu
-					cout<<endl<<"clientFds:"<<endl;
-					for (int i = 0; i < MAXCONN ; ++i) {
-						cout<<server->m_clientFds[i]<<" ";
-					}
-					cout<<endl;
-				}
+//				{	// Yu
+//					cout<<endl<<"clientFds:"<<endl;
+//					for (int i = 0; i < MAXCONN ; ++i) {
+//						cout<<server->m_clientFds[i]<<" ";
+//					}
+//					cout<<endl;
+//				}
 
 				if (!server->isFull()) {
 					if ((clientSockFd = accept(serverSockFd,
@@ -273,7 +273,7 @@ void* ClientListener::receiveHandler(void *para) {
 					if (0 == nread) {
 						//TODO does here means a client close the connection with server?
 						FD_CLR(server->m_clientFds[i], &watchFds);
-						close(server->m_clientFds[i]);
+						FileClose(server->m_clientFds[i]);
 						ClientLogging::log("-----for debug:close fd %d.", server->m_clientFds[i]);
 						server->removeClient(server->m_clientFds[i]);
 						continue;
@@ -287,9 +287,18 @@ void* ClientListener::receiveHandler(void *para) {
 
 					int sql_type = buf[0]-48;	// '1' - 48 = 1
 					ClientLogging::log("sql_type is %d", sql_type);
+					if (sql_type <= 9 && sql_type >= 0) {
+						server->client_type_ = client_type::java;
+						ClientListenerLogging::log("this messege is from java client :%s", buf);
+						generateSqlStmt(sql_type, buf);
+					}
+					else if ('#'-48 == sql_type){
+						buf += 1;	// ignore the number in the front of buf
+						server->client_type_ = client_type::c;
+						ClientListenerLogging::log("this messege is from c client :%s", buf);
+					}
 
-					generateSqlStmt(sql_type, buf);
-					//					strcpy(buf, "select row_id from tradelimit 100;\0");
+					//					strcpy(buf, "select row_id from trade limit 100;\0");
 
 					assert(buffer_size>nread);
 
@@ -334,12 +343,10 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		arg1 = string(buf+1, 6);
 		ClientLogging::log("arg1 is %s", arg1.c_str());
 		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
-		// select avg(trade_price), trade_date from trade where sec_code = '600036' group by trade_date order by trade_date;
-		string sql = "select avg(trade_price) as trade_price, trade_date as trade_date from trade where sec_code = \'" + arg1 + "\' group by trade_date order by trade_date; ";
+		string sql = "select avg(trade_price) as trade_price, trade_date from trade where sec_code = \'" + arg1 + "\' group by trade_date order by trade_date; ";
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 1: {
@@ -353,7 +360,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 			//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 			memset(buf, 0, sizeof(buf));
 			strcpy(buf, sql.c_str());
-			ClientLogging::log("sql buf is %s\n", buf);
 			break;
 		}
 	case 2: {
@@ -364,7 +370,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 			//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 			memset(buf, 0, sizeof(buf));
 			strcpy(buf, sql.c_str());
-			ClientLogging::log("sql buf is %s\n", buf);
 			break;
 		}
 	case 3: {
@@ -389,7 +394,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 4: {
@@ -417,7 +421,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 5: {
@@ -486,7 +489,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 6: {
@@ -555,7 +557,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 7: {
@@ -577,7 +578,6 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 8: {
@@ -594,18 +594,18 @@ void ClientListener::generateSqlStmt(int type, char *&buf) {
 		//		ClientLogging::log("the whole sql string is: %s",sql.c_str());
 		memset(buf, 0, sizeof(buf));
 		strcpy(buf, sql.c_str());
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	case 9: {
 		buf += 1;	// ignore the number in the front of buf
-		ClientLogging::log("sql buf is %s\n", buf);
 		break;
 	}
 	default: {
 		ClientLogging::elog("No supported");
 	}
 	}
+
+	ClientLogging::log("sql buf is %s\n", buf);
 	int temp;
 }
 
@@ -630,53 +630,55 @@ void *ClientListener::sendHandler(void *para) {
 				// DDL return true
 				cliRes.setChange(result.info);
 				ClientListenerLogging::log("to send change response-- status:%d  length:%d  content:%s",
-								cliRes.status, cliRes.length, cliRes.content.c_str());
+						cliRes.status, cliRes.length, cliRes.content.c_str());
 				server->write(result.fd, cliRes);
 			}
 			else {
-				sendJsonPacket(cliRes, result);
-				server->write(result.fd, cliRes);
-				/*
-				// query return true
-				cliRes.setOk("Yes Ok");
-				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
-								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
-				server->write(result.fd, cliRes);
-
-				cliRes.setSchema(result.result->schema_);
-				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
-								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
-				server->write(result.fd, cliRes);
-
-				std::vector<std::string> list = result.result->column_header_list_;
-				ColumnHeader header;
-				for (int i = 0; i < list.size(); ++i) {
-					header.add_header(list[i]);
-				}
-				cliRes.setAttributeName(header);
-				ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
-								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
-				server->write(result.fd, cliRes);
-
-				result.result->print();
-				ResultSet::Iterator it = result.result->createIterator();
-				BlockStreamBase* block;
-
-				Block serialzed_block(64*1024);
-
-				while (block = (BlockStreamBase*) it.atomicNextBlock()) {
-					block->serialize(serialzed_block);
-					cliRes.setDataBlock(serialzed_block);
-					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
-									cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
+				if (client_type::java == server->client_type_) {
+					sendJsonPacket(cliRes, result);
 					server->write(result.fd, cliRes);
 				}
+				else if (client_type::c == server->client_type_ ) {
+					// query return true
+					cliRes.setOk("Yes Ok");
+					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+							cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
+					server->write(result.fd, cliRes);
 
-				cliRes.setEnd(result.result->query_time_);
-				ClientListenerLogging::log("to send end response-- status:%d  length:%d  content:%s",
-								cliRes.status, cliRes.length, cliRes.content.c_str());
-				server->write(result.fd, cliRes);
-				 */
+					cliRes.setSchema(result.result->schema_);
+					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+							cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
+					server->write(result.fd, cliRes);
+
+					std::vector<std::string> list = result.result->column_header_list_;
+					ColumnHeader header;
+					for (int i = 0; i < list.size(); ++i) {
+						header.add_header(list[i]);
+					}
+					cliRes.setAttributeName(header);
+					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+							cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
+					server->write(result.fd, cliRes);
+
+					//				result.result->print();
+					ResultSet::Iterator it = result.result->createIterator();
+					BlockStreamBase* block;
+
+					Block serialzed_block(64*1024);
+
+					while (block = (BlockStreamBase*) it.atomicNextBlock()) {
+						block->serialize(serialzed_block);
+						cliRes.setDataBlock(serialzed_block);
+						ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
+								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
+						server->write(result.fd, cliRes);
+					}
+
+					cliRes.setEnd(result.result->query_time_);
+					ClientListenerLogging::log("to send end response-- status:%d  length:%d  content:%s",
+							cliRes.status, cliRes.length, cliRes.content.c_str());
+					server->write(result.fd, cliRes);
+				}
 			}
 		} else {
 			//ERROR
@@ -737,7 +739,7 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, executed_result &res) {
 //	int &serverSockFd = m_fd;
 //	int clientSockFd;
 //	unsigned int nread;
-//	char *buf = new char[128];
+//	char *buf = new char[128];	//new
 //	sockaddr_in serverSocket;
 //	sockaddr_in clientSocket;
 //
@@ -851,14 +853,14 @@ void ClientListener::shutdown() {
 
 	for (int i = 0; i < MAXCONN; ++i) {
 		if (m_clientFds[i] > 0) {
-			close(m_clientFds[i]);
+			FileClose(m_clientFds[i]);
 			ClientLogging::log("-----for debug:close fd %d.\n", m_clientFds[i]);
 		}
 	}
-	close(standard_err);
-	close(standard_input);
-	close(standard_output);
-	close(m_fd);
+	FileClose(standard_err);
+	FileClose(standard_input);
+	FileClose(standard_output);
+	FileClose(m_fd);
 	ClientLogging::log("-----for debug:close fd %d", m_fd);
 }
 
@@ -877,7 +879,7 @@ int ClientListener::write(const int fd, const ClientResponse& res) const {
 //	if (ret < 0) {
 //		ClientLogging::elog("when send to fd %d, send buffer failed.%s", fd, strerror(errno));
 //		if (EBADF == errno) {
-//			close(fd);
+//			FileClose(fd);
 //			removeClient(fd);
 //			ClientLogging::log("-----for debug:close fd %d in write()\n", fd);
 //		}

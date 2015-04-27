@@ -40,9 +40,8 @@ Filter::Filter(const Condition& condition,LogicalOperator*  child):condition_(co
 	setOperatortype(l_filter);
 }
 Filter::~Filter() {
-	// TODO Auto-generated destructor stub
 	if(child_>0){
-		child_->~LogicalOperator();
+		delete child_;
 	}
 }
 
@@ -158,7 +157,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 					upper_id_list=NodeTracker::getInstance()->getNodeIDList();
 				}
 			}
-			state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+			state.upper_id_list_=upper_id_list;
 
 			assert(requirement.hasReuiredPartitionKey());
 
@@ -167,7 +166,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 
 			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
 
-			state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+			state.lower_id_list_=lower_id_list;
 
 
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
@@ -326,7 +325,7 @@ void Filter::Condition::add(const Attribute& attr,const AttributeComparator::com
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
 	const unsigned value_length=attr.attrType->get_length();
-	void* value=malloc(value_length);
+	void* value=malloc(value_length);		//newmalloc
 	attr.attrType->operate->assignment(const_value,value);
 	const_value_list_.push_back(value);
 }
@@ -334,7 +333,7 @@ void Filter::Condition::add(const Attribute& attr,const AttributeComparator::com
 	attribute_list_.push_back(attr);
 	comparison_list_.push_back(com);
 	const unsigned value_length=attr.attrType->get_length();
-	void* value=malloc(value_length);
+	void* value=malloc(value_length);		//newmalloc
 	attr.attrType->operate->toValue(value,str_exp.c_str());
 	const_value_list_.push_back(value);
 }

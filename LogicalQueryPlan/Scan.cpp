@@ -60,12 +60,17 @@ Dataflow LogicalScan::getDataflow(){
 
 	if(target_projection_==0){
 		ProjectionOffset target_projection_off=-1;
+		unsigned int min_projection_cost = -1;
+
+		/*
+		 * TODO: get real need column as scan_attribute_list_, otherwise, optimization don't work	-Yu
+		 */
 		for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
 			ProjectionDescriptor* projection=table->getProjectoin(projection_off);
 			bool fail=false;
 			for(std::vector<Attribute>::iterator it=scan_attribute_list_.begin();it!=scan_attribute_list_.end();it++){
 				if(!projection->hasAttribute(*it)){
-					/*the attribute *it does not in the projection*/
+					/*the attribute *it is not in the projection*/
 					fail=true;
 					break;
 				}
@@ -73,8 +78,17 @@ Dataflow LogicalScan::getDataflow(){
 			if(fail==true){
 				continue;
 			}
-			target_projection_off=projection_off;
-			break;
+			unsigned int projection_cost = projection->getProjectionCost();
+			//get the projection with minimum cost
+			if (min_projection_cost > projection_cost) {
+				target_projection_off = projection_off;
+				min_projection_cost = projection_cost;
+				cout<<"in "<<table->getNumberOfProjection()<<" projections, "
+						"projection "<<projection_off<<" has less cost:"<<projection_cost<<endl;
+
+			}
+//			projection_candidate.push_back(projection_off);
+//			break;
 		}
 
 		if(target_projection_off==-1){
@@ -83,7 +97,8 @@ Dataflow LogicalScan::getDataflow(){
 			assert(false);
 		}
 		target_projection_=table->getProjectoin(target_projection_off);
-
+		cout<<"in "<<table->getNumberOfProjection()<<" projections, "
+				"projection "<<target_projection_off<<" has min cost:"<<min_projection_cost<<endl;
 	}
 	if(!target_projection_->AllPartitionBound()){
 		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
@@ -148,7 +163,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		state.schema_=getSchema(dataflow.attribute_list_);
 
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
-		state.lower_ip_list_=convertNodeIDListToNodeIPList(lower_id_list);
+		state.lower_id_list_=lower_id_list;
 
 		std::vector<NodeID> upper_id_list;
 		if(requirement.hasRequiredLocations()){
@@ -166,7 +181,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 			}
 		}
 
-		state.upper_ip_list_=convertNodeIDListToNodeIPList(upper_id_list);
+		state.upper_id_list_=upper_id_list;
 
 		state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey()));
 		assert(state.partition_schema_.partition_key_index>=0);
@@ -176,10 +191,10 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		Dataflow new_dataflow;
 		new_dataflow.attribute_list_=dataflow.attribute_list_;
 		new_dataflow.property_.partitioner.setPartitionKey(requirement.getPartitionKey());
-		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_ip_list_.size()));
+		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_id_list_.size()));
 
 		const unsigned total_size=dataflow.getAggregatedDatasize();
-		const unsigned degree_of_parallelism=state.upper_ip_list_.size();
+		const unsigned degree_of_parallelism=state.upper_id_list_.size();
 		std::vector<DataflowPartition> dataflow_partition_list;
 			for(unsigned i=0;i<degree_of_parallelism;i++){
 				const NodeID location=upper_id_list[i];

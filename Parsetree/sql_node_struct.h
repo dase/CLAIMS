@@ -514,6 +514,8 @@ struct Loadtable_stmt{	// 2014-4-1---修改---by Yu
 	Node *path;
 	char *column_separator;
 	char *tuple_separator;
+	double sample;
+	int mode;	// 0 is load, 1 is append
 };
 
 struct Rename_stmt
@@ -731,7 +733,15 @@ struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, 
 
 struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next,vector<Node *> *allnode);
 
-struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator,vector<Node *> *allnode);
+
+struct Node* newLoadTable(nodetype type,
+		char *table_name,
+		Node *path,
+		char *column_separator,
+		char *tuple_separator,
+		double sample,
+		int mode,
+		vector<Node *> *allnode);
 
 Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string,vector<Node *> *allnode);
 
@@ -764,5 +774,5 @@ bool semantic_analysis(Node *parsetree,bool issubquery);
 int solve_join_condition(Node * fromnode);
 void preprocess(Node *node);
 
-static Node * getparsetreeroot(const char * InputStr);
+//Node * getparsetreeroot(const char * InputStr);
 #endif /* NODES_H_ */

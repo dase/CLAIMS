@@ -330,7 +330,7 @@ static void startup_single_node_environment_of_poc(){
 		Environment::getInstance(true);
 		create_poc_data_one_partitions();
 
-
+//		Environment::getInstance(true)->getCatalog()->saveCatalog();
 		printf("Press any key to continue!\n");
 		getchar();
 //		create_poc_data_four_partitions();
@@ -1135,6 +1135,9 @@ static void startup_multiple_node_environment_of_tpch(bool master=true){
 
 		table_8->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
 	}
+
+	// save catalog as a file
+	catalog->saveCatalog();
 }
 
 

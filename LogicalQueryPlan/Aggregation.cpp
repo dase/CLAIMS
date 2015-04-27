@@ -18,11 +18,8 @@ Aggregation::Aggregation(std::vector<Attribute> group_by_attribute_list,std::vec
 }
 
 Aggregation::~Aggregation() {
-	dataflow_->~Dataflow();
-	if(child_>0){
-		child_->~LogicalOperator();
-	}
-	// TODO Auto-generated destructor stub
+	delete dataflow_;
+	delete  child_;
 }
 Dataflow Aggregation::getDataflow(){
 	if(dataflow_!=0)
@@ -191,8 +188,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 //			exchange_state.child=private_aggregation;
 			exchange_state.child_=expander_lower;
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
-			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
+			exchange_state.lower_id_list_=getInvolvedNodeID(child_->getDataflow().property_.partitioner);
+			exchange_state.upper_id_list_=getInvolvedNodeID(dataflow_->property_.partitioner);
 //			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
 
 			if(group_by_attribute_list_.empty())
@@ -233,8 +230,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			exchange_state.block_size_=block_size;
 			exchange_state.child_=expander;//child_->getIteratorTree(block_size);
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(child_->getDataflow().property_.partitioner));
-			exchange_state.upper_ip_list_=convertNodeIDListToNodeIPList(getInvolvedNodeID(dataflow_->property_.partitioner));
+			exchange_state.lower_id_list_=getInvolvedNodeID(child_->getDataflow().property_.partitioner);
+			exchange_state.upper_id_list_=getInvolvedNodeID(dataflow_->property_.partitioner);
 			if(group_by_attribute_list_.empty()){
 				/**
 				 * scalar aggregation allows parallel partitions to be partitioned in any fashion.
@@ -250,7 +247,8 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			exchange_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 			aggregation_state.isPartitionNode=false;//as regard to AVG(),for partition node and global node ,we should do some different operations.
-			changeSchemaforAVG(aggregation_state);//			aggregation_state.child=exchange;
+			changeSchemaforAVG(aggregation_state);
+			aggregation_state.child=exchange;
 			ret=new BlockStreamAggregationIterator(aggregation_state);
 			break;
 		}
@@ -368,7 +366,7 @@ std::vector<Attribute> Aggregation::getAggregationAttributeAfterAggregation()con
 }
 unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)const{
 	const unsigned long max_limits=1024*1024;
-	const unsigned long min_limits=1024*4;
+	const unsigned long min_limits=1024*512;
 	unsigned long data_card=dataflow.getAggregatedDataCardinality();
 	unsigned long ret;
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
@@ -382,7 +380,7 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 	for(unsigned i=0;i<group_by_attribute_list_.size();i++){
 		AttributeStatistics* attr_stat=StatManager::getInstance()->getAttributeStatistic(group_by_attribute_list_[i]);
 		if(attr_stat==0){
-			group_by_domain_size*=100;
+			group_by_domain_size*=1000;
 		}
 		else{
 			group_by_domain_size*=attr_stat->getDistinctCardinality();

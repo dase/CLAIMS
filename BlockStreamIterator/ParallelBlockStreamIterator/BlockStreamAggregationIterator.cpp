@@ -3,21 +3,6 @@
  *
  * Created on: 2013-9-9
  * Author: casa
- *
- * 这里的存在bug，因为对于汇总点和分布点取数据的地址不一样，但是由于p-a-p模型中，p1已经使得groupby-att和aggregation-att有序
- * 即存在下列关系
- * state_.groupByIndex[0]=inputGroupByToOutput_[0]=0
- * state_.groupByIndex[1]=inputGroupByToOutput_[1]=1
- *     .
- *     .
- * state_.groupByIndex[k-1]=inputGroupByToOutput_[k-1]=k-1
- * state_.aggregationIndex[0]=inputGroupByToOutput_[k]=k
- *    .
- *    .
- *    .
- *
- *    in hashschema: group by attribute,then aggregation attribute
- * 					like	[0 1 2 ……  k-1 ] [ k k+1, ……，n-1]
  */
 
 #include "BlockStreamAggregationIterator.h"
@@ -42,7 +27,10 @@ BlockStreamAggregationIterator::BlockStreamAggregationIterator()
 }
 
 BlockStreamAggregationIterator::~BlockStreamAggregationIterator() {
-
+	delete state_.input;
+	delete state_.hashSchema;
+	delete state_.output;
+	delete state_.child;
 }
 
 BlockStreamAggregationIterator::State::State(
@@ -76,61 +64,22 @@ isPartitionNode(isPartitionNode){
 bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offset){
 	barrier_.RegisterOneThread();
 	RegisterExpandedThreadToAllBarriers();
+
 	if(tryEntryIntoSerializedSection(0)){
 		ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_desc,"Aggregation",0));
 	}
 	barrierArrive(0);
+
 	state_.child->open(partition_offset);
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-//		printf("<<<<<<<<<<<<<<<<<Aggregation detected call back signal before constructing hash table!>>>>>>>>>>>>>>>>>\n");
 		unregisterExpandedThreadToAllBarriers();
 		return true;
 	}
 
-	//	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input,state_.block_size));
-	if(tryEntryIntoSerializedSection(1))
-	{
-		unsigned outputindex=0;
-		for(unsigned i=0;i<state_.groupByIndex.size();i++)
-		{
-			inputGroupByToOutput_[i]=outputindex++;	// index of group by attributes from input To output index
-			//				cout<<"i= "<<i<<" gbi= "<<state_.groupByIndex[i]<<"  igtoi= "<<inputGroupByToOutput_[i]<<endl;
-		}
-		for(unsigned i=0;i<state_.aggregationIndex.size();i++)
-		{
-			inputAggregationToOutput_[i]=outputindex++;	// index of aggregation attributes from input To output index
-			//				cout<<"i= "<<i<<" ai= "<<state_.aggregationIndex[i]<<"  iatoi= "<<inputAggregationToOutput_[i]<<endl;
-		}
-		for(unsigned i=0;i<state_.aggregations.size();i++)
-		{
-			switch(state_.aggregations[i])
-			{
-			case BlockStreamAggregationIterator::State::count:
-			{
-				aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetIncreateByOneFunction());
-				break;
-			}
-			case BlockStreamAggregationIterator::State::min:
-			{
-				aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetMINFunction());
-				break;
-			}
-			case BlockStreamAggregationIterator::State::max:
-			{
-				aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetMAXFunction());
-				break;
-			}
-			case BlockStreamAggregationIterator::State::sum:
-			{
-				aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetADDFunction());
-				break;
-			}
-			default://for avg has changed to sum and count
-			{
-				printf("invalid aggregation function!\n");
-			}
-			}
-		}
+
+	if(tryEntryIntoSerializedSection(1)){
+		prepareIndex();
+		prepareAggregateFunctions();
 		hash_=PartitionFunctionFactory::createGeneralModuloFunction(state_.nbuckets);
 		hashtable_=new BasicHashTable(state_.nbuckets,state_.bucketsize,state_.hashSchema->getTupleMaxSize());//
 		open_finished_=true;
@@ -156,179 +105,116 @@ bool BlockStreamAggregationIterator::open(const PartitionOffset& partition_offse
 	unsigned consumed_tuples=0;
 	unsigned matched_tuples=0;
 
-	/*
-	 * group-by aggregation
-	 */
-	if(!state_.groupByIndex.empty())
+	while(state_.child->next(bsb))	// traverse every block from child
 	{
-		while(state_.child->next(bsb))	// get every block from child
+		BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
+		bsti->reset();
+		while((cur=bsti->currentTuple())!=0)	// traverse every tuple from block
 		{
-			BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
-			bsti->reset();
-			while((cur=bsti->currentTuple())!=0)	// get every tuple from block
-			{
-				consumed_tuples++;
+			consumed_tuples++;
 
-				// get the corresponding bucket index according to the first column in group-by attributes
+			/* get the corresponding bucket index according to the first column in
+			 * group-by attributes.
+			 * Note that bn is always 0 for scalar aggregation.
+			 */
+			bn=0;
+			if(state_.groupByIndex.size()>0)
 				bn=state_.input->getcolumn(state_.groupByIndex[0]).operate->getPartitionValue(state_.input->getColumnAddess(state_.groupByIndex[0],cur),state_.nbuckets);
-				hashtable_->lockBlock(bn);
-				hashtable_->placeIterator(ht_it,bn);
-				key_exist=false;
-				while((tuple_in_hashtable=ht_it.readCurrent())!=0)
-				{
-					for(unsigned i=0;i<state_.groupByIndex.size();i++)
-					{
-						key_in_input_tuple=state_.input->getColumnAddess(state_.groupByIndex[i],cur);
-						key_in_hash_table=state_.hashSchema->getColumnAddess(inputGroupByToOutput_[i],tuple_in_hashtable);
-						if(state_.input->getcolumn(state_.groupByIndex[i]).operate->equal(key_in_input_tuple,key_in_hash_table))
-						{
-							key_exist=true;
-						}
-						else
-						{
-							key_exist=false;
-							break;
-						}
-					}
-					if(key_exist)	// hash table have the key (the value in group-by attribute)
-					{
-						matched_tuples++;
-						for(unsigned i=0;i<state_.aggregationIndex.size();i++)
-						{
-							if(state_.aggregations[i]==State::count)
-							{
-								value_in_input_tuple=&one;
-							}
-							else
-							{
-								value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
-							}
-							value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],tuple_in_hashtable);
-							hashtable_->UpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
-						}
-						break;
-					}
-					else
-					{
-						ht_it.increase_cur_();
-					}
-				}
-				if(key_exist)
-				{
-					bsti->increase_cur_();
-					hashtable_->unlockBlock(bn);
-					continue;
-				}
-				new_tuple_in_hash_table=hashtable_->allocate(bn);
-				hashtable_->unlockBlock(bn);
-				allocated_tuples_in_hashtable++;
+
+			hashtable_->lockBlock(bn);
+			hashtable_->placeIterator(ht_it,bn);
+			key_exist=false;
+			while((tuple_in_hashtable=ht_it.readCurrent())!=0)
+			{
+				/* set key_exist flag to true such that the the case for scalar
+				 * aggregation (i.e., aggregation with no group-by attributes)
+				 * could be considered as passed the group by value verification.
+				 */
+				key_exist=true;
 				for(unsigned i=0;i<state_.groupByIndex.size();i++)
 				{
 					key_in_input_tuple=state_.input->getColumnAddess(state_.groupByIndex[i],cur);
-					key_in_hash_table=state_.hashSchema->getColumnAddess(inputGroupByToOutput_[i],new_tuple_in_hash_table);
-					state_.input->getcolumn(state_.groupByIndex[i]).operate->assignment(key_in_input_tuple,key_in_hash_table);
-				}
-
-				for(unsigned i=0;i<state_.aggregationIndex.size();i++)
-				{
-					/**
-					 * use if-else here is a kind of ugly.
-					 * TODO: use a function which is initialized according to the aggregation function.
-					 */
-					if(state_.aggregations[i]==State::count)
+					key_in_hash_table=state_.hashSchema->getColumnAddess(inputGroupByToOutput_[i],tuple_in_hashtable);
+					if(!state_.input->getcolumn(state_.groupByIndex[i]).operate->equal(key_in_input_tuple,key_in_hash_table))
 					{
-						value_in_input_tuple=&one;
+						key_exist=false;
+						break;
 					}
-					else
-					{
-						value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
-					}
-					value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
-					state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
 				}
-				bsti->increase_cur_();
-			}
-			bsb->setEmpty();
-		}
-	}
-	else
-	{
-		/**
-		 * scalar aggregation, e.i., all tuples are in the same group.
-		 */
-		while(state_.child->next(bsb))
-		{
-			BlockStreamBase::BlockStreamTraverseIterator *bsti=bsb->createIterator();
-			bsti->reset();
-			while((cur=bsti->currentTuple())!=0)
-			{
-				consumed_tuples++;
-				bn=0;
-				hashtable_->placeIterator(ht_it,bn);
-				key_exist=false;
-				if((tuple_in_hashtable=ht_it.readCurrent())!=0)
+				if(key_exist)	// hash table have the key (the value in group-by attribute)
 				{
-					key_exist=true;
 					matched_tuples++;
 					for(unsigned i=0;i<state_.aggregationIndex.size();i++)
 					{
 						value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
 						value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],tuple_in_hashtable);
-						hashtable_->atomicUpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
+						hashtable_->UpdateTuple(bn,value_in_hash_table,value_in_input_tuple,aggregationFunctions_[i]);
 					}
-					bsti->increase_cur_();
+					break;
 				}
 				else
 				{
-					new_tuple_in_hash_table=hashtable_->atomicAllocate(bn);
-					allocated_tuples_in_hashtable++;
-					for(unsigned i=0;i<state_.aggregationIndex.size();i++)
-					{
-						/**
-						 * use if-else here is a kind of ugly.
-						 * TODO: use a function which is initialized according to the aggregation function.
-						 */
-						if(state_.aggregations[i]==State::count)
-						{
-							value_in_input_tuple=&one;
-						}
-						else
-						{
-							value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
-						}
-						value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
-						//						state_.input->getcolumn(state_.aggregationIndex[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
-						state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
-					}
-					bsti->increase_cur_();
+					ht_it.increase_cur_();
 				}
 			}
-			bsb->setEmpty();
+			if(key_exist)
+			{
+				bsti->increase_cur_();
+				hashtable_->unlockBlock(bn);
+				continue;
+			}
+			new_tuple_in_hash_table=hashtable_->allocate(bn);
+			hashtable_->unlockBlock(bn);
+			allocated_tuples_in_hashtable++;
+			for(unsigned i=0;i<state_.groupByIndex.size();i++)
+			{
+				key_in_input_tuple=state_.input->getColumnAddess(state_.groupByIndex[i],cur);
+				key_in_hash_table=state_.hashSchema->getColumnAddess(inputGroupByToOutput_[i],new_tuple_in_hash_table);
+				state_.input->getcolumn(state_.groupByIndex[i]).operate->assignment(key_in_input_tuple,key_in_hash_table);
+			}
+
+			for(unsigned i=0;i<state_.aggregationIndex.size();i++)
+			{
+				/**
+				 * use if-else here is a kind of ugly.
+				 * TODO: use a function which is initialized according to the aggregation function.
+				 */
+				if(state_.aggregations[i]==State::count)
+				{
+					value_in_input_tuple=&one;
+				}
+				else
+				{
+					value_in_input_tuple=state_.input->getColumnAddess(state_.aggregationIndex[i],cur);
+				}
+				value_in_hash_table=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],new_tuple_in_hash_table);
+				state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->assignment(value_in_input_tuple,value_in_hash_table);
+			}
+			bsti->increase_cur_();
 		}
+		bsb->setEmpty();
 	}
 
+	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
+		unregisterExpandedThreadToAllBarriers(1);
+		return true;
+	}
+	barrierArrive(2);
 
-
-
-		if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
-			unregisterExpandedThreadToAllBarriers(1);
-			return true;
-		}
-		barrierArrive(2);
-
-		if(tryEntryIntoSerializedSection(2)){
+	if(tryEntryIntoSerializedSection(2)){
 //			hashtable_->report_status();
-				it_=hashtable_->CreateIterator();
-				bucket_cur_=0;
-				hashtable_->placeIterator(it_,bucket_cur_);
-				open_finished_end_=true;
-				ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation  ",0));
-				perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
-				perf_info_->initialize();
-		}
-		barrierArrive(3);
+			it_=hashtable_->CreateIterator();
+			bucket_cur_=0;
+			hashtable_->placeIterator(it_,bucket_cur_);
+			open_finished_end_=true;
+			ExpanderTracker::getInstance()->addNewStageEndpoint(pthread_self(),LocalStageEndPoint(stage_src,"Aggregation  ",0));
+			perf_info_=ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
+			perf_info_->initialize();
+	}
+	barrierArrive(3);
 
 	delete bsb;
+//	hashtable_->report_status();
 }
 
 /*
@@ -453,7 +339,36 @@ void BlockStreamAggregationIterator::AtomicPushFreeHtBlockStream(BlockStreamBase
 	lock_.release();
 }
 
+void BlockStreamAggregationIterator::prepareIndex() {
+	unsigned outputindex=0;
+	for(unsigned i=0;i<state_.groupByIndex.size();i++)
+	{
+		inputGroupByToOutput_[i]=outputindex++;	// index of group by attributes from input To output index
+	}
+	for(unsigned i=0;i<state_.aggregationIndex.size();i++)
+	{
+		inputAggregationToOutput_[i]=outputindex++;	// index of aggregation attributes from input To output index
+	}
+}
 
-
-
-
+void BlockStreamAggregationIterator::prepareAggregateFunctions() {
+	for(unsigned i=0;i<state_.aggregations.size();i++)
+	{
+		switch(state_.aggregations[i]){
+		case BlockStreamAggregationIterator::State::count:
+			aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetIncreateByOneFunction());
+			break;
+		case BlockStreamAggregationIterator::State::min:
+			aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetMINFunction());
+			break;
+		case BlockStreamAggregationIterator::State::max:
+			aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetMAXFunction());
+			break;
+		case BlockStreamAggregationIterator::State::sum:
+			aggregationFunctions_.push_back(state_.hashSchema->getcolumn(inputAggregationToOutput_[i]).operate->GetADDFunction());
+			break;
+		default://for avg has changed to sum and count
+			printf("invalid aggregation function!\n");
+		}
+	}
+}

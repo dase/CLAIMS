@@ -19,8 +19,10 @@
 #include "../../utility/ExpandabilityShrinkability.h"
 #include "../../common/Logging.h"
 #include "../../utility/lock.h"
+#include "../../utility/ThreadPool.h"
+#include "../../Environment.h"
 
-#define EXPANDER_BUFFER_SIZE 100
+#define EXPANDER_BUFFER_SIZE 1000
 
 class BlockStreamExpander:public BlockStreamIteratorBase,public ExpandabilityShrinkability {
 public:

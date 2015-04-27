@@ -102,10 +102,10 @@ static void test_logical_index_scan()
 		cout << "Input the search sec_code: ";
 		cin >> value;
 
-		q.value_low = malloc(sizeof(int));
+		q.value_low = malloc(sizeof(int));		//newmalloc
 		q.value_low = (void*)(&value);
 		q.comp_low = EQ;
-		q.value_high = malloc(sizeof(int));
+		q.value_high = malloc(sizeof(int));		//newmalloc
 		q.value_high = (void*) (&value);
 		q.comp_high = EQ;
 		q.c_type.type = t_int;
@@ -139,10 +139,10 @@ static void bulk_test_logical_index_scan()
 		q_range.clear();
 		infile >> value >> expect_num;
 
-		q2.value_low = malloc(sizeof(int));
+		q2.value_low = malloc(sizeof(int));		//newmalloc
 		q2.value_low = (void*)(&value);
 		q2.comp_low = EQ;
-		q2.value_high = malloc(sizeof(int));
+		q2.value_high = malloc(sizeof(int));		//newmalloc
 		q2.value_high = (void*) (&value);
 		q2.comp_high = EQ;
 		q2.c_type.type = t_int;
@@ -214,10 +214,10 @@ static void test_index_filter_performance(int value_high)
 	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
 
 	IndexScanIterator::query_range q;
-	q.value_low = malloc(sizeof(int));
+	q.value_low = malloc(sizeof(int));		//newmalloc
 	q.value_low = (void*)(&value_low);
 	q.comp_low = GEQ;
-	q.value_high = malloc(sizeof(int));
+	q.value_high = malloc(sizeof(int));		//newmalloc
 	q.value_high = (void*) (&value_high);
 	q.comp_high = L;
 	q.c_type.type = t_int;

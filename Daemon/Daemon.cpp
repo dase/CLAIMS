@@ -6,7 +6,7 @@
  */
 
 #include "Daemon.h"
-#include "../Parsetree/runparsetree.cpp"
+#include "../Parsetree/runparsetree.h"
 #include "Executing.h"
 #include <pthread.h>
 #define WORK_THREAD_COUNT 1

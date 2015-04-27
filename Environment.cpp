@@ -33,6 +33,12 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 	}
 
+	if (true == g_thread_pool_used){
+		logging_->log("Initializing the ThreadPool...");
+		if (false == initializeThreadPool()) {
+			logging_->elog("initialize ThreadPool failed");
+		}
+	}
 	logging_->log("Initializing the AdaptiveEndPoint...");
 	initializeEndPoint();
 /**
@@ -69,6 +75,7 @@ Environment::Environment(bool ismaster):ismaster_(ismaster) {
 
 Environment::~Environment() {
 	_instance=0;
+	delete expander_tracker_;
 	delete logging_;
 	delete portManager;
 	delete catalog_;
@@ -84,7 +91,6 @@ Environment::~Environment() {
 	delete resourceManagerSlave_;
 	delete blockManager_;
 	delete bufferManager_;
-	delete expander_tracker_;
 	delete endpoint;
 }
 Environment* Environment::getInstance(bool ismaster){
@@ -99,6 +105,11 @@ std::string Environment::getIp(){
 unsigned Environment::getPort(){
 	return port;
 }
+
+ThreadPool* Environment::getThreadPool() const{
+	return thread_pool_;
+}
+
 void Environment::readConfigFile(){
 	libconfig::Config cfg;
 	cfg.readFile(Config::config_file.c_str());
@@ -116,11 +127,11 @@ void Environment::initializeEndPoint(){
 	}
 	port=endpoint_port;
 	logging_->log("Initializing the AdaptiveEndPoint as EndPoint://%s:%d.",endpoint_ip.c_str(),endpoint_port);
-	std::ostringstream name,port;
-	port<<endpoint_port;
-	name<<"EndPoint://"<<endpoint_ip<<":"<<port;
+	std::ostringstream name,port_str;
+	port_str<<endpoint_port;
+	name<<"EndPoint://"<<endpoint_ip<<":"<<endpoint_port;
 
-	endpoint=new AdaptiveEndPoint(name.str().c_str(),endpoint_ip,port.str());
+	endpoint=new AdaptiveEndPoint(name.str().c_str(),endpoint_ip,port_str.str());
 }
 void Environment::initializeCoordinator(){
 	coordinator=new Coordinator();
@@ -178,6 +189,7 @@ Catalog* Environment::getCatalog()const{
 	return catalog_;
 }
 
+
 void Environment::initializeClientListener() {
 	listener_=new ClientListener(Config::client_listener_port);
 	listener_->configure();
@@ -193,3 +205,15 @@ void Environment::destoryClientListener() {
 	listener_->shutdown();
 	delete listener_;
 }
+
+bool Environment::initializeThreadPool() {
+	thread_pool_ = new ThreadPool();
+//	return thread_pool_->Thread_Pool_init(2*sysconf(_SC_NPROCESSORS_CONF));
+	return thread_pool_->Thread_Pool_init(100);
+
+}
+
+IteratorExecutorSlave* Environment::getIteratorExecutorSlave() const {
+	return iteratorExecutorSlave;
+}
+

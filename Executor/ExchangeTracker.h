@@ -28,7 +28,7 @@ public:
 	virtual ~ExchangeTracker();
 	bool RegisterExchange(ExchangeID exchange_id, std::string port);
 	void LogoutExchange(const ExchangeID &exchange_id);
-	int AskForSocketConnectionInfo(ExchangeID exchange_id,std::string target_ip);
+	bool AskForSocketConnectionInfo(ExchangeID exchange_id,NodeID target_id, NodeAddress & node_addr);
 	void printAllExchangeId()const;
 private:
 	Theron::EndPoint* endpoint;

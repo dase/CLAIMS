@@ -15,7 +15,6 @@ Schema::Schema(const Schema& r){
 	this->columns=r.columns;
 }
 Schema::~Schema() {
-	// TODO Auto-generated destructor stub
 }
 
 unsigned Schema::getncolumns()const

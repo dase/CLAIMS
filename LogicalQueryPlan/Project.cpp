@@ -12,13 +12,13 @@
 #include "../common/Expression/initquery.h"
 
 LogicalProject::LogicalProject(LogicalOperator *child, std::vector<std::vector<ExpressionItem> > &exprArray)
-:child_(child),exprArray_(exprArray){
+:child_(child),exprArray_(exprArray),dataflow_(0){
 //	initialize_arithmetic_type_promotion_matrix();
 //	initialize_type_cast_functions();
 	setOperatortype(l_project);
 }
 LogicalProject::LogicalProject(LogicalOperator *child, vector<QNode *>exprTree)
-:child_(child),exprTree_(exprTree)
+:child_(child),exprTree_(exprTree),dataflow_(0)
 {
 	setOperatortype(l_project);
 //	initialize_arithmetic_type_promotion_matrix();
@@ -26,13 +26,13 @@ LogicalProject::LogicalProject(LogicalOperator *child, vector<QNode *>exprTree)
 }
 
 LogicalProject::~LogicalProject(){
-	dataflow_->~Dataflow();
-	if(child_>0){
-		child_->~LogicalOperator();
-	}
+	delete dataflow_;
+	delete child_;
 }
 
 Dataflow LogicalProject::getDataflow(){
+	if(dataflow_!=NULL)
+		return *dataflow_;
 	mappings_=getMapping();
 	Dataflow ret;
 	const Dataflow child_dataflow=child_->getDataflow();
@@ -48,7 +48,7 @@ Dataflow LogicalProject::getDataflow(){
 				seq++;
 				exprArray_[i][j].return_type=input_->getcolumn(mappings_.getMapping()[i][seq]).type;
 				if(exprArray_[i][j].return_type==t_string){
-					exprArray_[i][j].size=input_->getcolumn(mappings_.getMapping()[i][seq]).get_length();
+					exprArray_[i][j].size=input_->getcolumn(mappings_.getMapping()[i][seq]).size;
 				}
 			}
 		}
@@ -91,23 +91,17 @@ Dataflow LogicalProject::getDataflow(){
 	for(int i=0;i<exprTree_.size();i++)
 	{
 		column_type *column=0;
-		if(exprTree_[i]->type==t_qexpr_cmp)
+		if(exprTree_[i]->return_type==t_string||exprTree_[i]->return_type==t_decimal)
 		{
-			column=new column_type(t_boolean);
+			column=new column_type(exprTree_[i]->return_type,exprTree_[i]->length);
 		}
 		else
 		{
-			if(exprTree_[i]->return_type==t_string)
-			{
-				column=new column_type(exprTree_[i]->return_type,exprTree_[i]->length);
-			}
-			else
-			{
-				column=new column_type(exprTree_[i]->return_type);
-			}
+			column=new column_type(exprTree_[i]->return_type);
 		}
+
 		const unsigned table_id=INTERMEIDATE_TABLEID;
-		Attribute attr_alais(table_id,i,exprTree_[i]->alias,column->type,column->get_length());
+		Attribute attr_alais(table_id,i,exprTree_[i]->alias,column->type,column->size);
 		ret_attrs.push_back(attr_alais);
 	}
 	ret.attribute_list_=ret_attrs;

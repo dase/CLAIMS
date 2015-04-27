@@ -45,6 +45,8 @@ private:
 	 */
 	bool getBoolean(std::string attribute_name, bool defalut_value);
 
+	static void setConfigFile(std::string file_name);
+
 public:
 
 	static std::string config_file;

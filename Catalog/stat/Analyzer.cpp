@@ -307,10 +307,10 @@ void Analyzer::mcvAnalyse(void **list, const unsigned long size,
 		}
 	}
 
-	void **valueList = new void*[magicNumber];
-	double *selList = new double[magicNumber];
+	void **valueList = new void*[magicNumber];	//new
+	double *selList = new double[magicNumber];	//new
 	for (i = 0; i < magicNumber; ++i) {
-		valueList[i] = new char[attr.attrType->get_length()];
+		valueList[i] = new char[attr.attrType->get_length()];	//new
 		attr.attrType->operate->assign(mcvList[i], valueList[i]);
 		selList[i] = (1.0 * getFrequency(mcvList[i], attr.attrType))
 				/ stat->getTupleCount();
@@ -353,9 +353,9 @@ void Analyzer::equiDepthAnalyse(void **list, const unsigned long size,
 		boundCnt[bucketCnt] = 0;
 	}
 
-	void **valueList = new void*[magicNumber];
+	void **valueList = new void*[magicNumber];	//new
 	for (i = 0; i < magicNumber; ++i) {
-		valueList[i] = new char[attr.attrType->get_length()];
+		valueList[i] = new char[attr.attrType->get_length()];	//new
 		attr.attrType->operate->assign(boundList[i], valueList[i]);
 	}
 

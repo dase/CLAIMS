@@ -46,9 +46,7 @@ AdaptiveEndPoint::AdaptiveEndPoint(const char* name,  std::string ip, std::strin
 	if(WaitForReadySignalFromCoordinator()==false){
 		logging_->elog("Error occurs when waiting for the coordinator EndPoint");
 	}
-	close(socket_coor);
-	std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: fd %d is closed\n", socket_coor);
-
+	FileClose(socket_coor);
 }
 
 AdaptiveEndPoint::~AdaptiveEndPoint() {
@@ -87,11 +85,16 @@ bool AdaptiveEndPoint::SayHelloToCoordinator(std::string ip,std::string port){
 	serv_addr.sin_port=htons(atoi(coord_port.c_str()));
 	serv_addr.sin_addr=*((struct in_addr*)host.h_addr);
 	bzero(&(serv_addr.sin_zero),8);
-	if(connect(socket_coor,(struct sockaddr *)&serv_addr, sizeof(struct sockaddr))==-1)
+	int attemps_budget=10;
+	while(connect(socket_coor,(struct sockaddr *)&serv_addr, sizeof(struct sockaddr))==-1)
 	{
-		logging_->elog("connection errors when connecting to %s:%s! Reason:%s",inet_ntoa(serv_addr.sin_addr),coord_port.c_str(),strerror(errno));
-		assert(false);
-		return false;
+		logging_->elog("Cannot connect to the master! To retry in one second!");
+		sleep(1);
+		attemps_budget--;
+		if(attemps_budget==0){
+			logging_->elog("connection errors when connecting to %s:%s! Reason:%s",inet_ntoa(serv_addr.sin_addr),coord_port.c_str(),strerror(errno));
+			return false;
+		}
 	}
 
 	int port_send=atoi(port.c_str());

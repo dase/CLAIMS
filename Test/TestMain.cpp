@@ -89,15 +89,15 @@ int maina(int argc, char** argv){
 //	return generateVariableData_test();
 //	return query_optimization_based_on_statistics_aggregation();
 
-//	return query_optimization_outputdata();
+//	return query_optimization_outputdata();	// 2-8 yu
 
 //	return test_cross_join();
 //	return test_cross_join();
 
 //	 execute_sql_test();
-	return query_optimization_based_on_statistics();
+//	return query_optimization_based_on_statistics();
 //	return daemon_test();
-//	return testServerClient();
+//	return testServerClient();	// test for java client
 //	return test_data_type();
 
 //	return test_expression_item();
@@ -121,7 +121,7 @@ int maina(int argc, char** argv){
 //	return test_index_manager();
 
 //	in_test();
-//	test_expanderFramework_single_node(1);
+//	test_expanderFramework_single_node(100000);
 
 //	common_project_tcp_h_test_single_node();
 //	issue27_single_node();
@@ -130,7 +130,7 @@ int maina(int argc, char** argv){
 //	common_project_tcp_h_test_multi_node();
 //	test_expanderFramework_single_node(1);
 
-//	test_expanderFramework_single_node(5);
+//	test_expanderFramework_single_node(1);
 
 //	test_multiple_expanderFramework_single_node(3);
 //	tcp_h_test_single_node();
@@ -141,7 +141,7 @@ int maina(int argc, char** argv){
 
 //	::testing::GTEST_FLAG(filter) = "DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
 
-//	g_test_main(argc,argv);
+	g_test_main(argc,argv);
 
 //	test_ExpandedThreadTracker();
 

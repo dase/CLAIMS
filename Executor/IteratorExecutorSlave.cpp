@@ -10,6 +10,7 @@
 #include "../common/Logging.h"
 #include "../Resource/CPUResource.h"
 #include "../utility/print_tool.h"
+#include <iosfwd>
 
 
 IteratorExecutorSlave::IteratorExecutorSlave(){
@@ -22,8 +23,10 @@ IteratorExecutorSlave::IteratorExecutorSlave(){
 	framework->SetMaxThreads(1);
 //	framework->SetMinThreads(5);
 	logging_->log("Minimum thread is set to be %d",framework->GetMinThreads());
-	execute_iterator_actor=new ExecuteIteratorActor(this,*framework,("IteratorExecutorActor://"+Environment::getInstance()->getIp()).c_str());
-	logging_->log("Actor created with name: IteratorExecutorActor://%s",Environment::getInstance()->getIp().c_str());
+	std::ostringstream str;
+	str<<"IteratorExecutorActor://"<<Environment::getInstance()->getNodeID();
+	execute_iterator_actor=new ExecuteIteratorActor(this,*framework,str.str().c_str());
+	logging_->log("Actor created with name: IteratorExecutorActor://%d",Environment::getInstance()->getNodeID());
 
 }
 
@@ -69,8 +72,13 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(const Message4K &mes
 
 
 	ies->logging_->log("Sent the response message to the Receiver!");
+//	GETCURRENTTIME(s);
+//	printf("Yu debug:time when received message: %ld.%ld\n", s.tv_sec, s.tv_usec);
 	PhysicalQueryPlan* runable_iterator_message=new PhysicalQueryPlan();
+
+//	GETCURRENTTIME(t);
 	*runable_iterator_message=PhysicalQueryPlan::deserialize4K(message);
+//	cout<<"Yu debug:deserialize message use :"<<GetElapsedTime(t)<<endl;
 	ies->createNewThreadAndRun(runable_iterator_message);
 //	Send(int(0),from);
 	ies->logging_->log("iterator tree is added to the running queue");
@@ -111,14 +119,14 @@ void* IteratorExecutorSlave::run_iterator(void* arg){
 	executePhysicalQueryPlan(*it);
 
 //	CPUResourceManager::getInstance()->print();
-	it->~PhysicalQueryPlan();
+	delete it;
 	Pthis->logging_->log("A iterator tree is successfully executed!\n");
 	assert(Pthis->busy_thread_list_.find(pthread_self())!=Pthis->busy_thread_list_.end());
 	Pthis->lock_.acquire();
 	Pthis->busy_thread_list_.erase(pthread_self());
 	Pthis->lock_.release();
 //	p_green("Job in thread (%lx) finished.\n",pthread_self());
-	free((void**)arg);
+	delete[] ((void**)arg);
 }
 
 void IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan plan) {

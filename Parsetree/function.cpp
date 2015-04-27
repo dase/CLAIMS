@@ -22,7 +22,7 @@ inline void insertNodePointer(Node *a,vector<Node *> *allnode)
 // 2014-3-4---增加新建语句列表函数---by余楷
 struct Node *newStmt(nodetype t, Node *list, Node *newNode,vector<Node *> *allnode)
 {
-	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));
+	struct Stmt *a= (struct Stmt *)malloc(sizeof(struct Stmt));		//newmalloc
 	if(!a)
 	{
 		myyyerror("out of space!");
@@ -997,7 +997,7 @@ struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, 
 }
 
 // 2014-3-27---增加---by Yu
-struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator,vector<Node *> *allnode)
+struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *column_separator, char *tuple_separator, double sample, int mode,vector<Node *> *allnode)
 {
 	Loadtable_stmt *a= (Loadtable_stmt *)malloc(sizeof(Loadtable_stmt));
 	if(!a)
@@ -1010,7 +1010,9 @@ struct Node* newLoadTable(nodetype type, char *table_name, Node *path, char *col
 	a->path = path;
 	a->column_separator = column_separator;
 	a->tuple_separator = tuple_separator;
-	printf("the separator are %s,%s\n", a->column_separator, a->tuple_separator);
+	a->sample = sample;
+	a->mode = mode;
+	printf("the separator are %s,%s, the sample is %lf\n", a->column_separator, a->tuple_separator, a->sample);
 
 	//cout<<"Loadtable_stmt is created"<<endl;
 
