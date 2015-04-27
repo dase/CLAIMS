@@ -13,7 +13,8 @@ static int consumed_args=0;
 struct option long_options[] = {
    {"help",no_argument,0,'h'},
    {"ip", required_argument, 0, 256},
-   {"port", required_argument, 0, 257}
+   {"port", required_argument, 0, 257},
+   {nullptr, 0, 0, 0}
  };
 
 
@@ -30,7 +31,7 @@ std::string help_info=std::string("")+
 void handle_parameters(int argc, char** argv){
 	optind=0;
 	int opt;
-	while ((opt = getopt_long(argc, argv, "c:h", long_options, NULL)) != -1) {
+	while ((opt = getopt_long(argc, argv, "h", long_options, NULL)) != -1) {
 		switch (opt) {
 		case 256:
 			ElasticIteratorModelTest::ip_=(std::string(optarg));
@@ -44,6 +45,7 @@ void handle_parameters(int argc, char** argv){
 			printf("%s",help_info.c_str());
 			break;
 		default:
+			printf("Invalid parameters! Try -h for help\n");
 			break;
 		}
 	}
