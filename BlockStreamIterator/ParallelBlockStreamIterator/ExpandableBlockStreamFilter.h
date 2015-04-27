@@ -82,6 +82,7 @@ public:
 private:
 	void process_logic(BlockStreamBase* block,filter_thread_context * tc);
 private:
+	thread_context* createContext();
 	//ExecEvalQual(tc->thread_qual_, tuple_from_child,	state_.schema_);
 	typedef void(*filter_func)(bool& ret, void* tuple,expr_func func_gen, Schema* schema,vector<QNode *> thread_qual_);
 	static void computeFilter(bool& ret, void* tuple, expr_func func_gen, Schema* schema,vector<QNode *> thread_qual_);

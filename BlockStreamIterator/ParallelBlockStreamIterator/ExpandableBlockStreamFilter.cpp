@@ -48,19 +48,7 @@ ExpandableBlockStreamFilter::State::State(Schema* schema,
 }
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 
-	filter_thread_context* ftc = new filter_thread_context();
-	ftc->block_for_asking_ = BlockStreamBase::createBlock(state_.schema_,
-			state_.block_size_);
-	ftc->temp_block_ = BlockStreamBase::createBlock(state_.schema_,
-			state_.block_size_);
-	ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
-	ftc->thread_qual_=state_.qual_;
-	for(int i=0;i<state_.qual_.size();i++)
-	{
-		Expr_copy(state_.qual_[i],ftc->thread_qual_[i]);
-		InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
-	}
-	initContext(ftc);
+	filter_thread_context* ftc=createOrReuseContext(crm_core_sensitive);
 
 	if (tryEntryIntoSerializedSection()) {
 		if(Config::enable_codegen){
@@ -217,4 +205,20 @@ ExpandableBlockStreamFilter::filter_thread_context::~filter_thread_context() {
 	for (int i =0 ;i<thread_qual_.size();i++){
 		delete thread_qual_[i];
 	}
+}
+
+thread_context* ExpandableBlockStreamFilter::createContext(){
+	filter_thread_context* ftc = new filter_thread_context();
+	ftc->block_for_asking_ = BlockStreamBase::createBlock(state_.schema_,
+			state_.block_size_);
+	ftc->temp_block_ = BlockStreamBase::createBlock(state_.schema_,
+			state_.block_size_);
+	ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
+	ftc->thread_qual_=state_.qual_;
+	for(int i=0;i<state_.qual_.size();i++)
+	{
+		Expr_copy(state_.qual_[i],ftc->thread_qual_[i]);
+		InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
+	}
+	return ftc;
 }
