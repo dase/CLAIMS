@@ -280,3 +280,17 @@ long int ProjectionDescriptor::getNumberOfTuplesOnPartition(
 		const unsigned partition_off) const {
 	return partitioner->getPartitionCardinality(partition_off);
 }
+
+
+unsigned int ProjectionDescriptor::getProjectionCost() const {
+	unsigned int sum = 0;
+//	for (auto it:column_list_) {
+//
+//	}
+	for (auto it = column_list_.begin(); it != column_list_.end(); ++it) {
+		sum += it->attrType->get_length();
+	}
+
+	return sum;
+}
+

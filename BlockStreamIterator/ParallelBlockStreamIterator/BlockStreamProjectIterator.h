@@ -21,6 +21,8 @@
 #include <vector>
 #include <map>
 #include <list>
+
+#include "../ExpandableBlockStreamIteratorBase.h"
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -28,14 +30,22 @@ using namespace std;
 
 typedef vector<ExpressionItem> ExpressItem_List;
 
-class BlockStreamProjectIterator:public BlockStreamIteratorBase {
+class BlockStreamProjectIterator:public ExpandableBlockStreamIteratorBase {
 public:
-	struct remaining_block{
-		remaining_block(BlockStreamBase * bsb,BlockStreamBase::BlockStreamTraverseIterator * bsti)
-		:bsb_(bsb),bsti_(bsti){};
-		remaining_block():bsb_(0),bsti_(0){};
-        BlockStreamBase * bsb_;
-        BlockStreamBase::BlockStreamTraverseIterator * bsti_;
+	class project_thread_context:public thread_context{
+	public:
+		BlockStreamBase* block_for_asking_;
+		BlockStreamBase* temp_block_;
+		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+		vector<QNode *>thread_qual_;
+		~project_thread_context(){
+			delete block_for_asking_;
+			delete temp_block_;
+			delete block_stream_iterator_;
+			for (int i =0 ;i<thread_qual_.size();i++){
+				delete thread_qual_[i];
+			}
+		}
 	};
 
 	class State{
@@ -58,12 +68,12 @@ public:
 
 		vector<QNode *>exprTree_;
 		unsigned block_size_;
-		BlockStreamIteratorBase *children_;
+		BlockStreamIteratorBase *child_;
 
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input_ & output_ & children_ & map_ & block_size_ & v_ei_ &exprTree_;
+			ar & input_ & output_ & child_ & map_ & block_size_ & v_ei_ &exprTree_;
 		}
 	};
 	BlockStreamProjectIterator(State state);
@@ -75,21 +85,17 @@ public:
 	bool close();
 void print();
 private:
-	bool atomicPopRemainingBlock(remaining_block & rb);
-	void atomicPushRemainingBlock(remaining_block rb);
+
+	thread_context* createContext();
+
 	bool copyNewValue(void *tuple,void *result,int length);
 
 	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
+	void process_logic(BlockStreamBase* block, project_thread_context* tc);
 private:
-	semaphore sema_open_;
-	volatile bool open_finished_;
 
 	State state_;
 
-	std::list<remaining_block> remaining_block_list_;
-	std::list<BlockStreamBase *> free_block_stream_list_;
-
-	Lock lock_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

@@ -322,54 +322,23 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
 
 void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(BlockStreamBase*& block) const {
 
-#define MEMORY_COPY
+//#define MEMORY_COPY
 #ifdef MEMORY_COPY
 
 	/* Create a block, which will not free block_start_address when destructed.*/
 	Block temp_block(block_size,target_block_start_address);
 
-	/*construct the block stream from temp_block. In the current version, the memory copy
-	 * is used for simplicity.
-	 * TODO: avoid memory copy.
-	 */
-//	unsigned long long int second=curtick();
 	block->constructFromBlock(temp_block);
-//	printf("copy :%ld\n",curtick()-second);
-//	usleep(1);
-//
-
-//
 #else
+
+	/* According to my experiment, the performance can by improved by 2x by aoviding the memocy copy here */
 
 	block->setIsReference(true);
 	block->setBlock(target_block_start_address);
 	int tuple_count=*(unsigned*)((char*)target_block_start_address+block->getSerializedBlockSize()-sizeof(unsigned));
 	((BlockStreamFix*)block)->free_=(char*)block->getBlock()+tuple_count*((BlockStreamFix*)block)->tuple_size_;
 
-
-//	warmup(target_block_start_address,block_size-sizeof(unsigned));
-//	unsigned long long int first=curtick();
-//	Unit temp1=warmup(target_block_start_address,block_size-sizeof(unsigned));
-//	printf("1 :%ld\n",curtick()-first,temp1);
-//
-//	unsigned long long int second=curtick();
-//	Unit temp2=warmup(target_block_start_address,block_size-sizeof(unsigned));
-//	printf("2 :%ld\n",curtick()-second,temp1);
-
 #endif
-//	block->deepCopy()
-
-
-//	warmup(target_block_start_address,block_size-sizeof(unsigned));
-
-//	volatile int sink;
-//	long result;
-//	long *data=(long*)(char*)target_block_start_address;
-//	const int num=(block_size-sizeof(unsigned))/sizeof(long);
-//	for(unsigned i=0;i<num;i++){
-//		result+=data[i];
-//	};
-//	sink=result;
 
 }
 

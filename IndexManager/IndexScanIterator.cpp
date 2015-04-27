@@ -43,20 +43,16 @@ bool IndexScanIterator::open(const PartitionOffset& partition_off)
 		PartitionStorage* partition_handle_;
 		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_off)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_off).getName().c_str());
-			open_ret_=false;
+			setReturnStatus(false);
 		}
 		else{
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 //			chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		}
-		open_ret_=true;
-		broadcaseOpenFinishedSignal();
+		setReturnStatus(true);
 	}
-	else{
-		/* For other expanded threads just wait for the first thread finishing initialization*/
-		waitForOpenFinished();
-	}
-	return getOpenReturnValue();
+	barrierArrive();
+	return getReturnStatus();
 }
 
 bool IndexScanIterator::next(BlockStreamBase* block)
@@ -135,10 +131,9 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 bool IndexScanIterator::close()
 {
 	initialize_expanded_status();
-	partition_reader_iterator_->~PartitionReaderItetaor();
+	delete partition_reader_iterator_																																										;
 	remaining_block_list_.clear();
 	block_stream_list_.clear();
-	open_finished_ = false;
 	return true;
 }
 

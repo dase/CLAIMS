@@ -1288,8 +1288,8 @@ public:
 			return false;
 		NValue tmp = ((NValue*)a)->op_min(*(NValue*)b);
 		if (tmp.op_equals(*(NValue*)a))
-			return true;
-		return false;
+			return false;
+		return true;
 	}
 	int compare(const void* a,const void* b)const{
 		if ((*(NValue*)a).op_equals(*(NValue*)b))

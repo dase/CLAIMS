@@ -7,10 +7,9 @@
 
 #include "ExpandableBlockStreamIteratorBase.h"
 #include "../Executor/ExpanderTracker.h"
-
+#include "../utility/CpuScheduler.h"
 ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned number_of_barrier,unsigned number_of_seriliazed_section)
 :number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section),number_of_registered_expanded_threads_(0){
-	// TODO Auto-generated constructor stub
 	barrier_=new Barrier[number_of_barrier_];
 	seriliazed_section_entry_key_=new semaphore[number_of_seriliazed_section_];
 }
@@ -18,21 +17,11 @@ ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned nu
 ExpandableBlockStreamIteratorBase::~ExpandableBlockStreamIteratorBase() {
 	pthread_mutex_destroy(&sync_lock_);
 	pthread_cond_destroy(&sync_cv_);
-//	for(unsigned i=0;i<number_of_barrier_;i++){
-//		barrier_[i].~Barrier();
-//	}
 	for(unsigned i=0;i<number_of_seriliazed_section_;i++){
 		seriliazed_section_entry_key_[i].destroy();
 	}
 	delete[] barrier_;
 	delete[] seriliazed_section_entry_key_;
-}
-void ExpandableBlockStreamIteratorBase::waitForOpenFinished(){
-	pthread_mutex_lock(&sync_lock_);
-	if(open_finished_==false){
-		pthread_cond_wait(&sync_cv_, &sync_lock_);
-	}
-	pthread_mutex_unlock(&sync_lock_);
 }
 void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 	int ret;
@@ -43,10 +32,6 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 	if(ret!=0)
 		printf("pthread_cond_init failed at barrier creation.\n");
 
-	open_finished_=false;
-	/* only one thread wins when complete for the job of initialization*/
-
-
 	for(unsigned i=0;i<number_of_barrier_;i++){
 		barrier_[i].setEmpty();
 	}
@@ -55,24 +40,9 @@ void ExpandableBlockStreamIteratorBase::initialize_expanded_status(){
 		seriliazed_section_entry_key_[i].set_value(1);
 	}
 }
-void ExpandableBlockStreamIteratorBase::broadcaseOpenFinishedSignal(){
-	pthread_mutex_lock(&sync_lock_);
-	open_finished_=true;
-
-	/*wake up all the waiting thread*/
-	pthread_cond_broadcast(&sync_cv_);
-
-	pthread_mutex_unlock(&sync_lock_);
-}
 bool ExpandableBlockStreamIteratorBase::tryEntryIntoSerializedSection(unsigned phase_id){
 	assert(phase_id<number_of_seriliazed_section_);
 	return seriliazed_section_entry_key_[phase_id].try_wait();
-}
-void ExpandableBlockStreamIteratorBase::setOpenReturnValue(bool value){
-	open_ret_=value;
-}
-bool ExpandableBlockStreamIteratorBase::getOpenReturnValue()const{
-	return open_ret_;
 }
 void ExpandableBlockStreamIteratorBase::RegisterExpandedThreadToAllBarriers(){
 	lock_number_of_registered_expanded_threads_.acquire();
@@ -96,36 +66,38 @@ void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
 	barrier_[barrier_index].Arrive();
 }
 void ExpandableBlockStreamIteratorBase::destoryAllContext(){
-	for(boost::unordered_map<pthread_t,thread_context*>::iterator it=context_list_.begin();it!=context_list_.end();it++){
+	for(boost::unordered_map<pthread_t,thread_context*>::const_iterator it=context_list_.begin();it!=context_list_.cend();it++){
 		delete it->second;
-		context_list_.erase(it);
+	}
+	for(int i=0;i<free_context_list_.size();i++){
+		delete free_context_list_[i];
 	}
 }
-void ExpandableBlockStreamIteratorBase::destorySelfContext(){
-	context_lock_.acquire();
-	/* assert that no context is available for current thread*/
-	assert(context_list_.find(pthread_self())!=context_list_.cend());
-
-//	thread_context tc;
-//	tc.iterator_=tc.block_for_asking_->createIterator();
-//	assert(tc.iterator_->currentTuple()==0);
-	context_list_.erase(pthread_self());
-//	printf("Thread %lx is inited!\n",pthread_self());
-	context_lock_.release();
-}
+//void ExpandableBlockStreamIteratorBase::destorySelfContext(){
+//	context_lock_.acquire();
+//	/* assert that no context is available for current thread*/
+//	assert(context_list_.find(pthread_self())!=context_list_.cend());
+//
+////	thread_context tc;
+////	tc.iterator_=tc.block_for_asking_->createIterator();
+////	assert(tc.iterator_->currentTuple()==0);
+//	context_list_.erase(pthread_self());
+////	printf("Thread %lx is inited!\n",pthread_self());
+//	context_lock_.release();
+//}
 void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 	context_lock_.acquire();
 	/* assert that no context is available for current thread*/
 	assert(context_list_.find(pthread_self())==context_list_.cend());
 
 	context_list_[pthread_self()]=tc;
-//	printf("Thread %lx is inited!\n",pthread_self());
+//	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
 	context_lock_.release();
 }
 thread_context* ExpandableBlockStreamIteratorBase::getContext(){
-	context_lock_.acquire();
 	thread_context* ret;
-	boost::unordered_map<pthread_t,thread_context*>::iterator it;
+	boost::unordered_map<pthread_t,thread_context*>::const_iterator it;
+	context_lock_.acquire();
 	if((it=context_list_.find(pthread_self()))!=context_list_.cend()){
 		ret= it->second;
 	}
@@ -140,4 +112,47 @@ thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 
 bool ExpandableBlockStreamIteratorBase::checkTerminateRequest() {
 	return  ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self());
+}
+
+void ExpandableBlockStreamIteratorBase::setReturnStatus(bool ret) {
+	ret=open_ret_&&ret;
+}
+
+thread_context* ExpandableBlockStreamIteratorBase::createOrReuseContext(
+		context_reuse_mode crm) {
+	thread_context* target=getFreeContext(crm);
+	if(target!=0)
+		return target;
+	target= createContext();
+	target->set_locality_(getCurrentCpuAffility());
+	initContext(target);
+	return target;
+}
+
+bool ExpandableBlockStreamIteratorBase::getReturnStatus() const {
+	return open_ret_;
+}
+
+thread_context* ExpandableBlockStreamIteratorBase::getFreeContext(
+		context_reuse_mode crm) {
+	int32_t locality=getCurrentCpuAffility();
+	for(int i=0;i<free_context_list_.size();i++){
+		switch(crm){
+		case crm_no_reuse:
+			return 0;
+		case crm_core_sensitive:
+			if(locality==free_context_list_[i]->get_locality_())
+				return free_context_list_[i];
+			break;
+		case crm_numa_sensitive:
+			if(getCurrentSocketAffility()==getSocketAffility(free_context_list_[i]->get_locality_()))
+				return free_context_list_[i];
+			break;
+		case crm_anyway:
+			return free_context_list_[i];
+		default:
+			break;
+		}
+	}
+	return 0;
 }

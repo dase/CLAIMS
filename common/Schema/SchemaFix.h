@@ -42,6 +42,7 @@ public:
 	{
 		return (char*)column_start+accum_offsets[index];
 	}
+	int getColumnOffset(unsigned index)const;
 	inline unsigned copyTuple(void* src, void* desc) const{
 		memcpy(desc,src,totalsize);
 		return totalsize;

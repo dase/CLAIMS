@@ -79,7 +79,7 @@ inline DynamicBlockBuffer* generateBlockStreamBuffer(vector<column_metadata> col
 
 	const unsigned tuple_length=schema->getTupleMaxSize();
 	unsigned block_num=tuple_count*schema->getTupleMaxSize()/(BLOCK_SIZE);
-	void* tmp_tuple=malloc(schema->getTupleMaxSize());
+	void* tmp_tuple=malloc(schema->getTupleMaxSize());		//newmalloc
 
 	DynamicBlockBuffer* buffer=new DynamicBlockBuffer();
 	int value=0;
@@ -121,7 +121,7 @@ inline DynamicBlockBuffer* generate_BlockStreamBuffer(Schema* schema,unsigned lo
 	const unsigned tuple_length=schema->getTupleMaxSize();
 	unsigned long tuple_count=total_data_size_in_MB*1024*1024/(tuple_length);
 	unsigned block_num=total_data_size_in_MB*1024*1024/(BLOCK_SIZE);
-	void* tmp_tuple=malloc(schema->getTupleMaxSize());
+	void* tmp_tuple=malloc(schema->getTupleMaxSize());		//newmalloc
 
 	DynamicBlockBuffer* buffer=new DynamicBlockBuffer();
 	int value=0;

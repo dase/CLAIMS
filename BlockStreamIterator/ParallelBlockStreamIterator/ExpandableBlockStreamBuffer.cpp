@@ -43,7 +43,12 @@ bool ExpandableBlockStreamBuffer::open(const PartitionOffset& part_off){
 
 	registered_thread_count_++;
 	pthread_t tid;
-	pthread_create(&tid,NULL,worker,this);
+	if (true == g_thread_pool_used) {
+		Environment::getInstance()->getThreadPool()->add_task(worker, this);
+	}
+	else {
+		pthread_create(&tid,NULL,worker,this);
+	}
 
 	return true;
 }
@@ -97,7 +102,6 @@ void* ExpandableBlockStreamBuffer::worker(void* arg){
 	Pthis->finished_thread_count_++;
 
 	return 0;
-
 }
 bool ExpandableBlockStreamBuffer::ChildExhausted(){
 
