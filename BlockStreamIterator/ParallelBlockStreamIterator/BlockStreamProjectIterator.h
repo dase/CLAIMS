@@ -85,6 +85,9 @@ public:
 	bool close();
 void print();
 private:
+
+	thread_context* createContext();
+
 	bool copyNewValue(void *tuple,void *result,int length);
 
 	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
