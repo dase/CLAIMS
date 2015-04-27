@@ -10,7 +10,6 @@
 
 ExpandableBlockStreamIteratorBase::ExpandableBlockStreamIteratorBase(unsigned number_of_barrier,unsigned number_of_seriliazed_section)
 :number_of_barrier_(number_of_barrier),number_of_seriliazed_section_(number_of_seriliazed_section),number_of_registered_expanded_threads_(0){
-	// TODO Auto-generated constructor stub
 	barrier_=new Barrier[number_of_barrier_];
 	seriliazed_section_entry_key_=new semaphore[number_of_seriliazed_section_];
 }
@@ -67,9 +66,8 @@ void ExpandableBlockStreamIteratorBase::barrierArrive(unsigned barrier_index){
 	barrier_[barrier_index].Arrive();
 }
 void ExpandableBlockStreamIteratorBase::destoryAllContext(){
-	for(boost::unordered_map<pthread_t,thread_context*>::iterator it=context_list_.begin();it!=context_list_.end();it++){
+	for(boost::unordered_map<pthread_t,thread_context*>::const_iterator it=context_list_.begin();it!=context_list_.cend();it++){
 		delete it->second;
-		context_list_.erase(it);
 	}
 }
 //void ExpandableBlockStreamIteratorBase::destorySelfContext(){
@@ -90,12 +88,12 @@ void ExpandableBlockStreamIteratorBase::initContext(thread_context* tc){
 	assert(context_list_.find(pthread_self())==context_list_.cend());
 
 	context_list_[pthread_self()]=tc;
-//	printf("Thread %lx is inited!\n",pthread_self());
+	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
 	context_lock_.release();
 }
 thread_context* ExpandableBlockStreamIteratorBase::getContext(){
 	thread_context* ret;
-	boost::unordered_map<pthread_t,thread_context*>::iterator it;
+	boost::unordered_map<pthread_t,thread_context*>::const_iterator it;
 	context_lock_.acquire();
 	if((it=context_list_.find(pthread_self()))!=context_list_.cend()){
 		ret= it->second;

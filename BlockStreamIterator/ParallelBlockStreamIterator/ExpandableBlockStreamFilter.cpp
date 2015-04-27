@@ -175,16 +175,7 @@ void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,filter_th
 
 bool ExpandableBlockStreamFilter::close() {
 	initialize_expanded_status();
-	open_finished_ = false;
-
-	for (unsigned i = 0; i < free_block_stream_list_.size(); i++) {
-		delete free_block_stream_list_.front();
-		free_block_stream_list_.pop_front();
-	}
-
 	destoryAllContext();
-
-	free_block_stream_list_.clear();
 	state_.child_->close();
 	return true;
 }
@@ -197,62 +188,8 @@ void ExpandableBlockStreamFilter::print() {
 	}
 	state_.child_->print();
 }
-bool ExpandableBlockStreamFilter::atomicPopRemainingBlock(
-		remaining_block & rb) {
-	lock_.acquire();
 
-	if (remaining_block_list_.size() > 0) {
-		rb = remaining_block_list_.front();
-		remaining_block_list_.pop_front();
 
-		lock_.release();
-
-		return true;
-	} else {
-
-		lock_.release();
-
-		return false;
-	}
-}
-
-void ExpandableBlockStreamFilter::atomicPushRemainingBlock(remaining_block rb) {
-	lock_.acquire();
-	remaining_block_list_.push_back(rb);
-	lock_.release();
-}
-
-BlockStreamBase* ExpandableBlockStreamFilter::AtomicPopFreeBlockStream() {
-	assert(!free_block_stream_list_.empty());
-	lock_.acquire();
-	BlockStreamBase *block = free_block_stream_list_.front();
-	free_block_stream_list_.pop_front();
-	lock_.release();
-	return block;
-}
-void ExpandableBlockStreamFilter::AtomicPushFreeBlockStream(
-		BlockStreamBase* block) {
-	lock_.acquire();
-	free_block_stream_list_.push_back(block);
-	lock_.release();
-}
-thread_context ExpandableBlockStreamFilter::popContext() {
-	lock_.acquire();
-	assert(context_list_.find(pthread_self()) != context_list_.cend());
-	thread_context ret = context_list_[pthread_self()];
-	context_list_.erase(pthread_self());
-//	printf("Thread %lx is poped!\n",pthread_self());
-	lock_.release();
-	return ret;
-}
-
-void ExpandableBlockStreamFilter::pushContext(const thread_context& tc) {
-	lock_.acquire();
-	assert(context_list_.find(pthread_self()) == context_list_.cend());
-	context_list_[pthread_self()] = tc;
-//	printf("Thread %lx is pushed!\n",pthread_self());
-	lock_.release();
-}
 //void ExpandableBlockStreamFilter::destoryContext(thread_context& tc){
 //	lock_.acquire();
 //	assert(context_list_.find(pthread_self())!=context_list_.cend());
