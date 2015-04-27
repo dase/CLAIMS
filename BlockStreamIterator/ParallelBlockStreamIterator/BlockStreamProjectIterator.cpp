@@ -29,16 +29,7 @@ BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockSt
 
 }
 bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
-	project_thread_context* ptc = new project_thread_context();
-	ptc->block_for_asking_=BlockStreamBase::createBlock(state_.input_,state_.block_size_);
-	ptc->temp_block_ = BlockStreamBase::createBlock(state_.output_,state_.block_size_);
-	ptc->block_stream_iterator_ = ptc->block_for_asking_->createIterator();
-	ptc->thread_qual_=state_.exprTree_;
-	for(int i=0;i<state_.exprTree_.size();i++){
-		Expr_copy(state_.exprTree_[i],ptc->thread_qual_[i]);
-		InitExprAtPhysicalPlan(ptc->thread_qual_[i]);
-	}
-	initContext(ptc);
+	project_thread_context* ptc =createOrReuseContext(crm_core_sensitive);
 
 	bool ret=state_.child_->open(partition_offset);
 	setReturnStatus(ret);
@@ -179,4 +170,17 @@ void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
 	}
 	/* mark the block as processed by setting it empty*/
 	tc->block_for_asking_->setEmpty();
+}
+
+thread_context* BlockStreamProjectIterator::createContext() {
+	project_thread_context* ptc = new project_thread_context();
+	ptc->block_for_asking_=BlockStreamBase::createBlock(state_.input_,state_.block_size_);
+	ptc->temp_block_ = BlockStreamBase::createBlock(state_.output_,state_.block_size_);
+	ptc->block_stream_iterator_ = ptc->block_for_asking_->createIterator();
+	ptc->thread_qual_=state_.exprTree_;
+	for(int i=0;i<state_.exprTree_.size();i++){
+		Expr_copy(state_.exprTree_[i],ptc->thread_qual_[i]);
+		InitExprAtPhysicalPlan(ptc->thread_qual_[i]);
+	}
+	return ptc;
 }
