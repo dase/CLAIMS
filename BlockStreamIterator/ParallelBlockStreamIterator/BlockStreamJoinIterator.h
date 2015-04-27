@@ -29,8 +29,11 @@ class BlockStreamJoinIterator:public ExpandableBlockStreamIteratorBase{
 public:
 	class join_thread_context:public thread_context{
 	public:
-		BlockStreamBase* block_for_asking_;
-		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
+		~join_thread_context();
+		BlockStreamBase* l_block_for_asking_;
+		BlockStreamBase::BlockStreamTraverseIterator* l_block_stream_iterator_;
+		BlockStreamBase* r_block_for_asking_;
+		BlockStreamBase::BlockStreamTraverseIterator* r_block_stream_iterator_;
 		BasicHashTable::Iterator hashtable_iterator_;
 	};
 
@@ -85,6 +88,7 @@ public:
 	bool close();
 	void print();
 private:
+	thread_context* createContext();
 	static void isMatch(void* l_tuple_addr,
 			void* r_tuple_addr, void* return_addr,vector<int>& l_join_index, vector<int>& r_join_index, Schema* l_schema, Schema* r_schema,expr_func_two_tuples func);
 	static void isMatchCodegen(void* l_tuple_addr,
