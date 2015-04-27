@@ -20,7 +20,8 @@ struct option long_options[] = {
    {"init-dop",required_argument,0,257},
    {"max-dop",required_argument,0,258},
    {"datadir",required_argument,0,259},
-   {"scheduler_cycle",required_argument,0,260}
+   {"scheduler_cycle",required_argument,0,260},
+   {nullptr,0,0,0}
  };
 
 std::string help_info=std::string("-c --config-file FILE_NAME\n\t\t Specify the configure file\n")+
