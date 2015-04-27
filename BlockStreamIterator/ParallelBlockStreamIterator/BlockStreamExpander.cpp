@@ -298,7 +298,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		thread_count_++;
 		lock_.release();
 	//	in_work_expanded_thread_list_.insert(tid);
-		printf("Expand time :%lf \n",getSecond(start));
+//		printf("Expand time :%lf \n",getSecond(start));
 		return true;
 	}
 	else{
@@ -420,7 +420,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
-		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
+//		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
 		return true;
 	}
 //	lock_.release();
