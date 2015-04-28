@@ -16,7 +16,6 @@ struct ExpanderContext{
 
 BlockStreamExpander::BlockStreamExpander(State state)
 :state_(state),block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0),coordinate_pid_(0){
-	// TODO Auto-generated constructor stub
 	logging_=new BlockStreamExpanderLogging();
 }
 
@@ -298,7 +297,7 @@ bool BlockStreamExpander::createNewExpandedThread(){
 		thread_count_++;
 		lock_.release();
 	//	in_work_expanded_thread_list_.insert(tid);
-		printf("Expand time :%lf \n",getSecond(start));
+//		printf("Expand time :%lf \n",getSecond(start));
 		return true;
 	}
 	else{
@@ -420,7 +419,7 @@ bool BlockStreamExpander::Shrink(){
 //		in_work_expanded_thread_list_.erase(cencel_thread_id);
 		lock_.release();
 		this->terminateExpandedThread(cencel_thread_id);
-		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
+//		printf("\n\nShrink time :%f\t %ld cycles \n\n",getSecond(start),curtick()-start);
 		return true;
 	}
 //	lock_.release();
