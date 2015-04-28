@@ -130,6 +130,10 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 //		const unsigned long long int start=curtick();
 
 		ba->getBlock(block);
+
+		// whether delete InMemeryBlockAccessor::target_block_start_address
+		// is depend on whether use copy in ba->getBlock(block);
+		delete ba;
 //
 //		void* start_addr=((ChunkReaderIterator::InMemeryBlockAccessor*)ba)->getTargetBlockStartAddress();
 //		memcpy(block->getBlock(),
