@@ -187,11 +187,10 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	}
 
 	barrierArrive(1);
-	if(winning_thread){
-		hashtable->report_status();
-		hashtable->~BasicHashTable();
-		printf("Hash Table Build time: %4.4f\n",getMilliSecond(timer));
-	}
+//	if(winning_thread){
+////		hashtable->report_status();
+////		printf("Hash Table Build time: %4.4f\n",getMilliSecond(timer));
+//	}
 
 
 //	hashtable->report_status();
