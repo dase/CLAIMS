@@ -16,7 +16,6 @@ struct ExpanderContext{
 
 BlockStreamExpander::BlockStreamExpander(State state)
 :state_(state),block_stream_buffer_(0),finished_thread_count_(0),thread_count_(0),coordinate_pid_(0){
-	// TODO Auto-generated constructor stub
 	logging_=new BlockStreamExpanderLogging();
 }
 
