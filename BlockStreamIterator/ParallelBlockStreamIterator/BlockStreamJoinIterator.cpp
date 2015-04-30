@@ -127,7 +127,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	void *value_in_hashtable;
 
 
-	join_thread_context* jtc=createOrReuseContext(crm_numa_sensitive);
+	join_thread_context* jtc=(join_thread_context*)createOrReuseContext(crm_numa_sensitive);
 
 	const Schema* input_schema=state_.input_schema_left->duplicateSchema();
 	const Operate* op=input_schema->getcolumn(state_.joinIndex_left[0]).operate->duplicateOperator();
@@ -228,7 +228,7 @@ bool BlockStreamJoinIterator::next(BlockStreamBase *block){
 								memcat_(result_tuple,tuple_in_hashtable,tuple_from_right_child);
 							else{
 								const unsigned copyed_bytes=state_.input_schema_left->copyTuple(tuple_in_hashtable,result_tuple);
-								state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
+								state_.input_schema_right->copyTuple(tuple_from_right_child,(char*)result_tuple+copyed_bytes);
 							}
 						}
 						else{
@@ -295,7 +295,7 @@ void BlockStreamJoinIterator::print(){
 
 
 inline void BlockStreamJoinIterator::isMatch(void* l_tuple_addr,
-		void* r_tuple_addr, void* return_addr,vector<int>& l_join_index, vector<int>& r_join_index, Schema* l_schema, Schema* r_schema,expr_func_two_tuples func) {
+		void* r_tuple_addr, void* return_addr,vector<unsigned>& l_join_index, vector<unsigned>& r_join_index, Schema* l_schema, Schema* r_schema,expr_func_two_tuples func) {
 	bool key_exit=true;
 	for(unsigned i=0;i<r_join_index.size();i++){
 		void* key_in_input=r_schema->getColumnAddess(r_join_index[i],r_tuple_addr);
@@ -309,8 +309,8 @@ inline void BlockStreamJoinIterator::isMatch(void* l_tuple_addr,
 }
 
 inline void BlockStreamJoinIterator::isMatchCodegen(void* l_tuple_addr,
-		void* r_tuple_addr, void* return_addr, vector<int>& l_join_index,
-		vector<int>& r_join_index, Schema* l_schema, Schema* r_schema, expr_func_two_tuples func) {
+		void* r_tuple_addr, void* return_addr, vector<unsigned>& l_join_index,
+		vector<unsigned>& r_join_index, Schema* l_schema, Schema* r_schema, expr_func_two_tuples func) {
 	func(l_tuple_addr,r_tuple_addr,return_addr);
 }
 

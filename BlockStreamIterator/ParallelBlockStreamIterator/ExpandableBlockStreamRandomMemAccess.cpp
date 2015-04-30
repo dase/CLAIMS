@@ -92,7 +92,7 @@ bool ExpandableBlockStreamRandomMemAccess::next(BlockStreamBase* block) {
 			if ((tuple_in_block = block->allocateTuple(bytes)) > 0)
 			{
 				/* the block has enough space to hold this tuple */
-				state_.f_schema_->copyTuple((void*)(base_+(*(int*)tuple_from_child)*bytes), tuple_in_block);
+				state_.f_schema_->copyTuple((void*)((char*)base_+(*(int*)tuple_from_child)*bytes), tuple_in_block);
 				rb.iterator->increase_cur_();
 			}
 			else
@@ -119,7 +119,7 @@ bool ExpandableBlockStreamRandomMemAccess::next(BlockStreamBase* block) {
 			if ((tuple_in_block = block->allocateTuple(bytes)) > 0)
 			{
 				/* the block has enough space to hold this tuple */
-				state_.f_schema_->copyTuple((void*)(base_+(*(int*)tuple_from_child)*bytes), tuple_in_block);
+				state_.f_schema_->copyTuple((void*)((char*)base_+(*(int*)tuple_from_child)*bytes), tuple_in_block);
 				traverse_iterator->increase_cur_();
 			}
 			else

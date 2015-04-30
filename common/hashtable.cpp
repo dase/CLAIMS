@@ -178,7 +178,7 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 	if(data!=0){
 		void** freeloc = (void**)((char*)data + buck_actual_size_);
 
-		if ((*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
+		if ((char*)(*freeloc)+tuplesize_ <= ((char*)data + buck_actual_size_))
 		{
 			ret = *freeloc;
 			*freeloc = ((char*)(*freeloc)) + tuplesize_;
@@ -220,7 +220,7 @@ void* BasicHashTable::allocate(const unsigned & offset,unsigned thread_id){
 #endif
 	void** new_buck_nextloc = (void**)(((char*)ret) + buck_actual_size_ + sizeof(void*));
 	void** new_buck_freeloc = (void**)(((char*)ret) + buck_actual_size_);
-	*new_buck_freeloc = (ret)+tuplesize_ ;
+	*new_buck_freeloc = (char*)(ret)+tuplesize_ ;
 	*new_buck_nextloc = data;
 	overflow_count_[offset]++;
 	bucket_[offset]=ret;

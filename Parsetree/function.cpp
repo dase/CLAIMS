@@ -116,7 +116,7 @@ struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * 
 	return (struct Node *)a;
 }
 
-struct Node * newExprCal(nodetype type, char * sign, char *parameter,
+struct Node * newExprCal(nodetype type,const char * sign, char *parameter,
 	int cmp, Node *lnext, Node *rnext)
 {
 	struct Expr_cal * a= (struct Expr_cal *)malloc(sizeof(struct Expr_cal));

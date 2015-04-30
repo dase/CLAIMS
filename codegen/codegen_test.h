@@ -783,7 +783,7 @@ TEST_F(CodeGenerationTest,FilterLogic){
 	 * the first tuple can pass the filter
 	 */
 	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
-	char* c=c_start;
+	char* c=(char*)c_start;
 	for(int i=0;i<c_tuple_count;i++){
 		*(int*)s->getColumnAddess(0,c)=5+i*5;
 		*(int*)s->getColumnAddess(1,c)=10;
@@ -831,7 +831,7 @@ TEST_F(CodeGenerationTest,FilterLogic1){
 	 * the first four tuples can pass the filter
 	 */
 	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
-	char* c=c_start;
+	char* c=(char*)c_start;
 	for(int i=0;i<c_tuple_count;i++){
 		*(int*)s->getColumnAddess(0,c)=i*5;
 		*(int*)s->getColumnAddess(1,c)=20;
@@ -879,7 +879,7 @@ TEST_F(CodeGenerationTest,FilterLogic2){
 	 * the first tuple can pass the filter
 	 */
 	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
-	char* c=c_start;
+	char* c=(char*)c_start;
 	for(int i=0;i<c_tuple_count;i++){
 		*(int*)s->getColumnAddess(0,c)=i*5;
 		*(int*)s->getColumnAddess(1,c)=20;
@@ -927,7 +927,7 @@ TEST_F(CodeGenerationTest,FilterLogic3){
 	 * the first four tuples can pass the filter
 	 */
 	c_start=malloc(s->getTupleMaxSize()*c_tuple_count);
-	char* c=c_start;
+	char* c=(char*)c_start;
 	for(int i=0;i<c_tuple_count;i++){
 		*(int*)s->getColumnAddess(0,c)=i*5;
 		*(int*)s->getColumnAddess(1,c)=20;
@@ -1020,8 +1020,9 @@ TEST_F(CodeGenerationTest, LessCompare2) {
 //	verifyFunction(*ff);
 //	ff->dump();
 
+	typedef int (*tmp_fuc)(int*, int*);
 	// another way to call llvm Function
-	int (*create_less)(int*, int*) = CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(ff);
+			tmp_fuc create_less = (tmp_fuc)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(ff);
 	bool ret = create_less((int*)l_class, (int*)r_class);
 
 	delete l_class;

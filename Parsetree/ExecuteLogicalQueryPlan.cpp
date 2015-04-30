@@ -44,7 +44,7 @@ const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
-void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd = 0)
+void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd)
 {
 	Environment::getInstance(true);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
@@ -1141,7 +1141,7 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result
 	// split sign should be considered carefully, in case of it may be "||" or "###"
 	ASTParserLogging::log("The separator are :%c,%c, The sample is %lf, mode is %d\n",
 			column_separator[0], tuple_separator[0], new_node->sample, new_node->mode);
-	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, new_node->mode);
+	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, (open_flag)new_node->mode);
 	loader->load(new_node->sample);
 
 	result_flag=true;

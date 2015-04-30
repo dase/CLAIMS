@@ -1,4 +1,4 @@
-AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
+AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \

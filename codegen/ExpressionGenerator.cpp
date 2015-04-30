@@ -123,7 +123,7 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
 	//where condition
 	builder->SetInsertPoint(while_cond);
 	c_cur=builder->CreateLoad(c_cur_addr);
-	llvm::ICmpInst* while_cond_result = builder->CreateICmpSLT(c_cur,c_tuple_count);
+	llvm::Value* while_cond_result = builder->CreateICmpSLT(c_cur,c_tuple_count);
 	builder->CreateCondBr(while_cond_result,while_body,exit_block);
 
 	//where body
@@ -191,7 +191,7 @@ filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema) {
     llvm::verifyFunction(*F);
 //    F->dump();
     CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-    filter_process_func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+    filter_process_func ret=(filter_process_func)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
     CodeGenerator::getInstance()->release();
     return ret;
 
@@ -263,7 +263,7 @@ expr_func getExprFunc(QNode* qnode,Schema* schema) {
 		return NULL;
 	}
 	else{
-		expr_func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
+		expr_func ret=(expr_func)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
 		CodeGenerator::getInstance()->release();
 		return ret;
 	}
@@ -276,7 +276,7 @@ expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema, Schema
 		return NULL;
 	}
 	else{
-		expr_func_two_tuples ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
+		expr_func_two_tuples ret=(expr_func_two_tuples)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(fun);
 		CodeGenerator::getInstance()->release();
 		return ret;
 	}
@@ -783,7 +783,7 @@ llvm_memcpy getMemcpy(unsigned length) {
 	verifyFunction(*F);
 	F->dump();
 	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-	llvm_memcpy ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	llvm_memcpy ret=(llvm_memcpy)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 	CodeGenerator::getInstance()->release();
 	return ret;
 
@@ -826,7 +826,7 @@ llvm_memcat getMemcat(unsigned length1, unsigned length2) {
 	verifyFunction(*F);
 	F->dump();
 	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-	llvm_memcat ret= CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	llvm_memcat ret= (llvm_memcat)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 	CodeGenerator::getInstance()->release();
 	return ret;
 }
@@ -952,7 +952,7 @@ void test_reference(){
 
 	 typedef void (*func)(int &);
 
-	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+	 func ret=(func)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 	 int a=1024;
 	 ret(a);
 	 printf("result %d!\n",a);
@@ -1101,7 +1101,7 @@ void myllvm::test(){
 	 verifyFunction(*func__Z4funci);
 	 	 typedef int (*func)(int);
 
-	 	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
+	 	 func ret=(func)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
 
 	 	 printf("f(%d)=%d\n",50,ret(50));
 
@@ -1190,7 +1190,7 @@ void myllvm::test1(){
 	  builder->SetInsertPoint(label_while_cond);
 	  LoadInst* int32_7 = builder->CreateLoad(ptr_b);
 	  LoadInst* int32_8 = builder->CreateLoad(ptr_c_addr);
-	  ICmpInst* int1_cmp = builder->CreateICmpSLT(int32_7,int32_8);
+	  Value* int1_cmp = builder->CreateICmpSLT(int32_7,int32_8);
 	  builder->CreateCondBr(int1_cmp,label_while_body,label_while_end);
 //	  LoadInst* int32_7 = new LoadInst(ptr_b, "", false, label_while_cond);
 //	  int32_7->setAlignment(4);
@@ -1204,7 +1204,7 @@ void myllvm::test1(){
 	  builder->SetInsertPoint(label_while_body);
 	  LoadInst* int32_10 = builder->CreateLoad(ptr_b);
 	  LoadInst* int32_11 = builder->CreateLoad(ptr_b);
-	  BinaryOperator* int32_mul = builder->CreateMul(int32_10,int32_11);
+	  Value* int32_mul = builder->CreateMul(int32_10,int32_11);
 	  builder->CreateStore(int32_mul,ptr_b);
 	  builder->CreateBr(label_while_cond);
 //	  LoadInst* int32_10 = new LoadInst(ptr_b, "", false, label_while_body);
@@ -1228,7 +1228,7 @@ void myllvm::test1(){
 	 verifyFunction(*func__Z4funci);
 	 	 typedef int (*func)(int);
 
-	 	 func ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
+	 	 func ret=(func)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
 
 	 	 printf("f(%d)=%d\n",50,ret(50));
 

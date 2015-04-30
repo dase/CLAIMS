@@ -27,7 +27,7 @@ class CodeGenerator {
 public:
 	static CodeGenerator* getInstance();
 	virtual ~CodeGenerator();
-	const Module * getModule()const;
+	Module * getModule()const;
 	llvm::IRBuilder<>* getBuilder()const;
 	FunctionPassManager* getFunctionPassManager()const;
 	ExecutionEngine* getExecutionEngine()const;
