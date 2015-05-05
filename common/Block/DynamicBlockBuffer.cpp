@@ -76,7 +76,7 @@ void DynamicBlockBuffer::destory(){
 	DynamicBlockBuffer::Iterator it=this->createIterator();
 	BlockStreamBase* block_to_deallocate;
 	while(block_to_deallocate=it.nextBlock()){
-		block_to_deallocate->~Block();
+		delete block_to_deallocate;
 	}
 	this->block_list_.clear();
 }

@@ -42,9 +42,12 @@ typedef void (*fun)(void*,void*);
 #define NULL_DATE			neg_infin	// is_neg_infinity() return true
 #define NULL_TIME			neg_infin
 #define NULL_DATETIME		neg_infin
-#define NULL_DECIMAL		NValue::getDecimalValueFromString("99999999999999999999999999.999999999999")
+#define NULL_DECIMAL		nvalue_null
 #define NULL_U_SMALL_INT	USHRT_MAX
 #define NULL_BOOLEAN	    2
+
+
+static NValue nvalue_null=NValue::getDecimalValueFromString("99999999999999999999999999.999999999999");
 
 //static int count_open_for_data_column=0;
 
@@ -1288,8 +1291,8 @@ public:
 			return false;
 		NValue tmp = ((NValue*)a)->op_min(*(NValue*)b);
 		if (tmp.op_equals(*(NValue*)a))
-			return true;
-		return false;
+			return false;
+		return true;
 	}
 	int compare(const void* a,const void* b)const{
 		if ((*(NValue*)a).op_equals(*(NValue*)b))

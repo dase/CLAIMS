@@ -23,6 +23,7 @@ void print_welcome(){
 	printf("    |  `----.|  `----. /  _____  \\  |  | |  |  |  | .----)   |   \n");
 	printf("     \\______||_______|/__/     \\__\\ |__| |__|  |__| |_______/    \n");
 	printf("\033[0m\n");
+	printf("    -----------CLuster-Aware In-Memory Sql query engine----------\n\n");
 
 //
 //	printf("\033[;32m");

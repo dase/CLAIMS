@@ -214,6 +214,10 @@ bool BlockStreamSortIterator::close(){
 
 void BlockStreamSortIterator::print() {
 	printf("Sort\n");
+	for(int i=0;i<state_.direction_.size();i++){
+		printf("[%d]%s ",state_.orderbyKey_[i],state_.direction_[i]==0?"asc":"desc");
+	}
+	printf("\n");
 	state_.child_->print();
 }
 

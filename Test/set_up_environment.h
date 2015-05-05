@@ -685,6 +685,7 @@ static void startup_single_node_environment_of_tpch(bool master=true){
 
 		table_8->getProjectoin(0)->getPartitioner()->RegisterPartition(i,1);
 	}
+	catalog->saveCatalog();
 }
 
 static void startup_single_node_one_partition_environment_of_tpch(bool master=true){

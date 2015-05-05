@@ -53,6 +53,7 @@ public:
 
 	class scan_thread_context:public thread_context{
 	public:
+		~scan_thread_context(){};
 		assigned_data assigned_data_;
 	};
 
@@ -85,8 +86,6 @@ public:
 	void print();
 private:
 
-	void atomicPushChunkReaderIterator(ChunkReaderIterator*);
-	bool atomicPopChunkReaderIterator(ChunkReaderIterator*&);
 	bool passSample()const;
 private:
 
@@ -110,7 +109,6 @@ private:
 
 	/* for debug*/
 	unsigned long int return_blocks_;
-	Lock lock_;
 
 	PerformanceInfo* perf_info;
 

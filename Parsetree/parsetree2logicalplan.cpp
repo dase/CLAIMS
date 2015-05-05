@@ -797,6 +797,166 @@ static void recurse_get_item_in_expr(Node *node,vector<QNode *>&exprTree,Logical
 		}
 	}
 }
+static void ExprCanCancelProject1(Node *node,int flag,bool& ans)
+{
+	switch(node->type)
+	{
+		case t_expr_func:
+		{
+			Expr_func * funcnode=(Expr_func *)node;
+			if(strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
+			{
+				if(flag)
+				{
+					ans=0;
+					return;
+				}
+				ExprCanCancelProject1(funcnode->parameter1,1,ans);
+			}
+			else if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+				return;
+			}
+			else
+			{
+				if(flag)
+				{
+					ans=0;
+					return;
+				}
+				if(strcmp(funcnode->funname,"FSUBSTRING0")==0||strcmp(funcnode->funname,"FSUBSTRING1")==0)
+				{
+					ExprCanCancelProject1(funcnode->args,flag,ans);
+				}
+				else
+				{
+					ExprCanCancelProject1(funcnode->parameter1,flag,ans);
+				}
+			}
+		}break;
+		case t_expr_cal:
+		{
+			if(flag)
+			{
+				ans=0;
+				return;
+			}
+			Expr_cal * calnode=(Expr_cal *)node;
+			if(calnode->lnext!=0)
+				ExprCanCancelProject1(calnode->lnext,flag,ans);
+			if(calnode->rnext!=0)
+				ExprCanCancelProject1(calnode->rnext,flag,ans);
+
+		}break;
+		case t_name:
+		case t_name_name:
+		{
+
+		}break;
+		case t_stringval:
+		{
+
+		}break;
+		case t_intnum:
+		{
+
+		}break;
+		case t_approxnum:
+		{
+
+		}break;
+		case t_bool:
+		{
+
+		}break;
+		default:
+		{
+
+		}
+	}
+}
+static void ExprCanCancelProject2(Node *node,int flag,bool& ans)
+{
+	switch(node->type)
+	{
+		case t_expr_func:
+		{
+			Expr_func * funcnode=(Expr_func *)node;
+			if(strcmp(funcnode->funname,"FSUM")==0||strcmp(funcnode->funname,"FAVG")==0||strcmp(funcnode->funname,"FMIN")==0||strcmp(funcnode->funname,"FMAX")==0)
+			{
+			}
+			else if(strcmp(funcnode->funname,"FCOUNT")==0||strcmp(funcnode->funname,"FCOUNTALL")==0)
+			{
+			}
+			else
+			{
+				ans=0;
+			}
+		}break;
+		case t_expr_cal:
+		{
+			ans=0;
+		}break;
+		case t_name:
+		case t_name_name:
+		{
+			ans=0;
+		}break;
+		case t_stringval:
+		{
+
+		}break;
+		case t_intnum:
+		{
+
+		}break;
+		case t_approxnum:
+		{
+
+		}break;
+		case t_bool:
+		{
+
+		}break;
+		default:
+		{
+		}
+	}
+	return;
+}
+static bool CanCancelProject1(Node* node)
+{
+	bool result=1;
+	for(Node *p=node;p!=NULL&&result;)
+	{
+		Select_list *selectlist=(Select_list *)p;
+		Select_expr *sexpr=(Select_expr *)selectlist->args;
+		if(selectlist->isall==-1)
+		{
+			ExprCanCancelProject1(sexpr->colname,0,result);
+		}
+		else if(selectlist->isall==-2)//count(*) 不能参与运算
+		{
+			SQLParse_log("this sql has count(*)");
+		}
+		p=selectlist->next;
+	}
+	return result;
+}
+static bool CanCancelProject2(Node* node)
+{
+	bool result=1;
+	for(Node *p=node;p!=NULL&&result;)
+	{
+		Select_list *selectlist=(Select_list *)p;
+		Select_expr *sexpr=(Select_expr *)selectlist->args;
+
+		ExprCanCancelProject2(sexpr->colname,0,result);
+
+		p=selectlist->next;
+	}
+	return result;
+}
 static void get_all_selectlist_expression_item(Node * node,LogicalOperator *input,int proj_type,vector<QNode *>&exprTree)
 {
 	for(Node *p=node;p!=NULL;)
@@ -1158,11 +1318,25 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 //	SQLParse_log("has_agg= %d,agg_has_expr=%d,agg_in_expr=%d",has_agg,agg_has_expr,agg_in_expr);
 	if(has_agg==0&&node->groupby_list==NULL)
 	{
-		select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,0);
+		if(!CanCancelProject2(((Query_stmt *)parsetree)->select_list))
+		{
+			select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,0);
+		}
+		else
+		{
+			select_logicalplan=where_from_logicalplan;
+		}
 	}
 	else
 	{
-		select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,1);
+		if(CanCancelProject1(((Query_stmt *)parsetree)->select_list))
+		{
+			select_logicalplan=where_from_logicalplan;
+		}
+		else
+		{
+			select_logicalplan= select_where_from2logicalplan(parsetree,where_from_logicalplan,1);
+		}
 		if(node->groupby_list!=NULL)//获取group_by_attributes
 		{
 			get_group_by_attributes(node->groupby_list,group_by_attributes,select_logicalplan);
@@ -1186,7 +1360,14 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 //#endif
 		}
 		LogicalOperator* projection_or_aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_logicalplan);
-		select_logicalplan= select_where_from2logicalplan(parsetree,projection_or_aggregation,2);
+		if(!CanCancelProject2(((Query_stmt *)parsetree)->select_list))
+		{
+			select_logicalplan= select_where_from2logicalplan(parsetree,projection_or_aggregation,2);
+		}
+		else
+		{
+			select_logicalplan=projection_or_aggregation;
+		}
 	}
 	return select_logicalplan;
 }

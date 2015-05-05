@@ -29,6 +29,7 @@ install/
 *.o
 Makefile
 config.h
+config.h.in
 config.log
 configure
 claims.log
@@ -36,6 +37,8 @@ doc
 conf
 conf/config
 build
+Build
 *.dat*
 include/
 .history
+compile

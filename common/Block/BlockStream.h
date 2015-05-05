@@ -56,6 +56,13 @@ public:
 			cur=0;
 		}
 
+		inline unsigned get_cur()const {
+			return cur;
+		}
+		inline void set_cur(unsigned c){
+			cur=c;
+		}
+
 	private:
 		BlockStreamBase* block_stream_base_;
 		unsigned cur;
@@ -71,9 +78,13 @@ public:
 	virtual void* allocateTuple(unsigned bytes)=0;
 	virtual void setEmpty()=0;
 	virtual bool Empty() const =0;
+	virtual bool Full() const = 0;
 	virtual void* getBlockDataAddress()=0;
 //	virtual void setBlockDataAddress(void* addr)=0;
 	virtual unsigned getTuplesInBlock()const=0;
+
+	virtual unsigned getBlockCapacityInTuples()const=0;
+
 	/* copy a block in the storage layer into the BlockStream, the member variables (e.g., _free) are
 	 * also updated according the new data.
 	 */
@@ -125,12 +136,17 @@ public:
 	virtual ~BlockStreamFix();
 public:
 	inline void* allocateTuple(unsigned bytes){
-		if(free_+bytes<=start+BlockSize){
+		if(free_+bytes<=start+BlockSize-sizeof(tail_info)){
 			void* ret=free_;
 			free_+=bytes;
 			return ret;
 		}
 		return 0;
+	}
+	inline void setTuplesInBlock(unsigned n){
+		free_=start+n*tuple_size_;
+		assert(free_<=start+BlockSize-sizeof(tail_info));
+
 	}
 	void setEmpty();
 
@@ -143,6 +159,9 @@ public:
 		return ret;
 	}
 	bool Empty() const;
+	bool Full() const{
+		return free_+tuple_size_>start+BlockSize-sizeof(tail_info);
+	}
 	void* getBlockDataAddress();
 //	void setBlockDataAddress(void* addr);
 	bool switchBlock(BlockStreamBase& block);
@@ -152,6 +171,7 @@ public:
 	bool serialize(Block & block) const;
 	bool deserialize(Block * block);
 	unsigned getSerializedBlockSize()const;
+	unsigned getBlockCapacityInTuples()const;
 	unsigned getTuplesInBlock()const;
 	/* construct the BlockStream from a storage level block,
 	 * which last four bytes indicate the number of tuples in the block.*/
@@ -223,12 +243,15 @@ public:
 	bool Empty() const{
 		return free_front_==start;
 	};
-
+	bool Full() const{
+		assert(false);
+	}
 	void* getBlockDataAddress(){};
 	bool switchBlock(BlockStreamBase& block){};
 	void copyBlock(void* addr, unsigned length){};
 	void deepCopy(const Block* block){};
 	unsigned getSerializedBlockSize()const{};
+	unsigned getBlockCapacityInTuples()const{assert(false);};
 	unsigned getTuplesInBlock()const{};
 	BlockStreamBase* createBlockAndDeepCopy();
 private:

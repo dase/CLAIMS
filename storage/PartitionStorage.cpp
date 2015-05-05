@@ -143,7 +143,7 @@ bool PartitionStorage::AtomicPartitionReaderIterator::nextBlock(
 		return true;
 	}
 	else{
-		if((chunk_it_=nextChunk())>0){
+		if((chunk_it_=PartitionReaderItetaor::nextChunk())>0){
 			lock_.release();
 			return nextBlock(block);
 		}

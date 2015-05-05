@@ -32,19 +32,23 @@ public:
 	virtual Schema::schema_type getSchemaType()const;
 	/*get the pointer of the tuple and get the value of the tuple offset*/
 	virtual void getColumnValue(unsigned index,void* src, void* desc){};
+
+	/* this function should not be called, as has described in the base virtual function.*/
+	int getColumnOffset(unsigned index)const{assert(false);};
+
 	virtual Schema* getSubSchema(std::vector<unsigned>)const{};
 	Schema* duplicateSchema()const;
 	virtual void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline)){
 		unsigned ofs=0;
 		unsigned column_off=0;
-		void *ret;
+		char *ret;
 		if(index>0){
 			for(unsigned i=0;i<index;i++){
 				if(columns[i].type!=t_string){
 					ofs+=columns[i].get_length();
 				}
 				else{
-					ofs+=*(int *)(column_start+column_off*4);
+					ofs+=*(int *)((char*)column_start+column_off*4);
 					column_off++;
 				}
 			}

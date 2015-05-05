@@ -33,19 +33,18 @@
 #include "../../utility/Timer.h"
 #include "ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../Config.h"
+#include "../../utility/maths.h"
 #define BUFFER_SIZE_IN_EXCHANGE 1000
 
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(State state)
 :state(state){
 	initialize_expanded_status();
-	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	assert(state.partition_schema_.partition_key_index<100);
 	debug_winner_thread=0;
 }
 ExpandableBlockStreamExchangeEpoll::ExpandableBlockStreamExchangeEpoll(){
 	initialize_expanded_status();
-	open_finished_=false;
 	logging_=new ExchangeIteratorEagerLogging();
 	debug_winner_thread=0;
 }
@@ -123,7 +122,7 @@ bool ExpandableBlockStreamExchangeEpoll::open(const PartitionOffset& partition_o
 	}
 
 	/* A synchronization barrier, in case of multiple expanded threads*/
-	barrier_->Arrive();
+	barrierArrive();
 	return true;
 }
 
@@ -377,7 +376,8 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 
 	events=(epoll_event*)calloc(Pthis->nlowers,sizeof(epoll_event));
 	int fd_cur=0;
-
+	ticks start=curtick();
+	std::vector<int> finish_times;//in ms
 	while(true){
 		usleep(1);
 		const int event_count=epoll_wait(Pthis->epoll_fd_,events,Pthis->nlowers,-1);
@@ -488,6 +488,8 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						/** The newly obtained data block is the end-of-file.  **/
 						Pthis->logging_->log("[%ld] *****This block is the last one.",Pthis->state.exchange_id_);
 
+						finish_times.push_back((int)getMilliSecond(start));
+
 						/** update the exhausted senders count and post sem_new_block_or_eof_ so that all the
 						 * threads waiting for the semaphore continue.
 						 **/
@@ -501,6 +503,12 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 							 * that the input data is completely received.
 							 */
 							Pthis->buffer->setInputComplete();
+
+							/* print the finish times */
+							for(unsigned i=0;i<finish_times.size();i++){
+								printf("%d\t",finish_times[i]);
+							}
+							printf("\t Var:%5.4f\n",get_stddev(finish_times));
 						}
 
 
@@ -510,6 +518,7 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
 
 						Pthis->logging_->log("[%ld] This notification (all the blocks in the socket buffer are consumed) is send to the lower[%s] exchange=(%d,%d).\n",Pthis->state.exchange_id_,Pthis->lower_ip_array[socket_fd_index].c_str(),Pthis->state.exchange_id_,Pthis->partition_offset);
+
 
 					}
 				}

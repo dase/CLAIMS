@@ -138,6 +138,10 @@ bool BlockStreamFix::serialize(Block & block) const{
 
 }
 
+unsigned BlockStreamFix::getBlockCapacityInTuples() const {
+	return (BlockSize-sizeof(tail_info))/tuple_size_;
+}
+
 BlockStreamBase* BlockStreamFix::createBlockAndDeepCopy() {
 	BlockStreamBase* ret;
 	if(this->isIsReference()){

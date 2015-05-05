@@ -8,6 +8,7 @@
 #include "Client.h"
 
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -19,6 +20,11 @@
 
 Client::Client() {
 	m_clientFd = -1;
+	connected_=false;
+}
+
+bool Client::connected() const {
+	return connected_;
 }
 
 Client::~Client() {
@@ -39,19 +45,22 @@ void Client::connection(std::string host, int port) {
 	result = connect(m_clientFd, (struct sockaddr *) &serverSockAddr,
 			sizeof(serverSockAddr));
 	if (result < 0) {
+		printf("%s:%d\n",host.c_str(),port);
 		perror("Client::error on connecting \n");
 	} else {
-		printf("Client::succeed in connecting with server\n");
+		connected_=true;
 	}
 }
 
-Client::query_result Client::submit(std::string& command, std::string& message,
+Client::query_result Client::submit(std::string command, std::string& message,
 		ResultSet& rs) {
 	if (m_clientFd < 0) {
 		perror("Client does not connect to the server!\n");
 		return Client::error;
 	}
 	ClientResponse *response = new ClientResponse();
+
+	command="#"+command;
 
 	write(m_clientFd, command.c_str(), command.length() + 1);
 	ClientLogging::log("Client: message from server!\n");
@@ -74,7 +83,7 @@ Client::query_result Client::submit(std::string& command, std::string& message,
 	delete buf;
 
 	switch(response->status){
-		case Error:{
+		case ERROR:{
 			message+="ERROR>"+response->content+"\n";
 			return Client::error;
 		}

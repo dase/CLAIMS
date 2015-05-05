@@ -39,19 +39,15 @@ bool bottomLayerCollecting::open(const PartitionOffset& partition_offset)
 		PartitionStorage* partition_handle_;
 		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
-			open_ret_=false;
+			setReturnStatus(false);
 		}
 		else{
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 		}
-		open_ret_=true;
-		broadcaseOpenFinishedSignal();
+		setReturnStatus(true);
 	}
-	else{
-		/* For other expanded threads just wait for the first thread finishing initialization*/
-		waitForOpenFinished();
-	}
-	return getOpenReturnValue();
+	barrierArrive();
+	return getReturnStatus();
 }
 
 bool bottomLayerCollecting::next(BlockStreamBase* block) {
@@ -131,11 +127,9 @@ bool bottomLayerCollecting::next(BlockStreamBase* block) {
 
 bool bottomLayerCollecting::close() {
 	initialize_expanded_status();
-	partition_reader_iterator_->~PartitionReaderItetaor();
-//	chunk_reader_iterator_->~ChunkReaderIterator();
+	delete partition_reader_iterator_;
 	remaining_block_list_.clear();
 	block_stream_list_.clear();
-	open_finished_ = false;
 
 	return true;
 }
@@ -184,7 +178,7 @@ bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 
-		if (chunk_reader_iterator_ == false){
+		if (chunk_reader_iterator_ == 0){
 			printf("Has been falsed!!!!!!!!!!!!!*&S*DF&(SD&F(S<><<<><><><><><>\n");
 			return false;
 		}
@@ -246,11 +240,9 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 	{
 		computeVectorSchema();
 		const bool child_open_return = state_.child_->open(partition_offset);
-		setOpenReturnValue(child_open_return);
-		broadcaseOpenFinishedSignal();
+		setReturnStatus(child_open_return);
 	}
-	else
-		waitForOpenFinished();
+	barrierArrive();
 
 	//Construct the PartitionID for the next function to make up the ChunkID
 	partition_id_.projection_id = state_.projection_id_;
@@ -277,7 +269,7 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 			compare_node* c_node = (compare_node*)malloc(sizeof(compare_node));		//newmalloc
 			c_node->vector_schema_ = vector_schema_;
 			c_node->tuple_ = malloc(vector_schema_->getTupleMaxSize());		//newmalloc
-			vector_schema_->copyTuple(current_tuple+state_.schema_->getcolumn(0).get_length(),c_node->tuple_);
+			vector_schema_->copyTuple((char*)current_tuple+state_.schema_->getcolumn(0).get_length(),c_node->tuple_);
 //			c_node->tuple_ = current_tuple+state_.schema_->getcolumn(0).get_length();
 //			c_node->op_ = state_.schema_->getcolumn(1).operate->duplicateOperator();
 			c_node->op_ = op_;
@@ -331,7 +323,7 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 	}
 
 
-	return getOpenReturnValue();
+	return getReturnStatus();
 }
 
 bool bottomLayerSorting::next(BlockStreamBase* block)

@@ -148,9 +148,17 @@ class QColcumns:public QNode//getscalarvar
 public:
 	int id;//表示在dataflow_schema中的第几个
 	string table,col;
+	/* tab_index represents the logical index of table this column belongs to.
+	 * This index is used to distinguish the source of the column if expression
+	 * contains more than one table. For instance, if the expression is T1.a =T2.b
+	 * , which is used in an equal join condition, then tab_index in QColumn
+	 * indicates the target table. If express only reads data from one table, the
+	 * default value for tab_index should be 0.
+	 */
+	int tab_index; // represent the logical index of the table this column belongs to.
 	QColcumns(const char *tbl,const char *coln,data_type a_type,const char *t_alias);
 	QColcumns(QColcumns *node);
-	QColcumns(){};
+	QColcumns():tab_index(0){};
 	virtual ~QColcumns(){};
 private:
 	friend class boost::serialization::access;
