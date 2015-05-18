@@ -19,12 +19,7 @@
 extern timeval start_time;
 
 extern vector<Node*> NodePointer;
-//
-//extern "C" int yylex();
-//extern "C" int yyparse();
 
-//extern "C" int yyclearin();
-//extern "C" int yyerrok();
 extern int yyparse (struct ParseResult* result);
 
 void GetInputSQL(StreamBuffer* stream_buffer, char *desc);

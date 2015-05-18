@@ -65,7 +65,7 @@ struct ParseResult
 {
 	void * yyscan_info_;
 	Node * ast;
-	char * sql_clause;
+	const char * sql_clause;
 	int error_number;
 	vector<Node *>*node_pointer;
 };
@@ -101,8 +101,8 @@ struct Expr_list
 struct Columns//列
 {
 	nodetype type;
-	char * parameter1;
-	char *parameter2;
+	char * parameter1;//table name or alais
+	char *parameter2;//column name
 	Node * next;
 };
 
@@ -130,6 +130,7 @@ struct Table //table
 	nodetype type;
 	char * dbname,*tablename,*astablename;
 	int issubquery;
+	int table_id;
 	Node *subquery;
 	Node * whcdn;
 };
