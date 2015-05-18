@@ -22,9 +22,9 @@ client_listener_port = 10000
 
 #hadoop上的数据目录
 #data="/home/imdb/data/wangli/"
-
-data="/home/imdb/data/tpc-h/1-partition/sf-1/"
 #data="/home/imdb/data/POC/sample/"
+data="/home/imdb/data/tpc-h/1-partition/sf-1/"
+#data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/stock/"
 #data="/home/imdb/data/temp/"
 #data="/home/imdb/data/POC/"
@@ -36,7 +36,7 @@ hdfs_master_ip="127.0.0.1"
 hdfs_master_port=9000
 
 #最大单机算子并行度
-max_degree_of_parallelism=2
+max_degree_of_parallelism=4
 
 #初始单机算子并行度
 initial_degree_of_parallelism=1
@@ -48,3 +48,5 @@ enable_expander_adaptivity=0
 pipelined_exchange=1
 
 local_disk_mode=1
+
+scan_batch=100

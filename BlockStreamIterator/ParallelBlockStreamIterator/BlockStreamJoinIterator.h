@@ -14,6 +14,7 @@
 #include "../../utility/rdtsc.h"
 #include "../../common/hash.h"
 #include "../../common/hashtable.h"
+#include "../../codegen/ExpressionGenerator.h"
 
 #include <iostream>
 #include <vector>
@@ -28,21 +29,11 @@ class BlockStreamJoinIterator:public ExpandableBlockStreamIteratorBase{
 public:
 	class join_thread_context:public thread_context{
 	public:
-		BlockStreamBase* block_for_asking_;
-		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
-		BasicHashTable::Iterator hashtable_iterator_;
-	};
-	struct remaining_block{
-		remaining_block(BlockStreamBase *bsb_right,BlockStreamBase::BlockStreamTraverseIterator *bsti)
-		:bsb_right_(bsb_right),blockstream_iterator(bsti){};
-		remaining_block():bsb_right_(0),blockstream_iterator(0){};
-		remaining_block(const remaining_block&r){
-			bsb_right_=r.bsb_right_;
-			blockstream_iterator=r.blockstream_iterator;
-			hashtable_iterator_=r.hashtable_iterator_;
-		}
-		BlockStreamBase *bsb_right_;
-		BlockStreamBase::BlockStreamTraverseIterator *blockstream_iterator;
+		~join_thread_context();
+		BlockStreamBase* l_block_for_asking_;
+		BlockStreamBase::BlockStreamTraverseIterator* l_block_stream_iterator_;
+		BlockStreamBase* r_block_for_asking_;
+		BlockStreamBase::BlockStreamTraverseIterator* r_block_stream_iterator_;
 		BasicHashTable::Iterator hashtable_iterator_;
 	};
 
@@ -97,12 +88,12 @@ public:
 	bool close();
 	void print();
 private:
-	bool atomicPopRemainingBlock(remaining_block & rb);
-	void atomicPushRemainingBlock(remaining_block rb);
-	BlockStreamBase* AtomicPopFreeBlockStream();
-	void AtomicPushFreeBlockStream(BlockStreamBase* block);
-	BlockStreamBase* AtomicPopFreeHtBlockStream();
-	void AtomicPushFreeHtBlockStream(BlockStreamBase* block);
+	thread_context* createContext();
+	static void isMatch(void* l_tuple_addr,
+			void* r_tuple_addr, void* return_addr,vector<int>& l_join_index, vector<int>& r_join_index, Schema* l_schema, Schema* r_schema,expr_func_two_tuples func);
+	static void isMatchCodegen(void* l_tuple_addr,
+			void* r_tuple_addr, void* return_addr,vector<int>& l_join_index, vector<int>& r_join_index, Schema* l_schema, Schema* r_schema, expr_func_two_tuples func);
+//	static void copy_to_hashtable(void* desc, void* src, Schema* );
 private:
 	State state_;
 	/* joinIndex map to the output*/
@@ -116,15 +107,16 @@ private:
 	BasicHashTable *hashtable;
 	Schema *ht_schema;
 
-	std::list<remaining_block> remaining_block_list_;
-	std::list<BlockStreamBase *> free_block_stream_list_;
-	std::list<BlockStreamBase *> ht_free_block_stream_list_;
+	typedef void (*condition_filter_func)(void*,
+			void*, void*,vector<unsigned>&, vector<unsigned>&, Schema*, Schema*, expr_func_two_tuples);
+	condition_filter_func cff_;
+	expr_func_two_tuples eftt_;
+	llvm_memcpy memcpy_;
+	llvm_memcat memcat_;
 
-//	semaphore sema_open_;
-//	volatile bool open_finished_;
-	unsigned reached_end;
-	Lock lock_;
-//	Barrier barrier_;
+	typedef void (*void_voids_voids)(void*, void*,Schema*);
+	typedef void (*void_voids_voids_voids)(void*,void*,void*,Schema*,Schema*);
+
 
 	//debug
 	unsigned produced_tuples;

@@ -113,7 +113,6 @@ void* BlockStreamResultCollector::worker(void* arg){
 
 	BlockStreamResultCollector* Pthis=(BlockStreamResultCollector*)arg;
 	Pthis->state_.child_->open(Pthis->state_.partition_offset_);
-
 	BlockStreamBase* block_for_asking;
 	if(Pthis->createBlockStream(block_for_asking)==false){
 		assert(false);

@@ -781,6 +781,7 @@ int selectlist_has_column(char *&ascolname,Node *sltree,char *&astablename)//sel
 				{
 //					strcpy(ascolname,col->parameter2);
 //					astablename=col->parameter1;
+					astablename=ascolname;
 					result++;
 				}
 			}
@@ -1543,6 +1544,8 @@ bool orderby_analysis(Node * node,vector<Node *>rtable,Query_stmt *qstmt)//like 
 				}
 				else if(result==1)
 				{
+					if(astablename==NULL)
+						astablename=col->parameter2;
 					col->parameter1=astablename;
 					col->type=t_name_name;
 				}

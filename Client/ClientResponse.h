@@ -37,7 +37,7 @@
 #include "../common/Schema/SchemaFix.h"
 #include "../common/Logging.h"
 
-#define Error 	0
+#define ERROR 	0
 #define OK 		1
 #define SCHEMASS	2
 #define HEADER	3
@@ -68,7 +68,7 @@ struct ClientResponse {
 
 	std::string getMessage(){
 		switch(status){
-		case Error:
+		case ERROR:
 			return "Error";
 			break;
 		case OK:
@@ -91,12 +91,12 @@ struct ClientResponse {
 	}
 
 	void setError(std::string reason) {
-		status = Error;
+		status = ERROR;
 		length = reason.length();
 		content = reason;
 	}
 	std::string getError() const {
-		assert(status==Error);
+		assert(status==ERROR);
 		return content;
 	}
 	void setEnd(double query_time) {

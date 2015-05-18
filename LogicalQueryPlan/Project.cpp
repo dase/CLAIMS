@@ -123,7 +123,7 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 	BlockStreamIteratorBase *child=child_->getIteratorTree(blocksize);
 	BlockStreamProjectIterator::State state;
 	state.block_size_=blocksize;
-	state.children_=child;
+	state.child_=child;
 	state.v_ei_=exprArray_;
 	state.input_=getSchema(child_dataflow.attribute_list_);
 	state.map_=mappings_;

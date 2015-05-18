@@ -40,6 +40,51 @@ void readStrigFromTerminal(string & input){
 	}
 }
 
+void submit_command(Client& client, std::string &command){
+	ResultSet rs;
+	std::string message;
+	switch(client.submit(command,message,rs)){
+	case Client::result:
+		rs.print();
+//				if(i!=0)
+//					total_time+=rs.query_time_;
+		break;
+	case Client::message:
+		printf("%s",message.c_str());
+		break;
+	case Client::error:
+		printf("%s",message.c_str());
+		break;
+	default:
+		assert(false);
+		break;
+	}
+}
+
+void submit_command_repeated(Client& client, std::string &command,int repeated){
+	double total_time=0;
+	for(int i=0;i<repeated;i++){
+		ResultSet rs;
+		std::string message;
+		switch(client.submit(command,message,rs)){
+		case Client::result:
+			if(i!=0)
+				total_time+=rs.query_time_;
+			break;
+		case Client::message:
+			printf("%s",message.c_str());
+			break;
+		case Client::error:
+			printf("%s",message.c_str());
+			break;
+		default:
+			assert(false);
+			break;
+		}
+	}
+}
+
+
 int main(int argc, char** argv){
 	/* Client */
 
@@ -70,23 +115,13 @@ int main(int argc, char** argv){
 			continue;
 		}
 
-		command="#"+command;
+		submit_command(client,command);
 
-		ResultSet rs;
-		switch(client.submit(command,message,rs)){
-		case Client::result:
-			rs.print();
-			break;
-		case Client::message:
-			printf("%s",message.c_str());
-			break;
-		case Client::error:
-			printf("%s",message.c_str());
-			break;
-		default:
-			assert(false);
-			break;
-		}
+
+		/*
+		 * the following command execute the query for a given time and p
+		 * rint the averaged query response time.*/
+//		submit_command_repeated(client,command,50);
 	}
 	client.shutdown();
 }
