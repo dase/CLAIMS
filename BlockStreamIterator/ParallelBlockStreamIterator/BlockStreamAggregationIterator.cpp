@@ -41,7 +41,7 @@ BlockStreamAggregationIterator::State::State(
 		unsigned bucketsize,
 		unsigned block_size,
 		std::vector<unsigned>avgIndex,
-		bool isPartitionNode
+		AggNodeType agg_node_type
 ):input(input),
 output(output),
 hashSchema(hashSchema),
@@ -53,7 +53,7 @@ nbuckets(nbuckets),
 bucketsize(bucketsize),
 block_size(block_size),
 avgIndex(avgIndex),
-isPartitionNode(isPartitionNode){
+agg_node_type(agg_node_type){
 
 }
 
@@ -311,7 +311,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 		{
 			if((tuple=block->allocateTuple(state_.output->getTupleMaxSize()))!=0)//the tuple is empty??
 			{
-				if(state_.avgIndex.size()>0&&state_.isPartitionNode==false)//avg=sum/tuple_size
+				if(state_.avgIndex.size()>0&&(state_.agg_node_type==State::Hybrid_Agg_Global||state_.agg_node_type==State::Not_Hybrid_Agg))//avg=sum/tuple_size
 				{
 					for(unsigned i=0;i<state_.groupByIndex.size();i++)//in one tuple that are produced from aggregation statement, the groupby attributes is at the head, the rest attributes belong to the aggregation part.
 					{
@@ -322,24 +322,24 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 					state_.avgIndex.push_back(-1);//boundary point,
 					int aggsize=state_.aggregationIndex.size()-1;
 					unsigned i=0,j=0;
-					unsigned long  tuple_number=(*(unsigned long *)state_.hashSchema->getColumnAddess(inputAggregationToOutput_[aggsize],cur_in_ht));
+					unsigned long  count_value=(*(unsigned long *)state_.hashSchema->getColumnAddess(inputAggregationToOutput_[aggsize],cur_in_ht));
 					for(;i<aggsize;i++)
 					{
 						if(state_.avgIndex[j]==i)	//avgIndex save the index of avg in aggregations,see Aggregation.cpp:116
 						{
 							assert(state_.aggregations[i]==State::sum);
 							j++;
-							void *unknowntype=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],cur_in_ht); //get the value in hash table
+							void *sum_value=state_.hashSchema->getColumnAddess(inputAggregationToOutput_[i],cur_in_ht); //get the value in hash table
 
-							if(tuple_number==0)
+							if(count_value==0)//how to report the error if divided by 0?
 							{
-								key_in_hash_tuple=unknowntype;
+								key_in_hash_tuple=sum_value;
 							}
 							else
 							{// TODO: precision of avg result is not enough
 
-								key_in_hash_tuple=unknowntype;//the room is enough?
-								ExectorFunction::avg_divide[state_.hashSchema->columns[inputAggregationToOutput_[i]].type](unknowntype,tuple_number,key_in_hash_tuple);
+								key_in_hash_tuple=sum_value;//the room is enough?
+								ExectorFunction::avg_divide[state_.hashSchema->columns[inputAggregationToOutput_[i]].type](sum_value,count_value,key_in_hash_tuple);
 							}
 						}
 						else
