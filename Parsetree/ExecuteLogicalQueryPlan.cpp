@@ -241,7 +241,7 @@ bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsi
 
 	return has_warning;
 }
-
+/*
 bool query(const string& sql, query_result& result_set) {
 	bool ret;
 	string msg;
@@ -255,7 +255,7 @@ bool query(const string& sql, query_result& result_set) {
 	}
 	return ret;
 }
-
+*/
 bool CheckType(const column_type *col_type, Expr *expr)		// check whether the string is digit, can use strtol()
 {
 	nodetype insert_value_type = expr->type;
