@@ -330,5 +330,7 @@ void LogicalProject::print(int level)const{
 	{
 		printf("	%s\n",exprTree_[i]->alias.c_str());
 	}
-	child_->print(level+1);
+	if(child_!=NULL) {
+        child_->print(level+1);
+	}
 }

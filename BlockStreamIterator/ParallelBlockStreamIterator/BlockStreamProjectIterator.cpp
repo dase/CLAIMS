@@ -146,8 +146,9 @@ void BlockStreamProjectIterator::print()
 	{
 		printf("	%s\n",state_.exprTree_[i]->alias.c_str());
 	}
-	state_.child_->print();
-
+	if(state_.child_!=NULL) {
+        state_.child_->print();
+	}
 }
 
 void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
