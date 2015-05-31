@@ -73,6 +73,7 @@ void ExprIn::InitExprAtLogicalPlan(
         for (int j = 0; j < right_node_[i].size(); j++) {
             right_node_[i][j]->InitExprAtLogicalPlan(cmp_expr_[j]->actual_type_,
                                                      column_index, schema);
+            // should be get_type_?
         }
     }
 }

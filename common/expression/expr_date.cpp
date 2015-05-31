@@ -46,7 +46,8 @@ void ExprDate::InitExprAtLogicalPlan(
         Schema* schema) {
     return_type_ = return_type;
     // difference from ExprBinary
-    arg0_->InitExprAtLogicalPlan(actual_type_, column_index, schema);   //
+    arg0_->InitExprAtLogicalPlan(actual_type_, column_index, schema);
+    // actual_type_ => get_type_ ?
     arg1_->InitExprAtLogicalPlan(arg1_return_type_, column_index, schema);  //
     value_size_ = std::max(arg0_->value_size_, arg1_->value_size_);
     is_null_ = (arg0_->is_null_ || arg1_->is_null_);

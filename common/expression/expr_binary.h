@@ -48,5 +48,4 @@ class ExprBinary : public ExprNode {
     }
 };
 
-
 #endif /* COMMON_EXPRESSION_EXPR_BINARY_H_ */
