@@ -40,4 +40,4 @@ Build
 *.dat*
 include/
 .history
-thirdparty/
+!thirdparty/
