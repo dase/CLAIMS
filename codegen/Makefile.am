@@ -1,5 +1,6 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 -I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
 -I${THERON_HOME}/Include \
 -I${GTEST_HOME}/include \
 -I/usr/local/include  -D_DEBUG -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS \
@@ -13,7 +14,9 @@ AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs -L/usr/local/lib
 LDADD = ../common/libcommon.a \
 		../utility/libutility.a \
 		types/libtypes.a \
-		${GTEST_HOME}/libgtest.a
+		${GTEST_HOME}/libgtest.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so
 		
 
 noinst_LIBRARIES=libcodegen.a

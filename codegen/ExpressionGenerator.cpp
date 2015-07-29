@@ -781,7 +781,7 @@ llvm_memcpy getMemcpy(unsigned length) {
 	builder->CreateRetVoid();
 
 	verifyFunction(*F);
-	F->dump();
+//	F->dump();
 	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
 	llvm_memcpy ret=(llvm_memcpy)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 	CodeGenerator::getInstance()->release();
@@ -824,7 +824,7 @@ llvm_memcat getMemcat(unsigned length1, unsigned length2) {
 	builder->CreateRetVoid();
 
 	verifyFunction(*F);
-	F->dump();
+//	F->dump();
 	CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
 	llvm_memcat ret= (llvm_memcat)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
 	CodeGenerator::getInstance()->release();

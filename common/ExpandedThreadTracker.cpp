@@ -10,6 +10,8 @@
 #include "../utility/rdtsc.h"
 #include "../Config.h"
 
+//#define PRINT_PERFORMANCE_REALTIME
+
 #define CPU_CYCLES_IN_us (CPU_FRE/1000000L)
 #define TIME_SLICE  (1000*CPU_CYCLES_IN_us)
 #define get_time_slice_start(total_cycles) (total_cycles/TIME_SLICE*TIME_SLICE)
@@ -79,6 +81,7 @@ void PerformanceInfo::processed_one_block(){
 		last_update_=cur_tick;
 		scalability_vector_[cur_dop].last_update=cur_tick;
 		scalability_vector_[cur_dop].performance=report_instance_performance_in_millibytes();
+#ifdef PRINT_PERFORMANCE_REALTIME
 		int max_dop=Config::getInstance()->max_degree_of_parallelism+1;
 		for(unsigned i=0;i<max_dop;i++){
 			if(scalability_vector_[i].isUpdateToDate())
@@ -88,6 +91,7 @@ void PerformanceInfo::processed_one_block(){
 			}
 		}
 		printf("\n");
+#endif
 	}
 
 }

@@ -1,6 +1,7 @@
 
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
 -I${THERON_HOME}/Include 
 
 

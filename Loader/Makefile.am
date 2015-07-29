@@ -7,7 +7,7 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include
 
-AM_LDFLAGS=-lc -lm -lrt  -lxs
+AM_LDFLAGS=-lc -lm -lrt  -lxs -lboost_serialization
 
 LDADD = 	../Catalog/libcatalog.a \
 		../Schema/libschema.a \

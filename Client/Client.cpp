@@ -70,7 +70,9 @@ Client::query_result Client::submit(std::string command, std::string& message,
 
 	int receivedBytesNum;
 	//compute the length of ClientResponse object
-	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
+	if (-1 == recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL )) {
+	  perror("receive the length of response failed");
+	}
 	int len = *((int*) buf + 1);
 	if ((receivedBytesNum = recv(m_clientFd, buf+sizeof(int) + sizeof(int), len, MSG_WAITALL)) < 0) {
 		perror(

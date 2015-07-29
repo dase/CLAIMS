@@ -1,5 +1,6 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 -I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
 -I${THERON_HOME}/Include \
 -I${GTEST_HOME}/include
 
@@ -36,7 +37,8 @@ libcommon_a_SOURCES = \
 	hash.cpp 			hash.h \
 	hashtable.cpp 		hashtable.h \
 	ids.cpp 			ids.h \
-	rename.h	
+	rename.h			ErrorDefine.h \
+	ErrorNo.h			ErrorNo.cpp
 
 SUBDIRS = Block Schema types Expression
 DIST_SUBDIRS = Block Schema types Expression

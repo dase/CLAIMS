@@ -216,7 +216,8 @@ bool HdfsLoader::insertRecords(){
 			pj_buffer[i][part]->setEmpty();
 			block_tuple_addr = pj_buffer[i][part]->allocateTuple(projection_schema[i]->getTupleMaxSize());
 		}
-		projection_schema[i]->copyTuple(target,block_tuple_addr);
+		int copy_size = projection_schema[i]->copyTuple(target,block_tuple_addr);
+		assert(copy_size <= projection_schema[i]->getTupleMaxSize() && "copy more than malloc size");
 
 		free(target);
 	}
