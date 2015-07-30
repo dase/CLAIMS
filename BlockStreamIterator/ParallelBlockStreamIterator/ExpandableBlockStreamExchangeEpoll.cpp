@@ -439,7 +439,9 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 					int byte_received;
 					int socket_fd_index=Pthis->lower_sock_fd_to_index[events[i].data.fd];
 
-					byte_received=read(events[i].data.fd,(char*)Pthis->block_for_socket_[socket_fd_index]->getBlock()+Pthis->block_for_socket_[socket_fd_index]->GetCurSize(),Pthis->block_for_socket_[socket_fd_index]->GetRestSize());
+					byte_received=read(events[i].data.fd,
+					                   (char*)Pthis->block_for_socket_[socket_fd_index]->getBlock()+Pthis->block_for_socket_[socket_fd_index]->GetCurSize(),
+					                   Pthis->block_for_socket_[socket_fd_index]->GetRestSize());
 					if(byte_received==-1){
 						if(errno==EAGAIN){
 							/*We have read all the data,so go back to the loop.*/
@@ -512,7 +514,10 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 						}
 
 
-						Pthis->logging_->log("[%ld] <<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",Pthis->state.exchange_id_,Pthis->nexhausted_lowers,Pthis->state.exchange_id_,Pthis->partition_offset);
+						Pthis->logging_->log(
+                "[%ld] <<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",
+                Pthis->state.exchange_id_, Pthis->nexhausted_lowers,
+                Pthis->state.exchange_id_, Pthis->partition_offset);
 
 						/** tell the sender that all the block are consumed so that the sender can close the socket**/
 						Pthis->SendBlockAllConsumedNotification(events[i].data.fd);
