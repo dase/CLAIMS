@@ -42,3 +42,4 @@ Build
 include/
 .history
 compile
+!thirdparty/

@@ -127,7 +127,7 @@ bool BlockStreamJoinIterator::open(const PartitionOffset& partition_offset){
 	void *value_in_hashtable;
 
 
-	join_thread_context* jtc=(join_thread_context*)createOrReuseContext(crm_numa_sensitive);
+	join_thread_context* jtc=createOrReuseContext(crm_numa_sensitive);
 
 	const Schema* input_schema=state_.input_schema_left->duplicateSchema();
 	const Operate* op=input_schema->getcolumn(state_.joinIndex_left[0]).operate->duplicateOperator();

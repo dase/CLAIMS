@@ -191,6 +191,7 @@ bool ExpandableBlockStreamProjectionScan::next(BlockStreamBase* block) {
 
 bool ExpandableBlockStreamProjectionScan::close() {
 	delete partition_reader_iterator_;
+	partition_reader_iterator_ = NULL;
 
 	destoryAllContext();
 

@@ -71,6 +71,7 @@ bool BlockStreamNestLoopJoinIterator::open(const PartitionOffset& partition_offs
 		blockbuffer->atomicAppendNewBlock(jtc->block_for_asking_);
 		createBlockStream(jtc->block_for_asking_);
 	}
+
 	delete jtc->block_for_asking_;
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterExpandedThreadToAllBarriers(1);

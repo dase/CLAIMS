@@ -627,7 +627,8 @@ struct Node *newExprlistheader(nodetype type,Node * header,Node * tail);
 struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * next);
 
 struct Node * newExprCal(nodetype type,const char * sign, char *parameter,
-	int cmp, Node *lnext, Node *rnext);
+
+int cmp, Node *lnext, Node *rnext);
 
 struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 	Node * parameter1, Node *parameter2, Node *next);

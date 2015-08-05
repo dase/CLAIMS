@@ -4,9 +4,8 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
--I${THERON_HOME}/Include
-#-I${BOOST_HOME}
-
+-I${THERON_HOME}/Include \
+-I${BOOST_HOME}
 #<boost/unordered_map.hpp>添加编译选项
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system -lxs
 

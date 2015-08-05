@@ -37,8 +37,8 @@ libcommon_a_SOURCES = \
 	hash.cpp 			hash.h \
 	hashtable.cpp 		hashtable.h \
 	ids.cpp 			ids.h \
-	rename.h			ErrorDefine.h \
-	ErrorNo.h			ErrorNo.cpp
+	rename.h			error_define.h \
+	errno.h			errno.cpp
 
 SUBDIRS = Block Schema types Expression
 DIST_SUBDIRS = Block Schema types Expression

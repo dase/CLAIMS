@@ -28,4 +28,4 @@ libcommon_a_SOURCES = \
 	TestNew.cpp 					TestTPC_schame.cpp \
 	insert_optimized_hash_table_test.h 		issue27.cpp \
 	issue27_sort.cpp 					issue27ing.cpp \
-	ErrorNoTest.h
+	error_test.h

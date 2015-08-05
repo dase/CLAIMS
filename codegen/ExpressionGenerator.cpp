@@ -1230,6 +1230,7 @@ void myllvm::test1(){
 
 	 	 func ret=(func)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(func__Z4funci);
 
+
 	 	 printf("f(%d)=%d\n",50,ret(50));
 
 }

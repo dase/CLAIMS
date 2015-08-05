@@ -30,7 +30,7 @@ CodeGenerator* CodeGenerator::getInstance() {
 	return instance_;
 }
 
- Module* CodeGenerator::getModule() const {
+const Module* CodeGenerator::getModule() const {
 	return module_;
 }
 

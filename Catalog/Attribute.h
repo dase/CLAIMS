@@ -68,7 +68,7 @@ struct Attribute
 			return false;
 	}
 
-	Attribute(int symbol=ATTRIBUTE_NULL):table_id_(symbol),index(-1),attrType(0),unique(false){
+	Attribute(unsigned symbol=ATTRIBUTE_NULL):table_id_(symbol),index(-1),attrType(0),unique(false){
 		switch(symbol){
 		case ATTRIBUTE_ANY:{
 			attrName="*";

@@ -1023,6 +1023,7 @@ TEST_F(CodeGenerationTest, LessCompare2) {
 	typedef int (*tmp_fuc)(int*, int*);
 	// another way to call llvm Function
 			tmp_fuc create_less = (tmp_fuc)CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(ff);
+
 	bool ret = create_less((int*)l_class, (int*)r_class);
 
 	delete l_class;

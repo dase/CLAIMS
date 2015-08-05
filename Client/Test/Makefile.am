@@ -18,7 +18,6 @@ LDADD = 	../../Catalog/libcatalog.a \
 		${THERON_HOME}/Lib/libtherond.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a
-		
 
 noinst_LIBRARIES=libtest.a
 

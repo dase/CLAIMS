@@ -18,6 +18,7 @@
 #include "ClientResponse.h"
 #include "../common/Logging.h"
 
+
 Client::Client() {
 	m_clientFd = -1;
 	connected_=false;

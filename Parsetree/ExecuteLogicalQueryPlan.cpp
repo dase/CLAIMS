@@ -44,6 +44,7 @@ const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
 
 timeval start_time;	//2014-5-4---add---by Yu
+
 void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd)
 {
 	Environment::getInstance(true);
@@ -546,7 +547,7 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 
 //	cout<<"the first attribute Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
+//	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
 	catalog->add_table(new_table);
 	//				TableID table_id=catalog->getTable(tablename)->get_table_id();
 

@@ -513,7 +513,6 @@ void* ExpandableBlockStreamExchangeEpoll::receiver(void* arg){
 							printf("\t Var:%5.4f\n",get_stddev(finish_times));
 						}
 
-
 						Pthis->logging_->log(
                 "[%ld] <<<<<<<<<<<<<<<<nexhausted_lowers=%d>>>>>>>>>>>>>>>>exchange=(%d,%d)",
                 Pthis->state.exchange_id_, Pthis->nexhausted_lowers,

@@ -171,6 +171,11 @@ bool HdfsLoader::insertRecords(){
 //		assert(false);
 		return false;
 	}
+	else if (s_record.length() > table_schema->getTupleMaxSize()) {
+	  //TODO(yukai):set errno and return errno
+	  cout << "this record is too long than defined in create statement"<<endl;
+//	  return false;
+	}
 	void *tuple_buffer = malloc(table_schema->getTupleMaxSize());		//newmalloc
 
 	//add the row_id column
@@ -272,6 +277,7 @@ bool HdfsLoader::load(double sample_rate){
 ///*for testing*/ if(row_id/t_count > 100000)
 ///*for testing*/		break;
 
+			//TODO(yukai): get the return value and handle it
 			insertRecords();
 		}
 		InFile.close();
