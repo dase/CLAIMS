@@ -41,3 +41,4 @@ Build
 include/
 .history
 !thirdparty/
+ar-lib
