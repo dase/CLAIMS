@@ -54,7 +54,7 @@ bool ThreadPool::Thread_Pool_init(int thread_count_in_pool_){
 }
 
 //TODO： 可以把f与a封装为一个类对象，比如Task，不同的任务可以继承Task，Task中有run函数，Task由智能指针管理销毁
-void ThreadPool::add_task(void (*f)(void *), void *a, bool e){
+void ThreadPool::add_task(void* (*f)(void *), void *a, bool e){
 	Task *t = new Task(f, a, e);
 	pthread_mutex_lock(&task_queue_lock);
 	task_queue_.push(t);

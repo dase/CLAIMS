@@ -19,7 +19,9 @@ LDADD = 	../LogicalQueryPlan/liblogicalqueryplan.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
-		${BOOST_HOME}/stage/lib/libboost_system.a
+		${BOOST_HOME}/stage/lib/libboost_serialization.so \
+		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${BOOST_HOME}/stage/lib/libboost_system.so
 
 noinst_LIBRARIES=liblogicalqueryplan.a
 liblogicalqueryplan_a_SOURCES = \

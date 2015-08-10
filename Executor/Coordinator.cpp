@@ -138,7 +138,7 @@ void* Coordinator::ListeningNewNode(void *arg) {
 		if ((socket_fd_new = accept(Cthis->socket_fd,
 				(struct sockaddr*) &remote_addr, &sin_size)) == -1) {
 			perror("accept errors!\n");
-			return false;
+			return 0;
 		}
 
 		Cthis->logging->log(

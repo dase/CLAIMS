@@ -60,8 +60,10 @@ public:
 	QNode(){};
 	virtual ~QNode()
 	{
-		if(value!=NULL)
+		if(value!=NULL) {
 			free(value);
+			value = NULL;
+		}
 	};
 private:
 	friend class boost::serialization::access;

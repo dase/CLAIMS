@@ -132,7 +132,7 @@ static int testBuffer(){
 //	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
 	int input=1;
 	while(input>0){
-		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(perf_top,"127.0.0.1");
+		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(perf_top,0);
 		printf("continue or not?\n");
 		scanf("%d",&input);
 	}

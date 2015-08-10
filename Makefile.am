@@ -1,15 +1,15 @@
-AM_CPPFLAGS=-fPIC -fpermissive -DTHERON_XS\
+AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include \
+-I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
--I${BOOST_HOME}/ \
 -I${GTEST_HOME}/include
 
 #-L/usr/local/lib \
 #-I/usr/local/include
-AM_LDFLAGS= -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -ldl -rdynamic 
+AM_LDFLAGS=  -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic 
 
 LDADD =  \
 	Test/libtest.a \
