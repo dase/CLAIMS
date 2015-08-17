@@ -15,7 +15,9 @@ LDADD = 	../../LogicalQueryPlan/liblogicalqueryplan.a \
 		../../common/libcommon.a \
 		../../utility/libutility.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so \
 		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${BOOST_HOME}/stage/lib/libboost_system.so \
 		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a

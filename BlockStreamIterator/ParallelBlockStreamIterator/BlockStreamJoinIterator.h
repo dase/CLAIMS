@@ -90,9 +90,9 @@ public:
 private:
 	thread_context* createContext();
 	static void isMatch(void* l_tuple_addr,
-			void* r_tuple_addr, void* return_addr,vector<int>& l_join_index, vector<int>& r_join_index, Schema* l_schema, Schema* r_schema,expr_func_two_tuples func);
+			void* r_tuple_addr, void* return_addr,vector<unsigned>& l_join_index, vector<unsigned>& r_join_index, Schema* l_schema, Schema* r_schema,expr_func_two_tuples func);
 	static void isMatchCodegen(void* l_tuple_addr,
-			void* r_tuple_addr, void* return_addr,vector<int>& l_join_index, vector<int>& r_join_index, Schema* l_schema, Schema* r_schema, expr_func_two_tuples func);
+			void* r_tuple_addr, void* return_addr,vector<unsigned>& l_join_index, vector<unsigned>& r_join_index, Schema* l_schema, Schema* r_schema, expr_func_two_tuples func);
 //	static void copy_to_hashtable(void* desc, void* src, Schema* );
 private:
 	State state_;

@@ -32,7 +32,7 @@ unsigned SchemaVar::getTupleActualSize(void* tuple) const{
 			ofs+=columns[i].get_length();
 		}
 		else{
-			ofs+=*(int *)(tuple+column_off*4);
+			ofs+=*(int *)((char*)tuple+column_off*4);
 			column_off++;
 		}
 	}

@@ -182,7 +182,8 @@ ExpanderID ExpanderTracker::registerNewExpander(MonitorableBuffer* buffer,Expand
 	ExpanderID expander_id;
 	lock_.acquire();
 	expander_id=IDsGenerator::getInstance()->getUniqueExpanderID();
-	expander_id_to_status_[expander_id]=new ExpanderStatus(expand_shrink);
+	ExpanderStatus* es = new ExpanderStatus(expand_shrink);
+	expander_id_to_status_[expander_id]= es;
 	expander_id_to_status_[expander_id]->addNewEndpoint(LocalStageEndPoint(stage_desc,"Expander",buffer));
 	expander_id_to_expand_shrink_[expander_id]=expand_shrink;
 	assert(expand_shrink!=0);

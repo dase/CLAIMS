@@ -47,7 +47,10 @@ public:
 
 	char* GetCurrent() const {
 		assert(cur_<length_);
-		return buffer_[cur_];
+		assert(false);//li
+		// the following line is not correct!
+//		return buffer_[cur_];  original line
+		return buffer_+cur_;
 	}
 
 	// get freed memory
