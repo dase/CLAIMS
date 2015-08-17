@@ -29,9 +29,9 @@ class ThreadPool
 private:
 	struct Task{
 		Task();
-		Task(void (*f)(void *), void *a, bool e):func(f),arg(a),end(e){}
+		Task(void* (*f)(void *), void *a, bool e):func(f),arg(a),end(e){}
 
-		void (*func)(void *arg);	// pointer to function
+		void* (*func)(void *arg);	// pointer to function
 		void *arg;						// the parameter of function
 		bool end;						// whether exit thread
 		static void destroy_task(Task *task){
@@ -51,7 +51,7 @@ public:
 	void bind_cpu();
 
 	//arg can't be a class, because delete void * won't execute destructor function
-	void add_task(void (*)(void *), void *arg, bool e = false);
+	void add_task(void* (*)(void *), void *arg, bool e = false);
 	static void destroy_pool(ThreadPool * tp);
 
 private:

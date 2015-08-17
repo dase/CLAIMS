@@ -563,7 +563,7 @@ static int parser_test(){
 			int c=1;
 			while(c==1){
 				timer_start=curtick();
-				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+				IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,0);//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 	//			executable_query_plan->close();
 	//
 	//			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;

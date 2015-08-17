@@ -12,7 +12,9 @@ LDADD = 	../BufferManager/libbuffermanager.a \
 		../common/libcommon.a \
 		../common/Block/libblock.a \
 		../utility/libutility.a \
-		${THERON_HOME}/Lib/libtherond.a
+		${THERON_HOME}/Lib/libtherond.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a
 
 noinst_LIBRARIES=libstorage.a
 libstorage_a_SOURCES = \

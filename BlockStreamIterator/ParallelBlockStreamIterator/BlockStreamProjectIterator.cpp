@@ -29,7 +29,7 @@ BlockStreamProjectIterator::State::State(Schema * input, Schema* output, BlockSt
 
 }
 bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
-	project_thread_context* ptc =createOrReuseContext(crm_core_sensitive);
+	project_thread_context* ptc =(project_thread_context*)createOrReuseContext(crm_core_sensitive);
 
 	bool ret=state_.child_->open(partition_offset);
 	setReturnStatus(ret);
