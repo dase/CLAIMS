@@ -43,8 +43,11 @@ struct PerformanceInfo{
 
 	unsigned long getBlockSumInAllSlices();
 	SpineLock lock_;
+	// store the number of processed block in nearly 10 time slices
+	// from	0 to NUMOFSLICES ---->  from old to new
 	unsigned *slices;
 	unsigned long long int init_ticks_;
+	// store entrys in different condition where degree of parallelism range from 0 to max_degree_of_parallelism
 	std::vector<entry> scalability_vector_;
 	ExpandabilityShrinkability* expand_shrink_;
 	/* the timestamp for the last update to the scalability vector */

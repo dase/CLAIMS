@@ -9,7 +9,7 @@
 
 int utf8_strlen(const std::string & str)
 {
-	char* s=str.c_str();
+	const char* s=str.c_str();
     int i, j;
     int len = 0;
     for(i = 0; s[i] != 0; i++){

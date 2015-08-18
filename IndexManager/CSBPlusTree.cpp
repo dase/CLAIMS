@@ -418,6 +418,11 @@ CSBPlusTree<T>::~CSBPlusTree() {
 	// TODO Auto-generated destructor stub
 	ClearTree();
 }
+template <>
+CSBPlusTree<int>::~CSBPlusTree() {
+	// TODO Auto-generated destructor stub
+	ClearTree();
+}
 
 //bulkload the CSB+-Tree index
 template <typename T>
@@ -1971,3 +1976,7 @@ void CSBPlusTree<T>::printDoubleLinkedList()
 	}
 	cout << endl;
 }
+static void cheek_the_compiler_for_CSBPlusTree(){
+	CSBPlusTree<int> a;
+}
+

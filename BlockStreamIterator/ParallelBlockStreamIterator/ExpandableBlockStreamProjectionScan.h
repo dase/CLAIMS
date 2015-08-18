@@ -31,13 +31,13 @@ struct input_dataset{
 	SpineLock lock;
 	bool atomicGet(assigned_data &target,unsigned number_of_block){
 		lock.acquire();
-		bool ret= !target.empty();
+		bool not_empty = !target.empty();
 		while(number_of_block--&&(!input_data_blocks.empty())){
 			target.push_back(input_data_blocks.front());
 			input_data_blocks.pop_front();
 		}
 		lock.release();
-		return ret;
+		return not_empty;
 	}
 	void atomicPut(assigned_data blocks){
 		lock.acquire();

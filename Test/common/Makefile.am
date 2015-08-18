@@ -27,4 +27,5 @@ noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES = \
 	TestNew.cpp 					TestTPC_schame.cpp \
 	insert_optimized_hash_table_test.h 		issue27.cpp \
-	issue27_sort.cpp 					issue27ing.cpp
+	issue27_sort.cpp 					issue27ing.cpp \
+	error_test.h
