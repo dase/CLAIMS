@@ -1777,16 +1777,16 @@ opt_expr_list:  expr_list {$$ = newExprList(t_expr_list, $1, NULL,result->node_p
    ;
 //set_operator
 
-expr: expr IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "INVS", NULL, 0, $1, $4,result->node_pointer); }
-   | '(' expr_list ')' IN '(' opt_expr_list ')'	{$$=newExprCal(t_expr_cal, "INVM", NULL, 0, $2, $6,result->node_pointer);}
-   | expr NOT IN '(' expr_list ')'			{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5,result->node_pointer); }
+expr: expr IN '(' expr_list ')'						{ $$=newExprCal(t_expr_cal, "INVS", NULL, 0, $1, $4,result->node_pointer); }
+   | '(' expr_list ')' IN '(' opt_expr_list ')'		{ $$=newExprCal(t_expr_cal, "INVM", NULL, 0, $2, $6,result->node_pointer);}
+   | expr NOT IN '(' expr_list ')'					{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5,result->node_pointer); }
    | '(' expr_list ')' NOT IN  '(' expr_list ')'	{ $$=newExprCal(t_expr_cal, "NINM", NULL, 0, $2, $7,result->node_pointer); }
-   | expr IN '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4,result->node_pointer); }
-   | '(' expr_list ')' IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $2, $6,result->node_pointer); }
-   | expr NOT IN '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5,result->node_pointer); }
+   | expr IN '(' select_stmt ')'					{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $1, $4,result->node_pointer); }
+   | '(' expr_list ')' IN '(' select_stmt ')'		{ $$=newExprCal(t_expr_cal, "INS", NULL, 0, $2, $6,result->node_pointer); }
+   | expr NOT IN '(' select_stmt ')'				{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $1, $5,result->node_pointer); }
    | '(' expr_list ')' NOT IN '(' select_stmt ')'	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, $2, $7,result->node_pointer); }
-   | EXISTS '(' select_stmt ')'			{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3,result->node_pointer); }
-   | NOT EXISTS '(' select_stmt ')'	%dprec 2	{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, NULL, $4,result->node_pointer); } 
+   | EXISTS '(' select_stmt ')'						{ $$=newExprCal(t_expr_cal, "EX", NULL, 0, NULL, $3,result->node_pointer); }
+   | NOT EXISTS '(' select_stmt ')'	%dprec 2		{ $$=newExprCal(t_expr_cal, "NINS", NULL, 0, NULL, $4,result->node_pointer); } 
    ;
 
 expr: NAME '(' opt_expr_list ')'	{ $$=newExprCal(t_expr_cal, "NAME", $1, 0, NULL, $3,result->node_pointer); }   

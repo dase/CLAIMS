@@ -1,5 +1,6 @@
 AC_INIT([Claims], [0.3], [imdb@ecnu])
 AM_INIT_AUTOMAKE([-Wall foreign])
+AM_PROG_AR
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O0 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
 CXXFLAGS=${CXXFLAGS="-g  -std=c++11"}
@@ -20,11 +21,13 @@ AC_CONFIG_FILES([
   common/Makefile 
   common/Block/Makefile 
   common/Expression/Makefile 
+  common/expression/Makefile
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
   common/types/Makefile 
   common/types/Test/Makefile 
   common/types/ttmath/Makefile 
+  common/log/Makefile
   Daemon/Makefile 
   Daemon/Test/Makefile 
   Executor/Makefile 
@@ -39,6 +42,10 @@ AC_CONFIG_FILES([
   Parsetree/Test/Makefile 
   Resource/Makefile 
   storage/Makefile 
+  sql_parser/Makefile
+  sql_parser/ast_node/Makefile
+  sql_parser/parser/Makefile
+  sql_parser/main/Makefile
   Test/Makefile
   Test/common/Makefile
   Test/TestSuit/Makefile
