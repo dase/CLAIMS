@@ -28,6 +28,8 @@ typedef struct FuncCallInfoData
 }*FuncCallInfo;
 typedef  void (*ExecFunc)(FuncCallInfo  fcinfo);
 typedef void* (*FuncCall)(Node *qinfo,void *tuple,Schema *schema);
+typedef void (*AvgDivide)(void *sum_value,unsigned long tuple_number,void *result);
+
 enum qnodetype
 {
 	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qexpr_case_when,t_qexpr_in,
@@ -82,8 +84,7 @@ public:
 	QExpr_unary(){};
 	virtual ~QExpr_unary()
 	{
-		if(next!=NULL)
-			next->~QNode();
+		delete next;
 	};
 	QExpr_unary(QNode * arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 	QExpr_unary(QExpr_unary *node);
@@ -104,10 +105,8 @@ public:
 	QExpr_binary(){};
 	virtual ~QExpr_binary()
 	{
-		if(lnext!=NULL)
-			lnext->~QNode();
-		if(rnext!=NULL)
-			rnext->~QNode();
+		delete lnext;
+		delete rnext;
 	};
 	QExpr_binary(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 	QExpr_binary(QExpr_binary *node);
@@ -128,12 +127,9 @@ public:
 	QExpr_ternary(){};
 	virtual ~QExpr_ternary()
 	{
-		if(next0!=NULL)
-			next0->~QNode();
-		if(next1!=NULL)
-			next1->~QNode();
-		if(next2!=NULL)
-			next2->~QNode();
+		delete next0;
+		delete next1;
+		delete next2;
 	};
 	QExpr_ternary(QNode *arg0,QNode *arg1,QNode *arg2,data_type a_type,oper_type op_types,qnodetype q_type,char *t_alias);
 	QExpr_ternary(QExpr_ternary *node);
@@ -174,7 +170,7 @@ class QExpr:public QNode//getconst
 {
 public:
 	string const_value;
-	QExpr(char *val,data_type r_type,char *t_alias);
+	QExpr(char *val,data_type a_type,char *t_alias);
 	QExpr(QExpr *node);
 	QExpr(){};
 	virtual ~QExpr(){};
@@ -198,15 +194,11 @@ public:
 	QExpr_case_when(){};
 	virtual ~QExpr_case_when()
 	{
-		for(int i=0;i<qual.size();i++)
-		{
-			if(qual[i]!=NULL)
-				qual[i]->~QNode();
+		for(int i=0;i<qual.size();i++) {
+		    delete qual[i];
 		}
-		for(int i=0;i<ans.size();i++)
-		{
-			if(ans[i]!=NULL)
-				ans[i]->~QNode();
+		for(int i=0;i<ans.size();i++) {
+		    delete ans[i];
 		}
 	};
 private:
@@ -229,19 +221,14 @@ public:
 	{
 		for(int i=0;i<cmpnode.size();i++)
 		{
-			if(cmpnode[i]!=NULL)
-				cmpnode[i]->~QNode();
+				delete cmpnode[i];
 		}
 		for(int i=0;i<rnode.size();i++)
 		{
-//			if(rnode[i]!=NULL)
-			{
-				for(int j=0;j<rnode[i].size();j++)
-				{
-					if(rnode[i][j]!=NULL)
-						rnode[i][j]->~QNode();
-				}
-			}
+            for(int j=0;j<rnode[i].size();j++)
+            {
+                delete rnode[i][j];
+            }
 		}
 	};
 private:
@@ -262,14 +249,8 @@ public:
 	QExpr_date_add_sub(){};
 	virtual ~QExpr_date_add_sub()
 	{
-		if(lnext!=NULL)
-		{
-			lnext->~QNode();
-		}
-		if(rnext!=NULL)
-		{
-			rnext->~QNode();
-		}
+		delete rnext;
+		delete rnext;
 	};
 	QExpr_date_add_sub(QNode *l_arg,QNode *r_arg,data_type a_type,oper_type op_types,qnodetype q_type,data_type rr_type,char *t_alias);
 	QExpr_date_add_sub(QExpr_date_add_sub *node);

@@ -17,11 +17,11 @@
 #include <boost/archive/text_oarchive.hpp>
 using namespace std;
 
-extern "C" int yylex();
-extern "C" int yyparse();
+//extern "C" int yylex();
+//extern "C" int yyparse();
 extern "C" void emit(char *s, ...);
-extern "C" void yyerror(const char *s, ...);
-extern int yylineno;
+//extern "C" void yyerror(const char *s, ...);
+//extern int yylineno;
 
 /*
  * enum data_type{
@@ -61,7 +61,14 @@ struct Node//基本节点
 {
 	nodetype type;
 };
-
+struct ParseResult
+{
+	void * yyscan_info_;
+	Node * ast;
+	const char * sql_clause;
+	int error_number;
+	vector<Node *>*node_pointer;
+};
 struct Stmt	//语句列表 2014-3-4---增加语句列表结构体---by余楷
 {
 	nodetype type;
@@ -94,8 +101,8 @@ struct Expr_list
 struct Columns//列
 {
 	nodetype type;
-	char * parameter1;
-	char *parameter2;
+	char * parameter1;//table name or alais
+	char *parameter2;//column name
 	Node * next;
 };
 
@@ -124,6 +131,7 @@ struct Table //table
 	nodetype type;
 	char * dbname,*tablename,*astablename;
 	int issubquery;
+	int table_id;
 	Node *subquery;
 	Node * whcdn;
 };
@@ -612,157 +620,146 @@ struct Show_stmt	//2014-5-4---add ---by Yu
 /******************DDL语句结束********************************************
 *************************************************************************/
 
-/******************函数声明***********************************************
-*************************************************************************/
 
 
-struct Node *newStmt(nodetype t, Node *list, Node *newNode);	// 2014-3-4---增加新建语句列表函数---by余楷
 
-struct Node* newExpr(nodetype t, char *data);
+struct Node *newStmt(nodetype t, Node *list, Node *newNode,vector<Node *> *allnode);	// 2014-3-4---增加新建语句列表函数---by余楷
 
-struct Node * newExprList(nodetype t, Node * data, Node * next);
+struct Node* newExpr(nodetype t, char *data,vector<Node *> *allnode);
+
+struct Node * newExprList(nodetype t, Node * data, Node * next,vector<Node *> *allnode);
 
 struct Node *newExprlistheader(nodetype type,Node * header,Node * tail);
 
-struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * next);
+struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * next,vector<Node *> *allnode);
 
-struct Node * newExprCal(nodetype type,const char * sign, char *parameter,
 
-int cmp, Node *lnext, Node *rnext);
+struct Node * newExprCal(nodetype type, char * sign, char *parameter,
+	int cmp, Node *lnext, Node *rnext,vector<Node *> *allnode);
 
 struct Node * newExprFunc(nodetype type, char * funname, Node *args,
-	Node * parameter1, Node *parameter2, Node *next);
+	Node * parameter1, Node *parameter2, Node *next,vector<Node *> *allnode);
 
 struct Node * newTable(nodetype type, char * dbname, char *tablename,
-	char *astablename, int issubquery, Node *subquery);
+	char *astablename, int issubquery, Node *subquery,vector<Node *> *allnode);
 
-struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node *condition);
+struct Node * newJoin(nodetype type, int jointype,Node *lnext, Node *rnext, Node *condition,vector<Node *> *allnode);
 
-struct Node * newCondition(nodetype type, int conditiontype, Node * args);
+struct Node * newCondition(nodetype type, int conditiontype, Node * args,vector<Node *> *allnode);
 
-struct Node * newSubquery(nodetype type, char * querystring, Node *next);
+struct Node * newSubquery(nodetype type, char * querystring, Node *next,vector<Node *> *allnode);
 
 struct Node * newQueryStmt(nodetype t, char * querystring, int select_opts,
 	Node *select_list, Node *from_list, Node *where_list, Node *groupby_list,
-	Node *having_list, Node *orderby_list, Node *limit_list, Node *into_list);
+	Node *having_list, Node *orderby_list, Node *limit_list, Node *into_list,vector<Node *> *allnode);
 
-struct Node * newSelectList(nodetype type,int isall,Node * args,Node *next);
+struct Node * newSelectList(nodetype type,int isall,Node * args,Node *next,vector<Node *> *allnode);
 
-struct Node * newSelectExpr(nodetype type, char *ascolname, Node * colname);
+struct Node * newSelectExpr(nodetype type, char *ascolname, Node * colname,vector<Node *> *allnode);
 
-struct Node *  newFromList(nodetype type, Node * args, Node *next);
+struct Node *  newFromList(nodetype type, Node * args, Node *next,vector<Node *> *allnode);
 
-struct Node * newFromExpr( nodetype type, char * astablename, Node *next);
+struct Node * newFromExpr( nodetype type, char * astablename, Node *next,vector<Node *> *allnode);
 
-struct Node * newWhereList(nodetype type, char * wherestring, Node *next);
+struct Node * newWhereList(nodetype type, char * wherestring, Node *next,vector<Node *> *allnode);
 
-struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, int with_rollup);
+struct Node * newGroupbyList(nodetype type, char * groupbystring, Node *next, int with_rollup,vector<Node *> *allnode);
 
-struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next);
+struct Node * newGroupbyExpr(nodetype type, Node *args, int sorttype, Node *next,vector<Node *> *allnode);
 
-struct Node * newHavingList(nodetype type, char * havingstring, Node *next);
+struct Node * newHavingList(nodetype type, char * havingstring, Node *next,vector<Node *> *allnode);
 
-struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next);
+struct Node * newOrderbyList(nodetype type,char * orderbystring, Node *next,vector<Node *> *allnode);
 
-struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *next);
+struct Node * newOrderbyExpr(nodetype type, Node *args, char * sorttype, Node *next,vector<Node *> *allnode);
 
-struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count);
+struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count,vector<Node *> *allnode);
 
 
-//2014-4-17---add---by Yu
 Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
-		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt);
+		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt,vector<Node *> *allnode);
 
-//2014-4-17---add---by Yu
-Node* newInsertValueList(Node *insert_vals, Node *next);
+Node* newInsertValueList(Node *insert_vals, Node *next,vector<Node *> *allnode);
 
-//2014-4-17---add---by Yu
-Node* newInsertVals(int value_type, Node *expr, Node *next);
+Node* newInsertVals(int value_type, Node *expr, Node *next,vector<Node *> *allnode);
 
-//2014-4-17---add---by Yu
-Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next);
+Node* newInsertAssignList(char *col_name, int value_type, Node *expr, Node *next,vector<Node *> *allnode);
 
-/*******　DDL语句  *****/
-struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, char * name);
+/*******　DDL clause *****/
+struct Node * newCreateDatabaseStmt(nodetype type, int create_type, int check, char * name,vector<Node *> *allnode);
 
 struct Node * newCreateTableStmt( nodetype type, int create_type,
-		int check, char * name1, char * name2, Node * list, Node * select_stmt);
+		int check, char * name1, char * name2, Node * list, Node * select_stmt,vector<Node *> *allnode);
 
-struct Node * newCreateColList(nodetype type, Node * data, Node * next);
+struct Node * newCreateColList(nodetype type, Node * data, Node * next,vector<Node *> *allnode);
 
 struct Node * newCreateDef(nodetype type, int deftype, char * name,
-		Node * datatype, Node * col_atts, Node * col_list);	// 2-18---增加name属性---by余楷
+		Node * datatype, Node * col_atts, Node * col_list,vector<Node *> *allnode);	// 2-18---增加name属性---by余楷
 
 struct Node * newColumnAtts(nodetype type, int datatype,
-		int num1, double num2, char *s, Node * col_list);
+		int num1, double num2, char *s, Node * col_list,vector<Node *> *allnode);
 
-// 2014-2-24---增加该结构体---by余楷
 struct Node *newCreateProjectionStmt(nodetype type, char *tablename,
-		Node *column_list, int partition_num, char *partition_attribute_name);
+		Node *column_list, int partition_num, char *partition_attribute_name,vector<Node *> *allnode);
 
-struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt);
+struct Node * newAlterDatabaseStmt(nodetype type, int createtype, char * name, Node* opt,vector<Node *> *allnode);
 
-struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2);
+struct Node * newOptCsc(nodetype type, int datatype, char * s1, char * s2,vector<Node *> *allnode);
 
-struct Node * newAlterTableStmt(nodetype type, int isignore, char * name, Node * parameter);
+struct Node * newAlterTableStmt(nodetype type, int isignore, char * name, Node * parameter,vector<Node *> *allnode);
 
 struct Node * newAlterDef (nodetype type, int altertype, char * name1,
-		char * name2, int datatype, int coltype, Node * parameter, Node * next);
+		char * name2, int datatype, int coltype, Node * parameter, Node * next,vector<Node *> *allnode);
 
-struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int temporary, Node * select_stmt);
+struct Node * newCreateSelectStmt(nodetype type, int ignore_replace, int temporary, Node * select_stmt,vector<Node *> *allnode);
 
 struct Node * newDatatype (nodetype type, int datatype, Node* length,
-		int opt_uz, Node * opt_csc, int isbinary, Node * enum_list);
+		int opt_uz, Node * opt_csc, int isbinary, Node * enum_list,vector<Node *> *allnode);
 
-struct Node * newLength (nodetype type, int data1, int data2);
+struct Node * newLength (nodetype type, int data1, int data2,vector<Node *> *allnode);
 
-struct Node * newEnumList (nodetype type, char * s, Node * next);
+struct Node * newEnumList (nodetype type, char * s, Node * next,vector<Node *> *allnode);
 
-struct Node * newDoStmt(nodetype type, Node * data);
+struct Node * newDoStmt(nodetype type, Node * data,vector<Node *> *allnode);
 
-struct Node * newTruncateStmt(nodetype type, char * name);
+struct Node * newTruncateStmt(nodetype type, char * name,vector<Node *> *allnode);
 
-// 2014-3-24---增加---by Yu
-struct Node* newIndexColList(nodetype type, char * name, Node* length, int asc_desc, Node * next);
+struct Node* newIndexColList(nodetype type, char * name, Node* length, int asc_desc, Node * next,vector<Node *> *allnode);
 
-// 2014-3-24---增加---by Yu
-struct Node* newCreateIndex(nodetype type, int index_att, char* index_name, int index_type, char* table_name, Node* index_col_name);
+struct Node* newCreateIndex(nodetype type, int index_att, char* index_name, int index_type, char* table_name, Node* index_col_name,vector<Node *> *allnode);
 
-// 2014-3-24---增加---by Yu
-struct Node* newDropIndex(nodetype type, char* index_name, char* table_name);
+struct Node* newDropIndex(nodetype type, char* index_name, char* table_name,vector<Node *> *allnode);
 
-// 2014-3-24---增加---by Yu
-struct Node* newDropDatabase(nodetype type, int drop_type, int check, char* name);
+struct Node* newDropDatabase(nodetype type, int drop_type, int check, char* name,vector<Node *> *allnode);
 
-// 2014-3-24---增加---by Yu
-struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, Node * table_list);
+struct Node* newDropTable(nodetype type, int is_temp, int is_check, int opt_rc, Node * table_list,vector<Node *> *allnode);
 
-// 2014-3-24---增加---by Yu
-struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next);
+struct Node* newTableList(nodetype type, char * name1, char * name2, Node * next,vector<Node *> *allnode);
 
-// 2014-3-27---增加---by Yu
+
 struct Node* newLoadTable(nodetype type,
 		char *table_name,
 		Node *path,
 		char *column_separator,
 		char *tuple_separator,
 		double sample,
-		int mode);
+		int mode,
+		vector<Node *> *allnode);
 
-Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string);	//2014-5-4---add ---by Yu
+Node *newShowStmt(int show_type, bool full, char *database_name, char *like_string,vector<Node *> *allnode);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-inline void insertNodePointer(Node * a);	// 2014-3-7---增加将节点指针存入指针数组的函数---by余楷
+inline void insertNodePointer(Node * a,vector<Node *> *allnode);
 
-void FreeAllNode();		// 2014-3-6---增加释放所有节点函数---by余楷
+void FreeAllNode(vector<Node *> *allnode);
 
 void output(Node * n, int floor);
 
 void outputSpace(int f);
 
-void GetCorrectString(char *dest, const char *src);	// 2014-4-2---增加该函数---by Yu
+void GetCorrectString(char *dest, const char *src);
 
 
 int judgepos(struct Node *args,set<string>*st);
@@ -775,8 +772,10 @@ void solvewc(struct Node * wcexpr,struct Node *fromlist);
 
 void departwc(struct Node *  wherecondition,struct Node * fromlist);
 
-bool semantic_analysis(Node *parsetree,bool issubquery);//---3.22fzh--
+bool semantic_analysis(Node *parsetree,bool issubquery);
 
-int solve_join_condition(Node * fromnode);//---3.22fzh---
-void preprocess(Node *node);//---5.23fzh---
+int solve_join_condition(Node * fromnode);
+void preprocess(Node *node);
+
+//Node * getparsetreeroot(const char * InputStr);
 #endif /* NODES_H_ */

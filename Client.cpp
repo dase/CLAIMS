@@ -117,6 +117,7 @@ int main(int argc, char** argv){
 
 		submit_command(client,command);
 
+
 		/*
 		 * the following command execute the query for a given time and p
 		 * rint the averaged query response time.*/

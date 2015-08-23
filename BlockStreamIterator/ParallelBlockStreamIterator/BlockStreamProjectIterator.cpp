@@ -41,7 +41,8 @@ bool BlockStreamProjectIterator::open(const PartitionOffset& partition_offset){
  * now the expressions computing speed is slow because of the copy between among the expressions
  * todo: seek the pointer of data and LLVM will be solved by wangli.
  * */
-bool BlockStreamProjectIterator::next(BlockStreamBase *block){
+bool BlockStreamProjectIterator::next(BlockStreamBase *block)
+{
 	unsigned total_length_=state_.output_->getTupleMaxSize();
 
 	void* tuple_from_child;
@@ -64,6 +65,7 @@ bool BlockStreamProjectIterator::next(BlockStreamBase *block){
 					return false;
 				}
 			}
+
 		}
 		process_logic(block,tc);
 		/* there are totally two reasons for the end of the while loop.
@@ -144,8 +146,9 @@ void BlockStreamProjectIterator::print()
 	{
 		printf("	%s\n",state_.exprTree_[i]->alias.c_str());
 	}
-	state_.child_->print();
-
+	if(state_.child_!=NULL) {
+        state_.child_->print();
+	}
 }
 
 void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,

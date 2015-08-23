@@ -92,8 +92,8 @@ test_SOURCES = Test/gtest_main.cpp\
 
 SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
-storage Test utility codegen
+storage Test utility codegen sql_parser
 
 DIST_SUBDIRS = BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
-storage Test utility codegen
+storage Test utility codegen sql_parser

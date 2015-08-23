@@ -20,6 +20,7 @@ string gete(){
 	char *p=getenv("CLAIMS_HOME");
 	stringstream sp;
 	sp<<string(p).c_str()<<"/conf/config";
+	//sp<<"/home/imdb/config/fzh/config";
 	return sp.str();
 //	return "/home/imdb/config/wangli/config";
 }
