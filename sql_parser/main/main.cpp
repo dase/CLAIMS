@@ -2,7 +2,10 @@
 #include <string>
 #include <stdio.h>
 #include "../../common/log/logging.h"
+#include "../parser/parser.h"
+
 using namespace claims::common;
+
 int main(int argc, char* argv[]) {
   Logging my_glog(argv[0]);
   int flag = 1;

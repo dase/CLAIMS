@@ -8,11 +8,12 @@
 #include <stdio.h>
 #include <string>
 
-#include "../../sql_parser/parser/sql.lex.h"
-#include "../../sql_parser/parser/sql.tab.hpp"
-#include "parser.h"
+#include "./sql.tab.hpp"
+#include "./sql.lex.h"
+#include "./parser.h"
 
 #include "../ast_node/ast_node.h"
+
 extern int yyparse(struct ParseResult* result);
 using namespace std;
 Parser::Parser() {

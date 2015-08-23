@@ -10,8 +10,8 @@ bin_PROGRAMS = parser
 parser_SOURCES = main.cpp			
 
 parser_LDADD =       \
-				../parser/lib_parser.a	 \
-				../astnode/lib_astnode.a	\
+				../parser/libparser.a	 \
+				../ast_node/libast_node.a	\
 				../../common/log/lib_logging.a		\
 				/usr/local/lib/libglog.a	\
 				/usr/local/lib/libglog.so	
