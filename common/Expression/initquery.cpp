@@ -464,9 +464,14 @@ QNode * transformqual(Node *node,LogicalOperator* child)
 		case t_intnum:
 		{
 			Expr * exprval=(Expr *)node;
-			QExpr *qexpr=new QExpr(exprval->data,t_int,exprval->data);
+			QExpr *qexpr = NULL;
+			long temp = atol(exprval->data);
+			if (temp < INT_MAX) {
+			  qexpr=new QExpr(exprval->data,t_int,exprval->data);
+			} else {
+			  qexpr=new QExpr(exprval->data, t_u_long, exprval->data);
+			}
 			return qexpr;
-
 		}break;
 		case t_approxnum:
 		{

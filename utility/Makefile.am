@@ -2,6 +2,11 @@ AM_CPPFLAGS= -fPIC -fpermissive
 
 AM_LDFLAGS=-lc -lm -lrt -lxs 
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = ../common/Schema/libschema.a 
 
 

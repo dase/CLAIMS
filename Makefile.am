@@ -9,7 +9,13 @@ AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 
 #-L/usr/local/lib \
 #-I/usr/local/include
-AM_LDFLAGS=  -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system -lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic 
+AM_LDFLAGS=  -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system \
+	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic
+
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
 
 LDADD =  \
 	Test/libtest.a \
@@ -48,7 +54,7 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-      codegen/libcodegen.a\
+    codegen/libcodegen.a\
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -58,9 +64,11 @@ LDADD =  \
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 	${THERON_HOME}/Lib/libtherond.a \
 	${GTEST_HOME}/libgtest.a \
-	-lLLVMJIT -lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter -lLLVMMCParser -lLLVMCodeGen -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils -lLLVMipa -lLLVMAnalysis -lLLVMX86Desc -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMMCJIT -lLLVMTarget -lLLVMRuntimeDyld -lLLVMExecutionEngine -lLLVMMC -lLLVMObject -lLLVMBitReader -lLLVMCore -lLLVMSupport -lLLVMMCParser
-
-
+	-lLLVMJIT -lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter \
+	-lLLVMMCParser -lLLVMCodeGen -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils -lLLVMipa -lLLVMAnalysis \
+	-lLLVMX86Desc -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMMCJIT -lLLVMTarget -lLLVMRuntimeDyld \
+	-lLLVMExecutionEngine -lLLVMMC -lLLVMObject -lLLVMBitReader -lLLVMCore -lLLVMSupport -lLLVMMCParser 
+	
 
  
 include_HEADERS = Config.h \

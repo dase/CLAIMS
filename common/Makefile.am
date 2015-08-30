@@ -6,6 +6,11 @@ AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
 		../BlockStreamIterator/libblockstreamiterator.a \
 		../storage/libstorage.a \
