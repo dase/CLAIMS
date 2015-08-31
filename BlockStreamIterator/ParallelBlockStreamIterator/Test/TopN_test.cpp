@@ -136,7 +136,8 @@ static int test_TopN(){
 	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
 	int input=1;
 	while(input>0){
-		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
+		IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,0);
+		//IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
 		printf("continue or not?\n");
 		scanf("%d",&input);
 	}

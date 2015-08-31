@@ -152,6 +152,8 @@ void *Exec_date_add_sub(Node *cinfo,void *tuple,Schema *schema)
 	cal->function_call(&finfo);
 	return cal->type_cast_func(finfo.results,cal->value);
 }
+
+// deep copy with operator new
 void Expr_copy(QNode *node,QNode *&new_node)
 {
 	switch(node->type)

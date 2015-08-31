@@ -152,7 +152,7 @@ static int in_test(){
 		while(c==1){
 			timer_start=curtick();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(root1->getIteratorTree(1024*64-sizeof(unsigned)),"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");//						executable_query_plan->open();//			while(executable_query_plan->next(0));
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,0);//						executable_query_plan->open();//			while(executable_query_plan->next(0));
 //			executable_query_plan->close();
 //
 //			cout<<"Terminal(0) or continue(others)?"<<endl<<flush;

@@ -17,6 +17,11 @@
 #include "../common/Message.h"
 class AdaptiveEndPoint:public Theron::EndPoint {
 public:
+	/*
+	 * According to ip/port of Coordinator read from config, connect to Coordinator by socket
+	 * then exchange my EndPoint port and Coordinator's EndPoint port.
+	 * Connect to Coordinator with Theron depend on two port.
+	 */
 	AdaptiveEndPoint(const char* name, std::string ip, std::string port);
 
 	virtual ~AdaptiveEndPoint();

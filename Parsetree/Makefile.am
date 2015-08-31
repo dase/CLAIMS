@@ -15,7 +15,11 @@ LDADD = ../Catalog/libcatalog.a \
 		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../common/libcommon.a \
 		../common/Expression/libexpression.a \
-		../utility/libutility.a
+		../utility/libutility.a \
+		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${BOOST_HOME}/stage/lib/libboost_system.so \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a
 
 noinst_LIBRARIES=libparsetree.a
 

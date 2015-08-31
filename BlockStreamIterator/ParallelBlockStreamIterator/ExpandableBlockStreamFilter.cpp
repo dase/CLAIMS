@@ -48,7 +48,8 @@ ExpandableBlockStreamFilter::State::State(Schema* schema,
 }
 bool ExpandableBlockStreamFilter::open(const PartitionOffset& part_off) {
 
-	filter_thread_context* ftc=createOrReuseContext(crm_core_sensitive);
+	RegisterExpandedThreadToAllBarriers();
+	filter_thread_context* ftc=(filter_thread_context*)createOrReuseContext(crm_core_sensitive);
 
 	if (tryEntryIntoSerializedSection()) {
 		if(Config::enable_codegen){

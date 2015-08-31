@@ -110,7 +110,8 @@ struct Expr_cal//计算表达式,二元表达式
 {
 	nodetype type;
 	char * str;//5.23---by fzh---
-	char * sign,*parameter;
+	const char * sign;
+	char *parameter;
 	int cmp;
 	Node *lnext,*rnext;
 };
@@ -634,6 +635,7 @@ struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * 
 
 struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 	int cmp, Node *lnext, Node *rnext,vector<Node *> *allnode);
+
 
 struct Node * newExprFunc(nodetype type, char * funname, Node *args,
 	Node * parameter1, Node *parameter2, Node *next,vector<Node *> *allnode);

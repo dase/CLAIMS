@@ -120,7 +120,7 @@ public:
 		}
 
 		inline void increase_cur_(){
-			if (cur+tuplesize < free){
+			if ((char*)cur+tuplesize < free){
 				cur = ((char*)cur) + tuplesize;
 			}
 			else if (next != 0){

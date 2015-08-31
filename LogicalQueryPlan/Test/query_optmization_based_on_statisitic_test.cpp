@@ -507,7 +507,7 @@ static int query_optimization_based_on_statistics_join(){
 			//
 			//			please->print();
 			//
-			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,"127.0.0.1");//
+			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(please,1);//
 
 
 

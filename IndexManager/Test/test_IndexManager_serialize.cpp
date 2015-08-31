@@ -200,7 +200,7 @@ static void test_scan_filter_performance(int value)
 		printf("\tExpected:26695 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
+	delete executable_query_plan;
 	root->~LogicalOperator();
 }
 
@@ -236,7 +236,7 @@ static void test_index_filter_performance(int value_high)
 //	ResultSet* result_set = executable_query_plan->getResultSet();
 
 	const unsigned long int number_of_tuples = executable_query_plan->getNumberOfTuples();
-	executable_query_plan->~BlockStreamIteratorBase();
+	delete executable_query_plan;
 	root->~LogicalOperator();
 //	cout << "Sec_code: " << value_low << "\t Result: " << number_of_tuples << endl;
 	printf("execution time: %4.4f seconds.\n",getSecond(start));

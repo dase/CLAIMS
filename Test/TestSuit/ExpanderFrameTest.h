@@ -44,8 +44,8 @@ static int test_scan(){
 		printf("\tExpected:3966020 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -87,8 +87,8 @@ static int test_scan_filter_high_selectivity(){
 		printf("\tExpected:3651348 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -129,8 +129,8 @@ static int test_scan_filter_low_selectivity(){
 		printf("\tExpected:26695 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -266,8 +266,8 @@ static int test_scan_filter_Aggregation(){
 	if(!print_test_name_result(number_of_tuples==870,"Filtered Aggregation")){
 		printf("\tExpected:870 actual: %d\n",number_of_tuples);
 	}
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -315,14 +315,14 @@ static int test_scan_filter_Scalar_Aggregation(){
 	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
 
 	const unsigned long int number_of_tuples=*(unsigned long*)b_it->currentTuple();
-	b_it->~BlockStreamTraverseIterator();
+	delete b_it;
 
 	if(!print_test_name_result(number_of_tuples==3651348,"Filtered Scalar Aggregation")){
 		printf("\tExpected:3651348 actual: %d\n",number_of_tuples);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -378,8 +378,8 @@ static int test_no_repartition_filtered_join(){
 		printf("\tExpected:15 actual: %d\n",number_of_tuples);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -431,8 +431,8 @@ static int test_complete_repartition_filtered_join(){
 		printf("\tExpected:27012 actual: %d\n",number_of_tuples);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -472,8 +472,8 @@ static int test_complete_repartition_scan_join(){
 //		assert(false);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -506,8 +506,8 @@ static int test_no_repartition_scan_join(){
 //	result_set->print();
 	printf("%4.4f seconds\n",result_set->query_time_);
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -783,8 +783,8 @@ static int test_multiple_scan(){
 		printf("\tExpected:15882988 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -821,8 +821,8 @@ static int test_multiple_scan_filter_high_selectivity(){
 		printf("\tExpected:14623495 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -859,8 +859,8 @@ static int test_multiple_scan_filter_low_selectivity(){
 		printf("\tExpected:104010 actual: %d\n",number_of_tuples);
 	}
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -912,8 +912,8 @@ static int test_multiple_scan_filter_Aggregation(){
 	if(!print_test_name_result(number_of_tuples==3480,"Filtered Aggregation")){
 		printf("\tExpected:3480 actual: %d\n",number_of_tuples);
 	}
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -963,14 +963,14 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
 
 	const unsigned long int number_of_tuples=*(unsigned long*)b_it->currentTuple();
-	b_it->~BlockStreamTraverseIterator();
+	delete b_it;
 
 	if(!print_test_name_result(number_of_tuples==14623495,"Filtered Scalar Aggregation")){
 		printf("\tExpected:14623495 actual: %d\n",number_of_tuples);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -1026,8 +1026,8 @@ static int test_multiple_no_repartition_filtered_join(){
 		printf("\tExpected:278 actual: %d\n",number_of_tuples);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -1081,8 +1081,8 @@ static int test_multiple_complete_repartition_filtered_join(){
 		printf("\tExpected:105480 actual: %d\n",number_of_tuples);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -1120,8 +1120,8 @@ static int test_multiple_complete_repartition_scan_join(){
 //		assert(false);
 	}
 	printf("%4.4f seconds\n",result_set->query_time_);
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -1157,8 +1157,8 @@ static int test_multiple_no_repartition_scan_join(){
 //	result_set->print();
 	printf("%4.4f seconds\n",result_set->query_time_);
 //	result_set->~ResultSet();
-	executable_query_plan->~BlockStreamIteratorBase();
-	root->~LogicalOperator();
+	delete executable_query_plan;
+	delete root;
 
 	return 1;
 
@@ -1206,6 +1206,6 @@ static int test_multiple_expanderFramework_single_node(int repeated_times=20){
 	printf("Press any key to continue;\n");
 	int i;
 	scanf("%d",&i);
-	Environment::getInstance()->~Environment();
+	delete Environment::getInstance();
 //
 }

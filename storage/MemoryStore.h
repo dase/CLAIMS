@@ -38,7 +38,7 @@ using boost::pool;
  * 是catalog来管理的，所以这个地方只是负责存取，知道那些信息也没用，那
  * 些信息是做优化的
  * */
-struct HdfsBlock{
+typedef struct HdfsBlock{
 //	/*可以直接使用hdfs的blockid*/
 //	unsigned blockId;
 	HdfsBlock():hook(0),length(0){}
@@ -48,9 +48,9 @@ struct HdfsBlock{
 	/*记录每个block大小也就是文件长度*/
 	int length;
 	// 是否被序列化过
-};
+}HdfsInMemoryChunk;
 
-typedef HdfsBlock HdfsInMemoryChunk;
+//typedef HdfsBlock HdfsInMemoryChunk;
 
 /*
  * memorystore只是负责数据的存取，而和数据的管理和为什么存储是没有关系的，
