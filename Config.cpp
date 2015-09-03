@@ -7,10 +7,10 @@
 
 #include "Config.h"
 #include "Debug.h"
+#include <stdlib.h>
 #include <libconfig.h++>
 #include <iosfwd>
 #include <iostream>
-#include <stdlib.h>
 #include <string>
 #include <sstream>
 using namespace std;
@@ -101,7 +101,6 @@ Config::~Config() {
 }
 
 void Config::initialize() {
-
   if (config_file.empty()) config_file = gete().c_str();
 
   /**

@@ -39,12 +39,13 @@
 
 #define ERROR 	0
 #define OK 		1
-#define SCHEMA	2
+#define SCHEMASS	2
 #define HEADER	3
 #define DATA	4
-#define END		5
+#define ENDED		5
+#define CHANGEDD 6
+
 struct ColumnHeader {
-#define CHANGE 6
 	std::vector<std::string> header_list;
 	void add_header(std::string name) {
 		header_list.push_back(name);
@@ -73,7 +74,7 @@ struct ClientResponse {
 		case OK:
 			return "OK";
 			break;
-		case SCHEMA:
+		case SCHEMASS:
 			return "Schema";
 			break;
 		case HEADER:
@@ -82,7 +83,7 @@ struct ClientResponse {
 		case DATA:
 			return "Data";
 			break;
-		case END:
+		case ENDED:
 			return "End";
 			break;
 		}
@@ -99,14 +100,14 @@ struct ClientResponse {
 		return content;
 	}
 	void setEnd(double query_time) {
-		status = END;
+		status = ENDED;
 		std::ostringstream str;
 		str<<query_time;
 		length = str.str().size();
 		content =str.str();
 	}
 	std::string getEndInfo() const {
-		assert(status==END);
+		assert(status==ENDED);
 		return content;
 	}
 
@@ -132,11 +133,11 @@ struct ClientResponse {
 		oa << schema;
 		ostr.flush();
 		content = serial_str;
-		status = SCHEMA;
+		status = SCHEMASS;
 		length = serial_str.length();
 	}
 	Schema* getSchema() const {
-		assert(status==SCHEMA);
+		assert(status==SCHEMASS);
 		boost::iostreams::basic_array_source<char> device(content.data(),
 				content.size());
 		boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(
@@ -235,13 +236,13 @@ struct ClientResponse {
 	}
 
 	void setChange(std::string info) {
-		status = CHANGE;
+		status = CHANGEDD;
 		length = info.length();
 		content = info;
 	}
 
 	std::string getChange() const {
-		assert(status == CHANGE);
+		assert(status == CHANGEDD);
 		return content;
 	}
 };

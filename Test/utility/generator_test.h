@@ -15,7 +15,7 @@
 #include "../../utility/generator.h"
 #include "../../Debug.h"
 
-TEST(GENERATOR,SCHEMA){
+TEST(GENERATOR,SCHEMASS){
 	std::vector<column_type> columns;
 	columns.push_back(column_type(t_int));
 	columns.push_back(column_type(t_float));
