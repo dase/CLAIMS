@@ -643,6 +643,7 @@ void InitExprAtPhysicalPlan(QNode *node)
 		{
 			QExpr_binary * cmpnode=(QExpr_binary *)(node);
 			cmpnode->FuncId=Exec_cmp;
+			cmpnode->actual_type=t_boolean;//
 			InitExprAtPhysicalPlan(cmpnode->lnext);
 			InitExprAtPhysicalPlan(cmpnode->rnext);
 			cmpnode->function_call=ExectorFunction::operator_function[cmpnode->actual_type][cmpnode->op_type];

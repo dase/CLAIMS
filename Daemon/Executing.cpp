@@ -6,6 +6,11 @@
  */
 
 #include "Executing.h"
+#include "../Parsetree/runparsetree.h"
+#include <iosfwd>
+#include "../Parsetree/sql_node_struct.h"
+
+//using std::string;
 Executing::Executing() {
 	// TODO Auto-generated constructor stub
 

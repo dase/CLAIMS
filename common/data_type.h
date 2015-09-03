@@ -58,7 +58,7 @@ static NValue nvalue_null=NValue::getDecimalValueFromString("9999999999999999999
 #define byte_align(size) (((size-1)/allign_bytes+1)*allign_bytes)
 
 template<typename T>
-inline void ADD(void* target, void* increment)
+inline void ADD_FUNC(void* target, void* increment)
 {
 	*(T*)target+=*(T*)increment;
 }
@@ -68,27 +68,27 @@ inline void MULTIPLE(void *target,void *increment)
 	(*(T*)target)=(*(T*)target)*(*(T*)increment);
 }
 template<>
-inline void ADD<char*>(void* target, void* increment)
+inline void ADD_FUNC<char*>(void* target, void* increment)
 {
 }
 
 template<>
-inline void ADD<NValue*>(void* target, void* increment)
+inline void ADD_FUNC<NValue*>(void* target, void* increment)
 {
 	*(NValue*)target = ((NValue*)target)->op_add(*(NValue*)increment);
 }
 template<>
-inline void ADD<date*>(void* target, void* increment)
+inline void ADD_FUNC<date*>(void* target, void* increment)
 {
 	*(date*)target = *(date*)target + *(date_duration*)increment;
 }
 template<>
-inline void ADD<ptime*>(void* target, void* increment)
+inline void ADD_FUNC<ptime*>(void* target, void* increment)
 {
 	*(ptime*)target = *(ptime*)target + *(time_duration*)increment;
 }
 template<>
-inline void ADD<time_duration*>(void* target, void* increment)
+inline void ADD_FUNC<time_duration*>(void* target, void* increment)
 {
 	*(time_duration*)target = *(time_duration*)target + *(time_duration*)increment;
 }
@@ -268,7 +268,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<int>(target,increment);
+		ADD_FUNC<int>(target,increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -276,7 +276,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<int>;
+		return ADD_FUNC<int>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -368,7 +368,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<float>(target, increment);
+		ADD_FUNC<float>(target, increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -376,7 +376,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<float>;
+		return ADD_FUNC<float>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -466,7 +466,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<double>(target, increment);
+		ADD_FUNC<double>(target, increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -474,7 +474,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<double>;
+		return ADD_FUNC<double>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -564,7 +564,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<unsigned long>(target, increment);
+		ADD_FUNC<unsigned long>(target, increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -572,7 +572,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<unsigned long>;
+		return ADD_FUNC<unsigned long>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -673,7 +673,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<char*>;
+		return ADD_FUNC<char*>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -785,7 +785,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<date*>(target, increment);
+		ADD_FUNC<date*>(target, increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -794,7 +794,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<date*>;
+		return ADD_FUNC<date*>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -887,7 +887,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<time_duration*>(target, increment);
+		ADD_FUNC<time_duration*>(target, increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -896,7 +896,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<time_duration*>;
+		return ADD_FUNC<time_duration*>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -989,7 +989,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<ptime*>(target, increment);
+		ADD_FUNC<ptime*>(target, increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -998,7 +998,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<ptime*>;
+		return ADD_FUNC<ptime*>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -1093,7 +1093,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<short>(target,increment);
+		ADD_FUNC<short>(target,increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -1101,7 +1101,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<short>;
+		return ADD_FUNC<short>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -1187,7 +1187,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<unsigned short>(target,increment);
+		ADD_FUNC<unsigned short>(target,increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -1195,7 +1195,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<unsigned short>;
+		return ADD_FUNC<unsigned short>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -1303,7 +1303,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<NValue*>(target, increment);
+		ADD_FUNC<NValue*>(target, increment);
 //		((NValue*)target)->op_add(*(NValue*)increment);
 	}
 	inline void multiple(void* target, void* increment)
@@ -1312,7 +1312,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<NValue*>;
+		return ADD_FUNC<NValue*>;
 	}
 	inline fun GetMINFunction()
 	{
@@ -1429,7 +1429,7 @@ public:
 	}
 	inline void add(void* target, void* increment)
 	{
-		ADD<int>(target,increment);
+		ADD_FUNC<int>(target,increment);
 	}
 	inline void multiple(void* target, void* increment)
 	{
@@ -1437,7 +1437,7 @@ public:
 	}
 	inline fun GetADDFunction()
 	{
-		return ADD<int>;
+		return ADD_FUNC<int>;
 	}
 	inline fun GetMINFunction()
 	{

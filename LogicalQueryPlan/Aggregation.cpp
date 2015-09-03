@@ -125,24 +125,28 @@ void changeSchemaforAVG(BlockStreamAggregationIterator::State & state_)//for AVG
 	state_.hashSchema=state_.output->duplicateSchema();
 
 	// for partition node,output_schema=hash_schema;but for global node,input_schema=hash_schema
-
+	//if the agg isn't hybrid, the hashscheme has to add a column for store count() additionly
 	if(state_.avgIndex.size()>0)
 	{
 		column_type ct=column_type(t_u_long,8);
 		state_.hashSchema->addColumn(ct,8);
-		if(state_.isPartitionNode==true)
+		if(state_.agg_node_type==BlockStreamAggregationIterator::State::Hybrid_Agg_Private)
 		{
 			state_.aggregations.push_back(BlockStreamAggregationIterator::State::count);
 			state_.aggregationIndex.push_back(state_.aggregationIndex.size()+state_.groupByIndex.size());
 			state_.output=state_.hashSchema->duplicateSchema();
 		}
-		else
+		else if(state_.agg_node_type==BlockStreamAggregationIterator::State::Hybrid_Agg_Global)
 		{
 			state_.aggregations.push_back(BlockStreamAggregationIterator::State::sum);
 			state_.aggregationIndex.push_back(state_.aggregationIndex.size()+state_.groupByIndex.size());
 			state_.input=state_.hashSchema->duplicateSchema();
 		}
-
+		else if(state_.agg_node_type==BlockStreamAggregationIterator::State::Not_Hybrid_Agg)
+		{
+			state_.aggregations.push_back(BlockStreamAggregationIterator::State::count);
+			state_.aggregationIndex.push_back(state_.aggregationIndex.size()+state_.groupByIndex.size());
+		}
 	}
 
 }
@@ -168,13 +172,13 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 
 	switch(fashion_){
 		case no_repartition:{
-			aggregation_state.isPartitionNode=false;
+			aggregation_state.agg_node_type=BlockStreamAggregationIterator::State::Not_Hybrid_Agg;
 			changeSchemaforAVG(aggregation_state);
 			ret=new BlockStreamAggregationIterator(aggregation_state);//
 			break;
 		}
 		case hybrid:{
-			aggregation_state.isPartitionNode=true;//as regard to AVG(),for partition node and global node ,we should do some different operations.
+			aggregation_state.agg_node_type=BlockStreamAggregationIterator::State::Hybrid_Agg_Private;//as regard to AVG(),for partition node and global node ,we should do some different operations.
 			changeSchemaforAVG(aggregation_state);//
 			BlockStreamAggregationIterator* private_aggregation=new BlockStreamAggregationIterator(aggregation_state);
 
@@ -216,7 +220,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			global_aggregation_state.input=getSchema(dataflow_->attribute_list_);
 			global_aggregation_state.nbuckets=aggregation_state.nbuckets;
 			global_aggregation_state.output=getSchema(dataflow_->attribute_list_);
-			global_aggregation_state.isPartitionNode=false;
+			global_aggregation_state.agg_node_type=BlockStreamAggregationIterator::State::Hybrid_Agg_Global;
 			changeSchemaforAVG(global_aggregation_state);
 			BlockStreamIteratorBase* global_aggregation=new BlockStreamAggregationIterator(global_aggregation_state);//
 			ret=global_aggregation;
@@ -250,7 +254,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			}
 			exchange_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
-			aggregation_state.isPartitionNode=false;//as regard to AVG(),for partition node and global node ,we should do some different operations.
+			aggregation_state.agg_node_type=BlockStreamAggregationIterator::State::Not_Hybrid_Agg;//as regard to AVG(),for partition node and global node ,we should do some different operations.
 			changeSchemaforAVG(aggregation_state);
 			aggregation_state.child=exchange;
 			ret=new BlockStreamAggregationIterator(aggregation_state);
