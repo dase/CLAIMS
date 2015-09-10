@@ -43,3 +43,4 @@ include/
 .history
 compile
 thirdparty/
+ar-lib
