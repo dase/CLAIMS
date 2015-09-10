@@ -10,7 +10,7 @@ AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 #-L/usr/local/lib \
 #-I/usr/local/include
 AM_LDFLAGS=  -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system \
-	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic
+	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic -lglog
 
 if OPT_TCMALLOC
 AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
@@ -48,6 +48,7 @@ LDADD =  \
 	common/libcommon.a \
 	common/Block/libblock.a \
 	common/Expression/libexpression.a \
+	common/log/liblog.a \
 	common/Schema/libschema.a \
 	common/Schema/Test/libtest.a \
 	common/types/libtypes.a \
