@@ -2,6 +2,7 @@
 *.a
 *.dat*
 *.o
+*sql.output
 .cproject
 .gitignore.swp
 .history
@@ -9,7 +10,6 @@
 .settings
 Build
 Config.cpp
-Debug.h
 Debug.h
 Default
 Makefile
@@ -28,6 +28,7 @@ config.guess
 config.h
 config.h.in
 config.h.in*
+config.h.in~
 config.log
 config.status
 config.sub
@@ -36,7 +37,6 @@ depcomp
 doc
 include/
 install-sh
-install/
 install/
 libtool
 ltmain.sh

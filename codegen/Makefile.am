@@ -11,6 +11,11 @@ AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 #-fno-rtti -fno-exceptions
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs -L/usr/local/lib 
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = ../common/libcommon.a \
 		../utility/libutility.a \
 		types/libtypes.a \
