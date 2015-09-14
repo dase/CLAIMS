@@ -22,6 +22,7 @@ class ExectorFunction
 {
 public:
 	static ExecFunc operator_function[DATA_TYPE_NUM][OPER_TYPE_NUM];
+	static AvgDivide avg_divide[DATA_TYPE_NUM];
 };
 
 #define NextByte(p, plen)	((p)++, (plen)--)
@@ -1125,6 +1126,61 @@ inline void initialize_operator_function()
 	/*****************datetime********************/
 
 
+
+}
+inline void avg_error_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	SQLParse_elog("This oper_functions is not supported now!!!!!!!!!!!!!");
+	assert(false);
+}
+inline void avg_int_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(int *)result=(*(int *)sum_value/tuple_number);
+}
+inline void avg_float_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(float *)result=*(float *)sum_value/tuple_number;
+}
+inline void avg_double_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(double *)result=*(double *)sum_value/tuple_number;
+}
+inline void avg_ulong_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(unsigned long *)result=*(unsigned long *)sum_value/tuple_number;
+}
+inline void avg_smallint_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(short *)result=(*(short *)sum_value/tuple_number);
+}
+inline void avg_usmallint_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(unsigned short *)result=(*(unsigned short *)sum_value/tuple_number);
+}
+inline void avg_decimal_divide(void *sum_value,unsigned long tuple_number,void *result)
+{
+	*(NValue *) result=*(NValue *)sum_value;
+	stringstream ss;
+	ss<<tuple_number;
+	*(NValue *) result=(*(NValue *) result).op_divide((*(NValue *) result).getDecimalValueFromString(ss.str()));
+}
+
+/*
+ *avg=sum/tuple_number, use avg_divid[type] to avoid switching among all types
+ *typedef void (*AvgDivide)(void *sum_value,unsigned long tuple_number,void *result); in qnode.h
+ *AvgDivide ExectorFunction::avg_divide[DATA_TYPE_NUM]; in queryfunc.h
+ */
+inline void InitAvgDivide()
+{
+	for(int i=0;i<DATA_TYPE_NUM;i++)
+		ExectorFunction::avg_divide[i]=avg_error_divide;
+	ExectorFunction::avg_divide[t_int]=avg_int_divide;
+	ExectorFunction::avg_divide[t_float]=avg_float_divide;
+	ExectorFunction::avg_divide[t_double]=avg_double_divide;
+	ExectorFunction::avg_divide[t_u_long]=avg_ulong_divide;
+	ExectorFunction::avg_divide[t_smallInt]=avg_smallint_divide;
+	ExectorFunction::avg_divide[t_u_smallInt]=avg_usmallint_divide;
+	ExectorFunction::avg_divide[t_decimal]=avg_decimal_divide;
 
 }
 #endif /* QUERYFUNC_H_ */
