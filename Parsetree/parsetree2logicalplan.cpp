@@ -47,6 +47,8 @@
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
+// because Filter::Condition no longer exists
+/*
 static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
 	SQLParse_log("getfiltercondition   ");
 	//filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
@@ -161,7 +163,7 @@ static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition
 			SQLParse_elog("getfiltercondition type error");
 		}
 	}
-}
+}*/
 static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_list,LogicalOperator *filter_1,LogicalOperator * filter_2)
 {
 	switch(wcexpr->type)

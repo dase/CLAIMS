@@ -25,8 +25,4 @@ LDADD = 	\
 		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES =	\
-		test_CSB_index_building.cpp 		test_IndexManager_serialize.cpp \
-		test_csb_classes.cpp 			test_csb_indexing.cpp \
-		test_index_manager.cpp 			test_index_scan_iterator.cpp
-
+libtest_a_SOURCES = 

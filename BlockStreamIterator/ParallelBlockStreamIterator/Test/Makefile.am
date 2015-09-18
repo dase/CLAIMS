@@ -22,8 +22,4 @@ LDADD = ../libparallelblockStreamiterator.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES = \
-	Buffer.cpp 			Expanded_iterators_test.cpp \
-	Project_test.cpp 		Sort_test.cpp \
-	TopN_test.cpp 		in_iterator_test.cpp \
-	iterator_test.cpp 	projectionScan.cpp 
+libtest_a_SOURCES = 

@@ -16,5 +16,5 @@ LDADD = 	../libtypes.a \
 
 noinst_LIBRARIES=libtest.a
 
-libtest_a_SOURCES = data_type_test.h
+libtest_a_SOURCES =
 	

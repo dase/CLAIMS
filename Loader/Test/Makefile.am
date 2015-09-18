@@ -18,4 +18,4 @@ LDADD = ../../Catalog/libcatalog.a \
 		${THERON_HOME}/Lib/libtherond.a 
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES = test_load.cpp
+libtest_a_SOURCES = 

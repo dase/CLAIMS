@@ -19,4 +19,4 @@ LDADD = 	../../LogicalQueryPlan/liblogicalqueryplan.a \
 		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES = 	Partitioner_test.cpp 		statistic_manager_test.cpp
+libtest_a_SOURCES =

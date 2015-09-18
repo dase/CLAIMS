@@ -1,4 +1,4 @@
-#include <Test/TestMain.cpp>
+//#include <Test/TestMain.cpp>
 
 #include <startup.h>
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
@@ -142,6 +142,7 @@ int main(int argc, char** argv){
 			sleep(1);
 #endif
 #else
+	// add "#include <Test/TestMain.cpp>" before using maina(...)
 	maina(argc, argv);
 	return 0;
 #endif
