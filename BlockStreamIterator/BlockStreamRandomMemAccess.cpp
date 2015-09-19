@@ -69,7 +69,7 @@ bool BlockStreamRandomMemAccess::next(BlockStreamBase *block)
 			//test print oid
 //			printf("Oids: %d\n", *(int*)tuple_in_child);
 //			sleep(5);
-			state_.schema_out_->copyTuple((void*)(base_+(*(int*)tuple_in_child)*8), tuple_in_block);
+			state_.schema_out_->copyTuple((void*)((char*)base_+(*(int*)tuple_in_child)*8), tuple_in_block);
 //			printf("Records: %d\t%d\n", *(int*)tuple_in_block, *((int*)tuple_in_block+1));
 //			sleep(5);
 			block_for_asking_iterator_->increase_cur_();

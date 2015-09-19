@@ -3,6 +3,7 @@ AM_INIT_AUTOMAKE([-Wall foreign])
 AM_PROG_AR
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O0 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
+AM_CONDITIONAL(OPT_TCMALLOC, true)
 CXXFLAGS=${CXXFLAGS="-g  -std=c++11"}
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
@@ -22,12 +23,12 @@ AC_CONFIG_FILES([
   common/Block/Makefile 
   common/Expression/Makefile 
   common/expression/Makefile
+  common/log/Makefile
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
   common/types/Makefile 
   common/types/Test/Makefile 
   common/types/ttmath/Makefile 
-  common/log/Makefile
   Daemon/Makefile 
   Daemon/Test/Makefile 
   Executor/Makefile 

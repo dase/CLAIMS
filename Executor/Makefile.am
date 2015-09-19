@@ -1,11 +1,17 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
 AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization -lxs
+
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
 
 LDADD = 	../BlockStreamIterator/libblockstreamiterator.a \
 		../common/Block/libblock.a \

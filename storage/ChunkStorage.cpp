@@ -277,7 +277,7 @@ bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor*& ba) {
 	ba=new InMemeryBlockAccessor();
 	InMemeryBlockAccessor* imba=(InMemeryBlockAccessor*)ba;
 	imba->setBlockSize(block_size_);
-	imba->setTargetBlockStartAddress(start_+cur_block*block_size_);
+	imba->setTargetBlockStartAddress((char*)start_+cur_block*block_size_);
 	return true;
 }
 

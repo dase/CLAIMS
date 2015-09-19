@@ -71,7 +71,8 @@ bool BlockStreamNestLoopJoinIterator::open(const PartitionOffset& partition_offs
 		blockbuffer->atomicAppendNewBlock(jtc->block_for_asking_);
 		createBlockStream(jtc->block_for_asking_);
 	}
-	jtc->block_for_asking_->~Block();
+
+	delete jtc->block_for_asking_;
 	if(ExpanderTracker::getInstance()->isExpandedThreadCallBack(pthread_self())){
 		unregisterExpandedThreadToAllBarriers(1);
 		return true;
@@ -116,7 +117,7 @@ bool BlockStreamNestLoopJoinIterator::next(BlockStreamBase *block)
 					if((result_tuple=block->allocateTuple(state_.output_schema->getTupleMaxSize()))>0)
 					{
 						const unsigned copyed_bytes=state_.input_schema_left->copyTuple(tuple_from_buffer_child,result_tuple);
-						state_.input_schema_right->copyTuple(tuple_from_right_child,result_tuple+copyed_bytes);
+						state_.input_schema_right->copyTuple(tuple_from_right_child,(char*)result_tuple+copyed_bytes);
 					}
 					else
 					{

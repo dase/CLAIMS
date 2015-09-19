@@ -1,6 +1,11 @@
 /*
  * Coordinator.h
  * The Coordinator is the center for Theron connections.
+ *
+ * Accept all slaves' registration
+ * and send all slaves' Ip/Port to all slave,
+ * helping them to connect each other
+ *
  *  Created on: Aug 8, 2013
  *      Author: wangli
  */

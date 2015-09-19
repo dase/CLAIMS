@@ -7,7 +7,12 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include
 
-AM_LDFLAGS=-lc -lm -lrt  -lxs
+AM_LDFLAGS=-lc -lm -lrt  -lxs -lboost_serialization
+
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
 
 LDADD = 	../Catalog/libcatalog.a \
 		../Schema/libschema.a \

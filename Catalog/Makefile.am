@@ -1,14 +1,18 @@
 
 AM_CPPFLAGS= -fPIC -fpermissive \
--I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
--I${THERON_HOME}/Include
-
+-I${THERON_HOME}/Include \
+-I${BOOST_HOME}
 #<boost/unordered_map.hpp>添加编译选项
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lboost_date_time -lboost_system -lxs
+
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
 
 LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \

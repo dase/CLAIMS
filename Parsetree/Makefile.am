@@ -8,6 +8,11 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 
 AM_LDFLAGS=-lc -lm -lrt -lboost_system -lboost_serialization -ll -ly -lstdc++ -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = ../Catalog/libcatalog.a \
 		../Catalog/stat/libstat.a \
 		../LogicalQueryPlan/liblogicalqueryplan.a \
@@ -15,7 +20,11 @@ LDADD = ../Catalog/libcatalog.a \
 		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../common/libcommon.a \
 		../common/Expression/libexpression.a \
-		../utility/libutility.a
+		../utility/libutility.a \
+		${BOOST_HOME}/stage/lib/libboost_system.a \
+		${BOOST_HOME}/stage/lib/libboost_system.so \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a
 
 noinst_LIBRARIES=libparsetree.a
 

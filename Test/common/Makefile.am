@@ -9,6 +9,11 @@ AM_CPPFLAGS= -fPIC -fpermissive\
 
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization  -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = 	../../Catalog/libcatalog.a \
 		../../Loader/libloader.a \
 		../../LogicalQueryPlan/liblogicalqueryplan.a \
@@ -27,4 +32,5 @@ noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES = \
 	TestNew.cpp 					TestTPC_schame.cpp \
 	insert_optimized_hash_table_test.h 		issue27.cpp \
-	issue27_sort.cpp 					issue27ing.cpp
+	issue27_sort.cpp 					issue27ing.cpp \
+	error_test.h

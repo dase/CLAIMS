@@ -120,6 +120,7 @@ struct Node * newColumn(nodetype t, char * parameter1, char *parameter2, Node * 
 
 struct Node * newExprCal(nodetype type, char * sign, char *parameter,
 	int cmp, Node *lnext, Node *rnext,vector<Node *> *allnode)
+
 {
 	struct Expr_cal * a= (struct Expr_cal *)malloc(sizeof(struct Expr_cal));
 	if(!a)
@@ -1065,6 +1066,7 @@ void outputSpace(int f)
 }
 void output(Node * oldnode, int floor)
 {
+#ifdef DEBUG_ASTParser
 	//puts("there is output()");
 	if(oldnode == NULL)
 	{
@@ -1263,8 +1265,8 @@ void output(Node * oldnode, int floor)
 			if(node->querystring)
 				cout<<node->querystring<<" ";
 			if(node->select_opts)
-				cout<<node->select_opts<<" "; 
-				
+				cout<<node->select_opts<<" ";
+
 			cout<<endl;
 			output(node->select_list, floor + 1);
 			output(node->from_list, floor + 1);
@@ -1285,7 +1287,7 @@ void output(Node * oldnode, int floor)
 			outputSpace(floor);
 			cout<<"select_list: ";
 			if (node->isall) cout<<"is all ";
-			
+
 			cout<<endl;
 			output(node->args, floor + 1);
 			output(node->next, floor);//---3.14fzh---
@@ -1300,7 +1302,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Select_expr: ";
 			if (node->ascolname)
 				cout<<node->ascolname<< " ";
-				
+
 			cout<<endl;
 			output(node->colname, floor + 1);
 			
@@ -1313,7 +1315,7 @@ void output(Node * oldnode, int floor)
 			From_list * node = (From_list *) oldnode;
 			outputSpace(floor);
 			cout<<"From_list: ";
-			
+
 			cout<<endl;
 			//output(node->condition, floor + 1);////////////////////////////////
 			Node * p;
@@ -1371,7 +1373,7 @@ void output(Node * oldnode, int floor)
 			Groupby_expr * node = (Groupby_expr *) oldnode;
 			outputSpace(floor);
 			cout<<"Groupby_expr: ";
-			
+
 			if(node->sorttype)
 				cout<<node->sorttype<<" ";
 			cout<<endl;
@@ -1388,7 +1390,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Having_list: ";
 			if(node->havingstring)
 				cout<<node->havingstring<<" ";
-				
+
 			cout<<endl;
 			output(node->next, floor+1);
 			break;
@@ -1415,7 +1417,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Orderby_expr: ";
 			if(node->sorttype)
 				cout<<node->sorttype<<" ";
-				
+
 			cout<<endl;
 			output(node->args, floor+1);
 			output(node->next, floor+1);
@@ -1456,6 +1458,7 @@ void output(Node * oldnode, int floor)
 			printf("output type not exist!!!\n");
 		}
 	}
+#endif
 }
 
 void FreeAllNode(vector<Node *> *allnode)	// 2014-3-6---增加释放所有节点的函数---by余楷	// 2014-4-2---存放节点指针的数组改为vector---by Yu

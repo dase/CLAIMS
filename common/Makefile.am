@@ -1,14 +1,21 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 -I${BOOST_HOME} \
+-I${BOOST_HOME}/boost/serialization \
 -I${THERON_HOME}/Include \
 -I${GTEST_HOME}/include
 
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
 		../BlockStreamIterator/libblockstreamiterator.a \
 		../storage/libstorage.a \
 		../common/libcommon.a \
+		../common/log/liblog.a \
 		../common/Block/libblock.a \
 		../utility/libutility.a \
 		types/libtypes.a \
@@ -36,7 +43,9 @@ libcommon_a_SOURCES = \
 	hash.cpp 			hash.h \
 	hashtable.cpp 		hashtable.h \
 	ids.cpp 			ids.h \
-	rename.h	
+	rename.h			error_define.h \
+	error_no.h			error_no.cpp
 
-SUBDIRS = Block Schema types Expression log
-DIST_SUBDIRS = Block Schema types Expression log
+
+SUBDIRS = Block log Schema types Expression
+DIST_SUBDIRS = Block log Schema types Expression
