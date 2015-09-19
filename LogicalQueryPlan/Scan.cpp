@@ -50,7 +50,7 @@ LogicalScan::~LogicalScan() {
 //	return logical_projection_;
 //}
 //can only scan all attributes in a projection
-Dataflow LogicalScan::getDataflow(){
+Dataflow LogicalScan::GetDataflow(){
 	if(dataflow_==0)
 		dataflow_=new Dataflow();
 	else
@@ -115,7 +115,7 @@ Dataflow LogicalScan::getDataflow(){
 	return *dataflow_;
 
 }
-BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size){
+BlockStreamIteratorBase* LogicalScan::GetIteratorTree(const unsigned &block_size){
 	/* In the current implementation, all the attributes within the involved projection
 	 * are read.
 	 * TODO: Ideally, the columns in one projection are stored separately and only the
@@ -124,7 +124,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 	ExpandableBlockStreamProjectionScan::State state;
 	state.block_size_=block_size;
 	state.projection_id_=target_projection_->getProjectionID();
-	state.schema_=getSchema(dataflow_->attribute_list_);
+	state.schema_=GetSchema(dataflow_->attribute_list_);
 	state.sample_rate_=sample_rate_;
 	return new ExpandableBlockStreamProjectionScan(state);
 
@@ -136,13 +136,13 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 //	return new ExpandableBlockStreamSingleColumnScan(state);
 }
 bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
-	Dataflow dataflow=getDataflow();
+	Dataflow dataflow=GetDataflow();
 	NetworkTransfer transfer=requirement.requireNetworkTransfer(dataflow);
 
 	ExpandableBlockStreamProjectionScan::State state;
 	state.block_size_=block_size;
 	state.projection_id_=target_projection_->getProjectionID();
-	state.schema_=getSchema(dataflow_->attribute_list_);
+	state.schema_=GetSchema(dataflow_->attribute_list_);
 	state.sample_rate_=sample_rate_;
 
 	PhysicalPlan scan=new ExpandableBlockStreamProjectionScan(state);
@@ -160,7 +160,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		state.block_size_=block_size;
 		state.child_=scan;//child_iterator;
 		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema_=getSchema(dataflow.attribute_list_);
+		state.schema_=GetSchema(dataflow.attribute_list_);
 
 		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
 		state.lower_id_list_=lower_id_list;
@@ -173,11 +173,11 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 			if(requirement.hasRequiredPartitionFunction()){
 				/* partition function contains the number of partitions*/
 				PartitionFunction* partitoin_function=requirement.getPartitionFunction();
-				upper_id_list=std::vector<NodeID>(NodeTracker::getInstance()->getNodeIDList().begin(),NodeTracker::getInstance()->getNodeIDList().begin()+partitoin_function->getNumberOfPartitions()-1);
+				upper_id_list=std::vector<NodeID>(NodeTracker::GetInstance()->GetNodeIDList().begin(),NodeTracker::GetInstance()->GetNodeIDList().begin()+partitoin_function->getNumberOfPartitions()-1);
 			}
 			else{
 				//TODO: decide the degree of parallelism
-				upper_id_list=NodeTracker::getInstance()->getNodeIDList();
+				upper_id_list=NodeTracker::GetInstance()->GetNodeIDList();
 			}
 		}
 
@@ -219,7 +219,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		return false;
 
 }
-void LogicalScan::print(int level)const{
+void LogicalScan::Print(int level)const{
 //	align(level);
 	printf("%*.sScan: %s\n",level*8," ",Catalog::getInstance()->getTable(target_projection_->getProjectionID().table_id)->getTableName().c_str());
 

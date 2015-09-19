@@ -24,7 +24,7 @@ int sql_parser_test(){
 		LogicalOperator* logical_tree=convert_sql_to_logical_operator_tree(sql);
 		if(logical_tree!=0){
 			LogicalOperator* root=new LogicalQueryPlanRoot(0,logical_tree,LogicalQueryPlanRoot::PRINT );
-			BlockStreamIteratorBase* physical_plan=root->getIteratorTree(64*1024);
+			BlockStreamIteratorBase* physical_plan=root->GetIteratorTree(64*1024);
 
 			physical_plan->open(0);
 			physical_plan->next(0);

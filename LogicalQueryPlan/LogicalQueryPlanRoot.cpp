@@ -6,6 +6,10 @@
  */
 
 #include "LogicalQueryPlanRoot.h"
+
+#include <vector>
+#include <string>
+
 #include "../Resource/NodeTracker.h"
 #include "../IDsGenerator.h"
 #include "../Config.h"
@@ -20,27 +24,36 @@
 
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
                                            LogicalOperator* child,
-                                           const outputFashion& fashion,
+                                           const OutputFashion& kFashion,
                                            LimitConstraint limit_constraint)
     : collecter_(collecter),
       child_(child),
-      fashion_(fashion),
+      fashion_(kFashion),
       limit_constraint_(limit_constraint) {
   setOperatortype(l_root);
 }
 
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
-  if (child_ > 0) {
+  if (child_ != NULL) {
     delete child_;
+    child_ = NULL;
   }
 }
 
-BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(
-    const unsigned& block_size) {
-  Dataflow child_dataflow = getDataflow();
-  BlockStreamIteratorBase* child_iterator = child_->getIteratorTree(block_size);
+/**
+ * get dataflow and child physical plan from child ,
+ * consider dataflow's partitioner's location and collector,
+ * decide whether add expander and exchange operation in physical plan.
+ *
+ * choose one of three top physical operation depend on fashion_,
+ * return complete physical plan
+ */
+BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
+    const unsigned& kBlockSize) {
+  Dataflow child_dataflow = GetDataflow();
+  BlockStreamIteratorBase* child_iterator = child_->GetIteratorTree(kBlockSize);
 //  Schema* schema=getSchema(child_dataflow.attribute_list_);
-  NodeTracker* node_tracker = NodeTracker::getInstance();
+  NodeTracker* node_tracker = NodeTracker::GetInstance();
 
   bool data_exchange_used = false;
   /**
@@ -52,22 +65,24 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(
           == collecter_)) {
     data_exchange_used = true;
 
+    // add BlockStreamExpander iterator into physical plan
     BlockStreamExpander::State expander_state_lower;
     expander_state_lower.block_count_in_buffer_ = 10;
-    expander_state_lower.block_size_ = block_size;
+    expander_state_lower.block_size_ = kBlockSize;
     expander_state_lower.init_thread_count_ =
         Config::initial_degree_of_parallelism;
     expander_state_lower.child_ = child_iterator;
-    expander_state_lower.schema_ = getSchema(child_dataflow.attribute_list_);
+    expander_state_lower.schema_ = GetSchema(child_dataflow.attribute_list_);
     BlockStreamIteratorBase* expander_lower = new BlockStreamExpander(
         expander_state_lower);
 
+    // add ExchangeEpoll iterator into physical plan
     ExpandableBlockStreamExchangeEpoll::State state;
-    state.block_size_ = block_size;
+    state.block_size_ = kBlockSize;
     state.child_ = expander_lower;  // child_iterator;
     state.exchange_id_ =
         IDsGenerator::getInstance()->generateUniqueExchangeID();
-    state.schema_ = getSchema(child_dataflow.attribute_list_);
+    state.schema_ = GetSchema(child_dataflow.attribute_list_);
     state.upper_id_list_.push_back(collecter_);
     state.partition_schema_ = partition_schema::set_hash_partition(0);
     std::vector<NodeID> lower_id_list = getInvolvedNodeID(
@@ -78,27 +93,26 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(
 
   BlockStreamExpander::State expander_state;
   expander_state.block_count_in_buffer_ = 10;
-  expander_state.block_size_ = block_size;
+  expander_state.block_size_ = kBlockSize;
   if (data_exchange_used)
     /** if data exchange is used, only one expanded thread is enough.**/
     expander_state.init_thread_count_ = 1;
   else
     expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
   expander_state.child_ = child_iterator;
-  expander_state.schema_ = getSchema(child_dataflow.attribute_list_);
+  expander_state.schema_ = GetSchema(child_dataflow.attribute_list_);
   BlockStreamIteratorBase* expander = new BlockStreamExpander(expander_state);
 
   BlockStreamIteratorBase* middle_tier;
   if (!limit_constraint_.canBeOmitted()) {
-    /* we should add a limit operator*/
+    /** we should add a limit operator*/
     BlockStreamLimit::State limit_state(
         expander_state.schema_->duplicateSchema(), expander,
-        limit_constraint_.returned_tuples_, block_size,
+        limit_constraint_.returned_tuples_, kBlockSize,
         limit_constraint_.start_position_);
     BlockStreamIteratorBase* limit = new BlockStreamLimit(limit_state);
     middle_tier = limit;
-  }
-  else {
+  } else {
     middle_tier = expander;
   }
 
@@ -106,14 +120,14 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(
   switch (fashion_) {
     case PRINT: {
       BlockStreamPrint::State print_state(
-          getSchema(child_dataflow.attribute_list_), middle_tier, block_size,
+          GetSchema(child_dataflow.attribute_list_), middle_tier, kBlockSize,
           getAttributeName(child_dataflow));
       ret = new BlockStreamPrint(print_state);
       break;
     }
     case PERFORMANCE: {
       BlockStreamPerformanceMonitorTop::State performance_state(
-          getSchema(child_dataflow.attribute_list_), middle_tier, block_size);
+          GetSchema(child_dataflow.attribute_list_), middle_tier, kBlockSize);
       ret = new BlockStreamPerformanceMonitorTop(performance_state);
       break;
     }
@@ -123,7 +137,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(
         column_header.push_back(child_dataflow.attribute_list_[i].getName());
       }
       BlockStreamResultCollector::State result_state(
-          getSchema(child_dataflow.attribute_list_), middle_tier, block_size,
+          GetSchema(child_dataflow.attribute_list_), middle_tier, kBlockSize,
           column_header);
       ret = new BlockStreamResultCollector(result_state);
       break;
@@ -132,8 +146,12 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(
 
   return ret;
 }
-Dataflow LogicalQueryPlanRoot::getDataflow() {
-  Dataflow ret = child_->getDataflow();
+
+/**
+ * get dataflow from child and return
+ */
+Dataflow LogicalQueryPlanRoot::GetDataflow() {
+  Dataflow ret = child_->GetDataflow();
   QueryOptimizationLogging::log(
       "Communication cost:%ld, predicted ouput size=%ld\n",
       ret.property_.commnication_cost,
@@ -177,7 +195,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
       state.child_ = physical_plan.plan;  // child_iterator;
       state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
-      state.schema_ = getSchema(physical_plan.dataflow.attribute_list_);
+      state.schema_ = GetSchema(physical_plan.dataflow.attribute_list_);
       state.upper_id_list_.push_back(collecter_);
       state.partition_schema_ = partition_schema::set_hash_partition(0);
       state.lower_id_list_ = getInvolvedNodeID(
@@ -200,14 +218,14 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
   switch (fashion_) {
     case PRINT: {
       BlockStreamPrint::State print_state(
-          getSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
+          GetSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
           block_size, getAttributeName(physical_plan.dataflow));
       final_plan = new BlockStreamPrint(print_state);
       break;
     }
     case PERFORMANCE: {
       BlockStreamPerformanceMonitorTop::State performance_state(
-          getSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
+          GetSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
           block_size);
       final_plan = new BlockStreamPerformanceMonitorTop(performance_state);
     }
@@ -217,8 +235,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
     final_physical_plan_desc.cost = best_plan.cost;
     final_physical_plan_desc.dataflow = best_plan.dataflow;
     final_physical_plan_desc.plan = final_plan;
-  }
-  else {
+  } else {
     NetworkTransfer transfer = current_req.requireNetworkTransfer(
         best_plan.dataflow);
 
@@ -226,8 +243,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
       final_physical_plan_desc.cost = best_plan.cost;
       final_physical_plan_desc.dataflow = best_plan.dataflow;
       final_physical_plan_desc.plan = final_plan;
-    }
-    else if ((transfer == OneToOne) || (transfer == Shuffle)) {
+    } else if ((transfer == OneToOne) || (transfer == Shuffle)) {
       /* the input data flow should be transfered in the network to meet the requirement
        * TODO: implement OneToOne Exchange
        * */
@@ -237,24 +253,22 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
       state.child_ = best_plan.plan;  // child_iterator;
       state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
-      state.schema_ = getSchema(best_plan.dataflow.attribute_list_);
+      state.schema_ = GetSchema(best_plan.dataflow.attribute_list_);
       std::vector<NodeID> upper_id_list;
       if (requirement.hasRequiredLocations()) {
         upper_id_list = requirement.getRequiredLocations();
-      }
-      else {
+      } else {
         if (requirement.hasRequiredPartitionFunction()) {
           /* partition function contains the number of partitions*/
           PartitionFunction* partitoin_function = requirement
               .getPartitionFunction();
           upper_id_list = std::vector<NodeID>(
-              NodeTracker::getInstance()->getNodeIDList().begin(),
-              NodeTracker::getInstance()->getNodeIDList().begin()
+              NodeTracker::GetInstance()->GetNodeIDList().begin(),
+              NodeTracker::GetInstance()->GetNodeIDList().begin()
                   + partitoin_function->getNumberOfPartitions() - 1);
-        }
-        else {
-          //TODO: decide the degree of parallelism
-          upper_id_list = NodeTracker::getInstance()->getNodeIDList();
+        } else {
+          // TODO: decide the degree of parallelism
+          upper_id_list = NodeTracker::GetInstance()->GetNodeIDList();
         }
       }
 
@@ -297,12 +311,12 @@ std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(
   }
   return attribute_name_list;
 }
-void LogicalQueryPlanRoot::print(int level) const {
+void LogicalQueryPlanRoot::Print(int level) const {
   printf("Root\n");
   if (!limit_constraint_.canBeOmitted()) {
     printf("With limit constaint: %ld, %ld\n",
            limit_constraint_.start_position_,
            limit_constraint_.returned_tuples_);
   }
-  child_->print(level + 1);
+  child_->Print(level + 1);
 }

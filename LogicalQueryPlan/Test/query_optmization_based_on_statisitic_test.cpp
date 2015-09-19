@@ -501,7 +501,7 @@ static int query_optimization_based_on_statistics_join(){
 			LogicalOperator* root=new LogicalQueryPlanRoot(0,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
 			unsigned long long int timer_start=curtick();
 
-			BlockStreamIteratorBase* please=root->getIteratorTree(64*1024-sizeof(unsigned));
+			BlockStreamIteratorBase* please=root->GetIteratorTree(64*1024-sizeof(unsigned));
 			//			root->print();
 			//
 			//
@@ -1000,7 +1000,7 @@ static int query_optimization_based_on_statistics_aggregation(){
 			LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 			unsigned long long int timer_start=curtick();
 
-			BlockStreamIteratorBase* please=root->getIteratorTree(64*1024-sizeof(unsigned));
+			BlockStreamIteratorBase* please=root->GetIteratorTree(64*1024-sizeof(unsigned));
 			//			root->print();
 			//
 			//

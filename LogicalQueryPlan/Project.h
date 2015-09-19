@@ -29,12 +29,12 @@ public:
 
 	virtual ~LogicalProject();
 
-	Dataflow getDataflow();
-	BlockStreamIteratorBase *getIteratorTree(const unsigned& blocksize);
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase *GetIteratorTree(const unsigned& blocksize);
 
 	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
 	void printProjSchema()const;
-	void print(int level=0)const;
+	void Print(int level=0)const;
 
 private:
 	Mapping getMapping();

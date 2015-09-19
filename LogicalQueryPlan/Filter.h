@@ -42,10 +42,10 @@ public:
 	Filter(const Condition& condition, LogicalOperator*  child);
 	Filter(LogicalOperator *child,std::vector<std::vector<ExpressionItem> > &exprArray);
 	virtual ~Filter();
-	Dataflow getDataflow();
-	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
-	void print(int level=0)const;
+	void Print(int level=0)const;
 private:
 	bool couldHashPruned(unsigned partition_id,const DataflowPartitioningDescriptor&)const;
 	float predictSelectivity()const;

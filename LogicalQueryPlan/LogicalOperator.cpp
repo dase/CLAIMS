@@ -17,14 +17,14 @@
 //	// TODO Auto-generated destructor stub
 //}
 //
-Schema* LogicalOperator::getSchema(const std::vector<Attribute> &attributes)const{
+Schema* LogicalOperator::GetSchema(const std::vector<Attribute> &attributes)const{
 	std::vector<column_type> columns;
 	for(unsigned i=0;i<attributes.size();i++){
 		columns.push_back(*attributes[i].attrType);
 	}
 	return new SchemaFix(columns);
 }
-Schema* LogicalOperator::getSchema(const std::vector<Attribute>& attributes_left,const std::vector<Attribute>& attributes_right)const{
+Schema* LogicalOperator::GetSchema(const std::vector<Attribute>& attributes_left,const std::vector<Attribute>& attributes_right)const{
 	std::vector<column_type> columns;
 	for(unsigned i=0;i<attributes_left.size();i++){
 		columns.push_back(*attributes_left[i].attrType);
@@ -43,9 +43,9 @@ std::vector<NodeID> LogicalOperator::getInvolvedNodeID(const DataflowPartitionin
 }
 std::vector<NodeIP> LogicalOperator::convertNodeIDListToNodeIPList(const std::vector<NodeID>& node_id_list)const{
 	std::vector<NodeIP> ret;
-	NodeTracker* nodetracker=NodeTracker::getInstance();
+	NodeTracker* nodetracker=NodeTracker::GetInstance();
 	for(unsigned i=0;i<node_id_list.size();i++){
-		ret.push_back(nodetracker->getNodeIP(node_id_list[i]));
+		ret.push_back(nodetracker->GetNodeIP(node_id_list[i]));
 	}
 	return ret;
 }

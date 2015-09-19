@@ -20,8 +20,8 @@ LogicalSort::~LogicalSort() {
 		delete child_;
 }
 
-Dataflow LogicalSort::getDataflow(){
-	dataflow_=child_->getDataflow();
+Dataflow LogicalSort::GetDataflow(){
+	dataflow_=child_->GetDataflow();
 	Dataflow ret;
 	ret.attribute_list_=dataflow_.attribute_list_;
 	ret.property_.commnication_cost=dataflow_.property_.commnication_cost;
@@ -38,22 +38,22 @@ Dataflow LogicalSort::getDataflow(){
 	return ret;
 }
 
-BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize){
-	Dataflow rt=getDataflow();
+BlockStreamIteratorBase *LogicalSort::GetIteratorTree(const unsigned& blocksize){
+	Dataflow rt=GetDataflow();
 
 	BlockStreamExpander::State expander_state;
 	expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 	expander_state.block_size_=blocksize;
 	expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
-	expander_state.child_=child_->getIteratorTree(blocksize);
-	expander_state.schema_=getSchema(dataflow_.attribute_list_);
+	expander_state.child_=child_->GetIteratorTree(blocksize);
+	expander_state.schema_=GetSchema(dataflow_.attribute_list_);
 	BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state);
 
 	ExpandableBlockStreamExchangeEpoll::State exchange_state;
 	exchange_state.block_size_=blocksize;
 	exchange_state.child_=expander_lower;
 	exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();;
-	exchange_state.schema_=getSchema(dataflow_.attribute_list_);
+	exchange_state.schema_=GetSchema(dataflow_.attribute_list_);
 	vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow_.property_.partitioner);
 	exchange_state.lower_id_list_=lower_id_list;//upper
 	exchange_state.partition_schema_=partition_schema::set_hash_partition(0);
@@ -70,7 +70,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(const unsigned& blocksize)
 		reducer_state.orderbyKey_.push_back(getOrderByKey(oba_[i]->ta_));
 		reducer_state.direction_.push_back(oba_[i]->direction_);
 	}
-	reducer_state.input_=getSchema(dataflow_.attribute_list_);
+	reducer_state.input_=GetSchema(dataflow_.attribute_list_);
 	BlockStreamIteratorBase *reducer_sort=new BlockStreamSortIterator(reducer_state);
 
 	return reducer_sort;
@@ -103,8 +103,8 @@ void LogicalSort::printOrderByAttr()const
 
 	}
 }
-void LogicalSort::print(int level)const
+void LogicalSort::Print(int level)const
 {
 	printOrderByAttr();
-	child_->print(level+1);
+	child_->Print(level+1);
 }

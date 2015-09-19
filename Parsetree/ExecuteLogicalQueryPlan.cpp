@@ -1016,10 +1016,10 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	}
 
 #ifdef SQL_Parser
-	root->print(0);
+	root->Print(0);
 #endif
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
 	physical_iterator_tree->print();

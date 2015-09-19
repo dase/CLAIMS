@@ -87,7 +87,7 @@ void Analyzer::analyse(const AttributeID &attrID) {
 	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id,
 			aggregation, LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* collector = root->getIteratorTree(
+	BlockStreamIteratorBase* collector = root->GetIteratorTree(
 			1024 * 64 - sizeof(unsigned));
 
 	collector->open();
@@ -258,7 +258,7 @@ void Analyzer::compute_table_stat(const TableID& tab_id){
 	LogicalOperator* root = new LogicalQueryPlanRoot(0,
 			agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* collector = root->getIteratorTree(
+	BlockStreamIteratorBase* collector = root->GetIteratorTree(
 			1024 * 64 - sizeof(unsigned));
 	collector->open();
 	collector->next(0);
@@ -386,7 +386,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id){
 	LogicalOperator* root = new LogicalQueryPlanRoot(0,
 			count_agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* collector = root->getIteratorTree(
+	BlockStreamIteratorBase* collector = root->GetIteratorTree(
 			1024 * 64 - sizeof(unsigned));
 	collector->open();
 	collector->next(0);
@@ -446,7 +446,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,const unsigned 
 	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id,
 			aggregation, LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* collector = root->getIteratorTree(
+	BlockStreamIteratorBase* collector = root->GetIteratorTree(
 			1024 * 64 - sizeof(unsigned));
 
 	collector->open();

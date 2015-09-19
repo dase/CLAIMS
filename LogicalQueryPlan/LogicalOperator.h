@@ -32,13 +32,13 @@ public:
 
 	/*get the data flow which is optimal in the local view.*
 	 * TODO: leverage recursive search for the global optimal. */
-	virtual Dataflow getDataflow()=0;
+	virtual Dataflow GetDataflow()=0;
 
 	/*
 	 * generate the iterator tree based on the computed dataflow. Hence,
 	 * this function can only be called after the calling of getDataflow()
 	 */
-	virtual BlockStreamIteratorBase* getIteratorTree(const unsigned &)=0;
+	virtual BlockStreamIteratorBase* GetIteratorTree(const unsigned &)=0;
 
 	/**
 	 * get the optimal Physical plan that meets the requirement.
@@ -47,13 +47,13 @@ public:
 	 */
 	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
 
-	virtual void print(int level=0)const =0;
+	virtual void Print(int level=0)const =0;
 
-	inline operator_type getOperatorType() { return operator_type_; }
+	inline operator_type GetOperatorType() { return operator_type_; }
 
 protected:
-	Schema* getSchema(const std::vector<Attribute>&)const;
-	Schema* getSchema(const std::vector<Attribute>&,const std::vector<Attribute>&)const;
+	Schema* GetSchema(const std::vector<Attribute>&)const;
+	Schema* GetSchema(const std::vector<Attribute>&,const std::vector<Attribute>&)const;
 	std::vector<NodeID> getInvolvedNodeID(const DataflowPartitioningDescriptor&)const;
 	std::vector<NodeIP> convertNodeIDListToNodeIPList(const std::vector<NodeID>&)const;
 	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;

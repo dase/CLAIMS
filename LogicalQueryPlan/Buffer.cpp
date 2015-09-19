@@ -18,13 +18,13 @@ Buffer::~Buffer() {
 		delete child_;
 	}
 }
-Dataflow Buffer::getDataflow(){
-	dataflow_=child_->getDataflow();
+Dataflow Buffer::GetDataflow(){
+	dataflow_=child_->GetDataflow();
 	return dataflow_;
 }
-BlockStreamIteratorBase* Buffer::getIteratorTree(const unsigned & blocksize){
-	BlockStreamIteratorBase* child=child_->getIteratorTree(blocksize);
-	Schema* schema=this->getSchema(dataflow_.attribute_list_);
+BlockStreamIteratorBase* Buffer::GetIteratorTree(const unsigned & blocksize){
+	BlockStreamIteratorBase* child=child_->GetIteratorTree(blocksize);
+	Schema* schema=this->GetSchema(dataflow_.attribute_list_);
 	ExpandableBlockStreamBuffer::State expander_state(schema,child,blocksize);
 	BlockStreamIteratorBase* ret=new ExpandableBlockStreamBuffer(expander_state);
 	return ret;

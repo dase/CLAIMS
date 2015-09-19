@@ -38,14 +38,14 @@ public:
 	LogicalSort(LogicalOperator *child, vector<LogicalSort::OrderByAttr*>oba);
 	virtual ~LogicalSort();
 
-	Dataflow getDataflow();
-	BlockStreamIteratorBase *getIteratorTree(const unsigned& blocksize);
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase *GetIteratorTree(const unsigned& blocksize);
 
 	int getOrderByKey(const char *,const char *);
 	int getOrderByKey(const char *);
 
 	void printOrderByAttr()const;
-	void print(int level=0)const;
+	void Print(int level=0)const;
 	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
 
 private:

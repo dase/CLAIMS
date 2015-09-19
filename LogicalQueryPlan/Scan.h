@@ -21,13 +21,13 @@ public:
 	LogicalScan(const TableID&,const std::vector<unsigned>& selected_attribute_index_list);
 	virtual ~LogicalScan();
 //	LogicalProjection getLogcialProjection()const;
-	Dataflow getDataflow();
-	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase* GetIteratorTree(const unsigned &);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
 	/**check whether all the involved attributes are in the same projection.*/
 	bool checkInASingleProjection()const;
-	void print(int level=0)const;
+	void Print(int level=0)const;
 
 private:
 //	LogicalProjection logical_projection_;

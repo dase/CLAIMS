@@ -31,15 +31,15 @@ CrossJoin::~CrossJoin() {
 	}
 }
 
-Dataflow CrossJoin::getDataflow()
+Dataflow CrossJoin::GetDataflow()
 {
 	if (0!=dataflow_)
 	{
 		/* the data flow has been computed*/
 		return *dataflow_;
 	}
-	Dataflow left_dataflow=left_child_->getDataflow();
-	Dataflow right_dataflow=right_child_->getDataflow();
+	Dataflow left_dataflow=left_child_->GetDataflow();
+	Dataflow right_dataflow=right_child_->GetDataflow();
 
 	if(canLocalJoin(left_dataflow, right_dataflow)){
 		join_police_=local_join;
@@ -118,23 +118,23 @@ Dataflow CrossJoin::getDataflow()
 	return ret;
 }
 
-BlockStreamIteratorBase* CrossJoin::getIteratorTree(const unsigned & block_size)
+BlockStreamIteratorBase* CrossJoin::GetIteratorTree(const unsigned & block_size)
 {
 	if(dataflow_==0){
-		getDataflow();
+		GetDataflow();
 
 	}
 	BlockStreamNestLoopJoinIterator *cross_join_iterator;
 	BlockStreamIteratorBase* child_iterator_left=0;//=left_child_->getIteratorTree(block_size);
 	BlockStreamIteratorBase* child_iterator_right=0;//=right_child_->getIteratorTree(block_size);
 	generateChildPhysicalQueryPlan(child_iterator_left,child_iterator_right, block_size);
-	Dataflow dataflow_left=left_child_->getDataflow();
-	Dataflow dataflow_right=right_child_->getDataflow();
+	Dataflow dataflow_left=left_child_->GetDataflow();
+	Dataflow dataflow_right=right_child_->GetDataflow();
 	BlockStreamNestLoopJoinIterator::State state;
 	state.block_size_=block_size;
-	state.input_schema_left=getSchema(dataflow_left.attribute_list_);
-	state.input_schema_right=getSchema(dataflow_right.attribute_list_);
-	state.output_schema=getSchema(dataflow_->attribute_list_);
+	state.input_schema_left=GetSchema(dataflow_left.attribute_list_);
+	state.input_schema_right=GetSchema(dataflow_right.attribute_list_);
+	state.output_schema=GetSchema(dataflow_->attribute_list_);
 	state.child_left=child_iterator_left;
 	state.child_right=child_iterator_right;
 	cross_join_iterator =new BlockStreamNestLoopJoinIterator(state);
@@ -145,13 +145,13 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 		BlockStreamIteratorBase*& left_child_iterator_tree,
 		BlockStreamIteratorBase*& right_child_iterator_tree, const unsigned & blocksize) {
 
-	Dataflow left_dataflow=left_child_->getDataflow();
-	Dataflow right_dataflow=right_child_->getDataflow();
+	Dataflow left_dataflow=left_child_->GetDataflow();
+	Dataflow right_dataflow=right_child_->GetDataflow();
 
 	switch (join_police_){
 	case local_join:{
-		left_child_iterator_tree=left_child_->getIteratorTree(blocksize);
-		right_child_iterator_tree=right_child_->getIteratorTree(blocksize);
+		left_child_iterator_tree=left_child_->GetIteratorTree(blocksize);
+		right_child_iterator_tree=right_child_->GetIteratorTree(blocksize);
 		return;
 	}
 	case left_broadcast: {
@@ -160,7 +160,7 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 		expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 		expander_state.block_size_=blocksize;
 		expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
-		expander_state.child_=left_child_->getIteratorTree(blocksize);
+		expander_state.child_=left_child_->GetIteratorTree(blocksize);
 		expander_state.schema_=left_dataflow.getSchema();
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
@@ -180,7 +180,7 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 		BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(exchange_state);
 
 		left_child_iterator_tree=exchange;
-		right_child_iterator_tree=right_child_->getIteratorTree(blocksize);
+		right_child_iterator_tree=right_child_->GetIteratorTree(blocksize);
 		return;
 	}
 	case right_broadcast: {
@@ -189,13 +189,13 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 
 
 
-		left_child_iterator_tree=left_child_->getIteratorTree(blocksize);
+		left_child_iterator_tree=left_child_->GetIteratorTree(blocksize);
 
 		BlockStreamExpander::State expander_state;
 		expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 		expander_state.block_size_=blocksize;
 		expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
-		expander_state.child_=right_child_->getIteratorTree(blocksize);
+		expander_state.child_=right_child_->GetIteratorTree(blocksize);
 		expander_state.schema_=left_dataflow.getSchema();
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
@@ -226,7 +226,7 @@ void CrossJoin::generateChildPhysicalQueryPlan(
 
 }
 
-void CrossJoin::print(int level) const
+void CrossJoin::Print(int level) const
 {
 	printf("CrossJoin:\n",level*8," ");
 	switch(join_police_){
@@ -243,8 +243,8 @@ void CrossJoin::print(int level) const
 		break;
 	}
 	}
-	left_child_->print(level+1);
-	right_child_->print(level+1);
+	left_child_->Print(level+1);
+	right_child_->Print(level+1);
 }
 
 bool CrossJoin::canLocalJoin(Dataflow& left, Dataflow& right) const {

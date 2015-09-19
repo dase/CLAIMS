@@ -17,9 +17,9 @@ public:
 	CrossJoin();
 	CrossJoin(LogicalOperator* left_input,LogicalOperator* right_input);
 	virtual ~CrossJoin();
-	Dataflow getDataflow();
-	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
-	void print(int level=0)const;
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
+	void Print(int level=0)const;
 private:
 
 	/** return true if the nest-loop-join can be conducted locally**/
