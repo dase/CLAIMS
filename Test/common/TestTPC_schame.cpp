@@ -11,7 +11,7 @@
 //#include "../../Catalog/table.h"
 //#include "../../Loader/Hdfsloader.h"
 //#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-//#include "../../LogicalQueryPlan/Aggregation.h"
+//#include "../../LogicalQueryPlan/logical_aggregation.h"
 //#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 //#include "../../LogicalQueryPlan/Scan.h"
 //#include "../../LogicalQueryPlan/Filter.h"

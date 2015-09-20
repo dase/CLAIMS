@@ -325,7 +325,7 @@ bool BlockStreamAggregationIterator::next(BlockStreamBase *block){
 					unsigned long  count_value=(*(unsigned long *)state_.hashSchema->getColumnAddess(inputAggregationToOutput_[aggsize],cur_in_ht));
 					for(;i<aggsize;i++)
 					{
-						if(state_.avgIndex[j]==i)	//avgIndex save the index of avg in aggregations,see Aggregation.cpp:116
+						if(state_.avgIndex[j]==i)	//avgIndex save the index of avg in aggregations,see logical_aggregation.cpp:116
 						{
 							assert(state_.aggregations[i]==State::sum);
 							j++;

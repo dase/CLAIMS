@@ -12,7 +12,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../Aggregation.h"
+#include "../logical_aggregation.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../Scan.h"
 
@@ -38,7 +38,7 @@
 #include "../../Environment.h"
 
 //#include "../../utility/rdtsc.h"
-//#include "../Aggregation.h"
+//#include "../logical_aggregation.h"
 //#include "../Buffer.h"
 //#include "../EqualJoin.h"
 //#include "../Filter.h"
@@ -477,7 +477,7 @@ static int ResultCollect_test(){
 
 		LogicalOperator* sb_payload_scan = new LogicalScan(table_1->getProjectoin(pid));
 
-		LogicalOperator* aggregation = new Aggregation(group_by_attributes,
+		LogicalOperator* aggregation = new LogicalAggregation(group_by_attributes,
 				aggregation_attributes, aggregation_function, sb_payload_scan);
 		const NodeID collector_node_id = 0;
 

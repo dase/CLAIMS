@@ -14,7 +14,7 @@
 #include "../../../LogicalQueryPlan/EqualJoin.h"
 #include "../../../Catalog/ProjectionBinding.h"
 #include "../../../LogicalQueryPlan/Filter.h"
-#include "../../../LogicalQueryPlan/Aggregation.h"
+#include "../../../LogicalQueryPlan/logical_aggregation.h"
 #include "../../../LogicalQueryPlan/Buffer.h"
 #include "../../../utility/rdtsc.h"
 #include "../../../Executor/ExpanderTracker.h"
@@ -500,7 +500,7 @@ static int expanded_iterators_test(){
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
+		LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 //
 

@@ -11,7 +11,7 @@
 #include "../Scan.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
-#include "../Aggregation.h"
+#include "../logical_aggregation.h"
 #include "../Buffer.h"
 #include "../Filter.h"
 
@@ -517,7 +517,7 @@ static int getOptimalQueryPlan(){
 //		aggregation_attributes.push_back(table_1->getAttribute("order_no"));
 		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+		LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_cj_join);
 
 //

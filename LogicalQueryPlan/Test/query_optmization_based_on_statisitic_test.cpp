@@ -27,7 +27,6 @@
 #include "../../common/data_type.h"
 #include "../../common/AttributeComparator.h"
 
-#include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/Filter.h"
@@ -41,6 +40,7 @@
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../utility/rdtsc.h"
 #include "../../Test/set_up_environment.h"
+#include "../logical_aggregation.h"
 
 //#define DEBUG_TestForSerialize
 
@@ -992,7 +992,7 @@ static int query_optimization_based_on_statistics_aggregation(){
 			std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 			aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-			LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+			LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
 

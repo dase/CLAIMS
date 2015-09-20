@@ -21,7 +21,7 @@
 #include "../../LogicalQueryPlan/Sort.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
+#include "../../LogicalQueryPlan/logical_aggregation.h"
 
 #include "../../common/types/NValue.hpp"
 

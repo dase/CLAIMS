@@ -10,7 +10,6 @@
 #include "../Scan.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
-#include "../Aggregation.h"
 #include "../Buffer.h"
 #include "../Filter.h"
 
@@ -18,6 +17,7 @@
 #include "../../Catalog/ProjectionBinding.h"
 #include "../../utility/rdtsc.h"
 #include "../../common/AttributeComparator.h"
+#include "../logical_aggregation.h"
 
 using namespace std;
 static int aggregation_test(){
@@ -530,7 +530,7 @@ static int aggregation_test(){
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+		LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 ////
 //		std::vector<Attribute> aggregation_attributes_1;

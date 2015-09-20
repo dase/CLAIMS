@@ -30,10 +30,10 @@
 
 #include "../../Executor/IteratorExecutorMaster.h"
 
-#include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Buffer.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/Filter.h"
+#include "../../LogicalQueryPlan/logical_aggregation.h"
 #include "../../LogicalQueryPlan/LogicalOperator.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Scan.h"

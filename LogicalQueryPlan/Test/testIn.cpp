@@ -11,7 +11,7 @@
 
 #include "../Scan.h"
 #include "../Filter.h"
-#include "../Aggregation.h"
+#include "../logical_aggregation.h"
 #include "../Buffer.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
@@ -124,7 +124,7 @@ static int in_test(){
 		std::vector<Attribute> group_by_attributes;
 		group_by_attributes.push_back(table_1->getAttribute("row_id"));
 		std::vector<Attribute> aggregation_attributes;
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),filter_1);
+		LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),filter_1);
 
 		//join
 		std::vector<EqualJoin::JoinPair> join_pair_list;

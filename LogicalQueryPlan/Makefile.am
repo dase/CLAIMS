@@ -30,7 +30,7 @@ LDADD = 	../LogicalQueryPlan/liblogicalqueryplan.a \
 
 noinst_LIBRARIES=liblogicalqueryplan.a
 liblogicalqueryplan_a_SOURCES = \
-	Aggregation.cpp 				Aggregation.h \
+	logical_aggregation.cpp 				logical_aggregation.h \
 	Buffer.cpp 					Buffer.h \
 	DataflowPartition.cpp 			DataflowPartition.h \
 	DataflowPartitionDescriptor.cpp 	DataflowPartitionDescriptor.h \

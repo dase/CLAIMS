@@ -18,7 +18,7 @@
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
+#include "../../LogicalQueryPlan/logical_aggregation.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
@@ -58,7 +58,7 @@ static void query_1(){
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::PERFORMANCE);
@@ -118,7 +118,7 @@ static void query_2(){
 	aggregation_attributes.push_back(s_ps_join->getDataflow().getAttribute("PARTSUPP.PS_SUPPLYCOST"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
-	LogicalOperator* aggregation=new Aggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
+	LogicalOperator* aggregation=new LogicalAggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
@@ -239,7 +239,7 @@ static void query_3(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-	LogicalOperator* aggregation=new Aggregation(groupby_attributes,aggregation_attributes,aggregation_function,c_o_l_join);
+	LogicalOperator* aggregation=new LogicalAggregation(groupby_attributes,aggregation_attributes,aggregation_function,c_o_l_join);
 
 
 

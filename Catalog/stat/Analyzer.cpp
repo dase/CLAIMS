@@ -18,8 +18,8 @@
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
 #include "../../common/data_type.h"
+#include "../../LogicalQueryPlan/logical_aggregation.h"
 
-#include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Scan.h"
 
@@ -80,7 +80,7 @@ void Analyzer::analyse(const AttributeID &attrID) {
 
 	LogicalOperator* sb_payload_scan = new LogicalScan(projection);
 
-	LogicalOperator* aggregation = new Aggregation(group_by_attributes,
+	LogicalOperator* aggregation = new LogicalAggregation(group_by_attributes,
 			aggregation_attributes, aggregation_function, sb_payload_scan);
 	const NodeID collector_node_id = 0;
 
@@ -254,7 +254,7 @@ void Analyzer::compute_table_stat(const TableID& tab_id){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(
 			BlockStreamAggregationIterator::State::count);
-	LogicalOperator* agg=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
+	LogicalOperator* agg=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
 	LogicalOperator* root = new LogicalQueryPlanRoot(0,
 			agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
@@ -371,7 +371,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id){
 
 
 
-	LogicalOperator* agg=new Aggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),scan);
+	LogicalOperator* agg=new LogicalAggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),scan);
 
 
 	std::vector<Attribute> aggregation_attributes;
@@ -380,7 +380,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id){
 	aggregation_function.push_back(
 			BlockStreamAggregationIterator::State::count);
 
-	LogicalOperator* count_agg=new Aggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,agg);
+	LogicalOperator* count_agg=new LogicalAggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,agg);
 
 
 	LogicalOperator* root = new LogicalQueryPlanRoot(0,
@@ -439,7 +439,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,const unsigned 
 
 	LogicalOperator* sb_payload_scan = new LogicalScan(projection);
 
-	LogicalOperator* aggregation = new Aggregation(group_by_attributes,
+	LogicalOperator* aggregation = new LogicalAggregation(group_by_attributes,
 			aggregation_attributes, aggregation_function, sb_payload_scan);
 	const NodeID collector_node_id = 0;
 

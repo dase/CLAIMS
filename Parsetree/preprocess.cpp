@@ -13,7 +13,6 @@
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
 
-#include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
@@ -23,9 +22,10 @@
 
 #include "sql_node_struct.h"
 #include "../Environment.h"
-#include "../LogicalQueryPlan/Aggregation.h"
+#include "../LogicalQueryPlan/logical_aggregation.h"
 #include "../common/Logging.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
+#include "../LogicalQueryPlan/logical_aggregation.h"
 
 int getlevel(Expr_cal *calnode)
 {

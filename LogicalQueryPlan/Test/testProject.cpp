@@ -33,7 +33,7 @@
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
+#include "../../LogicalQueryPlan/logical_aggregation.h"
 
 static int testProject(){
 	int master;

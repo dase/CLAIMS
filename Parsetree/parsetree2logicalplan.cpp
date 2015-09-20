@@ -31,7 +31,7 @@
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
-#include "../LogicalQueryPlan/Aggregation.h"
+#include "../LogicalQueryPlan/logical_aggregation.h"
 #include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
 #include "../common/Logging.h"
@@ -268,7 +268,7 @@ static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
 						group_by_attributes.push_back(sublogicalplan->getDataflow().getAttribute(sexpr->ascolname));///????
 						p=selectlist->next;
 					}//2.2在1中的logicalplan上做groupby
-					LogicalOperator * aggrection_sublogicalplan=new Aggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),sublogicalplan);
+					LogicalOperator * aggrection_sublogicalplan=new LogicalAggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),sublogicalplan);
 					vector<EqualJoin::JoinPair> join_pair_list;
 					Node *lp,*sp;
 					for(lp=node->lnext,sp=((Query_stmt *)node->rnext)->select_list;lp!=NULL;)//3.1获得equaljoin的左右属性
@@ -1359,7 +1359,7 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 //			}
 //#endif
 		}
-		LogicalOperator* projection_or_aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_logicalplan);
+		LogicalOperator* projection_or_aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,select_logicalplan);
 		if(!CanCancelProject2(((Query_stmt *)parsetree)->select_list))
 		{
 			select_logicalplan= select_where_from2logicalplan(parsetree,projection_or_aggregation,2);

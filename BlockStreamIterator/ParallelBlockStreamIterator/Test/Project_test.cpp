@@ -31,7 +31,7 @@
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
 #include "../../../LogicalQueryPlan/Filter.h"
-#include "../../../LogicalQueryPlan/Aggregation.h"
+#include "../../../LogicalQueryPlan/logical_aggregation.h"
 
 using namespace std;
 

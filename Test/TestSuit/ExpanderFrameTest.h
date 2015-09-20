@@ -153,7 +153,7 @@ static int test_scan_Aggregation_small_Groups(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 
 
@@ -197,7 +197,7 @@ static int test_scan_Aggregation_large_Groups(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 
 
@@ -247,7 +247,7 @@ static int test_scan_filter_Aggregation(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
 
@@ -297,7 +297,7 @@ static int test_scan_filter_Scalar_Aggregation(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
 
@@ -891,7 +891,7 @@ static int test_multiple_scan_filter_Aggregation(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
 
@@ -943,7 +943,7 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
 

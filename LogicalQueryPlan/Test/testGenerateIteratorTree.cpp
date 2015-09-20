@@ -1,3 +1,4 @@
+
 /*
  * testGenerateIteratorTree.cpp
  *
@@ -11,7 +12,7 @@
 
 #include "../Scan.h"
 #include "../Filter.h"
-#include "../Aggregation.h"
+#include "../logical_aggregation.h"
 #include "../Buffer.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
@@ -536,7 +537,7 @@ static int testGenerateIteratorTree(){
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 //		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
-		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
+		LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,sb_payload_join);
 
 //
 

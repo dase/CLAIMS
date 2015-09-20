@@ -26,9 +26,10 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include"sql_node_struct.h"
 #include "../Environment.h"
-#include "../LogicalQueryPlan/Aggregation.h"
 #include "../common/Logging.h"
 #include <ostream>
+
+#include "../LogicalQueryPlan/logical_aggregation.h"
 using namespace std;
 bool semantic_analysis(Node *parsetree,bool issubquery);
 bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable);
