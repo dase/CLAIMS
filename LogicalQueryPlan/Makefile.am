@@ -38,7 +38,7 @@ liblogicalqueryplan_a_SOURCES = \
 	EqualJoin.cpp 				EqualJoin.h \
 	Filter.cpp 					Filter.h \
 	LogicalOperator.cpp 			LogicalOperator.h \
-	LogicalQueryPlanRoot.cpp 		LogicalQueryPlanRoot.h \
+	logcial_query_plan_root.h	logical_query_plan_root.cpp \
 	Project.cpp 				Project.h \
 	Requirement.cpp 				Requirement.h \
 	Scan.cpp 					Scan.h \
