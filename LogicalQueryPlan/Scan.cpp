@@ -1,9 +1,31 @@
 /*
- * Scan.cpp
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /Claims/LogicalQueryPlan/Scan.cpp
  *
  *  Created on: Nov 7, 2013
  *      Author: wangli
+ *       Email:
+ *
+ * Description:
+ *
  */
+
 #include <stdio.h>
 #include "Scan.h"
 #include "../Catalog/Catalog.h"
@@ -11,216 +33,247 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
+
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
-:scan_attribute_list_(attribute_list),target_projection_(0),dataflow_(0) {
-	// TODO Auto-generated constructor stub
-	setOperatortype(l_scan);
+    : scan_attribute_list_(attribute_list),
+      target_projection_(0),
+      dataflow_(0) {
+  // TODO Auto-generated constructor stub
+  setOperatortype(l_scan);
 }
-LogicalScan::LogicalScan(const TableID& table_id):target_projection_(0),dataflow_(0) {
-	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
-	if(table==0){
-		printf("Table[id=%d] does not exists!\n",table_id);
-	}
-	scan_attribute_list_=table->getAttributes();
-	setOperatortype(l_scan);
+
+LogicalScan::LogicalScan(const TableID& table_id)
+    : target_projection_(0), dataflow_(0) {
+  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
+  if (table == 0) {
+    printf("Table[id=%d] does not exists!\n", table_id);
+  }
+  scan_attribute_list_ = table->getAttributes();
+  setOperatortype(l_scan);
 }
-LogicalScan::LogicalScan(ProjectionDescriptor* projection,const float sample_rate):sample_rate_(sample_rate),dataflow_(0){
-	scan_attribute_list_=projection->getAttributeList();
-	target_projection_=projection;
-	setOperatortype(l_scan);
+LogicalScan::LogicalScan(ProjectionDescriptor* projection,
+                         const float sample_rate)
+    : sample_rate_(sample_rate), dataflow_(0) {
+  scan_attribute_list_ = projection->getAttributeList();
+  target_projection_ = projection;
+  setOperatortype(l_scan);
 }
-LogicalScan::LogicalScan(const TableID& table_id,const std::vector<unsigned>& selected_attribute_index_list)
-:target_projection_(0),dataflow_(0) {
-	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
-	if(table==0){
-		printf("Table[id=%d] does not exists!\n",table_id);
-	}
-	for(unsigned i=0;i<selected_attribute_index_list.size();i++){
-		scan_attribute_list_.push_back(table->getAttribute(selected_attribute_index_list[i]));
-	}
-	setOperatortype(l_scan);
+LogicalScan::LogicalScan(
+    const TableID& table_id,
+    const std::vector<unsigned>& selected_attribute_index_list)
+    : target_projection_(0), dataflow_(0) {
+  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
+  if (table == 0) {
+    printf("Table[id=%d] does not exists!\n", table_id);
+  }
+  for (unsigned i = 0; i < selected_attribute_index_list.size(); i++) {
+    scan_attribute_list_.push_back(
+        table->getAttribute(selected_attribute_index_list[i]));
+  }
+  setOperatortype(l_scan);
 }
 
 LogicalScan::~LogicalScan() {
-	// TODO Auto-generated destructor stub
-	delete dataflow_;
+  // TODO Auto-generated destructor stub
+  delete dataflow_;
 }
 
-//LogicalProjection LogicalScan::getLogcialProjection()const{
-//	return logical_projection_;
-//}
+/**
+ * @brief It can generate many projection. We need the smallest cost of
+ * projections,so we should choose the best one what we need with traversing
+ * scan_attribute_list_.
+ */
+Dataflow LogicalScan::getDataflow() {
+  if (dataflow_ == 0)
+    dataflow_ = new Dataflow();
+  else
+    return *dataflow_;
+  TableID table_id = scan_attribute_list_[0].table_id_;
+  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
 
-Dataflow LogicalScan::getDataflow(){
-	if(dataflow_==0)
-		dataflow_=new Dataflow();
-	else
-		return *dataflow_;
-	TableID table_id=scan_attribute_list_[0].table_id_;
-	TableDescriptor* table=Catalog::getInstance()->getTable(table_id);
+  if (target_projection_ == 0) {
+    ProjectionOffset target_projection_off = -1;
+    unsigned int min_projection_cost = -1;
+    // TODO(Yu): get real need column as scan_attribute_list_, otherwise,
+    // optimization don't work
+    for (ProjectionOffset projection_off = 0;
+         projection_off < table->getNumberOfProjection(); projection_off++) {
+      ProjectionDescriptor* projection = table->getProjectoin(projection_off);
+      bool fail = false;
+      for (std::vector<Attribute>::iterator it = scan_attribute_list_.begin();
+           it != scan_attribute_list_.end(); it++) {
+        if (!projection->hasAttribute(*it)) {
+          /*the attribute *it is not in the projection*/
+          fail = true;
+          break;
+        }
+      }
+      if (fail == true) {
+        continue;
+      }
+      unsigned int projection_cost = projection->getProjectionCost();
+      // get the projection with minimum cost
+      if (min_projection_cost > projection_cost) {
+        target_projection_off = projection_off;
+        min_projection_cost = projection_cost;
+        cout << "in " << table->getNumberOfProjection() << " projections, "
+                                                           "projection "
+             << projection_off << " has less cost:" << projection_cost << endl;
+      }
+    }
+    if (target_projection_off == -1) {
+      // fail to find a projection that contains all the scan attribute
+      printf(
+          "The current implementation does not support the scanning that "
+          "involves more than one projection.\n");
+      assert(false);
+    }
+    target_projection_ = table->getProjectoin(target_projection_off);
+    cout << "in " << table->getNumberOfProjection() << " projections, "
+                                                       "projection "
+         << target_projection_off << " has min cost:" << min_projection_cost
+         << endl;
+  }
 
-	if(target_projection_==0){
-		ProjectionOffset target_projection_off=-1;
-		unsigned int min_projection_cost = -1;
+  if (!target_projection_->AllPartitionBound()) {
+    Catalog::getInstance()->getBindingModele()->BindingEntireProjection(
+        target_projection_->getPartitioner(), DESIRIABLE_STORAGE_LEVEL);
+  }
 
-		/*
-		 * TODO: get real need column as scan_attribute_list_, otherwise, optimization don't work	-Yu
-		 */
-		for(ProjectionOffset projection_off=0;projection_off<table->getNumberOfProjection();projection_off++){
-			ProjectionDescriptor* projection=table->getProjectoin(projection_off);
-			bool fail=false;
-			for(std::vector<Attribute>::iterator it=scan_attribute_list_.begin();it!=scan_attribute_list_.end();it++){
-				if(!projection->hasAttribute(*it)){
-					/*the attribute *it is not in the projection*/
-					fail=true;
-					break;
-				}
-			}
-			if(fail==true){
-				continue;
-			}
-			unsigned int projection_cost = projection->getProjectionCost();
-			//get the projection with minimum cost
-			if (min_projection_cost > projection_cost) {
-				target_projection_off = projection_off;
-				min_projection_cost = projection_cost;
-				cout<<"in "<<table->getNumberOfProjection()<<" projections, "
-						"projection "<<projection_off<<" has less cost:"<<projection_cost<<endl;
+  /**
+   * @brief build the data flow
+   */
 
-			}
-//			projection_candidate.push_back(projection_off);
-//			break;
-		}
+  dataflow_->attribute_list_ = scan_attribute_list_;  // attribute_list
 
-		if(target_projection_off==-1){
-			/*fail to find a projection that contains all the scan attribute*/
-			printf("The current implementation does not support the scanning that involves more than one projection.\n");
-			assert(false);
-		}
-		target_projection_=table->getProjectoin(target_projection_off);
-		cout<<"in "<<table->getNumberOfProjection()<<" projections, "
-				"projection "<<target_projection_off<<" has min cost:"<<min_projection_cost<<endl;
-	}
-	if(!target_projection_->AllPartitionBound()){
-		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(target_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
-	}
-
-	/*build the data flow*/
-
-
-	dataflow_->attribute_list_=scan_attribute_list_; /*attribute_list*/
-
-	Partitioner* par=target_projection_->getPartitioner();
-	dataflow_->property_.partitioner=DataflowPartitioningDescriptor(*par);
-	dataflow_->property_.commnication_cost=0;
-	return *dataflow_;
-
+  Partitioner* par = target_projection_->getPartitioner();
+  dataflow_->property_.partitioner = DataflowPartitioningDescriptor(*par);
+  dataflow_->property_.commnication_cost = 0;
+  return *dataflow_;
 }
-BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size){
-	/* In the current implementation, all the attributes within the involved projection
-	 * are read.
-	 * TODO: Ideally, the columns in one projection are stored separately and only the
-	 * needed columns are touched for a given query.
-	 */
-	ExpandableBlockStreamProjectionScan::State state;
-	state.block_size_=block_size;
-	state.projection_id_=target_projection_->getProjectionID();
-	state.schema_=getSchema(dataflow_->attribute_list_);
-	state.sample_rate_=sample_rate_;
-	return new ExpandableBlockStreamProjectionScan(state);
 
-//
-//	ExpandableBlockStreamSingleColumnScan::State state;
-//	state.block_size_=block_size;
-//	state.filename_="/home/claims/data/wangli/T0G0P0";
-//	state.schema_=getSchema(dataflow_->attribute_list_);
-//	return new ExpandableBlockStreamSingleColumnScan(state);
+/**
+ * @brief Set the value of class state and get instantiation of physical
+ * operator to transform logical operator.
+ * In the current implementation, all the attributes within the involved
+ * projection
+ * are read.
+ */
+
+// TODO: Ideally, the columns in one projection are stored separately
+// and only the needed columns are touched for a given query.
+
+BlockStreamIteratorBase* LogicalScan::getIteratorTree(
+    const unsigned& block_size) {
+  ExpandableBlockStreamProjectionScan::State state;
+  state.block_size_ = block_size;
+  state.projection_id_ = target_projection_->getProjectionID();
+  state.schema_ = getSchema(dataflow_->attribute_list_);
+  state.sample_rate_ = sample_rate_;
+  return new ExpandableBlockStreamProjectionScan(state);
 }
-bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
-	Dataflow dataflow=getDataflow();
-	NetworkTransfer transfer=requirement.requireNetworkTransfer(dataflow);
 
-	ExpandableBlockStreamProjectionScan::State state;
-	state.block_size_=block_size;
-	state.projection_id_=target_projection_->getProjectionID();
-	state.schema_=getSchema(dataflow_->attribute_list_);
-	state.sample_rate_=sample_rate_;
+bool LogicalScan::GetOptimalPhysicalPlan(
+    Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
+    const unsigned& block_size) {
+  Dataflow dataflow = getDataflow();
+  NetworkTransfer transfer = requirement.requireNetworkTransfer(dataflow);
 
-	PhysicalPlan scan=new ExpandableBlockStreamProjectionScan(state);
+  ExpandableBlockStreamProjectionScan::State state;
+  state.block_size_ = block_size;
+  state.projection_id_ = target_projection_->getProjectionID();
+  state.schema_ = getSchema(dataflow_->attribute_list_);
+  state.sample_rate_ = sample_rate_;
 
-	if(transfer==NONE){
+  PhysicalPlan scan = new ExpandableBlockStreamProjectionScan(state);
 
-		physical_plan_descriptor.plan=scan;
-		physical_plan_descriptor.dataflow=dataflow;
-		physical_plan_descriptor.cost+=0;
-	}
-	else{
-		physical_plan_descriptor.cost+=dataflow.getAggregatedDatasize();
+  if (transfer == NONE) {
+    physical_plan_descriptor.plan = scan;
+    physical_plan_descriptor.dataflow = dataflow;
+    physical_plan_descriptor.cost += 0;
+  } else {
+    physical_plan_descriptor.cost += dataflow.getAggregatedDatasize();
 
-		ExpandableBlockStreamExchangeEpoll::State state;
-		state.block_size_=block_size;
-		state.child_=scan;//child_iterator;
-		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema_=getSchema(dataflow.attribute_list_);
+    ExpandableBlockStreamExchangeEpoll::State state;
+    state.block_size_ = block_size;
+    state.child_ = scan;  // child_iterator;
+    state.exchange_id_ =
+        IDsGenerator::getInstance()->generateUniqueExchangeID();
+    state.schema_ = getSchema(dataflow.attribute_list_);
 
-		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
-		state.lower_id_list_=lower_id_list;
+    std::vector<NodeID> lower_id_list =
+        getInvolvedNodeID(dataflow.property_.partitioner);
+    state.lower_id_list_ = lower_id_list;
 
-		std::vector<NodeID> upper_id_list;
-		if(requirement.hasRequiredLocations()){
-			upper_id_list=requirement.getRequiredLocations();
-		}
-		else{
-			if(requirement.hasRequiredPartitionFunction()){
-				/* partition function contains the number of partitions*/
-				PartitionFunction* partitoin_function=requirement.getPartitionFunction();
-				upper_id_list=std::vector<NodeID>(NodeTracker::getInstance()->getNodeIDList().begin(),NodeTracker::getInstance()->getNodeIDList().begin()+partitoin_function->getNumberOfPartitions()-1);
-			}
-			else{
-				//TODO: decide the degree of parallelism
-				upper_id_list=NodeTracker::getInstance()->getNodeIDList();
-			}
-		}
+    std::vector<NodeID> upper_id_list;
+    if (requirement.hasRequiredLocations()) {
+      upper_id_list = requirement.getRequiredLocations();
+    } else {
+      if (requirement.hasRequiredPartitionFunction()) {
+        // partition function contains the number of partitions
+        PartitionFunction* partitoin_function =
+            requirement.getPartitionFunction();
+        upper_id_list = std::vector<NodeID>(
+            NodeTracker::getInstance()->getNodeIDList().begin(),
+            NodeTracker::getInstance()->getNodeIDList().begin() +
+                partitoin_function->getNumberOfPartitions() - 1);
+      } else {
+        // TODO: decide the degree of parallelism
+        upper_id_list = NodeTracker::getInstance()->getNodeIDList();
+      }
+    }
 
-		state.upper_id_list_=upper_id_list;
+    state.upper_id_list_ = upper_id_list;
 
-		state.partition_schema_=partition_schema::set_hash_partition(getIndexInAttributeList(dataflow.attribute_list_,requirement.getPartitionKey()));
-		assert(state.partition_schema_.partition_key_index>=0);
+    state.partition_schema_ =
+        partition_schema::set_hash_partition(getIndexInAttributeList(
+            dataflow.attribute_list_, requirement.getPartitionKey()));
+    assert(state.partition_schema_.partition_key_index >= 0);
 
-		BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
+    BlockStreamIteratorBase* exchange =
+        new ExpandableBlockStreamExchangeEpoll(state);
 
-		Dataflow new_dataflow;
-		new_dataflow.attribute_list_=dataflow.attribute_list_;
-		new_dataflow.property_.partitioner.setPartitionKey(requirement.getPartitionKey());
-		new_dataflow.property_.partitioner.setPartitionFunction(PartitionFunctionFactory::createBoostHashFunction(state.upper_id_list_.size()));
+    Dataflow new_dataflow;
+    new_dataflow.attribute_list_ = dataflow.attribute_list_;
+    new_dataflow.property_.partitioner.setPartitionKey(
+        requirement.getPartitionKey());
+    new_dataflow.property_.partitioner.setPartitionFunction(
+        PartitionFunctionFactory::createBoostHashFunction(
+            state.upper_id_list_.size()));
 
-		const unsigned total_size=dataflow.getAggregatedDatasize();
-		const unsigned degree_of_parallelism=state.upper_id_list_.size();
-		std::vector<DataflowPartition> dataflow_partition_list;
-			for(unsigned i=0;i<degree_of_parallelism;i++){
-				const NodeID location=upper_id_list[i];
+    const unsigned total_size = dataflow.getAggregatedDatasize();
+    const unsigned degree_of_parallelism = state.upper_id_list_.size();
+    std::vector<DataflowPartition> dataflow_partition_list;
+    for (unsigned i = 0; i < degree_of_parallelism; i++) {
+      const NodeID location = upper_id_list[i];
 
-				/* Currently, the join output size cannot be predicted due to the absence of data statistics.
-				 * We just use the magic number as following */
-				const unsigned datasize=total_size/degree_of_parallelism;
-				DataflowPartition dfp(i,datasize,location);
-				dataflow_partition_list.push_back(dfp);
-			}
-		new_dataflow.property_.partitioner.setPartitionList(dataflow_partition_list);
+      /**
+       * @brief Currently, the join output size cannot be predicted due to the
+       * absence
+       * of data statistics.
+       * We just use the magic number as following
+       */
+      const unsigned datasize = total_size / degree_of_parallelism;
+      DataflowPartition dfp(i, datasize, location);
+      dataflow_partition_list.push_back(dfp);
+    }
+    new_dataflow.property_.partitioner.setPartitionList(
+        dataflow_partition_list);
 
+    physical_plan_descriptor.plan = exchange;
+    physical_plan_descriptor.dataflow = new_dataflow;
+    physical_plan_descriptor.cost += new_dataflow.getAggregatedDatasize();
+  }
 
-		physical_plan_descriptor.plan=exchange;
-		physical_plan_descriptor.dataflow=new_dataflow;
-		physical_plan_descriptor.cost+=new_dataflow.getAggregatedDatasize();
-	}
-
-	if(requirement.passLimits(physical_plan_descriptor.cost))
-		return true;
-	else
-		return false;
-
+  if (requirement.passLimits(physical_plan_descriptor.cost))
+    return true;
+  else
+    return false;
 }
-void LogicalScan::print(int level)const{
-//	align(level);
-	printf("%*.sScan: %s\n",level*8," ",Catalog::getInstance()->getTable(target_projection_->getProjectionID().table_id)->getTableName().c_str());
-
+void LogicalScan::print(int level) const {
+  printf("%*.sScan: %s\n", level * 8, " ",
+         Catalog::getInstance()
+             ->getTable(target_projection_->getProjectionID().table_id)
+             ->getTableName()
+             .c_str());
 }
