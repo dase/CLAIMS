@@ -13,6 +13,7 @@
 #include "../Aggregation.h"
 #include "../Buffer.h"
 #include "../Filter.h"
+#include "../Limit.h"
 
 #include "../../Environment.h"
 #include "../../Catalog/ProjectionBinding.h"

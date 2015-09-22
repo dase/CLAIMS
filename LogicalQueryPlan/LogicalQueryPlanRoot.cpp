@@ -81,7 +81,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
 	BlockStreamIteratorBase* middle_tier;
-	if(!limit_constraint_.canBeOmitted()){
+	if(!limit_constraint_.CanBeOmitted()){
 		/* we should add a limit operator*/
 		BlockStreamLimit::State limit_state(expander_state.schema_->duplicateSchema(),expander,limit_constraint_.returned_tuples_,block_size,limit_constraint_.start_position_);
 		BlockStreamIteratorBase* limit=new BlockStreamLimit(limit_state);
@@ -268,7 +268,7 @@ std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(const Dataflow& 
 }
 void LogicalQueryPlanRoot::print(int level)const{
 	printf("Root\n");
-	if(!limit_constraint_.canBeOmitted()){
+	if(!limit_constraint_.CanBeOmitted()){
 		printf("With limit constaint: %ld, %ld\n",limit_constraint_.start_position_,limit_constraint_.returned_tuples_);
 	}
 	child_->print(level+1);

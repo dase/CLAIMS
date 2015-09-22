@@ -28,6 +28,7 @@
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Buffer.h"
+#include "../LogicalQueryPlan/Limit.h"
 
 #include "../utility/rdtsc.h"
 
