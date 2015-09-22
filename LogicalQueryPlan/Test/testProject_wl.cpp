@@ -4,7 +4,7 @@
  *  Created on: 2014-3-8
  *      Author: casa
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 /*
  * testProject.cpp
  *
@@ -39,9 +39,9 @@
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
+#include "../project.h"
 
 
 /**
@@ -274,7 +274,7 @@ static int testProject_wl(){
 //		while(executable_plan->next(block));
 //		executable_plan->close();
 
-		BlockStreamIteratorBase* prj=proj->getIteratorTree(1024*64-sizeof(unsigned));
+		BlockStreamIteratorBase* prj=proj->GetIteratorTree(1024*64-sizeof(unsigned));
 
 		BlockStreamPrint::State print_state;
 		print_state.block_size_=64*1024-sizeof(unsigned);

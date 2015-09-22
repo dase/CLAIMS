@@ -543,12 +543,12 @@ static int testGenerateIteratorTree(){
 		const NodeID collector_node_id=0;
 		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
 		unsigned long long int timer_start=curtick();
-		root->print();
+		root->Print();
 
 //		root->getDataflow();
 
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
-		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+		BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64-sizeof(unsigned));
 		printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 
 		executable_query_plan->print();

@@ -32,7 +32,6 @@
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
@@ -43,6 +42,7 @@
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../LogicalQueryPlan/CrossJoin.h"
+#include "../LogicalQueryPlan/project.h"
 
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
@@ -197,16 +197,16 @@ static int getjoinpairlist(Node *wcexpr,vector<EqualJoin::JoinPair> &join_pair_l
 					//	printf("left %s.%s   right %s.%s\n",lnode->parameter1,lnode->parameter2,rnode->parameter1,rnode->parameter2);
 						//TODO just select PART.row_id,LINEITEM.row_id from LINEITEM,PART where LINEITEM.row_id=PART.row_id and PART.row_id<20;
 
-						Attribute la=filter_1->getDataflow().getAttribute(lnode->parameter2);
-						Attribute ra=filter_2->getDataflow().getAttribute(rnode->parameter2);
+						Attribute la=filter_1->GetDataflow().getAttribute(lnode->parameter2);
+						Attribute ra=filter_2->GetDataflow().getAttribute(rnode->parameter2);
 
 						if(strcmp(la.attrName.c_str(),"NULL")!=0&&strcmp(ra.attrName.c_str(),"NULL")!=0)
 						{
 							join_pair_list.push_back(EqualJoin::JoinPair(la,ra));
 							return 1;
 						}
-						la=filter_1->getDataflow().getAttribute(rnode->parameter2);
-						ra=filter_2->getDataflow().getAttribute(lnode->parameter2);
+						la=filter_1->GetDataflow().getAttribute(rnode->parameter2);
+						ra=filter_2->GetDataflow().getAttribute(lnode->parameter2);
 						if(strcmp(la.attrName.c_str(),"NULL")!=0&&strcmp(ra.attrName.c_str(),"NULL")!=0)
 						{
 							join_pair_list.push_back(EqualJoin::JoinPair(la,ra));
@@ -265,7 +265,7 @@ static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
 					{
 						Select_list *selectlist=(Select_list *)p;
 						Select_expr *sexpr=(Select_expr *)selectlist->args;
-						group_by_attributes.push_back(sublogicalplan->getDataflow().getAttribute(sexpr->ascolname));///????
+						group_by_attributes.push_back(sublogicalplan->GetDataflow().getAttribute(sexpr->ascolname));///????
 						p=selectlist->next;
 					}//2.2在1中的logicalplan上做groupby
 					LogicalOperator * aggrection_sublogicalplan=new Aggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),sublogicalplan);
@@ -277,7 +277,7 @@ static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
 						Columns * lcol=(Columns *)lpexpr->data;
 						Select_list *spexpr=(Select_list *)sp;
 						Columns *rcol=(Columns *)spexpr->args;
-						join_pair_list.push_back(EqualJoin::JoinPair(input->getDataflow().getAttribute(lcol->parameter2),sublogicalplan->getDataflow().getAttribute(rcol->parameter2)));
+						join_pair_list.push_back(EqualJoin::JoinPair(input->GetDataflow().getAttribute(lcol->parameter2),sublogicalplan->GetDataflow().getAttribute(rcol->parameter2)));
 						lp=lpexpr->next;
 						sp=spexpr->next;
 					}
@@ -316,7 +316,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			else//need to modify the output_schema_attrname from the subquery to the form of subquery's alias.attrname
 			{
 				tablescan=parsetree2logicalplan(node->subquery);
-				vector<Attribute>output_attribute=tablescan->getDataflow().attribute_list_;
+				vector<Attribute>output_attribute=tablescan->GetDataflow().attribute_list_;
 				vector<QNode *>exprTree;
 				string subquery_alias=string(node->astablename);
 				for(int i=0;i<output_attribute.size();i++)
@@ -574,7 +574,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
+					aggregation_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
 			else if(strcmp(funcnode->funname,"FSUM")==0)
@@ -587,7 +587,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
+					aggregation_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 
 				}
 			}
@@ -601,7 +601,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
+					aggregation_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
@@ -614,7 +614,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
+					aggregation_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
@@ -627,7 +627,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 				}
 				else
 				{
-					aggregation_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
+					aggregation_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(funcnode->parameter1)));
 				}
 			}
 			else
@@ -712,15 +712,15 @@ static void get_group_by_attributes(Node *groupby_node,vector<Attribute> &group_
 		case t_name_name:
 		case t_column:
 		{
-			group_by_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+			group_by_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(groupby_node)));
 		}break;
 		case t_expr_cal:
 		{
-			group_by_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+			group_by_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(groupby_node)));
 		}break;
 		case t_expr_func:
 		{
-			group_by_attributes.push_back(input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+			group_by_attributes.push_back(input->GetDataflow().getAttribute(get_expr_str(groupby_node)));
 		}break;
 		default:
 		{

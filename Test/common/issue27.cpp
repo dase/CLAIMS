@@ -4,7 +4,7 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 #ifndef ISSUE27_CPP_
 #define ISSUE27_CPP_
 #include "../../Environment.h"
@@ -19,13 +19,13 @@
 #include "../../LogicalQueryPlan/Aggregation.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
 
 #include "../../common/types/NValue.hpp"
+#include "../../LogicalQueryPlan/project.h"
 
 #include "../../utility/rdtsc.h"
 
@@ -221,7 +221,7 @@ static void query_select_aggregation(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	cout<<"performance is ok!"<<endl;
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));

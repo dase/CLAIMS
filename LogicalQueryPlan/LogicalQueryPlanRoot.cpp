@@ -31,10 +31,10 @@ LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
 	}
 }
 
-BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& block_size){
-	getDataflow();
-	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(block_size);
-	Dataflow child_dataflow=child_->getDataflow();
+BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(const unsigned& block_size){
+	GetDataflow();
+	BlockStreamIteratorBase* child_iterator=child_->GetIteratorTree(block_size);
+	Dataflow child_dataflow=child_->GetDataflow();
 //	Schema* schema=getSchema(child_dataflow.attribute_list_);
 	NodeTracker* node_tracker=NodeTracker::getInstance();
 
@@ -118,11 +118,11 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 
 	return ret;
 }
-Dataflow LogicalQueryPlanRoot::getDataflow(){
-	Dataflow ret=child_->getDataflow();
+Dataflow LogicalQueryPlanRoot::GetDataflow(){
+	Dataflow ret=child_->GetDataflow();
 	QueryOptimizationLogging::log("Communication cost:%ld, predicted ouput size=%ld\n",ret.property_.commnication_cost,ret.property_.partitioner.getAggregatedDataCardinality());
 //	print();
-	return child_->getDataflow();
+	return child_->GetDataflow();
 }
 
 bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& final_physical_plan_desc, const unsigned & block_size){
@@ -266,11 +266,11 @@ std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(const Dataflow& 
 	}
 	return attribute_name_list;
 }
-void LogicalQueryPlanRoot::print(int level)const{
+void LogicalQueryPlanRoot::Print(int level)const{
 	printf("Root\n");
 	if(!limit_constraint_.canBeOmitted()){
 		printf("With limit constaint: %ld, %ld\n",limit_constraint_.start_position_,limit_constraint_.returned_tuples_);
 	}
-	child_->print(level+1);
+	child_->Print(level+1);
 
 }

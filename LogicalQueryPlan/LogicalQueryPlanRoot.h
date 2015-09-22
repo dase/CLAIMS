@@ -33,10 +33,10 @@ public:
 	enum outputFashion{PRINT,PERFORMANCE,RESULTCOLLECTOR};
 	LogicalQueryPlanRoot(NodeID collecter,LogicalOperator* child,const outputFashion& fashion=PERFORMANCE, LimitConstraint limit_constraint=LimitConstraint());
 	virtual ~LogicalQueryPlanRoot();
-	Dataflow getDataflow();
-	BlockStreamIteratorBase* getIteratorTree(const unsigned&);
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase* GetIteratorTree(const unsigned&);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
-	void print(int level=0)const;
+	void Print(int level=0)const;
 private:
 	std::vector<std::string> getAttributeName(const Dataflow& dataflow)const;
 private:

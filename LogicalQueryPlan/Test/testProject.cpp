@@ -4,7 +4,7 @@
  *  Created on: 2014-3-2
  *      Author: casa
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 #include <vector>
 #include <iostream>
 #include "../../BlockStreamIterator/BlockStreamPrint.h"
@@ -31,9 +31,9 @@
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
+#include "../project.h"
 
 static int testProject(){
 	int master;
@@ -112,7 +112,7 @@ static int testProject(){
 		vve.push_back(ve6);
 
 		LogicalProject *proj=new LogicalProject(scan,vve);
-		BlockStreamIteratorBase* prj=proj->getIteratorTree(1024*64-sizeof(unsigned));
+		BlockStreamIteratorBase* prj=proj->GetIteratorTree(1024*64-sizeof(unsigned));
 
 		BlockStreamPrint::State print_state;
 		print_state.block_size_=64*1024-sizeof(unsigned);

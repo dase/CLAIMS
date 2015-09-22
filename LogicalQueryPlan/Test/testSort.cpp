@@ -93,7 +93,7 @@ static int testSort(){
 		oas.push_back(od0);
 		LogicalOperator* sort=new LogicalSort(scan,oas);
 
-		BlockStreamIteratorBase *sort_=sort->getIteratorTree(64*1024-sizeof(unsigned));
+		BlockStreamIteratorBase *sort_=sort->GetIteratorTree(64*1024-sizeof(unsigned));
 
 		BlockStreamPrint::State print_state;
 		print_state.block_size_=64*1024-sizeof(unsigned);

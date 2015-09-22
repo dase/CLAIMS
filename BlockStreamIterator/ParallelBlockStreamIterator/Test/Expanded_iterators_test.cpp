@@ -519,18 +519,18 @@ static int expanded_iterators_test(){
 
 //		filter_1->getDataflow();
 		LogicalOperator* target=aggregation;
-		executable_query_plan=target->getIteratorTree((1024*64-sizeof(unsigned)));
+		executable_query_plan=target->GetIteratorTree((1024*64-sizeof(unsigned)));
 
-		BlockStreamExpander::State expander_state(target->getDataflow().getSchema(),executable_query_plan,500,1024*64-sizeof(unsigned));
+		BlockStreamExpander::State expander_state(target->GetDataflow().getSchema(),executable_query_plan,500,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-		BlockStreamPerformanceMonitorTop::State perf_state(target->getDataflow().getSchema(),expander,1024*64-
+		BlockStreamPerformanceMonitorTop::State perf_state(target->GetDataflow().getSchema(),expander,1024*64-
 				sizeof(unsigned));
 		BlockStreamIteratorBase* top=new BlockStreamPerformanceMonitorTop(perf_state);
 
 		top->print();
 
-		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(target->getDataflow().getSchema(),1024*64);
+		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(target->GetDataflow().getSchema(),1024*64);
 		int c=1;
 		while(c==1){
 //			timer_start=curtick();b

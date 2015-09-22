@@ -25,7 +25,7 @@ LogicalIndexScan::~LogicalIndexScan() {
 	// TODO Auto-generated destructor stub
 }
 
-Dataflow LogicalIndexScan::getDataflow()
+Dataflow LogicalIndexScan::GetDataflow()
 {
 	if(!scan_projection_->AllPartitionBound()){
 		printf("Binded!\n");
@@ -40,7 +40,7 @@ Dataflow LogicalIndexScan::getDataflow()
 	return dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalIndexScan::getIteratorTree(const unsigned & blocksize)
+BlockStreamIteratorBase* LogicalIndexScan::GetIteratorTree(const unsigned & blocksize)
 {
 	IndexScanIterator::State state;
 	state.schema_ = getSchema(dataflow_.attribute_list_);
@@ -58,7 +58,7 @@ bool LogicalIndexScan::GetOptimalPhysicalPlan(Requirement requirement, PhysicalP
 	return false;
 }
 
-void LogicalIndexScan::print(int level) const
+void LogicalIndexScan::Print(int level) const
 {
 	cout << "level "  << level << ": Logical Index Scan\n";
 }

@@ -4,7 +4,7 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 #ifndef ISSUE27_SORT_CPP_
 #define ISSUE27_SORT_CPP_
 #include "../../Environment.h"
@@ -17,7 +17,6 @@
 
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Sort.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
@@ -29,6 +28,7 @@
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
+#include "../../LogicalQueryPlan/project.h"
 
 static void query_select_sort() {
 	/*
@@ -83,7 +83,7 @@ static void query_select_sort() {
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,sort,LogicalQueryPlanRoot::PRINT);
 
 	cout<<"performance is ok!"<<endl;
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));
@@ -202,12 +202,12 @@ static void query_select_sort_string() {
 		printf("vo[%d]= %s len=%d  aa=%x  sa=%x\n",i,(vo[i])->ta_,strlen(vo[i]->ta_) ,vo[i],vo[i]->ta_);
 	}
 	LogicalOperator* sort1=new LogicalSort(project1,vo);
-	sort1->print();
+	sort1->Print();
 	cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
 
 	//===========================root===========================
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,sort1,LogicalQueryPlanRoot::PRINT);
-	root->print();
+	root->Print();
 	cout<<"performance is ok!"<<endl;
 	getchar();
 	getchar();

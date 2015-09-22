@@ -45,12 +45,12 @@ Filter::~Filter() {
 	}
 }
 
-Dataflow Filter::getDataflow(){
+Dataflow Filter::GetDataflow(){
 	/** In the currently implementation, we assume that the boolean operator
 	 * between each AttributeComparator is "AND".
 	 */
 
-	Dataflow dataflow=child_->getDataflow();
+	Dataflow dataflow=child_->GetDataflow();
 	if(comparator_list_.size()==0)
 		generateComparatorList(dataflow);
 	if(dataflow.isHashPartitioned())
@@ -80,9 +80,9 @@ Dataflow Filter::getDataflow(){
 	}
 	return dataflow;
 }
-BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
-	Dataflow dataflow=getDataflow();
-	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(blocksize);
+BlockStreamIteratorBase* Filter::GetIteratorTree(const unsigned& blocksize){
+	Dataflow dataflow=GetDataflow();
+	BlockStreamIteratorBase* child_iterator=child_->GetIteratorTree(blocksize);
 	ExpandableBlockStreamFilter::State state;
 	state.block_size_=blocksize;
 	state.child_=child_iterator;
@@ -112,7 +112,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state.colindex_=colindex_;
 			state.comparator_list_=comparator_list_;
 			state.v_ei_=exprArray_;
-			Dataflow dataflow=getDataflow();
+			Dataflow dataflow=GetDataflow();
 			state.schema_=getSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 			physical_plan.plan=filter;
@@ -129,7 +129,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state_f.qual_=qual_;
 			state_f.colindex_=colindex_;
 			state_f.comparator_list_=comparator_list_;
-			Dataflow dataflow=getDataflow();
+			Dataflow dataflow=GetDataflow();
 			state_f.schema_=getSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state_f);
 			physical_plan.plan=filter;
@@ -186,7 +186,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 		state.qual_=qual_;
 		state.colindex_=colindex_;
 		state.comparator_list_=comparator_list_;
-		Dataflow dataflow=getDataflow();
+		Dataflow dataflow=GetDataflow();
 		state.schema_=getSchema(dataflow.attribute_list_);
 		BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 		physical_plan.plan=filter;
@@ -404,12 +404,12 @@ void Filter::generateComparatorList(const Dataflow& dataflow){
 //	printf("comparator size=%d\n",comparator_list_.size());
 	assert(condition_.comparison_list_.size()==comparator_list_.size());
 }
-void Filter::print(int level)const{
+void Filter::Print(int level)const{
 //	condition_.print(level);
 	printf("filter:\n");
 	for(int i=0;i<qual_.size();i++)
 	{
 		printf("	%s\n",qual_[i]->alias.c_str());
 	}
-	child_->print(level+1);
+	child_->Print(level+1);
 }

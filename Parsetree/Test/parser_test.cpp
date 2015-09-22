@@ -444,9 +444,9 @@ static int parser_test(){
 			LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::PERFORMANCE);
 			unsigned long long int timer_start=curtick();
 
-			root->print();
+			root->Print();
 
-			BlockStreamIteratorBase* please=root->getIteratorTree(64*1024-sizeof(unsigned));
+			BlockStreamIteratorBase* please=root->GetIteratorTree(64*1024-sizeof(unsigned));
 			please->print();
 	//		cin>>input;
 

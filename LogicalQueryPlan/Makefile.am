@@ -39,7 +39,7 @@ liblogicalqueryplan_a_SOURCES = \
 	Filter.cpp 					Filter.h \
 	LogicalOperator.cpp 			LogicalOperator.h \
 	LogicalQueryPlanRoot.cpp 		LogicalQueryPlanRoot.h \
-	Project.cpp 				Project.h \
+	project.cpp 				project.h \
 	Requirement.cpp 				Requirement.h \
 	Scan.cpp 					Scan.h \
 	Sort.cpp 					Sort.h \

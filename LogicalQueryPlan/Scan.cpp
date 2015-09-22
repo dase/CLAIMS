@@ -50,7 +50,7 @@ LogicalScan::~LogicalScan() {
 //	return logical_projection_;
 //}
 //can only scan all attributes in a projection
-Dataflow LogicalScan::getDataflow(){
+Dataflow LogicalScan::GetDataflow(){
 	if(dataflow_==0)
 		dataflow_=new Dataflow();
 	else
@@ -115,7 +115,7 @@ Dataflow LogicalScan::getDataflow(){
 	return *dataflow_;
 
 }
-BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size){
+BlockStreamIteratorBase* LogicalScan::GetIteratorTree(const unsigned &block_size){
 	/* In the current implementation, all the attributes within the involved projection
 	 * are read.
 	 * TODO: Ideally, the columns in one projection are stored separately and only the
@@ -136,7 +136,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 //	return new ExpandableBlockStreamSingleColumnScan(state);
 }
 bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
-	Dataflow dataflow=getDataflow();
+	Dataflow dataflow=GetDataflow();
 	NetworkTransfer transfer=requirement.requireNetworkTransfer(dataflow);
 
 	ExpandableBlockStreamProjectionScan::State state;
@@ -219,7 +219,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		return false;
 
 }
-void LogicalScan::print(int level)const{
+void LogicalScan::Print(int level)const{
 //	align(level);
 	printf("%*.sScan: %s\n",level*8," ",Catalog::getInstance()->getTable(target_projection_->getProjectionID().table_id)->getTableName().c_str());
 

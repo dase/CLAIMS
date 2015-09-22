@@ -36,7 +36,7 @@ EqualJoin::~EqualJoin() {
 	}
 }
 
-Dataflow EqualJoin::getDataflow(){
+Dataflow EqualJoin::GetDataflow(){
 	if(dataflow_!=0){
 		/* the data flow has been computed*/
 		return *dataflow_;
@@ -44,8 +44,8 @@ Dataflow EqualJoin::getDataflow(){
 
 
 	/** in the current implementation, only the hash join is considered**/
-	Dataflow left_dataflow=left_child_->getDataflow();
-	Dataflow right_dataflow=right_child_->getDataflow();
+	Dataflow left_dataflow=left_child_->GetDataflow();
+	Dataflow right_dataflow=right_child_->GetDataflow();
 	Dataflow ret;
 
 	const bool left_dataflow_key_partitioned=canLeverageHashPartition(left_join_key_list_,left_dataflow.property_.partitioner);
@@ -223,16 +223,16 @@ EqualJoin::JoinPolice EqualJoin::decideLeftOrRightRepartition(const Dataflow& le
 	}
 }
 
-BlockStreamIteratorBase* EqualJoin::getIteratorTree(const unsigned& block_size){
+BlockStreamIteratorBase* EqualJoin::GetIteratorTree(const unsigned& block_size){
 	if(dataflow_==0){
-		getDataflow();
+		GetDataflow();
 
 	}
 	BlockStreamJoinIterator* join_iterator;
-	BlockStreamIteratorBase* child_iterator_left=left_child_->getIteratorTree(block_size);
-	BlockStreamIteratorBase* child_iterator_right=right_child_->getIteratorTree(block_size);
-	Dataflow dataflow_left=left_child_->getDataflow();
-	Dataflow dataflow_right=right_child_->getDataflow();
+	BlockStreamIteratorBase* child_iterator_left=left_child_->GetIteratorTree(block_size);
+	BlockStreamIteratorBase* child_iterator_right=right_child_->GetIteratorTree(block_size);
+	Dataflow dataflow_left=left_child_->GetDataflow();
+	Dataflow dataflow_right=right_child_->GetDataflow();
 	BlockStreamJoinIterator::State state;
 	state.block_size_=block_size;
 
@@ -432,7 +432,7 @@ bool EqualJoin::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescr
 
 std::vector<unsigned> EqualJoin::getLeftJoinKeyIndexList()const{
 	std::vector<unsigned> ret;
-	const Dataflow dataflow=left_child_->getDataflow();
+	const Dataflow dataflow=left_child_->GetDataflow();
 	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
 		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
 			if(joinkey_pair_list_[i].first==dataflow.attribute_list_[j]){
@@ -445,7 +445,7 @@ std::vector<unsigned> EqualJoin::getLeftJoinKeyIndexList()const{
 
 std::vector<unsigned> EqualJoin::getRightJoinKeyIndexList()const{
 	std::vector<unsigned> ret;
-	const Dataflow dataflow=right_child_->getDataflow();
+	const Dataflow dataflow=right_child_->GetDataflow();
 	for(unsigned i=0;i<joinkey_pair_list_.size();i++){
 		for(unsigned j=0;j<dataflow.attribute_list_.size();j++){
 			if(joinkey_pair_list_[i].second==dataflow.attribute_list_[j]){
@@ -457,7 +457,7 @@ std::vector<unsigned> EqualJoin::getRightJoinKeyIndexList()const{
 }
 std::vector<unsigned> EqualJoin::getLeftPayloadIndexList()const{
 	std::vector<unsigned> ret;
-	const Dataflow dataflow=left_child_->getDataflow();
+	const Dataflow dataflow=left_child_->GetDataflow();
 	const std::vector<unsigned> left_join_key_index_list=getLeftJoinKeyIndexList();
 
 	for(unsigned i=0;i<dataflow.attribute_list_.size();i++){
@@ -491,7 +491,7 @@ std::vector<unsigned> EqualJoin::getLeftPayloadIndexList()const{
 
 std::vector<unsigned> EqualJoin::getRightPayloadIndexList()const{
 	std::vector<unsigned> ret;
-	const Dataflow dataflow=right_child_->getDataflow();
+	const Dataflow dataflow=right_child_->GetDataflow();
 	const std::vector<unsigned> right_join_key_index_list=getRightJoinKeyIndexList();
 
 	for(unsigned i=0;i<dataflow.attribute_list_.size();i++){
@@ -610,7 +610,7 @@ DataflowPartitioningDescriptor EqualJoin::decideOutputDataflowProperty(const Dat
 	return ret;
 
 }
-void EqualJoin::print(int level)const{
+void EqualJoin::Print(int level)const{
 	printf("%*.sEqualJoin:",level*8," ");
 	switch(join_police_){
 	case no_repartition:{
@@ -637,8 +637,8 @@ void EqualJoin::print(int level)const{
 		printf("%*.s",level*8," ");
 		printf("%s=%s\n",joinkey_pair_list_[i].first.attrName.c_str(),joinkey_pair_list_[i].second.attrName.c_str());
 	}
-	left_child_->print(level+1);
-	right_child_->print(level+1);
+	left_child_->Print(level+1);
+	right_child_->Print(level+1);
 }
 double EqualJoin::predictEqualJoinSelectivity(const Dataflow& left_dataflow,const Dataflow& right_dataflow)const{
 	/**

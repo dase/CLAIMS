@@ -21,11 +21,11 @@ Aggregation::~Aggregation() {
 	delete dataflow_;
 	delete  child_;
 }
-Dataflow Aggregation::getDataflow(){
+Dataflow Aggregation::GetDataflow(){
 	if(dataflow_!=0)
 		return *dataflow_;
 	Dataflow ret;
-	const Dataflow child_dataflow=child_->getDataflow();
+	const Dataflow child_dataflow=child_->GetDataflow();
 	if(canLeverageHashPartition(child_dataflow)){
 		fashion_=no_repartition;
 		QueryOptimizationLogging::log("no_repartition\n");
@@ -150,12 +150,12 @@ void changeSchemaforAVG(BlockStreamAggregationIterator::State & state_)//for AVG
 	}
 
 }
-BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size){
+BlockStreamIteratorBase* Aggregation::GetIteratorTree(const unsigned &block_size){
 	if(dataflow_==0){
-		getDataflow();
+		GetDataflow();
 	}
 	BlockStreamIteratorBase* ret;
-	Dataflow child_dataflow=child_->getDataflow();
+	Dataflow child_dataflow=child_->GetDataflow();
 	BlockStreamAggregationIterator::State aggregation_state;
 	aggregation_state.groupByIndex=getInvolvedIndexList(group_by_attribute_list_,child_dataflow);
 	aggregation_state.aggregationIndex=getInvolvedIndexList(aggregation_attribute_list_,child_dataflow);
@@ -168,7 +168,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 	aggregation_state.bucketsize=64;
 	aggregation_state.input=getSchema(child_dataflow.attribute_list_);
 	aggregation_state.output=getSchema(dataflow_->attribute_list_);
-	aggregation_state.child=child_->getIteratorTree(block_size);
+	aggregation_state.child=child_->GetIteratorTree(block_size);
 
 	switch(fashion_){
 		case no_repartition:{
@@ -196,7 +196,7 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 //			exchange_state.child=private_aggregation;
 			exchange_state.child_=expander_lower;
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_id_list_=getInvolvedNodeID(child_->getDataflow().property_.partitioner);
+			exchange_state.lower_id_list_=getInvolvedNodeID(child_->GetDataflow().property_.partitioner);
 			exchange_state.upper_id_list_=getInvolvedNodeID(dataflow_->property_.partitioner);
 //			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
 
@@ -231,14 +231,14 @@ BlockStreamIteratorBase* Aggregation::getIteratorTree(const unsigned &block_size
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
-			expander_state.child_=child_->getIteratorTree(block_size);;
+			expander_state.child_=child_->GetIteratorTree(block_size);;
 			expander_state.schema_=getSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
 			exchange_state.block_size_=block_size;
 			exchange_state.child_=expander;//child_->getIteratorTree(block_size);
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_id_list_=getInvolvedNodeID(child_->getDataflow().property_.partitioner);
+			exchange_state.lower_id_list_=getInvolvedNodeID(child_->GetDataflow().property_.partitioner);
 			exchange_state.upper_id_list_=getInvolvedNodeID(dataflow_->property_.partitioner);
 			if(group_by_attribute_list_.empty()){
 				/**
@@ -404,7 +404,7 @@ unsigned long Aggregation::estimateGroupByCardinality(const Dataflow& dataflow)c
 	return ret;
 
 }
-void Aggregation::print(int level)const{
+void Aggregation::Print(int level)const{
 	printf("%*.sAggregation:",level*8," ");
 	switch(fashion_){
 	case no_repartition:{
@@ -457,6 +457,6 @@ void Aggregation::print(int level)const{
 			}
 		}
 	}
-	child_->print(level+1);
+	child_->Print(level+1);
 //	right_child_->print(level+1);
 }

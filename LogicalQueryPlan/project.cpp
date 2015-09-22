@@ -1,0 +1,161 @@
+/*
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/LogicalQueryPlan/project.cpp
+ *
+ *  Created on: Sep 22, 2015
+ *      Author: casa, ccccly
+ *       Email: geekchenlingyun@outlook.com
+ *
+ * Description:
+ * it's a function which takes an input (e.g. a database row) and
+ * produces an output (e.g. one of the columns from the row, or
+ * perhaps some calculation based on multiple columns).
+ */
+#include <vector>
+#include "./project.h"
+#include "../common/ids.h"
+#include "../common/data_type.h"
+#include "../common/Expression/initquery.h"
+
+// namespace claims {
+// namespace logical_query_plan {
+
+LogicalProject::LogicalProject(LogicalOperator *child,
+                               vector<QNode *> expression_tree)
+    : child_(child), expression_tree_(expression_tree), dataflow_(0) {
+  setOperatortype(l_project);
+  // initialize_arithmetic_type_promotion_matrix();
+  // initialize_type_cast_functions();
+}
+
+LogicalProject::~LogicalProject() {
+  delete dataflow_;
+  delete child_;
+}
+/**
+ * construct a dataflow from child
+ */
+Dataflow LogicalProject::GetDataflow() {
+  if (dataflow_ != NULL) return *dataflow_;
+  Dataflow ret;
+  // get the dataflow of child
+  const Dataflow kChildDataflow = child_->GetDataflow();
+  // set commnication_cost and partitioner of the dataflow to be returned from
+  // dataflow of child
+  ret.property_.commnication_cost = kChildDataflow.property_.commnication_cost;
+  ret.property_.partitioner = kChildDataflow.property_.partitioner;
+  std::vector<Attribute> ret_attrs;
+  // construct an input schema from attribute list of child
+  Schema *input_ = getSchema(kChildDataflow.attribute_list_);
+  // get the index of attributes in child dataflow
+  Getcolindex(kChildDataflow);
+  /**
+   * if the expression type is compare,then the new column will be boolean type,
+   * else will be it's actual type according to the variable
+   */
+  for (int i = 0; i < expression_tree_.size(); i++) {
+    if (expression_tree_[i]->type == t_qexpr_cmp) {
+      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, col_index_, input_);
+    } else {
+      InitExprAtLogicalPlan(expression_tree_[i],
+                            expression_tree_[i]->actual_type, col_index_,
+                            input_);
+    }
+  }
+  // clean the attribute list of dataflow to be returned
+  ret_attrs.clear();
+
+  /**
+   * if the return type is a String value,then we have to calculate the length
+   * of the string
+   * else just construct a column having the same type as the return type
+   */
+  for (int i = 0; i < expression_tree_.size(); i++) {
+    column_type *column = 0;
+    if (expression_tree_[i]->return_type == t_string ||
+        expression_tree_[i]->return_type == t_decimal) {
+      column = new column_type(expression_tree_[i]->return_type,
+                               expression_tree_[i]->length);
+    } else {
+      column = new column_type(expression_tree_[i]->return_type);
+    }
+    // set TableID
+    const unsigned kTableID = INTERMEIDATE_TABLEID;
+    // construct attribute
+    Attribute attr_alais(kTableID, i, expression_tree_[i]->alias, column->type,
+                         column->size);
+    // construct an attribute list
+    ret_attrs.push_back(attr_alais);
+  }
+  // set the attribute list of the dataflow to be returned
+  ret.attribute_list_ = ret_attrs;
+  dataflow_ = new Dataflow();
+  // set the dataflow to be returned
+  *dataflow_ = ret;
+  return ret;
+}
+
+// Traverse the attribute_list_，
+// store the attribute name and index into colindex_.
+bool LogicalProject::Getcolindex(Dataflow dataflow) {
+  for (int i = 0; i < dataflow.attribute_list_.size(); i++) {
+    col_index_[dataflow.attribute_list_[i].attrName] = i;
+  }
+  return true;
+}
+
+/**
+ * get dataflow and child physical plan from child ,
+ */
+BlockStreamIteratorBase *LogicalProject::GetIteratorTree(
+    const unsigned &kBlockSize) {
+  GetDataflow();
+  Dataflow child_dataflow = child_->GetDataflow();
+  BlockStreamIteratorBase *child = child_->GetIteratorTree(kBlockSize);
+  BlockStreamProjectIterator::State state;
+
+  // assign some attributes to the state
+  state.block_size_ = kBlockSize;
+  state.child_ = child;
+  state.input_ = getSchema(child_dataflow.attribute_list_);
+  state.output_ = GetOutputSchema();
+  state.exprTree_ = expression_tree_;
+  return new BlockStreamProjectIterator(state);
+}
+/**
+ * construct a schema from attribute list of dataflow
+ * using the function getSchema in class Schema
+ */
+Schema *LogicalProject::GetOutputSchema() {
+  Schema *schema = getSchema(dataflow_->attribute_list_);
+  return schema;
+}
+/**
+ * Print the whole schema
+ */
+void LogicalProject::Print(int level) const {
+  printf("project:\n");
+  for (int i = 0; i < expression_tree_.size(); i++) {
+    printf("%s\n", expression_tree_[i]->alias.c_str());
+  }
+  child_->Print(level + 1);
+}
+
+//}  // namespace logical_query_plan
+//}  // namespace claims

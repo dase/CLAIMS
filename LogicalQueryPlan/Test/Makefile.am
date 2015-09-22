@@ -36,6 +36,6 @@ libtest_a_SOURCES = \
 	Aggregation_test.cpp 			ResultCollect_test.cpp \
 	getOptimalQueryPlan.cpp 		query_optmization_based_on_statisitic_test.cpp \
 	testGenerateIteratorTree.cpp 		testGetDataflow.cpp \
-	testIn.cpp 					testProject.cpp \
-	testProject_wl.cpp 			testSort.cpp \
+	testIn.cpp \
+	testSort.cpp \
 	testcrossjoin.cpp
