@@ -22,14 +22,17 @@ client_listener_port = 10000
 
 #hadoop上的数据目录
 #data="/home/imdb/data/wangli/"
-data="/home/imdb/data/tpc-h/1-partition/sf-1/"
+#data="/home/imdb/data/POC/sample/"
+#data="/home/imdb/data/tpc-h/1-partition/sf-1/"
+
 #data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/stock/"
-#data="/home/imdb/data/tmp/"
+
+data="/home/imdb/data/test/"
 #data="/home/imdb/data/POC/"
 
 #hdfs主节点
-hdfs_master_ip="10.11.1.190"
+hdfs_master_ip="127.0.0.1"
 
 #hdfs主节点端口
 hdfs_master_port=9000
