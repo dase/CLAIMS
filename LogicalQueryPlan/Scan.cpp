@@ -162,7 +162,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDes
 		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
 		state.schema_=GetSchema(dataflow.attribute_list_);
 
-		std::vector<NodeID> lower_id_list=getInvolvedNodeID(dataflow.property_.partitioner);
+		std::vector<NodeID> lower_id_list=GetInvolvedNodeID(dataflow.property_.partitioner);
 		state.lower_id_list_=lower_id_list;
 
 		std::vector<NodeID> upper_id_list;

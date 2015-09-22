@@ -20,7 +20,7 @@
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
-#include "../LogicalQueryPlan/Filter.h"
+#include "../LogicalQueryPlan/filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"

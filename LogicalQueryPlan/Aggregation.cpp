@@ -196,8 +196,8 @@ BlockStreamIteratorBase* Aggregation::GetIteratorTree(const unsigned &block_size
 //			exchange_state.child=private_aggregation;
 			exchange_state.child_=expander_lower;
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_id_list_=getInvolvedNodeID(child_->GetDataflow().property_.partitioner);
-			exchange_state.upper_id_list_=getInvolvedNodeID(dataflow_->property_.partitioner);
+			exchange_state.lower_id_list_=GetInvolvedNodeID(child_->GetDataflow().property_.partitioner);
+			exchange_state.upper_id_list_=GetInvolvedNodeID(dataflow_->property_.partitioner);
 //			exchange_state.partition_key_index=getInvolvedIndexList(group_by_attribute_list_,child_dataflow)[0];
 
 			if(group_by_attribute_list_.empty())
@@ -238,8 +238,8 @@ BlockStreamIteratorBase* Aggregation::GetIteratorTree(const unsigned &block_size
 			exchange_state.block_size_=block_size;
 			exchange_state.child_=expander;//child_->getIteratorTree(block_size);
 			exchange_state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			exchange_state.lower_id_list_=getInvolvedNodeID(child_->GetDataflow().property_.partitioner);
-			exchange_state.upper_id_list_=getInvolvedNodeID(dataflow_->property_.partitioner);
+			exchange_state.lower_id_list_=GetInvolvedNodeID(child_->GetDataflow().property_.partitioner);
+			exchange_state.upper_id_list_=GetInvolvedNodeID(dataflow_->property_.partitioner);
 			if(group_by_attribute_list_.empty()){
 				/**
 				 * scalar aggregation allows parallel partitions to be partitioned in any fashion.

@@ -27,7 +27,7 @@
  */
 
 
-#include "LogicalQueryPlanRoot.h"
+#include "./logical_query_plan_root.h"
 
 #include <vector>
 #include <string>
@@ -110,7 +110,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
     state.schema_ = GetSchema(child_dataflow.attribute_list_);
     state.upper_id_list_.push_back(collecter_);
     state.partition_schema_ = partition_schema::set_hash_partition(0);
-    std::vector<NodeID> lower_id_list = getInvolvedNodeID(
+    std::vector<NodeID> lower_id_list = GetInvolvedNodeID(
         child_dataflow.property_.partitioner);
     state.lower_id_list_ = lower_id_list;
     child_iterator = new ExpandableBlockStreamExchangeEpoll(state);
@@ -223,7 +223,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
       state.schema_ = GetSchema(physical_plan.dataflow.attribute_list_);
       state.upper_id_list_.push_back(collecter_);
       state.partition_schema_ = partition_schema::set_hash_partition(0);
-      state.lower_id_list_ = getInvolvedNodeID(
+      state.lower_id_list_ = GetInvolvedNodeID(
           physical_plan.dataflow.property_.partitioner);
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(state);
@@ -306,7 +306,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
                                         requirement.getPartitionKey()));
       assert(state.partition_schema_.partition_key_index >= 0);
 
-      std::vector<NodeID> lower_id_list = getInvolvedNodeID(
+      std::vector<NodeID> lower_id_list = GetInvolvedNodeID(
           best_plan.dataflow.property_.partitioner);
 
       state.lower_id_list_ = lower_id_list;

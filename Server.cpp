@@ -3,8 +3,8 @@
 #include <getopt.h>
 #include <string>
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
-#include "Test/set_up_environment.h"
-#include "Test/TestMain.cpp"
+// #include "Test/set_up_environment.h"
+// #include "Test/TestMain.cpp"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "common/log/logging.h"
 #define AUTU_MASTER
@@ -148,7 +148,13 @@ int main(int argc, char** argv) {
     sleep(1);
 #endif
 #else
+<<<<<<< HEAD
   maina(argc, argv);
   return 0;
+=======
+	// add "#include <Test/TestMain.cpp>" before using maina(...)
+	maina(argc, argv);
+	return 0;
+>>>>>>> refs/remotes/origin/master-tlx0922
 #endif
 }

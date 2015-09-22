@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 #include "./Logging.h"
-#include "log/logging.h"
 #include <iostream>
+#include "log/logging.h"
 
 #define   likely(x)        __builtin_expect(!!(x), 1)
 #define   unlikely(x)      __builtin_expect(!!(x), 0)
@@ -53,7 +53,6 @@
 #define SQL_Parser
 
 //#endif  //CLAIMS_QUEIT
-
 
 void RawLog(const char* where, const char* format, va_list args) {
   const int message_max_length = 1000;  // set initial message length

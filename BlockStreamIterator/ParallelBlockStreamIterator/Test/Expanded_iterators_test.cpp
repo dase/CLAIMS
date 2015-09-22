@@ -1,3 +1,4 @@
+// this file will not be used in current version, because it is not contained by Makefile.am
 /*
  * Expanded_iterators_test.cpp
  *

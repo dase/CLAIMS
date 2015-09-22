@@ -32,10 +32,4 @@ LDADD = 	../../Test/libtest.a \
 		${THERON_HOME}/Lib/libtherond.a 
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES = \
-	Aggregation_test.cpp 			ResultCollect_test.cpp \
-	getOptimalQueryPlan.cpp 		query_optmization_based_on_statisitic_test.cpp \
-	testGenerateIteratorTree.cpp 		testGetDataflow.cpp \
-	testIn.cpp 					testProject.cpp \
-	testProject_wl.cpp 			testSort.cpp \
-	testcrossjoin.cpp
+libtest_a_SOURCES = 

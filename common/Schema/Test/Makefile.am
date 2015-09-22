@@ -33,6 +33,4 @@ LDADD = 	../libschema.a \
 
 noinst_LIBRARIES=libtest.a
 
-libtest_a_SOURCES = 	\
-	SubTuple_test.cpp 		VariableSchema_test.cpp \
-	generateVariableData_test.cpp 		test_suits.cpp
+libtest_a_SOURCES = 

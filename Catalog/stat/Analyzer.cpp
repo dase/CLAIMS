@@ -20,7 +20,7 @@
 #include "../../common/data_type.h"
 
 #include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../../LogicalQueryPlan/logical_query_plan_root.h"
 #include "../../LogicalQueryPlan/Scan.h"
 
 #include "../Catalog.h"

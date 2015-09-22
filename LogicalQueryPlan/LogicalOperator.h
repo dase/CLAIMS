@@ -54,7 +54,7 @@ public:
 protected:
 	Schema* GetSchema(const std::vector<Attribute>&)const;
 	Schema* GetSchema(const std::vector<Attribute>&,const std::vector<Attribute>&)const;
-	std::vector<NodeID> getInvolvedNodeID(const DataflowPartitioningDescriptor&)const;
+	std::vector<NodeID> GetInvolvedNodeID(const DataflowPartitioningDescriptor&)const;
 	std::vector<NodeIP> convertNodeIDListToNodeIPList(const std::vector<NodeID>&)const;
 	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;
 	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const;

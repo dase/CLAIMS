@@ -68,7 +68,8 @@ struct LimitConstraint {
  */
 class LogicalQueryPlanRoot : public LogicalOperator {
  public:
-  /* three style decide which one the top physical operation is:
+  /**
+   * three style decide which one the top physical operation is:
    * BlockStreamPrint/BlockStreamPerformanceMonitorTop/BlockStreamResultCollector
    */
   enum OutputFashion {
@@ -79,13 +80,14 @@ class LogicalQueryPlanRoot : public LogicalOperator {
   /**
    * @brief Method description:
    * @param collecter : specify the id of node that return result to client, which is called master
-   *        child : the child logical operation of this operation
-   *        fashion : decide the top physical operation
+   * @param child : the child logical operation of this operation
+   * @param fashion : decide the top physical operation
    *                  (BlockStreamPrint,BlockStreamPerformanceMonitorTop,BlockStreamResultCollector)
    *                  generated from this logical operation
    *        limit_constraint : apply the necessary info about limit, default value is no limit
    */
-  LogicalQueryPlanRoot(NodeID collecter, LogicalOperator* child,
+  LogicalQueryPlanRoot(NodeID collecter,
+                       LogicalOperator* child,
                        const OutputFashion& fashion = PERFORMANCE,
                        LimitConstraint limit_constraint = LimitConstraint());
   virtual ~LogicalQueryPlanRoot();

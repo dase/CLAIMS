@@ -15,6 +15,8 @@
 
 class LogicalOperator;
 
+class LogicalOperator;
+
 struct query_result{
 	query_result():result_set(0){};
 	~query_result(){

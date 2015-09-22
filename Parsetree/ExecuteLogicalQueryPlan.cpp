@@ -23,9 +23,9 @@
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
 #include "../LogicalQueryPlan/Scan.h"
-#include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../LogicalQueryPlan/logical_query_plan_root.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
-#include "../LogicalQueryPlan/Filter.h"
+#include "../LogicalQueryPlan/filter.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Buffer.h"
 
