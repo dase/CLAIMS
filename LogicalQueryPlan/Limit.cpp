@@ -29,6 +29,9 @@
 #include <stdio.h>
 #include "Limit.h"
 
+// namespace claims {
+// namespace logical_query_plan {
+
 LimitConstraint::LimitConstraint(unsigned long return_tuples)
     : returned_tuples_(return_tuples), start_position_(0){};
 
@@ -41,3 +44,6 @@ LimitConstraint::LimitConstraint() : returned_tuples_(-1), start_position_(0){};
 bool LimitConstraint::CanBeOmitted() const {
   return returned_tuples_ == -1 & start_position_ == 0;
 };
+
+//}   // namespace logical_query_plan
+//}   // namespace claims

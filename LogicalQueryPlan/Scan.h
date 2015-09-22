@@ -44,13 +44,13 @@ class LogicalScan : public LogicalOperator {
   LogicalScan(const TableID&);
   LogicalScan(ProjectionDescriptor* projection, const float sample_rate_ = 1);
   LogicalScan(const TableID&,
-              const std::vector<unsigned>& selected_attribute_index_list);
+              const std::vector<unsigned>& kSelected_attribute_index_list);
   virtual ~LogicalScan();
   Dataflow getDataflow();
   BlockStreamIteratorBase* getIteratorTree(const unsigned &);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
-                              const unsigned & block_size = 4096 * 1024);
+                              const unsigned & kBlock_size = 4096 * 1024);
  private:
   /**check whether all the involved attributes are in the same projection.*/
   bool checkInASingleProjection() const;

@@ -34,6 +34,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
 
+//namespace claims {
+//namespace logical_query_plan {
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
     : scan_attribute_list_(attribute_list),
       target_projection_(0),
@@ -42,33 +44,33 @@ LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
   setOperatortype(l_scan);
 }
 
-LogicalScan::LogicalScan(const TableID& table_id)
+LogicalScan::LogicalScan(const TableID& kTable_id)
     : target_projection_(0), dataflow_(0) {
-  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
+  TableDescriptor* table = Catalog::getInstance()->getTable(kTable_id);
   if (table == 0) {
-    printf("Table[id=%d] does not exists!\n", table_id);
+    printf("Table[id=%d] does not exists!\n", kTable_id);
   }
   scan_attribute_list_ = table->getAttributes();
   setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,
-                         const float sample_rate)
-    : sample_rate_(sample_rate), dataflow_(0) {
+                         const float kSample_rate)
+    : sample_rate_(kSample_rate), dataflow_(0) {
   scan_attribute_list_ = projection->getAttributeList();
   target_projection_ = projection;
   setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(
-    const TableID& table_id,
-    const std::vector<unsigned>& selected_attribute_index_list)
+    const TableID& kTable_id,
+    const std::vector<unsigned>& kSelected_attribute_index_list)
     : target_projection_(0), dataflow_(0) {
-  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
+  TableDescriptor* table = Catalog::getInstance()->getTable(kTable_id);
   if (table == 0) {
-    printf("Table[id=%d] does not exists!\n", table_id);
+    printf("Table[id=%d] does not exists!\n", kTable_id);
   }
-  for (unsigned i = 0; i < selected_attribute_index_list.size(); i++) {
+  for (unsigned i = 0; i < kSelected_attribute_index_list.size(); i++) {
     scan_attribute_list_.push_back(
-        table->getAttribute(selected_attribute_index_list[i]));
+        table->getAttribute(kSelected_attribute_index_list[i]));
   }
   setOperatortype(l_scan);
 }
@@ -175,12 +177,12 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(
 
 bool LogicalScan::GetOptimalPhysicalPlan(
     Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
-    const unsigned& block_size) {
+    const unsigned& kBlock_size) {
   Dataflow dataflow = getDataflow();
   NetworkTransfer transfer = requirement.requireNetworkTransfer(dataflow);
 
   ExpandableBlockStreamProjectionScan::State state;
-  state.block_size_ = block_size;
+  state.block_size_ = kBlock_size;
   state.projection_id_ = target_projection_->getProjectionID();
   state.schema_ = getSchema(dataflow_->attribute_list_);
   state.sample_rate_ = sample_rate_;
@@ -195,7 +197,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     physical_plan_descriptor.cost += dataflow.getAggregatedDatasize();
 
     ExpandableBlockStreamExchangeEpoll::State state;
-    state.block_size_ = block_size;
+    state.block_size_ = kBlock_size;
     state.child_ = scan;  // child_iterator;
     state.exchange_id_ =
         IDsGenerator::getInstance()->generateUniqueExchangeID();
@@ -253,8 +255,8 @@ bool LogicalScan::GetOptimalPhysicalPlan(
        * of data statistics.
        * We just use the magic number as following
        */
-      const unsigned datasize = total_size / degree_of_parallelism;
-      DataflowPartition dfp(i, datasize, location);
+      const unsigned kDatasize = total_size / degree_of_parallelism;
+      DataflowPartition dfp(i, kDatasize, location);
       dataflow_partition_list.push_back(dfp);
     }
     new_dataflow.property_.partitioner.setPartitionList(
@@ -277,3 +279,6 @@ void LogicalScan::print(int level) const {
              ->getTableName()
              .c_str());
 }
+
+//}   // namespace logical_query_plan
+//}   // namespace claims
