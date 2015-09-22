@@ -48,7 +48,7 @@
 //#define DEBUG_ThreadPool
 #define SQL_Parser
 
-#endif  //CLAIMS_QUEIT
+//#endif  //CLAIMS_QUEIT
 void IteratorExecutorMasterLogging::log(const char* format,...){
 #ifdef DEBUG_IteratorExecutorMaster
 	printf("IteratorExecutorMaster: ");

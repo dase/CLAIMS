@@ -532,7 +532,7 @@ static int getOptimalQueryPlan(){
 
 		req.setRequiredPartitionkey(table_1->getAttribute("trade_dir"));
 
-		if(root->GetOptimalPhysicalPlan(req,physical_plan,1024*64-sizeof(unsigned))){
+		if(root->getOptimalPhysicalPlan(req,physical_plan,1024*64-sizeof(unsigned))){
 			printf("Physical plan is generated(cost=%d)!\n",physical_plan.cost);
 			executable_query_plan=physical_plan.plan;
 			executable_query_plan->print();

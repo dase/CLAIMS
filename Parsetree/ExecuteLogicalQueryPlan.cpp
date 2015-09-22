@@ -25,7 +25,7 @@
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
-#include "../LogicalQueryPlan/Filter.h"
+#include "../LogicalQueryPlan/filter.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Buffer.h"
 

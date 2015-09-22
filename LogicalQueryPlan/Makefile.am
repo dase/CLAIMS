@@ -29,7 +29,7 @@ liblogicalqueryplan_a_SOURCES = \
 	DataflowPartitionDescriptor.cpp 	DataflowPartitionDescriptor.h \
 	Dataflow.cpp				Dataflow.h\
 	EqualJoin.cpp 				EqualJoin.h \
-	Filter.cpp 					Filter.h \
+	filter.cpp 					filter.h \
 	LogicalOperator.cpp 			LogicalOperator.h \
 	LogicalQueryPlanRoot.cpp 		LogicalQueryPlanRoot.h \
 	Project.cpp 				Project.h \

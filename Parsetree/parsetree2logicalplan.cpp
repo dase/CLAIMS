@@ -28,7 +28,7 @@
 #include "../common/Expression/qnode.h"
 
 #include "../LogicalQueryPlan/EqualJoin.h"
-#include "../LogicalQueryPlan/Filter.h"
+#include "../LogicalQueryPlan/filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/Aggregation.h"
