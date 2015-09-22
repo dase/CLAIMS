@@ -7,13 +7,13 @@
 
 #include "../LogicalOperator.h"
 #include "../Scan.h"
-#include "../EqualJoin.h"
 #include "../Filter.h"
 
 #include "../../Environment.h"
 
 #include "../../Catalog/ProjectionBinding.h"
 #include "../../common/AttributeComparator.h"
+#include "../equal_join.h"
 
 int main_asdfasdf(){
 	Environment::getInstance(true);

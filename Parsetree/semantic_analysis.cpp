@@ -19,7 +19,6 @@
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
-#include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
@@ -29,6 +28,8 @@
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../common/Logging.h"
 #include <ostream>
+
+#include "../LogicalQueryPlan/equal_join.h"
 using namespace std;
 bool semantic_analysis(Node *parsetree,bool issubquery);
 bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable);

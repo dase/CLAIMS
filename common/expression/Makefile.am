@@ -17,9 +17,9 @@ LDADD = 	../../Catalog/libcatalog.a \
 		${BOOST_HOME}/stage/lib/libboost_system.a \
 		${GTEST_HOME}/libgtest.a
 
-noinst_LIBRARIES=lib_expression.a
+noinst_LIBRARIES=lib_expressionfzh.a
 
-libexpression_a_SOURCES = 	\
+libexpressionfzh_a_SOURCES = 	\
 	expr_node.cpp		expr_node.h			\
 	expr_column.cpp		expr_column.h		\
 	data_type_oper.cpp	data_type_oper.h	\

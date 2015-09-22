@@ -1,3 +1,4 @@
+
 /*
  * testGenerateIteratorTree.cpp
  *
@@ -14,7 +15,7 @@
 #include "../Aggregation.h"
 #include "../Buffer.h"
 #include "../LogicalQueryPlanRoot.h"
-#include "../EqualJoin.h"
+#include "../equal_join.h"
 
 #include "../../Environment.h"
 

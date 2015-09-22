@@ -14,7 +14,6 @@
 #include "../common/Logging.h"
 
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
@@ -26,6 +25,7 @@
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../common/Logging.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
+#include "../LogicalQueryPlan/equal_join.h"
 
 int getlevel(Expr_cal *calnode)
 {

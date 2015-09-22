@@ -5,8 +5,8 @@
  *      Author: fzh
  */
 
-#ifndef PARSER_H_
-#define PARSER_H_
+#ifndef SQL_PARSER_PARSER_PARSER_H_
+#define SQL_PARSER_PARSER_PARSER_H_
 #include <string>
 #include <vector>
 
@@ -15,18 +15,20 @@
 using std::string;
 using std::vector;
 
+class Parser {
+ public:
+  Parser();
+  explicit Parser(string SQL_statement);
+  virtual ~Parser();
+  AstNode* GetRawAST();
 
-class Parser
-{
-public:
-	Parser();
-	Parser(string SQL_statement);
-	virtual ~Parser();
-	AstNode* GetRawAST();
-private:
-	AstNode* CreateRawAST(string SQL_statement);
-	string SQL_statement_;
-	AstNode* AST_root_;
+ private:
+  AstNode* CreateRawAST(string SQL_statement);
+  // AstNode* CreateAst(string SQL_statement);
+  void SemanticAnalysis();
+  void RecoveryExpr();
+  string SQL_statement_;
+  AstNode* AST_root_;
 };
 
-#endif /* PARSER_H_ */
+#endif  // SQL_PARSER_PARSER_PARSER_H_

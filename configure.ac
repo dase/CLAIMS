@@ -21,7 +21,6 @@ AC_CONFIG_FILES([
   common/Makefile 
   common/Block/Makefile 
   common/Expression/Makefile 
-  common/expression/Makefile
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
   common/types/Makefile 
