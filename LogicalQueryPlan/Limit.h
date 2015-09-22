@@ -33,6 +33,7 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
+#include "LogicalOperator.h"
 // namespace claims {
 // namespace logical_query_plan {
 
@@ -51,25 +52,12 @@ class LimitConstraint {
   // TODO(Han):The positions of parameters is reverse, we should make sure where
   // the function called.
   LimitConstraint();
-  virtual ~LimitConstraint();
+  // virtual ~LimitConstraint();
   bool CanBeOmitted() const;
 
- private:
+ public:
   unsigned long start_position_;
   unsigned long returned_tuples_;
-};
-
-LimitConstraint::LimitConstraint(unsigned long return_tuples)
-    : returned_tuples_(return_tuples), start_position_(0){};
-
-LimitConstraint::LimitConstraint(unsigned long return_tuples,
-                                 unsigned long position)
-    : returned_tuples_(return_tuples), start_position_(position){};
-
-LimitConstraint::LimitConstraint() : returned_tuples_(-1), start_position_(0){};
-
-bool LimitConstraint::CanBeOmitted() const {
-  return returned_tuples_ == -1 & start_position_ == 0;
 };
 
 //}   // namespace logical_query_plan
