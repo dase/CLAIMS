@@ -44,7 +44,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../LogicalQueryPlan/CrossJoin.h"
 
-
+using namespace claims::logical_query_plan;
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
 /*static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
