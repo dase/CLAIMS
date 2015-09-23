@@ -49,7 +49,7 @@ class ErrorNoTest : public ::testing::Test{
 };
 
 TEST_F(ErrorNoTest, A) {
-  int errerno = C_TYPE_ERROR;
+  int errerno = kTypeError;
 
 //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
@@ -65,7 +65,7 @@ TEST_F(ErrorNoTest, B) {
 }
 
 TEST_F(ErrorNoTest, C) {
-  int errerno = C_SUCCESS;
+  int errerno = kSuccess;
 
 //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);

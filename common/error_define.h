@@ -38,26 +38,33 @@
 namespace claims {
 namespace common {
 
-const int ERROR_MAX_NUMBER = 10000;
-static const char* ERROR_MESSEGE[ERROR_MAX_NUMBER];
+const int kErrorMaxNumber = 10000;
+static const char* kErrorMessage[kErrorMaxNumber];
 
-const int C_SUCCESS = EXIT_SUCCESS;
-const int C_FAILURE = EXIT_FAILURE;
+const int kSuccess = EXIT_SUCCESS;
+const int kFailure = EXIT_FAILURE;
 
 /* errorno begin from here   */
 
 /* errorno for common  -1 ~ -1000 */
-const int C_TYPE_ERROR = -1;
-const int C_NOT_INIT = -2;
+const int kTypeError = -1;
+const int kNotInit = -2;
 
 /* errorno for SQL parser -1001 ~ -2000  */
-const int C_NO_TABLE_FOUND = -1001;
+const int kNoTableFound = -1001;
 
 /* errorno for Loader -2001 ~ -3000  */
 
-/* errorno for codegen -3001 ~ -4000 */
-const int C_TEST_ERROR = -3001;
 
+/* errorno for codegen -3001 ~ -4000 */
+const int kTestError = -3001;
+
+/* errorno for logical_query_plan -4001 ~ -5000*/
+const int kUninitializedJoinPolice = -4001;
+const int kGenerateDataflowFailed = -4002;
+
+/* errorno for physical_query_plan -5001 ~ -6000 */
+const int kGenerateSubPhyPlanFailed = -5001;
 
 }  // end namespace common
 }  // end namespace claims
