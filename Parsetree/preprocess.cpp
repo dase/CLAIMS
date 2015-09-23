@@ -14,7 +14,7 @@
 #include "../common/Logging.h"
 
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/EqualJoin.h"
+#include "../LogicalQueryPlan/logical_equal_join.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"

@@ -30,7 +30,7 @@
 
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
+#include "../../LogicalQueryPlan/logical_equal_join.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"

@@ -7,7 +7,7 @@
 
 #include "../LogicalOperator.h"
 #include "../Scan.h"
-#include "../EqualJoin.h"
+#include "../logical_equal_join.h"
 #include "../Filter.h"
 
 #include "../../Environment.h"

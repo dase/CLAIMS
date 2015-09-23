@@ -35,14 +35,14 @@ liblogicalqueryplan_a_SOURCES = \
 	DataflowPartition.cpp 			DataflowPartition.h \
 	DataflowPartitionDescriptor.cpp 	DataflowPartitionDescriptor.h \
 	Dataflow.cpp				Dataflow.h\
-	EqualJoin.cpp 				EqualJoin.h \
+	logical_equal_join.cpp 				logical_equal_join.h \
 	Filter.cpp 					Filter.h \
 	LogicalOperator.cpp 			LogicalOperator.h \
 	LogicalQueryPlanRoot.cpp 		LogicalQueryPlanRoot.h \
 	Project.cpp 				Project.h \
 	Requirement.cpp 				Requirement.h \
 	Scan.cpp 					Scan.h \
-	Sort.cpp 					Sort.h \
+	logical_sort.cpp 					logical_sort.h \
 	CrossJoin.cpp				CrossJoin.h
 
 SUBDIRS = Test

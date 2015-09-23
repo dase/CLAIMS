@@ -27,13 +27,13 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 
-#include "../LogicalQueryPlan/EqualJoin.h"
+#include "../LogicalQueryPlan/logical_equal_join.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/Aggregation.h"
 #include "../LogicalQueryPlan/Project.h"
-#include "../LogicalQueryPlan/Sort.h"
+#include "../LogicalQueryPlan/logical_sort.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include <string.h>
