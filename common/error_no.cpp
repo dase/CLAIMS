@@ -30,7 +30,6 @@
 #include <iostream>
 #include "./error_no.h"
 
-using namespace claims::common;
 namespace claims {
 namespace common {
 
