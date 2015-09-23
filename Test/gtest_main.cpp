@@ -24,6 +24,8 @@
 #include <getopt.h>
 #include <gtest/gtest.h>
 #include <string>
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include "common/log/logging.h"
 #include "../codegen/codegen_test.h"
 #include "common/errno_test.h"
 #include "iterator/elastic_iterator_model_test.h"
@@ -73,7 +75,7 @@ void handle_parameters(int argc, char** argv) {
 int main(int argc, char **argv) {
   handle_parameters(argc, argv);
   int new_argc = argc + consumed_args;
+  claims::common::Logging claims_logging(argv[0]);
   testing::InitGoogleTest(&(new_argc), argv + consumed_args);
   return RUN_ALL_TESTS();
 }
-
