@@ -36,7 +36,7 @@ static double lineitem_scan_self_join(){
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -73,7 +73,7 @@ static double sb_scan_self_join(){
 	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("trade_date"),table_right->getAttribute("entry_date")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -116,7 +116,7 @@ static double lineitem_scan_aggregation(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -146,7 +146,7 @@ static double lineitem_scan_filter(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -180,7 +180,7 @@ static double sb_scan_filter(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -217,7 +217,7 @@ static double sb_scan_aggregation(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();

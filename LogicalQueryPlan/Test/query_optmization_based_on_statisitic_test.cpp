@@ -498,7 +498,7 @@ static int query_optimization_based_on_statistics_join(){
 			LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 			const NodeID collector_node_id=0;
-			LogicalOperator* root=new LogicalQueryPlanRoot(0,sb_cj_join,LogicalQueryPlanRoot::PERFORMANCE);
+			LogicalOperator* root=new LogicalQueryPlanRoot(0,sb_cj_join,LogicalQueryPlanRoot::kPerformance);
 			unsigned long long int timer_start=curtick();
 
 			BlockStreamIteratorBase* please=root->GetIteratorTree(64*1024-sizeof(unsigned));
@@ -997,7 +997,7 @@ static int query_optimization_based_on_statistics_aggregation(){
 
 
 			const NodeID collector_node_id=0;
-			LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+			LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kPerformance);
 			unsigned long long int timer_start=curtick();
 
 			BlockStreamIteratorBase* please=root->GetIteratorTree(64*1024-sizeof(unsigned));

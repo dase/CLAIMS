@@ -28,7 +28,7 @@ static int test_scan(){
 	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64);
 //	executable_query_plan->print();
@@ -69,7 +69,7 @@ static int test_scan_filter_high_selectivity(){
 	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -115,7 +115,7 @@ static int test_scan_filter_low_selectivity(){
 	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -159,7 +159,7 @@ static int test_scan_Aggregation_small_Groups(){
 
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -203,7 +203,7 @@ static int test_scan_Aggregation_large_Groups(){
 
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -253,7 +253,7 @@ static int test_scan_filter_Aggregation(){
 
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -303,7 +303,7 @@ static int test_scan_filter_Scalar_Aggregation(){
 
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -364,7 +364,7 @@ static int test_no_repartition_filtered_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -417,7 +417,7 @@ static int test_complete_repartition_filtered_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -457,7 +457,7 @@ static int test_complete_repartition_scan_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,sb_join_key_scan,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
@@ -491,7 +491,7 @@ static int test_no_repartition_scan_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
@@ -767,7 +767,7 @@ static int test_multiple_scan(){
 	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -805,7 +805,7 @@ static int test_multiple_scan_filter_high_selectivity(){
 	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 	executable_query_plan->print();
@@ -843,7 +843,7 @@ static int test_multiple_scan_filter_low_selectivity(){
 	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -897,7 +897,7 @@ static int test_multiple_scan_filter_Aggregation(){
 
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -949,7 +949,7 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -1010,7 +1010,7 @@ static int test_multiple_no_repartition_filtered_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -1065,7 +1065,7 @@ static int test_multiple_complete_repartition_filtered_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -1102,7 +1102,7 @@ static int test_multiple_complete_repartition_scan_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();
@@ -1139,7 +1139,7 @@ static int test_multiple_no_repartition_scan_join(){
 	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
 //	executable_query_plan->print();

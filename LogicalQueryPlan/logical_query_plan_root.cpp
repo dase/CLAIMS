@@ -144,20 +144,20 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
 
   BlockStreamIteratorBase* ret;
   switch (style_) {
-    case PRINT: {
+    case kPrint: {
       BlockStreamPrint::State print_state(
           GetSchema(child_dataflow.attribute_list_), middle_tier, block_size,
           GetAttributeName(child_dataflow));
       ret = new BlockStreamPrint(print_state);
       break;
     }
-    case PERFORMANCE: {
+    case kPerformance: {
       BlockStreamPerformanceMonitorTop::State performance_state(
           GetSchema(child_dataflow.attribute_list_), middle_tier, block_size);
       ret = new BlockStreamPerformanceMonitorTop(performance_state);
       break;
     }
-    case RESULTCOLLECTOR: {
+    case kResultCollector: {
       std::vector<std::string> column_header;
       for (unsigned i = 0; i < child_dataflow.attribute_list_.size(); i++) {
         column_header.push_back(child_dataflow.attribute_list_[i].getName());
@@ -242,14 +242,14 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
 
   PhysicalPlan final_plan;
   switch (style_) {
-    case PRINT: {
+    case kPrint: {
       BlockStreamPrint::State print_state(
           GetSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
           block_size, GetAttributeName(physical_plan.dataflow));
       final_plan = new BlockStreamPrint(print_state);
       break;
     }
-    case PERFORMANCE: {
+    case kPerformance: {
       BlockStreamPerformanceMonitorTop::State performance_state(
           GetSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
           block_size);

@@ -132,7 +132,7 @@ static int in_test(){
 		LogicalOperator* sb_cj_join=new EqualJoin(join_pair_list,cj_join_key_scan,aggregation);
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kPrint);
 		unsigned long long int timer_start=curtick();
 //		root->print();
 

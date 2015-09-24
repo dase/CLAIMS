@@ -66,7 +66,7 @@ static void test_logical_index_building()
 	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
 	LogicalOperator* csb_building = new LogicalCSBIndexBuilding(table->getProjectoin(0)->getProjectionID(), table->getAttribute(3), "sec_code_index");
 	const NodeID collector_node_id=0;
-	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::kResultCollector);
 	root->Print();
 	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64);
 	executable_query_plan->open();
@@ -114,7 +114,7 @@ static void test_logical_index_scan()
 
 		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
 		const NodeID collector_node_id = 0;
-		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::kPrint);
 		BlockStreamIteratorBase* executable_query_plan = root->GetIteratorTree(1024 * 64);
 		executable_query_plan->open();
 		while (executable_query_plan->next(0));
@@ -151,7 +151,7 @@ static void bulk_test_logical_index_scan()
 
 		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
 		const NodeID collector_node_id = 0;
-		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::kResultCollector);
 		BlockStreamIteratorBase* executable_query_plan = root->GetIteratorTree(1024 * 64);
 		executable_query_plan->open();
 		while (executable_query_plan->next(0));

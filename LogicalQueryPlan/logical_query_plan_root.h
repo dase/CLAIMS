@@ -72,9 +72,9 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    * 3) BlockStreamResultCollector : collect result and store it in block buffer, then return to client
    */
   enum OutputStyle {
-    PRINT,
-    PERFORMANCE,
-    RESULTCOLLECTOR
+    kPrint,
+    kPerformance,
+    kResultCollector
   };
   /**
    * @brief Method description:
@@ -87,7 +87,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    */
   LogicalQueryPlanRoot(NodeID collecter_node_id,
                        LogicalOperator* child,
-                       const OutputStyle& fashion = PERFORMANCE,
+                       const OutputStyle& fashion = kPerformance,
                        LimitConstraint limit_constraint = LimitConstraint());
   virtual ~LogicalQueryPlanRoot();
   Dataflow GetDataflow();

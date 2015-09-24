@@ -1003,16 +1003,16 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 		Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 		if(lexpr->offset==NULL)
 		{
-			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 		}
 		else
 		{
-			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 		}
 	}
 	else
 	{
-		root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+		root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector);
 	}
 
 #ifdef SQL_Parser

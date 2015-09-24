@@ -61,7 +61,7 @@ static void query_1(){
 	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	physical_iterator_tree->print();
@@ -120,7 +120,7 @@ static void query_2(){
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 	LogicalOperator* aggregation=new Aggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* sub_physical_iterator_tree=root->GetIteratorTree(64*1024);
 
@@ -170,7 +170,7 @@ static void query_2(){
 	LogicalOperator* r_n_s_p_ps_farther_join=new EqualJoin(r_n_s_p_ps_farther_join_condition,r_n_s_farther_join,p_ps_farther_join);
 
 
-	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::kPerformance);
 	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->GetIteratorTree(64*1024);
 //
 //	final_physical_iterator_tree->open();
@@ -243,7 +243,7 @@ static void query_3(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kPerformance);
 	BlockStreamIteratorBase* final_physical_iterator_tree=root->GetIteratorTree(64*1024);
 
 	final_physical_iterator_tree->open();

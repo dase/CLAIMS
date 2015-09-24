@@ -523,7 +523,7 @@ static int getOptimalQueryPlan(){
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 		unsigned long long int timer_start=curtick();
 		BlockStreamIteratorBase* executable_query_plan;
 		PhysicalPlanDescriptor physical_plan;
