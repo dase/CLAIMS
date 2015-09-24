@@ -50,7 +50,7 @@ LogicalScan::LogicalScan(const TableID& table_id)
     : target_projection_(NULL), dataflow_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
-    LOG(WARNING) << "Table[id" << table_id << "] does not exists!/n";
+    LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
   }
   scan_attribute_list_ = table->getAttributes();
   setOperatortype(l_scan);
@@ -68,9 +68,7 @@ LogicalScan::LogicalScan(
     : target_projection_(NULL), dataflow_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
-    printf("Table[id=%d] does not exists!\n", table_id);
-    LOG(WARNING) << "Table[id" << table_id << "] does not exists!/n"
-                 << std::endl;
+    LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
   }
   for (unsigned i = 0; i < selected_attribute_index_list.size(); i++) {
     scan_attribute_list_.push_back(
@@ -130,9 +128,8 @@ Dataflow LogicalScan::getDataflow() {
     }
     if (target_projection_off == -1) {
       // fail to find a projection that contains all the scan attribute
-      printf(
-          "The current implementation does not support the scanning that "
-          "involves more than one projection.\n");
+      LOG(ERROR) << "The current implementation does not support the scanning "
+                    "that involves more than one projection." << std::endl;
       assert(false);
     }
     target_projection_ = table->getProjectoin(target_projection_off);
