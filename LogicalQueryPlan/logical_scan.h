@@ -33,8 +33,15 @@
 #include "../common/ids.h"
 #include "../Catalog/table.h"
 
-//namespace claims {
-//namespace logical_query_plan {
+// namespace claims {
+// namespace logical_query_plan {
+
+/**
+ * @brief Method description:This is the implementation of Scan operator in
+ * logical layer. Currently, we only choose the third of constructor functions.
+ * Through the method of LogicalScan, we can get data context and a physical
+ * operator.
+ */
 
 class LogicalScan : public LogicalOperator {
  public:
@@ -45,13 +52,14 @@ class LogicalScan : public LogicalOperator {
               const std::vector<unsigned>& selected_attribute_index_list);
   virtual ~LogicalScan();
   Dataflow getDataflow();
-  BlockStreamIteratorBase* getIteratorTree(const unsigned &);
+  BlockStreamIteratorBase* getIteratorTree(const unsigned&);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
-                              const unsigned & kBlock_size = 4096 * 1024);
+                              const unsigned& kBlock_size = 4096 * 1024);
+
  private:
   /**check whether all the involved attributes are in the same projection.*/
-  bool checkInASingleProjection() const;
+  bool IsInASingleProjection() const;
   void print(int level = 0) const;
 
  private:
@@ -59,12 +67,9 @@ class LogicalScan : public LogicalOperator {
   ProjectionDescriptor* target_projection_;
   Dataflow* dataflow_;
   float sample_rate_;
-
 };
 
 //}   // namespace logical_query_plan
 //}   // namespace claims
 
-
-
-#endif //  LOGICALQUERYPLAN_LOGICAL_SCAN_H_ 
+#endif  //  LOGICALQUERYPLAN_LOGICAL_SCAN_H_
