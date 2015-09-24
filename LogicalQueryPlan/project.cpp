@@ -19,7 +19,7 @@
  * /CLAIMS/LogicalQueryPlan/project.cpp
  *
  *  Created on: Sep 22, 2015
- *      Author: casa, chenlingyun
+ *      Author: casa, ChenLingyun
  *       Email: geekchenlingyun@outlook.com
  *
  * Description:
