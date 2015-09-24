@@ -17,7 +17,7 @@
 
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"

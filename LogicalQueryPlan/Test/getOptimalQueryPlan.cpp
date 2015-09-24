@@ -8,7 +8,7 @@
 #define __TESTGETOPTIMALQUERYPLAN__
 #include <vector>
 #include <iostream>
-#include "../Scan.h"
+#include "../logical_scan.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
 #include "../Aggregation.h"

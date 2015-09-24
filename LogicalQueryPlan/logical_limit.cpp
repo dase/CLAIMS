@@ -16,13 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/LogicalQueryPlan/Limit.cpp
+ * /Claims/LogicalQueryPlan/logical_limit.cpp
+*  Created on: Sep 21, 2015
+ *      Author: wangli, HanZhang
+ *       Email: wangli1426@gmail.com
  *
- *  Created on: Sep 21, 2015
- *      Author: Han
- *		   Email:
- *
- * Description:
+ * Description: Implementation of Limit operator in logical layer
  *
  */
 
@@ -33,13 +32,13 @@
 // namespace logical_query_plan {
 
 LimitConstraint::LimitConstraint(unsigned long return_tuples)
-    : returned_tuples_(return_tuples), start_position_(0){};
+    : returned_tuples_(return_tuples), start_position_(0) {}
 
 LimitConstraint::LimitConstraint(unsigned long return_tuples,
                                  unsigned long position)
-    : returned_tuples_(return_tuples), start_position_(position){};
+    : returned_tuples_(return_tuples), start_position_(position) {}
 
-LimitConstraint::LimitConstraint() : returned_tuples_(-1), start_position_(0){};
+LimitConstraint::LimitConstraint() : returned_tuples_(-1), start_position_(0) {}
 
 bool LimitConstraint::CanBeOmitted() const {
   return returned_tuples_ == -1 & start_position_ == 0;
@@ -47,3 +46,8 @@ bool LimitConstraint::CanBeOmitted() const {
 
 //}   // namespace logical_query_plan
 //}   // namespace claims
+
+
+
+
+

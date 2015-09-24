@@ -16,21 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/LogicalQueryPlan/Scan.h
+ * /CLAIMS/LogicalQueryPlan/logical_scan.h
  *
  *  Created on: Nov 7, 2013
- *      Author: wangli
- *       Email:
+ *      Author: wangli, HanZhang
+ *       Email:wangli1426@gmail.com
  *
- * Description:
+ * Description: Implementation of Scan operator in logical layer
  *
  */
 
-#ifndef SCAN_H_
-#define SCAN_H_
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
+#ifndef LOGICALQUERYPLAN_LOGICAL_SCAN_H_
+#define LOGICALQUERYPLAN_LOGICAL_SCAN_H_
+
 #include "LogicalOperator.h"
 #include "../common/ids.h"
 #include "../Catalog/table.h"
@@ -44,7 +42,7 @@ class LogicalScan : public LogicalOperator {
   LogicalScan(const TableID&);
   LogicalScan(ProjectionDescriptor* projection, const float sample_rate_ = 1);
   LogicalScan(const TableID&,
-              const std::vector<unsigned>& kSelected_attribute_index_list);
+              const std::vector<unsigned>& selected_attribute_index_list);
   virtual ~LogicalScan();
   Dataflow getDataflow();
   BlockStreamIteratorBase* getIteratorTree(const unsigned &);
@@ -67,4 +65,6 @@ class LogicalScan : public LogicalOperator {
 //}   // namespace logical_query_plan
 //}   // namespace claims
 
-#endif /* SCAN_H_ */
+
+
+#endif //  LOGICALQUERYPLAN_LOGICAL_SCAN_H_ 

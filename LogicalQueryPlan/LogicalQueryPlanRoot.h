@@ -13,7 +13,7 @@
 #include "LogicalOperator.h"
 #include "../common/ids.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
-#include "Limit.h"
+#include "logical_limit.h"
 class LogicalQueryPlanRoot : public LogicalOperator {
  public:
   enum outputFashion {

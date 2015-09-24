@@ -16,41 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/LogicalQueryPlan/logical_limit.h
+ * /CLAIMS/LogicalQueryPlan/logical_limit.h
  *
  *  Created on: Sep 18, 2015
- *      Author: Han,wangli
- *		   Email: chxiaoyifeng1992@gmail.com
+ *      Author: wangli，HanZhang
+ *       Email: wangli1426@gmail.com
  *
- * Description:
- *
- *
- *
+ * Description: Implementation of Limit operator in logical layer
  */
 
-#ifndef LOGICALQUERYPLAN_LIMIT_H_
-#define LOGICALQUERYPLAN_LIMIT_H_
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
+#ifndef LOGICALQUERYPLAN_LOGICAL_LIMIT_H_
+#define LOGICALQUERYPLAN_LOGICAL_LIMIT_H_
+
 #include "LogicalOperator.h"
 // namespace claims {
 // namespace logical_query_plan {
 
 /**
- * @brief Method description:limit operator is a simple operation.It get
- * @param start_position_:the fault value is 0,it means the position of
- * acquiring metedata.return_tuples_:the fault value is -1,it means which row is
- * needed.
- * @return values of start_positions and returned_tuples.
+ * @brief Method description:limit operator is a simple operator.
+ * start_position_:the fault value is 0,it means the position where we should
+ * acquire data.
+ * return_tuples_:the fault value is -1, it means that all rows are needed.
  */
 
 class LimitConstraint {
  public:
   LimitConstraint(unsigned long return_tuples);
   LimitConstraint(unsigned long return_tuples, unsigned long position);
-  // TODO(Han):The positions of parameters is reverse, we should make sure where
-  // the function called.
+  // TODO(HanZhang):The positions of parameters is reverse, we should make
+  // sure where the function called.
   LimitConstraint();
   // virtual ~LimitConstraint();
   bool CanBeOmitted() const;
@@ -63,4 +57,7 @@ class LimitConstraint {
 //}   // namespace logical_query_plan
 //}   // namespace claims
 
-#endif  //  LOGICALQUERYPLAN_LIMIT_H_
+
+
+
+#endif //  LOGICALQUERYPLAN_LOGICAL_LIMIT_H_ 

@@ -9,7 +9,7 @@
 #include <vector>
 #include <iostream>
 #include "../../../Environment.h"
-#include "../../../LogicalQueryPlan/Scan.h"
+#include "../../../LogicalQueryPlan/logical_scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
 #include "../../../Catalog/ProjectionBinding.h"

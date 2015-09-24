@@ -36,7 +36,7 @@
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/LogicalOperator.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 
 #include "../../utility/rdtsc.h"
 

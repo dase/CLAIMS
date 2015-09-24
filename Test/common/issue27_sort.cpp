@@ -15,7 +15,7 @@
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Sort.h"

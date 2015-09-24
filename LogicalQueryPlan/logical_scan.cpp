@@ -16,87 +16,92 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/LogicalQueryPlan/Scan.cpp
+ * /CLAIMS/LogicalQueryPlan/logical_scan.cpp
  *
  *  Created on: Nov 7, 2013
- *      Author: wangli
- *       Email:
+ *      Author: wangli, HanZhang
+ *       Email:wangli1426@gmail.com
  *
- * Description:
+ * Description: Implementation of Scan operator in logical layer
  *
  */
 
 #include <stdio.h>
-#include "Scan.h"
+#include <glog/logging.h>
+#include <iostream>
+#include "logical_scan.h"
 #include "../Catalog/Catalog.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
 
-//namespace claims {
-//namespace logical_query_plan {
+// namespace claims {
+// namespace logical_query_plan {
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
     : scan_attribute_list_(attribute_list),
-      target_projection_(0),
-      dataflow_(0) {
+      target_projection_(NULL),
+      dataflow_(NULL) {
   // TODO Auto-generated constructor stub
   setOperatortype(l_scan);
 }
 
-LogicalScan::LogicalScan(const TableID& kTable_id)
-    : target_projection_(0), dataflow_(0) {
-  TableDescriptor* table = Catalog::getInstance()->getTable(kTable_id);
-  if (table == 0) {
-    printf("Table[id=%d] does not exists!\n", kTable_id);
+LogicalScan::LogicalScan(const TableID& table_id)
+    : target_projection_(NULL), dataflow_(NULL) {
+  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
+  if (NULL == table) {
+    LOG(WARNING) << "Table[id" << table_id << "] does not exists!/n";
   }
   scan_attribute_list_ = table->getAttributes();
   setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,
-                         const float kSample_rate)
-    : sample_rate_(kSample_rate), dataflow_(0) {
+                         const float sample_rate)
+    : sample_rate_(sample_rate), dataflow_(NULL) {
   scan_attribute_list_ = projection->getAttributeList();
   target_projection_ = projection;
   setOperatortype(l_scan);
 }
 LogicalScan::LogicalScan(
-    const TableID& kTable_id,
-    const std::vector<unsigned>& kSelected_attribute_index_list)
-    : target_projection_(0), dataflow_(0) {
-  TableDescriptor* table = Catalog::getInstance()->getTable(kTable_id);
-  if (table == 0) {
-    printf("Table[id=%d] does not exists!\n", kTable_id);
+    const TableID& table_id,
+    const std::vector<unsigned>& selected_attribute_index_list)
+    : target_projection_(NULL), dataflow_(NULL) {
+  TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
+  if (NULL == table) {
+    printf("Table[id=%d] does not exists!\n", table_id);
+    LOG(WARNING) << "Table[id" << table_id << "] does not exists!/n"
+                 << std::endl;
   }
-  for (unsigned i = 0; i < kSelected_attribute_index_list.size(); i++) {
+  for (unsigned i = 0; i < selected_attribute_index_list.size(); i++) {
     scan_attribute_list_.push_back(
-        table->getAttribute(kSelected_attribute_index_list[i]));
+        table->getAttribute(selected_attribute_index_list[i]));
   }
   setOperatortype(l_scan);
 }
 
 LogicalScan::~LogicalScan() {
-  // TODO Auto-generated destructor stub
-  delete dataflow_;
+  if (NULL != dataflow_) {
+    delete dataflow_;
+    dataflow_ = NULL;
+  }
 }
 
 /**
  * @brief It can generate many projection. We need the smallest cost of
- * projections,so we should choose the best one what we need with traversing
+ * projections, so we should choose the best one what we need with traversing
  * scan_attribute_list_.
  */
 Dataflow LogicalScan::getDataflow() {
-  if (dataflow_ == 0)
-    dataflow_ = new Dataflow();
-  else
-    return *dataflow_;
+  if (NULL != dataflow_) return *dataflow_;
+  dataflow_ = new Dataflow();
+
   TableID table_id = scan_attribute_list_[0].table_id_;
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
 
-  if (target_projection_ == 0) {
+  if (target_projection_ == NULL) {
     ProjectionOffset target_projection_off = -1;
     unsigned int min_projection_cost = -1;
-    // TODO(Yu): get real need column as scan_attribute_list_, otherwise,
+    // TODO(KaiYu): get real need column as scan_attribute_list_, otherwise,
     // optimization don't work
     for (ProjectionOffset projection_off = 0;
          projection_off < table->getNumberOfProjection(); projection_off++) {
@@ -146,7 +151,7 @@ Dataflow LogicalScan::getDataflow() {
    * @brief build the data flow
    */
 
-  dataflow_->attribute_list_ = scan_attribute_list_;  // attribute_list
+  dataflow_->attribute_list_ = scan_attribute_list_;  // attribute_list_
 
   Partitioner* par = target_projection_->getPartitioner();
   dataflow_->property_.partitioner = DataflowPartitioningDescriptor(*par);
@@ -158,8 +163,7 @@ Dataflow LogicalScan::getDataflow() {
  * @brief Set the value of class state and get instantiation of physical
  * operator to transform logical operator.
  * In the current implementation, all the attributes within the involved
- * projection
- * are read.
+ * projection are read.
  */
 
 // TODO: Ideally, the columns in one projection are stored separately
@@ -177,12 +181,12 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(
 
 bool LogicalScan::GetOptimalPhysicalPlan(
     Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
-    const unsigned& kBlock_size) {
+    const unsigned& block_size) {
   Dataflow dataflow = getDataflow();
   NetworkTransfer transfer = requirement.requireNetworkTransfer(dataflow);
 
   ExpandableBlockStreamProjectionScan::State state;
-  state.block_size_ = kBlock_size;
+  state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
   state.schema_ = getSchema(dataflow_->attribute_list_);
   state.sample_rate_ = sample_rate_;
@@ -197,7 +201,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     physical_plan_descriptor.cost += dataflow.getAggregatedDatasize();
 
     ExpandableBlockStreamExchangeEpoll::State state;
-    state.block_size_ = kBlock_size;
+    state.block_size_ = block_size;
     state.child_ = scan;  // child_iterator;
     state.exchange_id_ =
         IDsGenerator::getInstance()->generateUniqueExchangeID();
@@ -251,8 +255,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
 
       /**
        * @brief Currently, the join output size cannot be predicted due to the
-       * absence
-       * of data statistics.
+       * absence of data statistics.
        * We just use the magic number as following
        */
       const unsigned kDatasize = total_size / degree_of_parallelism;

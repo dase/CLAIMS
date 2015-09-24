@@ -9,7 +9,7 @@
 #include <iostream>
 #include "../../Environment.h"
 
-#include "../Scan.h"
+#include "../logical_scan.h"
 #include "../Filter.h"
 #include "../Aggregation.h"
 #include "../Buffer.h"
