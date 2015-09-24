@@ -91,12 +91,12 @@ static int testProject_wl(){
 
 		LogicalOperator* scan=new LogicalScan(table_1->getProjectoin(0));
 
-		Filter::Condition filter_condition_1;
+		LogicalFilter::Condition filter_condition_1;
 
 		filter_condition_1.add(table_1->getAttribute("row_id"),AttributeComparator::L,std::string("1000"));
 
 
-		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
+		LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,scan);
 
 		std::vector<std::vector<ExpressionItem> > vve;
 

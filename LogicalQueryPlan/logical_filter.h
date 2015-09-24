@@ -19,10 +19,11 @@
  * /CLAIMS/LogicalQueryPlan/filter.h
  *
  *  Created on: Sep 21, 2015
- *      Author: whitespace
- *		   Email: 
+ *      Author: tonglanxuan
+ *       Email: lxtong0526@163.com
  * 
- * Description:
+ * Description: Structures the LogicalFilter class, which functions as logical
+ *              operator "filter".
  *
  */
 
@@ -32,9 +33,6 @@
 #include <vector>
 #include <map>
 #include <string>
-// #ifdef DMALLOC
-// #include "./dmalloc.h"
-// #endif
 #include "LogicalOperator.h"
 #include "../common/AttributeComparator.h"
 #include "../common/ExpressionCalculator.h"
@@ -44,29 +42,41 @@
 // namespace claims {
 // namespace logical_query_plan {
 
-class Filter : public LogicalOperator {
+
+/**
+ * @brief Method description: Logical Operator "filter", is used to screen out
+ *                            the info we don't need, so as to lessen time cost
+ */
+class LogicalFilter : public LogicalOperator {
  public:
   /**
    * @brief Method description: Construction.
    * @param child : Its child logical operator.
    * @param qual: Pointing to the root of the expression tree.
    */
-  Filter(LogicalOperator* child, vector<QNode*> qual);
+  LogicalFilter(LogicalOperator* child, vector<QNode*> qual);
+
   /**
    * @brief Method description: Destruction.
    */
-  virtual ~Filter();
+
+  virtual ~LogicalFilter();
+
   /**
-   * @brief Method description: To get the dataflow from its child logical operator, operates on it, thus give it to its
-   * father logical operator.
+   * @brief Method description: To get the dataflow from its child logical
+   *                            operator, operates on it, thus give it to
+   *                            its father logical operator.
    * @return Dataflow
    */
   Dataflow GetDataflow();
   /**
-   * @brief Method description: To get the Iterator Tree from its child logical operator, generates a state for establishing
-   * a physical execution plan, finally give it to its father logical operator.
+   * @brief Method description: To get the Iterator Tree from its child logical
+   *                            operator, generates a state for establishing a
+   *                            physical execution plan, finally give it to its
+   *                            father logical operator.
    * @param blocksize: The size of block in the CLAIMS project.
-   * @return BlockStreamIteratorBase*: A block stream iterator pointer.
+   * @return BlockStreamIteratorBase*: A block stream iterator pointer,
+   *         pointing to the root node of filter's iterator tree.
    */
   BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
   bool GetOptimalPhysicalPlan(Requirement requirement,
@@ -80,32 +90,34 @@ class Filter : public LogicalOperator {
 
  private:
   /**
-   * @brief Method description: Not used in the current version and remained to be rewrite. To help make getDataflow more
-   * efficient.
+   * @brief Method description: Not used in the current version and remained to
+   *                            be rewrite. To help make getDataflow more
+   *                            efficient.
    * @param partition_id: The id of partition.
    * @param DataflowPartitioningDescriptor
-   * @return  A boolean value.
+   * @return  A boolean value. Returning TRUE indicates the partition of that
+   *          partition_id can be hash pruned.
    */
-  bool CouldHashPruned(unsigned partition_id,
+  bool CanBeHashPruned(unsigned partition_id,
                        const DataflowPartitioningDescriptor&) const;
   /**
-   * @brief Method description: Default returning 1 in the current version and remained to be rewrite. To predict the cardinality
-   * of the table.
+   * @brief Method description: Default returning 1 in the current version and
+   *                            remained to be rewrite. To predict the
+   *                            cardinality of the table.
    * @return  A float number indicating the coefficient.
    */
   float PredictSelectivity() const;
   /**
-   * @brief Method description: To save the index of dataflow.attribute_list_ into colindex_.
+   * @brief Method description: To save the index of dataflow.attribute_list_
+   *                            into column_id_.
    * @param dataflow
-   * @return  A boolean value.
    */
-  bool Getcolindex(Dataflow dataflow);
+  void set_column_id(const Dataflow& dataflow);
 
  private:
   LogicalOperator* child_;
-  vector<AttributeComparator> comparator_list_;
-  map<string, int> colindex_;
-  vector<QNode*> qual_;
+  map<string, int> column_id_;
+  vector<QNode*> condi_;
 };
 
 //}   // namespace logical_query_plan

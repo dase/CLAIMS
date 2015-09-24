@@ -465,7 +465,7 @@ static int query_optimization_based_on_statistics_join(){
 
 
 			LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
-			Filter::Condition filter_condition_1;
+			LogicalFilter::Condition filter_condition_1;
 			//			const int order_type=1;
 			filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
@@ -474,11 +474,11 @@ static int query_optimization_based_on_statistics_join(){
 			printf("sec_code=%?\n");
 			scanf("%d",&sec_code);
 			filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,&sec_code);
-			LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+			LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 
 			LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
-			Filter::Condition filter_condition_2;
+			LogicalFilter::Condition filter_condition_2;
 			//			const int order_type=1;
 			filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
@@ -487,7 +487,7 @@ static int query_optimization_based_on_statistics_join(){
 			//			printf("sec_code=%?\n");
 			//			scanf("%d",&sec_code);
 			//			filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,&sec_code);
-			LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+			LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
 			std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
@@ -954,7 +954,7 @@ static int query_optimization_based_on_statistics_aggregation(){
 
 
 			LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(6));
-			Filter::Condition filter_condition_1;
+			LogicalFilter::Condition filter_condition_1;
 			//			const int order_type=1;
 			filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
@@ -963,11 +963,11 @@ static int query_optimization_based_on_statistics_aggregation(){
 			printf("sec_code=%?\n");
 			scanf("%d",&sec_code);
 			filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,&sec_code);
-			LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+			LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 
 			LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
-			Filter::Condition filter_condition_2;
+			LogicalFilter::Condition filter_condition_2;
 			//			const int order_type=1;
 			filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 			//			const int trade_date=20101008;
@@ -976,7 +976,7 @@ static int query_optimization_based_on_statistics_aggregation(){
 			//			printf("sec_code=%?\n");
 			//			scanf("%d",&sec_code);
 			//			filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,&sec_code);
-			LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+			LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 			std::vector<Attribute> group_by_attributes;
 			group_by_attributes.push_back(table_1->getAttribute("order_no"));

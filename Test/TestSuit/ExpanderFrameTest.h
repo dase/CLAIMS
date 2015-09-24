@@ -18,14 +18,14 @@ static int test_scan(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 //	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::EQ,std::string("20101008"));
 	const int sec_code=600036;
 //	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
@@ -59,14 +59,14 @@ static int test_scan_filter_high_selectivity(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
@@ -105,14 +105,14 @@ static int test_scan_filter_low_selectivity(){
 //	QExpr_binary *qcalnode=new QExpr_binary(qcol,qexpr,t_u_long,oper_equal,t_qexpr_cmp,"cj.row_id=1");
 //	vector<QNode *>qual;
 //	qual.push_back(qcalnode);
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
@@ -228,14 +228,14 @@ static int test_scan_filter_Aggregation(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	std::vector<Attribute> group_by_attributes;
 	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
@@ -278,14 +278,14 @@ static int test_scan_filter_Scalar_Aggregation(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	std::vector<Attribute> group_by_attributes;
 //	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
@@ -336,7 +336,7 @@ static int test_no_repartition_filtered_join(){
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
@@ -345,16 +345,16 @@ static int test_no_repartition_filtered_join(){
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
 
 
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
-	Filter::Condition filter_condition_2;
+	LogicalFilter::Condition filter_condition_2;
 	const int order_type_=1;
 	filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 	const int entry_date=20101008;
 	filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code_=600036;
 	filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
@@ -391,23 +391,23 @@ static int test_complete_repartition_filtered_join(){
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
-	Filter::Condition filter_condition_2;
+	LogicalFilter::Condition filter_condition_2;
 	const int order_type_=1;
 	filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 	const int entry_date=20101008;
 	filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code_=600036;
 	filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
@@ -757,14 +757,14 @@ static int test_multiple_scan(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 //	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 //	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
@@ -795,14 +795,14 @@ static int test_multiple_scan_filter_high_selectivity(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
@@ -833,14 +833,14 @@ static int test_multiple_scan_filter_low_selectivity(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
@@ -872,14 +872,14 @@ static int test_multiple_scan_filter_Aggregation(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	std::vector<Attribute> group_by_attributes;
 	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
@@ -924,14 +924,14 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	TableDescriptor* table_1=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
 	std::vector<Attribute> group_by_attributes;
 //	group_by_attributes.push_back(table_1->getAttribute("sec_code"));
@@ -984,23 +984,23 @@ static int test_multiple_no_repartition_filtered_join(){
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
-	Filter::Condition filter_condition_2;
+	LogicalFilter::Condition filter_condition_2;
 	const int order_type_=1;
 	filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 	const int entry_date=20101008;
 	filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code_=600036;
 	filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
@@ -1039,23 +1039,23 @@ static int test_multiple_complete_repartition_filtered_join(){
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	const int order_type=1;
 	filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 	const int trade_date=20101008;
 	filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code=600036;
 	filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
-	Filter::Condition filter_condition_2;
+	LogicalFilter::Condition filter_condition_2;
 	const int order_type_=1;
 	filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 	const int entry_date=20101008;
 	filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 	const int sec_code_=600036;
 	filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
 	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;

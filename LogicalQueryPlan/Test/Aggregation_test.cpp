@@ -440,34 +440,34 @@ static int aggregation_test(){
 
 		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(1));
 
-		Filter::Condition filter_condition_1;
+		LogicalFilter::Condition filter_condition_1;
 		const int order_type=1;
 		filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,std::string("1"));
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,std::string("20101008"));
 		const int sec_code=600036;
 		filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+		LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
-		Filter::Condition filter_condition_2;
+		LogicalFilter::Condition filter_condition_2;
 		const int order_type_=1;
 		filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,std::string("1"));
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,std::string("20101008"));
 		const int sec_code_=600036;
 		filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::GEQ,std::string("600036"));
-		LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+		LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
-		Filter::Condition filter_condition_cj_payload;
+		LogicalFilter::Condition filter_condition_cj_payload;
 		long tmp1=0;
 		filter_condition_cj_payload.add(table_1->getAttribute(0),AttributeComparator::EQ,&tmp1);
-		LogicalOperator* filter_cj_payload=new Filter(filter_condition_cj_payload,cj_payload_scan);
+		LogicalOperator* filter_cj_payload=new LogicalFilter(filter_condition_cj_payload,cj_payload_scan);
 
-		Filter::Condition filter_condition_sb_payload;
+		LogicalFilter::Condition filter_condition_sb_payload;
 		long tmp2=0;
 		filter_condition_sb_payload.add(table_2->getAttribute(0),AttributeComparator::EQ,&tmp2);
-		LogicalOperator* filter_sb_payload=new Filter(filter_condition_sb_payload,sb_payload_scan);
+		LogicalOperator* filter_sb_payload=new LogicalFilter(filter_condition_sb_payload,sb_payload_scan);
 
 
 		LogicalOperator* buffer1=new Buffer(filter_1);
