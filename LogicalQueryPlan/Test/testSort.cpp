@@ -77,12 +77,12 @@ static int testSort(){
 
 		LogicalOperator* scan=new LogicalScan(table_1->getProjectoin(0));
 
-		Filter::Condition filter_condition_1;
+		LogicalFilter::Condition filter_condition_1;
 
 		filter_condition_1.add(table_1->getAttribute("row_id"),AttributeComparator::L,std::string("100000"));
 
 
-		LogicalOperator* filter_1=new Filter(filter_condition_1,scan);
+		LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,scan);
 
 		vector<LogicalSort::OrderByAttr *> oas;
 		LogicalSort::OrderByAttr *od0=new LogicalSort::OrderByAttr("cj","row_id");

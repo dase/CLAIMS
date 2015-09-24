@@ -347,7 +347,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 					QNode *qual=transformqual((Node *)((Expr_list *)p)->data,tablescan);
 					v_qual.push_back(qual);
 				}
-				LogicalOperator* filter=new Filter(tablescan,v_qual);
+				LogicalOperator* filter=new LogicalFilter(tablescan,v_qual);
 				if(hasin==true)
 				{
 					for(p=whcdn->header;p!=NULL;p=((Expr_list *)p)->next)
@@ -383,7 +383,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 					}
 					if(v_qual.size()>0)
 					{
-						lopfrom=new Filter(filter_1,v_qual);
+						lopfrom=new LogicalFilter(filter_1,v_qual);
 					}
 					else
 					{
@@ -425,7 +425,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				if(v_qual.size()>0)
 				{
-					lopfrom=new Filter(lopfrom,v_qual);
+					lopfrom=new LogicalFilter(lopfrom,v_qual);
 				}
 				return lopfrom;
 			}
@@ -471,7 +471,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				if(v_qual.size()>0)
 				{
-					join=new Filter(join,v_qual);
+					join=new LogicalFilter(join,v_qual);
 				}
 				return join;
 			}
@@ -1463,7 +1463,7 @@ static LogicalOperator* having_select_groupby_where_from2logicalplan(Node *&pars
 	{
 		vector<QNode *>h_qual;
 		h_qual.push_back(transformqual(((Having_list*)node->having_list)->next,select_logicalplan));
-		having_logicalplan=new Filter(select_logicalplan,h_qual);
+		having_logicalplan=new LogicalFilter(select_logicalplan,h_qual);
 	}
 	return having_logicalplan;
 }

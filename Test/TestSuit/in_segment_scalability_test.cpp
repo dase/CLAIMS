@@ -24,9 +24,9 @@ static double lineitem_scan_self_join(){
 
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
@@ -62,9 +62,9 @@ static double sb_scan_self_join(){
 
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
@@ -140,9 +140,9 @@ static double lineitem_scan_filter(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 
@@ -169,14 +169,14 @@ static double sb_scan_filter(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 //	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
 //	filter_condition_1.add(table->getAttribute("entry_dir"),AttributeComparator::EQ,std::string("1"));
 //	const int trade_date=20101008;
 //	filter_condition_1.add(table->getAttribute("entry_date"),AttributeComparator::GEQ,std::string("20101008"));
 //	const int sec_code=600036;
 //	filter_condition_1.add(table->getAttribute("sec_code"),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 

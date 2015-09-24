@@ -107,7 +107,7 @@ int main_asdfasdf(){
 	AttributeComparator filter1(column_type(t_int),Comparator::EQ,2,&f);
 	std::vector<AttributeComparator> ComparatorList;
 	ComparatorList.push_back(filter1);
-	LogicalOperator* filter=new Filter(ComparatorList,scan_1);
+	LogicalOperator* filter=new LogicalFilter(ComparatorList,scan_1);
 
 	////scan/////////
 	std::vector<unsigned> index_list_2;
