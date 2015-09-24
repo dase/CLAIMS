@@ -19,31 +19,26 @@
  * /CLAIMS/LogicalQueryPlan/equal_join.h
  *
  *  Created on: Nov 21, 2013
- *      Author: wangli
- *       Email: wangli1426@gmail.com
+ *      Author: wangli,yuyang
+ *       Email: wangli1426@gmail.com, youngfish2010@hotmail.com
  *
  * Description:
- *   This file mainly describe the EqualJoin Operater.
+ *   This file mainly describe the EqualJoin Operator.
  *
  */
 #ifndef LOGICALQUERYPLAN_LOGICAL_EQUAL_JOIN_H_
 #define LOGICALQUERYPLAN_LOGICAL_EQUAL_JOIN_H_
 #include <vector>
-#include "LogicalOperator.h"
+#include "./LogicalOperator.h"
 #include "../Catalog/Attribute.h"
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
 /**
- * @brief The LogicalSort contains the information of attributes to be
- * joined.And it describe how to generate 'Join Operator'.
- * @details EqualJoin operator corresponding to the join statement to join two
- *tables.Require equivalent conditions.As for implementation, one of it is to
- *send all data to a same machine.But the table generated will be too big to
- *store and it is inefficient.So we partition the data to several machines.Each
- *of them do some join and return.
- *
+ * @brief Generate equal join logical plan.
+ * @details EqualJoin operator achieves the join statement tables.It requires
+ * equivalent conditions.As for implementation, one is to
+ * send all data to a same machine.But the generated table will be too big to
+ * store and it is inefficient.So we partition the data to several machines.Each
+ * of them does some join and return.
  */
 class EqualJoin : public LogicalOperator {
  public:
@@ -56,8 +51,8 @@ class EqualJoin : public LogicalOperator {
     Attribute first;
     Attribute second;
   };
-  enum JoinPolice {
-    kNa,
+  enum JoinPolicy {
+    kNull,
     kNoRepartition,
     kLeftRepartition,
     kRightRepartition,
@@ -88,13 +83,13 @@ class EqualJoin : public LogicalOperator {
    *hasSamePartition() is false,the machine which has smaller data will send its
    *data to another according to decideLeftOrRightRepartition().
    * If canLeverageHashPartition(left) is true but canLeverageHashPartition
-   * (right) is false, right nodes will be repartiotioned.
+   * (right) is false, right nodes will be repartitioned.
    * join_police_ = kRightRepartition
    * If canLeverageHashPartition(left) is false but canLeverageHashPartition
-   * (right) is true, left nodes will be repartiotioned.
+   * (right) is true, left nodes will be repartitioned.
    * oin_police_ = kLeftRepartition
    * If both canLeverageHashPartition()s are false ,left and right nodes will be
-   * repartiotioned.
+   * repartitioned.
    * join_police_ = kCompleteRepartition
    */
   Dataflow getDataflow();
@@ -104,41 +99,41 @@ class EqualJoin : public LogicalOperator {
                               const unsigned& block_size = 4096 * 1024);
 
  private:
-  std::vector<unsigned> getLeftJoinKeyIndexList() const;
-  std::vector<unsigned> getRightJoinKeyIndexList() const;
-  std::vector<unsigned> getLeftPayloadIndexList() const;
-  std::vector<unsigned> getRightPayloadIndexList() const;
-  int getIndexInLeftJoinKeyList(const Attribute&) const;
-  int getIndexInLeftJoinKeyList(
+  std::vector<unsigned> GetLeftJoinKeyIndexList() const;
+  std::vector<unsigned> GetRightJoinKeyIndexList() const;
+  std::vector<unsigned> GetLeftPayloadIndexList() const;
+  std::vector<unsigned> GetRightPayloadIndexList() const;
+  int GetIndexInLeftJoinKeyList(const Attribute&) const;
+  int GetIndexInLeftJoinKeyList(
       const Attribute&,
       const std::vector<Attribute> shadow_attribute_list) const;
-  int getIndexInRightJoinKeyList(const Attribute&) const;
-  int getIndexInRightJoinKeyList(
+  int GetIndexInRightJoinKeyList(const Attribute&) const;
+  int GetIndexInRightJoinKeyList(
       const Attribute&,
       const std::vector<Attribute> shadow_attribute_list) const;
-  int getIndexInAttributeList(const std::vector<Attribute>& attributes,
+  int GetIndexInAttributeList(const std::vector<Attribute>& attributes,
                               const Attribute&) const;
-  bool isHashOnLeftKey(const Partitioner& part, const Attribute& key) const;
+  bool IsHashOnLeftKey(const Partitioner& part, const Attribute& key) const;
 
   /**
    * @brief Method description:Check whether the partitioning is based on hash
-   * and the hash key is
-   * a subset of the join keys such that hash join is enabled.
+   * and the hash key is a subset of the join keys such that hash join is
+   * enabled.
    * @param const std::vector<Attribute>& partition_key_list
    * @param const DataflowPartitioningDescriptor& partitoiner
    * @return bool
    */
-  bool canLeverageHashPartition(
+  bool CanLeverageHashPartition(
       const std::vector<Attribute>& join_key_list,
       const DataflowPartitioningDescriptor& partitoiner) const;
   /**
    * @brief Method description:Check whether two partition_keys in the same
    * join_pair.
-   * @param const Attribute& a1
-   * @param const Attribute& a2
+   * @param const Attribute& left
+   * @param const Attribute& right
    * @return  bool
    */
-  bool isEqualCondition(const Attribute& a1, const Attribute& a2) const;
+  bool IsEqualCondition(const Attribute& left, const Attribute& right) const;
 
   /**
    * @brief Method description:Check which has the smaller data.
@@ -149,20 +144,19 @@ class EqualJoin : public LogicalOperator {
    * TODO(admin): Consider not only data size but also other factors, such as
    * parallelism, resource, etc.
    */
-  JoinPolice decideLeftOrRightRepartition(const Dataflow& left_dataflow,
+  JoinPolicy DecideLeftOrRightRepartition(const Dataflow& left_dataflow,
                                           const Dataflow& right_dataflow) const;
 
-  DataflowPartitioningDescriptor decideOutputDataflowProperty(
+  DataflowPartitioningDescriptor DecideOutputDataflowProperty(
       const Dataflow& left_dataflow, const Dataflow& right_dataflow) const;
   void print(int level = 0) const;
 
   /**
-   * @brief
-   * @details Assuming that R and S are the two join table, the selectivity is
+   * Assuming that R and S are the two join table, the selectivity is
    * the number of tuples generated by the join operator to the number of
    * |R|*|S|.
    */
-  double predictEqualJoinSelectivity(const Dataflow& left_dataflow,
+  double PredictEqualJoinSelectivity(const Dataflow& left_dataflow,
                                      const Dataflow& right_dataflow) const;
 
   /**
@@ -170,8 +164,8 @@ class EqualJoin : public LogicalOperator {
    * R.x=S.x.
    * return |O|, where |O|=|R.x=x1|*|S.x=x1|+|R.x=x2|*|S.x=x2|+......
    */
-  double predictEqualJoinSelectivityOnSingleJoinAttributePair(
-      const Attribute& a_l, const Attribute& a_r) const;
+  double PredictEqualJoinSelectivityOnSingleJoinAttributePair(
+      const Attribute& attr_left, const Attribute& attr_right) const;
 
  private:
   std::vector<JoinPair> joinkey_pair_list_;
@@ -179,7 +173,7 @@ class EqualJoin : public LogicalOperator {
   std::vector<Attribute> right_join_key_list_;
   LogicalOperator* left_child_;
   LogicalOperator* right_child_;
-  JoinPolice join_police_;
+  JoinPolicy join_policy_;
   Dataflow* dataflow_;
 };
 

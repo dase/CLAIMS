@@ -29,26 +29,22 @@
 
 #ifndef LOGICALQUERYPLAN_LOGICAL_SORT_H_
 #define LOGICALQUERYPLAN_LOGICAL_SORT_H_
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
 #include <string.h>
 #include <vector>
 #include <iostream>
-#include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../Catalog/Catalog.h"
+#include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
 /**
  * @brief The LogicalSort contains the information of attributes to be
  * sorted.And it describe how to generate Sort Operator.
- * @details LogicalSort have inline struct 'OrderByAttr' which contains the
+ * @details LogicalSort have inner struct 'OrderByAttr' which contains the
  * tablename and direction of sort(ASC or DESC).
- * geIteratorTree() starts the procedure.We use getDataflow() to get the data
- * from its child.
- * When we achieve sort logical paln, getOrderKey() help us return the column
- *number of the attributes we need to sort.
- *
+ * getIteratorTree() generates the logical plan.getIteratorTree() use
+ * getDataflow() to get the data from its child.
+ * When we achieve sort logical plan, getOrderKey() help us return the column
+ * number of the attributes we need to sort.
  */
 class LogicalSort : public LogicalOperator {
  public:
@@ -91,8 +87,7 @@ class LogicalSort : public LogicalOperator {
    * @param const unsigned &blocksize.
    * @return BlockStreamIteratorBase *
    * @details  Besides do these init we notice that "Sort" is a block operator,
-   * so
-   * we need to get all data from other nodes.
+   * so we need to get all data from other nodes.
    */
   BlockStreamIteratorBase *getIteratorTree(const unsigned &blocksize);
   /**
@@ -103,9 +98,9 @@ class LogicalSort : public LogicalOperator {
    * @return  int
    */
   int GetOrderByKey(const char *, const char *);
-  int getOrderByKey(const char *);
+  int GetOrderByKey(const char *);
 
-  void printOrderByAttr() const;
+  void PrintOrderByAttr() const;
   void print(int level = 0) const;
   virtual bool GetOptimalPhysicalPlan(
       Requirement requirement, PhysicalPlanDescriptor &physical_plan_descriptor,

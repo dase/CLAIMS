@@ -98,7 +98,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
   // Actually we just need the column number in the end.
   for (unsigned i = 0; i < order_by_attr_.size(); i++) {
     reducer_state.orderbyKey_.push_back(
-        getOrderByKey(order_by_attr_[i]->table_name_));
+        GetOrderByKey(order_by_attr_[i]->table_name_));
     reducer_state.direction_.push_back(order_by_attr_[i]->direction_);
   }
   reducer_state.input_ = getSchema(dataflow_.attribute_list_);
@@ -110,26 +110,26 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
 
 int LogicalSort::GetOrderByKey(const char *table_name, const char *attr) {
   // Use table name and attribute name to get the number.
-  for (unsigned i = 0; i < dataflow_.attribute_list_.size(); i++) {
+  for (unsigned attr_id = 0; attr_id < dataflow_.attribute_list_.size(); attr_id++) {
     TableDescriptor *table = Catalog::getInstance()->getTable(
-        dataflow_.attribute_list_[i].table_id_);
+        dataflow_.attribute_list_[attr_id].table_id_);
     string tablename = table->getTableName();
     if ((tablename.compare(table_name) == 0) &&
-        (dataflow_.attribute_list_[i].attrName.compare(attr) == 0)) {
-      return i;
+        (dataflow_.attribute_list_[attr_id].attrName.compare(attr) == 0)) {
+      return attr_id;
     }
   }
 }
 
-int LogicalSort::getOrderByKey(const char *table_name) {
-  for (unsigned i = 0; i < dataflow_.attribute_list_.size(); i++) {
+int LogicalSort::GetOrderByKey(const char *table_name) {
+  for (unsigned attr_id = 0; attr_id < dataflow_.attribute_list_.size(); attr_id++) {
     string _ta(table_name);
-    if (_ta.compare(dataflow_.attribute_list_[i].attrName) == 0) {
-      return i;
+    if (_ta.compare(dataflow_.attribute_list_[attr_id].attrName) == 0) {
+      return attr_id;
     }
   }
 }
-void LogicalSort::printOrderByAttr() const {
+void LogicalSort::PrintOrderByAttr() const {
   cout << "OrderByAttr:" << endl;
   for (int i = 0; i < order_by_attr_.size(); i++) {
     printf("%s  %s\n", (const char *)order_by_attr_[i]->table_name_,
@@ -137,6 +137,6 @@ void LogicalSort::printOrderByAttr() const {
   }
 }
 void LogicalSort::print(int level) const {
-  printOrderByAttr();
+  PrintOrderByAttr();
   child_->print(level + 1);
 }
