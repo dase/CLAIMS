@@ -6,6 +6,11 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 
 AM_LDFLAGS=-lc -lm -lrt lboost_serialization -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = 	../../Catalog/libcatalog.a \
 		../../common/libcommon.a \
 		../../common/Schema/libschema.a \

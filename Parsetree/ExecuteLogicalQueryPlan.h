@@ -14,6 +14,8 @@
 #include "../Catalog/table.h"
 #include <iosfwd>
 
+class LogicalOperator;
+
 struct query_result{
 	query_result():result_set(0){};
 	~query_result(){

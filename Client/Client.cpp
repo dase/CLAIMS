@@ -91,9 +91,9 @@ Client::query_result Client::submit(std::string command, std::string& message,
 			return Client::error;
 		}
 		case OK:{
-			while (response->status != END) {
+			while (response->status != ENDED) {
 				switch(response->status){
-				case SCHEMA:
+				case SCHEMASS:
 					rs.schema_=response->getSchema();
 					break;
 				case HEADER:
@@ -110,7 +110,7 @@ Client::query_result Client::submit(std::string command, std::string& message,
 			rs.query_time_=atof(response->content.c_str());
 			return Client::result;
 		}
-		case CHANGE:{
+		case CHANGEDD:{
 			message=response->content+"\n";
 			return Client::message;
 		}
