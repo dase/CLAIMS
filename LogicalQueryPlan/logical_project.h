@@ -42,6 +42,9 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include "../Catalog/Catalog.h"
 
+// namespace claims {
+// namespace logical_query_plan {
+
 class LogicalProject : public LogicalOperator {
  public:
   LogicalProject(LogicalOperator* child, vector<QNode*> expression_tree);

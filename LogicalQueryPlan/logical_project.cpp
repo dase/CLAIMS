@@ -29,11 +29,12 @@
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
-#include "logical_project.h"
+#include "./logical_project.h"
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Expression/initquery.h"
 #include "../common/log/logging.h"
+
 // namespace claims {
 // namespace logical_query_plan {
 
