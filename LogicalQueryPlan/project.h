@@ -97,7 +97,7 @@ class LogicalProject : public LogicalOperator {
    * @param dataflow: constructed dataflow
    * @return  : a boolean value presenting whether this operation success.
    */
-  bool Getcolindex(Dataflow dataflow);
+  bool SetColumnID(Dataflow dataflow);
 
  private:
   Dataflow *dataflow_;

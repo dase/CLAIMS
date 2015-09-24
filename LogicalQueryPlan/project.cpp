@@ -27,32 +27,39 @@
  * produces an output (e.g. one of the columns from the row, or
  * perhaps some calculation based on multiple columns).
  */
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
 #include "./project.h"
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Expression/initquery.h"
-
+#include "../common/log/logging.h"
 // namespace claims {
 // namespace logical_query_plan {
 
 LogicalProject::LogicalProject(LogicalOperator *child,
                                vector<QNode *> expression_tree)
-    : child_(child), expression_tree_(expression_tree), dataflow_(0) {
+    : child_(child), expression_tree_(expression_tree), dataflow_(NULL) {
   setOperatortype(l_project);
-  // initialize_arithmetic_type_promotion_matrix();
-  // initialize_type_cast_functions();
 }
 
 LogicalProject::~LogicalProject() {
-  delete dataflow_;
-  delete child_;
+  if (NULL != dataflow_) {
+    delete dataflow_;
+    dataflow_ = NULL;
+  }
+  if (NULL != child_) {
+    delete child_;
+    child_ = NULL;
+  }
 }
 /**
  * construct a dataflow from child
  */
 Dataflow LogicalProject::GetDataflow() {
-  if (dataflow_ != NULL) return *dataflow_;
+  //  LOG(INFO) << "hello" << endl;
+  //  LOG(ERROR) << "is" << (child_ == NULL) << endl;
+  if (NULL != dataflow_) return *dataflow_;
   Dataflow ret;
   // get the dataflow of child
   const Dataflow kChildDataflow = child_->GetDataflow();
@@ -64,9 +71,10 @@ Dataflow LogicalProject::GetDataflow() {
   // construct an input schema from attribute list of child
   Schema *input_ = getSchema(kChildDataflow.attribute_list_);
   // get the index of attributes in child dataflow
-  Getcolindex(kChildDataflow);
+  SetColumnID(kChildDataflow);
   /**
-   * if the expression type is compare,then the new column will be boolean type,
+   * if the expression type is compare,then the new column will be boolean
+   * type,
    * else will be it's actual type according to the variable
    */
   for (int i = 0; i < expression_tree_.size(); i++) {
@@ -111,9 +119,11 @@ Dataflow LogicalProject::GetDataflow() {
   return ret;
 }
 
-// Traverse the attribute_list_，
-// store the attribute name and index into colindex_.
-bool LogicalProject::Getcolindex(Dataflow dataflow) {
+/**
+ * Traverse the attribute_list_，
+ * store the attribute name and index into colindex_.
+ */
+bool LogicalProject::SetColumnID(Dataflow dataflow) {
   for (int i = 0; i < dataflow.attribute_list_.size(); i++) {
     col_index_[dataflow.attribute_list_[i].attrName] = i;
   }
@@ -126,14 +136,14 @@ bool LogicalProject::Getcolindex(Dataflow dataflow) {
 BlockStreamIteratorBase *LogicalProject::GetIteratorTree(
     const unsigned &kBlockSize) {
   GetDataflow();
-  Dataflow child_dataflow = child_->GetDataflow();
+  Dataflow kChildDataflow = child_->GetDataflow();
   BlockStreamIteratorBase *child = child_->GetIteratorTree(kBlockSize);
   BlockStreamProjectIterator::State state;
 
   // assign some attributes to the state
   state.block_size_ = kBlockSize;
   state.child_ = child;
-  state.input_ = getSchema(child_dataflow.attribute_list_);
+  state.input_ = getSchema(kChildDataflow.attribute_list_);
   state.output_ = GetOutputSchema();
   state.exprTree_ = expression_tree_;
   return new BlockStreamProjectIterator(state);
@@ -151,8 +161,10 @@ Schema *LogicalProject::GetOutputSchema() {
  */
 void LogicalProject::Print(int level) const {
   printf("project:\n");
+  LOG(INFO) << "project:\n" << endl;
   for (int i = 0; i < expression_tree_.size(); i++) {
     printf("%s\n", expression_tree_[i]->alias.c_str());
+    LOG(INFO) << expression_tree_[i]->alias.c_str() << endl;
   }
   child_->Print(level + 1);
 }
