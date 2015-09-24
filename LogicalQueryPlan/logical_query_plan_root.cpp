@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * logical_query_plan_root.cpp
+ * /Claims/LogicalQueryPlan/logical_query_plan_root.cpp
  *
  *  Created on: Sep 21, 2015
- *      Author: yukai
+ *      Author: wangli, yukai
  *		 Email: yukai2014@gmail.com
  * 
  * Description:
@@ -32,17 +32,17 @@
 #include <vector>
 #include <string>
 
-#include "../Resource/NodeTracker.h"
-#include "../IDsGenerator.h"
 #include "../Config.h"
+#include "../IDsGenerator.h"
+#include "../Resource/NodeTracker.h"
 
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-
-#include "../BlockStreamIterator/BlockStreamResultCollector.h"
-#include "../BlockStreamIterator/BlockStreamPrint.h"
-#include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 #include "../BlockStreamIterator/BlockStreamLimit.h"
+#include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
+#include "../BlockStreamIterator/BlockStreamPrint.h"
+#include "../BlockStreamIterator/BlockStreamResultCollector.h"
+
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 
 // namespace claims {
 // namespace logical_query_plan {
@@ -70,7 +70,7 @@ LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
  * consider dataflow's partitioner's location and collector,
  * decide whether add expander and exchange operator in physical plan.
  *
- * choose one of three top physical operator depend on fashion_,
+ * choose one of three top physical operators depend on fashion_,
  * return complete physical plan
  */
 BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
@@ -119,7 +119,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
   expander_state.block_count_in_buffer_ = 10;
   expander_state.block_size_ = block_size;
   if (is_exchange_need)
-    /** if data exchange is used, only one expanded thread is enough.**/
+    // if data exchange is used, only one expanded thread is enough.
     expander_state.init_thread_count_ = 1;
   else
     expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
@@ -129,7 +129,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
 
   BlockStreamIteratorBase* middle_tier;
   if (!limit_constraint_.canBeOmitted()) {
-    /** we should add a limit operator*/
+    // we should add a limit operator
     BlockStreamLimit::State limit_state(
         expander_state.schema_->duplicateSchema(),
         expander,
@@ -147,7 +147,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(
     case PRINT: {
       BlockStreamPrint::State print_state(
           GetSchema(child_dataflow.attribute_list_), middle_tier, block_size,
-          getAttributeName(child_dataflow));
+          GetAttributeName(child_dataflow));
       ret = new BlockStreamPrint(print_state);
       break;
     }
@@ -245,7 +245,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
     case PRINT: {
       BlockStreamPrint::State print_state(
           GetSchema(best_plan.dataflow.attribute_list_), best_plan.plan,
-          block_size, getAttributeName(physical_plan.dataflow));
+          block_size, GetAttributeName(physical_plan.dataflow));
       final_plan = new BlockStreamPrint(print_state);
       break;
     }
@@ -329,7 +329,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
     return false;
 }
 
-std::vector<std::string> LogicalQueryPlanRoot::getAttributeName(
+std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(
     const Dataflow& dataflow) const {
   std::vector<std::string> attribute_name_list;
   for (unsigned i = 0; i < dataflow.attribute_list_.size(); i++) {

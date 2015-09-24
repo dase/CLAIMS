@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * logical_query_plan_root.h
+ * /Claims/LogicalQueryPlan/logical_query_plan_root.h
  *
  *  Created on: Nov 13, 2013
  *      Author: wangli, yukai
@@ -61,15 +61,15 @@ struct LimitConstraint {
 
 /***
  * @brief: top logical operator in logical query plan,
- *          to generate a few top physical operators.
+ *         generating a few top physical operators.
  */
 class LogicalQueryPlanRoot : public LogicalOperator {
  public:
   /**
-   * three style decide which one the top physical operator is:
+   * three styles decide which one the top physical operator is:
    * 1) BlockStreamPrint: print result on console directly
    * 2) BlockStreamPerformanceMonitorTop: calculate the real-time performance and print
-   * 3) BlockStreamResultCollector : collect result and store in block buffer, then return to client
+   * 3) BlockStreamResultCollector : collect result and store it in block buffer, then return to client
    */
   enum OutputStyle {
     PRINT,
@@ -120,7 +120,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    * @param dataflow :
    * @return  vector of attribute names;
    */
-  std::vector<std::string> getAttributeName(const Dataflow& dataflow) const;
+  std::vector<std::string> GetAttributeName(const Dataflow& dataflow) const;
 
  private:
   NodeID collecter_node;
