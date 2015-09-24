@@ -21,7 +21,7 @@
 #include "../../utility/test_tool.h"
 #include "../../utility/rdtsc.h"
 
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/LogicalOperator.h"

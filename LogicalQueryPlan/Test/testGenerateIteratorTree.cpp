@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 
-#include "../Scan.h"
+#include "../logical_scan.h"
 #include "../Filter.h"
 #include "../logical_aggregation.h"
 #include "../Buffer.h"

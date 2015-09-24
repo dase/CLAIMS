@@ -1,7 +1,7 @@
 #include<iostream>
 #include "../../Test/set_up_environment.h"
 #include "../CrossJoin.h"
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../common/ExpressionItem.h"
 #include "../../LogicalQueryPlan/Filter.h"

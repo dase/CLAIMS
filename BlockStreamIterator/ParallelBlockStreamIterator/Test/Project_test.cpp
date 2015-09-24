@@ -27,7 +27,7 @@
 
 #include "../../../common/Block/BlockStream.h"
 
-#include "../../../LogicalQueryPlan/Scan.h"
+#include "../../../LogicalQueryPlan/logical_scan.h"
 #include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../../LogicalQueryPlan/EqualJoin.h"
 #include "../../../LogicalQueryPlan/Filter.h"

@@ -14,7 +14,7 @@
 
 #include "../logical_aggregation.h"
 #include "../LogicalQueryPlanRoot.h"
-#include "../Scan.h"
+#include "../logical_scan.h"
 
 #include "../../common/data_type.h"
 #include "../../common/ids.h"
@@ -43,7 +43,7 @@
 //#include "../EqualJoin.h"
 //#include "../Filter.h"
 //#include "../LogicalQueryPlanRoot.h"
-//#include "../Scan.h"
+//#include "../logical_scan.h"
 
 using namespace std;
 

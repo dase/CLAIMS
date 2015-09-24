@@ -7,11 +7,12 @@
 
 #include <vector>
 #include <iostream>
-#include "../Scan.h"
+#include "../logical_scan.h"
 #include "../LogicalQueryPlanRoot.h"
 #include "../EqualJoin.h"
 #include "../Buffer.h"
 #include "../Filter.h"
+#include "../logical_limit.h"
 
 #include "../../Environment.h"
 #include "../../Catalog/ProjectionBinding.h"

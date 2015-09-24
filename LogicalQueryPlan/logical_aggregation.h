@@ -27,22 +27,22 @@
  * operator, main function includes getting data context after executing this
  * operator and generating corresponding physical operator.
  */
-#ifndef LOGICAL_AGGREGATION_H_
-#define LOGICAL_AGGREGATION_H_
+#ifndef LOGICALQUERYPLAN_LOGICAL_AGGREGATION_H_
+#define LOGICALQUERYPLAN_LOGICAL_AGGREGATION_H_
 #include <vector>
 #include "LogicalOperator.h"
 #include "../Catalog/Attribute.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-//namespace claims {
-//namespace logical_query_plan {
-
+// namespace claims {
+// namespace logical_query_plan {
 /**
- * @brief class description: maintain operator property that results from executing
+ * @brief class description: maintain operator property that results from
+ * executing
  * aggregation operator, and generate corresponding physical operator.
  * @details as for the implementation of avg() based on sum()/count(), so it's
- * necessary to change the output_schema of private aggeration in
- * kLocalAggReparGlobalAgg aggeration style.
+ * necessary to change the output_schema of private aggregation in
+ * kLocalAggReparGlobalAgg aggregation style.
  * Note: kReparAndGlobalAgg node isn't implemented.
  */
 
@@ -55,7 +55,7 @@ class LogicalAggregation : public LogicalOperator {
    */
   enum AggregationStyle {
     kAgg,  // the data is local or it's distribution agrees with the group
-                // by attributes, one aggregation is enough.
+           // by attributes, one aggregation is enough.
     kReparGlobalAgg,         // otherwise first repartition raw data and then
                              // aggregation
     kLocalAggReparGlobalAgg  // additionally, first do local aggregation
@@ -133,4 +133,4 @@ class LogicalAggregation : public LogicalOperator {
 };
 //} // namespace logical_query_plan
 //}  // namespace claims
-#endif /* LOGICAL_AGGREGATION_H_ */
+#endif  // LOGICALQUERYPLAN_LOGICAL_AGGREGATION_H_

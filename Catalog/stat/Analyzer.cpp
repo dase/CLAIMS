@@ -21,7 +21,7 @@
 #include "../../LogicalQueryPlan/logical_aggregation.h"
 
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 
 #include "../Catalog.h"
 #include "../table.h"

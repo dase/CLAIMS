@@ -31,7 +31,7 @@
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Scan.h"
+#include "../../LogicalQueryPlan/logical_scan.h"
 
 #include "../../Parsetree/parsetree2logicalplan.cpp"
 

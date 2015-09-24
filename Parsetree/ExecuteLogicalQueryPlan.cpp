@@ -22,12 +22,13 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
-#include "../LogicalQueryPlan/Scan.h"
+#include "../LogicalQueryPlan/logical_scan.h"
 #include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../LogicalQueryPlan/EqualJoin.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/logical_aggregation.h"
 #include "../LogicalQueryPlan/Buffer.h"
+#include "../LogicalQueryPlan/logical_limit.h"
 
 #include "../utility/rdtsc.h"
 
