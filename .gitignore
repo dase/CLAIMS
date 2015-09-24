@@ -1,5 +1,6 @@
 *.Po
 *.a
+*.doxyfile
 *.dat*
 *.o
 *sql.output
