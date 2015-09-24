@@ -19,7 +19,7 @@
  * /CLAIMS/LogicalQueryPlan/project.cpp
  *
  *  Created on: Sep 22, 2015
- *      Author: casa, ccccly
+ *      Author: casa, chenlingyun
  *       Email: geekchenlingyun@outlook.com
  *
  * Description:
@@ -39,7 +39,9 @@
 
 LogicalProject::LogicalProject(LogicalOperator *child,
                                vector<QNode *> expression_tree)
-    : child_(child), expression_tree_(expression_tree), dataflow_(NULL) {
+    : child_(child),
+      expression_tree_(expression_tree),
+      dataflow_(NULL) {
   setOperatortype(l_project);
 }
 
@@ -53,31 +55,29 @@ LogicalProject::~LogicalProject() {
     child_ = NULL;
   }
 }
-/**
- * construct a dataflow from child
- */
+// construct a dataflow from child
 Dataflow LogicalProject::GetDataflow() {
-  //  LOG(INFO) << "hello" << endl;
-  //  LOG(ERROR) << "is" << (child_ == NULL) << endl;
   if (NULL != dataflow_) return *dataflow_;
   Dataflow ret;
   // get the dataflow of child
-  const Dataflow kChildDataflow = child_->GetDataflow();
-  // set commnication_cost and partitioner of the dataflow to be returned from
-  // dataflow of child
-  ret.property_.commnication_cost = kChildDataflow.property_.commnication_cost;
-  ret.property_.partitioner = kChildDataflow.property_.partitioner;
+  const Dataflow child_dataflow = child_->GetDataflow();
+  /**
+   * set commnication_cost and partitioner of the dataflow to be returned
+   * from dataflow of child
+   */
+  ret.property_.commnication_cost = child_dataflow.property_.commnication_cost;
+  ret.property_.partitioner = child_dataflow.property_.partitioner;
   std::vector<Attribute> ret_attrs;
   // construct an input schema from attribute list of child
-  Schema *input_ = getSchema(kChildDataflow.attribute_list_);
+  Schema *input_ = getSchema(child_dataflow.attribute_list_);
   // get the index of attributes in child dataflow
-  SetColumnID(kChildDataflow);
+  SetColumnID(child_dataflow);
   /**
    * if the expression type is compare,then the new column will be boolean
    * type,
    * else will be it's actual type according to the variable
    */
-  for (int i = 0; i < expression_tree_.size(); i++) {
+  for (int i = 0; i < expression_tree_.size(); ++i) {
     if (expression_tree_[i]->type == t_qexpr_cmp) {
       InitExprAtLogicalPlan(expression_tree_[i], t_boolean, col_index_, input_);
     } else {
@@ -94,10 +94,10 @@ Dataflow LogicalProject::GetDataflow() {
    * of the string
    * else just construct a column having the same type as the return type
    */
-  for (int i = 0; i < expression_tree_.size(); i++) {
-    column_type *column = 0;
-    if (expression_tree_[i]->return_type == t_string ||
-        expression_tree_[i]->return_type == t_decimal) {
+  for (int i = 0; i < expression_tree_.size(); ++i) {
+    column_type *column = NULL;
+    if (t_string == expression_tree_[i]->return_type ||
+       t_decimal == expression_tree_[i]->return_type) {
       column = new column_type(expression_tree_[i]->return_type,
                                expression_tree_[i]->length);
     } else {
@@ -123,42 +123,36 @@ Dataflow LogicalProject::GetDataflow() {
  * Traverse the attribute_list_，
  * store the attribute name and index into colindex_.
  */
-bool LogicalProject::SetColumnID(Dataflow dataflow) {
+void LogicalProject::SetColumnID(Dataflow dataflow) {
   for (int i = 0; i < dataflow.attribute_list_.size(); i++) {
     col_index_[dataflow.attribute_list_[i].attrName] = i;
   }
-  return true;
 }
 
-/**
- * get dataflow and child physical plan from child ,
- */
+// get dataflow and child physical plan from child ,
 BlockStreamIteratorBase *LogicalProject::GetIteratorTree(
-    const unsigned &kBlockSize) {
+    const unsigned &block_size) {
   GetDataflow();
-  Dataflow kChildDataflow = child_->GetDataflow();
-  BlockStreamIteratorBase *child = child_->GetIteratorTree(kBlockSize);
+  const Dataflow child_dataflow = child_->GetDataflow();
+  BlockStreamIteratorBase *child = child_->GetIteratorTree(block_size);
   BlockStreamProjectIterator::State state;
 
   // assign some attributes to the state
-  state.block_size_ = kBlockSize;
+  state.block_size_ = block_size;
   state.child_ = child;
-  state.input_ = getSchema(kChildDataflow.attribute_list_);
+  state.input_ = getSchema(child_dataflow.attribute_list_);
   state.output_ = GetOutputSchema();
   state.exprTree_ = expression_tree_;
   return new BlockStreamProjectIterator(state);
 }
-/**
- * construct a schema from attribute list of dataflow
- * using the function getSchema in class Schema
- */
+
+// construct a schema from attribute list of dataflow
 Schema *LogicalProject::GetOutputSchema() {
   Schema *schema = getSchema(dataflow_->attribute_list_);
   return schema;
 }
-/**
- * Print the whole schema
- */
+
+// Print the whole logical operation tree
 void LogicalProject::Print(int level) const {
   printf("project:\n");
   LOG(INFO) << "project:\n" << endl;

@@ -19,7 +19,7 @@
  * /CLAIMS/LogicalQueryPlan/project.h
  *
  *  Created on: Sep 22, 2015
- *      Author: casa, ccccly
+ *      Author: casa, chenlingyun
  *       Email: geekchenlingyun@outlook.com
  *
  * Description:
@@ -44,16 +44,8 @@
 
 class LogicalProject : public LogicalOperator {
  public:
-  /**
-   * @brief Method description:construct function
-   * @param child :the child logical operation of this operation
-   * @param expression_tree: a vector of expression tree
-   */
   LogicalProject(LogicalOperator *child, vector<QNode *> expression_tree);
 
-  /**
-   * @brief Method description:destruct function
-   */
   virtual ~LogicalProject();
 
   /**
@@ -71,9 +63,7 @@ class LogicalProject : public LogicalOperator {
    */
   BlockStreamIteratorBase *GetIteratorTree(const unsigned &kBlockSize);
 
-  /**
-   * @brief Method description:NOT USED NOW !!!
-   */
+  // brief Method description:NOT USED NOW !!!
   virtual bool GetOptimalPhysicalPlan(
       Requirement requirement, PhysicalPlanDescriptor &physical_plan_descriptor,
       const unsigned &kBlockSize = 4096 * 1024) {}
@@ -85,9 +75,8 @@ class LogicalProject : public LogicalOperator {
 
  private:
   /**
-   * @brief Method description:construct a schema from attribute list of
-   * dataflow
-   * @return  : a schema
+   * @brief Method description:construct a schema from
+   * attribute list of dataflow
    */
   Schema *GetOutputSchema();
 
@@ -95,9 +84,9 @@ class LogicalProject : public LogicalOperator {
    * @brief Method description:get the index of column according to the
    * attribute list of dataflow
    * @param dataflow: constructed dataflow
-   * @return  : a boolean value presenting whether this operation success.
+   * @return  : if true, then this operation successes; else, fails
    */
-  bool SetColumnID(Dataflow dataflow);
+  void SetColumnID(Dataflow dataflow);
 
  private:
   Dataflow *dataflow_;
