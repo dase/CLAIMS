@@ -28,7 +28,7 @@
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-#include "../../LogicalQueryPlan/project.h"
+#include "../../LogicalQueryPlan/logical_project.h"
 
 static void query_select_sort() {
 	/*

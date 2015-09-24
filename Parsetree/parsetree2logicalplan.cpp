@@ -42,7 +42,7 @@
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../LogicalQueryPlan/CrossJoin.h"
-#include "../LogicalQueryPlan/project.h"
+#include "../LogicalQueryPlan/logical_project.h"
 
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);

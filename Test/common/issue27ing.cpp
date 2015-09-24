@@ -25,8 +25,7 @@
 #include "../../common/ExpressionCalculator.h"
 
 #include "../../common/types/NValue.hpp"
-#include "../../LogicalQueryPlan/project.h"
-
+#include "../../LogicalQueryPlan/logical_project.h"
 #include "../../utility/rdtsc.h"
 
 static void query_select_fzh() {

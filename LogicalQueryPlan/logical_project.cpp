@@ -29,7 +29,7 @@
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
-#include "./project.h"
+#include "logical_project.h"
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Expression/initquery.h"
@@ -37,8 +37,8 @@
 // namespace claims {
 // namespace logical_query_plan {
 
-LogicalProject::LogicalProject(LogicalOperator *child,
-                               vector<QNode *> expression_tree)
+LogicalProject::LogicalProject(LogicalOperator* child,
+                               vector<QNode*> expression_tree)
     : child_(child),
       expression_tree_(expression_tree),
       dataflow_(NULL) {
@@ -69,7 +69,7 @@ Dataflow LogicalProject::GetDataflow() {
   ret.property_.partitioner = child_dataflow.property_.partitioner;
   std::vector<Attribute> ret_attrs;
   // construct an input schema from attribute list of child
-  Schema *input_ = getSchema(child_dataflow.attribute_list_);
+  Schema* input_ = getSchema(child_dataflow.attribute_list_);
   // get the index of attributes in child dataflow
   SetColumnID(child_dataflow);
   /**
@@ -79,10 +79,10 @@ Dataflow LogicalProject::GetDataflow() {
    */
   for (int i = 0; i < expression_tree_.size(); ++i) {
     if (expression_tree_[i]->type == t_qexpr_cmp) {
-      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, col_index_, input_);
+      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, column_id_, input_);
     } else {
       InitExprAtLogicalPlan(expression_tree_[i],
-                            expression_tree_[i]->actual_type, col_index_,
+                            expression_tree_[i]->actual_type, column_id_,
                             input_);
     }
   }
@@ -95,7 +95,7 @@ Dataflow LogicalProject::GetDataflow() {
    * else just construct a column having the same type as the return type
    */
   for (int i = 0; i < expression_tree_.size(); ++i) {
-    column_type *column = NULL;
+    column_type* column = NULL;
     if (t_string == expression_tree_[i]->return_type ||
        t_decimal == expression_tree_[i]->return_type) {
       column = new column_type(expression_tree_[i]->return_type,
@@ -125,16 +125,16 @@ Dataflow LogicalProject::GetDataflow() {
  */
 void LogicalProject::SetColumnID(Dataflow dataflow) {
   for (int i = 0; i < dataflow.attribute_list_.size(); i++) {
-    col_index_[dataflow.attribute_list_[i].attrName] = i;
+    column_id_[dataflow.attribute_list_[i].attrName] = i;
   }
 }
 
 // get dataflow and child physical plan from child ,
-BlockStreamIteratorBase *LogicalProject::GetIteratorTree(
+BlockStreamIteratorBase* LogicalProject::GetIteratorTree(
     const unsigned &block_size) {
   GetDataflow();
   const Dataflow child_dataflow = child_->GetDataflow();
-  BlockStreamIteratorBase *child = child_->GetIteratorTree(block_size);
+  BlockStreamIteratorBase* child = child_->GetIteratorTree(block_size);
   BlockStreamProjectIterator::State state;
 
   // assign some attributes to the state
@@ -147,8 +147,8 @@ BlockStreamIteratorBase *LogicalProject::GetIteratorTree(
 }
 
 // construct a schema from attribute list of dataflow
-Schema *LogicalProject::GetOutputSchema() {
-  Schema *schema = getSchema(dataflow_->attribute_list_);
+Schema* LogicalProject::GetOutputSchema() {
+  Schema* schema = getSchema(dataflow_->attribute_list_);
   return schema;
 }
 
