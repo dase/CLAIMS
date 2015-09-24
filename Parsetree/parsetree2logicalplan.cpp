@@ -42,7 +42,7 @@
 #include "../common/Expression/qnode.h"
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../LogicalQueryPlan/CrossJoin.h"
+#include "../LogicalQueryPlan/logical_cartesian_product.h"
 
 using namespace claims::logical_query_plan;
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
@@ -415,7 +415,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				else//other join
 				{
-					lopfrom=new CrossJoin(filter_1,filter_2);
+					lopfrom=new LogicalCartesianProduct(filter_1,filter_2);
 				}
 				for(int i=0;i<raw_qual.size();i++)
 				{
@@ -429,7 +429,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			}
 			else//other to crossjoin
 			{
-				lopfrom=new CrossJoin(filter_1,filter_2);
+				lopfrom=new LogicalCartesianProduct(filter_1,filter_2);
 				return lopfrom;
 			}
 
@@ -461,7 +461,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				else//other join
 				{
-					join=new CrossJoin(filter_1,filter_2);
+					join=new LogicalCartesianProduct(filter_1,filter_2);
 				}
 				for(int i=0;i<raw_qual.size();i++)
 				{
@@ -475,7 +475,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			}
 			else//other to crossjoin
 			{
-				LogicalOperator* join=new CrossJoin(filter_1,filter_2);
+				LogicalOperator* join=new LogicalCartesianProduct(filter_1,filter_2);
 				return join;
 			}
 

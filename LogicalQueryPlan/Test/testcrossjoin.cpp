@@ -1,6 +1,6 @@
 #include<iostream>
 #include "../../Test/set_up_environment.h"
-#include "../CrossJoin.h"
+#include "../logical_cartesian_product.h"
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../common/ExpressionItem.h"
@@ -45,7 +45,7 @@ static int test_cross_join() {
 //		exprTree1.push_back(qcalnode1);
 //		LogicalOperator *filter_area=new Filter(scan_area,exprTree1);
 
-    LogicalOperator* cross_join = new CrossJoin(scan_field, scan_area);
+    LogicalOperator* cross_join = new LogicalCartesianProduct(scan_field, scan_area);
 
     LogicalOperator* root = new LogicalQueryPlanRoot(
         0, cross_join, LogicalQueryPlanRoot::RESULTCOLLECTOR);

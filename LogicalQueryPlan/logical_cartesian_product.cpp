@@ -26,42 +26,46 @@
  *
  */
 
-#include "CrossJoin.h"
+
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamNestLoopJoinIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../IDsGenerator.h"
 #include "../Config.h"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
 #include "../common/error_define.h"
+#include "logical_cartesian_product.h"
 
-using claims::common;
+using namespace claims::common;
 
 namespace claims {
 namespace logical_query_plan {
-CrossJoin::CrossJoin()
-    : left_child_(0),
-      right_child_(0),
-      dataflow_(0) {
+LogicalCartesianProduct::LogicalCartesianProduct()
+    : left_child_(NULL),
+      right_child_(NULL),
+      dataflow_(NULL) {
   setOperatortype(l_cross_join);
-  join_police_ = NULL;
+  join_policy_ = kUninitialized;
 }
 
-CrossJoin::CrossJoin(LogicalOperator* left_input, LogicalOperator* right_input)
+LogicalCartesianProduct::LogicalCartesianProduct(LogicalOperator* left_input, LogicalOperator* right_input)
     : left_child_(left_input),
       right_child_(right_input),
-      dataflow_(0) {
+      dataflow_(NULL) {
   setOperatortype(l_cross_join);
-  join_police_ = NULL;
+  join_policy_ = kUninitialized;
 }
-CrossJoin::~CrossJoin() {
+LogicalCartesianProduct::~LogicalCartesianProduct() {
   delete dataflow_;
-  if (left_child_ > 0) {
+  dataflow_ = NULL;
+  if (NULL != left_child_) {
     delete left_child_;
+    left_child_ = NULL;
   }
-  if (right_child_ > 0) {
+  if (NULL != right_child_) {
     delete right_child_;
+    right_child_ = NULL;
   }
 }
 
@@ -72,14 +76,14 @@ CrossJoin::~CrossJoin() {
  * @details   (additional)
  */
 
-int CrossJoin::GetJoinPolice() {
-  if (NULL != join_police_) {
-    return join_police_;
+int LogicalCartesianProduct::getjoin_police_() {
+  if (kUninitializedJoinPolicy != join_policy_) {
+    return join_policy_;
   } else {
     LOG(WARNING)<< "[CrossJoin]: " << "["
-    << kErrorMessage[kUninitializedJoinPolice]<< ","
+    << kErrorMessage[kUninitializedJoinPolicy]<< ","
     << "]" << std::endl;
-    return kUninitializedJoinPolice;
+    return kUninitializedJoinPolicy;
   }
 }
 /**
@@ -89,7 +93,7 @@ int CrossJoin::GetJoinPolice() {
  * @details   (additional)
  */
 
-Dataflow CrossJoin::getDataflow() {
+Dataflow LogicalCartesianProduct::getDataflow() {
   if (0 != dataflow_) {
     /* the data flow has been computed already！*/
     return *dataflow_;
@@ -97,7 +101,7 @@ Dataflow CrossJoin::getDataflow() {
   Dataflow left_dataflow = left_child_->getDataflow();
   Dataflow right_dataflow = right_child_->getDataflow();
   Dataflow ret;
-  if (kSuccess == DecideJoinPolice(left_dataflow, right_dataflow)) {
+  if (kSuccess == DecideJoinPolicy(left_dataflow, right_dataflow)) {
       const Attribute left_partition_key = left_dataflow.property_.partitioner
           .getPartitionKey();
       const Attribute right_partition_key = right_dataflow.property_.partitioner
@@ -108,7 +112,7 @@ Dataflow CrossJoin::getDataflow() {
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  right_dataflow.attribute_list_.begin(),
                                  right_dataflow.attribute_list_.end());
-      switch (join_police_) {
+      switch (join_policy_) {
         case kLocalJoin: {
           ret.property_.partitioner.setPartitionList(
               left_dataflow.property_.partitioner.getPartitionList());
@@ -186,32 +190,32 @@ Dataflow CrossJoin::getDataflow() {
 }
 
 /**
- * @brief Method description: decide the join police of the cross join based on the partition of the child operator
+ * @brief Method description: decide the join policy of the cross join based on the partition of the child operator
 * @param
 * @return
 * @details   (additional)
 */
 
-int CrossJoin::DecideJoinPolice(const Dataflow &left_dataflow,
+int LogicalCartesianProduct::DecideJoinPolicy(const Dataflow &left_dataflow,
                                 const Dataflow &right_dataflow) {
   if (CanLocalJoin(left_dataflow, right_dataflow)) {
-    join_police_ = kLocalJoin;
+    join_policy_ = kLocalJoin;
   } else {
     if (left_dataflow.getAggregatedDatasize()
         < right_dataflow.getAggregatedDatasize()) {
       /** left input is the smaller one **/
-      join_police_ = kLeftBroadcast;
+      join_policy_ = kLeftBroadcast;
     } else {
-      join_police_ = kRightBroadcast;
+      join_policy_ = kRightBroadcast;
     }
   }
-  if (NULL != join_police_) {
+  if (kUninitialized != join_policy_) {
     return kSuccess;
   } else {
     LOG(WARNING)<< "[CROSS JOIN]:" << "["
-    << kErrorMessage[kUninitializedJoinPolice] << ",]"
+    << kErrorMessage[kUninitializedJoinPolicy] << ",]"
     << std::endl;
-    return kUninitializedJoinPolice;
+    return kUninitializedJoinPolicy;
   }
 }
 
@@ -222,16 +226,16 @@ int CrossJoin::DecideJoinPolice(const Dataflow &left_dataflow,
 * @details   (additional)
 */
 
-BlockStreamIteratorBase* CrossJoin::getIteratorTree(
+BlockStreamIteratorBase* LogicalCartesianProduct::getIteratorTree(
     const unsigned & block_size) {
-  if (0 == dataflow_) {
+  if (NULL == dataflow_) {
     getDataflow();
   }
-  BlockStreamNestLoopJoinIterator *cross_join_iterator;
+  BlockStreamNestLoopJoinIterator *cross_join_iterator = NULL;
   // =left_child_->getIteratorTree(block_size);
-  BlockStreamIteratorBase* child_iterator_left = 0;
+  BlockStreamIteratorBase* child_iterator_left = NULL;
   // =right_child_->getIteratorTree(block_size);
-  BlockStreamIteratorBase* child_iterator_right = 0;
+  BlockStreamIteratorBase* child_iterator_right = NULL;
   GenerateChildPhysicalQueryPlan(child_iterator_left, child_iterator_right,
                                  block_size);
   Dataflow dataflow_left = left_child_->getDataflow();
@@ -247,14 +251,14 @@ BlockStreamIteratorBase* CrossJoin::getIteratorTree(
   return cross_join_iterator;
 }
 
-int CrossJoin::GenerateChildPhysicalQueryPlan(
+int LogicalCartesianProduct::GenerateChildPhysicalQueryPlan(
     BlockStreamIteratorBase*& left_child_iterator_tree,
     BlockStreamIteratorBase*& right_child_iterator_tree,
     const unsigned & blocksize) {
   int ret = kSuccess;
   Dataflow left_dataflow = left_child_->getDataflow();
   Dataflow right_dataflow = right_child_->getDataflow();
-  switch (join_police_) {
+  switch (join_policy_) {
     case kLocalJoin: {
       left_child_iterator_tree = left_child_->getIteratorTree(blocksize);
       right_child_iterator_tree = right_child_->getIteratorTree(blocksize);
@@ -320,7 +324,6 @@ int CrossJoin::GenerateChildPhysicalQueryPlan(
     }
     default: {
       assert(false);
-      break;
     }
     if (NULL == left_child_iterator_tree) {
       ret = kGenerateSubPhyPlanFailed;
@@ -340,9 +343,9 @@ int CrossJoin::GenerateChildPhysicalQueryPlan(
   return ret;
 }
 
-void CrossJoin::print(int level) const {
+void LogicalCartesianProduct::print(int level) const {
   printf("CrossJoin:\n", level * 8, " ");
-  switch (join_police_) {
+  switch (join_policy_) {
     case kLeftBroadcast: {
       printf(" left_broadcast\n");
       break;
@@ -370,7 +373,7 @@ void CrossJoin::print(int level) const {
  * @details   (additional)
  */
 
-bool CrossJoin::CanLocalJoin(const Dataflow& left,
+bool LogicalCartesianProduct::CanLocalJoin(const Dataflow& left,
                              const Dataflow& right) const {
   if (left.property_.partitioner.getNumberOfPartitions() > 1)
     return false;
