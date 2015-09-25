@@ -56,6 +56,9 @@ LDADD =  \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
     codegen/libcodegen.a\
+    sql_parser/parser/libparser.a \
+    sql_parser/ast_node/libast_node.a \
+    stmt_handler/libstmthandler.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -101,8 +104,8 @@ test_SOURCES = Test/gtest_main.cpp\
 
 SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
-storage Test utility codegen sql_parser
+storage Test utility codegen sql_parser stmt_handler
 
 DIST_SUBDIRS = BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
-storage Test utility codegen sql_parser
+storage Test utility codegen sql_parser stmt_handler

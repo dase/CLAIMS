@@ -26,18 +26,27 @@
  *
  */
 
-#ifndef STMT_HANDLE_STMT_HANDLE_H_
-#define STMT_HANDLE_STMT_HANDLE_H_
+#ifndef STMT_HANDLER_STMT_HANDLER_H_
+#define STMT_HANDLER_STMT_HANDLER_H_
+
+#include "../stmt_handler/stmt_exec.h"
+#include "../stmt_handler/select_exec.h"
+#include "../stmt_handler/load_exec.h"
+#include "../stmt_handler/insert_exec.h"
+#include "../stmt_handler/create_exec.h"
+
 namespace claims {
-namespace stmt_handle {
-class StmtHandle {
+namespace stmt_handler {
+
+class StmtHandler {
  public:
-  StmtHandle(AstNode* stmt_ast);
-  virtual ~StmtHandle();
+  StmtHandler(AstNode* stmt_ast);
+  virtual ~StmtHandler();
   int Execute();
  private:
   StmtExec* stmt_executor_;
 };
-}   // namespace stmt_handle
+
+}   // namespace stmt_handler
 } // namespace claims
-#endif //  STMT_HANDLE_STMT_HANDLE_H_ 
+#endif //  STMT_HANDLER_STMT_HANDLER_H_ 

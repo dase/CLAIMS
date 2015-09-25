@@ -53,6 +53,7 @@ AC_CONFIG_FILES([
   Test/utility/Makefile
   utility/Makefile
   codegen/Makefile 
+  stmt_handler/Makefile
 ])
 AC_OUTPUT
 

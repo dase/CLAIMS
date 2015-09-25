@@ -26,10 +26,11 @@
  *
  */
 
-#include "select_exec.h"
+#include "../stmt_handler/select_exec.h"
 #include <iostream>
+
 namespace claims {
-namespace stmt_handle {
+namespace stmt_handler {
 SelectExec::SelectExec(AstNode* stmt) : StmtExec(stmt) {
   // TODO Auto-generated constructor stub
   select_ast_ = static_cast<AstSelectStmt* >(stmt_);
@@ -41,6 +42,7 @@ SelectExec::~SelectExec() {
 
 int SelectExec::Execute() {
 
+	return 0;
 }
 }   // namespace stmt_handle
 } // namespace claims

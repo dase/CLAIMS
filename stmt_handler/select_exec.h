@@ -26,20 +26,22 @@
  *
  */
 
-#ifndef STMT_HANDLE_SELECT_EXEC_H_
-#define STMT_HANDLE_SELECT_EXEC_H_
+#ifndef STMT_HANDLER_SELECT_EXEC_H_
+#define STMT_HANDLER_SELECT_EXEC_H_
 
-#include "stmt_exec.h"
+#include "../stmt_handler/stmt_exec.h"
+
 namespace claims {
-namespace stmt_handle {
+namespace stmt_handler {
 class SelectExec : public StmtExec {
  public:
   SelectExec(AstNode* stmt);
   virtual ~SelectExec();
   int Execute();
+
  private:
   AstSelectStmt* select_ast_;
 };
 }   // namespace stmt_handle
 } // namespace claims
-#endif //  STMT_HANDLE_SELECT_EXEC_H_ 
+#endif //  STMT_HANDLER_SELECT_EXEC_H_ 

@@ -26,12 +26,14 @@
  *
  */
 
-#include "stmt_handle.h"
 #include <iostream>
-namespace claims {
-namespace stmt_handle {
 #include <glog/logging.h>
-StmtHandle::StmtHandle(AstNode* stmt_ast) {
+#include "../stmt_handler/stmt_handler.h"
+
+namespace claims {
+namespace stmt_handler {
+
+StmtHandler::StmtHandler(AstNode* stmt_ast) {
   // TODO Auto-generated constructor stub
   switch (stmt_ast->ast_node_type_) {
     case AST_SELECT_STMT: {
@@ -40,6 +42,7 @@ StmtHandle::StmtHandle(AstNode* stmt_ast) {
     }
     case AST_INSERT_STMT: {
       stmt_executor_ = new InsertExec(stmt_ast);
+      break;
     }
     default : {
       LOG(WARNING) << "can't find corresponding executor!" << std::endl;
@@ -48,12 +51,14 @@ StmtHandle::StmtHandle(AstNode* stmt_ast) {
   }
 }
 
-StmtHandle::~StmtHandle() {
+StmtHandler::~StmtHandler() {
   // TODO Auto-generated destructor stub
+
 }
 
-int StmtHandle::Execute() {
+int StmtHandler::Execute() {
   return stmt_executor_->Execute();
 }
+
 }   // namespace stmt_handle
 } // namespace claims

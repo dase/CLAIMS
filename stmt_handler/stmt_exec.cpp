@@ -26,18 +26,64 @@
  *
  */
 
-#include "stmt_exec.h"
+#include "../stmt_handler/stmt_exec.h"
+
 #include <iostream>
 namespace claims {
-namespace stmt_handle {
-StmtExec::StmtExec(AstNode* stmt) : stmt_(stmt) {
+namespace stmt_handler {
+StmtExec::StmtExec(AstNode* stmt)
+    : stmt_(stmt) {
   // TODO Auto-generated constructor stub
+  tablename_ = "";
+  table_desc_ = NULL;
+  result_set_ = NULL;
+  result_flag_ = true;
+  error_msg_ = "";
+  info_ = "";
+
 }
 
 StmtExec::~StmtExec() {
   // TODO Auto-generated destructor stub
+  if (result_set_) {
+    delete result_set_;
+    result_set_ = NULL;
+  }
 }
 
-int StmtExec::Execute() { std::cout << "this is stmt_exec!" << std::endl; }
+int StmtExec::Execute() {
+  std::cout << "this is stmt_exec!" << std::endl;
+  return 0;
+}
+
+bool StmtExec::isTableExist() {
+  bool isExist = false;
+  if(table_desc_ != NULL)
+  {
+    //error_msg_="The table "+tablename_ +" has existed during creating table!";
+    //result_flag_=false;
+    //result_set_ = NULL;
+    isExist = true;
+  }
+  return isExist;
+}
+
+const string& StmtExec::getErrorMsg() const {
+  return error_msg_;
+}
+
+const string& StmtExec::getInfo() const {
+  return info_;
+}
+
+bool StmtExec::isResultFlag() const {
+  return result_flag_;
+}
+
+const ResultSet*& StmtExec::getResultSet() const {
+  return result_set_;
+}
+
+
 }   // namespace stmt_handle
-} // namespace claims
+}  // namespace claims

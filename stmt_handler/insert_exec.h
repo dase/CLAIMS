@@ -26,22 +26,35 @@
  *
  */
 
-#ifndef STMT_HANDLE_INSERT_EXEC_H_
-#define STMT_HANDLE_INSERT_EXEC_H_
+#ifndef STMT_HANDLER_INSERT_EXEC_H_
+#define STMT_HANDLER_INSERT_EXEC_H_
 
-#include "stmt_exec.h"
+#include "../stmt_handler/stmt_exec.h"
 
 namespace claims {
-namespace stmt_handle {
+namespace stmt_handler {
 class InsertExec : public StmtExec {
  public:
   InsertExec(AstNode* stmt);
   virtual ~InsertExec();
   int Execute();
+
+ private:
+  bool InsertValueToStream(AstInsertVals *insert_value, TableDescriptor *table, unsigned position, std::ostringstream &ostr);
+  bool CheckType(const column_type *col_type, AstNode *expr);
+
  private:
   AstInsertStmt* insert_ast_;
+
+  bool has_warning_;
+  bool is_correct_;
+  bool is_all_col_;
+  static const int INT_LENGTH;
+  static const int FLOAT_LENGTH;
+  static const int SMALLINT_LENGTH;
+
 };
 }   // namespace stmt_handle
-} // namespace claims
+}  // namespace claims
 
-#endif  //  STMT_HANDLE_INSERT_EXEC_H_
+#endif  //  STMT_HANDLER_INSERT_EXEC_H_
