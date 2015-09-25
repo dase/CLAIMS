@@ -4,7 +4,7 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 #ifndef ISSUE27_SORT_CPP_
 #define ISSUE27_SORT_CPP_
 #include "../../Environment.h"
@@ -17,7 +17,6 @@
 
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Sort.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
@@ -29,6 +28,7 @@
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
+#include "../../LogicalQueryPlan/logical_project.h"
 
 static void query_select_sort() {
 	/*

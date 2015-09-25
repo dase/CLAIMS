@@ -169,7 +169,6 @@ static void query_2(){
 	r_n_s_p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(supplier->getAttribute("SUPPLIER.S_SUPPKEY"),partsupp->getAttribute("PARTSUPP.PS_SUPPKEY")));
 	LogicalOperator* r_n_s_p_ps_farther_join=new EqualJoin(r_n_s_p_ps_farther_join_condition,r_n_s_farther_join,p_ps_farther_join);
 
-
 	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::kPerformance);
 	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->GetIteratorTree(64*1024);
 //

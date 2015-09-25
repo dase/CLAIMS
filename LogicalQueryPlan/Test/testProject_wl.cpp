@@ -4,7 +4,7 @@
  *  Created on: 2014-3-8
  *      Author: casa
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 /*
  * testProject.cpp
  *
@@ -39,9 +39,9 @@
 #include "../../LogicalQueryPlan/Scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/Project.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Aggregation.h"
+#include "../logical_project.h"
 
 
 /**

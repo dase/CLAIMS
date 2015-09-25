@@ -32,7 +32,6 @@
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/Scan.h"
 #include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/Project.h"
 #include "../LogicalQueryPlan/Sort.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
@@ -43,6 +42,7 @@
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../LogicalQueryPlan/CrossJoin.h"
+#include "../LogicalQueryPlan/logical_project.h"
 
 
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);

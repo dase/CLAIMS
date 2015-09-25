@@ -231,7 +231,7 @@ BlockStreamIteratorBase* Aggregation::GetIteratorTree(const unsigned &block_size
 			expander_state.block_count_in_buffer_=EXPANDER_BUFFER_SIZE;
 			expander_state.block_size_=block_size;
 			expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
-			expander_state.child_=child_->GetIteratorTree(block_size);;
+			expander_state.child_=child_->GetIteratorTree(block_size);
 			expander_state.schema_=GetSchema(child_dataflow.attribute_list_);
 			BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 			ExpandableBlockStreamExchangeEpoll::State exchange_state;
