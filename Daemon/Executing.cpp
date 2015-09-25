@@ -41,7 +41,7 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	plan->Print();
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector);
 	//	unsigned long long int timer_start=curtick();
 
 	BlockStreamIteratorBase* collector = root->GetIteratorTree(
