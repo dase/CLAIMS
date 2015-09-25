@@ -56,8 +56,14 @@ LogicalAggregation::LogicalAggregation(
 }
 
 LogicalAggregation::~LogicalAggregation() {
-  delete dataflow_;
-  delete child_;
+  if (NULL != dataflow_) {
+    delete dataflow_;
+    dataflow_ = NULL;
+  }
+  if (NULL != child_) {
+    delete child_;
+    child_ = NULL;
+  }
 }
 Dataflow LogicalAggregation::getDataflow() {
   if (NULL != dataflow_) return *dataflow_;

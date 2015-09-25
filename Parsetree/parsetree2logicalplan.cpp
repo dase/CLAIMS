@@ -43,9 +43,9 @@
 #include "../common/Expression/qnode.h"
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../LogicalQueryPlan/CrossJoin.h"
+#include "../LogicalQueryPlan/logical_cross_join.h"
 
-
+using namespace claims::logical_query_plan;
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem>&expr,Node *node,LogicalOperator *input);
 /*static void getfiltercondition(Node * wcexpr,Filter::Condition &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
@@ -416,7 +416,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				else//other join
 				{
-					lopfrom=new CrossJoin(filter_1,filter_2);
+					lopfrom=new LogicalCrossJoin(filter_1,filter_2);
 				}
 				for(int i=0;i<raw_qual.size();i++)
 				{
@@ -430,7 +430,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			}
 			else//other to crossjoin
 			{
-				lopfrom=new CrossJoin(filter_1,filter_2);
+				lopfrom=new LogicalCrossJoin(filter_1,filter_2);
 				return lopfrom;
 			}
 
@@ -462,7 +462,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 				}
 				else//other join
 				{
-					join=new CrossJoin(filter_1,filter_2);
+					join=new LogicalCrossJoin(filter_1,filter_2);
 				}
 				for(int i=0;i<raw_qual.size();i++)
 				{
@@ -476,7 +476,7 @@ static LogicalOperator* where_from2logicalplan(Node *parsetree)//实现where_fro
 			}
 			else//other to crossjoin
 			{
-				LogicalOperator* join=new CrossJoin(filter_1,filter_2);
+				LogicalOperator* join=new LogicalCrossJoin(filter_1,filter_2);
 				return join;
 			}
 

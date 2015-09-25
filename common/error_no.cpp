@@ -63,7 +63,7 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(kTestError, "test it is error ");
 
   /* errorno for logical_query_plan -4001~ -5000 */
-  DefineErrorAndMessage(kUninitializedJoinPolice,
+  DefineErrorAndMessage(kUninitializedJoinPolicy,
                         "the dedicated join police is not initialized, e.g., "
                         "in corss join, equal join logical operator");
   DefineErrorAndMessage(kGenerateDataflowFailed,

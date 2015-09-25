@@ -60,7 +60,7 @@ const int kNoTableFound = -1001;
 const int kTestError = -3001;
 
 /* errorno for logical_query_plan -4001 ~ -5000*/
-const int kUninitializedJoinPolice = -4001;
+const int kUninitializedJoinPolicy = -4001;
 const int kGenerateDataflowFailed = -4002;
 
 /* errorno for physical_query_plan -5001 ~ -6000 */

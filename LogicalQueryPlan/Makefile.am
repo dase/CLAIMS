@@ -43,8 +43,8 @@ liblogicalqueryplan_a_SOURCES = \
 	Requirement.cpp 				Requirement.h \
 	logical_scan.cpp 					logical_scan.h \
 	Sort.cpp 					Sort.h \
-	CrossJoin.cpp				CrossJoin.h \
-	logical_limit.cpp                   logical_limit.h 
+	logical_limit.cpp                   logical_limit.h \
+	logical_cross_join.cpp				logical_cross_join.h
 
 SUBDIRS = Test
 DIST_SUBDIRS = Test
