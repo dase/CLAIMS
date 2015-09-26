@@ -79,9 +79,9 @@ Dataflow EqualJoin::getDataflow() {
   Dataflow right_dataflow = right_child_->getDataflow();
   Dataflow ret;
 
-  const bool left_dataflow_key_partitioned = CanLeverageHashPartition(
+  const bool left_dataflow_key_partitioned = CanOmitHashPartition(
       left_join_key_list_, left_dataflow.property_.partitioner);
-  const bool right_dataflow_key_partitioned = CanLeverageHashPartition(
+  const bool right_dataflow_key_partitioned = CanOmitHashPartition(
       right_join_key_list_, right_dataflow.property_.partitioner);
 
   const Attribute left_partition_key =
@@ -118,7 +118,7 @@ Dataflow EqualJoin::getDataflow() {
   /**finally, construct the output data flow according to the join police**/
   switch (join_policy_) {
     case kNoRepartition: {
-      LOG(INFO) << "no_repartition\n";
+      LOG(INFO) << "no_repartition" << std::endl;
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -141,7 +141,7 @@ Dataflow EqualJoin::getDataflow() {
       /**
        * Set the generated data size.
        * Currently, we assume the generated data size is the sum of input data
-       * volumn.
+       * volume.
        * TODO(admin): Some reasonable output size estimation is needed.
        */
       for (unsigned i = 0;
@@ -162,7 +162,7 @@ Dataflow EqualJoin::getDataflow() {
       break;
     }
     case kLeftRepartition: {
-      LOG(INFO) << "left_repartiotion\n";
+      LOG(INFO) << "left_repartiotion" << std::endl;
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -200,7 +200,7 @@ Dataflow EqualJoin::getDataflow() {
       break;
     }
     case kRightRepartition: {
-      LOG(INFO) << "right_repartition\n";
+      LOG(INFO) << "right_repartition" << std::endl;
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -246,7 +246,7 @@ Dataflow EqualJoin::getDataflow() {
        * Additional optimization can be made by adopting the partition strategy
        * which benefits the remaining work.
        */
-      LOG(INFO) << "complete_repartition\n";
+      LOG(INFO) << "complete_repartition" << std::endl;
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -270,7 +270,7 @@ Dataflow EqualJoin::getDataflow() {
       break;
     }
     default: {
-      LOG(ERROR) << "The join police has not been decided!\n";
+      LOG(ERROR) << "The join police has not been decided!" << std::endl;
       assert(false);
       break;
     }
@@ -289,7 +289,7 @@ bool EqualJoin::IsHashOnLeftKey(const Partitioner& part,
   }
   return part.getPartitionKey() == key;
 }
-bool EqualJoin::CanLeverageHashPartition(
+bool EqualJoin::CanOmitHashPartition(
     const std::vector<Attribute>& join_key_list,
     const DataflowPartitioningDescriptor& partitoiner) const {
   Attribute attribute = partitoiner.getPartitionKey();
@@ -354,11 +354,11 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(
   state.ht_bucketsize = 128;
   state.output_schema = getSchema(dataflow_->attribute_list_);
 
-  state.joinIndex_left = GetLeftJoinKeyIndexList();
-  state.joinIndex_right = GetRightJoinKeyIndexList();
+  state.joinIndex_left = GetLeftJoinKeyIDs();
+  state.joinIndex_right = GetRightJoinKeyIDs();
 
-  state.payload_left = GetLeftPayloadIndexList();
-  state.payload_right = GetRightPayloadIndexList();
+  state.payload_left = GetLeftPayloadIDs();
+  state.payload_right = GetRightPayloadIDs();
 
   switch (join_policy_) {
     case kNoRepartition: {
@@ -556,7 +556,7 @@ bool EqualJoin::GetOptimalPhysicalPlan(
     Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
     const unsigned& block_size) {}
 
-std::vector<unsigned> EqualJoin::GetLeftJoinKeyIndexList() const {
+std::vector<unsigned> EqualJoin::GetLeftJoinKeyIDs() const {
   std::vector<unsigned> ret;
   const Dataflow dataflow = left_child_->getDataflow();
   for (unsigned i = 0; i < joinkey_pair_list_.size(); i++) {
@@ -569,7 +569,7 @@ std::vector<unsigned> EqualJoin::GetLeftJoinKeyIndexList() const {
   return ret;
 }
 
-std::vector<unsigned> EqualJoin::GetRightJoinKeyIndexList() const {
+std::vector<unsigned> EqualJoin::GetRightJoinKeyIDs() const {
   std::vector<unsigned> ret;
   const Dataflow dataflow = right_child_->getDataflow();
   for (unsigned i = 0; i < joinkey_pair_list_.size(); i++) {
@@ -581,11 +581,10 @@ std::vector<unsigned> EqualJoin::GetRightJoinKeyIndexList() const {
   }
   return ret;
 }
-std::vector<unsigned> EqualJoin::GetLeftPayloadIndexList() const {
+std::vector<unsigned> EqualJoin::GetLeftPayloadIDs() const {
   std::vector<unsigned> ret;
   const Dataflow dataflow = left_child_->getDataflow();
-  const std::vector<unsigned> left_join_key_index_list =
-      GetLeftJoinKeyIndexList();
+  const std::vector<unsigned> left_join_key_index_list = GetLeftJoinKeyIDs();
 
   for (unsigned i = 0; i < dataflow.attribute_list_.size(); i++) {
     bool found_equal = false;
@@ -600,24 +599,12 @@ std::vector<unsigned> EqualJoin::GetLeftPayloadIndexList() const {
     }
   }
   return ret;
-
-  //  for (unsigned i = 0; i < joinkey_pair_list_.size(); i++) {
-  //    for (unsigned j = 0; j < dataflow.attribute_list_.size(); j++) {
-  //      if (joinkey_pair_list_[i].first == dataflow.attribute_list_[j]) {
-  //        break;
-  //      } else {
-  //        ret.push_back(j);
-  //      }
-  //    }
-  //  }
-  //  return ret;
 }
 
-std::vector<unsigned> EqualJoin::GetRightPayloadIndexList() const {
+std::vector<unsigned> EqualJoin::GetRightPayloadIDs() const {
   std::vector<unsigned> ret;
   const Dataflow dataflow = right_child_->getDataflow();
-  const std::vector<unsigned> right_join_key_index_list =
-      GetRightJoinKeyIndexList();
+  const std::vector<unsigned> right_join_key_index_list = GetRightJoinKeyIDs();
 
   for (unsigned i = 0; i < dataflow.attribute_list_.size(); i++) {
     for (unsigned j = 0; j < right_join_key_index_list.size(); j++) {

@@ -99,10 +99,10 @@ class EqualJoin : public LogicalOperator {
                               const unsigned& block_size = 4096 * 1024);
 
  private:
-  std::vector<unsigned> GetLeftJoinKeyIndexList() const;
-  std::vector<unsigned> GetRightJoinKeyIndexList() const;
-  std::vector<unsigned> GetLeftPayloadIndexList() const;
-  std::vector<unsigned> GetRightPayloadIndexList() const;
+  std::vector<unsigned> GetLeftJoinKeyIDs() const;
+  std::vector<unsigned> GetRightJoinKeyIDs() const;
+  std::vector<unsigned> GetLeftPayloadIDs() const;
+  std::vector<unsigned> GetRightPayloadIDs() const;
   int GetIndexInLeftJoinKeyList(const Attribute&) const;
   int GetIndexInLeftJoinKeyList(
       const Attribute&,
@@ -123,7 +123,7 @@ class EqualJoin : public LogicalOperator {
    * @param const DataflowPartitioningDescriptor& partitoiner
    * @return bool
    */
-  bool CanLeverageHashPartition(
+  bool CanOmitHashPartition(
       const std::vector<Attribute>& join_key_list,
       const DataflowPartitioningDescriptor& partitoiner) const;
   /**

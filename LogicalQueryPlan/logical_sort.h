@@ -57,9 +57,8 @@ class LogicalSort : public LogicalOperator {
     //  const char *attr_;
     const char *table_name_;
     int direction_;
-    OrderByAttr(const char *table_name, int direction) {
-      table_name_ = table_name;
-      direction_ = direction;
+    OrderByAttr(const char *table_name, int direction)
+        : table_name_(table_name), direction_(direction) {
       //  printf("ta=%x len=%d ta_=%x len=%d\n",ta,strlen(ta),ta_,strlen(ta_));
       //  cout<<"order by att str ta=  "<<ta<<" @@@ta_= "<<ta_<<endl;
     }
@@ -97,6 +96,7 @@ class LogicalSort : public LogicalOperator {
    * @param const char*
    * @return  int
    */
+  // TODO(yuyang): change const char* to string
   int GetOrderByKey(const char *, const char *);
   int GetOrderByKey(const char *);
 
@@ -108,7 +108,7 @@ class LogicalSort : public LogicalOperator {
 
  private:
   vector<OrderByAttr *> order_by_attr_;
-  Dataflow dataflow_;
+  Dataflow child_data_flow_;
   LogicalOperator *child_;
 };
 

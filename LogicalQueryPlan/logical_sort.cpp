@@ -38,17 +38,17 @@ LogicalSort::LogicalSort(LogicalOperator *child,
     : child_(child), order_by_attr_(order_by_attr) {}
 
 LogicalSort::~LogicalSort() {
-  if (child_ > 0) delete child_;
+  if (NULL != child_) delete child_;
 }
 
 Dataflow LogicalSort::getDataflow() {
   // Get the information from its child
-  dataflow_ = child_->getDataflow();
+  child_data_flow_ = child_->getDataflow();
   Dataflow ret;
-  ret.attribute_list_ = dataflow_.attribute_list_;
-  ret.property_.commnication_cost = dataflow_.property_.commnication_cost;
+  ret.attribute_list_ = child_data_flow_.attribute_list_;
+  ret.property_.commnication_cost = child_data_flow_.property_.commnication_cost;
   ret.property_.partitioner.setPartitionFunction(
-      dataflow_.property_.partitioner.getPartitionFunction());
+      child_data_flow_.property_.partitioner.getPartitionFunction());
   ret.property_.partitioner.setPartitionKey(Attribute());
 
   NodeID location = 0;
@@ -63,7 +63,7 @@ Dataflow LogicalSort::getDataflow() {
 
 BlockStreamIteratorBase *LogicalSort::getIteratorTree(
     const unsigned &blocksize) {
-  Dataflow data_flow = getDataflow();
+  Dataflow dataflow = getDataflow();
 
   // Get all of the data from other nodes if needed.
   BlockStreamExpander::State expander_state;
@@ -71,7 +71,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
   expander_state.block_size_ = blocksize;
   expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
   expander_state.child_ = child_->getIteratorTree(blocksize);
-  expander_state.schema_ = getSchema(dataflow_.attribute_list_);
+  expander_state.schema_ = getSchema(child_data_flow_.attribute_list_);
   BlockStreamIteratorBase *expander_lower =
       new BlockStreamExpander(expander_state);
 
@@ -80,9 +80,9 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
   exchange_state.child_ = expander_lower;
   exchange_state.exchange_id_ =
       IDsGenerator::getInstance()->generateUniqueExchangeID();
-  exchange_state.schema_ = getSchema(dataflow_.attribute_list_);
+  exchange_state.schema_ = getSchema(child_data_flow_.attribute_list_);
   vector<NodeID> lower_id_list =
-      getInvolvedNodeID(dataflow_.property_.partitioner);
+      getInvolvedNodeID(child_data_flow_.property_.partitioner);
   exchange_state.lower_id_list_ = lower_id_list;  // upper
   exchange_state.partition_schema_ = partition_schema::set_hash_partition(0);
   // TODO(admin): compute the upper_ip_list to do reduce side sort
@@ -101,7 +101,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
         GetOrderByKey(order_by_attr_[i]->table_name_));
     reducer_state.direction_.push_back(order_by_attr_[i]->direction_);
   }
-  reducer_state.input_ = getSchema(dataflow_.attribute_list_);
+  reducer_state.input_ = getSchema(child_data_flow_.attribute_list_);
   BlockStreamIteratorBase *reducer_sort =
       new BlockStreamSortIterator(reducer_state);
 
@@ -110,21 +110,23 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
 
 int LogicalSort::GetOrderByKey(const char *table_name, const char *attr) {
   // Use table name and attribute name to get the number.
-  for (unsigned attr_id = 0; attr_id < dataflow_.attribute_list_.size(); attr_id++) {
+  for (unsigned attr_id = 0; attr_id < child_data_flow_.attribute_list_.size();
+       attr_id++) {
     TableDescriptor *table = Catalog::getInstance()->getTable(
-        dataflow_.attribute_list_[attr_id].table_id_);
+        child_data_flow_.attribute_list_[attr_id].table_id_);
     string tablename = table->getTableName();
     if ((tablename.compare(table_name) == 0) &&
-        (dataflow_.attribute_list_[attr_id].attrName.compare(attr) == 0)) {
+        (child_data_flow_.attribute_list_[attr_id].attrName.compare(attr) == 0)) {
       return attr_id;
     }
   }
 }
 
 int LogicalSort::GetOrderByKey(const char *table_name) {
-  for (unsigned attr_id = 0; attr_id < dataflow_.attribute_list_.size(); attr_id++) {
+  for (unsigned attr_id = 0; attr_id < child_data_flow_.attribute_list_.size();
+       attr_id++) {
     string _tablename(table_name);
-    if (_tablename.compare(dataflow_.attribute_list_[attr_id].attrName) == 0) {
+    if (_tablename.compare(child_data_flow_.attribute_list_[attr_id].attrName) == 0) {
       return attr_id;
     }
   }
