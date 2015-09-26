@@ -83,8 +83,8 @@ private:
 	unsigned registered_thread_count_;
 	semaphore sema_open_;
 
-	int swap_num;
-	unsigned temp_cur;
+	int swap_num_;
+	unsigned temp_cur_;
 	volatile bool open_finished_;
 	semaphore sema_open_finished_;
 	//TODO: use malloc to get the continuous memory

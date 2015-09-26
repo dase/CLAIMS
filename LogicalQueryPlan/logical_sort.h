@@ -38,10 +38,10 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
 /**
  * @brief The LogicalSort contains the information of attributes to be
- * sorted.And it describe how to generate Sort Operator.
+ * sorted. And it describe how to generate Sort Operator.
  * @details LogicalSort have inner struct 'OrderByAttr' which contains the
  * tablename and direction of sort(ASC or DESC).
- * getIteratorTree() generates the logical plan.getIteratorTree() use
+ * getIteratorTree() generates the logical plan.getIteratorTree() uses
  * getDataflow() to get the data from its child.
  * When we achieve sort logical plan, getOrderKey() help us return the column
  * number of the attributes we need to sort.
@@ -86,8 +86,8 @@ class LogicalSort : public LogicalOperator {
    * operator instance.
    * @param const unsigned &blocksize.
    * @return BlockStreamIteratorBase *
-   * @details  Besides do these init we notice that "Sort" is a block operator,
-   * so we need to get all data from other nodes.
+   * @details  Besides do these initialization we notice that "Sort" is a block
+   * operator, so we need to get all data from other nodes.
    */
   BlockStreamIteratorBase *getIteratorTree(const unsigned &blocksize);
   /**

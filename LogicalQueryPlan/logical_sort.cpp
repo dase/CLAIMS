@@ -63,7 +63,7 @@ Dataflow LogicalSort::getDataflow() {
 
 BlockStreamIteratorBase *LogicalSort::getIteratorTree(
     const unsigned &blocksize) {
-  Dataflow rt = getDataflow();
+  Dataflow data_flow = getDataflow();
 
   // Get all of the data from other nodes if needed.
   BlockStreamExpander::State expander_state;
@@ -123,8 +123,8 @@ int LogicalSort::GetOrderByKey(const char *table_name, const char *attr) {
 
 int LogicalSort::GetOrderByKey(const char *table_name) {
   for (unsigned attr_id = 0; attr_id < dataflow_.attribute_list_.size(); attr_id++) {
-    string _ta(table_name);
-    if (_ta.compare(dataflow_.attribute_list_[attr_id].attrName) == 0) {
+    string _tablename(table_name);
+    if (_tablename.compare(dataflow_.attribute_list_[attr_id].attrName) == 0) {
       return attr_id;
     }
   }

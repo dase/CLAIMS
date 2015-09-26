@@ -30,6 +30,9 @@
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
 #include "./logical_equal_join.h"
+
+#include <glog/logging.h>
+
 #include "../Catalog/stat/StatManager.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
@@ -52,16 +55,19 @@ EqualJoin::EqualJoin(std::vector<JoinPair> joinpair_list,
 
 EqualJoin::~EqualJoin() {
   delete dataflow_;
-  if (left_child_ != NULL) {
+  if (NULL != dataflow_) {
+    delete dataflow_;
+  }
+  if (NULL != left_child_) {
     delete left_child_;
   }
-  if (right_child_ != NULL) {
+  if (NULL != right_child_) {
     delete right_child_;
   }
 }
 
 Dataflow EqualJoin::getDataflow() {
-  if (dataflow_ != NULL) {
+  if (NULL != dataflow_) {
     // the data flow has been computed*/
     return *dataflow_;
   }
@@ -112,7 +118,7 @@ Dataflow EqualJoin::getDataflow() {
   /**finally, construct the output data flow according to the join police**/
   switch (join_policy_) {
     case kNoRepartition: {
-      QueryOptimizationLogging::log("no_repartition\n");
+      LOG(INFO) << "no_repartition\n";
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -122,8 +128,7 @@ Dataflow EqualJoin::getDataflow() {
       /**
        * Use the left partitioner as the output dataflow partitioner.
        * TODO(admin): In fact, the output dataflow partitioner should contains
-       * both
-       * left partitioner and right partitioner.
+       * both left partitioner and right partitioner.
        */
       //      ret.property_.partitioner=left_dataflow.property_.partitioner;
       ret.property_.partitioner.setPartitionList(
@@ -157,7 +162,7 @@ Dataflow EqualJoin::getDataflow() {
       break;
     }
     case kLeftRepartition: {
-      QueryOptimizationLogging::log("left_repartition\n");
+      LOG(INFO) << "left_repartiotion\n";
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -195,7 +200,7 @@ Dataflow EqualJoin::getDataflow() {
       break;
     }
     case kRightRepartition: {
-      QueryOptimizationLogging::log("right_repartition\n");
+      LOG(INFO) << "right_repartition\n";
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -241,7 +246,7 @@ Dataflow EqualJoin::getDataflow() {
        * Additional optimization can be made by adopting the partition strategy
        * which benefits the remaining work.
        */
-      QueryOptimizationLogging::log("complete_repartition\n");
+      LOG(INFO) << "complete_repartition\n";
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  left_dataflow.attribute_list_.begin(),
                                  left_dataflow.attribute_list_.end());
@@ -265,7 +270,7 @@ Dataflow EqualJoin::getDataflow() {
       break;
     }
     default: {
-      QueryOptimizationLogging::elog("The join police has not been decided!\n");
+      LOG(ERROR) << "The join police has not been decided!\n";
       assert(false);
       break;
     }
@@ -317,7 +322,7 @@ EqualJoin::JoinPolicy EqualJoin::DecideLeftOrRightRepartition(
 
 BlockStreamIteratorBase* EqualJoin::getIteratorTree(
     const unsigned& block_size) {
-  if (dataflow_ == 0) {
+  if (NULL == dataflow_) {
     getDataflow();
   }
   BlockStreamJoinIterator* join_iterator;
@@ -336,7 +341,8 @@ BlockStreamIteratorBase* EqualJoin::getIteratorTree(
   state.input_schema_right = getSchema(dataflow_right.attribute_list_);
   state.ht_schema = getSchema(dataflow_left.attribute_list_);
   // the bucket size is 64-byte-aligned
-  // state.ht_bucketsize=((state.input_schema_left->getTupleMaxSize()-1)/64+1)*64;
+  // state.ht_bucketsize =
+  //  ((state.input_schema_left->getTupleMaxSize()-1)/64+1)*64;
   /**
    * In the initial implementation, I set the bucket size to be up round to
    * cache line size, e.g., 64Bytes. Finally, I realized that different from
@@ -865,8 +871,7 @@ double EqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair(
      */
     ret = 0.1;
   }
-  QueryOptimizationLogging::log("Predicted selectivity for %s and %s is %f\n",
-                                attr_left.attrName.c_str(),
-                                attr_right.attrName.c_str(), ret);
+  LOG(INFO) << "Predicted selectivity for " << attr_left.attrName.c_str()
+            << " and " << attr_right.attrName.c_str() << " is " << ret << "\n";
   return ret;
 }
