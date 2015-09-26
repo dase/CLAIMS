@@ -16,22 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * createtable_exec.cpp
+ * /CLAIMS/stmt_handler/create_exec.cpp
  *
  *  Created on: Sep 23, 2015
  *      Author: cswang
- *	 		 Email: cs_wang@infosys.com
+ *	 Email: cs_wang@infosys.com
  * 
  * Description:
+ *
  *
  */
 
 #include <assert.h>
-#include "create_exec.h"
+#include "../stmt_handler/create_exec.h"
 
-#include <glog/logging.h>
 namespace claims {
 namespace stmt_handler {
+/**
+ * @brief Constructor
+ * @detail convert the base class member stmt_ to createtable_ast_ and get the table name,
+ *  firstly get the descriptor from catalog by table name.
+ */
 CreateTableExec::CreateTableExec(AstNode* stmt)
     : StmtExec(stmt) {
   // TODO Auto-generated constructor stub
@@ -50,23 +55,36 @@ CreateTableExec::CreateTableExec(AstNode* stmt)
     result_flag_ = false;
     result_set_ = NULL;
   }
-  table_desc_ = Environment::getInstance()->getCatalog()->getTable(tablename_);
+  if(!tablename_.empty())
+  {
+    table_desc_ = Environment::getInstance()->getCatalog()->getTable(tablename_);
+  }
 }
 
 CreateTableExec::~CreateTableExec() {
   // TODO Auto-generated destructor stub
 
 }
-
+/**
+ * @brief create a table by the AST.
+ * @detail check whether the table we have created or not.
+ *  Create the new table and give it a default attribute "row_id",
+ *  then add all attributes like the information about
+ *  column's value type, can be null or not from AST to the new table's descriptor,
+ *  save it to catalog by the end.
+ * @return a result code cooperate with the client.
+ */
 int CreateTableExec::Execute() {
 
-  int ret = STMT_HANDLER_OK;
+  int ret = common::kStmtHandlerOk;
 
   if (isTableExist()) {
-    //error_msg_ = "The table " + tablename_ + " has existed during creating table!";
+    result_flag_=false;
+    result_set_ = NULL;
+    error_msg_ = "The table " + tablename_ + " has existed during creating table!";
     LOG(ERROR)<<"The table " + tablename_
         + " has existed during creating table!" << std::endl;
-    ret = STMT_HANDLER_TABLE_EXIST_DURING_CREATE;
+    ret = common::kStmtHandlerTableExistDuringCreate;
   }
   else {
     table_desc_ = new TableDescriptor(tablename_, Environment::getInstance()->getCatalog()->allocate_unique_table_id());
@@ -166,11 +184,11 @@ int CreateTableExec::Execute() {
             else
             {
               //TODO:not supports
-              // error_msg_="This type is not supported during creating table!";
-              LOG(INFO) << "This type is not supported during creating table!" << std::endl;
+              error_msg_="This type is not supported during creating table!";
+              LOG(ERROR) << "This type is not supported during creating table!" << std::endl;
               result_flag_=false;
               result_set_ = NULL;
-              ret = STMT_HANDLER_TYPE_NOT_SUPPORT;
+              ret = common::kStmtHandlerTypeNotSupport;
             }
             break;
           }
@@ -235,7 +253,7 @@ int CreateTableExec::Execute() {
             }
             break;
           }
-          case 12:        // DATE --- 2014-4-1
+          case 12: // DATE
           {
             if (column_atts && (column_atts->datatype_ & 01)) {
               table_desc_->addAttribute(colname, data_type(t_date), 0, true, false);
@@ -249,7 +267,7 @@ int CreateTableExec::Execute() {
             LOG(INFO) << colname + " is created" << std::endl;
             break;
           }
-          case 13:        // TIME --- 2014-4-1
+          case 13: // TIME
           {
             if (column_atts && (column_atts->datatype_ & 01)) {
               table_desc_->addAttribute(colname, data_type(t_time), 0, true, false);
@@ -263,7 +281,7 @@ int CreateTableExec::Execute() {
             LOG(INFO) << colname << " is created" << std::endl;
             break;
           }
-          case 15:        // DATETIME --- 2014-4-1
+          case 15: // DATETIME
           {
             if (column_atts && (column_atts->datatype_ & 01)) {
               table_desc_->addAttribute(colname, data_type(t_datetime), 0, true, false);
@@ -314,11 +332,11 @@ int CreateTableExec::Execute() {
           }
           default:
           {
-            //error_msg_="This type is not supported now during creating table!";
-            LOG(INFO) << "This type is not supported now during creating table!" << std::endl;
-            result_flag_=false;
+            error_msg_="This type is not supported now during creating table!";
+            LOG(ERROR) << "This type is not supported now during creating table!" << std::endl;
+            result_flag_ = false;
             result_set_ = NULL;
-            ret = STMT_HANDLER_TYPE_NOT_SUPPORT;
+            ret = common::kStmtHandlerTypeNotSupport;
           }
         }
       }
@@ -333,7 +351,7 @@ int CreateTableExec::Execute() {
       info_ = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
       result_set_ = NULL;
-      ret = STMT_HANDLER_CREATE_TABLE_SUCCESS;
+      ret = common::kStmtHandlerCreateTableSuccess;
     }
 
   }

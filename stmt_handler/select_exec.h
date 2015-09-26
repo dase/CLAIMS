@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/select_exec.h
+ * /CLAIMS/stmt_handler/select_exec.h
  *
  *  Created on: Sep 23, 2015
  *      Author: fzh
@@ -42,6 +42,6 @@ class SelectExec : public StmtExec {
  private:
   AstSelectStmt* select_ast_;
 };
-}   // namespace stmt_handle
+}   // namespace stmt_handler
 } // namespace claims
 #endif //  STMT_HANDLER_SELECT_EXEC_H_ 

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/stmt_exec.h
+ * /CLAIMS/stmt_handler/stmt_exec.h
  *
  *  Created on: Sep 23, 2015
  *      Author: fzh
@@ -29,9 +29,11 @@
 #ifndef STMT_HANDLER_STMT_EXEC_H_
 #define STMT_HANDLER_STMT_EXEC_H_
 
+#include <glog/logging.h>
 #include "../common/Block/ResultSet.h"
 #include "../Catalog/table.h"
 #include "../common/data_type.h"
+#include "../common/error_define.h"
 
 #include "../sql_parser/ast_node/ast_node.h"
 #include "../sql_parser/ast_node/ast_insert_stmt.h"
@@ -41,20 +43,13 @@
 #include "../sql_parser/ast_node/ast_drop_stmt.h"
 #include "../sql_parser/ast_node/ast_create_stmt.h"
 
-#define STMT_HANDLER_OK                                       0
-#define STMT_HANDLER_TABLE_EXIST_DURING_CREATE                1
-#define STMT_HANDLER_TYPE_NOT_SUPPORT                         2
-#define STMT_HANDLER_CREATE_TABLE_SUCCESS                     3
-#define STMT_HANDLER_TABLE_NOT_EXIST_DURING_LOAD              4
-#define STMT_HANDLER_LOAD_DATA_SUCCESS                        5
-#define STMT_HANDLER_TABLE_NOT_EXIST_DURING_INSERT            6
-#define STMT_HANDLER_INERT_DATA_SUCCESS                       7
-#define STMT_HANDLER_INSERT_NO_VALUE                          8
-
 
 namespace claims {
 namespace stmt_handler {
-
+/**
+ * @brief
+ * @details
+ */
 class StmtExec {
  public:
   StmtExec(AstNode* stmt);
@@ -82,6 +77,6 @@ class StmtExec {
 
 };
 
-}   // namespace stmt_handle
+} // namespace stmt_handler
 } // namespace claims
 #endif  //  STMT_HANDLER_STMT_EXEC_H_

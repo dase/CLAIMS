@@ -16,14 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * createtable_exec.h
+ * /CLAIMS/stmt_handler/create_exec.h
  *
  *  Created on: Sep 23, 2015
  *      Author: cswang
  *	 		 Email: cs_wang@infosys.com
  * 
  * Description:
- *      this file is mainly about the data defination language of "create", like "create table", "create projection"...
+ *      this file is mainly about the data definition language of "create",
+ *      like "create table", "create projection" etc.
  *
  */
 
@@ -35,20 +36,36 @@
 namespace claims {
 namespace stmt_handler {
 /**
- *
+ * @brief create table and give the information during create a table.
+ * @details this class will get a AstCreateTable tree and then execute the implement function
+ * "Execute()" to create a new table and give the process result.
  */
 class CreateTableExec : public StmtExec {
  public:
+  /**
+   * @brief Method description: constructor about creating a table.
+   * @param AstNode *stmt point to abstract syntax tree.
+   */
   CreateTableExec(AstNode* stmt);
+  /**
+   * @brief Destructor
+   */
   virtual ~CreateTableExec();
+
+  /**
+   * @brief the concrete operation of creating a table.
+   */
   int Execute();
 
  private:
+  /**
+   * this pointer describes the abstract syntax tree about create a table.
+   * It is converted from the member stmt_ of base class when we construct a new object.
+   */
   AstCreateTable * createtable_ast_;
-
 };
 
-} // namespace stmt_handler
+}  // namespace stmt_handler
 }  // namespace claims 
 
 #endif // STMT_HANDLER_CREATE_EXEC_H_ 

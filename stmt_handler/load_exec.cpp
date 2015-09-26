@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/load_exec.cpp
+ * /CLAIMS/stmt_handler/load_exec.cpp
  *
  *  Created on: Sep 23, 2015
  *      Author: cswang
  *       Email: cs_wang@infosys.com
  * 
  * Description:
- *
+ *    this file is the function body of class LoadExec.
  */
 
 #include <assert.h>
@@ -45,39 +45,48 @@ LoadExec::~LoadExec() {
   // TODO Auto-generated destructor stub
 
 }
-
+/**
+ * @brief load data from file system.
+ * @details check whether the table we have created or not. forbid to load data into an nonexistent table.
+ *  then add path names from path node to a vector path_names,
+ *  create new HdfsLoader, load data.
+ */
 int LoadExec::Execute() {
 
-  int ret = STMT_HANDLER_OK;
+  int ret = common::kStmtHandlerOk;
 
-  if (!isTableExist())
-  {
+  if (!isTableExist()) {
     error_msg_ = "the table " + tablename_ + " does not exist during loading!";
     result_flag_ = false;
     result_set_ = NULL;
-    ret = STMT_HANDLER_TABLE_NOT_EXIST_DURING_LOAD;
+    ret = common::kStmtHandlerTableExistDuringCreate;
   }
-  else
-  {
+  else {
     string column_separator(load_ast_->column_separator_);
     string tuple_separator(load_ast_->tuple_separator_);
     AstExprList *path_node = dynamic_cast<AstExprList*>(load_ast_->path_);
 
-    ASTParserLogging::log("load file\'s name:");
+    //ASTParserLogging::log("load file\'s name:");
+    LOG(INFO)<< "load file's name:" << std::endl;
     std::vector<string> path_names;  // save the name of files which should be loaded
     //for test: the path name is:   /home/imdb/data/tpc-h/part.tbl
     while (path_node) {
       AstExprConst *data = dynamic_cast<AstExprConst*>(path_node->expr_);
-      ASTParserLogging::log("%s", data->data_.c_str());
+      //ASTParserLogging::log("%s", data->data_.c_str());
+      LOG(INFO)<< data->data_ << std::endl;
       path_names.push_back(data->data_);
       path_node = dynamic_cast<AstExprList*>(path_node->next_);
     }
 
     // split sign should be considered carefully, in case of it may be "||" or "###"
+    /*
     ASTParserLogging::log(
         "The separator are :%c,%c, The sample is %lf, mode is %d\n",
         column_separator[0], tuple_separator[0], load_ast_->sample_,
         load_ast_->mode_);
+    */
+    LOG(INFO)<< "The separator are :" +column_separator[0]+","+ tuple_separator[0] +
+        ", The sample is "+ load_ast_->sample_ + "," + "mode is "+ load_ast_->mode_ << std::endl;
     HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0],
                                         path_names, table_desc_,
                                         (open_flag) load_ast_->mode_);
@@ -88,11 +97,11 @@ int LoadExec::Execute() {
     info_ = "load data successfully";
 
     Environment::getInstance()->getCatalog()->saveCatalog();
-    ret = STMT_HANDLER_LOAD_DATA_SUCCESS;
+    ret = common::kStmtHandlerCreateTableSuccess;
   }
 
   return ret;
 }
 
-}  // namespace stmt_handle
+}  // namespace stmt_handler
 }  // namespace claims

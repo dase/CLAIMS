@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/select_exec.cpp
+ * /CLAIMS/stmt_handler/select_exec.cpp
  *
  *  Created on: Sep 23, 2015
  *      Author: fzh
@@ -44,5 +44,5 @@ int SelectExec::Execute() {
 
 	return 0;
 }
-}   // namespace stmt_handle
+}   // namespace stmt_handler
 } // namespace claims

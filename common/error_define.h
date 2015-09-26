@@ -58,6 +58,17 @@ const int C_NO_TABLE_FOUND = -1001;
 /* errorno for codegen -3001 ~ -4000 */
 const int C_TEST_ERROR = -3001;
 
+/* errorno for stmt_handler -4001 ~ -5000*/
+const int kStmtHandlerOk                                   =-4001;
+const int kStmtHandlerTableExistDuringCreate               =-4002;
+const int kStmtHandlerTypeNotSupport                       =-4003;
+const int kStmtHandlerCreateTableSuccess                   =-4004;
+const int kStmtHandlerTableNotExistDuringLoad              =-4005;
+const int kStmtHandlerLoadDataSuccess                      =-4006;
+const int kStmtHandlerTableNotExistDuringInsert            =-4007;
+const int kStmtHandlerInsertDataSuccess                    =-4008;
+const int kStmtHandlerInsertNoValue                        =-4009;
+
 
 }  // end namespace common
 }  // end namespace claims

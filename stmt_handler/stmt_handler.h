@@ -16,11 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/stmt_handle.h
+ * /CLAIMS/stmt_handler/stmt_handler.h
  *
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- *		   Email: 
  * 
  * Description:
  *

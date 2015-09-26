@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/stmt_exec.cpp
+ * /CLAIMS/stmt_handler/stmt_exec.cpp
  *
  *  Created on: Sep 23, 2015
  *      Author: fzh
@@ -60,9 +60,6 @@ bool StmtExec::isTableExist() {
   bool isExist = false;
   if(table_desc_ != NULL)
   {
-    //error_msg_="The table "+tablename_ +" has existed during creating table!";
-    //result_flag_=false;
-    //result_set_ = NULL;
     isExist = true;
   }
   return isExist;
@@ -85,5 +82,5 @@ const ResultSet*& StmtExec::getResultSet() const {
 }
 
 
-}   // namespace stmt_handle
+}   // namespace stmt_handler
 }  // namespace claims

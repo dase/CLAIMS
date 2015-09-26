@@ -16,13 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/load_exec.h
+ * /CLAIMS/stmt_handler/load_exec.h
  *
  *  Created on: Sep 23, 2015
  *      Author: cswang
  *	     Email: cs_wang@infosys.com
  * 
  * Description:
+ *      this file contains one class about load data.
  *
  */
 
@@ -34,19 +35,27 @@
 namespace claims {
 namespace stmt_handler {
 /**
- *
+ * @brief
+ * @details
  */
 class LoadExec : public StmtExec {
  public:
   LoadExec(AstNode* stmt);
   virtual ~LoadExec();
+  /**
+   * @brief the concrete operation of load data.
+   */
   int Execute();
 
  private:
+  /**
+   * this pointer describes the abstract syntax tree about load data into tables.
+   * It is converted from the member stmt_ of base class when we construct a new object.
+   */
   AstLoadTable* load_ast_;
 };
 
-} // namespace stmt_handle
+} // namespace stmt_handler
 } // namespace claims
 
 #endif // STMT_HANDLER_LOAD_EXEC_H_

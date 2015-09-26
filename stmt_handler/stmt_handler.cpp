@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/stmt_handle/stmt_handle.cpp
+ * /CLAIMS/stmt_handler/stmt_handler.cpp
  *
  *  Created on: Sep 23, 2015
  *      Author: fzh
@@ -60,5 +60,5 @@ int StmtHandler::Execute() {
   return stmt_executor_->Execute();
 }
 
-}   // namespace stmt_handle
+}   // namespace stmt_handler
 } // namespace claims
