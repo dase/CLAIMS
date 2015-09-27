@@ -484,7 +484,7 @@ static int ResultCollect_test(){
 		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id,
 				aggregation, LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-		BlockStreamIteratorBase* collector = root->getIteratorTree(
+		BlockStreamIteratorBase* collector = root->GetIteratorTree(
 				1024 * 64 - sizeof(unsigned));
 
 		collector->open();

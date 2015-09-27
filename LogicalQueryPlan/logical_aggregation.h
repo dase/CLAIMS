@@ -83,11 +83,11 @@ class LogicalAggregation : public LogicalOperator {
    * including corresponding attribute_list and property with partition info and
    * communication cost.
    */
-  Dataflow getDataflow();
+  Dataflow GetDataflow();
   /**
    * generate corresponding physical plan, mainly set necessary state.
    */
-  BlockStreamIteratorBase* getIteratorTree(const unsigned& block_size);
+  BlockStreamIteratorBase* GetIteratorTree(const unsigned& block_size);
 
  private:
   std::vector<unsigned> GetInvolvedAttrIdList(

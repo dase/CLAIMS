@@ -16,9 +16,9 @@ class Buffer: public LogicalOperator {
 public:
 	Buffer(LogicalOperator* child);
 	virtual ~Buffer();
-	Dataflow getDataflow();
+	Dataflow GetDataflow();
 
-	BlockStreamIteratorBase* getIteratorTree(const unsigned &);
+	BlockStreamIteratorBase* GetIteratorTree(const unsigned &);
 	void print(int level=0)const{
 
 	}

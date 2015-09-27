@@ -25,8 +25,8 @@ class LogicalQueryPlanRoot : public LogicalOperator {
                        const outputFashion& fashion = PERFORMANCE,
                        LimitConstraint limit_constraint = LimitConstraint());
   virtual ~LogicalQueryPlanRoot();
-  Dataflow getDataflow();
-  BlockStreamIteratorBase* getIteratorTree(const unsigned&);
+  Dataflow GetDataflow();
+  BlockStreamIteratorBase* GetIteratorTree(const unsigned&);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned & block_size = 4096 * 1024);

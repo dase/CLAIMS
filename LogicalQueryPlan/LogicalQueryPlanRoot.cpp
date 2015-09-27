@@ -31,10 +31,10 @@ LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
 	}
 }
 
-BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& block_size){
-	getDataflow();
-	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(block_size);
-	Dataflow child_dataflow=child_->getDataflow();
+BlockStreamIteratorBase* LogicalQueryPlanRoot::GetIteratorTree(const unsigned& block_size){
+	GetDataflow();
+	BlockStreamIteratorBase* child_iterator=child_->GetIteratorTree(block_size);
+	Dataflow child_dataflow=child_->GetDataflow();
 //	Schema* schema=getSchema(child_dataflow.attribute_list_);
 	NodeTracker* node_tracker=NodeTracker::getInstance();
 
@@ -51,17 +51,17 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		expander_state_lower.block_size_=block_size;
 		expander_state_lower.init_thread_count_=Config::initial_degree_of_parallelism;
 		expander_state_lower.child_=child_iterator;
-		expander_state_lower.schema_=getSchema(child_dataflow.attribute_list_);
+		expander_state_lower.schema_=GetSchema(child_dataflow.attribute_list_);
 		BlockStreamIteratorBase* expander_lower=new BlockStreamExpander(expander_state_lower);
 
 		ExpandableBlockStreamExchangeEpoll::State state;
 		state.block_size_=block_size;
 		state.child_=expander_lower;//child_iterator;
 		state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-		state.schema_=getSchema(child_dataflow.attribute_list_);
+		state.schema_=GetSchema(child_dataflow.attribute_list_);
 		state.upper_id_list_.push_back(collecter_);
 		state.partition_schema_=partition_schema::set_hash_partition(0);
-		std::vector<NodeID> lower_id_list=getInvolvedNodeID(child_dataflow.property_.partitioner);
+		std::vector<NodeID> lower_id_list=GetInvolvedNodeID(child_dataflow.property_.partitioner);
 		state.lower_id_list_=lower_id_list;
 		child_iterator=new ExpandableBlockStreamExchangeEpoll(state);
 	}
@@ -77,7 +77,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 		expander_state.init_thread_count_=Config::initial_degree_of_parallelism;
 	}
 	expander_state.child_=child_iterator;
-	expander_state.schema_=getSchema(child_dataflow.attribute_list_);
+	expander_state.schema_=GetSchema(child_dataflow.attribute_list_);
 	BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
 	BlockStreamIteratorBase* middle_tier;
@@ -95,12 +95,12 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 	switch(fashion_){
 		case PRINT:{
 
-			BlockStreamPrint::State print_state(getSchema(child_dataflow.attribute_list_),middle_tier,block_size,getAttributeName(child_dataflow));
+			BlockStreamPrint::State print_state(GetSchema(child_dataflow.attribute_list_),middle_tier,block_size,getAttributeName(child_dataflow));
 			ret=new BlockStreamPrint(print_state);
 			break;
 		}
 		case PERFORMANCE:{
-			BlockStreamPerformanceMonitorTop::State performance_state(getSchema(child_dataflow.attribute_list_),middle_tier,block_size);
+			BlockStreamPerformanceMonitorTop::State performance_state(GetSchema(child_dataflow.attribute_list_),middle_tier,block_size);
 			ret=new BlockStreamPerformanceMonitorTop(performance_state);
 			break;
 		}
@@ -109,7 +109,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 			for(unsigned i=0;i<child_dataflow.attribute_list_.size();i++){
 				column_header.push_back(child_dataflow.attribute_list_[i].getName());
 			}
-			BlockStreamResultCollector::State result_state(getSchema(child_dataflow.attribute_list_),middle_tier,block_size,column_header);
+			BlockStreamResultCollector::State result_state(GetSchema(child_dataflow.attribute_list_),middle_tier,block_size,column_header);
 			ret=new BlockStreamResultCollector(result_state);
 			break;
 		}
@@ -118,11 +118,11 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::getIteratorTree(const unsigned& b
 
 	return ret;
 }
-Dataflow LogicalQueryPlanRoot::getDataflow(){
-	Dataflow ret=child_->getDataflow();
+Dataflow LogicalQueryPlanRoot::GetDataflow(){
+	Dataflow ret=child_->GetDataflow();
 	QueryOptimizationLogging::log("Communication cost:%ld, predicted ouput size=%ld\n",ret.property_.commnication_cost,ret.property_.partitioner.getAggregatedDataCardinality());
 //	print();
-	return child_->getDataflow();
+	return child_->GetDataflow();
 }
 
 bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& final_physical_plan_desc, const unsigned & block_size){
@@ -157,10 +157,10 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 			state.block_size_=block_size;
 			state.child_=physical_plan.plan;//child_iterator;
 			state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			state.schema_=getSchema(physical_plan.dataflow.attribute_list_);
+			state.schema_=GetSchema(physical_plan.dataflow.attribute_list_);
 			state.upper_id_list_.push_back(collecter_);
 			state.partition_schema_=partition_schema::set_hash_partition(0);
-			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
+			std::vector<NodeID> lower_id_list=GetInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
 			state.lower_id_list_=lower_id_list;
 			BlockStreamIteratorBase* exchange=new ExpandableBlockStreamExchangeEpoll(state);
 			physical_plan.plan=exchange;
@@ -178,12 +178,12 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 	PhysicalPlan final_plan;
 	switch(fashion_){
 		case PRINT:{
-			BlockStreamPrint::State print_state(getSchema(best_plan.dataflow.attribute_list_),best_plan.plan,block_size,getAttributeName(physical_plan.dataflow));
+			BlockStreamPrint::State print_state(GetSchema(best_plan.dataflow.attribute_list_),best_plan.plan,block_size,getAttributeName(physical_plan.dataflow));
 			final_plan=new BlockStreamPrint(print_state);
 			break;
 		}
 		case PERFORMANCE:{
-			BlockStreamPerformanceMonitorTop::State performance_state(getSchema(best_plan.dataflow.attribute_list_),best_plan.plan,block_size);
+			BlockStreamPerformanceMonitorTop::State performance_state(GetSchema(best_plan.dataflow.attribute_list_),best_plan.plan,block_size);
 			final_plan=new BlockStreamPerformanceMonitorTop(performance_state);
 		}
 	}
@@ -211,7 +211,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 			state.block_size_=block_size;
 			state.child_=best_plan.plan;//child_iterator;
 			state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			state.schema_=getSchema(best_plan.dataflow.attribute_list_);
+			state.schema_=GetSchema(best_plan.dataflow.attribute_list_);
 			std::vector<NodeID> upper_id_list;
 			if(requirement.hasRequiredLocations()){
 				upper_id_list=requirement.getRequiredLocations();
@@ -235,7 +235,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 			state.partition_schema_=partition_schema::set_hash_partition(this->getIndexInAttributeList(best_plan.dataflow.attribute_list_,requirement.getPartitionKey()));
 			assert(state.partition_schema_.partition_key_index>=0);
 
-			std::vector<NodeID> lower_id_list=getInvolvedNodeID(best_plan.dataflow.property_.partitioner);
+			std::vector<NodeID> lower_id_list=GetInvolvedNodeID(best_plan.dataflow.property_.partitioner);
 
 			state.lower_id_list_=lower_id_list;
 

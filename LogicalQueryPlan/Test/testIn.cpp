@@ -128,7 +128,7 @@ static int in_test(){
 
 		//join
 		std::vector<EqualJoin::JoinPair> join_pair_list;
-		join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),aggregation->getDataflow().getAttribute("row_id")));
+		join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),aggregation->GetDataflow().getAttribute("row_id")));
 		LogicalOperator* sb_cj_join=new EqualJoin(join_pair_list,cj_join_key_scan,aggregation);
 
 		const NodeID collector_node_id=0;
@@ -143,7 +143,7 @@ static int in_test(){
 //		root->getDataflow();
 
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
-			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64-sizeof(unsigned));
+			BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64-sizeof(unsigned));
 			printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
 			root->print();
 			executable_query_plan->print();

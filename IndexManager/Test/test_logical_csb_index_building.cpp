@@ -74,7 +74,7 @@ static int test_logical_csb_index_building()
 			const NodeID collector_node_id=0;
 			LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 			root->print();
-			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
+			BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 			executable_query_plan->open();
@@ -122,7 +122,7 @@ cout << "index building finished!\n";
 			LogicalOperator* index_scan = new LogicalIndexScan(table_1->getProjectoin(0)->getProjectionID(), table_1->getAttribute(3), q_range);
 			root=new LogicalQueryPlanRoot(collector_node_id,index_scan,LogicalQueryPlanRoot::PRINT);
 			root->print();
-			executable_query_plan=root->getIteratorTree(1024*64);
+			executable_query_plan=root->GetIteratorTree(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 			executable_query_plan->open();

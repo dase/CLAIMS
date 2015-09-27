@@ -19,8 +19,8 @@ public:
 	LogicalIndexScan(ProjectionID projection_id, Attribute index_attr, vector<IndexScanIterator::query_range> q_range);
 	virtual ~LogicalIndexScan();
 
-	Dataflow getDataflow();
-	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
+	Dataflow GetDataflow();
+	BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 	void print(int level=0)const;
 

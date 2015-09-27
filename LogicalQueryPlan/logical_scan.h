@@ -51,8 +51,8 @@ class LogicalScan : public LogicalOperator {
   LogicalScan(const TableID&,
               const std::vector<unsigned>& selected_attribute_index_list);
   virtual ~LogicalScan();
-  Dataflow getDataflow();
-  BlockStreamIteratorBase* getIteratorTree(const unsigned&);
+  Dataflow GetDataflow();
+  BlockStreamIteratorBase* GetIteratorTree(const unsigned&);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& kBlock_size = 4096 * 1024);

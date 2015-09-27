@@ -43,9 +43,9 @@ LogicalSort::~LogicalSort() {
   }
 }
 
-Dataflow LogicalSort::getDataflow() {
+Dataflow LogicalSort::GetDataflow() {
   // Get the information from its child
-  child_dataflow_ = child_->getDataflow();
+  child_dataflow_ = child_->GetDataflow();
   Dataflow ret;
   ret.attribute_list_ = child_dataflow_.attribute_list_;
   ret.property_.commnication_cost = child_dataflow_.property_.commnication_cost;
@@ -63,17 +63,17 @@ Dataflow LogicalSort::getDataflow() {
   return ret;
 }
 
-BlockStreamIteratorBase *LogicalSort::getIteratorTree(
+BlockStreamIteratorBase *LogicalSort::GetIteratorTree(
     const unsigned &blocksize) {
-  Dataflow dataflow = getDataflow();
+  Dataflow dataflow = GetDataflow();
 
   // Get all of the data from other nodes if needed.
   BlockStreamExpander::State expander_state;
   expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
   expander_state.block_size_ = blocksize;
   expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-  expander_state.child_ = child_->getIteratorTree(blocksize);
-  expander_state.schema_ = getSchema(child_dataflow_.attribute_list_);
+  expander_state.child_ = child_->GetIteratorTree(blocksize);
+  expander_state.schema_ = GetSchema(child_dataflow_.attribute_list_);
   BlockStreamIteratorBase *expander_lower =
       new BlockStreamExpander(expander_state);
 
@@ -82,9 +82,9 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
   exchange_state.child_ = expander_lower;
   exchange_state.exchange_id_ =
       IDsGenerator::getInstance()->generateUniqueExchangeID();
-  exchange_state.schema_ = getSchema(child_dataflow_.attribute_list_);
+  exchange_state.schema_ = GetSchema(child_dataflow_.attribute_list_);
   vector<NodeID> lower_id_list =
-      getInvolvedNodeID(child_dataflow_.property_.partitioner);
+      GetInvolvedNodeID(child_dataflow_.property_.partitioner);
   exchange_state.lower_id_list_ = lower_id_list;  // upper
   exchange_state.partition_schema_ = partition_schema::set_hash_partition(0);
   // TODO(admin): compute the upper_ip_list to do reduce side sort
@@ -103,7 +103,7 @@ BlockStreamIteratorBase *LogicalSort::getIteratorTree(
         GetOrderByKey(order_by_attr_[i]->table_name_));
     reducer_state.direction_.push_back(order_by_attr_[i]->direction_);
   }
-  reducer_state.input_ = getSchema(child_dataflow_.attribute_list_);
+  reducer_state.input_ = GetSchema(child_dataflow_.attribute_list_);
   BlockStreamIteratorBase *reducer_sort =
       new BlockStreamSortIterator(reducer_state);
 

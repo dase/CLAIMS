@@ -25,7 +25,7 @@ LogicalIndexScan::~LogicalIndexScan() {
 	// TODO Auto-generated destructor stub
 }
 
-Dataflow LogicalIndexScan::getDataflow()
+Dataflow LogicalIndexScan::GetDataflow()
 {
 	if(!scan_projection_->AllPartitionBound()){
 		printf("Binded!\n");
@@ -40,10 +40,10 @@ Dataflow LogicalIndexScan::getDataflow()
 	return dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalIndexScan::getIteratorTree(const unsigned & blocksize)
+BlockStreamIteratorBase* LogicalIndexScan::GetIteratorTree(const unsigned & blocksize)
 {
 	IndexScanIterator::State state;
-	state.schema_ = getSchema(dataflow_.attribute_list_);
+	state.schema_ = GetSchema(dataflow_.attribute_list_);
 	state.projection_id_ = projection_id_;
 	state.block_size_ = blocksize;
 	state.query_range_ = query_range_;

@@ -64,7 +64,7 @@ static int test_cross_join() {
     cout << "~~~~~~~~~logical plan~~~~~~~~~~~~~~" << endl;
     root->print(0);
     BlockStreamIteratorBase* physical_iterator_tree =
-        root->getIteratorTree(64 * 1024);
+        root->GetIteratorTree(64 * 1024);
     cout << "~~~~~~~~~physical plan~~~~~~~~~~~~~~" << endl;
     physical_iterator_tree->print();
     cout << "~~~~~~~~~~~~~~~~end~~~~~~~~~~~~~~~~~~~~" << endl;

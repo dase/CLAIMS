@@ -112,7 +112,7 @@ static int testProject(){
 		vve.push_back(ve6);
 
 		LogicalProject *proj=new LogicalProject(scan,vve);
-		BlockStreamIteratorBase* prj=proj->getIteratorTree(1024*64-sizeof(unsigned));
+		BlockStreamIteratorBase* prj=proj->GetIteratorTree(1024*64-sizeof(unsigned));
 
 		BlockStreamPrint::State print_state;
 		print_state.block_size_=64*1024-sizeof(unsigned);

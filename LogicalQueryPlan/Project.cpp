@@ -30,17 +30,17 @@ LogicalProject::~LogicalProject(){
 	delete child_;
 }
 
-Dataflow LogicalProject::getDataflow(){
+Dataflow LogicalProject::GetDataflow(){
 	if(dataflow_!=NULL)
 		return *dataflow_;
 	mappings_=getMapping();
 	Dataflow ret;
-	const Dataflow child_dataflow=child_->getDataflow();
+	const Dataflow child_dataflow=child_->GetDataflow();
 	ret.property_.commnication_cost=child_dataflow.property_.commnication_cost;
 	ret.property_.partitioner=child_dataflow.property_.partitioner;
 	std::vector<Attribute> ret_attrs;
 
-	Schema *input_=getSchema(child_dataflow.attribute_list_);
+	Schema *input_=GetSchema(child_dataflow.attribute_list_);
 	for(unsigned i=0;i<exprArray_.size();i++){
 		int seq=-1;
 		for(unsigned j=0;j<exprArray_[i].size();j++){
@@ -117,15 +117,15 @@ bool LogicalProject::getcolindex(Dataflow dataflow)
 	}
 	return true;
 }
-BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksize){
-	getDataflow();
-	Dataflow child_dataflow=child_->getDataflow();
-	BlockStreamIteratorBase *child=child_->getIteratorTree(blocksize);
+BlockStreamIteratorBase *LogicalProject::GetIteratorTree(const unsigned& blocksize){
+	GetDataflow();
+	Dataflow child_dataflow=child_->GetDataflow();
+	BlockStreamIteratorBase *child=child_->GetIteratorTree(blocksize);
 	BlockStreamProjectIterator::State state;
 	state.block_size_=blocksize;
 	state.child_=child;
 	state.v_ei_=exprArray_;
-	state.input_=getSchema(child_dataflow.attribute_list_);
+	state.input_=GetSchema(child_dataflow.attribute_list_);
 	state.map_=mappings_;
 	state.output_=getOutputSchema();
 	state.exprTree_=exprTree_;
@@ -137,7 +137,7 @@ BlockStreamIteratorBase *LogicalProject::getIteratorTree(const unsigned& blocksi
 }
 
 Schema *LogicalProject::getOutputSchema(){
-	Schema *schema=getSchema(dataflow_->attribute_list_);
+	Schema *schema=GetSchema(dataflow_->attribute_list_);
 	return schema;
 }
 
@@ -159,7 +159,7 @@ int LogicalProject::getColumnSeq(ExpressionItem &ei){
 	/*every time invoke a getColumnSeq, you need to new a catalog--@li: it seams that you actually get
 	 * the reference to the catalog rather than creating one.
 	*/
-	Dataflow child_dataflow=child_->getDataflow();
+	Dataflow child_dataflow=child_->GetDataflow();
 	for(unsigned i=0;i<child_dataflow.attribute_list_.size();i++){
 	//		TableDescriptor *table=Catalog::getInstance()->getTable(child_dataflow.attribute_list_[i].table_id_);
 	//		stringstream ss;

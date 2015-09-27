@@ -45,12 +45,12 @@ Filter::~Filter() {
 	}
 }
 
-Dataflow Filter::getDataflow(){
+Dataflow Filter::GetDataflow(){
 	/** In the currently implementation, we assume that the boolean operator
 	 * between each AttributeComparator is "AND".
 	 */
 
-	Dataflow dataflow=child_->getDataflow();
+	Dataflow dataflow=child_->GetDataflow();
 	if(comparator_list_.size()==0)
 		generateComparatorList(dataflow);
 	if(dataflow.isHashPartitioned())
@@ -73,16 +73,16 @@ Dataflow Filter::getDataflow(){
 		}
 	}
 	getcolindex(dataflow);
-	Schema *input_=getSchema(dataflow.attribute_list_);
+	Schema *input_=GetSchema(dataflow.attribute_list_);
 	for(int i=0;i<qual_.size();i++)
 	{
 		InitExprAtLogicalPlan(qual_[i],t_boolean,colindex_,input_);
 	}
 	return dataflow;
 }
-BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
-	Dataflow dataflow=getDataflow();
-	BlockStreamIteratorBase* child_iterator=child_->getIteratorTree(blocksize);
+BlockStreamIteratorBase* Filter::GetIteratorTree(const unsigned& blocksize){
+	Dataflow dataflow=GetDataflow();
+	BlockStreamIteratorBase* child_iterator=child_->GetIteratorTree(blocksize);
 	ExpandableBlockStreamFilter::State state;
 	state.block_size_=blocksize;
 	state.child_=child_iterator;
@@ -92,7 +92,7 @@ BlockStreamIteratorBase* Filter::getIteratorTree(const unsigned& blocksize){
 //	assert(!comparator_list_.empty());
 	state.comparator_list_=comparator_list_;
 //	assert(!state.comparator_list_.empty());
-	state.schema_=getSchema(dataflow.attribute_list_);
+	state.schema_=GetSchema(dataflow.attribute_list_);
 	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 	return filter;
 }
@@ -112,8 +112,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state.colindex_=colindex_;
 			state.comparator_list_=comparator_list_;
 			state.v_ei_=exprArray_;
-			Dataflow dataflow=getDataflow();
-			state.schema_=getSchema(dataflow.attribute_list_);
+			Dataflow dataflow=GetDataflow();
+			state.schema_=GetSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 			physical_plan.plan=filter;
 			candidate_physical_plans.push_back(physical_plan);
@@ -129,8 +129,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state_f.qual_=qual_;
 			state_f.colindex_=colindex_;
 			state_f.comparator_list_=comparator_list_;
-			Dataflow dataflow=getDataflow();
-			state_f.schema_=getSchema(dataflow.attribute_list_);
+			Dataflow dataflow=GetDataflow();
+			state_f.schema_=GetSchema(dataflow.attribute_list_);
 			BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state_f);
 			physical_plan.plan=filter;
 
@@ -140,7 +140,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state.block_size_=block_size;
 			state.child_=physical_plan.plan;//child_iterator;
 			state.exchange_id_=IDsGenerator::getInstance()->generateUniqueExchangeID();
-			state.schema_=getSchema(physical_plan.dataflow.attribute_list_);
+			state.schema_=GetSchema(physical_plan.dataflow.attribute_list_);
 
 			std::vector<NodeID> upper_id_list;
 			if(requirement.hasRequiredLocations()){
@@ -164,7 +164,7 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 			state.partition_schema_=partition_schema::set_hash_partition(this->getIndexInAttributeList(physical_plan.dataflow.attribute_list_,requirement.getPartitionKey()));
 			assert(state.partition_schema_.partition_key_index>=0);
 
-			std::vector<NodeID> lower_id_list=getInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
+			std::vector<NodeID> lower_id_list=GetInvolvedNodeID(physical_plan.dataflow.property_.partitioner);
 
 			state.lower_id_list_=lower_id_list;
 
@@ -186,8 +186,8 @@ bool Filter::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescript
 		state.qual_=qual_;
 		state.colindex_=colindex_;
 		state.comparator_list_=comparator_list_;
-		Dataflow dataflow=getDataflow();
-		state.schema_=getSchema(dataflow.attribute_list_);
+		Dataflow dataflow=GetDataflow();
+		state.schema_=GetSchema(dataflow.attribute_list_);
 		BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(state);
 		physical_plan.plan=filter;
 		candidate_physical_plans.push_back(physical_plan);

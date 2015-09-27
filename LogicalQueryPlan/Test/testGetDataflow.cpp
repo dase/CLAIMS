@@ -127,7 +127,7 @@ int main_asdfasdf(){
 	LogicalOperator* join=new EqualJoin(pair_list,filter,scan_2);
 
 
-	Dataflow final_dataflow=join->getDataflow();
+	Dataflow final_dataflow=join->GetDataflow();
 	printf("Total communication cost: %d\n",final_dataflow.property_.commnication_cost);
 
 

@@ -79,7 +79,7 @@ class LogicalSort : public LogicalOperator {
    * @details The mostly important member is "property" and "attributes
    * list".
    */
-  Dataflow getDataflow();
+  Dataflow GetDataflow();
   /**
    * @brief Method description: Generate logical query plan and return physical
    * operator instance.
@@ -88,7 +88,7 @@ class LogicalSort : public LogicalOperator {
    * @details  Besides do these initialization we notice that "Sort" is a block
    * operator, so we need to get all data from other nodes.
    */
-  BlockStreamIteratorBase *getIteratorTree(const unsigned &blocksize);
+  BlockStreamIteratorBase *GetIteratorTree(const unsigned &blocksize);
   /**
    * @brief Method description: Get the column number of the given table name
    * and attributes name.

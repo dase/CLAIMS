@@ -19,7 +19,7 @@ LogicalCSBIndexBuilding::~LogicalCSBIndexBuilding() {
 	// TODO Auto-generated destructor stub
 }
 
-Dataflow LogicalCSBIndexBuilding::getDataflow()
+Dataflow LogicalCSBIndexBuilding::GetDataflow()
 {
 	if(!scan_projection_->AllPartitionBound()){
 		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
@@ -32,10 +32,10 @@ Dataflow LogicalCSBIndexBuilding::getDataflow()
 	return blc_dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalCSBIndexBuilding::getIteratorTree(const unsigned &block_size)
+BlockStreamIteratorBase* LogicalCSBIndexBuilding::GetIteratorTree(const unsigned &block_size)
 {
 	bottomLayerCollecting::State blc_state;
-	blc_state.schema_ = getSchema(blc_dataflow_.attribute_list_);
+	blc_state.schema_ = GetSchema(blc_dataflow_.attribute_list_);
 	blc_state.projection_id_ = projection_id_;
 	for (unsigned i = 0; i < blc_dataflow_.attribute_list_.size(); i++)
 	{

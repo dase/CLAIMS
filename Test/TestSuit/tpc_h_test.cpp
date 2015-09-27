@@ -63,7 +63,7 @@ static void query_1(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::PERFORMANCE);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	physical_iterator_tree->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(physical_iterator_tree));
 //	physical_iterator_tree->open();
@@ -115,14 +115,14 @@ static void query_2(){
 
 
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(s_ps_join->getDataflow().getAttribute("PARTSUPP.PS_SUPPLYCOST"));
+	aggregation_attributes.push_back(s_ps_join->GetDataflow().getAttribute("PARTSUPP.PS_SUPPLYCOST"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 	LogicalOperator* aggregation=new LogicalAggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
 
-	BlockStreamIteratorBase* sub_physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* sub_physical_iterator_tree=root->GetIteratorTree(64*1024);
 
 	sub_physical_iterator_tree->open();
 	while(sub_physical_iterator_tree->next(0));
@@ -171,7 +171,7 @@ static void query_2(){
 
 
 	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::PERFORMANCE);
-	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->GetIteratorTree(64*1024);
 //
 //	final_physical_iterator_tree->open();
 //	while(final_physical_iterator_tree->next(0));
@@ -230,12 +230,12 @@ static void query_3(){
 
 
 	std::vector<Attribute> groupby_attributes;
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_ORDERKEY"));
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("ORDERS.O_ORDERDATE"));
-	groupby_attributes.push_back(c_o_l_join->getDataflow().getAttribute("ORDERS.O_SHIPPRIORITY"));
+	groupby_attributes.push_back(c_o_l_join->GetDataflow().getAttribute("LINEITEM.L_ORDERKEY"));
+	groupby_attributes.push_back(c_o_l_join->GetDataflow().getAttribute("ORDERS.O_ORDERDATE"));
+	groupby_attributes.push_back(c_o_l_join->GetDataflow().getAttribute("ORDERS.O_SHIPPRIORITY"));
 	std::vector<Attribute> aggregation_attributes;
-	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_EXTENDEDPRICE"));
-	aggregation_attributes.push_back(c_o_l_join->getDataflow().getAttribute("LINEITEM.L_DISCOUNT"));
+	aggregation_attributes.push_back(c_o_l_join->GetDataflow().getAttribute("LINEITEM.L_EXTENDEDPRICE"));
+	aggregation_attributes.push_back(c_o_l_join->GetDataflow().getAttribute("LINEITEM.L_DISCOUNT"));
 	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
@@ -244,7 +244,7 @@ static void query_3(){
 
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
-	BlockStreamIteratorBase* final_physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* final_physical_iterator_tree=root->GetIteratorTree(64*1024);
 
 	final_physical_iterator_tree->open();
 	while(final_physical_iterator_tree->next(0));

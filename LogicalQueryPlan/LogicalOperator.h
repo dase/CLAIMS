@@ -17,69 +17,87 @@
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "Requirement.h"
 
-enum operator_type{l_scan,l_filter,l_aggregation,l_equal_join,l_project,l_sort, l_root,l_cross_join};
+enum operator_type {
+  l_scan,
+  l_filter,
+  l_aggregation,
+  l_equal_join,
+  l_project,
+  l_sort,
+  l_root,
+  l_cross_join
+};
 
 typedef BlockStreamIteratorBase* PhysicalPlan;
-typedef struct PhysicalPlanDescriptor{
-	PhysicalPlan plan;
-	Dataflow dataflow;
-	unsigned cost;
+typedef struct PhysicalPlanDescriptor {
+  PhysicalPlan plan;
+  Dataflow dataflow;
+  unsigned cost;
 };
-class LogicalOperator{
-public:
-	LogicalOperator(){};
-	virtual ~LogicalOperator(){};
+class LogicalOperator {
+ public:
+  LogicalOperator(){};
+  virtual ~LogicalOperator(){};
 
-	/*get the data flow which is optimal in the local view.*
-	 * TODO: leverage recursive search for the global optimal. */
-	virtual Dataflow getDataflow()=0;
+  /*get the data flow which is optimal in the local view.*
+   * TODO: leverage recursive search for the global optimal. */
+  virtual Dataflow GetDataflow() = 0;
 
-	/*
-	 * generate the iterator tree based on the computed dataflow. Hence,
-	 * this function can only be called after the calling of getDataflow()
-	 */
-	virtual BlockStreamIteratorBase* getIteratorTree(const unsigned &)=0;
+  /*
+   * generate the iterator tree based on the computed dataflow. Hence,
+   * this function can only be called after the calling of getDataflow()
+   */
+  virtual BlockStreamIteratorBase* GetIteratorTree(const unsigned&) = 0;
 
-	/**
-	 * get the optimal Physical plan that meets the requirement.
-	 * @return true if find physical plan that meets the requirement and store the physical plan and
-	 * its corresponding information in physical_plan_descriptor.
-	 */
-	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
+  /**
+   * get the optimal Physical plan that meets the requirement.
+   * @return true if find physical plan that meets the requirement and store the
+   * physical plan and
+   * its corresponding information in physical_plan_descriptor.
+   */
+  virtual bool GetOptimalPhysicalPlan(
+      Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
+      const unsigned& block_size = 4096 * 1024){};
 
-	virtual void print(int level=0)const =0;
+  virtual void print(int level = 0) const = 0;
 
-	inline operator_type getOperatorType() { return operator_type_; }
+  inline operator_type GetOperatorType() { return operator_type_; }
 
-protected:
-	Schema* getSchema(const std::vector<Attribute>&)const;
-	Schema* getSchema(const std::vector<Attribute>&,const std::vector<Attribute>&)const;
-	std::vector<NodeID> getInvolvedNodeID(const DataflowPartitioningDescriptor&)const;
-	std::vector<NodeIP> convertNodeIDListToNodeIPList(const std::vector<NodeID>&)const;
-	PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(const std::vector<PhysicalPlanDescriptor>)const;
-	int getIndexInAttributeList(const std::vector<Attribute>& attributes,const Attribute& attribute)const;
-	void align(int space)const;
+ protected:
+  Schema* GetSchema(const std::vector<Attribute>&) const;
+  Schema* GetSchema(const std::vector<Attribute>&,
+                    const std::vector<Attribute>&) const;
+  std::vector<NodeID> GetInvolvedNodeID(
+      const DataflowPartitioningDescriptor&) const;
+  std::vector<NodeIP> convertNodeIDListToNodeIPList(
+      const std::vector<NodeID>&) const;
+  PhysicalPlanDescriptor getBestPhysicalPlanDescriptor(
+      const std::vector<PhysicalPlanDescriptor>) const;
+  int getIndexInAttributeList(const std::vector<Attribute>& attributes,
+                              const Attribute& attribute) const;
+  void align(int space) const;
 
-	inline void setOperatortype(operator_type node_operator) { operator_type_ = node_operator; }
+  inline void setOperatortype(operator_type node_operator) {
+    operator_type_ = node_operator;
+  }
 
-private:
-	operator_type operator_type_;
-
+ private:
+  operator_type operator_type_;
 };
 
-//class Operator{
+// class Operator{
 //
 //};
-//class LogicalOperator :public Operator{
-//public:
+// class LogicalOperator :public Operator{
+// public:
 //	LogicalOperator();
 //	virtual ~LogicalOperator();
 //	virtual void getSchema()=0;
 //	virtual LogicalOperator* getchild()=0;
 //	virtual void setchild(Operator*)=0;
 //};
-//class ColoredLogicalOperator :public Operator{
-//public:
+// class ColoredLogicalOperator :public Operator{
+// public:
 //	ColoredLogicalOperator(){};
 //	virtual void getSchema()=0;
 //	virtual int getColor()=0;
@@ -87,8 +105,8 @@ private:
 //	virtual ColoredLogicalOperator* getchild()=0;
 //	virtual void setchild(Operator*)=0;
 //};
-//class join:public ColoredLogicalOperator,public LogicalOperator{
-//public:
+// class join:public ColoredLogicalOperator,public LogicalOperator{
+// public:
 //	join(){};
 //	void getSchema(){
 //		printf("join::getSchema()\n");
@@ -107,19 +125,20 @@ private:
 //	void setchild(Operator* op){
 //		child=op;
 //	}
-//public:
+// public:
 //	Operator* child;
 //
 //
 //};
 //
 //
-//class tryit{
-//public:
+// class tryit{
+// public:
 //	void doit(){
 //		LogicalOperator* o=new join();
 //		o->getchild();
-//		ColoredLogicalOperator* co=(join*)o;//(ColoredLogicalOperator*)o;
+//		ColoredLogicalOperator*
+//co=(join*)o;//(ColoredLogicalOperator*)o;
 //
 ////		co->setchild(o);
 //		co->getColor();

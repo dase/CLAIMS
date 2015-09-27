@@ -93,8 +93,8 @@ class EqualJoin : public LogicalOperator {
    * repartitioned.
    * join_police_ = kCompleteRepartition
    */
-  Dataflow getDataflow();
-  BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
+  Dataflow GetDataflow();
+  BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& block_size = 4096 * 1024);

@@ -89,7 +89,7 @@ LogicalScan::~LogicalScan() {
  * projections, so we should choose the best one what we need with traversing
  * scan_attribute_list_.
  */
-Dataflow LogicalScan::getDataflow() {
+Dataflow LogicalScan::GetDataflow() {
   if (NULL != dataflow_) return *dataflow_;
   dataflow_ = new Dataflow();
 
@@ -166,12 +166,12 @@ Dataflow LogicalScan::getDataflow() {
 // TODO: Ideally, the columns in one projection are stored separately
 // and only the needed columns are touched for a given query.
 
-BlockStreamIteratorBase* LogicalScan::getIteratorTree(
+BlockStreamIteratorBase* LogicalScan::GetIteratorTree(
     const unsigned& block_size) {
   ExpandableBlockStreamProjectionScan::State state;
   state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
-  state.schema_ = getSchema(dataflow_->attribute_list_);
+  state.schema_ = GetSchema(dataflow_->attribute_list_);
   state.sample_rate_ = sample_rate_;
   return new ExpandableBlockStreamProjectionScan(state);
 }
@@ -179,13 +179,13 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(
 bool LogicalScan::GetOptimalPhysicalPlan(
     Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
     const unsigned& block_size) {
-  Dataflow dataflow = getDataflow();
+  Dataflow dataflow = GetDataflow();
   NetworkTransfer transfer = requirement.requireNetworkTransfer(dataflow);
 
   ExpandableBlockStreamProjectionScan::State state;
   state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
-  state.schema_ = getSchema(dataflow_->attribute_list_);
+  state.schema_ = GetSchema(dataflow_->attribute_list_);
   state.sample_rate_ = sample_rate_;
 
   PhysicalPlan scan = new ExpandableBlockStreamProjectionScan(state);
@@ -202,10 +202,10 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     state.child_ = scan;  // child_iterator;
     state.exchange_id_ =
         IDsGenerator::getInstance()->generateUniqueExchangeID();
-    state.schema_ = getSchema(dataflow.attribute_list_);
+    state.schema_ = GetSchema(dataflow.attribute_list_);
 
     std::vector<NodeID> lower_id_list =
-        getInvolvedNodeID(dataflow.property_.partitioner);
+        GetInvolvedNodeID(dataflow.property_.partitioner);
     state.lower_id_list_ = lower_id_list;
 
     std::vector<NodeID> upper_id_list;

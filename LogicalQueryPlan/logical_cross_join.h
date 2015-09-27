@@ -44,8 +44,8 @@ class LogicalCrossJoin : public LogicalOperator {
   LogicalCrossJoin();
   LogicalCrossJoin(LogicalOperator* left_child, LogicalOperator* right_child);
   virtual ~LogicalCrossJoin();
-  Dataflow getDataflow();
-  BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
+  Dataflow GetDataflow();
+  BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
   void print(int level = 0) const;
 
  protected:

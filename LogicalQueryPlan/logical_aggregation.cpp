@@ -65,10 +65,10 @@ LogicalAggregation::~LogicalAggregation() {
     child_ = NULL;
   }
 }
-Dataflow LogicalAggregation::getDataflow() {
+Dataflow LogicalAggregation::GetDataflow() {
   if (NULL != dataflow_) return *dataflow_;
   Dataflow ret;
-  const Dataflow child_dataflow = child_->getDataflow();
+  const Dataflow child_dataflow = child_->GetDataflow();
   if (CanOmitHashRepartition(child_dataflow)) {
     aggregation_style_ = kAgg;
     LOG(INFO) << "Aggregation style: kAgg" << std::endl;
@@ -199,13 +199,13 @@ void LogicalAggregation::ChangeSchemaForAVG(
  * Note: if group_by_attribute_list_ is empty, the partition key is
  * ATTRIBUTE_NULL
  */
-BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
+BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
     const unsigned& block_size) {
   if (NULL == dataflow_) {
-    getDataflow();
+    GetDataflow();
   }
   BlockStreamIteratorBase* ret;
-  const Dataflow child_dataflow = child_->getDataflow();
+  const Dataflow child_dataflow = child_->GetDataflow();
   BlockStreamAggregationIterator::State aggregation_state;
   aggregation_state.groupByIndex =
       GetInvolvedAttrIdList(group_by_attribute_list_, child_dataflow);
@@ -215,9 +215,9 @@ BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
   aggregation_state.block_size = block_size;
   aggregation_state.nbuckets = EstimateGroupByCardinality(child_dataflow);
   aggregation_state.bucketsize = 64;
-  aggregation_state.input = getSchema(child_dataflow.attribute_list_);
-  aggregation_state.output = getSchema(dataflow_->attribute_list_);
-  aggregation_state.child = child_->getIteratorTree(block_size);
+  aggregation_state.input = GetSchema(child_dataflow.attribute_list_);
+  aggregation_state.output = GetSchema(dataflow_->attribute_list_);
+  aggregation_state.child = child_->GetIteratorTree(block_size);
 
   switch (aggregation_style_) {
     case kAgg: {
@@ -249,9 +249,9 @@ BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       exchange_state.lower_id_list_ =
-          getInvolvedNodeID(child_->getDataflow().property_.partitioner);
+          GetInvolvedNodeID(child_->GetDataflow().property_.partitioner);
       exchange_state.upper_id_list_ =
-          getInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(dataflow_->property_.partitioner);
       if (group_by_attribute_list_.empty()) {
         exchange_state.partition_schema_ =
             partition_schema::set_hash_partition(0);
@@ -273,9 +273,9 @@ BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
       global_aggregation_state.child = exchange;
       global_aggregation_state.groupByIndex =
           GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *dataflow_);
-      global_aggregation_state.input = getSchema(dataflow_->attribute_list_);
+      global_aggregation_state.input = GetSchema(dataflow_->attribute_list_);
       global_aggregation_state.nbuckets = aggregation_state.nbuckets;
-      global_aggregation_state.output = getSchema(dataflow_->attribute_list_);
+      global_aggregation_state.output = GetSchema(dataflow_->attribute_list_);
       global_aggregation_state.agg_node_type =
           BlockStreamAggregationIterator::State::Hybrid_Agg_Global;
       ChangeSchemaForAVG(global_aggregation_state);
@@ -290,8 +290,8 @@ BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = child_->getIteratorTree(block_size);
-      expander_state.schema_ = getSchema(child_dataflow.attribute_list_);
+      expander_state.child_ = child_->GetIteratorTree(block_size);
+      expander_state.schema_ = GetSchema(child_dataflow.attribute_list_);
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
       ExpandableBlockStreamExchangeEpoll::State exchange_state;
@@ -300,9 +300,9 @@ BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       exchange_state.lower_id_list_ =
-          getInvolvedNodeID(child_->getDataflow().property_.partitioner);
+          GetInvolvedNodeID(child_->GetDataflow().property_.partitioner);
       exchange_state.upper_id_list_ =
-          getInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(dataflow_->property_.partitioner);
       if (group_by_attribute_list_.empty()) {
         /**
          * scalar aggregation allows parallel partitions to be partitioned in
@@ -321,7 +321,7 @@ BlockStreamIteratorBase* LogicalAggregation::getIteratorTree(
         exchange_state.partition_schema_ = partition_schema::set_hash_partition(
             GetInvolvedAttrIdList(group_by_attribute_list_, child_dataflow)[0]);
       }
-      exchange_state.schema_ = getSchema(child_dataflow.attribute_list_);
+      exchange_state.schema_ = GetSchema(child_dataflow.attribute_list_);
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
       aggregation_state.agg_node_type =

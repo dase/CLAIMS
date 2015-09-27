@@ -97,13 +97,13 @@ int LogicalCrossJoin::get_join_policy_() {
  * @details   (additional)
  */
 
-Dataflow LogicalCrossJoin::getDataflow() {
+Dataflow LogicalCrossJoin::GetDataflow() {
   if (NULL != dataflow_) {
     /* the data flow has been computed already！*/
     return *dataflow_;
   }
-  Dataflow left_dataflow = left_child_->getDataflow();
-  Dataflow right_dataflow = right_child_->getDataflow();
+  Dataflow left_dataflow = left_child_->GetDataflow();
+  Dataflow right_dataflow = right_child_->GetDataflow();
   Dataflow ret;
   if (kSuccess == DecideJoinPolicy(left_dataflow, right_dataflow)) {
     const Attribute left_partition_key =
@@ -237,23 +237,23 @@ int LogicalCrossJoin::DecideJoinPolicy(const Dataflow& left_dataflow,
 * @details   (additional)
 */
 
-BlockStreamIteratorBase* LogicalCrossJoin::getIteratorTree(
+BlockStreamIteratorBase* LogicalCrossJoin::GetIteratorTree(
     const unsigned& block_size) {
   if (NULL == dataflow_) {
-    getDataflow();
+    GetDataflow();
   }
   BlockStreamNestLoopJoinIterator* cross_join_iterator = NULL;
   BlockStreamIteratorBase* child_iterator_left = NULL;
   BlockStreamIteratorBase* child_iterator_right = NULL;
   GenerateChildPhysicalQueryPlan(child_iterator_left, child_iterator_right,
                                  block_size);
-  Dataflow dataflow_left = left_child_->getDataflow();
-  Dataflow dataflow_right = right_child_->getDataflow();
+  Dataflow dataflow_left = left_child_->GetDataflow();
+  Dataflow dataflow_right = right_child_->GetDataflow();
   BlockStreamNestLoopJoinIterator::State state;
   state.block_size_ = block_size;
-  state.input_schema_left = getSchema(dataflow_left.attribute_list_);
-  state.input_schema_right = getSchema(dataflow_right.attribute_list_);
-  state.output_schema = getSchema(dataflow_->attribute_list_);
+  state.input_schema_left = GetSchema(dataflow_left.attribute_list_);
+  state.input_schema_right = GetSchema(dataflow_right.attribute_list_);
+  state.output_schema = GetSchema(dataflow_->attribute_list_);
   state.child_left = child_iterator_left;
   state.child_right = child_iterator_right;
   cross_join_iterator = new BlockStreamNestLoopJoinIterator(state);
@@ -265,12 +265,12 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     const BlockStreamIteratorBase* right_child_iterator_tree,
     const unsigned& blocksize) {
   int ret = kSuccess;
-  Dataflow left_dataflow = left_child_->getDataflow();
-  Dataflow right_dataflow = right_child_->getDataflow();
+  Dataflow left_dataflow = left_child_->GetDataflow();
+  Dataflow right_dataflow = right_child_->GetDataflow();
   switch (join_policy_) {
     case kLocalJoin: {
-      left_child_iterator_tree = left_child_->getIteratorTree(blocksize);
-      right_child_iterator_tree = right_child_->getIteratorTree(blocksize);
+      left_child_iterator_tree = left_child_->GetIteratorTree(blocksize);
+      right_child_iterator_tree = right_child_->GetIteratorTree(blocksize);
       break;
     }
     case kLeftBroadcast: {
@@ -278,7 +278,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = left_child_->getIteratorTree(blocksize);
+      expander_state.child_ = left_child_->GetIteratorTree(blocksize);
       expander_state.schema_ = left_dataflow.getSchema();
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
@@ -288,10 +288,10 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       std::vector<NodeID> upper_id_list =
-          getInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(dataflow_->property_.partitioner);
       exchange_state.upper_id_list_ = upper_id_list;
       std::vector<NodeID> lower_id_list =
-          getInvolvedNodeID(left_dataflow.property_.partitioner);
+          GetInvolvedNodeID(left_dataflow.property_.partitioner);
       exchange_state.lower_id_list_ = lower_id_list;
       exchange_state.partition_schema_ =
           partition_schema::set_broadcast_partition();
@@ -299,16 +299,16 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
       left_child_iterator_tree = exchange;
-      right_child_iterator_tree = right_child_->getIteratorTree(blocksize);
+      right_child_iterator_tree = right_child_->GetIteratorTree(blocksize);
       break;
     }
     case kRightBroadcast: {
-      left_child_iterator_tree = left_child_->getIteratorTree(blocksize);
+      left_child_iterator_tree = left_child_->GetIteratorTree(blocksize);
       BlockStreamExpander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = right_child_->getIteratorTree(blocksize);
+      expander_state.child_ = right_child_->GetIteratorTree(blocksize);
       expander_state.schema_ = left_dataflow.getSchema();
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
@@ -318,10 +318,10 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       std::vector<NodeID> upper_id_list =
-          getInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(dataflow_->property_.partitioner);
       exchange_state.upper_id_list_ = upper_id_list;
       std::vector<NodeID> lower_id_list =
-          getInvolvedNodeID(right_dataflow.property_.partitioner);
+          GetInvolvedNodeID(right_dataflow.property_.partitioner);
       exchange_state.lower_id_list_ = lower_id_list;
       exchange_state.partition_schema_ =
           partition_schema::set_broadcast_partition();
