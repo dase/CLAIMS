@@ -43,9 +43,9 @@ std::vector<NodeID> LogicalOperator::GetInvolvedNodeID(const DataflowPartitionin
 }
 std::vector<NodeIP> LogicalOperator::convertNodeIDListToNodeIPList(const std::vector<NodeID>& node_id_list)const{
 	std::vector<NodeIP> ret;
-	NodeTracker* nodetracker=NodeTracker::getInstance();
+	NodeTracker* nodetracker=NodeTracker::GetInstance();
 	for(unsigned i=0;i<node_id_list.size();i++){
-		ret.push_back(nodetracker->getNodeIP(node_id_list[i]));
+		ret.push_back(nodetracker->GetNodeIP(node_id_list[i]));
 	}
 	return ret;
 }

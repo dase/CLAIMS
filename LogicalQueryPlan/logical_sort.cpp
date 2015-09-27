@@ -140,7 +140,7 @@ void LogicalSort::PrintOrderByAttr() const {
            order_by_attr_[i]->direction_ == 0 ? "ASC" : "DESC");
   }
 }
-void LogicalSort::print(int level) const {
+void LogicalSort::Print(int level) const {
   PrintOrderByAttr();
-  child_->print(level + 1);
+  child_->Print(level + 1);
 }

@@ -71,7 +71,7 @@ bool LogicalCSBIndexBuilding::GetOptimalPhysicalPlan(Requirement requirement,Phy
 	assert(false);
 	return false;
 }
-void LogicalCSBIndexBuilding::print(int level) const
+void LogicalCSBIndexBuilding::Print(int level) const
 {
 	printf("%*.CSBIndexBuilding: %s\n",level*8," ",Catalog::getInstance()->getTable(scan_projection_->getProjectionID().table_id)->getTableName().c_str());
 }

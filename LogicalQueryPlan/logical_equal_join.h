@@ -151,7 +151,7 @@ class EqualJoin : public LogicalOperator {
 
   DataflowPartitioningDescriptor DecideOutputDataflowProperty(
       const Dataflow& left_dataflow, const Dataflow& right_dataflow) const;
-  void print(int level = 0) const;
+  void Print(int level = 0) const;
 
   /**
    * Assuming that R and S are the two join table, the selectivity is

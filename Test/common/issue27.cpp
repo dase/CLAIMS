@@ -4,7 +4,7 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
-
+//This file will not be used in current version,because it is not contained by Makefile.am
 #ifndef ISSUE27_CPP_
 #define ISSUE27_CPP_
 #include "../../Environment.h"
@@ -15,19 +15,14 @@
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/logical_aggregation.h"
-
 #include "../../LogicalQueryPlan/logical_scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Project.h"
+#include "../../LogicalQueryPlan/logical_filter.h"
 #include "../../LogicalQueryPlan/logical_equal_join.h"
-
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-
 #include "../../common/types/NValue.hpp"
-
+#include "../../LogicalQueryPlan/logical_project.h"
 #include "../../utility/rdtsc.h"
 
 static void query_select_aggregation(){

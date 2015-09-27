@@ -8,9 +8,9 @@
 #include "../LogicalQueryPlan/Test/testGenerateIteratorTree.cpp"
 #include "../LogicalQueryPlan/Test/ResultCollect_test.cpp"
 #include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
-#include "../LogicalQueryPlan/Test/testProject.cpp"
+//#include "../LogicalQueryPlan/Test/testProject.cpp"
 #include "../LogicalQueryPlan/Test/testSort.cpp"
-#include "../LogicalQueryPlan/Test/testProject_wl.cpp"
+//#include "../LogicalQueryPlan/Test/testProject_wl.cpp"
 #include "../LogicalQueryPlan/Test/Aggregation_test.cpp"
 #include "../LogicalQueryPlan/Test/query_optmization_based_on_statisitic_test.cpp"
 #include "../LogicalQueryPlan/Test/testIn.cpp"
@@ -50,8 +50,14 @@
 #include "../IndexManager/Test/test_IndexManager_serialize.cpp"
 
 #include "common/TestNew.cpp"
+<<<<<<< HEAD
 #include "common/issue27.cpp"
 #include "common/issue27ing.cpp"
+=======
+//#include "common/issue27.cpp"
+//#include "common/issue27ing.cpp"
+//#include "common/issue27_sort.cpp"
+>>>>>>> master-yk-150927
 
 #include "TestSuit/ExpanderFrameTest.h"
 #include "TestSuit/tpc_h_test.cpp"

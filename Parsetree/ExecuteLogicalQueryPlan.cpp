@@ -23,10 +23,11 @@
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
 #include "../LogicalQueryPlan/logical_scan.h"
-#include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../LogicalQueryPlan/logical_equal_join.h"
-#include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/logical_aggregation.h"
+
+#include "../LogicalQueryPlan/logical_query_plan_root.h"
+#include "../LogicalQueryPlan/logical_filter.h"
 #include "../LogicalQueryPlan/Buffer.h"
 #include "../LogicalQueryPlan/logical_limit.h"
 
@@ -1004,20 +1005,20 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 		Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 		if(lexpr->offset==NULL)
 		{
-			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 		}
 		else
 		{
-			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 		}
 	}
 	else
 	{
-		root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+		root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector);
 	}
 
 #ifdef SQL_Parser
-	root->print(0);
+	root->Print(0);
 #endif
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);

@@ -40,29 +40,28 @@ static int test_cross_join() {
                             ->getProjectoin(0));
     //		vector<QNode *>exprTree0;
     //		QColcumns *cal0=new
-    //QColcumns("field","field.row_id",t_u_long,"field.row_id");
+    // QColcumns("field","field.row_id",t_u_long,"field.row_id");
     //		QExpr *qexpr0=new QExpr("3",t_string,"3");
     //		QExpr_binary *qcalnode0=new
-    //QExpr_binary(cal0,qexpr0,t_u_long,oper_less,t_qexpr_cmp,"field.row_id<3");
+    // QExpr_binary(cal0,qexpr0,t_u_long,oper_less,t_qexpr_cmp,"field.row_id<3");
     //		exprTree0.push_back(qcalnode0);
     //		LogicalOperator *filter_field=new Filter(scan_field,exprTree0);
     //
     //		vector<QNode *>exprTree1;
     //		QColcumns *cal1=new
-    //QColcumns("area","area.row_id",t_u_long,"area.row_id");
+    // QColcumns("area","area.row_id",t_u_long,"area.row_id");
     //		QExpr *qexpr1=new QExpr("2",t_string,"2");
     //		QExpr_binary *qcalnode1=new
-    //QExpr_binary(cal1,qexpr1,t_u_long,oper_less,t_qexpr_cmp,"area.row_id<2");
+    // QExpr_binary(cal1,qexpr1,t_u_long,oper_less,t_qexpr_cmp,"area.row_id<2");
     //		exprTree1.push_back(qcalnode1);
     //		LogicalOperator *filter_area=new Filter(scan_area,exprTree1);
 
-    LogicalOperator* cross_join =
-        new LogicalCrossJoin(scan_field, scan_area);
+    LogicalOperator* cross_join = new LogicalCrossJoin(scan_field, scan_area);
 
     LogicalOperator* root = new LogicalQueryPlanRoot(
         0, cross_join, LogicalQueryPlanRoot::RESULTCOLLECTOR);
     cout << "~~~~~~~~~logical plan~~~~~~~~~~~~~~" << endl;
-    root->print(0);
+    root->Print(0);
     BlockStreamIteratorBase* physical_iterator_tree =
         root->GetIteratorTree(64 * 1024);
     cout << "~~~~~~~~~physical plan~~~~~~~~~~~~~~" << endl;

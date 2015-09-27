@@ -440,34 +440,34 @@ static int getOptimalQueryPlan(){
 
 		LogicalOperator* sb_payload_scan=new LogicalScan(table_2->getProjectoin(1));
 
-		Filter::Condition filter_condition_1;
+		LogicalFilter::Condition filter_condition_1;
 		const int order_type=1;
 		filter_condition_1.add(table_1->getAttribute(5),AttributeComparator::EQ,&order_type);
 		const int trade_date=20101008;
 		filter_condition_1.add(table_1->getAttribute(1),AttributeComparator::GEQ,&trade_date);
 		const int sec_code=600036;
 		filter_condition_1.add(table_1->getAttribute(3),AttributeComparator::EQ,&sec_code);
-		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_join_key_scan);
+		LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_join_key_scan);
 
-		Filter::Condition filter_condition_2;
+		LogicalFilter::Condition filter_condition_2;
 		const int order_type_=1;
 		filter_condition_2.add(table_2->getAttribute(4),AttributeComparator::EQ,&order_type_);
 		const int entry_date=20101008;
 		filter_condition_2.add(table_2->getAttribute(2),AttributeComparator::GEQ,&entry_date);
 		const int sec_code_=600036;
 		filter_condition_2.add(table_2->getAttribute(3),AttributeComparator::GEQ,&sec_code_);
-		LogicalOperator* filter_2=new Filter(filter_condition_2,sb_join_key_scan);
+		LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
-		Filter::Condition filter_condition_cj_payload;
+		LogicalFilter::Condition filter_condition_cj_payload;
 		long tmp1=0;
 		filter_condition_cj_payload.add(table_1->getAttribute(0),AttributeComparator::EQ,&tmp1);
-		LogicalOperator* filter_cj_payload=new Filter(filter_condition_cj_payload,cj_payload_scan);
+		LogicalOperator* filter_cj_payload=new LogicalFilter(filter_condition_cj_payload,cj_payload_scan);
 
-		Filter::Condition filter_condition_sb_payload;
+		LogicalFilter::Condition filter_condition_sb_payload;
 		long tmp2=0;
 		filter_condition_sb_payload.add(table_2->getAttribute(0),AttributeComparator::EQ,&tmp2);
-		LogicalOperator* filter_sb_payload=new Filter(filter_condition_sb_payload,sb_payload_scan);
+		LogicalOperator* filter_sb_payload=new LogicalFilter(filter_condition_sb_payload,sb_payload_scan);
 
 
 		LogicalOperator* buffer1=new Buffer(filter_1);
@@ -521,7 +521,7 @@ static int getOptimalQueryPlan(){
 //
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 		unsigned long long int timer_start=curtick();
 		BlockStreamIteratorBase* executable_query_plan;
 		PhysicalPlanDescriptor physical_plan;

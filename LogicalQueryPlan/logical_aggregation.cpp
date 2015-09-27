@@ -477,7 +477,7 @@ unsigned long LogicalAggregation::EstimateGroupByCardinality(
   ret = ret > min_limits ? ret : min_limits;
   return ret;
 }
-void LogicalAggregation::print(int level) const {
+void LogicalAggregation::Print(int level) const {
   printf("%*.sAggregation:", level * 8, " ");
   switch (aggregation_style_) {
     case kAgg: {
@@ -526,7 +526,7 @@ void LogicalAggregation::print(int level) const {
       default: { break; }
     }
   }
-  child_->print(level + 1);
+  child_->Print(level + 1);
 }
 //} // namespace logical_query_plan
 //}  // namespace claims

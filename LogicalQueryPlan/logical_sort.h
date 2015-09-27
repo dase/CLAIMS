@@ -101,7 +101,7 @@ class LogicalSort : public LogicalOperator {
   int GetOrderByKey(const char *);
 
   void PrintOrderByAttr() const;
-  void print(int level = 0) const;
+  void Print(int level = 0) const;
   virtual bool GetOptimalPhysicalPlan(
       Requirement requirement, PhysicalPlanDescriptor &physical_plan_descriptor,
       const unsigned &block_size = 4096 * 1024) {}

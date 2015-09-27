@@ -19,7 +19,8 @@ public:
 	Dataflow GetDataflow();
 
 	BlockStreamIteratorBase* GetIteratorTree(const unsigned &);
-	void print(int level=0)const{
+
+	void Print(int level=0)const{
 
 	}
 private:

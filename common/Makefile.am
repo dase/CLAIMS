@@ -11,18 +11,18 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
-		../BlockStreamIterator/libblockstreamiterator.a \
-		../storage/libstorage.a \
-		../common/libcommon.a \
-		../common/log/liblog.a \
-		../common/Block/libblock.a \
-		../utility/libutility.a \
-		types/libtypes.a \
-		${BOOST_HOME}/stage/lib/libboost_serialization.a \
-		${BOOST_HOME}/stage/lib/libboost_serialization.so \
-		${THERON_HOME}/Lib/libtherond.a \
-		${GTEST_HOME}/libgtest.a
+#LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
+#		../BlockStreamIterator/libblockstreamiterator.a \
+#		../storage/libstorage.a \
+#		../common/libcommon.a \
+#		../common/liblog.a \
+#		../common/Block/libblock.a \
+#		../utility/libutility.a \
+#		types/libtypes.a 
+#		${BOOST_HOME}/stage/lib/libboost_serialization.a \
+#		${BOOST_HOME}/stage/lib/libboost_serialization.so \
+#		${THERON_HOME}/Lib/libtherond.a \
+#		${GTEST_HOME}/libgtest.a
 
 noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES = \

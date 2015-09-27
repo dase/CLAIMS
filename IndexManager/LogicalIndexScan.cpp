@@ -58,7 +58,7 @@ bool LogicalIndexScan::GetOptimalPhysicalPlan(Requirement requirement, PhysicalP
 	return false;
 }
 
-void LogicalIndexScan::print(int level) const
+void LogicalIndexScan::Print(int level) const
 {
 	cout << "level "  << level << ": Logical Index Scan\n";
 }

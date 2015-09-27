@@ -350,7 +350,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
   return ret;
 }
 
-void LogicalCrossJoin::print(int level) const {
+void LogicalCrossJoin::Print(int level) const {
   printf("CrossJoin:\n", level * 8, " ");
   switch (join_policy_) {
     case kLeftBroadcast: {
@@ -366,8 +366,8 @@ void LogicalCrossJoin::print(int level) const {
       break;
     }
   }
-  left_child_->print(level + 1);
-  right_child_->print(level + 1);
+  left_child_->Print(level + 1);
+  right_child_->Print(level + 1);
 }
 
 /**

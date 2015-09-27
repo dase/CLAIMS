@@ -115,10 +115,10 @@ static int in_test(){
 		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(1));
 
 		//set child: row_id < 20;
-		Filter::Condition filter_condition_1;
+		LogicalFilter::Condition filter_condition_1;
 		filter_condition_1.add(table_1->getAttribute(0),AttributeComparator::L,std::string("5"
 				""));
-		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_payload_scan);
+		LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_payload_scan);
 
 		//aggregation
 		std::vector<Attribute> group_by_attributes;
@@ -132,7 +132,7 @@ static int in_test(){
 		LogicalOperator* sb_cj_join=new EqualJoin(join_pair_list,cj_join_key_scan,aggregation);
 
 		const NodeID collector_node_id=0;
-		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::PRINT);
+		LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kPrint);
 		unsigned long long int timer_start=curtick();
 //		root->print();
 
@@ -145,7 +145,7 @@ static int in_test(){
 //		BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024-sizeof(unsigned));
 			BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64-sizeof(unsigned));
 			printf("query optimization time :%5.5f\n",getMilliSecond(timer_start));
-			root->print();
+			root->Print();
 			executable_query_plan->print();
 
 		int c=1;

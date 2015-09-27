@@ -59,7 +59,7 @@ class LogicalOperator {
       Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
       const unsigned& block_size = 4096 * 1024){};
 
-  virtual void print(int level = 0) const = 0;
+  virtual void Print(int level = 0) const = 0;
 
   inline operator_type GetOperatorType() { return operator_type_; }
 
@@ -138,7 +138,7 @@ class LogicalOperator {
 //		LogicalOperator* o=new join();
 //		o->getchild();
 //		ColoredLogicalOperator*
-//co=(join*)o;//(ColoredLogicalOperator*)o;
+// co=(join*)o;//(ColoredLogicalOperator*)o;
 //
 ////		co->setchild(o);
 //		co->getColor();

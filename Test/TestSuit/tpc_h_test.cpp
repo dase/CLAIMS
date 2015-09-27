@@ -39,9 +39,9 @@ static void query_1(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("LINEITEM.L_SHIPDATE"),AttributeComparator::L,std::string("1998-12-01"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 //	LogicalOperator* filter=new Filter();
 
 	std::vector<Attribute> group_by_attributes;
@@ -61,7 +61,7 @@ static void query_1(){
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::PERFORMANCE);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	physical_iterator_tree->print();
@@ -92,9 +92,9 @@ static void query_2(){
 	LogicalOperator* s_scan=new LogicalScan(supplier->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(region->getAttribute("REGION.R_NAME"),AttributeComparator::EQ,std::string("EUROPE"));
-	LogicalOperator* r_filter=new Filter(filter_condition_1,r_scan);
+	LogicalOperator* r_filter=new LogicalFilter(filter_condition_1,r_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_join_condition;
 	r_n_join_condition.push_back(EqualJoin::JoinPair(region->getAttribute("REGION.R_REGIONKEY"),nation->getAttribute("NATION.N_REGIONKEY")));
@@ -120,7 +120,7 @@ static void query_2(){
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
 	LogicalOperator* aggregation=new LogicalAggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* sub_physical_iterator_tree=root->GetIteratorTree(64*1024);
 
@@ -135,15 +135,15 @@ static void query_2(){
 	it->~BlockStreamTraverseIterator();
 	sub_physical_iterator_tree->~BlockStreamIteratorBase();
 
-	Filter::Condition p_filter_condition_1;
+	LogicalFilter::Condition p_filter_condition_1;
 	p_filter_condition_1.add(part->getAttribute("PART.P_SIZE"),AttributeComparator::EQ,std::string("15"));//randomly 0~50
 	//TODO like predicates
-	LogicalOperator* p_filter=new Filter(p_filter_condition_1,p_scan);
+	LogicalOperator* p_filter=new LogicalFilter(p_filter_condition_1,p_scan);
 
-	Filter::Condition ps_filter_condition_1;
+	LogicalFilter::Condition ps_filter_condition_1;
 	ps_filter_condition_1.add(partsupp->getAttribute("PARTSUPP.PS_SUPPLYCOST"),AttributeComparator::EQ,OperateDecimal::toString(sub_query_result));
 //	ps_filter_condition_1.add(partsupp->getAttribute("PS_SUPPLYCOST"),AttributeComparator::EQ,std::string("1.00"));
-	LogicalOperator* ps_filter=new Filter(ps_filter_condition_1,ps_scan);
+	LogicalOperator* ps_filter=new LogicalFilter(ps_filter_condition_1,ps_scan);
 
 	std::vector<EqualJoin::JoinPair> p_ps_farther_join_condition;
 	p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(part->getAttribute("PART.P_PARTKEY"),partsupp->getAttribute("PARTSUPP.PS_PARTKEY")));
@@ -153,9 +153,9 @@ static void query_2(){
 
 	///////////////////////////
 
-	Filter::Condition r_filter_father_condition;
+	LogicalFilter::Condition r_filter_father_condition;
 	r_filter_father_condition.add(region->getAttribute("REGION.R_NAME"),AttributeComparator::EQ,std::string("AFRICA"));
-	LogicalOperator* r_filter_father=new Filter(r_filter_father_condition,r_scan);
+	LogicalOperator* r_filter_father=new LogicalFilter(r_filter_father_condition,r_scan);
 
 	std::vector<EqualJoin::JoinPair> r_n_farther_join_condition;
 	r_n_farther_join_condition.push_back(EqualJoin::JoinPair(region->getAttribute("REGION.R_REGIONKEY"),nation->getAttribute("NATION.N_REGIONKEY")));
@@ -169,8 +169,12 @@ static void query_2(){
 	r_n_s_p_ps_farther_join_condition.push_back(EqualJoin::JoinPair(supplier->getAttribute("SUPPLIER.S_SUPPKEY"),partsupp->getAttribute("PARTSUPP.PS_SUPPKEY")));
 	LogicalOperator* r_n_s_p_ps_farther_join=new EqualJoin(r_n_s_p_ps_farther_join_condition,r_n_s_farther_join,p_ps_farther_join);
 
+<<<<<<< HEAD
 
 	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::PERFORMANCE);
+=======
+	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::kPerformance);
+>>>>>>> master-yk-150927
 	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->GetIteratorTree(64*1024);
 //
 //	final_physical_iterator_tree->open();
@@ -207,22 +211,22 @@ static void query_3(){
 
 
 
-	Filter::Condition c_filter_condition;
+	LogicalFilter::Condition c_filter_condition;
 	c_filter_condition.add(customer->getAttribute("CUSTOMER.C_MKTSEGMENT"),AttributeComparator::EQ,std::string("BUILDING"));
-	LogicalOperator* c_filter=new Filter(c_filter_condition,c_scan);
+	LogicalOperator* c_filter=new LogicalFilter(c_filter_condition,c_scan);
 
-	Filter::Condition o_filter_condition;
+	LogicalFilter::Condition o_filter_condition;
 	o_filter_condition.add(orders->getAttribute("ORDERS.O_ORDERDATE"),AttributeComparator::L,std::string("1995-3-15"));
-	LogicalOperator* o_filter=new Filter(o_filter_condition,o_scan);
+	LogicalOperator* o_filter=new LogicalFilter(o_filter_condition,o_scan);
 
 
 	std::vector<EqualJoin::JoinPair> c_o_join_condition;
 	c_o_join_condition.push_back(EqualJoin::JoinPair(customer->getAttribute("CUSTOMER.C_CUSTKEY"),orders->getAttribute("ORDERS.O_CUSTKEY")));
 	LogicalOperator* c_o_join=new EqualJoin(c_o_join_condition,c_filter,o_filter);
 
-	Filter::Condition l_filter_condition;
+	LogicalFilter::Condition l_filter_condition;
 	l_filter_condition.add(lineitem->getAttribute("LINEITEM.L_SHIPDATE"),AttributeComparator::GEQ,std::string("1995-3-15"));
-	LogicalOperator* l_filter=new Filter(l_filter_condition,l_scan);
+	LogicalOperator* l_filter=new LogicalFilter(l_filter_condition,l_scan);
 
 	std::vector<EqualJoin::JoinPair> c_o_l_join_condition;
 	c_o_l_join_condition.push_back(EqualJoin::JoinPair(orders->getAttribute("ORDERS.O_ORDERKEY"),lineitem->getAttribute("LINEITEM.L_ORDERKEY")));
@@ -243,7 +247,11 @@ static void query_3(){
 
 
 
+<<<<<<< HEAD
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::PERFORMANCE);
+=======
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kPerformance);
+>>>>>>> master-yk-150927
 	BlockStreamIteratorBase* final_physical_iterator_tree=root->GetIteratorTree(64*1024);
 
 	final_physical_iterator_tree->open();

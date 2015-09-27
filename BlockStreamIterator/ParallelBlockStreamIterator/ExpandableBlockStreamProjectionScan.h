@@ -110,7 +110,7 @@ private:
 	/* for debug*/
 	unsigned long int return_blocks_;
 
-	PerformanceInfo* perf_info;
+	const PerformanceInfo*  perf_info;
 
 	/*
 	 * The following code is for boost serialization.

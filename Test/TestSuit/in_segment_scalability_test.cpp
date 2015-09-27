@@ -24,9 +24,9 @@ static double lineitem_scan_self_join(){
 
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
@@ -36,7 +36,7 @@ static double lineitem_scan_self_join(){
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -62,9 +62,9 @@ static double sb_scan_self_join(){
 
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
@@ -73,7 +73,7 @@ static double sb_scan_self_join(){
 	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("trade_date"),table_right->getAttribute("entry_date")));
 	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -116,7 +116,7 @@ static double lineitem_scan_aggregation(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -140,13 +140,13 @@ static double lineitem_scan_filter(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -169,18 +169,18 @@ static double sb_scan_filter(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 //	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
 //	filter_condition_1.add(table->getAttribute("entry_dir"),AttributeComparator::EQ,std::string("1"));
 //	const int trade_date=20101008;
 //	filter_condition_1.add(table->getAttribute("entry_date"),AttributeComparator::GEQ,std::string("20101008"));
 //	const int sec_code=600036;
 //	filter_condition_1.add(table->getAttribute("sec_code"),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();
@@ -217,7 +217,7 @@ static double sb_scan_aggregation(){
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
 //	root->print();

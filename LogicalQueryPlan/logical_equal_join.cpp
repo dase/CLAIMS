@@ -377,7 +377,7 @@ BlockStreamIteratorBase* EqualJoin::GetIteratorTree(
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
 
-      NodeTracker* node_tracker = NodeTracker::getInstance();
+      NodeTracker* node_tracker = NodeTracker::GetInstance();
       ExpandableBlockStreamExchangeEpoll::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander;  // child_iterator_left;
@@ -426,7 +426,7 @@ BlockStreamIteratorBase* EqualJoin::GetIteratorTree(
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
 
-      NodeTracker* node_tracker = NodeTracker::getInstance();
+      NodeTracker* node_tracker = NodeTracker::GetInstance();
       ExpandableBlockStreamExchangeEpoll::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander;
@@ -711,7 +711,7 @@ DataflowPartitioningDescriptor EqualJoin::DecideOutputDataflowProperty(
       right_dataflow.getAggregatedDataCardinality();
 
   std::vector<NodeID> all_node_id_list =
-      NodeTracker::getInstance()->getNodeIDList();
+      NodeTracker::GetInstance()->GetNodeIDList();
   /**
    * In the current implementation, all the nodes are involved in the
    * complete_repartition method.
@@ -745,7 +745,7 @@ DataflowPartitioningDescriptor EqualJoin::DecideOutputDataflowProperty(
   ret.setPartitionFunction(partition_function);
   return ret;
 }
-void EqualJoin::print(int level) const {
+void EqualJoin::Print(int level) const {
   printf("%*.sEqualJoin:", level * 8, " ");
   switch (join_policy_) {
     case kNoRepartition: {
@@ -771,8 +771,8 @@ void EqualJoin::print(int level) const {
     printf("%s=%s\n", joinkey_pair_list_[i].left_join_attr_.attrName.c_str(),
            joinkey_pair_list_[i].right_join_attr_.attrName.c_str());
   }
-  left_child_->print(level + 1);
-  right_child_->print(level + 1);
+  left_child_->Print(level + 1);
+  right_child_->Print(level + 1);
 }
 double EqualJoin::PredictEqualJoinSelectivity(
     const Dataflow& left_dataflow, const Dataflow& right_dataflow) const {

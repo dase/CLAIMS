@@ -1,9 +1,9 @@
+!thirdparty/
 *.Po
 *.a
 *.doxyfile
 *.dat*
 *.o
-*sql.output
 .cproject
 .gitignore.swp
 .history
@@ -67,3 +67,5 @@ compile
 thirdparty/
 ar-lib
 缺省值
+*sql.output
+*.doxyfile

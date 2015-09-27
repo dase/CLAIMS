@@ -60,7 +60,7 @@ class LogicalScan : public LogicalOperator {
  private:
   /**check whether all the involved attributes are in the same projection.*/
   bool IsInASingleProjection() const;
-  void print(int level = 0) const;
+  void Print(int level = 0) const;
 
  private:
   std::vector<Attribute> scan_attribute_list_;

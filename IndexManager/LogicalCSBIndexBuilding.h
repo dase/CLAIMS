@@ -22,7 +22,7 @@ public:
 	BlockStreamIteratorBase* GetIteratorTree(const unsigned &);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
-	void print(int level = 0) const;
+	void Print(int level = 0) const;
 private:
 //	unsigned index_offset_;
 //	std::vector<Attribute> scan_attribute_list_;

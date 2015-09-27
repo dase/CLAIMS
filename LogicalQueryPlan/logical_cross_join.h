@@ -46,7 +46,7 @@ class LogicalCrossJoin : public LogicalOperator {
   virtual ~LogicalCrossJoin();
   Dataflow GetDataflow();
   BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
-  void print(int level = 0) const;
+  void Print(int level = 0) const;
 
  protected:
   /**

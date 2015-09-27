@@ -217,12 +217,12 @@ bool LogicalScan::GetOptimalPhysicalPlan(
         PartitionFunction* partitoin_function =
             requirement.getPartitionFunction();
         upper_id_list = std::vector<NodeID>(
-            NodeTracker::getInstance()->getNodeIDList().begin(),
-            NodeTracker::getInstance()->getNodeIDList().begin() +
+            NodeTracker::GetInstance()->GetNodeIDList().begin(),
+            NodeTracker::GetInstance()->GetNodeIDList().begin() +
                 partitoin_function->getNumberOfPartitions() - 1);
       } else {
         // TODO: decide the degree of parallelism
-        upper_id_list = NodeTracker::getInstance()->getNodeIDList();
+        upper_id_list = NodeTracker::GetInstance()->GetNodeIDList();
       }
     }
 
@@ -272,7 +272,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
   else
     return false;
 }
-void LogicalScan::print(int level) const {
+void LogicalScan::Print(int level) const {
   printf("%*.sScan: %s\n", level * 8, " ",
          Catalog::getInstance()
              ->getTable(target_projection_->getProjectionID().table_id)
