@@ -28,7 +28,7 @@
 #include "../../common/AttributeComparator.h"
 
 #include "../../LogicalQueryPlan/Buffer.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
+#include "../../LogicalQueryPlan/logical_equal_join.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
 #include "../../LogicalQueryPlan/logical_scan.h"

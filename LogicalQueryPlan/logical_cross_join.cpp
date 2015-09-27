@@ -243,9 +243,7 @@ BlockStreamIteratorBase* LogicalCrossJoin::getIteratorTree(
     getDataflow();
   }
   BlockStreamNestLoopJoinIterator* cross_join_iterator = NULL;
-  // =left_child_->getIteratorTree(block_size);
   BlockStreamIteratorBase* child_iterator_left = NULL;
-  // =right_child_->getIteratorTree(block_size);
   BlockStreamIteratorBase* child_iterator_right = NULL;
   GenerateChildPhysicalQueryPlan(child_iterator_left, child_iterator_right,
                                  block_size);
@@ -263,8 +261,8 @@ BlockStreamIteratorBase* LogicalCrossJoin::getIteratorTree(
 }
 
 int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
-    BlockStreamIteratorBase*& left_child_iterator_tree,
-    BlockStreamIteratorBase*& right_child_iterator_tree,
+    const BlockStreamIteratorBase* left_child_iterator_tree,
+    const BlockStreamIteratorBase* right_child_iterator_tree,
     const unsigned& blocksize) {
   int ret = kSuccess;
   Dataflow left_dataflow = left_child_->getDataflow();

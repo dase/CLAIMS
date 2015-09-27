@@ -15,7 +15,7 @@
 #include "../logical_aggregation.h"
 #include "../Buffer.h"
 #include "../LogicalQueryPlanRoot.h"
-#include "../EqualJoin.h"
+#include "../logical_equal_join.h"
 
 #include "../../Environment.h"
 

@@ -90,8 +90,8 @@ class LogicalCrossJoin : public LogicalOperator {
    * @details   (additional) */
 
   int GenerateChildPhysicalQueryPlan(
-      BlockStreamIteratorBase*& left_child_iterator_tree,
-      BlockStreamIteratorBase*& right_child_iterator_tree,
+      const BlockStreamIteratorBase* left_child_iterator_tree,
+      const BlockStreamIteratorBase* right_child_iterator_tree,
       const unsigned& blocksize);
 
   LogicalOperator* left_child_;

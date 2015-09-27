@@ -40,7 +40,7 @@
 //#include "../../utility/rdtsc.h"
 //#include "../logical_aggregation.h"
 //#include "../Buffer.h"
-//#include "../EqualJoin.h"
+//#include "../logical_equal_join.h"
 //#include "../Filter.h"
 //#include "../LogicalQueryPlanRoot.h"
 //#include "../logical_scan.h"

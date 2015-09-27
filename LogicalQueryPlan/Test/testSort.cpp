@@ -31,8 +31,8 @@
 
 #include "../../LogicalQueryPlan/logical_scan.h"
 #include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/Sort.h"
+#include "../../LogicalQueryPlan/logical_equal_join.h"
+#include "../../LogicalQueryPlan/logical_sort.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/logical_aggregation.h"
 

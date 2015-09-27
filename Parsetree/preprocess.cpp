@@ -9,17 +9,13 @@
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
-
-#include "../LogicalQueryPlan/EqualJoin.h"
+#include "../LogicalQueryPlan/logical_equal_join.h"
 #include "../LogicalQueryPlan/Filter.h"
 #include "../LogicalQueryPlan/LogicalOperator.h"
 #include "../LogicalQueryPlan/logical_scan.h"
-
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-
 #include "sql_node_struct.h"
 #include "../Environment.h"
 #include "../LogicalQueryPlan/logical_aggregation.h"

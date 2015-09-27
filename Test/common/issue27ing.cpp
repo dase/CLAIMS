@@ -21,7 +21,7 @@
 #include "../../LogicalQueryPlan/logical_scan.h"
 #include "../../LogicalQueryPlan/Filter.h"
 #include "../../LogicalQueryPlan/Project.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
+#include "../../LogicalQueryPlan/logical_equal_join.h"
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"

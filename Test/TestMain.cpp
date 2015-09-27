@@ -52,7 +52,6 @@
 #include "common/TestNew.cpp"
 #include "common/issue27.cpp"
 #include "common/issue27ing.cpp"
-#include "common/issue27_sort.cpp"
 
 #include "TestSuit/ExpanderFrameTest.h"
 #include "TestSuit/tpc_h_test.cpp"

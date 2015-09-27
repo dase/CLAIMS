@@ -33,7 +33,7 @@ BlockStreamSortIterator::State::State(Schema* input,vector<unsigned> orderbyKey,
 }
 
 void BlockStreamSortIterator::swap(void *&desc,void *&src){
-	swap_num++;
+	swap_num_++;
 	void *temp=0;
 	temp=desc;
 	desc=src;
@@ -112,8 +112,8 @@ void BlockStreamSortIterator::order(){
 
 bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 	//TODO: multi threads can be used to pipeline!!!
-	swap_num=0;
-	temp_cur=0;
+	swap_num_=0;
+	temp_cur_=0;
 	/* first we can store all the data which will be bufferred
 	 * 1, buffer is the first phase. multi-threads will be applyed to the data
 	 *    in the buffer.
@@ -184,12 +184,12 @@ bool BlockStreamSortIterator::open(const PartitionOffset& part_off){
 bool BlockStreamSortIterator::next(BlockStreamBase* block){
 	/* multi-threads to send the block out*/
 	unsigned tuple_size=state_.input_->getTupleMaxSize();
-	while(temp_cur<secondaryArray_.size()){
+	while(temp_cur_<secondaryArray_.size()){
 		void *desc=0;
 		while((desc=block->allocateTuple(tuple_size))){
-			memcpy(desc,secondaryArray_[temp_cur]->tuple,tuple_size);
-			temp_cur++;
-			if(temp_cur<secondaryArray_.size())
+			memcpy(desc,secondaryArray_[temp_cur_]->tuple,tuple_size);
+			temp_cur_++;
+			if(temp_cur_<secondaryArray_.size())
 				continue;
 			else
 				break;
