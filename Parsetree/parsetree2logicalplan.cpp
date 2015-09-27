@@ -27,13 +27,8 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 
-#include "../LogicalQueryPlan/logical_equal_join.h"
-#include "../LogicalQueryPlan/LogicalOperator.h"
+#include "../logical_query_plan/logical_operator.h"
 
-#include "../LogicalQueryPlan/logical_aggregation.h"
-#include "../LogicalQueryPlan/logical_scan.h"
-#include "../LogicalQueryPlan/logical_sort.h"
-#include "../LogicalQueryPlan/logical_filter.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include <string.h>
@@ -42,8 +37,13 @@
 #include "../common/Expression/qnode.h"
 #include <assert.h>
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../LogicalQueryPlan/logical_cross_join.h"
-#include "../LogicalQueryPlan/logical_project.h"
+#include "../logical_query_plan/logical_aggregation.h"
+#include "../logical_query_plan/logical_cross_join.h"
+#include "../logical_query_plan/logical_equal_join.h"
+#include "../logical_query_plan/logical_filter.h"
+#include "../logical_query_plan/logical_project.h"
+#include "../logical_query_plan/logical_scan.h"
+#include "../logical_query_plan/logical_sort.h"
 
 using namespace claims::logical_query_plan;
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);

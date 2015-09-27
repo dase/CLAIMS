@@ -21,11 +21,11 @@
 #include "../../../BlockStreamIterator/BlockStreamPrint.h"
 #include "../../../BlockStreamIterator/BlockStreamIteratorBase.h"
 
-#include "../../../LogicalQueryPlan/logical_scan.h"
-#include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../../LogicalQueryPlan/logical_equal_join.h"
-#include "../../../LogicalQueryPlan/Filter.h"
-#include "../../../LogicalQueryPlan/logical_aggregation.h"
+#include "../../../logical_query_plan/logical_scan.h"
+#include "../../../logical_query_plan/LogicalQueryPlanRoot.h"
+#include "../../../logical_query_plan/logical_equal_join.h"
+#include "../../../logical_query_plan/Filter.h"
+#include "../../../logical_query_plan/logical_aggregation.h"
 
 #include "../../../Catalog/ProjectionBinding.h"
 

@@ -5,7 +5,8 @@
  *      Author: wangli
  */
 
-#include "Dataflow.h"
+#include "../logical_query_plan/Dataflow.h"
+
 #include "../common/Schema/SchemaFix.h"
 
 Dataflow::Dataflow() {

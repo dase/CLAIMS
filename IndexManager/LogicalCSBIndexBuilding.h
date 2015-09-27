@@ -7,7 +7,7 @@
 
 #ifndef LOGICALCSBINDEXBUILDING_H_
 #define LOGICALCSBINDEXBUILDING_H_
-#include "../LogicalQueryPlan/LogicalOperator.h"
+#include "../logical_query_plan/logical_operator.h"
 #include "../Catalog/Attribute.h"
 #include "../Catalog/table.h"
 #include "../common/ids.h"

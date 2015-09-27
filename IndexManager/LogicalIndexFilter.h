@@ -8,7 +8,7 @@
 //#ifndef LOGICALINDEXFILTER_H_
 //#define LOGICALINDEXFILTER_H_
 //
-//#include "../LogicalQueryPlan/LogicalOperator.h"
+//#include "../logical_query_plan/logical_operator.h"
 //#include "../iterator/FilterIterator.h"
 //#include "CSBPlusTree.h"
 //

@@ -19,7 +19,7 @@ endif
 LDADD = 	../libschema.a \
 		../../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../../BlockStreamIterator/libblockstreamiterator.a \
-		../../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../../logical_query_plan/liblogicalqueryplan.a \
 		../../../Catalog/libcatalog.a \
 		../../../common/Block/libblock.a \
 		../../libcommon.a \

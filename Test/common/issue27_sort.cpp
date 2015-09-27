@@ -15,12 +15,12 @@
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Sort.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
+#include "../../logical_query_plan/Scan.h"
+#include "../../logical_query_plan/Filter.h"
+#include "../../logical_query_plan/Sort.h"
+#include "../../logical_query_plan/EqualJoin.h"
+#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
+#include "../../logical_query_plan/Aggregation.h"
 
 #include "../../common/types/NValue.hpp"
 
@@ -28,7 +28,7 @@
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-#include "../../LogicalQueryPlan/logical_project.h"
+#include "../../logical_query_plan/logical_project.h"
 
 static void query_select_sort() {
 	/*

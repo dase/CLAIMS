@@ -14,7 +14,7 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = 	../../LogicalQueryPlan/liblogicalqueryplan.a \
+LDADD = 	../../logical_query_plan/liblogicalqueryplan.a \
 		../stat/libstat.a \
 		../libcatalog.a \
 		../../common/libcommon.a \

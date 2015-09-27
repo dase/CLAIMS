@@ -29,15 +29,14 @@
 #include "../../Environment.h"
 
 #include "../../Executor/IteratorExecutorMaster.h"
+#include "../../logical_query_plan/Buffer.h"
+#include "../../logical_query_plan/logical_aggregation.h"
+#include "../../logical_query_plan/logical_equal_join.h"
+#include "../../logical_query_plan/logical_scan.h"
 
-#include "../../LogicalQueryPlan/Buffer.h"
-#include "../../LogicalQueryPlan/logical_equal_join.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/logical_aggregation.h"
-#include "../../LogicalQueryPlan/LogicalOperator.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/logical_scan.h"
-
+#include "../../logical_query_plan/Filter.h"
+#include "../../logical_query_plan/logical_operator.h"
+#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
 #include "../../utility/rdtsc.h"
 
 #include "../sql_node_struct.h"

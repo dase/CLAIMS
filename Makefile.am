@@ -33,8 +33,8 @@ LDADD =  \
 	IndexManager/Test/libtest.a \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
-	LogicalQueryPlan/Test/libtest.a \
-	LogicalQueryPlan/liblogicalqueryplan.a \
+	logical_query_plan/Test/libtest.a \
+	logical_query_plan/liblogicalqueryplan.a \
 	storage/libstorage.a \
 	BlockStreamIterator/ParallelBlockStreamIterator/Test/libtest.a \
 	BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
@@ -100,9 +100,9 @@ test_SOURCES = Test/gtest_main.cpp\
 
 
 SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource \
+Loader logical_query_plan Parsetree Resource \
 storage Test utility codegen
 
 DIST_SUBDIRS = BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource \
+Loader logical_query_plan Parsetree Resource \
 storage Test utility codegen

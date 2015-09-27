@@ -11,17 +11,18 @@
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
-#include "../LogicalQueryPlan/logical_equal_join.h"
-#include "../LogicalQueryPlan/logical_filter.h"
-#include "../LogicalQueryPlan/LogicalOperator.h"
-#include "../LogicalQueryPlan/logical_scan.h"
+#include "../logical_query_plan/logical_operator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "sql_node_struct.h"
 #include "../Environment.h"
-#include "../LogicalQueryPlan/logical_aggregation.h"
 #include "../common/Logging.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
-#include "../LogicalQueryPlan/logical_aggregation.h"
+
+#include "../logical_query_plan/logical_aggregation.h"
+#include "../logical_query_plan/logical_equal_join.h"
+#include "../logical_query_plan/logical_filter.h"
+#include "../logical_query_plan/logical_scan.h"
+#include "../logical_query_plan/logical_aggregation.h"
 
 int getlevel(Expr_cal *calnode)
 {

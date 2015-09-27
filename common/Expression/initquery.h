@@ -22,7 +22,8 @@
 #include "../../common/Logging.h"
 #include "../../Environment.h"
 #include<algorithm>
-#include "../../LogicalQueryPlan/LogicalOperator.h"
+
+#include "../../logical_query_plan/logical_operator.h"
 using namespace std;
 QNode * transformqual(Node *node,LogicalOperator *child);
 void InitExprAtPhysicalPlan(QNode *node);

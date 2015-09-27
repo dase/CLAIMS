@@ -21,10 +21,10 @@
 #include "../../utility/test_tool.h"
 #include "../../utility/rdtsc.h"
 
-#include "../../LogicalQueryPlan/logical_scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/LogicalOperator.h"
+#include "../../logical_query_plan/logical_scan.h"
+#include "../../logical_query_plan/Filter.h"
+#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
+#include "../../logical_query_plan/logical_operator.h"
 
 #include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 

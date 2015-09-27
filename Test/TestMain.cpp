@@ -5,16 +5,6 @@
  *      Author: wangli
  */
 
-#include "../LogicalQueryPlan/Test/testGenerateIteratorTree.cpp"
-#include "../LogicalQueryPlan/Test/ResultCollect_test.cpp"
-#include "../LogicalQueryPlan/Test/getOptimalQueryPlan.cpp"
-//#include "../LogicalQueryPlan/Test/testProject.cpp"
-#include "../LogicalQueryPlan/Test/testSort.cpp"
-//#include "../LogicalQueryPlan/Test/testProject_wl.cpp"
-#include "../LogicalQueryPlan/Test/Aggregation_test.cpp"
-#include "../LogicalQueryPlan/Test/query_optmization_based_on_statisitic_test.cpp"
-#include "../LogicalQueryPlan/Test/testIn.cpp"
-
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/projectionScan.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/iterator_test.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Project_test.cpp"
@@ -48,6 +38,13 @@
 #include "../IndexManager/Test/test_logical_csb_index_building.cpp"
 #include "../IndexManager/Test/test_index_scan_iterator.cpp"
 #include "../IndexManager/Test/test_IndexManager_serialize.cpp"
+#include "../logical_query_plan/Test/Aggregation_test.cpp"
+#include "../logical_query_plan/Test/getOptimalQueryPlan.cpp"
+#include "../logical_query_plan/Test/query_optmization_based_on_statisitic_test.cpp"
+#include "../logical_query_plan/Test/ResultCollect_test.cpp"
+#include "../logical_query_plan/Test/testGenerateIteratorTree.cpp"
+#include "../logical_query_plan/Test/testIn.cpp"
+#include "../logical_query_plan/Test/testSort.cpp"
 
 #include "common/TestNew.cpp"
 <<<<<<< HEAD
@@ -71,7 +68,7 @@
 #include "../utility/data_distribution_generator.h"
 #include "TestSuit/filter_test.h"
 #include "Resource/CPUResourceManagerTest.h"
-#include "../LogicalQueryPlan/Test/testcrossjoin.cpp"
+#include "../logical_query_plan/Test/testcrossjoin.cpp"
 #include "../Parsetree/Test/execute_sql_test.cpp"
 #include <stdio.h>
 #include <string>

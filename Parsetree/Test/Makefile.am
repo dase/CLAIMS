@@ -15,7 +15,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../libparsetree.a \
-		../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../logical_query_plan/liblogicalqueryplan.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../Catalog/libcatalog.a \
 		../../Executor/libexecutor.a \

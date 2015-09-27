@@ -22,20 +22,20 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
-#include "../LogicalQueryPlan/logical_scan.h"
-#include "../LogicalQueryPlan/logical_equal_join.h"
-#include "../LogicalQueryPlan/logical_aggregation.h"
+#include "../logical_query_plan/logical_scan.h"
+#include "../logical_query_plan/logical_equal_join.h"
+#include "../logical_query_plan/logical_aggregation.h"
 
-#include "../LogicalQueryPlan/logical_query_plan_root.h"
-#include "../LogicalQueryPlan/logical_filter.h"
-#include "../LogicalQueryPlan/Buffer.h"
-#include "../LogicalQueryPlan/logical_limit.h"
+#include "../logical_query_plan/logical_filter.h"
+#include "../logical_query_plan/logical_limit.h"
 
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
+#include "../logical_query_plan/Buffer.h"
+#include "../logical_query_plan/logical_query_plan_root.h"
 #define SQL_Parser
 using namespace std;
 

@@ -36,8 +36,8 @@ AC_CONFIG_FILES([
   IndexManager/Test/Makefile
   Loader/Makefile
   Loader/Test/Makefile
-  LogicalQueryPlan/Makefile 
-  LogicalQueryPlan/Test/Makefile 
+  logical_query_plan/Makefile 
+  logical_query_plan/Test/Makefile 
   Parsetree/Makefile 
   Parsetree/Test/Makefile 
   Resource/Makefile 

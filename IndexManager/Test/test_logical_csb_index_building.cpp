@@ -14,7 +14,7 @@
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
 
 static int test_logical_csb_index_building()
 {

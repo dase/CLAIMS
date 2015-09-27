@@ -16,16 +16,16 @@
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../LogicalQueryPlan/logical_aggregation.h"
+#include "../../logical_query_plan/logical_aggregation.h"
 
-#include "../../LogicalQueryPlan/logical_scan.h"
-#include "../../LogicalQueryPlan/logical_equal_join.h"
+#include "../../logical_query_plan/logical_scan.h"
+#include "../../logical_query_plan/logical_equal_join.h"
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
 
 #include "../../common/types/NValue.hpp"
-#include "../../LogicalQueryPlan/logical_project.h"
+#include "../../logical_query_plan/logical_project.h"
 #include "../../utility/rdtsc.h"
 
 static void query_select_fzh() {

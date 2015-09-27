@@ -7,11 +7,11 @@
 
 #ifndef SQL_PARSER_TEST_H_
 #define SQL_PARSER_TEST_H_
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/LogicalOperator.h"
+#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
 #include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../set_up_environment.h"
 #include <stdio.h>
+#include "../../logical_query_plan/logical_operator.h"
 
 char sql[1000];
 int sql_parser_test(){

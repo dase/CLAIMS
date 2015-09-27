@@ -16,10 +16,9 @@
 #include "../../common/Block/ResultSet.h"
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../common/data_type.h"
-#include "../../LogicalQueryPlan/logical_aggregation.h"
-#include "../../LogicalQueryPlan/logical_scan.h"
-#include "../../LogicalQueryPlan/logical_query_plan_root.h"
-
+#include "../../logical_query_plan/logical_aggregation.h"
+#include "../../logical_query_plan/logical_query_plan_root.h"
+#include "../../logical_query_plan/logical_scan.h"
 #include "../Catalog.h"
 #include "../table.h"
 

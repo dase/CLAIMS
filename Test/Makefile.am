@@ -18,7 +18,7 @@ LDADD =	TestSuit/libtestsuit.a \
 		../Executor/libexecutor.a \
 		../Executor/Test/libtest.a \
 		../Parsetree/Test/libtest.a \
-		../LogicalQueryPlan/Test/libtest.a \
+		../logical_query_plan/Test/libtest.a \
 		../Daemon/Test/libtest.a \
 		../Client/Test/libtest.a \
 		../Loader/Test/libtest.a \
