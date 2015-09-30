@@ -83,7 +83,7 @@ static void query_select_sort() {
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,sort,LogicalQueryPlanRoot::PRINT);
 
 	cout<<"performance is ok!"<<endl;
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	physical_iterator_tree->print();
 	physical_iterator_tree->open();
 	while(physical_iterator_tree->next(0));

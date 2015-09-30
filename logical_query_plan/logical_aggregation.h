@@ -34,12 +34,11 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../logical_query_plan/logical_operator.h"
 
-// namespace claims {
-// namespace logical_query_plan {
+namespace claims {
+namespace logical_query_plan {
 /**
  * @brief class description: maintain operator property that results from
- * executing
- * aggregation operator, and generate corresponding physical operator.
+ * executing aggregation operator, and generate corresponding physical operator.
  * @details as for the implementation of avg() based on sum()/count(), so it's
  * necessary to change the output_schema of private aggregation in
  * kLocalAggReparGlobalAgg aggregation style.
@@ -65,7 +64,7 @@ class LogicalAggregation : public LogicalOperator {
 
   /**
    * This is the default construct method of Aggregation.
-   * This logical operator creates a new dataflow.
+   * This logical operator creates a new plan context.
    * group_by_attribute can be empty if it is scalar aggregation.
    * count(*) aggregation can be expressed as 'count' aggregation function along
    * with Attribute(ATTRIBUTE_ANY)
@@ -79,21 +78,21 @@ class LogicalAggregation : public LogicalOperator {
 
  protected:
   /**
-   * get data context resulting from executing aggregation operator.
+   * get plan context resulting from executing aggregation operator.
    * including corresponding attribute_list and property with partition info and
    * communication cost.
    */
-  Dataflow GetDataflow();
+  PlanContext GetPlanContext();
   /**
-   * generate corresponding physical plan, mainly set necessary state.
+   * generate corresponding physical plan tree, mainly set necessary state.
    */
-  BlockStreamIteratorBase* GetIteratorTree(const unsigned& block_size);
+  BlockStreamIteratorBase* GetPhysicalPlan(const unsigned& block_size);
 
  private:
   std::vector<unsigned> GetInvolvedAttrIdList(
       const std::vector<Attribute>& attribute_list,
-      const Dataflow& dataflow) const;
-  bool CanOmitHashRepartition(const Dataflow& child_dataflow) const;
+      const PlanContext& plan_context) const;
+  bool CanOmitHashRepartition(const PlanContext& child_plan_context) const;
   float EstimateSelectivity() const;
   /**
    * the kLocalAggReparGlobalAgg aggregation schema of local aggregation may be
@@ -121,16 +120,16 @@ class LogicalAggregation : public LogicalOperator {
   std::vector<Attribute> GetGroupByAttrsAfterAgg() const;
   std::vector<Attribute> GetAggAttrsAfterAgg() const;
 
-  unsigned long EstimateGroupByCardinality(const Dataflow& dataflow) const;
+  unsigned long EstimateGroupByCardinality(const PlanContext& plan_context) const;
 
   LogicalOperator* child_;
   std::vector<Attribute> group_by_attribute_list_;
   std::vector<Attribute> aggregation_attribute_list_;
   std::vector<BlockStreamAggregationIterator::State::aggregation>
       aggregation_function_list_;
-  Dataflow* dataflow_;
+  PlanContext* plan_context_;
   AggregationStyle aggregation_style_;
 };
-//} // namespace logical_query_plan
-//}  // namespace claims
+}  // namespace logical_query_plan
+}  // namespace claims
 #endif  // LOGICAL_QUERY_PLAN_LOGICAL_AGGREGATION_H_

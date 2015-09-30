@@ -23,7 +23,7 @@
 #include "../table.h"
 
 #include "StatManager.h"
-
+using namespace claims::logical_query_plan;
 using std::map;
 
 typedef void* TuplePtr;
@@ -81,7 +81,7 @@ void Analyzer::analyse(const AttributeID& attrID) {
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
 
   BlockStreamIteratorBase* collector =
-      root->GetIteratorTree(1024 * 64 - sizeof(unsigned));
+      root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->open();
   collector->next(0);
@@ -265,7 +265,7 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
       new LogicalQueryPlanRoot(0, agg, LogicalQueryPlanRoot::kResultCollector);
 
   BlockStreamIteratorBase* collector =
-      root->GetIteratorTree(1024 * 64 - sizeof(unsigned));
+      root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
   collector->open();
   collector->next(0);
   collector->close();
@@ -394,7 +394,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
       0, count_agg, LogicalQueryPlanRoot::kResultCollector);
 
   BlockStreamIteratorBase* collector =
-      root->GetIteratorTree(1024 * 64 - sizeof(unsigned));
+      root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
   collector->open();
   collector->next(0);
   collector->close();
@@ -461,7 +461,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
 
   BlockStreamIteratorBase* collector =
-      root->GetIteratorTree(1024 * 64 - sizeof(unsigned));
+      root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->open();
   collector->next(0);

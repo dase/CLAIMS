@@ -44,7 +44,7 @@ namespace logical_query_plan {
 LogicalCrossJoin::LogicalCrossJoin()
     : left_child_(NULL),
       right_child_(NULL),
-      dataflow_(NULL),
+      plan_context_(NULL),
       join_policy_(kUninitialized) {
   set_operator_type(kLogicalCrossJoin);
 }
@@ -53,14 +53,14 @@ LogicalCrossJoin::LogicalCrossJoin(LogicalOperator* left_child,
                                    LogicalOperator* right_child)
     : left_child_(left_child),
       right_child_(right_child),
-      dataflow_(NULL),
+      plan_context_(NULL),
       join_policy_(kUninitialized) {
   set_operator_type(kLogicalCrossJoin);
 }
 LogicalCrossJoin::~LogicalCrossJoin() {
-  if (NULL != dataflow_) {
-      delete dataflow_;
-      dataflow_ = NULL;
+  if (NULL != plan_context_) {
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   if (NULL != left_child_) {
     delete left_child_;
@@ -90,109 +90,105 @@ int LogicalCrossJoin::get_join_policy_() {
   }
 }
 /**
- * @brief Method description: return the output of the dataflow of the dedicated
- * operator
+ * @brief Method description: return the output of the plan context of the
+ * dedicated operator
  * @param
  * @return
  * @details   (additional)
  */
 
-Dataflow LogicalCrossJoin::GetDataflow() {
-  if (NULL != dataflow_) {
-    /* the data flow has been computed already！*/
-    return *dataflow_;
+PlanContext LogicalCrossJoin::GetPlanContext() {
+  if (NULL != plan_context_) {
+    /* the plan context has been computed already！*/
+    return *plan_context_;
   }
-  Dataflow left_dataflow = left_child_->GetDataflow();
-  Dataflow right_dataflow = right_child_->GetDataflow();
-  Dataflow ret;
-  if (kSuccess == DecideJoinPolicy(left_dataflow, right_dataflow)) {
+  PlanContext left_plan_context = left_child_->GetPlanContext();
+  PlanContext right_plan_context = right_child_->GetPlanContext();
+  PlanContext ret;
+  if (kSuccess == DecideJoinPolicy(left_plan_context, right_plan_context)) {
     const Attribute left_partition_key =
-        left_dataflow.property_.partitioner.getPartitionKey();
+        left_plan_context.plan_partitioner_.get_partition_key();
     const Attribute right_partition_key =
-        right_dataflow.property_.partitioner.getPartitionKey();
+        right_plan_context.plan_partitioner_.get_partition_key();
     ret.attribute_list_.insert(ret.attribute_list_.end(),
-                               left_dataflow.attribute_list_.begin(),
-                               left_dataflow.attribute_list_.end());
+                               left_plan_context.attribute_list_.begin(),
+                               left_plan_context.attribute_list_.end());
     ret.attribute_list_.insert(ret.attribute_list_.end(),
-                               right_dataflow.attribute_list_.begin(),
-                               right_dataflow.attribute_list_.end());
+                               right_plan_context.attribute_list_.begin(),
+                               right_plan_context.attribute_list_.end());
     switch (join_policy_) {
       case kLocalJoin: {
-        ret.property_.partitioner.setPartitionList(
-            left_dataflow.property_.partitioner.getPartitionList());
-        ret.property_.partitioner.setPartitionFunction(
-            left_dataflow.property_.partitioner.getPartitionFunction());
-        ret.property_.partitioner.setPartitionKey(left_partition_key);
-        ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+        ret.plan_partitioner_.set_partition_list(
+            left_plan_context.plan_partitioner_.get_partition_list());
+        ret.plan_partitioner_.set_partition_func(
+            left_plan_context.plan_partitioner_.get_partition_func());
+        ret.plan_partitioner_.set_partition_key(left_partition_key);
+        ret.plan_partitioner_.AddShadowPartitionKey(right_partition_key);
         const unsigned long l_cardinality =
-            left_dataflow.getAggregatedDataCardinality();
+            left_plan_context.GetAggregatedDataCardinality();
         const unsigned long r_cardinality =
-            right_dataflow.getAggregatedDataCardinality();
-        ret.property_.partitioner.getPartition(0)
-            ->setDataCardinality(l_cardinality * r_cardinality);
-        ret.property_.commnication_cost =
-            left_dataflow.property_.commnication_cost +
-            right_dataflow.property_.commnication_cost;
+            right_plan_context.GetAggregatedDataCardinality();
+        ret.plan_partitioner_.GetPartition(0)
+            ->set_cardinality(l_cardinality * r_cardinality);
+        ret.commu_cost_ =
+            left_plan_context.commu_cost_ + right_plan_context.commu_cost_;
         break;
       }
       case kLeftBroadcast: {
-        ret.property_.partitioner.setPartitionList(
-            right_dataflow.property_.partitioner.getPartitionList());
-        ret.property_.partitioner.setPartitionFunction(
-            right_dataflow.property_.partitioner.getPartitionFunction());
-        ret.property_.partitioner.setPartitionKey(right_partition_key);
+        ret.plan_partitioner_.set_partition_list(
+            right_plan_context.plan_partitioner_.get_partition_list());
+        ret.plan_partitioner_.set_partition_func(
+            right_plan_context.plan_partitioner_.get_partition_func());
+        ret.plan_partitioner_.set_partition_key(right_partition_key);
         const unsigned long l_cardinality =
-            left_dataflow.getAggregatedDataCardinality();
+            left_plan_context.GetAggregatedDataCardinality();
         for (unsigned i = 0;
-             i < right_dataflow.property_.partitioner.getNumberOfPartitions();
+             i < right_plan_context.plan_partitioner_.GetNumberOfPartitions();
              i++) {
           const unsigned r_cardinality =
-              right_dataflow.property_.partitioner.getPartition(i)
-                  ->getDataCardinality();
-          ret.property_.partitioner.getPartition(i)
-              ->setDataCardinality(l_cardinality * r_cardinality);
+              right_plan_context.plan_partitioner_.GetPartition(i)
+                  ->get_cardinality();
+          ret.plan_partitioner_.GetPartition(i)
+              ->set_cardinality(l_cardinality * r_cardinality);
         }
-        ret.property_.commnication_cost =
-            left_dataflow.property_.commnication_cost +
-            right_dataflow.property_.commnication_cost;
-        ret.property_.commnication_cost +=
-            left_dataflow.getAggregatedDatasize() *
-            right_dataflow.property_.partitioner.getNumberOfPartitions();
+        ret.commu_cost_ =
+            left_plan_context.commu_cost_ + right_plan_context.commu_cost_;
+        ret.commu_cost_ +=
+            left_plan_context.GetAggregatedDatasize() *
+            right_plan_context.plan_partitioner_.GetNumberOfPartitions();
         break;
       }
       case kRightBroadcast: {
-        ret.property_.partitioner.setPartitionList(
-            left_dataflow.property_.partitioner.getPartitionList());
-        ret.property_.partitioner.setPartitionFunction(
-            left_dataflow.property_.partitioner.getPartitionFunction());
-        ret.property_.partitioner.setPartitionKey(left_partition_key);
+        ret.plan_partitioner_.set_partition_list(
+            left_plan_context.plan_partitioner_.get_partition_list());
+        ret.plan_partitioner_.set_partition_func(
+            left_plan_context.plan_partitioner_.get_partition_func());
+        ret.plan_partitioner_.set_partition_key(left_partition_key);
         const unsigned long r_cardinality =
-            left_dataflow.getAggregatedDataCardinality();
+            left_plan_context.GetAggregatedDataCardinality();
         for (unsigned i = 0;
-             i < left_dataflow.property_.partitioner.getNumberOfPartitions();
-             i++) {
+             i < left_plan_context.plan_partitioner_.GetNumberOfPartitions(); i++) {
           const unsigned l_cardinality =
-              left_dataflow.property_.partitioner.getPartition(i)
-                  ->getDataCardinality();
-          ret.property_.partitioner.getPartition(i)
-              ->setDataCardinality(l_cardinality * r_cardinality);
+              left_plan_context.plan_partitioner_.GetPartition(i)
+                  ->get_cardinality();
+          ret.plan_partitioner_.GetPartition(i)
+              ->set_cardinality(l_cardinality * r_cardinality);
         }
-        ret.property_.commnication_cost =
-            right_dataflow.property_.commnication_cost +
-            left_dataflow.property_.commnication_cost;
-        ret.property_.commnication_cost +=
-            right_dataflow.getAggregatedDatasize() *
-            left_dataflow.property_.partitioner.getNumberOfPartitions();
+        ret.commu_cost_ =
+            right_plan_context.commu_cost_ + left_plan_context.commu_cost_;
+        ret.commu_cost_ +=
+            right_plan_context.GetAggregatedDatasize() *
+            left_plan_context.plan_partitioner_.GetNumberOfPartitions();
         break;
       }
       default: { assert(false); }
     }
-    dataflow_ = new Dataflow();
-    *dataflow_ = ret;
+    plan_context_ = new PlanContext();
+    *plan_context_ = ret;
     return ret;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kGenerateDataflowFailed] << "],"
+                 << "[" << kErrorMessage[kGeneratePlanContextFailed] << "],"
                  << std::endl;
     return ret;
   }
@@ -206,13 +202,13 @@ Dataflow LogicalCrossJoin::GetDataflow() {
 * @details   (additional)
 */
 
-int LogicalCrossJoin::DecideJoinPolicy(const Dataflow& left_dataflow,
-                                       const Dataflow& right_dataflow) {
-  if (CanLocalJoin(left_dataflow, right_dataflow)) {
+int LogicalCrossJoin::DecideJoinPolicy(const PlanContext& left_plan_context,
+                                       const PlanContext& right_plan_context) {
+  if (CanLocalJoin(left_plan_context, right_plan_context)) {
     join_policy_ = kLocalJoin;
   } else {
-    if (left_dataflow.getAggregatedDatasize() <
-        right_dataflow.getAggregatedDatasize()) {
+    if (left_plan_context.GetAggregatedDatasize() <
+        right_plan_context.GetAggregatedDatasize()) {
       /** left input is the smaller one **/
       join_policy_ = kLeftBroadcast;
     } else {
@@ -237,23 +233,23 @@ int LogicalCrossJoin::DecideJoinPolicy(const Dataflow& left_dataflow,
 * @details   (additional)
 */
 
-BlockStreamIteratorBase* LogicalCrossJoin::GetIteratorTree(
+BlockStreamIteratorBase* LogicalCrossJoin::GetPhysicalPlan(
     const unsigned& block_size) {
-  if (NULL == dataflow_) {
-    GetDataflow();
+  if (NULL == plan_context_) {
+    GetPlanContext();
   }
   BlockStreamNestLoopJoinIterator* cross_join_iterator = NULL;
   BlockStreamIteratorBase* child_iterator_left = NULL;
   BlockStreamIteratorBase* child_iterator_right = NULL;
   GenerateChildPhysicalQueryPlan(child_iterator_left, child_iterator_right,
                                  block_size);
-  Dataflow dataflow_left = left_child_->GetDataflow();
-  Dataflow dataflow_right = right_child_->GetDataflow();
+  PlanContext left_plan_context = left_child_->GetPlanContext();
+  PlanContext right_plan_context = right_child_->GetPlanContext();
   BlockStreamNestLoopJoinIterator::State state;
   state.block_size_ = block_size;
-  state.input_schema_left = GetSchema(dataflow_left.attribute_list_);
-  state.input_schema_right = GetSchema(dataflow_right.attribute_list_);
-  state.output_schema = GetSchema(dataflow_->attribute_list_);
+  state.input_schema_left = GetSchema(left_plan_context.attribute_list_);
+  state.input_schema_right = GetSchema(right_plan_context.attribute_list_);
+  state.output_schema = GetSchema(plan_context_->attribute_list_);
   state.child_left = child_iterator_left;
   state.child_right = child_iterator_right;
   cross_join_iterator = new BlockStreamNestLoopJoinIterator(state);
@@ -265,12 +261,12 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     const BlockStreamIteratorBase* right_child_iterator_tree,
     const unsigned& blocksize) {
   int ret = kSuccess;
-  Dataflow left_dataflow = left_child_->GetDataflow();
-  Dataflow right_dataflow = right_child_->GetDataflow();
+  PlanContext left_plan_context = left_child_->GetPlanContext();
+  PlanContext right_plan_context = right_child_->GetPlanContext();
   switch (join_policy_) {
     case kLocalJoin: {
-      left_child_iterator_tree = left_child_->GetIteratorTree(blocksize);
-      right_child_iterator_tree = right_child_->GetIteratorTree(blocksize);
+      left_child_iterator_tree = left_child_->GetPhysicalPlan(blocksize);
+      right_child_iterator_tree = right_child_->GetPhysicalPlan(blocksize);
       break;
     }
     case kLeftBroadcast: {
@@ -278,8 +274,8 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = left_child_->GetIteratorTree(blocksize);
-      expander_state.schema_ = left_dataflow.getSchema();
+      expander_state.child_ = left_child_->GetPhysicalPlan(blocksize);
+      expander_state.schema_ = left_plan_context.GetSchema();
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
       ExpandableBlockStreamExchangeEpoll::State exchange_state;
@@ -288,28 +284,28 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       std::vector<NodeID> upper_id_list =
-          GetInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       exchange_state.upper_id_list_ = upper_id_list;
       std::vector<NodeID> lower_id_list =
-          GetInvolvedNodeID(left_dataflow.property_.partitioner);
+          GetInvolvedNodeID(left_plan_context.plan_partitioner_);
       exchange_state.lower_id_list_ = lower_id_list;
       exchange_state.partition_schema_ =
           partition_schema::set_broadcast_partition();
-      exchange_state.schema_ = left_dataflow.getSchema();
+      exchange_state.schema_ = left_plan_context.GetSchema();
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
       left_child_iterator_tree = exchange;
-      right_child_iterator_tree = right_child_->GetIteratorTree(blocksize);
+      right_child_iterator_tree = right_child_->GetPhysicalPlan(blocksize);
       break;
     }
     case kRightBroadcast: {
-      left_child_iterator_tree = left_child_->GetIteratorTree(blocksize);
+      left_child_iterator_tree = left_child_->GetPhysicalPlan(blocksize);
       BlockStreamExpander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = right_child_->GetIteratorTree(blocksize);
-      expander_state.schema_ = left_dataflow.getSchema();
+      expander_state.child_ = right_child_->GetPhysicalPlan(blocksize);
+      expander_state.schema_ = left_plan_context.GetSchema();
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
       ExpandableBlockStreamExchangeEpoll::State exchange_state;
@@ -318,14 +314,14 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       std::vector<NodeID> upper_id_list =
-          GetInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       exchange_state.upper_id_list_ = upper_id_list;
       std::vector<NodeID> lower_id_list =
-          GetInvolvedNodeID(right_dataflow.property_.partitioner);
+          GetInvolvedNodeID(right_plan_context.plan_partitioner_);
       exchange_state.lower_id_list_ = lower_id_list;
       exchange_state.partition_schema_ =
           partition_schema::set_broadcast_partition();
-      exchange_state.schema_ = right_dataflow.getSchema();
+      exchange_state.schema_ = right_plan_context.GetSchema();
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
       right_child_iterator_tree = exchange;
@@ -377,18 +373,18 @@ void LogicalCrossJoin::Print(int level) const {
  * operator.
  * if the number of partitions from both of the left and right are 1, then it is
  * joined locally
- * @param left left child operator dataflow
- * @param ritht right child operator dataflow
+ * @param  left child operator plan context
+ * @param  right child operator plan context
  * @return
  * @details   (additional)
  */
 
-bool LogicalCrossJoin::CanLocalJoin(const Dataflow& left,
-                                    const Dataflow& right) const {
-  if (left.property_.partitioner.getNumberOfPartitions() > 1) return false;
-  if (right.property_.partitioner.getNumberOfPartitions() > 1) return false;
-  return left.property_.partitioner.getPartitionList()[0].getLocation() ==
-         right.property_.partitioner.getPartitionList()[0].getLocation();
+bool LogicalCrossJoin::CanLocalJoin(const PlanContext& left_plan_context,
+                                    const PlanContext& right_plan_context) const {
+  if (left_plan_context.plan_partitioner_.GetNumberOfPartitions() > 1) return false;
+  if (right_plan_context.plan_partitioner_.GetNumberOfPartitions() > 1) return false;
+  return left_plan_context.plan_partitioner_.get_partition_list()[0].get_location() ==
+         right_plan_context.plan_partitioner_.get_partition_list()[0].get_location();
 }
 }  // namespace logical_query_plan
 }  // namespace claims

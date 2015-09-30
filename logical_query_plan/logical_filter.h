@@ -21,14 +21,14 @@
  *  Created on: Sep 21, 2015
  *      Author: tonglanxuan
  *       Email: lxtong0526@163.com
- * 
+ *
  * Description: Structures the LogicalFilter class, which functions as logical
  *              operator "filter".
  *
  */
 
-#ifndef LOGICALQUERYPLAN_FILTER_H_
-#define LOGICALQUERYPLAN_FILTER_H_
+#ifndef LOGICAL_QUERY_PLAN_LOGICAL_FILTER_H_
+#define LOGICAL_QUERY_PLAN_LOGICAL_FILTER_H_
 
 #include <vector>
 #include <map>
@@ -39,9 +39,8 @@
 #include "../common/Expression/qnode.h"
 #include "../logical_query_plan/logical_operator.h"
 
-// namespace claims {
-// namespace logical_query_plan {
-
+namespace claims {
+namespace logical_query_plan {
 
 /**
  * @brief Method description: Logical Operator "filter", is used to screen out
@@ -63,12 +62,12 @@ class LogicalFilter : public LogicalOperator {
   virtual ~LogicalFilter();
 
   /**
-   * @brief Method description: To get the dataflow from its child logical
+   * @brief Method description: To get the plan context from its child logical
    *                            operator, operates on it, thus give it to
    *                            its father logical operator.
-   * @return Dataflow
+   * @return PlanContext
    */
-  Dataflow GetDataflow();
+  PlanContext GetPlanContext();
   /**
    * @brief Method description: To get the Iterator Tree from its child logical
    *                            operator, generates a state for establishing a
@@ -78,7 +77,7 @@ class LogicalFilter : public LogicalOperator {
    * @return BlockStreamIteratorBase*: A block stream iterator pointer,
    *         pointing to the root node of filter's iterator tree.
    */
-  BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
+  BlockStreamIteratorBase* GetPhysicalPlan(const unsigned& blocksize);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& block_size = 4096 * 1024);
@@ -91,15 +90,14 @@ class LogicalFilter : public LogicalOperator {
  private:
   /**
    * @brief Method description: Not used in the current version and remained to
-   *                            be rewrite. To help make getDataflow more
+   *                            be rewrite. To help make GetPlanContext more
    *                            efficient.
    * @param partition_id: The id of partition.
-   * @param DataflowPartitioningDescriptor
+   * @param PlanPartitioner
    * @return  A boolean value. Returning TRUE indicates the partition of that
    *          partition_id can be hash pruned.
    */
-  bool CanBeHashPruned(unsigned partition_id,
-                       const DataflowPartitioningDescriptor&) const;
+  bool CanBeHashPruned(unsigned partition_id, const PlanPartitioner&) const;
   /**
    * @brief Method description: Default returning 1 in the current version and
    *                            remained to be rewrite. To predict the
@@ -108,11 +106,11 @@ class LogicalFilter : public LogicalOperator {
    */
   float PredictSelectivity() const;
   /**
-   * @brief Method description: To save the index of dataflow.attribute_list_
+   * @brief Method description: To save the index of PlanContext.attribute_list_
    *                            into column_id_.
-   * @param dataflow
+   * @param plan_context
    */
-  void set_column_id(const Dataflow& dataflow);
+  void set_column_id(const PlanContext& plan_context);
 
  private:
   LogicalOperator* child_;
@@ -120,9 +118,7 @@ class LogicalFilter : public LogicalOperator {
   vector<QNode*> condi_;
 };
 
-//}   // namespace logical_query_plan
-//}   // namespace claims
+}   // namespace logical_query_plan
+}   // namespace claims
 
-
-
-#endif  //  LOGICALQUERYPLAN_FILTER_H_
+#endif  //  LOGICAL_QUERY_PLAN_LOGICAL_FILTER_H_

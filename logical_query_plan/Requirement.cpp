@@ -5,14 +5,14 @@
  *      Author: wangli
  */
 #include "../logical_query_plan/Requirement.h"
-
 #include <assert.h>
 
-Requirement::Requirement()
-    : partition_function_(0),
-      cost_limit_(0) {
-  // TODO Auto-generated constructor stub
+#include "../logical_query_plan/plan_context.h"
 
+namespace claims {
+namespace logical_query_plan {
+Requirement::Requirement() : partition_function_(0), cost_limit_(0) {
+  // TODO Auto-generated constructor stub
 }
 
 Requirement::~Requirement() {
@@ -22,9 +22,7 @@ Requirement::~Requirement() {
 void Requirement::setRequiredPartitionkey(const Attribute partition_key) {
   partition_key_ = partition_key;
 }
-Attribute Requirement::getPartitionKey() const {
-  return partition_key_;
-}
+Attribute Requirement::getPartitionKey() const { return partition_key_; }
 bool Requirement::hasReuiredPartitionKey() const {
   return !partition_key_.isNULL();
 }
@@ -49,21 +47,21 @@ void Requirement::setRequiredCost(const unsigned long cost) {
   cost_limit_ = cost;
 }
 NetworkTransfer Requirement::requireNetworkTransfer(
-    const Dataflow& dataflow) const {
+    const PlanContext& plan_context) const {
   NetworkTransfer ret;
-  /* whether the data flow is partitioned on desirable key*/
+  /* whether the plan_context is partitioned on desirable key*/
   bool right_partition_key = true;
   bool right_partition_function = true;
   if (!partition_key_.isNULL()) {
     /**there is partition key requirement*/
-    if (partition_key_ != dataflow.property_.partitioner.getPartitionKey()) {
+    if (partition_key_ != plan_context.plan_partitioner_.get_partition_key()) {
       /* the partition key is not match*/
       right_partition_key = false;
     } else {
       /* partition key matches and now test the partition numbers*/
       if (partition_function_ != 0) {
         if (!partition_function_->equal(
-            dataflow.property_.partitioner.getPartitionFunction())) {
+                plan_context.plan_partitioner_.get_partition_func())) {
           right_partition_function = false;
         }
       } else {
@@ -76,8 +74,8 @@ NetworkTransfer Requirement::requireNetworkTransfer(
       /* there is requirememt for locations*/
       bool same_locations = true;
       for (unsigned i = 0; i < location_list_.size(); i++) {
-        if (location_list_[i]
-            != dataflow.property_.partitioner.getPartition(i)->getLocation()) {
+        if (location_list_[i] !=
+            plan_context.plan_partitioner_.GetPartition(i)->get_location()) {
           same_locations = false;
           break;
         }
@@ -133,8 +131,8 @@ bool Requirement::tryMerge(const Requirement req, Requirement& target) const {
    */
 
   /*test the number of partitions*/
-  if (this->hasRequiredPartitionFunction()
-      && req.hasRequiredPartitionFunction()) {
+  if (this->hasRequiredPartitionFunction() &&
+      req.hasRequiredPartitionFunction()) {
     if (!(this->getPartitionFunction()->equal(req.getPartitionFunction())))
       return false;
     else
@@ -153,11 +151,12 @@ bool Requirement::tryMerge(const Requirement req, Requirement& target) const {
     else
       target.setRequiredLocations(this->getRequiredLocations());
   } else {
-    target.setRequiredLocations(
-        this->hasRequiredLocations() ?
-            this->getRequiredLocations() : req.getRequiredLocations());
+    target.setRequiredLocations(this->hasRequiredLocations()
+                                    ? this->getRequiredLocations()
+                                    : req.getRequiredLocations());
   }
 
   return true;
-
 }
+}  // namespace logical_query_plan
+}  // namespace claims

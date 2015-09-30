@@ -33,7 +33,6 @@ LDADD =  \
 	IndexManager/Test/libtest.a \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
-	logical_query_plan/Test/libtest.a \
 	logical_query_plan/liblogicalqueryplan.a \
 	storage/libstorage.a \
 	BlockStreamIterator/ParallelBlockStreamIterator/Test/libtest.a \

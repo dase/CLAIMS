@@ -12,14 +12,16 @@
 #include "../Catalog/table.h"
 #include "../common/ids.h"
 
+using namespace claims::logical_query_plan;
+
 class LogicalCSBIndexBuilding : public LogicalOperator {
 public:
 	//target projection id and the column attribute which will be indexed
 	LogicalCSBIndexBuilding(ProjectionID projection_id, Attribute index_attr, std::string index_name);
 	virtual ~LogicalCSBIndexBuilding();
 
-	Dataflow GetDataflow();
-	BlockStreamIteratorBase* GetIteratorTree(const unsigned &);
+	PlanContext GetPlanContext();
+	BlockStreamIteratorBase* GetPhysicalPlan(const unsigned &);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
 	void Print(int level = 0) const;
@@ -30,8 +32,8 @@ private:
 	Attribute index_attr_;
 	std::string index_name_;
 	ProjectionDescriptor* scan_projection_;
-	Dataflow blc_dataflow_;
-	Dataflow bls_dataflow_;
+	PlanContext blc_dataflow_;
+	PlanContext bls_dataflow_;
 };
 
 #endif /* LOGICALCSBINDEXBUILDING_H_ */

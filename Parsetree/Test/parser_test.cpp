@@ -445,7 +445,7 @@ static int parser_test(){
 
 			root->Print();
 
-			BlockStreamIteratorBase* please=root->GetIteratorTree(64*1024-sizeof(unsigned));
+			BlockStreamIteratorBase* please=root->GetPhysicalPlan(64*1024-sizeof(unsigned));
 			please->print();
 	//		cin>>input;
 

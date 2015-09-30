@@ -29,12 +29,14 @@
 #ifndef LOGICAL_QUERY_PLAN_LOGICAL_SCAN_H_
 #define LOGICAL_QUERY_PLAN_LOGICAL_SCAN_H_
 
+#include <vector>
 #include "../common/ids.h"
+#include "../Catalog/Attribute.h"
 #include "../Catalog/table.h"
 #include "../logical_query_plan/logical_operator.h"
 
-// namespace claims {
-// namespace logical_query_plan {
+namespace claims {
+namespace logical_query_plan {
 
 /**
  * @brief Method description:This is the implementation of Scan operator in
@@ -51,8 +53,8 @@ class LogicalScan : public LogicalOperator {
   LogicalScan(const TableID&,
               const std::vector<unsigned>& selected_attribute_index_list);
   virtual ~LogicalScan();
-  Dataflow GetDataflow();
-  BlockStreamIteratorBase* GetIteratorTree(const unsigned&);
+  PlanContext GetPlanContext();
+  BlockStreamIteratorBase* GetPhysicalPlan(const unsigned&);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& kBlock_size = 4096 * 1024);
@@ -65,11 +67,11 @@ class LogicalScan : public LogicalOperator {
  private:
   std::vector<Attribute> scan_attribute_list_;
   ProjectionDescriptor* target_projection_;
-  Dataflow* dataflow_;
+  PlanContext* plan_context_;
   float sample_rate_;
 };
 
-//}   // namespace logical_query_plan
-//}   // namespace claims
+}  // namespace logical_query_plan
+}  // namespace claims
 
 #endif  //  LOGICAL_QUERY_PLAN_LOGICAL_SCAN_H_

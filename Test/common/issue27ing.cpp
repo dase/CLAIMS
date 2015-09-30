@@ -138,7 +138,7 @@ static void query_select_fzh() {
 
   cout << "performance is ok!" << endl;
   BlockStreamIteratorBase* physical_iterator_tree =
-      root->GetIteratorTree(64 * 1024);
+      root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
   physical_iterator_tree->open();
   while (physical_iterator_tree->next(0))
@@ -339,7 +339,7 @@ static void query_select_aggregation_ing() {
 
   cout << "performance is ok!" << endl;
   BlockStreamIteratorBase* physical_iterator_tree =
-      root->GetIteratorTree(64 * 1024);
+      root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
   physical_iterator_tree->open();
   while (physical_iterator_tree->next(0))

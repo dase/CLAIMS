@@ -36,13 +36,15 @@
 #include "../logical_query_plan/logical_operator.h"
 #include "../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
+namespace claims {
+namespace logical_query_plan {
 /**
  * @brief The LogicalSort contains the information of attributes to be
  * sorted. And it describe how to generate Sort Operator.
  * @details LogicalSort have inner struct 'OrderByAttr' which contains the
  * tablename and direction of sort(ASC or DESC).
  * getIteratorTree() generates the logical plan.getIteratorTree() uses
- * getDataflow() to get the data from its child.
+ * getPlanContext() to get the data from its child.
  * When we achieve sort logical plan, getOrderKey() help us return the column
  * number of the attributes we need to sort.
  */
@@ -79,7 +81,7 @@ class LogicalSort : public LogicalOperator {
    * @details The mostly important member is "property" and "attributes
    * list".
    */
-  Dataflow GetDataflow();
+  PlanContext GetPlanContext();
   /**
    * @brief Method description: Generate logical query plan and return physical
    * operator instance.
@@ -88,7 +90,7 @@ class LogicalSort : public LogicalOperator {
    * @details  Besides do these initialization we notice that "Sort" is a block
    * operator, so we need to get all data from other nodes.
    */
-  BlockStreamIteratorBase *GetIteratorTree(const unsigned &blocksize);
+  BlockStreamIteratorBase *GetPhysicalPlan(const unsigned &blocksize);
   /**
    * @brief Method description: Get the column number of the given table name
    * and attributes name.
@@ -108,8 +110,9 @@ class LogicalSort : public LogicalOperator {
 
  private:
   vector<OrderByAttr *> order_by_attr_;
-  Dataflow child_dataflow_;
+  PlanContext child_plan_context_;
   LogicalOperator *child_;
 };
-
+}  // namespace logical_query_plan
+}  // namespace claims
 #endif  // LOGICAL_QUERY_PLAN_LOGICAL_SORT_H_

@@ -34,11 +34,9 @@
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
-#include "../logical_query_plan/Buffer.h"
 #include "../logical_query_plan/logical_query_plan_root.h"
 #define SQL_Parser
 using namespace std;
-
 #define SQL_Parser
 
 const int INT_LENGTH = 10;
@@ -1021,7 +1019,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	root->Print(0);
 #endif
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
 	physical_iterator_tree->print();

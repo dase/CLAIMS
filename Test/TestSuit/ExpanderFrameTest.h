@@ -30,7 +30,7 @@ static int test_scan(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64);
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64);
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -71,7 +71,7 @@ static int test_scan_filter_high_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
@@ -117,7 +117,7 @@ static int test_scan_filter_low_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -161,7 +161,7 @@ static int test_scan_Aggregation_small_Groups(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -205,7 +205,7 @@ static int test_scan_Aggregation_large_Groups(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -255,7 +255,7 @@ static int test_scan_filter_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -305,7 +305,7 @@ static int test_scan_filter_Scalar_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -357,16 +357,16 @@ static int test_no_repartition_filtered_join(){
 	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -410,16 +410,16 @@ static int test_complete_repartition_filtered_join(){
 	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
@@ -443,7 +443,7 @@ static int test_complete_repartition_scan_join(){
 	LogicalOperator* cj_join_key_scan=new LogicalScan(table_1->getProjectoin(0));
 	LogicalOperator* sb_join_key_scan=new LogicalScan(table_2->getProjectoin(0));
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
@@ -451,15 +451,15 @@ static int test_complete_repartition_scan_join(){
 //	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_2->getAttribute("order_no"),table_1->getAttribute("order_no")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_2->getAttribute("entry_date"),table_1->getAttribute("trade_date")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_2->getAttribute("entry_dir"),table_1->getAttribute("trade_dir")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,sb_join_key_scan,cj_join_key_scan);
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_2->getAttribute("order_no"),table_1->getAttribute("order_no")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_2->getAttribute("entry_date"),table_1->getAttribute("trade_date")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_2->getAttribute("entry_dir"),table_1->getAttribute("trade_dir")));
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,sb_join_key_scan,cj_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -486,14 +486,14 @@ static int test_no_repartition_scan_join(){
 
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -769,7 +769,7 @@ static int test_multiple_scan(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -807,7 +807,7 @@ static int test_multiple_scan_filter_high_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -845,7 +845,7 @@ static int test_multiple_scan_filter_low_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -899,7 +899,7 @@ static int test_multiple_scan_filter_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetIteratorTree(1024*64 );
+	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -951,7 +951,7 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -1003,16 +1003,16 @@ static int test_multiple_no_repartition_filtered_join(){
 	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
 //	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -1058,16 +1058,16 @@ static int test_multiple_complete_repartition_filtered_join(){
 	LogicalOperator* filter_2=new LogicalFilter(filter_condition_2,sb_join_key_scan);
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -1095,16 +1095,16 @@ static int test_multiple_complete_repartition_scan_join(){
 
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));
@@ -1134,14 +1134,14 @@ static int test_multiple_no_repartition_scan_join(){
 
 
 
-	std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-	sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
-	LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
+	std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+	sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
+	LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64 );
+	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->open();
 	while(executable_query_plan->next(0));

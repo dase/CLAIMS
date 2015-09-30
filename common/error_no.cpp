@@ -66,7 +66,7 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(kUninitializedJoinPolicy,
                         "the dedicated join police is not initialized, e.g., "
                         "in corss join, equal join logical operator");
-  DefineErrorAndMessage(kGenerateDataflowFailed,
+  DefineErrorAndMessage(kGeneratePlanContextFailed,
                         "generate the dataflow failed in the logical operator");
 
   /* errorno for physical query plan -5001 ~ -6000 */

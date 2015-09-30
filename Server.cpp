@@ -148,13 +148,9 @@ int main(int argc, char** argv) {
     sleep(1);
 #endif
 #else
-<<<<<<< HEAD
-  maina(argc, argv);
-  return 0;
-=======
+
 	// add "#include <Test/TestMain.cpp>" before using maina(...)
 	maina(argc, argv);
 	return 0;
->>>>>>> refs/remotes/origin/master-tlx0922
 #endif
 }

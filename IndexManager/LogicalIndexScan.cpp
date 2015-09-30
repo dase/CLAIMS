@@ -25,7 +25,7 @@ LogicalIndexScan::~LogicalIndexScan() {
 	// TODO Auto-generated destructor stub
 }
 
-Dataflow LogicalIndexScan::GetDataflow()
+PlanContext LogicalIndexScan::GetPlanContext()
 {
 	if(!scan_projection_->AllPartitionBound()){
 		printf("Binded!\n");
@@ -34,13 +34,13 @@ Dataflow LogicalIndexScan::GetDataflow()
 
 	dataflow_.attribute_list_ = scan_projection_->getAttributeList();
 	Partitioner* par = scan_projection_->getPartitioner();
-	dataflow_.property_.partitioner = DataflowPartitioningDescriptor(*par);
-	dataflow_.property_.commnication_cost = 0;
+	dataflow_.plan_partitioner_ = PlanPartitioner(*par);
+	dataflow_.commu_cost_ = 0;
 
 	return dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalIndexScan::GetIteratorTree(const unsigned & blocksize)
+BlockStreamIteratorBase* LogicalIndexScan::GetPhysicalPlan(const unsigned & blocksize)
 {
 	IndexScanIterator::State state;
 	state.schema_ = GetSchema(dataflow_.attribute_list_);

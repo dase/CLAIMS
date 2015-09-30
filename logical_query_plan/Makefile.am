@@ -30,22 +30,21 @@ LDADD = 	../logical_query_plan/liblogicalqueryplan.a \
 
 noinst_LIBRARIES=liblogicalqueryplan.a
 liblogicalqueryplan_a_SOURCES = \
-	logical_aggregation.cpp 				logical_aggregation.h \
-	Buffer.cpp 					Buffer.h \
-	DataflowPartition.cpp 			DataflowPartition.h \
-	DataflowPartitionDescriptor.cpp 	DataflowPartitionDescriptor.h \
-	Dataflow.cpp				Dataflow.h\
+	logical_aggregation.cpp 			logical_aggregation.h \
+	plan_partition_info.cpp 			plan_partition_info.h \
+	plan_partitioner.cpp 				plan_partitioner.h \
+	plan_context.cpp					plan_context.h\
 	logical_equal_join.cpp 				logical_equal_join.h \
-	logical_filter.cpp 			logical_filter.h \
-	logical_operator.cpp 			logical_operator.h \
-	logcial_query_plan_root.h	logical_query_plan_root.cpp \
+	logical_filter.cpp 					logical_filter.h \
+	logical_operator.cpp 				logical_operator.h \
+	logcial_query_plan_root.h			logical_query_plan_root.cpp \
 	logical_project.cpp 				logical_project.h \
-	Requirement.cpp 				Requirement.h \
+	Requirement.cpp 					Requirement.h \
 	logical_scan.cpp 					logical_scan.h \
 	logical_limit.cpp                   logical_limit.h \
 	logical_cross_join.cpp				logical_cross_join.h \
 	logical_sort.cpp 					logical_sort.h 
 
-SUBDIRS = Test
-DIST_SUBDIRS = Test
+SUBDIRS = 
+DIST_SUBDIRS = 
 					

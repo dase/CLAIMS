@@ -33,6 +33,8 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
+namespace claims {
+namespace logical_query_plan {
 LogicalSort::LogicalSort(LogicalOperator *child,
                          std::vector<LogicalSort::OrderByAttr *> order_by_attr)
     : child_(child), order_by_attr_(order_by_attr) {}
@@ -44,37 +46,37 @@ LogicalSort::~LogicalSort() {
   }
 }
 
-Dataflow LogicalSort::GetDataflow() {
+PlanContext LogicalSort::GetPlanContext() {
   // Get the information from its child
-  child_dataflow_ = child_->GetDataflow();
-  Dataflow ret;
-  ret.attribute_list_ = child_dataflow_.attribute_list_;
-  ret.property_.commnication_cost = child_dataflow_.property_.commnication_cost;
-  ret.property_.partitioner.setPartitionFunction(
-      child_dataflow_.property_.partitioner.getPartitionFunction());
-  ret.property_.partitioner.setPartitionKey(Attribute());
+  child_plan_context_ = child_->GetPlanContext();
+  PlanContext ret;
+  ret.attribute_list_ = child_plan_context_.attribute_list_;
+  ret.commu_cost_ = child_plan_context_.commu_cost_;
+  ret.plan_partitioner_.set_partition_func(
+      child_plan_context_.plan_partitioner_.get_partition_func());
+  ret.plan_partitioner_.set_partition_key(Attribute());
 
   NodeID location = 0;
   unsigned long data_cardinality = 0;
   PartitionOffset offset = 0;
-  DataflowPartition par(offset, data_cardinality, location);
-  vector<DataflowPartition> partition_list;
+  PlanPartitionInfo par(offset, data_cardinality, location);
+  vector<PlanPartitionInfo> partition_list;
   partition_list.push_back(par);
-  ret.property_.partitioner.setPartitionList(partition_list);
+  ret.plan_partitioner_.set_partition_list(partition_list);
   return ret;
 }
 
-BlockStreamIteratorBase *LogicalSort::GetIteratorTree(
+BlockStreamIteratorBase *LogicalSort::GetPhysicalPlan(
     const unsigned &blocksize) {
-  Dataflow dataflow = GetDataflow();
+  PlanContext dataflow = GetPlanContext();
 
   // Get all of the data from other nodes if needed.
   BlockStreamExpander::State expander_state;
   expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
   expander_state.block_size_ = blocksize;
   expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-  expander_state.child_ = child_->GetIteratorTree(blocksize);
-  expander_state.schema_ = GetSchema(child_dataflow_.attribute_list_);
+  expander_state.child_ = child_->GetPhysicalPlan(blocksize);
+  expander_state.schema_ = GetSchema(child_plan_context_.attribute_list_);
   BlockStreamIteratorBase *expander_lower =
       new BlockStreamExpander(expander_state);
 
@@ -83,9 +85,9 @@ BlockStreamIteratorBase *LogicalSort::GetIteratorTree(
   exchange_state.child_ = expander_lower;
   exchange_state.exchange_id_ =
       IDsGenerator::getInstance()->generateUniqueExchangeID();
-  exchange_state.schema_ = GetSchema(child_dataflow_.attribute_list_);
+  exchange_state.schema_ = GetSchema(child_plan_context_.attribute_list_);
   vector<NodeID> lower_id_list =
-      GetInvolvedNodeID(child_dataflow_.property_.partitioner);
+      GetInvolvedNodeID(child_plan_context_.plan_partitioner_);
   exchange_state.lower_id_list_ = lower_id_list;  // upper
   exchange_state.partition_schema_ = partition_schema::set_hash_partition(0);
   // TODO(admin): compute the upper_ip_list to do reduce side sort
@@ -104,7 +106,7 @@ BlockStreamIteratorBase *LogicalSort::GetIteratorTree(
         GetOrderByKey(order_by_attr_[i]->table_name_));
     reducer_state.direction_.push_back(order_by_attr_[i]->direction_);
   }
-  reducer_state.input_ = GetSchema(child_dataflow_.attribute_list_);
+  reducer_state.input_ = GetSchema(child_plan_context_.attribute_list_);
   BlockStreamIteratorBase *reducer_sort =
       new BlockStreamSortIterator(reducer_state);
 
@@ -113,23 +115,23 @@ BlockStreamIteratorBase *LogicalSort::GetIteratorTree(
 
 int LogicalSort::GetOrderByKey(const char *table_name, const char *attr) {
   // Use table name and attribute name to get the number.
-  for (unsigned attr_id = 0; attr_id < child_dataflow_.attribute_list_.size();
+  for (unsigned attr_id = 0; attr_id < child_plan_context_.attribute_list_.size();
        attr_id++) {
     TableDescriptor *table = Catalog::getInstance()->getTable(
-        child_dataflow_.attribute_list_[attr_id].table_id_);
+        child_plan_context_.attribute_list_[attr_id].table_id_);
     string tablename = table->getTableName();
     if ((tablename.compare(table_name) == 0) &&
-        (child_dataflow_.attribute_list_[attr_id].attrName.compare(attr) == 0)) {
+        (child_plan_context_.attribute_list_[attr_id].attrName.compare(attr) == 0)) {
       return attr_id;
     }
   }
 }
 
 int LogicalSort::GetOrderByKey(const char *table_name) {
-  for (unsigned attr_id = 0; attr_id < child_dataflow_.attribute_list_.size();
+  for (unsigned attr_id = 0; attr_id < child_plan_context_.attribute_list_.size();
        attr_id++) {
     string _tablename(table_name);
-    if (_tablename.compare(child_dataflow_.attribute_list_[attr_id].attrName) == 0) {
+    if (_tablename.compare(child_plan_context_.attribute_list_[attr_id].attrName) == 0) {
       return attr_id;
     }
   }
@@ -145,3 +147,5 @@ void LogicalSort::Print(int level) const {
   PrintOrderByAttr();
   child_->Print(level + 1);
 }
+}  // namespace logical_query_plan
+}  // namespace claims

@@ -35,44 +35,42 @@
 #include "../common/Expression/initquery.h"
 #include "../common/log/logging.h"
 
-// namespace claims {
-// namespace logical_query_plan {
+namespace claims {
+namespace logical_query_plan {
 
 LogicalProject::LogicalProject(LogicalOperator* child,
                                vector<QNode*> expression_tree)
-    : child_(child),
-      expression_tree_(expression_tree),
-      dataflow_(NULL) {
+    : child_(child), expression_tree_(expression_tree), plan_context_(NULL) {
   set_operator_type(kLogicalProject);
 }
 
 LogicalProject::~LogicalProject() {
-  if (NULL != dataflow_) {
-    delete dataflow_;
-    dataflow_ = NULL;
+  if (NULL != plan_context_) {
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   if (NULL != child_) {
     delete child_;
     child_ = NULL;
   }
 }
-// construct a dataflow from child
-Dataflow LogicalProject::GetDataflow() {
-  if (NULL != dataflow_) return *dataflow_;
-  Dataflow ret;
-  // get the dataflow of child
-  const Dataflow child_dataflow = child_->GetDataflow();
+// construct a PlanContext from child
+PlanContext LogicalProject::GetPlanContext() {
+  if (NULL != plan_context_) return *plan_context_;
+  PlanContext ret;
+  // get the PlanContext of child
+  const PlanContext child_plan_context = child_->GetPlanContext();
   /**
-   * set commnication_cost and partitioner of the dataflow to be returned
-   * from dataflow of child
+   * set commnication_cost and partitioner of the PlanContext to be returned
+   * from PlanContext of child
    */
-  ret.property_.commnication_cost = child_dataflow.property_.commnication_cost;
-  ret.property_.partitioner = child_dataflow.property_.partitioner;
+  ret.commu_cost_ = child_plan_context.commu_cost_;
+  ret.plan_partitioner_ = child_plan_context.plan_partitioner_;
   std::vector<Attribute> ret_attrs;
   // construct an input schema from attribute list of child
-  Schema* input_ = GetSchema(child_dataflow.attribute_list_);
-  // get the index of attributes in child dataflow
-  SetColumnID(child_dataflow);
+  Schema* input_ = GetSchema(child_plan_context.attribute_list_);
+  // get the index of attributes in child PlanContext
+  SetColumnID(child_plan_context);
   /**
    * if the expression type is compare,then the new column will be boolean
    * type,
@@ -87,7 +85,7 @@ Dataflow LogicalProject::GetDataflow() {
                             input_);
     }
   }
-  // clean the attribute list of dataflow to be returned
+  // clean the attribute list of PlanContext to be returned
   ret_attrs.clear();
 
   /**
@@ -98,7 +96,7 @@ Dataflow LogicalProject::GetDataflow() {
   for (int i = 0; i < expression_tree_.size(); ++i) {
     column_type* column = NULL;
     if (t_string == expression_tree_[i]->return_type ||
-       t_decimal == expression_tree_[i]->return_type) {
+        t_decimal == expression_tree_[i]->return_type) {
       column = new column_type(expression_tree_[i]->return_type,
                                expression_tree_[i]->length);
     } else {
@@ -112,11 +110,11 @@ Dataflow LogicalProject::GetDataflow() {
     // construct an attribute list
     ret_attrs.push_back(attr_alais);
   }
-  // set the attribute list of the dataflow to be returned
+  // set the attribute list of the PlanContext to be returned
   ret.attribute_list_ = ret_attrs;
-  dataflow_ = new Dataflow();
-  // set the dataflow to be returned
-  *dataflow_ = ret;
+  plan_context_ = new PlanContext();
+  // set the PlanContext to be returned
+  *plan_context_ = ret;
   return ret;
 }
 
@@ -124,32 +122,32 @@ Dataflow LogicalProject::GetDataflow() {
  * Traverse the attribute_list_，
  * store the attribute name and index into colindex_.
  */
-void LogicalProject::SetColumnID(Dataflow dataflow) {
-  for (int i = 0; i < dataflow.attribute_list_.size(); i++) {
-    column_id_[dataflow.attribute_list_[i].attrName] = i;
+void LogicalProject::SetColumnID(PlanContext plan_context) {
+  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
+    column_id_[plan_context.attribute_list_[i].attrName] = i;
   }
 }
 
-// get dataflow and child physical plan from child ,
-BlockStreamIteratorBase* LogicalProject::GetIteratorTree(
-    const unsigned &block_size) {
-  GetDataflow();
-  const Dataflow child_dataflow = child_->GetDataflow();
-  BlockStreamIteratorBase* child = child_->GetIteratorTree(block_size);
+// get PlanContext and child physical plan from child ,
+BlockStreamIteratorBase* LogicalProject::GetPhysicalPlan(
+    const unsigned& block_size) {
+  GetPlanContext();
+  const PlanContext child_plan_context = child_->GetPlanContext();
+  BlockStreamIteratorBase* child = child_->GetPhysicalPlan(block_size);
   BlockStreamProjectIterator::State state;
 
   // assign some attributes to the state
   state.block_size_ = block_size;
   state.child_ = child;
-  state.input_ = GetSchema(child_dataflow.attribute_list_);
+  state.input_ = GetSchema(child_plan_context.attribute_list_);
   state.output_ = GetOutputSchema();
   state.exprTree_ = expression_tree_;
   return new BlockStreamProjectIterator(state);
 }
 
-// construct a schema from attribute list of dataflow
+// construct a schema from attribute list of PlanContext
 Schema* LogicalProject::GetOutputSchema() {
-  Schema* schema = GetSchema(dataflow_->attribute_list_);
+  Schema* schema = GetSchema(plan_context_->attribute_list_);
   return schema;
 }
 
@@ -164,5 +162,5 @@ void LogicalProject::Print(int level) const {
   child_->Print(level + 1);
 }
 
-//}  // namespace logical_query_plan
-//}  // namespace claims
+}  // namespace logical_query_plan
+}  // namespace claims

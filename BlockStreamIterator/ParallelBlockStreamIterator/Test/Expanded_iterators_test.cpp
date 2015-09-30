@@ -11,12 +11,9 @@
 #include <iostream>
 #include "../../../Environment.h"
 #include "../../../logical_query_plan/logical_scan.h"
-#include "../../../logical_query_plan/LogicalQueryPlanRoot.h"
 #include "../../../logical_query_plan/logical_equal_join.h"
 #include "../../../Catalog/ProjectionBinding.h"
-#include "../../../logical_query_plan/Filter.h"
 #include "../../../logical_query_plan/logical_aggregation.h"
-#include "../../../logical_query_plan/Buffer.h"
 #include "../../../utility/rdtsc.h"
 #include "../../../Executor/ExpanderTracker.h"
 #include "../../../common/AttributeComparator.h"
@@ -473,12 +470,12 @@ static int expanded_iterators_test(){
 
 
 
-		std::vector<EqualJoin::JoinPair> sb_cj_join_pair_list;
-		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
-		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
-		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
+		std::vector<LogicalEqualJoin::JoinPair> sb_cj_join_pair_list;
+		sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("order_no"),table_2->getAttribute("order_no")));
+		sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_date"),table_2->getAttribute("entry_date")));
+		sb_cj_join_pair_list.push_back(LogicalEqualJoin::JoinPair(table_1->getAttribute("trade_dir"),table_2->getAttribute("entry_dir")));
 //		sb_cj_join_pair_list.push_back(EqualJoin::JoinPair(table_1->getAttribute("row_id"),table_2->getAttribute("row_id")));
-		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
+		LogicalOperator* sb_cj_join=new LogicalEqualJoin(sb_cj_join_pair_list,filter_1,filter_2);
 //		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,cj_join_key_scan,sb_join_key_scan);
 //		LogicalOperator* sb_cj_join=new EqualJoin(sb_cj_join_pair_list,buffer1,buffer2);
 
@@ -520,18 +517,18 @@ static int expanded_iterators_test(){
 
 //		filter_1->getDataflow();
 		LogicalOperator* target=aggregation;
-		executable_query_plan=target->GetIteratorTree((1024*64-sizeof(unsigned)));
+		executable_query_plan=target->GetPhysicalPlan((1024*64-sizeof(unsigned)));
 
-		BlockStreamExpander::State expander_state(target->GetDataflow().getSchema(),executable_query_plan,500,1024*64-sizeof(unsigned));
+		BlockStreamExpander::State expander_state(target->GetPlanContext().GetSchema(),executable_query_plan,500,1024*64-sizeof(unsigned));
 		BlockStreamIteratorBase* expander=new BlockStreamExpander(expander_state);
 
-		BlockStreamPerformanceMonitorTop::State perf_state(target->GetDataflow().getSchema(),expander,1024*64-
+		BlockStreamPerformanceMonitorTop::State perf_state(target->GetPlanContext().GetSchema(),expander,1024*64-
 				sizeof(unsigned));
 		BlockStreamIteratorBase* top=new BlockStreamPerformanceMonitorTop(perf_state);
 
 		top->print();
 
-		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(target->GetDataflow().getSchema(),1024*64);
+		BlockStreamBase* block=BlockStreamBase::createBlockWithDesirableSerilaizedSize(target->GetPlanContext().GetSchema(),1024*64);
 		int c=1;
 		while(c==1){
 //			timer_start=curtick();b

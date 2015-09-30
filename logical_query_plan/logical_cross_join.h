@@ -44,8 +44,8 @@ class LogicalCrossJoin : public LogicalOperator {
   LogicalCrossJoin();
   LogicalCrossJoin(LogicalOperator* left_child, LogicalOperator* right_child);
   virtual ~LogicalCrossJoin();
-  Dataflow GetDataflow();
-  BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
+  PlanContext GetPlanContext();
+  BlockStreamIteratorBase* GetPhysicalPlan(const unsigned& blocksize);
   void Print(int level = 0) const;
 
  protected:
@@ -69,24 +69,23 @@ class LogicalCrossJoin : public LogicalOperator {
 
  private:
   /**
-   * @brief  Method description : decide the join policy based on the dataflow
-   * of both of the left and right child
-   * @param left, the dataflow of the left child
-   * @param right, the dataflow of the right child
+   * @brief  Method description : decide the join policy based on the plan
+   * context of both of the left and right child
+   * @param left, the plan_context of the left child
+   * @param right, the plan_context of the right child
    * @ return the errorcode
    * @details   (additional)
    */
 
-  int DecideJoinPolicy(const Dataflow& left, const Dataflow& right);
+  int DecideJoinPolicy(const PlanContext& left, const PlanContext& right);
   /** return true if the nest-loop-join can be conducted locally**/
-  bool CanLocalJoin(const Dataflow& left, const Dataflow& right) const;
+  bool CanLocalJoin(const PlanContext& left, const PlanContext& right) const;
   /**
    * @brief  Method description : generate the child sub physical plan for the
-   *cartesian product
+   * Cartesian product
    * @param left_child_iterator_tree  left child sub physical plan
    * @param right_child_iterator_tree  right child sub physical plan
-   *
-   * @ return error code
+   * @return error code
    * @details   (additional) */
 
   int GenerateChildPhysicalQueryPlan(
@@ -96,7 +95,7 @@ class LogicalCrossJoin : public LogicalOperator {
 
   LogicalOperator* left_child_;
   LogicalOperator* right_child_;
-  Dataflow* dataflow_;
+  PlanContext* plan_context_;
   JoinPolicy join_policy_;
 };
 }  // namespace logical_query_plan

@@ -12,10 +12,11 @@
 #include "../common/Block/ResultSet.h"
 #include "../common/data_type.h"
 #include "../Catalog/table.h"
+#include "../logical_query_plan/logical_operator.h"
 
-class LogicalOperator;
+using claims::logical_query_plan::LogicalOperator;
 
-class LogicalOperator;
+
 
 struct query_result{
 	query_result():result_set(0){};

@@ -16,34 +16,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/logical_query_plan/logical_limit.cpp
-*  Created on: Sep 21, 2015
- *      Author: wangli, HanZhang
- *       Email: wangli1426@gmail.com
+ * ./LogicalPlan/plan_partition_info.h
  *
- * Description: Implementation of Limit operator in logical layer
+ *  Created on: Nov 10, 2013
+ *      Author: wangli, fangzhuhe
+ *       Email: fzhedu@gmail.com
  *
+ * Description:
  */
 
-#include "../logical_query_plan/logical_limit.h"
-
-#include <stdio.h>
-
+#ifndef LOGICAL_QUERY_PLAN_PLAN_PARTITION_INFO_H_
+#define LOGICAL_QUERY_PLAN_PLAN_PARTITION_INFO_H_
+#include "../common/ids.h"
 namespace claims {
 namespace logical_query_plan {
 
-LimitConstraint::LimitConstraint(unsigned long return_tuples)
-    : returned_tuples_(return_tuples), start_position_(0) {}
+class PlanPartitionInfo {
+ public:
+  friend class PlanPartitioner;
+  PlanPartitionInfo() : filtered_(false){};
+  PlanPartitionInfo(unsigned partitoin_id, int cardinality, NodeID location);
+  PlanPartitionInfo(const PlanPartitionInfo& part);
+  virtual ~PlanPartitionInfo();
+  unsigned get_cardinality() const;
+  void set_cardinality(const unsigned&);
+  bool IsAvaliable() const;
+  void set_filtered();
+  NodeID get_location() const;
 
-LimitConstraint::LimitConstraint(unsigned long return_tuples,
-                                 unsigned long position)
-    : returned_tuples_(return_tuples), start_position_(position) {}
-
-LimitConstraint::LimitConstraint() : returned_tuples_(-1), start_position_(0) {}
-
-bool LimitConstraint::CanBeOmitted() const {
-  return returned_tuples_ == -1 & start_position_ == 0;
+ protected:
+  unsigned partition_id_;
+  int cardinality_;
+  NodeID location_;
+  bool filtered_;
 };
 
 }  // namespace logical_query_plan
 }  // namespace claims
+#endif  //  LOGICAL_QUERY_PLAN_PLAN_PARTITION_INFO_H_

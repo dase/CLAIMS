@@ -19,7 +19,7 @@ LogicalCSBIndexBuilding::~LogicalCSBIndexBuilding() {
 	// TODO Auto-generated destructor stub
 }
 
-Dataflow LogicalCSBIndexBuilding::GetDataflow()
+PlanContext LogicalCSBIndexBuilding::GetPlanContext()
 {
 	if(!scan_projection_->AllPartitionBound()){
 		Catalog::getInstance()->getBindingModele()->BindingEntireProjection(scan_projection_->getPartitioner(),DESIRIABLE_STORAGE_LEVEL);
@@ -27,12 +27,12 @@ Dataflow LogicalCSBIndexBuilding::GetDataflow()
 
 	blc_dataflow_.attribute_list_ = scan_projection_->getAttributeList();
 	Partitioner* par = scan_projection_->getPartitioner();
-	blc_dataflow_.property_.partitioner=DataflowPartitioningDescriptor(*par);
-	blc_dataflow_.property_.commnication_cost=0;
+	blc_dataflow_.plan_partitioner_=PlanPartitioner(*par);
+	blc_dataflow_.commu_cost_=0;
 	return blc_dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalCSBIndexBuilding::GetIteratorTree(const unsigned &block_size)
+BlockStreamIteratorBase* LogicalCSBIndexBuilding::GetPhysicalPlan(const unsigned &block_size)
 {
 	bottomLayerCollecting::State blc_state;
 	blc_state.schema_ = GetSchema(blc_dataflow_.attribute_list_);

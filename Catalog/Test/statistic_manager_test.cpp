@@ -16,7 +16,6 @@
 #include "../../logical_query_plan/logical_equal_join.h"
 #include "../../logical_query_plan/Filter.h"
 #include "../../logical_query_plan/logical_aggregation.h"
-#include "../../logical_query_plan/Buffer.h"
 
 #include "../../utility/rdtsc.h"
 #include "../stat/Analyzer.h"

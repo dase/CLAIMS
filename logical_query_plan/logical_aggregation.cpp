@@ -1,5 +1,3 @@
-#include <vector>
-
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -26,20 +24,22 @@
  *
  * Description: Aggregation operator is designed for executing group by and
  * aggregation function. LogicalAggregation is the logical type of Aggregation
- * operator, main function includes getting data context after executing this
+ * operator, main function includes getting plan context after executing this
  * operator and generating corresponding physical operator.
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES  // avoid macro conflict
-#include <glog/logging.h>
+#include "../logical_query_plan/logical_aggregation.h"
+#include <vector>
+#include "../logical_query_plan/plan_context.h"
 #include "../IDsGenerator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Config.h"
-#include "../logical_query_plan/logical_aggregation.h"
-// namespace claims {
-// namespace logical_query_plan {
+#include <glog/logging.h>
+namespace claims {
+namespace logical_query_plan {
 LogicalAggregation::LogicalAggregation(
     std::vector<Attribute> group_by_attribute_list,
     std::vector<Attribute> aggregation_attribute_list,
@@ -48,7 +48,7 @@ LogicalAggregation::LogicalAggregation(
     : group_by_attribute_list_(group_by_attribute_list),
       aggregation_attribute_list_(aggregation_attribute_list),
       aggregation_function_list_(aggregation_function_list),
-      dataflow_(NULL),
+      plan_context_(NULL),
       child_(child) {
   assert(aggregation_attribute_list_.size() ==
          aggregation_function_list_.size());
@@ -56,20 +56,20 @@ LogicalAggregation::LogicalAggregation(
 }
 
 LogicalAggregation::~LogicalAggregation() {
-  if (NULL != dataflow_) {
-    delete dataflow_;
-    dataflow_ = NULL;
+  if (NULL != plan_context_) {
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   if (NULL != child_) {
     delete child_;
     child_ = NULL;
   }
 }
-Dataflow LogicalAggregation::GetDataflow() {
-  if (NULL != dataflow_) return *dataflow_;
-  Dataflow ret;
-  const Dataflow child_dataflow = child_->GetDataflow();
-  if (CanOmitHashRepartition(child_dataflow)) {
+PlanContext LogicalAggregation::GetPlanContext() {
+  if (NULL != plan_context_) return *plan_context_;
+  PlanContext ret;
+  const PlanContext child_context = child_->GetPlanContext();
+  if (CanOmitHashRepartition(child_context)) {
     aggregation_style_ = kAgg;
     LOG(INFO) << "Aggregation style: kAgg" << std::endl;
   } else {  // as for the kLocalAggReparGlobalAgg style is optimal
@@ -80,20 +80,21 @@ Dataflow LogicalAggregation::GetDataflow() {
   switch (aggregation_style_) {
     case kAgg: {
       ret.attribute_list_ = GetAttrsAfterAgg();
-      ret.property_.commnication_cost =
-          child_dataflow.property_.commnication_cost;
-      ret.property_.partitioner = child_dataflow.property_.partitioner;
+      ret.commu_cost_ = child_context.commu_cost_;
+      ret.plan_partitioner_ =
+          child_context.plan_partitioner_;
       Attribute partition_key =
-          child_dataflow.property_.partitioner.getPartitionKey();
+          child_context.plan_partitioner_.get_partition_key();
       partition_key.table_id_ = INTERMEIDATE_TABLEID;
-      ret.property_.partitioner.setPartitionKey(partition_key);
+      ret.plan_partitioner_.set_partition_key(partition_key);
       for (unsigned i = 0;
-           i < ret.property_.partitioner.getNumberOfPartitions(); i++) {
+           i < ret.plan_partitioner_.GetNumberOfPartitions(); i++) {
         const unsigned cardinality =
-            ret.property_.partitioner.getPartition(i)->getDataCardinality();
-        ret.property_.partitioner.getPartition(i)->setDataCardinality(
-            EstimateGroupByCardinality(child_dataflow) /
-            ret.property_.partitioner.getNumberOfPartitions());
+            ret.plan_partitioner_.GetPartition(i)
+                ->get_cardinality();
+        ret.plan_partitioner_.GetPartition(i)->set_cardinality(
+            EstimateGroupByCardinality(child_context) /
+            ret.plan_partitioner_.GetNumberOfPartitions());
       }
       break;
     }
@@ -106,47 +107,47 @@ Dataflow LogicalAggregation::GetDataflow() {
       // of partitions and partition style) after repartition aggregation should
       // be decided by the partition property enforcement.
       ret.attribute_list_ = GetAttrsAfterAgg();
-      ret.property_.commnication_cost =
-          child_dataflow.property_.commnication_cost +
-          child_dataflow.getAggregatedDatasize();
-      ret.property_.partitioner.setPartitionFunction(
-          child_dataflow.property_.partitioner.getPartitionFunction());
+      ret.commu_cost_ = child_context.commu_cost_ +
+                                  child_context.GetAggregatedDatasize();
+      ret.plan_partitioner_.set_partition_func(
+          child_context.plan_partitioner_.get_partition_func());
       if (group_by_attribute_list_.empty()) {
-        ret.property_.partitioner.setPartitionKey(Attribute());
+        ret.plan_partitioner_.set_partition_key(Attribute());
       } else {
         const Attribute partition_key = group_by_attribute_list_[0];
-        ret.property_.partitioner.setPartitionKey(partition_key);
+        ret.plan_partitioner_.set_partition_key(partition_key);
       }
       NodeID location = 0;
       unsigned long data_cardinality =
-          EstimateGroupByCardinality(child_dataflow);
+          EstimateGroupByCardinality(child_context);
       PartitionOffset offset = 0;
-      DataflowPartition par(offset, data_cardinality, location);
-      std::vector<DataflowPartition> partition_list;
+      PlanPartitionInfo par(offset, data_cardinality, location);
+      std::vector<PlanPartitionInfo> partition_list;
       partition_list.push_back(par);
-      ret.property_.partitioner.setPartitionList(partition_list);
+      ret.plan_partitioner_.set_partition_list(partition_list);
       break;
     }
   }
-  dataflow_ = new Dataflow();
-  *dataflow_ = ret;
+  plan_context_ = new PlanContext();
+  *plan_context_ = ret;
   return ret;
 }
 
 bool LogicalAggregation::CanOmitHashRepartition(
-    const Dataflow& child_dataflow) const {
-  if (child_dataflow.property_.partitioner.getNumberOfPartitions() == 1 &&
-      child_dataflow.property_.partitioner.getPartition(0)->getLocation() == 0)
+    const PlanContext& child_plan_context) const {
+  if (child_plan_context.plan_partitioner_.GetNumberOfPartitions() == 1 &&
+      child_plan_context.plan_partitioner_.GetPartition(0)
+              ->get_location() == 0)
     return true;
-  if (!child_dataflow.isHashPartitioned()) return false;
+  if (!child_plan_context.IsHashPartitioned()) return false;
 
   /**
-   * the hash property of the input data flow can be leveraged in the
+   * the hash property of the input data can be leveraged in the
    * aggregation as long as the hash attribute is one of the group-by
    * attributes.
    */
   const Attribute partition_key =
-      child_dataflow.property_.partitioner.getPartitionKey();
+      child_plan_context.plan_partitioner_.get_partition_key();
   for (unsigned i = 0; i < group_by_attribute_list_.size(); i++) {
     if (group_by_attribute_list_[i] == partition_key) return true;
   }
@@ -199,25 +200,25 @@ void LogicalAggregation::ChangeSchemaForAVG(
  * Note: if group_by_attribute_list_ is empty, the partition key is
  * ATTRIBUTE_NULL
  */
-BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
+BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
     const unsigned& block_size) {
-  if (NULL == dataflow_) {
-    GetDataflow();
+  if (NULL == plan_context_) {
+    GetPlanContext();
   }
   BlockStreamIteratorBase* ret;
-  const Dataflow child_dataflow = child_->GetDataflow();
+  const PlanContext child_plan_context = child_->GetPlanContext();
   BlockStreamAggregationIterator::State aggregation_state;
   aggregation_state.groupByIndex =
-      GetInvolvedAttrIdList(group_by_attribute_list_, child_dataflow);
+      GetInvolvedAttrIdList(group_by_attribute_list_, child_plan_context);
   aggregation_state.aggregationIndex =
-      GetInvolvedAttrIdList(aggregation_attribute_list_, child_dataflow);
+      GetInvolvedAttrIdList(aggregation_attribute_list_, child_plan_context);
   aggregation_state.aggregations = aggregation_function_list_;
   aggregation_state.block_size = block_size;
-  aggregation_state.nbuckets = EstimateGroupByCardinality(child_dataflow);
+  aggregation_state.nbuckets = EstimateGroupByCardinality(child_plan_context);
   aggregation_state.bucketsize = 64;
-  aggregation_state.input = GetSchema(child_dataflow.attribute_list_);
-  aggregation_state.output = GetSchema(dataflow_->attribute_list_);
-  aggregation_state.child = child_->GetIteratorTree(block_size);
+  aggregation_state.input = GetSchema(child_plan_context.attribute_list_);
+  aggregation_state.output = GetSchema(plan_context_->attribute_list_);
+  aggregation_state.child = child_->GetPhysicalPlan(block_size);
 
   switch (aggregation_style_) {
     case kAgg: {
@@ -248,16 +249,16 @@ BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
       exchange_state.child_ = expander_lower;
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
-      exchange_state.lower_id_list_ =
-          GetInvolvedNodeID(child_->GetDataflow().property_.partitioner);
+      exchange_state.lower_id_list_ = GetInvolvedNodeID(
+          child_->GetPlanContext().plan_partitioner_);
       exchange_state.upper_id_list_ =
-          GetInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       if (group_by_attribute_list_.empty()) {
         exchange_state.partition_schema_ =
             partition_schema::set_hash_partition(0);
       } else {
         exchange_state.partition_schema_ = partition_schema::set_hash_partition(
-            GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *dataflow_)[0]);
+            GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_)[0]);
       }
       exchange_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
       BlockStreamIteratorBase* exchange =
@@ -265,17 +266,17 @@ BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
 
       BlockStreamAggregationIterator::State global_aggregation_state;
       global_aggregation_state.aggregationIndex =
-          GetInvolvedAttrIdList(GetAggAttrsAfterAgg(), *dataflow_);
+          GetInvolvedAttrIdList(GetAggAttrsAfterAgg(), *plan_context_);
       global_aggregation_state.aggregations =
           ChangeForGlobalAggregation(aggregation_function_list_);
       global_aggregation_state.block_size = block_size;
       global_aggregation_state.bucketsize = 64;
       global_aggregation_state.child = exchange;
       global_aggregation_state.groupByIndex =
-          GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *dataflow_);
-      global_aggregation_state.input = GetSchema(dataflow_->attribute_list_);
+          GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_);
+      global_aggregation_state.input = GetSchema(plan_context_->attribute_list_);
       global_aggregation_state.nbuckets = aggregation_state.nbuckets;
-      global_aggregation_state.output = GetSchema(dataflow_->attribute_list_);
+      global_aggregation_state.output = GetSchema(plan_context_->attribute_list_);
       global_aggregation_state.agg_node_type =
           BlockStreamAggregationIterator::State::Hybrid_Agg_Global;
       ChangeSchemaForAVG(global_aggregation_state);
@@ -290,8 +291,8 @@ BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = child_->GetIteratorTree(block_size);
-      expander_state.schema_ = GetSchema(child_dataflow.attribute_list_);
+      expander_state.child_ = child_->GetPhysicalPlan(block_size);
+      expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
       ExpandableBlockStreamExchangeEpoll::State exchange_state;
@@ -299,10 +300,10 @@ BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
       exchange_state.child_ = expander;  // child_->getIteratorTree(block_size);
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
-      exchange_state.lower_id_list_ =
-          GetInvolvedNodeID(child_->GetDataflow().property_.partitioner);
+      exchange_state.lower_id_list_ = GetInvolvedNodeID(
+          child_->GetPlanContext().plan_partitioner_);
       exchange_state.upper_id_list_ =
-          GetInvolvedNodeID(dataflow_->property_.partitioner);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       if (group_by_attribute_list_.empty()) {
         /**
          * scalar aggregation allows parallel partitions to be partitioned in
@@ -316,12 +317,12 @@ BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
         // cardinality and load balance.
         exchange_state.partition_schema_ =
             partition_schema::set_hash_partition(GetInvolvedAttrIdList(
-                aggregation_attribute_list_, child_dataflow)[0]);
+                aggregation_attribute_list_, child_plan_context)[0]);
       } else {
         exchange_state.partition_schema_ = partition_schema::set_hash_partition(
-            GetInvolvedAttrIdList(group_by_attribute_list_, child_dataflow)[0]);
+            GetInvolvedAttrIdList(group_by_attribute_list_, child_plan_context)[0]);
       }
-      exchange_state.schema_ = GetSchema(child_dataflow.attribute_list_);
+      exchange_state.schema_ = GetSchema(child_plan_context.attribute_list_);
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
       aggregation_state.agg_node_type =
@@ -336,23 +337,23 @@ BlockStreamIteratorBase* LogicalAggregation::GetIteratorTree(
 }
 std::vector<unsigned> LogicalAggregation::GetInvolvedAttrIdList(
     const std::vector<Attribute>& attribute_list,
-    const Dataflow& dataflow) const {
+    const PlanContext& plan_context) const {
   std::vector<unsigned> ret;
   for (unsigned i = 0; i < attribute_list.size(); i++) {
     bool found = false;
-    for (unsigned j = 0; j < dataflow.attribute_list_.size(); j++) {
+    for (unsigned j = 0; j < plan_context.attribute_list_.size(); j++) {
       /*
        * @brief: attribute_list[j].isANY()
        */
       if (attribute_list[i].isANY() ||
-          (dataflow.attribute_list_[j] == attribute_list[i])) {
+          (plan_context.attribute_list_[j] == attribute_list[i])) {
         found = true;
         ret.push_back(j);
         break;
       }
     }
     if (found == false) {
-      LOG(ERROR) << "can't find attrbute in dataflow in "
+      LOG(ERROR) << "can't find attrbute in plan context in "
                     "LogicalAggeration::GetInvolvedAttributeIdList"
                  << std::endl;
     }
@@ -444,13 +445,13 @@ std::vector<Attribute> LogicalAggregation::GetAggAttrsAfterAgg() const {
   return ret;
 }
 unsigned long LogicalAggregation::EstimateGroupByCardinality(
-    const Dataflow& dataflow) const {
+    const PlanContext& plan_context) const {
   if (group_by_attribute_list_.size() == 0) {
     return 1;
   }
   const unsigned long max_limits = 1024 * 1024;
   const unsigned long min_limits = 1024 * 512;
-  unsigned long data_card = dataflow.getAggregatedDataCardinality();
+  unsigned long data_card = plan_context.GetAggregatedDataCardinality();
   unsigned long ret;
   for (unsigned i = 0; i < group_by_attribute_list_.size(); i++) {
     if (group_by_attribute_list_[i].isUnique()) {
@@ -470,7 +471,8 @@ unsigned long LogicalAggregation::EstimateGroupByCardinality(
       group_by_domain_size *= attr_stat->getDistinctCardinality();
     }
   }
-  ret = group_by_domain_size;  // TODO(fzh): This is only the upper bound of group_by
+  ret = group_by_domain_size;  // TODO(fzh): This is only the upper bound of
+                               // group_by
                                // domain size;
 
   ret = ret < max_limits ? ret : max_limits;
@@ -528,5 +530,5 @@ void LogicalAggregation::Print(int level) const {
   }
   child_->Print(level + 1);
 }
-//} // namespace logical_query_plan
-//}  // namespace claims
+}  // namespace logical_query_plan
+}  // namespace claims

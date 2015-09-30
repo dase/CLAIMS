@@ -12,6 +12,7 @@
 #include "../common/ids.h"
 #include "IndexScanIterator.h"
 #include "../Catalog/table.h"
+using namespace claims::logical_query_plan;
 
 class LogicalIndexScan :public LogicalOperator{
 public:
@@ -19,8 +20,8 @@ public:
 	LogicalIndexScan(ProjectionID projection_id, Attribute index_attr, vector<IndexScanIterator::query_range> q_range);
 	virtual ~LogicalIndexScan();
 
-	Dataflow GetDataflow();
-	BlockStreamIteratorBase* GetIteratorTree(const unsigned& blocksize);
+	PlanContext GetPlanContext();
+	BlockStreamIteratorBase* GetPhysicalPlan(const unsigned& blocksize);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 	void Print(int level=0)const;
 
@@ -29,7 +30,7 @@ private:
 	Attribute index_attr_;
 	vector<IndexScanIterator::query_range> query_range_;
 	ProjectionDescriptor* scan_projection_;
-	Dataflow dataflow_;
+	PlanContext dataflow_;
 };
 
 #endif /* LOGICALINDEXSCAN_H_ */

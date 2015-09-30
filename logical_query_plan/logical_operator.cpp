@@ -1,8 +1,29 @@
 /*
- * logical_operator.cpp
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/logical_query_plan/logical_operator.cpp
  *
  *  Created on: Nov 7, 2013
- *      Author: wangli
+ *      Author: wangli, fzh
+ *       Email: fzhedu@gmail.com
+ *
+ * Description:
+ *
  */
 #include "../logical_query_plan/logical_operator.h"
 
@@ -10,7 +31,8 @@
 #include <vector>
 
 #include "../Resource/NodeTracker.h"
-
+namespace claims {
+namespace logical_query_plan {
 // LogicalOperator::LogicalOperator() {
 //	// TODO Auto-generated constructor stub
 //
@@ -41,10 +63,10 @@ Schema* LogicalOperator::GetSchema(
   return new SchemaFix(columns);
 }
 std::vector<NodeID> LogicalOperator::GetInvolvedNodeID(
-    const DataflowPartitioningDescriptor& part) const {
+    const PlanPartitioner& part) const {
   std::vector<NodeID> ret;
-  for (unsigned i = 0; i < part.getNumberOfPartitions(); i++) {
-    ret.push_back(part.getPartition(i)->getLocation());
+  for (unsigned i = 0; i < part.GetNumberOfPartitions(); i++) {
+    ret.push_back(part.GetPartition(i)->get_location());
   }
   return ret;
 }
@@ -86,3 +108,6 @@ void LogicalOperator::Align(int space) const {
     printf(" ");
   }
 }
+
+}  // namespace logical_query_plan
+}  // namespace claims

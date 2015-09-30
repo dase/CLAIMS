@@ -78,7 +78,7 @@ static int test_logical_csb_index_building()
 =======
 			root->Print();
 >>>>>>> master-yk-150927
-			BlockStreamIteratorBase* executable_query_plan=root->GetIteratorTree(1024*64);
+			BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 			executable_query_plan->open();
@@ -130,7 +130,7 @@ cout << "index building finished!\n";
 =======
 			root->Print();
 >>>>>>> master-yk-150927
-			executable_query_plan=root->GetIteratorTree(1024*64);
+			executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 			executable_query_plan->open();

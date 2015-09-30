@@ -29,8 +29,8 @@
 #define LOGICAL_QUERY_PLAN_LOGICAL_LIMIT_H_
 
 #include "../logical_query_plan/logical_operator.h"
-// namespace claims {
-// namespace logical_query_plan {
+namespace claims {
+namespace logical_query_plan {
 
 /**
  * @brief Method description:limit operator is a simple operator.
@@ -54,10 +54,7 @@ class LimitConstraint {
   unsigned long returned_tuples_;
 };
 
-//}   // namespace logical_query_plan
-//}   // namespace claims
+}  // namespace logical_query_plan
+}  // namespace claims
 
-
-
-
-#endif //  LOGICAL_QUERY_PLAN_LOGICAL_LIMIT_H_ 
+#endif  //  LOGICAL_QUERY_PLAN_LOGICAL_LIMIT_H_

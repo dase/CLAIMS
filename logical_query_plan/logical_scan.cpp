@@ -37,17 +37,17 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
 
-// namespace claims {
-// namespace logical_query_plan {
+namespace claims {
+namespace logical_query_plan {
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
     : scan_attribute_list_(attribute_list),
       target_projection_(NULL),
-      dataflow_(NULL) {
+      plan_context_(NULL) {
   set_operator_type(kLogicalScan);
 }
 
 LogicalScan::LogicalScan(const TableID& table_id)
-    : target_projection_(NULL), dataflow_(NULL) {
+    : target_projection_(NULL), plan_context_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
     LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
@@ -57,7 +57,7 @@ LogicalScan::LogicalScan(const TableID& table_id)
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,
                          const float sample_rate)
-    : sample_rate_(sample_rate), dataflow_(NULL) {
+    : sample_rate_(sample_rate), plan_context_(NULL) {
   scan_attribute_list_ = projection->getAttributeList();
   target_projection_ = projection;
   set_operator_type(kLogicalScan);
@@ -65,7 +65,7 @@ LogicalScan::LogicalScan(ProjectionDescriptor* projection,
 LogicalScan::LogicalScan(
     const TableID& table_id,
     const std::vector<unsigned>& selected_attribute_index_list)
-    : target_projection_(NULL), dataflow_(NULL) {
+    : target_projection_(NULL), plan_context_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
     LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
@@ -78,9 +78,9 @@ LogicalScan::LogicalScan(
 }
 
 LogicalScan::~LogicalScan() {
-  if (NULL != dataflow_) {
-    delete dataflow_;
-    dataflow_ = NULL;
+  if (NULL != plan_context_) {
+    delete plan_context_;
+    plan_context_ = NULL;
   }
 }
 
@@ -89,9 +89,9 @@ LogicalScan::~LogicalScan() {
  * projections, so we should choose the best one what we need with traversing
  * scan_attribute_list_.
  */
-Dataflow LogicalScan::GetDataflow() {
-  if (NULL != dataflow_) return *dataflow_;
-  dataflow_ = new Dataflow();
+PlanContext LogicalScan::GetPlanContext() {
+  if (NULL != plan_context_) return *plan_context_;
+  plan_context_ = new PlanContext();
 
   TableID table_id = scan_attribute_list_[0].table_id_;
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
@@ -145,15 +145,15 @@ Dataflow LogicalScan::GetDataflow() {
   }
 
   /**
-   * @brief build the data flow
+   * @brief build the PlanContext
    */
 
-  dataflow_->attribute_list_ = scan_attribute_list_;  // attribute_list_
+  plan_context_->attribute_list_ = scan_attribute_list_;  // attribute_list_
 
   Partitioner* par = target_projection_->getPartitioner();
-  dataflow_->property_.partitioner = DataflowPartitioningDescriptor(*par);
-  dataflow_->property_.commnication_cost = 0;
-  return *dataflow_;
+  plan_context_->plan_partitioner_ = PlanPartitioner(*par);
+  plan_context_->commu_cost_ = 0;
+  return *plan_context_;
 }
 
 /**
@@ -163,15 +163,15 @@ Dataflow LogicalScan::GetDataflow() {
  * projection are read.
  */
 
-// TODO: Ideally, the columns in one projection are stored separately
+// TODO(wangli): Ideally, the columns in one projection are stored separately
 // and only the needed columns are touched for a given query.
 
-BlockStreamIteratorBase* LogicalScan::GetIteratorTree(
+BlockStreamIteratorBase* LogicalScan::GetPhysicalPlan(
     const unsigned& block_size) {
   ExpandableBlockStreamProjectionScan::State state;
   state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
-  state.schema_ = GetSchema(dataflow_->attribute_list_);
+  state.schema_ = GetSchema(plan_context_->attribute_list_);
   state.sample_rate_ = sample_rate_;
   return new ExpandableBlockStreamProjectionScan(state);
 }
@@ -179,33 +179,33 @@ BlockStreamIteratorBase* LogicalScan::GetIteratorTree(
 bool LogicalScan::GetOptimalPhysicalPlan(
     Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor,
     const unsigned& block_size) {
-  Dataflow dataflow = GetDataflow();
-  NetworkTransfer transfer = requirement.requireNetworkTransfer(dataflow);
+  PlanContext plan_context = GetPlanContext();
+  NetworkTransfer transfer = requirement.requireNetworkTransfer(plan_context);
 
   ExpandableBlockStreamProjectionScan::State state;
   state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
-  state.schema_ = GetSchema(dataflow_->attribute_list_);
+  state.schema_ = GetSchema(plan_context_->attribute_list_);
   state.sample_rate_ = sample_rate_;
 
   PhysicalPlan scan = new ExpandableBlockStreamProjectionScan(state);
 
   if (transfer == NONE) {
     physical_plan_descriptor.plan = scan;
-    physical_plan_descriptor.dataflow = dataflow;
+    physical_plan_descriptor.plan_context_ = plan_context;
     physical_plan_descriptor.cost += 0;
   } else {
-    physical_plan_descriptor.cost += dataflow.getAggregatedDatasize();
+    physical_plan_descriptor.cost += plan_context.GetAggregatedDatasize();
 
     ExpandableBlockStreamExchangeEpoll::State state;
     state.block_size_ = block_size;
     state.child_ = scan;  // child_iterator;
     state.exchange_id_ =
         IDsGenerator::getInstance()->generateUniqueExchangeID();
-    state.schema_ = GetSchema(dataflow.attribute_list_);
+    state.schema_ = GetSchema(plan_context.attribute_list_);
 
     std::vector<NodeID> lower_id_list =
-        GetInvolvedNodeID(dataflow.property_.partitioner);
+        GetInvolvedNodeID(plan_context.plan_partitioner_);
     state.lower_id_list_ = lower_id_list;
 
     std::vector<NodeID> upper_id_list;
@@ -230,23 +230,23 @@ bool LogicalScan::GetOptimalPhysicalPlan(
 
     state.partition_schema_ =
         partition_schema::set_hash_partition(GetIdInAttributeList(
-            dataflow.attribute_list_, requirement.getPartitionKey()));
+            plan_context.attribute_list_, requirement.getPartitionKey()));
     assert(state.partition_schema_.partition_key_index >= 0);
 
     BlockStreamIteratorBase* exchange =
         new ExpandableBlockStreamExchangeEpoll(state);
 
-    Dataflow new_dataflow;
-    new_dataflow.attribute_list_ = dataflow.attribute_list_;
-    new_dataflow.property_.partitioner.setPartitionKey(
+    PlanContext new_plan_context;
+    new_plan_context.attribute_list_ = plan_context.attribute_list_;
+    new_plan_context.plan_partitioner_.set_partition_key(
         requirement.getPartitionKey());
-    new_dataflow.property_.partitioner.setPartitionFunction(
+    new_plan_context.plan_partitioner_.set_partition_func(
         PartitionFunctionFactory::createBoostHashFunction(
             state.upper_id_list_.size()));
 
-    const unsigned total_size = dataflow.getAggregatedDatasize();
+    const unsigned total_size = plan_context.GetAggregatedDatasize();
     const unsigned degree_of_parallelism = state.upper_id_list_.size();
-    std::vector<DataflowPartition> dataflow_partition_list;
+    std::vector<PlanPartitionInfo> plan_context_partition_list;
     for (unsigned i = 0; i < degree_of_parallelism; i++) {
       const NodeID location = upper_id_list[i];
 
@@ -256,15 +256,15 @@ bool LogicalScan::GetOptimalPhysicalPlan(
        * We just use the magic number as following
        */
       const unsigned kDatasize = total_size / degree_of_parallelism;
-      DataflowPartition dfp(i, kDatasize, location);
-      dataflow_partition_list.push_back(dfp);
+      PlanPartitionInfo dfp(i, kDatasize, location);
+      plan_context_partition_list.push_back(dfp);
     }
-    new_dataflow.property_.partitioner.setPartitionList(
-        dataflow_partition_list);
+    new_plan_context.plan_partitioner_.set_partition_list(
+        plan_context_partition_list);
 
     physical_plan_descriptor.plan = exchange;
-    physical_plan_descriptor.dataflow = new_dataflow;
-    physical_plan_descriptor.cost += new_dataflow.getAggregatedDatasize();
+    physical_plan_descriptor.plan_context_ = new_plan_context;
+    physical_plan_descriptor.cost += new_plan_context.GetAggregatedDatasize();
   }
 
   if (requirement.passLimits(physical_plan_descriptor.cost))
@@ -280,5 +280,5 @@ void LogicalScan::Print(int level) const {
              .c_str());
 }
 
-//}   // namespace logical_query_plan
-//}   // namespace claims
+}  // namespace logical_query_plan
+}  // namespace claims

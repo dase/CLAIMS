@@ -282,8 +282,8 @@ static double projection_scan(unsigned degree_of_parallelism){
 
 
 	LogicalScan* scan=new LogicalScan(table->getProjectoin(1));
-	scan->GetDataflow();
-	BlockStreamIteratorBase* warm_up_iterator=scan->GetIteratorTree(1024*64);
+	scan->GetPlanContext();
+	BlockStreamIteratorBase* warm_up_iterator=scan->GetPhysicalPlan(1024*64);
 
 	ExpandableBlockStreamProjectionScan::State ps_state;
 	ps_state.block_size_=1024*64;

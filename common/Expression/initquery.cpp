@@ -328,28 +328,28 @@ QNode * transformqual(Node *node,LogicalOperator* child)
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
 //				QNode *anext=transformqual(funcnode->parameter1,child);
-				data_type a_type=child->GetDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				data_type a_type=child->GetPlanContext().GetAttribute(string(funcnode->str)).attrType->type;
 				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
 //				QNode *anext=transformqual(funcnode->parameter1,child);
-				data_type a_type=child->GetDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				data_type a_type=child->GetPlanContext().GetAttribute(string(funcnode->str)).attrType->type;
 				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
 //				QNode *anext=transformqual(funcnode->parameter1,child);
-				data_type a_type=child->GetDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				data_type a_type=child->GetPlanContext().GetAttribute(string(funcnode->str)).attrType->type;
 				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
 //				QNode *anext=transformqual(funcnode->parameter1,child);
-				data_type a_type=child->GetDataflow().getAttribute(string(funcnode->str)).attrType->type;
+				data_type a_type=child->GetPlanContext().GetAttribute(string(funcnode->str)).attrType->type;
 				QNode *aggnode=new QColcumns("",funcnode->str,a_type,funcnode->str);
 				return aggnode;
 			}
@@ -446,7 +446,7 @@ QNode * transformqual(Node *node,LogicalOperator* child)
 		{
 			Columns *col=(Columns *)node;
 //			data_type a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
-			data_type a_type=child->GetDataflow().getAttribute(string(col->parameter2)).attrType->type;
+			data_type a_type=child->GetPlanContext().GetAttribute(string(col->parameter2)).attrType->type;
 			if(col->parameter1==NULL)//for temporary variable
 			{
 				col->parameter1="";
