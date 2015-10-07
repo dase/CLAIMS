@@ -31,8 +31,8 @@
 #define LOGICAL_QUERY_PLAN_LOGICAL_AGGREGATION_H_
 #include <vector>
 #include "../Catalog/Attribute.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../logical_query_plan/logical_operator.h"
+#include "../physical_query_plan/BlockStreamAggregationIterator.h"
 
 namespace claims {
 namespace logical_query_plan {

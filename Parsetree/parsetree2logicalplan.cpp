@@ -36,7 +36,6 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 #include <assert.h>
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../logical_query_plan/logical_aggregation.h"
 #include "../logical_query_plan/logical_cross_join.h"
 #include "../logical_query_plan/logical_equal_join.h"
@@ -44,6 +43,7 @@
 #include "../logical_query_plan/logical_project.h"
 #include "../logical_query_plan/logical_scan.h"
 #include "../logical_query_plan/logical_sort.h"
+#include "../physical_query_plan/BlockStreamAggregationIterator.h"
 
 using namespace claims::logical_query_plan;
 static LogicalOperator* parsetree2logicalplan(Node *parsetree);

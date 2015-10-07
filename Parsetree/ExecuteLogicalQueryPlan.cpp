@@ -1022,12 +1022,12 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-	physical_iterator_tree->print();
+	physical_iterator_tree->Print();
 
-	physical_iterator_tree->open();
+	physical_iterator_tree->Open();
 
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 	//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
 	result_set=physical_iterator_tree->getResultSet();
 	cout<<"execute "<<result_set->query_time_<<" s"<<endl;

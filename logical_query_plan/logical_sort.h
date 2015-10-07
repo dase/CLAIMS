@@ -34,8 +34,8 @@
 #include <iostream>
 #include "../Catalog/Catalog.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
+#include "..//physical_query_plan/BlockStreamSortIterator.h"
 namespace claims {
 namespace logical_query_plan {
 /**

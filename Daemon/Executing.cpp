@@ -46,10 +46,10 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 
 	BlockStreamIteratorBase* collector = root->GetPhysicalPlan(
 			1024 * 64 - sizeof(unsigned));
-	collector->print();
-	collector->open();
-	collector->next(0);
-	collector->close();
+	collector->Print();
+	collector->Open();
+	collector->Next(0);
+	collector->Close();
 	resultset = collector->getResultSet();
 	root->~LogicalOperator();;
 	return resultset;

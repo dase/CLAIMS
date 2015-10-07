@@ -30,8 +30,8 @@
 #define LOGICAL_QUERY_PLAN_LOGICAL_EQUAL_JOIN_H_
 #include <vector>
 #include "../Catalog/Attribute.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamSortIterator.h"
 #include "../logical_query_plan/logical_operator.h"
+#include "../physical_query_plan/BlockStreamSortIterator.h"
 
 namespace claims {
 namespace logical_query_plan {

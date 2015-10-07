@@ -46,5 +46,5 @@ libcommon_a_SOURCES = \
 	rename.h			error_define.h \
 	error_no.h			error_no.cpp
 
-SUBDIRS = Block log Schema types Expression
-DIST_SUBDIRS = Block log Schema types Expression
+SUBDIRS = Block log Schema types Expression serialization
+DIST_SUBDIRS = Block log Schema types Expression serialization

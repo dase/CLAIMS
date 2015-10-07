@@ -34,16 +34,24 @@
 #include "../common/Schema/Schema.h"
 namespace claims {
 namespace logical_query_plan {
-
+/**
+ * maintain the data property of the plan after having completed current
+ * operator, mainly include the attribute_list_, commu_cost_ and
+ * plan_partitioner_. the PlanContext originates the leaf of the plan (i.e. scan
+ * operator), the PlanContext of current operator generates from it's children.
+ */
 class PlanContext {
-  /* describe the properties of the PlanContext*/
   friend class LogcalOperator;
-
  public:
   PlanContext();
   PlanContext(const PlanContext& plan_context);
   virtual ~PlanContext();
+  /**
+   * after having executing current operator, the data size could be changed,
+   * the data size = total tuples * tuple size.
+   */
   unsigned long GetAggregatedDatasize() const;
+  // cardinality = tuple number
   unsigned long GetAggregatedDataCardinality() const;
   bool IsHashPartitioned() const;
   Schema* GetSchema() const;
@@ -52,8 +60,11 @@ class PlanContext {
   Attribute GetAttribute(std::string tbname, std::string colname) const;
 
  public:
-  std::vector<Attribute> attribute_list_;
-  unsigned long commu_cost_;  // communication cost
+  std::vector<Attribute> attribute_list_;  // maintain the output attributes
+                                           // after having completed current
+                                           // operator.
+  unsigned long commu_cost_;               // communication cost
+  // describe the information of the data partition
   PlanPartitioner plan_partitioner_;
 };
 

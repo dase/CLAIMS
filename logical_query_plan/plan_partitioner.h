@@ -30,16 +30,18 @@
 #include <vector>
 #include "../Catalog/Partitioner.h"
 #include "../logical_query_plan/plan_partition_info.h"
-/**
- * describe how the PlanContext are partitioned and the partition property
- * between
- * them. I think that, in the current design, the PlanContext descriptor fails
- * to
- * contain the information describing how the data flow is processed since it is
- * release from the source, i.e., Scan operator.
- */
+
 namespace claims {
 namespace logical_query_plan {
+/**
+ * describe how the PlanContext are partitioned and the partition property
+ * between them. I think that, in the current design, the PlanContext
+ * descriptor fails to contain the information describing how the data
+ * is processed since it is release from the source, i.e., Scan operator.
+ * the information of every partition is described by the PlanPartitionInfo.
+ * all this information originates from the partition information of the raw
+ * dataset.
+ */
 class PlanPartitioner {
  public:
   PlanPartitioner() : partition_func_(0){};
@@ -69,12 +71,12 @@ class PlanPartitioner {
   PartitionFunction* partition_func_;
   Attribute partition_key_;
 
-  /*
+  /**
    * After the no-partitioning EqualHashJoin where the left join input is
    * partitioned on A1 and the right join input is partitioned on A2, we can say
    * that the generated PlanContext is either partitioned on A1 or partitioned
-   * on
-   * A2. In such cases, each attribute is a SHADOW PARTITION KEY to the other.
+   * on A2. In such cases, each attribute is a SHADOW PARTITION KEY to the
+   * other.
    */
   std::vector<Attribute> shadow_partition_keys_;
 

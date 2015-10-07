@@ -30,7 +30,9 @@
 #include "../common/ids.h"
 namespace claims {
 namespace logical_query_plan {
-
+/**
+ * the partition info of every partition is changing during executing them.
+ */
 class PlanPartitionInfo {
  public:
   friend class PlanPartitioner;

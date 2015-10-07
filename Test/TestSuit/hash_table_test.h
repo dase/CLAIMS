@@ -19,7 +19,7 @@
 
 #include "../../Catalog/Column.h"
 
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../../physical_query_plan/BlockStreamIteratorBase.h"
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
 
@@ -291,11 +291,11 @@ static double projection_scan(unsigned degree_of_parallelism){
 	ps_state.schema_=schema;
 
 	BlockStreamBase* block_for_asking=BlockStreamBase::createBlockWithDesirableSerilaizedSize(schema,64*1024);
-	warm_up_iterator->open(0);
-	while(warm_up_iterator->next(block_for_asking)){
+	warm_up_iterator->Open(0);
+	while(warm_up_iterator->Next(block_for_asking)){
 
 	}
-	warm_up_iterator->close();
+	warm_up_iterator->Close();
 
 	Arg arg;
 	arg.hash=PartitionFunctionFactory::createBoostHashFunction(nbuckets);

@@ -12,7 +12,6 @@
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
@@ -23,6 +22,7 @@
 #include "../logical_query_plan/logical_filter.h"
 #include "../logical_query_plan/logical_scan.h"
 #include "../logical_query_plan/logical_aggregation.h"
+#include "../physical_query_plan/BlockStreamAggregationIterator.h"
 
 int getlevel(Expr_cal *calnode)
 {

@@ -29,10 +29,12 @@
 
 #include "../logical_query_plan/logical_sort.h"
 
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
+#include "../Catalog/Catalog.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
+#include "../physical_query_plan/BlockStreamExpander.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 namespace claims {
 namespace logical_query_plan {
 LogicalSort::LogicalSort(LogicalOperator *child,

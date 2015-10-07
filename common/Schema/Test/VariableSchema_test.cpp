@@ -19,7 +19,7 @@
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
 
 #include "../../../BlockStreamIterator/BlockStreamPrint.h"
-#include "../../../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../../../physical_query_plan/BlockStreamIteratorBase.h"
 
 #include "../../../logical_query_plan/logical_scan.h"
 #include "../../../logical_query_plan/LogicalQueryPlanRoot.h"
@@ -109,9 +109,9 @@ static int variable_schema_test(){
 
 
 	/*******************show******************/
-	print->open();
-	print->next(0);
-	print->close();
+	print->Open();
+	print->Next(0);
+	print->Close();
 
 //	IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
 	return 0;

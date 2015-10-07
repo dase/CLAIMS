@@ -1,3 +1,6 @@
+#include "../physical_query_plan/BlockStreamAggregationIterator.h"
+
+
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -32,9 +35,8 @@
 #include <vector>
 #include "../logical_query_plan/plan_context.h"
 #include "../IDsGenerator.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/BlockStreamExpander.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Config.h"
 #include <glog/logging.h>

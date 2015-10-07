@@ -81,11 +81,11 @@ static int test_logical_csb_index_building()
 			BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
-			executable_query_plan->open();
+			executable_query_plan->Open();
 			cout << "open finished!\n";
-			while (executable_query_plan->next(0));
+			while (executable_query_plan->Next(0));
 			cout << "next finished!\n";
-			executable_query_plan->close();
+			executable_query_plan->Close();
 			cout << "close finished!\n";
 
 //			ResultSet* result_set = executable_query_plan->getResultSet();
@@ -133,9 +133,9 @@ cout << "index building finished!\n";
 			executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
-			executable_query_plan->open();
-			while (executable_query_plan->next(0));
-			executable_query_plan->close();
+			executable_query_plan->Open();
+			while (executable_query_plan->Next(0));
+			executable_query_plan->Close();
 
 			executable_query_plan->~BlockStreamIteratorBase();
 			root->~LogicalOperator();

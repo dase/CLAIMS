@@ -31,12 +31,11 @@
 #include <vector>
 #include "./plan_context.h"
 #include "../common/Schema/SchemaFix.h"
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../logical_query_plan/Requirement.h"
 
 namespace claims {
 namespace logical_query_plan {
-
 enum OperatorType {
   kLogicalScan,
   kLogicalFilter,
@@ -54,18 +53,27 @@ typedef struct PhysicalPlanDescriptor {
   PlanContext plan_context_;
   unsigned cost;
 };
+/**
+ * LogicalOperator is the base class of all logical operator.
+ * GetPlanContext() aims at maintaining the property of the data after
+ * completing every operator of plan. the property contains the output
+ * attributes, partition key, cardinality and communication cost.
+ * GetPhysicalPlan() adds current physical operator into the whole plan, result
+ * into a plan tree.
+ */
 class LogicalOperator {
  public:
   LogicalOperator(){};
   virtual ~LogicalOperator(){};
-
-  /*get the data flow which is optimal in the local view.*
-   * TODO: leverage recursive search for the global optimal. */
+  /**
+   * get the plan context which describes the property of the data after having
+   * executed corresponding operator.
+   */
   virtual PlanContext GetPlanContext() = 0;
 
-  /*
-   * generate the iterator tree based on the computed dataflow. Hence,
-   * this function can only be called after the calling of getDataflow()
+  /**
+   * generate the iterator tree based on the computed plan_context. Hence,
+   * this function can only be called after the calling of GetPlanContext().
    */
   virtual BlockStreamIteratorBase* GetPhysicalPlan(const unsigned&) = 0;
 
@@ -81,8 +89,6 @@ class LogicalOperator {
 
   virtual void Print(int level = 0) const = 0;
 
-  inline OperatorType GetOperatorType() { return operator_type_; }
-
  protected:
   Schema* GetSchema(const std::vector<Attribute>&) const;
   Schema* GetSchema(const std::vector<Attribute>&,
@@ -94,10 +100,8 @@ class LogicalOperator {
       const std::vector<PhysicalPlanDescriptor>) const;
   int GetIdInAttributeList(const std::vector<Attribute>& attributes,
                            const Attribute& attribute) const;
-  void Align(int space) const;
-
-  inline void set_operator_type(OperatorType node_operator) {
-    operator_type_ = node_operator;
+  inline void set_operator_type(OperatorType operator_type) {
+    operator_type_ = operator_type;
   }
 
  private:

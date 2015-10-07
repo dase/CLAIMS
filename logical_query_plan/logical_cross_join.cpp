@@ -1,3 +1,7 @@
+#include "../Config.h"
+#include "../IDsGenerator.h"
+#include "../Resource/NodeTracker.h"
+
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -25,17 +29,13 @@
  * Description:
  *
  */
-
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamNestLoopJoinIterator.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-#include "../IDsGenerator.h"
-#include "../Config.h"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
+#include "../physical_query_plan/BlockStreamExpander.h"
 #include "../common/error_define.h"
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 #include "../logical_query_plan/logical_cross_join.h"
-
+#include "../physical_query_plan/BlockStreamNestLoopJoinIterator.h"
 using namespace claims::common;
 
 namespace claims {

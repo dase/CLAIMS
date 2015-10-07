@@ -14,10 +14,10 @@
 using std::stable_sort;
 
 bottomLayerCollecting::bottomLayerCollecting(State state) :state_(state), partition_reader_iterator_(0), chunk_reader_iterator_(0), chunk_offset_(0), block_offset_(0) {
-	initialize_expanded_status();
+	InitExpandedStatus();
 }
 bottomLayerCollecting::bottomLayerCollecting(){
-	initialize_expanded_status();
+	InitExpandedStatus();
 }
 bottomLayerCollecting::~bottomLayerCollecting() {
 	// TODO Auto-generated destructor stub
@@ -28,29 +28,29 @@ bottomLayerCollecting::State::State(ProjectionID projection_id, Schema* schema, 
 
 }
 
-bool bottomLayerCollecting::open(const PartitionOffset& partition_offset)
+bool bottomLayerCollecting::Open(const PartitionOffset& partition_offset)
 {
 
 	AtomicPushBlockStream(BlockStreamBase::createBlockWithDesirableSerilaizedSize(state_.schema_, state_.block_size_));
-	if(tryEntryIntoSerializedSection()){
+	if(TryEntryIntoSerializedSection()){
 
 		computeOutputSchema();
 		/* this is the first expanded thread*/
 		PartitionStorage* partition_handle_;
 		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
-			setReturnStatus(false);
+			SetReturnStatus(false);
 		}
 		else{
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 		}
-		setReturnStatus(true);
+		SetReturnStatus(true);
 	}
-	barrierArrive();
-	return getReturnStatus();
+	BarrierArrive();
+	return GetReturnStatus();
 }
 
-bool bottomLayerCollecting::next(BlockStreamBase* block) {
+bool bottomLayerCollecting::Next(BlockStreamBase* block) {
 	remaining_block rb;
 	void* original_tuple;
 	void* tuple_new;
@@ -125,8 +125,8 @@ bool bottomLayerCollecting::next(BlockStreamBase* block) {
 	return false;
 }
 
-bool bottomLayerCollecting::close() {
-	initialize_expanded_status();
+bool bottomLayerCollecting::Close() {
+	InitExpandedStatus();
 	delete partition_reader_iterator_;
 	remaining_block_list_.clear();
 	block_stream_list_.clear();
@@ -217,12 +217,12 @@ void bottomLayerCollecting::computeOutputSchema(){
 
 bottomLayerSorting::bottomLayerSorting(){
 
-	initialize_expanded_status();
+	InitExpandedStatus();
 }
 
 bottomLayerSorting::bottomLayerSorting(State state) :state_(state)
 {
-	initialize_expanded_status();
+	InitExpandedStatus();
 }
 
 bottomLayerSorting::~bottomLayerSorting()
@@ -234,15 +234,15 @@ bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child,
 : schema_(schema), child_(child), block_size_(block_size), projection_id_(projection_id), key_indexing_(key_indexing), index_name_(index_name) {
 
 }
-bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
+bool bottomLayerSorting::Open(const PartitionOffset& partition_offset)
 {
-	if (tryEntryIntoSerializedSection())
+	if (TryEntryIntoSerializedSection())
 	{
 		computeVectorSchema();
-		const bool child_open_return = state_.child_->open(partition_offset);
-		setReturnStatus(child_open_return);
+		const bool child_open_return = state_.child_->Open(partition_offset);
+		SetReturnStatus(child_open_return);
 	}
-	barrierArrive();
+	BarrierArrive();
 
 	//Construct the PartitionID for the next function to make up the ChunkID
 	partition_id_.projection_id = state_.projection_id_;
@@ -254,7 +254,7 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 	BlockStreamBase::BlockStreamTraverseIterator* iterator = NULL;
 	void* current_chunk = new ChunkOffset;
 	Operate* op_ = state_.schema_->getcolumn(1).operate->duplicateOperator();
-	while (state_.child_->next(block_for_asking))
+	while (state_.child_->Next(block_for_asking))
 	{
 		iterator = block_for_asking->createIterator();
 		void* current_tuple = NULL;
@@ -323,10 +323,10 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 	}
 
 
-	return getReturnStatus();
+	return GetReturnStatus();
 }
 
-bool bottomLayerSorting::next(BlockStreamBase* block)
+bool bottomLayerSorting::Next(BlockStreamBase* block)
 {
 	switch (vector_schema_->getcolumn(0).type)
 	{
@@ -408,10 +408,10 @@ bool bottomLayerSorting::next(BlockStreamBase* block)
 */
 }
 
-bool bottomLayerSorting::close()
+bool bottomLayerSorting::Close()
 {
-	initialize_expanded_status();
-	state_.child_->close();
+	InitExpandedStatus();
+	state_.child_->Close();
 	cout << "bottomLayerSorting close finished!\n";
 	return true;
 }

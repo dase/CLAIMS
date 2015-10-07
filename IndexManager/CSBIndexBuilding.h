@@ -9,7 +9,7 @@
 #define CSBINDEXBUILDING_H_
 #include <boost/serialization/base_object.hpp>
 #include <map>
-#include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
+#include "../physical_query_plan/physical_operator.h"
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Schema/Schema.h"
@@ -21,7 +21,7 @@
 template<typename T>
 CSBPlusTree<T>* indexBuilding(Schema* schema, vector<void*> chunk_tuples);
 
-class bottomLayerCollecting :public ExpandableBlockStreamIteratorBase {
+class bottomLayerCollecting :public PhysicalOperator {
 public:
 	struct remaining_block {
 		remaining_block() : block(0), iterator(0), chunk_offset(0), block_offset(0), tuple_offset(0) {}
@@ -54,10 +54,10 @@ public:
 	bottomLayerCollecting();
 	bottomLayerCollecting(State state);
 	virtual ~bottomLayerCollecting();
-	bool open(const PartitionOffset& partition_offset=0);
-	bool next(BlockStreamBase* block);
-	bool close();
-	void print(){
+	bool Open(const PartitionOffset& partition_offset=0);
+	bool Next(BlockStreamBase* block);
+	bool Close();
+	void Print(){
 		printf("CCSBIndexingBuilding\n");
 	}
 
@@ -88,14 +88,14 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state_;
+		ar & boost::serialization::base_object<PhysicalOperator>(*this) & state_;
 	}
 };
 
 
 
 
-class bottomLayerSorting :public ExpandableBlockStreamIteratorBase {
+class bottomLayerSorting :public PhysicalOperator {
 public:
 	class State {
 		friend class bottomLayerSorting;
@@ -130,9 +130,9 @@ public:
 	bottomLayerSorting(State state);
 	virtual ~bottomLayerSorting();
 
-	bool open(const PartitionOffset& partition_offset=0);
-	bool next(BlockStreamBase* block);
-	bool close();
+	bool Open(const PartitionOffset& partition_offset=0);
+	bool Next(BlockStreamBase* block);
+	bool Close();
 
 private:
 	static bool compare(const compare_node* a, const compare_node* b);
@@ -153,7 +153,7 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state_;
+		ar & boost::serialization::base_object<PhysicalOperator>(*this) & state_;
 	}
 };
 

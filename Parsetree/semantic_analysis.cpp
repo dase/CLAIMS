@@ -20,7 +20,6 @@
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include"sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
@@ -30,6 +29,7 @@
 #include "../logical_query_plan/logical_equal_join.h"
 #include "../logical_query_plan/logical_filter.h"
 #include "../logical_query_plan/logical_scan.h"
+#include "../physical_query_plan/BlockStreamAggregationIterator.h"
 using namespace std;
 bool semantic_analysis(Node *parsetree,bool issubquery);
 bool wherecondition_analysis(Query_stmt * qstmt,Node *cur,vector<Node *>rtable);

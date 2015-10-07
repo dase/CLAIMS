@@ -99,15 +99,5 @@ int LogicalOperator::GetIdInAttributeList(
   return -1;
 }
 
-// bool LogicalOperator::GetOptimalPhysicalPlan(Requirement
-// requirement,PhysicalPlanDescriptor& physical_plan_descriptor){
-//	assert(false);
-//}
-void LogicalOperator::Align(int space) const {
-  for (unsigned i = 0; i < space; i++) {
-    printf(" ");
-  }
-}
-
 }  // namespace logical_query_plan
 }  // namespace claims

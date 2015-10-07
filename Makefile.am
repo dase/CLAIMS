@@ -22,7 +22,7 @@ LDADD =  \
 	Test/common/libcommon.a \
 	Test/TestSuit/libtestsuit.a \
 	Test/utility/libutility.a \
-	BlockStreamIterator/Serialization/libserialization.a \
+	common/serialization/libserialization.a \
 	Client/libclient.a \
 	Client/Test/libtest.a \
 	Daemon/libdaemon.a \
@@ -34,10 +34,8 @@ LDADD =  \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
 	logical_query_plan/liblogicalqueryplan.a \
+	physical_query_plan/libphysicalqueryplan.a \
 	storage/libstorage.a \
-	BlockStreamIterator/ParallelBlockStreamIterator/Test/libtest.a \
-	BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
-	BlockStreamIterator/libblockstreamiterator.a \
 	Resource/libresouce.a \
 	Catalog/libcatalog.a \
 	Catalog/Test/libtest.a \
@@ -98,10 +96,10 @@ test_SOURCES = Test/gtest_main.cpp\
 				
 
 
-SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
-Loader logical_query_plan Parsetree Resource \
+SUBDIRS=  Catalog Client common Daemon Executor IndexManager\
+Loader physical_query_plan logical_query_plan Parsetree Resource \
 storage Test utility codegen
 
-DIST_SUBDIRS = BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
-Loader logical_query_plan Parsetree Resource \
+DIST_SUBDIRS =  Catalog Client common Daemon Executor IndexManager\
+Loader physical_query_plan logical_query_plan Parsetree Resource \
 storage Test utility codegen

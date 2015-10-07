@@ -30,24 +30,22 @@
 
 #include "../common/Schema/SchemaFix.h"
 
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScanDisk.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStredomDiskAccess.h"
+#include "../physical_query_plan/BlockStreamExpander.h"
 
-using namespace std;
-
-/***********************************Pthread && Block at a time*******************************************/
+using namespace#include "../physical_query_plan/ExpandableBlockStreamRandomDiskAccess.h"
+e***************************#include "../physical_query_plan/ExpandableBlockStreamRandomMemAccess.h"
+****************/
 
 
-/************Local Disk Access************/
+/*******#include "../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
+*****Local Disk Access******#include "../physical_query_plan/ExpandableBlockStreamSingleColumnScanDisk.h"
+******/
 int main_ld (int argc, char** argv)
 {
 	const unsigned block_size = atoi(argv[1]);
@@ -96,9 +94,9 @@ int main_ld (int argc, char** argv)
 	BlockStreamPerformanceTest::State bspt_state(d_schema, bse1, bse2, block_size, 1000);
 	BlockStreamIteratorBase* bspt = new BlockStreamPerformanceTest(bspt_state);
 
-	bspt->open();
-	while (bspt->next(0));
-	bspt->close();
+	bspt->Open();
+	while (bspt->Next(0));
+	bspt->Close();
 
 	return 0;
 }

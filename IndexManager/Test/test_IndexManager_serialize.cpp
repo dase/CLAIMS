@@ -74,9 +74,9 @@ static void test_logical_index_building()
 	root->Print();
 >>>>>>> master-yk-150927
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
-	executable_query_plan->open();
-	while (executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while (executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	ResultSet* result_set = executable_query_plan->getResultSet();
 
@@ -125,9 +125,9 @@ static void test_logical_index_scan()
 		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::kPrint);
 >>>>>>> master-yk-150927
 		BlockStreamIteratorBase* executable_query_plan = root->GetPhysicalPlan(1024 * 64);
-		executable_query_plan->open();
-		while (executable_query_plan->next(0));
-		executable_query_plan->close();
+		executable_query_plan->Open();
+		while (executable_query_plan->Next(0));
+		executable_query_plan->Close();
 		executable_query_plan->~BlockStreamIteratorBase();
 		root->~LogicalOperator();
 	}
@@ -166,9 +166,9 @@ static void bulk_test_logical_index_scan()
 		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::kResultCollector);
 >>>>>>> master-yk-150927
 		BlockStreamIteratorBase* executable_query_plan = root->GetPhysicalPlan(1024 * 64);
-		executable_query_plan->open();
-		while (executable_query_plan->next(0));
-		executable_query_plan->close();
+		executable_query_plan->Open();
+		while (executable_query_plan->Next(0));
+		executable_query_plan->Close();
 
 		ResultSet* result_set = executable_query_plan->getResultSet();
 
@@ -201,9 +201,9 @@ static void test_scan_filter_performance(int value)
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64);
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -242,9 +242,9 @@ static void test_index_filter_performance(int value_high)
 	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PERFORMANCE);
 //	root->print();
 	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024 * 64);
-	executable_query_plan->open();
-	while (executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while (executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	ResultSet* result_set = executable_query_plan->getResultSet();
 

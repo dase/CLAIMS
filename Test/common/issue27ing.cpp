@@ -140,10 +140,10 @@ static void query_select_fzh() {
   BlockStreamIteratorBase* physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
-  physical_iterator_tree->open();
-  while (physical_iterator_tree->next(0))
+  physical_iterator_tree->Open();
+  while (physical_iterator_tree->Next(0))
     ;
-  physical_iterator_tree->close();
+  physical_iterator_tree->Close();
   printf("Q1: execution time: %4.4f second.\n", getSecond(start));
 }
 
@@ -341,10 +341,10 @@ static void query_select_aggregation_ing() {
   BlockStreamIteratorBase* physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
-  physical_iterator_tree->open();
-  while (physical_iterator_tree->next(0))
+  physical_iterator_tree->Open();
+  while (physical_iterator_tree->Next(0))
     ;
-  physical_iterator_tree->close();
+  physical_iterator_tree->Close();
   printf("Q1: execution time: %4.4f second.\n", getSecond(start));
 }
 

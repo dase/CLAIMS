@@ -13,7 +13,7 @@
 
 #include "../../Loader/Hdfsloader.h"
 
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../../physical_query_plan/BlockStreamIteratorBase.h"
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
@@ -124,9 +124,9 @@ static void query_2(){
 
 	BlockStreamIteratorBase* sub_physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 
-	sub_physical_iterator_tree->open();
-	while(sub_physical_iterator_tree->next(0));
-	sub_physical_iterator_tree->close();
+	sub_physical_iterator_tree->Open();
+	while(sub_physical_iterator_tree->Next(0));
+	sub_physical_iterator_tree->Close();
 
 	ResultSet *result_set=sub_physical_iterator_tree->getResultSet();
 
@@ -254,9 +254,9 @@ static void query_3(){
 >>>>>>> master-yk-150927
 	BlockStreamIteratorBase* final_physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 
-	final_physical_iterator_tree->open();
-	while(final_physical_iterator_tree->next(0));
-	final_physical_iterator_tree->close();
+	final_physical_iterator_tree->Open();
+	while(final_physical_iterator_tree->Next(0));
+	final_physical_iterator_tree->Close();
 
 	printf("Q3: execution time: %4.4f second.\n",getSecond(start));
 

@@ -38,9 +38,9 @@
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/qnode.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamProjectIterator.h"
 #include "../Catalog/Catalog.h"
 #include "../logical_query_plan/logical_operator.h"
+#include "../physical_query_plan/BlockStreamProjectIterator.h"
 
 namespace claims {
 namespace logical_query_plan {

@@ -8,10 +8,10 @@
 #ifndef SQL_PARSER_TEST_H_
 #define SQL_PARSER_TEST_H_
 #include "../../logical_query_plan/LogicalQueryPlanRoot.h"
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
 #include "../set_up_environment.h"
 #include <stdio.h>
 #include "../../logical_query_plan/logical_operator.h"
+#include "../../physical_query_plan/BlockStreamIteratorBase.h"
 
 char sql[1000];
 int sql_parser_test(){
@@ -26,9 +26,9 @@ int sql_parser_test(){
 			LogicalOperator* root=new LogicalQueryPlanRoot(0,logical_tree,LogicalQueryPlanRoot::PRINT );
 			BlockStreamIteratorBase* physical_plan=root->GetPhysicalPlan(64*1024);
 
-			physical_plan->open(0);
-			physical_plan->next(0);
-			physical_plan->close();
+			physical_plan->Open(0);
+			physical_plan->Next(0);
+			physical_plan->Close();
 
 		}
 	}

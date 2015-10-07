@@ -36,10 +36,9 @@
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
 #include "../Catalog/stat/StatManager.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamJoinIterator.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-
+#include "../physical_query_plan/BlockStreamExpander.h"
+#include "../physical_query_plan/BlockStreamJoinIterator.h"
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 namespace claims {
 namespace logical_query_plan {
 LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,

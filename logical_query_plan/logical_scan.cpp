@@ -32,11 +32,11 @@
 #include <glog/logging.h>
 #include <iostream>
 #include "../Catalog/Catalog.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
-
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
+#include "../Resource/NodeTracker.h"
 namespace claims {
 namespace logical_query_plan {
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)

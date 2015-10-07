@@ -32,16 +32,16 @@
 
 #include "../Config.h"
 #include "../IDsGenerator.h"
+#include "../logical_query_plan/logical_operator.h"
+#include "../physical_query_plan/BlockStreamExpander.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/BlockStreamLimit.h"
 #include "../Resource/NodeTracker.h"
 
-#include "../BlockStreamIterator/BlockStreamLimit.h"
-#include "../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
-#include "../BlockStreamIterator/BlockStreamPrint.h"
-#include "../BlockStreamIterator/BlockStreamResultCollector.h"
-
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-
+#include "../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
+#include "../physical_query_plan/BlockStreamPrint.h"
+#include "../physical_query_plan/BlockStreamResultCollector.h"
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 namespace claims {
 namespace logical_query_plan {
 

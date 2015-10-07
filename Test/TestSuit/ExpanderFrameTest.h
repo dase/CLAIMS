@@ -1,10 +1,10 @@
 #include "../../utility/test_tool.h"
 #include "../../common/Block/ResultSet.h"
-#include "../../BlockStreamIterator/BlockStreamResultCollector.h"
 #include "../set_up_environment.h"
 #include "../../common/AttributeComparator.h"
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../Executor/IteratorExecutorSlave.h"
+#include "../../physical_query_plan/BlockStreamResultCollector.h"
 /*
  * ExpanderFrameTest.h
  *
@@ -32,9 +32,9 @@ static int test_scan(){
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64);
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -771,9 +771,9 @@ static int test_multiple_scan(){
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -808,10 +808,10 @@ static int test_multiple_scan_filter_high_selectivity(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
-	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Print();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -847,9 +847,9 @@ static int test_multiple_scan_filter_low_selectivity(){
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -901,9 +901,9 @@ static int test_multiple_scan_filter_Aggregation(){
 
 	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -953,9 +953,9 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	executable_query_plan
 	ResultSet *result_set=executable_query_plan->getResultSet();
@@ -1014,9 +1014,9 @@ static int test_multiple_no_repartition_filtered_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -1069,9 +1069,9 @@ static int test_multiple_complete_repartition_filtered_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -1106,9 +1106,9 @@ static int test_multiple_complete_repartition_scan_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 
@@ -1143,9 +1143,9 @@ static int test_multiple_no_repartition_scan_join(){
 
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 	ResultSet *result_set=executable_query_plan->getResultSet();
 

@@ -14,8 +14,6 @@
 #include <string>
 #include <vector>
 
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/Partitioner.h"
@@ -37,6 +35,7 @@
 #include "../../logical_query_plan/Filter.h"
 #include "../../logical_query_plan/logical_operator.h"
 #include "../../logical_query_plan/LogicalQueryPlanRoot.h"
+#include "../../physical_query_plan/BlockStreamAggregationIterator.h"
 #include "../../utility/rdtsc.h"
 
 #include "../sql_node_struct.h"
@@ -446,7 +445,7 @@ static int parser_test(){
 			root->Print();
 
 			BlockStreamIteratorBase* please=root->GetPhysicalPlan(64*1024-sizeof(unsigned));
-			please->print();
+			please->Print();
 	//		cin>>input;
 
 	//		ProjectionBinding *pb=new ProjectionBinding();

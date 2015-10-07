@@ -40,14 +40,14 @@ int mainasdfaf234(int argc,const char** argv){
 
 
 //		bsf->open();
-		bsf->open();
+		bsf->Open();
 		unsigned long long int start=curtick();
 
-		while(bsf->next(block)){
+		while(bsf->Next(block)){
 			block->setEmpty();
 		}
 		printf("Time=%f Throughput=%f.\n",getSecond(start),1024/getSecond(start));
-		bsf->close();
+		bsf->Close();
 		printf("Continue(0) or Not(1) ?\n");
 
 		scanf("%d",&choice);

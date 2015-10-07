@@ -29,8 +29,6 @@
 #include "../logical_query_plan/logical_filter.h"
 
 #include <vector>
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
 #include "../IDsGenerator.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Catalog/stat/Estimation.h"
@@ -38,7 +36,8 @@
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/initquery.h"
-
+#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/ExpandableBlockStreamFilter.h"
 namespace claims {
 namespace logical_query_plan {
 

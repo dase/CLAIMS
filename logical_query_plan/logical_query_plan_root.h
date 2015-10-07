@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 #include "../common/ids.h"
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../logical_query_plan/logical_limit.h"
 #include "../logical_query_plan/logical_operator.h"
 

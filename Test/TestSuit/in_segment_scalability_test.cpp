@@ -41,9 +41,9 @@ static double lineitem_scan_self_join(){
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -78,9 +78,9 @@ static double sb_scan_self_join(){
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -121,9 +121,9 @@ static double lineitem_scan_aggregation(){
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	printf("tuples %d\n",result_set->getNumberOftuples());
@@ -151,9 +151,9 @@ static double lineitem_scan_filter(){
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -185,9 +185,9 @@ static double sb_scan_filter(){
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -222,9 +222,9 @@ static double sb_scan_aggregation(){
 	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	printf("tuples %d\n",result_set->getNumberOftuples());
@@ -307,18 +307,18 @@ static void test_block_construct(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 	scan->GetPlanContext();
 	BlockStreamIteratorBase* s=scan->GetPhysicalPlan(64*1024);
-	s->print();
+	s->Print();
 
 	std::vector<BlockStreamBase*> vect;
 	BlockStreamBase* block=BlockStreamBase::createBlock(table->getProjectoin(0)->getSchema(),64*1024);
-	s->open();
-	while(s->next(block));
-	s->close();
-	s->open();
+	s->Open();
+	while(s->Next(block));
+	s->Close();
+	s->Open();
 	unsigned long long int start=curtick();
-	while(s->next(block));
+	while(s->Next(block));
 	printf("time: %lf \n",getSecond(start));
-	s->close();
+	s->Close();
 
 
 

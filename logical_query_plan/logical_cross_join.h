@@ -29,7 +29,7 @@
 #ifndef LOGICAL_QUERY_PLAN_LOGICAL_CROSS_JOIN_H_
 #define LOGICAL_QUERY_PLAN_LOGICAL_CROSS_JOIN_H_
 
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../common/error_define.h"
 #include "../logical_query_plan/logical_operator.h"
 

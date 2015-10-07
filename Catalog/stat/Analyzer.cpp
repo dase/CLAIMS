@@ -14,11 +14,11 @@
 #include "../../common/Block/BlockStream.h"
 #include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../common/Block/ResultSet.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 #include "../../common/data_type.h"
 #include "../../logical_query_plan/logical_aggregation.h"
 #include "../../logical_query_plan/logical_query_plan_root.h"
 #include "../../logical_query_plan/logical_scan.h"
+#include "../../physical_query_plan/BlockStreamAggregationIterator.h"
 #include "../Catalog.h"
 #include "../table.h"
 
@@ -83,9 +83,9 @@ void Analyzer::analyse(const AttributeID& attrID) {
   BlockStreamIteratorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
-  collector->open();
-  collector->next(0);
-  collector->close();
+  collector->Open();
+  collector->Next(0);
+  collector->Close();
   ResultSet* resultset = collector->getResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 
@@ -231,7 +231,7 @@ void Analyzer::compute_attribute_stat(const AttributeID& attr_id) {
     Histogram* his = Analyzer::computeHistogram(
         attr_id, decideNumberOfBucketsForHistogram(
                      distinct_cardinality, tab_stat->number_of_tuples_));
-    his->print(Catalog::getInstance()
+    his->Print(Catalog::getInstance()
                    ->getTable(attr_id.table_id)
                    ->getAttribute(attr_id.offset)
                    .attrType->type);
@@ -266,9 +266,9 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
 
   BlockStreamIteratorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
-  collector->open();
-  collector->next(0);
-  collector->close();
+  collector->Open();
+  collector->Next(0);
+  collector->Close();
   ResultSet* resultset = collector->getResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
@@ -395,9 +395,9 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
 
   BlockStreamIteratorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
-  collector->open();
-  collector->next(0);
-  collector->close();
+  collector->Open();
+  collector->Next(0);
+  collector->Close();
   ResultSet* resultset = collector->getResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
@@ -463,9 +463,9 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
   BlockStreamIteratorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
-  collector->open();
-  collector->next(0);
-  collector->close();
+  collector->Open();
+  collector->Next(0);
+  collector->Close();
   ResultSet* resultset = collector->getResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 
