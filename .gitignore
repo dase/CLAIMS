@@ -69,3 +69,4 @@ ar-lib
 缺省值
 *sql.output
 *.doxyfile
+bin/
