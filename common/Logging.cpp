@@ -49,6 +49,9 @@
 
 #define DEBUG_ASTParser
 
+#define DEBUG_StorageManager
+#define DEBUG_QueryOptimization
+
 #define DEBUG_ThreadPool
 #define SQL_Parser
 
@@ -446,7 +449,7 @@ void SQLParse_log(const char* format, ...) {
 void SQLParse_elog(const char* format, ...) {
   va_list arg;
   va_start(arg, format);
-  RawLog("[SQLParse]: ", format, arg);
+  RawElog("[SQLParse]: ", format, arg);
   va_end(arg);
 }
 

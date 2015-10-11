@@ -31,7 +31,7 @@
 
 #include <stdlib.h>
 
-
+typedef int RetCode; // means return code
 /*
  * have to add Error Message in error_no.h and error_no.cpp, if new error no is add
  */
