@@ -46,6 +46,9 @@ class ErrorNoTest : public ::testing::Test{
   static void TearDownTestCase() {
     cout << "finish new test case" << endl;
   }
+  static ErrCode TestReturnErrorCode() {
+    return C_SUCCESS;
+  }
 };
 
 TEST_F(ErrorNoTest, A) {
@@ -70,6 +73,10 @@ TEST_F(ErrorNoTest, C) {
 //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
   EXPECT_STREQ("Success", res);
+}
+
+TEST_F(ErrorNoTest, D) {
+  EXPECT_EQ(TestReturnErrorCode(), C_SUCCESS);
 }
 
 #endif  // TEST_COMMON_ERRNO_TEST_H_

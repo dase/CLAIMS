@@ -115,6 +115,7 @@ struct ColumnID{
 	ColumnID(){};
 	ColumnID(ProjectionID pid,ColumnOffset off):projection_id(pid),column_off(off){};
 	ProjectionID projection_id;
+	// the index of column in projection, not in table
 	ColumnOffset column_off;
 	bool operator==(const ColumnID &r)const{
 		return projection_id==r.projection_id&&column_off==r.column_off;

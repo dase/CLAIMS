@@ -95,6 +95,16 @@ std::string BlockManagerMaster::generateSlaveActorName(const NodeID & node_id)co
 	return str.str();
 }
 
+/*
+ * send message to specified node to set chunk number in partition
+ * whose id is partition_id.
+ *
+ * this function is used in two way:
+ *    1) bind a projection to a node:
+ *      add new partition info like chunk number in the node
+ *      chunk number is not changed
+ *    2) update the chunk number in a node: chunk number changed
+ */
 bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, const unsigned& number_of_chunks, const StorageLevel& desirable_storage_level,const NodeID& target)const{
 	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
 
@@ -111,6 +121,10 @@ bool BlockManagerMaster::SendBindingMessage(const PartitionID& partition_id, con
 	return true;
 }
 
+/*
+ * As opposed to SendBindingMessage,
+ * except this method isn't used in updating chunk number
+ */
 bool BlockManagerMaster::SendUnbindingMessage(const PartitionID &partition_id, NodeID &target) const
 {
 	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
@@ -122,7 +136,7 @@ bool BlockManagerMaster::SendUnbindingMessage(const PartitionID &partition_id, N
 	logging_->log("Sending the unbinding message to [%s]",generateSlaveActorName(target).c_str());
 	framework_->Send(message,receiver.GetAddress(),Theron::Address(generateSlaveActorName(target).c_str()));
 	if(receiver.TimeOutWait(1,200000)==0){
-		logging_->elog("The node[%s] fails to receiver the partition unbinding message! target actor name=%s",NodeTracker::GetInstance()->GetNodeIP(target).c_str(),generateSlaveActorName(target).c_str());
+		logging_->elog("The node[%s] fails to receive the partition unbinding message! target actor name=%s",NodeTracker::GetInstance()->GetNodeIP(target).c_str(),generateSlaveActorName(target).c_str());
 	}
 	return true;
 }

@@ -621,6 +621,7 @@ void *ClientListener::sendHandler(void *para) {
 		usleep(1);
 		ClientListenerLogging::log("-SendHandler: wait for result!\n");
 		executed_result result = Daemon::getInstance()->getExecutedResult();
+		printf("-SendHandler: get executed_result for %d\n", result.fd);
 		ClientListenerLogging::log("-SendHandler: get executed_result for %d\n", result.fd);
 
 		checkFdValid(result.fd);
@@ -645,11 +646,13 @@ void *ClientListener::sendHandler(void *para) {
 					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
 							cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 					server->write(result.fd, cliRes);
+					printf("send ok response packet ok\n");
 
 					cliRes.setSchema(result.result->schema_);
 					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
 							cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 					server->write(result.fd, cliRes);
+          printf("send schema response packet ok\n");
 
 					std::vector<std::string> list = result.result->column_header_list_;
 					ColumnHeader header;
@@ -660,6 +663,7 @@ void *ClientListener::sendHandler(void *para) {
 					ClientListenerLogging::log("to send data response-- status:%d  length:%d  content:%s  fd:%d",
 							cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 					server->write(result.fd, cliRes);
+          printf("send head response packet ok\n");
 
 					//				result.result->print();
 					ResultSet::Iterator it = result.result->createIterator();
@@ -674,11 +678,13 @@ void *ClientListener::sendHandler(void *para) {
 								cliRes.status, cliRes.length, cliRes.content.c_str(),result.fd);
 						server->write(result.fd, cliRes);
 					}
+          printf("send data packet ok\n");
 
 					cliRes.setEnd(result.result->query_time_);
 					ClientListenerLogging::log("to send end response-- status:%d  length:%d  content:%s",
 							cliRes.status, cliRes.length, cliRes.content.c_str());
 					server->write(result.fd, cliRes);
+          printf("send end response packet ok\n");
 				}
 			}
 		} else {
