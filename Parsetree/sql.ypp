@@ -961,7 +961,7 @@ column_atts: /* nil */				{ $$ = newColumnAtts(t_column_atts, 0, 0, 0, NULL, NUL
     | column_atts NOT NULLX			{ Column_atts *t = (Column_atts *)$1; t->datatype |= 01; $$ = (Node *)t; }
     | column_atts NULLX				{ Column_atts *t = (Column_atts *)$1; t->datatype |= 02; $$ = (Node *)t; }
     | column_atts DEFAULT STRING        	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 04; t->s = $3; $$ = (Node *)t; }
-    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1; t->datatype |= 010; t->num1 = atoi($3); $$ = (Node *)t; }
+    | column_atts DEFAULT INTNUM		{ Column_atts *t = (Column_atts *)$1; t->datatype |= 010; t->num1 = atol($3); $$ = (Node *)t; }
     | column_atts DEFAULT APPROXNUM 	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 020; t->num2 = atof($3); $$ = (Node *)t; }
     | column_atts DEFAULT BOOL          	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 040; t->num1 = atoi($3); $$ = (Node *)t; }
     | column_atts AUTO_INCREMENT        	{ Column_atts *t = (Column_atts *)$1; t->datatype |= 0100; $$ = (Node *)t; }

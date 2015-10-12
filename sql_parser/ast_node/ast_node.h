@@ -73,6 +73,11 @@ enum AstNodeType {
   AST_INSERT_VALUE_LIST,
   AST_INSERT_VALUE,
   AST_INSERT_ASSIGN_LIST,
+  
+  AST_INTNUM,
+  AST_APPROXNUM,
+  AST_STRINGVAL,
+  AST_BOOL,
 };
 const int TAB_SIZE = 4;
 class AstNode {
