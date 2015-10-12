@@ -31,12 +31,12 @@ LDADD = ../Catalog/libcatalog.a \
 noinst_LIBRARIES=libstmthandler.a
 
 libstmthandler_a_SOURCES = \
-	stmt_handler.cpp	stmt_handler.h
-#	stmt_exec.cpp	stmt_exec.h \
-#	select_exec.cpp	select_exec.h \
-#	insert_exec.cpp insert_exec.h \
-#	load_exec.cpp	load_exec.h \
-3	create_exec.cpp create_exec.h
+	stmt_handler.cpp	stmt_handler.h	\
+	stmt_exec.cpp	stmt_exec.h \
+	select_exec.cpp	select_exec.h \
+	insert_exec.cpp insert_exec.h \
+	load_exec.cpp	load_exec.h \
+	create_exec.cpp create_exec.h
 	
 
 	

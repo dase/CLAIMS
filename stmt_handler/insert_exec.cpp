@@ -30,6 +30,9 @@
 #include <assert.h>
 #include "../stmt_handler/insert_exec.h"
 
+#include "../Environment.h"
+#include "../Loader/Hdfsloader.h"
+
 namespace claims {
 namespace stmt_handler {
 
@@ -39,25 +42,25 @@ const int InsertExec::SMALLINT_LENGTH = 4;
 
 /**
  * @brief Constructor
- * @detail convert the base class member stmt_ to insert_ast_ and get the table name,
+ * @detail convert the base class member stmt_ to insert_ast_ and get the table
+ * name,
  *  firstly get the descriptor from catalog by table name.
  *  initialize members has_warning_, is_correct_, is_all_col_ to default values.
  */
-InsertExec::InsertExec(AstNode* stmt)
+InsertExec::InsertExec(AstNode *stmt)
     : StmtExec(stmt),
       has_warning_(false),
       is_correct_(true),
       is_all_col_(false) {
   // TODO Auto-generated constructor stub
   assert(stmt_);
-  insert_ast_ = static_cast<AstInsertStmt*>(stmt_);
+  insert_ast_ = static_cast<AstInsertStmt *>(stmt_);
   tablename_ = insert_ast_->table_name_;
   table_desc_ = Environment::getInstance()->getCatalog()->getTable(tablename_);
 }
 
 InsertExec::~InsertExec() {
   // TODO Auto-generated destructor stub
-
 }
 
 bool InsertExec::InsertValueToStream(AstInsertVals *insert_value,
@@ -66,26 +69,20 @@ bool InsertExec::InsertValueToStream(AstInsertVals *insert_value,
   bool has_warning = true;
   if (insert_value->value_type_ == 0) {
     // check whether the column type match value type
-    has_warning = CheckType(table->getAttribute(position).attrType,
-                            insert_value->expr_);
+    has_warning =
+        CheckType(table->getAttribute(position).attrType, insert_value->expr_);
     // 2014-4-17---only these type are supported now---by Yu
-    switch (insert_value->expr_->ast_node_type())
-    {
+    switch (insert_value->expr_->ast_node_type()) {
       case AST_STRINGVAL:
       case AST_INTNUM:
       case AST_APPROXNUM:
       case AST_BOOL: {
-        AstExprConst *expr = dynamic_cast<AstExprConst*>(insert_value->expr_);
+        AstExprConst *expr = dynamic_cast<AstExprConst *>(insert_value->expr_);
         ostr << expr->data_;
-      }
-      break;
-      default: {
-
-      }
+      } break;
+      default: {}
     }
-  }
-  else if (insert_value->ast_node_type() == 1) {
-
+  } else if (insert_value->ast_node_type() == 1) {
   }
   return has_warning;
 }
@@ -95,86 +92,85 @@ bool InsertExec::InsertValueToStream(AstInsertVals *insert_value,
  */
 bool InsertExec::CheckType(const column_type *col_type, AstNode *expr) {
   AstNodeType insert_value_type = expr->ast_node_type();
-  AstExprConst *pexpr = dynamic_cast<AstExprConst*>(expr);
+  AstExprConst *pexpr = dynamic_cast<AstExprConst *>(expr);
   switch (col_type->type) {
     case t_int:
-      return (insert_value_type != AST_INTNUM)
-          || (pexpr->data_.length()) > INT_LENGTH;
+      return (insert_value_type != AST_INTNUM) ||
+             (pexpr->data_.length()) > INT_LENGTH;
     case t_float:
-      return !(insert_value_type == AST_APPROXNUM)
-          || (pexpr->data_.length()) > FLOAT_LENGTH;
+      return !(insert_value_type == AST_APPROXNUM) ||
+             (pexpr->data_.length()) > FLOAT_LENGTH;
     case t_double:
       return (insert_value_type != AST_APPROXNUM);
     case t_string:
-      return (insert_value_type != AST_STRINGVAL)
-          || (pexpr->data_.length()) > col_type->get_length();
+      return (insert_value_type != AST_STRINGVAL) ||
+             (pexpr->data_.length()) > col_type->get_length();
     case t_time:
       return false;
     case t_datetime:
       return false;
     case t_smallInt:
-      return (insert_value_type != AST_INTNUM)
-          || (pexpr->data_.length()) > SMALLINT_LENGTH;
+      return (insert_value_type != AST_INTNUM) ||
+             (pexpr->data_.length()) > SMALLINT_LENGTH;
     case t_decimal:
       return (insert_value_type != AST_INTNUM);
     default:
       return true;
   }
-
 }
 
 /**
  * @brief insert data
- * @detail check whether the table we have created or not. forbid to insert data into an nonexistent table.
+ * @detail check whether the table we have created or not. forbid to insert data
+ * into an nonexistent table.
  *  There are two different cases when we insert data:
  *    1. insert all columns
  *    2. insert part of all columns
- *  To case 1, we just insert all rows values and make sure the value count and type match each column.
+ *  To case 1, we just insert all rows values and make sure the value count and
+ * type match each column.
  *  To case 2, make sure each value correspond to its column and its type.
- *  If no exceptions and errors, data will be stored into tables and hdfs proper time.
+ *  If no exceptions and errors, data will be stored into tables and hdfs proper
+ * time.
  * @return a result code cooperate with the client.
  */
 int InsertExec::Execute() {
-
   int ret = common::kStmtHandlerOk;
 
   if (isTableExist()) {
     unsigned col_count = 0;
-    AstColumn* col = dynamic_cast<AstColumn*>(insert_ast_->col_list_);
+    AstColumn *col = dynamic_cast<AstColumn *>(insert_ast_->col_list_);
     if (NULL == col) {
-      is_all_col_ = true; // insert all columns
-    }
-    else { // get insert column count
+      is_all_col_ = true;  // insert all columns
+    } else {               // get insert column count
       ++col_count;
-      while ((col = dynamic_cast<AstColumn*>(col->next_)))
-        ++col_count;
+      while ((col = dynamic_cast<AstColumn *>(col->next_))) ++col_count;
     }
 
-    AstInsertValList* insert_value_list =
-        dynamic_cast<AstInsertValList*>(insert_ast_->insert_val_list_);
+    AstInsertValList *insert_value_list =
+        dynamic_cast<AstInsertValList *>(insert_ast_->insert_val_list_);
     if (NULL == insert_value_list) {
       error_msg_ = "No value!";
       result_flag_ = false;
       result_set_ = NULL;
 
       ret = common::kStmtHandlerInsertNoValue;
-    }
-    else {
+    } else {
       std::ostringstream ostr;
       int changed_row_num = 0;
 
       // get data in one row like (...), (...), (...) by while loop.
       while (insert_value_list) {
-
         AstInsertVals *insert_value =
             dynamic_cast<AstInsertVals *>(insert_value_list->insert_vals_);
-        col = dynamic_cast<AstColumn*>(insert_ast_->col_list_);
+        col = dynamic_cast<AstColumn *>(insert_ast_->col_list_);
 
         if (is_all_col_) {
-          // by scdong: Claims adds a default row_id attribute for all tables which is attribute(0),
-          // when inserting tuples we should begin to construct the string_tuple from the second attribute.
+          // by scdong: Claims adds a default row_id attribute for all tables
+          // which is attribute(0),
+          // when inserting tuples we should begin to construct the string_tuple
+          // from the second attribute.
           for (unsigned int position = 1;
-              position < table_desc_->getNumberOfAttribute(); position++) {
+               position < table_desc_->getNumberOfAttribute(); position++) {
             // check value count
             if (insert_value == NULL) {
               // ASTParserLogging::elog("Value count is too few");
@@ -185,9 +181,11 @@ int InsertExec::Execute() {
               break;
             }
 
-            // insert value to ostringstream and if has warning return 1;   look out   the order!
+            // insert value to ostringstream and if has warning return 1;   look
+            // out   the order!
             has_warning_ = InsertValueToStream(insert_value, table_desc_,
-                                               position, ostr) || has_warning_;
+                                               position, ostr) ||
+                           has_warning_;
             // move to next
             insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
             ostr << "|";
@@ -203,8 +201,7 @@ int InsertExec::Execute() {
             break;
           }
 
-        }
-        else {
+        } else {
           // get insert value count and check whether it match column count
           unsigned insert_value_count = 0;
           while (insert_value) {
@@ -212,7 +209,7 @@ int InsertExec::Execute() {
             insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
           }
           if (insert_value_count != col_count) {
-            //ASTParserLogging::elog("Column count doesn't match value count");
+            // ASTParserLogging::elog("Column count doesn't match value count");
             error_msg_ = "Column count doesn't match value count";
             LOG(ERROR) << "Column count doesn't match value count" << std::endl;
             result_flag_ = false;
@@ -221,34 +218,39 @@ int InsertExec::Execute() {
             break;
           }
           unsigned int used_col_count = 0;
-          // by scdong: Claims adds a default row_id attribute for all tables which
-          // is attribute(0), when inserting tuples we should begin to construct the
+          // by scdong: Claims adds a default row_id attribute for all tables
+          // which
+          // is attribute(0), when inserting tuples we should begin to construct
+          // the
           // string_tuple from the second attribute.
           for (unsigned int position = 1;
-              position < table_desc_->getNumberOfAttribute(); position++) {
+               position < table_desc_->getNumberOfAttribute(); position++) {
             // find the matched column and value by name
-            col = dynamic_cast<AstColumn*>(insert_ast_->col_list_);
+            col = dynamic_cast<AstColumn *>(insert_ast_->col_list_);
             AstInsertVals *insert_value =
                 dynamic_cast<AstInsertVals *>(insert_value_list->insert_vals_);
 
             // take attention that attrName is tablename.colname
             // here is temporary code and need to change later
-            while (col
-                && (table_desc_->getAttribute(position).attrName).compare(
-                    table_desc_->getTableName() + "." + col->relation_name_)) {
-              col = dynamic_cast<AstColumn*>(col->next_);
-              insert_value = dynamic_cast<AstInsertVals*>(insert_value->next_);
+            while (col &&
+                   (table_desc_->getAttribute(position).attrName)
+                       .compare(table_desc_->getTableName() + "." +
+                                col->relation_name_)) {
+              col = dynamic_cast<AstColumn *>(col->next_);
+              insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
             }
 
-            // if find the column count is proved to match the insert value count, so column
+            // if find the column count is proved to match the insert value
+            // count, so column
             // exist, then insert_value exist
             if (col && insert_value) {
               ++used_col_count;
-              // insert value to ostringstream and if has warning return 1; look out
+              // insert value to ostringstream and if has warning return 1; look
+              // out
               // the order!
               has_warning_ = InsertValueToStream(insert_value, table_desc_,
-                                                 position, ostr)
-                  || has_warning_;
+                                                 position, ostr) ||
+                             has_warning_;
             }
             ostr << "|";
           }
@@ -263,13 +265,12 @@ int InsertExec::Execute() {
             is_correct_ = false;
             break;
           }
-
         }
 
         if (!is_correct_) break;
 
-        insert_value_list = dynamic_cast<AstInsertValList*>(insert_value_list
-            ->next_);
+        insert_value_list =
+            dynamic_cast<AstInsertValList *>(insert_value_list->next_);
         if (insert_value_list != NULL) ostr << "\n";
 
         ++changed_row_num;
@@ -278,13 +279,15 @@ int InsertExec::Execute() {
 
       if (is_correct_) {
         if (has_warning_) {
-          //ASTParserLogging::log("[WARNING]: The type is not matched!\n");
-          LOG(WARNING) <<  "The type is not matched!" << std::endl;
+          // ASTParserLogging::log("[WARNING]: The type is not matched!\n");
+          LOG(WARNING) << "The type is not matched!" << std::endl;
         }
-        //ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
-        LOG(INFO) << "the insert content is " << std::endl << ostr.str() << std::endl;
+        // ASTParserLogging::log("the insert content is \n%s\n",
+        // ostr.str().c_str());
+        LOG(INFO) << "the insert content is " << std::endl << ostr.str()
+                  << std::endl;
 
-        HdfsLoader* Hl = new HdfsLoader(table_desc_);
+        HdfsLoader *Hl = new HdfsLoader(table_desc_);
         string tmp = ostr.str();
         Hl->append(ostr.str());
 
@@ -300,10 +303,9 @@ int InsertExec::Execute() {
         ret = common::kStmtHandlerInsertDataSuccess;
       }
     }
-  }
-  else {
+  } else {
     error_msg_ = "The table " + tablename_ + "does not exist!";
-    LOG(ERROR)<< "The table " + tablename_ + "does not exist!" << std::endl;
+    LOG(ERROR) << "The table " + tablename_ + "does not exist!" << std::endl;
     result_flag_ = false;
     result_set_ = NULL;
     ret = common::kStmtHandlerTableNotExistDuringInsert;

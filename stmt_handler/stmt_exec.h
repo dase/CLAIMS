@@ -43,7 +43,6 @@
 #include "../sql_parser/ast_node/ast_drop_stmt.h"
 #include "../sql_parser/ast_node/ast_create_stmt.h"
 
-
 namespace claims {
 namespace stmt_handler {
 /**
@@ -57,7 +56,7 @@ class StmtExec {
   virtual int Execute();
 
  public:
-  const ResultSet*& getResultSet() const;
+  const ResultSet* getResultSet() const;
   bool isResultFlag() const;
   const string& getErrorMsg() const;
   const string& getInfo() const;
@@ -68,15 +67,14 @@ class StmtExec {
  protected:
   AstNode* stmt_;
   string tablename_;
-  TableDescriptor *table_desc_;
+  TableDescriptor* table_desc_;
 
   ResultSet* result_set_;
   bool result_flag_;
   string error_msg_;
   string info_;
-
 };
 
-} // namespace stmt_handler
-} // namespace claims
+}  // namespace stmt_handler
+}  // namespace claims
 #endif  //  STMT_HANDLER_STMT_EXEC_H_

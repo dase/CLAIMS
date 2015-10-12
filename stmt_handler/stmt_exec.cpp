@@ -31,8 +31,7 @@
 #include <iostream>
 namespace claims {
 namespace stmt_handler {
-StmtExec::StmtExec(AstNode* stmt)
-    : stmt_(stmt) {
+StmtExec::StmtExec(AstNode* stmt) : stmt_(stmt) {
   // TODO Auto-generated constructor stub
   tablename_ = "";
   table_desc_ = NULL;
@@ -40,7 +39,6 @@ StmtExec::StmtExec(AstNode* stmt)
   result_flag_ = true;
   error_msg_ = "";
   info_ = "";
-
 }
 
 StmtExec::~StmtExec() {
@@ -58,29 +56,19 @@ int StmtExec::Execute() {
 
 bool StmtExec::isTableExist() {
   bool isExist = false;
-  if(table_desc_ != NULL)
-  {
+  if (table_desc_ != NULL) {
     isExist = true;
   }
   return isExist;
 }
 
-const string& StmtExec::getErrorMsg() const {
-  return error_msg_;
-}
+const string& StmtExec::getErrorMsg() const { return error_msg_; }
 
-const string& StmtExec::getInfo() const {
-  return info_;
-}
+const string& StmtExec::getInfo() const { return info_; }
 
-bool StmtExec::isResultFlag() const {
-  return result_flag_;
-}
+bool StmtExec::isResultFlag() const { return result_flag_; }
 
-const ResultSet*& StmtExec::getResultSet() const {
-  return result_set_;
-}
+const ResultSet* StmtExec::getResultSet() const { return result_set_; }
 
-
-}   // namespace stmt_handler
+}  // namespace stmt_handler
 }  // namespace claims
