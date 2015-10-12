@@ -208,12 +208,13 @@ void departwc(struct Node * wherecondition,struct  Node * fromlist)//对wherecon
 	if(cur->type==t_expr_cal)
 	{
 		struct Expr_cal * node=(struct Expr_cal *)cur;
-		if(strcmp((node->sign),"ANDOP")==0)////////////////////////////////
-		{
-			departwc(node->rnext,fromlist);
-			departwc(node->lnext,fromlist);
-		}
-		else if(strcmp(node->sign,"INS")==0)
+//		if(strcmp((node->sign),"ANDOP")==0)////////////////////////////////
+//		{
+//			departwc(node->rnext,fromlist);
+//			departwc(node->lnext,fromlist);
+//		}
+//		else
+		  if(strcmp(node->sign,"INS")==0)
 		{
 			if(node->rnext->type==t_query_stmt)
 			{
