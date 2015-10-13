@@ -9,7 +9,7 @@
 //#include "IndexManager.h"
 //#include "IndexScanIterator.h"
 //#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-//#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
+//#include "../BlockStreamIterator/ParallelBlockStreamIterator/physical_filter.h"
 //
 //LogicalIndexFilter::Condition::Condition(const Condition& r){
 //	for(unsigned i=0;i<r.attribute_list_.size();i++){

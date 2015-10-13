@@ -37,7 +37,7 @@
 #include "../common/TypeCast.h"
 #include "../common/Expression/initquery.h"
 #include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
-#include "../physical_query_plan/ExpandableBlockStreamFilter.h"
+#include "../physical_query_plan/physical_filter.h"
 namespace claims {
 namespace logical_query_plan {
 

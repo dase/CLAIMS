@@ -1,10 +1,32 @@
 /*
- * ExpandableBlockStreamFilter.cpp
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/physical_query_plan/physical_filter.cpp
  *
  *  Created on: Aug 28, 2013
- *      Author: wangli
+ *      Author: wangli, Hanzhang
+ *		   Email: wangli1426@gmail.com
+ *
+ * Description: Implementation of Filter operator in physical layer.
+ *
  */
-#include "../physical_query_plan/ExpandableBlockStreamFilter.h"
+
+#include "../physical_query_plan/physical_filter.h"
 #include <assert.h>
 #include <limits>
 #include "../../utility/warmup.h"
@@ -20,6 +42,9 @@
 #include "../../codegen/ExpressionGenerator.h"
 
 #define NEWCONDITION
+
+// namespace claims{
+// namespace physica query_plan{
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
     : state_(state),
@@ -51,6 +76,17 @@ ExpandableBlockStreamFilter::State::State(
       child_(child),
       comparator_list_(comparator_list),
       block_size_(block_size) {}
+
+/**
+ * @brief Method description:To choose which optimization way of filter
+ *function.(if enable_codegen isn't open, we should execute the function:
+ *computerFilter ). traditional model of iterator of physical plan.
+ * 1)If a block can be optimized by llvm, we choose
+ *generated_filter_processing_function_.
+ * 2)If a tuple can be optimized by llvm, we choose
+ *computerFilterwithGeneratedCode.
+ * 3)If it can't be optimized by llvm , we still choose computerFilter.
+ */
 bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
   RegisterExpandedThreadToAllBarriers();
   filter_thread_context* ftc =
@@ -68,16 +104,16 @@ bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
         if (generated_filter_function_) {
-          ff_ = computeFilterwithGeneratedCode;
+          ff_ = ComputeFilterwithGeneratedCode;
           printf("CodeGen (partial feature) succeeds!(%f8.4ms)\n",
                  getMilliSecond(start));
         } else {
-          ff_ = computeFilter;
+          ff_ = ComputeFilter;
           printf("CodeGen fails!\n");
         }
       }
     } else {
-      ff_ = computeFilter;
+      ff_ = ComputeFilter;
       printf("CodeGen closed!\n");
     }
   }
@@ -106,17 +142,26 @@ bool ExpandableBlockStreamFilter::Next(BlockStreamBase* block) {
       }
     }
     process_logic(block, tc);
-    /* there are totally two reasons for the end of the while loop.
+    /**
+     * @brief Method description: There are totally two reasons for the end of
+     * the while loop.
      * (1) block is full of tuples satisfying filter (should return true to the
      * caller)
      * (2) block_for_asking_ is exhausted (should fetch a new block from child
      * and continue to process)
      */
+
     if (block->Full())
       // for case (1)
       return true;
   }
 }
+
+/**
+ * @brief Method description:According to which optimization of generate filter
+ * function,execute function with related parameters. Different operator has
+ * different implementation in process_logic().
+ */
 void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,
                                                 filter_thread_context* tc) {
   if (generated_filter_processing_fucntoin_) {
@@ -183,25 +228,14 @@ void ExpandableBlockStreamFilter::Print() {
   state_.child_->Print();
 }
 
-// void ExpandableBlockStreamFilter::destoryContext(thread_context& tc){
-//	lock_.acquire();
-//	assert(context_list_.find(pthread_self())!=context_list_.cend());
-//	context_list_[pthread_self()].block_for_asking_->~BlockStreamBase();
-//	context_list_[pthread_self()].iterator_->~BlockStreamTraverseIterator();
-//	context_list_.erase(pthread_self());
-//	lock_.release();
-////	tc->block_for_asking_->~BlockStreamBase();
-////	tc->iterator_->~BlockStreamTraverseIterator();
-//}
-
-void ExpandableBlockStreamFilter::computeFilter(bool& ret, void* tuple,
+void ExpandableBlockStreamFilter::ComputeFilter(bool& ret, void* tuple,
                                                 expr_func func_gen,
                                                 Schema* schema,
                                                 vector<QNode*> thread_qual_) {
   ret = ExecEvalQual(thread_qual_, tuple, schema);
 }
 
-void ExpandableBlockStreamFilter::computeFilterwithGeneratedCode(
+void ExpandableBlockStreamFilter::ComputeFilterwithGeneratedCode(
     bool& ret, void* tuple, expr_func func_gen, Schema* schema,
     vector<QNode*> allocator) {
   func_gen(tuple, &ret);
@@ -230,3 +264,6 @@ ThreadContext* ExpandableBlockStreamFilter::CreateContext() {
   }
   return ftc;
 }
+
+//}//namespace claims
+//}// namespace physical_query_plan

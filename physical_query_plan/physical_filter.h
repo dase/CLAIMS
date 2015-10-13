@@ -1,16 +1,39 @@
 /*
- * ExpandableBlockStreamFilter.h
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/physical_query_plan/physical_filter.h
  *
  *  Created on: Aug 28, 2013
- *      Author: wangli
+ *      Author: wangli, Hanzhang
+ *		   Email: wangli1426@gmail.com
+ *
+ * Description: Implementation of Filter operator in physical layer.
+ *
  */
 
-#ifndef EXPANDABLEBLOCKSTREAMFILTER_H_
-#define EXPANDABLEBLOCKSTREAMFILTER_H_
+#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
+#define PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
+
 #include <list>
 #include <map>
 #include <string>
 #include <boost/serialization/map.hpp>
+
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/physical_operator.h"
 #include "../../common/Schema/Schema.h"
@@ -24,7 +47,9 @@
 #include "../physical_query_plan/physical_project.h"
 #include "../../common/Expression/qnode.h"
 #include "../../codegen/ExpressionGenerator.h"
-// typedef vector<ExpressionItem> ExpressItem_List;
+
+// namespace claims {
+// namespace physical_query_plan {
 class ExpandableBlockStreamFilter : public PhysicalOperator {
  public:
   class filter_thread_context : public ThreadContext {
@@ -35,9 +60,11 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
     vector<QNode*> thread_qual_;
     ~filter_thread_context();
   };
-  /* struct to hold the remaining data when the next is returned but the block
-   * from the child
-   *  iterator is not exhausted.*/
+
+  /**
+   * @brief Method description: struct to hold the remaining data when the next
+   * is returned but the block from the child iterator is not exhausted.
+   */
   struct remaining_block {
     remaining_block(BlockStreamBase* block,
                     BlockStreamBase::BlockStreamTraverseIterator* iterator)
@@ -47,6 +74,9 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
     BlockStreamBase::BlockStreamTraverseIterator* iterator;
   };
 
+  /**
+   * @brief Method description: Obtain information from logical layer
+   */
   class State {
    public:
     friend class ExpandableBlockStreamFilter;
@@ -87,12 +117,14 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
 
  private:
   ThreadContext* CreateContext();
-  // ExecEvalQual(tc->thread_qual_, tuple_from_child,	state_.schema_);
   typedef void (*filter_func)(bool& ret, void* tuple, expr_func func_gen,
                               Schema* schema, vector<QNode*> thread_qual_);
-  static void computeFilter(bool& ret, void* tuple, expr_func func_gen,
+
+  // traditional optimized function to generate filter function.
+  static void ComputeFilter(bool& ret, void* tuple, expr_func func_gen,
                             Schema* schema, vector<QNode*> thread_qual_);
-  static void computeFilterwithGeneratedCode(bool& ret, void* tuple,
+  // llvm optimized function which be used to tuples.
+  static void ComputeFilterwithGeneratedCode(bool& ret, void* tuple,
                                              expr_func func_gen, Schema* schema,
                                              vector<QNode*>);
 
@@ -101,11 +133,14 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
   map<string, int> colindex;
 
   unsigned long tuple_after_filter_;
-  //	vector<QNode *>qual_;//store the transfromed Qnode
   Lock lock_;
+
   filter_func ff_;
+  // optimization of tuple:(llvm or none)
   expr_func generated_filter_function_;
+  // optimization of block:(llvm or none)
   filter_process_func generated_filter_processing_fucntoin_;
+
   /* the following code is for boost serialization*/
  private:
   friend class boost::serialization::access;
@@ -115,5 +150,7 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
         state_;
   }
 };
+//}  // physical_query_plan
+//}  // claims
 
-#endif /* EXPANDABLEBLOCKSTREAMFILTER_H_ */
+#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
