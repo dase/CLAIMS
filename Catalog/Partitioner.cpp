@@ -30,6 +30,14 @@ Partitioner::Partitioner(ProjectionID projection_id,unsigned number_of_partition
 
 Partitioner::~Partitioner() {
 	// TODO Auto-generated destructor stub
+	delete partition_function_;
+    delete partition_key_;
+
+    for(auto iter= partition_info_list.begin(); iter != partition_info_list.end(); ++ iter)
+    {
+        delete *iter;
+    }
+    
 }
 unsigned Partitioner::getNumberOfPartitions()const{
 	return partition_function_->getNumberOfPartitions();

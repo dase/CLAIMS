@@ -55,8 +55,12 @@ public:
 	virtual ~Catalog();
 	unsigned allocate_unique_table_id();
 	bool add_table(TableDescriptor* const &table);
+	bool drop_table(const std::string table_name = "", const TableID id = -1);
 	TableDescriptor* getTable(const TableID&) const;
 	TableDescriptor* getTable(const std::string& table_name) const;
+
+	void getTables(ostringstream &ostr) const;
+	int getTableSize() const;
 	ProjectionDescriptor* getProjection(const ProjectionID&) const;
 	ProjectionBinding* getBindingModele()const;
 

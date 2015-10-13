@@ -99,10 +99,16 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			break;
 		}
 		case t_drop_stmt:
+        case t_drop_table_stmt:
 		{
 			DropTable(catalog, node, result_set, result_flag, error_msg, info);
 			break;
 		}
+        case t_delete_stmt:
+        {
+            DeleteData(catalog, node, result_set, result_flag, error_msg, info);
+            break;
+        }
 		default:
 		{
 			cout<<node->type<<endl;
@@ -277,6 +283,16 @@ bool CheckType(const column_type *col_type, Expr *expr)		// check whether the st
 	//	strtol();
 	default: return true;
 	}
+}
+
+
+void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info)
+{
+  std::cout << "File:[" <<__FILE__ <<"], func:[" << __FUNCTION__<<"], line:[" <<__LINE__ << "]" << std::endl;
+  result_set = NULL;
+  result_flag = true;
+  error_msg = "";
+  info = "we are not support now!";
 }
 
 void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info)
@@ -1511,9 +1527,12 @@ void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &resul
 	case 1:
 	{
 		ostr<<"TABLES:"<<endl;
-		for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
+#if 0
+        for (unsigned i = 0; i < catalog->getTableSize(); ++i) {
 			ostr<<catalog->getTable(i)->getTableName()<<endl;
 		}
+#endif
+        catalog->getTables(ostr);
 		info = ostr.str();
 		result_flag=true;
 		result_set=NULL;
@@ -1553,6 +1572,66 @@ void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool&result
 	Droptable_stmt *drop_stmt = (Droptable_stmt*)node;
 	Tablelist *table_list = (Tablelist *)(drop_stmt->table_list);
 	//TODO
+
+    while(table_list != NULL)
+    {
+        string tablename;
+        if(table_list->name2 != NULL) {
+            tablename = table_list->name2;
+        }
+        else if(table_list->name1 != NULL) {
+            tablename = table_list->name1;
+        }
+        else {
+            error_msg="No table name during creating table!";
+            result_flag=false;
+            result_set = NULL;
+            break;
+        }
+
+#if 0    
+        cout << "===========================" << endl;
+        cout << "type : " << table_list->type << endl;
+        cout << "tablename : " <<tablename << endl;
+#endif   
+
+        TableDescriptor *table_desc = Environment::getInstance()->getCatalog()->getTable(tablename);
+        if(NULL == table_desc)
+        {
+           info = "table [" + tablename + "] is not exist!";
+           error_msg = "";
+	       result_flag=true;
+           result_set=NULL;
+        }
+        else
+        {
+            
+            if(Environment::getInstance()->getCatalog()->drop_table(tablename, table_desc->get_table_id()))
+            {
+                
+                HdfsLoader* Hl = new HdfsLoader(table_desc, (open_flag)(DELETE_FILE));
+                Hl->DeleteDataFilesForDropTable();
+            
+                delete table_desc;       
+                cout << tablename + " is dropped from this database!" << endl; 
+                info = "drop table successfully!";
+            }
+            else
+            {
+                cout << "drop table [" + tablename + "] failed" << endl;
+                info = "drop table [" + tablename + "] failed.";
+            }
+        }
+
+        table_list =  (Tablelist *)table_list->next;
+    }
+
+  
+	catalog->saveCatalog();
+
+	result_flag=true;
+	result_set=NULL;
+
 }
 
 #endif

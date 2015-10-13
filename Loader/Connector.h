@@ -12,12 +12,14 @@
 
 using std::vector;
 using std::string;
-enum open_flag { CREATEE, APPENDD };
+enum open_flag { CREATEE, APPENDD, DELETE_FILE };
 class Connector {
 public:
 	Connector(vector<vector<string> > writepath):writepath(writepath){
 	};
 	virtual ~Connector(){};
+
+	virtual bool deleteFiles()=0;
 
 	virtual bool openFiles(open_flag open_flag_)=0;
 	virtual bool closeFiles()=0;

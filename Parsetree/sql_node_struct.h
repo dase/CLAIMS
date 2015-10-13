@@ -52,7 +52,8 @@ enum nodetype
 	t_drop_database_stmt,t_drop_table_stmt, t_table_list,	// 2014-3-24---增加---by Yu
 	t_load_table_stmt,	// 2014-3-24---add---by Yu
 	t_show_stmt,	// 2014-5-4---add---by Yu
-	t_drop_stmt
+	t_drop_stmt,
+	t_delete_stmt
 };
 
 // 2014-4-14---delete union dataval, because only char* is need---by Yu
@@ -345,7 +346,17 @@ struct Insert_assign_list
 /******************DDL语句开始***************************************
 ******************************************************************/
 
-
+struct DeleteStmt {
+  nodetype type_;
+  char* table_name_;
+  Node* where_list_;
+  int options_;
+  DeleteStmt(nodetype type, char* table_name, Node* where_list, int options)
+  : type_(type),
+    table_name_(table_name),
+    where_list_(where_list),
+    options_(options){}
+};
 struct Create_database_stmt
 {
 	nodetype type;

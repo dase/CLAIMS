@@ -59,6 +59,61 @@ bool Catalog::add_table(TableDescriptor* const &table){
 
 	return true;
 }
+
+bool Catalog::drop_table(const std::string table_name, const TableID id)
+{
+    bool isdropped = false;
+    bool isnamedrop = false;
+    bool istableIDdrop =false;
+
+    TableDescriptor *table_desc = NULL;
+    
+    if(table_name != "")
+    {
+        table_desc = getTable(table_name);
+        if(1 == name_to_table.erase(table_name))
+        {
+            isnamedrop = true;
+        }
+        else
+        {
+            cout << "falied to drop table by name" << endl;
+        }
+    }
+    if(id != -1)
+    {
+        table_desc = getTable(id);
+        if(1 == tableid_to_table.erase(id))
+        {
+            istableIDdrop = true;
+        }
+        else
+        {
+            cout << "falied to drop table by tableID" << endl;
+        }
+    }
+
+    if(isnamedrop&&istableIDdrop)
+    {
+        //table_id_allocator.decrease_table_id();
+        isdropped  =true;
+    }
+    else
+    {
+        if(!isnamedrop)
+        {
+            tableid_to_table[id] = table_desc;
+        }
+        if(!istableIDdrop)
+        {
+            name_to_table[table_name] = table_desc;
+        }
+    }
+    
+    return isdropped;
+}
+
+
 TableDescriptor* Catalog::getTable(const TableID &target)const{
 	if(tableid_to_table.find(target)==tableid_to_table.cend())
 		return NULL;
@@ -73,6 +128,20 @@ TableDescriptor* Catalog::getTable(const std::string& table_name) const{
 
 	/* at could retain const while [] doesn't.*/
 	return name_to_table.at(table_name);
+}
+
+void Catalog::getTables(ostringstream &ostr) const{
+    
+    for ( auto it = name_to_table.begin(); it != name_to_table.end(); ++it )
+    {
+        ostr << it->first << endl;
+    }
+
+}
+
+
+int Catalog::getTableSize() const{
+    return name_to_table.size();
 }
 ProjectionDescriptor* Catalog::getProjection(const ProjectionID& pid) const{
 	const TableDescriptor* td=getTable(pid.table_id);

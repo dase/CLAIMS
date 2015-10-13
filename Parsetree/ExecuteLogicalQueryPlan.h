@@ -39,6 +39,15 @@ void ExecuteLogicalQueryPlan(
 		int fd = 0
 		);
 
+void DeleteData(
+    Catalog *catalog,
+    Node *node,
+    ResultSet *&result_set,
+    bool& result_flag,
+    string &error_msg,
+    string &info
+    );
+
 void CreateTable(
 		Catalog *catalog,
 		Node *node,

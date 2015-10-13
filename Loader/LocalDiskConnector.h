@@ -15,6 +15,8 @@ public:
 	LocalDiskConnector(vector<vector <string> > hdfs_writepath);
 	virtual ~LocalDiskConnector();
 
+	bool deleteFiles();
+	
 	bool openFiles(open_flag open_flag_);
 	bool closeFiles();
 

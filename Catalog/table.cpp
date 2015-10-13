@@ -18,6 +18,7 @@ ProjectionDescriptor::ProjectionDescriptor(const string& name)
 }
 
 ProjectionDescriptor::~ProjectionDescriptor(){
+    delete partitioner;
 
 }
 void ProjectionDescriptor::addAttribute(Attribute attr)
@@ -89,7 +90,10 @@ TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 }
 
 TableDescriptor::~TableDescriptor(){
-
+    for(auto iter = projection_list_.begin(); iter != projection_list_.end(); ++iter)
+    {
+        delete *iter;
+    }
 }
 
 void TableDescriptor::addAttribute(Attribute attr)
