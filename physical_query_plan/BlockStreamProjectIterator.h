@@ -30,78 +30,87 @@ using namespace std;
 
 typedef vector<ExpressionItem> ExpressItem_List;
 
-class BlockStreamProjectIterator:public PhysicalOperator {
-public:
-	class project_thread_context:public ThreadContext{
-	public:
-		BlockStreamBase* block_for_asking_;
-		BlockStreamBase* temp_block_;
-		BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
-		vector<QNode *>thread_qual_;
-		~project_thread_context(){
-			delete block_for_asking_;
-			delete temp_block_;
-			delete block_stream_iterator_;
-			for (int i =0 ;i<thread_qual_.size();i++){
-				delete thread_qual_[i];
-			}
-		}
-	};
+class BlockStreamProjectIterator : public PhysicalOperator {
+ public:
+  class project_thread_context : public ThreadContext {
+   public:
+    BlockStreamBase *block_for_asking_;
+    BlockStreamBase *temp_block_;
+    BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
+    vector<QNode *> thread_qual_;
+    ~project_thread_context() {
+      delete block_for_asking_;
+      delete temp_block_;
+      delete block_stream_iterator_;
+      for (int i = 0; i < thread_qual_.size(); i++) {
+        delete thread_qual_[i];
+      }
+    }
+  };
 
-	class State{
-		friend class BlockStreamProjectIterator;
-	public:
-		State(Schema *input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map,vector<ExpressItem_List> v_ei,vector<QNode *>exprTree);
-		State(Schema *input, Schema* output, BlockStreamIteratorBase * children, unsigned blocksize, Mapping map,vector<ExpressItem_List> v_ei);
-		State(){};
-	public:
-		Schema *input_;
-		Schema *output_;
-		/* Recently, the expression is supporting the reduce the number of the input table!!!
-		 * TODO: support the multi-to-multi between the input table and the select list, this expr
-		 * is the result of the getIteratorTree to construct a schema. getDataflow() can generate a
-		 * schema by using the SQLExpression and Expression can be computed by SQLExpression
-		 * */
-		vector<ExpressItem_List> v_ei_;
-		Mapping map_;
+  class State {
+    friend class BlockStreamProjectIterator;
 
+   public:
+    State(Schema *input, Schema *output, BlockStreamIteratorBase *children,
+          unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei,
+          vector<QNode *> exprTree);
+    State(Schema *input, Schema *output, BlockStreamIteratorBase *children,
+          unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei);
+    State(){};
 
-		vector<QNode *>exprTree_;
-		unsigned block_size_;
-		BlockStreamIteratorBase *child_;
+   public:
+    Schema *input_;
+    Schema *output_;
+    /* Recently, the expression is supporting the reduce the number of the input
+     * table!!!
+     * TODO: support the multi-to-multi between the input table and the select
+     * list, this expr
+     * is the result of the getIteratorTree to construct a schema. getDataflow()
+     * can generate a
+     * schema by using the SQLExpression and Expression can be computed by
+     * SQLExpression
+     * */
+    vector<ExpressItem_List> v_ei_;
+    Mapping map_;
 
-		friend class boost::serialization::access;
-		template<class Archive>
-		void serialize(Archive & ar, const unsigned int version){
-			ar & input_ & output_ & child_ & map_ & block_size_ & v_ei_ &exprTree_;
-		}
-	};
-	BlockStreamProjectIterator(State state);
-	BlockStreamProjectIterator();
-	virtual ~BlockStreamProjectIterator();
+    vector<QNode *> exprTree_;
+    unsigned block_size_;
+    BlockStreamIteratorBase *child_;
 
-	bool Open(const PartitionOffset& partition_offset=0);
-	bool Next(BlockStreamBase *block);
-	bool Close();
-void Print();
-private:
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int version) {
+      ar &input_ &output_ &child_ &map_ &block_size_ &v_ei_ &exprTree_;
+    }
+  };
+  BlockStreamProjectIterator(State state);
+  BlockStreamProjectIterator();
+  virtual ~BlockStreamProjectIterator();
 
-	ThreadContext* CreateContext();
+  bool Open(const PartitionOffset &partition_offset = 0);
+  bool Next(BlockStreamBase *block);
+  bool Close();
+  void Print();
 
-	bool copyNewValue(void *tuple,void *result,int length);
+ private:
+  ThreadContext *CreateContext();
 
-	bool copyColumn(void *&tuple,ExpressionItem &result,int length);
-	void process_logic(BlockStreamBase* block, project_thread_context* tc);
-private:
+  bool copyNewValue(void *tuple, void *result, int length);
 
-	State state_;
+  bool copyColumn(void *&tuple, ExpressionItem &result, int length);
+  void process_logic(BlockStreamBase *block, project_thread_context *tc);
 
-private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<BlockStreamIteratorBase>(*this) & state_;
-	}
+ private:
+  State state_;
+
+ private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &boost::serialization::base_object<BlockStreamIteratorBase>(*this) &
+        state_;
+  }
 };
 
 #endif /* BLOCKSTREAMPROJECTITERATOR_H_ */

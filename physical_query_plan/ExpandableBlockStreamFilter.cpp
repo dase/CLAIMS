@@ -5,7 +5,6 @@
  *      Author: wangli
  */
 #include "../physical_query_plan/ExpandableBlockStreamFilter.h"
-
 #include <assert.h>
 #include <limits>
 #include "../../utility/warmup.h"
@@ -30,49 +29,44 @@ ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
 }
 
 ExpandableBlockStreamFilter::ExpandableBlockStreamFilter()
-    : generated_filter_function_(0),
-      generated_filter_processing_fucntoin_(0) {
+    : generated_filter_function_(0), generated_filter_processing_fucntoin_(0) {
   InitExpandedStatus();
 }
 
-ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {
-}
+ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {}
 ExpandableBlockStreamFilter::State::State(Schema* schema,
                                           BlockStreamIteratorBase* child,
-                                          vector<QNode *> qual,
+                                          vector<QNode*> qual,
                                           map<string, int> colindex,
                                           unsigned block_size)
     : schema_(schema),
       child_(child),
       qual_(qual),
       colindex_(colindex),
-      block_size_(block_size) {
-}
+      block_size_(block_size) {}
 ExpandableBlockStreamFilter::State::State(
     Schema* schema, BlockStreamIteratorBase* child,
     std::vector<AttributeComparator> comparator_list, unsigned block_size)
     : schema_(schema),
       child_(child),
       comparator_list_(comparator_list),
-      block_size_(block_size) {
-}
+      block_size_(block_size) {}
 bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
-
   RegisterExpandedThreadToAllBarriers();
-  filter_thread_context* ftc = (filter_thread_context*) CreateOrReuseContext(
-      crm_core_sensitive);
+  filter_thread_context* ftc =
+      (filter_thread_context*)CreateOrReuseContext(crm_core_sensitive);
 
   if (TryEntryIntoSerializedSection()) {
     if (Config::enable_codegen) {
       ticks start = curtick();
-      generated_filter_processing_fucntoin_ = getFilterProcessFunc(
-          state_.qual_[0], state_.schema_);
+      generated_filter_processing_fucntoin_ =
+          getFilterProcessFunc(state_.qual_[0], state_.schema_);
       if (generated_filter_processing_fucntoin_) {
         printf("CodeGen (full feature) succeeds!(%f8.4ms)\n",
                getMilliSecond(start));
       } else {
-        generated_filter_function_ = getExprFunc(state_.qual_[0],
-                                                 state_.schema_);
+        generated_filter_function_ =
+            getExprFunc(state_.qual_[0], state_.schema_);
         if (generated_filter_function_) {
           ff_ = computeFilterwithGeneratedCode;
           printf("CodeGen (partial feature) succeeds!(%f8.4ms)\n",
@@ -96,13 +90,12 @@ bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
 bool ExpandableBlockStreamFilter::Next(BlockStreamBase* block) {
   void* tuple_from_child;
   void* tuple_in_block;
-  filter_thread_context* tc = (filter_thread_context*) GetContext();
+  filter_thread_context* tc = (filter_thread_context*)GetContext();
   while (true) {
     if (tc->block_stream_iterator_->currentTuple() == 0) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
       if (state_.child_->Next(tc->block_for_asking_)) {
-//      printf("%lld\n",pthread_self());
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {
@@ -114,8 +107,10 @@ bool ExpandableBlockStreamFilter::Next(BlockStreamBase* block) {
     }
     process_logic(block, tc);
     /* there are totally two reasons for the end of the while loop.
-     * (1) block is full of tuples satisfying filter (should return true to the caller)
-     * (2) block_for_asking_ is exhausted (should fetch a new block from child and continue to process)
+     * (1) block is full of tuples satisfying filter (should return true to the
+     * caller)
+     * (2) block_for_asking_ is exhausted (should fetch a new block from child
+     * and continue to process)
      */
     if (block->Full())
       // for case (1)
@@ -130,16 +125,16 @@ void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,
     const int b_tuple_count = block->getBlockCapacityInTuples();
     const int c_tuple_count = tc->block_for_asking_->getTuplesInBlock();
 
-    generated_filter_processing_fucntoin_(block->getBlock(), &b_cur,
-                                          b_tuple_count,
-                                          tc->block_for_asking_->getBlock(),
-                                          &c_cur, c_tuple_count);
-    ((BlockStreamFix*) block)->setTuplesInBlock(b_cur);
+    generated_filter_processing_fucntoin_(
+        block->getBlock(), &b_cur, b_tuple_count,
+        tc->block_for_asking_->getBlock(), &c_cur, c_tuple_count);
+    ((BlockStreamFix*)block)->setTuplesInBlock(b_cur);
     tc->block_stream_iterator_->set_cur(c_cur);
   } else {
     void* tuple_from_child;
     void* tuple_in_block;
-    while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) > 0) {
+    while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) >
+           0) {
       bool pass_filter = true;
 #ifdef NEWCONDITION
       ff_(pass_filter, tuple_from_child, generated_filter_function_,
@@ -147,15 +142,16 @@ void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,
 #else
       pass_filter = true;
       for (unsigned i = 0; i < state_.comparator_list_.size(); i++) {
-        if (!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(state_.comparator_list_[i].get_index(),tuple_from_child))) {
+        if (!state_.comparator_list_[i].filter(state_.schema_->getColumnAddess(
+                state_.comparator_list_[i].get_index(), tuple_from_child))) {
           pass_filter = false;
           break;
         }
       }
 #endif
       if (pass_filter) {
-        const unsigned bytes = state_.schema_->getTupleActualSize(
-            tuple_from_child);
+        const unsigned bytes =
+            state_.schema_->getTupleActualSize(tuple_from_child);
         if ((tuple_in_block = block->allocateTuple(bytes)) > 0) {
           block->insert(tuple_in_block, tuple_from_child, bytes);
           tuple_after_filter_++;
@@ -187,7 +183,7 @@ void ExpandableBlockStreamFilter::Print() {
   state_.child_->Print();
 }
 
-//void ExpandableBlockStreamFilter::destoryContext(thread_context& tc){
+// void ExpandableBlockStreamFilter::destoryContext(thread_context& tc){
 //	lock_.acquire();
 //	assert(context_list_.find(pthread_self())!=context_list_.cend());
 //	context_list_[pthread_self()].block_for_asking_->~BlockStreamBase();
@@ -222,10 +218,10 @@ ExpandableBlockStreamFilter::filter_thread_context::~filter_thread_context() {
 
 ThreadContext* ExpandableBlockStreamFilter::CreateContext() {
   filter_thread_context* ftc = new filter_thread_context();
-  ftc->block_for_asking_ = BlockStreamBase::createBlock(state_.schema_,
-                                                        state_.block_size_);
-  ftc->temp_block_ = BlockStreamBase::createBlock(state_.schema_,
-                                                  state_.block_size_);
+  ftc->block_for_asking_ =
+      BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
+  ftc->temp_block_ =
+      BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
   ftc->thread_qual_ = state_.qual_;
   for (int i = 0; i < state_.qual_.size(); i++) {

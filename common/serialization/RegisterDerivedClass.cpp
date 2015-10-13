@@ -8,7 +8,7 @@
 #include <boost/iostreams/stream.hpp>
 #include "../../IndexManager/CSBIndexBuilding.h"
 #include "../../IndexManager/IndexScanIterator.h"
-#include "../../physical_query_plan/BlockStreamLimit.h"
+#include "../../physical_query_plan/physical_operator_limit.h"
 #include "../../common/Expression/qnode.h"
 #include "../../physical_query_plan/BlockStreamAggregationIterator.h"
 #include "../../physical_query_plan/BlockStreamCombinedIterator.h"

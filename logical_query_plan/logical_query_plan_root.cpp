@@ -35,7 +35,7 @@
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamExpander.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "../physical_query_plan/BlockStreamLimit.h"
+#include "../physical_query_plan/physical_operator_limit.h"
 #include "../Resource/NodeTracker.h"
 
 #include "../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
