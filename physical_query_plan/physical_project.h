@@ -1,12 +1,38 @@
 /*
- * BlockStreamProjectIterator.h
+ * Copyright [2012-2015] DaSE@ECNU
  *
- *  Created on: 2014-2-17
- *      Author: casa
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/physical_query_plan/physical_project.h
+ *
+ *  Created on: Feb 17, 2014
+ *      Author: casa,Hanzhang
+ *		   Email:zhangleicasa@gmail.com
+ *
+ * Description: Implementation of Project operator in physical layer.
+ *
  */
 
-#ifndef BLOCKSTREAMPROJECTITERATOR_H_
-#define BLOCKSTREAMPROJECTITERATOR_H_
+#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECT_H_
+#define PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECT_H_
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <list>
 
 #include "../../common/ExpressionCalculator.h"
 #include "../../common/ExpressionItem.h"
@@ -15,19 +41,13 @@
 #include "../../common/Expression/qnode.h"
 #include "../../common/Expression/initquery.h"
 #include "../../common/Expression/execfunc.h"
-
-#include <iostream>
-#include <vector>
-#include <map>
-#include <list>
-
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/physical_operator.h"
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
+
 using namespace std;
 
+// namespace claims {
+// namespace physical_query_plan {
 typedef vector<ExpressionItem> ExpressItem_List;
 
 class BlockStreamProjectIterator : public PhysicalOperator {
@@ -62,15 +82,16 @@ class BlockStreamProjectIterator : public PhysicalOperator {
    public:
     Schema *input_;
     Schema *output_;
-    /* Recently, the expression is supporting the reduce the number of the input
-     * table!!!
-     * TODO: support the multi-to-multi between the input table and the select
-     * list, this expr
-     * is the result of the getIteratorTree to construct a schema. getDataflow()
-     * can generate a
-     * schema by using the SQLExpression and Expression can be computed by
-     * SQLExpression
-     * */
+
+    /**
+     * @brief Recently, the expression is supporting the reduce the number of
+     * the input table!!!
+     */
+
+    // TODO(casa): Support the multi-to-multi between the input table and the
+    // select list, this expr is the result of the getIteratorTree to construct
+    // a schema. getDataflow() can generate a schema by using the SQLExpression
+    // and Expression can be computed by SQLExpression
     vector<ExpressItem_List> v_ei_;
     Mapping map_;
 
@@ -96,9 +117,14 @@ class BlockStreamProjectIterator : public PhysicalOperator {
  private:
   ThreadContext *CreateContext();
 
+  // According to result,the function generate a new attribute list(new
+  // schema:output).
   bool copyNewValue(void *tuple, void *result, int length);
 
+  // this function is not used. Because of ExpressionItem.
   bool copyColumn(void *&tuple, ExpressionItem &result, int length);
+
+  // The actual implementation of operations.
   void process_logic(BlockStreamBase *block, project_thread_context *tc);
 
  private:
@@ -113,4 +139,7 @@ class BlockStreamProjectIterator : public PhysicalOperator {
   }
 };
 
-#endif /* BLOCKSTREAMPROJECTITERATOR_H_ */
+// }  // namespace physical_query_plan
+// }  // namespace claims
+
+#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECT_H_

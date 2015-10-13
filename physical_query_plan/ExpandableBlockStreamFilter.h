@@ -21,7 +21,7 @@
 #include "../../common/ExpressionItem.h"
 #include "../../common/Mapping.h"
 #include "../../Catalog/Attribute.h"
-#include "../physical_query_plan/BlockStreamProjectIterator.h"
+#include "../physical_query_plan/physical_project.h"
 #include "../../common/Expression/qnode.h"
 #include "../../codegen/ExpressionGenerator.h"
 // typedef vector<ExpressionItem> ExpressItem_List;

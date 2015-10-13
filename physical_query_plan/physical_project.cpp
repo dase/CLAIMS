@@ -1,12 +1,35 @@
 /*
- * BlockStreamProjectIterator.cpp
+ * Copyright [2012-2015] DaSE@ECNU
  *
- *  Created on: 2014-2-17
- *      Author: casa
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/physical_query_plan/physical_project.cpp
+ *
+ *  Created on: Feb 14, 2014
+ *      Author: casa, Hanzhang
+ *		   Email: zhangleicasa@gmail.com
+ *
+ * Description: Implementation of Project operator in physical layer.
+ *
  */
 
-#include "../physical_query_plan/BlockStreamProjectIterator.h"
+#include "../physical_query_plan/physical_project.h"
 
+// namespace claims{
+// namespace physical_query_plan{
 BlockStreamProjectIterator::BlockStreamProjectIterator() {
   InitExpandedStatus();
 }
@@ -50,11 +73,12 @@ bool BlockStreamProjectIterator::Open(const PartitionOffset& partition_offset) {
   return GetReturnStatus();
 }
 
-/*
- * now the expressions computing speed is slow because of the copy between among
- * the expressions
- * todo: seek the pointer of data and LLVM will be solved by wangli.
- * */
+/**
+ * @brief Method description: now the expressions computing speed is slow
+ * because of the copy between among the expression.
+ */
+
+// TODO(casa): seek the pointer of data and LLVM will be solved by wangli.
 bool BlockStreamProjectIterator::Next(BlockStreamBase* block) {
   unsigned total_length_ = state_.output_->getTupleMaxSize();
 
@@ -66,7 +90,7 @@ bool BlockStreamProjectIterator::Next(BlockStreamBase* block) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
       if (state_.child_->Next(tc->block_for_asking_)) {
-        //				printf("%lld\n",pthread_self());
+        //        printf("%lld\n",pthread_self());
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {
@@ -78,12 +102,15 @@ bool BlockStreamProjectIterator::Next(BlockStreamBase* block) {
       }
     }
     process_logic(block, tc);
-    /* there are totally two reasons for the end of the while loop.
+    /**
+     * @brief Method description: There are totally two reasons for the end of
+     * the while loop.
      * (1) block is full of tuples satisfying filter (should return true to the
      * caller)
      * (2) block_for_asking_ is exhausted (should fetch a new block from child
      * and continue to process)
      */
+
     if (block->Full())
       // for case (1)
       return true;
@@ -155,11 +182,17 @@ bool BlockStreamProjectIterator::copyColumn(void*& tuple,
 void BlockStreamProjectIterator::Print() {
   cout << "proj:" << endl;
   for (int i = 0; i < state_.exprTree_.size(); i++) {
-    printf("	%s\n", state_.exprTree_[i]->alias.c_str());
+    printf("  %s\n", state_.exprTree_[i]->alias.c_str());
   }
   state_.child_->Print();
 }
 
+/**
+ * @brief Method description: By traversing block_steam_iterator, Copy
+ * expression to thread and add the attribute in new tuples.
+ * @param BlockStreamBase*, project_thread_context*
+ * @details   (additional) The actual implementation of operations.
+ */
 void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
                                                project_thread_context* tc) {
   unsigned total_length = state_.output_->getTupleMaxSize();
@@ -182,6 +215,11 @@ void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
   tc->block_for_asking_->setEmpty();
 }
 
+/**
+ * @brief Method description: Initialize project thread context with
+ * state(Class)
+ * @return a pointer(project_thread_context)
+ */
 ThreadContext* BlockStreamProjectIterator::CreateContext() {
   project_thread_context* ptc = new project_thread_context();
   ptc->block_for_asking_ =
@@ -196,3 +234,6 @@ ThreadContext* BlockStreamProjectIterator::CreateContext() {
   }
   return ptc;
 }
+
+// } // namespace physical_query_plan
+// } // namespace claims

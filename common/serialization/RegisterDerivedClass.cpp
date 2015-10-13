@@ -18,7 +18,7 @@
 #include "../../physical_query_plan/BlockStreamNestLoopJoinIterator.h"
 #include "../../physical_query_plan/BlockStreamPrint.h"
 #include "../../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
-#include "../../physical_query_plan/BlockStreamProjectIterator.h"
+#include "../../physical_query_plan/physical_project.h"
 #include "../../physical_query_plan/BlockStreamSortIterator.h"
 #include "../../physical_query_plan/ExpandableBlockStreamBuffer.h"
 #include "../../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
