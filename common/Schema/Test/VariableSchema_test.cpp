@@ -15,7 +15,7 @@
 
 #include "../../../common/Block/BlockStream.h"
 
-#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_ProjectionScan.h"
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_filter.h"
 
 #include "../../../BlockStreamIterator/BlockStreamPrint.h"

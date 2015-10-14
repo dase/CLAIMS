@@ -8,7 +8,7 @@
 //#include "LogicalIndexFilter.h"
 //#include "IndexManager.h"
 //#include "IndexScanIterator.h"
-//#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+//#include "../BlockStreamIterator/ParallelBlockStreamIterator/physical_ProjectionScan.h"
 //#include "../BlockStreamIterator/ParallelBlockStreamIterator/physical_filter.h"
 //
 //LogicalIndexFilter::Condition::Condition(const Condition& r){

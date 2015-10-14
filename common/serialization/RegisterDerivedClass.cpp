@@ -26,7 +26,7 @@
 #include "../../physical_query_plan/ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../physical_query_plan/physical_filter.h"
 #include "../../physical_query_plan/ExpandableBlockStreamHdfsScan.h"
-#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../../physical_query_plan/physical_ProjectionScan.h"
 #include "../../physical_query_plan/ExpandableBlockStreamRandomMemAccess.h"
 #include "../../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
 #include "../../physical_query_plan/ExpandableBlockStreamSingleColumnScanDisk.h"

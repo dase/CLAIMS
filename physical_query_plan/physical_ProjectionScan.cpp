@@ -1,10 +1,32 @@
 /*
- * ExpandableBlockStreamProjectionScan.cpp
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /Claims/physical_query_plan/physical_projectionscan.cpp
  *
  *  Created on: Nov.14, 2013
- *      Author: wangli
+ *      Author: wangli, Hanzhang
+ *		   Email: wangli1426@gmail.com
+ *
+ * Description: Implementation of Scan operator in physical layer.
+ *
  */
-#include "../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+
+#include "../physical_query_plan/physical_ProjectionScan.h"
 
 #include <memory.h>
 #include <malloc.h>
@@ -18,7 +40,8 @@
 #include "../../utility/warmup.h"
 #include "../../storage/ChunkStorage.h"
 
-//#define AVOID_CONTENTION_IN_SCAN
+// namespace claims{
+// namespace physical_query_plan{
 
 ExpandableBlockStreamProjectionScan::ExpandableBlockStreamProjectionScan(
     State state)
@@ -44,6 +67,11 @@ ExpandableBlockStreamProjectionScan::State::State(ProjectionID projection_id,
       block_size_(block_size),
       sample_rate_(sample_rate) {}
 
+/**
+ * @brief Method description: Initialize the operator. The logic is read
+ * partition and get chunks, read a chunk and get blocks. different policy
+ * decide if it generates a buffer.
+ */
 bool ExpandableBlockStreamProjectionScan::Open(
     const PartitionOffset& partition_offset) {
   if (TryEntryIntoSerializedSection()) {
@@ -63,36 +91,34 @@ bool ExpandableBlockStreamProjectionScan::Open(
       SetReturnStatus(true);
     }
 
-    if (NULL != avoid_contention_in_scan_) {
-      //我暂时将宏定义改变成了判断的标志位，这点可能会造成其他问题吗？ --BY HAN
-      unsigned long long start = curtick();
+#ifdef AVOID_CONTENTION_IN_SCAN
+    unsigned long long start = curtick();
 
-      ChunkReaderIterator* chunk_reader_it;
-      ChunkReaderIterator::block_accessor* ba;
-      while (chunk_reader_it = partition_reader_iterator_->nextChunk()) {
-        while (chunk_reader_it->getNextBlockAccessor(ba)) {
-          ba->getBlockSize();
-          input_dataset_.input_data_blocks.push_back(ba);
-        }
+    ChunkReaderIterator* chunk_reader_it;
+    ChunkReaderIterator::block_accessor* ba;
+    while (chunk_reader_it = partition_reader_iterator_->nextChunk()) {
+      while (chunk_reader_it->getNextBlockAccessor(ba)) {
+        ba->getBlockSize();
+        input_dataset_.input_data_blocks.push_back(ba);
       }
     }
+#endif
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(), LocalStageEndPoint(stage_src, "Scan", 0));
     perf_info =
         ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
-    perf_info->initialize();
+    perf_info->initearialize();
   }
   BarrierArrive();
   return GetReturnStatus();
 }
+
 /**
  * @brief Method description:There are two method of strategy to scan data
- * 1)
- * @param
- * @return
- * @details   (additional)
+ * 1) make a buffer(input_data).wait for quantitative block and return it.
+ * 2) get a block and return it immediately.
+ * according to AVOID_CONTENTION_IN_SCAN.
  */
-
 bool ExpandableBlockStreamProjectionScan::Next(BlockStreamBase* block) {
   unsigned long long total_start = curtick();
 #ifdef AVOID_CONTENTION_IN_SCAN
@@ -123,6 +149,7 @@ bool ExpandableBlockStreamProjectionScan::Next(BlockStreamBase* block) {
     return true;
   } else {
     if (input_dataset_.atomicGet(stc->assigned_data_, Config::scan_batch)) {
+      // case(1)
       return Next(block);
     } else {
       delete stc;
@@ -138,6 +165,7 @@ bool ExpandableBlockStreamProjectionScan::Next(BlockStreamBase* block) {
     return false;
   }
   perf_info->processed_one_block();
+  // case(2)
   return partition_reader_iterator_->nextBlock(block);
 
 #endif
@@ -161,7 +189,9 @@ void ExpandableBlockStreamProjectionScan::Print() {
 }
 
 bool ExpandableBlockStreamProjectionScan::passSample() const {
-  //	const float ram=(float)rand()/(float)RAND_MAX;
   if ((rand() / (float)RAND_MAX) < state_.sample_rate_) return true;
   return false;
 }
+
+//} // namespace physical_query_plan
+//} // namespace claims

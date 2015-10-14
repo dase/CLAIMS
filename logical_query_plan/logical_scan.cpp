@@ -34,7 +34,7 @@
 #include "../Catalog/Catalog.h"
 #include "../IDsGenerator.h"
 #include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
-#include "../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../physical_query_plan/physical_ProjectionScan.h"
 #include "../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
 #include "../Resource/NodeTracker.h"
 namespace claims {

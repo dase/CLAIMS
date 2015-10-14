@@ -1,16 +1,39 @@
 /*
- * ExpandableBlockStreamSingleColumnScan.h
- * In the current implementation, for simplicity, we assume that the underlying
- * storage
- * is arranged in blocks, each of which is the same as the size of the
- * block in the parameter of the next function.
- * TODO: adjust or rewrite this iterator if the consumption above does not hold.
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/physical_query_plan/physical_projectionscan.h
+ *
  *  Created on: Aug 27, 2013
- *      Author: wangli
+ *      Author: wangli,Hanzhang
+ *		   Email: wangli1426@gmail.com
+ *
+ * Description: Implementation of Scan operator in physical layer. In the
+ * current implementation, for simplicity, we assume that the underlying storage
+ * is arranged in blocks, each of which is the same as the size of the block in
+ * the parameter of the next function.
+ * TODO(wangli): adjust or rewrite this iterator if the consumption above does
+ * not hold.
+ *
  */
 
-#ifndef EXPANDABLEBLOCKSTREAMPROJECTIONSCAN_H_
-#define EXPANDABLEBLOCKSTREAMPROJECTIONSCAN_H_
+#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTIONSCAN_H_
+#define PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTIONSCAN_H_
+
 #include <string>
 #include <list>
 #include <boost/archive/text_iarchive.hpp>
@@ -21,6 +44,9 @@
 #include "../../storage/PartitionStorage.h"
 #include "../physical_query_plan/physical_operator.h"
 #include "../../common/ExpandedThreadTracker.h"
+
+// namespace claims {
+// namespace physical_query_plan {
 
 typedef std::list<ChunkReaderIterator::block_accessor*> assigned_data;
 struct input_dataset {
@@ -88,12 +114,10 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
 
  private:
   State state_;
-  const int avoid_contention_in_scan_=0;
-  //flag for
   PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
   std::list<ChunkReaderIterator*> remaining_chunk_reader_iterator_list_;
   Lock chunk_reader_container_lock_;
-
+  // like a buffer
   input_dataset input_dataset_;
 
   /* for debug*/
@@ -101,9 +125,7 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
 
   const PerformanceInfo* perf_info;
 
-  /*
-   * The following code is for boost serialization.
-   */
+  // The following code is for boost serialization.
  private:
   friend class boost::serialization::access;
   template <class Archive>
@@ -112,4 +134,7 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
   }
 };
 
-#endif /* EXPANDABLEBLOCKSTREAMSINGLECOLUMNSCAN_H_ */
+//}  // namespace physical_query_plan
+//}  // namespace claims
+
+#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTIONSCAN_H_

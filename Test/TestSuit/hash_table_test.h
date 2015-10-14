@@ -21,7 +21,7 @@
 
 #include "../../physical_query_plan/BlockStreamIteratorBase.h"
 
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/physical_ProjectionScan.h"
 
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"

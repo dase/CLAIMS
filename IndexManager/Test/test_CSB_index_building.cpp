@@ -12,7 +12,7 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../../physical_query_plan/physical_ProjectionScan.h"
 #include "../CSBIndexBuilding.h"
 #include "test_index_manager.cpp"
 
