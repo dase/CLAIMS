@@ -107,7 +107,7 @@ bool ExpandableBlockStreamProjectionScan::Open(
         pthread_self(), LocalStageEndPoint(stage_src, "Scan", 0));
     perf_info =
         ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
-    perf_info->initearialize();
+    perf_info->initialize();
   }
   BarrierArrive();
   return GetReturnStatus();
