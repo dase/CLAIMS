@@ -30,25 +30,25 @@ noinst_LIBRARIES=libphysicalqueryplan.a
 libphysicalqueryplan_a_SOURCES = \
 	physical_operator.cpp 	physical_operator.h	\
 	BlockStreamExchangeLowerBase.cpp 		BlockStreamExchangeLowerBase.h \
-	BlockStreamIteratorBase.cpp 			BlockStreamIteratorBase.h \
-	BlockStreamLimit.cpp 				BlockStreamLimit.h \
+	BlockStreamIteratorBase.cpp 				BlockStreamIteratorBase.h \
+	physical_operator_limit.cpp 				physical_operator_limit.h \
 	BlockStreamPerformanceMonitorTop.cpp 	BlockStreamPerformanceMonitorTop.h \
-	BlockStreamPrint.cpp 				BlockStreamPrint.h \
-	BlockStreamResultCollector.cpp 		BlockStreamResultCollector.h \
+	BlockStreamPrint.cpp 						BlockStreamPrint.h \
+	BlockStreamResultCollector.cpp 			BlockStreamResultCollector.h \
 	BlockStreamAggregationIterator.cpp 				BlockStreamAggregationIterator.h \
 	BlockStreamCombinedIterator.cpp 				BlockStreamCombinedIterator.h \
 	BlockStreamExpander.cpp 						BlockStreamExpander.h \
 	BlockStreamInIterator.cpp 						BlockStreamInIterator.h \
 	BlockStreamJoinIterator.cpp 						BlockStreamJoinIterator.h \
-	BlockStreamProjectIterator.cpp 						BlockStreamProjectIterator.h \
+	physical_project.cpp 						physical_project.h \
 	BlockStreamSortIterator.cpp 						BlockStreamSortIterator.h \
 	ExpandableBlockStreamBuffer.cpp 					ExpandableBlockStreamBuffer.h \
 	ExpandableBlockStreamExchangeEpoll.cpp 				ExpandableBlockStreamExchangeEpoll.h \
 	ExpandableBlockStreamExchangeLowerEfficient.cpp 		ExpandableBlockStreamExchangeLowerEfficient.h \
 	ExpandableBlockStreamExchangeLowerMaterialized.cpp 		ExpandableBlockStreamExchangeLowerMaterialized.h \
-	ExpandableBlockStreamFilter.cpp 					ExpandableBlockStreamFilter.h \
+	physical_filter.cpp 								physical_filter.h \
 	ExpandableBlockStreamHdfsScan.cpp 					ExpandableBlockStreamHdfsScan.h \
-	ExpandableBlockStreamProjectionScan.cpp 			ExpandableBlockStreamProjectionScan.h \
+	physical_ProjectionScan.cpp 					physical_ProjectionScan.h \
 	ExpandableBlockStreamRandomDiskAccess.cpp 			ExpandableBlockStreamRandomDiskAccess.h \
 	ExpandableBlockStreamRandomMemAccess.cpp 			ExpandableBlockStreamRandomMemAccess.h \
 	ExpandableBlockStreamSingleColumnScan.cpp 			ExpandableBlockStreamSingleColumnScan.h \
