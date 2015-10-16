@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/physical_query_plan/physical_operator_limit.h
+ * /CLAIMS/physical_query_plan/physical_limit.h
  *
  *  Created on: Sep 18, 2015
  *      Author: wangli,Hanzhang
@@ -26,23 +26,23 @@
  *
  */
 
-#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_OPERATOR_LIMIT_H_
-#define PHYSICAL_QUERY_PLAN_PHYSICAL_OPERATOR_LIMIT_H_
+#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_LIMIT_H_
+#define PHYSICAL_QUERY_PLAN_PHYSICAL_LIMIT_H_
 
 #include "BlockStreamIteratorBase.h"
 
-//namespace claims {
-//namespace physical_query_plan {
+// namespace claims {
+// namespace physical_query_plan {
 /**
  * @brief Method description: Implementation of limit physical operator. This
  * operator is a traditional model of iterator. Execute inline function to judge
  * which position is starting point and whether tuples is acquired.
  */
 
-class BlockStreamLimit : public BlockStreamIteratorBase {
+class PhysicalLimit : public BlockStreamIteratorBase {
  public:
   struct State {
-    friend class BlockStreamLimit;
+    friend class PhysicalLimit;
 
    public:
     State(Schema* schema, BlockStreamIteratorBase* child, unsigned long limits,
@@ -63,9 +63,9 @@ class BlockStreamLimit : public BlockStreamIteratorBase {
       ar& schema_& child_& limits_& block_size_& start_position_;
     }
   };
-  BlockStreamLimit();
-  BlockStreamLimit(State state);
-  virtual ~BlockStreamLimit();
+  PhysicalLimit();
+  PhysicalLimit(State state);
+  virtual ~PhysicalLimit();
   bool Open(const PartitionOffset&);
   bool Next(BlockStreamBase*);
   bool Close();
@@ -97,4 +97,4 @@ class BlockStreamLimit : public BlockStreamIteratorBase {
 //}  // namespace physical_query_plan
 //}  // namespace claims
 
-#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_OPERATOR_LIMIT_H_
+#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_LIMIT_H_

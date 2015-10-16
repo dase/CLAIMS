@@ -35,7 +35,7 @@
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamExpander.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "../physical_query_plan/physical_operator_limit.h"
+#include "../physical_query_plan/physical_limit.h"
 #include "../Resource/NodeTracker.h"
 
 #include "../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
@@ -130,11 +130,11 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
   BlockStreamIteratorBase* middle_tier;
   if (!limit_constraint_.CanBeOmitted()) {
     // we should add a limit operator
-    BlockStreamLimit::State limit_state(
+    PhysicalLimit::State limit_state(
         expander_state.schema_->duplicateSchema(), expander,
         limit_constraint_.returned_tuples_, block_size,
         limit_constraint_.start_position_);
-    BlockStreamIteratorBase* limit = new BlockStreamLimit(limit_state);
+    BlockStreamIteratorBase* limit = new PhysicalLimit(limit_state);
     middle_tier = limit;
   } else {
     middle_tier = expander;

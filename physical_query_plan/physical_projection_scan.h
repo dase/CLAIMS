@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/physical_query_plan/physical_projectionscan.h
+ * /CLAIMS/physical_query_plan/physical_projection_scan.h
  *
  *  Created on: Aug 27, 2013
  *      Author: wangli,Hanzhang
@@ -31,19 +31,22 @@
  *
  */
 
-#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTIONSCAN_H_
-#define PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTIONSCAN_H_
+#ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTION_SCAN_H_
+#define PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTION_SCAN_H_
 
-#include <string>
-#include <list>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <glog/logging.h>
+#include <string>
+#include <list>
+
+#include "../common/error_no.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "../../common/Schema/Schema.h"
-#include "../../storage/ChunkStorage.h"
-#include "../../storage/PartitionStorage.h"
+#include "../common/Schema/Schema.h"
+#include "../storage/ChunkStorage.h"
+#include "../storage/PartitionStorage.h"
 #include "../physical_query_plan/physical_operator.h"
-#include "../../common/ExpandedThreadTracker.h"
+#include "../common/ExpandedThreadTracker.h"
 
 // namespace claims {
 // namespace physical_query_plan {
@@ -52,7 +55,7 @@ typedef std::list<ChunkReaderIterator::block_accessor*> assigned_data;
 struct input_dataset {
   assigned_data input_data_blocks;
   SpineLock lock;
-  bool atomicGet(assigned_data& target, unsigned number_of_block) {
+  bool AtomicGet(assigned_data& target, unsigned number_of_block) {
     lock.acquire();
     bool not_empty = !target.empty();
     while (number_of_block-- && (!input_data_blocks.empty())) {
@@ -62,7 +65,7 @@ struct input_dataset {
     lock.release();
     return not_empty;
   }
-  void atomicPut(assigned_data blocks) {
+  void AtomicPut(assigned_data blocks) {
     lock.acquire();
     for (assigned_data::iterator it = blocks.begin(); it != blocks.end(); it++)
       input_data_blocks.push_front(*it);
@@ -70,11 +73,11 @@ struct input_dataset {
   }
 };
 
-class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
+class PhysicalProjectionScan : public PhysicalOperator {
  public:
-  class scan_thread_context : public ThreadContext {
+  class ScanThreadContext : public ThreadContext {
    public:
-    ~scan_thread_context(){};
+    ~ScanThreadContext(){};
     assigned_data assigned_data_;
   };
 
@@ -83,7 +86,7 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
     unsigned length;
   };
   class State {
-    friend class ExpandableBlockStreamProjectionScan;
+    friend class PhysicalProjectionScan;
 
    public:
     State(ProjectionID projection_id, Schema* schema, unsigned block_size,
@@ -101,16 +104,16 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
       ar& schema_& projection_id_& block_size_& sample_rate_;
     }
   };
-  ExpandableBlockStreamProjectionScan(State state);
-  ExpandableBlockStreamProjectionScan();
-  virtual ~ExpandableBlockStreamProjectionScan();
-  bool Open(const PartitionOffset& partition_offset = 0);
+  PhysicalProjectionScan(State state);
+  PhysicalProjectionScan();
+  virtual ~PhysicalProjectionScan();
+  bool Open(const PartitionOffset& kPartitionOffset = 0);
   bool Next(BlockStreamBase* block);
   bool Close();
   void Print();
 
  private:
-  bool passSample() const;
+  bool PassSample() const;
 
  private:
   State state_;
@@ -123,7 +126,7 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
   /* for debug*/
   unsigned long int return_blocks_;
 
-  const PerformanceInfo* perf_info;
+  const PerformanceInfo* kPerfInfo;
 
   // The following code is for boost serialization.
  private:
@@ -137,4 +140,4 @@ class ExpandableBlockStreamProjectionScan : public PhysicalOperator {
 //}  // namespace physical_query_plan
 //}  // namespace claims
 
-#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTIONSCAN_H_
+#endif  //  PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTION_SCAN_H_

@@ -29,49 +29,47 @@
 #include "../physical_query_plan/physical_filter.h"
 #include <assert.h>
 #include <limits>
-#include "../../utility/warmup.h"
-#include "../../utility/rdtsc.h"
-#include "../../common/ExpressionCalculator.h"
-#include "../../common/Expression/execfunc.h"
-#include "../../common/Expression/qnode.h"
-#include "../../common/Expression/initquery.h"
-#include "../../common/Expression/queryfunc.h"
-#include "../../common/data_type.h"
-#include "../../Config.h"
-#include "../../Parsetree/sql_node_struct.h"
-#include "../../codegen/ExpressionGenerator.h"
+#include "../utility/warmup.h"
+#include "../utility/rdtsc.h"
+#include "../common/ExpressionCalculator.h"
+#include "../common/Expression/execfunc.h"
+#include "../common/Expression/qnode.h"
+#include "../common/Expression/initquery.h"
+#include "../common/Expression/queryfunc.h"
+#include "../common/data_type.h"
+#include "../Config.h"
+#include "../Parsetree/sql_node_struct.h"
+#include "../codegen/ExpressionGenerator.h"
 
 #define NEWCONDITION
 
 // namespace claims{
 // namespace physica query_plan{
 
-ExpandableBlockStreamFilter::ExpandableBlockStreamFilter(State state)
+PhysicalFilter::PhysicalFilter(State state)
     : state_(state),
       generated_filter_function_(0),
       generated_filter_processing_fucntoin_(0) {
   InitExpandedStatus();
 }
 
-ExpandableBlockStreamFilter::ExpandableBlockStreamFilter()
+PhysicalFilter::PhysicalFilter()
     : generated_filter_function_(0), generated_filter_processing_fucntoin_(0) {
   InitExpandedStatus();
 }
 
-ExpandableBlockStreamFilter::~ExpandableBlockStreamFilter() {}
-ExpandableBlockStreamFilter::State::State(Schema* schema,
-                                          BlockStreamIteratorBase* child,
-                                          vector<QNode*> qual,
-                                          map<string, int> colindex,
-                                          unsigned block_size)
+PhysicalFilter::~PhysicalFilter() {}
+PhysicalFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
+                             vector<QNode*> qual, map<string, int> colindex,
+                             unsigned block_size)
     : schema_(schema),
       child_(child),
       qual_(qual),
       colindex_(colindex),
       block_size_(block_size) {}
-ExpandableBlockStreamFilter::State::State(
-    Schema* schema, BlockStreamIteratorBase* child,
-    std::vector<AttributeComparator> comparator_list, unsigned block_size)
+PhysicalFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
+                             std::vector<AttributeComparator> comparator_list,
+                             unsigned block_size)
     : schema_(schema),
       child_(child),
       comparator_list_(comparator_list),
@@ -87,10 +85,10 @@ ExpandableBlockStreamFilter::State::State(
  *computerFilterwithGeneratedCode.
  * 3)If it can't be optimized by llvm , we still choose computerFilter.
  */
-bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
+bool PhysicalFilter::Open(const PartitionOffset& part_off) {
   RegisterExpandedThreadToAllBarriers();
-  filter_thread_context* ftc =
-      (filter_thread_context*)CreateOrReuseContext(crm_core_sensitive);
+  FilterThreadContext* ftc = reinterpret_cast<FilterThreadContext*>(
+      CreateOrReuseContext(crm_core_sensitive));
 
   if (TryEntryIntoSerializedSection()) {
     if (Config::enable_codegen) {
@@ -104,7 +102,7 @@ bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
         if (generated_filter_function_) {
-          ff_ = ComputeFilterwithGeneratedCode;
+          ff_ = ComputeFilterWithGeneratedCode;
           printf("CodeGen (partial feature) succeeds!(%f8.4ms)\n",
                  getMilliSecond(start));
         } else {
@@ -123,10 +121,11 @@ bool ExpandableBlockStreamFilter::Open(const PartitionOffset& part_off) {
   return GetReturnStatus();
 }
 
-bool ExpandableBlockStreamFilter::Next(BlockStreamBase* block) {
+bool PhysicalFilter::Next(BlockStreamBase* block) {
   void* tuple_from_child;
   void* tuple_in_block;
-  filter_thread_context* tc = (filter_thread_context*)GetContext();
+  FilterThreadContext* tc =
+      reinterpret_cast<FilterThreadContext*>(GetContext());
   while (true) {
     if (tc->block_stream_iterator_->currentTuple() == 0) {
       /* mark the block as processed by setting it empty*/
@@ -141,7 +140,7 @@ bool ExpandableBlockStreamFilter::Next(BlockStreamBase* block) {
           return false;
       }
     }
-    process_logic(block, tc);
+    ProcessInLogic(block, tc);
     /**
      * @brief Method description: There are totally two reasons for the end of
      * the while loop.
@@ -162,18 +161,18 @@ bool ExpandableBlockStreamFilter::Next(BlockStreamBase* block) {
  * function,execute function with related parameters. Different operator has
  * different implementation in process_logic().
  */
-void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,
-                                                filter_thread_context* tc) {
+void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
+                                    FilterThreadContext* tc) {
   if (generated_filter_processing_fucntoin_) {
     int b_cur = block->getTuplesInBlock();
     int c_cur = tc->block_stream_iterator_->get_cur();
-    const int b_tuple_count = block->getBlockCapacityInTuples();
-    const int c_tuple_count = tc->block_for_asking_->getTuplesInBlock();
+    const int kBlockTulpeCount = block->getBlockCapacityInTuples();
+    const int kContextTupleCount = tc->block_for_asking_->getTuplesInBlock();
 
     generated_filter_processing_fucntoin_(
-        block->getBlock(), &b_cur, b_tuple_count,
-        tc->block_for_asking_->getBlock(), &c_cur, c_tuple_count);
-    ((BlockStreamFix*)block)->setTuplesInBlock(b_cur);
+        block->getBlock(), &b_cur, kBlockTulpeCount,
+        tc->block_for_asking_->getBlock(), &c_cur, kContextTupleCount);
+    (reinterpret_cast<BlockStreamFix*>(block))->setTuplesInBlock(b_cur);
     tc->block_stream_iterator_->set_cur(c_cur);
   } else {
     void* tuple_from_child;
@@ -213,14 +212,14 @@ void ExpandableBlockStreamFilter::process_logic(BlockStreamBase* block,
   }
 }
 
-bool ExpandableBlockStreamFilter::Close() {
+bool PhysicalFilter::Close() {
   InitExpandedStatus();
   DestoryAllContext();
   state_.child_->Close();
   return true;
 }
 
-void ExpandableBlockStreamFilter::Print() {
+void PhysicalFilter::Print() {
   printf("filter: \n");
   for (int i = 0; i < state_.qual_.size(); i++) {
     printf("  %s\n", state_.qual_[i]->alias.c_str());
@@ -228,20 +227,20 @@ void ExpandableBlockStreamFilter::Print() {
   state_.child_->Print();
 }
 
-void ExpandableBlockStreamFilter::ComputeFilter(bool& ret, void* tuple,
-                                                expr_func func_gen,
-                                                Schema* schema,
-                                                vector<QNode*> thread_qual_) {
+void PhysicalFilter::ComputeFilter(bool& ret, void* tuple, expr_func func_gen,
+                                   Schema* schema,
+                                   vector<QNode*> thread_qual_) {
   ret = ExecEvalQual(thread_qual_, tuple, schema);
 }
 
-void ExpandableBlockStreamFilter::ComputeFilterwithGeneratedCode(
-    bool& ret, void* tuple, expr_func func_gen, Schema* schema,
-    vector<QNode*> allocator) {
+void PhysicalFilter::ComputeFilterWithGeneratedCode(bool& ret, void* tuple,
+                                                    expr_func func_gen,
+                                                    Schema* schema,
+                                                    vector<QNode*> allocator) {
   func_gen(tuple, &ret);
 }
 
-ExpandableBlockStreamFilter::filter_thread_context::~filter_thread_context() {
+PhysicalFilter::FilterThreadContext::~FilterThreadContext() {
   delete block_for_asking_;
   delete temp_block_;
   delete block_stream_iterator_;
@@ -250,8 +249,8 @@ ExpandableBlockStreamFilter::filter_thread_context::~filter_thread_context() {
   }
 }
 
-ThreadContext* ExpandableBlockStreamFilter::CreateContext() {
-  filter_thread_context* ftc = new filter_thread_context();
+ThreadContext* PhysicalFilter::CreateContext() {
+  FilterThreadContext* ftc = new FilterThreadContext();
   ftc->block_for_asking_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   ftc->temp_block_ =
@@ -265,5 +264,5 @@ ThreadContext* ExpandableBlockStreamFilter::CreateContext() {
   return ftc;
 }
 
-//}//namespace claims
-//}// namespace physical_query_plan
+//} // namespace claims
+//} // namespace physical_query_plan

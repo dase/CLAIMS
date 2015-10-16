@@ -26,39 +26,38 @@
  *
  */
 
-#include "../physical_query_plan/physical_operator_limit.h"
+#include "../physical_query_plan/physical_limit.h"
 
-namespace claims {
-namespace physical_query_plan {
+// namespace claims {
+// namespace physical_query_plan {
 
-BlockStreamLimit::BlockStreamLimit()
-    : received_tuples_(0), block_for_asking_(NULL) {}
-BlockStreamLimit::BlockStreamLimit(State state)
+PhysicalLimit::PhysicalLimit() : received_tuples_(0), block_for_asking_(NULL) {}
+PhysicalLimit::PhysicalLimit(State state)
     : state_(state), received_tuples_(0), block_for_asking_(NULL) {}
 
-BlockStreamLimit::State::State(Schema* schema, BlockStreamIteratorBase* child,
-                               unsigned long limits, unsigned block_size,
-                               unsigned long start_position)
+PhysicalLimit::State::State(Schema* schema, BlockStreamIteratorBase* child,
+                            unsigned long limits, unsigned block_size,
+                            unsigned long start_position)
     : schema_(schema),
       child_(child),
       limits_(limits),
       block_size_(block_size),
       start_position_(start_position) {}
-BlockStreamLimit::State::State()
+PhysicalLimit::State::State()
     : schema_(NULL), child_(NULL), limits_(0), block_size_(0) {}
 
-BlockStreamLimit::~BlockStreamLimit() {
+PhysicalLimit::~PhysicalLimit() {
   // TODO(wangli):Auto-generated destructor stub
 }
 
-bool BlockStreamLimit::Open(const PartitionOffset& par) {
+bool PhysicalLimit::Open(const PartitionOffset& par) {
   tuple_cur_ = 0;
   block_for_asking_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   received_tuples_ = 0;
   return state_.child_->Open(par);
 }
-bool BlockStreamLimit::Next(BlockStreamBase* block) {
+bool PhysicalLimit::Next(BlockStreamBase* block) {
   while (state_.child_->Next(block_for_asking_)) {
     void* tuple_from_child;
     BlockStreamBase::BlockStreamTraverseIterator* it =
@@ -87,7 +86,8 @@ bool BlockStreamLimit::Next(BlockStreamBase* block) {
         /**
          * if the limit has already been exhausted, the current loop breaks
          * to fetch the next block from child iterator.
-         * TODO(wangli): ideally, fetching blocks from child iterator in cases that
+         * TODO(wangli): ideally, fetching blocks from child iterator in cases
+         * that
          * the limit is exhausted is not necessary. However, in the current
          * implementation, the child iterator sub-tree leaded by exchange
          * lower iterator cannot be closed if not all the blocks are called.
@@ -98,16 +98,16 @@ bool BlockStreamLimit::Next(BlockStreamBase* block) {
   }
   return !block->Empty();
 }
-bool BlockStreamLimit::Close() {
+bool PhysicalLimit::Close() {
   state_.child_->Close();
   block_for_asking_->~BlockStreamBase();
   return true;
 }
 
-void BlockStreamLimit::Print() {
+void PhysicalLimit::Print() {
   printf("Limit %ld\n", state_.limits_);
   state_.child_->Print();
 }
 
-}  // physical_query_plan
-}  // claims
+//}  // physical_query_plan
+//}  // claims

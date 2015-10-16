@@ -8,7 +8,7 @@
 #include <boost/iostreams/stream.hpp>
 #include "../../IndexManager/CSBIndexBuilding.h"
 #include "../../IndexManager/IndexScanIterator.h"
-#include "../../physical_query_plan/physical_operator_limit.h"
+#include "../../physical_query_plan/physical_limit.h"
 #include "../../common/Expression/qnode.h"
 #include "../../physical_query_plan/BlockStreamAggregationIterator.h"
 #include "../../physical_query_plan/BlockStreamCombinedIterator.h"
@@ -26,18 +26,18 @@
 #include "../../physical_query_plan/ExpandableBlockStreamExchangeLowerMaterialized.h"
 #include "../../physical_query_plan/physical_filter.h"
 #include "../../physical_query_plan/ExpandableBlockStreamHdfsScan.h"
-#include "../../physical_query_plan/physical_ProjectionScan.h"
 #include "../../physical_query_plan/ExpandableBlockStreamRandomMemAccess.h"
 #include "../../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
 #include "../../physical_query_plan/ExpandableBlockStreamSingleColumnScanDisk.h"
 #include "../../physical_query_plan/physical_operator.h"
+#include "../../physical_query_plan/physical_projection_scan.h"
 #pragma auto_inline
 template<class Archive>
 void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamExpander*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamSingleColumnScan*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamSingleColumnScanDisk*>(NULL));
-	ar.register_type(static_cast<ExpandableBlockStreamFilter*>(NULL));
+	ar.register_type(static_cast<PhysicalFilter*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamExchangeEpoll*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamExchangeLowerEfficient*>(NULL));
 	ar.register_type(static_cast<BlockStreamCombinedIterator*>(NULL));
@@ -45,15 +45,15 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<ExpandableBlockStreamHdfsScan*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamExchangeLowerMaterialized*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamRandomMemAccess*>(NULL));
-	ar.register_type(static_cast<ExpandableBlockStreamProjectionScan*>(NULL));
+	ar.register_type(static_cast<PhysicalProjectionScan*>(NULL));
 	ar.register_type(static_cast<BlockStreamPerformanceMonitorTop*>(NULL));
 	ar.register_type(static_cast<BlockStreamPrint*>(NULL));
 	ar.register_type(static_cast<BlockStreamAggregationIterator*>(NULL));
 	ar.register_type(static_cast<BlockStreamNestLoopJoinIterator*>(NULL));
 	ar.register_type(static_cast<BlockStreamSortIterator*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
-	ar.register_type(static_cast<BlockStreamLimit*>(NULL));
-	ar.register_type(static_cast<BlockStreamProjectIterator*>(NULL));
+	ar.register_type(static_cast<PhysicalLimit*>(NULL));
+	ar.register_type(static_cast<PhysicalProject*>(NULL));
 	ar.register_type(static_cast<PhysicalOperator*>(NULL));
 	ar.register_type(static_cast<BlockStreamInIterator*>(NULL));
 	ar.register_type(static_cast<bottomLayerCollecting*>(NULL));

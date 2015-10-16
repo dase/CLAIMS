@@ -31,7 +31,7 @@ libphysicalqueryplan_a_SOURCES = \
 	physical_operator.cpp 	physical_operator.h	\
 	BlockStreamExchangeLowerBase.cpp 		BlockStreamExchangeLowerBase.h \
 	BlockStreamIteratorBase.cpp 				BlockStreamIteratorBase.h \
-	physical_operator_limit.cpp 				physical_operator_limit.h \
+	physical_limit.cpp 							physical_limit.h \
 	BlockStreamPerformanceMonitorTop.cpp 	BlockStreamPerformanceMonitorTop.h \
 	BlockStreamPrint.cpp 						BlockStreamPrint.h \
 	BlockStreamResultCollector.cpp 			BlockStreamResultCollector.h \
@@ -48,7 +48,7 @@ libphysicalqueryplan_a_SOURCES = \
 	ExpandableBlockStreamExchangeLowerMaterialized.cpp 		ExpandableBlockStreamExchangeLowerMaterialized.h \
 	physical_filter.cpp 								physical_filter.h \
 	ExpandableBlockStreamHdfsScan.cpp 					ExpandableBlockStreamHdfsScan.h \
-	physical_ProjectionScan.cpp 					physical_ProjectionScan.h \
+	physical_projection_scan.cpp 					physical_projection_scan.h \
 	ExpandableBlockStreamRandomDiskAccess.cpp 			ExpandableBlockStreamRandomDiskAccess.h \
 	ExpandableBlockStreamRandomMemAccess.cpp 			ExpandableBlockStreamRandomMemAccess.h \
 	ExpandableBlockStreamSingleColumnScan.cpp 			ExpandableBlockStreamSingleColumnScan.h \

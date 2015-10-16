@@ -29,47 +29,47 @@
 #ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
 #define PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
 
+#include <boost/serialization/map.hpp>
 #include <list>
 #include <map>
 #include <string>
-#include <boost/serialization/map.hpp>
 
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/physical_operator.h"
-#include "../../common/Schema/Schema.h"
-#include "../../common/Comparator.h"
-#include "../../common/Block/BlockStream.h"
-#include "../../utility/lock.h"
-#include "../../common/AttributeComparator.h"
-#include "../../common/ExpressionItem.h"
-#include "../../common/Mapping.h"
-#include "../../Catalog/Attribute.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Comparator.h"
+#include "../common/Block/BlockStream.h"
+#include "../utility/lock.h"
+#include "../common/AttributeComparator.h"
+#include "../common/ExpressionItem.h"
+#include "../common/Mapping.h"
+#include "../Catalog/Attribute.h"
 #include "../physical_query_plan/physical_project.h"
-#include "../../common/Expression/qnode.h"
-#include "../../codegen/ExpressionGenerator.h"
+#include "../common/Expression/qnode.h"
+#include "../codegen/ExpressionGenerator.h"
 
 // namespace claims {
 // namespace physical_query_plan {
-class ExpandableBlockStreamFilter : public PhysicalOperator {
+class PhysicalFilter : public PhysicalOperator {
  public:
-  class filter_thread_context : public ThreadContext {
+  class FilterThreadContext : public ThreadContext {
    public:
     BlockStreamBase* block_for_asking_;
     BlockStreamBase* temp_block_;
     BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
     vector<QNode*> thread_qual_;
-    ~filter_thread_context();
+    ~FilterThreadContext();
   };
 
   /**
    * @brief Method description: struct to hold the remaining data when the next
    * is returned but the block from the child iterator is not exhausted.
    */
-  struct remaining_block {
-    remaining_block(BlockStreamBase* block,
-                    BlockStreamBase::BlockStreamTraverseIterator* iterator)
+  struct RemainingBlock {
+    RemainingBlock(BlockStreamBase* block,
+                   BlockStreamBase::BlockStreamTraverseIterator* iterator)
         : block(block), iterator(iterator){};
-    remaining_block() : block(NULL), iterator(NULL){};
+    RemainingBlock() : block(NULL), iterator(NULL){};
     BlockStreamBase* block;
     BlockStreamBase::BlockStreamTraverseIterator* iterator;
   };
@@ -79,7 +79,7 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
    */
   class State {
    public:
-    friend class ExpandableBlockStreamFilter;
+    friend class PhysicalFilter;
     State(Schema* schema, BlockStreamIteratorBase* child, vector<QNode*> qual,
           map<string, int> colindex, unsigned block_size);
     State(Schema* s, BlockStreamIteratorBase* child,
@@ -93,7 +93,6 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
     unsigned block_size_;
     vector<QNode*> qual_;
     std::vector<AttributeComparator> comparator_list_;
-    vector<ExpressItem_List> v_ei_;
     map<string, int> colindex_;
 
    private:
@@ -104,16 +103,16 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
     }
   };
 
-  ExpandableBlockStreamFilter(State state);
-  ExpandableBlockStreamFilter();
-  virtual ~ExpandableBlockStreamFilter();
+  PhysicalFilter(State state);
+  PhysicalFilter();
+  virtual ~PhysicalFilter();
   bool Open(const PartitionOffset& part_off);
   bool Next(BlockStreamBase* block);
   bool Close();
   void Print();
 
  private:
-  void process_logic(BlockStreamBase* block, filter_thread_context* tc);
+  void ProcessInLogic(BlockStreamBase* block, FilterThreadContext* tc);
 
  private:
   ThreadContext* CreateContext();
@@ -124,7 +123,7 @@ class ExpandableBlockStreamFilter : public PhysicalOperator {
   static void ComputeFilter(bool& ret, void* tuple, expr_func func_gen,
                             Schema* schema, vector<QNode*> thread_qual_);
   // llvm optimized function which be used to tuples.
-  static void ComputeFilterwithGeneratedCode(bool& ret, void* tuple,
+  static void ComputeFilterWithGeneratedCode(bool& ret, void* tuple,
                                              expr_func func_gen, Schema* schema,
                                              vector<QNode*>);
 

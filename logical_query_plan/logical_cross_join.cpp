@@ -167,7 +167,8 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
         const unsigned long r_cardinality =
             left_plan_context.GetAggregatedDataCardinality();
         for (unsigned i = 0;
-             i < left_plan_context.plan_partitioner_.GetNumberOfPartitions(); i++) {
+             i < left_plan_context.plan_partitioner_.GetNumberOfPartitions();
+             i++) {
           const unsigned l_cardinality =
               left_plan_context.plan_partitioner_.GetPartition(i)
                   ->get_cardinality();
@@ -379,12 +380,17 @@ void LogicalCrossJoin::Print(int level) const {
  * @details   (additional)
  */
 
-bool LogicalCrossJoin::CanLocalJoin(const PlanContext& left_plan_context,
-                                    const PlanContext& right_plan_context) const {
-  if (left_plan_context.plan_partitioner_.GetNumberOfPartitions() > 1) return false;
-  if (right_plan_context.plan_partitioner_.GetNumberOfPartitions() > 1) return false;
-  return left_plan_context.plan_partitioner_.get_partition_list()[0].get_location() ==
-         right_plan_context.plan_partitioner_.get_partition_list()[0].get_location();
+bool LogicalCrossJoin::CanLocalJoin(
+    const PlanContext& left_plan_context,
+    const PlanContext& right_plan_context) const {
+  if (left_plan_context.plan_partitioner_.GetNumberOfPartitions() > 1)
+    return false;
+  if (right_plan_context.plan_partitioner_.GetNumberOfPartitions() > 1)
+    return false;
+  return left_plan_context.plan_partitioner_.get_partition_list()[0]
+             .get_location() ==
+         right_plan_context.plan_partitioner_.get_partition_list()[0]
+             .get_location();
 }
 }  // namespace logical_query_plan
 }  // namespace claims

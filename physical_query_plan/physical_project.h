@@ -34,31 +34,28 @@
 #include <map>
 #include <list>
 
-#include "../../common/ExpressionCalculator.h"
-#include "../../common/ExpressionItem.h"
-#include "../../common/Mapping.h"
-#include "../../configure.h"
-#include "../../common/Expression/qnode.h"
-#include "../../common/Expression/initquery.h"
-#include "../../common/Expression/execfunc.h"
+#include "../common/ExpressionCalculator.h"
+#include "../common/ExpressionItem.h"
+#include "../common/Mapping.h"
+#include "../configure.h"
+#include "../common/Expression/qnode.h"
+#include "../common/Expression/initquery.h"
+#include "../common/Expression/execfunc.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/physical_operator.h"
 
-using namespace std;
-
-// namespace claims {
+// namespace claims{
 // namespace physical_query_plan {
-typedef vector<ExpressionItem> ExpressItem_List;
 
-class BlockStreamProjectIterator : public PhysicalOperator {
+class PhysicalProject : public PhysicalOperator {
  public:
-  class project_thread_context : public ThreadContext {
+  class ProjectThreadContext : public ThreadContext {
    public:
     BlockStreamBase *block_for_asking_;
     BlockStreamBase *temp_block_;
     BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
     vector<QNode *> thread_qual_;
-    ~project_thread_context() {
+    ~ProjectThreadContext() {
       delete block_for_asking_;
       delete temp_block_;
       delete block_stream_iterator_;
@@ -69,14 +66,13 @@ class BlockStreamProjectIterator : public PhysicalOperator {
   };
 
   class State {
-    friend class BlockStreamProjectIterator;
+    friend class PhysicalProject;
 
    public:
     State(Schema *input, Schema *output, BlockStreamIteratorBase *children,
-          unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei,
-          vector<QNode *> exprTree);
+          unsigned blocksize, Mapping map, vector<QNode *> exprTree);
     State(Schema *input, Schema *output, BlockStreamIteratorBase *children,
-          unsigned blocksize, Mapping map, vector<ExpressItem_List> v_ei);
+          unsigned blocksize, Mapping map);
     State(){};
 
    public:
@@ -92,7 +88,6 @@ class BlockStreamProjectIterator : public PhysicalOperator {
     // select list, this expr is the result of the getIteratorTree to construct
     // a schema. getDataflow() can generate a schema by using the SQLExpression
     // and Expression can be computed by SQLExpression
-    vector<ExpressItem_List> v_ei_;
     Mapping map_;
 
     vector<QNode *> exprTree_;
@@ -102,14 +97,14 @@ class BlockStreamProjectIterator : public PhysicalOperator {
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {
-      ar &input_ &output_ &child_ &map_ &block_size_ &v_ei_ &exprTree_;
+      ar &input_ &output_ &child_ &map_ &block_size_ &exprTree_;
     }
   };
-  BlockStreamProjectIterator(State state);
-  BlockStreamProjectIterator();
-  virtual ~BlockStreamProjectIterator();
+  PhysicalProject(State state);
+  PhysicalProject();
+  virtual ~PhysicalProject();
 
-  bool Open(const PartitionOffset &partition_offset = 0);
+  bool Open(const PartitionOffset &kPartitionOffset = 0);
   bool Next(BlockStreamBase *block);
   bool Close();
   void Print();
@@ -119,13 +114,13 @@ class BlockStreamProjectIterator : public PhysicalOperator {
 
   // According to result,the function generate a new attribute list(new
   // schema:output).
-  bool copyNewValue(void *tuple, void *result, int length);
+  bool CopyNewValue(void *tuple, void *result, int length);
 
   // this function is not used. Because of ExpressionItem.
-  bool copyColumn(void *&tuple, ExpressionItem &result, int length);
+  bool CopyColumn(void *&tuple, ExpressionItem &result, int length);
 
   // The actual implementation of operations.
-  void process_logic(BlockStreamBase *block, project_thread_context *tc);
+  void ProcessInLogic(BlockStreamBase *block, ProjectThreadContext *tc);
 
  private:
   State state_;

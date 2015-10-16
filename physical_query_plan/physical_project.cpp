@@ -30,44 +30,37 @@
 
 // namespace claims{
 // namespace physical_query_plan{
-BlockStreamProjectIterator::BlockStreamProjectIterator() {
+PhysicalProject::PhysicalProject() { InitExpandedStatus(); }
+
+PhysicalProject::~PhysicalProject() {}
+
+PhysicalProject::PhysicalProject(State state) : state_(state) {
   InitExpandedStatus();
 }
 
-BlockStreamProjectIterator::~BlockStreamProjectIterator() {}
-
-BlockStreamProjectIterator::BlockStreamProjectIterator(State state)
-    : state_(state) {
-  InitExpandedStatus();
-}
-
-BlockStreamProjectIterator::State::State(Schema* input, Schema* output,
-                                         BlockStreamIteratorBase* children,
-                                         unsigned blocksize, Mapping map,
-                                         vector<ExpressItem_List> v_ei,
-                                         vector<QNode*> exprTree)
+PhysicalProject::State::State(Schema* input, Schema* output,
+                              BlockStreamIteratorBase* children,
+                              unsigned blocksize, Mapping map,
+                              vector<QNode*> exprTree)
     : input_(input),
       output_(output),
       child_(children),
       block_size_(blocksize),
       map_(map),
-      v_ei_(v_ei),
       exprTree_(exprTree) {}
-BlockStreamProjectIterator::State::State(Schema* input, Schema* output,
-                                         BlockStreamIteratorBase* children,
-                                         unsigned blocksize, Mapping map,
-                                         vector<ExpressItem_List> v_ei)
+PhysicalProject::State::State(Schema* input, Schema* output,
+                              BlockStreamIteratorBase* children,
+                              unsigned blocksize, Mapping map, )
     : input_(input),
       output_(output),
       child_(children),
       block_size_(blocksize),
-      map_(map),
-      v_ei_(v_ei) {}
-bool BlockStreamProjectIterator::Open(const PartitionOffset& partition_offset) {
-  project_thread_context* ptc =
-      (project_thread_context*)CreateOrReuseContext(crm_core_sensitive);
+      map_(map) {}
+bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
+  ProjectThreadContext* ptc =
+      reinterpret_cast<char*>(CreateOrReuseContext(crm_core_sensitive));
 
-  bool ret = state_.child_->Open(partition_offset);
+  bool ret = state_.child_->Open(kPartitionOffset);
   SetReturnStatus(ret);
   BarrierArrive();
   return GetReturnStatus();
@@ -79,18 +72,18 @@ bool BlockStreamProjectIterator::Open(const PartitionOffset& partition_offset) {
  */
 
 // TODO(casa): seek the pointer of data and LLVM will be solved by wangli.
-bool BlockStreamProjectIterator::Next(BlockStreamBase* block) {
+bool PhysicalProject::Next(BlockStreamBase* block) {
   unsigned total_length_ = state_.output_->getTupleMaxSize();
 
   void* tuple_from_child;
   void* tuple_in_block;
-  project_thread_context* tc = (project_thread_context*)GetContext();
+  ProjectThreadContext* tc =
+      reinterpret_cast<ProjectThreadContext*>(GetContext());
   while (true) {
     if (tc->block_stream_iterator_->currentTuple() == 0) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
       if (state_.child_->Next(tc->block_for_asking_)) {
-        //        printf("%lld\n",pthread_self());
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {
@@ -101,7 +94,7 @@ bool BlockStreamProjectIterator::Next(BlockStreamBase* block) {
         }
       }
     }
-    process_logic(block, tc);
+    ProcessInLogic(block, tc);
     /**
      * @brief Method description: There are totally two reasons for the end of
      * the while loop.
@@ -114,24 +107,20 @@ bool BlockStreamProjectIterator::Next(BlockStreamBase* block) {
     if (block->Full())
       // for case (1)
       return true;
-    else {
-    }
   }
 }
 
-bool BlockStreamProjectIterator::Close() {
+bool PhysicalProject::Close() {
   InitExpandedStatus();
   DestoryAllContext();
   return state_.child_->Close();
 }
 
-bool BlockStreamProjectIterator::copyNewValue(void* tuple, void* result,
-                                              int length) {
+bool PhysicalProject::CopyNewValue(void* tuple, void* result, int length) {
   memcpy(tuple, result, length);
 }
-bool BlockStreamProjectIterator::copyColumn(void*& tuple,
-                                            ExpressionItem& result,
-                                            int length) {
+bool PhysicalProject::CopyColumn(void*& tuple, ExpressionItem& result,
+                                 int length) {
   switch (result.return_type) {
     case t_int: {
       memcpy(tuple, &result.content.data.value._int, length);
@@ -174,13 +163,13 @@ bool BlockStreamProjectIterator::copyColumn(void*& tuple,
       break;
     }
     default: {
-      cout << "missing the operator!!!" << endl;
+      std::cout << "missing the operator!!!" << endl;
       break;
     }
   }
 }
-void BlockStreamProjectIterator::Print() {
-  cout << "proj:" << endl;
+void PhysicalProject::Print() {
+  std::cout << "proj:" << endl;
   for (int i = 0; i < state_.exprTree_.size(); i++) {
     printf("  %s\n", state_.exprTree_[i]->alias.c_str());
   }
@@ -193,8 +182,8 @@ void BlockStreamProjectIterator::Print() {
  * @param BlockStreamBase*, project_thread_context*
  * @details   (additional) The actual implementation of operations.
  */
-void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
-                                               project_thread_context* tc) {
+void PhysicalProject::ProcessInLogic(BlockStreamBase* block,
+                                     ProjectThreadContext* tc) {
   unsigned total_length = state_.output_->getTupleMaxSize();
   void* tuple_from_child;
   void* tuple;
@@ -203,8 +192,9 @@ void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
       for (int i = 0; i < tc->thread_qual_.size(); i++) {
         void* result = tc->thread_qual_[i]->FuncId(
             tc->thread_qual_[i], tuple_from_child, state_.input_);
-        copyNewValue(tuple, result, state_.output_->getcolumn(i).get_length());
-        tuple = (char*)tuple + state_.output_->getcolumn(i).get_length();
+        CopyNewValue(tuple, result, state_.output_->getcolumn(i).get_length());
+        tuple = reinterpret_cast<char*>(tuple) +
+                state_.output_->getcolumn(i).get_length();
       }
       tc->block_stream_iterator_->increase_cur_();
     } else {
@@ -220,8 +210,8 @@ void BlockStreamProjectIterator::process_logic(BlockStreamBase* block,
  * state(Class)
  * @return a pointer(project_thread_context)
  */
-ThreadContext* BlockStreamProjectIterator::CreateContext() {
-  project_thread_context* ptc = new project_thread_context();
+ThreadContext* PhysicalProject::CreateContext() {
+  ProjectThreadContext* ptc = new ProjectThreadContext();
   ptc->block_for_asking_ =
       BlockStreamBase::createBlock(state_.input_, state_.block_size_);
   ptc->temp_block_ =
