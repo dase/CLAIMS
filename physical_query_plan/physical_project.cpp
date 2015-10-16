@@ -50,15 +50,15 @@ PhysicalProject::State::State(Schema* input, Schema* output,
       exprTree_(exprTree) {}
 PhysicalProject::State::State(Schema* input, Schema* output,
                               BlockStreamIteratorBase* children,
-                              unsigned blocksize, Mapping map, )
+                              unsigned blocksize, Mapping map)
     : input_(input),
       output_(output),
       child_(children),
       block_size_(blocksize),
       map_(map) {}
 bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
-  ProjectThreadContext* ptc =
-      reinterpret_cast<char*>(CreateOrReuseContext(crm_core_sensitive));
+  ProjectThreadContext* ptc = reinterpret_cast<ProjectThreadContext*>(
+      CreateOrReuseContext(crm_core_sensitive));
 
   bool ret = state_.child_->Open(kPartitionOffset);
   SetReturnStatus(ret);

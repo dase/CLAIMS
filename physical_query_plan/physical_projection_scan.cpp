@@ -28,6 +28,7 @@
 
 #include <memory.h>
 #include <malloc.h>
+#include <glog/logging.h>
 #include <sys/mman.h>
 #include <errno.h>
 #include <limits.h>
@@ -37,7 +38,8 @@
 #include "../Config.h"
 #include "../utility/warmup.h"
 #include "../storage/ChunkStorage.h"
-#include "physical_projection_scan.h"
+#include "./physical_projection_scan.h"
+
 using namespace claims::common;
 
 // namespace claims{
@@ -71,12 +73,13 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
     /* this is the first expanded thread*/
     PartitionStorage* partition_handle_;
     return_blocks_ = 0;
-    if ((partition_handle_ = BlockManager::getInstance()->getPartitionHandle(
-             PartitionID(state_.projection_id_, kPartitionOffset))) == 0) {
-      LOG(WARNING) << PartitionID(state_.projection_id_, kPartitionOffset)
-                          .getName()
-                          .c_str() << kErrorMessage[kNoPartitionIdScan]
-                   << std::endl;
+    if (0 ==
+        (partition_handle_ = BlockManager::getInstance()->getPartitionHandle(
+             PartitionID(state_.projection_id_, kPartitionOffset)))) {
+      LOG(ERROR) << PartitionID(state_.projection_id_, kPartitionOffset)
+                        .getName()
+                        .c_str() << kErrorMessage[kNoPartitionIdScan]
+                 << std::endl;
       SetReturnStatus(false);
     } else {
       partition_reader_iterator_ =

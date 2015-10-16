@@ -34,6 +34,7 @@
 #ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTION_SCAN_H_
 #define PHYSICAL_QUERY_PLAN_PHYSICAL_PROJECTION_SCAN_H_
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <glog/logging.h>
