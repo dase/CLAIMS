@@ -74,7 +74,7 @@ bool ProjectionBinding::BindingEntireProjection(
           allocate_cur = (allocate_cur + 1) % node_id_list.size();
           target = node_id_list[allocate_cur];
           failures++;
-          if (failures > node_id_list.size()) {
+          if (failures >= node_id_list.size()) {
             /* none of the available Slave could meet the budget;
              * TODO: 1.Roll back the allocated budget for other partitions.
              * 		 2.The partitioner may need to consider OneToMany mode so

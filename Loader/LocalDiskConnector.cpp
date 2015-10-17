@@ -70,7 +70,7 @@ bool LocalDiskConnector::closeFiles() {
 }
 
 int LocalDiskConnector::flush(unsigned projection_offset,
-		unsigned partition_offset, void* source, unsigned length) {
+		unsigned partition_offset, const void* source, unsigned length) {
 	return write(file_handles_[projection_offset][partition_offset], source, length);
 }
 

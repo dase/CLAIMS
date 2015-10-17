@@ -18,7 +18,7 @@ public:
 	bool openFiles(open_flag open_flag_);
 	bool closeFiles();
 
-	int flush(unsigned projection_offset, unsigned partition_offset, void* source, unsigned length);
+	int flush(unsigned projection_offset, unsigned partition_offset, const void* source, unsigned length);
 private:
 protected:
 	std::vector<std::vector<int> > file_handles_;

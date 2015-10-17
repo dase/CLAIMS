@@ -112,7 +112,7 @@ void Config::initialize() {
    * The following lines set the search attribute name and default value for each parameter.
    */
 
-  data_dir = getString("data", "/home/claims/data/");
+  data_dir = getString("data", "/home/imdb/data/");
 
   max_degree_of_parallelism = getInt("max_degree_of_parallelism", 4);
 
@@ -139,7 +139,7 @@ void Config::initialize() {
 
   client_listener_port = getInt("client_listener_port", 10001);
 
-  catalog_file = getString("catalog_file", "catalogData.dat");
+  catalog_file = getString("catalog_file", data_dir+"CATALOG");
 
   enable_codegen = getBoolean("enable_codegen", true);
 

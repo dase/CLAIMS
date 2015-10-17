@@ -55,6 +55,9 @@ ErrorInit::ErrorInit() {
   /* errorno for common  -1 ~ -1000 */
   DefineErrorAndMessage(kTypeError, "Type error");
   DefineErrorAndMessage(kNotInit, "Not initialize");
+  DefineErrorAndMessage(EReadHdfsFileFail, "Read data from hdfs failed");
+  DefineErrorAndMessage(EOpenHdfsFileFail, "open hdfs file failed");
+  DefineErrorAndMessage(EReadDiskFileFail, "Read data from disk failed");
 
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(kNoTableFound, "No such table found");
@@ -72,6 +75,9 @@ ErrorInit::ErrorInit() {
   /* errorno for physical query plan -5001 ~ -6000 */
   DefineErrorAndMessage(kGenerateSubPhyPlanFailed,
                         "generate the sub physical plan failed");
+
+  DefineErrorAndMessage(ECatalogRestoreInvild, "restore catalog failed");
+  DefineErrorAndMessage(ECatalogNotFound, "catalog file is not existed");
 
 //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }

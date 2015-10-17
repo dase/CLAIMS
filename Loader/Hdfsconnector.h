@@ -26,7 +26,7 @@ public:
 	bool openFiles(open_flag open_flag_);
 	bool closeFiles();
 
-	int flush(unsigned projection_offset, unsigned partition_offset, void* source, unsigned length);
+	int flush(unsigned projection_offset, unsigned partition_offset, const void* source, unsigned length);
 private:
 	bool assgin_open_file(open_flag open_flag_);
 

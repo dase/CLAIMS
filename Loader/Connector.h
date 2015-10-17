@@ -22,7 +22,7 @@ public:
 	virtual bool openFiles(open_flag open_flag_)=0;
 	virtual bool closeFiles()=0;
 
-	virtual int flush(unsigned projection_offset, unsigned partition_offset, void* source, unsigned length)=0;
+	virtual int flush(unsigned projection_offset, unsigned partition_offset, const void* source, unsigned length)=0;
 private:
 protected:
 	vector<vector<string> > writepath;

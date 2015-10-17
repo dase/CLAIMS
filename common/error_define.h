@@ -31,7 +31,7 @@
 
 #include <stdlib.h>
 
-typedef int RetCode; // means return code
+typedef int RetCode;  // means return code
 /*
  * have to add Error Message in error_no.h and error_no.cpp, if new error no is add
  */
@@ -49,7 +49,9 @@ const int kFailure = EXIT_FAILURE;
 /* errorno for common  -1 ~ -1000 */
 const int kTypeError = -1;
 const int kNotInit = -2;
-
+const int EReadHdfsFileFail = -3;
+const int EOpenHdfsFileFail = -4;
+const int EReadDiskFileFail = -5;
 /* errorno for SQL parser -1001 ~ -2000  */
 const int kNoTableFound = -1001;
 
@@ -65,6 +67,10 @@ const int kGeneratePlanContextFailed = -4002;
 
 /* errorno for physical_query_plan -5001 ~ -6000 */
 const int kGenerateSubPhyPlanFailed = -5001;
+
+/* errorno for physical_query_plan -6001 ~ -7000 */
+const int ECatalogRestoreInvild = -6001;
+const int ECatalogNotFound = -6002;
 
 }  // end namespace common
 }  // end namespace claims
