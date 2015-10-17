@@ -47,6 +47,10 @@
 // namespace claims{
 // namespace physical_query_plan {
 
+/**
+ * @brief Method description: Implementation of Project operator in physical
+ * layer.
+ */
 class PhysicalProject : public PhysicalOperator {
  public:
   class ProjectThreadContext : public ThreadContext {

@@ -52,6 +52,12 @@
 // namespace claims {
 // namespace physical_query_plan {
 
+/**
+ * @brief Method description:  Implementation of Scan operator in physical
+ * layer. In the current implementation, for simplicity, we assume that the
+ * underlying storage is arranged in blocks, each of which is the same as the
+ * size of the block in the parameter of the next function.
+ */
 typedef std::list<ChunkReaderIterator::block_accessor*> assigned_data;
 struct input_dataset {
   assigned_data input_data_blocks;

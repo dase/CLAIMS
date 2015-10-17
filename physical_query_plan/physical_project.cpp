@@ -70,7 +70,6 @@ bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
  * @brief Method description: now the expressions computing speed is slow
  * because of the copy between among the expression.
  */
-
 // TODO(casa): seek the pointer of data and LLVM will be solved by wangli.
 bool PhysicalProject::Next(BlockStreamBase* block) {
   unsigned total_length_ = state_.output_->getTupleMaxSize();

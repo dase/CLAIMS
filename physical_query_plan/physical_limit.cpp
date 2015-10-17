@@ -87,8 +87,7 @@ bool PhysicalLimit::Next(BlockStreamBase* block) {
          * if the limit has already been exhausted, the current loop breaks
          * to fetch the next block from child iterator.
          * TODO(wangli): ideally, fetching blocks from child iterator in cases
-         * that
-         * the limit is exhausted is not necessary. However, in the current
+         * that the limit is exhausted is not necessary. However, in the current
          * implementation, the child iterator sub-tree leaded by exchange
          * lower iterator cannot be closed if not all the blocks are called.
          */
