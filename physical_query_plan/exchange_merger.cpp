@@ -42,6 +42,7 @@
 #include <sys/select.h>
 #include <assert.h>
 #include <sys/epoll.h>
+#include <glog/logging.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -56,9 +57,8 @@
 #include "../utility/rdtsc.h"
 #include "./exchange_merger.h"
 
-#include <glog/logging.h>
 #include "./exchange_sender_pipeline.h"
-#include "exchange_sender_materialized.h"
+#include "./exchange_sender_materialized.h"
 #define BUFFER_SIZE_IN_EXCHANGE 1000
 
 ExchangeMerger::ExchangeMerger(State state) : state_(state) {
@@ -102,16 +102,17 @@ bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
         pthread_self(),
         LocalStageEndPoint(stage_src, "Exchange", all_merged_block_buffer_));
 
+    // if one of block_for_socket is full, it will be deserialized into
+    // block_for_deserialization and sended to all_merged_data_buffer
+    block_for_deserialization =
+        BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
+
     // store block for each socket and the received block is serialized.
     block_for_socket_ = new BlockContainer* [lower_num_];
     for (unsigned i = 0; i < lower_num_; ++i) {
       block_for_socket_[i] = new BlockContainer(
           block_for_deserialization->getSerializedBlockSize());
     }
-    // if one of block_for_socket is full, it will be deserialized into
-    // block_for_deserialization and sended to all_merged_data_buffer
-    block_for_deserialization =
-        BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
     if (PrepareSocket() == false) return false;
     if (SetSocketNonBlocking(sock_fd_) == false) {
       return false;
@@ -336,6 +337,11 @@ bool ExchangeMerger::IsMaster() {
   }
   return false;
 }
+/**
+ * 1. for every next segment of plan, one ExchangeSenderPipeline or
+ * ExchangeSenderMaterialized will be add at top of it;
+ * 2. serialize it and send it to every lower senders.
+ */
 bool ExchangeMerger::SerializeAndSendPlan() {
   IteratorExecutorMaster* IEM = IteratorExecutorMaster::getInstance();
   // GETCURRENTTIME(start);
@@ -409,6 +415,8 @@ void ExchangeMerger::CancelReceiverThread() {
 /**
  * first, block_for_socket_ for receive data from senders, then if one block is
  * enough, next serialize it and put it into all_merged_block_buffer.
+ *  epoll is good at listening every coming block for different socket.
+ *
  */
 void* ExchangeMerger::Receiver(void* arg) {
   ExchangeMerger* Pthis = reinterpret_cast<ExchangeMerger*>(arg);
