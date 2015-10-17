@@ -84,7 +84,7 @@ class LogicalAggregation : public LogicalOperator {
    */
   PlanContext GetPlanContext();
   /**
-   * generate corresponding physical plan tree, mainly set necessary state.
+   * generate corresponding physical plan tree, mainly set necessary state_.
    */
   BlockStreamIteratorBase* GetPhysicalPlan(const unsigned& block_size);
 

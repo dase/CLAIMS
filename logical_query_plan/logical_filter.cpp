@@ -36,7 +36,7 @@
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/initquery.h"
-#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/exchange_merger.h"
 #include "../physical_query_plan/ExpandableBlockStreamFilter.h"
 namespace claims {
 namespace logical_query_plan {
@@ -93,7 +93,7 @@ BlockStreamIteratorBase* LogicalFilter::GetPhysicalPlan(
     const unsigned& blocksize) {
   PlanContext plan_context = GetPlanContext();
   BlockStreamIteratorBase* child_iterator = child_->GetPhysicalPlan(blocksize);
-  ExpandableBlockStreamFilter::State state;  // Initial a state.
+  ExpandableBlockStreamFilter::State state;  // Initial a state_.
   state.block_size_ = blocksize;
   state.child_ = child_iterator;
   state.qual_ = condi_;
@@ -143,7 +143,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
 
       physical_plan.cost += physical_plan.plan_context_.GetAggregatedDatasize();
 
-      ExpandableBlockStreamExchangeEpoll::State state;
+      ExchangeMerger::State state;
       state.block_size_ = block_size;
       state.child_ = physical_plan.plan;  // child_iterator;
       state.exchange_id_ =
@@ -183,7 +183,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
       state.lower_id_list_ = lower_id_list;
 
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(state);
+          new ExchangeMerger(state);
 
       physical_plan.plan = exchange;
     }

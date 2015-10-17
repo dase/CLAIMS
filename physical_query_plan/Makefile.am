@@ -29,7 +29,7 @@ LDADD = ../Executor/libexecutor.a \
 noinst_LIBRARIES=libphysicalqueryplan.a
 libphysicalqueryplan_a_SOURCES = \
 	physical_operator.cpp 	physical_operator.h	\
-	BlockStreamExchangeLowerBase.cpp 		BlockStreamExchangeLowerBase.h \
+	exchange_sender.cpp 		exchange_sender.h \
 	BlockStreamIteratorBase.cpp 			BlockStreamIteratorBase.h \
 	BlockStreamLimit.cpp 				BlockStreamLimit.h \
 	BlockStreamPerformanceMonitorTop.cpp 	BlockStreamPerformanceMonitorTop.h \
@@ -37,15 +37,15 @@ libphysicalqueryplan_a_SOURCES = \
 	BlockStreamResultCollector.cpp 		BlockStreamResultCollector.h \
 	BlockStreamAggregationIterator.cpp 				BlockStreamAggregationIterator.h \
 	BlockStreamCombinedIterator.cpp 				BlockStreamCombinedIterator.h \
-	BlockStreamExpander.cpp 						BlockStreamExpander.h \
+	expander.cpp 						expander.h \
 	BlockStreamInIterator.cpp 						BlockStreamInIterator.h \
 	BlockStreamJoinIterator.cpp 						BlockStreamJoinIterator.h \
 	BlockStreamProjectIterator.cpp 						BlockStreamProjectIterator.h \
 	BlockStreamSortIterator.cpp 						BlockStreamSortIterator.h \
 	ExpandableBlockStreamBuffer.cpp 					ExpandableBlockStreamBuffer.h \
-	ExpandableBlockStreamExchangeEpoll.cpp 				ExpandableBlockStreamExchangeEpoll.h \
-	ExpandableBlockStreamExchangeLowerEfficient.cpp 		ExpandableBlockStreamExchangeLowerEfficient.h \
-	ExpandableBlockStreamExchangeLowerMaterialized.cpp 		ExpandableBlockStreamExchangeLowerMaterialized.h \
+	exchange_merger.cpp 				physical_exchange_merger.h \
+	exchange_sender_pipeline.cpp 		exchange_sender_pipeline.h \
+	exchange_sender_materialized.cpp 		exchange_sender_materialized.h \
 	ExpandableBlockStreamFilter.cpp 					ExpandableBlockStreamFilter.h \
 	ExpandableBlockStreamHdfsScan.cpp 					ExpandableBlockStreamHdfsScan.h \
 	ExpandableBlockStreamProjectionScan.cpp 			ExpandableBlockStreamProjectionScan.h \

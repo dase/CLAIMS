@@ -81,7 +81,7 @@ class PhysicalOperator : public BlockStreamIteratorBase {
  protected:
   ThreadContext* CreateOrReuseContext(context_reuse_mode crm);
 
-  /* this function initialize the state of expanded iterator.
+  /* this function initialize the state_ of expanded iterator.
    * Should be called in the constructor and close() of the expanded iterator
    * implementation.
    */

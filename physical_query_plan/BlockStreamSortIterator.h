@@ -143,7 +143,7 @@ private:
 //	};
 //
 //	BlockStreamSortIterator();
-//	BlockStreamSortIterator(State state);
+//	BlockStreamSortIterator(State state_);
 //	virtual ~BlockStreamSortIterator();
 //	bool open(const PartitionOffset& part_off=0);
 //	bool next(BlockStreamBase* block);

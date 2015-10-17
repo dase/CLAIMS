@@ -1,11 +1,10 @@
 /*
- * ExchangeTracker.cpp
+ * exchange_tracker.cpp
  *
  *  Created on: Aug 11, 2013
  *      Author: wangli
  */
 
-#include "ExchangeTracker.h"
 #include <string>
 #include <sstream>
 #include "../common/Logging.h"
@@ -14,6 +13,8 @@
 #include "../utility/rdtsc.h"
 #include "../common/ids.h"
 #include <iosfwd>
+
+#include "exchange_tracker.h"
 ExchangeTracker::ExchangeTracker() {
 	endpoint=Environment::getInstance()->getEndPoint();
 	framework=new Theron::Framework(*endpoint);

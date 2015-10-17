@@ -32,9 +32,9 @@
 #include "../Catalog/Catalog.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
-#include "../physical_query_plan/BlockStreamExpander.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/exchange_merger.h"
+#include "../physical_query_plan/expander.h"
 namespace claims {
 namespace logical_query_plan {
 LogicalSort::LogicalSort(LogicalOperator *child,
@@ -82,7 +82,7 @@ BlockStreamIteratorBase *LogicalSort::GetPhysicalPlan(
   BlockStreamIteratorBase *expander_lower =
       new BlockStreamExpander(expander_state);
 
-  ExpandableBlockStreamExchangeEpoll::State exchange_state;
+  ExchangeMerger::State exchange_state;
   exchange_state.block_size_ = blocksize;
   exchange_state.child_ = expander_lower;
   exchange_state.exchange_id_ =
@@ -97,7 +97,7 @@ BlockStreamIteratorBase *LogicalSort::GetPhysicalPlan(
   upper_ip_list.push_back(0);
   exchange_state.upper_id_list_ = upper_ip_list;  // lower
   BlockStreamIteratorBase *exchange =
-      new ExpandableBlockStreamExchangeEpoll(exchange_state);
+      new ExchangeMerger(exchange_state);
 
   BlockStreamSortIterator::State reducer_state;
   reducer_state.block_size_ = blocksize;

@@ -33,7 +33,7 @@
 #include <iostream>
 #include "../Catalog/Catalog.h"
 #include "../IDsGenerator.h"
-#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/exchange_merger.h"
 #include "../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
 #include "../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
 #include "../Resource/NodeTracker.h"
@@ -157,7 +157,7 @@ PlanContext LogicalScan::GetPlanContext() {
 }
 
 /**
- * @brief Set the value of class state and get instantiation of physical
+ * @brief Set the value of class state_ and get instantiation of physical
  * operator to transform logical operator.
  * In the current implementation, all the attributes within the involved
  * projection are read.
@@ -197,7 +197,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
   } else {
     physical_plan_descriptor.cost += plan_context.GetAggregatedDatasize();
 
-    ExpandableBlockStreamExchangeEpoll::State state;
+    ExchangeMerger::State state;
     state.block_size_ = block_size;
     state.child_ = scan;  // child_iterator;
     state.exchange_id_ =
@@ -234,7 +234,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     assert(state.partition_schema_.partition_key_index >= 0);
 
     BlockStreamIteratorBase* exchange =
-        new ExpandableBlockStreamExchangeEpoll(state);
+        new ExchangeMerger(state);
 
     PlanContext new_plan_context;
     new_plan_context.attribute_list_ = plan_context.attribute_list_;

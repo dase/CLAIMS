@@ -35,8 +35,8 @@
 #include <vector>
 #include "../logical_query_plan/plan_context.h"
 #include "../IDsGenerator.h"
-#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
-#include "../physical_query_plan/BlockStreamExpander.h"
+#include "../physical_query_plan/exchange_merger.h"
+#include "../physical_query_plan/expander.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Config.h"
 #include <glog/logging.h>
@@ -246,7 +246,7 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       BlockStreamIteratorBase* expander_lower =
           new BlockStreamExpander(expander_state);
 
-      ExpandableBlockStreamExchangeEpoll::State exchange_state;
+      ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander_lower;
       exchange_state.exchange_id_ =
@@ -264,7 +264,7 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       }
       exchange_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(exchange_state);
+          new ExchangeMerger(exchange_state);
 
       BlockStreamAggregationIterator::State global_aggregation_state;
       global_aggregation_state.aggregationIndex =
@@ -297,7 +297,7 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
       BlockStreamIteratorBase* expander =
           new BlockStreamExpander(expander_state);
-      ExpandableBlockStreamExchangeEpoll::State exchange_state;
+      ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander;  // child_->getIteratorTree(block_size);
       exchange_state.exchange_id_ =
@@ -326,7 +326,7 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       }
       exchange_state.schema_ = GetSchema(child_plan_context.attribute_list_);
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(exchange_state);
+          new ExchangeMerger(exchange_state);
       aggregation_state.agg_node_type =
           BlockStreamAggregationIterator::State::Not_Hybrid_Agg;
       ChangeSchemaForAVG(aggregation_state);

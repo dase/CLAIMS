@@ -7,8 +7,8 @@
 
 #include "../physical_query_plan/BlockStreamNestLoopJoinIterator.h"
 
-#include "../../Executor/ExpanderTracker.h"
 #include "../../common/Block/BlockStream.h"
+#include "../Executor/expander_tracker.h"
 #include "../physical_query_plan/BlockStreamJoinIterator.h"
 BlockStreamNestLoopJoinIterator::BlockStreamNestLoopJoinIterator():PhysicalOperator(2,1) {
 	InitExpandedStatus();

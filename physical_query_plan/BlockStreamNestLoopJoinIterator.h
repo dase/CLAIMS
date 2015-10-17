@@ -9,7 +9,7 @@
 #define BLOCKSTREAMNESTLOOPJOINITERATOR_H_
 #include <boost/serialization/base_object.hpp>
 #include "../../Debug.h"
-#include "../../Executor/ExpanderTracker.h"
+#include "../Executor/expander_tracker.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/BlockStreamJoinIterator.h"
 #include "../physical_query_plan/physical_operator.h"

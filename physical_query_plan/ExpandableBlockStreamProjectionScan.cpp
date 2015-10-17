@@ -13,10 +13,10 @@
 #include <limits.h>
 #include "../../common/rename.h"
 #include "../../storage/BlockManager.h"
-#include "../../Executor/ExpanderTracker.h"
 #include "../../Config.h"
 #include "../../utility/warmup.h"
 #include "../../storage/ChunkStorage.h"
+#include "../Executor/expander_tracker.h"
 
 //#define AVOID_CONTENTION_IN_SCAN
 
