@@ -21,9 +21,9 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
- * 
- * Description:
  *
+ *  ATTENTION: have to add Error Message in error_no.h and error_no.cpp,
+ *  if new error no is add
  */
 
 #ifndef COMMON_ERROR_DEFINE_H_
@@ -32,9 +32,7 @@
 #include <stdlib.h>
 
 typedef int RetCode;  // means return code
-/*
- * have to add Error Message in error_no.h and error_no.cpp, if new error no is add
- */
+
 namespace claims {
 namespace common {
 
@@ -52,11 +50,13 @@ const int kNotInit = -2;
 const int EReadHdfsFileFail = -3;
 const int EOpenHdfsFileFail = -4;
 const int EReadDiskFileFail = -5;
+const int EOpenDiskFileFail = -6;
+const int ELSeekDiskFileFail = -7;
+
 /* errorno for SQL parser -1001 ~ -2000  */
 const int kNoTableFound = -1001;
 
 /* errorno for Loader -2001 ~ -3000  */
-
 
 /* errorno for codegen -3001 ~ -4000 */
 const int kTestError = -3001;

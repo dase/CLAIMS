@@ -21,7 +21,7 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
- * 
+ *
  * Description:
  *
  */
@@ -34,16 +34,13 @@ namespace claims {
 namespace common {
 
 const char* CStrError(int errorno) {
-#define likely(x)     __builtin_expect(!!(x), 1)
-#define unlikely(x)   __builtin_expect(!!(x), 0)
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
 
   const char* res = "Unknown Error";
   if (likely(errorno <= 0 && errorno > -kErrorMaxNumber)) {
     res = kErrorMessage[-errorno];
-//    std::cout<<res<<"----"<<std::endl;
-    if (unlikely(NULL == res)) {
-      res = "Unknown Error";
-    }
+    if (unlikely(NULL == res)) res = "Unknown Error";
   }
   return res;
 }
@@ -56,8 +53,10 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(kTypeError, "Type error");
   DefineErrorAndMessage(kNotInit, "Not initialize");
   DefineErrorAndMessage(EReadHdfsFileFail, "Read data from hdfs failed");
-  DefineErrorAndMessage(EOpenHdfsFileFail, "open hdfs file failed");
+  DefineErrorAndMessage(EOpenHdfsFileFail, "Open hdfs file failed");
   DefineErrorAndMessage(EReadDiskFileFail, "Read data from disk failed");
+  DefineErrorAndMessage(EOpenDiskFileFail, "Open disk file failed");
+  DefineErrorAndMessage(ELSeekDiskFileFail, "lseek a disk file failed");
 
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(kNoTableFound, "No such table found");
@@ -79,8 +78,7 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(ECatalogRestoreInvild, "restore catalog failed");
   DefineErrorAndMessage(ECatalogNotFound, "catalog file is not existed");
 
-//  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
+  //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common
 }  // namespace claims
-

@@ -18,12 +18,10 @@
 #include "../utility/lock.h"
 
 struct TableIDAllocator {
-  TableIDAllocator() {
-    table_id_curosr = 0;
-  }
+  TableIDAllocator() { table_id_curosr = 0; }
   Lock lock_;
   unsigned table_id_curosr;
-  unsigned allocate_unique_table_id() {	// add lock, like postgreSQL --- yukai
+  unsigned allocate_unique_table_id() {  // add lock, like postgreSQL --- yukai
     lock_.acquire();
     unsigned id = table_id_curosr;
     ++table_id_curosr;
@@ -38,9 +36,9 @@ struct TableIDAllocator {
   }
 
   friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive &ar, const unsigned int file_version) {
-    ar & table_id_curosr;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int file_version) {
+    ar& table_id_curosr;
   }
 };
 
@@ -49,17 +47,15 @@ class Catalog {
   static Catalog* getInstance();
   virtual ~Catalog();
   unsigned allocate_unique_table_id();
-  bool add_table(TableDescriptor* const &table);
+  bool add_table(TableDescriptor* const& table);
   TableDescriptor* getTable(const TableID&) const;
   TableDescriptor* getTable(const std::string& table_name) const;
   ProjectionDescriptor* getProjection(const ProjectionID&) const;
   ProjectionBinding* getBindingModele() const;
 
-  unsigned getTableCount() const {
-    return table_id_allocator.table_id_curosr;
-  }
+  unsigned getTableCount() const { return table_id_allocator.table_id_curosr; }
 
-  void saveCatalog();  // 2014-3-20---save as a file---by Yu
+  RetCode saveCatalog();     // 2014-3-20---save as a file---by Yu
   RetCode restoreCatalog();  // 2014-3-20---restore from a file---by Yu
   void outPut();
 
@@ -74,8 +70,8 @@ class Catalog {
   Catalog();  // avoiding generate more instance
   bool IsDataFileExist();
   bool CanFileAccessed(string file_name);
-  RetCode LoadFileFromHdfs(string file_name, void* &buffer, int* read_length);
-  RetCode LoadFileFromDisk(string file_name, void* &buffer, int* read_length);
+  RetCode LoadFileFromHdfs(string file_name, void*& buffer, int* read_length);
+  RetCode LoadFileFromDisk(string file_name, void*& buffer, int* read_length);
 
   TableIDAllocator table_id_allocator;
 
@@ -87,9 +83,9 @@ class Catalog {
 
   // 2014-3-20---add serialize function---by Yu
   friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive &ar, const unsigned int version) {
-    ar & table_id_allocator & name_to_table & tableid_to_table;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar& table_id_allocator& name_to_table& tableid_to_table;
   }
 };
 

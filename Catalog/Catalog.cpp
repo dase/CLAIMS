@@ -133,7 +133,7 @@ void Catalog::outPut() {
 }
 
 // 2014-3-20---save as a file---by Yu
-void Catalog::saveCatalog() {
+RetCode Catalog::saveCatalog() {
   std::ostringstream oss;
   boost::archive::text_oarchive oa(oss);
   oa << *this;
@@ -161,6 +161,7 @@ void Catalog::saveCatalog() {
   if (false == connector->closeFiles()) {
     LOG(ERROR) << "close catalog file failed" << endl;
   }
+  return kSuccess;
 }
 
 bool Catalog::IsDataFileExist() {
@@ -229,16 +230,25 @@ RetCode Catalog::LoadFileFromHdfs(string file_name, void*& buffer,
 
 RetCode Catalog::LoadFileFromDisk(string file_name, void*& buffer,
                                   int* read_length) {
-  int fd = FileOpen(file_name.c_str(), O_RDWR | O_TRUNC | O_CREAT,
-                    S_IWUSR | S_IRUSR);
+  int fd = FileOpen(file_name.c_str(), O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
   long int file_length = lseek(fd, 0, SEEK_END);
+  if (-1 == file_length) {
+    PLOG(ERROR) << "lseek called on fd to set pos to the end of file " << fd
+                << " failed : ";
+    return ELSeekDiskFileFail;
+  }
   buffer = new char[file_length];
+  // reset pos to 0
+  if (0 == lseek(fd, 0, SEEK_SET)) {
+    PLOG(ERROR) << "lseek called on fd to reset pos to the start of file " << fd
+                << " failed : ";
+  }
   int read_num = read(fd, buffer, file_length);
   FileClose(fd);
   if (read_num != file_length) {
     LOG(ERROR) << "read file [" << file_name
                << "] from disk failed, expected read " << file_length
-               << " , actually read" << read_num << endl;
+               << " , actually read " << read_num << endl;
     return EReadDiskFileFail;
   }
   *read_length = read_num;
