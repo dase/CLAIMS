@@ -40,13 +40,17 @@
 #include "../../Environment.h"
 
 #define EXPANDER_BUFFER_SIZE 1000
-
-class BlockStreamExpander : public BlockStreamIteratorBase,
-                            public ExpandabilityShrinkability {
+/**
+ * expand or shrink working thread, called by ExpanderTracker. Expanding one
+ * thread is easy, but shrinking one may be complex due to it would be working
+ * now.
+ */
+class Expander : public BlockStreamIteratorBase,
+                 public ExpandabilityShrinkability {
  public:
   class State {
    public:
-    friend class BlockStreamExpander;
+    friend class Expander;
     State(Schema* schema, BlockStreamIteratorBase* child, unsigned thread_count,
           unsigned block_size, unsigned block_count_in_buffer = 10);
     State(){};
@@ -57,7 +61,7 @@ class BlockStreamExpander : public BlockStreamIteratorBase,
     unsigned init_thread_count_;
     unsigned block_size_;
     unsigned block_count_in_buffer_;
-    PartitionOffset partition_offset;
+    PartitionOffset partition_offset_;
 
    private:
     friend class boost::serialization::access;
@@ -67,15 +71,25 @@ class BlockStreamExpander : public BlockStreamIteratorBase,
           block_count_in_buffer_;
     }
   };
-  explicit BlockStreamExpander(State state);
-  BlockStreamExpander();
-  virtual ~BlockStreamExpander();
+  explicit Expander(State state);
+  Expander();
+  virtual ~Expander();
+  /**
+   * prepare block-buffer for collecting block from child and some thread list,
+   * create one initial working thread.
+   */
   bool Open(const PartitionOffset& partitoin_offset = 0);
+  /**
+   * fetch one block from buffer and return
+   */
   bool Next(BlockStreamBase* block);
   bool Close();
   void Print();
 
  private:
+  /**
+   * tracker the working thread and start the child's plan
+   */
   static void* ExpandedWork(void* arg);
   bool ChildExhausted();
   bool CreateWorkingThread();

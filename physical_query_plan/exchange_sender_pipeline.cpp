@@ -54,7 +54,8 @@ ExchangeSenderPipeline::~ExchangeSenderPipeline() {
   }
 }
 /**
- * 1.pay attention to the work of different block buffer
+ * pay attention to the work of different block buffer according to the
+ * comments near it
  */
 bool ExchangeSenderPipeline::Open(const PartitionOffset&) {
   state_.child_->Open(state_.partition_offset_);
@@ -117,9 +118,10 @@ bool ExchangeSenderPipeline::Open(const PartitionOffset&) {
 
     if (ConnectToUpper(ExchangeID(state_.exchange_id_, upper_offset),
                        state_.upper_id_list_[upper_offset],
-                       socket_fd_upper_list_[upper_offset]) != true)
+                       socket_fd_upper_list_[upper_offset]) != true) {
       LOG(INFO) << "unsuccessfully !" << std::endl;
-    return false;
+      return false;
+    }
   }
   LOG(INFO) << "successfully !" << std::endl;
 
@@ -127,16 +129,23 @@ bool ExchangeSenderPipeline::Open(const PartitionOffset&) {
   int error;
   error = pthread_create(&sender_thread_id_, NULL, Sender, this);
   if (error != 0) {
-    LOG(ERROR) << "Failed to create the sender thread>>>>>>>>>>" << std::endl;
+    LOG(ERROR) << "(exchane_id= " << state_.exchange_id_
+               << " partition_offset= " << state_.partition_offset_
+               << " ) Failed to create the sender thread>>>>>>>>>>"
+               << std::endl;
     return false;
   }
   return true;
 }
 /**
+ * Note the process from getting block of child to sending to mergers in
+ * different buffer.
  * if the state_.partition_schema_ is hash partitioned, every tuple of the block
- * which get from child will be hash repartition, if one new block if full, then
+ * which get from child will be hash repartition and copied into
+ * partitioned_block_stream_, if it is full, then
  * serialize it and insert into corresponding partition buffer.
- * else the state_.partition_schema_ is broadcast, staightly insert
+ * else the state_.partition_schema_ is broadcast, straightly insert the block
+ * from child into each partition buffer.
  */
 bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
   void* tuple_from_child;
@@ -146,7 +155,7 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
     if (state_.child_->Next(block_for_asking_)) {
       /**
        * if a blocks is obtained from child, we repartition the tuples in the
-       * block to corresponding partition.
+       * block to corresponding partition_block_stream_.
        */
       if (state_.partition_schema_.isHashPartition()) {
         BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
@@ -156,9 +165,9 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
            * for each tuple in the newly obtained block, insert the tuple to
            * one partitioned block according to the partition hash value
            */
-          const unsigned partition_id =
-              Hash(tuple_from_child, state_.schema_,
-                   state_.partition_schema_.partition_key_index, upper_num_);
+          const unsigned partition_id = GetHashPartitionId(
+              tuple_from_child, state_.schema_,
+              state_.partition_schema_.partition_key_index, upper_num_);
 
           // calculate the tuple size for the current tuple
           const unsigned bytes =
@@ -223,7 +232,9 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
        * waiting until all the block in the buffer has been
        * transformed to the uppers.
        */
-      LOG(INFO) << "Waiting until all the blocks in the buffer is sent!"
+      LOG(INFO) << "(exchane_id= " << state_.exchange_id_
+                << " partition_offset= " << state_.partition_offset_
+                << " ) Waiting until all the blocks in the buffer is sent!"
                 << std::endl;
       while (!partitioned_data_buffer_->isEmpty()) {
         usleep(1);
@@ -235,7 +246,9 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
        * blocks in the uppers' socket buffer have all been
        * consumed.
        */
-      LOG(INFO) << "Waiting for close notification from all merger!"
+      LOG(INFO) << "(exchane_id= " << state_.exchange_id_
+                << " partition_offset= " << state_.partition_offset_
+                << " ) Waiting for close notification from all merger!"
                 << std::endl;
       for (unsigned i = 0; i < upper_num_; i++) {
         WaitingForCloseNotification(socket_fd_upper_list_[i]);
@@ -289,7 +302,11 @@ bool ExchangeSenderPipeline::Close() {
   }
   return true;
 }
-
+/**
+ * sending_buffer_ contains one block from every partition (e.t. socket
+ * connection), if one block is send completely, supply one from
+ * partitioned_data_buffer_
+ */
 void* ExchangeSenderPipeline::Sender(void* arg) {
   ExchangeSenderPipeline* Pthis =
       reinterpret_cast<ExchangeSenderPipeline*>(arg);
@@ -393,7 +410,9 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
       }
       if (consumed == true) {
         /* In the current loop, we have sent an entire block to the Receiver,
-         * so we should get a new block into the block_for_sender_
+         * so we should get a new block into the block_for_sender_, but note
+         * one empty block is also appended in partitioned_data_buffer_ in
+         * next()
          */
         pthread_testcancel();
         if (Pthis->partitioned_data_buffer_->getBlock(
@@ -420,6 +439,8 @@ void ExchangeSenderPipeline::CancelSenderThread() {
   void* res;
   pthread_join(sender_thread_id_, &res);
   if (res != PTHREAD_CANCELED)
-    LOG(WARNING) << "thread is not canceled!" << std::endl;
+    LOG(WARNING) << "(exchange_id = " << state_.exchange_id_
+                 << " , partition_offset = " << state_.partition_offset_
+                 << " ) thread is not canceled!" << std::endl;
   sender_thread_id_ = 0;
 }

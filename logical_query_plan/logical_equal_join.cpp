@@ -372,14 +372,14 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
     }
     case kLeftRepartition: {
       //    state_.child_left
-      BlockStreamExpander::State expander_state;
+      Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = child_iterator_left;
       expander_state.schema_ = GetSchema(dataflow_left.attribute_list_);
       BlockStreamIteratorBase* expander =
-          new BlockStreamExpander(expander_state);
+          new Expander(expander_state);
 
       NodeTracker* node_tracker = NodeTracker::GetInstance();
       ExchangeMerger::State exchange_state;
@@ -421,14 +421,14 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
       break;
     }
     case kRightRepartition: {
-      BlockStreamExpander::State expander_state;
+      Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = child_iterator_right;
       expander_state.schema_ = GetSchema(dataflow_right.attribute_list_);
       BlockStreamIteratorBase* expander =
-          new BlockStreamExpander(expander_state);
+          new Expander(expander_state);
 
       NodeTracker* node_tracker = NodeTracker::GetInstance();
       ExchangeMerger::State exchange_state;
@@ -477,7 +477,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
     }
     case kCompleteRepartition: {
       /* build left input*/
-      BlockStreamExpander::State expander_state_l;
+      Expander::State expander_state_l;
       expander_state_l.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state_l.block_size_ = block_size;
       expander_state_l.init_thread_count_ =
@@ -485,7 +485,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
       expander_state_l.child_ = child_iterator_left;
       expander_state_l.schema_ = GetSchema(dataflow_left.attribute_list_);
       BlockStreamIteratorBase* expander_l =
-          new BlockStreamExpander(expander_state_l);
+          new Expander(expander_state_l);
 
       ExchangeMerger::State l_exchange_state;
       l_exchange_state.block_size_ = block_size;
@@ -512,7 +512,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
 
       // build right input
 
-      BlockStreamExpander::State expander_state_r;
+      Expander::State expander_state_r;
       expander_state_r.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state_r.block_size_ = block_size;
       expander_state_r.init_thread_count_ =
@@ -520,7 +520,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
       expander_state_r.child_ = child_iterator_right;
       expander_state_r.schema_ = GetSchema(dataflow_right.attribute_list_);
       BlockStreamIteratorBase* expander_r =
-          new BlockStreamExpander(expander_state_r);
+          new Expander(expander_state_r);
 
       ExchangeMerger::State r_exchange_state;
       r_exchange_state.block_size_ = block_size;

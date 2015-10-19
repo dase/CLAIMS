@@ -237,14 +237,14 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       ChangeSchemaForAVG(aggregation_state);
       BlockStreamAggregationIterator* local_aggregation =
           new BlockStreamAggregationIterator(aggregation_state);
-      BlockStreamExpander::State expander_state;
+      Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = local_aggregation;
       expander_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
       BlockStreamIteratorBase* expander_lower =
-          new BlockStreamExpander(expander_state);
+          new Expander(expander_state);
 
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
@@ -289,14 +289,14 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
     }
     case kReparGlobalAgg: {
       // the corresponding physical operation is't implemented
-      BlockStreamExpander::State expander_state;
+      Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = child_->GetPhysicalPlan(block_size);
       expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
       BlockStreamIteratorBase* expander =
-          new BlockStreamExpander(expander_state);
+          new Expander(expander_state);
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander;  // child_->getIteratorTree(block_size);

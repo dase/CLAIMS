@@ -104,7 +104,7 @@ void ExchangeSender::WaitingForCloseNotification(
   FileClose(target_socket_fd);
 }
 
-unsigned ExchangeSender::Hash(void* input_tuple, Schema* schema,
+unsigned ExchangeSender::GetHashPartitionId(void* input_tuple, Schema* schema,
                               unsigned partition_key_index, unsigned nuppers) {
   const void* hash_key_address =
       schema->getColumnAddess(partition_key_index, input_tuple);

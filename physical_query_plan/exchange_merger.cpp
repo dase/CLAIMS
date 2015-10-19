@@ -64,12 +64,8 @@
 ExchangeMerger::ExchangeMerger(State state) : state_(state) {
   InitExpandedStatus();
   assert(state.partition_schema_.partition_key_index < 100);
-  //  debug_winner_thread = 0;
 }
-ExchangeMerger::ExchangeMerger() {
-  InitExpandedStatus();
-  //  debug_winner_thread = 0;
-}
+ExchangeMerger::ExchangeMerger() { InitExpandedStatus(); }
 ExchangeMerger::~ExchangeMerger() {
   if (NULL != state_.schema_) {
     delete state_.schema_;
@@ -81,13 +77,14 @@ ExchangeMerger::~ExchangeMerger() {
   }
 }
 /**
- * note the block size is different from others, it has tail info.
+ * note the serialized block's size is different from others, it has tail info.
+ * exchange merger is at the end of one segment of plan, so it's the "stage_src"
+ * for this stage
  */
 bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
   unsigned long long int start = curtick();
   RegisterExpandedThreadToAllBarriers();
-  if (TryEntryIntoSerializedSection()) {
-    //    debug_winner_thread++;
+  if (TryEntryIntoSerializedSection()) {  // first arrived thread dose
     exhausted_lowers = 0;
     this->partition_offset_ = partition_offset;
     lower_num_ = state_.lower_id_list_.size();
@@ -268,16 +265,16 @@ bool ExchangeMerger::PrepareSocket() {
 
   if (bind(sock_fd_, (struct sockaddr*)&my_addr, sizeof(struct sockaddr)) ==
       -1) {
-    LOG(INFO) << " exchange_id = " << state_.exchange_id_
-              << " partition_offset = " << partition_offset_ << " bind errors!"
-              << std::endl;
+    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+               << " partition_offset = " << partition_offset_ << " bind errors!"
+               << std::endl;
     return false;
   }
 
   if (listen(sock_fd_, lower_num_) == -1) {
-    LOG(INFO) << " exchange_id = " << state_.exchange_id_
-              << " partition_offset = " << partition_offset_
-              << " listen errors!\n";
+    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+               << " partition_offset = " << partition_offset_
+               << " listen errors!\n";
     return false;
   }
   LOG(INFO) << " exchange_id = " << state_.exchange_id_
@@ -311,6 +308,11 @@ bool ExchangeMerger::RegisterExchange() {
   return et->RegisterExchange(
       ExchangeID(state_.exchange_id_, partition_offset_), port_str.str());
 }
+/**
+ * make sure each exchange merger at the same segment is registered, otherwise
+ * result into bugs, one lower sender would fail to connect to one upper merger
+ * due to it hasn't prepared.
+ */
 bool ExchangeMerger::IsOtherMergersRegistered() {
   ExchangeTracker* et = Environment::getInstance()->getExchangeTracker();
   for (unsigned i = 0; i < state_.upper_id_list_.size(); i++) {

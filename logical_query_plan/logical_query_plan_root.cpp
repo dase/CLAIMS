@@ -89,7 +89,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     is_exchange_need = true;
 
     // add BlockStreamExpander iterator into physical plan
-    BlockStreamExpander::State expander_state_lower;
+    Expander::State expander_state_lower;
     expander_state_lower.block_count_in_buffer_ = 10;
     expander_state_lower.block_size_ = block_size;
     expander_state_lower.init_thread_count_ =
@@ -98,7 +98,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     expander_state_lower.schema_ =
         GetSchema(child_plan_context.attribute_list_);
     BlockStreamIteratorBase* expander_lower =
-        new BlockStreamExpander(expander_state_lower);
+        new Expander(expander_state_lower);
 
     // add ExchangeEpoll iterator into physical plan
     ExchangeMerger::State state;
@@ -115,7 +115,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     child_iterator = new ExchangeMerger(state);
   }
 
-  BlockStreamExpander::State expander_state;
+  Expander::State expander_state;
   expander_state.block_count_in_buffer_ = 10;
   expander_state.block_size_ = block_size;
   if (is_exchange_need)
@@ -125,7 +125,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
   expander_state.child_ = child_iterator;
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
-  BlockStreamIteratorBase* expander = new BlockStreamExpander(expander_state);
+  BlockStreamIteratorBase* expander = new Expander(expander_state);
 
   BlockStreamIteratorBase* middle_tier;
   if (!limit_constraint_.CanBeOmitted()) {

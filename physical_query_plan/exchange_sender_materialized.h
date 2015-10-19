@@ -43,13 +43,14 @@
 #include "../../common/Block/BlockStreamBuffer.h"
 #include "../../common/Logging.h"
 #include "../../common/partition_functions.h"
-#include "exchange_sender.h"
+#include "./exchange_sender.h"
 /**
  * write block come from child into disk file, and send thread fetch block from
- * the file. others like ExchangeSenderPipeline.
+ * the file. others are similar to ExchangeSenderPipeline.
  */
 class ExchangeSenderMaterialized : public ExchangeSender {
   friend class ExchangeMerger;
+
  public:
   struct State {
     Schema* schema_;

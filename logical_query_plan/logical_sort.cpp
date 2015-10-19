@@ -73,14 +73,14 @@ BlockStreamIteratorBase *LogicalSort::GetPhysicalPlan(
   PlanContext dataflow = GetPlanContext();
 
   // Get all of the data from other nodes if needed.
-  BlockStreamExpander::State expander_state;
+  Expander::State expander_state;
   expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
   expander_state.block_size_ = blocksize;
   expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
   expander_state.child_ = child_->GetPhysicalPlan(blocksize);
   expander_state.schema_ = GetSchema(child_plan_context_.attribute_list_);
   BlockStreamIteratorBase *expander_lower =
-      new BlockStreamExpander(expander_state);
+      new Expander(expander_state);
 
   ExchangeMerger::State exchange_state;
   exchange_state.block_size_ = blocksize;

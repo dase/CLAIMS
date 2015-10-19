@@ -32,24 +32,24 @@
 
 #include "../Executor/expander_tracker.h"
 struct ExpanderContext {
-  BlockStreamExpander* pthis_;
+  Expander* pthis_;
   semaphore sem_;
 };
 
-BlockStreamExpander::BlockStreamExpander(State state)
+Expander::Expander(State state)
     : state_(state),
       block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
       coordinate_pid_(0) {}
 
-BlockStreamExpander::BlockStreamExpander()
+Expander::Expander()
     : block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
       coordinate_pid_(0) {}
 
-BlockStreamExpander::~BlockStreamExpander() {
+Expander::~Expander() {
   if (NULL != state_.child_) {
     delete state_.child_;
     state_.child_ = NULL;
@@ -60,19 +60,21 @@ BlockStreamExpander::~BlockStreamExpander() {
   }
 }
 
-BlockStreamExpander::State::State(Schema* schema,
-                                  BlockStreamIteratorBase* child,
-                                  unsigned thread_count, unsigned block_size,
-                                  unsigned block_count_in_buffer)
+Expander::State::State(Schema* schema, BlockStreamIteratorBase* child,
+                       unsigned thread_count, unsigned block_size,
+                       unsigned block_count_in_buffer)
     : schema_(schema),
       child_(child),
       init_thread_count_(thread_count),
       block_size_(block_size),
       block_count_in_buffer_(block_count_in_buffer) {}
-
-bool BlockStreamExpander::Open(const PartitionOffset& partitoin_offset) {
+/**
+ * @param partitoin_offset means to solve corresponding partition
+ * every Expander should register to ExpanderTracker
+ */
+bool Expander::Open(const PartitionOffset& partitoin_offset) {
   received_tuples_ = 0;
-  state_.partition_offset = partitoin_offset;
+  state_.partition_offset_ = partitoin_offset;
   input_data_complete_ = false;
   one_thread_finished_ = false;
   finished_thread_count_ = 0;
@@ -95,8 +97,10 @@ bool BlockStreamExpander::Open(const PartitionOffset& partitoin_offset) {
   }
   return true;
 }
-
-bool BlockStreamExpander::Next(BlockStreamBase* block) {
+/**
+ * fetch one block from buffer and return, until it is exhausted.
+ */
+bool Expander::Next(BlockStreamBase* block) {
   while (!block_stream_buffer_->getBlock(*block)) {
     if (ChildExhausted()) {
       return false;
@@ -107,7 +111,7 @@ bool BlockStreamExpander::Next(BlockStreamBase* block) {
   return true;
 }
 
-bool BlockStreamExpander::Close() {
+bool Expander::Close() {
   LOG(INFO) << "Expander: " << expander_id_ << " received "
             << block_stream_buffer_->getReceivedDataSizeInKbytes() << " kByte "
             << received_tuples_ << " tuples!" << std::endl;
@@ -147,13 +151,18 @@ bool BlockStreamExpander::Close() {
   LOG(INFO) << expander_id_ << "<<<<<<<Expander closed!>>>>>>>>>>" << std::endl;
   return true;
 }
-void BlockStreamExpander::Print() {
+void Expander::Print() {
   printf("Expander: thread num:%d\n", state_.init_thread_count_);
   state_.child_->Print();
 }
-void* BlockStreamExpander::ExpandedWork(void* arg) {
-  BlockStreamExpander* Pthis =
-      (reinterpret_cast<ExpanderContext*>(arg))->pthis_;
+/**
+ * one expander may have many threads, so ExpanderTracker should track each
+ * thread's status. call open() and next() of child to start the woke flow,
+ * because the close() should called once, so can ignore to call it here. If the
+ * work flow is exhausted, the delete some context and return
+ */
+void* Expander::ExpandedWork(void* arg) {
+  Expander* Pthis = (reinterpret_cast<ExpanderContext*>(arg))->pthis_;
   const pthread_t pid = pthread_self();
   LOG(INFO) << Pthis->expander_id_ << " thread " << pid
             << " is created!  BlockStreamExpander address is  " << Pthis
@@ -176,7 +185,8 @@ void* BlockStreamExpander::ExpandedWork(void* arg) {
   LOG(INFO) << Pthis->expander_id_ << ", pid= " << pid
             << " begins to open child!" << std::endl;
   ticks start_open = curtick();
-  Pthis->state_.child_->Open(Pthis->state_.partition_offset);
+
+  Pthis->state_.child_->Open(Pthis->state_.partition_offset_);
 
   LOG(INFO) << Pthis->expander_id_ << ", pid= " << pid
             << " finished opening child" << std::endl;
@@ -195,6 +205,7 @@ void* BlockStreamExpander::ExpandedWork(void* arg) {
     BlockStreamBase* block_for_asking = BlockStreamBase::createBlock(
         Pthis->state_.schema_, Pthis->state_.block_size_);
     block_for_asking->setEmpty();
+
     while (Pthis->state_.child_->Next(block_for_asking)) {
       if (!block_for_asking->Empty()) {
         Pthis->lock_.acquire();
@@ -259,9 +270,12 @@ void* BlockStreamExpander::ExpandedWork(void* arg) {
   return 0;
 }
 
-bool BlockStreamExpander::ChildExhausted() {
-  /* first acquire the exclusive lock to prevent creating expanded thread,
-   * Otherwise, newly created thread may not be detected by ChildExhausted().*/
+/**
+ * first acquire the exclusive lock to prevent creating expanded thread,
+ * Otherwise, newly created thread may not be detected by ChildExhausted().
+ * but what's coordinate_pid_?(fzh)
+ */
+bool Expander::ChildExhausted() {
   exclusive_expanding_.acquire();
   lock_.acquire();
   bool ret = input_data_complete_ == true &&
@@ -281,7 +295,11 @@ bool BlockStreamExpander::ChildExhausted() {
   }
   return ret;
 }
-bool BlockStreamExpander::CreateWorkingThread() {
+/**
+ * use thread-pool or pthread_create to create new working thread, the
+ * thread-pool way can avoid the cost to create and destroy one new thread
+ */
+bool Expander::CreateWorkingThread() {
   pthread_t tid = 0;
 
   ExpanderContext para;
@@ -316,7 +334,12 @@ bool BlockStreamExpander::CreateWorkingThread() {
     return false;
   }
 }
-void BlockStreamExpander::TerminateWorkingThread(const pthread_t pid) {
+/**
+ * in order to guarantee terminating one working thread fast and correctly, just
+ * set the status of corresponding call_backed, then try wait(), waiting
+ * somewhere at some PhysicalOperator can exit safely and set post()
+ */
+void Expander::TerminateWorkingThread(const pthread_t pid) {
   if (!ExpanderTracker::getInstance()->isExpandedThreadCallBack(pid)) {
     semaphore sem;
     tid_to_shrink_semaphore_[pid] = &sem;
@@ -324,7 +347,7 @@ void BlockStreamExpander::TerminateWorkingThread(const pthread_t pid) {
 
     AddIntoCalledBackThreadList(pid);
     ExpanderTracker::getInstance()->callbackExpandedThread(pid);
-    tid_to_shrink_semaphore_[pid]->wait();
+    tid_to_shrink_semaphore_[pid]->wait();  // note waiting post() somewhere
     lock_.acquire();
     tid_to_shrink_semaphore_.erase(pid);
     lock_.release();
@@ -343,7 +366,7 @@ void BlockStreamExpander::TerminateWorkingThread(const pthread_t pid) {
               << std::endl;
   }
 }
-void BlockStreamExpander::AddIntoWorkingThreadList(pthread_t pid) {
+void Expander::AddIntoWorkingThreadList(pthread_t pid) {
   lock_.acquire();
   in_work_expanded_thread_list_.insert(pid);
   LOG(INFO) << expander_id_ << " pid = " << pid
@@ -353,7 +376,7 @@ void BlockStreamExpander::AddIntoWorkingThreadList(pthread_t pid) {
          in_work_expanded_thread_list_.end());
   lock_.release();
 }
-bool BlockStreamExpander::RemoveFromWorkingThreadList(pthread_t pid) {
+bool Expander::RemoveFromWorkingThreadList(pthread_t pid) {
   lock_.acquire();
   if (in_work_expanded_thread_list_.find(pid) !=
       in_work_expanded_thread_list_.end()) {
@@ -369,7 +392,7 @@ bool BlockStreamExpander::RemoveFromWorkingThreadList(pthread_t pid) {
     return false;
   }
 }
-void BlockStreamExpander::AddIntoCalledBackThreadList(pthread_t pid) {
+void Expander::AddIntoCalledBackThreadList(pthread_t pid) {
   lock_.acquire();
   being_called_bacl_expanded_thread_list_.insert(pid);
   LOG(INFO) << expander_id_ << " pid = " << pid
@@ -377,35 +400,34 @@ void BlockStreamExpander::AddIntoCalledBackThreadList(pthread_t pid) {
   lock_.release();
 }
 // there should add some code to check that the pid exist in the list?
-void BlockStreamExpander::RemoveFromCalledBackThreadList(pthread_t pid) {
+void Expander::RemoveFromCalledBackThreadList(pthread_t pid) {
   lock_.acquire();
   being_called_bacl_expanded_thread_list_.erase(pid);
   LOG(INFO) << expander_id_ << " pid = " << pid
             << " is removed from being called back list!" << std::endl;
   lock_.release();
 }
-unsigned BlockStreamExpander::GetDegreeOfParallelism() {
+unsigned Expander::GetDegreeOfParallelism() {
   unsigned ret;
   lock_.acquire();
   ret = in_work_expanded_thread_list_.size();
   lock_.release();
   return ret;
 }
-bool BlockStreamExpander::Expand() {
+bool Expander::Expand() {
   if (input_data_complete_) {
     /*
      * Expander does not expand when at least one expanded thread has completely
-     * processed
-     * the input data flow. Otherwise the newly created expanded thread might
-     * not be able to
-     * work properly if the expander's close is called before its creation.
+     * processed the input data flow. Otherwise the newly created expanded
+     * thread might not be able to work properly if the expander's close is
+     * called before its creation.
      */
     return false;
   }
   return CreateWorkingThread();
 }
 
-bool BlockStreamExpander::Shrink() {
+bool Expander::Shrink() {
   ticks start = curtick();
   lock_.acquire();
   if (in_work_expanded_thread_list_.empty()) {

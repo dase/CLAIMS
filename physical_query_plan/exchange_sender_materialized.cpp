@@ -123,7 +123,7 @@ bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
            * one partitioned block according to the
            * partition hash value**/
           const unsigned partition_id =
-              Hash(tuple_from_child, state_.schema_,
+              GetHashPartitionId(tuple_from_child, state_.schema_,
                    state_.partition_schema_.partition_key_index, nuppers_);
 
           /** calculate the tuple size for the current tuple **/

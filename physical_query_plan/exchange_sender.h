@@ -50,10 +50,12 @@ class ExchangeSender : public BlockStreamIteratorBase {
   // build socket connection with upper mergers
   bool ConnectToUpper(const ExchangeID& exchange_id, const NodeID& id,
                       int& sock_fd) const;
+  // wait info from upper mergers.
   void WaitingForNotification(const int& target_socket_fd) const;
+  // wait close info from upper mergers
   void WaitingForCloseNotification(const int& target_socket_fd) const;
-  unsigned Hash(void* input_tuple, Schema* schema, unsigned partition_key_index,
-                unsigned nuppers);
+  unsigned GetHashPartitionId(void* input_tuple, Schema* schema,
+                              unsigned partition_key_index, unsigned nuppers);
 
  private:
   friend class boost::serialization::access;

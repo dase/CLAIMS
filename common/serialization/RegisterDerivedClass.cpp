@@ -34,7 +34,7 @@
 #pragma auto_inline
 template<class Archive>
 void Register_Block_Stream_Iterator(Archive & ar){
-	ar.register_type(static_cast<BlockStreamExpander*>(NULL));
+	ar.register_type(static_cast<Expander*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamSingleColumnScan*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamSingleColumnScanDisk*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamFilter*>(NULL));

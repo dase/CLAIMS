@@ -57,8 +57,6 @@
 /**
  * get one block from child and send to mergers immediately during one active
  * pipeline
- * Note the process from get block of child to send to mergers in
- * different buffer.
  */
 class ExchangeSenderPipeline : public ExchangeSender {
  public:
@@ -120,11 +118,6 @@ class ExchangeSenderPipeline : public ExchangeSender {
   unsigned upper_num_;
   int* socket_fd_upper_list_;
   PartitionedBlockBuffer* partitioned_data_buffer_;
-
-  /* one BlockStream for each uppers, the tuples from the child
-   * iterator are fed to the cur_block_stream_list_ according to their
-   * partition key.
-   */
   BlockStreamBase** partitioned_block_stream_;
   BlockContainer* block_for_sending_;
   BlockContainer* block_for_sending_buffer_;
