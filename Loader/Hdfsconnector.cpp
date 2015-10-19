@@ -14,8 +14,8 @@
 
 HdfsConnector::HdfsConnector(vector<vector<string> > hdfs_writepath)
     : Connector(hdfs_writepath) {
-  hdfsFS hdfsfs = hdfsConnect(Config::hdfs_master_ip.c_str(),
-                              Config::hdfs_master_port);
+  hdfsFS hdfsfs =
+      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
   fs = hdfsfs;
 }
 
@@ -24,38 +24,37 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_) {
   vector<string>::iterator par_writepath;
 
   for (prj_writepath = writepath.begin(); prj_writepath != writepath.end();
-      prj_writepath++) {
+       prj_writepath++) {
     vector<hdfsFile> prj_writefile;
     prj_writefile.clear();
     for (par_writepath = (*prj_writepath).begin();
-        par_writepath != (*prj_writepath).end(); par_writepath++) {
+         par_writepath != (*prj_writepath).end(); par_writepath++) {
       switch (open_flag_) {
         case CREATEE: {
-          if (hdfsExists(fs, (*par_writepath).c_str()) == 0) cout
-              << "[WARNINIG: Hdfsconnector.cpp->assgin_open_file()]: The file "
-              << *par_writepath << " is already exits! It will be override!\n";
-          prj_writefile.push_back(
-              hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY | O_CREAT, 0,
-                           0, 0));
+          if (hdfsExists(fs, (*par_writepath).c_str()) == 0)
+            cout << "[WARNINIG: Hdfsconnector.cpp->assgin_open_file()]: The "
+                    "file " << *par_writepath
+                 << " is already exits! It will be override!\n";
+          prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(),
+                                               O_WRONLY | O_CREAT, 0, 0, 0));
           break;
         }
         case APPENDD: {
           if (hdfsExists(fs, (*par_writepath).c_str()) == -1) {
-            prj_writefile.push_back(
-                hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY | O_CREAT,
-                             0, 0, 0));
+            prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(),
+                                                 O_WRONLY | O_CREAT, 0, 0, 0));
             break;
-//					cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: The file " << *par_writepath << "is not exits!\n";
-//					return false;
+            //					cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]:
+            //The file " << *par_writepath << "is not exits!\n";
+            //					return false;
           }
-          prj_writefile.push_back(
-              hdfsOpenFile(fs, (*par_writepath).c_str(), O_WRONLY | O_APPEND, 0,
-                           0, 0));
+          prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(),
+                                               O_WRONLY | O_APPEND, 0, 0, 0));
           break;
         }
         default: {
-          cout
-              << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: Illegal file open flag for data loading!\n";
+          cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]: Illegal "
+                  "file open flag for data loading!\n";
           return false;
         }
       }
@@ -67,9 +66,9 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_) {
 
 bool HdfsConnector::openFiles(open_flag open_flag_) {
   if (!fs) {
-    fprintf(
-        stderr,
-        "[ERROR: Hdfsconnector.cpp->op_connect()]: Failed to connect to hdfs.\n");
+    fprintf(stderr,
+            "[ERROR: Hdfsconnector.cpp->op_connect()]: Failed to connect to "
+            "hdfs.\n");
     exit(-1);
   }
   assgin_open_file(open_flag_);
@@ -78,7 +77,7 @@ bool HdfsConnector::openFiles(open_flag open_flag_) {
          << endl;
     exit(-1);
   } else {
-    cout << "HDFS connect successfully." << "\t";
+    cout << "HDFS connect successfully." << endl;
   }
 
   return true;
@@ -103,6 +102,4 @@ bool HdfsConnector::closeFiles() {
   return false;
 }
 
-HdfsConnector::~HdfsConnector() {
-}
-
+HdfsConnector::~HdfsConnector() {}

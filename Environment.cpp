@@ -6,6 +6,8 @@
  */
 
 #include "Environment.h"
+
+#include <glog/logging.h>
 #include <libconfig.h++>
 #include <iostream>
 #include <sstream>
@@ -18,6 +20,7 @@
 #include "common/Expression/queryfunc.h"
 #include "common/error_define.h"
 #include "codegen/CodeGenerator.h"
+
 using namespace claims::common;
 
 Environment* Environment::_instance = 0;
@@ -36,8 +39,8 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
     initializeCoordinator();
     catalog_ = Catalog::getInstance();
     if (kSuccess != catalog_->restoreCatalog()) {
-      cerr << "restore catalog failed" << endl;
-      exit(kFailure);
+      LOG(ERROR) << "failed to restore catalog" << std::endl;
+      cerr << "ERROR: restore catalog failed" << endl;
     }
   }
 

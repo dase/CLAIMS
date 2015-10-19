@@ -171,8 +171,13 @@ bool Catalog::IsDataFileExist() {
 
     dir = opendir(Config::data_dir.c_str());
     while ((file_ptr = readdir(dir)) != NULL) {
-      if ('T' == file_ptr->d_name[0]) return true;
+      if ('T' == file_ptr->d_name[0]) {
+        LOG(INFO) << "The data disk file started with 'T': "
+                  << file_ptr->d_name[0] << " is existed" << endl;
+        return true;
+      }
     }
+    LOG(INFO) << "There are no data file in disk" << endl;
     return false;
   } else {
     hdfsFS hdfsfs =
@@ -181,12 +186,20 @@ bool Catalog::IsDataFileExist() {
     hdfsFileInfo* file_list =
         hdfsListDirectory(hdfsfs, Config::data_dir.c_str(), &file_num);
     for (int cur = 0; cur < file_num; ++cur) {
-      if ('T' == file_list[cur].mName[0]) {
+      LOG(INFO) << "  " << file_list[cur].mName << "----";
+      string full_file_name(file_list[cur].mName);
+      int pos = full_file_name.find_last_of('/');
+      string file_name = full_file_name.substr(pos + 1);
+      LOG(INFO) << file_name << endl;
+      if ('T' == file_name[0]) {
+        LOG(INFO) << "The data HDFS file started with 'T': "
+                  << file_list[cur].mName[0] << " is existed" << endl;
         hdfsFreeFileInfo(file_list, file_num);
         return true;
       }
     }
     hdfsFreeFileInfo(file_list, file_num);
+    LOG(INFO) << "There are no data file in HDFS" << endl;
     return false;
   }
 }
@@ -215,6 +228,8 @@ RetCode Catalog::LoadFileFromHdfs(string file_name, void*& buffer,
   }
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs, file_name.c_str());
   int file_length = hdfsfile->mSize;
+  LOG(INFO) << "The length of file " << file_name << "is " << file_length
+            << endl;
 
   buffer = new char[file_length];
   int read_num = hdfsRead(fs, readFile, buffer, file_length);
@@ -223,6 +238,8 @@ RetCode Catalog::LoadFileFromHdfs(string file_name, void*& buffer,
   if (read_num != file_length) {
     LOG(ERROR) << "read file [" << file_name << "] from hdfs failed" << endl;
     return EReadHdfsFileFail;
+  } else {
+    LOG(INFO) << "read " << read_num << " from hdfs file " << file_name << endl;
   }
   *read_length = read_num;
   return kSuccess;
@@ -237,6 +254,8 @@ RetCode Catalog::LoadFileFromDisk(string file_name, void*& buffer,
                 << " failed : ";
     return ELSeekDiskFileFail;
   }
+  LOG(INFO) << "The length of file " << file_name << "is " << file_length
+            << endl;
   buffer = new char[file_length];
   // reset pos to 0
   if (0 == lseek(fd, 0, SEEK_SET)) {
@@ -244,6 +263,8 @@ RetCode Catalog::LoadFileFromDisk(string file_name, void*& buffer,
                 << " failed : ";
   }
   int read_num = read(fd, buffer, file_length);
+  LOG(INFO) << "read " << read_num << " from disk file " << file_name << endl;
+
   FileClose(fd);
   if (read_num != file_length) {
     LOG(ERROR) << "read file [" << file_name
@@ -264,6 +285,10 @@ RetCode Catalog::restoreCatalog() {
                << catalog_file << " is not existed!" << endl;
     return ECatalogNotFound;
   } else if (!CanFileAccessed(catalog_file)) {
+    LOG(INFO) << "The catalog file and data file all are not existed" << endl;
+    return kSuccess;
+  } else if (IsDataFileExist()) {
+    LOG(WARNING) << "There are no data file while catalog file exists" << endl;
     return kSuccess;
   } else {
     int file_length = 0;
@@ -284,6 +309,7 @@ RetCode Catalog::restoreCatalog() {
       }
     }
 
+    LOG(INFO) << "Start to deserialize catalog ..." << endl;
     string temp(static_cast<char*>(buffer), file_length);
     std::istringstream iss(temp);
     boost::archive::text_iarchive ia(iss);
