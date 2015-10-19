@@ -6,7 +6,7 @@
 
 %glr-parser
 %expect 8
-%expect-rr 79
+%expect-rr 80
 %defines
 %{
 #include <stdlib.h>
@@ -721,7 +721,7 @@ table_subquery: '(' select_stmt ')' { $$=$2; }//---3.14fzh---
 stmt: delete_stmt { emit("STMT"); }
    ;
 
-delete_stmt: DELETE delete_opts FROM NAME
+delete_stmt: DELETE delete_opts FROM table_references
     opt_where opt_orderby opt_limit
                   { 
                    /* emit("DELETEONE %d %s", $2, $4); free($4); */

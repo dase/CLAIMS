@@ -138,7 +138,133 @@ TEST_F(ElasticIteratorModelTest,FilteredJoin){
 	delete b_it;
 }
 
+//delete data test.
+TEST_F(ElasticIteratorModelTest,createTable){
 
+	string createtablesql = "create table PART2(\
+P_PARTKEY bigint unsigned,\
+P_NAME varchar(55),\
+P_MFGR varchar(25),\
+P_BRAND varchar(10),\
+P_TYPE varchar(25),\
+P_SIZE int,\
+P_CONTAINER varchar(10),\
+P_RETAILPRICE  decimal(4),\
+P_COMMENT varchar(23)\
+);";
+
+	string showtablessql = "SHOW TABLES;";
+	
+	ResultSet rs;
+	std::string message;
+	client_.submit(createtablesql.c_str(),message,rs);
+	EXPECT_STREQ("create table successfully\n", message.c_str());
+	cout << message << endl;
+	client_.submit(showtablessql.c_str(),message,rs);
+	
+	if((message.find("PART2") != std::string::npos) && (message.find("PART2_DEL") != std::string::npos))
+	{
+		EXPECT_TRUE(true);
+	}
+	else
+	{
+		EXPECT_TRUE(false);
+	}
+
+}
+
+#if 1
+TEST_F(ElasticIteratorModelTest,createprojection){
+
+	string createprojectionsql="create projection on PART2(\
+P_PARTKEY,\
+P_NAME,\
+P_MFGR,\
+P_BRAND,\
+P_TYPE,\
+P_SIZE,\
+P_CONTAINER,\
+P_RETAILPRICE,\
+P_COMMENT\
+) number = 18 partitioned on P_PARTKEY;";
+	
+	ResultSet rs;
+	std::string message;
+	client_.submit(createprojectionsql.c_str(),message,rs);
+	EXPECT_STREQ("create projection successfully\n", message.c_str());
+	
+	cout << message << endl;
+	
+}
+
+TEST_F(ElasticIteratorModelTest,loaddata){
+
+	string datapathfile = "/home/imdb/data/part.tbl";
+	/* this data file should be loaded by tester SELF and the structure of the data is the same as PART. 
+		just load the data of PART into PART2. 
+	*/
+#if 0 
+	cout << "please input the your data to load:" << endl;
+	cin >> datapathfile;
+#endif
+
+	string loaddataintopart2sql="load table PART2 from \""+ datapathfile +"\" with '|','\\n';";
+
+	cout << loaddataintopart2sql << endl;
+	
+	ResultSet rs;
+	std::string message;
+	client_.submit(loaddataintopart2sql.c_str(),message,rs);
+	EXPECT_STREQ("load data successfully\n", message.c_str());
+	
+	cout << message << endl;
+}
+
+TEST_F(ElasticIteratorModelTest,deletedata){
+
+
+	string deletedatafrompart2sql="delete from PART2 where row_id < 10;";
+	
+	ResultSet rs;
+	std::string message;
+	client_.submit(deletedatafrompart2sql.c_str(),message,rs);
+	//EXPECT_STREQ("load data successfully", message.c_str());
+	
+	cout << message << endl;
+}
+
+TEST_F(ElasticIteratorModelTest,showdeleteddatafromtableDEL){
+
+
+	string showdeletedatafrompart2sql="select * from PART2_DEL order by row_id_DEL;";
+	
+	ResultSet rs;
+	std::string message;
+	client_.submit(showdeletedatafrompart2sql.c_str(),message,rs);
+	DynamicBlockBuffer::Iterator it=rs.createIterator();
+	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
+	EXPECT_EQ(10,rs.getNumberOftuples());
+	cout << message << endl;
+}
+
+TEST_F(ElasticIteratorModelTest,droptestdata){
+
+
+	string droptablepart2sql="drop table PART2, PART2_DEL;";
+	
+	ResultSet rs;
+	std::string message;
+	client_.submit(droptablepart2sql.c_str(),message,rs);
+	DynamicBlockBuffer::Iterator it=rs.createIterator();
+	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
+	EXPECT_EQ("drop table successfully!\n",message);
+	cout << message << endl;
+}
+
+
+#endif
+
+// add by cswang 19 Oct, 2015
 
 
 

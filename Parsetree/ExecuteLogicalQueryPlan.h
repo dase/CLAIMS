@@ -14,6 +14,9 @@
 #include "../Catalog/table.h"
 #include <iosfwd>
 
+#define _DELETE_DATA_SUPPORT_
+
+
 class LogicalOperator;
 
 struct query_result{
@@ -39,6 +42,7 @@ void ExecuteLogicalQueryPlan(
 		int fd = 0
 		);
 
+#ifdef _DELETE_DATA_SUPPORT_
 void DeleteData(
     Catalog *catalog,
     Node *node,
@@ -47,6 +51,10 @@ void DeleteData(
     string &error_msg,
     string &info
     );
+
+void InsertDeletedDataIntoTableDEL(string tablename, ResultSet *result_set);
+
+#endif
 
 void CreateTable(
 		Catalog *catalog,
