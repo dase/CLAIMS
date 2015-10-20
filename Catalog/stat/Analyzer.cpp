@@ -66,9 +66,9 @@ void Analyzer::analyse(const AttributeID& attrID) {
   group_by_attributes.push_back(attr);
   aggregation_attributes.push_back(attr);
 
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
+  std::vector<BlockStreamAggregationIterator::State::Aggregation>
       aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
 
   LogicalOperator* sb_payload_scan = new LogicalScan(projection);
 
@@ -256,9 +256,9 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
 
   aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
+  std::vector<BlockStreamAggregationIterator::State::Aggregation>
       aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
   LogicalOperator* agg = new LogicalAggregation(
       group_by_attributes, aggregation_attributes, aggregation_function, scan);
   LogicalOperator* root =
@@ -378,13 +378,13 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
 
   LogicalOperator* agg = new LogicalAggregation(
       group_by_attributes, std::vector<Attribute>(),
-      std::vector<BlockStreamAggregationIterator::State::aggregation>(), scan);
+      std::vector<BlockStreamAggregationIterator::State::Aggregation>(), scan);
 
   std::vector<Attribute> aggregation_attributes;
   aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
+  std::vector<BlockStreamAggregationIterator::State::Aggregation>
       aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
 
   LogicalOperator* count_agg =
       new LogicalAggregation(std::vector<Attribute>(), aggregation_attributes,
@@ -446,9 +446,9 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
   group_by_attributes.push_back(attr);
   aggregation_attributes.push_back(attr);
 
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
+  std::vector<BlockStreamAggregationIterator::State::Aggregation>
       aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
 
   LogicalOperator* sb_payload_scan = new LogicalScan(projection);
 

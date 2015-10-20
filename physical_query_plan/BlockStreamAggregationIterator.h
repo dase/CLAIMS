@@ -1,12 +1,34 @@
 /*
- * BlockStreamAggregationIterator.h
+ * Copyright [2012-2015] DaSE@ECNU
  *
- * Created on: 2013-9-9
- * Author: casa
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/physical_query_plan/BlockStreamAggregationIterator.h
+ *
+ *  Created on: Sep 9, 2013
+ *      Author: casa cswang
+ *       Email: cs_wang@infosys.com
+ *
+ * Description: Aggregation physical operator, implement interface of Open(), Next(), Close().
+ *  multiply threads to process data blocks in one Node by different node type.
+ *  this file is about the class BlockStreamAggregationIterator definition.
  */
 
-#ifndef BLOCKSTREAMAGGREGATIONITERATOR_H_
-#define BLOCKSTREAMAGGREGATIONITERATOR_H_
+#ifndef BLOCK_STREAM_AGGREGATION_ITERATOR_H_
+#define BLOCK_STREAM_AGGREGATION_ITERATOR_H_
 
 #include <vector>
 #include <map>
@@ -20,46 +42,67 @@
 #include "../../common/Schema/Schema.h"
 #include "../../common/Expression/queryfunc.h"
 using namespace std;
+
+
+// namespace claims {
+// namespace physical_query_plan {
+
+/**
+ * @brief     Aggregation physical operator
+ * @details   physical operator about group by and aggregation,
+ *  data will be processed as stream with one block each time from its child operator.
+ *  several threads will be created dynamically to process data simultaneously.
+ */
 class BlockStreamAggregationIterator:public PhysicalOperator{
 public:
 	class State{
 		friend class BlockStreamAggregationIterator;
 	public:
-		enum aggregation{sum,min,max,count,avg};
-		enum AggNodeType{Hybrid_Agg_Global,Hybrid_Agg_Private,Not_Hybrid_Agg};
+		enum Aggregation{
+				kSum,
+				kMin,
+				kMax,
+				kCount,
+				kAvg
+				};
+		enum AggNodeType{
+				kHybridAggGlobal,
+				kHybridAggPrivate,
+				kNotHybridAgg
+				};
 		State(Schema *input,
 				Schema *output,
-				Schema *hashSchema,
+				Schema *hash_schema,
 				BlockStreamIteratorBase *child,
-				std::vector<unsigned> groupByIndex,
-				std::vector<unsigned> aggregationIndex,
-				std::vector<aggregation> aggregations,
-				unsigned nbuckets,
-				unsigned bucketsize,
+				std::vector<unsigned> groupby_index,
+				std::vector<unsigned> aggregation_index,
+				std::vector<Aggregation> aggregations,
+				unsigned num_of_buckets,
+				unsigned bucket_size,
 				unsigned block_size,
-				std::vector<unsigned>avgIndex,
+				std::vector<unsigned>avg_index,
 				AggNodeType agg_node_type
 		);
-		State():hashSchema(0),input(0),output(0),child(0){};
+		State():hash_schema_(0),input_(0),output_(0),child_(0){};
 		~State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input & output & hashSchema & child & groupByIndex & aggregationIndex & aggregations & nbuckets & bucketsize & block_size &avgIndex & agg_node_type ;
+			ar & input_ & output_ & hash_schema_ & child_ & groupby_Index_ & aggregation_index_ & aggregations_ & num_of_buckets_ & bucket_size_ & block_size_ &avg_index_ & agg_node_type_ ;
 		}
 	public:
-		Schema *input;
-		Schema *output;
-		Schema *hashSchema;
-		BlockStreamIteratorBase *child;
-		std::vector<unsigned> groupByIndex;
-		std::vector<unsigned> aggregationIndex;
-		std::vector<aggregation> aggregations;
-		unsigned nbuckets;
-		unsigned bucketsize;
-		unsigned block_size;
-		std::vector<unsigned>avgIndex;
-		AggNodeType agg_node_type;
+		Schema *input_;
+		Schema *output_;
+		Schema *hash_schema_;
+		BlockStreamIteratorBase *child_;
+		std::vector<unsigned> groupby_Index_;
+		std::vector<unsigned> aggregation_index_;
+		std::vector<Aggregation> aggregations_;
+		unsigned num_of_buckets_;
+		unsigned bucket_size_;
+		unsigned block_size_;
+		std::vector<unsigned>avg_index_;
+		AggNodeType agg_node_type_;
 	};
 	BlockStreamAggregationIterator(State state);
 	BlockStreamAggregationIterator();
@@ -71,22 +114,21 @@ public:
 	void Print();
 private:
 	/* prepare all sorts of indices to facilitate aggregate*/
-	void prepareIndex();
+	void PrepareIndex();
 
 	/* prepare the aggregation functions */
-	void prepareAggregateFunctions();
-
+	void PrepareAggregateFunctions();
 
 public:
 	State state_;
 
 private:
-	BasicHashTable *hashtable_;
+	BasicHashTable *hash_table_;
 	PartitionFunction *hash_;
-	std::map<unsigned,unsigned> inputGroupByToOutput_;
-	std::map<unsigned,unsigned> inputAggregationToOutput_;
-	std::vector<fun> globalAggregationFunctions_;
-	std::vector<fun> privateAggregationFunctions_;
+	std::map<unsigned,unsigned> input_groupby_to_output_;
+	std::map<unsigned,unsigned> input_aggregation_to_output_;
+	std::vector<fun> global_aggregation_functions_;
+	std::vector<fun> private_aggregation_functions_;
 
 
 	//hashtable traverse and in the next func
@@ -96,7 +138,7 @@ private:
 
 	PerformanceInfo* perf_info_;
 
-	//        unsigned allocated_tuples_in_hashtable;
+	// unsigned allocated_tuples_in_hashtable;
 #ifdef TIME
 	unsigned long long timer;
 #endif
@@ -108,4 +150,7 @@ private:
 	}
 };
 
-#endif /* BLOCKSTREAMAGGREGATIONITERATOR_H_ */
+//} // namespace physical_query_plan
+//} // namespace claims
+
+#endif /* BLOCK_STREAM_AGGREGATION_ITERATOR_H_ */

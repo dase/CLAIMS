@@ -271,7 +271,7 @@ static LogicalOperator *solve_insubquery(Node *exprnode,LogicalOperator * input)
 						group_by_attributes.push_back(sublogicalplan->GetPlanContext().GetAttribute(sexpr->ascolname));///????
 						p=selectlist->next;
 					}//2.2在1中的logicalplan上做groupby
-					LogicalOperator * aggrection_sublogicalplan=new LogicalAggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::aggregation>(),sublogicalplan);
+					LogicalOperator * aggrection_sublogicalplan=new LogicalAggregation(group_by_attributes,std::vector<Attribute>(),std::vector<BlockStreamAggregationIterator::State::Aggregation>(),sublogicalplan);
 					vector<LogicalEqualJoin::JoinPair> join_pair_list;
 					Node *lp,*sp;
 					for(lp=node->lnext,sp=((Query_stmt *)node->rnext)->select_list;lp!=NULL;)//3.1获得equaljoin的左右属性
@@ -538,7 +538,7 @@ static char * get_expr_str(Node *node)
 	return str;
 }
 
-static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::aggregation> &aggregation_function,LogicalOperator * input)
+static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregation_attributes,vector<BlockStreamAggregationIterator::State::Aggregation> &aggregation_function,LogicalOperator * input)
 {
 	if(selectlist==NULL)
 	{
@@ -564,12 +564,12 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 			Expr_func * funcnode=(Expr_func *)selectlist;
 			if(strcmp(funcnode->funname,"FCOUNTALL")==0)
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
 				aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 			}
 			else if(strcmp(funcnode->funname,"FCOUNT")==0)
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
 				if(input==NULL)
 				{
 					Columns *funccol=(Columns *)funcnode->parameter1;
@@ -582,7 +582,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 			}
 			else if(strcmp(funcnode->funname,"FSUM")==0)
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
 				if(input==NULL)
 				{
 					Columns *funccol=(Columns *)funcnode->parameter1;
@@ -596,7 +596,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 			}
 			else if(strcmp(funcnode->funname,"FMIN")==0)
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::kMin);
 				if(input==NULL)
 				{
 					Columns *funccol=(Columns *)funcnode->parameter1;
@@ -609,7 +609,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 			}
 			else if(strcmp(funcnode->funname,"FMAX")==0)
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::max);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::kMax);
 				if(input==NULL)
 				{
 					Columns *funccol=(Columns *)funcnode->parameter1;
@@ -622,7 +622,7 @@ static void get_aggregation_args(Node *selectlist, vector<Attribute> &aggregatio
 			}
 			else if(strcmp(funcnode->funname,"FAVG")==0)
 			{
-				aggregation_function.push_back(BlockStreamAggregationIterator::State::avg);
+				aggregation_function.push_back(BlockStreamAggregationIterator::State::kAvg);
 				if(input==NULL)
 				{
 					Columns *funccol=(Columns *)funcnode->parameter1;
@@ -1313,7 +1313,7 @@ static LogicalOperator* groupby_select_where_from2logicalplan(Node *parsetree)//
 	LogicalOperator * where_from_logicalplan=where_from2logicalplan(node->from_list);
 	vector<Attribute> group_by_attributes;
 	vector<Attribute> aggregation_attributes;
-	vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	vector<BlockStreamAggregationIterator::State::Aggregation> aggregation_function;
 	int agg_has_expr,agg_in_expr,has_agg,sid=0;
 	agg_has_expr=agg_in_expr=has_agg=0;
 	judge_selectlist_agg_has_or_in_expr(node->select_list,has_agg,agg_has_expr,agg_in_expr);

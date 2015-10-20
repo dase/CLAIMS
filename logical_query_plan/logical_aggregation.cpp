@@ -45,7 +45,7 @@ namespace logical_query_plan {
 LogicalAggregation::LogicalAggregation(
     std::vector<Attribute> group_by_attribute_list,
     std::vector<Attribute> aggregation_attribute_list,
-    std::vector<BlockStreamAggregationIterator::State::aggregation>
+    std::vector<BlockStreamAggregationIterator::State::Aggregation>
         aggregation_function_list, LogicalOperator* child)
     : group_by_attribute_list_(group_by_attribute_list),
       aggregation_attribute_list_(aggregation_attribute_list),
@@ -158,14 +158,14 @@ bool LogicalAggregation::CanOmitHashRepartition(
 
 void LogicalAggregation::ChangeSchemaForAVG(
     BlockStreamAggregationIterator::State& state_) {
-  state_.avgIndex.clear();
-  for (unsigned i = 0; i < state_.aggregations.size(); i++) {
-    if (state_.aggregations[i] == BlockStreamAggregationIterator::State::avg) {
-      state_.aggregations[i] = BlockStreamAggregationIterator::State::sum;
-      state_.avgIndex.push_back(i);
+  state_.avg_index_.clear();
+  for (unsigned i = 0; i < state_.aggregations_.size(); i++) {
+    if (state_.aggregations_[i] == BlockStreamAggregationIterator::State::kAvg) {
+      state_.aggregations_[i] = BlockStreamAggregationIterator::State::kSum;
+      state_.avg_index_.push_back(i);
     }
   }
-  state_.hashSchema = state_.output->duplicateSchema();
+  state_.hash_schema_ = state_.output_->duplicateSchema();
 
   // if the agg style isn kLocalAggReparGlobalAgg
   // at local, output_schema = hash_schema, but for global,
@@ -173,28 +173,28 @@ void LogicalAggregation::ChangeSchemaForAVG(
   // the hash_schema has to replace the column of avg() with sum() and append
   // one count() column at the end.
 
-  if (state_.avgIndex.size() > 0) {
+  if (state_.avg_index_.size() > 0) {
     column_type count_column_type = column_type(t_u_long, 8);
-    state_.hashSchema->addColumn(count_column_type, 8);
-    if (state_.agg_node_type ==
-        BlockStreamAggregationIterator::State::Hybrid_Agg_Private) {
-      state_.aggregations.push_back(
-          BlockStreamAggregationIterator::State::count);
-      state_.aggregationIndex.push_back(state_.aggregationIndex.size() +
-                                        state_.groupByIndex.size());
-      state_.output = state_.hashSchema->duplicateSchema();
-    } else if (state_.agg_node_type ==
-               BlockStreamAggregationIterator::State::Hybrid_Agg_Global) {
-      state_.aggregations.push_back(BlockStreamAggregationIterator::State::sum);
-      state_.aggregationIndex.push_back(state_.aggregationIndex.size() +
-                                        state_.groupByIndex.size());
-      state_.input = state_.hashSchema->duplicateSchema();
-    } else if (state_.agg_node_type ==
-               BlockStreamAggregationIterator::State::Not_Hybrid_Agg) {
-      state_.aggregations.push_back(
-          BlockStreamAggregationIterator::State::count);
-      state_.aggregationIndex.push_back(state_.aggregationIndex.size() +
-                                        state_.groupByIndex.size());
+    state_.hash_schema_->addColumn(count_column_type, 8);
+    if (state_.agg_node_type_ ==
+        BlockStreamAggregationIterator::State::kHybridAggPrivate) {
+      state_.aggregations_.push_back(
+          BlockStreamAggregationIterator::State::kCount);
+      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
+                                        state_.groupby_Index_.size());
+      state_.output_ = state_.hash_schema_->duplicateSchema();
+    } else if (state_.agg_node_type_ ==
+               BlockStreamAggregationIterator::State::kHybridAggGlobal) {
+      state_.aggregations_.push_back(BlockStreamAggregationIterator::State::kSum);
+      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
+                                        state_.groupby_Index_.size());
+      state_.input_ = state_.hash_schema_->duplicateSchema();
+    } else if (state_.agg_node_type_ ==
+               BlockStreamAggregationIterator::State::kNotHybridAgg) {
+      state_.aggregations_.push_back(
+          BlockStreamAggregationIterator::State::kCount);
+      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
+                                        state_.groupby_Index_.size());
     }
   }
 }
@@ -210,29 +210,29 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
   BlockStreamIteratorBase* ret;
   const PlanContext child_plan_context = child_->GetPlanContext();
   BlockStreamAggregationIterator::State aggregation_state;
-  aggregation_state.groupByIndex =
+  aggregation_state.groupby_Index_ =
       GetInvolvedAttrIdList(group_by_attribute_list_, child_plan_context);
-  aggregation_state.aggregationIndex =
+  aggregation_state.aggregation_index_ =
       GetInvolvedAttrIdList(aggregation_attribute_list_, child_plan_context);
-  aggregation_state.aggregations = aggregation_function_list_;
-  aggregation_state.block_size = block_size;
-  aggregation_state.nbuckets = EstimateGroupByCardinality(child_plan_context);
-  aggregation_state.bucketsize = 64;
-  aggregation_state.input = GetSchema(child_plan_context.attribute_list_);
-  aggregation_state.output = GetSchema(plan_context_->attribute_list_);
-  aggregation_state.child = child_->GetPhysicalPlan(block_size);
+  aggregation_state.aggregations_ = aggregation_function_list_;
+  aggregation_state.block_size_ = block_size;
+  aggregation_state.num_of_buckets_ = EstimateGroupByCardinality(child_plan_context);
+  aggregation_state.bucket_size_ = 64;
+  aggregation_state.input_ = GetSchema(child_plan_context.attribute_list_);
+  aggregation_state.output_ = GetSchema(plan_context_->attribute_list_);
+  aggregation_state.child_ = child_->GetPhysicalPlan(block_size);
 
   switch (aggregation_style_) {
     case kAgg: {
-      aggregation_state.agg_node_type =
-          BlockStreamAggregationIterator::State::Not_Hybrid_Agg;
+      aggregation_state.agg_node_type_ =
+          BlockStreamAggregationIterator::State::kNotHybridAgg;
       ChangeSchemaForAVG(aggregation_state);
       ret = new BlockStreamAggregationIterator(aggregation_state);
       break;
     }
     case kLocalAggReparGlobalAgg: {
-      aggregation_state.agg_node_type = BlockStreamAggregationIterator::State::
-          Hybrid_Agg_Private;  // as regard to AVG(),for partition node and
+      aggregation_state.agg_node_type_ = BlockStreamAggregationIterator::State::
+          kHybridAggPrivate;  // as regard to AVG(),for partition node and
                                // global node ,we should do change schema.
       ChangeSchemaForAVG(aggregation_state);
       BlockStreamAggregationIterator* local_aggregation =
@@ -242,7 +242,7 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = local_aggregation;
-      expander_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
+      expander_state.schema_ = aggregation_state.hash_schema_->duplicateSchema();
       BlockStreamIteratorBase* expander_lower =
           new BlockStreamExpander(expander_state);
 
@@ -262,25 +262,25 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
         exchange_state.partition_schema_ = partition_schema::set_hash_partition(
             GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_)[0]);
       }
-      exchange_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
+      exchange_state.schema_ = aggregation_state.hash_schema_->duplicateSchema();
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
 
       BlockStreamAggregationIterator::State global_aggregation_state;
-      global_aggregation_state.aggregationIndex =
+      global_aggregation_state.aggregation_index_ =
           GetInvolvedAttrIdList(GetAggAttrsAfterAgg(), *plan_context_);
-      global_aggregation_state.aggregations =
+      global_aggregation_state.aggregations_ =
           ChangeForGlobalAggregation(aggregation_function_list_);
-      global_aggregation_state.block_size = block_size;
-      global_aggregation_state.bucketsize = 64;
-      global_aggregation_state.child = exchange;
-      global_aggregation_state.groupByIndex =
+      global_aggregation_state.block_size_ = block_size;
+      global_aggregation_state.bucket_size_ = 64;
+      global_aggregation_state.child_ = exchange;
+      global_aggregation_state.groupby_Index_ =
           GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_);
-      global_aggregation_state.input = GetSchema(plan_context_->attribute_list_);
-      global_aggregation_state.nbuckets = aggregation_state.nbuckets;
-      global_aggregation_state.output = GetSchema(plan_context_->attribute_list_);
-      global_aggregation_state.agg_node_type =
-          BlockStreamAggregationIterator::State::Hybrid_Agg_Global;
+      global_aggregation_state.input_ = GetSchema(plan_context_->attribute_list_);
+      global_aggregation_state.num_of_buckets_ = aggregation_state.num_of_buckets_;
+      global_aggregation_state.output_ = GetSchema(plan_context_->attribute_list_);
+      global_aggregation_state.agg_node_type_ =
+          BlockStreamAggregationIterator::State::kHybridAggGlobal;
       ChangeSchemaForAVG(global_aggregation_state);
       BlockStreamIteratorBase* global_aggregation =
           new BlockStreamAggregationIterator(global_aggregation_state);
@@ -327,10 +327,10 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       exchange_state.schema_ = GetSchema(child_plan_context.attribute_list_);
       BlockStreamIteratorBase* exchange =
           new ExpandableBlockStreamExchangeEpoll(exchange_state);
-      aggregation_state.agg_node_type =
-          BlockStreamAggregationIterator::State::Not_Hybrid_Agg;
+      aggregation_state.agg_node_type_ =
+          BlockStreamAggregationIterator::State::kNotHybridAgg;
       ChangeSchemaForAVG(aggregation_state);
-      aggregation_state.child = exchange;
+      aggregation_state.child_ = exchange;
       ret = new BlockStreamAggregationIterator(aggregation_state);
       break;
     }
@@ -364,13 +364,13 @@ std::vector<unsigned> LogicalAggregation::GetInvolvedAttrIdList(
 }
 float LogicalAggregation::EstimateSelectivity() const { return 0.1; }
 
-std::vector<BlockStreamAggregationIterator::State::aggregation>
+std::vector<BlockStreamAggregationIterator::State::Aggregation>
 LogicalAggregation::ChangeForGlobalAggregation(const std::vector<
-    BlockStreamAggregationIterator::State::aggregation> list) const {
-  std::vector<BlockStreamAggregationIterator::State::aggregation> ret;
+    BlockStreamAggregationIterator::State::Aggregation> list) const {
+  std::vector<BlockStreamAggregationIterator::State::Aggregation> ret;
   for (unsigned i = 0; i < list.size(); i++) {
-    if (list[i] == BlockStreamAggregationIterator::State::count) {
-      ret.push_back(BlockStreamAggregationIterator::State::sum);
+    if (list[i] == BlockStreamAggregationIterator::State::kCount) {
+      ret.push_back(BlockStreamAggregationIterator::State::kSum);
     } else {
       ret.push_back(list[i]);
     }
@@ -409,7 +409,7 @@ std::vector<Attribute> LogicalAggregation::GetAggAttrsAfterAgg() const {
     Attribute temp = aggregation_attribute_list_[i];
 
     switch (aggregation_function_list_[i]) {
-      case BlockStreamAggregationIterator::State::count: {
+      case BlockStreamAggregationIterator::State::kCount: {
         if (!(temp.isNULL() || temp.isANY())) temp.attrType->~column_type();
         temp.attrType = new column_type(t_u_long, 8);
         temp.attrName = "count(" + temp.getName() + ")";
@@ -417,25 +417,25 @@ std::vector<Attribute> LogicalAggregation::GetAggAttrsAfterAgg() const {
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::max: {
+      case BlockStreamAggregationIterator::State::kMax: {
         temp.attrName = "max(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::min: {
+      case BlockStreamAggregationIterator::State::kMin: {
         temp.attrName = "min(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::sum: {
+      case BlockStreamAggregationIterator::State::kSum: {
         temp.attrName = "sum(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::avg: {
+      case BlockStreamAggregationIterator::State::kAvg: {
         temp.attrName = "avg(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
@@ -507,23 +507,23 @@ void LogicalAggregation::Print(int level) const {
   for (unsigned i = 0; i < aggregation_attribute_list_.size(); i++) {
     printf("%*.s", level * 8, " ");
     switch (aggregation_function_list_[i]) {
-      case BlockStreamAggregationIterator::State::count: {
+      case BlockStreamAggregationIterator::State::kCount: {
         printf("Count: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::max: {
+      case BlockStreamAggregationIterator::State::kMax: {
         printf("Max: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::min: {
+      case BlockStreamAggregationIterator::State::kMin: {
         printf("Min: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::sum: {
+      case BlockStreamAggregationIterator::State::kSum: {
         printf("Sum: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::avg: {
+      case BlockStreamAggregationIterator::State::kAvg: {
         printf("Avg: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }

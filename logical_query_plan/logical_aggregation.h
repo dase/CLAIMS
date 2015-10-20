@@ -72,7 +72,7 @@ class LogicalAggregation : public LogicalOperator {
   LogicalAggregation(
       std::vector<Attribute> group_by_attribute_list,
       std::vector<Attribute> aggregation_attribute_list,
-      std::vector<BlockStreamAggregationIterator::State::aggregation>
+      std::vector<BlockStreamAggregationIterator::State::Aggregation>
           aggregation_function_list, LogicalOperator* child);
   virtual ~LogicalAggregation();
 
@@ -107,9 +107,9 @@ class LogicalAggregation : public LogicalOperator {
   // not change but construct the schema during reorganizing physical operator.
 
   void ChangeSchemaForAVG(BlockStreamAggregationIterator::State& state);
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
+  std::vector<BlockStreamAggregationIterator::State::Aggregation>
   ChangeForGlobalAggregation(const std::vector<
-      BlockStreamAggregationIterator::State::aggregation>) const;
+      BlockStreamAggregationIterator::State::Aggregation>) const;
   void Print(int level = 0) const;
 
   /**
@@ -125,7 +125,7 @@ class LogicalAggregation : public LogicalOperator {
   LogicalOperator* child_;
   std::vector<Attribute> group_by_attribute_list_;
   std::vector<Attribute> aggregation_attribute_list_;
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
+  std::vector<BlockStreamAggregationIterator::State::Aggregation>
       aggregation_function_list_;
   PlanContext* plan_context_;
   AggregationStyle aggregation_style_;
