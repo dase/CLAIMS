@@ -51,7 +51,13 @@ const int EReadHdfsFileFail = -3;
 const int EOpenHdfsFileFail = -4;
 const int EReadDiskFileFail = -5;
 const int EOpenDiskFileFail = -6;
-const int ELSeekDiskFileFail = -7;
+const int EWriteDiskFileFail = -7;
+const int EWriteHdfsFileFail = -8;
+const int ELSeekDiskFileFail = -9;
+const int ELSeekHdfsFileFail = -10;
+const int ECloseDiskFileFail = -11;
+const int ECloseHdfsFileFail = -12;
+const int EParamInvalid = -13;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int kNoTableFound = -1001;

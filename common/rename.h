@@ -8,32 +8,28 @@
 #ifndef RENAME_H_
 #define RENAME_H_
 
-
-
 #include <unistd.h>
 #include <malloc.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <assert.h>
 
-typedef int (f)(int);
+typedef int64_t int64;
 
-//static f * FileClose=close;
-static int FileClose(int fd){
-	assert(fd != 0);
-	assert(fd != 1);
-	assert(fd != 2);
-	close(fd);
+typedef int(f)(int);
+
+// static f * FileClose=close;
+static int FileClose(int fd) {
+  assert(fd != 0);
+  assert(fd != 1);
+  assert(fd != 2);
+  return close(fd);
 }
 
-typedef void (f1)(void*);
-static f1 * memory_free=free;
+typedef void(f1)(void *);
+static f1 *memory_free = free;
 
-
-typedef int (f3)(const char*,int,...);
-static f3 *FileOpen=open;
-
-
+typedef int(f3)(const char *, int, ...);
+static f3 *FileOpen = open;
 
 #endif /* RENAME_H_ */
-

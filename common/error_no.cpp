@@ -56,7 +56,15 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(EOpenHdfsFileFail, "Open hdfs file failed");
   DefineErrorAndMessage(EReadDiskFileFail, "Read data from disk failed");
   DefineErrorAndMessage(EOpenDiskFileFail, "Open disk file failed");
+  DefineErrorAndMessage(EWriteDiskFileFail,
+                        "failed to write data into disk file");
+  DefineErrorAndMessage(EWriteHdfsFileFail,
+                        "failed to write data into hdfs file");
   DefineErrorAndMessage(ELSeekDiskFileFail, "lseek a disk file failed");
+  DefineErrorAndMessage(ELSeekHdfsFileFail, "failed to seek hdfs file");
+  DefineErrorAndMessage(EParamInvalid, "parameter of function is invalid");
+  DefineErrorAndMessage(ECloseDiskFileFail, "failed to close disk file");
+  DefineErrorAndMessage(ECloseHdfsFileFail, "failed to close hdfs file");
 
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(kNoTableFound, "No such table found");
