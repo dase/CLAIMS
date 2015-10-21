@@ -1,15 +1,41 @@
 /*
- * ast_node.h
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * ./sql_parser/ast_node/ast_node.h
  *  Created on: May 21, 2015 4:10:35 PM
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- *   Copyright: Copyright (c) @ ECNU.DaSE
- * Description:
+ *
  */
 
-#ifndef AST_NODE_H_    // NOLINT
+#ifndef AST_NODE_H_  // NOLINT
 #define AST_NODE_H_
+#include <iosfwd>
 #include <vector>
+#include <utility>
+#include <set>
+#include <map>
+#include <string>
+using std::pair;
+using std::set;
+using std::map;
+using std::multimap;
+using std::string;
 
 enum AstNodeType {
   AST_NODE,
@@ -73,31 +99,52 @@ enum AstNodeType {
   AST_INSERT_VALUE_LIST,
   AST_INSERT_VALUE,
   AST_INSERT_ASSIGN_LIST,
-  
+
   AST_INTNUM,
   AST_APPROXNUM,
   AST_STRINGVAL,
   AST_BOOL,
 };
 const int TAB_SIZE = 4;
+/**
+ * @brief The basic data structure of other AST nodes.
+ */
 class AstNode {
  public:
+  /**
+   * @brief The Semantic analysis middle scheme context.
+   * @details SemanticContext mainly includes a multimap used for storing middle
+   * scheme and a set for storing table name.
+   * IsTableExist(string table_name) is used for judging whether table_name is
+   * in the set<string>table_name_.
+   * IsColumnExist(string column) is used for  judging whether column is in the
+   * column_to_table_.
+   */
+  class SemanticContext {
+   public:
+    multimap<string, string> column_to_table_;
+    set<string> table_name_;
+    bool IsTableExist(string table_name) {}
+    bool IsColumnExist(string column) {}
+  };
   explicit AstNode(AstNodeType ast_node_type);
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
+  virtual int SemanticAnalysis();
   AstNodeType ast_node_type();
   AstNodeType ast_node_type_;
 };
 struct ParseResult {
-  void * yyscan_info_;
-  AstNode * ast;
-  const char * sql_clause;
+  void* yyscan_info_;
+  AstNode* ast;
+  const char* sql_clause;
   int error_number;
 };
 
-/*
- * used to link every statement in one sql contains multiple statement
- * for example: select a from tb;select max(a) from tb2;
+/**
+ * @brief AstStmtList is used to link every statement in one sql contains
+ * multiple statement.
+ * @details For example: select a from tb;select max(a) from tb2;
  */
 class AstStmtList : public AstNode {
  public:
@@ -108,4 +155,4 @@ class AstStmtList : public AstNode {
   AstNode* next_;
 };
 
-#endif  // AST_NODE_H__    //  NOLINT
+#endif  // SQL_PARSER_AST_NODE_AST_NODE_H_

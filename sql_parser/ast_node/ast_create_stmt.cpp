@@ -1,15 +1,31 @@
 /*
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  *  /sql_parser/src/astnode/ast_create_stmt.cpp
  *
  *  Created on: Jul 23, 2015
- *      Author: fish
+ *      Author: yuyang
  *       Email: youngfish93@hotmail.com
- *   Copyright: Copyright (c) @ ECNU.DaSe
  *
  */
 
 #include "../ast_node/ast_create_stmt.h"
-#include <iostream>   //  NOLINT
+#include <iostream>  //  NOLINT
 #include <iomanip>
 #include <string>
 #include <bitset>
@@ -26,40 +42,39 @@ AstCreateDatabase::AstCreateDatabase(AstNodeType ast_node_type, int create_type,
     : AstNode(ast_node_type),
       create_type_(create_type),
       check_(check),
-      db_name_(db_name) {
-}
+      db_name_(db_name) {}
 
-AstCreateDatabase::~AstCreateDatabase() {
-}
+AstCreateDatabase::~AstCreateDatabase() {}
 
 void AstCreateDatabase::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Database|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Database|" << endl;
 }
 
 AstCreateTable::AstCreateTable(AstNodeType ast_node_type, int create_type,
                                int check, string table_name,
-                               string additional_name, AstNode * list,
-                               AstNode * select_stmt)
+                               string additional_name, AstNode* list,
+                               AstNode* select_stmt)
     : AstNode(ast_node_type),
       create_type_(create_type),
       check_(check),
       table_name_(table_name),
       additional_name_(additional_name),
-      list_(list),
-      select_stmt_(select_stmt) {
-}
+      col_list_(list),
+      select_stmt_(select_stmt) {}
 
 AstCreateTable::~AstCreateTable() {
-  delete list_;
+  delete col_list_;
   delete select_stmt_;
 }
 
 void AstCreateTable::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Table|" << "  "
-      << table_name_ << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Table|"
+       << "  " << table_name_ << endl;
 
-  if (list_ != NULL) {
-    list_->Print(level + 1);
+  if (col_list_ != NULL) {
+    col_list_->Print(level + 1);
   }
   if (select_stmt_ != NULL) {
     select_stmt_->Print(level + 1);
@@ -68,10 +83,7 @@ void AstCreateTable::Print(int level) const {
 
 AstCreateColList::AstCreateColList(AstNodeType ast_node_type, AstNode* data,
                                    AstNode* next)
-    : AstNode(ast_node_type),
-      data_(data),
-      next_(next) {
-}
+    : AstNode(ast_node_type), data_(data), next_(next) {}
 
 AstCreateColList::~AstCreateColList() {
   delete data_;
@@ -79,7 +91,8 @@ AstCreateColList::~AstCreateColList() {
 }
 
 void AstCreateColList::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Column List|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Column List|" << endl;
   if (data_ != NULL) {
     data_->Print(level + 1);
   }
@@ -93,11 +106,10 @@ AstCreateDef::AstCreateDef(AstNodeType ast_node_type, int def_type, string name,
                            AstNode* col_list)
     : AstNode(ast_node_type),
       def_type_(def_type),
-      name_(name),
+      col_name_(name),
       data_type_(data_type),
       col_atts_(col_atts),
-      col_list_(col_list) {
-}
+      col_list_(col_list) {}
 
 AstCreateDef::~AstCreateDef() {
   delete data_type_;
@@ -106,9 +118,12 @@ AstCreateDef::~AstCreateDef() {
 }
 
 void AstCreateDef::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Definition|" << endl;
-  cout << setw(level * TAB_SIZE) << " " << "Col Name: " << name_ << endl;
-  cout << setw(level * TAB_SIZE) << " " << "    Type: ";
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Definition|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "Col Name: " << col_name_ << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "    Type: ";
 
   if (data_type_ != NULL) {
     data_type_->Print(level);
@@ -126,15 +141,13 @@ AstCreateSelect::AstCreateSelect(AstNodeType ast_node_type, int ignore_replace,
     : AstNode(ast_node_type),
       ignore_replace_(ignore_replace),
       temporary_(temporary),
-      select_stmt_(select_stmt) {
-}
+      select_stmt_(select_stmt) {}
 
-AstCreateSelect::~AstCreateSelect() {
-  delete select_stmt_;
-}
+AstCreateSelect::~AstCreateSelect() { delete select_stmt_; }
 
 void AstCreateSelect::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Selection|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Selection|" << endl;
   if (select_stmt_ != NULL) {
     select_stmt_->Print(level + 1);
   }
@@ -149,18 +162,17 @@ AstCreateProjection::AstCreateProjection(AstNodeType ast_node_type,
       table_name_(table_name),
       column_list_(column_list),
       partition_num_(partition_num),
-      partition_attribute_name_(partition_attribute_name) {
-}
+      partition_attribute_name_(partition_attribute_name) {}
 
-AstCreateProjection::~AstCreateProjection() {
-  delete column_list_;
-}
+AstCreateProjection::~AstCreateProjection() { delete column_list_; }
 
 void AstCreateProjection::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Projection|" << "  "
-      << table_name_ << endl;
-  cout << setw(++level * TAB_SIZE) << " " << "Prtition Number: "
-      << partition_num_ << " ON " << partition_attribute_name_ << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Projection|"
+       << "  " << table_name_ << endl;
+  cout << setw(++level * TAB_SIZE) << " "
+       << "Prtition Number: " << partition_num_ << " ON "
+       << partition_attribute_name_ << endl;
 
   if (column_list_ != NULL) {
     column_list_->Print(level);
@@ -175,18 +187,16 @@ AstColumnAtts::AstColumnAtts(AstNodeType ast_node_type, int datatype,
       int_num_(int_num),
       double_num_(double_num),
       default_string_(default_string),
-      col_list_(col_list) {
-}
+      col_list_(col_list) {}
 
-AstColumnAtts::~AstColumnAtts() {
-  delete col_list_;
-}
+AstColumnAtts::~AstColumnAtts() { delete col_list_; }
 
 void AstColumnAtts::Print(int level) const {
-  bitset < 12 > type;
+  bitset<12> type;
   type = datatype_;
   if (type != 0) {
-    cout << setw(level * TAB_SIZE) << " " << "Col Atts: ";
+    cout << setw(level * TAB_SIZE) << " "
+         << "Col Atts: ";
 
     if (type[0] == 1) {
       cout << " <NOT NULL> ";
@@ -238,17 +248,15 @@ AstCreateIndex::AstCreateIndex(AstNodeType ast_node_type, int index_att,
     : AstNode(ast_node_type),
       index_att_(index_att),
       index_name_(index_name),
-      index_type_(index_type),
+      using_type_(index_type),
       table_name_(table_name),
-      index_col_name_(index_col_name) {
-}
+      index_col_name_(index_col_name) {}
 
-AstCreateIndex::~AstCreateIndex() {
-  delete index_col_name_;
-}
+AstCreateIndex::~AstCreateIndex() { delete index_col_name_; }
 
 void AstCreateIndex::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Create Index|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Create Index|" << endl;
   if (index_col_name_ != NULL) {
     index_col_name_->Print(level + 1);
   }
@@ -263,8 +271,7 @@ AstDataType::AstDataType(AstNodeType ast_node_type, int data_type,
       opt_uz_(opt_uz),
       opt_csc_(opt_csc),
       isbinary_(isbinary),
-      enum_list_(enum_list) {
-}
+      enum_list_(enum_list) {}
 
 AstDataType::~AstDataType() {
   delete length_;
@@ -274,7 +281,8 @@ AstDataType::~AstDataType() {
 
 void AstDataType::Print(int level) const {
   if (data_type_ == 1) {
-    cout << "BIT" << " " << endl;
+    cout << "BIT"
+         << " " << endl;
   } else if (data_type_ == 2) {
     cout << "TINYINT" << endl;
   } else if (data_type_ == 3) {
@@ -342,45 +350,29 @@ void AstDataType::Print(int level) const {
 
 AstEnumList::AstEnumList(AstNodeType ast_node_type, string enum_name,
                          AstNode* next)
-    : AstNode(ast_node_type),
-      enum_name_(enum_name),
-      next_(next) {
-}
+    : AstNode(ast_node_type), enum_name_(enum_name), next_(next) {}
 
-AstEnumList::~AstEnumList() {
-  delete next_;
-}
+AstEnumList::~AstEnumList() { delete next_; }
 
-void AstEnumList::Print(int level) const {
-}
+void AstEnumList::Print(int level) const {}
 
 AstOptLength::AstOptLength(AstNodeType ast_node_type, int data1, int data2)
-    : AstNode(ast_node_type),
-      data1_(data1),
-      data2_(data2) {
-}
+    : AstNode(ast_node_type), data1_(data1), data2_(data2) {}
 
-AstOptLength::~AstOptLength() {
-}
+AstOptLength::~AstOptLength() {}
 
 void AstOptLength::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "  Length: " << data1_ << " "
-      << data2_ << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "  Length: " << data1_ << " " << data2_ << endl;
 }
 
 AstOptCsc::AstOptCsc(AstNodeType ast_node_type, int data_type, string str1,
                      string str2)
-    : AstNode(ast_node_type),
-      data_type_(data_type),
-      str1_(str1),
-      str2_(str2) {
-}
+    : AstNode(ast_node_type), data_type_(data_type), str1_(str1), str2_(str2) {}
 
-AstOptCsc::~AstOptCsc() {
-}
+AstOptCsc::~AstOptCsc() {}
 
-void AstOptCsc::Print(int level) const {
-}
+void AstOptCsc::Print(int level) const {}
 
 AstIndexColList::AstIndexColList(AstNodeType ast_node_type, string name,
                                  AstNode* length, int asc_desc, AstNode* next)
@@ -388,8 +380,7 @@ AstIndexColList::AstIndexColList(AstNodeType ast_node_type, string name,
       name_(name),
       length_(length),
       asc_desc_(asc_desc),
-      next_(next) {
-}
+      next_(next) {}
 
 AstIndexColList::~AstIndexColList() {
   delete length_;
@@ -397,7 +388,8 @@ AstIndexColList::~AstIndexColList() {
 }
 
 void AstIndexColList::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|Index Col List|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|Index Col List|" << endl;
   if (next_ != NULL) {
     next_->Print(level);
   }

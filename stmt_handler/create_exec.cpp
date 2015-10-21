@@ -91,7 +91,7 @@ int CreateTableExec::Execute() {
     table_desc_->addAttribute("row_id", data_type(t_u_long), 0, true);
 
     AstCreateColList* list =
-        dynamic_cast<AstCreateColList*>(createtable_ast_->list_);
+        dynamic_cast<AstCreateColList*>(createtable_ast_->col_list_);
     string primaryname = "";
     int colNum = 0;
 
@@ -99,7 +99,7 @@ int CreateTableExec::Execute() {
       AstCreateDef* data = dynamic_cast<AstCreateDef*>(list->data_);
       if (data->def_type_ == 1) {
         ++colNum;
-        string colname = data->name_;
+        string colname = data->col_name_;
         primaryname = colname;
         AstColumnAtts* column_atts =
             dynamic_cast<AstColumnAtts*>(data->col_atts_);
