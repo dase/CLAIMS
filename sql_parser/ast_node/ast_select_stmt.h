@@ -1,18 +1,37 @@
 /*
- * ast_select_stmt.h
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /sql_parser/ast_node/ast_select_stmt.h
  *  Created on: May 22, 2015 11:32:03 AM
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- *   Copyright: Copyright (c) @ ECNU.DaSE
- * Description:
  */
 
-#ifndef AST_SELECT_STMT_H_
-#define AST_SELECT_STMT_H_
+#ifndef SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_
+#define SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_
 #include <string>
 
 #include "./ast_node.h"
 using std::string;
+/**
+ * @brief The AST of select list.
+ * @details The member bool is_all_ stands for "select *" statement.
+ */
 class AstSelectList : public AstNode {
  public:
   AstSelectList(AstNodeType ast_node_type, bool is_all, AstNode* args,
@@ -25,6 +44,9 @@ class AstSelectList : public AstNode {
   AstNode* args_;
   AstNode* next_;
 };
+/**
+ * @brief The AST of select expression statement.
+ */
 class AstSelectExpr : public AstNode {
  public:
   AstSelectExpr(AstNodeType ast_node_type, string expr_alias, AstNode* expr);
@@ -35,17 +57,26 @@ class AstSelectExpr : public AstNode {
   string expr_alias_;
   AstNode* expr_;
 };
+/**
+ * @brief The AST of from list.
+ * @details TODO(fzh):condition_ is not used in this version.
+ */
 class AstFromList : public AstNode {
  public:
   AstFromList(AstNodeType ast_node_type, AstNode* args, AstNode* next);
   ~AstFromList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* args_;
   AstNode* next_;
-  AstNode* condition_;  // TODO(fzh)
+  AstNode* condition_;
 };
-
+/**
+ * @brief The AST of table.
+ * @details AstTable mainly includes database name, table name, table alias
+ * and table id.
+ */
 class AstTable : public AstNode {
  public:
   AstTable(AstNodeType ast_node_type, string db_name, string table_name,
@@ -59,7 +90,11 @@ class AstTable : public AstNode {
   int table_id_;
   // AstNode* condition_; //
 };
-
+/**
+ * @brief The AST of sub query statement.
+ * @details AstSubquery mainly includes sub query alias and a pointer to
+ * select statement.
+ */
 class AstSubquery : public AstNode {
  public:
   AstSubquery(AstNodeType ast_node_type, string subquery_alias,
@@ -70,6 +105,9 @@ class AstSubquery : public AstNode {
   string subquery_alias_;
   AstNode* subquery_;
 };
+/**
+ * @brief The AST of join condition.
+ */
 class AstJoinCondition : public AstNode {
  public:
   AstJoinCondition(AstNodeType ast_node_type, string join_condition_type,
@@ -80,6 +118,11 @@ class AstJoinCondition : public AstNode {
   string join_condition_type_;
   AstNode* condition_;
 };
+/**
+ * @brief The AST of join statement.
+ * @details AstJoin mainly includes join_type, pointer to left table, pointer to
+ * right table and pointer to join condition.
+ */
 class AstJoin : public AstNode {
  public:
   AstJoin(AstNodeType ast_node_type, int join_type, AstNode* left_table,
@@ -92,6 +135,9 @@ class AstJoin : public AstNode {
   AstNode* right_table_;
   AstJoinCondition* join_condition_;
 };
+/**
+ * @brief The AST of where clause.
+ */
 class AstWhereClause : public AstNode {
  public:
   AstWhereClause(AstNodeType ast_node_type, AstNode* expr);
@@ -100,6 +146,9 @@ class AstWhereClause : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNode* expr_;
 };
+/**
+ * @brief The AST of group by list.
+ */
 class AstGroupByList : public AstNode {
  public:
   AstGroupByList(AstNodeType ast_node_type, AstNode* expr, AstNode* next);
@@ -110,6 +159,9 @@ class AstGroupByList : public AstNode {
   AstNode* expr_;
   AstNode* next_;
 };
+/**
+ * @brief The AST of group by clause.
+ */
 class AstGroupByClause : public AstNode {
  public:
   AstGroupByClause(AstNodeType ast_node_type, AstNode* groupby_list,
@@ -120,6 +172,9 @@ class AstGroupByClause : public AstNode {
   AstGroupByList* groupby_list_;
   bool with_roolup_;
 };
+/**
+ * @brief The AST of order by list.
+ */
 class AstOrderByList : public AstNode {
  public:
   explicit AstOrderByList(AstNodeType ast_node_type, AstNode* expr,
@@ -132,6 +187,9 @@ class AstOrderByList : public AstNode {
   string orderby_type_;
   AstNode* next_;
 };
+/**
+ * @brief The AST of order by clause.
+ */
 class AstOrderByClause : public AstNode {
  public:
   AstOrderByClause(AstNodeType ast_node_type, AstNode* orderby_list);
@@ -141,6 +199,9 @@ class AstOrderByClause : public AstNode {
 
   AstOrderByList* orderby_list_;
 };
+/**
+ * @brief The AST of having clause.
+ */
 class AstHavingClause : public AstNode {
  public:
   AstHavingClause(AstNodeType ast_node_type, AstNode* expr);
@@ -150,6 +211,9 @@ class AstHavingClause : public AstNode {
 
   AstNode* expr_;
 };
+/**
+ * @brief The AST of limit clause.
+ */
 class AstLimitClause : public AstNode {
  public:
   AstLimitClause(AstNodeType ast_node_type, AstNode* offset,
@@ -161,12 +225,18 @@ class AstLimitClause : public AstNode {
   AstNode* offset_;
   AstNode* row_count_;
 };
+/**
+ * TODO(fzh):not used in this version.
+ */
 class AstSelectIntoClause : public AstNode {
  public:
   // AstSelectIntoClause();
   // ~AstSelectIntoClause();
   // void Print(int level = 0) const;
 };
+/**
+ * @brief The AST of AstColumn.
+ */
 class AstColumn : public AstNode {
  public:
   AstColumn(AstNodeType ast_node_type, string relation_name,
@@ -181,6 +251,12 @@ class AstColumn : public AstNode {
   string column_name_;
   AstNode* next_;
 };
+/**
+ * @brief The AST of select statement.
+ * @details AstSelectStmt is the beginning of a SQL AST. So it has pointers to
+ * all
+ * other clauses.
+ */
 class AstSelectStmt : public AstNode {
  public:
   enum SelectOpts {
@@ -208,4 +284,4 @@ class AstSelectStmt : public AstNode {
   AstNode* select_into_clause_;
 };
 
-#endif /* AST_SELECT_STMT_H_ */
+#endif  //  SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_

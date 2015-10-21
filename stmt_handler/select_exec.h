@@ -21,27 +21,28 @@
  *  Created on: Sep 23, 2015
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- * 
+ *
  * Description:
  *
  */
 
 #ifndef STMT_HANDLER_SELECT_EXEC_H_
 #define STMT_HANDLER_SELECT_EXEC_H_
-
+#include <string>
 #include "../stmt_handler/stmt_exec.h"
 
+using std::string;
 namespace claims {
 namespace stmt_handler {
 class SelectExec : public StmtExec {
  public:
-  SelectExec(AstNode* stmt);
+  SelectExec(AstNode* stmt);  // NOLINT
   virtual ~SelectExec();
-  int Execute();
+  int Execute(AstNode* ast_node);
 
  private:
   AstSelectStmt* select_ast_;
 };
-}   // namespace stmt_handler
-} // namespace claims
-#endif //  STMT_HANDLER_SELECT_EXEC_H_ 
+}  // namespace stmt_handler
+}  // namespace claims
+#endif  //  STMT_HANDLER_SELECT_EXEC_H_

@@ -27,22 +27,27 @@
  */
 
 #include "../stmt_handler/select_exec.h"
+#include <glog/logging.h>
 #include <iostream>
+#include <vector>
+#include <string>
+
+using std::endl;
+using std::vector;
+using std::string;
+using std::cout;
 
 namespace claims {
 namespace stmt_handler {
 SelectExec::SelectExec(AstNode* stmt) : StmtExec(stmt) {
   // TODO Auto-generated constructor stub
-  select_ast_ = static_cast<AstSelectStmt* >(stmt_);
+  select_ast_ = static_cast<AstSelectStmt*>(stmt_);
 }
 
 SelectExec::~SelectExec() {
   // TODO Auto-generated destructor stub
 }
 
-int SelectExec::Execute() {
-
-	return 0;
-}
-}   // namespace stmt_handler
-} // namespace claims
+int SelectExec::Execute(AstNode* ast_root) {}
+}  // namespace stmt_handler
+}  // namespace claims

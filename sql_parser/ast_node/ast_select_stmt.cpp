@@ -1,10 +1,25 @@
 /*
- * ast_select_stmt.cpp
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /sql_parser/ast_node/ast_select_stmt.cpp
  *  Created on: May 22, 2015 11:32:03 AM
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- *   Copyright: Copyright (c) @ ECNU.DaSE
- * Description:
  */
 
 #include "./ast_select_stmt.h"
@@ -19,6 +34,7 @@
 #include "../../Environment.h"
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/table.h"
+
 using std::bitset;
 using std::endl;
 using std::cout;
@@ -27,6 +43,8 @@ using std::string;
 using std::vector;
 using std::map;
 using std::endl;
+using std::multimap;
+using std::vector;
 AstSelectList::AstSelectList(AstNodeType ast_node_type, bool is_all,
                              AstNode* args, AstNode* next)
     : AstNode(ast_node_type), is_all_(is_all), args_(args), next_(next) {}
@@ -82,7 +100,6 @@ void AstSelectExpr::Print(int level) const {
 }
 ErrorNo AstSelectExpr::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
-  string str_temp = "NULL";
   if (NULL != expr_) {
     ret = expr_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
@@ -92,6 +109,7 @@ ErrorNo AstSelectExpr::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (expr_alias_.compare("NULL") == 0) {
     expr_alias_ = "temp";
   }
+  string str_temp = "NULL";
   ret = sem_cnxt->IsColumnExist(str_temp, expr_alias_);
   if (eOK == ret) {
     LOG(ERROR) << "select column alias " << expr_alias_ << " is ambiguous!"

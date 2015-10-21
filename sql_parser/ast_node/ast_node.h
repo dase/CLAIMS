@@ -1,10 +1,26 @@
 /*
- * ast_node.h
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * ./sql_parser/ast_node/ast_node.h
  *  Created on: May 21, 2015 4:10:35 PM
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- *   Copyright: Copyright (c) @ ECNU.DaSE
- * Description:
+ *
  */
 
 #ifndef AST_NODE_H_  // NOLINT
@@ -13,7 +29,12 @@
 #include <map>
 #include <set>
 #include <vector>
-
+#include <utility>
+using std::pair;
+using std::set;
+using std::map;
+using std::multimap;
+using std::string;
 using std::multimap;
 using std::set;
 using std::string;
@@ -102,6 +123,9 @@ enum ErrorNoType {
   eSelectClauseIsNULL,
 };
 const int TAB_SIZE = 4;
+/**
+ * @brief The Semantic analysis middle scheme context.
+ */
 class SemanticContext {
  public:
   SemanticContext();
@@ -118,12 +142,16 @@ class SemanticContext {
   multimap<string, string> column_to_table_;
   set<string> tables_;
 };
+/**
+ * @brief The basic data structure of other AST nodes.
+ */
 class AstNode {
  public:
   explicit AstNode(AstNodeType ast_node_type);
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
   virtual ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNodeType ast_node_type();
   AstNodeType ast_node_type_;
 };
@@ -134,9 +162,10 @@ struct ParseResult {
   int error_number;
 };
 
-/*
- * used to link every statement in one sql contains multiple statement
- * for example: select a from tb;select max(a) from tb2;
+/**
+ * @brief AstStmtList is used to link every statement in one sql contains
+ * multiple statement.
+ * @details For example: select a from tb;select max(a) from tb2;
  */
 class AstStmtList : public AstNode {
  public:
@@ -148,4 +177,4 @@ class AstStmtList : public AstNode {
   AstNode* next_;
 };
 
-#endif  // AST_NODE_H__    //  NOLINT
+#endif  // SQL_PARSER_AST_NODE_AST_NODE_H_
