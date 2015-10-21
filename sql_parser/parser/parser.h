@@ -30,5 +30,5 @@ class Parser {
   string SQL_statement_;
   AstNode* AST_root_;
 };
-
+int TestNewSql();
 #endif  // SQL_PARSER_PARSER_PARSER_H_

@@ -31,6 +31,7 @@ LDADD =	TestSuit/libtestsuit.a \
 		../common/Schema/libschema.a \
 		../common/Block/libblock.a \
 		../common/types/libtypes.a \
+		../sql_parser/parser/libparser_test.a	\
 		../utility/libutility.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\

@@ -17,6 +17,7 @@ LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
 		../common/libcommon.a \
 		../common/log/liblog.a \
 		../common/Block/libblock.a \
+		../common/expression/libexpression.a	\
 		../utility/libutility.a \
 		types/libtypes.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
@@ -47,5 +48,5 @@ libcommon_a_SOURCES = \
 	error_no.h			error_no.cpp
 
 
-SUBDIRS = Block log Schema types Expression
-DIST_SUBDIRS = Block log Schema types Expression
+SUBDIRS = Block log Schema types Expression	expression
+DIST_SUBDIRS = Block log Schema types Expression expression

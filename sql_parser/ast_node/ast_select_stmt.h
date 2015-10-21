@@ -11,7 +11,7 @@
 #define AST_SELECT_STMT_H_
 #include <string>
 
-#include "../ast_node/ast_node.h"
+#include "./ast_node.h"
 using std::string;
 class AstSelectList : public AstNode {
  public:
@@ -19,6 +19,8 @@ class AstSelectList : public AstNode {
                 AstNode* next);
   ~AstSelectList();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   bool is_all_;
   AstNode* args_;
   AstNode* next_;
@@ -28,6 +30,7 @@ class AstSelectExpr : public AstNode {
   AstSelectExpr(AstNodeType ast_node_type, string expr_alias, AstNode* expr);
   ~AstSelectExpr();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
 
   string expr_alias_;
   AstNode* expr_;
@@ -37,7 +40,7 @@ class AstFromList : public AstNode {
   AstFromList(AstNodeType ast_node_type, AstNode* args, AstNode* next);
   ~AstFromList();
   void Print(int level = 0) const;
-
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNode* args_;
   AstNode* next_;
   AstNode* condition_;  // TODO(fzh)
@@ -49,12 +52,12 @@ class AstTable : public AstNode {
            string table_alias);
   ~AstTable();
   void Print(int level = 0) const;
-
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   string db_name_;
   string table_name_;
   string table_alias_;
   int table_id_;
-// AstNode* condition_; //
+  // AstNode* condition_; //
 };
 
 class AstSubquery : public AstNode {
@@ -63,7 +66,7 @@ class AstSubquery : public AstNode {
               AstNode* subquery);
   ~AstSubquery();
   void Print(int level = 0) const;
-
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   string subquery_alias_;
   AstNode* subquery_;
 };
@@ -73,6 +76,7 @@ class AstJoinCondition : public AstNode {
                    AstNode* condition);
   ~AstJoinCondition();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   string join_condition_type_;
   AstNode* condition_;
 };
@@ -82,6 +86,7 @@ class AstJoin : public AstNode {
           AstNode* right_table, AstNode* join_condition);
   ~AstJoin();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   string join_type_;
   AstNode* left_table_;
   AstNode* right_table_;
@@ -92,7 +97,7 @@ class AstWhereClause : public AstNode {
   AstWhereClause(AstNodeType ast_node_type, AstNode* expr);
   ~AstWhereClause();
   void Print(int level = 0) const;
-
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNode* expr_;
 };
 class AstGroupByList : public AstNode {
@@ -100,6 +105,8 @@ class AstGroupByList : public AstNode {
   AstGroupByList(AstNodeType ast_node_type, AstNode* expr, AstNode* next);
   ~AstGroupByList();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* expr_;
   AstNode* next_;
 };
@@ -109,6 +116,7 @@ class AstGroupByClause : public AstNode {
                    bool with_roolup);
   ~AstGroupByClause();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   AstGroupByList* groupby_list_;
   bool with_roolup_;
 };
@@ -118,6 +126,8 @@ class AstOrderByList : public AstNode {
                           int orderby_type, AstNode* next);
   ~AstOrderByList();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* expr_;
   string orderby_type_;
   AstNode* next_;
@@ -127,6 +137,8 @@ class AstOrderByClause : public AstNode {
   AstOrderByClause(AstNodeType ast_node_type, AstNode* orderby_list);
   ~AstOrderByClause();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstOrderByList* orderby_list_;
 };
 class AstHavingClause : public AstNode {
@@ -134,6 +146,8 @@ class AstHavingClause : public AstNode {
   AstHavingClause(AstNodeType ast_node_type, AstNode* expr);
   ~AstHavingClause();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* expr_;
 };
 class AstLimitClause : public AstNode {
@@ -142,14 +156,16 @@ class AstLimitClause : public AstNode {
                  AstNode* row_count);
   ~AstLimitClause();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* offset_;
   AstNode* row_count_;
 };
 class AstSelectIntoClause : public AstNode {
  public:
-// AstSelectIntoClause();
-// ~AstSelectIntoClause();
-// void Print(int level = 0) const;
+  // AstSelectIntoClause();
+  // ~AstSelectIntoClause();
+  // void Print(int level = 0) const;
 };
 class AstColumn : public AstNode {
  public:
@@ -159,6 +175,8 @@ class AstColumn : public AstNode {
             AstNode* next);
   ~AstColumn();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   string relation_name_;
   string column_name_;
   AstNode* next_;
@@ -177,6 +195,7 @@ class AstSelectStmt : public AstNode {
                 AstNode* select_into_clause);
   ~AstSelectStmt();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   string select_str_;
   SelectOpts select_opts_;
   AstNode* select_list_;

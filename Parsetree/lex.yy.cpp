@@ -1485,7 +1485,7 @@ static yyconst flex_int32_t yy_rule_can_match_eol[293] =
 #include "sql.tab.hpp"
 #include "sql_node_struct.h"
 int oldstate;
-extern void yyerror(struct ParseResult *pp,const char *s, ...);
+extern void yyerror(struct ParserResult *pp,const char *s, ...);
 
 
 #line 1492 "lex.yy.c"
@@ -1726,7 +1726,7 @@ YY_DECL
 #line 23 "sql.l"
 
 
-struct ParseResult *pp =(struct ParseResult *) yyextra;
+struct ParserResult *pp =(struct ParserResult *) yyextra;
 
   /* keywords */
 

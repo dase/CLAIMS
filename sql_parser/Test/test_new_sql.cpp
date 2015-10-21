@@ -16,37 +16,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/sql_parser/ast_node/header.cpp
+ * /Claims/sql_parser/test_/test_new_sql.cpp
  *
- *  Created on: Aug 24, 2015
- *      Author:
- *       Email:
+ *  Created on: Oct 20, 2015
+ *      Author: fzh
+ *		   Email: fzhedu@gmail.com
  *
  * Description:
  *
  */
+#include <glog/logging.h>
 #include <iostream>  //NOLINT
 #include <string>
 #include <stdio.h>  //NOLINT
-#include "../../common/log/logging.h"
 #include "../parser/parser.h"
+#include "../ast_node/ast_node.h"
+using std::endl;
+using std::cout;
 
-// using claims::common;
-
-int main(int argc, char* argv[]) {
-  claims::common::Logging my_glog(argv[0]);
+int TestNewSql() {
   int flag = 1;
   while (flag) {
     Parser* my_parser = new Parser();
-    if (my_parser->GetRawAST() != NULL) {
-      my_parser->GetRawAST()->Print();
+    AstNode* raw_ast = my_parser->GetRawAST();
+    if (raw_ast != NULL) {
+      raw_ast->Print();
+      cout << "----------begin semantic analysis----------------" << endl;
+      SemanticContext sem_cnxt;
+      cout << "semantic analysis result= : "
+           << raw_ast->SemanticAnalisys(&sem_cnxt) << endl;
+      raw_ast->Print();
+
     } else {
-      LOG_WARNING << "the raw ast is null";
+      LOG(WARNING) << "the raw ast is null" << endl;
     }
     delete my_parser;
     printf("continue 1 or not 0!\n");
     scanf("%d", &flag);
   }
-
   return 0;
 }

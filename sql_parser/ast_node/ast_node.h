@@ -7,10 +7,17 @@
  * Description:
  */
 
-#ifndef AST_NODE_H_    // NOLINT
+#ifndef AST_NODE_H_  // NOLINT
 #define AST_NODE_H_
+#include <string>
+#include <map>
+#include <set>
 #include <vector>
 
+using std::multimap;
+using std::set;
+using std::string;
+typedef int ErrorNo;
 enum AstNodeType {
   AST_NODE,
   AST_STMT_LIST,
@@ -73,25 +80,57 @@ enum AstNodeType {
   AST_INSERT_VALUE_LIST,
   AST_INSERT_VALUE,
   AST_INSERT_ASSIGN_LIST,
-  
+
   AST_INTNUM,
   AST_APPROXNUM,
   AST_STRINGVAL,
   AST_BOOL,
 };
+enum ErrorNoType {
+  eOK = 10000,
+  eTableNotExist,
+  eTableillegal,
+  eTableAliasEqualExistedTable,
+  eTableAliasEqualLowerAlias,
+  eColumnNotExist,
+  eColumnIsAmbiguous,
+  eColumnAliasIsAmbiguous,
+  eColumnIsAmbiguousAfterAlias,
+  eColumnIsAmbiguousToExistedColumn,
+  eArgNotExist,
+  eFromClauseIsNULL,
+  eSelectClauseIsNULL,
+};
 const int TAB_SIZE = 4;
+class SemanticContext {
+ public:
+  SemanticContext();
+  ~SemanticContext();
+  ErrorNo IsTableExist(const string table);
+  ErrorNo IsColumnExist(string& table, const string column);
+  ErrorNo AddTable(string table);
+  ErrorNo AddTableColumn(const string& table, const string& column);
+  ErrorNo AddTableColumn(const multimap<string, string>& column_to_table);
+  ErrorNo GetAliasColumn(const string& alias,
+                         multimap<string, string>& column_to_table);
+
+ private:
+  multimap<string, string> column_to_table_;
+  set<string> tables_;
+};
 class AstNode {
  public:
   explicit AstNode(AstNodeType ast_node_type);
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
+  virtual ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNodeType ast_node_type();
   AstNodeType ast_node_type_;
 };
 struct ParseResult {
-  void * yyscan_info_;
-  AstNode * ast;
-  const char * sql_clause;
+  void* yyscan_info_;
+  AstNode* ast;
+  const char* sql_clause;
   int error_number;
 };
 
@@ -104,6 +143,7 @@ class AstStmtList : public AstNode {
   AstStmtList(AstNodeType ast_node_type, AstNode* stmt, AstNode* next);
   ~AstStmtList();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNode* stmt_;
   AstNode* next_;
 };

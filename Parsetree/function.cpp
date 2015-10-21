@@ -1387,8 +1387,8 @@ void output(Node *oldnode, int floor) {
 
 void FreeAllNode(
     vector<Node *> *allnode)  // 2014-3-6---增加释放所有节点的函数---by余楷
-                              // // 2014-4-2---存放节点指针的数组改为vector---by
-                              // Yu
+// // 2014-4-2---存放节点指针的数组改为vector---by
+// Yu
 {
   int NodePointerNum = allnode->size();
   vector<Node *>::iterator it;
@@ -1401,6 +1401,7 @@ void FreeAllNode(
 }
 
 // 2014-4-2----处理转义字符以及消去首尾的引号---by Yu
+#ifdef OLDSQL
 void GetCorrectString(char *dest, const char *src) {
   int j = 0;
   for (int i = 1; i < strlen(src) - 1; ++i) {
@@ -1437,3 +1438,4 @@ void GetCorrectString(char *dest, const char *src) {
   }
   dest[j] = '\0';
 }
+#endif

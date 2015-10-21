@@ -46,7 +46,7 @@ AC_CONFIG_FILES([
   sql_parser/Makefile
   sql_parser/ast_node/Makefile
   sql_parser/parser/Makefile
-  sql_parser/main/Makefile
+  sql_parser/Test/Makefile
   Test/Makefile
   Test/common/Makefile
   Test/TestSuit/Makefile

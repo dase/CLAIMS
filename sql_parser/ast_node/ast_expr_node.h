@@ -7,11 +7,13 @@
  * Description:
  */
 /*
- * those classes in this file are used to describe the calculation tree of expression,
- * just store some main information, so don't match the class used to describe the
+ * those classes in this file are used to describe the calculation tree of
+ * expression,
+ * just store some main information, so don't match the class used to describe
+ * the
  * calculation tree of execution completely.
  */
-#ifndef AST_EXPR_NODE_H_    //NOLINT
+#ifndef AST_EXPR_NODE_H_  // NOLINT
 #define AST_EXPR_NODE_H_
 #include <string>
 
@@ -23,6 +25,8 @@ class AstExprConst : public AstNode {
   AstExprConst(AstNodeType ast_node_type, string expr_type, string data);
   ~AstExprConst();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   string expr_type_;
   string data_;
 };
@@ -32,6 +36,8 @@ class AstExprUnary : public AstNode {
   AstExprUnary(AstNodeType ast_node_type, string expr_type, AstNode* arg0);
   ~AstExprUnary();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* arg0_;
   string expr_type_;
   string expr_str_;
@@ -45,6 +51,8 @@ class AstExprFunc : public AstNode {
               AstNode* arg1, AstNode* arg2);
   ~AstExprFunc();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* arg0_;
   AstNode* arg1_;
   AstNode* arg2_;
@@ -58,6 +66,8 @@ class AstExprCalBinary : public AstNode {
                    AstNode* arg1);
   ~AstExprCalBinary();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
@@ -73,6 +83,8 @@ class AstExprCmpBinary : public AstNode {
 
   ~AstExprCmpBinary();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
@@ -84,8 +96,10 @@ class AstExprList : public AstNode {
   AstExprList(AstNodeType ast_node_type, AstNode* expr, AstNode* next);
   ~AstExprList();
   void Print(int level = 0) const;
+  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+
   AstNode* expr_;
   AstNode* next_;
 };
 
-#endif /* AST_EXPR_NODE_H_ */    //NOLINT
+#endif /* AST_EXPR_NODE_H_ */  // NOLINT

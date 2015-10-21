@@ -1,2 +1,3 @@
-SUBDIRS = ast_node parser main
-DIST_SUBDIRS = ast_node parser main
+
+SUBDIRS = ast_node parser Test
+DIST_SUBDIRS = ast_node parser Test

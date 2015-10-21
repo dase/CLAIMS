@@ -17,9 +17,12 @@
 #include <boost/archive/text_oarchive.hpp>
 using namespace std;
 
+//#define OLDSQL
 // extern "C" int yylex();
 // extern "C" int yyparse();
+#ifdef OLDSQL
 extern "C" void emit(char *s, ...);
+#endif
 // extern "C" void yyerror(const char *s, ...);
 // extern int yylineno;
 
@@ -106,7 +109,7 @@ struct Node  //基本节点
     {
   nodetype type;
 };
-struct ParseResult {
+struct ParserResult {
   void *yyscan_info_;
   Node *ast;
   const char *sql_clause;
@@ -382,7 +385,7 @@ struct Create_database_stmt {
 struct Create_table_stmt {
   nodetype type;
   int create_type;  // opt_temporary
-  int check;  // opt_if_not_exists
+  int check;        // opt_if_not_exists
   char *name1;
   char *name2;
   Node *list;

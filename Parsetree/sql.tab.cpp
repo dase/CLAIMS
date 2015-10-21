@@ -64,7 +64,7 @@
 #include <malloc.h>
 #include <vector>
 using namespace std;
-void yyerror(struct ParseResult *pp,const char *s, ...);
+void yyerror(struct ParserResult *pp,const char *s, ...);
 
 
 /* Line 172 of glr.c  */
@@ -2572,7 +2572,7 @@ static const unsigned short int yystos[] =
 
 
 /* Prevent warning if -Wmissing-prototypes.  */
-int yyparse (struct ParseResult* result);
+int yyparse (struct ParserResult* result);
 
 /* Error token number */
 #define YYTERROR 1
@@ -2637,7 +2637,7 @@ do {						\
 
 /*ARGSUSED*/
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct ParseResult* result)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct ParserResult* result)
 {
   if (!yyvaluep)
     return;
@@ -2661,7 +2661,7 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 `--------------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct ParseResult* result)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct ParserResult* result)
 {
   if (yytype < YYNTOKENS)
     YYFPRINTF (yyoutput, "token %s (", yytname[yytype]);
@@ -2910,10 +2910,10 @@ struct yyGLRStack {
 static void yyexpandGLRStack (yyGLRStack* yystackp);
 #endif
 
-static void yyFail (yyGLRStack* yystackp, struct ParseResult* result, const char* yymsg)
+static void yyFail (yyGLRStack* yystackp, struct ParserResult* result, const char* yymsg)
   __attribute__ ((__noreturn__));
 static void
-yyFail (yyGLRStack* yystackp, struct ParseResult* result, const char* yymsg)
+yyFail (yyGLRStack* yystackp, struct ParserResult* result, const char* yymsg)
 {
   if (yymsg != NULL)
     yyerror (result, yymsg);
@@ -2986,7 +2986,7 @@ yyuserAction (yyRuleNum yyn, int yyrhslen, yyGLRStackItem* yyvsp,
 	      YYSTYPE* yyvalp,
 	      YYLTYPE* YYOPTIONAL_LOC (yylocp),
 	      yyGLRStack* yystackp
-	      , struct ParseResult* result)
+	      , struct ParserResult* result)
 {
   yybool yynormal __attribute__ ((__unused__)) =
     (yystackp->yysplitPoint == NULL);
@@ -6410,7 +6410,7 @@ yyuserMerge (int yyn, YYSTYPE* yy0, YYSTYPE* yy1)
 
 /*ARGSUSED*/
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, struct ParseResult* result)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, struct ParserResult* result)
 {
   YYUSE (yyvaluep);
   YYUSE (result);
@@ -6435,7 +6435,7 @@ yyrhsLength (yyRuleNum yyrule)
 }
 
 static void
-yydestroyGLRState (char const *yymsg, yyGLRState *yys, struct ParseResult* result)
+yydestroyGLRState (char const *yymsg, yyGLRState *yys, struct ParserResult* result)
 {
   if (yys->yyresolved)
     yydestruct (yymsg, yystos[yys->yylrState],
@@ -6829,7 +6829,7 @@ yyglrShiftDefer (yyGLRStack* yystackp, size_t yyk, yyStateNum yylrState,
  *  for userAction.  */
 static inline YYRESULTTAG
 yydoAction (yyGLRStack* yystackp, size_t yyk, yyRuleNum yyrule,
-	    YYSTYPE* yyvalp, YYLTYPE* yylocp, struct ParseResult* result)
+	    YYSTYPE* yyvalp, YYLTYPE* yylocp, struct ParserResult* result)
 {
   int yynrhs = yyrhsLength (yyrule);
 
@@ -6882,7 +6882,7 @@ do {					\
 
 /*ARGSUSED*/ static inline void
 yy_reduce_print (yyGLRStack* yystackp, size_t yyk, yyRuleNum yyrule,
-		 YYSTYPE* yyvalp, YYLTYPE* yylocp, struct ParseResult* result)
+		 YYSTYPE* yyvalp, YYLTYPE* yylocp, struct ParserResult* result)
 {
   int yynrhs = yyrhsLength (yyrule);
   yybool yynormal __attribute__ ((__unused__)) =
@@ -6921,7 +6921,7 @@ yy_reduce_print (yyGLRStack* yystackp, size_t yyk, yyRuleNum yyrule,
  */
 static inline YYRESULTTAG
 yyglrReduce (yyGLRStack* yystackp, size_t yyk, yyRuleNum yyrule,
-	     yybool yyforceEval, struct ParseResult* result)
+	     yybool yyforceEval, struct ParserResult* result)
 {
   size_t yyposn = yystackp->yytops.yystates[yyk]->yyposn;
 
@@ -7127,7 +7127,7 @@ yypreference (yySemanticOption* y0, yySemanticOption* y1)
 }
 
 static YYRESULTTAG yyresolveValue (yyGLRState* yys,
-				   yyGLRStack* yystackp, struct ParseResult* result);
+				   yyGLRStack* yystackp, struct ParserResult* result);
 
 
 /** Resolve the previous N states starting at and including state S.  If result
@@ -7137,7 +7137,7 @@ static YYRESULTTAG yyresolveValue (yyGLRState* yys,
  *  if necessary.  */
 static YYRESULTTAG
 yyresolveStates (yyGLRState* yys, int yyn,
-		 yyGLRStack* yystackp, struct ParseResult* result)
+		 yyGLRStack* yystackp, struct ParserResult* result)
 {
   if (0 < yyn)
     {
@@ -7155,7 +7155,7 @@ yyresolveStates (yyGLRState* yys, int yyn,
  *  semantic values if invoked).  */
 static YYRESULTTAG
 yyresolveAction (yySemanticOption* yyopt, yyGLRStack* yystackp,
-		 YYSTYPE* yyvalp, YYLTYPE* yylocp, struct ParseResult* result)
+		 YYSTYPE* yyvalp, YYLTYPE* yylocp, struct ParserResult* result)
 {
   yyGLRStackItem yyrhsVals[YYMAXRHS + YYMAXLEFT + 1];
   int yynrhs;
@@ -7240,7 +7240,7 @@ yyreportTree (yySemanticOption* yyx, int yyindent)
 
 /*ARGSUSED*/ static YYRESULTTAG
 yyreportAmbiguity (yySemanticOption* yyx0,
-		   yySemanticOption* yyx1, struct ParseResult* result)
+		   yySemanticOption* yyx1, struct ParserResult* result)
 {
   YYUSE (yyx0);
   YYUSE (yyx1);
@@ -7263,7 +7263,7 @@ yyreportAmbiguity (yySemanticOption* yyx0,
  *  is always chosen.  */
 static void
 yyresolveLocations (yyGLRState* yys1, int yyn1,
-		    yyGLRStack *yystackp, struct ParseResult* result)
+		    yyGLRStack *yystackp, struct ParserResult* result)
 {
   if (0 < yyn1)
     {
@@ -7323,7 +7323,7 @@ yyresolveLocations (yyGLRState* yys1, int yyn1,
  *  of whether result = yyok, S has been left with consistent data so that
  *  yydestroyGLRState can be invoked if necessary.  */
 static YYRESULTTAG
-yyresolveValue (yyGLRState* yys, yyGLRStack* yystackp, struct ParseResult* result)
+yyresolveValue (yyGLRState* yys, yyGLRStack* yystackp, struct ParserResult* result)
 {
   yySemanticOption* yyoptionList = yys->yysemantics.yyfirstVal;
   yySemanticOption* yybest;
@@ -7411,7 +7411,7 @@ yyresolveValue (yyGLRState* yys, yyGLRStack* yystackp, struct ParseResult* resul
 }
 
 static YYRESULTTAG
-yyresolveStack (yyGLRStack* yystackp, struct ParseResult* result)
+yyresolveStack (yyGLRStack* yystackp, struct ParserResult* result)
 {
   if (yystackp->yysplitPoint != NULL)
     {
@@ -7460,7 +7460,7 @@ yycompressStack (yyGLRStack* yystackp)
 
 static YYRESULTTAG
 yyprocessOneStack (yyGLRStack* yystackp, size_t yyk,
-		   size_t yyposn, struct ParseResult* result)
+		   size_t yyposn, struct ParserResult* result)
 {
   int yyaction;
   const short int* yyconflicts;
@@ -7540,7 +7540,7 @@ yyprocessOneStack (yyGLRStack* yystackp, size_t yyk,
 }
 
 /*ARGSUSED*/ static void
-yyreportSyntaxError (yyGLRStack* yystackp, struct ParseResult* result)
+yyreportSyntaxError (yyGLRStack* yystackp, struct ParserResult* result)
 {
   if (yystackp->yyerrState == 0)
     {
@@ -7644,7 +7644,7 @@ yyreportSyntaxError (yyGLRStack* yystackp, struct ParseResult* result)
    yylval, and yylloc are the syntactic category, semantic value, and location
    of the lookahead.  */
 /*ARGSUSED*/ static void
-yyrecoverSyntaxError (yyGLRStack* yystackp, struct ParseResult* result)
+yyrecoverSyntaxError (yyGLRStack* yystackp, struct ParserResult* result)
 {
   size_t yyk;
   int yyj;
@@ -7754,7 +7754,7 @@ yyrecoverSyntaxError (yyGLRStack* yystackp, struct ParseResult* result)
 `----------*/
 
 int
-yyparse (struct ParseResult* result)
+yyparse (struct ParserResult* result)
 {
   int yyresult;
   yyGLRStack yystack;
@@ -8078,7 +8078,7 @@ void emit(char *s, ...)
   printf("\n");*/
 }
 
-void yyerror(struct ParseResult *pp,const char *  s, ...)
+void yyerror(struct ParserResult *pp,const char *  s, ...)
 {
 /*  va_list ap;
   va_start(ap, s);

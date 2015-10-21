@@ -54,7 +54,7 @@ void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
   Catalog *catalog = Environment::getInstance()->getCatalog();
   string tablename;
   vector<Node *> allnode;
-  struct ParseResult presult = {NULL, NULL, sql.c_str(), 0, &allnode};
+  struct ParserResult presult = {NULL, NULL, sql.c_str(), 0, &allnode};
   Node *oldnode = getparsetreeroot(&presult, sql.c_str());
   if (oldnode == NULL) {
     FreeAllNode(presult.node_pointer);
@@ -124,7 +124,7 @@ void ExecuteLogicalQueryPlan() {
     // begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
     string tablename;
     vector<Node *> allnode;
-    struct ParseResult presult = {NULL, NULL, NULL, 0, &allnode};
+    struct ParserResult presult = {NULL, NULL, NULL, 0, &allnode};
     Node *oldnode = getparsetreeroot(&presult);
     // get parser time	//2014-5-4---add---by Yu
     timeval finish_parser_time;

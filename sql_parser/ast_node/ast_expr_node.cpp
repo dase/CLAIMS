@@ -8,7 +8,9 @@
  */
 
 #include "../ast_node/ast_expr_node.h"
-#include <iostream>   //  NOLINT
+
+#include <glog/logging.h>
+#include <iostream>  //  NOLINT
 #include <iomanip>
 #include <string>
 #include <bitset>
@@ -22,47 +24,52 @@ using std::bitset;
 
 AstExprConst::AstExprConst(AstNodeType ast_node_type, string expr_type,
                            string data)
-    : AstNode(ast_node_type),
-      expr_type_(expr_type),
-      data_(data) {
-}
+    : AstNode(ast_node_type), expr_type_(expr_type), data_(data) {}
 
-AstExprConst::~AstExprConst() {
-}
+AstExprConst::~AstExprConst() {}
 void AstExprConst::Print(int level) const {
-  cout << setw(level++ * TAB_SIZE) << " " << "|const|" << endl;
-  cout << setw(level * TAB_SIZE) << " " << "const expr type: " << expr_type_
-       << endl;
-  cout << setw(level * TAB_SIZE) << " " << "const data: " << data_ << endl;
+  cout << setw(level++ * TAB_SIZE) << " "
+       << "|const|" << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "const expr type: " << expr_type_ << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "const data: " << data_ << endl;
 }
-
+// TODO(FZH) be strict to the type of const
+ErrorNo AstExprConst::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  ErrorNo ret = eOK;
+  if (expr_type_.compare("CONST_INT") == 0) {
+  } else if (expr_type_.compare("CONST_DOUBLE") == 0) {
+  } else if (expr_type_.compare("CONST_STRING") == 0) {
+  } else if (expr_type_.compare("CONST_BOOL") == 0) {
+  }
+  return ret;
+}
 AstExprUnary::AstExprUnary(AstNodeType ast_node_type, string expr_type,
                            AstNode* arg0)
-    : AstNode(ast_node_type),
-      expr_type_(expr_type),
-      arg0_(arg0) {
-}
+    : AstNode(ast_node_type), expr_type_(expr_type), arg0_(arg0) {}
 
-AstExprUnary::~AstExprUnary() {
-  delete arg0_;
-}
+AstExprUnary::~AstExprUnary() { delete arg0_; }
 
 void AstExprUnary::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|expr unary| " << expr_type_
-       << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|expr unary| " << expr_type_ << endl;
   if (arg0_ != NULL) {
     arg0_->Print(level + 1);
   }
+}
+ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  if (NULL != arg0_) {
+    return arg0_->SemanticAnalisys(sem_cnxt);
+  }
+  LOG(ERROR) << "arg0 is NULL in unary expr!" << endl;
+  return eArgNotExist;
 }
 
 AstExprCalBinary::AstExprCalBinary(AstNodeType ast_node_type,
                                    std::string expr_type, AstNode* arg0,
                                    AstNode* arg1)
-    : AstNode(ast_node_type),
-      expr_type_(expr_type),
-      arg0_(arg0),
-      arg1_(arg1) {
-}
+    : AstNode(ast_node_type), expr_type_(expr_type), arg0_(arg0), arg1_(arg1) {}
 
 AstExprCalBinary::~AstExprCalBinary() {
   delete arg0_;
@@ -70,26 +77,34 @@ AstExprCalBinary::~AstExprCalBinary() {
 }
 
 void AstExprCalBinary::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|expr binary| " << expr_type_
-       << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|expr binary| " << expr_type_ << endl;
   if (arg0_ != NULL) arg0_->Print(level + 1);
   if (arg1_ != NULL) arg1_->Print(level + 1);
 }
-
+ErrorNo AstExprCalBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  ErrorNo ret = eOK;
+  if (NULL != arg0_) {
+    ret = arg0_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != arg1_) {
+    return arg1_->SemanticAnalisys(sem_cnxt);
+  }
+  return eOK;
+}
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string expr_type,
                                    AstNode* arg0, AstNode* arg1)
     : AstNode(ast_node_type),
       expr_type_(expr_type),
       cmp_para_(""),
       arg0_(arg0),
-      arg1_(arg1) {
-}
+      arg1_(arg1) {}
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string cmp_para,
                                    int cmp_type, AstNode* arg0, AstNode* arg1)
-    : AstNode(ast_node_type),
-      cmp_para_(cmp_para),
-      arg0_(arg0),
-      arg1_(arg1) {
+    : AstNode(ast_node_type), cmp_para_(cmp_para), arg0_(arg0), arg1_(arg1) {
   switch (cmp_type) {
     case 1: {
       expr_type_ = "<";
@@ -119,9 +134,7 @@ AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string cmp_para,
       expr_type_ = "<=>";
       break;
     }
-    default: {
-      expr_type_ = "error type";
-    }
+    default: { expr_type_ = "error type"; }
   }
 }
 AstExprCmpBinary::~AstExprCmpBinary() {
@@ -129,18 +142,28 @@ AstExprCmpBinary::~AstExprCmpBinary() {
   delete arg1_;
 }
 void AstExprCmpBinary::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|expr binary| " << cmp_para_ << "  "
-       << expr_type_ << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|expr binary| " << cmp_para_ << "  " << expr_type_ << endl;
   if (arg0_ != NULL) arg0_->Print(level + 1);
   if (arg1_ != NULL) arg1_->Print(level + 1);
+}
+ErrorNo AstExprCmpBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  ErrorNo ret = eOK;
+  if (NULL != arg0_) {
+    ret = arg0_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != arg1_) {
+    return arg1_->SemanticAnalisys(sem_cnxt);
+  }
+  return eOK;
 }
 
 AstExprList::AstExprList(AstNodeType ast_node_type, AstNode* expr,
                          AstNode* next)
-    : AstNode(ast_node_type),
-      expr_(expr),
-      next_(next) {
-}
+    : AstNode(ast_node_type), expr_(expr), next_(next) {}
 
 AstExprList::~AstExprList() {
   delete expr_;
@@ -149,9 +172,23 @@ AstExprList::~AstExprList() {
 
 void AstExprList::Print(int level) const {
   // cout << "level= " << level << endl;
-  cout << setw(level * TAB_SIZE) << " " << "|expr list| " << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|expr list| " << endl;
   if (expr_ != NULL) expr_->Print(level);
   if (next_ != NULL) next_->Print(level);
+}
+ErrorNo AstExprList::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  ErrorNo ret = eOK;
+  if (NULL != expr_) {
+    ret = expr_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != next_) {
+    return next_->SemanticAnalisys(sem_cnxt);
+  }
+  return eOK;
 }
 
 AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
@@ -160,8 +197,7 @@ AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
       expr_type_(expr_type),
       arg0_(arg0),
       arg1_(arg1),
-      arg2_(arg2) {
-}
+      arg2_(arg2) {}
 
 AstExprFunc::~AstExprFunc() {
   delete arg0_;
@@ -170,9 +206,28 @@ AstExprFunc::~AstExprFunc() {
 }
 
 void AstExprFunc::Print(int level) const {
-  cout << setw(level * TAB_SIZE) << " " << "|expr function| " << expr_type_
-       << endl;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|expr function| " << expr_type_ << endl;
   if (arg0_ != NULL) arg0_->Print(level + 1);
   if (arg1_ != NULL) arg1_->Print(level + 2);
   if (arg2_ != NULL) arg2_->Print(level + 3);
+}
+ErrorNo AstExprFunc::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  ErrorNo ret = eOK;
+  if (NULL != arg0_) {
+    ret = arg0_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != arg1_) {
+    ret = arg1_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != arg2_) {
+    return arg2_->SemanticAnalisys(sem_cnxt);
+  }
+  return eOK;
 }

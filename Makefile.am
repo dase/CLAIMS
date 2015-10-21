@@ -48,6 +48,7 @@ LDADD =  \
 	common/libcommon.a \
 	common/Block/libblock.a \
 	common/Expression/libexpression.a \
+	common/expression/libexpression.a	\
 	common/log/liblog.a \
 	common/Schema/libschema.a \
 	common/Schema/Test/libtest.a \
@@ -56,6 +57,7 @@ LDADD =  \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
     codegen/libcodegen.a\
+    sql_parser/Test/libparser_test.a	\
     sql_parser/parser/libparser.a \
     sql_parser/ast_node/libast_node.a \
     stmt_handler/libstmthandler.a \
@@ -83,7 +85,7 @@ include_HEADERS = Config.h \
 				
 bin_PROGRAMS =  claimsserver \
 				client \
-				test
+				test	
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -100,8 +102,6 @@ test_SOURCES = Test/gtest_main.cpp\
 				IDsGenerator.cpp \
 				Config.cpp
 				
-
-
 SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
 Loader LogicalQueryPlan Parsetree Resource \
 storage Test utility codegen sql_parser stmt_handler
