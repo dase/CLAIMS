@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>CLAIMS: {{ page.title }}</title>
+    <link rel="shortcut icon" href="{{ site.baseurl }}/claims/favicon.ico" type="claims/image/x-icon">
+    <link rel="icon" href="{{ site.baseurl }}/claims/favicon.ico" type="claims/image/x-icon">
+    
+    <script src="{{ site.baseurl }}/claims/js/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="{{ site.baseurl }}/claims/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="{{ site.baseurl }}/claims/js/buttons.js"></script>
+    <script src="{{ site.baseurl }}/claims/js/jquery-ui.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{{ site.baseurl }}/claims/css/font.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/claims/css/common.css">
+		{% if page.url == '/claims/index.html' or page.url == '/claims/feature/index.html' %}
+		<link rel="stylesheet" href="{{ site.baseurl }}/claims/css/index.css">
+		{% else %}
+		<link rel="stylesheet" href="{{ stie.baseurl }}/claims/css/other.css">
+		{% endif %}
+  </head>
+  <body data-spy="scroll" data-target="#navbar-side">  
+		{% include navbar.html %}
+    <!-- Main content. -->
+    <div class="container" id="main-container">
+			{{ content }}
+   	</div><!-- /.container -->
+    <div class="footer text-center" id="footer">
+      <p>© East China Normal University - DaSE 2014. </p>
+    </div>
+  </body>
+</html>
