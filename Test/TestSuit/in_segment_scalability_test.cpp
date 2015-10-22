@@ -105,12 +105,12 @@ static double lineitem_scan_aggregation(){
 	aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
 	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-	std::vector<BlockStreamAggregationIterator::State::Aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
 
 
@@ -208,10 +208,10 @@ static double sb_scan_aggregation(){
 	std::vector<Attribute> aggregation_attributes;
 	aggregation_attributes.push_back(table->getAttribute("row_id"));
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-	std::vector<BlockStreamAggregationIterator::State::Aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
 
 

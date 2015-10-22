@@ -35,7 +35,7 @@ libphysicalqueryplan_a_SOURCES = \
 	BlockStreamPerformanceMonitorTop.cpp 	BlockStreamPerformanceMonitorTop.h \
 	BlockStreamPrint.cpp 				BlockStreamPrint.h \
 	BlockStreamResultCollector.cpp 		BlockStreamResultCollector.h \
-	BlockStreamAggregationIterator.cpp 				BlockStreamAggregationIterator.h \
+	physical_aggregation.cpp 						physical_aggregation.h \
 	BlockStreamCombinedIterator.cpp 				BlockStreamCombinedIterator.h \
 	BlockStreamExpander.cpp 						BlockStreamExpander.h \
 	BlockStreamInIterator.cpp 						BlockStreamInIterator.h \

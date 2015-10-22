@@ -32,7 +32,9 @@
 #include <vector>
 #include "../Catalog/Attribute.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../physical_query_plan/BlockStreamAggregationIterator.h"
+#include "../physical_query_plan/physical_aggregation.h"
+
+using claims::physical_query_plan::PhysicalAggregation;
 
 namespace claims {
 namespace logical_query_plan {
@@ -69,11 +71,10 @@ class LogicalAggregation : public LogicalOperator {
    * count(*) aggregation can be expressed as 'count' aggregation function along
    * with Attribute(ATTRIBUTE_ANY)
    */
-  LogicalAggregation(
-      std::vector<Attribute> group_by_attribute_list,
-      std::vector<Attribute> aggregation_attribute_list,
-      std::vector<BlockStreamAggregationIterator::State::Aggregation>
-          aggregation_function_list, LogicalOperator* child);
+  LogicalAggregation(std::vector<Attribute> group_by_attribute_list,
+                     std::vector<Attribute> aggregation_attribute_list,
+                     std::vector<PhysicalAggregation::State::Aggregation>
+                         aggregation_function_list, LogicalOperator* child);
   virtual ~LogicalAggregation();
 
  protected:
@@ -106,10 +107,10 @@ class LogicalAggregation : public LogicalOperator {
   // TODO(fzh): merge ChangeSchemaForAVG() and ChangeForGlobalAggregation() and
   // not change but construct the schema during reorganizing physical operator.
 
-  void ChangeSchemaForAVG(BlockStreamAggregationIterator::State& state);
-  std::vector<BlockStreamAggregationIterator::State::Aggregation>
-  ChangeForGlobalAggregation(const std::vector<
-      BlockStreamAggregationIterator::State::Aggregation>) const;
+  void ChangeSchemaForAVG(PhysicalAggregation::State& state);
+  std::vector<PhysicalAggregation::State::Aggregation>
+  ChangeForGlobalAggregation(
+      const std::vector<PhysicalAggregation::State::Aggregation>) const;
   void Print(int level = 0) const;
 
   /**
@@ -120,12 +121,13 @@ class LogicalAggregation : public LogicalOperator {
   std::vector<Attribute> GetGroupByAttrsAfterAgg() const;
   std::vector<Attribute> GetAggAttrsAfterAgg() const;
 
-  unsigned long EstimateGroupByCardinality(const PlanContext& plan_context) const;
+  unsigned long EstimateGroupByCardinality(
+      const PlanContext& plan_context) const;
 
   LogicalOperator* child_;
   std::vector<Attribute> group_by_attribute_list_;
   std::vector<Attribute> aggregation_attribute_list_;
-  std::vector<BlockStreamAggregationIterator::State::Aggregation>
+  std::vector<PhysicalAggregation::State::Aggregation>
       aggregation_function_list_;
   PlanContext* plan_context_;
   AggregationStyle aggregation_style_;

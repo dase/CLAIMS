@@ -52,12 +52,12 @@ static void query_1(){
 	aggregation_attributes.push_back(table->getAttribute("LINEITEM.L_EXTENDEDPRICE"));
 	aggregation_attributes.push_back(table->getAttribute("LINEITEM.L_DISCOUNT"));
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-	std::vector<BlockStreamAggregationIterator::State::Aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kCount);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 
 
@@ -116,8 +116,8 @@ static void query_2(){
 
 	std::vector<Attribute> aggregation_attributes;
 	aggregation_attributes.push_back(s_ps_join->GetPlanContext().GetAttribute("PARTSUPP.PS_SUPPLYCOST"));
-	std::vector<BlockStreamAggregationIterator::State::Aggregation> aggregation_function;
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kMin);
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+	aggregation_function.push_back(PhysicalAggregation::State::kMin);
 	LogicalOperator* aggregation=new LogicalAggregation(std::vector<Attribute>(),aggregation_attributes,aggregation_function,s_ps_n_join);
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::kResultCollector);
@@ -240,9 +240,9 @@ static void query_3(){
 	std::vector<Attribute> aggregation_attributes;
 	aggregation_attributes.push_back(c_o_l_join->GetPlanContext().GetAttribute("LINEITEM.L_EXTENDEDPRICE"));
 	aggregation_attributes.push_back(c_o_l_join->GetPlanContext().GetAttribute("LINEITEM.L_DISCOUNT"));
-	std::vector<BlockStreamAggregationIterator::State::Aggregation> aggregation_function;
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::kSum);
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
+	aggregation_function.push_back(PhysicalAggregation::State::kSum);
 	LogicalOperator* aggregation=new LogicalAggregation(groupby_attributes,aggregation_attributes,aggregation_function,c_o_l_join);
 
 
