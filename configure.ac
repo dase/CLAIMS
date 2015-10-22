@@ -1,7 +1,9 @@
 AC_INIT([Claims], [0.3], [imdb@ecnu])
 AM_INIT_AUTOMAKE([-Wall foreign])
+AM_PROG_AR
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O0 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
+AM_CONDITIONAL(OPT_TCMALLOC, true)
 CXXFLAGS=${CXXFLAGS="-g  -std=c++11"}
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
@@ -20,6 +22,7 @@ AC_CONFIG_FILES([
   common/Makefile 
   common/Block/Makefile 
   common/Expression/Makefile 
+  common/log/Makefile
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
   common/types/Makefile 

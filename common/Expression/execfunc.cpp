@@ -53,7 +53,8 @@ void *Exec_cmp(Node *cinfo,void *tuple,Schema *schema)
 	finfo.nargs=2;
 	finfo.results=cal->value;
 	cal->function_call(&finfo);
-	return finfo.results;//the actual type is bool ,so it needn't change
+	//return finfo.results;//the actual type is bool ,so it needn't change
+	return cal->type_cast_func(finfo.results,cal->value);
 }
 void *Exec_ternary(Node *cinfo,void *tuple,Schema *schema)
 {
@@ -151,6 +152,8 @@ void *Exec_date_add_sub(Node *cinfo,void *tuple,Schema *schema)
 	cal->function_call(&finfo);
 	return cal->type_cast_func(finfo.results,cal->value);
 }
+
+// deep copy with operator new
 void Expr_copy(QNode *node,QNode *&new_node)
 {
 	switch(node->type)

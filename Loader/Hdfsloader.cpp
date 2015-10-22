@@ -20,7 +20,7 @@
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
 {
-	if (open_flag_ == APPEND)
+	if (open_flag_ == APPENDD)
 		row_id = table_descriptor_->getRowNumber();
 	else
 		row_id = 0;
@@ -67,7 +67,7 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			if (open_flag_ == APPEND){
+			if (open_flag_ == APPENDD){
 				tmp_tuple_count.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionCardinality(j));
 				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			}
@@ -87,7 +87,7 @@ HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator,
 HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), file_list(file_name), open_flag_(open_flag_), block_size(64*1024)
 {
-	if (open_flag_ == APPEND)
+	if (open_flag_ == APPENDD)
 		row_id = table_descriptor_->getRowNumber();
 	else
 		row_id = 0;
@@ -134,7 +134,7 @@ HdfsLoader::HdfsLoader(const char c_separator,const char r_separator, std::vecto
 		for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 		{
 			temp_v.push_back(BlockStreamBase::createBlock(table_descriptor_->getProjectoin(i)->getSchema(), block_size-sizeof(unsigned)));
-			if (open_flag_ == APPEND) {
+			if (open_flag_ == APPENDD) {
 				tmp_tuple_count.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionCardinality(j));
 				tmp_block_num.push_back(table_descriptor_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
 			}
@@ -170,6 +170,11 @@ bool HdfsLoader::insertRecords(){
 		cout << "The record is null! The row id is: "<< row_id << "\n";
 //		assert(false);
 		return false;
+	}
+	else if (s_record.length() > table_schema->getTupleMaxSize()) {
+	  //TODO(yukai):set errno and return errno
+	  cout << "this record is too long than defined in create statement"<<endl;
+//	  return false;
 	}
 	void *tuple_buffer = malloc(table_schema->getTupleMaxSize());		//newmalloc
 
@@ -216,7 +221,8 @@ bool HdfsLoader::insertRecords(){
 			pj_buffer[i][part]->setEmpty();
 			block_tuple_addr = pj_buffer[i][part]->allocateTuple(projection_schema[i]->getTupleMaxSize());
 		}
-		projection_schema[i]->copyTuple(target,block_tuple_addr);
+		int copy_size = projection_schema[i]->copyTuple(target,block_tuple_addr);
+		assert(copy_size <= projection_schema[i]->getTupleMaxSize() && "copy more than malloc size");
 
 		free(target);
 	}
@@ -235,7 +241,7 @@ bool HdfsLoader::load(double sample_rate){
 	connector_->openFiles(open_flag_);
 #endif
 
-	if (open_flag_ == CREATE)
+	if (open_flag_ == CREATEE)
 	{
 		//TODO: for reloading after select, unbinding the original data
 		if (table_descriptor_->getProjectoin(0)->getPartitioner()->allPartitionBound())
@@ -271,6 +277,7 @@ bool HdfsLoader::load(double sample_rate){
 ///*for testing*/ if(row_id/t_count > 100000)
 ///*for testing*/		break;
 
+			//TODO(yukai): get the return value and handle it
 			insertRecords();
 		}
 		InFile.close();
@@ -330,14 +337,14 @@ bool HdfsLoader::load(double sample_rate){
 		{
 //			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j],tuples_per_partition[i][j]);
 			table_descriptor_->getProjectoin(i)->getPartitioner()->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
-			if (open_flag_ == APPEND)
+			if (open_flag_ == APPENDD)
 			{
 				table_descriptor_->getProjectoin(i)->getPartitioner()->UpdatePartitionWithNumberOfChunksToBlockManager(j, blocks_per_partition[i][j]);
 			}
 			cout << "Number of blocks " << i << "\t" << j << "\t: " << blocks_per_partition[i][j] << endl;
 		}
 	}
-	if (open_flag_ == CREATE)
+	if (open_flag_ == CREATEE)
 		cout << "\n\n\n--------------------------Load End!--------------------------\n";
 	else
 		cout << "\n\n\n--------------------------Append End!--------------------------\n";

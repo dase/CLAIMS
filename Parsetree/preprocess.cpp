@@ -550,7 +550,7 @@ void solve_const_value_in_wherecondition(Node *&cur)
 					strcpy(datechar,datestr.c_str());
 //					SQLParse_log("the date result after date_add, string= %s ------------------\n",datechar);
 					//free(cur);
-					cur=(Node *)newExpr(t_stringval,datechar);
+					cur=(Node *)newExpr(t_stringval,datechar,NULL);
 				}
 
 			}
@@ -593,7 +593,7 @@ void solve_const_value_in_wherecondition(Node *&cur)
 					strcpy(datechar,datestr.c_str());
 //					SQLParse_log("the date result after date_sub, string= %s ------------------\n",datechar);
 					//free(cur);
-					cur=(Node *)newExpr(t_stringval,datechar);
+					cur=(Node *)newExpr(t_stringval,datechar,NULL);
 				}
 			}
 			else

@@ -4,524 +4,487 @@
  *  Created on: Sep 26, 2013
  *      Author: wangli
  */
-#include "Logging.h"
+#include "./Logging.h"
+
+#include <string.h>
+#include <iostream>
+#include "log/logging.h"
+
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
+
 //#define CLAIMS_QUEIT
-//#ifndef CLAIMS_QUEIT //If defined, all the output information is binded.
-//#define DEBUG_Config
-//#define DEBUG_ExpanderTracker
-//#define DEBUG_BlockStreamExpander
-//#define DEBUG_BlockStreamJoin
-//#define DEBUG_PerformanceTop
-//#define DEBUG_Coordinator
-//#define DEBUG_Environment
-//#define DEBUG_AdaptiveEndPoint
-//#define DEBUG_ExchangeIteratorLowerWithWideDependency
-//#define DEBUG_ExchangeIteratorWithWideDependency
-//#define DEBUG_ExchangeIteratorEager
-//#define DEBUG_ExchangeIteratorEagerLower
 
+//#ifndef CLAIMS_QUEIT  // If defined, all the output information is binded.
+#define DEBUG_QueryOptimization
+#define DEBUG_StorageManager
+#define DEBUG_Config
+#define DEBUG_ExpanderTracker
+#define DEBUG_BlockStreamExpander
+#define DEBUG_BlockStreamJoin
+#define DEBUG_PerformanceTop
+#define DEBUG_Coordinator
+#define DEBUG_Environment
+#define DEBUG_AdaptiveEndPoint
+#define DEBUG_ExchangeIteratorLowerWithWideDependency
+#define DEBUG_ExchangeIteratorWithWideDependency
+#define DEBUG_ExchangeIteratorEager
+#define DEBUG_ExchangeIteratorEagerLower
 
-//#define DEBUG_ExchangeRegister
-//#define DEBUG_ExchangeTracker
-//
-//#define DEBUG_PortManager
-//#define DEBUG_IteratorExecutorSlave
-//#define DEBUG_IteratorExecutorMaster
-//
+#define DEBUG_ExchangeRegister
+#define DEBUG_ExchangeTracker
 
-//#define DEBUG_Client
-//#define DEBUG_ClientLinsener
+#define DEBUG_PortManager
+#define DEBUG_IteratorExecutorSlave
+#define DEBUG_IteratorExecutorMaster
 
+#define DEBUG_Client
+#define DEBUG_ClientLinsener
 
-//#define DEBUG_ExchangeIteratorEager
-//#define DEBUG_ExchangeIteratorSenderMaterialized
-//#define DEBUG_ExpandableBlockStreamExchangeMaterialized
-//#define DEBUG_BlockStreamExchangeLowerBase
-//#define DEBUG_ExpandableBlockStreamExchangeLM
+#define DEBUG_ExchangeIteratorEager
+#define DEBUG_ExchangeIteratorSenderMaterialized
+#define DEBUG_ExpandableBlockStreamExchangeMaterialized
+#define DEBUG_BlockStreamExchangeLowerBase
+#define DEBUG_ExpandableBlockStreamExchangeLM
 
-//#define DEBUG_ResourceManagerMaster
-//#define DEBUG_ResourceManagerSlave
-//#define DEBUG_Catalog
-//#define DEBUG_BufferManager
+#define DEBUG_ResourceManagerMaster
+#define DEBUG_ResourceManagerSlave
+#define DEBUG_Catalog
+#define DEBUG_BufferManager
 
-//#define DEBUG_ASTParser
-//#define DEBUG_ThreadPool
+#define DEBUG_ASTParser
+
+#define DEBUG_ThreadPool
 #define SQL_Parser
 
 //#endif  //CLAIMS_QUEIT
-void IteratorExecutorMasterLogging::log(const char* format,...){
+
+void RawLog(const char* where, const char* format, va_list args) {
+  const int message_max_length = 1000;  // set initial message length
+  char p[message_max_length];
+  memset(p, 0, message_max_length * sizeof(char));
+
+  int real_length = vsnprintf(p, message_max_length, format, args);
+
+  if (unlikely(real_length < 0)) {  // check error code and output
+    LOG(ERROR) << "vsnprintf error. " << strerror(errno) << std::endl;
+  } else if (likely(real_length < message_max_length)) {
+    // if it worked, output the message
+    //    std::cout<<where<<p<<std::endl;
+    LOG(INFO) << where << p << std::endl;
+  } else {  // try again with more space
+    int new_message_length = real_length + 1;
+    char* temp = new char[new_message_length];
+    if (temp == NULL) {
+      LOG(ERROR) << "new " << new_message_length << " bytes failed."
+                 << strerror(errno) << std::endl;
+      return;
+    }
+    // if enough space got, do it again
+    real_length = vsnprintf(temp, new_message_length, format, args);
+    LOG(INFO) << where << temp << std::endl;
+    delete[] temp;
+  }
+}
+
+void RawElog(const char* where, const char* format, va_list args) {
+  const int message_max_length = 1000;  // set initial message length
+  char p[message_max_length];
+
+  int real_length = vsnprintf(p, message_max_length, format, args);
+
+  if (unlikely(real_length < 0)) {  // check error code and output
+    LOG(ERROR) << "vsnprintf error. " << strerror(errno) << std::endl;
+  } else if (likely(real_length < message_max_length)) {
+    // if it worked, output the message
+    LOG(ERROR) << where << p << std::endl;
+  } else {  // try again with more space
+    int new_message_length = real_length + 1;
+    char* temp = new char[new_message_length];
+    if (temp == NULL) {
+      LOG(ERROR) << "new " << new_message_length << " bytes failed."
+                 << strerror(errno) << std::endl;
+      return;
+    }
+    // if enough space got, do it again
+    real_length = vsnprintf(temp, new_message_length, format, args);
+    LOG(ERROR) << where << temp << std::endl;
+    delete[] temp;
+  }
+}
+
+void IteratorExecutorMasterLogging::log(const char* format, ...) {
 #ifdef DEBUG_IteratorExecutorMaster
-	printf("IteratorExecutorMaster: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[IteratorExecutorMaster]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void IteratorExecutorMasterLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[IteratorExecutorMaster]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void IteratorExecutorMasterLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[IteratorExecutorMaster]: ", format, arg);
+  va_end(arg);
 }
 
-
-void IteratorExecutorSlaveLogging::log(const char* format,...){
+void IteratorExecutorSlaveLogging::log(const char* format, ...) {
 #ifdef DEBUG_IteratorExecutorSlave
-	printf("IteratorExecutorSlave: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[IteratorExecutorSlave]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void IteratorExecutorSlaveLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[IteratorExecutorSlave]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void IteratorExecutorSlaveLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[IteratorExecutorSlave]: ", format, arg);
+  va_end(arg);
 }
 
-void EnvironmentLogging::log(const char* format,...){
+void EnvironmentLogging::log(const char* format, ...) {
 #ifdef DEBUG_Environment
-	printf("Environment: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[Environment]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void EnvironmentLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[Environment]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void EnvironmentLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[Environment]: ", format, arg);
+  va_end(arg);
 }
 
-void AdaptiveEndPointLogging::log(const char* format,...){
+void AdaptiveEndPointLogging::log(const char* format, ...) {
 #ifdef DEBUG_AdaptiveEndPoint
-	printf("AdaptiveEndPoint: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[AdaptiveEndPoint]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void AdaptiveEndPointLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[AdaptiveEndPoint]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void AdaptiveEndPointLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[AdaptiveEndPoint]: ", format, arg);
+  va_end(arg);
 }
 
-void CoordinatorLogging::log(const char* format,...){
+void CoordinatorLogging::log(const char* format, ...) {
 #ifdef DEBUG_Coordinator
-	printf("Coordinator: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[Coordinator]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void CoordinatorLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[Coordinator]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void CoordinatorLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[Coordinator]: ", format, arg);
+  va_end(arg);
 }
 
-void ExchangeTrackerLogging::log(const char* format,...){
+void ExchangeTrackerLogging::log(const char* format, ...) {
 #ifdef DEBUG_ExchangeTracker
-	printf("ExchangeTracker: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ExchangeTracker]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ExchangeTrackerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ExchangeTracker]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ExchangeTrackerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ExchangeTracker]: ", format, arg);
+  va_end(arg);
 }
 
-void ExpanderTrackerLogging::log(const char* format,...){
+void ExpanderTrackerLogging::log(const char* format, ...) {
 #ifdef DEBUG_ExpanderTracker
-	printf("ExpanderTracker: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ExpanderTracker]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ExpanderTrackerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ExpanderTracker]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ExpanderTrackerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ExpanderTracker]: ", format, arg);
+  va_end(arg);
 }
 
-void ExchangeIteratorEagerLogging::log(const char* format,...){
+void ExchangeIteratorEagerLogging::log(const char* format, ...) {
 #ifdef DEBUG_ExchangeIteratorEager
-	printf("ExchangeEagerUpper: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ExchangeEagerUpper]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ExchangeIteratorEagerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ExchangeEagerUpper]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ExchangeIteratorEagerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ExchangeEagerUpper]: ", format, arg);
+  va_end(arg);
 }
 
-void ExchangeIteratorEagerLowerLogging::log(const char* format,...){
+void ExchangeIteratorEagerLowerLogging::log(const char* format, ...) {
 #ifdef DEBUG_ExchangeIteratorEager
-	printf("ExchangeEagerLower: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ExchangeEagerLower]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ExchangeIteratorEagerLowerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ExchangeEagerLower]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ExchangeIteratorEagerLowerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ExchangeEagerLower]: ", format, arg);
+  va_end(arg);
 }
 
-void ExchangeIteratorSenderMaterialized::log(const char* format,...){
+void ExchangeIteratorSenderMaterialized::log(const char* format, ...) {
 #ifdef DEBUG_ExchangeIteratorSenderMaterialized
-	printf("ExchangeEagerLowerMaterialized: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ExchangeEagerLowerMaterialized]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ExchangeIteratorSenderMaterialized::elog(const char* format,...){
-	fprintf(stderr,"Error[ExchangeEagerLowerMaterialized]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ExchangeIteratorSenderMaterialized::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ExchangeEagerLowerMaterialized]: ", format, arg);
+  va_end(arg);
 }
 
-void CatalogLogging::log(const char* format,...){
+void CatalogLogging::log(const char* format, ...) {
 #ifdef DEBUG_Catalog
-	printf("Catalog: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[Catalog]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void CatalogLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[Catalog]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void CatalogLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[Catalog]: ", format, arg);
+  va_end(arg);
 }
 
-void ResourceManagerMasterLogging::log(const char* format,...){
+void ResourceManagerMasterLogging::log(const char* format, ...) {
 #ifdef DEBUG_ResourceManagerMaster
-	printf("ResourceManagerMaster: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ResourceManagerMaster]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ResourceManagerMasterLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ResourceManagerMaster]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ResourceManagerMasterLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ResourceManagerMaster]: ", format, arg);
+  va_end(arg);
 }
 
-void ResourceManagerSlaveLogging::log(const char* format,...){
+void ResourceManagerSlaveLogging::log(const char* format, ...) {
 #ifdef DEBUG_ResourceManagerSlave
-	printf("ResourceManagerSlave: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ResourceManagerSlave]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ResourceManagerSlaveLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ResourceManagerSlave]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ResourceManagerSlaveLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ResourceManagerSlave]: ", format, arg);
+  va_end(arg);
 }
 
-void StorageManagerLogging::log(const char* format,...){
+void StorageManagerLogging::log(const char* format, ...) {
 #ifdef DEBUG_StorageManager
-	printf("StorageManager: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[StorageManager]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void StorageManagerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[StorageManager]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void StorageManagerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[StorageManager]: ", format, arg);
+  va_end(arg);
 }
-void StorageManagerMasterLogging::log(const char* format,...){
+void StorageManagerMasterLogging::log(const char* format, ...) {
 #ifdef DEBUG_StorageManager
-	printf("StorageManagerMaster: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[StorageManagerMaster]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void StorageManagerMasterLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[StorageManagerMaster]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void StorageManagerMasterLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[StorageManagerMaster]: ", format, arg);
+  va_end(arg);
 }
 
-void BufferManagerLogging::log(const char* format,...){
+void BufferManagerLogging::log(const char* format, ...) {
 #ifdef DEBUG_BufferManager
-	printf("BufferManager: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[BufferManager]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void BufferManagerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[BufferManager]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void BufferManagerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[BufferManager]: ", format, arg);
+  va_end(arg);
 }
 
-void ASTParserLogging::log(const char* format,...){
+void ASTParserLogging::log(const char* format, ...) {
 #ifdef DEBUG_ASTParser
-	printf("ASTParser: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ASTParser]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ASTParserLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ASTParser]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ASTParserLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ASTParser]: ", format, arg);
+  va_end(arg);
 }
 
-
-void ClientListenerLogging::log(const char* format,...){
+void ClientListenerLogging::log(const char* format, ...) {
 #ifdef DEBUG_ClientLinsener
-	printf("[ClientListener]: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ClientListener]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void ClientListenerLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[ClientLinster]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ClientListenerLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ClientListener]: ", format, arg);
+  va_end(arg);
 }
 
-void BlockStreamExpanderLogging::log(const char* format,...){
+void BlockStreamExpanderLogging::log(const char* format, ...) {
 #ifdef DEBUG_BlockStreamExpander
-	printf("BlockStreamExpander: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[BlockStreamExpander]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void BlockStreamExpanderLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[BlockStreamExpander]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void BlockStreamExpanderLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[BlockStreamExpander]: ", format, arg);
+  va_end(arg);
 }
-void PerformanceTopLogging::log(const char* format,...){
+void PerformanceTopLogging::log(const char* format, ...) {
 #ifdef DEBUG_PerformanceTop
-	printf("PerformanceTop: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[PerformanceTop]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void PerformanceTopLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[PerformanceTop]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void PerformanceTopLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[PerformanceTop]: ", format, arg);
+  va_end(arg);
 }
-void QueryOptimizationLogging::log(const char* format,...){
+void QueryOptimizationLogging::log(const char* format, ...) {
 #ifdef DEBUG_QueryOptimization
-	printf("QueryOptimization: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[QueryOptimization]: ", format, arg);
+  va_end(arg);
 #endif
 }
-void QueryOptimizationLogging::elog(const char* format,...){
-	fprintf(stderr,"Error[PerformanceTop]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void QueryOptimizationLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[QueryOptimization]: ", format, arg);
+  va_end(arg);
 }
 
-void BlockStreamJoinLogging::log(const char* format,...) {
+void BlockStreamJoinLogging::log(const char* format, ...) {
 #ifdef DEBUG_BlockStreamJoin
-	printf("BlockStreamJoin: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[BlockStreamJoin]: ", format, arg);
+  va_end(arg);
 #endif
 }
 
-void BlockStreamJoinLogging::elog(const char* format,...) {
-	fprintf(stderr,"Error[BlockStreamJoin]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void BlockStreamJoinLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[BlockStreamJoin]:", format, arg);
+  va_end(arg);
 }
 
-void SQLParse_log(const char* format,...) {
+void SQLParse_log(const char* format, ...) {
 #ifdef SQL_Parser
-	printf("[SQLParse_log]: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf (format, arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[SQLParse]:", format, arg);
+  va_end(arg);
 #endif
 }
 
-void SQLParse_elog(const char* format,...) {
-	printf("[SQLParse_elog]: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf (format, arg);
-	printf("\n");
-	va_end (arg);
+void SQLParse_elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[SQLParse]: ", format, arg);
+  va_end(arg);
 }
 
-void ClientLogging::log(const char* format,...) {
+void ClientLogging::log(const char* format, ...) {
 #ifdef DEBUG_Client
-	printf("Client: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	printf("\n");
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[Client]: ", format, arg);
+  va_end(arg);
 #endif
 }
 
-void ClientLogging::elog(const char* format,...) {
-	fprintf(stderr,"Error[Client]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	printf("\n");
-	va_end (arg);
+void ClientLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[Client]: ", format, arg);
+  va_end(arg);
 }
 
-
-void ThreadPoolLogging::log(const char* format,...) {
+void ThreadPoolLogging::log(const char* format, ...) {
 #ifdef DEBUG_ThreadPool
-	printf("ThreadPool: ");
-	va_list arg;
-	va_start (arg, format);
-	vprintf(format,arg);
-	va_end (arg);
+  va_list arg;
+  va_start(arg, format);
+  RawLog("[ThreadPool]: ", format, arg);
+  va_end(arg);
 #endif
 }
 
-void ThreadPoolLogging::elog(const char* format,...) {
-	fprintf(stderr,"Error[ThreadPool]: ");
-	va_list arg;
-	va_start (arg, format);
-	vfprintf(stderr,format,arg);
-	va_end (arg);
+void ThreadPoolLogging::elog(const char* format, ...) {
+  va_list arg;
+  va_start(arg, format);
+  RawElog("[ThreadPool]: ", format, arg);
+  va_end(arg);
 }

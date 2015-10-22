@@ -10,12 +10,19 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 #<boost/unordered_map.hpp>应该加什么编译选项
 AM_LDFLAGS=-lc -lm -lrt lboost_serialization -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = 	../../Catalog/libcatalog.a \
 		../../common/libcommon.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
-		${THERON_HOME}/Lib/libtherond.a
+		${THERON_HOME}/Lib/libtherond.a \
+		${BOOST_HOME}/stage/lib/libboost_serialization.so \
+		${BOOST_HOME}/stage/lib/libboost_serialization.a
 
 noinst_LIBRARIES=libtest.a
 

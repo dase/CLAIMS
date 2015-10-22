@@ -1,3 +1,4 @@
+
 **CLAIMS** is a parallel in-memory database prototype, which runs on clusters of commodity servers and provides fast data analysis on relational dataset. 
 
 ##Highlights

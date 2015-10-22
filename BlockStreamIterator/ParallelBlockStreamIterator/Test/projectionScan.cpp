@@ -115,13 +115,14 @@ static int testProjectionScan(){
 
 	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
 
-	IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
+	IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,1);
 
 	////////Run////////////
 //	sleep(1);
 //	BlockStreamBase* block=BlockStreamBase::createBlock(scan_state.schema_,64*1024-sizeof(unsigned));
 //	block->setEmpty();
 //	int c=1;
+
 //	while(c==1){
 //		unsigned tuple_count=0;
 //

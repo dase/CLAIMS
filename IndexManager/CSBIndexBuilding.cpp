@@ -178,7 +178,7 @@ bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 
-		if (chunk_reader_iterator_ == false){
+		if (chunk_reader_iterator_ == 0){
 			printf("Has been falsed!!!!!!!!!!!!!*&S*DF&(SD&F(S<><<<><><><><><>\n");
 			return false;
 		}
@@ -269,7 +269,7 @@ bool bottomLayerSorting::open(const PartitionOffset& partition_offset)
 			compare_node* c_node = (compare_node*)malloc(sizeof(compare_node));		//newmalloc
 			c_node->vector_schema_ = vector_schema_;
 			c_node->tuple_ = malloc(vector_schema_->getTupleMaxSize());		//newmalloc
-			vector_schema_->copyTuple(current_tuple+state_.schema_->getcolumn(0).get_length(),c_node->tuple_);
+			vector_schema_->copyTuple((char*)current_tuple+state_.schema_->getcolumn(0).get_length(),c_node->tuple_);
 //			c_node->tuple_ = current_tuple+state_.schema_->getcolumn(0).get_length();
 //			c_node->op_ = state_.schema_->getcolumn(1).operate->duplicateOperator();
 			c_node->op_ = op_;

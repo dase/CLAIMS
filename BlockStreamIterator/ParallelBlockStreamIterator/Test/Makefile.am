@@ -8,6 +8,11 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lpthread -lxs
 
+if OPT_TCMALLOC
+AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
+AM_LDFLAGS+=-ltcmalloc 
+endif
+
 LDADD = ../libparallelblockStreamiterator.a \
 		../../../Catalog/libcatalog.a \
 		../../../LogicalQueryPlan/liblogicalqueryplan.a \

@@ -28,6 +28,8 @@ typedef struct FuncCallInfoData
 }*FuncCallInfo;
 typedef  void (*ExecFunc)(FuncCallInfo  fcinfo);
 typedef void* (*FuncCall)(Node *qinfo,void *tuple,Schema *schema);
+typedef void (*AvgDivide)(void *sum_value,unsigned long tuple_number,void *result);
+
 enum qnodetype
 {
 	t_qnode,t_qexpr_cal,t_qexpr_cmp,t_qexpr,t_qexpr_unary,t_qexpr_ternary,t_qcolcumns,t_qexpr_func,t_qexpr_case_when,t_qexpr_in,
@@ -60,8 +62,10 @@ public:
 	QNode(){};
 	virtual ~QNode()
 	{
-		if(value!=NULL)
+		if(value!=NULL) {
 			free(value);
+			value = NULL;
+		}
 	};
 private:
 	friend class boost::serialization::access;

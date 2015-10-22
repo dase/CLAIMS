@@ -44,9 +44,26 @@ int subquery_has_column(char *colname,Node * subquery)
 		Select_expr * sexpr=(Select_expr *)slist->args;
 		if(sexpr->ascolname!=NULL)
 		{
-			if(strcmp(colname,sexpr->ascolname)==0)
+			if(strchr(colname,'.')!=NULL&&strchr(sexpr->ascolname,'.')!=NULL)
 			{
-				result++;
+				if(strcmp(strchr(colname,'.')+1,strchr(sexpr->ascolname,'.')+1)==0)//in the form like a.b
+				{
+					result++;
+				}
+			}
+			else if(strchr(colname,'.')==NULL&&strchr(sexpr->ascolname,'.')!=NULL)
+			{
+				if(strcmp(colname,strchr(sexpr->ascolname,'.')+1)==0)//in the form like a.b
+				{
+					result++;
+				}
+			}
+			else
+			{
+				if(strcmp(strchr(colname,'.')+1,sexpr->ascolname)==0)//in the form like a.b
+				{
+					result++;
+				}
 			}
 		}
 		else//TODO
@@ -145,12 +162,12 @@ int fromlist_has_astablename(char *astablename,vector<Node *>rtable,char *&table
 Node * get_copy_selectlist_from_subquery(Node *subnode,Node *&tailnode)//return the first and the last pointer
 {
 	Select_list *node,*temp;
-	node=temp=(Select_list *)newSelectList(t_select_list,0,NULL,NULL);
+	node=temp=(Select_list *)newSelectList(t_select_list,0,NULL,NULL,NULL);
 	Query_stmt* subquery=(Query_stmt *)subnode;
 	for(Node *p=subquery->select_list;p!=NULL;)//not copy all，just copy select_list
 	{
 		Select_list *slist=(Select_list *)p;
-		Node *q=newSelectList(t_select_list,slist->isall,slist->args,NULL);
+		Node *q=newSelectList(t_select_list,slist->isall,slist->args,NULL,NULL);
 		temp->next=q;
 		temp=(Select_list *)q;
 		p=slist->next;
@@ -171,9 +188,9 @@ void add_all_table_column(Select_list *selectlist,vector<Node *>rtable,Node *nex
 			vector<Attribute>columns=Environment::getInstance()->getCatalog()->getTable(table->tablename)->getAttributes();
 			for(vector<Attribute>::iterator it=columns.begin();it!=columns.end();it++)
 			{
-				Node *q=newColumn(t_name_name,table->astablename,(char*)(it->attrName).c_str(),NULL);
-					  q=newSelectExpr(t_select_expr,(char*)(it->attrName).c_str(),q);
-					  q=newSelectList(t_select_list,0,q,NULL);
+				Node *q=newColumn(t_name_name,table->astablename,(char*)(it->attrName).c_str(),NULL,NULL);
+					  q=newSelectExpr(t_select_expr,(char*)(it->attrName).c_str(),q,NULL);
+					  q=newSelectList(t_select_list,0,q,NULL,NULL);
 				selectlist->next=q;
 				selectlist=(Select_list *)q;
 			}
@@ -201,9 +218,9 @@ void add_table_column(Select_list *selectlist,Node *next,vector<Node *>rtable)//
 		vector<Attribute>columns=Environment::getInstance()->getCatalog()->getTable(tablename)->getAttributes();
 		for(vector<Attribute>::iterator it=columns.begin();it!=columns.end();it++)
 		{
-			Node *q=newColumn(t_name_name,col->parameter1,(char*)(it->attrName).c_str(),NULL);
-				  q=newSelectExpr(t_select_expr,(char*)(it->attrName).c_str(),q);
-				  q=newSelectList(t_select_list,0,q,NULL);
+			Node *q=newColumn(t_name_name,col->parameter1,(char*)(it->attrName).c_str(),NULL,NULL);
+				  q=newSelectExpr(t_select_expr,(char*)(it->attrName).c_str(),q,NULL);
+				  q=newSelectList(t_select_list,0,q,NULL,NULL);
 			selectlist->next=q;
 			selectlist=(Select_list *)q;
 		}
@@ -332,7 +349,7 @@ int selectlist_expr_analysis(Node* slnode,Query_stmt * qstmt,Node *node,vector<N
 				selectlist->isall=1;
 				return 1;
 			}
-			if(fg==1)//base_table
+			if(fg==1)//base_table, if the base_table has alias, how?
 			{
 				stringstream ss;
 				ss<<string(col->parameter1).c_str()<<"."<<string(col->parameter2).c_str();
@@ -687,14 +704,14 @@ bool fromlist_analysis(Query_stmt * &querynode,Node *qnode,vector<Node *>&rtable
 				}
 				else//using join :if two column is the same ,just keep one TODO
 				{
-					Node *tp=newExprList(t_expr_list,NULL,NULL);
+					Node *tp=newExprList(t_expr_list,NULL,NULL,NULL);
 					Node *temp=tp;
 					for(Node *p=cnode->args;p!=NULL;)
 					{
 						Columns * col=(Columns *)p;
 //						cout<<((Table *)(jnode->lnext))->astablename<<"dddddddddddddd "<<col->parameter1<<endl;
-						Node * cal=newExprCal(t_expr_cal, "CMP", NULL, 4,newColumn(t_name_name,((Table *)(jnode->lnext))->astablename, col->parameter1, NULL),newColumn(t_name_name,((Table *)(jnode->rnext))->astablename, col->parameter1, NULL));
-						Node *q=newExprList(t_expr_list,cal,NULL);
+						Node * cal=newExprCal(t_expr_cal, "CMP", NULL, 4,newColumn(t_name_name,((Table *)(jnode->lnext))->astablename, col->parameter1, NULL,NULL),newColumn(t_name_name,((Table *)(jnode->rnext))->astablename, col->parameter1, NULL,NULL),NULL);
+						Node *q=newExprList(t_expr_list,cal,NULL,NULL);
 						((Expr_list *)tp)->next=q;
 						tp=q;
 						p=col->next;
