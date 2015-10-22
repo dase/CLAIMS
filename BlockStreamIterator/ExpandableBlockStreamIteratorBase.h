@@ -83,6 +83,7 @@ protected:
 	/*
 	 * Register to all the barriers that a new thread has been registered. Accordingly, barriers
 	 * could increase the expected number of threads by 1.
+	 * Note: all iterator using barrier should call this function at the beginner of open()
 	 */
 	void RegisterExpandedThreadToAllBarriers();
 

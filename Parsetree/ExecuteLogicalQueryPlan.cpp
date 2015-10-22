@@ -42,18 +42,21 @@ using namespace std;
 const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
-
+#define SQL_Parser
 timeval start_time;	//2014-5-4---add---by Yu
-void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd = 0)
+
+void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &result_flag,string &error_msg, string &info, int fd)
 {
 	Environment::getInstance(true);
 	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
 	Catalog* catalog=Environment::getInstance()->getCatalog();
 	string tablename;
-	Node* oldnode=getparsetreeroot(sql.c_str());
+    vector<Node *>allnode;
+	struct ParseResult presult={NULL,NULL,sql.c_str(),0,&allnode};
+	Node* oldnode=getparsetreeroot(&presult,sql.c_str());
 	if(oldnode == NULL)
 	{
-		FreeAllNode();
+		FreeAllNode(presult.node_pointer);
 		error_msg="There are some errors during parsing time";
 		result_flag=false;
 		result_set = NULL;
@@ -110,7 +113,7 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 		}
 		}
 		if(result_flag==false){
-			FreeAllNode();	// -Yu 2015-3-2
+			FreeAllNode(&allnode);	// -Yu 2015-3-2
 		}
 		stmtList = (Stmt *)stmtList->next;
 	}
@@ -125,7 +128,12 @@ void ExecuteLogicalQueryPlan()
 
 	while(1)
 	{
-		Node* oldnode=getparsetreeroot();
+		//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SQL is begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
+		string tablename;
+	    vector<Node *>allnode;
+		struct ParseResult presult={NULL,NULL,NULL,0,&allnode};
+		Node* oldnode=getparsetreeroot(&presult);
+		// get parser time	//2014-5-4---add---by Yu
 		timeval finish_parser_time;
 		gettimeofday(&finish_parser_time, NULL);
 		cout<<"parser use "<<(double)(finish_parser_time.tv_usec - start_time.tv_usec)/1000+(finish_parser_time.tv_sec - start_time.tv_sec)*1000<<" ms"<<endl;
@@ -133,7 +141,7 @@ void ExecuteLogicalQueryPlan()
 		if(oldnode == NULL)	// 2014-2-24---增加node为空的判断---by余楷
 		{
 			printf("[ERROR]there are some wrong in statement! please try again!!\n");
-			FreeAllNode();	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
+			FreeAllNode(presult.node_pointer);	//释放SQL解析过程忠所有申请的内存		// 2014-3-6---增加解析错误后的处理---by余楷
 			//			printf("Continue(1) or not (others number)?\n");
 			//			scanf("%d",&count);
 			//			getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
@@ -193,7 +201,7 @@ void ExecuteLogicalQueryPlan()
 			}//end switch
 			if(result_flag==false){
 				ASTParserLogging::elog("%s", error_msg.c_str());
-				FreeAllNode();	// -Yu 2015-3-2
+				FreeAllNode(&allnode);// -Yu 2015-3-2
 			}
 			else {
 				cout<<info<<endl;
@@ -202,7 +210,7 @@ void ExecuteLogicalQueryPlan()
 			stmtList = (Stmt *)stmtList->next;
 		}
 
-		FreeAllNode();
+		FreeAllNode(&allnode);
 
 		//		SQLParse_log("SQL Complete! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 		//		printf("Continue(1) or not (0)?\n");
@@ -234,7 +242,7 @@ bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table, unsi
 
 	return has_warning;
 }
-
+/*
 bool query(const string& sql, query_result& result_set) {
 	bool ret;
 	string msg;
@@ -248,7 +256,7 @@ bool query(const string& sql, query_result& result_set) {
 	}
 	return ret;
 }
-
+*/
 bool CheckType(const column_type *col_type, Expr *expr)		// check whether the string is digit, can use strtol()
 {
 	nodetype insert_value_type = expr->type;
@@ -546,7 +554,7 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 
 //	cout<<"the first attribute Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
+//	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
 	catalog->add_table(new_table);
 	//				TableID table_id=catalog->getTable(tablename)->get_table_id();
 
@@ -1014,7 +1022,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-				physical_iterator_tree->print();
+	physical_iterator_tree->print();
 
 	physical_iterator_tree->open();
 
@@ -1141,7 +1149,7 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result
 	// split sign should be considered carefully, in case of it may be "||" or "###"
 	ASTParserLogging::log("The separator are :%c,%c, The sample is %lf, mode is %d\n",
 			column_separator[0], tuple_separator[0], new_node->sample, new_node->mode);
-	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, new_node->mode);
+	HdfsLoader *loader = new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table, (open_flag)new_node->mode);
 	loader->load(new_node->sample);
 
 	result_flag=true;

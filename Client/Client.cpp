@@ -8,6 +8,7 @@
 #include "Client.h"
 
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -16,6 +17,7 @@
 
 #include "ClientResponse.h"
 #include "../common/Logging.h"
+
 
 Client::Client() {
 	m_clientFd = -1;
@@ -69,7 +71,9 @@ Client::query_result Client::submit(std::string command, std::string& message,
 
 	int receivedBytesNum;
 	//compute the length of ClientResponse object
-	recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL );
+	if (-1 == recv(m_clientFd, buf, sizeof(int) + sizeof(int), MSG_WAITALL )) {
+	  perror("receive the length of response failed");
+	}
 	int len = *((int*) buf + 1);
 	if ((receivedBytesNum = recv(m_clientFd, buf+sizeof(int) + sizeof(int), len, MSG_WAITALL)) < 0) {
 		perror(
@@ -87,9 +91,9 @@ Client::query_result Client::submit(std::string command, std::string& message,
 			return Client::error;
 		}
 		case OK:{
-			while (response->status != END) {
+			while (response->status != ENDED) {
 				switch(response->status){
-				case SCHEMA:
+				case SCHEMASS:
 					rs.schema_=response->getSchema();
 					break;
 				case HEADER:
@@ -106,7 +110,7 @@ Client::query_result Client::submit(std::string command, std::string& message,
 			rs.query_time_=atof(response->content.c_str());
 			return Client::result;
 		}
-		case CHANGE:{
+		case CHANGEDD:{
 			message=response->content+"\n";
 			return Client::message;
 		}

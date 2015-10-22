@@ -464,9 +464,14 @@ QNode * transformqual(Node *node,LogicalOperator* child)
 		case t_intnum:
 		{
 			Expr * exprval=(Expr *)node;
-			QExpr *qexpr=new QExpr(exprval->data,t_int,exprval->data);
+			QExpr *qexpr = NULL;
+			long temp = atol(exprval->data);
+			if (temp < INT_MAX) {
+			  qexpr=new QExpr(exprval->data,t_int,exprval->data);
+			} else {
+			  qexpr=new QExpr(exprval->data, t_u_long, exprval->data);
+			}
 			return qexpr;
-
 		}break;
 		case t_approxnum:
 		{
@@ -638,6 +643,7 @@ void InitExprAtPhysicalPlan(QNode *node)
 		{
 			QExpr_binary * cmpnode=(QExpr_binary *)(node);
 			cmpnode->FuncId=Exec_cmp;
+			cmpnode->actual_type=t_boolean;//
 			InitExprAtPhysicalPlan(cmpnode->lnext);
 			InitExprAtPhysicalPlan(cmpnode->rnext);
 			cmpnode->function_call=ExectorFunction::operator_function[cmpnode->actual_type][cmpnode->op_type];

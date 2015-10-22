@@ -7,30 +7,30 @@
 
 #include "Config.h"
 #include "Debug.h"
+#include <stdlib.h>
 #include <libconfig.h++>
 #include <iosfwd>
 #include <iostream>
-#include <stdlib.h>
 #include <string>
 #include <sstream>
 using namespace std;
 //#define DEBUG_Config
 
-string gete(){
-	char *p=getenv("CLAIMS_HOME");
-	stringstream sp;
-	sp<<string(p).c_str()<<"/conf/config";
-	return sp.str();
+string gete() {
+  char *p = getenv("CLAIMS_HOME");
+  stringstream sp;
+  sp << string(p).c_str() << "/conf/config";
+  return sp.str();
 //	return "/home/imdb/config/wangli/config";
 }
-string get_default_logfile_name(){
-	char *p=getenv("CLAIMS_HOME");
-	stringstream sp;
-	sp<<string(p).c_str()<<"/log/claims.log";
-	return sp.str();
+string get_default_logfile_name() {
+  char *p = getenv("CLAIMS_HOME");
+  stringstream sp;
+  sp << string(p).c_str() << "/log/claims.log";
+  return sp.str();
 }
 std::string Config::config_file;
-Config* Config::instance_=0;
+Config* Config::instance_ = 0;
 
 /**
  * This parameter specifies the maximum degrees of parallelism
@@ -66,7 +66,6 @@ int Config::initial_degree_of_parallelism;
  */
 bool Config::pipelined_exchange;
 
-
 int Config::scan_batch;
 
 std::string Config::logfile;
@@ -82,125 +81,127 @@ bool Config::local_disk_mode;
 /* the port of the ClientListener in the master */
 int Config::client_listener_port;
 
-bool Config::enable_codegen = true ;
+bool Config::enable_codegen;
 
 std::string Config::catalog_file;
 
 Config* Config::getInstance() {
-	if(instance_==0){
-		instance_=new Config();
-	}
-	return instance_;
+  if (instance_ == 0) {
+    instance_ = new Config();
+  }
+  return instance_;
 }
 
 Config::Config() {
-	initialize();
+  initialize();
 }
 
 Config::~Config() {
-	// TODO Auto-generated destructor stub
+  // TODO Auto-generated destructor stub
 }
 
 void Config::initialize() {
+  if (config_file.empty()) config_file = gete().c_str();
 
-	if(config_file.empty())
-		config_file=gete().c_str();
+  /**
+   * open configure file, which path is specified in CONFIG.
+   */
+  cfg.readFile(config_file.c_str());
 
-	/**
-	 * open configure file, which path is specified in CONFIG.
-	 */
-	cfg.readFile(config_file.c_str());
+  /*
+   * The following lines set the search attribute name and default value for each parameter.
+   */
 
-	/*
-	 * The following lines set the search attribute name and default value for each parameter.
-	 */
+  data_dir = getString("data", "/home/claims/data/");
 
-	data_dir=getString("data","/home/claims/data/");
+  max_degree_of_parallelism = getInt("max_degree_of_parallelism", 4);
 
-	max_degree_of_parallelism=getInt("max_degree_of_parallelism",4);
+  expander_adaptivity_check_frequency = getInt(
+      "expander_adaptivity_check_frequency", 1000);
 
-	expander_adaptivity_check_frequency=getInt("expander_adaptivity_check_frequency",1000);
+  enable_expander_adaptivity = getBoolean("enable_expander_adaptivity", false);
 
-	enable_expander_adaptivity=getBoolean("enable_expander_adaptivity",false);
+  initial_degree_of_parallelism = getInt("initial_degree_of_parallelism", 1);
 
-	initial_degree_of_parallelism=getInt("initial_degree_of_parallelism",1);
+  scan_batch = getInt("scan_batch", 10);
 
-	scan_batch=getInt("scan_batch",10);
+  hdfs_master_ip = getString("hdfs_master_ip", "10.11.1.190");
 
-	hdfs_master_ip=getString("hdfs_master_ip","10.11.1.190");
+  hdfs_master_port = getInt("hdfs_master_port", 9000);
 
-	hdfs_master_port=getInt("hdfs_master_port",9000);
+  logfile = getString("log", get_default_logfile_name().c_str());
 
-	logfile=getString("log",get_default_logfile_name().c_str());
+  master = getBoolean("master", true);
 
-	master=getBoolean("master",true);
+  local_disk_mode = getBoolean("local_disk_mode", false);
 
-	local_disk_mode=getBoolean("local_disk_mode",false);
+  pipelined_exchange = getBoolean("pipelined_exchange", true);
 
-	pipelined_exchange=getBoolean("pipelined_exchange",true);
+  client_listener_port = getInt("client_listener_port", 10001);
 
-	client_listener_port=getInt("client_listener_port",10001);
+  catalog_file = getString("catalog_file", "catalogData.dat");
 
-	catalog_file=getString("catalog_file","catalogData.dat");
+  enable_codegen = getBoolean("enable_codegen", true);
 
 #ifdef DEBUG_Config
-	print_configure();
+  print_configure();
 #endif
 }
 
 std::string Config::getString(std::string attribute_name,
-		std::string default_value) {
-	std::string ret;
-	try{
-		ret=(const char*)cfg.lookup(attribute_name.c_str());
-	}
-	catch (libconfig::SettingNotFoundException &e) {
-		ret=default_value;
-	}
-	return ret;
+                              std::string default_value) {
+  std::string ret;
+  try {
+    ret = (const char*) cfg.lookup(attribute_name.c_str());
+  } catch (libconfig::SettingNotFoundException &e) {
+    ret = default_value;
+  }
+  return ret;
 }
 
 int Config::getInt(std::string attribute_name, int default_value) {
-	int ret;
-	try{
-		ret=cfg.lookup(attribute_name.c_str());
-	}
-	catch (libconfig::SettingNotFoundException &e) {
-		ret=default_value;
-	}
-	return ret;
+  int ret;
+  try {
+    ret = cfg.lookup(attribute_name.c_str());
+  } catch (libconfig::SettingNotFoundException &e) {
+    ret = default_value;
+  }
+  return ret;
 }
 
-
 bool Config::getBoolean(std::string attribute_name, bool defalut_value) {
-	bool ret;
-	try{
-		ret=((int)cfg.lookup(attribute_name.c_str()))==1;
-	}
-	catch (libconfig::SettingNotFoundException &e) {
-		ret=defalut_value;
-	}
-	return ret;
+  bool ret;
+  try {
+    ret = ((int) cfg.lookup(attribute_name.c_str())) == 1;
+  } catch (libconfig::SettingNotFoundException &e) {
+    ret = defalut_value;
+  }
+  return ret;
 }
 
 void Config::print_configure() const {
-	std::cout<<"configure file :"<<config_file<<std::endl;
-	std::cout<<"The configure is as follows."<<std::endl;
-	std::cout<<"data:"<<data_dir<<std::endl;
-	std::cout<<"max_degree_of_parallelism:"<<max_degree_of_parallelism<<std::endl;
-	std::cout<<"expander_adaptivity_check_frequency:"<<expander_adaptivity_check_frequency<<std::endl;
-	std::cout<<"enable_expander_adaptivity:"<<enable_expander_adaptivity<<std::endl;
-	std::cout<<"initial_degree_of_parallelism:"<<initial_degree_of_parallelism<<std::endl;
-	std::cout<<"hdfs master ip:"<<hdfs_master_ip<<std::endl;
-	std::cout<<"hdfs_master_port:"<<hdfs_master_port<<std::endl;
+  std::cout << "configure file :" << config_file << std::endl;
+  std::cout << "The configure is as follows." << std::endl;
+  std::cout << "data:" << data_dir << std::endl;
+  std::cout << "max_degree_of_parallelism:" << max_degree_of_parallelism
+            << std::endl;
+  std::cout << "expander_adaptivity_check_frequency:"
+            << expander_adaptivity_check_frequency << std::endl;
+  std::cout << "enable_expander_adaptivity:" << enable_expander_adaptivity
+            << std::endl;
+  std::cout << "initial_degree_of_parallelism:" << initial_degree_of_parallelism
+            << std::endl;
+  std::cout << "hdfs master ip:" << hdfs_master_ip << std::endl;
+  std::cout << "hdfs_master_port:" << hdfs_master_port << std::endl;
 
-	std::cout<<"log:"<<logfile<<std::endl;
-	std::cout<<"master:"<<master<<std::endl;
-	std::cout<<"local disk mode:"<<local_disk_mode<<std::endl;
-	std::cout<<"client_lisener_port:"<<client_listener_port<<std::endl;
-	std::cout<<"catalog_file:"<<catalog_file<<std::endl;
+  std::cout << "log:" << logfile << std::endl;
+  std::cout << "master:" << master << std::endl;
+  std::cout << "local disk mode:" << local_disk_mode << std::endl;
+  std::cout << "client_lisener_port:" << client_listener_port << std::endl;
+  std::cout << "catalog_file:" << catalog_file << std::endl;
+  std::cout << "codegen:" << enable_codegen << std::endl;
 }
 
 void Config::setConfigFile(std::string file_name) {
-	config_file=file_name;
+  config_file = file_name;
 }

@@ -23,13 +23,14 @@ using namespace std;
 #include "../../Debug.h"
 #include "../../utility/lock.h"
 #include "../../common/Schema/Schema.h"
-
+#include "../../common/Expression/queryfunc.h"
 class BlockStreamAggregationIterator:public ExpandableBlockStreamIteratorBase{
 public:
 	class State{
 		friend class BlockStreamAggregationIterator;
 	public:
 		enum aggregation{sum,min,max,count,avg};
+		enum AggNodeType{Hybrid_Agg_Global,Hybrid_Agg_Private,Not_Hybrid_Agg};
 		State(Schema *input,
 				Schema *output,
 				Schema *hashSchema,
@@ -41,14 +42,14 @@ public:
 				unsigned bucketsize,
 				unsigned block_size,
 				std::vector<unsigned>avgIndex,
-				bool isPartitionNode
+				AggNodeType agg_node_type
 		);
 		State():hashSchema(0),input(0),output(0),child(0){};
 		~State(){};
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version){
-			ar & input & output & hashSchema & child & groupByIndex & aggregationIndex & aggregations & nbuckets & bucketsize & block_size &avgIndex &isPartitionNode ;
+			ar & input & output & hashSchema & child & groupByIndex & aggregationIndex & aggregations & nbuckets & bucketsize & block_size &avgIndex & agg_node_type ;
 		}
 	public:
 		Schema *input;
@@ -62,7 +63,7 @@ public:
 		unsigned bucketsize;
 		unsigned block_size;
 		std::vector<unsigned>avgIndex;
-		bool isPartitionNode;
+		AggNodeType agg_node_type;
 	};
 	BlockStreamAggregationIterator(State state);
 	BlockStreamAggregationIterator();
