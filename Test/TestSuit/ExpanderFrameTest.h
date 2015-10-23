@@ -166,7 +166,7 @@ static int test_scan_Aggregation_small_Groups(){
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 	if(!print_test_name_result(number_of_tuples==1022,"Scan Aggregation small groups")){
@@ -209,7 +209,7 @@ static int test_scan_Aggregation_large_Groups(){
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 	if(!print_test_name_result(number_of_tuples==3966020,"Scan Aggregation large groups")){
@@ -310,7 +310,7 @@ static int test_scan_filter_Scalar_Aggregation(){
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 	ResultSet::Iterator it=result_set->createIterator();
 	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
 
@@ -370,7 +370,7 @@ static int test_no_repartition_filtered_join(){
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -423,7 +423,7 @@ static int test_complete_repartition_filtered_join(){
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -462,7 +462,7 @@ static int test_complete_repartition_scan_join(){
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -496,7 +496,7 @@ static int test_no_repartition_scan_join(){
 	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -958,7 +958,7 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	executable_query_plan->Close();
 
 //	executable_query_plan
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 	ResultSet::Iterator it=result_set->createIterator();
 	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
 
@@ -1018,7 +1018,7 @@ static int test_multiple_no_repartition_filtered_join(){
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -1073,7 +1073,7 @@ static int test_multiple_complete_repartition_filtered_join(){
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -1110,7 +1110,7 @@ static int test_multiple_complete_repartition_scan_join(){
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -1147,7 +1147,7 @@ static int test_multiple_no_repartition_scan_join(){
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 

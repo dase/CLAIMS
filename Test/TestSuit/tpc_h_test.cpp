@@ -128,7 +128,7 @@ static void query_2(){
 	while(sub_physical_iterator_tree->Next(0));
 	sub_physical_iterator_tree->Close();
 
-	ResultSet *result_set=sub_physical_iterator_tree->getResultSet();
+	ResultSet *result_set=sub_physical_iterator_tree->GetResultSet();
 
 	BlockStreamBase::BlockStreamTraverseIterator* it=result_set->createIterator().atomicNextBlock()->createIterator();
 	NValue sub_query_result=*(NValue*)it->nextTuple();

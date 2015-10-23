@@ -1029,7 +1029,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 	//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
-	result_set=physical_iterator_tree->getResultSet();
+	result_set=physical_iterator_tree->GetResultSet();
 	cout<<"execute "<<result_set->query_time_<<" s"<<endl;
 	result_flag=true;
 
