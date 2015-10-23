@@ -113,7 +113,7 @@ class PhysicalAggregation : public PhysicalOperator {
  private:
   BasicHashTable *hashtable_;
   PartitionFunction *hash_;
-  std::map<unsigned, unsigned> input_groupby_to_output_;
+  std::map<unsigned, unsigned> input_group_by_to_output_;
   std::map<unsigned, unsigned> input_aggregation_to_output_;
   std::vector<fun> global_aggregation_functions_;
   std::vector<fun> private_aggregation_functions_;

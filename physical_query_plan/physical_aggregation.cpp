@@ -29,6 +29,7 @@
  *
  */
 
+#include <glog/logging.h>
 #include "../../Debug.h"
 #include "../../utility/rdtsc.h"
 #include "../../Executor/ExpanderTracker.h"
@@ -82,18 +83,19 @@ PhysicalAggregation::State::State(
       agg_node_type_(agg_node_type) {}
 
 /**
- * while one thread start Open(), the thread will be registered to all barriers
+ * while one thread starts Open(), the thread will be registered to all barriers
  * to synchronize other threads.
  * Open() aggregate tuples from child's block in private hashtable by several
  * threads.
- * One block of data get from child operator, then loop to get every tuple,
- * firtly check it whether in this private hash table.
+ * One block of data get from child operator each time, then loop to get every
+ * tuple,
+ * firstly check it whether in this private hash table.
  * operate the prepared aggregation function to update new tuple into private
  * hash table if the tuple key exists.
  * otherwise, allocate new bucket and assign every value of column in the tuple
- * to the new bucket as the firt tuple value in the new bucket.
+ * to the new bucket as the first tuple value in the new bucket.
  * after all block from child be processed. merge private hash table into shared
- * hasd table thread by thread synchronized by the hash table lock.
+ * hash table thread by thread synchronized by the hash table lock.
  */
 bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
   RegisterExpandedThreadToAllBarriers();
@@ -104,22 +106,20 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
   }
   BarrierArrive(0);
 
-  state_.child_->Open(partition_offset);
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers();
     return true;
   }
-
+  state_.child_->Open(partition_offset);
   ticks start = curtick();
   if (TryEntryIntoSerializedSection(1)) {
     PrepareIndex();
     PrepareAggregateFunctions();
     hash_ = PartitionFunctionFactory::createGeneralModuloFunction(
         state_.num_of_buckets_);
-    hashtable_ =
-        new BasicHashTable(state_.num_of_buckets_, state_.bucket_size_,
-                           state_.hash_schema_->getTupleMaxSize());  //
+    hashtable_ = new BasicHashTable(state_.num_of_buckets_, state_.bucket_size_,
+                                    state_.hash_schema_->getTupleMaxSize());
   }
 
   start = curtick();
@@ -151,14 +151,16 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
   BasicHashTable::Iterator ht_it = hashtable_->CreateIterator();
   BasicHashTable::Iterator pht_it = private_hashtable->CreateIterator();
   unsigned long long one = 1;
-  BlockStreamBase *bsb =
+  BlockStreamBase *block_for_asking =
       BlockStreamBase::createBlock(state_.input_, state_.block_size_);
-  bsb->setEmpty();
+  block_for_asking->setEmpty();
 
   start = curtick();
 
-  while (state_.child_->Next(bsb)) {  // traverse every block from child
-    BlockStreamBase::BlockStreamTraverseIterator *bsti = bsb->createIterator();
+  while (state_.child_->Next(
+      block_for_asking)) {  // traverse every block from child
+    BlockStreamBase::BlockStreamTraverseIterator *bsti =
+        block_for_asking->createIterator();
     bsti->reset();
     while ((cur = bsti->currentTuple()) !=
            0) {  // traverse every tuple from block
@@ -169,9 +171,10 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
       bn = 0;
       if (state_.index_of_group_by_.size() > 0)
         bn = state_.input_->getcolumn(state_.index_of_group_by_[0])
-                 .operate->getPartitionValue(state_.input_->getColumnAddess(
-                                                 state_.index_of_group_by_[0], cur),
-                                             state_.num_of_buckets_);
+                 .operate->getPartitionValue(
+                     state_.input_->getColumnAddess(
+                         state_.index_of_group_by_[0], cur),
+                     state_.num_of_buckets_);
 
       private_hashtable->placeIterator(pht_it, bn);
       key_exist = false;
@@ -185,7 +188,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
           key_in_input_tuple =
               state_.input_->getColumnAddess(state_.index_of_group_by_[i], cur);
           key_in_hash_table = state_.hash_schema_->getColumnAddess(
-              input_groupby_to_output_[i], tuple_in_hashtable);
+              input_group_by_to_output_[i], tuple_in_hashtable);
           if (!state_.input_->getcolumn(state_.index_of_group_by_[i])
                    .operate->equal(key_in_input_tuple, key_in_hash_table)) {
             key_exist = false;
@@ -217,7 +220,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
         key_in_input_tuple =
             state_.input_->getColumnAddess(state_.index_of_group_by_[i], cur);
         key_in_hash_table = state_.hash_schema_->getColumnAddess(
-            input_groupby_to_output_[i], new_tuple_in_hash_table);
+            input_group_by_to_output_[i], new_tuple_in_hash_table);
         state_.input_->getcolumn(state_.index_of_group_by_[i])
             .operate->assignment(key_in_input_tuple, key_in_hash_table);
       }
@@ -241,7 +244,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
       }
       bsti->increase_cur_();
     }
-    bsb->setEmpty();
+    block_for_asking->setEmpty();
   }
 
   for (int i = 0; i < state_.num_of_buckets_; i++) {
@@ -270,7 +273,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
         for (unsigned i = 0; i < state_.index_of_group_by_.size(); i++) {
           key_in_input_tuple = state_.hash_schema_->getColumnAddess(i, cur);
           key_in_hash_table = state_.hash_schema_->getColumnAddess(
-              input_groupby_to_output_[i], tuple_in_hashtable);
+              input_group_by_to_output_[i], tuple_in_hashtable);
           if (!state_.hash_schema_->getcolumn(i)
                    .operate->equal(key_in_input_tuple, key_in_hash_table)) {
             key_exist = false;
@@ -285,8 +288,8 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
             value_in_hash_table = state_.hash_schema_->getColumnAddess(
                 input_aggregation_to_output_[i], tuple_in_hashtable);
             hashtable_->UpdateTuple(bn, value_in_hash_table,
-                                     value_in_input_tuple,
-                                     global_aggregation_functions_[i]);
+                                    value_in_input_tuple,
+                                    global_aggregation_functions_[i]);
           }
           pht_it.increase_cur_();
           hashtable_->unlockBlock(bn);
@@ -303,7 +306,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
       for (unsigned i = 0; i < state_.index_of_group_by_.size(); i++) {
         key_in_input_tuple = state_.hash_schema_->getColumnAddess(i, cur);
         key_in_hash_table = state_.hash_schema_->getColumnAddess(
-            input_groupby_to_output_[i], new_tuple_in_hash_table);
+            input_group_by_to_output_[i], new_tuple_in_hash_table);
         state_.hash_schema_->getcolumn(i)
             .operate->assignment(key_in_input_tuple, key_in_hash_table);
       }
@@ -342,7 +345,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
   }
   BarrierArrive(3);
 
-  delete bsb;
+  delete block_for_asking;
   delete private_hashtable;
   return GetReturnStatus();
 }
@@ -356,9 +359,9 @@ bool PhysicalAggregation::Next(BlockStreamBase *block) {
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(3);
-    printf(
-        "<<<<<<<<<<<<<<<<<Aggregation next detected call back "
-        "signal!>>>>>>>>>>>>>>>>>\n");
+    LOG(INFO) << "<<<<<<<<<<<<<<<<<Aggregation next detected call back "
+                 "signal!>>>>>>>>>>>>>>>>>" << std::endl;
+
     return false;
   }
   void *cur_in_ht;
@@ -380,10 +383,10 @@ bool PhysicalAggregation::Next(BlockStreamBase *block) {
                        // statement, the groupby attributes is at the head, the
                        // rest attributes belong to the aggregation part.
             key_in_hash_tuple = state_.hash_schema_->getColumnAddess(
-                input_groupby_to_output_[i], cur_in_ht);
+                input_group_by_to_output_[i], cur_in_ht);
             key_in_output_tuple = state_.output_->getColumnAddess(
-                input_groupby_to_output_[i], tuple);
-            state_.output_->getcolumn(input_groupby_to_output_[i])
+                input_group_by_to_output_[i], tuple);
+            state_.output_->getcolumn(input_group_by_to_output_[i])
                 .operate->assignment(key_in_hash_tuple, key_in_output_tuple);
           }
           state_.avg_index_.push_back(-1);  // boundary point,
@@ -449,23 +452,24 @@ bool PhysicalAggregation::Close() {
   delete hashtable_;
   global_aggregation_functions_.clear();
   input_aggregation_to_output_.clear();
-  input_groupby_to_output_.clear();
+  input_group_by_to_output_.clear();
 
   state_.child_->Close();
   return true;
 }
 void PhysicalAggregation::Print() {
-  printf("Aggregation:  %d buckets in hash table\n", state_.num_of_buckets_);
-  printf("---------------\n");
+  LOG(INFO) << "Aggregation:  " << state_.num_of_buckets_
+            << " buckets in hash table" << std::endl;
+  LOG(INFO) << "---------------" << std::endl;
   state_.child_->Print();
 }
 
 void PhysicalAggregation::PrepareIndex() {
   unsigned outputindex = 0;
   for (unsigned i = 0; i < state_.index_of_group_by_.size(); i++) {
-    input_groupby_to_output_[i] = outputindex++;  // index of group by
-                                                  // attributes from input To
-                                                  // output index
+    input_group_by_to_output_[i] = outputindex++;  // index of group by
+                                                   // attributes from input To
+                                                   // output index
   }
   for (unsigned i = 0; i < state_.aggregation_index_.size(); i++) {
     input_aggregation_to_output_[i] = outputindex++;  // index of aggregation
