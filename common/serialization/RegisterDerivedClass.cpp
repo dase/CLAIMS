@@ -15,7 +15,6 @@
 #include "../../physical_query_plan/BlockStreamExpander.h"
 #include "../../physical_query_plan/BlockStreamInIterator.h"
 #include "../../physical_query_plan/BlockStreamJoinIterator.h"
-#include "../../physical_query_plan/BlockStreamNestLoopJoinIterator.h"
 #include "../../physical_query_plan/BlockStreamPrint.h"
 #include "../../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
 #include "../../physical_query_plan/BlockStreamProjectIterator.h"
@@ -30,6 +29,7 @@
 #include "../../physical_query_plan/ExpandableBlockStreamRandomMemAccess.h"
 #include "../../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
 #include "../../physical_query_plan/ExpandableBlockStreamSingleColumnScanDisk.h"
+#include "../../physical_query_plan/physical_nestloop_join.h"
 #include "../../physical_query_plan/physical_operator.h"
 #pragma auto_inline
 template<class Archive>
@@ -49,7 +49,7 @@ void Register_Block_Stream_Iterator(Archive & ar){
 	ar.register_type(static_cast<BlockStreamPerformanceMonitorTop*>(NULL));
 	ar.register_type(static_cast<BlockStreamPrint*>(NULL));
 	ar.register_type(static_cast<BlockStreamAggregationIterator*>(NULL));
-	ar.register_type(static_cast<BlockStreamNestLoopJoinIterator*>(NULL));
+	ar.register_type(static_cast<PhysicalNestloopJoin*>(NULL));
 	ar.register_type(static_cast<BlockStreamSortIterator*>(NULL));
 	ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
 	ar.register_type(static_cast<BlockStreamLimit*>(NULL));
