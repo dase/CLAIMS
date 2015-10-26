@@ -33,6 +33,7 @@
 #include "../physical_query_plan/physical_operator.h"
 #include "../../Debug.h"
 #include "../../Executor/ExpanderTracker.h"
+
 // namespace claims {
 // namespace physical_query_plan {
 class PhysicalNestloopJoin : public PhysicalOperator {
@@ -129,6 +130,7 @@ class PhysicalNestloopJoin : public PhysicalOperator {
     ar &boost::serialization::base_object<PhysicalOperator>(*this) & state_;
   }
 };
+
 //} /* namespace physical_query_plan */
 //} /* namespace claims */
 #endif /* PHYSICAL_QUERY_PLAN_PHYSICAL_NESTLOOP_JOIN_H__ */

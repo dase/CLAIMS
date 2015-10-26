@@ -71,8 +71,6 @@ PhysicalNestloopJoin::State::State(BlockStreamIteratorBase *child_left,
 
 bool PhysicalNestloopJoin::Open(const PartitionOffset &partition_offset) {
   RegisterExpandedThreadToAllBarriers();
-  //	AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(state_.input_schema_left,state_.block_size_));
-  //	AtomicPushFreeBlockStream(BlockStreamBase::createBlock(state_.input_schema_right,state_.block_size_));
   unsigned long long int timer;
   bool winning_thread = false;
   if (TryEntryIntoSerializedSection(0)) {  // the first thread of all need to do
@@ -209,5 +207,6 @@ void PhysicalNestloopJoin::Print() {
   printf("------Join Right-------\n");
   state_.child_right_->Print();
 }
+
 //} /* namespace physical_query_plan */
 //} /* namespace claims  */
