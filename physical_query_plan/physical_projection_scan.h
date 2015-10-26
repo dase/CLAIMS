@@ -120,13 +120,10 @@ class PhysicalProjectionScan : public PhysicalOperator {
   PhysicalProjectionScan();
   virtual ~PhysicalProjectionScan();
   /**
-   * .
-   */
-  bool Open(const PartitionOffset& partition_offset = 0);
-  /**
    * @brief Method description: Initialize the operator and get the initial
    * position of chunk read iterator.
    */
+  bool Open(const PartitionOffset& partition_offset = 0);
 
   /**
    * @brief: fetch block from child operator.
