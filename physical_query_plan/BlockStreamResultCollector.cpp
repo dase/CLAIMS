@@ -49,8 +49,8 @@ BlockStreamResultCollector::BlockStreamResultCollector(State state)
   sema_input_complete_.set_value(0);
 }
 BlockStreamResultCollector::~BlockStreamResultCollector() {
-  delete state_.input_;
-  delete state_.child_;
+  if (NULL != state_.input_) delete state_.input_;
+  if (NULL != state_.child_) delete state_.child_;
 }
 BlockStreamResultCollector::State::State()
     : input_(0), child_(0), block_size_(0), partition_offset_(0) {}
@@ -134,7 +134,7 @@ void* BlockStreamResultCollector::worker(void* arg) {
   BlockStreamResultCollector* Pthis = (BlockStreamResultCollector*)arg;
   Pthis->state_.child_->Open(Pthis->state_.partition_offset_);
   BlockStreamBase* block_for_asking;
-  if (Pthis->CreateBlockStream(block_for_asking) == false) {
+  if (false == Pthis->CreateBlockStream(block_for_asking)) {
     assert(false);
     return 0;
   }
@@ -145,7 +145,7 @@ void* BlockStreamResultCollector::worker(void* arg) {
 
   while (Pthis->state_.child_->Next(block_for_asking)) {
     Pthis->block_buffer_->atomicAppendNewBlock(block_for_asking);
-    if (Pthis->CreateBlockStream(block_for_asking) == false) {
+    if (false == Pthis->CreateBlockStream(block_for_asking)) {
       assert(false);
       return 0;
     }
