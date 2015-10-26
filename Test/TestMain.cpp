@@ -70,7 +70,7 @@
 #include "../Parsetree/Test/execute_sql_test.cpp"
 #include <stdio.h>
 #include <string>
-#include "../sql_parser/parser/parser.h"
+#include "../sql_parser/Test/test_new_sql.cpp"
 int MainDebug(int argc, char** argv) {
   //	return testGenerateIteratorTree();
   //	return iterator_test();

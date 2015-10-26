@@ -36,9 +36,11 @@
 
 #ifndef SQL_PARSER_AST_NODE_AST_EXPR_NODE_H_
 #define SQL_PARSER_AST_NODE_AST_EXPR_NODE_H_
+#include <set>
 #include <string>
 #include "../ast_node/ast_node.h"
 using std::string;
+using std::set;
 /**
  * @brief The AST of const expression.
  * @details AstExprConst mainly includes expression type and type name.
@@ -49,7 +51,9 @@ class AstExprConst : public AstNode {
   ~AstExprConst();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   string expr_type_;
   string data_;
 };
@@ -64,10 +68,11 @@ class AstExprUnary : public AstNode {
   ~AstExprUnary();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstNode* arg0_;
   string expr_type_;
-  string expr_str_;
 };
 /**
  * @brief The AST of expression function.
@@ -79,12 +84,14 @@ class AstExprFunc : public AstNode {
   ~AstExprFunc();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
 
   AstNode* arg0_;
   AstNode* arg1_;
   AstNode* arg2_;
   string expr_type_;
-  string expr_str_;
 };
 /**
  * @brief The AST of binary calculation expression.
@@ -96,11 +103,12 @@ class AstExprCalBinary : public AstNode {
   ~AstExprCalBinary();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
-  string expr_str_;
 };
 /**
  * @brief The AST of binary compare expression.
@@ -115,11 +123,13 @@ class AstExprCmpBinary : public AstNode {
   ~AstExprCmpBinary();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
-  string expr_str_;
+
   string cmp_para_;  //  "ALL","ANY","SOME","NULL","SUBQUERY"
 };
 /**
@@ -131,7 +141,9 @@ class AstExprList : public AstNode {
   ~AstExprList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstNode* expr_;
   AstNode* next_;
 };

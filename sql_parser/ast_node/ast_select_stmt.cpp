@@ -31,9 +31,12 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
+
 #include "../../Environment.h"
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/table.h"
+#include "../ast_node/ast_node.h"
 
 using std::bitset;
 using std::endl;
@@ -47,7 +50,11 @@ using std::multimap;
 using std::vector;
 AstSelectList::AstSelectList(AstNodeType ast_node_type, bool is_all,
                              AstNode* args, AstNode* next)
-    : AstNode(ast_node_type), is_all_(is_all), args_(args), next_(next) {}
+    : AstNode(ast_node_type), is_all_(is_all), args_(args), next_(next) {
+  if (is_all) {
+    args_ = new AstColumn(AST_COLUMN_ALL_ALL, "*", "*", "*.*");
+  }
+}
 
 AstSelectList::~AstSelectList() {
   delete args_;
@@ -70,6 +77,7 @@ void AstSelectList::Print(int level) const {
   }
 }
 ErrorNo AstSelectList::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  sem_cnxt->clause_type_ = SemanticContext::kSelectClause;
   ErrorNo ret = eOK;
   if (NULL != args_) {
     ret = args_->SemanticAnalisys(sem_cnxt);
@@ -77,12 +85,38 @@ ErrorNo AstSelectList::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return ret;
     }
   }
+  if (is_all_) {
+    ret = sem_cnxt->AddSelectAttrs(args_);  // collect select expr node
+    return eOK;
+  }
   if (NULL != next_) {
     ret = next_->SemanticAnalisys(sem_cnxt);
     return ret;
   }
+  sem_cnxt->clause_type_ = SemanticContext::kNone;
   return eOK;
 }
+void AstSelectList::RecoverExprName(string& name) {
+  if (NULL != args_) {
+    args_->RecoverExprName(name);
+  }
+  if (NULL != next_) {
+    next_->RecoverExprName(name);
+  }
+  return;
+}
+void AstSelectList::ReplaceAggregation(AstNode*& agg_column,
+                                       set<AstNode*>& agg_node,
+                                       bool is_select) {
+  if (NULL != args_) {
+    args_->ReplaceAggregation(agg_column, agg_node, true);
+  }
+  if (NULL != next_) {
+    next_->ReplaceAggregation(agg_column, agg_node, true);
+  }
+  return;
+}
+
 AstSelectExpr::AstSelectExpr(AstNodeType ast_node_type, std::string expr_alias,
                              AstNode* expr)
     : AstNode(ast_node_type), expr_alias_(expr_alias), expr_(expr) {}
@@ -98,6 +132,8 @@ void AstSelectExpr::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "expr alias: " << expr_alias_ << endl;
 }
+// there is no need to eliminate alias conflict in top select, but in sub query,
+// the alias conflict will be checked by Ast.
 ErrorNo AstSelectExpr::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
   if (NULL != expr_) {
@@ -105,18 +141,35 @@ ErrorNo AstSelectExpr::SemanticAnalisys(SemanticContext* sem_cnxt) {
     if (eOK != ret) {
       return ret;
     }
-  }
-  if (expr_alias_.compare("NULL") == 0) {
-    expr_alias_ = "temp";
-  }
-  string str_temp = "NULL";
-  ret = sem_cnxt->IsColumnExist(str_temp, expr_alias_);
-  if (eOK == ret) {
-    LOG(ERROR) << "select column alias " << expr_alias_ << " is ambiguous!"
-               << endl;
-    return eColumnAliasIsAmbiguous;
+    expr_->expr_str_ = expr_alias_;
+    ret = sem_cnxt->AddSelectAttrs(expr_);  // collect select expr node
+    if (eOK != ret) {
+      return ret;
+    }
   }
   return eOK;
+}
+void AstSelectExpr::RecoverExprName(string& name) {
+  string expr_name = "";
+  if (NULL != expr_) {
+    expr_->RecoverExprName(expr_name);
+  }
+  if (expr_alias_ == "NULL") {
+    expr_alias_ = expr_name;
+  }
+  return;
+}
+void AstSelectExpr::ReplaceAggregation(AstNode*& agg_column,
+                                       set<AstNode*>& agg_node,
+                                       bool is_select) {
+  if (NULL != expr_) {
+    agg_column = NULL;
+    expr_->ReplaceAggregation(agg_column, agg_node, true);
+    if (NULL != agg_column) {
+      expr_ = agg_column;
+    }
+    agg_column = NULL;
+  }
 }
 
 AstFromList::AstFromList(AstNodeType ast_node_type, AstNode* args,
@@ -139,6 +192,7 @@ void AstFromList::Print(int level) const {
   }
 }
 ErrorNo AstFromList::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  sem_cnxt->clause_type_ = SemanticContext::kFromClause;
   ErrorNo ret = eOK;
   if (NULL != args_) {
     ret = args_->SemanticAnalisys(sem_cnxt);
@@ -150,6 +204,7 @@ ErrorNo AstFromList::SemanticAnalisys(SemanticContext* sem_cnxt) {
     ret = next_->SemanticAnalisys(sem_cnxt);
     return ret;
   }
+  sem_cnxt->clause_type_ = SemanticContext::kNone;
   return eOK;
 }
 AstTable::AstTable(AstNodeType ast_node_type, string db_name, string table_name,
@@ -180,7 +235,7 @@ ErrorNo AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
     LOG(ERROR) << "table: " << table_name_ << " dosen't exist!" << endl;
     return eTableNotExist;
   }
-  if (table_alias_.compare("NULL") == 0) {
+  if (table_alias_ == "NULL") {
     table_alias_ = table_name_;
   }
   sem_cnxt->AddTable(table_alias_);
@@ -214,22 +269,30 @@ void AstSubquery::Print(int level) const {
 }
 ErrorNo AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   SemanticContext sub_sem_cnxt;
-  // subquery_alias_ == existed_table?
-  if (NULL !=
-      Environment::getInstance()->getCatalog()->getTable(subquery_alias_)) {
-    LOG(ERROR) << "subquery's alias couldn't equal to table that's exist in DB"
-               << endl;
-    return eTableAliasEqualExistedTable;
-  }
+  //  // subquery_alias_ == existed_table?
+  //  if (NULL !=
+  //      Environment::getInstance()->getCatalog()->getTable(subquery_alias_)) {
+  //    LOG(ERROR) << "subquery's alias couldn't equal to table that's exist in
+  //    DB"
+  //               << endl;
+  //    return eTableAliasEqualExistedTable;
+  //  }
+
   // subquery_ is OK?
   ErrorNo ret = subquery_->SemanticAnalisys(&sub_sem_cnxt);
   if (eOK != ret) {
     return ret;
   }
-  // subquery_alias == lower alias?
-  ret = sub_sem_cnxt.IsTableExist(subquery_alias_);
-  if (eOK == ret) {
-    return eTableAliasEqualLowerAlias;
+  //  // subquery_alias in tables that occur in subquery?
+  //  ret = sub_sem_cnxt.IsTableExist(subquery_alias_);
+  //  if (eOK == ret) {
+  //    return eTableAliasEqualLowerAlias;
+  //  }
+
+  // add this sub query alias into upper query's table list
+  ret = sem_cnxt->AddTable(subquery_alias_);
+  if (eOK != ret) {
+    return ret;
   }
 
   multimap<string, string> column_to_table;
@@ -237,6 +300,7 @@ ErrorNo AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (eOK != ret) {
     return ret;
   }
+
   return sem_cnxt->AddTableColumn(column_to_table);
 }
 
@@ -321,25 +385,30 @@ void AstJoin::Print(int level) const {
 }
 ErrorNo AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
+  SemanticContext join_sem_cnxt;
   if (NULL != left_table_) {
-    ret = left_table_->SemanticAnalisys(sem_cnxt);
+    ret = left_table_->SemanticAnalisys(&join_sem_cnxt);
     if (eOK != ret) {
       return ret;
     }
   }
   if (NULL != right_table_) {
-    ret = right_table_->SemanticAnalisys(sem_cnxt);
+    ret = right_table_->SemanticAnalisys(&join_sem_cnxt);
     if (eOK != ret) {
       return ret;
     }
   }
   if (NULL != join_condition_) {
-    ret = join_condition_->SemanticAnalisys(sem_cnxt);
+    ret = join_condition_->SemanticAnalisys(&join_sem_cnxt);
     if (eOK != ret) {
       return ret;
     }
   }
-  return eOK;
+  ret = sem_cnxt->AddTable(join_sem_cnxt.get_tables());
+
+  ret = sem_cnxt->AddTableColumn(join_sem_cnxt.get_column_to_table());
+  //  join_sem_cnxt.~SemanticContext();
+  return ret;
 }
 
 AstWhereClause::AstWhereClause(AstNodeType ast_node_type, AstNode* expr)
@@ -354,7 +423,11 @@ void AstWhereClause::Print(int level) const {
 }
 ErrorNo AstWhereClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL != expr_) {
-    return expr_->SemanticAnalisys(sem_cnxt);
+    sem_cnxt->clause_type_ = SemanticContext::kWhereClause;
+    ErrorNo ret = eOK;
+    ret = expr_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) return ret;
+    sem_cnxt->clause_type_ = SemanticContext::kNone;
   }
   return eOK;
 }
@@ -370,8 +443,10 @@ AstGroupByList::~AstGroupByList() {
 
 void AstGroupByList::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
-       << "|groupby list| " << endl;
-  if (expr_ != NULL) expr_->Print(level + 1);
+       << "|groupby list| " << expr_str_ << endl;
+  if (expr_ != NULL) {
+    expr_->Print(level + 1);
+  }
   if (next_ != NULL) {
     next_->Print(level);
   }
@@ -379,10 +454,17 @@ void AstGroupByList::Print(int level) const {
 ErrorNo AstGroupByList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
   if (NULL != expr_) {
+    // to limit that don't support expression in group by
+    //    // don't support expression in group by list
+    //    if (AST_COLUMN != expr_->ast_node_type()) {
+    //      LOG(ERROR) << "group by list should be single column!" << endl;
+    //      return eGroupByNotSupportColumn;
+    //    }
     ret = expr_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
       return ret;
     }
+    sem_cnxt->AddGroupByAttrs(expr_);  // collect group by expr node
   }
   if (NULL != next_) {
     ret = next_->SemanticAnalisys(sem_cnxt);
@@ -392,7 +474,14 @@ ErrorNo AstGroupByList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   return eOK;
 }
-
+void AstGroupByList::RecoverExprName(string& name) {
+  if (NULL != expr_) {
+    expr_->RecoverExprName(name);
+  }
+  if (NULL != next_) {
+    next_->RecoverExprName(name);
+  }
+}
 AstGroupByClause::AstGroupByClause(AstNodeType ast_node_type,
                                    AstNode* groupby_list, bool with_roolup)
     : AstNode(ast_node_type),
@@ -408,10 +497,22 @@ void AstGroupByClause::Print(int level) const {
   groupby_list_->Print(level + 1);
 }
 ErrorNo AstGroupByClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  ErrorNo ret = eOK;
   if (NULL != groupby_list_) {
-    return groupby_list_->SemanticAnalisys(sem_cnxt);
+    sem_cnxt->clause_type_ = SemanticContext::kGroupByClause;
+    ret = groupby_list_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+    sem_cnxt->clause_type_ = SemanticContext::kNone;
+    return eOK;
   }
-  return eOK;
+  return eGroupbyListIsNULL;
+}
+void AstGroupByClause::RecoverExprName(string& name) {
+  if (NULL != groupby_list_) {
+    groupby_list_->RecoverExprName(name);
+  }
 }
 
 AstOrderByList::AstOrderByList(AstNodeType ast_node_type, AstNode* expr,
@@ -452,6 +553,30 @@ ErrorNo AstOrderByList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   return eOK;
 }
+void AstOrderByList::RecoverExprName(string& name) {
+  if (NULL != expr_) {
+    expr_->RecoverExprName(name);
+  }
+  if (NULL != next_) {
+    next_->RecoverExprName(name);
+  }
+}
+void AstOrderByList::ReplaceAggregation(AstNode*& agg_column,
+                                        set<AstNode*>& agg_node,
+                                        bool is_select) {
+  if (NULL != expr_) {
+    agg_column = NULL;
+    expr_->ReplaceAggregation(agg_column, agg_node, is_select);
+    if (NULL != agg_column) {
+      delete expr_;
+      expr_ = agg_column;
+    }
+    agg_column = NULL;
+  }
+  if (NULL != next_) {
+    next_->ReplaceAggregation(agg_column, agg_node, is_select);
+  }
+}
 
 AstOrderByClause::AstOrderByClause(AstNodeType ast_node_type,
                                    AstNode* orderby_list)
@@ -469,11 +594,29 @@ void AstOrderByClause::Print(int level) const {
 }
 ErrorNo AstOrderByClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL != orderby_list_) {
-    return orderby_list_->SemanticAnalisys(sem_cnxt);
+    sem_cnxt->clause_type_ = SemanticContext::kOrderByClause;
+    ErrorNo ret = eOK;
+    ret = orderby_list_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+    sem_cnxt->clause_type_ = SemanticContext::kNone;
+    return eOK;
   }
   return eOK;
 }
-
+void AstOrderByClause::RecoverExprName(string& name) {
+  if (NULL != orderby_list_) {
+    orderby_list_->RecoverExprName(name);
+  }
+}
+void AstOrderByClause::ReplaceAggregation(AstNode*& agg_column,
+                                          set<AstNode*>& agg_node,
+                                          bool is_select) {
+  if (NULL != orderby_list_) {
+    orderby_list_->ReplaceAggregation(agg_column, agg_node, is_select);
+  }
+}
 AstHavingClause::AstHavingClause(AstNodeType ast_node_type, AstNode* expr)
     : AstNode(ast_node_type), expr_(expr) {}
 
@@ -486,11 +629,28 @@ void AstHavingClause::Print(int level) const {
 }
 ErrorNo AstHavingClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL != expr_) {
-    return expr_->SemanticAnalisys(sem_cnxt);
+    sem_cnxt->clause_type_ = SemanticContext::kHavingClause;
+    ErrorNo ret = eOK;
+    ret = expr_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      return ret;
+    }
+    sem_cnxt->clause_type_ = SemanticContext::kNone;
   }
   return eOK;
 }
-
+void AstHavingClause::RecoverExprName(string& name) {
+  if (NULL != expr_) {
+    expr_->RecoverExprName(name);
+  }
+}
+void AstHavingClause::ReplaceAggregation(AstNode*& agg_column,
+                                         set<AstNode*>& agg_node,
+                                         bool is_select) {
+  if (NULL != expr_) {
+    expr_->ReplaceAggregation(agg_column, agg_node, is_select);
+  }
+}
 AstLimitClause::AstLimitClause(AstNodeType ast_node_type, AstNode* offset,
                                AstNode* row_count)
     : AstNode(ast_node_type), offset_(offset), row_count_(row_count) {}
@@ -531,6 +691,14 @@ AstColumn::AstColumn(AstNodeType ast_node_type, std::string relation_name,
       relation_name_(relation_name),
       column_name_(column_name),
       next_(NULL) {}
+AstColumn::AstColumn(AstNodeType ast_node_type, std::string relation_name,
+                     std::string column_name, string expr_str)
+    : AstNode(ast_node_type),
+      relation_name_(relation_name),
+      column_name_(column_name),
+      next_(NULL) {
+  expr_str_ = expr_str;
+}
 
 AstColumn::AstColumn(AstNodeType ast_node_type, std::string relation_name,
                      std::string column_name, AstNode* next)
@@ -543,7 +711,7 @@ AstColumn::~AstColumn() { delete next_; }
 
 void AstColumn::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
-       << "|column| " << endl;
+       << "|column| " << expr_str_ << endl;
   cout << setw((level + 1) * TAB_SIZE) << " "
        << "relation name: " << relation_name_ << endl;
   cout << setw((level + 1) * TAB_SIZE) << " "
@@ -555,13 +723,52 @@ void AstColumn::Print(int level) const {
   level++;
 }
 ErrorNo AstColumn::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = sem_cnxt->IsColumnExist(relation_name_, column_name_);
+  ErrorNo ret = eOK;
+  if (AST_COLUMN_ALL_ALL == ast_node_type_) {
+    if (SemanticContext::kSelectClause == sem_cnxt->clause_type_) {
+      return eOK;
+    } else {
+      return eColumnAllShouldNotInOtherClause;
+    }
+  }
+  if (AST_COLUMN_ALL == ast_node_type_) {
+    if (SemanticContext::kSelectClause == sem_cnxt->clause_type_) {
+      ret = sem_cnxt->IsTableExist(relation_name_);
+      if (eOK != ret) {
+        return eTableNotExistInTableColumnALL;
+      }
+    } else {
+      return eColumnAllShouldNotInOtherClause;
+    }
+    return eOK;
+  }
+  ret = sem_cnxt->IsColumnExist(relation_name_, column_name_);
   if (eOK != ret) {
     LOG(ERROR) << "There are errors in ( " << relation_name_ << " , "
                << column_name_ << " )" << endl;
     return ret;
   }
+  if (NULL != next_) {
+    return next_->SemanticAnalisys(sem_cnxt);
+  }
   return eOK;
+}
+void AstColumn::RecoverExprName(string& name) {
+  string next_name = "";
+  if (NULL != next_) {
+    next_->RecoverExprName(next_name);
+  }
+  if (relation_name_ != "NULL") {
+    expr_str_ = relation_name_ + "." + column_name_;
+  } else {
+    expr_str_ = column_name_;
+  }
+  if (NULL != next_) {
+    name = expr_str_ + " , " + next_name;
+  } else {
+    name = expr_str_;
+  }
+  return;
 }
 
 AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
@@ -599,62 +806,140 @@ void AstSelectStmt::Print(int level) const {
   if (from_list_ != NULL) from_list_->Print(level);
   if (where_clause_ != NULL) where_clause_->Print(level);
   if (groupby_clause_ != NULL) groupby_clause_->Print(level);
-  if (orderby_clause_ != NULL) orderby_clause_->Print(level);
   if (having_clause_ != NULL) having_clause_->Print(level);
+  if (orderby_clause_ != NULL) orderby_clause_->Print(level);
   if (limit_clause_ != NULL) limit_clause_->Print(level);
   if (select_into_clause_ != NULL) select_into_clause_->Print(level);
   cout << "------------select ast print over!------------------" << endl;
 }
+/**
+ *  NOTE: the physical execution may be divide into 2 step_
+ *  from-> where-> groupby-> select_aggregation->
+ *  having->orderby-> limit-> select_expression
+ */
 
 ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  SemanticContext sem;
-  sem_cnxt = &sem;
+  if (NULL == sem_cnxt) {
+    SemanticContext sem;
+    sem_cnxt = &sem;
+  }
   ErrorNo ret = eOK;
+  // check whether table exist or table alias conflict
   if (NULL != from_list_) {
     ret = from_list_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
+      LOG(ERROR) << "from clause has error" << endl;
       return ret;
     }
   } else {
-    return eFromClauseIsNULL;
+    LOG(WARNING) << "from clause is NULL" << endl;
   }
+  // check whether column exist
+  // TODO(FZH) check every functions
   if (NULL != where_clause_) {
     ret = where_clause_->SemanticAnalisys(sem_cnxt);
+
     if (eOK != ret) {
+      LOG(ERROR) << "where clause has error" << endl;
       return ret;
     }
   }
+  // aggregation couldn't in group by clause
+  // collect all group by attributes to rebuild schema
   if (NULL != groupby_clause_) {
+    string name = "";
+    groupby_clause_->RecoverExprName(name);
     ret = groupby_clause_->SemanticAnalisys(sem_cnxt);
+
     if (eOK != ret) {
+      LOG(ERROR) << "groupby clause has error" << endl;
       return ret;
     }
+    groupby_attrs_ = sem_cnxt->get_groupby_attrs();
   }
-  if (NULL != having_clause_) {
-    ret = having_clause_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
-      return ret;
-    }
-  }
+
+  sem_cnxt->PrintContext();
+  // first recover select attr name
+  // collect all aggregation functions
+  agg_attrs_.clear();
   if (NULL != select_list_) {
+    string name = "";
+    select_list_->RecoverExprName(name);
+
     ret = select_list_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
+      LOG(ERROR) << "select list has error" << endl;
       return ret;
     }
+
+    AstNode* agg_column = NULL;
+    select_list_->ReplaceAggregation(agg_column, agg_attrs_, true);
+    if (agg_attrs_.size() > 0) {
+      sem_cnxt->RemoveMore(agg_attrs_);
+    }
   } else {
+    LOG(ERROR) << "select list is NULL" << endl;
     return eSelectClauseIsNULL;
   }
+  // rebuild schema result from aggregation
+  have_aggeragion = (NULL != groupby_clause_ || agg_attrs_.size() > 0);
+  if (have_aggeragion) {
+    ErrorNo ret = sem_cnxt->RebuildTableColumn(agg_attrs_);
+    if (eOK != ret) {
+      LOG(ERROR) << "there are confiction in new schema after agg!" << endl;
+      return ret;
+    }
+    sem_cnxt->PrintContext();
+
+    // check whether other column except from aggregation funcs and groupby
+    // expressions in select expressions
+    ret = select_list_->SemanticAnalisys(sem_cnxt);
+
+    if (eOK != ret) {
+      return eAggSelectExprHaveOtherColumn;
+    }
+  }
+  // having clause exist only if have aggregation
+  if (NULL != having_clause_) {
+    if (!have_aggeragion) {
+      return eHavingNotAgg;
+    }
+    string name = "";
+    having_clause_->RecoverExprName(name);
+
+    AstNode* agg_column = NULL;
+    set<AstNode*> agg_node_having;
+    having_clause_->ReplaceAggregation(agg_column, agg_node_having, false);
+
+    ret = having_clause_->SemanticAnalisys(sem_cnxt);
+    if (eOK != ret) {
+      LOG(ERROR) << "having clause has error" << endl;
+      return ret;
+    }
+  }
   if (NULL != orderby_clause_) {
+    ErrorNo ret = eOK;
+    string name = "";
+    orderby_clause_->RecoverExprName(name);
+
+    AstNode* agg_column = NULL;
+    set<AstNode*> agg_node_orderby;
+    orderby_clause_->ReplaceAggregation(agg_column, agg_node_orderby, false);
+
     ret = orderby_clause_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
+      LOG(ERROR) << "orderby clause has error" << endl;
       return ret;
     }
   }
   if (NULL != limit_clause_) {
     ret = limit_clause_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
+      LOG(ERROR) << "limit clause has error" << endl;
       return ret;
     }
   }
+  sem_cnxt->RebuildTableColumn();
+  sem_cnxt->PrintContext();
   return ret;
 }

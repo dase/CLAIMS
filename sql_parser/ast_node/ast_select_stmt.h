@@ -24,6 +24,7 @@
 
 #ifndef SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_
 #define SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_
+#include <set>
 #include <string>
 
 #include "./ast_node.h"
@@ -39,7 +40,9 @@ class AstSelectList : public AstNode {
   ~AstSelectList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   bool is_all_;
   AstNode* args_;
   AstNode* next_;
@@ -53,7 +56,9 @@ class AstSelectExpr : public AstNode {
   ~AstSelectExpr();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   string expr_alias_;
   AstNode* expr_;
 };
@@ -154,7 +159,10 @@ class AstGroupByList : public AstNode {
   AstGroupByList(AstNodeType ast_node_type, AstNode* expr, AstNode* next);
   ~AstGroupByList();
   void Print(int level = 0) const;
+  // TODO(FZH) need to support expression and be sure group attributes are
+  // different from each other
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void RecoverExprName(string& name);
 
   AstNode* expr_;
   AstNode* next_;
@@ -169,6 +177,8 @@ class AstGroupByClause : public AstNode {
   ~AstGroupByClause();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void RecoverExprName(string& name);
+
   AstGroupByList* groupby_list_;
   bool with_roolup_;
 };
@@ -182,7 +192,9 @@ class AstOrderByList : public AstNode {
   ~AstOrderByList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstNode* expr_;
   string orderby_type_;
   AstNode* next_;
@@ -196,7 +208,9 @@ class AstOrderByClause : public AstNode {
   ~AstOrderByClause();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstOrderByList* orderby_list_;
 };
 /**
@@ -208,7 +222,9 @@ class AstHavingClause : public AstNode {
   ~AstHavingClause();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void RecoverExprName(string& name);
+  void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                          bool is_select);
   AstNode* expr_;
 };
 /**
@@ -242,10 +258,13 @@ class AstColumn : public AstNode {
   AstColumn(AstNodeType ast_node_type, string relation_name,
             string column_name);
   AstColumn(AstNodeType ast_node_type, string relation_name, string column_name,
+            string expr_str);
+  AstColumn(AstNodeType ast_node_type, string relation_name, string column_name,
             AstNode* next);
   ~AstColumn();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void RecoverExprName(string& name);
 
   string relation_name_;
   string column_name_;
@@ -254,8 +273,7 @@ class AstColumn : public AstNode {
 /**
  * @brief The AST of select statement.
  * @details AstSelectStmt is the beginning of a SQL AST. So it has pointers to
- * all
- * other clauses.
+ * all other clauses.
  */
 class AstSelectStmt : public AstNode {
  public:
@@ -282,6 +300,10 @@ class AstSelectStmt : public AstNode {
   AstNode* orderby_clause_;
   AstNode* limit_clause_;
   AstNode* select_into_clause_;
+  set<AstNode*> groupby_attrs_;
+  set<AstNode*> agg_attrs_;
+
+  bool have_aggeragion;
 };
 
 #endif  //  SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_

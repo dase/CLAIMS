@@ -31,7 +31,6 @@
 #include <vector>
 #include <utility>
 using std::pair;
-using std::set;
 using std::map;
 using std::multimap;
 using std::string;
@@ -42,7 +41,6 @@ typedef int ErrorNo;
 enum AstNodeType {
   AST_NODE,
   AST_STMT_LIST,
-
   AST_SELECT_LIST,
   AST_SELECT_EXPR,
   AST_FROM_LIST,
@@ -59,13 +57,17 @@ enum AstNodeType {
   AST_LIMIT_CLAUSE,
   AST_SELECT_INTO_CLAUSE,
   AST_COLUMN,
+  AST_COLUMN_ALL,      // tb.*
+  AST_COLUMN_ALL_ALL,  // *
   AST_SELECT_STMT,
   AST_EXPR_LIST,
   AST_EXPR_CONST,
   AST_EXPR_UNARY,
-  AST_EXPR_CAL_BINARY,
-  AST_EXPR_CMP_BINARY,
   AST_EXPR_FUNC,
+  // NOTE: couldn't change the sequence of the underlying 3
+  AST_EXPR_CMP_BINARY,
+  AST_EXPR_BOOL_BINARY,
+  AST_EXPR_CAL_BINARY,
 
   AST_CREATE_DATABASE,
   AST_CREATE_SCHEMA,
@@ -101,7 +103,6 @@ enum AstNodeType {
   AST_INSERT_VALUE_LIST,
   AST_INSERT_VALUE,
   AST_INSERT_ASSIGN_LIST,
-
   AST_INTNUM,
   AST_APPROXNUM,
   AST_STRINGVAL,
@@ -115,30 +116,81 @@ enum ErrorNoType {
   eTableAliasEqualLowerAlias,
   eColumnNotExist,
   eColumnIsAmbiguous,
+  eTabelHaveNotColumn,
   eColumnAliasIsAmbiguous,
   eColumnIsAmbiguousAfterAlias,
   eColumnIsAmbiguousToExistedColumn,
-  eArgNotExist,
+  eUnaryArgNotExist,
   eFromClauseIsNULL,
   eSelectClauseIsNULL,
+  eGroupbyListIsNULL,
+  eGroupByNotSupportColumn,
+  eAggNodeExprStrIsNULL,
+  eGroupbyNodeExprStrIsNULL,
+  eSelectNodeExprStrIsNULL,
+  eAliasConfictInSelectNode,
+  eAggHaveAgg,
+  eAggCouldNotInWhereClause,
+  eAggCouldNotInGroupByClause,
+  eAggSelectExprHaveOtherColumn,
+  eHavingNotAgg,
+  eTableNotExistInTableColumnALL,
+  eColumnAllShouldNotInOtherClause,
+  eMoreColumnsInSelectHaveALLALL,
 };
 const int TAB_SIZE = 4;
+class AstNode;
 /**
  * @brief The Semantic analysis middle scheme context.
  */
 class SemanticContext {
  public:
+  enum SQLClauseType {
+    kNone,
+    kFromClause,
+    kWhereClause,
+    kGroupByClause,
+    kSelectClause,
+    kHavingClause,
+    kOrderByClause,
+    kLimitClause
+  };
   SemanticContext();
   ~SemanticContext();
   ErrorNo IsTableExist(const string table);
   ErrorNo IsColumnExist(string& table, const string column);
   ErrorNo AddTable(string table);
+  ErrorNo AddTable(set<string> table);
   ErrorNo AddTableColumn(const string& table, const string& column);
   ErrorNo AddTableColumn(const multimap<string, string>& column_to_table);
+  ErrorNo RebuildTableColumn(set<AstNode*>& aggregation);
+  ErrorNo RebuildTableColumn();
+  ErrorNo AddNewTableColumn(set<AstNode*>& new_set, bool need_clear);
   ErrorNo GetAliasColumn(const string& alias,
                          multimap<string, string>& column_to_table);
 
+  ErrorNo AddAggregation(AstNode* agg_node);
+  ErrorNo AddGroupByAttrs(AstNode* groupby_node);
+  ErrorNo AddSelectAttrs(AstNode* select_node);
+  void GetTableAllColumn(const string table,
+                         multimap<string, string>& new_columns);
+  void RemoveMore(set<AstNode*>& new_set);
+  set<AstNode*> get_aggregation();
+  set<AstNode*> get_groupby_attrs();
+  set<AstNode*> get_select_attrs();
+  multimap<string, string> get_column_to_table();
+  set<string> get_tables();
+  void ClearColumn();
+  void ClearTable();
+  AstNode* agg_upper_;
+  void PrintContext();
+  SQLClauseType clause_type_;
+  bool have_agg;
+
  private:
+  set<AstNode*> aggregation_;
+  set<AstNode*> groupby_attrs_;
+  set<AstNode*> select_attrs_;
   multimap<string, string> column_to_table_;
   set<string> tables_;
 };
@@ -151,9 +203,14 @@ class AstNode {
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
   virtual ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  virtual void RecoverExprName(string& name);
+  // replace aggregation expression with one single column, and collect it if
+  // aggregation in select expression
+  virtual void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                                  bool is_select);
   AstNodeType ast_node_type();
   AstNodeType ast_node_type_;
+  string expr_str_;
 };
 struct ParseResult {
   void* yyscan_info_;

@@ -17,13 +17,13 @@
 #include <malloc.h>
 #include <vector>
 using namespace std;
-#include "../astnode/ast_node.h"
-#include "../astnode/ast_select_stmt.h"
-#include "../astnode/ast_expr_node.h"
-#include "../astnode/ast_create_stmt.h"
-#include "../astnode/ast_drop_stmt.h"
-#include "../astnode/ast_insert_stmt.h"
-#include "../astnode/ast_load_stmt.h"
+#include "../ast_node/ast_node.h"
+#include "../ast_node/ast_select_stmt.h"
+#include "../ast_node/ast_expr_node.h"
+#include "../ast_node/ast_create_stmt.h"
+#include "../ast_node/ast_drop_stmt.h"
+#include "../ast_node/ast_insert_stmt.h"
+#include "../ast_node/ast_load_stmt.h"
 
 void yyerror(struct ParseResult *pp,const char *s, ...);
 void emit(char *s, ...);
@@ -553,7 +553,6 @@ select_expr_list:
 	select_expr							{ $$ = new AstSelectList(AST_SELECT_LIST, 0,$1,NULL);}
     | select_expr ',' select_expr_list	{ $$ = new AstSelectList(AST_SELECT_LIST, 0,$1,$3);}
     | '*'								{ $$ = new AstSelectList(AST_SELECT_LIST, 1,NULL,NULL);}
-    | '*' ',' select_expr_list			{ $$ = new AstSelectList(AST_SELECT_LIST, 1,NULL,$3); }
     ;
 
 select_expr: 
@@ -650,7 +649,7 @@ table_subquery:
 expr: NAME                                      { $$ = new AstColumn(AST_COLUMN, string("NULL"),string($1));}
    | USERVAR                                    { $$ = new AstExprConst(AST_EXPR_CONST, "CONST",string($1)); }
    | NAME '.' NAME                              { $$ = new AstColumn(AST_COLUMN, string($1),string($3)); }
-   | NAME '.' '*'                               { $$ = new AstColumn(AST_COLUMN, string($1),string("*"));}
+   | NAME '.' '*'                               { $$ = new AstColumn(AST_COLUMN_ALL, string($1),string("*"));}
    | STRING                                     { $$ = new AstExprConst(AST_EXPR_CONST, "CONST_STRING",	string($1)); }
    | INTNUM                                     { $$ = new AstExprConst(AST_EXPR_CONST, "CONST_INT",		string($1)); }	
    | APPROXNUM                                  { $$ = new AstExprConst(AST_EXPR_CONST, "CONST_DOUBLE",	string($1)); }	
@@ -666,9 +665,9 @@ expr: expr '+' expr 		                    { $$ = new AstExprCalBinary(AST_EXPR_C
    | '-' expr %prec UMINUS                      { $$ = new AstExprUnary(AST_EXPR_UNARY, "-", $2); }
    | '+' expr %prec UMINUS                      { $$ = new AstExprUnary(AST_EXPR_UNARY, "+", $2); }
 
-   | expr ANDOP expr                            { $$ = new AstExprCalBinary(AST_EXPR_CAL_BINARY, "AND", $1, $3); }
-   | expr OR expr                               { $$ = new AstExprCalBinary(AST_EXPR_CAL_BINARY, "OR",  $1, $3); }
-   | expr XOR expr                              { $$ = new AstExprCalBinary(AST_EXPR_CAL_BINARY, "XOR", $1, $3); }
+   | expr ANDOP expr                            { $$ = new AstExprCalBinary(AST_EXPR_BOOL_BINARY, "AND", $1, $3); }
+   | expr OR expr                               { $$ = new AstExprCalBinary(AST_EXPR_BOOL_BINARY, "OR",  $1, $3); }
+   | expr XOR expr                              { $$ = new AstExprCalBinary(AST_EXPR_BOOL_BINARY, "XOR", $1, $3); }
 
    | expr COMPARISON expr	                    { $$ = new AstExprCmpBinary(AST_EXPR_CMP_BINARY, "", 		$2, $1, $3); }
    | expr COMPARISON 	  '(' select_stmt ')'   { $$ = new AstExprCmpBinary(AST_EXPR_CMP_BINARY, "SUBQUERY", $2, $1, $4); }

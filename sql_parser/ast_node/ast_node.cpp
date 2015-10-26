@@ -24,13 +24,17 @@
  */
 
 #include "../ast_node/ast_node.h"
+
+#include <assert.h>
 #include <glog/logging.h>
 #include <iostream>
 #include <iomanip>
 #include <map>
+#include <set>
 #include <string>
 #include <utility>
 
+#include "./ast_select_stmt.h"
 using std::cout;
 using std::setw;
 using std::endl;
@@ -59,6 +63,11 @@ AstStmtList::~AstStmtList() {
   delete stmt_;
   delete next_;
 }
+void AstNode::RecoverExprName(string& name) { name = "AstNode"; }
+void AstNode::ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
+                                 bool is_select) {
+  cout << "this is in ast base node!" << endl;
+}
 
 void AstStmtList::Print(int level) const {
   cout << setw(level * 8) << " "
@@ -86,6 +95,12 @@ ErrorNo AstStmtList::SemanticAnalisys(SemanticContext* sem_cnxt) {
 SemanticContext::SemanticContext() {
   tables_.clear();
   column_to_table_.clear();
+  aggregation_.clear();
+  groupby_attrs_.clear();
+  select_attrs_.clear();
+  agg_upper_ = NULL;
+  clause_type_ = kNone;
+  have_agg = false;
 }
 
 SemanticContext::~SemanticContext() {}
@@ -101,52 +116,61 @@ ErrorNo SemanticContext::IsTableExist(const string table) {
 ErrorNo SemanticContext::IsColumnExist(string& table, const string column) {
   int table_counts = column_to_table_.count(column);
   if (table_counts == 0) {
+    LOG(ERROR) << column << " doesn't exist in " << table << endl;
     return eColumnNotExist;
-  } else if (table_counts > 1) {       // ambiguous
-    if (table.compare("NULL") == 0) {  // NULL.col
+  } else if (table_counts > 1) {  // ambiguous
+    if (table == "NULL") {        // NULL.col
+      LOG(ERROR) << column << " is ambiguous!" << endl;
       return eColumnIsAmbiguous;
     } else {  // tbl.col
-      auto table_range = column_to_table_.equal_range(table);
+      auto table_range = column_to_table_.equal_range(column);
       for (auto it = table_range.first; it != table_range.second; ++it) {
-        if (it->second.compare(table) == 0) {
+        if (it->second == table) {
           return eOK;
         }
       }
-      return eColumnIsAmbiguous;
+      LOG(ERROR) << table << " don't have " << column << endl;
+      return eTabelHaveNotColumn;
     }
   } else {  // unique col
     auto it = column_to_table_.find(column);
-    if (table.compare("NULL") == 0) {  // NULL.col
+    if (table == "NULL") {  // NULL.col
       table = it->second;
       return eOK;
     } else {  // tbl.col
-      if (it->second.compare(table) == 0) {
+      if (it->second == table) {
         return eOK;
       } else {
+        LOG(ERROR) << column << " doesn't exist in " << table << endl;
         return eColumnNotExist;
       }
     }
   }
 }
-
+ErrorNo SemanticContext::AddTable(set<string> table) {
+  tables_.insert(table.begin(), table.end());
+  return eOK;
+}
 ErrorNo SemanticContext::AddTable(string table) {
   tables_.insert(table);
   return eOK;
 }
+set<string> SemanticContext::get_tables() { return tables_; }
+
 /**
  * if <table,column> doesn't exist in column_to_table_, so add into it,
  * otherwise, ignore it.
  */
 ErrorNo SemanticContext::AddTableColumn(const string& table,
                                         const string& column) {
-  if (table.compare("NULL") == 0) {
+  if (table == "NULL") {
     LOG(ERROR) << "table name couldn't be 'NULL'!";
     return eTableillegal;
   } else {  // guarantee the <table,column> is unique
     int counts = 0;
     auto table_range = column_to_table_.equal_range(table);
     for (auto it = table_range.first; it != table_range.second; ++it) {
-      if (it->second.compare(table) == 0) {
+      if (it->second == table) {
         counts++;
       }
     }
@@ -165,14 +189,85 @@ ErrorNo SemanticContext::AddTableColumn(
   for (auto it_column = column_to_table_.begin();
        it_column != column_to_table_.end(); ++it_column) {
     for (auto it = column_to_table.begin(); it != column_to_table.end(); ++it) {
-      if (it_column->first.compare(it->first) == 0 &&
-          it_column->second.compare(it->second) == 0) {
+      if (it_column->first == it->first && it_column->second == it->second) {
         return eColumnIsAmbiguousToExistedColumn;
       }
     }
   }
   column_to_table_.insert(column_to_table.begin(), column_to_table.end());
   return eOK;
+}
+void SemanticContext::GetTableAllColumn(string table,
+                                        multimap<string, string>& new_columns) {
+  for (auto it = column_to_table_.begin(); it != column_to_table_.end(); ++it) {
+    if (table == it->second) {
+      new_columns.insert(make_pair(it->first, it->second));
+    }
+  }
+}
+void SemanticContext::RemoveMore(set<AstNode*>& new_set) {
+  map<string, AstNode*> temp_map;
+  bool exist = false;
+  for (auto it = new_set.begin(); it != new_set.end(); ++it) {
+    temp_map.insert(make_pair((*it)->expr_str_, (*it)));
+  }
+  new_set.clear();
+  for (auto it = temp_map.begin(); it != temp_map.end(); ++it) {
+    new_set.insert(it->second);
+  }
+}
+
+ErrorNo SemanticContext::AddNewTableColumn(set<AstNode*>& new_set,
+                                           bool need_clear) {
+  ErrorNo ret = eOK;
+  multimap<string, string> new_columns;
+  new_columns.clear();
+  for (auto it = new_set.begin(); it != new_set.end(); ++it) {
+    if (AST_COLUMN == (*it)->ast_node_type_) {
+      // because the column may be aliased, so new column attr=col->expr_str_(=
+      // alias, if not aliased initially, the alias = column or table.column, so
+      // should remove "table." from "table.column")
+      AstColumn* col = reinterpret_cast<AstColumn*>(*it);
+      new_columns.insert(
+          make_pair(col->expr_str_.substr(col->expr_str_.find('.') + 1),
+                    col->relation_name_));
+    } else if (AST_COLUMN_ALL == (*it)->ast_node_type_) {
+      // add the columns whose table=table.*
+      AstColumn* col = reinterpret_cast<AstColumn*>(*it);
+      GetTableAllColumn(col->relation_name_, new_columns);
+    } else if (AST_COLUMN_ALL_ALL == (*it)->ast_node_type_) {
+      // must just one *.* in select, and the columns_to_table_ couldn't change
+      if (new_set.size() != 1) {
+        LOG(ERROR) << "more columns in select in which has *.*" << endl;
+        return eMoreColumnsInSelectHaveALLALL;
+      }
+      assert(new_set.size() == 1);
+      return eOK;
+    } else {
+      new_columns.insert(make_pair((*it)->expr_str_, "NULL_AGG"));
+    }
+  }
+  if (need_clear) {
+    ClearColumn();
+  }
+  ret = AddTableColumn(new_columns);
+  if (eOK != ret) {
+    return ret;
+  }
+  return eOK;
+}
+ErrorNo SemanticContext::RebuildTableColumn(set<AstNode*>& aggregation) {
+  ClearTable();
+  ErrorNo ret = eOK;
+  ret = AddNewTableColumn(aggregation, true);
+  if (eOK != ret) return ret;
+  ret = AddNewTableColumn(groupby_attrs_, false);
+  if (eOK != ret) return ret;
+  return eOK;
+}
+ErrorNo SemanticContext::RebuildTableColumn() {
+  ClearTable();
+  return AddNewTableColumn(select_attrs_, true);
 }
 /**
  * check <tb1.a,tb2.a> isn't ambiguous in subquery, but <alias.a,alias.a> is
@@ -184,7 +279,98 @@ ErrorNo SemanticContext::GetAliasColumn(
     if (column_to_table_.count(it->first) > 1) {
       return eColumnIsAmbiguousAfterAlias;
     }
-    column_to_table.insert(make_pair(alias, it->second));
+    column_to_table.insert(make_pair(it->first, alias));
   }
   return eOK;
+}
+ErrorNo SemanticContext::AddAggregation(AstNode* agg_node) {
+  if (aggregation_.count(agg_node) > 0) {
+    return eOK;
+  }
+  bool exist = false;
+  for (auto it = aggregation_.begin(); it != aggregation_.end(); ++it) {
+    if (agg_node->expr_str_ == "") {
+      return eAggNodeExprStrIsNULL;
+    }
+    if (agg_node->expr_str_ == (*it)->expr_str_) {
+      exist = true;
+      break;
+    }
+  }
+  if (exist) {
+    LOG(INFO) << "eliminate one aggregation" << endl;
+  } else {
+    aggregation_.insert(agg_node);
+  }
+  return eOK;
+}
+ErrorNo SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
+  if (groupby_attrs_.count(groupby_node) > 0) {
+    return eOK;
+  }
+  bool exist = false;
+  for (auto it = groupby_attrs_.begin(); it != groupby_attrs_.end(); ++it) {
+    if (groupby_node->expr_str_ == "") {
+      return eGroupbyNodeExprStrIsNULL;
+    }
+    if (groupby_node->expr_str_ == (*it)->expr_str_) {
+      exist = true;
+      break;
+    }
+  }
+  if (exist) {
+    LOG(INFO) << "eliminate one groupby node" << endl;
+  } else {
+    groupby_attrs_.insert(groupby_node);
+  }
+  return eOK;
+}
+ErrorNo SemanticContext::AddSelectAttrs(AstNode* select_node) {
+  if (select_attrs_.count(select_node) > 0) {
+    return eOK;
+  }
+  bool exist = false;
+  // no need to check conflict in select
+  //  if (select_node->expr_str_ == "") {
+  //    return eSelectNodeExprStrIsNULL;
+  //  }
+  //  for (auto it = select_attrs_.begin(); it != select_attrs_.end(); ++it) {
+  //    if (select_node->expr_str_ == (*it)->expr_str_) {
+  //      exist = true;
+  //      break;
+  //    }
+  //  }
+  if (exist) {
+    LOG(ERROR) << "alias confict in one select node" << endl;
+    return eAliasConfictInSelectNode;
+  } else {
+    select_attrs_.insert(select_node);
+  }
+  return eOK;
+}
+set<AstNode*> SemanticContext::get_aggregation() { return aggregation_; }
+set<AstNode*> SemanticContext::get_groupby_attrs() {
+  RemoveMore(groupby_attrs_);
+  return groupby_attrs_;
+}
+set<AstNode*> SemanticContext::get_select_attrs() { return select_attrs_; }
+multimap<string, string> SemanticContext::get_column_to_table() {
+  return column_to_table_;
+}
+
+void SemanticContext::ClearColumn() { column_to_table_.clear(); }
+
+void SemanticContext::ClearTable() { tables_.clear(); }
+
+void SemanticContext::PrintContext() {
+  cout << "++++print Tables++++  " << tables_.size() << endl;
+  for (auto it = tables_.begin(); it != tables_.end(); ++it) {
+    cout << (*it) << endl;
+  }
+  cout << "----print Columns----  " << column_to_table_.size() << endl;
+  for (auto it = column_to_table_.begin(); it != column_to_table_.end(); ++it) {
+    cout << it->first << "  " << it->second << endl;
+  }
+  cout << endl;
+  cout << "---------------------\n" << endl;
 }
