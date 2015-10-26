@@ -49,7 +49,8 @@
 
 /**
  * @brief Method description: Implementation of Project operator in physical
- * layer.
+ * layer. Projection operator corresponds to the select-clause of SQL, it
+ * calculates each expression at the select-clause and construct one new tuple.
  */
 class PhysicalProject : public PhysicalOperator {
  public:
@@ -60,11 +61,23 @@ class PhysicalProject : public PhysicalOperator {
     BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
     vector<QNode *> thread_qual_;
     ~ProjectThreadContext() {
-      delete block_for_asking_;
-      delete temp_block_;
-      delete block_stream_iterator_;
+      if (NULL != block_for_asking_) {
+        delete block_for_asking_;
+        block_for_asking_ = NULL;
+      }
+      if (NULL != temp_block_) {
+        delete temp_block_;
+        temp_block_ = NULL;
+      }
+      if (NULL != block_stream_iterator_) {
+        delete block_stream_iterator_;
+        block_stream_iterator_ = NULL;
+      }
       for (int i = 0; i < thread_qual_.size(); i++) {
-        delete thread_qual_[i];
+        if (NULL != thread_qual_[i]) {
+          delete thread_qual_[i];
+          thread_qual_[i] = NULL;
+        }
       }
     }
   };
@@ -73,15 +86,14 @@ class PhysicalProject : public PhysicalOperator {
     friend class PhysicalProject;
 
    public:
-    State(Schema *input, Schema *output, BlockStreamIteratorBase *children,
-          unsigned blocksize, Mapping map, vector<QNode *> exprTree);
-    State(Schema *input, Schema *output, BlockStreamIteratorBase *children,
-          unsigned blocksize, Mapping map);
+    State(Schema *schema_input, Schema *schema_output,
+          BlockStreamIteratorBase *children, unsigned block_size,
+          vector<QNode *> expr_tree);
     State(){};
 
    public:
-    Schema *input_;
-    Schema *output_;
+    Schema *schema_input_;
+    Schema *schema_output_;
 
     /**
      * @brief Recently, the expression is supporting the reduce the number of
@@ -92,38 +104,55 @@ class PhysicalProject : public PhysicalOperator {
     // select list, this expr is the result of the getIteratorTree to construct
     // a schema. getDataflow() can generate a schema by using the SQLExpression
     // and Expression can be computed by SQLExpression
-    Mapping map_;
 
-    vector<QNode *> exprTree_;
+    vector<QNode *> expr_tree_;
     unsigned block_size_;
     BlockStreamIteratorBase *child_;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {
-      ar &input_ &output_ &child_ &map_ &block_size_ &exprTree_;
+      ar &schema_input_ &schema_output_ &child_ &block_size_ &expr_tree_;
     }
   };
   PhysicalProject(State state);
   PhysicalProject();
   virtual ~PhysicalProject();
-
+  /**
+   * @brief: construct iterator of project operator
+   */
   bool Open(const PartitionOffset &kPartitionOffset = 0);
+
+  /**
+   * @brief: fetch a block from child and ProcessInLogic().
+   */
   bool Next(BlockStreamBase *block);
+
+  /**
+   * @brief: revoke resource.
+   */
   bool Close();
   void Print();
 
  private:
+  /**
+   * @brief Method description: Initialize project thread context with
+   * state(Class).
+   * @return a pointer(ProjectThreadContext)
+   */
   ThreadContext *CreateContext();
-
-  // According to result,the function generate a new attribute list(new
-  // schema:output).
+  /**
+   * @brief Method description:// According to result,the function generate a
+   * new attribute list(new schema:output).
+   * @return  a new tuples.
+   */
   bool CopyNewValue(void *tuple, void *result, int length);
 
-  // this function is not used. Because of ExpressionItem.
-  bool CopyColumn(void *&tuple, ExpressionItem &result, int length);
-
-  // The actual implementation of operations.
+  /**
+   * @brief: The actual implementation of operations.
+   * @param BlockStreamBase*, ProjectThreadContext*
+   * @details   (additional) The actual implementation of operations.
+   */
   void ProcessInLogic(BlockStreamBase *block, ProjectThreadContext *tc);
 
  private:

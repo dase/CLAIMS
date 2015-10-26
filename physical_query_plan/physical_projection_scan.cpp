@@ -54,7 +54,12 @@ PhysicalProjectionScan::PhysicalProjectionScan()
   InitExpandedStatus();
 }
 
-PhysicalProjectionScan::~PhysicalProjectionScan() { delete state_.schema_; }
+PhysicalProjectionScan::~PhysicalProjectionScan() {
+  if (NULL != state_.schema_) {
+    delete state_.schema_;
+    state_.schema_ = NULL;
+  }
+}
 
 PhysicalProjectionScan::State::State(ProjectionID projection_id, Schema* schema,
                                      unsigned block_size, float sample_rate)
@@ -64,16 +69,16 @@ PhysicalProjectionScan::State::State(ProjectionID projection_id, Schema* schema,
       sample_rate_(sample_rate) {}
 
 /**
- * @brief Method description: Initialize the operator. The logic is read
- * partition and get chunks, read a chunk and get blocks. different policy
+ * Initialize the operator to get the initial position. Scan is the start point
+ * of stage, get instance of ExpanderTracker to add this point. Different policy
  * decide if it generates a buffer.
  */
+
 bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
   if (TryEntryIntoSerializedSection()) {
     /* this is the first expanded thread*/
     PartitionStorage* partition_handle_;
-    return_blocks_ = 0;
-    if (0 ==
+    if (NULL ==
         (partition_handle_ = BlockManager::getInstance()->getPartitionHandle(
              PartitionID(state_.projection_id_, kPartitionOffset)))) {
       LOG(ERROR) << PartitionID(state_.projection_id_, kPartitionOffset)
@@ -95,7 +100,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
     while (chunk_reader_it = partition_reader_iterator_->nextChunk()) {
       while (chunk_reader_it->getNextBlockAccessor(ba)) {
         ba->getBlockSize();
-        input_dataset_.input_data_blocks.push_back(ba);
+        input_dataset_.input_data_blocks_.push_back(ba);
       }
     }
 #endif
@@ -110,16 +115,20 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
 }
 
 /**
- * @brief Method description:There are two method of strategy to scan data
- * 1) make a buffer(input_data).wait for quantitative block and return it.
+ * There are two method of strategy to scan data.
+ * 1) make a buffer(input_data). wait for quantitative block and return it.
+ * because destorySelfContext() is not work, we don't use this method(code has
+ * commented).
  * 2) get a block and return it immediately.
- * according to AVOID_CONTENTION_IN_SCAN.
  */
+
+// TODO(Hanzhang): According to AVOID_CONTENTION_IN_SCAN, we choose the
+// strategy. We need finish case(1).
 bool PhysicalProjectionScan::Next(BlockStreamBase* block) {
   unsigned long long total_start = curtick();
 #ifdef AVOID_CONTENTION_IN_SCAN
   ScanThreadContext* stc = reinterpret_cast<ScanThreadContext*>(GetContext());
-  if (0 == stc) {
+  if (NULL == stc) {
     stc = new ScanThreadContext();
     InitContext(stc);
   }

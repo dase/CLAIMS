@@ -38,21 +38,21 @@
  * operator is a traditional model of iterator. Execute inline function to judge
  * which position is starting point and whether tuples is acquired.
  */
-
 class PhysicalLimit : public BlockStreamIteratorBase {
  public:
   struct State {
     friend class PhysicalLimit;
 
    public:
-    State(Schema* schema, BlockStreamIteratorBase* child, unsigned long limits,
-          unsigned block_size, unsigned long start_position = 0);
+    State(Schema* schema, BlockStreamIteratorBase* child,
+          unsigned long limit_tuples, unsigned block_size,
+          unsigned long start_position = 0);
     State();
 
    private:
     Schema* schema_;
     BlockStreamIteratorBase* child_;
-    unsigned long limits_;
+    unsigned long limit_tuples_;
     unsigned block_size_;
     unsigned long start_position_;
 
@@ -60,25 +60,47 @@ class PhysicalLimit : public BlockStreamIteratorBase {
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-      ar& schema_& child_& limits_& block_size_& start_position_;
+      ar& schema_& child_& limit_tuples_& block_size_& start_position_;
     }
   };
   PhysicalLimit();
   PhysicalLimit(State state);
   virtual ~PhysicalLimit();
-  bool Open(const PartitionOffset&);
-  bool Next(BlockStreamBase*);
+
+  /**
+   * @brief Method description: Initialize the position of current tuple and
+   * target tuple
+   */
+  bool Open(const PartitionOffset& kPartitionOffset);
+
+  /**
+   * @brief Method description:find limit_tuple tuples from start_position and
+   * return them
+   * @return : given tuples.
+   */
+  bool Next(BlockStreamBase* block);
+
+  /**
+   * @brief Method description: revoke resource
+   */
   bool Close();
   void Print();
 
  private:
-  // this function judges whether tuples we need are acquired.
-  inline bool limitExhausted() const {
-    return received_tuples_ >= state_.limits_;
+  /**
+   * @brief Method description: this function judges whether tuples we need are
+   * acquired.
+   */
+  inline bool LimitExhausted() const {
+    return received_tuples_ >= state_.limit_tuples_;
   }
-  // finding where we should start the operation of limit is the aim of this
-  // function.
-  inline bool shouldSkip() const { return tuple_cur_ < state_.start_position_; }
+  /**
+   * @brief Method description:Finding start_postition_ of limit is the aim of
+   * this function.
+   * @return start position.
+   */
+
+  inline bool ShouldSkip() const { return tuple_cur_ < state_.start_position_; }
 
  private:
   State state_;

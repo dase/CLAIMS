@@ -40,35 +40,46 @@ PhysicalLimit::State::State(Schema* schema, BlockStreamIteratorBase* child,
                             unsigned long start_position)
     : schema_(schema),
       child_(child),
-      limits_(limits),
+      limit_tuples_(limits),
       block_size_(block_size),
       start_position_(start_position) {}
 PhysicalLimit::State::State()
-    : schema_(NULL), child_(NULL), limits_(0), block_size_(0) {}
+    : schema_(NULL), child_(NULL), limit_tuples_(0), block_size_(0) {}
 
 PhysicalLimit::~PhysicalLimit() {
-  // TODO(wangli):Auto-generated destructor stub
+  // TODO(wangli):Auto-generated destructor stub.
 }
-
-bool PhysicalLimit::Open(const PartitionOffset& par) {
+/**
+ * Initialize of the position of current tuple and target tuple
+ */
+bool PhysicalLimit::Open(const PartitionOffset& kPartitionOffset) {
   tuple_cur_ = 0;
   block_for_asking_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   received_tuples_ = 0;
-  return state_.child_->Open(par);
+  return state_.child_->Open(kPartitionOffset);
 }
+/**
+ * if the limit has already been exhausted, the current loop breaks
+ * to fetch the next block from child iterator.
+ */
+
+// TODO(wangli): ideally, fetching blocks from child iterator in cases
+// that the limit is exhausted is not necessary. However, in the current
+// implementation, the child iterator sub-tree leaded by exchange
+// lower iterator cannot be closed if not all the blocks are called.
 bool PhysicalLimit::Next(BlockStreamBase* block) {
   while (state_.child_->Next(block_for_asking_)) {
     void* tuple_from_child;
     BlockStreamBase::BlockStreamTraverseIterator* it =
         block_for_asking_->createIterator();
-    while ((tuple_from_child = it->currentTuple())) {
-      if (!limitExhausted()) {
-        if (!shouldSkip()) {
+    while (NULL != (tuple_from_child = it->currentTuple())) {
+      if (!LimitExhausted()) {
+        if (!ShouldSkip()) {
           const unsigned tuple_size =
               state_.schema_->getTupleActualSize(tuple_from_child);
           void* target_tuple;
-          if ((target_tuple = block->allocateTuple(tuple_size)) > 0) {
+          if (NULL != (target_tuple = block->allocateTuple(tuple_size))) {
             state_.schema_->copyTuple(tuple_from_child, target_tuple);
             received_tuples_++;
             tuple_cur_++;
@@ -83,20 +94,13 @@ bool PhysicalLimit::Next(BlockStreamBase* block) {
           continue;
         }
       } else {
-        /**
-         * if the limit has already been exhausted, the current loop breaks
-         * to fetch the next block from child iterator.
-         * TODO(wangli): ideally, fetching blocks from child iterator in cases
-         * that the limit is exhausted is not necessary. However, in the current
-         * implementation, the child iterator sub-tree leaded by exchange
-         * lower iterator cannot be closed if not all the blocks are called.
-         */
         break;  // to consume the next block;
       }
     }
   }
   return !block->Empty();
 }
+
 bool PhysicalLimit::Close() {
   state_.child_->Close();
   block_for_asking_->~BlockStreamBase();
@@ -104,7 +108,7 @@ bool PhysicalLimit::Close() {
 }
 
 void PhysicalLimit::Print() {
-  printf("Limit %ld\n", state_.limits_);
+  printf("Limit %ld\n", state_.limit_tuples_);
   state_.child_->Print();
 }
 

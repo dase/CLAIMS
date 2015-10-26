@@ -52,22 +52,20 @@
 // namespace claims {
 // namespace physical_query_plan {
 
-/**
- * @brief Method description:  Implementation of Scan operator in physical
- * layer. In the current implementation, for simplicity, we assume that the
- * underlying storage is arranged in blocks, each of which is the same as the
- * size of the block in the parameter of the next function.
- */
 typedef std::list<ChunkReaderIterator::block_accessor*> assigned_data;
+/**
+ * @brief Method description: As a buffer for input.
+ */
+
 struct input_dataset {
-  assigned_data input_data_blocks;
+  assigned_data input_data_blocks_;
   SpineLock lock;
   bool AtomicGet(assigned_data& target, unsigned number_of_block) {
     lock.acquire();
     bool not_empty = !target.empty();
-    while (number_of_block-- && (!input_data_blocks.empty())) {
-      target.push_back(input_data_blocks.front());
-      input_data_blocks.pop_front();
+    while (number_of_block-- && (!input_data_blocks_.empty())) {
+      target.push_back(input_data_blocks_.front());
+      input_data_blocks_.pop_front();
     }
     lock.release();
     return not_empty;
@@ -75,11 +73,18 @@ struct input_dataset {
   void AtomicPut(assigned_data blocks) {
     lock.acquire();
     for (assigned_data::iterator it = blocks.begin(); it != blocks.end(); it++)
-      input_data_blocks.push_front(*it);
+      input_data_blocks_.push_front(*it);
     lock.release();
   }
 };
 
+/**
+ * Implementation of Scan operator in physical layer. Get blocks for Storage
+ * medium.  In the current implementation, for simplicity, the underlying
+ * storage is arranged in blocks, each of which is the same as the size of the
+ * block in the parameter of the next function. Actually, read chunks from
+ * partition, read blocks from chunk.
+ */
 class PhysicalProjectionScan : public PhysicalOperator {
  public:
   class ScanThreadContext : public ThreadContext {
@@ -88,10 +93,10 @@ class PhysicalProjectionScan : public PhysicalOperator {
     assigned_data assigned_data_;
   };
 
-  struct allocated_block {
-    char* start;
-    unsigned length;
-  };
+  //  struct allocated_block {
+  //    char* start;
+  //    unsigned length;
+  //  };
   class State {
     friend class PhysicalProjectionScan;
 
@@ -114,8 +119,23 @@ class PhysicalProjectionScan : public PhysicalOperator {
   PhysicalProjectionScan(State state);
   PhysicalProjectionScan();
   virtual ~PhysicalProjectionScan();
-  bool Open(const PartitionOffset& kPartitionOffset = 0);
+  /**
+   * .
+   */
+  bool Open(const PartitionOffset& partition_offset = 0);
+  /**
+   * @brief Method description: Initialize the operator and get the initial
+   * position of chunk read iterator.
+   */
+
+  /**
+   * @brief: fetch block from child operator.
+   */
+
   bool Next(BlockStreamBase* block);
+  /**
+   * @brief: revoke resource.
+   */
   bool Close();
   void Print();
 
@@ -125,13 +145,10 @@ class PhysicalProjectionScan : public PhysicalOperator {
  private:
   State state_;
   PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
-  std::list<ChunkReaderIterator*> remaining_chunk_reader_iterator_list_;
+  std::list<ChunkReaderIterator*> remaining_chunk_iterator_list_;
   Lock chunk_reader_container_lock_;
   // like a buffer
   input_dataset input_dataset_;
-
-  /* for debug*/
-  unsigned long int return_blocks_;
 
   const PerformanceInfo* kPerfInfo;
 

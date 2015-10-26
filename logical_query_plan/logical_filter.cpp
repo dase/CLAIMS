@@ -97,7 +97,7 @@ BlockStreamIteratorBase* LogicalFilter::GetPhysicalPlan(
   state.block_size_ = blocksize;
   state.child_ = child_iterator;
   state.qual_ = condi_;
-  state.colindex_ = column_id_;
+  state.column_id_ = column_id_;
   state.schema_ = GetSchema(plan_context.attribute_list_);
   BlockStreamIteratorBase* filter = new PhysicalFilter(state);
   return filter;
@@ -118,7 +118,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
       state.block_size_ = block_size;
       state.child_ = physical_plan.plan;
       state.qual_ = condi_;
-      state.colindex_ = column_id_;
+      state.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state.schema_ = GetSchema(plan_context.attribute_list_);
       BlockStreamIteratorBase* filter = new PhysicalFilter(state);
@@ -134,7 +134,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
       state_f.block_size_ = block_size;
       state_f.child_ = physical_plan.plan;
       state_f.qual_ = condi_;
-      state_f.colindex_ = column_id_;
+      state_f.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state_f.schema_ = GetSchema(plan_context.attribute_list_);
       BlockStreamIteratorBase* filter =
@@ -194,7 +194,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
     PhysicalFilter::State state;
     state.block_size_ = block_size;
     state.child_ = physical_plan.plan;
-    state.colindex_ = column_id_;
+    state.column_id_ = column_id_;
     PlanContext plan_context = GetPlanContext();
     state.schema_ = GetSchema(plan_context.attribute_list_);
     BlockStreamIteratorBase* filter = new PhysicalFilter(state);

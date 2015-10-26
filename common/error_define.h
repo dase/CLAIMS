@@ -65,6 +65,8 @@ const int kGeneratePlanContextFailed = -4002;
 /* errorno for physical_query_plan -5001 ~ -6000 */
 const int kGenerateSubPhyPlanFailed = -5001;
 const int kNoPartitionIdScan = -5002;
+// the optimization of filter function failed;
+const int kCodegenFailed = -5003;
 
 }  // end namespace common
 }  // end namespace claims

@@ -74,6 +74,7 @@ ErrorInit::ErrorInit() {
                         "generate the sub physical plan failed");
   DefineErrorAndMessage(kNoPartitionIdScan,
                         "The partition id does not existed.");
+  DefineErrorAndMessage(kCodegenFailed, "codegen failed.");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }

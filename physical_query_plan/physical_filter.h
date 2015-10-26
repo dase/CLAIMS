@@ -29,10 +29,13 @@
 #ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
 #define PHYSICAL_QUERY_PLAN_PHYSICAL_FILTER_H_
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <boost/serialization/map.hpp>
+#include <glog/logging.h>
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/physical_operator.h"
@@ -47,9 +50,14 @@
 #include "../physical_query_plan/physical_project.h"
 #include "../common/Expression/qnode.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/error_no.h"
 
 // namespace claims {
 // namespace physical_query_plan {
+/**
+ * @brief Method description: According to expression function, we generate
+ * filter function to remove tuple which does not match condition.
+ */
 class PhysicalFilter : public PhysicalOperator {
  public:
   class FilterThreadContext : public ThreadContext {
@@ -62,8 +70,8 @@ class PhysicalFilter : public PhysicalOperator {
   };
 
   /**
-   * @brief Method description: struct to hold the remaining data when the next
-   * is returned but the block from the child iterator is not exhausted.
+   * @brief Method description: struct to hold the remaining data when the
+   * next is returned but the block from the child iterator is not exhausted.
    */
   struct RemainingBlock {
     RemainingBlock(BlockStreamBase* block,
@@ -81,7 +89,7 @@ class PhysicalFilter : public PhysicalOperator {
    public:
     friend class PhysicalFilter;
     State(Schema* schema, BlockStreamIteratorBase* child, vector<QNode*> qual,
-          map<string, int> colindex, unsigned block_size);
+          map<string, int> column_id, unsigned block_size);
     State(Schema* s, BlockStreamIteratorBase* child,
           std::vector<AttributeComparator> comparator_list,
           unsigned block_size);
@@ -93,48 +101,75 @@ class PhysicalFilter : public PhysicalOperator {
     unsigned block_size_;
     vector<QNode*> qual_;
     std::vector<AttributeComparator> comparator_list_;
-    map<string, int> colindex_;
+    map<string, int> column_id_;
 
    private:
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-      ar& schema_& child_& block_size_& qual_& comparator_list_& colindex_;
+      ar& schema_& child_& block_size_& qual_& comparator_list_& column_id_;
     }
   };
 
   PhysicalFilter(State state);
   PhysicalFilter();
   virtual ~PhysicalFilter();
-  bool Open(const PartitionOffset& part_off);
+
+  /**
+   * @brief: choose which way to generate filter function
+   */
+  bool Open(const PartitionOffset& kPartitionOffset);
+
+  /**
+   * @brief: fetch a block from child and execute ProcessInLogic
+   */
   bool Next(BlockStreamBase* block);
+
+  /**
+   * @brief: revoke resource
+   */
   bool Close();
   void Print();
 
  private:
+  /**
+   * @brief Method description: The actual implementation of operations.
+   */
   void ProcessInLogic(BlockStreamBase* block, FilterThreadContext* tc);
-
- private:
+  /**
+   * @brief Method description:Initialize project thread context with
+   * state(Class).
+   * @return a pointer(FilterThreadContext)
+  */
   ThreadContext* CreateContext();
   typedef void (*filter_func)(bool& ret, void* tuple, expr_func func_gen,
                               Schema* schema, vector<QNode*> thread_qual_);
 
-  // traditional optimized function to generate filter function.
+  /**
+   * @brief Method description: traditional optimized function to generate
+   * filter function.
+   * @return  a filter function
+   */
   static void ComputeFilter(bool& ret, void* tuple, expr_func func_gen,
                             Schema* schema, vector<QNode*> thread_qual_);
-  // llvm optimized function which be used to tuples.
+  /**
+   * @brief Method description:  llvm optimized function which be used to
+   * tuples.
+   * @return  a filter function
+   */
   static void ComputeFilterWithGeneratedCode(bool& ret, void* tuple,
                                              expr_func func_gen, Schema* schema,
                                              vector<QNode*>);
+  // return error_no.
+  int DecideFilterFunction(expr_func const& generate_filter_function);
 
  private:
   State state_;
-  map<string, int> colindex;
 
   unsigned long tuple_after_filter_;
   Lock lock_;
 
-  filter_func ff_;
+  filter_func filter_function_;
   // optimization of tuple:(llvm or none)
   expr_func generated_filter_function_;
   // optimization of block:(llvm or none)

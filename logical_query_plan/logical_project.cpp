@@ -139,9 +139,9 @@ BlockStreamIteratorBase* LogicalProject::GetPhysicalPlan(
   // assign some attributes to the state
   state.block_size_ = block_size;
   state.child_ = child;
-  state.input_ = GetSchema(child_plan_context.attribute_list_);
-  state.output_ = GetOutputSchema();
-  state.exprTree_ = expression_tree_;
+  state.schema_input_ = GetSchema(child_plan_context.attribute_list_);
+  state.schema_output_ = GetOutputSchema();
+  state.expr_tree_ = expression_tree_;
   return new PhysicalProject(state);
 }
 

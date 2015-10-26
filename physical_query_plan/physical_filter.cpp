@@ -40,32 +40,35 @@
 #include "../Config.h"
 #include "../Parsetree/sql_node_struct.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/error_no.h"
 
 #define NEWCONDITION
+using namespace claims::common;
 
 // namespace claims{
 // namespace physica query_plan{
 
 PhysicalFilter::PhysicalFilter(State state)
     : state_(state),
-      generated_filter_function_(0),
-      generated_filter_processing_fucntoin_(0) {
+      generated_filter_function_(NULL),
+      generated_filter_processing_fucntoin_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalFilter::PhysicalFilter()
-    : generated_filter_function_(0), generated_filter_processing_fucntoin_(0) {
+    : generated_filter_function_(NULL),
+      generated_filter_processing_fucntoin_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalFilter::~PhysicalFilter() {}
 PhysicalFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
-                             vector<QNode*> qual, map<string, int> colindex,
+                             vector<QNode*> qual, map<string, int> column_id,
                              unsigned block_size)
     : schema_(schema),
       child_(child),
       qual_(qual),
-      colindex_(colindex),
+      column_id_(column_id),
       block_size_(block_size) {}
 PhysicalFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
                              std::vector<AttributeComparator> comparator_list,
@@ -76,16 +79,17 @@ PhysicalFilter::State::State(Schema* schema, BlockStreamIteratorBase* child,
       block_size_(block_size) {}
 
 /**
- * @brief Method description:To choose which optimization way of filter
- *function.(if enable_codegen isn't open, we should execute the function:
- *computerFilter ). traditional model of iterator of physical plan.
+ * To choose which optimization way of filter function.(if enable_codegen isn't
+ *open, we should execute the function: computerFilter ). traditional model of
+ *iterator of physical plan.
  * 1)If a block can be optimized by llvm, we choose
  *generated_filter_processing_function_.
  * 2)If a tuple can be optimized by llvm, we choose
  *computerFilterwithGeneratedCode.
  * 3)If it can't be optimized by llvm , we still choose computerFilter.
  */
-bool PhysicalFilter::Open(const PartitionOffset& part_off) {
+bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
+  // set a Synchronization point.
   RegisterExpandedThreadToAllBarriers();
   FilterThreadContext* ftc = reinterpret_cast<FilterThreadContext*>(
       CreateOrReuseContext(crm_core_sensitive));
@@ -96,38 +100,46 @@ bool PhysicalFilter::Open(const PartitionOffset& part_off) {
       generated_filter_processing_fucntoin_ =
           getFilterProcessFunc(state_.qual_[0], state_.schema_);
       if (generated_filter_processing_fucntoin_) {
-        printf("CodeGen (full feature) succeeds!(%f8.4ms)\n",
-               getMilliSecond(start));
+        LOG(INFO) << "CodeGen (full feature) succeeds!("
+                  << getMilliSecond(start) << "ms)" << std::endl;
       } else {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
-        if (generated_filter_function_) {
-          ff_ = ComputeFilterWithGeneratedCode;
-          printf("CodeGen (partial feature) succeeds!(%f8.4ms)\n",
-                 getMilliSecond(start));
+
+        if (kSuccess == DecideFilterFunction(generated_filter_function_)) {
+          filter_function_ = ComputeFilterWithGeneratedCode;
+          LOG(INFO) << "CodeGen (partial feature) succeeds!("
+                    << getMilliSecond(start) << "ms)" << std::endl;
         } else {
-          ff_ = ComputeFilter;
-          printf("CodeGen fails!\n");
+          filter_function_ = ComputeFilter;
+          LOG(ERROR) << "filter:" << kErrorMessage[kCodegenFailed] << std::endl;
         }
       }
     } else {
-      ff_ = ComputeFilter;
-      printf("CodeGen closed!\n");
+      filter_function_ = ComputeFilter;
+      LOG(INFO) << "CodeGen closed!" << std::endl;
     }
   }
-  bool ret = state_.child_->Open(part_off);
+  bool ret = state_.child_->Open(kPartitiontOffset);
   SetReturnStatus(ret);
   BarrierArrive();
   return GetReturnStatus();
 }
 
+/**
+ * There are totally two reasons for the end of the while loop.
+ * (1) block is full of tuples satisfying filter (should return true to the
+ * caller)
+ * (2) block_for_asking_ is exhausted (should fetch a new block from child
+ * and continue to process)
+ */
 bool PhysicalFilter::Next(BlockStreamBase* block) {
   void* tuple_from_child;
   void* tuple_in_block;
   FilterThreadContext* tc =
       reinterpret_cast<FilterThreadContext*>(GetContext());
   while (true) {
-    if (tc->block_stream_iterator_->currentTuple() == 0) {
+    if (NULL == (tc->block_stream_iterator_->currentTuple())) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
       if (state_.child_->Next(tc->block_for_asking_)) {
@@ -141,15 +153,6 @@ bool PhysicalFilter::Next(BlockStreamBase* block) {
       }
     }
     ProcessInLogic(block, tc);
-    /**
-     * @brief Method description: There are totally two reasons for the end of
-     * the while loop.
-     * (1) block is full of tuples satisfying filter (should return true to the
-     * caller)
-     * (2) block_for_asking_ is exhausted (should fetch a new block from child
-     * and continue to process)
-     */
-
     if (block->Full())
       // for case (1)
       return true;
@@ -157,9 +160,9 @@ bool PhysicalFilter::Next(BlockStreamBase* block) {
 }
 
 /**
- * @brief Method description:According to which optimization of generate filter
- * function,execute function with related parameters. Different operator has
- * different implementation in process_logic().
+ * According to which optimization of generate filter function, execute function
+ * with related parameters. Different operator has different implementation in
+ * process_logic().
  */
 void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
                                     FilterThreadContext* tc) {
@@ -181,8 +184,9 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
            0) {
       bool pass_filter = true;
 #ifdef NEWCONDITION
-      ff_(pass_filter, tuple_from_child, generated_filter_function_,
-          state_.schema_, tc->thread_qual_);
+      filter_function_(pass_filter, tuple_from_child,
+                       generated_filter_function_, state_.schema_,
+                       tc->thread_qual_);
 #else
       pass_filter = true;
       for (unsigned i = 0; i < state_.comparator_list_.size(); i++) {
@@ -196,7 +200,7 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
       if (pass_filter) {
         const unsigned bytes =
             state_.schema_->getTupleActualSize(tuple_from_child);
-        if ((tuple_in_block = block->allocateTuple(bytes)) > 0) {
+        if (NULL != (tuple_in_block = block->allocateTuple(bytes))) {
           block->insert(tuple_in_block, tuple_from_child, bytes);
           tuple_after_filter_++;
         } else {
@@ -240,15 +244,32 @@ void PhysicalFilter::ComputeFilterWithGeneratedCode(bool& ret, void* tuple,
   func_gen(tuple, &ret);
 }
 
+// Revoke the source of thread.
 PhysicalFilter::FilterThreadContext::~FilterThreadContext() {
-  delete block_for_asking_;
-  delete temp_block_;
-  delete block_stream_iterator_;
+  if (NULL != block_for_asking_) {
+    delete block_for_asking_;
+    block_for_asking_ = NULL;
+  }
+  if (NULL != temp_block_) {
+    delete temp_block_;
+    temp_block_ = NULL;
+  }
+  if (NULL != block_stream_iterator_) {
+    delete block_stream_iterator_;
+    block_stream_iterator_ = NULL;
+  }
   for (int i = 0; i < thread_qual_.size(); i++) {
-    delete thread_qual_[i];
+    if (NULL != thread_qual_[i]) {
+      delete thread_qual_[i];
+      thread_qual_[i] = NULL;
+    }
   }
 }
 
+/**
+ * Copy expression tree to FilterThreadContext and initialize the expression
+ * tree at physical plan.
+ */
 ThreadContext* PhysicalFilter::CreateContext() {
   FilterThreadContext* ftc = new FilterThreadContext();
   ftc->block_for_asking_ =
@@ -262,6 +283,19 @@ ThreadContext* PhysicalFilter::CreateContext() {
     InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
   }
   return ftc;
+}
+
+/**
+ * Because of the result of generate_filter_function, Decide whether return
+ * error_no.
+ */
+int PhysicalFilter::DecideFilterFunction(
+    expr_func const& generate_filter_function) {
+  if (generate_filter_function) {
+    return kSuccess;
+  } else {
+    return kCodegenFailed;
+  }
 }
 
 //} // namespace claims
