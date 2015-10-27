@@ -50,10 +50,12 @@ BlockStreamResultCollector::BlockStreamResultCollector(State state)
 }
 BlockStreamResultCollector::~BlockStreamResultCollector() {
   if (NULL != state_.input_) delete state_.input_;
+  state_.input_ = NULL;
   if (NULL != state_.child_) delete state_.child_;
+  state_.child_ = NULL;
 }
 BlockStreamResultCollector::State::State()
-    : input_(0), child_(0), block_size_(0), partition_offset_(0) {}
+    : input_(NULL), child_(NULL), block_size_(0), partition_offset_(0) {}
 
 BlockStreamResultCollector::State::State(Schema* input,
                                          BlockStreamIteratorBase* child,
@@ -118,7 +120,7 @@ bool BlockStreamResultCollector::CreateBlockStream(
    * the buffer manager first.
    */
   target = BlockStreamBase::createBlock(state_.input_, state_.block_size_);
-  return target != 0;
+  return target != NULL;
 }
 
 void BlockStreamResultCollector::DeallocateBlockStream(
