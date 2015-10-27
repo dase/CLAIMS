@@ -38,9 +38,11 @@
 #define SQL_PARSER_AST_NODE_AST_EXPR_NODE_H_
 #include <set>
 #include <string>
+#include <vector>
 #include "../ast_node/ast_node.h"
 using std::string;
 using std::set;
+using std::vector;
 /**
  * @brief The AST of const expression.
  * @details AstExprConst mainly includes expression type and type name.
@@ -71,6 +73,7 @@ class AstExprUnary : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  void GetRefTable(set<string>& ref_table);
   AstNode* arg0_;
   string expr_type_;
 };
@@ -87,6 +90,7 @@ class AstExprFunc : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  void GetRefTable(set<string>& ref_table);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -106,6 +110,9 @@ class AstExprCalBinary : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
+  void GetRefTable(set<string>& ref_table);
+
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
@@ -126,6 +133,8 @@ class AstExprCmpBinary : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  void GetRefTable(set<string>& ref_table);
+
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
@@ -144,6 +153,8 @@ class AstExprList : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  void GetRefTable(set<string>& ref_table);
+
   AstNode* expr_;
   AstNode* next_;
 };

@@ -47,6 +47,9 @@ int TestNewSql() {
       cout << "semantic analysis result= : "
            << raw_ast->SemanticAnalisys(&sem_cnxt) << endl;
       raw_ast->Print();
+      cout << "----------begin push down condition ----------------" << endl;
+      raw_ast->PushDownCondition(NULL);
+      raw_ast->Print();
 
     } else {
       LOG(WARNING) << "the raw ast is null" << endl;

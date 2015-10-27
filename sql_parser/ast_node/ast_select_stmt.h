@@ -24,11 +24,14 @@
 
 #ifndef SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_
 #define SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_
+#include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 #include "./ast_node.h"
 using std::string;
+using std::vector;
 /**
  * @brief The AST of select list.
  * @details The member bool is_all_ stands for "select *" statement.
@@ -72,10 +75,16 @@ class AstFromList : public AstNode {
   ~AstFromList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                     AstNode* joined_root);
+  void PreProcess();
+  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  map<string, AstNode*> table_joined_root;
   AstNode* args_;
   AstNode* next_;
   AstNode* condition_;
+  set<AstNode*> equal_join_condition_;
+  set<AstNode*> normal_condition_;
 };
 /**
  * @brief The AST of table.
@@ -89,6 +98,11 @@ class AstTable : public AstNode {
   ~AstTable();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                     AstNode* joined_root);
+  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  set<AstNode*> equal_join_condition_;
+  set<AstNode*> normal_condition_;
   string db_name_;
   string table_name_;
   string table_alias_;
@@ -107,8 +121,13 @@ class AstSubquery : public AstNode {
   ~AstSubquery();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                     AstNode* joined_root);
+  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   string subquery_alias_;
   AstNode* subquery_;
+  set<AstNode*> equal_join_condition_;
+  set<AstNode*> normal_condition_;
 };
 /**
  * @brief The AST of join condition.
@@ -135,10 +154,15 @@ class AstJoin : public AstNode {
   ~AstJoin();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                     AstNode* joined_root);
+  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   string join_type_;
   AstNode* left_table_;
   AstNode* right_table_;
   AstJoinCondition* join_condition_;
+  set<AstNode*> equal_join_condition_;
+  set<AstNode*> normal_condition_;
 };
 /**
  * @brief The AST of where clause.
@@ -265,6 +289,7 @@ class AstColumn : public AstNode {
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
+  void GetRefTable(set<string>& ref_table);
 
   string relation_name_;
   string column_name_;
@@ -290,6 +315,7 @@ class AstSelectStmt : public AstNode {
   ~AstSelectStmt();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   string select_str_;
   SelectOpts select_opts_;
   AstNode* select_list_;

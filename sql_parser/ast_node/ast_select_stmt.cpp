@@ -25,6 +25,7 @@
 #include "./ast_select_stmt.h"
 
 #include <glog/logging.h>
+#include <algorithm>
 #include <bitset>
 #include <iostream>  // NOLINT
 #include <iomanip>
@@ -32,6 +33,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <utility>
 
 #include "../../Environment.h"
 #include "../../Catalog/Attribute.h"
@@ -43,10 +45,10 @@ using std::endl;
 using std::cout;
 using std::setw;
 using std::string;
-using std::vector;
 using std::map;
 using std::endl;
 using std::multimap;
+using std::sort;
 using std::vector;
 AstSelectList::AstSelectList(AstNodeType ast_node_type, bool is_all,
                              AstNode* args, AstNode* next)
@@ -184,10 +186,27 @@ AstFromList::~AstFromList() {
 void AstFromList::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "|from list|" << endl;
+  ++level;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|equal join condition: |" << endl;
+  for (auto it = equal_join_condition_.begin();
+       it != equal_join_condition_.end(); ++it) {
+    (*it)->Print(level + 1);
+    cout << endl;
+  }
+  cout << setw(level * TAB_SIZE) << " "
+       << "|normal condition: |" << endl;
+  for (auto it = normal_condition_.begin(); it != normal_condition_.end();
+       ++it) {
+    (*it)->Print(level + 1);
+  }
+  cout << endl;
+
   if (args_ != NULL) {
     args_->Print(level + 1);
   }
   if (next_ != NULL) {
+    --level;
     next_->Print(level);
   }
 }
@@ -207,6 +226,34 @@ ErrorNo AstFromList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   sem_cnxt->clause_type_ = SemanticContext::kNone;
   return eOK;
 }
+void AstFromList::GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                                AstNode* joined_root) {
+  if (NULL != next_) {
+    next_->GetJoinedRoot(table_joined_root, NULL);
+  }
+  if (NULL != args_) {
+    args_->GetJoinedRoot(table_joined_root, NULL);
+  }
+}
+ErrorNo AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  PushDownConditionContext* cur_pdccnxt = new PushDownConditionContext();
+  cur_pdccnxt->sub_expr_info_ = pdccnxt->sub_expr_info_;
+
+  if (NULL != args_) {
+    cur_pdccnxt->from_tables_.clear();
+    args_->PushDownCondition(cur_pdccnxt);
+    pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
+                                 cur_pdccnxt->from_tables_.end());
+  }
+  if (NULL != next_) {
+    cur_pdccnxt->from_tables_.clear();
+    next_->PushDownCondition(cur_pdccnxt);
+    pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
+                                 cur_pdccnxt->from_tables_.end());
+  }
+  pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  return eOK;
+}
 AstTable::AstTable(AstNodeType ast_node_type, string db_name, string table_name,
                    string table_alias)
     : AstNode(ast_node_type),
@@ -220,6 +267,21 @@ AstTable::~AstTable() {}
 void AstTable::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "|table| " << endl;
+  ++level;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|equal join condition: |" << endl;
+  for (auto it = equal_join_condition_.begin();
+       it != equal_join_condition_.end(); ++it) {
+    (*it)->Print(level + 1);
+    cout << endl;
+  }
+  cout << setw(level * TAB_SIZE) << " "
+       << "|normal condition: |" << endl;
+  for (auto it = normal_condition_.begin(); it != normal_condition_.end();
+       ++it) {
+    (*it)->Print(level + 1);
+  }
+  cout << endl;
   level++;
   cout << setw(level * TAB_SIZE) << " "
        << "db_name: " << db_name_ << endl;
@@ -240,7 +302,7 @@ ErrorNo AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   sem_cnxt->AddTable(table_alias_);
 
-  vector<Attribute> attrs = tbl->getAttributes();
+  std::vector<Attribute> attrs = tbl->getAttributes();
   // NOTE: PART.row_id should row_id
   for (auto it = attrs.begin(); it != attrs.end(); ++it) {
     sem_cnxt->AddTableColumn(table_alias_,
@@ -248,6 +310,20 @@ ErrorNo AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   LOG(INFO) << table_name_ << " , " << table_alias_ << " semantic successfully"
             << endl;
+  return eOK;
+}
+void AstTable::GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                             AstNode* joined_root) {
+  assert(table_alias_ != "NULL");
+  if (NULL == joined_root) {
+    table_joined_root[table_alias_] = this;
+  } else {
+    table_joined_root[table_alias_] = joined_root;
+  }
+}
+ErrorNo AstTable::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  pdccnxt->from_tables_.insert(table_alias_);
+  pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
   return eOK;
 }
 
@@ -263,6 +339,21 @@ void AstSubquery::Print(int level) const {
   cout << setw(level++ * TAB_SIZE) << " "
        << "|subquery| "
        << " subquery_alias: " << subquery_alias_ << endl;
+  ++level;
+  cout << setw(level * TAB_SIZE) << " "
+       << "|equal join condition: |" << endl;
+  for (auto it = equal_join_condition_.begin();
+       it != equal_join_condition_.end(); ++it) {
+    (*it)->Print(level + 1);
+    cout << endl;
+  }
+  cout << setw(level * TAB_SIZE) << " "
+       << "|normal condition: |" << endl;
+  for (auto it = normal_condition_.begin(); it != normal_condition_.end();
+       ++it) {
+    (*it)->Print(level + 1);
+  }
+  cout << endl;
   if (subquery_ != NULL) {
     subquery_->Print(level);
   }
@@ -302,6 +393,21 @@ ErrorNo AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
 
   return sem_cnxt->AddTableColumn(column_to_table);
+}
+
+void AstSubquery::GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                                AstNode* joined_root) {
+  assert(subquery_alias_ != "NULL");
+  if (NULL == joined_root) {
+    table_joined_root[subquery_alias_] = this;
+  } else {
+    table_joined_root[subquery_alias_] = joined_root;
+  }
+}
+ErrorNo AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  pdccnxt->from_tables_.insert(subquery_alias_);
+  pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  return eOK;
 }
 
 AstJoinCondition::AstJoinCondition(AstNodeType ast_node_type,
@@ -373,6 +479,21 @@ void AstJoin::Print(int level) const {
   cout << setw(level++ * TAB_SIZE) << " "
        << "|join|" << endl;
   cout << setw(level * TAB_SIZE) << " "
+       << "|equal join condition: |" << endl;
+  for (auto it = equal_join_condition_.begin();
+       it != equal_join_condition_.end(); ++it) {
+    (*it)->Print(level + 1);
+    cout << endl;
+  }
+  cout << setw(level * TAB_SIZE) << " "
+       << "|normal condition: |" << endl;
+  for (auto it = normal_condition_.begin(); it != normal_condition_.end();
+       ++it) {
+    (*it)->Print(level + 1);
+  }
+  cout << endl;
+
+  cout << setw(level * TAB_SIZE) << " "
        << "|join type|: " << join_type_ << endl;
   cout << setw(level * TAB_SIZE) << " "
        << "|join left table| " << endl;
@@ -409,6 +530,38 @@ ErrorNo AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ret = sem_cnxt->AddTableColumn(join_sem_cnxt.get_column_to_table());
   //  join_sem_cnxt.~SemanticContext();
   return ret;
+}
+void AstJoin::GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                            AstNode* joined_root) {
+  left_table_->GetJoinedRoot(table_joined_root, this);
+  right_table_->GetJoinedRoot(table_joined_root, this);
+}
+ErrorNo AstJoin::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  PushDownConditionContext* cur_pdccnxt = new PushDownConditionContext();
+  cur_pdccnxt->sub_expr_info_ = pdccnxt->sub_expr_info_;
+  if (NULL != join_condition_) {
+    cur_pdccnxt->GetSubExprInfo(
+        reinterpret_cast<AstJoinCondition*>(join_condition_)->condition_);
+  }
+
+  cur_pdccnxt->from_tables_.clear();
+  PushDownConditionContext* child_pdccnxt = new PushDownConditionContext();
+  child_pdccnxt->sub_expr_info_ = cur_pdccnxt->sub_expr_info_;
+  child_pdccnxt->from_tables_.clear();
+  left_table_->PushDownCondition(child_pdccnxt);
+  cur_pdccnxt->from_tables_.insert(child_pdccnxt->from_tables_.begin(),
+                                   child_pdccnxt->from_tables_.end());
+
+  child_pdccnxt->from_tables_.clear();
+  right_table_->PushDownCondition(child_pdccnxt);
+  cur_pdccnxt->from_tables_.insert(child_pdccnxt->from_tables_.begin(),
+                                   child_pdccnxt->from_tables_.end());
+
+  cur_pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+
+  pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
+                               cur_pdccnxt->from_tables_.end());
+  return eOK;
 }
 
 AstWhereClause::AstWhereClause(AstNodeType ast_node_type, AstNode* expr)
@@ -771,6 +924,18 @@ void AstColumn::RecoverExprName(string& name) {
   return;
 }
 
+/**
+ * because GetRefTable from where clause, so there couldn't be AST_COLUMN_ALL or
+ * AST_COLUMN_ALL_ALL
+ * relation_name_=="NULL" is illegal, but "NULL_AGG" means for aggregation, so
+ * it's legal
+ */
+void AstColumn::GetRefTable(set<string>& ref_table) {
+  assert(AST_COLUMN_ALL != ast_node_type_ &&
+         AST_COLUMN_ALL_ALL != ast_node_type_);
+  assert(relation_name_ != "NULL");
+  ref_table.insert(relation_name_);
+}
 AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
                              AstNode* select_list, AstNode* from_list,
                              AstNode* where_clause, AstNode* groupby_clause,
@@ -942,4 +1107,19 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   sem_cnxt->RebuildTableColumn();
   sem_cnxt->PrintContext();
   return ret;
+}
+
+ErrorNo AstSelectStmt::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  if (NULL == pdccnxt) {
+    pdccnxt = new PushDownConditionContext();
+  }
+  if (NULL != where_clause_) {
+    AstWhereClause* where_clause =
+        reinterpret_cast<AstWhereClause*>(where_clause_);
+    pdccnxt->GetSubExprInfo(where_clause->expr_);
+  }
+  from_list_->PushDownCondition(pdccnxt);
+
+  //  from_list_->Print();
+  return eOK;
 }

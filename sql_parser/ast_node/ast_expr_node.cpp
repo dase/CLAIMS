@@ -171,6 +171,11 @@ void AstExprUnary::ReplaceAggregation(AstNode*& agg_column,
   }
   return;
 }
+void AstExprUnary::GetRefTable(set<string>& ref_table) {
+  if (NULL != arg0_) {
+    arg0_->GetRefTable(ref_table);
+  }
+}
 AstExprCalBinary::AstExprCalBinary(AstNodeType ast_node_type,
                                    std::string expr_type, AstNode* arg0,
                                    AstNode* arg1)
@@ -274,6 +279,24 @@ void AstExprCalBinary::ReplaceAggregation(AstNode*& agg_column,
   }
 }
 
+void AstExprCalBinary::GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and) {
+  if (is_top_and && expr_type_ == "AND") {
+    arg0_->GetSubExpr(sub_expr, is_top_and);
+    arg1_->GetSubExpr(sub_expr, is_top_and);
+  } else {
+    assert(expr_type_ != "AND");
+    is_top_and = false;
+    sub_expr.push_back(this);
+  }
+}
+void AstExprCalBinary::GetRefTable(set<string>& ref_table) {
+  if (NULL != arg0_) {
+    arg0_->GetRefTable(ref_table);
+  }
+  if (NULL != arg1_) {
+    arg1_->GetRefTable(ref_table);
+  }
+}
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string expr_type,
                                    AstNode* arg0, AstNode* arg1)
     : AstNode(ast_node_type),
@@ -385,6 +408,15 @@ void AstExprCmpBinary::ReplaceAggregation(AstNode*& agg_column,
     agg_column = NULL;
   }
 }
+void AstExprCmpBinary::GetRefTable(set<string>& ref_table) {
+  if (NULL != arg0_) {
+    arg0_->GetRefTable(ref_table);
+  }
+  if (NULL != arg1_) {
+    arg1_->GetRefTable(ref_table);
+  }
+}
+
 AstExprList::AstExprList(AstNodeType ast_node_type, AstNode* expr,
                          AstNode* next)
     : AstNode(ast_node_type), expr_(expr), next_(next) {}
@@ -453,6 +485,15 @@ void AstExprList::ReplaceAggregation(AstNode*& agg_column,
     agg_column = NULL;
   }
 }
+void AstExprList::GetRefTable(set<string>& ref_table) {
+  if (NULL != expr_) {
+    expr_->GetRefTable(ref_table);
+  }
+  if (NULL != next_) {
+    next_->GetRefTable(ref_table);
+  }
+}
+
 AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
                          AstNode* arg0, AstNode* arg1, AstNode* arg2)
     : AstNode(ast_node_type),
@@ -563,5 +604,16 @@ void AstExprFunc::ReplaceAggregation(AstNode*& agg_column,
       arg2_ = agg_column;
     }
     agg_column = NULL;
+  }
+}
+void AstExprFunc::GetRefTable(set<string>& ref_table) {
+  if (NULL != arg0_) {
+    arg0_->GetRefTable(ref_table);
+  }
+  if (NULL != arg1_) {
+    arg1_->GetRefTable(ref_table);
+  }
+  if (NULL != arg2_) {
+    arg2_->GetRefTable(ref_table);
   }
 }

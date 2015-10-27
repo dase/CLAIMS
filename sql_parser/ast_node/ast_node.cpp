@@ -33,14 +33,15 @@
 #include <set>
 #include <string>
 #include <utility>
-
+#include <vector>
 #include "./ast_select_stmt.h"
+#include "./ast_expr_node.h"
 using std::cout;
 using std::setw;
 using std::endl;
 using std::string;
 using std::endl;
-
+using std::vector;
 AstNode::AstNode(AstNodeType ast_node_type) : ast_node_type_(ast_node_type) {}
 
 AstNode::~AstNode() {}
@@ -68,7 +69,16 @@ void AstNode::ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                                  bool is_select) {
   cout << "this is in ast base node!" << endl;
 }
-
+void AstNode::GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and) {
+  is_top_and = false;
+  sub_expr.push_back(this);
+  cout << "GetSubExpr ast node type is : " << ast_node_type_ << endl;
+}
+void AstNode::GetRefTable(set<string>& ref_table) { return; }
+void GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                   AstNode* joined_root) {
+  return;
+}
 void AstStmtList::Print(int level) const {
   cout << setw(level * 8) << " "
        << "|stmt list|" << endl;
@@ -92,6 +102,16 @@ ErrorNo AstStmtList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   return eOK;
 }
+ErrorNo AstStmtList::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  if (NULL != stmt_) {
+    stmt_->PushDownCondition(pdccnxt);
+  }
+  if (NULL != next_) {
+    next_->PushDownCondition(pdccnxt);
+  }
+  return eOK;
+}
+
 SemanticContext::SemanticContext() {
   tables_.clear();
   column_to_table_.clear();
@@ -373,4 +393,65 @@ void SemanticContext::PrintContext() {
   }
   cout << endl;
   cout << "---------------------\n" << endl;
+}
+
+PushDownConditionContext::PushDownConditionContext() { from_tables_.clear(); }
+bool PushDownConditionContext::IsTableSubSet(set<string>& expr_tables,
+                                             set<string>& from_tables) {
+  for (auto it = expr_tables.begin(); it != expr_tables.end(); ++it) {
+    if (from_tables.count(*it) == 0) {
+      return false;
+    }
+  }
+  return true;
+}
+void PushDownConditionContext::SetCondition(set<AstNode*>& equal_join_condi,
+                                            set<AstNode*>& normal_condi) {
+  for (int i = 0; i < sub_expr_info_.size(); ++i) {
+    if (sub_expr_info_[i]->is_set == false &&
+        IsTableSubSet(sub_expr_info_[i]->ref_table_, from_tables_)) {
+      if (kIsEqualCondition == sub_expr_info_[i]->sub_expr_type_) {
+        equal_join_condi.insert(sub_expr_info_[i]->sub_expr_);
+      } else {
+        normal_condi.insert(sub_expr_info_[i]->sub_expr_);
+      }
+      sub_expr_info_[i]->is_set = true;
+    }
+  }
+}
+bool PushDownConditionContext::IsEqualJoinCondition(AstNode* sub_expr) {
+  if (sub_expr->ast_node_type() == AST_EXPR_CMP_BINARY) {
+    AstExprCmpBinary* cmp_expr = reinterpret_cast<AstExprCmpBinary*>(sub_expr);
+    if (cmp_expr->arg0_->ast_node_type() == AST_COLUMN &&
+        cmp_expr->arg1_->ast_node_type() == AST_COLUMN) {
+      return true;
+    }
+  }
+  return false;
+}
+SubExprType PushDownConditionContext::GetSubExprType(AstNode* sub_expr,
+                                                     int ref_table_num) {
+  if (ref_table_num == 0) {
+    return kNoneTable;
+  } else if (ref_table_num == 1) {
+    return kSingleTable;
+  } else if (ref_table_num == 2 && IsEqualJoinCondition(sub_expr)) {
+    return kIsEqualCondition;
+  }
+  return kMoreTable;
+}
+
+void PushDownConditionContext::GetSubExprInfo(AstNode* expr) {
+  vector<AstNode*> sub_expr_;
+  sub_expr_.clear();
+  expr->GetSubExpr(sub_expr_, true);
+  set<string> ref_table;
+  SubExprType sub_expr_type;
+  for (int i = 0; i < sub_expr_.size(); ++i) {
+    ref_table.clear();
+    sub_expr_[i]->GetRefTable(ref_table);
+    sub_expr_type = GetSubExprType(sub_expr_[i], ref_table.size());
+    sub_expr_info_.push_back(
+        new SubExprInfo(sub_expr_[i], ref_table, sub_expr_type));
+  }
 }

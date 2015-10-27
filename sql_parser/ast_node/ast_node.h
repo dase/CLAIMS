@@ -30,10 +30,9 @@
 #include <set>
 #include <vector>
 #include <utility>
+using std::vector;
 using std::pair;
 using std::map;
-using std::multimap;
-using std::string;
 using std::multimap;
 using std::set;
 using std::string;
@@ -138,6 +137,13 @@ enum ErrorNoType {
   eColumnAllShouldNotInOtherClause,
   eMoreColumnsInSelectHaveALLALL,
 };
+// the order should be keep
+enum SubExprType {
+  kSingleTable,
+  kIsEqualCondition,
+  kMoreTable,
+  kNoneTable,
+};
 const int TAB_SIZE = 4;
 class AstNode;
 /**
@@ -194,6 +200,31 @@ class SemanticContext {
   multimap<string, string> column_to_table_;
   set<string> tables_;
 };
+class PushDownConditionContext {
+ public:
+  struct SubExprInfo {
+    AstNode* sub_expr_;
+    set<string> ref_table_;
+    SubExprType sub_expr_type_;
+    bool is_set;
+    SubExprInfo(AstNode* sub_expr, set<string> ref_table,
+                SubExprType sub_expr_type)
+        : sub_expr_(sub_expr),
+          ref_table_(ref_table),
+          sub_expr_type_(sub_expr_type),
+          is_set(false) {}
+  };
+  PushDownConditionContext();
+  void GetSubExprInfo(AstNode* expr);
+  SubExprType GetSubExprType(AstNode* sub_expr, int ref_table_num);
+  bool IsEqualJoinCondition(AstNode* sub_expr);
+  bool IsTableSubSet(set<string>& expr_tables, set<string>& from_tables);
+  void SetCondition(set<AstNode*>& equal_join_condi,
+                    set<AstNode*>& normal_condi);
+  std::vector<SubExprInfo*> sub_expr_info_;
+  set<string> from_tables_;
+};
+
 /**
  * @brief The basic data structure of other AST nodes.
  */
@@ -209,6 +240,13 @@ class AstNode {
   virtual void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                                   bool is_select);
   AstNodeType ast_node_type();
+  virtual void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
+  virtual void GetRefTable(set<string>& ref_table);
+  virtual void GetJoinedRoot(map<string, AstNode*> table_joined_root,
+                             AstNode* joined_root){};
+
+  virtual ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt){};
+
   AstNodeType ast_node_type_;
   string expr_str_;
 };
@@ -230,6 +268,7 @@ class AstStmtList : public AstNode {
   ~AstStmtList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   AstNode* stmt_;
   AstNode* next_;
 };
