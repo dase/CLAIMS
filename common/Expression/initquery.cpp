@@ -643,11 +643,11 @@ void InitExprAtPhysicalPlan(QNode *node)
 		{
 			QExpr_binary * cmpnode=(QExpr_binary *)(node);
 			cmpnode->FuncId=Exec_cmp;
-			cmpnode->actual_type=t_boolean;//
 			InitExprAtPhysicalPlan(cmpnode->lnext);
 			InitExprAtPhysicalPlan(cmpnode->rnext);
 			cmpnode->function_call=ExectorFunction::operator_function[cmpnode->actual_type][cmpnode->op_type];
-			cmpnode->type_cast_func=TypeCast::type_cast_func[cmpnode->actual_type][cmpnode->return_type];
+//			cmpnode->actual_type=t_boolean;//
+			cmpnode->type_cast_func=TypeCast::type_cast_func[t_boolean][cmpnode->return_type];
 			cmpnode->value=memalign(cacheline_size,cmpnode->length);
 		}break;
 		case t_qexpr_unary:

@@ -136,7 +136,7 @@ BlockStreamIteratorBase* LogicalProject::GetPhysicalPlan(
   BlockStreamIteratorBase* child = child_->GetPhysicalPlan(block_size);
   BlockStreamProjectIterator::State state;
 
-  // assign some attributes to the state
+  // assign some attributes to the state_
   state.block_size_ = block_size;
   state.child_ = child;
   state.input_ = GetSchema(child_plan_context.attribute_list_);

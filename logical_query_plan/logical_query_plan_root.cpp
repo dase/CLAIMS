@@ -33,7 +33,6 @@
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../physical_query_plan/BlockStreamExpander.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/BlockStreamLimit.h"
 #include "../Resource/NodeTracker.h"
@@ -41,7 +40,8 @@
 #include "../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
 #include "../physical_query_plan/BlockStreamPrint.h"
 #include "../physical_query_plan/BlockStreamResultCollector.h"
-#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/exchange_merger.h"
+#include "../physical_query_plan/expander.h"
 namespace claims {
 namespace logical_query_plan {
 
@@ -89,7 +89,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     is_exchange_need = true;
 
     // add BlockStreamExpander iterator into physical plan
-    BlockStreamExpander::State expander_state_lower;
+    Expander::State expander_state_lower;
     expander_state_lower.block_count_in_buffer_ = 10;
     expander_state_lower.block_size_ = block_size;
     expander_state_lower.init_thread_count_ =
@@ -98,10 +98,10 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     expander_state_lower.schema_ =
         GetSchema(child_plan_context.attribute_list_);
     BlockStreamIteratorBase* expander_lower =
-        new BlockStreamExpander(expander_state_lower);
+        new Expander(expander_state_lower);
 
     // add ExchangeEpoll iterator into physical plan
-    ExpandableBlockStreamExchangeEpoll::State state;
+    ExchangeMerger::State state;
     state.block_size_ = block_size;
     state.child_ = expander_lower;  // child_iterator;
     state.exchange_id_ =
@@ -112,10 +112,10 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     std::vector<NodeID> lower_id_list =
         GetInvolvedNodeID(child_plan_context.plan_partitioner_);
     state.lower_id_list_ = lower_id_list;
-    child_iterator = new ExpandableBlockStreamExchangeEpoll(state);
+    child_iterator = new ExchangeMerger(state);
   }
 
-  BlockStreamExpander::State expander_state;
+  Expander::State expander_state;
   expander_state.block_count_in_buffer_ = 10;
   expander_state.block_size_ = block_size;
   if (is_exchange_need)
@@ -125,7 +125,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
   expander_state.child_ = child_iterator;
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
-  BlockStreamIteratorBase* expander = new BlockStreamExpander(expander_state);
+  BlockStreamIteratorBase* expander = new Expander(expander_state);
 
   BlockStreamIteratorBase* middle_tier;
   if (!limit_constraint_.CanBeOmitted()) {
@@ -217,7 +217,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
        * */
       physical_plan.cost += physical_plan.plan_context_.GetAggregatedDatasize();
 
-      ExpandableBlockStreamExchangeEpoll::State state;
+      ExchangeMerger::State state;
       state.block_size_ = block_size;
       state.child_ = physical_plan.plan;  // child_iterator;
       state.exchange_id_ =
@@ -228,7 +228,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
       state.lower_id_list_ =
           GetInvolvedNodeID(physical_plan.plan_context_.plan_partitioner_);
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(state);
+          new ExchangeMerger(state);
       physical_plan.plan = exchange;
     }
   }
@@ -276,7 +276,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
        * TODO: implement OneToOne Exchange
        * */
 
-      ExpandableBlockStreamExchangeEpoll::State state;
+      ExchangeMerger::State state;
       state.block_size_ = block_size;
       state.child_ = best_plan.plan;  // child_iterator;
       state.exchange_id_ =
@@ -315,7 +315,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
       state.lower_id_list_ = lower_id_list;
 
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(state);
+          new ExchangeMerger(state);
       best_plan.plan = exchange;
       best_plan.cost += best_plan.plan_context_.GetAggregatedDatasize();
 

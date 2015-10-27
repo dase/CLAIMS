@@ -86,10 +86,10 @@ int main_ld (int argc, char** argv)
 	ExpandableBlockStreamRandomDiskAccess::State ebsrda_state("/home/claims/temp/Uniform_0_9999.column", ebssc, d_schema, i_schema, block_size);
 	BlockStreamIteratorBase* ebsrda = new ExpandableBlockStreamRandomDiskAccess(ebsrda_state);
 
-	BlockStreamExpander::State bse_state1(d_schema,ebsscsd,thread_count,block_size,expander_buffer);
-	BlockStreamIteratorBase* bse1=new BlockStreamExpander(bse_state1);
-	BlockStreamExpander::State bse_state2(d_schema,ebsrda,thread_count,block_size,expander_buffer);
-	BlockStreamIteratorBase* bse2=new BlockStreamExpander(bse_state2);
+	Expander::State bse_state1(d_schema,ebsscsd,thread_count,block_size,expander_buffer);
+	BlockStreamIteratorBase* bse1=new Expander(bse_state1);
+	Expander::State bse_state2(d_schema,ebsrda,thread_count,block_size,expander_buffer);
+	BlockStreamIteratorBase* bse2=new Expander(bse_state2);
 
 	BlockStreamPerformanceTest::State bspt_state(d_schema, bse1, bse2, block_size, 1000);
 	BlockStreamIteratorBase* bspt = new BlockStreamPerformanceTest(bspt_state);

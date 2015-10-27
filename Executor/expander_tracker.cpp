@@ -1,11 +1,9 @@
 /*
- * ExpanderTracker.cpp
+ * expander_tracker.cpp
  *
  *  Created on: Mar 12, 2014
  *      Author: wangli
  */
-
-#include "ExpanderTracker.h"
 
 #include <glog/logging.h>
 #include <stdio.h>
@@ -13,6 +11,7 @@
 #include <pthread.h>
 #include "../Config.h"
 #include "../common/ids.h"
+#include "expander_tracker.h"
 
 #define DECISION_SHRINK 0
 #define DECISION_EXPAND 1
@@ -20,9 +19,10 @@
 
 #define THRESHOLD 0.1
 #define THRESHOLD_EMPTY (THRESHOLD)
-#define THRESHOLD_FULL (1-THRESHOLD)
+#define THRESHOLD_FULL (1 - THRESHOLD)
 
-#define SWITCHER(SWITCH,CAUSE) if (SWITCH) CAUSE;
+#define SWITCHER(SWITCH, CAUSE) \
+  if (SWITCH) CAUSE;
 
 ///**
 // * Ideally, this should be guaranteed by resource manager.
@@ -57,8 +57,7 @@ bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,
     assert(false);
     lock_.release();
     return false;
-  }
-  else {
+  } else {
     ExpandedThreadStatus status;
     status.call_back_ = false;
     id_to_status_[id] = status;
@@ -68,12 +67,11 @@ bool ExpanderTracker::registerNewExpandedThreadStatus(expanded_thread_id id,
     assert(false);
     lock_.release();
     return false;
-  }
-  else {
+  } else {
     thread_id_to_expander_id_[id] = exp_id;
 
-    if (expander_id_to_expand_shrink_.find(exp_id)
-        == expander_id_to_expand_shrink_.cend()) {
+    if (expander_id_to_expand_shrink_.find(exp_id) ==
+        expander_id_to_expand_shrink_.cend()) {
       printf("error!  not exists: expander_id = %d\n", exp_id);
       assert(false);
     }
@@ -93,13 +91,12 @@ bool ExpanderTracker::deleteExpandedThreadStatus(expanded_thread_id id) {
     assert(false);
     lock_.release();
     return false;
-  }
-  else {
+  } else {
     id_to_status_.erase(id);
   }
-////		log_->log("[ExpanderTracker]: %lx is delete!\n",id);
-//		lock_.release();
-//		return true;
+  ////		log_->log("[ExpanderTracker]: %lx is delete!\n",id);
+  //		lock_.release();
+  //		return true;
 
   if (thread_id_to_expander_id_.find(id) == thread_id_to_expander_id_.end()) {
     assert(false);
@@ -110,9 +107,9 @@ bool ExpanderTracker::deleteExpandedThreadStatus(expanded_thread_id id) {
   thread_id_to_expander_id_.erase(id);
   lock_.release();
   return true;
-
 }
-bool ExpanderTracker::isExpandedThreadCallBack(expanded_thread_id id) {	// if this thread want to exit, return true
+bool ExpanderTracker::isExpandedThreadCallBack(
+    expanded_thread_id id) {  // if this thread want to exit, return true
   lock_.acquire();
   if (id_to_status_.find(id) != id_to_status_.end()) {
     bool ret = id_to_status_[id].call_back_;
@@ -128,8 +125,7 @@ bool ExpanderTracker::callbackExpandedThread(expanded_thread_id id) {
     if (id_to_status_[id].call_back_ == true) {
       lock_.release();
       return false;
-    }
-    else {
+    } else {
       id_to_status_[id].call_back_ = true;
       lock_.release();
       return true;
@@ -141,17 +137,16 @@ bool ExpanderTracker::callbackExpandedThread(expanded_thread_id id) {
 
 bool ExpanderTracker::addNewStageEndpoint(expanded_thread_id tid,
                                           LocalStageEndPoint endpoint) {
-
   lock_.acquire();
   if (thread_id_to_expander_id_.find(tid) == thread_id_to_expander_id_.end()) {
     lock_.release();
-//		assert(false);
+    //		assert(false);
     return false;
   }
   ExpanderID expender_id = thread_id_to_expander_id_[tid];
 
-  if (expander_id_to_status_.find(expender_id)
-      == expander_id_to_status_.end()) {
+  if (expander_id_to_status_.find(expender_id) ==
+      expander_id_to_status_.end()) {
     lock_.release();
     assert(false);
     return false;
@@ -165,15 +160,15 @@ PerformanceInfo* ExpanderTracker::getPerformanceInfo(expanded_thread_id tid) {
   if (thread_id_to_expander_id_.find(tid) == thread_id_to_expander_id_.end()) {
     lock_.release();
     assert(false && "thread_id_to_expander_id_ don't have this element");
-//		return false;
+    //		return false;
   }
   ExpanderID expender_id = thread_id_to_expander_id_[tid];
 
-  if (expander_id_to_status_.find(expender_id)
-      == expander_id_to_status_.end()) {
+  if (expander_id_to_status_.find(expender_id) ==
+      expander_id_to_status_.end()) {
     lock_.release();
     assert(false && "expander_id_to_status_ don't have this element");
-//		return false;
+    //		return false;
   }
   PerformanceInfo* ret = &expander_id_to_status_[expender_id]->perf_info;
   lock_.release();
@@ -195,70 +190,70 @@ ExpanderID ExpanderTracker::registerNewExpander(
   return expander_id;
 }
 void ExpanderTracker::unregisterExpander(ExpanderID expander_id) {
-
   lock_.acquire();
 
   for (boost::unordered_map<expanded_thread_id, ExpanderID>::iterator it =
-      thread_id_to_expander_id_.begin(); it != thread_id_to_expander_id_.end();
-      it++) {
-//		assert(it->second!=expander_id);
+           thread_id_to_expander_id_.begin();
+       it != thread_id_to_expander_id_.end(); it++) {
+    //		assert(it->second!=expander_id);
   }
-//	delete expander_id_to_status_[expander_id];
+  //	delete expander_id_to_status_[expander_id];
   expander_id_to_status_.erase(expander_id);
-  LOG(INFO) << "erased expander id:"<<expander_id << " from expander_id_to_status_"<< std::endl;
+  LOG(INFO) << "erased expander id:" << expander_id
+            << " from expander_id_to_status_" << std::endl;
   expander_id_to_expand_shrink_.erase(expander_id);
   lock_.release();
-
 }
 
-ExpanderTracker::ExpanderStatus::~ExpanderStatus() {
-}
+ExpanderTracker::ExpanderStatus::~ExpanderStatus() {}
 
 void ExpanderTracker::ExpanderStatus::addNewEndpoint(
     LocalStageEndPoint new_end_point) {
-//	lock.acquire();
-//	if(pending_endpoints.empty()){
-//		pending_endpoints.push(new_end_point);
-//		lock.release();
-//		return;
-//	}
-//	//if the endpoint is exchange or state_stage_start, then the segment might step into a new local stage.
-//	switch(new_end_point.type){
-//	case endpoint_state_stage_start:{
-//		assert(!pending_endpoints.empty());
-//		LocalStageEndPoint top=pending_endpoints.top();
-//		pending_endpoints.pop();
-//		current_stage=local_stage(new_end_point,top);
-//		break;
-//	}
-//	case endpoint_exchange_:{
-//		assert(!pending_endpoints.empty());
-//		LocalStageEndPoint top=pending_endpoints.top();
-//		pending_endpoints.pop();
-//		current_stage=local_stage(new_end_point,top);
-//		break;
-//	}
-//	default:{
-//		pending_endpoints.push(new_end_point);
-//		lock.release();
-//		return;
-//	}
-//	}
-//
-//	lock.release();
+  //	lock.acquire();
+  //	if(pending_endpoints.empty()){
+  //		pending_endpoints.push(new_end_point);
+  //		lock.release();
+  //		return;
+  //	}
+  //	//if the endpoint is exchange or state_stage_start, then the segment
+  //might step into a new local stage.
+  //	switch(new_end_point.type){
+  //	case endpoint_state_stage_start:{
+  //		assert(!pending_endpoints.empty());
+  //		LocalStageEndPoint top=pending_endpoints.top();
+  //		pending_endpoints.pop();
+  //		current_stage=local_stage(new_end_point,top);
+  //		break;
+  //	}
+  //	case endpoint_exchange_:{
+  //		assert(!pending_endpoints.empty());
+  //		LocalStageEndPoint top=pending_endpoints.top();
+  //		pending_endpoints.pop();
+  //		current_stage=local_stage(new_end_point,top);
+  //		break;
+  //	}
+  //	default:{
+  //		pending_endpoints.push(new_end_point);
+  //		lock.release();
+  //		return;
+  //	}
+  //	}
+  //
+  //	lock.release();
 
   lock.acquire();
   if (new_end_point.type == stage_desc) {
     pending_endpoints.push(new_end_point);
-//		printf("=======stage desc:%s\n",new_end_point.end_point_name.c_str());
-  }
-  else {
+    //		printf("=======stage
+    //desc:%s\n",new_end_point.end_point_name.c_str());
+  } else {
     /*new_end_point.type==stage_end*/
     LocalStageEndPoint top = pending_endpoints.top();
     pending_endpoints.pop();
     current_stage = local_stage(new_end_point, top);
-//		perf_info=PerformanceInfo();
-//		printf("The execution is in a new stage: %s ---> %s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
+    //		perf_info=PerformanceInfo();
+    //		printf("The execution is in a new stage: %s --->
+    //%s\n",new_end_point.end_point_name.c_str(),top.end_point_name.c_str());
   }
   lock.release();
 }
@@ -273,31 +268,33 @@ ExpanderTracker::segment_status ExpanderTracker::getSegmentStatus(
       return seg_under_producing;
     }
     case local_stage::from_buffer: {
-      double utilization_ratio = current_stage.dataflow_src_.monitorable_buffer
-          ->getBufferUsage();
+      double utilization_ratio =
+          current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
       if (utilization_ratio > THRESHOLD_FULL + refine)
         return seg_under_producing;
-      else if (utilization_ratio < THRESHOLD_EMPTY - refine) return seg_over_producing;
+      else if (utilization_ratio < THRESHOLD_EMPTY - refine)
+        return seg_over_producing;
       return seg_normal_producing;
     }
     case local_stage::to_buffer: {
-      double utilization_ratio = current_stage.dataflow_desc_.monitorable_buffer
-          ->getBufferUsage();
+      double utilization_ratio =
+          current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
       if (utilization_ratio > THRESHOLD_FULL + refine)
         return seg_over_producing;
-      else if (utilization_ratio < THRESHOLD_EMPTY - refine) return seg_under_producing;
+      else if (utilization_ratio < THRESHOLD_EMPTY - refine)
+        return seg_under_producing;
       return seg_normal_producing;
     }
     case local_stage::buffer_to_buffer: {
-      double src_ratio = current_stage.dataflow_src_.monitorable_buffer
-          ->getBufferUsage();
-      double desc_ratio = current_stage.dataflow_desc_.monitorable_buffer
-          ->getBufferUsage();
-      if (src_ratio < THRESHOLD_EMPTY - refine
-          || desc_ratio > THRESHOLD_FULL + refine)
+      double src_ratio =
+          current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
+      double desc_ratio =
+          current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
+      if (src_ratio < THRESHOLD_EMPTY - refine ||
+          desc_ratio > THRESHOLD_FULL + refine)
         return seg_over_producing;
-      else if (src_ratio > THRESHOLD_FULL - refine
-          && desc_ratio < THRESHOLD_EMPTY + refine)
+      else if (src_ratio > THRESHOLD_FULL - refine &&
+               desc_ratio < THRESHOLD_EMPTY + refine)
         return seg_under_producing;
       else
         return seg_normal_producing;
@@ -312,29 +309,37 @@ int ExpanderTracker::decideExpandingOrShrinking(
     local_stage& current_stage, unsigned int current_degree_of_parallelism,
     bool print) {
   /**
-   * In the initial implementation, if all expanded threads are shrunk and the condition
-   *  for expanding will never be triggered due to the exhaust of input data-flow, then
+   * In the initial implementation, if all expanded threads are shrunk and the
+   *condition
+   *  for expanding will never be triggered due to the exhaust of input
+   *data-flow, then
    *  the remaining work will never be done.
    *
-   *  To avoid this problem, we should first check whether the dataflow is exhausted. If so, we should guarantee that
-   *  there is at least one expanded threads to process the remaining data in buffer.
+   *  To avoid this problem, we should first check whether the dataflow is
+   *exhausted. If so, we should guarantee that
+   *  there is at least one expanded threads to process the remaining data in
+   *buffer.
    */
 
   /*
-   * The following block will make decision randomly, which is very helpful to vervify the
+   * The following block will make decision randomly, which is very helpful to
+   * vervify the
    * correctness of the elastic iterator model.
    */
-//	{
-//		int ret=rand()%2;// overwrite the decide with a random seed to test the correctness of shrinkage and expansion.
-//
-//		if(ret==DECISION_EXPAND){
-//			return expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
-//		}
-//		if(ret==DECISION_SHRINK){
-//			return shrinkIfNotExceedTheMinDegreeOfParallelims(current_degree_of_parallelism);
-//		}
-//		return ret;
-//	}
+  //	{
+  //		int ret=rand()%2;// overwrite the decide with a random seed to test
+  //the correctness of shrinkage and expansion.
+  //
+  //		if(ret==DECISION_EXPAND){
+  //			return
+  //expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
+  //		}
+  //		if(ret==DECISION_SHRINK){
+  //			return
+  //shrinkIfNotExceedTheMinDegreeOfParallelims(current_degree_of_parallelism);
+  //		}
+  //		return ret;
+  //	}
 
   int ret;
   switch (current_stage.type_) {
@@ -346,16 +351,16 @@ int ExpanderTracker::decideExpandingOrShrinking(
     case local_stage::no_buffer: {
       ret = DECISION_KEEP;
       /**
-       * Currently, for the stage without synchronization buffer, the workload is not known and hence
+       * Currently, for the stage without synchronization
+       * all_merged_data_buffer_, the workload is not known and hence
        * maximum degree of parallelism is used.
        */
       if (current_degree_of_parallelism == Config::max_degree_of_parallelism) {
         ret = DECISION_KEEP;
         break;
         return DECISION_KEEP;
-      }
-      else if (current_degree_of_parallelism
-          < Config::max_degree_of_parallelism) {
+      } else if (current_degree_of_parallelism <
+                 Config::max_degree_of_parallelism) {
         ret = DECISION_EXPAND;
         break;
         return DECISION_EXPAND;
@@ -366,21 +371,20 @@ int ExpanderTracker::decideExpandingOrShrinking(
     }
     case local_stage::from_buffer: {
       ret = DECISION_KEEP;
-//		break;
+      //		break;
       SWITCHER(
           print,
           log_->log(
               "Buffer usage: %lf=====>N/A",
               current_stage.dataflow_src_.monitorable_buffer->getBufferUsage()))
-      const double current_usage = current_stage.dataflow_src_
-          .monitorable_buffer->getBufferUsage();
+      const double current_usage =
+          current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
       if (current_stage.dataflow_src_.monitorable_buffer->inputComplete()) {
         if (current_degree_of_parallelism == 0) {
           ret = DECISION_EXPAND;
           break;
           return DECISION_EXPAND;
-        }
-        else {
+        } else {
           ret = DECISION_KEEP;
           break;
           return DECISION_KEEP;
@@ -390,45 +394,39 @@ int ExpanderTracker::decideExpandingOrShrinking(
         ret = DECISION_EXPAND;
         break;
         return DECISION_EXPAND;
-      }
-      else if (current_usage < THRESHOLD_EMPTY) {
+      } else if (current_usage < THRESHOLD_EMPTY) {
         ret = DECISION_SHRINK;
         break;
         return DECISION_SHRINK;
-      }
-      else {
+      } else {
         ret = DECISION_KEEP;
         break;
         return DECISION_KEEP;
       }
     }
     case local_stage::to_buffer: {
-      SWITCHER(
-          print,
-          log_->log(
-              "Buffer usage: N/A=====>%lf",
-              current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()));
-      const double current_usage = current_stage.dataflow_desc_
-          .monitorable_buffer->getBufferUsage();
+      SWITCHER(print, log_->log("Buffer usage: N/A=====>%lf",
+                                current_stage.dataflow_desc_.monitorable_buffer
+                                    ->getBufferUsage()));
+      const double current_usage =
+          current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
       if (current_usage > THRESHOLD_FULL) {
         ret = DECISION_SHRINK;
         break;
         return DECISION_SHRINK;
-      }
-      else if (current_usage < THRESHOLD_EMPTY) {
-//			if(current_degree_of_parallelism>=MAX_DEGREE_OF_PARALLELISM)
-//				return DECISION_KEEP;
-//			else
+      } else if (current_usage < THRESHOLD_EMPTY) {
+        //			if(current_degree_of_parallelism>=MAX_DEGREE_OF_PARALLELISM)
+        //				return DECISION_KEEP;
+        //			else
         ret = DECISION_EXPAND;
         break;
         return DECISION_EXPAND;
-      }
-      else {
+      } else {
         ret = DECISION_KEEP;
         break;
         return DECISION_KEEP;
       }
-//		return DECISION_KEEP;
+      //		return DECISION_KEEP;
     }
     case local_stage::buffer_to_buffer: {
       SWITCHER(
@@ -436,19 +434,20 @@ int ExpanderTracker::decideExpandingOrShrinking(
           log_->log(
               "Buffer usage: %lf=====> %lf",
               current_stage.dataflow_src_.monitorable_buffer->getBufferUsage(),
-              current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage()))
-      const double bottom_usage = current_stage.dataflow_src_.monitorable_buffer
-          ->getBufferUsage();
-      const double top_usage = current_stage.dataflow_desc_.monitorable_buffer
-          ->getBufferUsage();
-      /* guarantee that there is at least one expanded thread when the input is complete so that the stage can be finished soon.*/
+              current_stage.dataflow_desc_.monitorable_buffer
+                  ->getBufferUsage()))
+      const double bottom_usage =
+          current_stage.dataflow_src_.monitorable_buffer->getBufferUsage();
+      const double top_usage =
+          current_stage.dataflow_desc_.monitorable_buffer->getBufferUsage();
+      /* guarantee that there is at least one expanded thread when the input is
+       * complete so that the stage can be finished soon.*/
       if (current_stage.dataflow_src_.monitorable_buffer->inputComplete()) {
         if (current_degree_of_parallelism == 0) {
           ret = DECISION_EXPAND;
           break;
           return DECISION_EXPAND;
-        }
-        else {
+        } else {
           ret = DECISION_KEEP;
           break;
           return DECISION_KEEP;
@@ -456,9 +455,9 @@ int ExpanderTracker::decideExpandingOrShrinking(
       }
 
       if (bottom_usage > THRESHOLD_FULL && top_usage < THRESHOLD_EMPTY) {
-//			if(current_degree_of_parallelism>=MAX_DEGREE_OF_PARALLELISM)
-//				return DECISION_KEEP;
-//			else
+        //			if(current_degree_of_parallelism>=MAX_DEGREE_OF_PARALLELISM)
+        //				return DECISION_KEEP;
+        //			else
         ret = DECISION_EXPAND;
         break;
         return DECISION_EXPAND;
@@ -468,7 +467,7 @@ int ExpanderTracker::decideExpandingOrShrinking(
         break;
         return DECISION_SHRINK;
       }
-//		log_->elog("The theory is not complete!\n");
+      //		log_->elog("The theory is not complete!\n");
       return DECISION_KEEP;
     }
   }
@@ -483,13 +482,12 @@ int ExpanderTracker::decideExpandingOrShrinking(
   }
 
   return ret;
-
 }
 void* ExpanderTracker::monitoringThread(void* arg) {
   if (!Config::enable_expander_adaptivity) {
     return 0;
   }
-  ExpanderTracker* Pthis = (ExpanderTracker*) arg;
+  ExpanderTracker* Pthis = (ExpanderTracker*)arg;
   int cur = 0;
   unsigned long long start_cycles = curtick();
   while (true) {
@@ -501,38 +499,45 @@ void* ExpanderTracker::monitoringThread(void* arg) {
       usleep(1000);
       continue;
     }
-//		Pthis->printStatus();
-    boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it = Pthis
-        ->expander_id_to_status_.begin();
-    for (int tmp = 0; tmp < cur; tmp++)
-      it++;
+    //		Pthis->printStatus();
+    boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
+        Pthis->expander_id_to_status_.begin();
+    for (int tmp = 0; tmp < cur; tmp++) it++;
     ExpanderID id = it->first;
 
     assert(!Pthis->expander_id_to_expand_shrink_.empty());
     bool print = true;
-//		bool print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
-//		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);// ----> Agg
-//		bool print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);  //       ---> Join
-//		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);   //  Scan --->
-//		printf("return=%d %d print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
-//		bool print=true;
-//		printf("\n");
+    //		bool
+    //print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
+    //		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);//
+    //----> Agg
+    //		bool
+    //print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);
+    ////       ---> Join
+    //		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);
+    ////  Scan --->
+    //		printf("return=%d %d
+    //print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
+    //		bool print=true;
+    //		printf("\n");
     SWITCHER(print, Pthis->log_->log("--------%d---------", id))
 
-//		if(Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()!=0)
+    //		if(Pthis->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism()!=0)
     SWITCHER(
         print,
         Pthis->log_->log(
             "Instance throughput: %lf Mbytes",
             it->second->perf_info.report_instance_performance_in_millibytes()))
-    const unsigned int current_degree_of_parallelism = Pthis
-        ->expander_id_to_expand_shrink_[it->first]->getDegreeOfParallelism();
+    const unsigned int current_degree_of_parallelism =
+        Pthis->expander_id_to_expand_shrink_[it->first]
+            ->GetDegreeOfParallelism();
     int decision = Pthis->decideExpandingOrShrinking(
         it->second->current_stage, current_degree_of_parallelism, print);
-//		if(current_degree_of_parallelism!=0&&getSegmentStatus(it->second.current_stage)==seg_normal_producing)
-//		printf("%s---->%s\t  d=%d\t %lf\n",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism,it->second->perf_info.report_instance_performance_in_millibytes());
+    //		if(current_degree_of_parallelism!=0&&getSegmentStatus(it->second.current_stage)==seg_normal_producing)
+    //		printf("%s---->%s\t  d=%d\t
+    //%lf\n",it->second->current_stage.dataflow_src_.end_point_name.c_str(),it->second->current_stage.dataflow_desc_.end_point_name.c_str(),current_degree_of_parallelism,it->second->perf_info.report_instance_performance_in_millibytes());
 
-//		printf("Desision=%d\n",decision);
+    //		printf("Desision=%d\n",decision);
     SWITCHER(
         print,
         Pthis->log_->log(
@@ -546,31 +551,25 @@ void* ExpanderTracker::monitoringThread(void* arg) {
     switch (decision) {
       case DECISION_EXPAND: {
         if (Pthis->expander_id_to_expand_shrink_[it->first]->Expand()) {
-          SWITCHER(
-              print,
-              Pthis->log_->log("=========Expanding======== %d-->%d ",
-                               current_degree_of_parallelism,
-                               current_degree_of_parallelism + 1))
-        }
-        else {
-          SWITCHER(
-              print,
-              Pthis->log_->log("=========Expanding======== Failed to expand!"))
+          SWITCHER(print,
+                   Pthis->log_->log("=========Expanding======== %d-->%d ",
+                                    current_degree_of_parallelism,
+                                    current_degree_of_parallelism + 1))
+        } else {
+          SWITCHER(print, Pthis->log_->log(
+                              "=========Expanding======== Failed to expand!"))
         }
         break;
       }
       case DECISION_SHRINK: {
         if (Pthis->expander_id_to_expand_shrink_[it->first]->Shrink()) {
-          SWITCHER(
-              print,
-              Pthis->log_->log("=========Shrinking========  %d-->%d",
-                               current_degree_of_parallelism,
-                               current_degree_of_parallelism - 1))
-        }
-        else {
-          SWITCHER(
-              print,
-              Pthis->log_->log("=========Shrinking======== Failed to shrink!"))
+          SWITCHER(print,
+                   Pthis->log_->log("=========Shrinking========  %d-->%d",
+                                    current_degree_of_parallelism,
+                                    current_degree_of_parallelism - 1))
+        } else {
+          SWITCHER(print, Pthis->log_->log(
+                              "=========Shrinking======== Failed to shrink!"))
         }
         break;
       }
@@ -579,9 +578,8 @@ void* ExpanderTracker::monitoringThread(void* arg) {
         break;
       }
     }
-//		Pthis->lock_.release();
+    //		Pthis->lock_.release();
     cur++;
-
   }
 }
 
@@ -589,8 +587,7 @@ int ExpanderTracker::expandeIfNotExceedTheMaxDegreeOfParallelism(
     int current_degree_of_parallelism) const {
   if (current_degree_of_parallelism < Config::max_degree_of_parallelism) {
     return DECISION_EXPAND;
-  }
-  else
+  } else
     return DECISION_KEEP;
 }
 
@@ -606,38 +603,41 @@ void ExpanderTracker::printStatus() {
   printf("Num. of Expanders: %d\n", expander_id_to_status_.size());
   printf("expanded_thread_id : ExpanderID\n");
   for (boost::unordered_map<expanded_thread_id, ExpanderID>::iterator it =
-      thread_id_to_expander_id_.begin(); it != thread_id_to_expander_id_.end();
-      it++) {
+           thread_id_to_expander_id_.begin();
+       it != thread_id_to_expander_id_.end(); it++) {
     printf("(%llx,%ld) ", it->first, it->second);
   }
   printf("\n");
   printf("ExpanderID : ExpanderStatus*\n");
   for (boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
-      expander_id_to_status_.begin(); it != expander_id_to_status_.end();
-      it++) {
+           expander_id_to_status_.begin();
+       it != expander_id_to_status_.end(); it++) {
     printf("(%ld,%llx) ", it->first, it->second);
   }
   printf("\n");
 
   printf("ExpanderID : ExpandabilitySrinkability*\n");
-  for (boost::unordered_map<ExpanderID, ExpandabilityShrinkability*>::iterator it =
-      expander_id_to_expand_shrink_.begin();
-      it != expander_id_to_expand_shrink_.end(); it++) {
+  for (boost::unordered_map<ExpanderID, ExpandabilityShrinkability*>::iterator
+           it = expander_id_to_expand_shrink_.begin();
+       it != expander_id_to_expand_shrink_.end(); it++) {
     printf("(%ld,%llx) ", it->first, it->second);
   }
   printf("\n");
 
   printf("expanded thread id: ExpandedThreadStatus\n");
   for (std::map<expanded_thread_id, ExpandedThreadStatus>::iterator it =
-      id_to_status_.begin(); it != id_to_status_.end(); it++) {
+           id_to_status_.begin();
+       it != id_to_status_.end(); it++) {
     printf("(%ld, %llx)", it->first, &it->second);
   }
   printf("\n");
 }
 
 bool ExpanderTracker::trackExpander(ExpanderID id) const {
-  if (expander_id_to_expand_shrink_.find(id)
-      != expander_id_to_expand_shrink_.end()) return true;
-  if (expander_id_to_status_.find(id) != expander_id_to_status_.end()) return true;
+  if (expander_id_to_expand_shrink_.find(id) !=
+      expander_id_to_expand_shrink_.end())
+    return true;
+  if (expander_id_to_status_.find(id) != expander_id_to_status_.end())
+    return true;
   return false;
 }

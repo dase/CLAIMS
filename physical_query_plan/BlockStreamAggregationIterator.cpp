@@ -9,7 +9,7 @@
 
 #include "../../Debug.h"
 #include "../../utility/rdtsc.h"
-#include "../../Executor/ExpanderTracker.h"
+#include "../Executor/expander_tracker.h"
 BlockStreamAggregationIterator::BlockStreamAggregationIterator(State state)
 :state_(state),hashtable_(0),hash_(0),bucket_cur_(0),PhysicalOperator(4,3){
 	InitExpandedStatus();

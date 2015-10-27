@@ -31,9 +31,9 @@
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
-#include "../physical_query_plan/BlockStreamExpander.h"
+#include "../physical_query_plan/expander.h"
 #include "../common/error_define.h"
-#include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
+#include "../physical_query_plan/exchange_merger.h"
 #include "../logical_query_plan/logical_cross_join.h"
 #include "../physical_query_plan/BlockStreamNestLoopJoinIterator.h"
 using namespace claims::common;
@@ -270,15 +270,15 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       break;
     }
     case kLeftBroadcast: {
-      BlockStreamExpander::State expander_state;
+      Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = left_child_->GetPhysicalPlan(blocksize);
       expander_state.schema_ = left_plan_context.GetSchema();
       BlockStreamIteratorBase* expander =
-          new BlockStreamExpander(expander_state);
-      ExpandableBlockStreamExchangeEpoll::State exchange_state;
+          new Expander(expander_state);
+      ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = blocksize;
       exchange_state.child_ = expander;
       exchange_state.exchange_id_ =
@@ -293,22 +293,22 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
           partition_schema::set_broadcast_partition();
       exchange_state.schema_ = left_plan_context.GetSchema();
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(exchange_state);
+          new ExchangeMerger(exchange_state);
       left_child_iterator_tree = exchange;
       right_child_iterator_tree = right_child_->GetPhysicalPlan(blocksize);
       break;
     }
     case kRightBroadcast: {
       left_child_iterator_tree = left_child_->GetPhysicalPlan(blocksize);
-      BlockStreamExpander::State expander_state;
+      Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = right_child_->GetPhysicalPlan(blocksize);
       expander_state.schema_ = left_plan_context.GetSchema();
       BlockStreamIteratorBase* expander =
-          new BlockStreamExpander(expander_state);
-      ExpandableBlockStreamExchangeEpoll::State exchange_state;
+          new Expander(expander_state);
+      ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = blocksize;
       exchange_state.child_ = expander;
       exchange_state.exchange_id_ =
@@ -323,7 +323,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
           partition_schema::set_broadcast_partition();
       exchange_state.schema_ = right_plan_context.GetSchema();
       BlockStreamIteratorBase* exchange =
-          new ExpandableBlockStreamExchangeEpoll(exchange_state);
+          new ExchangeMerger(exchange_state);
       right_child_iterator_tree = exchange;
       break;
     }

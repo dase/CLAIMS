@@ -244,8 +244,8 @@ bool BlockStreamSortIterator::createBlockStream(BlockStreamBase*& target)const{
 //    sema_open_finished_.set_value(0);
 //}
 //
-//BlockStreamSortIterator::BlockStreamSortIterator(State state)
-//:finished_thread_count_(0),registered_thread_count_(0),state_(state){
+//BlockStreamSortIterator::BlockStreamSortIterator(State state_)
+//:finished_thread_count_(0),registered_thread_count_(0),state_(state_){
 //    sema_open_.set_value(1);
 //    sema_open_finished_.set_value(0);
 //}
@@ -259,8 +259,8 @@ bool BlockStreamSortIterator::createBlockStream(BlockStreamBase*& target)const{
 //
 //}
 //
-//BlockStreamSortIterator::State::State(Schema* input,unsigned orderbyKey,BlockStreamIteratorBase* child,const unsigned block_size,const PartitionOffset partition_offset)
-//:input_(input),orderbyKey_(orderbyKey),child_(child),block_size_(block_size),partition_offset_(partition_offset){
+//BlockStreamSortIterator::State::State(Schema* input,unsigned orderbyKey,BlockStreamIteratorBase* child,const unsigned block_size,const PartitionOffset partition_offset_)
+//:input_(input),orderbyKey_(orderbyKey),child_(child),block_size_(block_size),partition_offset_(partition_offset_){
 //
 //}
 //

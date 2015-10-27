@@ -70,7 +70,7 @@ class LogicalFilter : public LogicalOperator {
   PlanContext GetPlanContext();
   /**
    * @brief Method description: To get the Iterator Tree from its child logical
-   *                            operator, generates a state for establishing a
+   *                            operator, generates a state_ for establishing a
    *                            physical execution plan, finally give it to its
    *                            father logical operator.
    * @param blocksize: The size of block in the CLAIMS project.
