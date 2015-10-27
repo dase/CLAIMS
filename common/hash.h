@@ -32,7 +32,7 @@
 class PartitionFunction {
 
 public:
-	enum partition_fashion{hash_f,range_f,round_robin_f};
+	enum PartitionStyle{hash_f,range_f,round_robin_f};
 	/**
 	 * Creates a new hashing object, rounding the number of buckets
 	 * \a k to the next power of two. Formally \a k will become
@@ -45,7 +45,7 @@ public:
 	PartitionFunction(){};
 	PartitionFunction(int min, int max, unsigned int k);
 	virtual ~PartitionFunction(){};
-	virtual partition_fashion getPartitionFashion()const=0;
+	virtual PartitionStyle getPartitionFashion()const=0;
 	/**
 	 * Returns the bucket number \f$n\in[0,k)\f$ for this \a value.
 	 * @param value Value to hash. Must be within bounds.
@@ -97,7 +97,7 @@ public:
 	inline unsigned int getNumberOfPartitions()const{
 		return range_;
 	}
-	partition_fashion getPartitionFashion()const;
+	PartitionStyle getPartitionFashion()const;
 private:
 	int range_;
 	unsigned cur_;
@@ -136,7 +136,7 @@ public:
 		val <<= k_;
 		return val / (max_-min_+1);
 	}
-	partition_fashion getPartitionFashion()const;
+	PartitionStyle getPartitionFashion()const;
 	unsigned getNumberOfPartitions()const{
 		return 1<<k_;
 	}
@@ -173,7 +173,7 @@ public:
 	inline unsigned int get_partition_value(const unsigned long& value)const {
 		return ((*(long*)&value-min_) & k_) >> skipbits_;
 	}
-	partition_fashion getPartitionFashion()const;
+	PartitionStyle getPartitionFashion()const;
 	inline unsigned int getNumberOfPartitions()const {
 		return (k_ >> skipbits_) + 1;
 	}
@@ -210,7 +210,7 @@ public:
 		return ((tmp*16807)%2839+(tmp*19))%range_;
 	}
 
-	partition_fashion getPartitionFashion()const;
+	PartitionStyle getPartitionFashion()const;
 	unsigned getNumberOfPartitions()const{
 		return range_;
 	}
@@ -248,7 +248,7 @@ public:
 		return boost::hash_value(value)%range_;
 	}
 
-	partition_fashion getPartitionFashion()const{
+	PartitionStyle getPartitionFashion()const{
 		return hash_f;
 	}
 	unsigned getNumberOfPartitions()const{

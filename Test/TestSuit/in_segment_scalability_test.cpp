@@ -24,26 +24,26 @@ static double lineitem_scan_self_join(){
 
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
-	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
+	std::vector<LogicalEqualJoin::JoinPair> s_ps_join_condition;
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table_right->getAttribute("N_NATIONKEY")));
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_ORDERKEY"),table_right->getAttribute("L_ORDERKEY")));
+	s_ps_join_condition.push_back(LogicalEqualJoin::JoinPair(table->getAttribute("L_ORDERKEY"),table_right->getAttribute("L_ORDERKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
 //	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("L_PARTKEY"),table->getAttribute("L_SUPPKEY")));
-	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
+	LogicalOperator* s_ps_join=new LogicalEqualJoin(s_ps_join_condition,scan,scan_right);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -62,25 +62,25 @@ static double sb_scan_self_join(){
 
 	LogicalOperator* scan_right=new LogicalScan(table_right->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
-	std::vector<EqualJoin::JoinPair> s_ps_join_condition;
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("order_no"),table_right->getAttribute("order_no")));
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("trade_dir"),table_right->getAttribute("entry_dir")));
-	s_ps_join_condition.push_back(EqualJoin::JoinPair(table->getAttribute("trade_date"),table_right->getAttribute("entry_date")));
-	LogicalOperator* s_ps_join=new EqualJoin(s_ps_join_condition,scan,scan_right);
+	std::vector<LogicalEqualJoin::JoinPair> s_ps_join_condition;
+	s_ps_join_condition.push_back(LogicalEqualJoin::JoinPair(table->getAttribute("order_no"),table_right->getAttribute("order_no")));
+	s_ps_join_condition.push_back(LogicalEqualJoin::JoinPair(table->getAttribute("trade_dir"),table_right->getAttribute("entry_dir")));
+	s_ps_join_condition.push_back(LogicalEqualJoin::JoinPair(table->getAttribute("trade_date"),table_right->getAttribute("entry_date")));
+	LogicalOperator* s_ps_join=new LogicalEqualJoin(s_ps_join_condition,scan,scan_right);
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -111,19 +111,19 @@ static double lineitem_scan_aggregation(){
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
 
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	printf("tuples %d\n",result_set->getNumberOftuples());
@@ -140,20 +140,20 @@ static double lineitem_scan_filter(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -169,25 +169,25 @@ static double sb_scan_filter(){
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 //	printf("Tuple size:%d\n",table->getProjectoin(0)->getSchema()->getTupleMaxSize());
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute("row_id"),AttributeComparator::EQ,std::string("0"));
 //	filter_condition_1.add(table->getAttribute("entry_dir"),AttributeComparator::EQ,std::string("1"));
 //	const int trade_date=20101008;
 //	filter_condition_1.add(table->getAttribute("entry_date"),AttributeComparator::GEQ,std::string("20101008"));
 //	const int sec_code=600036;
 //	filter_condition_1.add(table->getAttribute("sec_code"),AttributeComparator::EQ,std::string("600036"));
-	LogicalOperator* filter=new Filter(filter_condition_1,scan);
+	LogicalOperator* filter=new LogicalFilter(filter_condition_1,scan);
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	double ret=result_set->query_time_;
@@ -212,19 +212,19 @@ static double sb_scan_aggregation(){
 
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
 
 
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 
 	ResultSet* result_set=physical_iterator_tree->getResultSet();
 	printf("tuples %d\n",result_set->getNumberOftuples());
@@ -305,20 +305,20 @@ static void test_block_construct(){
 	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("sb");
 
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
-	scan->getDataflow();
-	BlockStreamIteratorBase* s=scan->getIteratorTree(64*1024);
-	s->print();
+	scan->GetPlanContext();
+	BlockStreamIteratorBase* s=scan->GetPhysicalPlan(64*1024);
+	s->Print();
 
 	std::vector<BlockStreamBase*> vect;
 	BlockStreamBase* block=BlockStreamBase::createBlock(table->getProjectoin(0)->getSchema(),64*1024);
-	s->open();
-	while(s->next(block));
-	s->close();
-	s->open();
+	s->Open();
+	while(s->Next(block));
+	s->Close();
+	s->Open();
 	unsigned long long int start=curtick();
-	while(s->next(block));
+	while(s->Next(block));
 	printf("time: %lf \n",getSecond(start));
-	s->close();
+	s->Close();
 
 
 

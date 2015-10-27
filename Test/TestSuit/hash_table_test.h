@@ -19,10 +19,7 @@
 
 #include "../../Catalog/Column.h"
 
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
-
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-
+#include "../../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"
 
@@ -282,8 +279,8 @@ static double projection_scan(unsigned degree_of_parallelism){
 
 
 	LogicalScan* scan=new LogicalScan(table->getProjectoin(1));
-	scan->getDataflow();
-	BlockStreamIteratorBase* warm_up_iterator=scan->getIteratorTree(1024*64);
+	scan->GetPlanContext();
+	BlockStreamIteratorBase* warm_up_iterator=scan->GetPhysicalPlan(1024*64);
 
 	ExpandableBlockStreamProjectionScan::State ps_state;
 	ps_state.block_size_=1024*64;
@@ -291,11 +288,11 @@ static double projection_scan(unsigned degree_of_parallelism){
 	ps_state.schema_=schema;
 
 	BlockStreamBase* block_for_asking=BlockStreamBase::createBlockWithDesirableSerilaizedSize(schema,64*1024);
-	warm_up_iterator->open(0);
-	while(warm_up_iterator->next(block_for_asking)){
+	warm_up_iterator->Open(0);
+	while(warm_up_iterator->Next(block_for_asking)){
 
 	}
-	warm_up_iterator->close();
+	warm_up_iterator->Close();
 
 	Arg arg;
 	arg.hash=PartitionFunctionFactory::createBoostHashFunction(nbuckets);

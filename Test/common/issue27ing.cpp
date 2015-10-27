@@ -4,29 +4,20 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
-
+// This file will not be used in current version,because it is not contained by
+// Makefile.am
 #ifndef ISSUE27ING_CPP_
 #define ISSUE27ING_CPP_
 #include "../../Environment.h"
-
 #include "../../Catalog/table.h"
-
 #include "../../Loader/Hdfsloader.h"
-
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Project.h"
-#include "../../LogicalQueryPlan/equal_join.h"
-
+#include "../../logical_query_plan/logical_aggregation.h"
+#include "../../logical_query_plan/logical_scan.h"
+#include "../../logical_query_plan/logical_equal_join.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-
 #include "../../common/types/NValue.hpp"
-
+#include "../../logical_query_plan/logical_project.h"
 #include "../../utility/rdtsc.h"
 
 static void query_select_fzh() {
@@ -121,8 +112,9 @@ static void query_select_fzh() {
   aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
   LogicalOperator* aggregation =
-      new Aggregation(group_by_attributes, aggregation_attributes,
-                      aggregation_function, project1);
+
+      new LogicalAggregation(group_by_attributes, aggregation_attributes,
+                             aggregation_function, project1);
 
   //==========================project=========================
   vector<vector<ExpressionItem> > expr_list2;
@@ -139,12 +131,13 @@ static void query_select_fzh() {
 
   cout << "performance is ok!" << endl;
   BlockStreamIteratorBase* physical_iterator_tree =
-      root->getIteratorTree(64 * 1024);
+
+      root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
-  physical_iterator_tree->open();
-  while (physical_iterator_tree->next(0))
+  physical_iterator_tree->Open();
+  while (physical_iterator_tree->Next(0))
     ;
-  physical_iterator_tree->close();
+  physical_iterator_tree->Close();
   printf("Q1: execution time: %4.4f second.\n", getSecond(start));
 }
 
@@ -322,14 +315,14 @@ static void query_select_aggregation_ing() {
   //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
   //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
   //	std::vector<BlockStreamAggregationIterator::State::aggregation>
-  //aggregation_function;
+  // aggregation_function;
   //
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
   //	LogicalOperator* aggregation=new
-  //Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+  // Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
   //
   //	//==========================project=========================
   //	vector< vector<ExpressionItem> >expr_list2;
@@ -340,12 +333,13 @@ static void query_select_aggregation_ing() {
 
   cout << "performance is ok!" << endl;
   BlockStreamIteratorBase* physical_iterator_tree =
-      root->getIteratorTree(64 * 1024);
+
+      root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
-  physical_iterator_tree->open();
-  while (physical_iterator_tree->next(0))
+  physical_iterator_tree->Open();
+  while (physical_iterator_tree->Next(0))
     ;
-  physical_iterator_tree->close();
+  physical_iterator_tree->Close();
   printf("Q1: execution time: %4.4f second.\n", getSecond(start));
 }
 

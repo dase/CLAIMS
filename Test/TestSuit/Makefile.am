@@ -17,7 +17,7 @@ endif
 LDADD = 	../libtest.a \
 		../../Catalog/libcatalog.a \
 		../../Loader/libloader.a \
-		../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../logical_query_plan/liblogicalqueryplan.a \
 		../../BlockStreamIterator/libblockstreamiterator.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../storage/libstorage \
@@ -33,6 +33,4 @@ LDADD = 	../libtest.a \
 		${GTEST_HOME}/libgtest.a
 
 noinst_LIBRARIES=libtestsuit.a
-libtestsuit_a_SOURCES = \
-	ExpanderFrameTest.h 				hash_table_test.h \
-	in_segment_scalability_test.cpp 		tpc_h_test.cpp
+libtestsuit_a_SOURCES = 

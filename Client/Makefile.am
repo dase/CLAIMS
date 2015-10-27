@@ -27,5 +27,5 @@ libclient_a_SOURCES = \
 	ClientResponse.cpp 		ClientResponse.h \
 	jsoncpp.cpp
 
-SUBDIRS = Test json
-DIST_SUBDIRS = Test json
+SUBDIRS = json Test
+DIST_SUBDIRS = json Test

@@ -14,8 +14,8 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../../BlockStreamIterator/BlockStreamPrint.h"
+#include "../../physical_query_plan/BlockStreamPrint.h"
+#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
 
 static int test_index_scan_iterator()
 {
@@ -97,13 +97,13 @@ static int test_index_scan_iterator()
 //			ExpandableBlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 
-			bls->open();
+			bls->Open();
 			BlockStreamBase* block;
-			while(bls->next(block))
+			while(bls->Next(block))
 			{
 
 			}
-			bls->close();
+			bls->Close();
 /********************************** CSB Plus Tree Index Building Finished! **********************************/
 			unsigned long index_id = 0;
 			vector<IndexScanIterator::query_range> q_range;
@@ -144,12 +144,12 @@ static int test_index_scan_iterator()
 			attribute_name.push_back("order_type");
 			BlockStreamPrint::State bsp_state(blc_schema, isi, block_size, attribute_name, "\t");
 			BlockStreamIteratorBase* bsp = new BlockStreamPrint(bsp_state);
-			bsp->open();
-			while(bsp->next(block))
+			bsp->Open();
+			while(bsp->Next(block))
 			{
 
 			}
-			bsp->close();
+			bsp->Close();
 
 		}
 		cout<<"Waiting~~~!~"<<endl;

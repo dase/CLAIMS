@@ -3,8 +3,8 @@
 #include <getopt.h>
 #include <string>
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
-#include "Test/set_up_environment.h"
-#include "Test/TestMain.cpp"
+// #include "Test/set_up_environment.h"
+#include "./Test/TestMain.cpp"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "common/log/logging.h"
 //#define AUTU_MASTER
@@ -148,5 +148,6 @@ int main(int argc, char** argv) {
   MainDebug(argc, argv);
   Environment::getInstance(1)->~Environment();
   return 0;
+
 #endif
 }

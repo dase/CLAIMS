@@ -7,14 +7,14 @@
 
 #ifndef INDEXSCANITERATOR_H_
 #define INDEXSCANITERATOR_H_
-#include "../BlockStreamIterator/ExpandableBlockStreamIteratorBase.h"
+#include "../physical_query_plan/physical_operator.h"
 #include "../common/Schema/Schema.h"
 #include "../common/ids.h"
 #include "../common/Block/BlockStream.h"
 #include "CSBPlusTree.h"
 #include "../storage/PartitionStorage.h"
 
-class IndexScanIterator :public ExpandableBlockStreamIteratorBase {
+class IndexScanIterator :public PhysicalOperator {
 public:
 	struct remaining_block {
 		remaining_block() :  iter_result_vector(0), block_off(0), block(0), iterator(0) {
@@ -103,10 +103,10 @@ public:
 	IndexScanIterator();
 	IndexScanIterator(State state);
 	virtual ~IndexScanIterator();
-	bool open(const PartitionOffset& partition_off = 0);
-	bool next(BlockStreamBase* block);
-	bool close();
-	void print()
+	bool Open(const PartitionOffset& partition_off = 0);
+	bool Next(BlockStreamBase* block);
+	bool Close();
+	void Print()
 	{
 		printf("IndexScanIterator\n");
 	}
@@ -133,7 +133,7 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & boost::serialization::base_object<ExpandableBlockStreamIteratorBase>(*this) & state_;
+		ar & boost::serialization::base_object<PhysicalOperator>(*this) & state_;
 	}
 };
 

@@ -7,6 +7,7 @@
 
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
+
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -32,8 +33,8 @@
 #include <assert.h>
 #include "Theron/Defines.h"
 #include "Theron/Theron.h"
-#include "../BlockStreamIterator/Serialization/RegisterDerivedClass.h"
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "serialization/RegisterDerivedClass.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../Debug.h"
 #include "../storage/StorageLevel.h"
 #include "ids.h"

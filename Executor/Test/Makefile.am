@@ -22,4 +22,4 @@ LDADD = 	../libexecutor.a \
 		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES =	Executor.cpp 
+libtest_a_SOURCES =	

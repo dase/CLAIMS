@@ -16,7 +16,7 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../common/Logging.h"
 #include "../utility/Timer.h"
 class IteratorExecutorMaster {

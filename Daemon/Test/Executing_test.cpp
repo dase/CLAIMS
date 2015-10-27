@@ -8,12 +8,9 @@
 #include <iostream>
 #include "../../Environment.h"
 
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/equal_join.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/Buffer.h"
+#include "../../logical_query_plan/logical_scan.h"
+#include "../../logical_query_plan/logical_equal_join.h"
+#include "../../logical_query_plan/logical_aggregation.h"
 
 #include "../../Catalog/ProjectionBinding.h"
 
@@ -77,7 +74,8 @@ static int execting_test() {
     const int partition_key_index_1 = 2;
     //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);
     ////G0
-    table_1->createHashPartitionedProjection(cj_proj0_index, "row_id", 1);  // G0
+    table_1->createHashPartitionedProjection(cj_proj0_index, "row_id",
+                                             1);  // G0
     //		catalog->add_table(table_1);
     vector<ColumnOffset> cj_proj1_index;
     cj_proj1_index.push_back(0);
@@ -96,21 +94,25 @@ static int execting_test() {
     cj_proj1_index.push_back(18);
     cj_proj1_index.push_back(18);
 
-    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id", 4);  // G1
+    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id",
+                                             4);  // G1
 
     table_1->createHashPartitionedProjection(cj_proj0_index, "order_no",
                                              8);  // G2
-    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id", 8);  // G3
+    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id",
+                                             8);  // G3
 
     // 1 month
     // 4 partitions
     table_1->createHashPartitionedProjection(cj_proj0_index, "order_no",
                                              4);  // G4
-    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id", 4);  // G5
+    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id",
+                                             4);  // G5
     // 18 partitions
     table_1->createHashPartitionedProjection(cj_proj0_index, "order_no",
                                              8);  // G6
-    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id", 8);  // G7
+    table_1->createHashPartitionedProjection(cj_proj1_index, "row_id",
+                                             8);  // G7
     //
     //		// 5 days
     //		table_1->createHashPartitionedProjection(cj_proj0_index,"order_no",4);
@@ -137,7 +139,7 @@ static int execting_test() {
     catalog->add_table(table_1);
 
     ////////////////////////////////////Create table
-    ///right//////////////////////////
+    /// right//////////////////////////
     TableDescriptor* table_2 = new TableDescriptor(
         "sb",
         Environment::getInstance()->getCatalog()->allocate_unique_table_id());
@@ -178,7 +180,8 @@ static int execting_test() {
 
     //		table_2->createHashPartitionedProjection(sb_proj0_index,"order_no",4);
     ////G0
-    table_2->createHashPartitionedProjection(sb_proj0_index, "row_id", 1);  // G0
+    table_2->createHashPartitionedProjection(sb_proj0_index, "row_id",
+                                             1);  // G0
 
     vector<ColumnOffset> sb_proj1_index;
     sb_proj1_index.push_back(0);
@@ -203,22 +206,26 @@ static int execting_test() {
     sb_proj1_index.push_back(24);
     sb_proj1_index.push_back(25);
 
-    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id", 4);  // G1
+    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id",
+                                             4);  // G1
 
     table_2->createHashPartitionedProjection(sb_proj0_index, "order_no",
                                              8);  // G2
-    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id", 8);  // G3
+    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id",
+                                             8);  // G3
 
     // 1 month
     // 4 partitions
     table_2->createHashPartitionedProjection(sb_proj0_index, "order_no",
                                              4);  // G4
-    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id", 4);  // G5
+    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id",
+                                             4);  // G5
 
     // 18 partitions
     table_2->createHashPartitionedProjection(sb_proj0_index, "order_no",
                                              8);  // G6
-    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id", 8);  // G7
+    table_2->createHashPartitionedProjection(sb_proj1_index, "row_id",
+                                             8);  // G7
     //
     //
     //		//5 days
@@ -276,20 +283,20 @@ static int execting_test() {
     }
     // partitioned by row_id
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(14)->getPartitioner()->RegisterPartition(i,2);
     //		}
     //
     //		// 8 partitions
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
     //		}
@@ -315,20 +322,20 @@ static int execting_test() {
           ->RegisterPartition(i, 6);
     }
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(2)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(2)->getPartitioner()->RegisterPartition(i,1);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(3)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(3)->getPartitioner()->RegisterPartition(i,3);
     //		}
     //
     //		//partitioned by row_id
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(14)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(14)->getPartitioner()->RegisterPartition(i,2);
     //		}
@@ -336,41 +343,41 @@ static int execting_test() {
     //		////////////////////////////////////////
     //
     //		///////////////////ONE
-    //MONTH/////////////////////////////////////////////////////////////
+    // MONTH/////////////////////////////////////////////////////////////
     //		//CJ
     //		// 4 partition
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,40);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,104);
     //		}
     //		//8 partitions
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(10)->getPartitioner()->RegisterPartition(i,20);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(11)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(11)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(11)->getPartitioner()->RegisterPartition(i,52);
     //		}
     ////		// 18 partitions
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,24);
     //		}
@@ -378,37 +385,37 @@ static int execting_test() {
     //		//SB
     //		// 4 partition
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(4)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(4)->getPartitioner()->RegisterPartition(i,39);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(5)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(5)->getPartitioner()->RegisterPartition(i,131);
     //		}
     //		// 8 partitions
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(10)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(10)->getPartitioner()->RegisterPartition(i,20);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(11)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(11)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(11)->getPartitioner()->RegisterPartition(i,66);
     //		}
     //		// 18 partitions
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(6)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(6)->getPartitioner()->RegisterPartition(i,10);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(7)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(7)->getPartitioner()->RegisterPartition(i,30);
     //		}
@@ -419,25 +426,25 @@ static int execting_test() {
     //		//// cj////
     //		// 4 partitions
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(8)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(8)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(8)->getPartitioner()->RegisterPartition(i,14);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(9)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(9)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(9)->getPartitioner()->RegisterPartition(i,36);
     //		}
     //		// 8 partitions
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(12)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(12)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(12)->getPartitioner()->RegisterPartition(i,7);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_1->getProjectoin(13)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_1->getProjectoin(13)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(0)->getProjectoin(13)->getPartitioner()->RegisterPartition(i,19);
     //		}
@@ -445,25 +452,25 @@ static int execting_test() {
     //		//// sb ////
     //		// 4 partitions//
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(8)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(8)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(8)->getPartitioner()->RegisterPartition(i,14);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(9)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(9)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(9)->getPartitioner()->RegisterPartition(i,131);
     //		}
     //		// 8 partitions//
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(12)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(12)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(12)->getPartitioner()->RegisterPartition(i,7);
     //		}
     //
     //		for(unsigned
-    //i=0;i<table_2->getProjectoin(13)->getPartitioner()->getNumberOfPartitions();i++){
+    // i=0;i<table_2->getProjectoin(13)->getPartitioner()->getNumberOfPartitions();i++){
     //
     //			catalog->getTable(1)->getProjectoin(13)->getPartitioner()->RegisterPartition(i,23);
     //		}

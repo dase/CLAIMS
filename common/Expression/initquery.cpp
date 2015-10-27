@@ -9,7 +9,7 @@
 #include "queryfunc.h"
 #include "qnode.h"
 #include "../../Parsetree/sql_node_struct.h"
-#include "../../LogicalQueryPlan/LogicalOperator.h"
+#include "../../logical_query_plan/logical_operator.h"
 /*
  * the transformqual() transform the ast(the parsetree) to expression tree
  */
@@ -339,8 +339,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(funcnode->funname, "FSUM") == 0) {
         //				QNode
         //*anext=transformqual(funcnode->parameter1,child);
-        data_type a_type = child->getDataflow()
-                               .getAttribute(string(funcnode->str))
+        data_type a_type = child->GetPlanContext()
+                               .GetAttribute(string(funcnode->str))
                                .attrType->type;
         QNode *aggnode =
             new QColcumns("", funcnode->str, a_type, funcnode->str);
@@ -348,8 +348,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(funcnode->funname, "FAVG") == 0) {
         //				QNode
         //*anext=transformqual(funcnode->parameter1,child);
-        data_type a_type = child->getDataflow()
-                               .getAttribute(string(funcnode->str))
+        data_type a_type = child->GetPlanContext()
+                               .GetAttribute(string(funcnode->str))
                                .attrType->type;
         QNode *aggnode =
             new QColcumns("", funcnode->str, a_type, funcnode->str);
@@ -357,8 +357,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(funcnode->funname, "FMIN") == 0) {
         //				QNode
         //*anext=transformqual(funcnode->parameter1,child);
-        data_type a_type = child->getDataflow()
-                               .getAttribute(string(funcnode->str))
+        data_type a_type = child->GetPlanContext()
+                               .GetAttribute(string(funcnode->str))
                                .attrType->type;
         QNode *aggnode =
             new QColcumns("", funcnode->str, a_type, funcnode->str);
@@ -366,8 +366,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(funcnode->funname, "FMAX") == 0) {
         //				QNode
         //*anext=transformqual(funcnode->parameter1,child);
-        data_type a_type = child->getDataflow()
-                               .getAttribute(string(funcnode->str))
+        data_type a_type = child->GetPlanContext()
+                               .GetAttribute(string(funcnode->str))
                                .attrType->type;
         QNode *aggnode =
             new QColcumns("", funcnode->str, a_type, funcnode->str);
@@ -469,9 +469,9 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
     case t_name_name: {
       Columns *col = (Columns *)node;
       //			data_type
-      //a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
-      data_type a_type = child->getDataflow()
-                             .getAttribute(string(col->parameter2))
+      // a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+      data_type a_type = child->GetPlanContext()
+                             .GetAttribute(string(col->parameter2))
                              .attrType->type;
       if (col->parameter1 == NULL)  // for temporary variable
       {
@@ -644,6 +644,7 @@ void InitExprAtLogicalPlan(QNode *node, data_type r_type,
  * set node->FuncId
  * allocate room for storing value
  */
+
 void InitExprAtPhysicalPlan(QNode *node) {
   if (node == NULL) return;
   switch (node->type) {
@@ -667,9 +668,9 @@ void InitExprAtPhysicalPlan(QNode *node) {
       InitExprAtPhysicalPlan(cmpnode->rnext);
       cmpnode->function_call = ExectorFunction::operator_function
           [cmpnode->actual_type][cmpnode->op_type];
-      cmpnode->actual_type = t_boolean;  //
+      //			cmpnode->actual_type=t_boolean;//
       cmpnode->type_cast_func =
-          TypeCast::type_cast_func[cmpnode->actual_type][cmpnode->return_type];
+          TypeCast::type_cast_func[t_boolean][cmpnode->return_type];
       cmpnode->value = memalign(cacheline_size, cmpnode->length);
     } break;
     case t_qexpr_unary: {

@@ -22,21 +22,21 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
-#include "../LogicalQueryPlan/Scan.h"
-#include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../LogicalQueryPlan/equal_join.h"
-#include "../LogicalQueryPlan/Filter.h"
-#include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/Buffer.h"
+#include "../logical_query_plan/logical_scan.h"
+#include "../logical_query_plan/logical_equal_join.h"
+#include "../logical_query_plan/logical_aggregation.h"
+
+#include "../logical_query_plan/logical_filter.h"
+#include "../logical_query_plan/logical_limit.h"
 
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
+#include "../logical_query_plan/logical_query_plan_root.h"
 #define SQL_Parser
 using namespace std;
-
 #define SQL_Parser
 
 const int INT_LENGTH = 10;
@@ -84,12 +84,13 @@ void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
         LoadData(catalog, node, result_set, result_flag, error_msg, info);
         break;
       }
-      case t_insert_stmt:  // 2014-4-19---add---by Yu	// 2014-5-1---modify---by
+      case t_insert_stmt:  // 2014-4-19---add---by Yu	//
+                           // 2014-5-1---modify---by
                            // Yu
-      {
-        InsertData(catalog, node, result_set, result_flag, error_msg, info);
-        break;
-      }
+        {
+          InsertData(catalog, node, result_set, result_flag, error_msg, info);
+          break;
+        }
       case t_show_stmt: {
         ShowTable(catalog, node, result_set, result_flag, error_msg, info);
         break;
@@ -137,14 +138,13 @@ void ExecuteLogicalQueryPlan() {
     if (oldnode == NULL)  // 2014-2-24---增加node为空的判断---by余楷
     {
       printf("[ERROR]there are some wrong in statement! please try again!!\n");
-      FreeAllNode(presult
-                      .node_pointer);  //释放SQL解析过程忠所有申请的内存
-                                       ////
-                                       //2014-3-6---增加解析错误后的处理---by余楷
+      FreeAllNode(presult.node_pointer);  //释放SQL解析过程忠所有申请的内存
+                                          ////
+      // 2014-3-6---增加解析错误后的处理---by余楷
       //			printf("Continue(1) or not (others number)?\n");
       //			scanf("%d",&count);
       //			getchar();	//
-      //2014-3-4---屏蔽换行符对后面的影响---by余楷
+      // 2014-3-4---屏蔽换行符对后面的影响---by余楷
       //			setbuf(stdin, NULL);	//关闭缓冲
       continue;
     }
@@ -180,9 +180,10 @@ void ExecuteLogicalQueryPlan() {
         } break;
         case t_insert_stmt:  // 2014-4-19---add---by Yu	//
                              // 2014-5-1---modify---by Yu
-        {
-          InsertData(catalog, node, result_set, result_flag, error_msg, info);
-        } break;
+          {
+            InsertData(catalog, node, result_set, result_flag, error_msg, info);
+          }
+          break;
         case t_show_stmt: {
           ShowTable(catalog, node, result_set, result_flag, error_msg, info);
         } break;
@@ -547,23 +548,24 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
   if (result_flag == false) return;
 
   //	cout<<"the first attribute
-  //Name:"<<new_table->getAttribute(0).getName()<<endl;
+  // Name:"<<new_table->getAttribute(0).getName()<<endl;
 
   //	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(),
-  //18);
+  // 18);
   catalog->add_table(new_table);
   //				TableID
-  //table_id=catalog->getTable(tablename)->get_table_id();
+  // table_id=catalog->getTable(tablename)->get_table_id();
 
   //				for(unsigned
-  //i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+  // i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
   //					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
   //					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
   //				}
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve the dirty
-  //read after insert
+  //			catalog->restoreCatalog();// commented by li to solve the
+  //dirty
+  // read after insert
   result_flag = true;
   info = "create table successfully";
   result_set = NULL;
@@ -990,8 +992,9 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
   }
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve the dirty
-  //read after insert
+  //			catalog->restoreCatalog();// commented by li to solve the
+  //dirty
+  // read after insert
 
   result_flag = true;
   result_set = NULL;
@@ -1091,35 +1094,35 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
     Limit_expr *lexpr = (Limit_expr *)querynode->limit_list;
     if (lexpr->offset == NULL) {
       root = new LogicalQueryPlanRoot(
-          0, plan, LogicalQueryPlanRoot::RESULTCOLLECTOR,
+          0, plan, LogicalQueryPlanRoot::kResultCollector,
           LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
     } else {
       root = new LogicalQueryPlanRoot(
-          0, plan, LogicalQueryPlanRoot::RESULTCOLLECTOR,
+          0, plan, LogicalQueryPlanRoot::kResultCollector,
           LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),
                           atoi(((Expr *)lexpr->offset)->data)));
     }
   } else {
     root = new LogicalQueryPlanRoot(0, plan,
-                                    LogicalQueryPlanRoot::RESULTCOLLECTOR);
+                                    LogicalQueryPlanRoot::kResultCollector);
   }
 
 #ifdef SQL_Parser
-  root->print(0);
+  root->Print(0);
 #endif
 
   BlockStreamIteratorBase *physical_iterator_tree =
-      root->getIteratorTree(64 * 1024);
+      root->GetPhysicalPlan(64 * 1024);
   //					puts("+++++++++++++++++++++begin
   //time++++++++++++++++");
   unsigned long long start = curtick();
-  physical_iterator_tree->print();
+  physical_iterator_tree->Print();
 
-  physical_iterator_tree->open();
+  physical_iterator_tree->Open();
 
-  while (physical_iterator_tree->next(0))
+  while (physical_iterator_tree->Next(0))
     ;
-  physical_iterator_tree->close();
+  physical_iterator_tree->Close();
   //					printf("++++++++++++++++Q1: execution time: %4.4f
   //second.++++++++++++++\n",getSecond(start));
   result_set = physical_iterator_tree->getResultSet();
@@ -1266,7 +1269,7 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set,
 
   catalog->saveCatalog();
   //	catalog->restoreCatalog();// commented by li to solve the dirty read
-  //after insert
+  // after insert
 }
 /*
 
@@ -1323,8 +1326,9 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
   TableDescriptor *table =
       Environment::getInstance()->getCatalog()->getTable(table_name);
   if (table == NULL) {
-    //				ASTParserLogging::elog("The table %s does not exist!",
-    //table_name.c_str());
+    //				ASTParserLogging::elog("The table %s does not
+    //exist!",
+    // table_name.c_str());
     error_msg = "The table " + table_name + " does not exist!";
     result_flag = false;
     result_set = NULL;
@@ -1370,8 +1374,9 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
            position++) {
         // check value count
         if (insert_value == NULL) {
-          //							ASTParserLogging::elog("Value count is
-          //too few");
+          //							ASTParserLogging::elog("Value count
+          //is
+          // too few");
           is_correct = false;
           error_msg = "Value count is too few";
           result_flag = false;
@@ -1395,7 +1400,7 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
       // check insert value count
       if (insert_value) {
         //						ASTParserLogging::elog("Value
-        //count is too many");
+        // count is too many");
         error_msg = "Value count is too many";
         result_flag = false;
         result_set = NULL;
@@ -1412,7 +1417,7 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
       }
       if (insert_value_count != col_count) {
         //						ASTParserLogging::elog("Column
-        //count doesn't match value count");
+        // count doesn't match value count");
         error_msg = "Column count doesn't match value count";
         result_flag = false;
         result_set = NULL;
@@ -1458,7 +1463,7 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
       // check if every insert column is existed
       if (used_col_count != col_count) {
         //						ASTParserLogging::elog("Some
-        //columns don't exist");
+        // columns don't exist");
         error_msg = "Some columns don't exist";
         result_flag = false;
         result_set = NULL;
@@ -1485,8 +1490,9 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
   Hl->append(ostr.str());
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog(); // commented by li to solve the dirty
-  //read after insert
+  //			catalog->restoreCatalog(); // commented by li to solve the
+  //dirty
+  // read after insert
 
   result_flag = true;
   ostr.clear();

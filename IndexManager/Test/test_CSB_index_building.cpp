@@ -12,8 +12,8 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
+#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
 #include "../CSBIndexBuilding.h"
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
 #include "test_index_manager.cpp"
 
 using namespace std;
@@ -116,13 +116,13 @@ static int test_CSBIndexBuilding ()
 			bottomLayerSorting::State bls_state(bls_schema, blc, block_size, catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3, "sec_code_index");
 			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
 
-			bls->open();
+			bls->Open();
 			BlockStreamBase* block;
-			while(bls->next(block))
+			while(bls->Next(block))
 			{
 
 			}
-			bls->close();
+			bls->Close();
 
 			//following for test the index manager~
 			test_index_manager_();

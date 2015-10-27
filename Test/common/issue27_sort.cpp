@@ -4,31 +4,19 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
-
+// This file will not be used in current version,because it is not contained by
+// Makefile.am
 #ifndef ISSUE27_SORT_CPP_
 #define ISSUE27_SORT_CPP_
 #include "../../Environment.h"
-
 #include "../../Catalog/table.h"
-
 #include "../../Loader/Hdfsloader.h"
-
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Project.h"
-#include "../../LogicalQueryPlan/logical_sort.h"
-#include "../../LogicalQueryPlan/equal_join.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
-
 #include "../../common/types/NValue.hpp"
-
 #include "../../utility/rdtsc.h"
-
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
+#include "../../logical_query_plan/logical_project.h"
+#include "../../physical_query_plan/BlockStreamAggregationIterator.h"
 
 static void query_select_sort() {
   /*
@@ -87,12 +75,12 @@ static void query_select_sort() {
 
   cout << "performance is ok!" << endl;
   BlockStreamIteratorBase* physical_iterator_tree =
-      root->getIteratorTree(64 * 1024);
+      root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
-  physical_iterator_tree->open();
-  while (physical_iterator_tree->next(0))
+  physical_iterator_tree->Open();
+  while (physical_iterator_tree->Next(0))
     ;
-  physical_iterator_tree->close();
+  physical_iterator_tree->Close();
   printf("Q1: execution time: %4.4f second.\n", getSecond(start));
 }
 static void get_orderby_att(vector<LogicalSort::OrderByAttr*>& vo) {
@@ -100,14 +88,14 @@ static void get_orderby_att(vector<LogicalSort::OrderByAttr*>& vo) {
   string orderstr2 = "LINEITEM.L_RETURNFLAG";
 
   //	LogicalSort::OrderByAttr * ob1=new
-  //LogicalSort::OrderByAttr(orderstr1.c_str());
+  // LogicalSort::OrderByAttr(orderstr1.c_str());
   LogicalSort::OrderByAttr tmp1(string(orderstr1).c_str(), 0);
   LogicalSort::OrderByAttr tmp2(string(orderstr2).c_str(), 0);
   vo.push_back(&tmp1);
   vo.push_back(&tmp2);
   //	vo.push_back(ob1);
   //	LogicalSort::OrderByAttr * ob2=new
-  //LogicalSort::OrderByAttr(orderstr2.c_str());
+  // LogicalSort::OrderByAttr(orderstr2.c_str());
   //	printf("ob1=%x ob2=%x\n",ob1,ob2);
   //	printf("st1=%x st2=%x\n",orderstr1.c_str(),orderstr2.c_str());
   //	vo.push_back(ob2);
@@ -166,14 +154,14 @@ static void query_select_sort_string() {
   //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
   //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
   //	std::vector<BlockStreamAggregationIterator::State::aggregation>
-  //aggregation_function;
+  // aggregation_function;
 
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
   //	LogicalOperator* aggregation=new
-  //Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+  // Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
   //==========================project=========================
   //	vector< vector<ExpressionItem> >expr_list2;
   //
@@ -205,22 +193,22 @@ static void query_select_sort_string() {
   vo.push_back(&tmp1);
   vo.push_back(&tmp2);
   for (int i = 0; i < vo.size(); i++) {
-    printf("vo[%d]= %s len=%d  aa=%x  sa=%x\n", i, (vo[i])->table_name_,
-           strlen(vo[i]->table_name_), vo[i], vo[i]->table_name_);
+    printf("vo[%d]= %s len=%d  aa=%x  sa=%x\n", i, (vo[i])->ta_,
+           strlen(vo[i]->ta_), vo[i], vo[i]->ta_);
   }
   LogicalOperator* sort1 = new LogicalSort(project1, vo);
-  sort1->print();
+  sort1->Print();
   cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
   //===========================root===========================
   LogicalOperator* root =
       new LogicalQueryPlanRoot(0, sort1, LogicalQueryPlanRoot::PRINT);
-  root->print();
+  root->Print();
   cout << "performance is ok!" << endl;
   getchar();
   getchar();
   //	BlockStreamIteratorBase*
-  //physical_iterator_tree=root->getIteratorTree(64*1024);
+  // physical_iterator_tree=root->getIteratorTree(64*1024);
   ////	physical_iterator_tree->print();
   //	physical_iterator_tree->open();
   //	while(physical_iterator_tree->next(0));

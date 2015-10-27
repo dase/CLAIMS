@@ -1024,364 +1024,397 @@ void outputSpace(int f) {
 }
 void output(Node *oldnode, int floor) {
 #ifdef DEBUG_ASTParser
-  // puts("there is output()");
-  if (oldnode == NULL) {
-    // cout<<"This is Nothing!"<<endl;
-    return;
-  }
-  nodetype type = oldnode->type;
-  switch (type) {
-    case t_name_name: {
-      Columns *node = (Columns *)oldnode;
-      outputSpace(floor);
-      cout << "Columns: " << node->parameter1 << "  " << node->parameter2
-           << endl;
-      break;
-    }
-    case t_name:  // ---3.5---
-    {
-      Columns *node = (Columns *)oldnode;
-      outputSpace(floor);
-      cout << "Columns: " << node->parameter2 << endl;
-      break;
-    }
-    case t_stringval: {
-      Expr *node = (Expr *)oldnode;
-      outputSpace(floor);
-      cout << "t_stringval: " << node->data << endl;  // 2014-4-14---modify
-                                                      // because of the change
-                                                      // of struct---by Yu
-      break;
-    }
-    case t_intnum: {
-      Expr *node = (Expr *)oldnode;
-      outputSpace(floor);
-      cout << "t_intnum: " << node->data << endl;  // 2014-4-14---modify because
-                                                   // of the change of
-                                                   // struct---by Yu
-      break;
-    }
-    case t_approxnum: {
-      Expr *node = (Expr *)oldnode;
-      outputSpace(floor);
-      cout << "t_approxnum: " << node->data << endl;  // 2014-4-14---modify
-                                                      // because of the change
-                                                      // of struct---by Yu
-      break;
-    }
-    case t_bool: {
-      Expr *node = (Expr *)oldnode;
-      outputSpace(floor);
-      cout << "t_bool: " << node->data << endl;  // 2014-4-14---modify because
-                                                 // of the change of struct---by
-                                                 // Yu
-      break;
-    }
-    case t_dateval: {
-      Expr *node = (Expr *)oldnode;
-      outputSpace(floor);
-      cout << "t_dateval: " << node->data << endl;  //---2014.6.22fzh---
-      break;
-    }
-    case t_expr_list: {
-      Expr_list *node = (Expr_list *)oldnode;
-      outputSpace(floor);
-      cout << "Expr_list: ";
-      cout << endl;
+	//puts("there is output()");
+	if(oldnode == NULL)
+	{
+		//cout<<"This is Nothing!"<<endl;
+		return;
+	}
+	nodetype type = oldnode->type;
+	switch(type)
+	{
+		
+		case t_name_name:
+		{
+			Columns * node = (Columns *) oldnode;
+			outputSpace(floor);
+			cout<<"Columns: "<< node->parameter1<< "  "<< node->parameter2<<endl;
+			break;
+		}
+		case t_name:	// ---3.5---
+		{
+					Columns * node = (Columns *) oldnode;
+					outputSpace(floor);
+					cout<<"Columns: "<< node->parameter2<<endl;
+					break;
+		}
+		case t_stringval:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_stringval: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
+			break;
+		}
+		case t_intnum:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_intnum: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
+			break;
+		}
+		case t_approxnum:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_approxnum: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
+			break;
+		}
+		case t_bool:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_bool: "<<node->data<<endl;	// 2014-4-14---modify because of the change of struct---by Yu
+			break;
+		}	
+		case t_dateval:
+		{
+			Expr * node = (Expr *) oldnode;
+			outputSpace(floor);
+			cout<<"t_dateval: "<<node->data<<endl;	//---2014.6.22fzh---
+			break;
+		}
+		case t_expr_list:
+		{
+			Expr_list * node = (Expr_list *) oldnode;
+			outputSpace(floor);
+			cout<<"Expr_list: ";cout<<endl;
+			
+			if(node->data!=NULL) output(node->data,floor+1);
+			if(node->Next!=NULL) output(node->Next,floor);//---3.14fzh---
+			
+			
+			
+			break;
+		}
+		case t_column:
+		/* nodetype type;char * parameter1;char *parameter2;Node * next; */
+		{
+			Columns * node = (Columns *) oldnode;
+			outputSpace(floor);
+			cout<<"Columns: ";
+			if (node->parameter1)
+				cout<<node->parameter1<<" ";
+			if (node->parameter2)
+				cout<<node->parameter2<<" ";
+				
+			cout<<endl;
+			if (node->Next)
+				output(node->Next, floor + 1);
+			
+			break;
+		}
+		/*
+		struct Expr_cal//计算表达式,二元表达式
+		{
+			nodetype type;
+			char * sign,*parameter;
+			int cmp;
+			Node *lnext,*rnext;
+		};
+		*/
+		case t_expr_cal: 
+		{
+			Expr_cal * node = (Expr_cal *) oldnode;
+			outputSpace(floor);//---5.23by fzh---
+			cout<<"str: >>>>>>>>"<<node->str<<endl;//---5.23by fzh---
+			outputSpace(floor);
+			cout<<"Expr_cal: ";
+			if (node->sign)
+				cout<<node->sign<<" ";
+			if (node->parameter)
+				cout<<node->parameter<<" ";
+			if (node->cmp)
+				cout<<node->cmp<<" ";
+				
+			cout<<endl;
+			output(node->lnext, floor + 1);
+			output(node->rnext, floor + 1);
+			break;
+		}
+		
+		/*
+		struct Expr_func //函数表达式，将is null/exist等判断抽象成函数
+		{
+			nodetype type;
+			char * funname;
+			Node *args;
+			Node * parameter1,*parameter2;//函数中的参数列表，处理between...and.../case...when...then...end等
+			Node *next;
+		}; 
+		*/
+		case t_expr_func:
+		{
+			Expr_func * node = (Expr_func *) oldnode;
+			outputSpace(floor);//---5.23by fzh---
+			if(node->str!=NULL)
+			cout<<"str: >>>>>>>>"<<node->str<<endl;//---5.23by fzh---
+			outputSpace(floor);
+			cout<<"Expr_func: ";
+			if (node->funname)
+				cout<<node->funname<<" ";
+				
+			cout<<endl;
+			output(node->args, floor + 1);
+			output(node->parameter1, floor + 1);
+			output(node->parameter2, floor + 1);
+			output(node->Next, floor + 1);
+			break;
+		}
+		
+		case t_table://///////////////////////////////////////////////////
+		/* nodetype type;	char * dbname,*tablename,*astablename;
+		 * int issubquery;Node *subquery; Node * condition */
+		{
+			Table * node = (Table *) oldnode;
+			
+			outputSpace(floor);
+			cout<<"Table: ";
+			if (node->dbname)
+				cout<<node->dbname<<" ";
+			if (node->tablename)
+				cout<<node->tablename<<" ";
+			if (node->astablename)
+				cout<<node->astablename<<" ";
+			if (node->issubquery)
+				cout<<node->issubquery<<" ";
+				
+			cout<<endl;
+			output(node->subquery, floor + 1);
+			//output(node->condition, floor + 1);
+		//	set<Node*>::iterator it;
+		//	vector<Node*>::iterator it;
+		//	for(it=node->wcondition.begin();it!=node->wcondition.end();it++)
+		//	{
+		//		output((Node *)*it,floor+1);
+		//	}
+			Node * p;
+			Expr_list_header * lists=(Expr_list_header *)node->whcdn;
+			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->Next)
+			{
+				
+				output(p,floor+1);
+			}
+			
+			break;
+			
+		}
+		
+		/*************************************************/
+		
+		case t_query_stmt:
+		/* nodetype type;char * querystring;int select_opts;Node *select_list;
+			 Node *from_list; Node *where_list; Node *groupby_list;
+			Node *having_list; Node *orderby_list; Node *limit_list; Node *into_list; */
+		{
+			Query_stmt * node = (Query_stmt *) oldnode;
+			outputSpace(floor);
+			cout<<"Query_stmt: ";
+			if(node->querystring)
+				cout<<node->querystring<<" ";
+			if(node->select_opts)
+				cout<<node->select_opts<<" ";
 
-      if (node->data != NULL) output(node->data, floor + 1);
-      if (node->next != NULL) output(node->next, floor);  //---3.14fzh---
+			cout<<endl;
+			output(node->select_list, floor + 1);
+			output(node->from_list, floor + 1);
+			output(node->where_list, floor + 1);
+			output(node->groupby_list, floor + 1);
+			output(node->having_list, floor + 1);
+			output(node->orderby_list, floor + 1);
+			output(node->limit_list, floor + 1);
+			output(node->into_list, floor + 1);
+			
+			/* 可继续添加 */
+			break;
+		}
+		case t_select_list:
+		/* nodetype type; int isall; Node * args; Node *next; */
+		{
+			Select_list * node = (Select_list *) oldnode;
+			outputSpace(floor);
+			cout<<"select_list: ";
+			if (node->isall) cout<<"is all ";
 
-      break;
-    }
-    case t_column:
-      /* nodetype type;char * parameter1;char *parameter2;Node * next; */
-      {
-        Columns *node = (Columns *)oldnode;
-        outputSpace(floor);
-        cout << "Columns: ";
-        if (node->parameter1) cout << node->parameter1 << " ";
-        if (node->parameter2) cout << node->parameter2 << " ";
+			cout<<endl;
+			output(node->args, floor + 1);
+			output(node->Next, floor);//---3.14fzh---
+			
+			break;
+		}
+		case t_select_expr:
+		/* nodetype type;	char *ascolname;	Node * colname; */
+		{
+			Select_expr * node = (Select_expr *) oldnode;
+			outputSpace(floor);
+			cout<<"Select_expr: ";
+			if (node->ascolname)
+				cout<<node->ascolname<< " ";
 
-        cout << endl;
-        if (node->next) output(node->next, floor + 1);
+			cout<<endl;
+			output(node->colname, floor + 1);
+			
+			break;
+		}
+		
+		case t_from_list:
+		/* nodetype type;	Node * args;	Node *next;  Node * condition */
+		{
+			From_list * node = (From_list *) oldnode;
+			outputSpace(floor);
+			cout<<"From_list: ";
 
-        break;
-      }
-    /*
-    struct Expr_cal//计算表达式,二元表达式
-    {
-            nodetype type;
-            char * sign,*parameter;
-            int cmp;
-            Node *lnext,*rnext;
-    };
-    */
-    case t_expr_cal: {
-      Expr_cal *node = (Expr_cal *)oldnode;
-      outputSpace(floor);                            //---5.23by fzh---
-      cout << "str: >>>>>>>>" << node->str << endl;  //---5.23by fzh---
-      outputSpace(floor);
-      cout << "Expr_cal: ";
-      if (node->sign) cout << node->sign << " ";
-      if (node->parameter) cout << node->parameter << " ";
-      if (node->cmp) cout << node->cmp << " ";
+			cout<<endl;
+			//output(node->condition, floor + 1);////////////////////////////////
+			Node * p;
+			Expr_list_header * lists=(Expr_list_header *)node->whcdn;
+			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->Next)
+			{
+				output(p,floor+1);
+			}
+			output(node->args, floor + 1);
+			output(node->Next, floor + 1);
+			
+			break;
+		}
+		case t_from_expr:
+		/* nodetype type;	char * astablename;	Node *next; */
+		{
+			From_expr * node = (From_expr *) oldnode;
+			outputSpace(floor);
+			cout<<"From_expr: ";
+			if(node->astablename)
+				cout<<node->astablename;
+			cout<<endl;
+			output(node->Next, floor+1);
+			break;
+		}
+		case t_where_list:
+		/* nodetype type;	char * wherestring;	Node *next; */
+		{
+			Where_list * node = (Where_list *) oldnode;
+			outputSpace(floor);
+			cout<<"Where_list: ";
+			if(node->wherestring)
+				cout<<node->wherestring;
+			cout<<endl;
+			output(node->Next, floor+1);
+			break;
+		}
+		case t_groupby_list:
+		/* nodetype type;char * groupbystring;Node *next;int with_rollup; */
+		{
+			Groupby_list * node = (Groupby_list *) oldnode;
+			outputSpace(floor);
+			cout<<"Groupby_list: ";
+			if(node->groupbystring)
+				cout<<node->groupbystring<<" ";
+			if (node->with_rollup)
+				cout<<node->with_rollup<<" ";
+			cout<<endl;
+			output(node->Next, floor+1);
+			break;
+		}
+		case t_groupby_expr:
+		/* nodetype type;	Node *args;	int sorttype;	Node *next; */
+		{
+			Groupby_expr * node = (Groupby_expr *) oldnode;
+			outputSpace(floor);
+			cout<<"Groupby_expr: ";
 
-      cout << endl;
-      output(node->lnext, floor + 1);
-      output(node->rnext, floor + 1);
-      break;
-    }
+			if(node->sorttype)
+				cout<<node->sorttype<<" ";
+			cout<<endl;
+			output(node->args, floor+1);
+			output(node->Next, floor+1);
+			break;
+		}
+		
+		case t_having_list:
+		/* nodetype type;	char * havingstring;	Node *next; */
+		{
+			Having_list * node = (Having_list *) oldnode;
+			outputSpace(floor);
+			cout<<"Having_list: ";
+			if(node->havingstring)
+				cout<<node->havingstring<<" ";
 
-    /*
-    struct Expr_func //函数表达式，将is null/exist等判断抽象成函数
-    {
-            nodetype type;
-            char * funname;
-            Node *args;
-            Node *
-    parameter1,*parameter2;//函数中的参数列表，处理between...and.../case...when...then...end等
-            Node *next;
-    };
-    */
-    case t_expr_func: {
-      Expr_func *node = (Expr_func *)oldnode;
-      outputSpace(floor);  //---5.23by fzh---
-      if (node->str != NULL)
-        cout << "str: >>>>>>>>" << node->str << endl;  //---5.23by fzh---
-      outputSpace(floor);
-      cout << "Expr_func: ";
-      if (node->funname) cout << node->funname << " ";
+			cout<<endl;
+			output(node->Next, floor+1);
+			break;
+		}
+		case t_orderby_list:
+		/* nodetype type;	char * orderbystring;	Node *next; */
+		{
+			Orderby_list * node = (Orderby_list *) oldnode;
+			outputSpace(floor);
+			cout<<"Orderby_list: ";
+			if(node->orderbystring)
+				cout<<node->orderbystring<<" ";
+				
+			cout<<endl;
+			output(node->Next, floor+1);
+			break;
+		}
+		
+		case t_orderby_expr:
+		/* nodetype type;	Node *args;	char * sorttype;	Node *next; */
+		{
+			Orderby_expr * node = (Orderby_expr *) oldnode;
+			outputSpace(floor);
+			cout<<"Orderby_expr: ";
+			if(node->sorttype)
+				cout<<node->sorttype<<" ";
 
-      cout << endl;
-      output(node->args, floor + 1);
-      output(node->parameter1, floor + 1);
-      output(node->parameter2, floor + 1);
-      output(node->next, floor + 1);
-      break;
-    }
+			cout<<endl;
+			output(node->args, floor+1);
+			output(node->Next, floor+1);
+			break;
+		}
+		
+		case t_limit_expr:
+		/* nodetype type;	Node * offset;	Node *row_count; */
+		{
+			Limit_expr * node = (Limit_expr *) oldnode;
+			outputSpace(floor);
+			cout<<"Limit_expr: ";
+			
+			cout<<endl;
+			output(node->offset, floor+1);
+			output(node->row_count, floor+1);
+			break;
+		}//---3.21 fzh---
+		case t_join:
+		{
+			Join *node=(Join *)oldnode;
+			outputSpace(floor);
+			cout<<"Join:   jtype= "<<node->jointype<<endl;
+			output(node->lnext,floor+1);
+			output(node->rnext,floor+1);
+			output(node->condition,floor+1);
+		}break;
+		case t_condition:
+		{
+			Condition *node=(Condition *)oldnode;
+			outputSpace(floor);
+			cout<<"joincondition:   ctype= "<<node->conditiontype<<endl;
+			output(node->args,floor+1);
+		}break;
 
-    case t_table:  /////////////////////////////////////////////////////
-                   /* nodetype type;	char * dbname,*tablename,*astablename;
-                    * int issubquery;Node *subquery; Node * condition */
-      {
-        Table *node = (Table *)oldnode;
-
-        outputSpace(floor);
-        cout << "Table: ";
-        if (node->dbname) cout << node->dbname << " ";
-        if (node->tablename) cout << node->tablename << " ";
-        if (node->astablename) cout << node->astablename << " ";
-        if (node->issubquery) cout << node->issubquery << " ";
-
-        cout << endl;
-        output(node->subquery, floor + 1);
-        // output(node->condition, floor + 1);
-        //	set<Node*>::iterator it;
-        //	vector<Node*>::iterator it;
-        //	for(it=node->wcondition.begin();it!=node->wcondition.end();it++)
-        //	{
-        //		output((Node *)*it,floor+1);
-        //	}
-        Node *p;
-        Expr_list_header *lists = (Expr_list_header *)node->whcdn;
-        for (p = lists->header; p != NULL; p = ((Expr_list *)p)->next) {
-          output(p, floor + 1);
-        }
-
-        break;
-      }
-
-    /*************************************************/
-
-    case t_query_stmt:
-      /* nodetype type;char * querystring;int select_opts;Node *select_list;
-               Node *from_list; Node *where_list; Node *groupby_list;
-              Node *having_list; Node *orderby_list; Node *limit_list; Node
-         *into_list; */
-      {
-        Query_stmt *node = (Query_stmt *)oldnode;
-        outputSpace(floor);
-        cout << "Query_stmt: ";
-        if (node->querystring) cout << node->querystring << " ";
-        if (node->select_opts) cout << node->select_opts << " ";
-
-        cout << endl;
-        output(node->select_list, floor + 1);
-        output(node->from_list, floor + 1);
-        output(node->where_list, floor + 1);
-        output(node->groupby_list, floor + 1);
-        output(node->having_list, floor + 1);
-        output(node->orderby_list, floor + 1);
-        output(node->limit_list, floor + 1);
-        output(node->into_list, floor + 1);
-
-        /* 可继续添加 */
-        break;
-      }
-    case t_select_list:
-      /* nodetype type; int isall; Node * args; Node *next; */
-      {
-        Select_list *node = (Select_list *)oldnode;
-        outputSpace(floor);
-        cout << "select_list: ";
-        if (node->isall) cout << "is all ";
-
-        cout << endl;
-        output(node->args, floor + 1);
-        output(node->next, floor);  //---3.14fzh---
-
-        break;
-      }
-    case t_select_expr:
-      /* nodetype type;	char *ascolname;	Node * colname; */
-      {
-        Select_expr *node = (Select_expr *)oldnode;
-        outputSpace(floor);
-        cout << "Select_expr: ";
-        if (node->ascolname) cout << node->ascolname << " ";
-
-        cout << endl;
-        output(node->colname, floor + 1);
-
-        break;
-      }
-
-    case t_from_list:
-      /* nodetype type;	Node * args;	Node *next;  Node * condition */
-      {
-        From_list *node = (From_list *)oldnode;
-        outputSpace(floor);
-        cout << "From_list: ";
-
-        cout << endl;
-        // output(node->condition, floor + 1);////////////////////////////////
-        Node *p;
-        Expr_list_header *lists = (Expr_list_header *)node->whcdn;
-        for (p = lists->header; p != NULL; p = ((Expr_list *)p)->next) {
-          output(p, floor + 1);
-        }
-        output(node->args, floor + 1);
-        output(node->next, floor + 1);
-
-        break;
-      }
-    case t_from_expr:
-      /* nodetype type;	char * astablename;	Node *next; */
-      {
-        From_expr *node = (From_expr *)oldnode;
-        outputSpace(floor);
-        cout << "From_expr: ";
-        if (node->astablename) cout << node->astablename;
-        cout << endl;
-        output(node->next, floor + 1);
-        break;
-      }
-    case t_where_list:
-      /* nodetype type;	char * wherestring;	Node *next; */
-      {
-        Where_list *node = (Where_list *)oldnode;
-        outputSpace(floor);
-        cout << "Where_list: ";
-        if (node->wherestring) cout << node->wherestring;
-        cout << endl;
-        output(node->next, floor + 1);
-        break;
-      }
-    case t_groupby_list:
-      /* nodetype type;char * groupbystring;Node *next;int with_rollup; */
-      {
-        Groupby_list *node = (Groupby_list *)oldnode;
-        outputSpace(floor);
-        cout << "Groupby_list: ";
-        if (node->groupbystring) cout << node->groupbystring << " ";
-        if (node->with_rollup) cout << node->with_rollup << " ";
-        cout << endl;
-        output(node->next, floor + 1);
-        break;
-      }
-    case t_groupby_expr:
-      /* nodetype type;	Node *args;	int sorttype;	Node *next; */
-      {
-        Groupby_expr *node = (Groupby_expr *)oldnode;
-        outputSpace(floor);
-        cout << "Groupby_expr: ";
-
-        if (node->sorttype) cout << node->sorttype << " ";
-        cout << endl;
-        output(node->args, floor + 1);
-        output(node->next, floor + 1);
-        break;
-      }
-
-    case t_having_list:
-      /* nodetype type;	char * havingstring;	Node *next; */
-      {
-        Having_list *node = (Having_list *)oldnode;
-        outputSpace(floor);
-        cout << "Having_list: ";
-        if (node->havingstring) cout << node->havingstring << " ";
-
-        cout << endl;
-        output(node->next, floor + 1);
-        break;
-      }
-    case t_orderby_list:
-      /* nodetype type;	char * orderbystring;	Node *next; */
-      {
-        Orderby_list *node = (Orderby_list *)oldnode;
-        outputSpace(floor);
-        cout << "Orderby_list: ";
-        if (node->orderbystring) cout << node->orderbystring << " ";
-
-        cout << endl;
-        output(node->next, floor + 1);
-        break;
-      }
-
-    case t_orderby_expr:
-      /* nodetype type;	Node *args;	char * sorttype;	Node *next; */
-      {
-        Orderby_expr *node = (Orderby_expr *)oldnode;
-        outputSpace(floor);
-        cout << "Orderby_expr: ";
-        if (node->sorttype) cout << node->sorttype << " ";
-
-        cout << endl;
-        output(node->args, floor + 1);
-        output(node->next, floor + 1);
-        break;
-      }
-
-    case t_limit_expr:
-      /* nodetype type;	Node * offset;	Node *row_count; */
-      {
-        Limit_expr *node = (Limit_expr *)oldnode;
-        outputSpace(floor);
-        cout << "Limit_expr: ";
-
-        cout << endl;
-        output(node->offset, floor + 1);
-        output(node->row_count, floor + 1);
-        break;
-      }  //---3.21 fzh---
-    case t_join: {
-      Join *node = (Join *)oldnode;
-      outputSpace(floor);
-      cout << "Join:   jtype= " << node->jointype << endl;
-      output(node->lnext, floor + 1);
-      output(node->rnext, floor + 1);
-      output(node->condition, floor + 1);
-    } break;
-    case t_condition: {
-      Condition *node = (Condition *)oldnode;
-      outputSpace(floor);
-      cout << "joincondition:   ctype= " << node->conditiontype << endl;
-      output(node->args, floor + 1);
-    } break;
-
-    default: { printf("output type not exist!!!\n"); }
-  }
+		default:
+		{
+			printf("output type not exist!!!\n");
+		}
+	}
 #endif
 }
 
