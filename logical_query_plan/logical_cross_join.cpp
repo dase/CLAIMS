@@ -35,7 +35,7 @@
 #include "../common/error_define.h"
 #include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 #include "../logical_query_plan/logical_cross_join.h"
-#include "../physical_query_plan/BlockStreamNestLoopJoinIterator.h"
+#include "../physical_query_plan/physical_nestloop_join.h"
 using namespace claims::common;
 
 namespace claims {
@@ -239,21 +239,21 @@ BlockStreamIteratorBase* LogicalCrossJoin::GetPhysicalPlan(
   if (NULL == plan_context_) {
     GetPlanContext();
   }
-  BlockStreamNestLoopJoinIterator* cross_join_iterator = NULL;
+  PhysicalNestLoopJoin* cross_join_iterator = NULL;
   BlockStreamIteratorBase* child_iterator_left = NULL;
   BlockStreamIteratorBase* child_iterator_right = NULL;
   GenerateChildPhysicalQueryPlan(child_iterator_left, child_iterator_right,
                                  block_size);
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
-  BlockStreamNestLoopJoinIterator::State state;
+  PhysicalNestLoopJoin::State state;
   state.block_size_ = block_size;
-  state.input_schema_left = GetSchema(left_plan_context.attribute_list_);
-  state.input_schema_right = GetSchema(right_plan_context.attribute_list_);
-  state.output_schema = GetSchema(plan_context_->attribute_list_);
-  state.child_left = child_iterator_left;
-  state.child_right = child_iterator_right;
-  cross_join_iterator = new BlockStreamNestLoopJoinIterator(state);
+  state.input_schema_left_ = GetSchema(left_plan_context.attribute_list_);
+  state.input_schema_right_ = GetSchema(right_plan_context.attribute_list_);
+  state.output_schema_ = GetSchema(plan_context_->attribute_list_);
+  state.child_left_ = child_iterator_left;
+  state.child_right_ = child_iterator_right;
+  cross_join_iterator = new PhysicalNestLoopJoin(state);
   return cross_join_iterator;
 }
 

@@ -60,7 +60,11 @@ const int kTestError = -3001;
 
 /* errorno for logical_query_plan -4001 ~ -5000*/
 const int kUninitializedJoinPolicy = -4001;
+
 const int kGeneratePlanContextFailed = -4002;
+
+const int kGenerateDataflowFailed = -4003;
+
 
 /* errorno for physical_query_plan -5001 ~ -6000 */
 const int kGenerateSubPhyPlanFailed = -5001;

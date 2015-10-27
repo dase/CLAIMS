@@ -53,7 +53,7 @@ libphysicalqueryplan_a_SOURCES = \
 	ExpandableBlockStreamRandomMemAccess.cpp 			ExpandableBlockStreamRandomMemAccess.h \
 	ExpandableBlockStreamSingleColumnScan.cpp 			ExpandableBlockStreamSingleColumnScan.h \
 	ExpandableBlockStreamSingleColumnScanDisk.cpp 		ExpandableBlockStreamSingleColumnScanDisk.h \
-	BlockStreamNestLoopJoinIterator.h					BlockStreamNestLoopJoinIterator.cpp	
+	physical_nestloop_join.h					        physical_nestloop_join.cpp	
 			
 SUBDIRS = 
 DIST_SUBDIRS = 
