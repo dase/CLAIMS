@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  src: url("https://fonts.gstatic.com/s/raleway/v9/IczWvq5y_Cwwv_rBjOtT0w.woff") format("woff");
+}
+@font-face {
+  font-family: "Reenie Beanie";
+  font-style: normal;
+  font-weight: 400;
+  src: url(http://fonts.gstatic.com/s/reeniebeanie/v7/ljpKc6CdXusL1cnGUSamX_n8qdNnd5eCmWXua5W-n7c.woff) format('woff');
+}
+@font-face {
+  font-family: "LiberationSans";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/LiberationSans-Regular.ttf) format('ttf');
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Open Sans"), local("OpenSans"), url("http://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3VtXRa8TVwTICgirnJhmVJw.woff2") format("woff2");
+}

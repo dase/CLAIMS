@@ -125,7 +125,7 @@ Dataflow LogicalQueryPlanRoot::getDataflow(){
 	return child_->getDataflow();
 }
 
-bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& final_physical_plan_desc, const unsigned & block_size){
+bool LogicalQueryPlanRoot::getOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& final_physical_plan_desc, const unsigned & block_size){
 	std::vector<PhysicalPlanDescriptor> candidate_physical_plan;
 	Requirement current_req;
 	current_req.setRequiredLocations(std::vector<NodeID>(1,collecter_));
@@ -140,7 +140,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 	PhysicalPlanDescriptor physical_plan;
 
 	/** no requirement**/
-	if(child_->GetOptimalPhysicalPlan(Requirement(),physical_plan,block_size)){
+	if(child_->getOptimalPhysicalPlan(Requirement(),physical_plan,block_size)){
 
 		NetworkTransfer transfer=current_req.requireNetworkTransfer(physical_plan.dataflow);
 
@@ -169,7 +169,7 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(Requirement requirement,Physic
 	}
 
 	/** with requirement**/
-	if(child_->GetOptimalPhysicalPlan(current_req,physical_plan,block_size)){
+	if(child_->getOptimalPhysicalPlan(current_req,physical_plan,block_size)){
 		candidate_physical_plan.push_back(physical_plan);
 	}
 

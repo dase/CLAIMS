@@ -66,7 +66,7 @@ BlockStreamIteratorBase* LogicalCSBIndexBuilding::getIteratorTree(const unsigned
 	return new bottomLayerSorting(bls_state);
 
 }
-bool LogicalCSBIndexBuilding::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size)
+bool LogicalCSBIndexBuilding::getOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size)
 {
 	assert(false);
 	return false;

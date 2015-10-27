@@ -36,5 +36,4 @@ libexecutor_a_LIBADD = 	${THERON_HOME}/Lib/libtherond.a \
 				${BOOST_HOME}/stage/lib/libboost_serialization.a \
 				${BOOST_HOME}/stage/lib/libboost_serialization.so
 
-SUBDIRS = Test
-DIST_SUBDIRS = Test
+

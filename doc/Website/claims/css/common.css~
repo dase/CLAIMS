@@ -1,0 +1,86 @@
+body {
+	background-color: #FFFFFF;
+}
+#navbar-upper {
+	background-color: #643094;
+}
+#navbar-upper .container {
+	padding-top: 30px;
+	padding-bottom: 12px;
+}
+#navbar-upper-img {
+	max-width: 90px; 
+	max-height: 90px;
+}
+#navbar-upper-img img {
+	width: 100%; 
+	height: 100%;
+}
+nav {
+	margin-top: -2px;
+}
+.navbar-upper-header {
+	color: #F4F8F9; 
+	font-size: 20px;
+	font-family: sans-serif;
+}
+.navbar-upper-para {
+	color: #F4F8F9; 
+	font-size: 16px;
+	font-family: Arial;
+}
+.navbar-tab {
+	width: 110px; 
+	font-size: 16px; 
+	text-align: center;
+}
+.navbar-tab-right {
+	width: 110px; 
+	font-size: 16px; 
+	text-align: center;
+}
+h1 {
+	font-size: 160%;
+}
+h2 {
+	font-size: 140%;
+}
+a {
+	color: #843AAF;
+}
+a:hover, a:focus {
+	color: #8942BE;
+}
+#navbar-side li.active a, #navbar-side a:hover, #navbar-side a:focus{
+	background-color: #EBCAFE;
+	color: #333333;
+}
+#navbar-side a {
+	color: #666666;
+}
+#navbar-side ul.nav-pills.affix{
+	top: 0px;
+	width: 195px;
+}
+#main-content {
+	padding-left: 30px;
+}
+p {
+	font-family: "Open Sans";
+	color: #555555;
+}
+.document-list li {
+	border: 1px solid #EBCAFE;
+}
+.blank {
+	height: 25px;
+}
+#footer {
+	height: 100px;
+	background-color: #222222;
+}
+#footer p {
+	position: relative;
+	top: 40%;
+	color: #F4F8F9;
+}

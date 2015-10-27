@@ -26,6 +26,3 @@ LDADD = 	../Parsetree/libparsetree.a \
 noinst_LIBRARIES=libdaemon.a
 libdaemon_a_SOURCES =	Daemon.cpp	Daemon.h \
 		Executing.cpp	Executing.h
-
-SUBDIRS = Test
-DIST_SUBDIRS = Test

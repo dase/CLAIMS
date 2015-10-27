@@ -52,7 +52,7 @@ BlockStreamIteratorBase* LogicalIndexScan::getIteratorTree(const unsigned & bloc
 	return new IndexScanIterator(state);
 }
 
-bool LogicalIndexScan::GetOptimalPhysicalPlan(Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size)
+bool LogicalIndexScan::getOptimalPhysicalPlan(Requirement requirement, PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size)
 {
 	assert(false);
 	return false;

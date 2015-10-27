@@ -26,7 +26,7 @@ public:
 	virtual ~EqualJoin();
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
-	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
+	bool getOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 private:
 	std::vector<unsigned> getLeftJoinKeyIndexList()const;
 	std::vector<unsigned> getRightJoinKeyIndexList()const;
