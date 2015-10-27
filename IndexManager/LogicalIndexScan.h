@@ -21,7 +21,7 @@ public:
 
 	Dataflow getDataflow();
 	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
-	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
+	bool getOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 	void print(int level=0)const;
 
 private:

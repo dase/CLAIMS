@@ -10,10 +10,11 @@
 #include <iostream>
 #include "log/logging.h"
 
-#define   likely(x)        __builtin_expect(!!(x), 1)
-#define   unlikely(x)      __builtin_expect(!!(x), 0)
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
 
 //#define CLAIMS_QUEIT
+
 //#ifndef CLAIMS_QUEIT  // If defined, all the output information is binded.
 #define DEBUG_QueryOptimization
 #define DEBUG_StorageManager
@@ -58,11 +59,10 @@
 
 //#endif  //CLAIMS_QUEIT
 
-
 void RawLog(const char* where, const char* format, va_list args) {
   const int message_max_length = 1000;  // set initial message length
   char p[message_max_length];
-  memset(p, 0, message_max_length*sizeof(char));
+  memset(p, 0, message_max_length * sizeof(char));
 
   int real_length = vsnprintf(p, message_max_length, format, args);
 
@@ -70,14 +70,14 @@ void RawLog(const char* where, const char* format, va_list args) {
     LOG(ERROR) << "vsnprintf error. " << strerror(errno) << std::endl;
   } else if (likely(real_length < message_max_length)) {
     // if it worked, output the message
-//    std::cout<<where<<p<<std::endl;
+    //    std::cout<<where<<p<<std::endl;
     LOG(INFO) << where << p << std::endl;
   } else {  // try again with more space
     int new_message_length = real_length + 1;
     char* temp = new char[new_message_length];
     if (temp == NULL) {
       LOG(ERROR) << "new " << new_message_length << " bytes failed."
-          << strerror(errno) << std::endl;
+                 << strerror(errno) << std::endl;
       return;
     }
     // if enough space got, do it again
@@ -86,7 +86,6 @@ void RawLog(const char* where, const char* format, va_list args) {
     delete[] temp;
   }
 }
-
 
 void RawElog(const char* where, const char* format, va_list args) {
   const int message_max_length = 1000;  // set initial message length
@@ -104,7 +103,7 @@ void RawElog(const char* where, const char* format, va_list args) {
     char* temp = new char[new_message_length];
     if (temp == NULL) {
       LOG(ERROR) << "new " << new_message_length << " bytes failed."
-          << strerror(errno) << std::endl;
+                 << strerror(errno) << std::endl;
       return;
     }
     // if enough space got, do it again

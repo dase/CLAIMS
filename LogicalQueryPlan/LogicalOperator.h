@@ -45,7 +45,7 @@ public:
 	 * @return true if find physical plan that meets the requirement and store the physical plan and
 	 * its corresponding information in physical_plan_descriptor.
 	 */
-	virtual bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
+	virtual bool getOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024){};
 
 	virtual void print(int level=0)const =0;
 

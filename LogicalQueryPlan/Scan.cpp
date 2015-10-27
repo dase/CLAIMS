@@ -135,7 +135,7 @@ BlockStreamIteratorBase* LogicalScan::getIteratorTree(const unsigned &block_size
 //	state.schema_=getSchema(dataflow_->attribute_list_);
 //	return new ExpandableBlockStreamSingleColumnScan(state);
 }
-bool LogicalScan::GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
+bool LogicalScan::getOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size){
 	Dataflow dataflow=getDataflow();
 	NetworkTransfer transfer=requirement.requireNetworkTransfer(dataflow);
 

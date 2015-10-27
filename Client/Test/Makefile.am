@@ -26,4 +26,4 @@ LDADD = 	../../Catalog/libcatalog.a \
 
 noinst_LIBRARIES=libtest.a
 
-libtest_a_SOURCES = TestSeverClient.cpp
+libtest_a_SOURCES = 

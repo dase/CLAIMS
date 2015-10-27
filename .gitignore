@@ -42,4 +42,26 @@ libtool
 ltmain.sh
 missing
 stamp-h1
+<<<<<<< HEAD
+Makefile.in
+*.Po
+Debug.h
+install/
+*.a
+*.o
+Makefile
+config.h
+config.h.in
+config.log
+configure
+claims.log
+conf
+conf/config
+build
+Build
+*.dat*
+include/
+.history
+=======
 缺省值
+>>>>>>> refs/remotes/origin/master-151022

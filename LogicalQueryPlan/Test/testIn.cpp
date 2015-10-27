@@ -115,10 +115,10 @@ static int in_test(){
 		LogicalOperator* cj_payload_scan=new LogicalScan(table_1->getProjectoin(1));
 
 		//set child: row_id < 20;
-		Filter::Condition filter_condition_1;
+		LogicalFilter::Condition filter_condition_1;
 		filter_condition_1.add(table_1->getAttribute(0),AttributeComparator::L,std::string("5"
 				""));
-		LogicalOperator* filter_1=new Filter(filter_condition_1,cj_payload_scan);
+		LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_payload_scan);
 
 		//aggregation
 		std::vector<Attribute> group_by_attributes;

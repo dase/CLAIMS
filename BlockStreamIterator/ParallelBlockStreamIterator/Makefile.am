@@ -48,6 +48,7 @@ libparallelblockstreamiterator_a_SOURCES = \
 	ExpandableBlockStreamSingleColumnScan.cpp 		ExpandableBlockStreamSingleColumnScan.h \
 	ExpandableBlockStreamSingleColumnScanDisk.cpp 		ExpandableBlockStreamSingleColumnScanDisk.h \
 	BlockStreamNestLoopJoinIterator.h				BlockStreamNestLoopJoinIterator.cpp
-
+	
+	
 SUBDIRS = Test
 DIST_SUBDIRS = Test
