@@ -50,7 +50,7 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	collector->Open();
 	collector->Next(0);
 	collector->Close();
-	resultset = collector->getResultSet();
+	resultset = collector->GetResultSet();
 	root->~LogicalOperator();;
 	return resultset;
 }

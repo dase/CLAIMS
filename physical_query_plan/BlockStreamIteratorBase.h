@@ -39,7 +39,7 @@ public:
 	/*
 	 * Suggested by scdong, this method can be removed.
 	 */
-	virtual ResultSet* getResultSet();
+	virtual ResultSet* GetResultSet();
 
 private:
 	friend class boost::serialization::access;

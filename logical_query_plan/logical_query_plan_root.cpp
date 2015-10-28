@@ -162,10 +162,10 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
         column_header.push_back(
             child_plan_context.attribute_list_[i].getName());
       }
-      BlockStreamResultCollector::State result_state(
+      physical_query_plan::BlockStreamResultCollector::State result_state(
           GetSchema(child_plan_context.attribute_list_), middle_tier,
           block_size, column_header);
-      ret = new BlockStreamResultCollector(result_state);
+      ret = new physical_query_plan::BlockStreamResultCollector(result_state);
       break;
     }
   }
