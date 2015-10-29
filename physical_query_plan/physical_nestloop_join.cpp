@@ -97,7 +97,8 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     jtc->block_for_asking_ = NULL;
   }
   // when the finished expanded thread finished its allocated work, it can be
-  // called back here. What should be noticed that the callback meas the to exit
+  // called back here. What should be noticed that the callback meas the to
+  // exit
   // on the of the thread
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
@@ -119,6 +120,19 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
 }
 
 bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
+  /**
+   * @brief it describes the sequence of the nestloop join. As the intermediate
+   * result of the left child has been stored in the dynamic block buffer in the
+   * open function. in this next function, it get the intermediate result of the
+   * right child operator, one block after one block. Within each block, it gets
+   * each tuple in the block and joins with each tuple in the dynamic block
+   * buffer
+   * when traversing them.
+   * Method description :
+   * @param
+   * @ return
+   * @details   (additional)
+   */
   void *tuple_from_buffer_child;
   void *tuple_from_right_child;
   void *result_tuple;
@@ -142,11 +156,11 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
                 tuple_from_right_child,
                 reinterpret_cast<char *>(result_tuple + copyed_bytes));
           } else {
-            LOG(INFO)
-                << "[NestloopJoin]: "
-                << "["
-                << "a block of the result is full of the nest loop join result"
-                << "]" << std::endl;
+            LOG(INFO) << "[NestloopJoin]: "
+                      << "["
+                      << "a block of the result is full of the nest loop "
+                         "join result"
+                      << "]" << std::endl;
             return true;
           }
           jtc->buffer_stream_iterator_->increase_cur_();
@@ -185,7 +199,8 @@ bool PhysicalNestLoopJoin::Close() {
 }
 
 /**
- * @brief  Method description : create a block buffer based on the given left or
+ * @brief  Method description : create a block buffer based on the given left
+or
  * right input schema
  * @param  target : the dynamic buffer to be created based on the given buffer
  * @param schema: the left or the right input schema

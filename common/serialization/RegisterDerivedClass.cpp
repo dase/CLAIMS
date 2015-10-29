@@ -32,7 +32,6 @@
 template <class Archive>
 void Register_Block_Stream_Iterator(Archive& ar) {
   ar.register_type(static_cast<Expander*>(NULL));
-
   ar.register_type(static_cast<ExchangeMerger*>(NULL));
   ar.register_type(static_cast<ExchangeSenderPipeline*>(NULL));
   ar.register_type(static_cast<PhysicalFilter*>(NULL));

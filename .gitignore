@@ -1,6 +1,7 @@
 !thirdparty/
 *.Po
 *.Po
+<<<<<<< HEAD
 *.a
 *.a
 *.dat*
@@ -9,6 +10,16 @@
 *.doxyfile
 *.o
 *.o
+=======
+*.a
+*.a
+*.dat*
+*.dat*
+*.doxyfile
+*.doxyfile
+*.o
+*.o
+>>>>>>> ebf8554976da9d7b1824369888e8212097ac61f1
 *sql.output
 .cproject
 .gitignore.swp

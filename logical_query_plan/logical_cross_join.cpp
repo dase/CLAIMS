@@ -247,6 +247,7 @@ BlockStreamIteratorBase* LogicalCrossJoin::GetPhysicalPlan(
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   PhysicalNestLoopJoin::State state;
+
   state.block_size_ = block_size;
   state.input_schema_left_ = GetSchema(left_plan_context.attribute_list_);
   state.input_schema_right_ = GetSchema(right_plan_context.attribute_list_);
@@ -277,8 +278,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = left_child_->GetPhysicalPlan(blocksize);
       expander_state.schema_ = left_plan_context.GetSchema();
-      BlockStreamIteratorBase* expander =
-          new Expander(expander_state);
+      BlockStreamIteratorBase* expander = new Expander(expander_state);
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = blocksize;
       exchange_state.child_ = expander;
@@ -293,8 +293,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       exchange_state.partition_schema_ =
           partition_schema::set_broadcast_partition();
       exchange_state.schema_ = left_plan_context.GetSchema();
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(exchange_state);
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(exchange_state);
       left_child_iterator_tree = exchange;
       right_child_iterator_tree = right_child_->GetPhysicalPlan(blocksize);
       break;
@@ -307,8 +306,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = right_child_->GetPhysicalPlan(blocksize);
       expander_state.schema_ = left_plan_context.GetSchema();
-      BlockStreamIteratorBase* expander =
-          new Expander(expander_state);
+      BlockStreamIteratorBase* expander = new Expander(expander_state);
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = blocksize;
       exchange_state.child_ = expander;
@@ -323,8 +321,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       exchange_state.partition_schema_ =
           partition_schema::set_broadcast_partition();
       exchange_state.schema_ = right_plan_context.GetSchema();
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(exchange_state);
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(exchange_state);
       right_child_iterator_tree = exchange;
       break;
     }
