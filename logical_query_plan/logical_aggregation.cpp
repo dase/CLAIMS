@@ -1,5 +1,4 @@
-#include "../physical_query_plan/BlockStreamAggregationIterator.h"
-
+#include "../physical_query_plan/physical_aggregation.h"
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -45,7 +44,7 @@ namespace logical_query_plan {
 LogicalAggregation::LogicalAggregation(
     std::vector<Attribute> group_by_attribute_list,
     std::vector<Attribute> aggregation_attribute_list,
-    std::vector<BlockStreamAggregationIterator::State::aggregation>
+    std::vector<PhysicalAggregation::State::Aggregation>
         aggregation_function_list, LogicalOperator* child)
     : group_by_attribute_list_(group_by_attribute_list),
       aggregation_attribute_list_(aggregation_attribute_list),
@@ -83,20 +82,18 @@ PlanContext LogicalAggregation::GetPlanContext() {
     case kAgg: {
       ret.attribute_list_ = GetAttrsAfterAgg();
       ret.commu_cost_ = child_context.commu_cost_;
-      ret.plan_partitioner_ =
-          child_context.plan_partitioner_;
+      ret.plan_partitioner_ = child_context.plan_partitioner_;
       Attribute partition_key =
           child_context.plan_partitioner_.get_partition_key();
       partition_key.table_id_ = INTERMEIDATE_TABLEID;
       ret.plan_partitioner_.set_partition_key(partition_key);
-      for (unsigned i = 0;
-           i < ret.plan_partitioner_.GetNumberOfPartitions(); i++) {
+      for (unsigned i = 0; i < ret.plan_partitioner_.GetNumberOfPartitions();
+           i++) {
         const unsigned cardinality =
-            ret.plan_partitioner_.GetPartition(i)
-                ->get_cardinality();
-        ret.plan_partitioner_.GetPartition(i)->set_cardinality(
-            EstimateGroupByCardinality(child_context) /
-            ret.plan_partitioner_.GetNumberOfPartitions());
+            ret.plan_partitioner_.GetPartition(i)->get_cardinality();
+        ret.plan_partitioner_.GetPartition(i)
+            ->set_cardinality(EstimateGroupByCardinality(child_context) /
+                              ret.plan_partitioner_.GetNumberOfPartitions());
       }
       break;
     }
@@ -109,8 +106,8 @@ PlanContext LogicalAggregation::GetPlanContext() {
       // of partitions and partition style) after repartition aggregation should
       // be decided by the partition property enforcement.
       ret.attribute_list_ = GetAttrsAfterAgg();
-      ret.commu_cost_ = child_context.commu_cost_ +
-                                  child_context.GetAggregatedDatasize();
+      ret.commu_cost_ =
+          child_context.commu_cost_ + child_context.GetAggregatedDatasize();
       ret.plan_partitioner_.set_partition_func(
           child_context.plan_partitioner_.get_partition_func());
       if (group_by_attribute_list_.empty()) {
@@ -138,8 +135,7 @@ PlanContext LogicalAggregation::GetPlanContext() {
 bool LogicalAggregation::CanOmitHashRepartition(
     const PlanContext& child_plan_context) const {
   if (child_plan_context.plan_partitioner_.GetNumberOfPartitions() == 1 &&
-      child_plan_context.plan_partitioner_.GetPartition(0)
-              ->get_location() == 0)
+      child_plan_context.plan_partitioner_.GetPartition(0)->get_location() == 0)
     return true;
   if (!child_plan_context.IsHashPartitioned()) return false;
 
@@ -157,15 +153,15 @@ bool LogicalAggregation::CanOmitHashRepartition(
 }
 
 void LogicalAggregation::ChangeSchemaForAVG(
-    BlockStreamAggregationIterator::State& state_) {
-  state_.avgIndex.clear();
-  for (unsigned i = 0; i < state_.aggregations.size(); i++) {
-    if (state_.aggregations[i] == BlockStreamAggregationIterator::State::avg) {
-      state_.aggregations[i] = BlockStreamAggregationIterator::State::sum;
-      state_.avgIndex.push_back(i);
+    PhysicalAggregation::State& state_) {
+  state_.avg_index_.clear();
+  for (unsigned i = 0; i < state_.aggregations_.size(); i++) {
+    if (state_.aggregations_[i] == PhysicalAggregation::State::kAvg) {
+      state_.aggregations_[i] = PhysicalAggregation::State::kSum;
+      state_.avg_index_.push_back(i);
     }
   }
-  state_.hashSchema = state_.output->duplicateSchema();
+  state_.hash_schema_ = state_.output_->duplicateSchema();
 
   // if the agg style isn kLocalAggReparGlobalAgg
   // at local, output_schema = hash_schema, but for global,
@@ -173,28 +169,26 @@ void LogicalAggregation::ChangeSchemaForAVG(
   // the hash_schema has to replace the column of avg() with sum() and append
   // one count() column at the end.
 
-  if (state_.avgIndex.size() > 0) {
+  if (state_.avg_index_.size() > 0) {
     column_type count_column_type = column_type(t_u_long, 8);
-    state_.hashSchema->addColumn(count_column_type, 8);
-    if (state_.agg_node_type ==
-        BlockStreamAggregationIterator::State::Hybrid_Agg_Private) {
-      state_.aggregations.push_back(
-          BlockStreamAggregationIterator::State::count);
-      state_.aggregationIndex.push_back(state_.aggregationIndex.size() +
-                                        state_.groupByIndex.size());
-      state_.output = state_.hashSchema->duplicateSchema();
-    } else if (state_.agg_node_type ==
-               BlockStreamAggregationIterator::State::Hybrid_Agg_Global) {
-      state_.aggregations.push_back(BlockStreamAggregationIterator::State::sum);
-      state_.aggregationIndex.push_back(state_.aggregationIndex.size() +
-                                        state_.groupByIndex.size());
-      state_.input = state_.hashSchema->duplicateSchema();
-    } else if (state_.agg_node_type ==
-               BlockStreamAggregationIterator::State::Not_Hybrid_Agg) {
-      state_.aggregations.push_back(
-          BlockStreamAggregationIterator::State::count);
-      state_.aggregationIndex.push_back(state_.aggregationIndex.size() +
-                                        state_.groupByIndex.size());
+    state_.hash_schema_->addColumn(count_column_type, 8);
+    if (state_.agg_node_type_ ==
+        PhysicalAggregation::State::kHybridAggPrivate) {
+      state_.aggregations_.push_back(PhysicalAggregation::State::kCount);
+      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
+                                          state_.index_of_group_by_.size());
+      state_.output_ = state_.hash_schema_->duplicateSchema();
+    } else if (state_.agg_node_type_ ==
+               PhysicalAggregation::State::kHybridAggGlobal) {
+      state_.aggregations_.push_back(PhysicalAggregation::State::kSum);
+      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
+                                          state_.index_of_group_by_.size());
+      state_.input_ = state_.hash_schema_->duplicateSchema();
+    } else if (state_.agg_node_type_ ==
+               PhysicalAggregation::State::kNotHybridAgg) {
+      state_.aggregations_.push_back(PhysicalAggregation::State::kCount);
+      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
+                                          state_.index_of_group_by_.size());
     }
   }
 }
@@ -209,81 +203,89 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
   }
   BlockStreamIteratorBase* ret;
   const PlanContext child_plan_context = child_->GetPlanContext();
-  BlockStreamAggregationIterator::State aggregation_state;
-  aggregation_state.groupByIndex =
+  PhysicalAggregation::State aggregation_state;
+  aggregation_state.index_of_group_by_ =
       GetInvolvedAttrIdList(group_by_attribute_list_, child_plan_context);
-  aggregation_state.aggregationIndex =
+  aggregation_state.aggregation_index_ =
       GetInvolvedAttrIdList(aggregation_attribute_list_, child_plan_context);
-  aggregation_state.aggregations = aggregation_function_list_;
-  aggregation_state.block_size = block_size;
-  aggregation_state.nbuckets = EstimateGroupByCardinality(child_plan_context);
-  aggregation_state.bucketsize = 64;
-  aggregation_state.input = GetSchema(child_plan_context.attribute_list_);
-  aggregation_state.output = GetSchema(plan_context_->attribute_list_);
-  aggregation_state.child = child_->GetPhysicalPlan(block_size);
+  aggregation_state.aggregations_ = aggregation_function_list_;
+  aggregation_state.block_size_ = block_size;
+  aggregation_state.num_of_buckets_ =
+      EstimateGroupByCardinality(child_plan_context);
+  aggregation_state.bucket_size_ = 64;
+  aggregation_state.input_ = GetSchema(child_plan_context.attribute_list_);
+  aggregation_state.output_ = GetSchema(plan_context_->attribute_list_);
+  aggregation_state.child_ = child_->GetPhysicalPlan(block_size);
 
   switch (aggregation_style_) {
     case kAgg: {
-      aggregation_state.agg_node_type =
-          BlockStreamAggregationIterator::State::Not_Hybrid_Agg;
+      aggregation_state.agg_node_type_ =
+          PhysicalAggregation::State::kNotHybridAgg;
       ChangeSchemaForAVG(aggregation_state);
-      ret = new BlockStreamAggregationIterator(aggregation_state);
+      ret = new PhysicalAggregation(aggregation_state);
       break;
     }
     case kLocalAggReparGlobalAgg: {
-      aggregation_state.agg_node_type = BlockStreamAggregationIterator::State::
-          Hybrid_Agg_Private;  // as regard to AVG(),for partition node and
-                               // global node ,we should do change schema.
+      aggregation_state.agg_node_type_ =
+          PhysicalAggregation::State::kHybridAggPrivate;  // as regard to
+                                                          // AVG(),for partition
+                                                          // node and
+      // global node ,we should do change schema.
       ChangeSchemaForAVG(aggregation_state);
-      BlockStreamAggregationIterator* local_aggregation =
-          new BlockStreamAggregationIterator(aggregation_state);
+
+      PhysicalAggregation* local_aggregation =
+          new PhysicalAggregation(aggregation_state);
       Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = local_aggregation;
-      expander_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
-      BlockStreamIteratorBase* expander_lower =
-          new Expander(expander_state);
+      expander_state.schema_ =
+          aggregation_state.hash_schema_->duplicateSchema();
+      BlockStreamIteratorBase* expander_lower = new Expander(expander_state);
 
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander_lower;
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
-      exchange_state.lower_id_list_ = GetInvolvedNodeID(
-          child_->GetPlanContext().plan_partitioner_);
+      exchange_state.lower_id_list_ =
+          GetInvolvedNodeID(child_->GetPlanContext().plan_partitioner_);
       exchange_state.upper_id_list_ =
           GetInvolvedNodeID(plan_context_->plan_partitioner_);
       if (group_by_attribute_list_.empty()) {
         exchange_state.partition_schema_ =
             partition_schema::set_hash_partition(0);
       } else {
-        exchange_state.partition_schema_ = partition_schema::set_hash_partition(
-            GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_)[0]);
+        exchange_state.partition_schema_ =
+            partition_schema::set_hash_partition(GetInvolvedAttrIdList(
+                GetGroupByAttrsAfterAgg(), *plan_context_)[0]);
       }
-      exchange_state.schema_ = aggregation_state.hashSchema->duplicateSchema();
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(exchange_state);
+      exchange_state.schema_ =
+          aggregation_state.hash_schema_->duplicateSchema();
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(exchange_state);
 
-      BlockStreamAggregationIterator::State global_aggregation_state;
-      global_aggregation_state.aggregationIndex =
+      PhysicalAggregation::State global_aggregation_state;
+      global_aggregation_state.aggregation_index_ =
           GetInvolvedAttrIdList(GetAggAttrsAfterAgg(), *plan_context_);
-      global_aggregation_state.aggregations =
+      global_aggregation_state.aggregations_ =
           ChangeForGlobalAggregation(aggregation_function_list_);
-      global_aggregation_state.block_size = block_size;
-      global_aggregation_state.bucketsize = 64;
-      global_aggregation_state.child = exchange;
-      global_aggregation_state.groupByIndex =
+      global_aggregation_state.block_size_ = block_size;
+      global_aggregation_state.bucket_size_ = 64;
+      global_aggregation_state.child_ = exchange;
+      global_aggregation_state.index_of_group_by_ =
           GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_);
-      global_aggregation_state.input = GetSchema(plan_context_->attribute_list_);
-      global_aggregation_state.nbuckets = aggregation_state.nbuckets;
-      global_aggregation_state.output = GetSchema(plan_context_->attribute_list_);
-      global_aggregation_state.agg_node_type =
-          BlockStreamAggregationIterator::State::Hybrid_Agg_Global;
+      global_aggregation_state.input_ =
+          GetSchema(plan_context_->attribute_list_);
+      global_aggregation_state.num_of_buckets_ =
+          aggregation_state.num_of_buckets_;
+      global_aggregation_state.output_ =
+          GetSchema(plan_context_->attribute_list_);
+      global_aggregation_state.agg_node_type_ =
+          PhysicalAggregation::State::kHybridAggGlobal;
       ChangeSchemaForAVG(global_aggregation_state);
       BlockStreamIteratorBase* global_aggregation =
-          new BlockStreamAggregationIterator(global_aggregation_state);
+          new PhysicalAggregation(global_aggregation_state);
       ret = global_aggregation;
       break;
     }
@@ -295,15 +297,14 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = child_->GetPhysicalPlan(block_size);
       expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
-      BlockStreamIteratorBase* expander =
-          new Expander(expander_state);
+      BlockStreamIteratorBase* expander = new Expander(expander_state);
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander;  // child_->getIteratorTree(block_size);
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
-      exchange_state.lower_id_list_ = GetInvolvedNodeID(
-          child_->GetPlanContext().plan_partitioner_);
+      exchange_state.lower_id_list_ =
+          GetInvolvedNodeID(child_->GetPlanContext().plan_partitioner_);
       exchange_state.upper_id_list_ =
           GetInvolvedNodeID(plan_context_->plan_partitioner_);
       if (group_by_attribute_list_.empty()) {
@@ -321,17 +322,17 @@ BlockStreamIteratorBase* LogicalAggregation::GetPhysicalPlan(
             partition_schema::set_hash_partition(GetInvolvedAttrIdList(
                 aggregation_attribute_list_, child_plan_context)[0]);
       } else {
-        exchange_state.partition_schema_ = partition_schema::set_hash_partition(
-            GetInvolvedAttrIdList(group_by_attribute_list_, child_plan_context)[0]);
+        exchange_state.partition_schema_ =
+            partition_schema::set_hash_partition(GetInvolvedAttrIdList(
+                group_by_attribute_list_, child_plan_context)[0]);
       }
       exchange_state.schema_ = GetSchema(child_plan_context.attribute_list_);
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(exchange_state);
-      aggregation_state.agg_node_type =
-          BlockStreamAggregationIterator::State::Not_Hybrid_Agg;
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(exchange_state);
+      aggregation_state.agg_node_type_ =
+          PhysicalAggregation::State::kNotHybridAgg;
       ChangeSchemaForAVG(aggregation_state);
-      aggregation_state.child = exchange;
-      ret = new BlockStreamAggregationIterator(aggregation_state);
+      aggregation_state.child_ = exchange;
+      ret = new PhysicalAggregation(aggregation_state);
       break;
     }
   }
@@ -364,13 +365,13 @@ std::vector<unsigned> LogicalAggregation::GetInvolvedAttrIdList(
 }
 float LogicalAggregation::EstimateSelectivity() const { return 0.1; }
 
-std::vector<BlockStreamAggregationIterator::State::aggregation>
-LogicalAggregation::ChangeForGlobalAggregation(const std::vector<
-    BlockStreamAggregationIterator::State::aggregation> list) const {
-  std::vector<BlockStreamAggregationIterator::State::aggregation> ret;
+std::vector<PhysicalAggregation::State::Aggregation>
+LogicalAggregation::ChangeForGlobalAggregation(
+    const std::vector<PhysicalAggregation::State::Aggregation> list) const {
+  std::vector<PhysicalAggregation::State::Aggregation> ret;
   for (unsigned i = 0; i < list.size(); i++) {
-    if (list[i] == BlockStreamAggregationIterator::State::count) {
-      ret.push_back(BlockStreamAggregationIterator::State::sum);
+    if (list[i] == PhysicalAggregation::State::kCount) {
+      ret.push_back(PhysicalAggregation::State::kSum);
     } else {
       ret.push_back(list[i]);
     }
@@ -409,7 +410,7 @@ std::vector<Attribute> LogicalAggregation::GetAggAttrsAfterAgg() const {
     Attribute temp = aggregation_attribute_list_[i];
 
     switch (aggregation_function_list_[i]) {
-      case BlockStreamAggregationIterator::State::count: {
+      case PhysicalAggregation::State::kCount: {
         if (!(temp.isNULL() || temp.isANY())) temp.attrType->~column_type();
         temp.attrType = new column_type(t_u_long, 8);
         temp.attrName = "count(" + temp.getName() + ")";
@@ -417,25 +418,25 @@ std::vector<Attribute> LogicalAggregation::GetAggAttrsAfterAgg() const {
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::max: {
+      case PhysicalAggregation::State::kMax: {
         temp.attrName = "max(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::min: {
+      case PhysicalAggregation::State::kMin: {
         temp.attrName = "min(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::sum: {
+      case PhysicalAggregation::State::kSum: {
         temp.attrName = "sum(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
         break;
       }
-      case BlockStreamAggregationIterator::State::avg: {
+      case PhysicalAggregation::State::kAvg: {
         temp.attrName = "avg(" + temp.getName() + ")";
         temp.index = aggregation_start_index++;
         temp.table_id_ = INTERMEIDATE_TABLEID;
@@ -507,23 +508,23 @@ void LogicalAggregation::Print(int level) const {
   for (unsigned i = 0; i < aggregation_attribute_list_.size(); i++) {
     printf("%*.s", level * 8, " ");
     switch (aggregation_function_list_[i]) {
-      case BlockStreamAggregationIterator::State::count: {
+      case PhysicalAggregation::State::kCount: {
         printf("Count: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::max: {
+      case PhysicalAggregation::State::kMax: {
         printf("Max: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::min: {
+      case PhysicalAggregation::State::kMin: {
         printf("Min: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::sum: {
+      case PhysicalAggregation::State::kSum: {
         printf("Sum: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }
-      case BlockStreamAggregationIterator::State::avg: {
+      case PhysicalAggregation::State::kAvg: {
         printf("Avg: %s\n", aggregation_attribute_list_[i].attrName.c_str());
         break;
       }

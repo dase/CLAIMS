@@ -27,7 +27,7 @@
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
 #include "../../logical_query_plan/logical_project.h"
-#include "../../physical_query_plan/BlockStreamAggregationIterator.h"
+#include "../../physical_query_plan/physical_aggregation.h"
 
 static void query_select_sort() {
 	/*
