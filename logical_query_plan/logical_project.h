@@ -40,7 +40,7 @@
 #include "../common/Expression/qnode.h"
 #include "../Catalog/Catalog.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../physical_query_plan/BlockStreamProjectIterator.h"
+#include "../physical_query_plan/physical_project.h"
 
 namespace claims {
 namespace logical_query_plan {

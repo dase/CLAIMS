@@ -15,8 +15,8 @@
 
 #include "../../../common/Block/BlockStream.h"
 
-#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
+#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_projection_scan.h"
+#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_filter.h"
 
 #include "../../../BlockStreamIterator/BlockStreamPrint.h"
 #include "../../../physical_query_plan/BlockStreamIteratorBase.h"
@@ -70,12 +70,12 @@ static int variable_schema_test(){
 	column_list.push_back(column_type(t_int));
 	column_list.push_back(column_type(t_double));
 	column_list.push_back(column_type(t_string));
-	ExpandableBlockStreamProjectionScan::State scan_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),new SchemaVar(column_list),64*1024-sizeof(unsigned));
-	BlockStreamIteratorBase* scan=new ExpandableBlockStreamProjectionScan(scan_state);
+	PhysicalProjectionScan::State scan_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),new SchemaVar(column_list),64*1024-sizeof(unsigned));
+	BlockStreamIteratorBase* scan=new PhysicalProjectionScan(scan_state);
 	//------------------------------------------------------------------
 
 	/*******************filter******************/
-	ExpandableBlockStreamFilter::State filter_state;
+	PhysicalFilter::State filter_state;
 
 	int f0=1;
 	AttributeComparator filter0(column_type(t_int),Comparator::EQ,0,&f0);
@@ -95,7 +95,7 @@ static int variable_schema_test(){
 	filter_state.comparator_list_=ComparatorList;
 	filter_state.child_=scan;
 
-	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(filter_state);
+	BlockStreamIteratorBase* filter=new PhysicalFilter(filter_state);
 	//------------------------------------------------------------------
 
 	/*******************print******************/

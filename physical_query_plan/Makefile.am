@@ -31,29 +31,26 @@ libphysicalqueryplan_a_SOURCES = \
 	physical_operator.cpp 	physical_operator.h	\
 	exchange_sender.cpp 		exchange_sender.h \
 	BlockStreamIteratorBase.cpp 			BlockStreamIteratorBase.h \
-	BlockStreamLimit.cpp 				BlockStreamLimit.h \
+	physical_limit.cpp 							physical_limit.h \
 	BlockStreamPerformanceMonitorTop.cpp 	BlockStreamPerformanceMonitorTop.h \
-	BlockStreamPrint.cpp 				BlockStreamPrint.h \
-	BlockStreamResultCollector.cpp 		BlockStreamResultCollector.h \
+	BlockStreamPrint.cpp 						BlockStreamPrint.h \
+	BlockStreamResultCollector.cpp 			BlockStreamResultCollector.h \
 	BlockStreamAggregationIterator.cpp 				BlockStreamAggregationIterator.h \
 	BlockStreamCombinedIterator.cpp 				BlockStreamCombinedIterator.h \
 	expander.cpp 						expander.h \
 	BlockStreamInIterator.cpp 						BlockStreamInIterator.h \
 	BlockStreamJoinIterator.cpp 						BlockStreamJoinIterator.h \
-	BlockStreamProjectIterator.cpp 						BlockStreamProjectIterator.h \
+	physical_project.cpp 						physical_project.h \
 	BlockStreamSortIterator.cpp 						BlockStreamSortIterator.h \
 	ExpandableBlockStreamBuffer.cpp 					ExpandableBlockStreamBuffer.h \
 	exchange_merger.cpp 				physical_exchange_merger.h \
 	exchange_sender_pipeline.cpp 		exchange_sender_pipeline.h \
 	exchange_sender_materialized.cpp 		exchange_sender_materialized.h \
-	ExpandableBlockStreamFilter.cpp 					ExpandableBlockStreamFilter.h \
-	ExpandableBlockStreamHdfsScan.cpp 					ExpandableBlockStreamHdfsScan.h \
-	ExpandableBlockStreamProjectionScan.cpp 			ExpandableBlockStreamProjectionScan.h \
+	physical_filter.cpp 								physical_filter.h \
+	physical_projection_scan.cpp 					physical_projection_scan.h \
 	ExpandableBlockStreamRandomDiskAccess.cpp 			ExpandableBlockStreamRandomDiskAccess.h \
 	ExpandableBlockStreamRandomMemAccess.cpp 			ExpandableBlockStreamRandomMemAccess.h \
-	ExpandableBlockStreamSingleColumnScan.cpp 			ExpandableBlockStreamSingleColumnScan.h \
-	ExpandableBlockStreamSingleColumnScanDisk.cpp 		ExpandableBlockStreamSingleColumnScanDisk.h \
-	BlockStreamNestLoopJoinIterator.h					BlockStreamNestLoopJoinIterator.cpp	
+	physical_nestloop_join.h					        physical_nestloop_join.cpp	
 			
 SUBDIRS = 
 DIST_SUBDIRS = 

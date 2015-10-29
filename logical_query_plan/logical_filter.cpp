@@ -37,7 +37,7 @@
 #include "../common/TypeCast.h"
 #include "../common/Expression/initquery.h"
 #include "../physical_query_plan/exchange_merger.h"
-#include "../physical_query_plan/ExpandableBlockStreamFilter.h"
+#include "../physical_query_plan/physical_filter.h"
 namespace claims {
 namespace logical_query_plan {
 
@@ -93,13 +93,13 @@ BlockStreamIteratorBase* LogicalFilter::GetPhysicalPlan(
     const unsigned& blocksize) {
   PlanContext plan_context = GetPlanContext();
   BlockStreamIteratorBase* child_iterator = child_->GetPhysicalPlan(blocksize);
-  ExpandableBlockStreamFilter::State state;  // Initial a state_.
+  PhysicalFilter::State state;  // Initial a state.
   state.block_size_ = blocksize;
   state.child_ = child_iterator;
   state.qual_ = condi_;
-  state.colindex_ = column_id_;
+  state.column_id_ = column_id_;
   state.schema_ = GetSchema(plan_context.attribute_list_);
-  BlockStreamIteratorBase* filter = new ExpandableBlockStreamFilter(state);
+  BlockStreamIteratorBase* filter = new PhysicalFilter(state);
   return filter;
 }
 
@@ -114,14 +114,14 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
     NetworkTransfer transfer =
         requirement.requireNetworkTransfer(physical_plan.plan_context_);
     if (NONE == transfer) {
-      ExpandableBlockStreamFilter::State state;
+      PhysicalFilter::State state;
       state.block_size_ = block_size;
       state.child_ = physical_plan.plan;
       state.qual_ = condi_;
-      state.colindex_ = column_id_;
+      state.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state.schema_ = GetSchema(plan_context.attribute_list_);
-      BlockStreamIteratorBase* filter = new ExpandableBlockStreamFilter(state);
+      BlockStreamIteratorBase* filter = new PhysicalFilter(state);
       physical_plan.plan = filter;
       candidate_physical_plans.push_back(physical_plan);
     } else if ((OneToOne == transfer) || (Shuffle == transfer)) {
@@ -130,15 +130,14 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
        * requirement.
        * TODO(wangli): Implement OneToOne Exchange
        * */
-      ExpandableBlockStreamFilter::State state_f;
+      PhysicalFilter::State state_f;
       state_f.block_size_ = block_size;
       state_f.child_ = physical_plan.plan;
       state_f.qual_ = condi_;
-      state_f.colindex_ = column_id_;
+      state_f.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state_f.schema_ = GetSchema(plan_context.attribute_list_);
-      BlockStreamIteratorBase* filter =
-          new ExpandableBlockStreamFilter(state_f);
+      BlockStreamIteratorBase* filter = new PhysicalFilter(state_f);
       physical_plan.plan = filter;
 
       physical_plan.cost += physical_plan.plan_context_.GetAggregatedDatasize();
@@ -182,8 +181,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
 
       state.lower_id_list_ = lower_id_list;
 
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(state);
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(state);
 
       physical_plan.plan = exchange;
     }
@@ -191,13 +189,13 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
   }
 
   if (child_->GetOptimalPhysicalPlan(requirement, physical_plan)) {
-    ExpandableBlockStreamFilter::State state;
+    PhysicalFilter::State state;
     state.block_size_ = block_size;
     state.child_ = physical_plan.plan;
-    state.colindex_ = column_id_;
+    state.column_id_ = column_id_;
     PlanContext plan_context = GetPlanContext();
     state.schema_ = GetSchema(plan_context.attribute_list_);
-    BlockStreamIteratorBase* filter = new ExpandableBlockStreamFilter(state);
+    BlockStreamIteratorBase* filter = new PhysicalFilter(state);
     physical_plan.plan = filter;
     candidate_physical_plans.push_back(physical_plan);
   }

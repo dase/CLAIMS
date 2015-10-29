@@ -34,8 +34,7 @@
 #include "../Catalog/Catalog.h"
 #include "../IDsGenerator.h"
 #include "../physical_query_plan/exchange_merger.h"
-#include "../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
-#include "../physical_query_plan/ExpandableBlockStreamSingleColumnScan.h"
+#include "../physical_query_plan/physical_projection_scan.h"
 #include "../Resource/NodeTracker.h"
 namespace claims {
 namespace logical_query_plan {
@@ -168,12 +167,12 @@ PlanContext LogicalScan::GetPlanContext() {
 
 BlockStreamIteratorBase* LogicalScan::GetPhysicalPlan(
     const unsigned& block_size) {
-  ExpandableBlockStreamProjectionScan::State state;
+  PhysicalProjectionScan::State state;
   state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
   state.schema_ = GetSchema(plan_context_->attribute_list_);
   state.sample_rate_ = sample_rate_;
-  return new ExpandableBlockStreamProjectionScan(state);
+  return new PhysicalProjectionScan(state);
 }
 
 bool LogicalScan::GetOptimalPhysicalPlan(
@@ -182,13 +181,13 @@ bool LogicalScan::GetOptimalPhysicalPlan(
   PlanContext plan_context = GetPlanContext();
   NetworkTransfer transfer = requirement.requireNetworkTransfer(plan_context);
 
-  ExpandableBlockStreamProjectionScan::State state;
+  PhysicalProjectionScan::State state;
   state.block_size_ = block_size;
   state.projection_id_ = target_projection_->getProjectionID();
   state.schema_ = GetSchema(plan_context_->attribute_list_);
   state.sample_rate_ = sample_rate_;
 
-  PhysicalPlan scan = new ExpandableBlockStreamProjectionScan(state);
+  PhysicalPlan scan = new PhysicalProjectionScan(state);
 
   if (transfer == NONE) {
     physical_plan_descriptor.plan = scan;
@@ -233,8 +232,7 @@ bool LogicalScan::GetOptimalPhysicalPlan(
             plan_context.attribute_list_, requirement.getPartitionKey()));
     assert(state.partition_schema_.partition_key_index >= 0);
 
-    BlockStreamIteratorBase* exchange =
-        new ExchangeMerger(state);
+    BlockStreamIteratorBase* exchange = new ExchangeMerger(state);
 
     PlanContext new_plan_context;
     new_plan_context.attribute_list_ = plan_context.attribute_list_;

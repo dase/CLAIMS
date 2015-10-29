@@ -31,13 +31,13 @@
 #include <vector>
 #include <set>
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "../../common/Schema/Schema.h"
-#include "../../common/Block/BlockStreamBuffer.h"
-#include "../../utility/ExpandabilityShrinkability.h"
-#include "../../common/Logging.h"
-#include "../../utility/lock.h"
-#include "../../utility/ThreadPool.h"
-#include "../../Environment.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Block/BlockStreamBuffer.h"
+#include "../utility/ExpandabilityShrinkability.h"
+#include "../common/Logging.h"
+#include "../utility/lock.h"
+#include "../utility/ThreadPool.h"
+#include "../Environment.h"
 
 #define EXPANDER_BUFFER_SIZE 1000
 /**

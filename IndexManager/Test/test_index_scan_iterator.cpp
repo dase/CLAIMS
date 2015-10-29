@@ -15,7 +15,7 @@
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
 #include "../../physical_query_plan/BlockStreamPrint.h"
-#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../../physical_query_plan/physical_projection_scan.h"
 
 static int test_index_scan_iterator()
 {

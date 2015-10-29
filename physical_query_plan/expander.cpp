@@ -27,7 +27,7 @@
 #include <glog/logging.h>
 #include <set>
 #include <iostream>
-#include "../../common/Logging.h"
+#include "../common/Logging.h"
 #include "./expander.h"
 
 #include "../Executor/expander_tracker.h"

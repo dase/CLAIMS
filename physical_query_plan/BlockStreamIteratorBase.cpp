@@ -10,27 +10,25 @@
 #include <iostream>
 #include <assert.h>
 
-#include "ExpandableBlockStreamSingleColumnScan.h"
-
 using namespace std;
 
 BlockStreamIteratorBase::BlockStreamIteratorBase() {
-	// TODO Auto-generated constructor stub
-
+  // TODO Auto-generated constructor stub
 }
 
 BlockStreamIteratorBase::~BlockStreamIteratorBase() {
-	// TODO Auto-generated destructor stub
+  // TODO Auto-generated destructor stub
 }
 
-BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(const string &IteratorName){
-//	if(IteratorName=="scan"){
-//		cout<<"scan iterator"<<endl;
-//		return new ExpandableBlockStreamSingleColumnScan();
-//	}
+BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(
+    const string& IteratorName) {
+  //	if(IteratorName=="scan"){
+  //		cout<<"scan iterator"<<endl;
+  //		return new ExpandableBlockStreamSingleColumnScan();
+  //	}
 }
-ResultSet* BlockStreamIteratorBase::getResultSet(){
-	printf("You cannot get ResultSet from Root operator!\n");
-	assert(false);
-	return 0;
+ResultSet* BlockStreamIteratorBase::getResultSet() {
+  printf("You cannot get ResultSet from Root operator!\n");
+  assert(false);
+  return 0;
 }

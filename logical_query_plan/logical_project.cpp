@@ -134,15 +134,15 @@ BlockStreamIteratorBase* LogicalProject::GetPhysicalPlan(
   GetPlanContext();
   const PlanContext child_plan_context = child_->GetPlanContext();
   BlockStreamIteratorBase* child = child_->GetPhysicalPlan(block_size);
-  BlockStreamProjectIterator::State state;
+  PhysicalProject::State state;
 
   // assign some attributes to the state_
   state.block_size_ = block_size;
   state.child_ = child;
-  state.input_ = GetSchema(child_plan_context.attribute_list_);
-  state.output_ = GetOutputSchema();
-  state.exprTree_ = expression_tree_;
-  return new BlockStreamProjectIterator(state);
+  state.schema_input_ = GetSchema(child_plan_context.attribute_list_);
+  state.schema_output_ = GetOutputSchema();
+  state.expr_tree_ = expression_tree_;
+  return new PhysicalProject(state);
 }
 
 // construct a schema from attribute list of PlanContext
