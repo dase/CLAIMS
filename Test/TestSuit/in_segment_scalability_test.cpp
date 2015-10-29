@@ -45,7 +45,7 @@ static double lineitem_scan_self_join(){
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 
-	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	double ret=result_set->query_time_;
 
 
@@ -82,7 +82,7 @@ static double sb_scan_self_join(){
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 
-	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	double ret=result_set->query_time_;
 
 
@@ -125,7 +125,7 @@ static double lineitem_scan_aggregation(){
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 
-	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
 
@@ -155,7 +155,7 @@ static double lineitem_scan_filter(){
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 
-	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	double ret=result_set->query_time_;
 
 	physical_iterator_tree->~BlockStreamIteratorBase();
@@ -189,7 +189,7 @@ static double sb_scan_filter(){
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 
-	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	double ret=result_set->query_time_;
 
 	physical_iterator_tree->~BlockStreamIteratorBase();
@@ -226,7 +226,7 @@ static double sb_scan_aggregation(){
 	while(physical_iterator_tree->Next(0));
 	physical_iterator_tree->Close();
 
-	ResultSet* result_set=physical_iterator_tree->getResultSet();
+	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
 

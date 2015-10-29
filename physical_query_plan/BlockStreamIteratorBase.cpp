@@ -27,7 +27,8 @@ BlockStreamIteratorBase* BlockStreamIteratorBase::createIterator(
   //		return new ExpandableBlockStreamSingleColumnScan();
   //	}
 }
-ResultSet* BlockStreamIteratorBase::getResultSet() {
+
+ResultSet* BlockStreamIteratorBase::GetResultSet() {
   printf("You cannot get ResultSet from Root operator!\n");
   assert(false);
   return 0;
