@@ -2,6 +2,7 @@
 *.Po
 *.Po
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.a
 *.a
 *.dat*
@@ -13,13 +14,22 @@
 =======
 *.a
 *.a
+=======
+*.a
+*.a
+>>>>>>> 9a9bb388566a4d79e0ea34822cecafe9363197b1
 *.dat*
 *.dat*
 *.doxyfile
 *.doxyfile
+<<<<<<< HEAD
 *.o
 *.o
 >>>>>>> ebf8554976da9d7b1824369888e8212097ac61f1
+=======
+*.o
+*.o
+>>>>>>> 9a9bb388566a4d79e0ea34822cecafe9363197b1
 *sql.output
 .cproject
 .gitignore.swp

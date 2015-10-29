@@ -200,8 +200,7 @@ bool PhysicalNestLoopJoin::Close() {
 
 /**
  * @brief  Method description : create a block buffer based on the given left
-or
- * right input schema
+ * or right input schema
  * @param  target : the dynamic buffer to be created based on the given buffer
  * @param schema: the left or the right input schema
   */
