@@ -38,8 +38,8 @@
 #include "../utility/warmup.h"
 #include "../storage/ChunkStorage.h"
 #include "./physical_projection_scan.h"
-
 #include "../Executor/expander_tracker.h"
+
 using namespace claims::common;
 
 // namespace claims{

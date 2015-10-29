@@ -247,7 +247,6 @@ BlockStreamIteratorBase* LogicalCrossJoin::GetPhysicalPlan(
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   PhysicalNestLoopJoin::State state;
-
   state.block_size_ = block_size;
   state.input_schema_left_ = GetSchema(left_plan_context.attribute_list_);
   state.input_schema_right_ = GetSchema(right_plan_context.attribute_list_);
