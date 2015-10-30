@@ -142,6 +142,7 @@ void Catalog::getTables(ostringstream &ostr) const{
     {
         string tbname = it->first;
         int len = tbname.length();
+        if(len <= 4) continue;
         if(tbname.substr(len-4, len) == "_DEL" )
         {
             tbname = tbname.substr(0, len-4);
