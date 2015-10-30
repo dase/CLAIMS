@@ -357,7 +357,7 @@ void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &resu
 
     ResultSet* result;
     Query(catalog, querynode, result, result_flag, error_msg, info, false);
-    result_set = result;
+  //  result_set = result;
   //  result->print();
     ostringstream ostr;
     ostr << result->getNumberOftuples() << " tuples deleted.";
@@ -1785,7 +1785,6 @@ void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool&result
         }
         else
         {
-            
             if(Environment::getInstance()->getCatalog()->drop_table(tablename, table_desc->get_table_id()))
             {
                 
@@ -1795,6 +1794,18 @@ void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool&result
                 delete table_desc;       
                 cout << tablename + " is dropped from this database!" << endl; 
                 info = "drop table successfully!";
+#if 1
+                // drop table_DEL couple with table.
+                {
+                    TableDescriptor *table_desc_DEL = Environment::getInstance()->getCatalog()->getTable(tablename+"_DEL");
+                    Environment::getInstance()->getCatalog()->drop_table(tablename+"_DEL", table_desc_DEL->get_table_id());
+                    HdfsLoader* Hl = new HdfsLoader(table_desc_DEL, (open_flag)(DELETE_FILE));
+                    Hl->DeleteDataFilesForDropTable();
+            
+                    delete table_desc_DEL;       
+                    cout << tablename+"_DEL" + " is dropped from this database!" << endl; 
+                }
+#endif           
             }
             else
             {
