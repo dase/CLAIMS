@@ -27,6 +27,7 @@ using namespace std;
 class HdfsLoader {
 public:
 	HdfsLoader();
+	HdfsLoader(TableDescriptor* tableDescriptor,  open_flag open_flag_ );
 	HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator = '|', const char r_separator = '\n', open_flag open_flag_=APPENDD);
 	HdfsLoader(const char c_separator, const char r_separator, std::vector<std::string> file_name, TableDescriptor* tableDescriptor, open_flag open_flag_=CREATEE);
 	virtual ~HdfsLoader();
@@ -40,6 +41,8 @@ public:
 	bool load(double sample_rate=1);
 
 	bool append(std::string tuple_string);
+
+	bool DeleteDataFilesForDropTable();
 
 public:
 	TableDescriptor* table_descriptor_;

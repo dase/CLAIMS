@@ -481,7 +481,7 @@ struct Node * newLimitExpr(nodetype type, Node * offset, Node * row_count,vector
 	insertNodePointer((Node*)a,allnode);
 	return (Node *)a;
 };
-
+// DDL
 //2014-4-16---add---by Yu
 Node* newInsertStmt(int insert_opt, char *tablename, Node *col_list,
 		Node *insert_val_list, Node *insert_assign_list, Node *insert_assign_list_from_set, Node *select_stmt,vector<Node *> *allnode)

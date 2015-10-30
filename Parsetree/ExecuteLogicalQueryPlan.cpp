@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
+
 #include "../Environment.h"
 
 #include "../Catalog/stat/Analyzer.h"
@@ -34,6 +35,9 @@
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include "../common/log/logging.h"
+
 #define SQL_Parser
 using namespace std;
 
@@ -99,10 +103,18 @@ void ExecuteLogicalQueryPlan(const string &sql,ResultSet *&result_set,bool &resu
 			break;
 		}
 		case t_drop_stmt:
+        case t_drop_table_stmt:
 		{
 			DropTable(catalog, node, result_set, result_flag, error_msg, info);
 			break;
 		}
+#ifdef _DELETE_DATA_SUPPORT_
+        case t_delete_stmt:
+        {
+            DeleteData(catalog, node, result_set, result_flag, error_msg, info);
+            break;
+        }
+#endif
 		default:
 		{
 			cout<<node->type<<endl;
@@ -279,11 +291,146 @@ bool CheckType(const column_type *col_type, Expr *expr)		// check whether the st
 	}
 }
 
+#ifdef _DELETE_DATA_SUPPORT_
+void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info)
+{
+    result_set = NULL;
+    result_flag = true;
+    error_msg = "";
+
+    DeleteStmt * delete_stmt = (DeleteStmt* )node;
+#if 0
+    ostringstream ostr;
+
+    ostr << "delete_stmt->type_: " << delete_stmt->type_;
+
+    LOG(INFO) << ostr.str() << std::endl;
+
+    ostr.clear();
+	ostr.str("");
+
+    ostr << "from_list->type_: " <<((From_list*)(delete_stmt->from_list_))->args->type;
+    LOG(INFO) << ostr.str() << std::endl;
+
+    ostr.clear();
+	ostr.str("");
+
+    string tablename  = ((Table*)(((From_list*)(delete_stmt->from_list_))->args))->tablename;
+    ostr << "tablename : " << tablename;
+    LOG(INFO) << ostr.str() << std::endl;
+#endif
+    string tablename = ((Table*)(((From_list*)(delete_stmt->from_list_))->args))->tablename;
+    TableDescriptor *new_table = Environment::getInstance()->getCatalog()->getTable(tablename);
+	if (new_table == NULL)
+	{
+		error_msg="The table "+tablename +" is not existed.";
+		result_flag=false;
+		result_set = NULL;
+		return;
+	}
+
+#if 1
+    /** create new sql:
+        DELETE FROM tbA WHERE colA = 10;
+        =>
+        SELECT row_id FROM tbA WHERE colA = 10;
+    */
+    Node *q=newColumn(t_name_name,((Table*)(((From_list*)(delete_stmt->from_list_))->args))->tablename,"row_id"/*(char*)(it->attrName).c_str()*/,NULL,NULL);
+          q=newSelectExpr(t_select_expr,"row_id"/*(char*)(it->attrName).c_str()*/,q,NULL);
+
+    Node *slistrowid = newSelectList(t_select_list,0,q,NULL,NULL);
+    
+    Node *querynode = newQueryStmt(
+                t_query_stmt, //nodetype t, 
+                NULL, //char * querystring, 
+                0,  //int select_opts,
+                slistrowid, //Node *select_list, 
+                delete_stmt->from_list_,//Node *from_list, 
+                delete_stmt->where_list_, //Node *where_list, 
+                NULL, //Node *groupby_list,
+                NULL, //Node *having_list, 
+                NULL, //Node *orderby_list, 
+                NULL, //Node *limit_list, 
+                NULL, //Node *into_list,
+                NULL //vector<Node *> *allnode
+                );
+
+    ResultSet* result;
+    Query(catalog, querynode, result, result_flag, error_msg, info, false);
+  //  result_set = result;
+  //  result->print();
+    ostringstream ostr;
+    ostr << result->getNumberOftuples() << " tuples deleted.";
+    info = ostr.str();
+
+    string tablenamedel = tablename + "_DEL";
+    
+    InsertDeletedDataIntoTableDEL(tablenamedel, result);
+
+//    LOG(ERROR) <<  << std::endl;
+    
+#endif
+
+}
+
+
+void InsertDeletedDataIntoTableDEL(string tablename, ResultSet *result_set)
+{
+    DynamicBlockBuffer::Iterator it = result_set->createIterator();
+    BlockStreamBase* block;
+    BlockStreamBase::BlockStreamTraverseIterator* tuple_it;
+
+    printf("insert del table name : [%s]\n", tablename.c_str());
+    TableDescriptor *tabledel = Environment::getInstance()->getCatalog()->getTable(tablename);
+	if (tabledel == NULL)
+	{
+		LOG(ERROR) << "The table DEL "+tablename +" is not existed during delete data." << std::endl;
+		return;
+	}
+
+    /**
+        prepare the data which will be insert into TABLE_DEL.
+    */
+    ostringstream ostr;
+	while(block=it.nextBlock()) {
+		tuple_it=block->createIterator();
+		void * tuple;
+		while(tuple=tuple_it->nextTuple()){
+			for(unsigned i=0;i < result_set->column_header_list_.size();i++){
+//				printf("%s",result_set->schema_->getcolumn(i).operate->toString(result_set->schema_->getColumnAddess(i,tuple)).c_str());
+                // check whether the row has been deleted or not.
+                if(true)
+                {
+                    ostr << result_set->schema_->getcolumn(i).operate->toString(result_set->schema_->getColumnAddess(i,tuple)).c_str();
+                    ostr << "|";
+                }
+                else
+                {
+                    continue;
+                }
+			}
+            ostr << "\n";
+		}
+		delete tuple_it;
+	}
+
+    HdfsLoader* Hl = new HdfsLoader(tabledel);
+    string tmp = ostr.str();
+    Hl->append(ostr.str());
+    cout << tmp << endl;
+    Environment::getInstance()->getCatalog()->saveCatalog();
+}
+
+
+
+#endif
+
 void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &result_flag, string &error_msg, string &info)
 {
 	/* nodetype type, int create_type, int check, char * name1, char * name2, Node * list, Node * select_stmt */
 	Create_table_stmt * ctnode = (Create_table_stmt *)node;
 	string tablename;
+    string tablename_del;
 	if(ctnode->name2 != NULL) {
 		tablename = ctnode->name2;
 	}
@@ -306,6 +453,8 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 		return;
 	}
 
+    tablename_del = tablename + "_DEL";
+    
 	new_table = new TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
 	new_table->addAttribute("row_id",data_type(t_u_long),0,true);
 
@@ -552,6 +701,7 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 	if(result_flag==false)
 		return;
 
+    
 //	cout<<"the first attribute Name:"<<new_table->getAttribute(0).getName()<<endl;
 
 //	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(), 18);
@@ -562,7 +712,26 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &res
 	//					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
 	//					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
 	//				}
+#ifdef _DELETE_DATA_SUPPORT_
+    /**
+        Create a table to store the deleted data's row_id whose table name is tablename_DEL with two attrbutes, one is "row_id" and the other one is "row_id_DEL".
+    */
+    // create table delete begin.
+    new_table = Environment::getInstance()->getCatalog()->getTable(tablename_del);
+	if (new_table == NULL)
+	{
+		new_table = new TableDescriptor(tablename_del,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+        new_table->addAttribute("row_id",data_type(t_u_long),0,true);
+        new_table->addAttribute("row_id_DEL", data_type(t_u_long),0,true);
 
+        catalog->add_table(new_table); 
+	}
+    else
+    {
+        LOG(ERROR) << "The table "+tablename +" has existed during creating table_DEL!" << std::endl; 
+    }
+    // create table delete end.
+#endif
 	catalog->saveCatalog();
 	//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
 	result_flag=true;
@@ -907,6 +1076,33 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set, bool
 
 		catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->RegisterPartition(i,0);
 	}
+    
+#ifdef _DELETE_DATA_SUPPORT_
+    /**
+        create projection for table_del
+    */
+    // create projection start
+    table = catalog->getTable((tablename+"_DEL"));
+    if(table != NULL)
+    {
+        table_id=catalog->getTable(tablename+"_DEL")->get_table_id();    
+        std::vector<ColumnOffset> indexDEL;
+    	indexDEL.push_back(0);
+
+        if(table->isExist(tablename+"_DEL."+"row_id_DEL"))
+    			indexDEL.push_back(table->getAttribute("row_id_DEL").index);
+
+        catalog->getTable(table_id)->createHashPartitionedProjection(indexDEL,"row_id_DEL",partition_num);
+
+    	projection_index = catalog->getTable(table_id)->getNumberOfProjection()-1;
+        
+    	for(unsigned i=0;i<catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->getNumberOfPartitions();i++){
+
+    		catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->RegisterPartition(i,0);
+    	}
+    }
+    // create projection for table_delete end.
+#endif
 
 	catalog->saveCatalog();
 	//			catalog->restoreCatalog();// commented by li to solve the dirty read after insert
@@ -1511,9 +1707,12 @@ void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool &resul
 	case 1:
 	{
 		ostr<<"TABLES:"<<endl;
-		for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
+#if 0
+        for (unsigned i = 0; i < catalog->getTableSize(); ++i) {
 			ostr<<catalog->getTable(i)->getTableName()<<endl;
 		}
+#endif
+        catalog->getTables(ostr);
 		info = ostr.str();
 		result_flag=true;
 		result_set=NULL;
@@ -1553,6 +1752,77 @@ void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set, bool&result
 	Droptable_stmt *drop_stmt = (Droptable_stmt*)node;
 	Tablelist *table_list = (Tablelist *)(drop_stmt->table_list);
 	//TODO
+
+    while(table_list != NULL)
+    {
+        string tablename;
+        if(table_list->name2 != NULL) {
+            tablename = table_list->name2;
+        }
+        else if(table_list->name1 != NULL) {
+            tablename = table_list->name1;
+        }
+        else {
+            error_msg="No table name during creating table!";
+            result_flag=false;
+            result_set = NULL;
+            break;
+        }
+
+#if 0    
+        cout << "===========================" << endl;
+        cout << "type : " << table_list->type << endl;
+        cout << "tablename : " <<tablename << endl;
+#endif   
+
+        TableDescriptor *table_desc = Environment::getInstance()->getCatalog()->getTable(tablename);
+        if(NULL == table_desc)
+        {
+           info = "table [" + tablename + "] is not exist!";
+           error_msg = "";
+	       result_flag=true;
+           result_set=NULL;
+        }
+        else
+        {
+            if(Environment::getInstance()->getCatalog()->drop_table(tablename, table_desc->get_table_id()))
+            {
+                
+                HdfsLoader* Hl = new HdfsLoader(table_desc, (open_flag)(DELETE_FILE));
+                Hl->DeleteDataFilesForDropTable();
+            
+                delete table_desc;       
+                cout << tablename + " is dropped from this database!" << endl; 
+                info = "drop table successfully!";
+#if 1
+                // drop table_DEL couple with table.
+                {
+                    TableDescriptor *table_desc_DEL = Environment::getInstance()->getCatalog()->getTable(tablename+"_DEL");
+                    Environment::getInstance()->getCatalog()->drop_table(tablename+"_DEL", table_desc_DEL->get_table_id());
+                    HdfsLoader* Hl = new HdfsLoader(table_desc_DEL, (open_flag)(DELETE_FILE));
+                    Hl->DeleteDataFilesForDropTable();
+            
+                    delete table_desc_DEL;       
+                    cout << tablename+"_DEL" + " is dropped from this database!" << endl; 
+                }
+#endif           
+            }
+            else
+            {
+                cout << "drop table [" + tablename + "] failed" << endl;
+                info = "drop table [" + tablename + "] failed.";
+            }
+        }
+
+        table_list =  (Tablelist *)table_list->next;
+    }
+
+  
+	catalog->saveCatalog();
+
+	result_flag=true;
+	result_set=NULL;
+
 }
 
 #endif

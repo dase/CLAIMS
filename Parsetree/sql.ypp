@@ -6,7 +6,7 @@
 
 %glr-parser
 %expect 8
-%expect-rr 79
+%expect-rr 80
 %defines
 %{
 #include <stdlib.h>
@@ -429,6 +429,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %type <ast_node> create_index_stmt index_col_list drop_index_stmt	
 %type <ast_node> drop_database_stmt drop_table_stmt table_list	
 %type <ast_node> load_table_stmt	
+%type <ast_node> delete_stmt
 %type <ast_node> show_stmt	// 2014-5-4---add---by Yu
 %type <intval> opt_rc  opt_ignore opt_if_exists	opt_using_type		
 %type <intval> opt_col index_att index_type rename_list
@@ -720,9 +721,12 @@ table_subquery: '(' select_stmt ')' { $$=$2; }//---3.14fzh---
 stmt: delete_stmt { emit("STMT"); }
    ;
 
-delete_stmt: DELETE delete_opts FROM NAME
+delete_stmt: DELETE delete_opts FROM table_references
     opt_where opt_orderby opt_limit
-                  { emit("DELETEONE %d %s", $2, $4); free($4); }
+                  { 
+                   /* emit("DELETEONE %d %s", $2, $4); free($4); */
+                   $$ = (Node*)new DeleteStmt(t_delete_stmt,$4,$5,$2 );
+                   }
 ;
 
 delete_opts: delete_opts LOW_PRIORITY { $$ = $1 + 01; }
@@ -819,13 +823,13 @@ stmt: replace_stmt { emit("STMT"); }
 replace_stmt: REPLACE insert_opts opt_into NAME
      opt_col_names
      VALUES insert_vals_list
-     opt_ondupupdate { emit("REPLACEVALS %d %d %s", $2, $7, $4); free($4) }
+     opt_ondupupdate { emit("REPLACEVALS %d %d %s", $2, $7, $4); free($4); }
    ;
 
 replace_stmt: REPLACE insert_opts opt_into NAME
     SET insert_asgn_list
     opt_ondupupdate
-     { emit("REPLACEASGN %d %d %s", $2, $6, $4); free($4) }
+     { emit("REPLACEASGN %d %d %s", $2, $6, $4); free($4); }
    ;
 
 replace_stmt: REPLACE insert_opts opt_into NAME opt_col_names

@@ -23,6 +23,8 @@ public:
 	HdfsConnector(vector<vector<string> > hdfs_writepath);
 	virtual ~HdfsConnector();
 
+	bool deleteFiles();
+	
 	bool openFiles(open_flag open_flag_);
 	bool closeFiles();
 
