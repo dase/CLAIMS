@@ -59,7 +59,7 @@ class LogicalCrossJoin : public LogicalOperator {
    *                contains the partitions of the left table
    */
   enum JoinPolicy {
-    kUninitialized ,
+    kUninitialized,
     kLeftBroadcast,
     kRightBroadcast,
     kLocalJoin
@@ -89,8 +89,8 @@ class LogicalCrossJoin : public LogicalOperator {
    * @details   (additional) */
 
   int GenerateChildPhysicalQueryPlan(
-      const BlockStreamIteratorBase* left_child_iterator_tree,
-      const BlockStreamIteratorBase* right_child_iterator_tree,
+      BlockStreamIteratorBase*& left_child_iterator_tree,
+      BlockStreamIteratorBase*& right_child_iterator_tree,
       const unsigned& blocksize);
 
   LogicalOperator* left_child_;

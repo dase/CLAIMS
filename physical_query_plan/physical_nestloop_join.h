@@ -27,9 +27,9 @@
  */
 #ifndef PHYSICAL_QUERY_PLAN_PHYSICAL_NESTLOOP_JOIN_H_
 #define PHYSICAL_QUERY_PLAN_PHYSICAL_NESTLOOP_JOIN_H_
+#include "./physical_nestloop_join.h"
 #include <boost/serialization/base_object.hpp>
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "../physical_query_plan/BlockStreamJoinIterator.h"
 #include "../physical_query_plan/physical_operator.h"
 #include "../Debug.h"
 

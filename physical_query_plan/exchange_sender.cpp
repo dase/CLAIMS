@@ -1,3 +1,4 @@
+#include "../common/Schema/Schema.h"
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -105,7 +106,8 @@ void ExchangeSender::WaitingForCloseNotification(
 }
 
 unsigned ExchangeSender::GetHashPartitionId(void* input_tuple, Schema* schema,
-                              unsigned partition_key_index, unsigned nuppers) {
+                                            unsigned partition_key_index,
+                                            unsigned nuppers) {
   const void* hash_key_address =
       schema->getColumnAddess(partition_key_index, input_tuple);
   return schema->getcolumn(partition_key_index)

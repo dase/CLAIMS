@@ -258,8 +258,8 @@ BlockStreamIteratorBase* LogicalCrossJoin::GetPhysicalPlan(
 }
 
 int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
-    const BlockStreamIteratorBase* left_child_iterator_tree,
-    const BlockStreamIteratorBase* right_child_iterator_tree,
+    BlockStreamIteratorBase*& left_child_iterator_tree,
+    BlockStreamIteratorBase*& right_child_iterator_tree,
     const unsigned& blocksize) {
   int ret = kSuccess;
   PlanContext left_plan_context = left_child_->GetPlanContext();

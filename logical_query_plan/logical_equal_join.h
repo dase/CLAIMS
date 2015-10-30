@@ -31,7 +31,7 @@
 #include <vector>
 #include "../Catalog/Attribute.h"
 #include "../logical_query_plan/logical_operator.h"
-#include "../physical_query_plan/BlockStreamSortIterator.h"
+#include "../physical_query_plan/physical_sort.h"
 
 namespace claims {
 namespace logical_query_plan {

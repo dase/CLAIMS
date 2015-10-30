@@ -36,13 +36,16 @@
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
 #include "../Catalog/stat/StatManager.h"
-#include "../physical_query_plan/BlockStreamJoinIterator.h"
 #include "../physical_query_plan/exchange_merger.h"
 #include "../physical_query_plan/expander.h"
+#include "../physical_query_plan/physical_join.h"
+
+// using claims::physical_query_plan::PhysicalJoin;
 namespace claims {
 namespace logical_query_plan {
 LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
-                     LogicalOperator* left_input, LogicalOperator* right_input)
+                                   LogicalOperator* left_input,
+                                   LogicalOperator* right_input)
     : joinkey_pair_list_(joinpair_list),
       left_child_(left_input),
       right_child_(right_input),
@@ -146,21 +149,17 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
        * volume.
        * TODO(admin): Some reasonable output size estimation is needed.
        */
-      for (unsigned i = 0;
-           i < ret.plan_partitioner_.GetNumberOfPartitions(); i++) {
+      for (unsigned i = 0; i < ret.plan_partitioner_.GetNumberOfPartitions();
+           i++) {
         const unsigned l_cardinality =
-            left_dataflow.plan_partitioner_.GetPartition(i)
-                ->get_cardinality();
+            left_dataflow.plan_partitioner_.GetPartition(i)->get_cardinality();
         const unsigned r_cardinality =
-            right_dataflow.plan_partitioner_.GetPartition(i)
-                ->get_cardinality();
+            right_dataflow.plan_partitioner_.GetPartition(i)->get_cardinality();
         ret.plan_partitioner_.GetPartition(i)
             ->set_cardinality(l_cardinality + r_cardinality);
       }
 
-      ret.commu_cost_ =
-          left_dataflow.commu_cost_ +
-          right_dataflow.commu_cost_;
+      ret.commu_cost_ = left_dataflow.commu_cost_ + right_dataflow.commu_cost_;
       break;
     }
     case kLeftRepartition: {
@@ -185,18 +184,15 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
           left_dataflow.plan_partitioner_.GetAggregatedDataSize();
       const unsigned right_partition_count =
           right_dataflow.plan_partitioner_.GetNumberOfPartitions();
-      for (unsigned i = 0;
-           i < ret.plan_partitioner_.GetNumberOfPartitions(); i++) {
+      for (unsigned i = 0; i < ret.plan_partitioner_.GetNumberOfPartitions();
+           i++) {
         const unsigned r_size =
-            right_dataflow.plan_partitioner_.GetPartition(i)
-                ->get_cardinality();
-        ret.plan_partitioner_.GetPartition(i)->set_cardinality(
-            r_size + left_total_size / right_partition_count);
+            right_dataflow.plan_partitioner_.GetPartition(i)->get_cardinality();
+        ret.plan_partitioner_.GetPartition(i)
+            ->set_cardinality(r_size + left_total_size / right_partition_count);
       }
 
-      ret.commu_cost_ =
-          left_dataflow.commu_cost_ +
-          right_dataflow.commu_cost_;
+      ret.commu_cost_ = left_dataflow.commu_cost_ + right_dataflow.commu_cost_;
       ret.commu_cost_ +=
           left_dataflow.plan_partitioner_.GetAggregatedDataSize();
       break;
@@ -225,17 +221,14 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
           right_dataflow.plan_partitioner_.GetAggregatedDataSize();
       const unsigned left_partition_count =
           left_dataflow.plan_partitioner_.GetNumberOfPartitions();
-      for (unsigned i = 0;
-           i < ret.plan_partitioner_.GetNumberOfPartitions(); i++) {
+      for (unsigned i = 0; i < ret.plan_partitioner_.GetNumberOfPartitions();
+           i++) {
         const unsigned l_size =
-            left_dataflow.plan_partitioner_.GetPartition(i)
-                ->get_cardinality();
-        ret.plan_partitioner_.GetPartition(i)->set_cardinality(
-            l_size + right_total_size / left_partition_count);
+            left_dataflow.plan_partitioner_.GetPartition(i)->get_cardinality();
+        ret.plan_partitioner_.GetPartition(i)
+            ->set_cardinality(l_size + right_total_size / left_partition_count);
       }
-      ret.commu_cost_ =
-          left_dataflow.commu_cost_ +
-          right_dataflow.commu_cost_;
+      ret.commu_cost_ = left_dataflow.commu_cost_ + right_dataflow.commu_cost_;
       ret.commu_cost_ +=
           right_dataflow.plan_partitioner_.GetAggregatedDataSize();
       break;
@@ -255,9 +248,7 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
       ret.attribute_list_.insert(ret.attribute_list_.end(),
                                  right_dataflow.attribute_list_.begin(),
                                  right_dataflow.attribute_list_.end());
-      ret.commu_cost_ =
-          left_dataflow.commu_cost_ +
-          right_dataflow.commu_cost_;
+      ret.commu_cost_ = left_dataflow.commu_cost_ + right_dataflow.commu_cost_;
       ret.commu_cost_ +=
           left_dataflow.plan_partitioner_.GetAggregatedDataSize();
       ret.commu_cost_ +=
@@ -285,7 +276,7 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
 }
 
 bool LogicalEqualJoin::IsHashOnLeftKey(const Partitioner& part,
-                                const Attribute& key) const {
+                                       const Attribute& key) const {
   if (part.getPartitionFashion() != PartitionFunction::hash_f) return false;
   for (unsigned i = 0; i < joinkey_pair_list_.size(); i++) {
   }
@@ -301,8 +292,9 @@ bool LogicalEqualJoin::CanOmitHashRepartition(
   return false;
 }
 
-bool LogicalEqualJoin::IsInOneJoinPair(const Attribute& left_partition_key,
-                                const Attribute& right_partition_key) const {
+bool LogicalEqualJoin::IsInOneJoinPair(
+    const Attribute& left_partition_key,
+    const Attribute& right_partition_key) const {
   for (unsigned i = 0; i < joinkey_pair_list_.size(); i++) {
     if (left_partition_key == joinkey_pair_list_[i].left_join_attr_ &&
         right_partition_key == joinkey_pair_list_[i].right_join_attr_) {
@@ -327,21 +319,20 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
   if (NULL == dataflow_) {
     GetPlanContext();
   }
-  BlockStreamJoinIterator* join_iterator;
+  PhysicalJoin* join_iterator;
   BlockStreamIteratorBase* child_iterator_left =
       left_child_->GetPhysicalPlan(block_size);
   BlockStreamIteratorBase* child_iterator_right =
       right_child_->GetPhysicalPlan(block_size);
   PlanContext dataflow_left = left_child_->GetPlanContext();
   PlanContext dataflow_right = right_child_->GetPlanContext();
-  BlockStreamJoinIterator::State state;
+  PhysicalJoin::State state;
   state.block_size_ = block_size;
-
-  state.ht_nbuckets = 1024 * 1024;
-  // state_.ht_nbuckets=1024;
-  state.input_schema_left = GetSchema(dataflow_left.attribute_list_);
-  state.input_schema_right = GetSchema(dataflow_right.attribute_list_);
-  state.ht_schema = GetSchema(dataflow_left.attribute_list_);
+  state.hashtable_bucket_num_ = 1024 * 1024;
+  // state.ht_nbuckets=1024;
+  state.input_schema_left_ = GetSchema(dataflow_left.attribute_list_);
+  state.input_schema_right_ = GetSchema(dataflow_right.attribute_list_);
+  state.hashtable_schema_ = GetSchema(dataflow_left.attribute_list_);
   // the bucket size is 64-byte-aligned
   // state_.ht_bucketsize =
   //  ((state_.input_schema_left->getTupleMaxSize()-1)/64+1)*64;
@@ -353,21 +344,21 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
    * number of overflowing buckets and avoid the random memory access caused by
    * acceesing overflowing buckets.
    */
-  state.ht_bucketsize = 128;
-  state.output_schema = GetSchema(dataflow_->attribute_list_);
+  state.hashtable_bucket_size_ = 128;
+  state.output_schema_ = GetSchema(dataflow_->attribute_list_);
 
-  state.joinIndex_left = GetLeftJoinKeyIds();
-  state.joinIndex_right = GetRightJoinKeyIds();
+  state.join_index_left_ = GetLeftJoinKeyIds();
+  state.join_index_right_ = GetRightJoinKeyIds();
 
-  state.payload_left = GetLeftPayloadIds();
-  state.payload_right = GetRightPayloadIds();
+  state.payload_left_ = GetLeftPayloadIds();
+  state.payload_right_ = GetRightPayloadIds();
 
   switch (join_policy_) {
     case kNoRepartition: {
-      state.child_left = child_iterator_left;
-      state.child_right = child_iterator_right;
+      state.child_left_ = child_iterator_left;
+      state.child_right_ = child_iterator_right;
 
-      join_iterator = new BlockStreamJoinIterator(state);
+      join_iterator = new PhysicalJoin(state);
       break;
     }
     case kLeftRepartition: {
@@ -378,8 +369,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = child_iterator_left;
       expander_state.schema_ = GetSchema(dataflow_left.attribute_list_);
-      BlockStreamIteratorBase* expander =
-          new Expander(expander_state);
+      BlockStreamIteratorBase* expander = new Expander(expander_state);
 
       NodeTracker* node_tracker = NodeTracker::GetInstance();
       ExchangeMerger::State exchange_state;
@@ -411,13 +401,10 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
       // exchange_state.schema=getSchema(dataflow_left.attribute_list_,
       //                                 dataflow_right.attribute_list_);
       exchange_state.schema_ = GetSchema(dataflow_left.attribute_list_);
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(exchange_state);
-      state.child_left = exchange;
-      state.child_right = child_iterator_right;
-
-      join_iterator = new BlockStreamJoinIterator(state);
-
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(exchange_state);
+      state.child_left_ = exchange;
+      state.child_right_ = child_iterator_right;
+      join_iterator = new PhysicalJoin(state);
       break;
     }
     case kRightRepartition: {
@@ -427,8 +414,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = child_iterator_right;
       expander_state.schema_ = GetSchema(dataflow_right.attribute_list_);
-      BlockStreamIteratorBase* expander =
-          new Expander(expander_state);
+      BlockStreamIteratorBase* expander = new Expander(expander_state);
 
       NodeTracker* node_tracker = NodeTracker::GetInstance();
       ExchangeMerger::State exchange_state;
@@ -468,11 +454,10 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
               dataflow_right.attribute_list_, right_repartition_key));
 
       exchange_state.schema_ = GetSchema(dataflow_right.attribute_list_);
-      BlockStreamIteratorBase* exchange =
-          new ExchangeMerger(exchange_state);
-      state.child_left = child_iterator_left;
-      state.child_right = exchange;
-      join_iterator = new BlockStreamJoinIterator(state);
+      BlockStreamIteratorBase* exchange = new ExchangeMerger(exchange_state);
+      state.child_left_ = child_iterator_left;
+      state.child_right_ = exchange;
+      join_iterator = new PhysicalJoin(state);
       break;
     }
     case kCompleteRepartition: {
@@ -484,8 +469,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
           Config::initial_degree_of_parallelism;
       expander_state_l.child_ = child_iterator_left;
       expander_state_l.schema_ = GetSchema(dataflow_left.attribute_list_);
-      BlockStreamIteratorBase* expander_l =
-          new Expander(expander_state_l);
+      BlockStreamIteratorBase* expander_l = new Expander(expander_state_l);
 
       ExchangeMerger::State l_exchange_state;
       l_exchange_state.block_size_ = block_size;
@@ -519,8 +503,7 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
           Config::initial_degree_of_parallelism;
       expander_state_r.child_ = child_iterator_right;
       expander_state_r.schema_ = GetSchema(dataflow_right.attribute_list_);
-      BlockStreamIteratorBase* expander_r =
-          new Expander(expander_state_r);
+      BlockStreamIteratorBase* expander_r = new Expander(expander_state_r);
 
       ExchangeMerger::State r_exchange_state;
       r_exchange_state.block_size_ = block_size;
@@ -545,9 +528,9 @@ BlockStreamIteratorBase* LogicalEqualJoin::GetPhysicalPlan(
           new ExchangeMerger(r_exchange_state);
 
       // finally  build the join iterator itself
-      state.child_left = l_exchange;
-      state.child_right = r_exchange;
-      join_iterator = new BlockStreamJoinIterator(state);
+      state.child_left_ = l_exchange;
+      state.child_right_ = r_exchange;
+      join_iterator = new PhysicalJoin(state);
       break;
     }
     default: { break; }
@@ -693,8 +676,9 @@ int LogicalEqualJoin::GetIdInRightJoinKeys(
   assert(false);
   return -1;
 }
-int LogicalEqualJoin::GetIdInAttributeList(const std::vector<Attribute>& attributes,
-                                    const Attribute& attribute) const {
+int LogicalEqualJoin::GetIdInAttributeList(
+    const std::vector<Attribute>& attributes,
+    const Attribute& attribute) const {
   for (unsigned i = 0; i < attributes.size(); i++) {
     if (attributes[i] == attribute) {
       return i;
