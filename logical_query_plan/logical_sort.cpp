@@ -19,7 +19,7 @@
  * /CLAIMS/logical_query_plan/logical_sort.cpp
  *
  *  Created on: Sep 21, 2015
- *      Author: fish
+ *      Author: yuyang
  *       Email: youngfish93@hotmail.com
  *
  * Description:
@@ -35,6 +35,8 @@
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../physical_query_plan/exchange_merger.h"
 #include "../physical_query_plan/expander.h"
+#include "../physical_query_plan/physical_sort.h"
+// using claims::physical_query_plan::PhysicalSort;
 namespace claims {
 namespace logical_query_plan {
 LogicalSort::LogicalSort(LogicalOperator *child,
@@ -79,8 +81,7 @@ BlockStreamIteratorBase *LogicalSort::GetPhysicalPlan(
   expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
   expander_state.child_ = child_->GetPhysicalPlan(blocksize);
   expander_state.schema_ = GetSchema(child_plan_context_.attribute_list_);
-  BlockStreamIteratorBase *expander_lower =
-      new Expander(expander_state);
+  BlockStreamIteratorBase *expander_lower = new Expander(expander_state);
 
   ExchangeMerger::State exchange_state;
   exchange_state.block_size_ = blocksize;
@@ -96,44 +97,44 @@ BlockStreamIteratorBase *LogicalSort::GetPhysicalPlan(
   vector<NodeID> upper_ip_list;
   upper_ip_list.push_back(0);
   exchange_state.upper_id_list_ = upper_ip_list;  // lower
-  BlockStreamIteratorBase *exchange =
-      new ExchangeMerger(exchange_state);
+  BlockStreamIteratorBase *exchange = new ExchangeMerger(exchange_state);
 
-  BlockStreamSortIterator::State reducer_state;
+  PhysicalSort::State reducer_state;
   reducer_state.block_size_ = blocksize;
   reducer_state.child_ = exchange;
   // Actually we just need the column number in the end.
   for (unsigned i = 0; i < order_by_attr_.size(); i++) {
-    reducer_state.orderbyKey_.push_back(
+    reducer_state.order_by_key_.push_back(
         GetOrderByKey(order_by_attr_[i]->table_name_));
     reducer_state.direction_.push_back(order_by_attr_[i]->direction_);
   }
   reducer_state.input_ = GetSchema(child_plan_context_.attribute_list_);
-  BlockStreamIteratorBase *reducer_sort =
-      new BlockStreamSortIterator(reducer_state);
+  BlockStreamIteratorBase *reducer_sort = new PhysicalSort(reducer_state);
 
   return reducer_sort;
 }
 
 int LogicalSort::GetOrderByKey(const char *table_name, const char *attr) {
   // Use table name and attribute name to get the number.
-  for (unsigned attr_id = 0; attr_id < child_plan_context_.attribute_list_.size();
-       attr_id++) {
+  for (unsigned attr_id = 0;
+       attr_id < child_plan_context_.attribute_list_.size(); attr_id++) {
     TableDescriptor *table = Catalog::getInstance()->getTable(
         child_plan_context_.attribute_list_[attr_id].table_id_);
     string tablename = table->getTableName();
     if ((tablename.compare(table_name) == 0) &&
-        (child_plan_context_.attribute_list_[attr_id].attrName.compare(attr) == 0)) {
+        (child_plan_context_.attribute_list_[attr_id].attrName.compare(attr) ==
+         0)) {
       return attr_id;
     }
   }
 }
 
 int LogicalSort::GetOrderByKey(const char *table_name) {
-  for (unsigned attr_id = 0; attr_id < child_plan_context_.attribute_list_.size();
-       attr_id++) {
+  for (unsigned attr_id = 0;
+       attr_id < child_plan_context_.attribute_list_.size(); attr_id++) {
     string _tablename(table_name);
-    if (_tablename.compare(child_plan_context_.attribute_list_[attr_id].attrName) == 0) {
+    if (_tablename.compare(
+            child_plan_context_.attribute_list_[attr_id].attrName) == 0) {
       return attr_id;
     }
   }

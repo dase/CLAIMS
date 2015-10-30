@@ -1,0 +1,46 @@
+.TH "yySemanticOption" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+yySemanticOption \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "yybool \fByyisState\fP"
+.br
+.ti -1c
+.RI "yyRuleNum \fByyrule\fP"
+.br
+.ti -1c
+.RI "\fByyGLRState\fP * \fByystate\fP"
+.br
+.ti -1c
+.RI "int \fByyrawchar\fP"
+.br
+.ti -1c
+.RI "\fBYYSTYPE\fP \fByyval\fP"
+.br
+.ti -1c
+.RI "\fByySemanticOption\fP * \fByynext\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "yybool yySemanticOption::yyisState"
+Type tag: always false\&. 
+.SS "\fByySemanticOption\fP* yySemanticOption::yynext"
+Next sibling in chain of options\&. To facilitate merging, options are chained in decreasing order by address\&. 
+.SS "int yySemanticOption::yyrawchar"
+The lookahead for this reduction\&. 
+.SS "yyRuleNum yySemanticOption::yyrule"
+Rule number for this reduction 
+.SS "\fByyGLRState\fP* yySemanticOption::yystate"
+The last RHS state in the list of states to be reduced\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

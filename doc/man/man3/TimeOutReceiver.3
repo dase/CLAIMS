@@ -1,0 +1,31 @@
+.TH "TimeOutReceiver" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TimeOutReceiver \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Receiver\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTimeOutReceiver\fP (Theron::EndPoint *endpoint)"
+.br
+.ti -1c
+.RI "\fBTimeOutReceiver\fP (Theron::EndPoint *endpoint, const char *name)"
+.br
+.ti -1c
+.RI "unsigned \fBTimeOutWait\fP (unsigned expected_message_count, unsigned time_out_in_ms)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned TimeOutReceiver::TimeOutWait (unsignedexpected_message_count, unsignedtime_out_in_ms)"
+This function supports timeout Wait\&. The calling of this method will be blocked until one of the following conditions satisfied\&. (1) expected number of messages are received before the timeout\&. Then the return value is the number of expected messages\&. (2) The time is out before expected number of messages are received\&. Then the return value is the number of received messages\&. E\&.g\&., TimeOutWait(10,1000)==10 will return true if 10 messages are received within 1 second, and will false if less than 10 messages are received within 1 second\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

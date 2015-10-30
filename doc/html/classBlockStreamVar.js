@@ -1,0 +1,25 @@
+var classBlockStreamVar =
+[
+    [ "BlockStreamVar", "classBlockStreamVar.html#a7ae584d8458e21cc067e3f23f29a9057", null ],
+    [ "~BlockStreamVar", "classBlockStreamVar.html#a79706f33c5ab783cbd8cab9e8eaa8784", null ],
+    [ "allocateTuple", "classBlockStreamVar.html#a4c13ed5d70fc7cf16198f9c1ceea7c40", null ],
+    [ "constructFromBlock", "classBlockStreamVar.html#a159741ca1af79a977c01b2fbb7453327", null ],
+    [ "copyBlock", "classBlockStreamVar.html#aa1e168a3ca12166f3bb57953a61ff374", null ],
+    [ "createBlockAndDeepCopy", "classBlockStreamVar.html#a2b1052212f5317a58e858892c25abb81", null ],
+    [ "deepCopy", "classBlockStreamVar.html#a296267bf30a77af9170d566621e60db9", null ],
+    [ "deserialize", "classBlockStreamVar.html#a902aff77556c2898e04e0df4ac286b63", null ],
+    [ "Empty", "classBlockStreamVar.html#acad11a172a5feaf91559300027311a25", null ],
+    [ "Full", "classBlockStreamVar.html#ab841dfbcb15582b5a893ffbc0afc84f5", null ],
+    [ "getBlockCapacityInTuples", "classBlockStreamVar.html#adede45b91a2e8e9d5c8ac94b5c5b0484", null ],
+    [ "getBlockDataAddress", "classBlockStreamVar.html#a4e9e88c9f813c2b51680cf60eeb55ec8", null ],
+    [ "getSerializedBlockSize", "classBlockStreamVar.html#add060c7fdb81ff3f03972d86c7cc4631", null ],
+    [ "getTuple", "classBlockStreamVar.html#a32fb949cbef1eb8f95338e478dbafb2c", null ],
+    [ "getTuplesInBlock", "classBlockStreamVar.html#af307840405d2ebad0062f57ca4ad96c5", null ],
+    [ "insert", "classBlockStreamVar.html#acd2129a4b6f6a62724d0d96cd7cc95f8", null ],
+    [ "insert", "classBlockStreamVar.html#aef8408d1c47c364ab9cb7335b097f9ed", null ],
+    [ "printSchema", "classBlockStreamVar.html#a5ca6356c7ab8a7553704af3b3424d559", null ],
+    [ "serialize", "classBlockStreamVar.html#a0dd1cd1eda704b14ac5ca9c4011db173", null ],
+    [ "setEmpty", "classBlockStreamVar.html#acc1b77831d06f31bda149b64432f9fd3", null ],
+    [ "switchBlock", "classBlockStreamVar.html#a7149dbf296a3ead5576106296a5b99e0", null ],
+    [ "toDisk", "classBlockStreamVar.html#ace7c115f52cd99b370e8f68ebbb328ac", null ]
+];

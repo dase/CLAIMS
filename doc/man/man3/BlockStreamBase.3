@@ -1,0 +1,125 @@
+.TH "BlockStreamBase" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamBase \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlock\fP\&.
+.PP
+Inherited by \fBBlockStreamFix\fP, and \fBBlockStreamVar\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamTraverseIterator\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamBase\fP (unsigned block_size)"
+.br
+.ti -1c
+.RI "\fBBlockStreamBase\fP (unsigned block_size, void *start_addr)"
+.br
+.ti -1c
+.RI "virtual \fBBlockStreamBase\fP * \fBcreateBlockAndDeepCopy\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void * \fBallocateTuple\fP (unsigned bytes)=0"
+.br
+.ti -1c
+.RI "virtual void \fBsetEmpty\fP ()=0"
+.br
+.ti -1c
+.RI "virtual bool \fBEmpty\fP () const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBFull\fP () const =0"
+.br
+.ti -1c
+.RI "virtual void * \fBgetBlockDataAddress\fP ()=0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetTuplesInBlock\fP () const =0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetBlockCapacityInTuples\fP () const =0"
+.br
+.ti -1c
+.RI "virtual void \fBcopyBlock\fP (void *addr, unsigned length)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBinsert\fP (void *dest, void *src, unsigned bytes)=0"
+.br
+.ti -1c
+.RI "virtual void \fBdeepCopy\fP (const \fBBlock\fP *block)=0"
+.br
+.ti -1c
+.RI "virtual void \fBconstructFromBlock\fP (const \fBBlock\fP &block)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBswitchBlock\fP (\fBBlockStreamBase\fP &block)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBserialize\fP (\fBBlock\fP &block) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBdeserialize\fP (\fBBlock\fP *block)=0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetSerializedBlockSize\fP () const =0"
+.br
+.ti -1c
+.RI "\fBBlockStreamTraverseIterator\fP * \fBcreateIterator\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBBlockStreamBase\fP * \fBcreateBlock\fP (const \fBSchema\fP *const &schema, unsigned block_size)"
+.br
+.ti -1c
+.RI "static \fBBlockStreamBase\fP * \fBcreateBlockWithDesirableSerilaizedSize\fP (\fBSchema\fP *schema, unsigned block_size)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void * \fBgetTuple\fP (unsigned offset) const =0"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamTraverseIterator\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBBlockStreamBase\fP * BlockStreamBase::createBlockWithDesirableSerilaizedSize (\fBSchema\fP *schema, unsignedblock_size)\fC [static]\fP"
+
+.PD 0
+
+.IP "\(bu" 2
+:I add this function in order to end the chaos of setting the block size when initializing the BlockStream\&. -_- 
+.PP
+
+.PP
+Referenced by bottomLayerCollecting::Open(), and IndexScanIterator::Open()\&.
+.SS "virtual void BlockStreamBase::deepCopy (const \fBBlock\fP *block)\fC [pure virtual]\fP"
+deep copy from block, including block content and member variables that maintain the block status\&. the user should guarantee that rest block and desc block are of equal derived class type(e\&.g\&., both are \fBBlockStreamFix\fP), otherwise the copy may be incomplete\&. 
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

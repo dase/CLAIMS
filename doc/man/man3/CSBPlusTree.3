@@ -1,0 +1,68 @@
+.TH "CSBPlusTree< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CSBPlusTree< T > \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBBulkLoad\fP (\fBdata_offset\fP< T > *aray, unsigned arayNo)"
+.br
+.ti -1c
+.RI "map< index_offset, vector
+.br
+< index_offset > * > * \fBSearch\fP (T key)"
+.br
+.ti -1c
+.RI "map< index_offset, vector
+.br
+< index_offset > * > * \fBrangeQuery\fP (T lower_key, T upper_key)"
+.br
+.ti -1c
+.RI "map< index_offset, vector
+.br
+< index_offset > * > * \fBrangeQuery\fP (T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)"
+.br
+.ti -1c
+.RI "bool \fBInsert\fP (\fBdata_offset\fP< T > data)"
+.br
+.ti -1c
+.RI "bool \fBDelete\fP (T key)"
+.br
+.ti -1c
+.RI "bool \fBserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "bool \fBdeserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "void \fBprintTree\fP ()"
+.br
+.ti -1c
+.RI "void \fBprintDoubleLinkedList\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBleaf_header\fP"
+.br
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBleaf_tailer\fP"
+.br
+.ti -1c
+.RI "\fBCCSBNode\fP< T > * \fBcsb_root\fP"
+.br
+.ti -1c
+.RI "unsigned \fBcsb_depth\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -28,7 +28,6 @@
 
 #include "../Executor/expander_tracker.h"
 #include "../common/Block/BlockStream.h"
-#include "../physical_query_plan/BlockStreamJoinIterator.h"
 #include "./physical_nestloop_join.h"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"

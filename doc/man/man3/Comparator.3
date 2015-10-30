@@ -1,0 +1,65 @@
+.TH "Comparator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Comparator \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBAttributeComparator\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBPair\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBcomparison\fP { \fBL\fP, \fBLEQ\fP, \fBEQ\fP, \fBNEQ\fP, \fBG\fP, \fBGEQ\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBComparator\fP (\fBcolumn_type\fP x, \fBcolumn_type\fP b, Comparator::comparison c)"
+.br
+.ti -1c
+.RI "\fBComparator\fP (const \fBComparator\fP &r)"
+.br
+.ti -1c
+.RI "comparison \fBgetCompareType\fP () const "
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool(* \fBcompare\fP )(const void *, const void *)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPair\fP \fBpair\fP"
+.br
+.ti -1c
+.RI "comparison \fBcompareType\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

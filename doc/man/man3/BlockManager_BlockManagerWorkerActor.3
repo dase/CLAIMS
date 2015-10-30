@@ -1,0 +1,40 @@
+.TH "BlockManager::BlockManagerWorkerActor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockManager::BlockManagerWorkerActor \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Actor\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockManagerWorkerActor\fP (Theron::Framework *framework, const char *name, \fBBlockManager\fP *bm)"
+.br
+.ti -1c
+.RI "bool \fB_reigisterToMaster\fP (\fBBlockManagerId\fP *bMId)"
+.br
+.ti -1c
+.RI "bool \fB_sendHeartBeat\fP ()"
+.br
+.ti -1c
+.RI "bool \fB_reportBlockStatus\fP (string blockId)"
+.br
+.ti -1c
+.RI "string \fB_askformatch\fP (string filename, \fBBlockManagerId\fP bmi)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockManager\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

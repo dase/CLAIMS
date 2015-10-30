@@ -1,0 +1,51 @@
+.TH "PhysicalQueryPlan" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PhysicalQueryPlan \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPhysicalQueryPlan\fP (\fBBlockStreamIteratorBase\fP *it)"
+.br
+.ti -1c
+.RI "\fBPhysicalQueryPlan\fP (const \fBPhysicalQueryPlan\fP &r)"
+.br
+.ti -1c
+.RI "void \fBdestory\fP ()"
+.br
+.ti -1c
+.RI "void \fBrun\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBPhysicalQueryPlan\fP \fBdeserialize\fP (\fBMessage256\fP message)"
+.br
+.ti -1c
+.RI "static \fBMessage256\fP \fBserialize\fP (\fBPhysicalQueryPlan\fP input)"
+.br
+.ti -1c
+.RI "static \fBPhysicalQueryPlan\fP \fBdeserialize4K\fP (\fBMessage4K\fP message)"
+.br
+.ti -1c
+.RI "static \fBMessage4K\fP \fBserialize4K\fP (\fBPhysicalQueryPlan\fP &input)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,32 @@
+.TH "yyGLRStateSet" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+yyGLRStateSet \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fByyGLRState\fP ** \fByystates\fP"
+.br
+.ti -1c
+.RI "yybool * \fByylookaheadNeeds\fP"
+.br
+.ti -1c
+.RI "size_t \fByysize\fP"
+.br
+.ti -1c
+.RI "size_t \fByycapacity\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "yybool* yyGLRStateSet::yylookaheadNeeds"
+During nondeterministic operation, yylookaheadNeeds tracks which stacks have actually needed the current lookahead\&. During deterministic operation, yylookaheadNeeds[0] is not maintained since it would merely duplicate yychar != YYEMPTY\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

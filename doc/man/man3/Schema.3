@@ -1,0 +1,96 @@
+.TH "Schema" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Schema \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBSchemaFix\fP, and \fBSchemaVar\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBschema_type\fP { \fBfixed\fP, \fBvaraible\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSchema\fP (const std::vector< \fBcolumn_type\fP > &columns)"
+.br
+.ti -1c
+.RI "\fBSchema\fP (const \fBSchema\fP &r)"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetTupleMaxSize\fP () const =0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetTupleActualSize\fP (void *tuple) const =0"
+.br
+.ti -1c
+.RI "virtual void \fBgetColumnValue\fP (unsigned index, void *src, void *desc)=0"
+.br
+.ti -1c
+.RI "virtual int \fBgetColumnOffset\fP (unsigned index) const =0"
+.br
+.ti -1c
+.RI "virtual void * \fBgetColumnAddess\fP (const unsigned &index, const void *const &column_start) const __attribute__((always_inline))=0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBcopyTuple\fP (void *src, void *desc) const =0"
+.br
+.ti -1c
+.RI "unsigned \fBgetncolumns\fP () const "
+.br
+.ti -1c
+.RI "virtual \fBSchema\fP * \fBgetSubSchema\fP (std::vector< unsigned >) const =0"
+.br
+.ti -1c
+.RI "virtual \fBSchema\fP * \fBduplicateSchema\fP () const =0"
+.br
+.ti -1c
+.RI "const \fBcolumn_type\fP & \fBgetcolumn\fP (const unsigned index) const "
+.br
+.ti -1c
+.RI "virtual schema_type \fBgetSchemaType\fP () const =0"
+.br
+.ti -1c
+.RI "virtual void \fBaddColumn\fP (\fBcolumn_type\fP ct, unsigned size)"
+.br
+.ti -1c
+.RI "virtual void \fBdisplayTuple\fP (const void *tuple_start_address, const char *spliter='|') const "
+.br
+.ti -1c
+.RI "virtual void \fBtoValue\fP (std::string text_tuple, void *binary_tuple, const char attr_separator)"
+.br
+.ti -1c
+.RI "virtual void \fBshowAccum_off\fP ()"
+.br
+.ti -1c
+.RI "bool \fBhasSameSchema\fP (\fBSchema\fP *schema)"
+.br
+.ti -1c
+.RI "virtual std::string \fBgetColumnValue\fP (const void *tuple_start_address, int i)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBcolumn_type\fP > \fBcolumns\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

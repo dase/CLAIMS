@@ -12,11 +12,9 @@
 #include "../../common/Expression/qnode.h"
 #include "../../physical_query_plan/BlockStreamCombinedIterator.h"
 #include "../../physical_query_plan/BlockStreamInIterator.h"
-#include "../../physical_query_plan/BlockStreamJoinIterator.h"
 #include "../../physical_query_plan/BlockStreamPrint.h"
 #include "../../physical_query_plan/BlockStreamPerformanceMonitorTop.h"
 #include "../../physical_query_plan/physical_project.h"
-#include "../../physical_query_plan/BlockStreamSortIterator.h"
 #include "../../physical_query_plan/exchange_merger.h"
 #include "../../physical_query_plan/exchange_sender_materialized.h"
 #include "../../physical_query_plan/exchange_sender_pipeline.h"
@@ -24,9 +22,11 @@
 #include "../../physical_query_plan/ExpandableBlockStreamBuffer.h"
 #include "../../physical_query_plan/physical_filter.h"
 #include "../../physical_query_plan/ExpandableBlockStreamRandomMemAccess.h"
+#include "../../physical_query_plan/physical_join.h"
+#include "../../physical_query_plan/physical_operator.h"
+#include "../../physical_query_plan/physical_sort.h"
 #include "../../physical_query_plan/physical_aggregation.h"
 #include "../../physical_query_plan/physical_nestloop_join.h"
-#include "../../physical_query_plan/physical_operator.h"
 #include "../../physical_query_plan/physical_projection_scan.h"
 
 using claims::physical_query_plan::PhysicalAggregation;
@@ -38,7 +38,7 @@ void Register_Block_Stream_Iterator(Archive& ar) {
   ar.register_type(static_cast<ExchangeSenderPipeline*>(NULL));
   ar.register_type(static_cast<PhysicalFilter*>(NULL));
   ar.register_type(static_cast<BlockStreamCombinedIterator*>(NULL));
-  ar.register_type(static_cast<BlockStreamJoinIterator*>(NULL));
+  ar.register_type(static_cast<PhysicalJoin*>(NULL));
   ar.register_type(static_cast<ExchangeSenderMaterialized*>(NULL));
   ar.register_type(static_cast<ExpandableBlockStreamRandomMemAccess*>(NULL));
   ar.register_type(static_cast<PhysicalProjectionScan*>(NULL));
@@ -46,7 +46,7 @@ void Register_Block_Stream_Iterator(Archive& ar) {
   ar.register_type(static_cast<BlockStreamPrint*>(NULL));
   ar.register_type(static_cast<PhysicalAggregation*>(NULL));
   ar.register_type(static_cast<PhysicalNestLoopJoin*>(NULL));
-  ar.register_type(static_cast<BlockStreamSortIterator*>(NULL));
+  ar.register_type(static_cast<PhysicalSort*>(NULL));
   ar.register_type(static_cast<ExpandableBlockStreamBuffer*>(NULL));
   ar.register_type(static_cast<PhysicalLimit*>(NULL));
   ar.register_type(static_cast<PhysicalProject*>(NULL));

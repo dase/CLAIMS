@@ -19,7 +19,7 @@
  * /CLAIMS/logical_query_plan/logical_sort.h
  *
  *  Created on: Sep 21, 2015
- *      Author: fish
+ *      Author: yuyang
  *       Email: youngfish93@hotmail.com
  *
  * Description:
@@ -35,7 +35,7 @@
 #include "../Catalog/Catalog.h"
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
-#include "..//physical_query_plan/BlockStreamSortIterator.h"
+#include "..//physical_query_plan/physical_sort.h"
 namespace claims {
 namespace logical_query_plan {
 /**
@@ -78,7 +78,7 @@ class LogicalSort : public LogicalOperator {
   virtual ~LogicalSort();
   /**
    * @brief Method description: Get the schema and child information.
-   * @details The mostly important member is "property" and "attributes
+   * @details The most important members are "property" and "attributes
    * list".
    */
   PlanContext GetPlanContext();
@@ -87,7 +87,8 @@ class LogicalSort : public LogicalOperator {
    * operator instance.
    * @param const unsigned &blocksize.
    * @return BlockStreamIteratorBase *
-   * @details  Besides do these initialization we notice that "Sort" is a block
+   * @details  Besides doing these initialization we notice that "Sort" is a
+   * block
    * operator, so we need to get all data from other nodes.
    */
   BlockStreamIteratorBase *GetPhysicalPlan(const unsigned &blocksize);

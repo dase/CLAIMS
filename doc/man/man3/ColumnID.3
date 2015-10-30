@@ -1,0 +1,47 @@
+.TH "ColumnID" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ColumnID \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ids\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBColumnID\fP (\fBProjectionID\fP pid, ColumnOffset off)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBColumnID\fP &r) const "
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBProjectionID\fP \fBprojection_id\fP"
+.br
+.ti -1c
+.RI "ColumnOffset \fBcolumn_off\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBColumnID\fP: a \fBColumn\fP corresponds to an attribute and is physically stored in one projection\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

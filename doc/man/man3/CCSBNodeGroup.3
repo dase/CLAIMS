@@ -1,0 +1,67 @@
+.TH "CCSBNodeGroup< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CCSBNodeGroup< T > \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCCSBInternalNodeGroup< T >\fP, and \fBCCSBLeafNodeGroup< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP (unsigned n)"
+.br
+.ti -1c
+.RI "unsigned \fBgetUsedNodes\fP ()"
+.br
+.ti -1c
+.RI "void \fBnodeCountIncrement\fP ()"
+.br
+.ti -1c
+.RI "virtual \fBCCSBNodeGroup\fP< T > * \fBgetHeaderNG\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBsetHeaderNG\fP (\fBCCSBNodeGroup\fP< T > *header)"
+.br
+.ti -1c
+.RI "virtual \fBCCSBNodeGroup\fP< T > * \fBgetTailerNG\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBsetTailerNG\fP (\fBCCSBNodeGroup\fP< T > *tailer)"
+.br
+.ti -1c
+.RI "virtual bool \fBsetUsedNodes\fP (unsigned n)"
+.br
+.ti -1c
+.RI "virtual \fBCCSBNode\fP< T > * \fBgetNode\fP (unsigned i)"
+.br
+.ti -1c
+.RI "virtual void \fBsetNode\fP (unsigned i, \fBCCSBNode\fP< T > *node)"
+.br
+.ti -1c
+.RI "virtual bool \fBInsert\fP (unsigned node_off, T key)"
+.br
+.ti -1c
+.RI "virtual void \fBDeleteChildren\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "virtual bool \fBdeserialize\fP (FILE *filename)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBused_nodes\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

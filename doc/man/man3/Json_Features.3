@@ -1,0 +1,95 @@
+.TH "Json::Features" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::Features \- 
+.PP
+Configuration passed to reader and writer\&. This configuration object can be used to force the \fBReader\fP or \fBWriter\fP to behave in a standard conforming way\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFeatures\fP ()"
+.br
+.RI "\fIInitialize the configuration like JsonConfig::allFeatures;\&. \fP"
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBFeatures\fP \fBall\fP ()"
+.br
+.RI "\fIA configuration that allows all features and assumes all strings are UTF-8\&. \fP"
+.ti -1c
+.RI "static \fBFeatures\fP \fBstrictMode\fP ()"
+.br
+.RI "\fIA configuration that is strictly compatible with the JSON specification\&. \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBallowComments_\fP"
+.br
+.RI "\fI\fCtrue\fP if comments are allowed\&. Default: \fCtrue\fP\&. \fP"
+.ti -1c
+.RI "bool \fBstrictRoot_\fP"
+.br
+.ti -1c
+.RI "bool \fBallowDroppedNullPlaceholders_\fP"
+.br
+.RI "\fI\fCtrue\fP if dropped null placeholders are allowed\&. Default: \fCfalse\fP\&. \fP"
+.ti -1c
+.RI "bool \fBallowNumericKeys_\fP"
+.br
+.RI "\fI\fCtrue\fP if numeric object key are allowed\&. Default: \fCfalse\fP\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Configuration passed to reader and writer\&. This configuration object can be used to force the \fBReader\fP or \fBWriter\fP to behave in a standard conforming way\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBFeatures\fP Json::Features::all ()\fC [static]\fP"
+
+.PP
+A configuration that allows all features and assumes all strings are UTF-8\&. 
+.IP "\(bu" 2
+C & C++ comments are allowed
+.IP "\(bu" 2
+Root object can be any JSON value
+.IP "\(bu" 2
+Assumes \fBValue\fP strings are encoded in UTF-8 
+.PP
+
+.PP
+References Features()\&.
+.SS "\fBFeatures\fP Json::Features::strictMode ()\fC [static]\fP"
+
+.PP
+A configuration that is strictly compatible with the JSON specification\&. 
+.IP "\(bu" 2
+Comments are forbidden\&.
+.IP "\(bu" 2
+Root object must be either an array or an object value\&.
+.IP "\(bu" 2
+Assumes \fBValue\fP strings are encoded in UTF-8 
+.PP
+
+.PP
+References allowComments_, allowDroppedNullPlaceholders_, allowNumericKeys_, and strictRoot_\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool Json::Features::strictRoot_"
+\fCtrue\fP if root must be either an array or an object value\&. Default: \fCfalse\fP\&. 
+.PP
+Referenced by Json::Reader::parse(), and strictMode()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

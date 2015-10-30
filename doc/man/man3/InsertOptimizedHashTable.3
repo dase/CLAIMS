@@ -1,0 +1,79 @@
+.TH "InsertOptimizedHashTable" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+InsertOptimizedHashTable \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBbucket\fP"
+.br
+.ti -1c
+.RI "class \fBBucketIterator\fP"
+.br
+.ti -1c
+.RI "struct \fBentry\fP"
+.br
+.ti -1c
+.RI "struct \fBmeta_data\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBInsertOptimizedHashTable\fP (unsigned nbuckets)"
+.br
+.ti -1c
+.RI "void \fBinitialize\fP ()"
+.br
+.ti -1c
+.RI "void \fBinsertBlock\fP (\fBBlockStreamBase\fP *block)"
+.br
+.ti -1c
+.RI "void \fBinsertEntry\fP (unsigned bn, \fBentry\fP &\fBentry\fP)"
+.br
+.ti -1c
+.RI "\fBBucketIterator\fP \fBcreateBucketIterator\fP (unsigned bn)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBBlockStreamBase\fP * > \fBblock_list_\fP"
+.br
+.ti -1c
+.RI "\fBSpineLock\fP \fBblock_list_lock_\fP"
+.br
+.ti -1c
+.RI "\fBbucket\fP * \fBbuckets_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBnbuckets_\fP"
+.br
+.ti -1c
+.RI "const unsigned long \fBhash_value_mask\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBucketIterator\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void InsertOptimizedHashTable::insertBlock (\fBBlockStreamBase\fP *block)"
+Insert a block stream into the hash table block list\&. It is the responsibility of hash table for possible space allocation and release\&. If the block is a reference, a new referenced block will be created\&. Otherwise, a new block will be allocated with desirable block size and apply deep copy to create a new block\&. 
+.PP
+References SpineLock::acquire(), and SpineLock::release()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

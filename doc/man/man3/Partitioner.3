@@ -1,0 +1,93 @@
+.TH "Partitioner" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Partitioner \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitioner\fP (\fBProjectionID\fP projection_id, unsigned number_of_partitions, \fBPartitionFunction\fP *partition_functin)"
+.br
+.ti -1c
+.RI "\fBPartitioner\fP (\fBProjectionID\fP projection_id, unsigned number_of_partitions, const \fBAttribute\fP &partition_key, \fBPartitionFunction\fP *partition_functin)"
+.br
+.ti -1c
+.RI "unsigned \fBgetNumberOfPartitions\fP () const "
+.br
+.ti -1c
+.RI "bool \fBbindPartitionToNode\fP (PartitionOffset partition_id, NodeID target_node)"
+.br
+.ti -1c
+.RI "void \fBunbindPartitionToNode\fP (PartitionOffset partition_id)"
+.br
+.ti -1c
+.RI "void \fBRegisterPartition\fP (unsigned partitoin_key, unsigned number_of_chunks)"
+.br
+.ti -1c
+.RI "void \fBRegisterPartitionWithNumberOfBlocks\fP (unsigned partitoin_key, unsigned long number_of_blocks)"
+.br
+.ti -1c
+.RI "void \fBUpdatePartitionWithNumberOfChunksToBlockManager\fP (unsigned partitoin_offset, unsigned long number_of_blocks)"
+.br
+.ti -1c
+.RI "unsigned \fBgetPartitionDataSize\fP (unsigned partitoin_index) const "
+.br
+.ti -1c
+.RI "unsigned long \fBgetPartitionCardinality\fP (unsigned partitoin_index) const "
+.br
+.ti -1c
+.RI "unsigned \fBgetPartitionBlocks\fP (unsigned partitoin_index) const "
+.br
+.ti -1c
+.RI "unsigned \fBgetPartitionChunks\fP (unsigned partition_index) const "
+.br
+.ti -1c
+.RI "NodeID \fBgetPartitionLocation\fP (unsigned partition_offset) const "
+.br
+.ti -1c
+.RI "void \fBprint\fP ()"
+.br
+.ti -1c
+.RI "bool \fBhasSamePartitionLocation\fP (const \fBPartitioner\fP &target_partition) const "
+.br
+.ti -1c
+.RI "binding_mode \fBget_binding_mode_\fP () const "
+.br
+.ti -1c
+.RI "PartitionFunction::PartitionStyle \fBgetPartitionFashion\fP () const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBgetPartitionKey\fP () const "
+.br
+.ti -1c
+.RI "\fBPartitionFunction\fP * \fBgetPartitionFunction\fP () const "
+.br
+.ti -1c
+.RI "\fBProjectionID\fP \fBgetProejctionID\fP () const "
+.br
+.ti -1c
+.RI "bool \fBallPartitionBound\fP () const "
+.br
+.ti -1c
+.RI "vector< \fBPartitionID\fP > \fBgetPartitionIDList\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "bool Partitioner::hasSamePartitionLocation (const \fBPartitioner\fP &target_partition) const"
+in the current version, any the location detection in OneToMany mode is ommited\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
