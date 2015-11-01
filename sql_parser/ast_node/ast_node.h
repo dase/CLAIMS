@@ -30,12 +30,19 @@
 #include <set>
 #include <vector>
 #include <utility>
+
+#include "../../common/Expression/qnode.h"
+#include "../../logical_query_plan/logical_operator.h"
+using claims::logical_query_plan::LogicalOperator;
 using std::vector;
 using std::pair;
 using std::map;
 using std::multimap;
 using std::set;
 using std::string;
+// namespace claims {
+// namespace sql_parser {
+
 typedef int ErrorNo;
 enum AstNodeType {
   AST_NODE,
@@ -136,6 +143,10 @@ enum ErrorNoType {
   eTableNotExistInTableColumnALL,
   eColumnAllShouldNotInOtherClause,
   eMoreColumnsInSelectHaveALLALL,
+  eRightTableIsNULLInJoin,
+  eLeftTableIsNULLInJoin,
+  eNoDataTypeInConst,
+  eEqualJoinCondiInATable,
 };
 // the order should be keep
 enum SubExprType {
@@ -243,10 +254,16 @@ class AstNode {
   virtual void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   virtual void GetRefTable(set<string>& ref_table);
   virtual void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                             AstNode* joined_root){};
+                             AstNode* joined_root) {}
 
-  virtual ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt){};
-
+  virtual ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt) {
+    return eOK;
+  }
+  virtual ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan) { return eOK; }
+  virtual ErrorNo GetLogicalPlan(QNode*& logic_expr,
+                                 LogicalOperator* child_logic_plan) {
+    return eOK;
+  }
   AstNodeType ast_node_type_;
   string expr_str_;
 };
@@ -269,8 +286,11 @@ class AstStmtList : public AstNode {
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
   AstNode* stmt_;
   AstNode* next_;
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  // SQL_PARSER_AST_NODE_AST_NODE_H_

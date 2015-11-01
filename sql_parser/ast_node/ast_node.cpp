@@ -42,6 +42,8 @@ using std::endl;
 using std::string;
 using std::endl;
 using std::vector;
+// namespace claims {
+// namespace sql_parser {
 AstNode::AstNode(AstNodeType ast_node_type) : ast_node_type_(ast_node_type) {}
 
 AstNode::~AstNode() {}
@@ -98,6 +100,9 @@ ErrorNo AstStmtList::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
   }
   if (NULL != next_) {
+    LOG(ERROR) << "just support one statement now!" << endl;
+    assert(false);
+    return eOK;
     return next_->SemanticAnalisys(sem_cnxt);
   }
   return eOK;
@@ -111,7 +116,9 @@ ErrorNo AstStmtList::PushDownCondition(PushDownConditionContext* pdccnxt) {
   }
   return eOK;
 }
-
+ErrorNo AstStmtList::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  return stmt_->GetLogicalPlan(logic_plan);
+}
 SemanticContext::SemanticContext() {
   tables_.clear();
   column_to_table_.clear();
@@ -455,3 +462,5 @@ void PushDownConditionContext::GetSubExprInfo(AstNode* expr) {
         new SubExprInfo(sub_expr_[i], ref_table, sub_expr_type));
   }
 }
+//}  // namespace sql_parser
+//}  // namespace claims

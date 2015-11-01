@@ -38,8 +38,17 @@
 #include "../../Environment.h"
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/table.h"
+#include "../../logical_query_plan/logical_equal_join.h"
+#include "../../logical_query_plan/logical_cross_join.h"
+#include "../../logical_query_plan/logical_filter.h"
+#include "../../logical_query_plan/logical_scan.h"
+
 #include "../ast_node/ast_node.h"
 
+using claims::logical_query_plan::LogicalCrossJoin;
+using claims::logical_query_plan::LogicalEqualJoin;
+using claims::logical_query_plan::LogicalFilter;
+using claims::logical_query_plan::LogicalScan;
 using std::bitset;
 using std::endl;
 using std::cout;
@@ -50,6 +59,8 @@ using std::endl;
 using std::multimap;
 using std::sort;
 using std::vector;
+// namespace claims {
+// namespace sql_parser {
 AstSelectList::AstSelectList(AstNodeType ast_node_type, bool is_all,
                              AstNode* args, AstNode* next)
     : AstNode(ast_node_type), is_all_(is_all), args_(args), next_(next) {
@@ -254,6 +265,52 @@ ErrorNo AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
   return eOK;
 }
+ErrorNo AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  LogicalOperator* args_lplan = NULL;
+  LogicalOperator* next_lplan = NULL;
+  ErrorNo ret = eOK;
+  if (NULL != args_) {
+    args_->GetLogicalPlan(args_lplan);
+  }
+  if (NULL != next_) {
+    next_->GetLogicalPlan(next_lplan);
+  }
+  if (NULL != next_lplan) {
+    if (equal_join_condition_.size() > 0) {
+      vector<LogicalEqualJoin::JoinPair> join_pair;
+      join_pair.clear();
+      // TODO(FZH)
+      for (auto it = equal_join_condition_.begin();
+           it != equal_join_condition_.end(); ++it) {
+        //        join_pair.push_back(new LogicalEqualJoin::JoinPair());
+      }
+      logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
+
+    } else {
+      logic_plan = new LogicalCrossJoin(args_lplan, next_lplan);
+    }
+    if (normal_condition_.size() > 0) {
+      vector<QNode*> condition;
+      condition.clear();
+      QNode* qnode = NULL;
+      for (auto it = normal_condition_.begin(); it != normal_condition_.end();
+           ++it) {
+        ret = (*it)->GetLogicalPlan(qnode, logic_plan);
+        if (eOK != ret) {
+          LOG(ERROR) << "get normal condition upon from list, due to [err: "
+                     << ret << " ] !" << endl;
+          return ret;
+        }
+        assert(NULL != qnode);
+        condition.push_back(qnode);
+      }
+    }
+  } else {
+    logic_plan = args_lplan;
+  }
+  return eOK;
+}
+
 AstTable::AstTable(AstNodeType ast_node_type, string db_name, string table_name,
                    string table_alias)
     : AstNode(ast_node_type),
@@ -324,6 +381,37 @@ void AstTable::GetJoinedRoot(map<string, AstNode*> table_joined_root,
 ErrorNo AstTable::PushDownCondition(PushDownConditionContext* pdccnxt) {
   pdccnxt->from_tables_.insert(table_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  return eOK;
+}
+// TODO(FZH) diver table_name_ to LogicalScan
+ErrorNo AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  ErrorNo ret = eOK;
+  logic_plan = new LogicalScan(Environment::getInstance()
+                                   ->getCatalog()
+                                   ->getTable(table_name_)
+                                   ->getProjectoin(0));
+  if (equal_join_condition_.size() > 0) {
+    LOG(ERROR) << "equal join condition shouldn't occur in a single table!"
+               << endl;
+    assert(false);
+    return eEqualJoinCondiInATable;
+  }
+  if (normal_condition_.size() > 0) {
+    vector<QNode*> condition;
+    QNode* qnode = NULL;
+    for (auto it = normal_condition_.begin(); it != normal_condition_.end();
+         ++it) {
+      ret = (*it)->GetLogicalPlan(qnode, logic_plan);
+      if (eOK != ret) {
+        LOG(ERROR) << "get normal condition upon a table, due to [err: " << ret
+                   << " ] !" << endl;
+        return ret;
+      }
+      assert(NULL != qnode);
+      condition.push_back(qnode);
+    }
+    logic_plan = new LogicalFilter(logic_plan, condition);
+  }
   return eOK;
 }
 
@@ -408,6 +496,10 @@ ErrorNo AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
   pdccnxt->from_tables_.insert(subquery_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
   return eOK;
+}
+// may be deliver subquery output schema
+ErrorNo AstSubquery::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  return subquery_->GetLogicalPlan(logic_plan);
 }
 
 AstJoinCondition::AstJoinCondition(AstNodeType ast_node_type,
@@ -507,18 +599,26 @@ void AstJoin::Print(int level) const {
 ErrorNo AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
   SemanticContext join_sem_cnxt;
-  if (NULL != left_table_) {
-    ret = left_table_->SemanticAnalisys(&join_sem_cnxt);
-    if (eOK != ret) {
-      return ret;
-    }
+  if (NULL == left_table_) {
+    LOG(ERROR) << "left table is null in join!" << endl;
+    assert(false);
+    return eLeftTableIsNULLInJoin;
   }
   if (NULL != right_table_) {
-    ret = right_table_->SemanticAnalisys(&join_sem_cnxt);
-    if (eOK != ret) {
-      return ret;
-    }
+    LOG(ERROR) << "right table is null in join!" << endl;
+    assert(false);
+    return eRightTableIsNULLInJoin;
   }
+  ret = left_table_->SemanticAnalisys(&join_sem_cnxt);
+  if (eOK != ret) {
+    return ret;
+  }
+
+  ret = right_table_->SemanticAnalisys(&join_sem_cnxt);
+  if (eOK != ret) {
+    return ret;
+  }
+
   if (NULL != join_condition_) {
     ret = join_condition_->SemanticAnalisys(&join_sem_cnxt);
     if (eOK != ret) {
@@ -526,7 +626,6 @@ ErrorNo AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
   }
   ret = sem_cnxt->AddTable(join_sem_cnxt.get_tables());
-
   ret = sem_cnxt->AddTableColumn(join_sem_cnxt.get_column_to_table());
   //  join_sem_cnxt.~SemanticContext();
   return ret;
@@ -561,6 +660,31 @@ ErrorNo AstJoin::PushDownCondition(PushDownConditionContext* pdccnxt) {
 
   pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
                                cur_pdccnxt->from_tables_.end());
+  return eOK;
+}
+ErrorNo AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  LogicalOperator* left_plan = NULL;
+  LogicalOperator* right_plan = NULL;
+  left_table_->GetLogicalPlan(left_plan);
+  right_table_->GetLogicalPlan(right_plan);
+  if (equal_join_condition_.size() > 0) {
+    vector<LogicalEqualJoin::JoinPair> join_pair;
+    join_pair.clear();
+    // TODO(FZH)
+    for (auto it = equal_join_condition_.begin();
+         it != equal_join_condition_.end(); ++it) {
+      //        join_pair.push_back(new LogicalEqualJoin::JoinPair());
+    }
+    logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
+
+  } else {
+    logic_plan = new LogicalCrossJoin(left_plan, right_plan);
+  }
+  if (normal_condition_.size() > 0) {
+    vector<QNode*> condition;
+    // TODO(FZH)
+    logic_plan = new LogicalFilter(logic_plan, condition);
+  }
   return eOK;
 }
 
@@ -936,6 +1060,19 @@ void AstColumn::GetRefTable(set<string>& ref_table) {
   assert(relation_name_ != "NULL");
   ref_table.insert(relation_name_);
 }
+
+ErrorNo AstColumn::GetLogicalPlan(QNode*& logic_expr,
+                                  LogicalOperator* child_logic_plan) {
+  ErrorNo ret = eOK;
+  logic_expr = new QColcumns(
+      relation_name_.c_str(), column_name_.c_str(),
+      child_logic_plan->GetPlanContext()
+          .GetAttribute(relation_name_, relation_name_ + "." + column_name_)
+          .attrType->type,
+      "");
+  return eOK;
+}
+
 AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
                              AstNode* select_list, AstNode* from_list,
                              AstNode* where_clause, AstNode* groupby_clause,
@@ -1047,8 +1184,8 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     return eSelectClauseIsNULL;
   }
   // rebuild schema result from aggregation
-  have_aggeragion = (NULL != groupby_clause_ || agg_attrs_.size() > 0);
-  if (have_aggeragion) {
+  have_aggeragion_ = (NULL != groupby_clause_ || agg_attrs_.size() > 0);
+  if (have_aggeragion_) {
     ErrorNo ret = sem_cnxt->RebuildTableColumn(agg_attrs_);
     if (eOK != ret) {
       LOG(ERROR) << "there are confiction in new schema after agg!" << endl;
@@ -1066,7 +1203,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   // having clause exist only if have aggregation
   if (NULL != having_clause_) {
-    if (!have_aggeragion) {
+    if (!have_aggeragion_) {
       return eHavingNotAgg;
     }
     string name = "";
@@ -1123,3 +1260,55 @@ ErrorNo AstSelectStmt::PushDownCondition(PushDownConditionContext* pdccnxt) {
   //  from_list_->Print();
   return eOK;
 }
+// should support expression in aggregation
+ErrorNo AstSelectStmt::GetLogicalPlanOfAggeration(LogicalOperator* logic_plan) {
+  return eOK;
+}
+//#define SUPPORT
+ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  ErrorNo ret = eOK;
+  if (NULL != from_list_) {
+    ret = from_list_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+#ifdef SUPPORT
+  if (have_aggeragion_) {
+    ret = GetLogicalPlanOfAggeration(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != having_clause_) {
+    ret = having_clause_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != orderby_clause_) {
+    ret = orderby_clause_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != select_list_) {
+    ret = select_list_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != limit_clause_) {
+    cout << "not support limit now !" << endl;
+    return eOK;
+    ret = limit_clause_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+#endif
+  return eOK;
+}
+
+//}  // namespace sql_parser
+//}  // namespace claims

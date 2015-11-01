@@ -34,7 +34,8 @@
 #include "../ast_node/ast_node.h"
 
 using std::string;
-
+// namespace claims {
+// namespace sql_parser {
 /***
  * @brief The AST of load table statement.
  * @details AstLoadTable mainly includes table names, file path, column
@@ -57,5 +58,7 @@ class AstLoadTable : public AstNode {
 
  private:
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  // SQL_PARSER_AST_NODE_AST_LOAD_STMT_H_

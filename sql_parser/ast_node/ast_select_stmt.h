@@ -32,6 +32,8 @@
 #include "./ast_node.h"
 using std::string;
 using std::vector;
+// namespace claims {
+// namespace sql_parser {
 /**
  * @brief The AST of select list.
  * @details The member bool is_all_ stands for "select *" statement.
@@ -79,6 +81,8 @@ class AstFromList : public AstNode {
                      AstNode* joined_root);
   void PreProcess();
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+
   map<string, AstNode*> table_joined_root;
   AstNode* args_;
   AstNode* next_;
@@ -101,6 +105,8 @@ class AstTable : public AstNode {
   void GetJoinedRoot(map<string, AstNode*> table_joined_root,
                      AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+
   set<AstNode*> equal_join_condition_;
   set<AstNode*> normal_condition_;
   string db_name_;
@@ -124,6 +130,8 @@ class AstSubquery : public AstNode {
   void GetJoinedRoot(map<string, AstNode*> table_joined_root,
                      AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+
   string subquery_alias_;
   AstNode* subquery_;
   set<AstNode*> equal_join_condition_;
@@ -157,6 +165,8 @@ class AstJoin : public AstNode {
   void GetJoinedRoot(map<string, AstNode*> table_joined_root,
                      AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+
   string join_type_;
   AstNode* left_table_;
   AstNode* right_table_;
@@ -290,6 +300,7 @@ class AstColumn : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void GetRefTable(set<string>& ref_table);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
 
   string relation_name_;
   string column_name_;
@@ -316,6 +327,8 @@ class AstSelectStmt : public AstNode {
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  ErrorNo GetLogicalPlanOfAggeration(LogicalOperator* logic_plan);
   string select_str_;
   SelectOpts select_opts_;
   AstNode* select_list_;
@@ -329,7 +342,9 @@ class AstSelectStmt : public AstNode {
   set<AstNode*> groupby_attrs_;
   set<AstNode*> agg_attrs_;
 
-  bool have_aggeragion;
+  bool have_aggeragion_;
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  //  SQL_PARSER_AST_NODE_AST_SELECT_STMT_H_

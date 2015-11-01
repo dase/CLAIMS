@@ -43,10 +43,14 @@
 using std::string;
 using std::set;
 using std::vector;
+// namespace claims {
+// namespace sql_parser {
+
 /**
  * @brief The AST of const expression.
  * @details AstExprConst mainly includes expression type and type name.
  */
+
 class AstExprConst : public AstNode {
  public:
   AstExprConst(AstNodeType ast_node_type, string expr_type, string data);
@@ -56,6 +60,7 @@ class AstExprConst : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   string expr_type_;
   string data_;
 };
@@ -74,6 +79,8 @@ class AstExprUnary : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
+
   AstNode* arg0_;
   string expr_type_;
 };
@@ -91,6 +98,7 @@ class AstExprFunc : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -112,6 +120,7 @@ class AstExprCalBinary : public AstNode {
                           bool is_select);
   void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   void GetRefTable(set<string>& ref_table);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -134,6 +143,7 @@ class AstExprCmpBinary : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -154,9 +164,12 @@ class AstExprList : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
+  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
 
   AstNode* expr_;
   AstNode* next_;
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  // SQL_PARSER_AST_NODE_AST_EXPR_NODE_H_

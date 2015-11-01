@@ -37,6 +37,8 @@ using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
+// namespace claims {
+// namespace sql_parser {
 
 AstInsertStmt::AstInsertStmt(AstNodeType ast_node_type, int insert_opt,
                              string table_name, AstNode* col_list,
@@ -125,3 +127,5 @@ void AstInsertAssignList::Print(int level) const {
     next_->Print(level);
   }
 }
+//}  // namespace sql_parser
+//}  // namespace claims

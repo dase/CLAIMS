@@ -33,7 +33,8 @@
 #include "../ast_node/ast_node.h"
 
 using std::string;
-
+// namespace claims {
+// namespace sql_parser {
 /**
  * @brief The AST of drop index statement.
  * @details AstDropIndex mainly includes index name and table name.
@@ -107,5 +108,7 @@ class AstDropTableList : public AstNode {
 
  private:
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  // SQL_PARSER_AST_NODE_AST_DROP_STMT_H_

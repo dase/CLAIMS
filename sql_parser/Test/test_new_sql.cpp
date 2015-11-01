@@ -1,3 +1,5 @@
+#include "../../logical_query_plan/logical_query_plan_root.h"
+
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -32,6 +34,7 @@
 #include <stdio.h>  //NOLINT
 #include "../parser/parser.h"
 #include "../ast_node/ast_node.h"
+using claims::logical_query_plan::LogicalQueryPlanRoot;
 using std::endl;
 using std::cout;
 
@@ -42,14 +45,43 @@ int TestNewSql() {
     AstNode* raw_ast = my_parser->GetRawAST();
     if (raw_ast != NULL) {
       raw_ast->Print();
-      cout << "----------begin semantic analysis----------------" << endl;
+      cout << "--------------begin semantic analysis---------------" << endl;
       SemanticContext sem_cnxt;
       cout << "semantic analysis result= : "
            << raw_ast->SemanticAnalisys(&sem_cnxt) << endl;
       raw_ast->Print();
-      cout << "----------begin push down condition ----------------" << endl;
+      cout << "--------------begin push down condition ------------" << endl;
       raw_ast->PushDownCondition(NULL);
       raw_ast->Print();
+      cout << "--------------begin logical plan -------------------" << endl;
+
+      LogicalOperator* logic_plan = NULL;
+      raw_ast->GetLogicalPlan(logic_plan);
+
+      logic_plan = new LogicalQueryPlanRoot(
+          0, logic_plan, LogicalQueryPlanRoot::kResultCollector);
+
+      logic_plan->Print();
+      cout << "--------------begin physical plan -------------------" << endl;
+
+      BlockStreamIteratorBase* physical_plan =
+          logic_plan->GetPhysicalPlan(64 * 1024);
+
+      physical_plan->Print();
+
+      cout << "--------------begin output result -------------------" << endl;
+
+      physical_plan->Open();
+      while (physical_plan->Next(NULL)) {
+      }
+      ResultSet* result_set = physical_plan->getResultSet();
+      physical_plan->Close();
+
+      result_set->print();
+
+      delete logic_plan;
+      delete physical_plan;
+      delete result_set;
 
     } else {
       LOG(WARNING) << "the raw ast is null" << endl;

@@ -36,12 +36,16 @@
 #include <bitset>
 
 #include "./ast_select_stmt.h"
+#include "../../common/data_type.h"
+#include "../../common/TypePromotionMap.h"
 using std::cout;
 using std::endl;
 using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
+// namespace claims {
+// namespace sql_parser {
 
 AstExprConst::AstExprConst(AstNodeType ast_node_type, string expr_type,
                            string data)
@@ -73,6 +77,31 @@ void AstExprConst::RecoverExprName(string& name) {
 void AstExprConst::ReplaceAggregation(AstNode*& agg_column,
                                       set<AstNode*>& agg_node, bool is_select) {
   agg_column = NULL;
+}
+ErrorNo AstExprConst::GetLogicalPlan(QNode*& logic_expr,
+                                     LogicalOperator* child_logic_plan) {
+  data_type actual_type = t_string;
+  if (expr_type_ == "CONST_INT") {
+    if (atol(data_.c_str()) > INT_MAX) {
+      actual_type = t_u_long;
+    } else {
+      actual_type = t_int;
+    }
+  } else if (expr_type_ == "CONST_BOOL") {
+    actual_type = t_boolean;
+  } else if (expr_type_ == "CONST_STRING") {
+    actual_type = t_string;
+  } else if (expr_type_ == "CONST_DOUBLE") {
+    actual_type = t_double;
+  } else if (expr_type_ == "CONST") {
+    actual_type = t_string;
+  } else {
+    LOG(ERROR) << "no actual_type!" << endl;
+    return eNoDataTypeInConst;
+  }
+  logic_expr = new QExpr(const_cast<char*>(data_.c_str()), actual_type,
+                         const_cast<char*>(data_.c_str()));
+  return eOK;
 }
 
 AstExprUnary::AstExprUnary(AstNodeType ast_node_type, string expr_type,
@@ -176,6 +205,12 @@ void AstExprUnary::GetRefTable(set<string>& ref_table) {
     arg0_->GetRefTable(ref_table);
   }
 }
+
+ErrorNo AstExprUnary::GetLogicalPlan(QNode*& logic_expr,
+                                     LogicalOperator* child_logic_plan) {
+  return eOK;
+}
+
 AstExprCalBinary::AstExprCalBinary(AstNodeType ast_node_type,
                                    std::string expr_type, AstNode* arg0,
                                    AstNode* arg1)
@@ -297,6 +332,11 @@ void AstExprCalBinary::GetRefTable(set<string>& ref_table) {
     arg1_->GetRefTable(ref_table);
   }
 }
+ErrorNo AstExprCalBinary::GetLogicalPlan(QNode*& logic_expr,
+                                         LogicalOperator* child_logic_plan) {
+  return eOK;
+}
+
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string expr_type,
                                    AstNode* arg0, AstNode* arg1)
     : AstNode(ast_node_type),
@@ -416,6 +456,29 @@ void AstExprCmpBinary::GetRefTable(set<string>& ref_table) {
     arg1_->GetRefTable(ref_table);
   }
 }
+ErrorNo AstExprCmpBinary::GetLogicalPlan(QNode*& logic_expr,
+                                         LogicalOperator* child_logic_plan) {
+  QNode* left_expr_node = NULL;
+  QNode* right_expr_node = NULL;
+  ErrorNo ret = eOK;
+  ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  data_type actual_type = TypePromotion::arith_type_promotion_map
+      [left_expr_node->actual_type][right_expr_node->actual_type];
+  oper_type oper = oper_equal;
+  if (expr_type_ == "<") {
+    oper = oper_less;
+  }
+  logic_expr = new QExpr_binary(left_expr_node, right_expr_node, actual_type,
+                                oper, t_qexpr_cmp, expr_str_.c_str());
+  return eOK;
+}
 
 AstExprList::AstExprList(AstNodeType ast_node_type, AstNode* expr,
                          AstNode* next)
@@ -492,6 +555,10 @@ void AstExprList::GetRefTable(set<string>& ref_table) {
   if (NULL != next_) {
     next_->GetRefTable(ref_table);
   }
+}
+ErrorNo AstExprList::GetLogicalPlan(QNode*& logic_expr,
+                                    LogicalOperator* child_logic_plan) {
+  return eOK;
 }
 
 AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
@@ -617,3 +684,11 @@ void AstExprFunc::GetRefTable(set<string>& ref_table) {
     arg2_->GetRefTable(ref_table);
   }
 }
+
+ErrorNo AstExprFunc::GetLogicalPlan(QNode*& logic_expr,
+                                    LogicalOperator* child_logic_plan) {
+  return eOK;
+}
+
+//}  // namespace sql_parser
+//}  // namespace claims

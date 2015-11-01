@@ -16,7 +16,8 @@
 #include "../ast_node/ast_node.h"
 
 using std::string;
-
+// namespace claims {
+// namespace sql_parser {
 /**
  * @brief The AST of create database statement.
  * @details AstCreateDatabase mainly includes the database name and create type.
@@ -305,5 +306,7 @@ class AstOptCsc : public AstNode {
 
  private:
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  // SQL_PARSER_AST_NODE_AST_CREATE_STMT_H_

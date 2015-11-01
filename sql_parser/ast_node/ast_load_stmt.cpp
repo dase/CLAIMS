@@ -37,7 +37,8 @@ using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
-
+// namespace claims {
+// namespace sql_parser {
 AstLoadTable::AstLoadTable(AstNodeType ast_node_type, string table_name,
                            AstNode* path, string column_separator,
                            string tuple_separator, double sample, int mode)
@@ -62,3 +63,5 @@ void AstLoadTable::Print(int level) const {
     path_->Print(++level);
   }
 }
+//}  // namespace sql_parser
+//}  // namespace claims

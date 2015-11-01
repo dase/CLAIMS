@@ -36,7 +36,8 @@ using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
-
+// namespace claims {
+// namespace sql_parser {
 AstCreateDatabase::AstCreateDatabase(AstNodeType ast_node_type, int create_type,
                                      int check, string db_name)
     : AstNode(ast_node_type),
@@ -394,3 +395,5 @@ void AstIndexColList::Print(int level) const {
     next_->Print(level);
   }
 }
+//}  // namespace sql_parser
+//}  // namespace claims

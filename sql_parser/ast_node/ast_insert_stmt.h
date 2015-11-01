@@ -31,7 +31,8 @@
 #include "../ast_node/ast_node.h"
 
 using std::string;
-
+// namespace claims {
+// namespace sql_parser {
 /***
  * @brief The AST of insert statement.
  * @details AstInsertStmt mainly includes table name, column name and value
@@ -110,5 +111,7 @@ class AstInsertAssignList : public AstNode {
   AstNode* expr_;
   AstNode* next_;
 };
+//}  // namespace sql_parser
+//}  // namespace claims
 
 #endif  // SQL_PARSER_AST_NODE_AST_INSERT_STMT_H_

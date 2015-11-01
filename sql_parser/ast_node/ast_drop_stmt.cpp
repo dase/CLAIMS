@@ -35,6 +35,8 @@ using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
+// namespace claims {
+// namespace sql_parser {
 
 AstDropIndex::AstDropIndex(AstNodeType ast_node_type, string index_name,
                            string table_name)
@@ -93,3 +95,5 @@ void AstDropTableList::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "|Drop Table List|" << endl;
 }
+//}  // namespace sql_parser
+//}  // namespace claims
