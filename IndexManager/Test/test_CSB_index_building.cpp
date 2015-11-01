@@ -12,7 +12,7 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../../physical_query_plan/physical_projection_scan.h"
+#include "../../physical_operator/physical_projection_scan.h"
 #include "../CSBIndexBuilding.h"
 #include "test_index_manager.cpp"
 
@@ -104,7 +104,7 @@ static int test_CSBIndexBuilding ()
 			Schema* blc_schema = new SchemaFix(blc_column_list);
 			unsigned block_size = 64*1024;
 			bottomLayerCollecting::State blc_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, 3, block_size);
-			BlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
+			PhysicalOperatorBase* blc = new bottomLayerCollecting(blc_state);
 
 			vector<column_type> bls_column_list;
 			bls_column_list.push_back(t_int);	//chunk offset
@@ -114,7 +114,7 @@ static int test_CSBIndexBuilding ()
 
 			Schema* bls_schema = new SchemaFix(bls_column_list);
 			bottomLayerSorting::State bls_state(bls_schema, blc, block_size, catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3, "sec_code_index");
-			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
+			PhysicalOperatorBase* bls = new bottomLayerSorting(bls_state);
 
 			bls->Open();
 			BlockStreamBase* block;

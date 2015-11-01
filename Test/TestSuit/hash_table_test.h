@@ -19,7 +19,7 @@
 
 #include "../../Catalog/Column.h"
 
-#include "../../physical_query_plan/BlockStreamIteratorBase.h"
+#include "../../physical_operator/physical_operator_base.h"
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/physical_projection_scan.h"
 
@@ -210,7 +210,7 @@ struct Arg{
 	BasicHashTable ** hash_table;
 	Schema* schema;
 	PartitionFunction* hash;
-	BlockStreamIteratorBase* iterator;
+	PhysicalOperatorBase* iterator;
 	PartitionStorage::PartitionReaderItetaor* partition_reader;
 	Barrier* barrier;
 	unsigned tid;
@@ -283,7 +283,7 @@ static double projection_scan(unsigned degree_of_parallelism){
 
 	LogicalScan* scan=new LogicalScan(table->getProjectoin(1));
 	scan->GetPlanContext();
-	BlockStreamIteratorBase* warm_up_iterator=scan->GetPhysicalPlan(1024*64);
+	PhysicalOperatorBase* warm_up_iterator=scan->GetPhysicalPlan(1024*64);
 
 	PhysicalProjectionScan::State ps_state;
 	ps_state.block_size_=1024*64;

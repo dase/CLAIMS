@@ -11,18 +11,18 @@
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
-#include "../logical_query_plan/logical_operator.h"
 #include "sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
 
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_scan.h"
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../physical_query_plan/physical_aggregation.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_operator.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../physical_operator/physical_aggregation.h"
 
 int getlevel(Expr_cal *calnode) {
   int level = 0;

@@ -22,19 +22,18 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
-#include "../logical_query_plan/logical_scan.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_aggregation.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_aggregation.h"
 
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_limit.h"
-
+#include "../logical_operator/logical_filter.h"
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
-#include "../logical_query_plan/logical_query_plan_root.h"
+#include "../logical_operator/logical_limit.h"
+#include "../logical_operator/logical_query_plan_root.h"
 #define SQL_Parser
 using namespace std;
 #define SQL_Parser
@@ -1019,7 +1018,7 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 	root->Print(0);
 #endif
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
 	physical_iterator_tree->Print();

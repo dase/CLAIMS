@@ -38,7 +38,7 @@ static double lineitem_scan_self_join(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
@@ -49,7 +49,7 @@ static double lineitem_scan_self_join(){
 	double ret=result_set->query_time_;
 
 
-	physical_iterator_tree->~BlockStreamIteratorBase();
+	physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	return ret;
 }
@@ -75,7 +75,7 @@ static double sb_scan_self_join(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
@@ -86,7 +86,7 @@ static double sb_scan_self_join(){
 	double ret=result_set->query_time_;
 
 
-	physical_iterator_tree->~BlockStreamIteratorBase();
+	physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	return ret;
 }
@@ -118,7 +118,7 @@ static double lineitem_scan_aggregation(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
@@ -129,7 +129,7 @@ static double lineitem_scan_aggregation(){
 	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
 
-	physical_iterator_tree->~BlockStreamIteratorBase();
+	physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	return ret;
 }
@@ -148,7 +148,7 @@ static double lineitem_scan_filter(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
@@ -158,7 +158,7 @@ static double lineitem_scan_filter(){
 	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	double ret=result_set->query_time_;
 
-	physical_iterator_tree->~BlockStreamIteratorBase();
+	physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	return ret;
 }
@@ -182,7 +182,7 @@ static double sb_scan_filter(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
@@ -192,7 +192,7 @@ static double sb_scan_filter(){
 	ResultSet* result_set=physical_iterator_tree->GetResultSet();
 	double ret=result_set->query_time_;
 
-	physical_iterator_tree->~BlockStreamIteratorBase();
+	physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	return ret;
 }
@@ -219,7 +219,7 @@ static double sb_scan_aggregation(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	root->print();
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
@@ -230,7 +230,7 @@ static double sb_scan_aggregation(){
 	printf("tuples %d\n",result_set->getNumberOftuples());
 	double ret=result_set->query_time_;
 
-	physical_iterator_tree->~BlockStreamIteratorBase();
+	physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	return ret;
 }
@@ -306,7 +306,7 @@ static void test_block_construct(){
 
 	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 	scan->GetPlanContext();
-	BlockStreamIteratorBase* s=scan->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* s=scan->GetPhysicalPlan(64*1024);
 	s->Print();
 
 	std::vector<BlockStreamBase*> vect;

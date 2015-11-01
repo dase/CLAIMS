@@ -12,9 +12,9 @@
 #include "../common/Block/ResultSet.h"
 #include "../common/data_type.h"
 #include "../Catalog/table.h"
-#include "../logical_query_plan/logical_operator.h"
+#include "../logical_operator/logical_operator.h"
 
-using claims::logical_query_plan::LogicalOperator;
+using claims::logical_operator::LogicalOperator;
 
 
 

@@ -23,8 +23,8 @@
 #include "../../Environment.h"
 #include <algorithm>
 
-#include "../../logical_query_plan/logical_operator.h"
-using namespace claims::logical_query_plan;
+#include "../../logical_operator/logical_operator.h"
+using namespace claims::logical_operator;
 QNode *transformqual(Node *node, LogicalOperator *child);
 void InitExprAtPhysicalPlan(QNode *node);
 void InitExprAtLogicalPlan(QNode *node, data_type actual_type,

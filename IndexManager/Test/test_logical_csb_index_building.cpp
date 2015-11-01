@@ -14,7 +14,7 @@
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
-#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
 
 static int test_logical_csb_index_building()
 {
@@ -78,7 +78,7 @@ static int test_logical_csb_index_building()
 =======
 			root->Print();
 >>>>>>> master-yk-150927
-			BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
+			PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
 			executable_query_plan->Open();
@@ -90,7 +90,7 @@ static int test_logical_csb_index_building()
 
 //			ResultSet* result_set = executable_query_plan->getResultSet();
 
-			executable_query_plan->~BlockStreamIteratorBase();
+			executable_query_plan->~PhysicalOperatorBase();
 			root->~LogicalOperator();
 cout << "index building finished!\n";
 /********************************* Logical Index Scan *********************************/
@@ -137,7 +137,7 @@ cout << "index building finished!\n";
 			while (executable_query_plan->Next(0));
 			executable_query_plan->Close();
 
-			executable_query_plan->~BlockStreamIteratorBase();
+			executable_query_plan->~PhysicalOperatorBase();
 			root->~LogicalOperator();
 
 		}

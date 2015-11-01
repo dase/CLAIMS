@@ -13,15 +13,15 @@
 
 #include "../../Loader/Hdfsloader.h"
 
-#include "../../physical_query_plan/BlockStreamIteratorBase.h"
+#include "../../physical_operator/physical_operator_base.h"
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
-#include "../../logical_query_plan/logical_aggregation.h"
-#include "../../logical_query_plan/logical_scan.h"
-#include "../../logical_query_plan/Filter.h"
-#include "../../logical_query_plan/logical_equal_join.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/logical_aggregation.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/Filter.h"
+#include "../../logical_operator/logical_equal_join.h"
 
 #include "../../common/AttributeComparator.h"
 
@@ -63,7 +63,7 @@ static void query_1(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,filter,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	physical_iterator_tree->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(physical_iterator_tree));
 //	physical_iterator_tree->open();
@@ -122,7 +122,7 @@ static void query_2(){
 
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,s_ps_n_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* sub_physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* sub_physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 
 	sub_physical_iterator_tree->Open();
 	while(sub_physical_iterator_tree->Next(0));
@@ -133,7 +133,7 @@ static void query_2(){
 	BlockStreamBase::BlockStreamTraverseIterator* it=result_set->createIterator().atomicNextBlock()->createIterator();
 	NValue sub_query_result=*(NValue*)it->nextTuple();
 	it->~BlockStreamTraverseIterator();
-	sub_physical_iterator_tree->~BlockStreamIteratorBase();
+	sub_physical_iterator_tree->~PhysicalOperatorBase();
 
 	LogicalFilter::Condition p_filter_condition_1;
 	p_filter_condition_1.add(part->getAttribute("PART.P_SIZE"),AttributeComparator::EQ,std::string("15"));//randomly 0~50
@@ -175,7 +175,7 @@ static void query_2(){
 =======
 	LogicalOperator* root_father=new LogicalQueryPlanRoot(0,r_n_s_p_ps_farther_join,LogicalQueryPlanRoot::kPerformance);
 >>>>>>> master-yk-150927
-	BlockStreamIteratorBase* final_physical_iterator_tree=root_father->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* final_physical_iterator_tree=root_father->GetPhysicalPlan(64*1024);
 //
 //	final_physical_iterator_tree->open();
 //	while(final_physical_iterator_tree->next(0));
@@ -186,7 +186,7 @@ static void query_2(){
 	printf("Q2: execution time: %4.4f second.\n",getSecond(start));
 
 
-	final_physical_iterator_tree->~BlockStreamIteratorBase();
+	final_physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	root_father->~LogicalOperator();
 
@@ -252,7 +252,7 @@ static void query_3(){
 =======
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,Aggregation,LogicalQueryPlanRoot::kPerformance);
 >>>>>>> master-yk-150927
-	BlockStreamIteratorBase* final_physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* final_physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 
 	final_physical_iterator_tree->Open();
 	while(final_physical_iterator_tree->Next(0));
@@ -261,7 +261,7 @@ static void query_3(){
 	printf("Q3: execution time: %4.4f second.\n",getSecond(start));
 
 
-	final_physical_iterator_tree->~BlockStreamIteratorBase();
+	final_physical_iterator_tree->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 
 

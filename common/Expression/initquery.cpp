@@ -9,7 +9,7 @@
 #include "queryfunc.h"
 #include "qnode.h"
 #include "../../Parsetree/sql_node_struct.h"
-#include "../../logical_query_plan/logical_operator.h"
+#include "../../logical_operator/logical_operator.h"
 /*
  * the transformqual() transform the ast(the parsetree) to expression tree
  */

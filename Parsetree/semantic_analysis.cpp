@@ -19,17 +19,17 @@
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
-#include "../logical_query_plan/logical_operator.h"
 #include "sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
 #include <ostream>
 
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_scan.h"
-#include "../physical_query_plan/physical_aggregation.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_operator.h"
+#include "../logical_operator/logical_scan.h"
+#include "../physical_operator/physical_aggregation.h"
 using namespace std;
 bool semantic_analysis(Node *parsetree, bool issubquery);
 bool wherecondition_analysis(Query_stmt *qstmt, Node *cur,

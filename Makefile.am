@@ -33,8 +33,8 @@ LDADD =  \
 	IndexManager/Test/libtest.a \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
-	logical_query_plan/liblogicalqueryplan.a \
-	physical_query_plan/libphysicalqueryplan.a \
+	logical_operator/liblogicalqueryplan.a \
+	physical_operator/libphysicalqueryplan.a \
 	storage/libstorage.a \
 	Resource/libresouce.a \
 	Catalog/libcatalog.a \
@@ -97,9 +97,9 @@ test_SOURCES = Test/gtest_main.cpp\
 
 
 SUBDIRS=  Catalog Client common Daemon Executor IndexManager\
-Loader physical_query_plan logical_query_plan Parsetree Resource \
+Loader physical_operator logical_operator Parsetree Resource \
 storage Test utility codegen
 
 DIST_SUBDIRS =  Catalog Client common Daemon Executor IndexManager\
-Loader physical_query_plan logical_query_plan Parsetree Resource \
+Loader physical_operator logical_operator Parsetree Resource \
 storage Test utility codegen
