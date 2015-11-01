@@ -12,98 +12,117 @@
 #include <errno.h>
 #include "../../common/rename.h"
 
-ExpandableBlockStreamSingleColumnScanDisk::ExpandableBlockStreamSingleColumnScanDisk(State state)
-:state_(state), fd_(-1), file_length_(0), base_(0), data_(0), open_finished_(false) {
-	sema_open_.set_value(1);
-	sema_open_finished_.set_value(0);
+ExpandableBlockStreamSingleColumnScanDisk::
+    ExpandableBlockStreamSingleColumnScanDisk(State state)
+    : state_(state),
+      fd_(-1),
+      file_length_(0),
+      base_(0),
+      data_(0),
+      open_finished_(false) {
+  sema_open_.set_value(1);
+  sema_open_finished_.set_value(0);
 }
 
-ExpandableBlockStreamSingleColumnScanDisk::ExpandableBlockStreamSingleColumnScanDisk()
-:fd_(-1), file_length_(0), base_(0), data_(0), open_finished_(false){
-	sema_open_.set_value(1);
-	sema_open_finished_.set_value(0);
-	}
+ExpandableBlockStreamSingleColumnScanDisk::
+    ExpandableBlockStreamSingleColumnScanDisk()
+    : fd_(-1), file_length_(0), base_(0), data_(0), open_finished_(false) {
+  sema_open_.set_value(1);
+  sema_open_finished_.set_value(0);
+}
 
-ExpandableBlockStreamSingleColumnScanDisk::~ExpandableBlockStreamSingleColumnScanDisk() {
-	// TODO Auto-generated destructor stub
+ExpandableBlockStreamSingleColumnScanDisk::
+    ~ExpandableBlockStreamSingleColumnScanDisk() {
+  // TODO Auto-generated destructor stub
 }
 
 ExpandableBlockStreamSingleColumnScanDisk::State::State(std::string file_name,
-		Schema* schema, unsigned block_size) :
-		schema_(schema), filename_(file_name), block_size_(block_size) {
-	used_size_control_ = false;
+                                                        Schema* schema,
+                                                        unsigned block_size)
+    : schema_(schema), filename_(file_name), block_size_(block_size) {
+  used_size_control_ = false;
 }
 
-ExpandableBlockStreamSingleColumnScanDisk::State::State(std::string file_name,
-		Schema* schema, unsigned block_size, unsigned long used_length) :
-		schema_(schema), filename_(file_name), block_size_(block_size), used_length_(used_length) {
-	used_size_control_ = true;
+ExpandableBlockStreamSingleColumnScanDisk::State::State(
+    std::string file_name, Schema* schema, unsigned block_size,
+    unsigned long used_length)
+    : schema_(schema),
+      filename_(file_name),
+      block_size_(block_size),
+      used_length_(used_length) {
+  used_size_control_ = true;
 }
 
-bool ExpandableBlockStreamSingleColumnScanDisk::Open(const PartitionOffset& part_off) {
-	block_for_reading_=BlockStreamBase::createBlock(state_.schema_,state_.block_size_);
+bool ExpandableBlockStreamSingleColumnScanDisk::Open(
+    const PartitionOffset& part_off) {
+  block_for_reading_ =
+      BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
 
-	if (sema_open_.try_wait()) {
-		printf("Scan open!\n");
+  if (sema_open_.try_wait()) {
+    printf("Scan open!\n");
 
-		/* the winning thread does the read job in the open function*/
-		fd_ = FileOpen(state_.filename_.c_str(), O_RDONLY);
-		if (fd_ == -1) {
-			printf("Cannot open file %s! Reason: %s\n",
-					state_.filename_.c_str(), strerror(errno));
-			return false;
-		}
-		file_length_ = lseek(fd_, 0, SEEK_END);
-		if (state_.used_size_control_ && (state_.used_length_ < file_length_))
-			file_length_ = state_.used_length_;
-//		cout << "Disk scan iterator in, scan size: " << file_length_ << endl;
-		lseek(fd_,0,SEEK_SET);
+    /* the winning thread does the read job in the open function*/
+    fd_ = FileOpen(state_.filename_.c_str(), O_RDONLY);
+    if (fd_ == -1) {
+      printf("Cannot open file %s! Reason: %s\n", state_.filename_.c_str(),
+             strerror(errno));
+      return false;
+    }
+    file_length_ = lseek(fd_, 0, SEEK_END);
+    if (state_.used_size_control_ && (state_.used_length_ < file_length_))
+      file_length_ = state_.used_length_;
+    //		cout << "Disk scan iterator in, scan size: " << file_length_ <<
+    // endl;
+    lseek(fd_, 0, SEEK_SET);
 
-		printf("Open is successful!\n");
-		open_finished_ = true;
-		return true;
+    printf("Open is successful!\n");
+    open_finished_ = true;
+    return true;
 
-	} else {
-		while (!open_finished_) {
-			usleep(1);
-		}
-		return true;
-	}
+  } else {
+    while (!open_finished_) {
+      usleep(1);
+    }
+    return true;
+  }
 }
 
 bool ExpandableBlockStreamSingleColumnScanDisk::Next(BlockStreamBase* block) {
-	unsigned read_size = 0;
-	file_flength_lock_.acquire();
-	if (state_.block_size_ <= file_length_)
-		read_size=read(fd_,block_for_reading_->getBlockDataAddress(),state_.block_size_);
-	else
-		read_size = read(fd_,block_for_reading_->getBlockDataAddress(),file_length_);
-	if(read_size>0){
-		file_length_ -= read_size;
-		block->copyBlock(block_for_reading_->getBlockDataAddress(),read_size);
-		file_flength_lock_.release();
-		return true;
-	}
-	else
-	{
-		cout << "disk scan return false\n";
-		file_flength_lock_.release();
-		return false;
-	}
+  unsigned read_size = 0;
+  file_flength_lock_.acquire();
+  //读一个block（文件大于一个block）还是读一个文件  -H
+  if (state_.block_size_ <= file_length_)
+    read_size = read(fd_, block_for_reading_->getBlockDataAddress(),
+                     state_.block_size_);
+  else
+    read_size =
+        read(fd_, block_for_reading_->getBlockDataAddress(), file_length_);
+  if (read_size > 0) {
+    file_length_ -= read_size;
+    //文件长度减去已读取的长度，这样就能从下一个要读取的位置开始读取剩余长度。-H
+    block->copyBlock(block_for_reading_->getBlockDataAddress(), read_size);
+    //将已经读取到的长度，根据偏移量来从缓冲区copy走block。-H
+    file_flength_lock_.release();
+    return true;
+  } else {
+    cout << "disk scan return false\n";
+    file_flength_lock_.release();
+    return false;
+  }
 }
 
 bool ExpandableBlockStreamSingleColumnScanDisk::Close() {
-	sema_open_.post();
+  sema_open_.post();
 
-	open_finished_ = false;
-//	free(data_);
-//	data_ = 0;
-//	munmap(base_, file_length_);
-	if (FileClose(fd_) == 0) {
-		std::cout<<"in "<<__FILE__<<":"<<__LINE__;printf("-----for debug: close fd %d.\n", fd_);
-		return true;
-	}
-	else {
-		return false;
-	}
+  open_finished_ = false;
+  //	free(data_);
+  //	data_ = 0;
+  //	munmap(base_, file_length_);
+  if (FileClose(fd_) == 0) {
+    std::cout << "in " << __FILE__ << ":" << __LINE__;
+    printf("-----for debug: close fd %d.\n", fd_);
+    return true;
+  } else {
+    return false;
+  }
 }

@@ -134,7 +134,7 @@ BlockStreamIteratorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
         expander_state.schema_->duplicateSchema(), expander,
         limit_constraint_.returned_tuples_, block_size,
         limit_constraint_.start_position_);
-    BlockStreamIteratorBase* limit = new PhysicalLimit(limit_state);
+    BlockStreamIteratorBase* limit = new PhysicaLimit(limit_state);
     middle_tier = limit;
   } else {
     middle_tier = expander;

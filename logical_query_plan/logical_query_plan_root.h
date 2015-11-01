@@ -65,7 +65,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    * value is no limit
    */
   LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
-                       const OutputStyle& fashion = kPerformance,
+                       const OutputStyle& fashion = kResultCollector,
                        LimitConstraint limit_constraint = LimitConstraint());
   virtual ~LogicalQueryPlanRoot();
   PlanContext GetPlanContext();

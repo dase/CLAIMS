@@ -71,6 +71,7 @@ PlanContext LogicalFilter::GetPlanContext() {
                  *               of the input data, which may be maintained in the
                  *               catalog module.
                  */
+
         const unsigned before_filter_cardinality =
             plan_context.plan_partitioner_.GetPartition(i)->get_cardinality();
         const unsigned after_filter_cardinality =
@@ -137,8 +138,7 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
       state_f.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state_f.schema_ = GetSchema(plan_context.attribute_list_);
-      BlockStreamIteratorBase* filter =
-          new PhysicalFilter(state_f);
+      BlockStreamIteratorBase* filter = new PhysicalFilter(state_f);
       physical_plan.plan = filter;
 
       physical_plan.cost += physical_plan.plan_context_.GetAggregatedDatasize();
