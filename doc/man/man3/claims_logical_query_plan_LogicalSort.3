@@ -1,0 +1,144 @@
+.TH "claims::logical_operator::LogicalSort" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::LogicalSort \- 
+.PP
+The \fBLogicalSort\fP contains the information of attributes to be sorted\&. And it describe how to generate Sort Operator\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <logical_sort\&.h>\fP
+.PP
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBOrderByAttr\fP"
+.br
+.RI "\fIDescription: \fBOrderByAttr\fP contains the table information and its sort direction\&.We use ASC as default\&. \fP"
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLogicalSort\fP (\fBLogicalOperator\fP *child, vector< \fBLogicalSort::OrderByAttr\fP * > order_by_attr)"
+.br
+.RI "\fIMethod description: Create a Sort operator\&. \fP"
+.ti -1c
+.RI "\fBPlanContext\fP \fBGetPlanContext\fP ()"
+.br
+.RI "\fIMethod description: Get the schema and child information\&. \fP"
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &blocksize)"
+.br
+.RI "\fIMethod description: Generate logical query plan and return physical operator instance\&. \fP"
+.ti -1c
+.RI "int \fBGetOrderByKey\fP (const char *, const char *)"
+.br
+.RI "\fIMethod description: Get the column number of the given table name and attributes name\&. \fP"
+.ti -1c
+.RI "int \fBGetOrderByKey\fP (const char *)"
+.br
+.ti -1c
+.RI "void \fBPrintOrderByAttr\fP () const "
+.br
+.ti -1c
+.RI "void \fBPrint\fP (int level=0) const "
+.br
+.ti -1c
+.RI "virtual bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size=4096 *1024)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+The \fBLogicalSort\fP contains the information of attributes to be sorted\&. And it describe how to generate Sort Operator\&. 
+
+\fBLogicalSort\fP have inner struct '\fBOrderByAttr\fP' which contains the tablename and direction of sort(ASC or DESC)\&. getIteratorTree() generates the logical plan\&.getIteratorTree() uses getPlanContext() to get the data from its child\&. When we achieve sort logical plan, getOrderKey() help us return the column number of the attributes we need to sort\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "claims::logical_operator::LogicalSort::LogicalSort (\fBLogicalOperator\fP *child, vector< \fBLogicalSort::OrderByAttr\fP * >order_by_attr)"
+
+.PP
+Method description: Create a Sort operator\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fI\fBLogicalOperator\fP\fP *child_\&. The pointer of its child\&. 
+.br
+\fIvector<LogicalSort::OrderByAttr\fP *> order_by_attr_\&. This contains the attributes list to be sorted\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool claims::logical_operator::LogicalSort::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [inline]\fP, \fC [virtual]\fP"
+get the optimal Physical plan that meets the requirement\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "int claims::logical_operator::LogicalSort::GetOrderByKey (const char *table_name, const char *attr)"
+
+.PP
+Method description: Get the column number of the given table name and attributes name\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconst\fP char* 
+.br
+\fIconst\fP char* 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+int 
+.RE
+.PP
+
+.PP
+Referenced by GetPhysicalPlan()\&.
+.SS "\fBBlockStreamIteratorBase\fP * claims::logical_operator::LogicalSort::GetPhysicalPlan (const unsigned &blocksize)\fC [virtual]\fP"
+
+.PP
+Method description: Generate logical query plan and return physical operator instance\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconst\fP unsigned &blocksize\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBBlockStreamIteratorBase\fP *
+.RE
+.PP
+ Besides do these initialization we notice that 'Sort' is a block operator, so we need to get all data from other nodes\&. 
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References GetOrderByKey(), claims::logical_operator::LogicalOperator::GetPhysicalPlan(), GetPlanContext(), and Config::initial_degree_of_parallelism\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalSort::GetPlanContext ()\fC [virtual]\fP"
+
+.PP
+Method description: Get the schema and child information\&. The mostly important member is 'property' and 'attributes
+list'\&. 
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References claims::logical_operator::LogicalOperator::GetPlanContext()\&.
+.PP
+Referenced by GetPhysicalPlan()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

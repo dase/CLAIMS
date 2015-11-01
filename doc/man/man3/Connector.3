@@ -1,0 +1,37 @@
+.TH "Connector" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Connector \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBHdfsConnector\fP, and \fBLocalDiskConnector\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBConnector\fP (vector< vector< string > > writepath)"
+.br
+.ti -1c
+.RI "virtual bool \fBopenFiles\fP (open_flag open_flag_)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBcloseFiles\fP ()=0"
+.br
+.ti -1c
+.RI "virtual int \fBflush\fP (unsigned projection_offset, unsigned partition_offset, void *source, unsigned length)=0"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "vector< vector< string > > \fBwritepath\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

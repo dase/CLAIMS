@@ -1,0 +1,40 @@
+.TH "PartitionStorage::PartitionReaderItetaor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PartitionStorage::PartitionReaderItetaor \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBPartitionStorage::AtomicPartitionReaderIterator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionReaderItetaor\fP (\fBPartitionStorage\fP *partition_storage)"
+.br
+.ti -1c
+.RI "virtual \fBChunkReaderIterator\fP * \fBnextChunk\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBnextBlock\fP (\fBBlockStreamBase\fP *&block)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionStorage\fP * \fBps\fP"
+.br
+.ti -1c
+.RI "unsigned \fBchunk_cur_\fP"
+.br
+.ti -1c
+.RI "\fBChunkReaderIterator\fP * \fBchunk_it_\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

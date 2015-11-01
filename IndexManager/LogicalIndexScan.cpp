@@ -40,7 +40,7 @@ PlanContext LogicalIndexScan::GetPlanContext()
 	return dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalIndexScan::GetPhysicalPlan(const unsigned & blocksize)
+PhysicalOperatorBase* LogicalIndexScan::GetPhysicalPlan(const unsigned & blocksize)
 {
 	IndexScanIterator::State state;
 	state.schema_ = GetSchema(dataflow_.attribute_list_);

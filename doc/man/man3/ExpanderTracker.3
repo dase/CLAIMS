@@ -1,0 +1,68 @@
+.TH "ExpanderTracker" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExpanderTracker \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBregisterNewExpandedThreadStatus\fP (expanded_thread_id id, ExpanderID exp_id)"
+.br
+.ti -1c
+.RI "bool \fBdeleteExpandedThreadStatus\fP (expanded_thread_id id)"
+.br
+.ti -1c
+.RI "bool \fBisExpandedThreadCallBack\fP (expanded_thread_id id)"
+.br
+.ti -1c
+.RI "bool \fBcallbackExpandedThread\fP (expanded_thread_id id)"
+.br
+.ti -1c
+.RI "bool \fBaddNewStageEndpoint\fP (expanded_thread_id, \fBLocalStageEndPoint\fP)"
+.br
+.ti -1c
+.RI "\fBPerformanceInfo\fP * \fBgetPerformanceInfo\fP (expanded_thread_id)"
+.br
+.ti -1c
+.RI "ExpanderID \fBregisterNewExpander\fP (\fBMonitorableBuffer\fP *buffer, \fBExpandabilityShrinkability\fP *expand_shrink)"
+.br
+.ti -1c
+.RI "void \fBunregisterExpander\fP (ExpanderID expander_id)"
+.br
+.ti -1c
+.RI "bool \fBtrackExpander\fP (ExpanderID id) const "
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBExpanderTracker\fP * \fBgetInstance\fP ()"
+.br
+.ti -1c
+.RI "static segment_status \fBgetSegmentStatus\fP (\fBlocal_stage\fP &)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::map< expanded_thread_id, 
+.br
+ExpandedThreadStatus > \fBid_to_status_\fP"
+.br
+.ti -1c
+.RI "\fBLogging\fP * \fBlog_\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBmonitor_thread_id_\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

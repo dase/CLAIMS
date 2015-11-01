@@ -25,9 +25,9 @@ noinst_LIBRARIES=libexecutor.a
 libexecutor_a_SOURCES = \
 	AdaptiveEndPoint.cpp 		AdaptiveEndPoint.h \
 	Coordinator.cpp 			Coordinator.cppnew \
-	Coordinator.h 			ExchangeTracker.cpp \
-	ExchangeTracker.h 		ExpanderTracker.cpp \
-	ExpanderTracker.h 		IteratorExecutorMaster.cpp \
+	Coordinator.h 			exchange_tracker.cpp \
+	exchange_tracker.h 		expander_tracker.cpp \
+	expander_tracker.h 		IteratorExecutorMaster.cpp \
 	IteratorExecutorMaster.h 	IteratorExecutorSlave.cpp \
 	IteratorExecutorSlave.h 	PortManager.cpp \
 	PortManager.h

@@ -1,0 +1,55 @@
+.TH "CPUResourceManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CPUResourceManager \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBcore\fP"
+.br
+.ti -1c
+.RI "struct \fBsocket\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBtryApplyCore\fP ()"
+.br
+.ti -1c
+.RI "int \fBapplyCore\fP ()"
+.br
+.ti -1c
+.RI "void \fBfreeCore\fP (int core_id=-1)"
+.br
+.ti -1c
+.RI "void \fBprint\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBCPUResourceManager\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "int CPUResourceManager::applyCore ()"
+apply for a core, return id of allocated core, blocked if no cores are available\&. 
+.SS "void CPUResourceManager::freeCore (intcore_id = \fC-1\fP)"
+return the core to the Cpu resource core_id should be given if the caller is not running of the thread bound to the core\&. 
+.SS "void CPUResourceManager::print ()"
+print the status of the cores in an array form\&. 
+.SS "int CPUResourceManager::tryApplyCore ()"
+apply for a core available on any socket, this function returns the id of the core, or return -1 when there is not any core available\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,115 @@
+.TH "claims::logical_operator::LogicalEqualJoin" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::LogicalEqualJoin \- 
+.PP
+Generate equal join logical plan\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <logical_equal_join\&.h>\fP
+.PP
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBJoinPair\fP"
+.br
+.RI "\fIThe \fBJoinPair\fP contains two attributes to be joined\&. \fP"
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBJoinPolicy\fP { \fBkNull\fP, \fBkNoRepartition\fP, \fBkLeftRepartition\fP, \fBkRightRepartition\fP, \fBkCompleteRepartition\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLogicalEqualJoin\fP (std::vector< \fBJoinPair\fP >, \fBLogicalOperator\fP *left_input, \fBLogicalOperator\fP *right_input)"
+.br
+.RI "\fIMethod description:Create a EqualJoin implement\&. \fP"
+.ti -1c
+.RI "\fBPlanContext\fP \fBGetPlanContext\fP ()"
+.br
+.RI "\fIMethod description: Get the child information\&. \fP"
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &blocksize)"
+.br
+.ti -1c
+.RI "bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size=4096 *1024)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Generate equal join logical plan\&. 
+
+EqualJoin operator achieves the join statement tables\&.It requires equivalent conditions\&.As for implementation, one is to send all data to a same machine\&.But the generated table will be too big to store and it is inefficient\&.So we partition the data to several machines\&.Each of them does some join and return\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "claims::logical_operator::LogicalEqualJoin::LogicalEqualJoin (std::vector< \fBJoinPair\fP >joinpair_list, \fBLogicalOperator\fP *left_input, \fBLogicalOperator\fP *right_input)"
+
+.PP
+Method description:Create a EqualJoin implement\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstd::vector<JoinPair>\fP 
+.br
+\fILogicalOperator*\fP left_input 
+.br
+\fILogicalOperator*\fP right_input 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool claims::logical_operator::LogicalEqualJoin::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
+get the optimal Physical plan that meets the requirement\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "\fBBlockStreamIteratorBase\fP * claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan (const unsigned &)\fC [virtual]\fP"
+generate the iterator tree based on the computed plan_context\&. Hence, this function can only be called after the calling of \fBGetPlanContext()\fP\&. In the initial implementation, I set the bucket size to be up round to cache line size, e\&.g\&., 64Bytes\&. Finally, I realized that different from aggregation,the hash table bucket in the build phase of hash join is filled very quickly and hence a * a relatively large bucket size could reduce the number of overflowing buckets and avoid the random memory access caused by acceesing overflowing buckets\&.
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References claims::logical_operator::LogicalOperator::GetPhysicalPlan(), claims::logical_operator::LogicalOperator::GetPlanContext(), GetPlanContext(), and Config::initial_degree_of_parallelism\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalEqualJoin::GetPlanContext ()\fC [virtual]\fP"
+
+.PP
+Method description: Get the child information\&. The mostly important member is 'property' and 'attributes
+list'\&. When getting data from child, we make some choices according to JoinPolice\&. JoinPolice is generated from canLeverageHashPartition(), isEqualCondition(), hasSamePartition()\&. If all of them is true, it means partition_key in the join_list and two partition_keys in the same join_pair\&.Besides, it they have partitioned to the same machine\&.So we don't need repartition, and JoinPolice = kNodeRepartition\&. If both canLeverageHashPartition()s are true, but isEqualCondition() or hasSamePartition() is false, the machine which has smaller data will send its data to another according to decideLeftOrRightRepartition()\&. If canLeverageHashPartition(left) is true but canLeverageHashPartition (right) is false, right nodes will be repartitioned\&. join_police_ = kRightRepartition If canLeverageHashPartition(left) is false but canLeverageHashPartition (right) is true, left nodes will be repartitioned\&. oin_police_ = kLeftRepartition If both canLeverageHashPartition()s are false, left and right nodes will be repartitioned\&. join_police_ = kCompleteRepartition in the current implementation, only the hash join is considered
+.PP
+finally, construct the output data flow according to the join police
+.PP
+Use the left partitioner as the output dataflow partitioner\&. TODO(admin): In fact, the output dataflow partitioner should contains both left partitioner and right partitioner\&.
+.PP
+Set the generated data size\&. Currently, we assume the generated data size is the sum of input data volume\&. TODO(admin): Some reasonable output size estimation is needed\&.
+.PP
+set the generated data size
+.PP
+TODO(admin): the repartition strategy (e\&.g\&., the degree of parallelism and the partition function) in such case is not decided by any child data flow\&. Additional optimization can be made by adopting the partition strategy which benefits the remaining work\&.
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References claims::logical_operator::LogicalOperator::GetPlanContext(), and claims::logical_operator::PlanPartitioner::HasSamePartitionLocation()\&.
+.PP
+Referenced by GetPhysicalPlan()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

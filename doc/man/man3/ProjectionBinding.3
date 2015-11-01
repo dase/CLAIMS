@@ -1,0 +1,32 @@
+.TH "ProjectionBinding" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ProjectionBinding \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBBindingEntireProjection\fP (\fBPartitioner\fP *, const StorageLevel &desriable_storage_level=MEMORY)"
+.br
+.ti -1c
+.RI "bool \fBUnbindingEntireProjection\fP (\fBPartitioner\fP *part)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ProjectionBinding::BindingEntireProjection (\fBPartitioner\fP *part, const StorageLevel &desriable_storage_level = \fCMEMORY\fP)"
+TODO: OneToMany mode where one partition is allowed to be bound to multiple nodes\&.
+.PP
+Referenced by LogicalCSBIndexBuilding::GetPlanContext(), LogicalIndexScan::GetPlanContext(), and claims::logical_operator::LogicalScan::GetPlanContext()\&.
+.SS "bool ProjectionBinding::UnbindingEntireProjection (\fBPartitioner\fP *part)"
+TODO: OneToMany mode where one partition is allowed to be bound to multiple nodes\&.
+.PP
+Referenced by HdfsLoader::load()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

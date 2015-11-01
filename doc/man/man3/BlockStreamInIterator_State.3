@@ -1,0 +1,66 @@
+.TH "BlockStreamInIterator::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamInIterator::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBBlockStreamIteratorBase\fP *child_set, \fBBlockStreamIteratorBase\fP *child_in, \fBSchema\fP *schema_child_set, \fBSchema\fP *schema_child_in, unsigned index_child_set, unsigned index_child_in, unsigned block_size, unsigned ht_nbuckets, unsigned ht_bucketsize)"
+.br
+.ti -1c
+.RI "\fBState\fP (\fBBlockStreamIteratorBase\fP *child_set, \fBBlockStreamIteratorBase\fP *child_in, \fBSchema\fP *schema_child_set, \fBSchema\fP *schema_child_in, unsigned index_child_set, unsigned index_child_in, unsigned block_size)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_set\fP"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_in\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBschema_child_set\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBschema_child_in\fP"
+.br
+.ti -1c
+.RI "unsigned \fBindex_child_set\fP"
+.br
+.ti -1c
+.RI "unsigned \fBindex_child_in\fP"
+.br
+.ti -1c
+.RI "unsigned \fBht_nbuckets\fP"
+.br
+.ti -1c
+.RI "unsigned \fBht_bucketsize\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamInIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,40 @@
+.TH "BlockManagerMaster::BlockManagerMasterActor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockManagerMaster::BlockManagerMasterActor \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits Actor\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockManagerMasterActor\fP (Theron::Framework *framework, const char *name)"
+.br
+.ti -1c
+.RI "void \fBworkerRegister\fP (const \fBStorageBudgetMessage\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBheartbeatReceiver\fP (const \fBHeartBeatMessage\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBblockStatusReceiver\fP (const \fBBlockStatusMessage\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBmatcherReceiver\fP (const \fBMatcherMessage\fP &message, const Theron::Address from)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockManagerMaster\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

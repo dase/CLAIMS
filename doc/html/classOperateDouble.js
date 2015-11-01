@@ -1,0 +1,25 @@
+var classOperateDouble =
+[
+    [ "OperateDouble", "classOperateDouble.html#a3781f6caae60032952c905248983d185", null ],
+    [ "~OperateDouble", "classOperateDouble.html#a1bff12e6a9819f64bee2450d98203153", null ],
+    [ "add", "classOperateDouble.html#a73663749a756fd5157b557de6edf9800", null ],
+    [ "assignment", "classOperateDouble.html#ae2330dd0806b82e847f81c565dbc3b74", null ],
+    [ "compare", "classOperateDouble.html#a80869b1bae23dee972f2f4e38b9590a6", null ],
+    [ "duplicateOperator", "classOperateDouble.html#ae297b63bd901ad4620c63c5eb6b3500d", null ],
+    [ "equal", "classOperateDouble.html#ae3ddeffe342344fb729094be5c368c39", null ],
+    [ "GetADDFunction", "classOperateDouble.html#a8e83a50d81722f34541fea69c698f9b1", null ],
+    [ "GetAVGFunction", "classOperateDouble.html#ad603d3a3be176db5132c63c00c134a48", null ],
+    [ "GetIncreateByOneFunction", "classOperateDouble.html#a5e6e0a247330871a667526268d0ed89b", null ],
+    [ "GetMAXFunction", "classOperateDouble.html#a424c6b91bd56fe8be7500569b0791517", null ],
+    [ "GetMINFunction", "classOperateDouble.html#affe7b91aa4d0bef79c00d7105a392cc4", null ],
+    [ "getPartitionValue", "classOperateDouble.html#aa521a96c689d671e189e953da9385e1f", null ],
+    [ "getPartitionValue", "classOperateDouble.html#abd7c9cfbc9f92569927450abdb4c7235", null ],
+    [ "getPartitionValue", "classOperateDouble.html#a2ebf161f580c91ec84140500bd430b52", null ],
+    [ "greate", "classOperateDouble.html#addfa1540e3ffd7729e9e76d4d5ac0f7c", null ],
+    [ "isNull", "classOperateDouble.html#a81abff809cf4cb6573b8b71d6e68e711", null ],
+    [ "less", "classOperateDouble.html#a4ed4bd0aba726fcb6850d319906bae36", null ],
+    [ "multiple", "classOperateDouble.html#a2c4e343dc222995cd05bcbbcb12615f6", null ],
+    [ "setNull", "classOperateDouble.html#a8bffa1890c1643fee0c5e018b17991a9", null ],
+    [ "toString", "classOperateDouble.html#aa73bcb85fe9656b589bb4cbcf23c9ae3", null ],
+    [ "toValue", "classOperateDouble.html#a4f94e3a7530945f2fdf7f3620303eb4c", null ]
+];

@@ -1,0 +1,54 @@
+.TH "BlockStreamExchangeLowerBase" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamExchangeLowerBase \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamIteratorBase\fP\&.
+.PP
+Inherited by \fBExpandableBlockStreamExchangeLowerEfficient\fP, and \fBExpandableBlockStreamExchangeLowerMaterialized\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual bool \fBOpen\fP (const PartitionOffset &part_off=0)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBNext\fP (\fBBlockStreamBase\fP *)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBClose\fP ()=0"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBConnectToUpper\fP (const \fBExchangeID\fP &exchange_id, const NodeID &id, int &sock_fd, \fBLogging\fP *log) const "
+.br
+.ti -1c
+.RI "void \fBWaitingForNotification\fP (const int &target_socket_fd) const "
+.br
+.ti -1c
+.RI "void \fBWaitingForCloseNotification\fP (const int &target_socket_fd) const "
+.br
+.ti -1c
+.RI "unsigned \fBhash\fP (void *input_tuple, \fBSchema\fP *schema, unsigned partition_key_index, unsigned nuppers)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

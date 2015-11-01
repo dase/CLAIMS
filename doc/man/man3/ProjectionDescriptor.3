@@ -1,0 +1,101 @@
+.TH "ProjectionDescriptor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ProjectionDescriptor \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <table\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBProjectionDescriptor\fP (\fBProjectionID\fP)"
+.br
+.ti -1c
+.RI "\fBProjectionDescriptor\fP (const string &name)"
+.br
+.ti -1c
+.RI "void \fBaddAttribute\fP (\fBAttribute\fP attr)"
+.br
+.ti -1c
+.RI "bool \fBhasAttribute\fP (const \fBAttribute\fP &attr) const "
+.br
+.ti -1c
+.RI "void \fBDefinePartitonier\fP (const unsigned &number_of_partitions, const \fBAttribute\fP &partition_key, \fBPartitionFunction\fP *partition_functin)"
+.br
+.ti -1c
+.RI "\fBPartitioner\fP * \fBgetPartitioner\fP () const "
+.br
+.ti -1c
+.RI "bool \fBisExist\fP (const string &name) const "
+.br
+.ti -1c
+.RI "void \fBsetProjectionID\fP (const \fBProjectionID\fP &pid)"
+.br
+.ti -1c
+.RI "map< string, set< string > > \fBgetFileLocations\fP () const "
+.br
+.ti -1c
+.RI "\fBProjectionID\fP \fBgetProjectionID\fP () const "
+.br
+.ti -1c
+.RI "bool \fBAllPartitionBound\fP () const "
+.br
+.ti -1c
+.RI "std::vector< \fBAttribute\fP > \fBgetAttributeList\fP () const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBgetSchema\fP () const "
+.br
+.ti -1c
+.RI "int \fBgetAttributeIndex\fP (const \fBAttribute\fP &att) const "
+.br
+.ti -1c
+.RI "int long \fBgetNumberOfTuplesOnPartition\fP (const unsigned partition_off) const "
+.br
+.ti -1c
+.RI "unsigned int \fBgetProjectionCost\fP () const "
+.br
+.RI "\fIMethod description: \fP"
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBTableDescriptor\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBAttribute\fP describes a column in type, name, position in the table\&. A projection is a combination of columns that belong to a single table and will be horizontally partitioned among storage instances\&. \fBProjectionDescriptor\fP mainly contains two kinds of important information:
+.PP
+1)\&. how many attributes there are in a projection and what are they\&.
+.PP
+2)\&. how the projection is partitioned (e\&.g\&., hash partition, range partition)\&. How many storage instances are involved\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned int ProjectionDescriptor::getProjectionCost () const"
+
+.PP
+Method description: 
+.PP
+\fBReturns:\fP
+.RS 4
+: the sum of all attribute's length in projection, as this projection's cost 
+.RE
+.PP
+
+.PP
+Referenced by claims::logical_operator::LogicalScan::GetPlanContext()\&.
+.SS "\fBSchema\fP * ProjectionDescriptor::getSchema () const"
+Only fixed schema is supported now\&. TODO: support other schema\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

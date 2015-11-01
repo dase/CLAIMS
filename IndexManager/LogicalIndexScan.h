@@ -8,11 +8,11 @@
 #ifndef LOGICALINDEXSCAN_H_
 #define LOGICALINDEXSCAN_H_
 
-#include "../logical_query_plan/logical_operator.h"
 #include "../common/ids.h"
 #include "IndexScanIterator.h"
 #include "../Catalog/table.h"
-using namespace claims::logical_query_plan;
+#include "../logical_operator/logical_operator.h"
+using namespace claims::logical_operator;
 
 class LogicalIndexScan :public LogicalOperator{
 public:
@@ -21,7 +21,7 @@ public:
 	virtual ~LogicalIndexScan();
 
 	PlanContext GetPlanContext();
-	BlockStreamIteratorBase* GetPhysicalPlan(const unsigned& blocksize);
+	PhysicalOperatorBase* GetPhysicalPlan(const unsigned& blocksize);
 	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
 	void Print(int level=0)const;
 

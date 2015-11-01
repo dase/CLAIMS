@@ -18,18 +18,16 @@
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_projection_scan.h"
 #include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_filter.h"
 
-#include "../../../BlockStreamIterator/BlockStreamPrint.h"
-#include "../../../physical_query_plan/BlockStreamIteratorBase.h"
-
-#include "../../../logical_query_plan/logical_scan.h"
-#include "../../../logical_query_plan/LogicalQueryPlanRoot.h"
-#include "../../../logical_query_plan/logical_equal_join.h"
-#include "../../../logical_query_plan/Filter.h"
-#include "../../../logical_query_plan/logical_aggregation.h"
-
+#include "../../../BlockStreamIterator/result_printer.h"
+#include "../../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../../logical_operator/Filter.h"
 #include "../../../Catalog/ProjectionBinding.h"
 
 #include "../../../Environment.h"
+#include "../../../logical_operator/logical_aggregation.h"
+#include "../../../logical_operator/logical_equal_join.h"
+#include "../../../logical_operator/logical_scan.h"
+#include "../../../physical_operator/physical_operator_base.h"
 
 using namespace std;
 
@@ -71,7 +69,7 @@ static int variable_schema_test(){
 	column_list.push_back(column_type(t_double));
 	column_list.push_back(column_type(t_string));
 	PhysicalProjectionScan::State scan_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),new SchemaVar(column_list),64*1024-sizeof(unsigned));
-	BlockStreamIteratorBase* scan=new PhysicalProjectionScan(scan_state);
+	PhysicalOperatorBase* scan=new PhysicalProjectionScan(scan_state);
 	//------------------------------------------------------------------
 
 	/*******************filter******************/
@@ -95,17 +93,17 @@ static int variable_schema_test(){
 	filter_state.comparator_list_=ComparatorList;
 	filter_state.child_=scan;
 
-	BlockStreamIteratorBase* filter=new PhysicalFilter(filter_state);
+	PhysicalOperatorBase* filter=new PhysicalFilter(filter_state);
 	//------------------------------------------------------------------
 
 	/*******************print******************/
-	BlockStreamPrint::State print_state;
+	ResultPrinter::State print_state;
 	print_state.block_size_=64*1024-sizeof(unsigned);
 	print_state.child_=filter;
 	print_state.schema_=filter_state.schema_;
 	print_state.spliter_="-|-";
 
-	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
+	PhysicalOperatorBase* print=new ResultPrinter(print_state);
 
 
 	/*******************show******************/

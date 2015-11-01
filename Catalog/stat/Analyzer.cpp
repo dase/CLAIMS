@@ -15,15 +15,16 @@
 #include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../common/Block/ResultSet.h"
 #include "../../common/data_type.h"
-#include "../../logical_query_plan/logical_aggregation.h"
-#include "../../logical_query_plan/logical_query_plan_root.h"
-#include "../../logical_query_plan/logical_scan.h"
-#include "../../physical_query_plan/BlockStreamAggregationIterator.h"
+#include "../../logical_operator/logical_aggregation.h"
+#include "../../logical_operator/logical_query_plan_root.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../physical_operator/physical_aggregation.h"
 #include "../Catalog.h"
 #include "../table.h"
 
 #include "StatManager.h"
-using namespace claims::logical_query_plan;
+using namespace claims::logical_operator;
+using claims::physical_operator::PhysicalAggregation;
 using std::map;
 
 typedef void* TuplePtr;
@@ -33,11 +34,11 @@ inline int getFrequency(const void* tuple, const column_type* type) {
 }
 
 Analyzer::Analyzer() {
-  // TODO Auto-generated constructor stub
+  // TODO(Anyone): Auto-generated constructor stub
 }
 
 Analyzer::~Analyzer() {
-  // TODO Auto-generated destructor stub
+  // TODO(Anyone): Auto-generated destructor stub
 }
 
 int compare(const void* a, const void* b, void* arg) {
@@ -66,9 +67,8 @@ void Analyzer::analyse(const AttributeID& attrID) {
   group_by_attributes.push_back(attr);
   aggregation_attributes.push_back(attr);
 
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+  aggregation_function.push_back(PhysicalAggregation::State::kCount);
 
   LogicalOperator* sb_payload_scan = new LogicalScan(projection);
 
@@ -80,13 +80,13 @@ void Analyzer::analyse(const AttributeID& attrID) {
   LogicalOperator* root = new LogicalQueryPlanRoot(
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->Open();
   collector->Next(0);
   collector->Close();
-  ResultSet* resultset = collector->getResultSet();
+  ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 
   BlockStreamBase* block;
@@ -129,46 +129,48 @@ void Analyzer::analyse(TableID table_id, analysis_level level) {
       StatManager::getInstance()->getTableStatistic(table_id);
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (tab_stat == 0) {
-    //		LogicalOperator * scan=new LogicalScan(table->getProjectoin(0));
-    //		std::vector<Attribute> group_by_attributes;
-    //		std::vector<Attribute> aggregation_attributes;
+    //    LogicalOperator * scan = new LogicalScan(table->getProjectoin(0));
+    //    std::vector<Attribute> group_by_attributes;
+    //    std::vector<Attribute> aggregation_attributes;
     //
-    //		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+    //    aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
     //
-    //		std::vector<BlockStreamAggregationIterator::State::aggregation>
-    //aggregation_function;
-    //		aggregation_function.push_back(
-    //				BlockStreamAggregationIterator::State::count);
-    //		LogicalOperator* agg=new
-    //Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,scan);
-    //		LogicalOperator* root = new LogicalQueryPlanRoot(0,
-    //				agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+    //    std::vector<BlockStreamAggregationIterator::State::aggregation>
+    //    aggregation_function;
+    //    aggregation_function.push_back(
+    //        BlockStreamAggregationIterator::State::count);
+    //    LogicalOperator* agg = new Aggregation(group_by_attributes,
+    //                                           aggregation_attributes,
+    //                                           aggregation_function, scan);
+    //    LogicalOperator* root = new LogicalQueryPlanRoot(
+    //        0, agg, LogicalQueryPlanRoot::RESULTCOLLECTOR);
     //
-    //		BlockStreamIteratorBase* collector = root->getIteratorTree(
-    //				1024 * 64 - sizeof(unsigned));
-    //		collector->open();
-    //		collector->next(0);
-    //		collector->close();
-    //		ResultSet* resultset = collector->getResultSet();
-    //		ResultSet::Iterator it = resultset->createIterator();
-    //		BlockStreamBase::BlockStreamTraverseIterator*
-    //b_it=it.nextBlock()->createIterator();
-    //		const unsigned long tuple_count=*(unsigned
-    //long*)b_it->nextTuple();
-    //		BlockStreamBase* block;
-    //		while(block=it.nextBlock()){
-    //			BlockStreamBase::BlockStreamTraverseIterator*
-    //b_it=block->createIterator();
+    //    BlockStreamIteratorBase* collector = root->getIteratorTree(
+    //        1024 * 64 - sizeof(unsigned));
+    //    collector->open();
+    //    collector->next(0);
+    //    collector->close();
+    //    ResultSet* resultset = collector->getResultSet();
+    //    ResultSet::Iterator it = resultset->createIterator();
+    //    BlockStreamBase::BlockStreamTraverseIterator* b_it = it.nextBlock()
+    //        ->createIterator();
+    //    const unsigned long tuple_count = *(unsigned
+    //    long*) b_it->nextTuple();
+    //    BlockStreamBase* block;
+    //    while (block = it.nextBlock()) {
+    //      BlockStreamBase::BlockStreamTraverseIterator* b_it =
+    //          block->createIterator();
     //
-    //		}
-    //		tab_stat=new TableStatistic();
-    //		tab_stat->number_of_tuples_=tuple_count;
-    //		printf("Statistics for table %s is
-    //gathered!\n",Catalog::getInstance()->getTable(table_id)->getTableName().c_str());
-    //		tab_stat->print();
-    //		StatManager::getInstance()->setTableStatistic(table_id,tab_stat);
-    //		resultset->destory();
-    //		root->~LogicalOperator();
+    //    }
+    //    tab_stat = new TableStatistic();
+    //    tab_stat->number_of_tuples_ = tuple_count;
+    //    printf("Statistics for table %s is
+    //        gathered!\n",Catalog::getInstance()->getTable(table_id)
+    //    ->getTableName().c_str());
+    //        tab_stat->print();
+    //        StatManager::getInstance()->setTableStatistic(table_id, tab_stat);
+    //        resultset->destory();
+    //        root->~LogicalOperator();
     compute_table_stat(table_id);
   }
 
@@ -256,20 +258,19 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
 
   aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+  aggregation_function.push_back(PhysicalAggregation::State::kCount);
   LogicalOperator* agg = new LogicalAggregation(
       group_by_attributes, aggregation_attributes, aggregation_function, scan);
   LogicalOperator* root =
       new LogicalQueryPlanRoot(0, agg, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
   collector->Open();
   collector->Next(0);
   collector->Close();
-  ResultSet* resultset = collector->getResultSet();
+  ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
       it.nextBlock()->createIterator();
@@ -314,7 +315,7 @@ void Analyzer::mcvAnalyse(void** list, const unsigned long size,
   }
 
   void** valueList = new void* [magicNumber];  // new
-  double* selList = new double[magicNumber];  // new
+  double* selList = new double[magicNumber];   // new
   for (i = 0; i < magicNumber; ++i) {
     valueList[i] = new char[attr.attrType->get_length()];  // new
     attr.attrType->operate->assign(mcvList[i], valueList[i]);
@@ -378,13 +379,12 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
 
   LogicalOperator* agg = new LogicalAggregation(
       group_by_attributes, std::vector<Attribute>(),
-      std::vector<BlockStreamAggregationIterator::State::aggregation>(), scan);
+      std::vector<PhysicalAggregation::State::Aggregation>(), scan);
 
   std::vector<Attribute> aggregation_attributes;
   aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+  aggregation_function.push_back(PhysicalAggregation::State::kCount);
 
   LogicalOperator* count_agg =
       new LogicalAggregation(std::vector<Attribute>(), aggregation_attributes,
@@ -393,19 +393,19 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
   LogicalOperator* root = new LogicalQueryPlanRoot(
       0, count_agg, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
   collector->Open();
   collector->Next(0);
   collector->Close();
-  ResultSet* resultset = collector->getResultSet();
+  ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
       it.nextBlock()->createIterator();
   const unsigned long distinct_cardinality = *(unsigned long*)b_it->nextTuple();
 
   resultset->destory();
-  collector->~BlockStreamIteratorBase();
+  collector->~PhysicalOperatorBase();
   root->~LogicalOperator();
   return distinct_cardinality;
 }
@@ -446,9 +446,8 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
   group_by_attributes.push_back(attr);
   aggregation_attributes.push_back(attr);
 
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+  aggregation_function.push_back(PhysicalAggregation::State::kCount);
 
   LogicalOperator* sb_payload_scan = new LogicalScan(projection);
 
@@ -460,13 +459,13 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
   LogicalOperator* root = new LogicalQueryPlanRoot(
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->Open();
   collector->Next(0);
   collector->Close();
-  ResultSet* resultset = collector->getResultSet();
+  ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 
   BlockStreamBase* block;

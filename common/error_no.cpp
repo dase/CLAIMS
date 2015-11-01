@@ -62,7 +62,7 @@ ErrorInit::ErrorInit() {
   /* errorno for codegen -3001 ~ -4000 */
   DefineErrorAndMessage(kTestError, "test it is error ");
 
-  /* errorno for logical_query_plan -4001~ -5000 */
+  /* errorno for logical_operator -4001~ -5000 */
   DefineErrorAndMessage(kUninitializedJoinPolicy,
                         "the dedicated join police is not initialized, e.g., "
                         "in corss join, equal join logical operator");

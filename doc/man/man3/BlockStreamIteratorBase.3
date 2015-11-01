@@ -1,0 +1,52 @@
+.TH "BlockStreamIteratorBase" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamIteratorBase \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <BlockStreamIteratorBase\&.h>\fP
+.PP
+Inherited by \fBBlockStreamCombinedIterator\fP, \fBBlockStreamExchangeLowerBase\fP, \fBBlockStreamExpander\fP, \fBBlockStreamInIterator\fP, \fBBlockStreamLimit\fP, \fBBlockStreamPerformanceMonitorTop\fP, \fBBlockStreamPrint\fP, \fBBlockStreamResultCollector\fP, \fBBlockStreamSortIterator\fP, \fBExpandableBlockStreamBuffer\fP, \fBExpandableBlockStreamHdfsScan\fP, \fBExpandableBlockStreamRandomDiskAccess\fP, \fBExpandableBlockStreamRandomMemAccess\fP, \fBExpandableBlockStreamSingleColumnScan\fP, \fBExpandableBlockStreamSingleColumnScanDisk\fP, and \fBPhysicalOperator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual bool \fBOpen\fP (const PartitionOffset &part_off=0)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBNext\fP (\fBBlockStreamBase\fP *)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBClose\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void \fBPrint\fP ()"
+.br
+.ti -1c
+.RI "virtual \fBResultSet\fP * \fBgetResultSet\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBBlockStreamIteratorBase\fP * \fBcreateIterator\fP (const string &IteratorName)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This is the base class for the block stream iterators\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
