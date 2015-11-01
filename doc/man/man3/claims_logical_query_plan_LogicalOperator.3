@@ -1,0 +1,87 @@
+.TH "claims::logical_operator::LogicalOperator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::LogicalOperator \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <logical_operator\&.h>\fP
+.PP
+Inherited by \fBclaims::logical_operator::LogicalAggregation\fP, \fBclaims::logical_operator::LogicalCrossJoin\fP, \fBclaims::logical_operator::LogicalEqualJoin\fP, \fBclaims::logical_operator::LogicalFilter\fP, \fBclaims::logical_operator::LogicalProject\fP, \fBclaims::logical_operator::LogicalQueryPlanRoot\fP, \fBclaims::logical_operator::LogicalScan\fP, \fBclaims::logical_operator::LogicalSort\fP, \fBLogicalCSBIndexBuilding\fP, and \fBLogicalIndexScan\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual \fBPlanContext\fP \fBGetPlanContext\fP ()=0"
+.br
+.ti -1c
+.RI "virtual \fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size=4096 *1024)"
+.br
+.ti -1c
+.RI "virtual void \fBPrint\fP (int level=0) const =0"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSchema\fP * \fBGetSchema\fP (const std::vector< \fBAttribute\fP > &) const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBGetSchema\fP (const std::vector< \fBAttribute\fP > &, const std::vector< \fBAttribute\fP > &) const "
+.br
+.ti -1c
+.RI "std::vector< NodeID > \fBGetInvolvedNodeID\fP (const \fBPlanPartitioner\fP &) const "
+.br
+.ti -1c
+.RI "std::vector< NodeIP > \fBConvertNodeIDListToNodeIPList\fP (const std::vector< NodeID > &) const "
+.br
+.ti -1c
+.RI "\fBPhysicalPlanDescriptor\fP \fBGetBestPhysicalPlanDescriptor\fP (const std::vector< \fBPhysicalPlanDescriptor\fP >) const "
+.br
+.ti -1c
+.RI "int \fBGetIdInAttributeList\fP (const std::vector< \fBAttribute\fP > &attributes, const \fBAttribute\fP &attribute) const "
+.br
+.ti -1c
+.RI "void \fBset_operator_type\fP (OperatorType operator_type)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBLogicalOperator\fP is the base class of all logical operator\&. \fBGetPlanContext()\fP aims at maintaining the property of the data after completing every operator of plan\&. the property contains the output attributes, partition key, cardinality and communication cost\&. \fBGetPhysicalPlan()\fP adds current physical operator into the whole plan, result into a plan tree\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool claims::logical_operator::LogicalOperator::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [inline]\fP, \fC [virtual]\fP"
+get the optimal Physical plan that meets the requirement\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor\&. 
+.RE
+.PP
+
+.PP
+Reimplemented in \fBclaims::logical_operator::LogicalSort\fP, \fBclaims::logical_operator::LogicalEqualJoin\fP, \fBclaims::logical_operator::LogicalQueryPlanRoot\fP, \fBclaims::logical_operator::LogicalFilter\fP, \fBclaims::logical_operator::LogicalProject\fP, \fBclaims::logical_operator::LogicalScan\fP, \fBLogicalCSBIndexBuilding\fP, and \fBLogicalIndexScan\fP\&.
+.PP
+Referenced by claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), and claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
+.SS "virtual \fBBlockStreamIteratorBase\fP* claims::logical_operator::LogicalOperator::GetPhysicalPlan (const unsigned &)\fC [pure virtual]\fP"
+generate the iterator tree based on the computed plan_context\&. Hence, this function can only be called after the calling of \fBGetPlanContext()\fP\&. 
+.PP
+Implemented in \fBclaims::logical_operator::LogicalEqualJoin\fP, \fBclaims::logical_operator::LogicalSort\fP, \fBclaims::logical_operator::LogicalAggregation\fP, \fBclaims::logical_operator::LogicalFilter\fP, \fBclaims::logical_operator::LogicalQueryPlanRoot\fP, \fBclaims::logical_operator::LogicalProject\fP, \fBclaims::logical_operator::LogicalScan\fP, \fBclaims::logical_operator::LogicalCrossJoin\fP, \fBLogicalCSBIndexBuilding\fP, and \fBLogicalIndexScan\fP\&.
+.PP
+Referenced by claims::logical_operator::LogicalProject::GetPhysicalPlan(), claims::logical_operator::LogicalQueryPlanRoot::GetPhysicalPlan(), claims::logical_operator::LogicalFilter::GetPhysicalPlan(), claims::logical_operator::LogicalAggregation::GetPhysicalPlan(), claims::logical_operator::LogicalSort::GetPhysicalPlan(), and claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan()\&.
+.SS "virtual \fBPlanContext\fP claims::logical_operator::LogicalOperator::GetPlanContext ()\fC [pure virtual]\fP"
+get the plan context which describes the property of the data after having executed corresponding operator\&. 
+.PP
+Implemented in \fBclaims::logical_operator::LogicalEqualJoin\fP, \fBclaims::logical_operator::LogicalAggregation\fP, \fBclaims::logical_operator::LogicalSort\fP, \fBclaims::logical_operator::LogicalQueryPlanRoot\fP, \fBclaims::logical_operator::LogicalFilter\fP, \fBclaims::logical_operator::LogicalProject\fP, \fBclaims::logical_operator::LogicalScan\fP, \fBclaims::logical_operator::LogicalCrossJoin\fP, \fBLogicalCSBIndexBuilding\fP, and \fBLogicalIndexScan\fP\&.
+.PP
+Referenced by claims::logical_operator::LogicalCrossJoin::GetPhysicalPlan(), claims::logical_operator::LogicalProject::GetPhysicalPlan(), claims::logical_operator::LogicalAggregation::GetPhysicalPlan(), claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan(), claims::logical_operator::LogicalCrossJoin::GetPlanContext(), claims::logical_operator::LogicalProject::GetPlanContext(), claims::logical_operator::LogicalFilter::GetPlanContext(), claims::logical_operator::LogicalQueryPlanRoot::GetPlanContext(), claims::logical_operator::LogicalSort::GetPlanContext(), claims::logical_operator::LogicalAggregation::GetPlanContext(), and claims::logical_operator::LogicalEqualJoin::GetPlanContext()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,100 @@
+.TH "Json::ValueIteratorBase" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::ValueIteratorBase \- 
+.PP
+base class for \fBValue\fP iterators\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.PP
+Inherited by \fBJson::ValueConstIterator\fP, and \fBJson::ValueIterator\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef 
+.br
+std::bidirectional_iterator_tag \fBiterator_category\fP"
+.br
+.ti -1c
+.RI "typedef unsigned int \fBsize_t\fP"
+.br
+.ti -1c
+.RI "typedef int \fBdifference_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBValueIteratorBase\fP \fBSelfType\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBValueIteratorBase\fP (const Value::ObjectValues::iterator &current)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBSelfType\fP &other) const "
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBSelfType\fP &other) const "
+.br
+.ti -1c
+.RI "difference_type \fBoperator-\fP (const \fBSelfType\fP &other) const "
+.br
+.ti -1c
+.RI "\fBValue\fP \fBkey\fP () const "
+.br
+.ti -1c
+.RI "UInt \fBindex\fP () const "
+.br
+.RI "\fIReturn the index of the referenced \fBValue\fP\&. -1 if it is not an arrayValue\&. \fP"
+.ti -1c
+.RI "const char * \fBmemberName\fP () const "
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBValue\fP & \fBderef\fP () const "
+.br
+.ti -1c
+.RI "void \fBincrement\fP ()"
+.br
+.ti -1c
+.RI "void \fBdecrement\fP ()"
+.br
+.ti -1c
+.RI "difference_type \fBcomputeDistance\fP (const \fBSelfType\fP &other) const "
+.br
+.ti -1c
+.RI "bool \fBisEqual\fP (const \fBSelfType\fP &other) const "
+.br
+.ti -1c
+.RI "void \fBcopy\fP (const \fBSelfType\fP &other)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+base class for \fBValue\fP iterators\&. 
+
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBValue\fP Json::ValueIteratorBase::key () const"
+Return either the index or the member name of the referenced value as a \fBValue\fP\&. 
+.PP
+References memberName()\&.
+.SS "const char * Json::ValueIteratorBase::memberName () const"
+Return the member name of the referenced \fBValue\fP\&. '' if it is not an objectValue\&. 
+.PP
+Referenced by key()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

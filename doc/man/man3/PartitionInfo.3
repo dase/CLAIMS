@@ -1,0 +1,90 @@
+.TH "PartitionInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PartitionInfo \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id)"
+.br
+.ti -1c
+.RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id, string file_name)"
+.br
+.ti -1c
+.RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id, string file_name, int number_of_blocks, unsigned long number_of_tuples)"
+.br
+.ti -1c
+.RI "virtual binding_mode \fBget_mode\fP () const =0"
+.br
+.ti -1c
+.RI "virtual void \fBadd_one_block\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void \fBadd_mutiple_block\fP (unsigned number_of_new_blocks)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBbind_one_block\fP (BlockID blockid, NodeID target)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBbind_all_blocks\fP (NodeID target)=0"
+.br
+.ti -1c
+.RI "virtual void \fBunbind_all_blocks\fP ()=0"
+.br
+.ti -1c
+.RI "virtual bool \fBis_all_blocks_bound\fP ()=0"
+.br
+.ti -1c
+.RI "virtual bool \fBis_colocated\fP (const \fBPartitionInfo\fP &) const =0"
+.br
+.ti -1c
+.RI "int \fBget_number_of_blocks\fP () const "
+.br
+.ti -1c
+.RI "virtual NodeID \fBget_location\fP () const =0"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "string \fBhdfs_file_name\fP"
+.br
+.ti -1c
+.RI "int long \fBnumber_of_blocks\fP"
+.br
+.ti -1c
+.RI "\fBPartitionID\fP \fBpartition_id_\fP"
+.br
+.ti -1c
+.RI "int long \fBnumber_of_tuples_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBPartitioner\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

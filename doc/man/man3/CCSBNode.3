@@ -1,0 +1,92 @@
+.TH "CCSBNode< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CCSBNode< T > \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBCCSBInternalNode< T >\fP, and \fBCCSBLeafNode< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBgetUsedKeys\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBsetUsedKeys\fP (int count)"
+.br
+.ti -1c
+.RI "\fBCCSBNode\fP< T > * \fBgetFather\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetFather\fP (\fBCCSBNode\fP< T > *father)"
+.br
+.ti -1c
+.RI "virtual \fBdata_offset\fP< T > \fBgetElement\fP (unsigned i)"
+.br
+.ti -1c
+.RI "virtual bool \fBsetElement\fP (unsigned i, \fBdata_offset\fP< T > value)"
+.br
+.ti -1c
+.RI "virtual bool \fBsetElement\fP (unsigned i, T value)"
+.br
+.ti -1c
+.RI "virtual \fBCCSBNodeGroup\fP< T > * \fBgetPointer\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBsetPointer\fP (\fBCCSBNodeGroup\fP< T > *pointer)"
+.br
+.ti -1c
+.RI "virtual void \fBDeleteChildren\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBInsert\fP (T key)"
+.br
+.ti -1c
+.RI "virtual bool \fBInsert\fP (\fBdata_offset\fP< T > value)"
+.br
+.ti -1c
+.RI "virtual bool \fBDelete\fP (T value)"
+.br
+.ti -1c
+.RI "virtual T \fBSplitInsert\fP (\fBCCSBNode\fP< T > *pNode, T key)"
+.br
+.ti -1c
+.RI "virtual T \fBSplitInsert\fP (\fBCCSBNode\fP< T > *pNode, \fBdata_offset\fP< T > data)"
+.br
+.ti -1c
+.RI "virtual bool \fBCombine\fP (\fBCCSBNode\fP< T > *pNode)"
+.br
+.ti -1c
+.RI "virtual bool \fBserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "virtual bool \fBdeserialize\fP (FILE *filename)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static unsigned \fBgetMaxKeys\fP ()"
+.br
+.ti -1c
+.RI "static unsigned \fBgetMaxDatas\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBused_keys\fP"
+.br
+.ti -1c
+.RI "\fBCCSBNode\fP< T > * \fBp_father\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -38,19 +38,19 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 		return resultset;
 	}
 
-	plan->print();
+	plan->Print();
 
 
-	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector);
 	//	unsigned long long int timer_start=curtick();
 
-	BlockStreamIteratorBase* collector = root->getIteratorTree(
+	PhysicalOperatorBase* collector = root->GetPhysicalPlan(
 			1024 * 64 - sizeof(unsigned));
-	collector->print();
-	collector->open();
-	collector->next(0);
-	collector->close();
-	resultset = collector->getResultSet();
+	collector->Print();
+	collector->Open();
+	collector->Next(0);
+	collector->Close();
+	resultset = collector->GetResultSet();
 	root->~LogicalOperator();;
 	return resultset;
 }

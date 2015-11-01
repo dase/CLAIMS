@@ -1,0 +1,66 @@
+.TH "Catalog" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Catalog \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBallocate_unique_table_id\fP ()"
+.br
+.ti -1c
+.RI "bool \fBadd_table\fP (\fBTableDescriptor\fP *const &table)"
+.br
+.ti -1c
+.RI "\fBTableDescriptor\fP * \fBgetTable\fP (const TableID &) const "
+.br
+.ti -1c
+.RI "\fBTableDescriptor\fP * \fBgetTable\fP (const std::string &table_name) const "
+.br
+.ti -1c
+.RI "\fBProjectionDescriptor\fP * \fBgetProjection\fP (const \fBProjectionID\fP &) const "
+.br
+.ti -1c
+.RI "\fBProjectionBinding\fP * \fBgetBindingModele\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetTableCount\fP () const "
+.br
+.ti -1c
+.RI "void \fBsaveCatalog\fP ()"
+.br
+.ti -1c
+.RI "void \fBrestoreCatalog\fP ()"
+.br
+.ti -1c
+.RI "void \fBoutPut\fP ()"
+.br
+.ti -1c
+.RI "bool \fBisAttributeExist\fP (const std::string &table_name, const std::string &attribute_name) const "
+.br
+.ti -1c
+.RI "vector< \fBPartitionID\fP > \fBgetPartitionIDList\fP (const std::string &table_name, const std::string &attribute_name)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBCatalog\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,60 @@
+.TH "BlockStreamProjectIterator::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamProjectIterator::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBSchema\fP *input, \fBSchema\fP *output, \fBBlockStreamIteratorBase\fP *children, unsigned blocksize, \fBMapping\fP map, vector< ExpressItem_List > v_ei, vector< \fBQNode\fP * >exprTree)"
+.br
+.ti -1c
+.RI "\fBState\fP (\fBSchema\fP *input, \fBSchema\fP *output, \fBBlockStreamIteratorBase\fP *children, unsigned blocksize, \fBMapping\fP map, vector< ExpressItem_List > v_ei)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBSchema\fP * \fBinput_\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBoutput_\fP"
+.br
+.ti -1c
+.RI "vector< ExpressItem_List > \fBv_ei_\fP"
+.br
+.ti -1c
+.RI "\fBMapping\fP \fBmap_\fP"
+.br
+.ti -1c
+.RI "vector< \fBQNode\fP * > \fBexprTree_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamProjectIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

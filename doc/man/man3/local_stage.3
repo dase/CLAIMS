@@ -1,0 +1,48 @@
+.TH "local_stage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+local_stage \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBtype\fP { \fBfrom_buffer\fP, \fBbuffer_to_buffer\fP, \fBto_buffer\fP, \fBno_buffer\fP, \fBincomplete\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBlocal_stage\fP (const \fBlocal_stage\fP &r)"
+.br
+.ti -1c
+.RI "\fBlocal_stage\fP (\fBLocalStageEndPoint\fP start, \fBLocalStageEndPoint\fP end)"
+.br
+.ti -1c
+.RI "std::string \fBget_type_name\fP (type tp) const "
+.br
+.ti -1c
+.RI "void \fBprint\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBLocalStageEndPoint\fP \fBdataflow_src_\fP"
+.br
+.ti -1c
+.RI "\fBLocalStageEndPoint\fP \fBdataflow_desc_\fP"
+.br
+.ti -1c
+.RI "type \fBtype_\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

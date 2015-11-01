@@ -1,0 +1,82 @@
+.TH "BlockStreamAggregationIterator::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamAggregationIterator::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBaggregation\fP { \fBsum\fP, \fBmin\fP, \fBmax\fP, \fBcount\fP, \fBavg\fP }"
+.br
+.ti -1c
+.RI "enum \fBAggNodeType\fP { \fBHybrid_Agg_Global\fP, \fBHybrid_Agg_Private\fP, \fBNot_Hybrid_Agg\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBSchema\fP *input, \fBSchema\fP *output, \fBSchema\fP *hashSchema, \fBBlockStreamIteratorBase\fP *child, std::vector< unsigned > groupByIndex, std::vector< unsigned > aggregationIndex, std::vector< aggregation > aggregations, unsigned nbuckets, unsigned bucketsize, unsigned block_size, std::vector< unsigned >avgIndex, AggNodeType agg_node_type)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBSchema\fP * \fBinput\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBoutput\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBhashSchema\fP"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBgroupByIndex\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBaggregationIndex\fP"
+.br
+.ti -1c
+.RI "std::vector< aggregation > \fBaggregations\fP"
+.br
+.ti -1c
+.RI "unsigned \fBnbuckets\fP"
+.br
+.ti -1c
+.RI "unsigned \fBbucketsize\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBavgIndex\fP"
+.br
+.ti -1c
+.RI "AggNodeType \fBagg_node_type\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamAggregationIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

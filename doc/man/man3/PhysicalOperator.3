@@ -1,0 +1,110 @@
+.TH "PhysicalOperator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PhysicalOperator \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamIteratorBase\fP\&.
+.PP
+Inherited by \fBBlockStreamAggregationIterator\fP, \fBBlockStreamJoinIterator\fP, \fBBlockStreamNestLoopJoinIterator\fP, \fBBlockStreamProjectIterator\fP, \fBbottomLayerCollecting\fP, \fBbottomLayerSorting\fP, \fBExpandableBlockStreamExchangeEpoll\fP, \fBExpandableBlockStreamFilter\fP, \fBExpandableBlockStreamProjectionScan\fP, and \fBIndexScanIterator\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBcontext_reuse_mode\fP { \fBcrm_no_reuse\fP, \fBcrm_core_sensitive\fP, \fBcrm_numa_sensitive\fP, \fBcrm_anyway\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPhysicalOperator\fP (unsigned number_of_barrier=1, unsigned number_of_seriliazed_section=1)"
+.br
+.ti -1c
+.RI "virtual bool \fBOpen\fP (const PartitionOffset &part_off=0)"
+.br
+.ti -1c
+.RI "virtual bool \fBNext\fP (\fBBlockStreamBase\fP *)"
+.br
+.ti -1c
+.RI "virtual bool \fBClose\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBPrint\fP ()"
+.br
+.ti -1c
+.RI "virtual \fBThreadContext\fP * \fBCreateContext\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBThreadContext\fP * \fBCreateOrReuseContext\fP (context_reuse_mode crm)"
+.br
+.ti -1c
+.RI "void \fBInitExpandedStatus\fP ()"
+.br
+.ti -1c
+.RI "bool \fBTryEntryIntoSerializedSection\fP (unsigned serialized_section_id=0)"
+.br
+.ti -1c
+.RI "void \fBRegisterExpandedThreadToAllBarriers\fP ()"
+.br
+.ti -1c
+.RI "void \fBUnregisterExpandedThreadToAllBarriers\fP (unsigned barrier_index=0)"
+.br
+.ti -1c
+.RI "void \fBBarrierArrive\fP (unsigned barrier_index=0)"
+.br
+.ti -1c
+.RI "void \fBInitContext\fP (\fBThreadContext\fP *tc)"
+.br
+.ti -1c
+.RI "\fBThreadContext\fP * \fBGetContext\fP ()"
+.br
+.ti -1c
+.RI "void \fBDestoryAllContext\fP ()"
+.br
+.ti -1c
+.RI "bool \fBCheckTerminateRequest\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetReturnStatus\fP (bool ret)"
+.br
+.ti -1c
+.RI "bool \fBGetReturnStatus\fP () const "
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBnumber_of_registered_expanded_threads_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual \fBThreadContext\fP* PhysicalOperator::CreateContext ()\fC [inline]\fP, \fC [virtual]\fP"
+As different elastic iterators differs from each other in the structure of the context and the way to construct the context, this function should be implemented explicitly by each elastic iterator\&.\&. 
+.SS "virtual bool PhysicalOperator::Open (const PartitionOffset &part_off = \fC0\fP)\fC [inline]\fP, \fC [virtual]\fP"
+Because that boost::serialization will allocate an instance of this class when deserializing, and hence the following three virtual method cannot be pure\&. 
+.PP
+Implements \fBBlockStreamIteratorBase\fP\&.
+.PP
+Reimplemented in \fBbottomLayerSorting\fP, \fBIndexScanIterator\fP, \fBBlockStreamJoinIterator\fP, \fBBlockStreamProjectIterator\fP, \fBExpandableBlockStreamProjectionScan\fP, \fBExpandableBlockStreamFilter\fP, \fBBlockStreamAggregationIterator\fP, \fBBlockStreamNestLoopJoinIterator\fP, \fBExpandableBlockStreamExchangeEpoll\fP, and \fBbottomLayerCollecting\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

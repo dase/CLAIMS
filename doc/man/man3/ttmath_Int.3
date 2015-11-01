@@ -1,0 +1,567 @@
+.TH "ttmath::Int< value_size >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ttmath::Int< value_size > \- 
+.PP
+\fBInt\fP implements a big integer value with a sign\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ttmathint\&.h>\fP
+.PP
+Inherits \fBttmath::UInt< value_size >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSetMax\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetMin\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetSignOne\fP ()"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBChangeSign\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetSign\fP ()"
+.br
+.ti -1c
+.RI "bool \fBIsSign\fP () const "
+.br
+.ti -1c
+.RI "\fBuint\fP \fBAbs\fP ()"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBAdd\fP (const \fBInt\fP< value_size > &ss2)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBAddInt\fP (\fBuint\fP value, \fBuint\fP index=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBAddTwoInts\fP (\fBuint\fP x2, \fBuint\fP x1, \fBuint\fP index)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBSub\fP (const \fBInt\fP< value_size > &ss2)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBSubInt\fP (\fBuint\fP value, \fBuint\fP index=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBAddOne\fP ()"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBSubOne\fP ()"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBMul\fP (\fBInt\fP< value_size > ss2)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv\fP (\fBInt\fP< value_size > ss2, \fBInt\fP< value_size > *remainder=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv\fP (const \fBInt\fP< value_size > &ss2, \fBInt\fP< value_size > &remainder)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDivInt\fP (sint ss2, sint *remainder=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDivInt\fP (sint ss2, sint &remainder)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBPow\fP (\fBInt\fP< value_size > pow)"
+.br
+.ti -1c
+.RI "template<uint argument_size> \fBuint\fP \fBFromInt\fP (const \fBInt\fP< argument_size > &p)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBFromInt\fP (sint value)"
+.br
+.ti -1c
+.RI "template<uint argument_size> \fBuint\fP \fBFromUInt\fP (const \fBUInt\fP< argument_size > &p)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBFromUInt\fP (\fBuint\fP value)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (const \fBInt\fP< value_size > &p)"
+.br
+.ti -1c
+.RI "template<uint argument_size> \fBInt\fP< value_size > & \fBoperator=\fP (const \fBInt\fP< argument_size > &p)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (sint i)"
+.br
+.ti -1c
+.RI "\fBInt\fP (sint i)"
+.br
+.ti -1c
+.RI "\fBInt\fP (const \fBInt\fP< value_size > &u)"
+.br
+.ti -1c
+.RI "template<uint argument_size> \fBInt\fP (const \fBInt\fP< argument_size > &u)"
+.br
+.ti -1c
+.RI "template<uint argument_size> \fBInt\fP< value_size > & \fBoperator=\fP (const \fBUInt\fP< argument_size > &p)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (\fBuint\fP i)"
+.br
+.ti -1c
+.RI "\fBInt\fP (\fBuint\fP i)"
+.br
+.ti -1c
+.RI "template<uint argument_size> \fBInt\fP (const \fBUInt\fP< argument_size > &u)"
+.br
+.ti -1c
+.RI "\fBInt\fP (const char *s)"
+.br
+.ti -1c
+.RI "\fBInt\fP (const wchar_t *s)"
+.br
+.ti -1c
+.RI "\fBInt\fP (const std::string &s)"
+.br
+.ti -1c
+.RI "\fBInt\fP (const std::wstring &s)"
+.br
+.ti -1c
+.RI "\fBInt\fP ()"
+.br
+.ti -1c
+.RI "\fB~Int\fP ()"
+.br
+.ti -1c
+.RI "sint \fBToInt\fP () const "
+.br
+.ti -1c
+.RI "void \fBToString\fP (std::string &result, \fBuint\fP b=10) const "
+.br
+.ti -1c
+.RI "void \fBToString\fP (std::wstring &result, \fBuint\fP b=10) const "
+.br
+.ti -1c
+.RI "std::string \fBToString\fP (\fBuint\fP b=10) const "
+.br
+.ti -1c
+.RI "std::wstring \fBToWString\fP (\fBuint\fP b=10) const "
+.br
+.ti -1c
+.RI "\fBuint\fP \fBFromString\fP (const char *s, \fBuint\fP b=10, const char **after_source=0, bool *value_read=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBFromString\fP (const wchar_t *s, \fBuint\fP b=10, const wchar_t **after_source=0, bool *value_read=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBFromString\fP (const std::string &s, \fBuint\fP b=10)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBFromString\fP (const std::wstring &s, \fBuint\fP b=10)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (const char *s)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (const wchar_t *s)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (const std::string &s)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator=\fP (const std::wstring &s)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBInt\fP< value_size > &l) const "
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBInt\fP< value_size > &l) const "
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const \fBInt\fP< value_size > &l) const "
+.br
+.ti -1c
+.RI "bool \fBoperator>\fP (const \fBInt\fP< value_size > &l) const "
+.br
+.ti -1c
+.RI "bool \fBoperator<=\fP (const \fBInt\fP< value_size > &l) const "
+.br
+.ti -1c
+.RI "bool \fBoperator>=\fP (const \fBInt\fP< value_size > &l) const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > \fBoperator-\fP () const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > \fBoperator-\fP (const \fBInt\fP< value_size > &p2) const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator-=\fP (const \fBInt\fP< value_size > &p2)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > \fBoperator+\fP (const \fBInt\fP< value_size > &p2) const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator+=\fP (const \fBInt\fP< value_size > &p2)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > \fBoperator*\fP (const \fBInt\fP< value_size > &p2) const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator*=\fP (const \fBInt\fP< value_size > &p2)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > \fBoperator/\fP (const \fBInt\fP< value_size > &p2) const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator/=\fP (const \fBInt\fP< value_size > &p2)"
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > \fBoperator%\fP (const \fBInt\fP< value_size > &p2) const "
+.br
+.ti -1c
+.RI "\fBInt\fP< value_size > & \fBoperator%=\fP (const \fBInt\fP< value_size > &p2)"
+.br
+.ti -1c
+.RI "\fBUInt\fP< value_size > & \fBoperator++\fP ()"
+.br
+.ti -1c
+.RI "\fBUInt\fP< value_size > \fBoperator++\fP (int)"
+.br
+.ti -1c
+.RI "\fBUInt\fP< value_size > & \fBoperator--\fP ()"
+.br
+.ti -1c
+.RI "\fBUInt\fP< value_size > \fBoperator--\fP (int)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "std::ostream & \fBoperator<<\fP (std::ostream &s, const \fBInt\fP< value_size > &l)"
+.br
+.ti -1c
+.RI "std::wostream & \fBoperator<<\fP (std::wostream &s, const \fBInt\fP< value_size > &l)"
+.br
+.ti -1c
+.RI "std::istream & \fBoperator>>\fP (std::istream &s, \fBInt\fP< value_size > &l)"
+.br
+.ti -1c
+.RI "std::wistream & \fBoperator>>\fP (std::wistream &s, \fBInt\fP< value_size > &l)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+
+.SS "template<uint value_size>class ttmath::Int< value_size >"
+\fBInt\fP implements a big integer value with a sign\&. 
+
+value_size - how many bytes specify our value on 32bit platforms: value_size=1 -> 4 bytes -> 32 bits on 64bit platforms: value_size=1 -> 8 bytes -> 64 bits value_size = 1,2,3,4,5,6\&.\&.\&.\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (sinti)\fC [inline]\fP"
+a constructor for converting the uint to this class 
+.PP
+References ttmath::Int< value_size >::FromInt()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const \fBInt\fP< value_size > &u)\fC [inline]\fP"
+a copy constructor 
+.PP
+References ttmath::Int< value_size >::FromInt()\&.
+.SS "template<uint value_size> template<uint argument_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const \fBInt\fP< argument_size > &u)\fC [inline]\fP"
+a constructor for copying from another types 
+.PP
+References ttmath::Int< value_size >::FromInt()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (\fBuint\fPi)\fC [inline]\fP"
+a constructor for converting the uint to this class 
+.PP
+References ttmath::Int< value_size >::FromUInt()\&.
+.SS "template<uint value_size> template<uint argument_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const \fBUInt\fP< argument_size > &u)\fC [inline]\fP"
+a constructor for copying from another types 
+.PP
+References ttmath::Int< value_size >::FromUInt()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const char *s)\fC [inline]\fP"
+a constructor for converting string to this class (with the base=10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const wchar_t *s)\fC [inline]\fP"
+a constructor for converting string to this class (with the base=10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const std::string &s)\fC [inline]\fP"
+a constructor for converting a string to this class (with the base=10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP (const std::wstring &s)\fC [inline]\fP"
+a constructor for converting a string to this class (with the base=10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::\fBInt\fP ()\fC [inline]\fP"
+a default constructor
+.PP
+we don't clear table etc\&. 
+.SS "template<uint value_size> \fBttmath::Int\fP< value_size >::~\fBInt\fP ()\fC [inline]\fP"
+the destructor 
+.SH "Member Function Documentation"
+.PP 
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::Abs ()\fC [inline]\fP"
+it sets an absolute value
+.PP
+it can return carry (1) (look on \fBChangeSign()\fP for details) 
+.PP
+References ttmath::Int< value_size >::ChangeSign(), and ttmath::Int< value_size >::IsSign()\&.
+.PP
+Referenced by ttmath::Int< value_size >::Div(), ttmath::Int< value_size >::DivInt(), and ttmath::Int< value_size >::Mul()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::Add (const \fBInt\fP< value_size > &ss2)\fC [inline]\fP"
+this method adds two value with a sign and returns a carry
+.PP
+we're using methods from the base class because values are stored with U2 we must only make the carry correction
+.PP
+this = p1(=this) + p2
+.PP
+when p1>=0 i p2>=0 carry is set when the highest bit of value is set when p1<0 i p2<0 carry is set when the highest bit of value is clear when p1>=0 i p2<0 carry will never be set when p1<0  i p2>=0 carry will never be set 
+.PP
+References ttmath::Int< value_size >::IsSign()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::AddInt (\fBuint\fPvalue, \fBuint\fPindex = \fC0\fP)\fC [inline]\fP"
+this method adds one \fIunsigned\fP word (at a specific position) and returns a carry (if it was)
+.PP
+look at a description in UInt<>::AddInt(\&.\&.\&.) 
+.PP
+References ttmath::Int< value_size >::IsSign()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::AddOne ()\fC [inline]\fP"
+this method adds one to the value and returns carry 
+.PP
+References ttmath::UInt< value_size >::AddOne(), and ttmath::Int< value_size >::IsSign()\&.
+.PP
+Referenced by ttmath::Int< value_size >::operator++()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::AddTwoInts (\fBuint\fPx2, \fBuint\fPx1, \fBuint\fPindex)\fC [inline]\fP"
+this method adds two \fIunsigned\fP words to the existing value and these words begin on the 'index' position
+.PP
+index should be equal or smaller than value_size-2 (index <= value_size-2) x1 - lower word, x2 - higher word
+.PP
+look at a description in UInt<>::AddTwoInts(\&.\&.\&.) 
+.PP
+References ttmath::Int< value_size >::IsSign()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::ChangeSign ()\fC [inline]\fP"
+we change the sign of the value
+.PP
+if it isn't possible to change the sign this method returns 1 else return 0 and changing the sign 
+.PP
+References ttmath::Int< value_size >::operator=(), ttmath::Int< value_size >::SetMin(), and ttmath::UInt< value_size >::SetZero()\&.
+.PP
+Referenced by ttmath::Int< value_size >::Abs(), decimal::NValue::createStringFromDecimal(), ttmath::Int< value_size >::operator-(), ttmath::Int< value_size >::Pow(), and ttmath::Int< value_size >::SetSign()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::Div (\fBInt\fP< value_size >ss2, \fBInt\fP< value_size > *remainder = \fC0\fP)\fC [inline]\fP"
+division this = this / ss2 returned values: 0 - ok 1 - division by zero
+.PP
+for example: (result means 'this') 20 / 3 --> result: 6 remainder: 2 -20 / 3 --> result: -6 remainder: -2 20 / -3 --> result: -6 remainder: 2 -20 / -3 --> result: 6 remainder: -2
+.PP
+in other words: this(old) = ss2 * this(new)(result) + remainder 
+.PP
+References ttmath::Int< value_size >::Abs(), ttmath::UInt< value_size >::Div(), ttmath::Int< value_size >::IsSign(), and ttmath::Int< value_size >::SetSign()\&.
+.PP
+Referenced by ttmath::Int< value_size >::Pow()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::DivInt (sintss2, sint *remainder = \fC0\fP)\fC [inline]\fP"
+division this = this / ss2 (ss2 is int) returned values: 0 - ok 1 - division by zero
+.PP
+for example: (result means 'this') 20 / 3 --> result: 6 remainder: 2 -20 / 3 --> result: -6 remainder: -2 20 / -3 --> result: -6 remainder: 2 -20 / -3 --> result: 6 remainder: -2
+.PP
+in other words: this(old) = ss2 * this(new)(result) + remainder 
+.PP
+References ttmath::Int< value_size >::Abs(), ttmath::UInt< value_size >::DivInt(), ttmath::Int< value_size >::IsSign(), and ttmath::Int< value_size >::SetSign()\&.
+.SS "template<uint value_size> template<uint argument_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromInt (const \fBInt\fP< argument_size > &p)\fC [inline]\fP"
+this method converts an Int<another_size> type into this class
+.PP
+this operation has mainly sense if the value from p can be held in this type
+.PP
+it returns a carry if the value 'p' is too big 
+.PP
+Referenced by ttmath::Int< value_size >::Int(), and ttmath::Int< value_size >::operator=()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromInt (sintvalue)\fC [inline]\fP"
+this method converts the sint type into this class 
+.PP
+References TTMATH_UINT_MAX_VALUE\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromString (const char *s, \fBuint\fPb = \fC10\fP, const char **after_source = \fC0\fP, bool *value_read = \fC0\fP)\fC [inline]\fP"
+this method converts a string into its value it returns carry=1 if the value will be too big or an incorrect base 'b' is given
+.PP
+string is ended with a non-digit value, for example: '-12' will be translated to -12 as well as: '- 12foo' will be translated to -12 too
+.PP
+existing first white characters will be ommited (between '-' and a first digit can be white characters too)
+.PP
+after_source (if exists) is pointing at the end of the parsed string
+.PP
+value_read (if exists) tells whether something has actually been read (at least one digit) 
+.PP
+Referenced by ttmath::Int< value_size >::FromString(), ttmath::Int< value_size >::Int(), and ttmath::Int< value_size >::operator=()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromString (const wchar_t *s, \fBuint\fPb = \fC10\fP, const wchar_t **after_source = \fC0\fP, bool *value_read = \fC0\fP)\fC [inline]\fP"
+this method converts a string into its value 
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromString (const std::string &s, \fBuint\fPb = \fC10\fP)\fC [inline]\fP"
+this method converts a string into its value it returns carry=1 if the value will be too big or an incorrect base 'b' is given 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromString (const std::wstring &s, \fBuint\fPb = \fC10\fP)\fC [inline]\fP"
+this method converts a string into its value it returns carry=1 if the value will be too big or an incorrect base 'b' is given 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> template<uint argument_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromUInt (const \fBUInt\fP< argument_size > &p)\fC [inline]\fP"
+this method converts UInt<another_size> into this class 
+.PP
+Referenced by ttmath::Int< value_size >::Int(), and ttmath::Int< value_size >::operator=()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::FromUInt (\fBuint\fPvalue)\fC [inline]\fP"
+this method converts the uint type into this class 
+.PP
+References TTMATH_UINT_HIGHEST_BIT\&.
+.SS "template<uint value_size> bool \fBttmath::Int\fP< value_size >::IsSign () const\fC [inline]\fP"
+this method returns true if there's the sign
+.PP
+(the highest bit will be converted to the bool) 
+.PP
+References ttmath::UInt< value_size >::IsTheHighestBitSet()\&.
+.PP
+Referenced by ttmath::Int< value_size >::Abs(), ttmath::Int< value_size >::Add(), ttmath::Int< value_size >::AddInt(), ttmath::Int< value_size >::AddOne(), ttmath::Int< value_size >::AddTwoInts(), decimal::NValue::createStringFromDecimal(), ttmath::Int< value_size >::Div(), ttmath::Int< value_size >::DivInt(), ttmath::Int< value_size >::Mul(), ttmath::Int< value_size >::Pow(), ttmath::Int< value_size >::SetSign(), ttmath::Int< value_size >::Sub(), ttmath::Int< value_size >::SubInt(), and ttmath::Int< value_size >::SubOne()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::Mul (\fBInt\fP< value_size >ss2)\fC [inline]\fP"
+multiplication this = this * ss2
+.PP
+it returns carry if the result is too big (we're using the method from the base class but we have to make one correction in account of signs) 
+.PP
+References ttmath::Int< value_size >::Abs(), ttmath::Int< value_size >::IsSign(), ttmath::Int< value_size >::SetMin(), and ttmath::Int< value_size >::SetSign()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator++ ()\fC [inline]\fP"
+Prefix operator e\&.g\&. ++variable 
+.PP
+References ttmath::Int< value_size >::AddOne()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::Int\fP< value_size >::operator++ (int)\fC [inline]\fP"
+Postfix operator e\&.g\&. variable++ 
+.PP
+References ttmath::Int< value_size >::AddOne()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size> \fBttmath::Int\fP< value_size >::operator- () const\fC [inline]\fP"
+standard mathematical operators
+.PP
+an operator for changing the sign
+.PP
+it's not changing 'this' but the changed value will be returned 
+.PP
+References ttmath::Int< value_size >::ChangeSign()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const \fBInt\fP< value_size > &p)\fC [inline]\fP"
+the default assignment operator 
+.PP
+References ttmath::Int< value_size >::FromInt()\&.
+.PP
+Referenced by ttmath::Int< value_size >::ChangeSign()\&.
+.SS "template<uint value_size> template<uint argument_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const \fBInt\fP< argument_size > &p)\fC [inline]\fP"
+this operator converts an Int<another_size> type to this class
+.PP
+it doesn't return a carry 
+.PP
+References ttmath::Int< value_size >::FromInt()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (sinti)\fC [inline]\fP"
+this method converts the sint type to this class 
+.PP
+References ttmath::Int< value_size >::FromInt()\&.
+.SS "template<uint value_size> template<uint argument_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const \fBUInt\fP< argument_size > &p)\fC [inline]\fP"
+this operator converts an UInt<another_size> type to this class
+.PP
+it doesn't return a carry 
+.PP
+References ttmath::Int< value_size >::FromUInt()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (\fBuint\fPi)\fC [inline]\fP"
+this method converts the Uint type to this class 
+.PP
+References ttmath::Int< value_size >::FromUInt()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const char *s)\fC [inline]\fP"
+this operator converts a string into its value (with base = 10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const wchar_t *s)\fC [inline]\fP"
+this operator converts a string into its value (with base = 10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const std::string &s)\fC [inline]\fP"
+this operator converts a string into its value (with base = 10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> \fBInt\fP<value_size>& \fBttmath::Int\fP< value_size >::operator= (const std::wstring &s)\fC [inline]\fP"
+this operator converts a string into its value (with base = 10) 
+.PP
+References ttmath::Int< value_size >::FromString()\&.
+.SS "template<uint value_size> bool \fBttmath::Int\fP< value_size >::operator== (const \fBInt\fP< value_size > &l) const\fC [inline]\fP"
+methods for comparing 
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::Pow (\fBInt\fP< value_size >pow)\fC [inline]\fP"
+power this = this ^ pow
+.PP
+return values: 0 - ok 1 - carry 2 - incorrect arguments 0^0 or 0^(-something) 
+.PP
+References ttmath::Int< value_size >::ChangeSign(), ttmath::Int< value_size >::Div(), ttmath::Int< value_size >::IsSign(), and ttmath::UInt< value_size >::SetOne()\&.
+.SS "template<uint value_size> void \fBttmath::Int\fP< value_size >::SetMax ()\fC [inline]\fP"
+this method sets the max value which this class can hold (all bits will be one besides the last one) 
+.PP
+References ttmath::UInt< value_size >::SetMax(), and TTMATH_UINT_HIGHEST_BIT\&.
+.SS "template<uint value_size> void \fBttmath::Int\fP< value_size >::SetMin ()\fC [inline]\fP"
+this method sets the min value which this class can hold (all bits will be zero besides the last one which is one) 
+.PP
+References ttmath::UInt< value_size >::SetZero(), and TTMATH_UINT_HIGHEST_BIT\&.
+.PP
+Referenced by ttmath::Int< value_size >::ChangeSign(), and ttmath::Int< value_size >::Mul()\&.
+.SS "template<uint value_size> void \fBttmath::Int\fP< value_size >::SetSign ()\fC [inline]\fP"
+this method sets the sign
+.PP
+e\&.g\&. 1 -> -1 -2 -> -2
+.PP
+from a positive value we make a negative value, if the value is negative we do nothing 
+.PP
+References ttmath::Int< value_size >::ChangeSign(), and ttmath::Int< value_size >::IsSign()\&.
+.PP
+Referenced by decimal::NValue::createDecimalFromString(), ttmath::Int< value_size >::Div(), ttmath::Int< value_size >::DivInt(), and ttmath::Int< value_size >::Mul()\&.
+.SS "template<uint value_size> void \fBttmath::Int\fP< value_size >::SetSignOne ()\fC [inline]\fP"
+this method sets -1 as the value (-1 is equal the max value in an unsigned type) 
+.PP
+References ttmath::UInt< value_size >::SetMax()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::Sub (const \fBInt\fP< value_size > &ss2)\fC [inline]\fP"
+this method subtracts two values with a sign
+.PP
+we don't use the previous Add because the method ChangeSign can sometimes return carry
+.PP
+this = p1(=this) - p2
+.PP
+when p1>=0 i p2>=0 carry will never be set when p1<0 i p2<0 carry will never be set when p1>=0 i p2<0 carry is set when the highest bit of value is set when p1<0  i p2>=0 carry is set when the highest bit of value is clear 
+.PP
+References ttmath::Int< value_size >::IsSign()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::SubInt (\fBuint\fPvalue, \fBuint\fPindex = \fC0\fP)\fC [inline]\fP"
+this method subtracts one \fIunsigned\fP word (at a specific position) and returns a carry (if it was) 
+.PP
+References ttmath::Int< value_size >::IsSign()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::Int\fP< value_size >::SubOne ()\fC [inline]\fP"
+this method subtracts one from the value and returns carry 
+.PP
+References ttmath::Int< value_size >::IsSign(), and ttmath::UInt< value_size >::SubOne()\&.
+.SS "template<uint value_size> sint \fBttmath::Int\fP< value_size >::ToInt () const\fC [inline]\fP"
+this method returns the lowest value from table with a sign
+.PP
+we must be sure when we using this method whether the value will hold in an sint type or not (the rest value from table must be zero or -1) 
+.SS "template<uint value_size> void \fBttmath::Int\fP< value_size >::ToString (std::string &result, \fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+this method converts the value to a string with a base equal 'b' 
+.PP
+Referenced by decimal::NValue::createStringFromDecimal()\&.
+.SS "template<uint value_size> void \fBttmath::Int\fP< value_size >::ToString (std::wstring &result, \fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+this method converts the value to a string with a base equal 'b' 
+.SS "template<uint value_size> std::string \fBttmath::Int\fP< value_size >::ToString (\fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+this method converts the value to a string with a base equal 'b' 
+.SS "template<uint value_size> std::wstring \fBttmath::Int\fP< value_size >::ToWString (\fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+this method converts the value to a string with a base equal 'b' 
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "template<uint value_size> std::ostream& operator<< (std::ostream &s, const \fBInt\fP< value_size > &l)\fC [friend]\fP"
+output to standard streams 
+.SS "template<uint value_size> std::wostream& operator<< (std::wostream &s, const \fBInt\fP< value_size > &l)\fC [friend]\fP"
+output to standard streams 
+.SS "template<uint value_size> std::istream& operator>> (std::istream &s, \fBInt\fP< value_size > &l)\fC [friend]\fP"
+input from standard streams 
+.SS "template<uint value_size> std::wistream& operator>> (std::wistream &s, \fBInt\fP< value_size > &l)\fC [friend]\fP"
+input from standard streams 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

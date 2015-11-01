@@ -5,8 +5,6 @@
  *      Author: wangli
  */
 #include "./Logging.h"
-
-#include <string.h>
 #include <iostream>
 #include "log/logging.h"
 
@@ -14,10 +12,7 @@
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
 //#define CLAIMS_QUEIT
-
 //#ifndef CLAIMS_QUEIT  // If defined, all the output information is binded.
-#define DEBUG_QueryOptimization
-#define DEBUG_StorageManager
 #define DEBUG_Config
 #define DEBUG_ExpanderTracker
 #define DEBUG_BlockStreamExpander
@@ -72,6 +67,8 @@ void RawLog(const char* where, const char* format, va_list args) {
     // if it worked, output the message
     //    std::cout<<where<<p<<std::endl;
     LOG(INFO) << where << p << std::endl;
+  } else if (real_length < 0) {  // check error code and output
+    std::cerr << "vsnprintf error. " << strerror(errno) << std::endl;
   } else {  // try again with more space
     int new_message_length = real_length + 1;
     char* temp = new char[new_message_length];
@@ -89,15 +86,14 @@ void RawLog(const char* where, const char* format, va_list args) {
 
 void RawElog(const char* where, const char* format, va_list args) {
   const int message_max_length = 1000;  // set initial message length
-  char p[message_max_length];
+  static char p[message_max_length];
 
   int real_length = vsnprintf(p, message_max_length, format, args);
-
-  if (unlikely(real_length < 0)) {  // check error code and output
-    LOG(ERROR) << "vsnprintf error. " << strerror(errno) << std::endl;
-  } else if (likely(real_length < message_max_length)) {
-    // if it worked, output the message
+  // if it worked, output the message
+  if (likely(real_length < message_max_length)) {
     LOG(ERROR) << where << p << std::endl;
+  } else if (real_length < 0) {  // check error code and output
+    std::cerr << "vsnprintf error. " << strerror(errno) << std::endl;
   } else {  // try again with more space
     int new_message_length = real_length + 1;
     char* temp = new char[new_message_length];

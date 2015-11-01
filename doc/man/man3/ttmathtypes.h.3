@@ -1,0 +1,197 @@
+.TH "common/types/ttmath/ttmathtypes.h" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+common/types/ttmath/ttmathtypes.h \- 
+.PP
+constants used in the library  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdexcept>\fP
+.br
+\fC#include <sstream>\fP
+.br
+\fC#include <vector>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBttmath::Conv\fP"
+.br
+.ti -1c
+.RI "class \fBttmath::StopCalculating\fP"
+.br
+.ti -1c
+.RI "class \fBttmath::ExceptionInfo\fP"
+.br
+.ti -1c
+.RI "class \fBttmath::ReferenceError\fP"
+.br
+.ti -1c
+.RI "class \fBttmath::RuntimeError\fP"
+.br
+.in -1c
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "\fBttmath\fP"
+.br
+.RI "\fIa namespace for the TTMath library \fP"
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBTTMATH_MAJOR_VER\fP   0"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_MINOR_VER\fP   9"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_REVISION_VER\fP   0"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_PRERELEASE_VER\fP   0"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_DEBUG\fP"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_PLATFORM32\fP"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_NOASM\fP"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_BITS_PER_UINT\fP   32u"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_UINT_HIGHEST_BIT\fP   2147483648u"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_UINT_MAX_VALUE\fP   4294967295u"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_BUILTIN_VARIABLES_SIZE\fP   256u"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_BITS\fP(min_bits)   ((min_bits-1)/32 + 1)"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_ARITHMETIC_MAX_LOOP\fP   10000"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE\fP   5"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_GAMMA_BOUNDARY\fP   2000"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_REFERENCE_ASSERT\fP(expression)   if( &(expression) == this ) throw ReferenceError();"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_ASSERT\fP(expression)   if( !(expression) ) throw RuntimeError();"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_LOG\fP(msg)"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_LOGC\fP(msg, carry)"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_VECTOR_LOG\fP(msg, vector, len)"
+.br
+.ti -1c
+.RI "#define \fBTTMATH_VECTOR_LOGC\fP(msg, carry, vector, len)"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef unsigned int \fBttmath::uint\fP"
+.br
+.ti -1c
+.RI "typedef signed int \fBttmath::sint\fP"
+.br
+.ti -1c
+.RI "typedef unsigned long long int \fBttmath::ulint\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBttmath::LibTypeCode\fP { \fBasm_vc_32\fP = 0, \fBasm_gcc_32\fP, \fBasm_vc_64\fP, \fBasm_gcc_64\fP, \fBno_asm_32\fP, \fBno_asm_64\fP }"
+.br
+.ti -1c
+.RI "enum \fBttmath::ErrorCode\fP { \fBerr_ok\fP = 0, \fBerr_nothing_has_read\fP, \fBerr_unknown_character\fP, \fBerr_unexpected_final_bracket\fP, \fBerr_stack_not_clear\fP, \fBerr_unknown_variable\fP, \fBerr_division_by_zero\fP, \fBerr_interrupt\fP, \fBerr_overflow\fP, \fBerr_unknown_function\fP, \fBerr_unknown_operator\fP, \fBerr_unexpected_semicolon_operator\fP, \fBerr_improper_amount_of_arguments\fP, \fBerr_improper_argument\fP, \fBerr_unexpected_end\fP, \fBerr_internal_error\fP, \fBerr_incorrect_name\fP, \fBerr_incorrect_value\fP, \fBerr_variable_exists\fP, \fBerr_variable_loop\fP, \fBerr_functions_loop\fP, \fBerr_must_be_only_one_value\fP, \fBerr_object_exists\fP, \fBerr_unknown_object\fP, \fBerr_still_calculating\fP, \fBerr_in_short_form_used_function\fP, \fBerr_percent_from\fP }"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+constants used in the library 
+
+As our library is written in header files (templates) we cannot use constants like 'const int' etc\&. because we should have some source files \&.cpp to define this variables\&. Only what we can have are constants defined by #define preprocessor macros\&.
+.PP
+All macros are preceded by TTMATH_ prefix 
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define TTMATH_ARITHMETIC_MAX_LOOP   10000"
+this variable defines how many iterations are performed during some kind of calculating when we're making any long formulas (for example Taylor series)
+.PP
+it's used in ExpSurrounding0(\&.\&.\&.), LnSurrounding1(\&.\&.\&.), Sin0pi05(\&.\&.\&.), etc\&.
+.PP
+note! there'll not be so many iterations, iterations are stopped when there is no sense to continue calculating (for example when the result still remains unchanged after adding next series and we know that the next series are smaller than previous ones) 
+.SS "#define TTMATH_BITS(min_bits)   ((min_bits-1)/32 + 1)"
+this macro returns the number of machine words capable to hold min_bits bits e\&.g\&. \fBTTMATH_BITS(128)\fP returns 4 
+.SS "#define TTMATH_BITS_PER_UINT   32u"
+how many bits there are in the uint type 
+.PP
+Referenced by ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::GetBit(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::Rcr(), and ttmath::UInt< value_size >::SetBit()\&.
+.SS "#define TTMATH_BUILTIN_VARIABLES_SIZE   256u"
+the number of words (32bit words on 32bit platform) which are kept in built-in variables for a Big<> type (these variables are defined in ttmathbig\&.h) 
+.SS "#define TTMATH_DEBUG"
+TTMATH_DEBUG this macro enables further testing during writing your code you don't have to define it in a release mode
+.PP
+if this macro is set then macros TTMATH_ASSERT and TTMATH_REFERENCE_ASSERT are set as well and these macros can throw an exception if a condition in it is not fulfilled (look at the definition of TTMATH_ASSERT and TTMATH_REFERENCE_ASSERT)
+.PP
+TTMATH_RELEASE if you are confident that your code is perfect you can define TTMATH_RELEASE macro for example by using -D option in gcc gcc -DTTMATH_RELEASE -o myprogram myprogram\&.cpp or by defining this macro in your code before using any header files of this library
+.PP
+if TTMATH_RELEASE is not set then TTMATH_DEBUG is set automatically 
+.SS "#define TTMATH_GAMMA_BOUNDARY   2000"
+this is a special value used when calculating the Gamma(x) function if x is greater than this value then the Gamma(x) will be calculated using some kind of series
+.PP
+don't use smaller values than about 100 
+.SS "#define TTMATH_MAJOR_VER   0"
+the version of the library
+.PP
+TTMATH_PRERELEASE_VER is either zero or one if zero that means this is the release version of the library 
+.SS "#define TTMATH_NOASM"
+another compilers than MS VC or GCC by default use no asm version (TTMATH_NOASM) 
+.SS "#define TTMATH_PLATFORM32"
+we're using a 32bit platform 
+.SS "#define TTMATH_REFERENCE_ASSERT(expression)   if( &(expression) == this ) throw ReferenceError();"
+look at the description of macros TTMATH_RELEASE and TTMATH_DEBUG 
+.PP
+Referenced by ttmath::UInt< value_size >::Div2(), ttmath::UInt< value_size >::Div3(), and ttmath::UInt< value_size >::Mul1()\&.
+.SS "#define TTMATH_UINT_HIGHEST_BIT   2147483648u"
+the mask for the highest bit in the unsigned 32bit word (2^31) 
+.PP
+Referenced by ttmath::Int< value_size >::FromUInt(), ttmath::UInt< value_size >::SetFromTable(), ttmath::Int< value_size >::SetMax(), and ttmath::Int< value_size >::SetMin()\&.
+.SS "#define TTMATH_UINT_MAX_VALUE   4294967295u"
+the max value of the unsigned 32bit word (2^32 - 1) (all bits equal one) 
+.PP
+Referenced by ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::Int< value_size >::FromInt(), ttmath::UInt< value_size >::SetFromTable(), and ttmath::UInt< value_size >::SetMax()\&.
+.SS "#define TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE   5"
+this is a limit when calculating Karatsuba multiplication if the size of a vector is smaller than TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE the Karatsuba algorithm will use standard schoolbook multiplication 
+.PP
+Referenced by ttmath::UInt< value_size >::MulFastestBig()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

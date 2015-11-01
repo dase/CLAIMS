@@ -1,0 +1,55 @@
+.TH "Histogram" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Histogram \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBStatisticOnTable\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHistogram\fP (unsigned bucketCnt)"
+.br
+.ti -1c
+.RI "void \fBsetTupleCount\fP (unsigned long tupleCount)"
+.br
+.ti -1c
+.RI "void \fBsetValueCount\fP (unsigned long valueCount)"
+.br
+.ti -1c
+.RI "void \fBsetMostCommonValues\fP (void **mcvList, double *seleList)"
+.br
+.ti -1c
+.RI "void \fBsetEquithDepthBound\fP (void **boundList, unsigned long *bucketValueCount)"
+.br
+.ti -1c
+.RI "unsigned long \fBgetTupleCount\fP () const "
+.br
+.ti -1c
+.RI "unsigned long \fBgetValueCount\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetBucketCnt\fP () const "
+.br
+.ti -1c
+.RI "void \fBPrint\fP (\fBcolumn_type\fP type)"
+.br
+.ti -1c
+.RI "void \fBdestory\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBEstimation\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -76,7 +76,7 @@ void PerformanceInfo::processed_one_block(){
 	 */
 
 	if(last_update_+MONITOR_FRECY<cur_tick){
-		unsigned cur_dop=expand_shrink_->getDegreeOfParallelism();
+		unsigned cur_dop=expand_shrink_->GetDegreeOfParallelism();
 //		unsigned cur_dop=1;
 		last_update_=cur_tick;
 		scalability_vector_[cur_dop].last_update=cur_tick;

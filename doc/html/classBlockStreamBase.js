@@ -1,0 +1,26 @@
+var classBlockStreamBase =
+[
+    [ "BlockStreamTraverseIterator", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html", "classBlockStreamBase_1_1BlockStreamTraverseIterator" ],
+    [ "BlockStreamBase", "classBlockStreamBase.html#aaf8c2a60a1744b336b7436b20974e7c9", null ],
+    [ "BlockStreamBase", "classBlockStreamBase.html#ab7d16b641e693a217873c0188e9f4840", null ],
+    [ "~BlockStreamBase", "classBlockStreamBase.html#a91a25935598a3e96d426f6104e43417f", null ],
+    [ "allocateTuple", "classBlockStreamBase.html#acf2074e9f553d6b0d2de640b5c4c9f64", null ],
+    [ "constructFromBlock", "classBlockStreamBase.html#af49bd81fa5584a68db8977f7db08af9a", null ],
+    [ "copyBlock", "classBlockStreamBase.html#ae8f2aa97388705783e3cbc81dd11c3f5", null ],
+    [ "createBlockAndDeepCopy", "classBlockStreamBase.html#a4e2b93579f286718aa0a5c3c51fcf238", null ],
+    [ "createIterator", "classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085", null ],
+    [ "deepCopy", "classBlockStreamBase.html#ae1d4851efb68f3cc6b138cd477ec7343", null ],
+    [ "deserialize", "classBlockStreamBase.html#aec7d8cb0bbe8c45259bd3a27c2e2e94b", null ],
+    [ "Empty", "classBlockStreamBase.html#a88c9ff325fb8283c0bdf9a552154fafb", null ],
+    [ "Full", "classBlockStreamBase.html#af47e8d6eca3eb2724edb3e608a444a7f", null ],
+    [ "getBlockCapacityInTuples", "classBlockStreamBase.html#a1755362b3dbd6b4f7c8c7fd8d77ae177", null ],
+    [ "getBlockDataAddress", "classBlockStreamBase.html#a558f8cb75aa517d447af46e1ee126921", null ],
+    [ "getSerializedBlockSize", "classBlockStreamBase.html#a6dafa8c5fc29f7cdde194e8f68a20e8d", null ],
+    [ "getTuple", "classBlockStreamBase.html#adf55cc4fc6e79352b6df5ca028b08f05", null ],
+    [ "getTuplesInBlock", "classBlockStreamBase.html#ad50cdcaaf287686de6ca6db643459509", null ],
+    [ "insert", "classBlockStreamBase.html#a53d8cbcd53a53a437b6b73fb9fc25c72", null ],
+    [ "serialize", "classBlockStreamBase.html#af30db8133ade0addcef0602dfc9dbd76", null ],
+    [ "setEmpty", "classBlockStreamBase.html#a0e34e5e274bdee82a9bea61e1991ecdc", null ],
+    [ "switchBlock", "classBlockStreamBase.html#abbdd092a2dc841ecac4929599adaafa5", null ],
+    [ "BlockStreamTraverseIterator", "classBlockStreamBase.html#a6430408dd4e7ad9dfdd3b38802a19d3d", null ]
+];

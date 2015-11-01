@@ -16,7 +16,7 @@ endif
 
 LDADD = 	../../Catalog/libcatalog.a \
 		../../Loader/libloader.a \
-		../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../logical_operator/liblogicalqueryplan.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../common/libcommon.a \
 		../../common/types/libtypes.a \
@@ -29,5 +29,5 @@ LDADD = 	../../Catalog/libcatalog.a \
 		${GTEST_HOME}/libgtest.a
 
 noinst_LIBRARIES=libcommon.a
-libcommon_a_SOURCES = \
-	errno_test.h
+
+libcommon_a_SOURCES = 

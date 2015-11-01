@@ -1,0 +1,86 @@
+.TH "ClientResponse" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ClientResponse \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBget_length\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBgetMessage\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetError\fP (std::string reason)"
+.br
+.ti -1c
+.RI "std::string \fBgetError\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetEnd\fP (double query_time)"
+.br
+.ti -1c
+.RI "std::string \fBgetEndInfo\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetOk\fP (std::string info)"
+.br
+.ti -1c
+.RI "std::string \fBgetOK\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetSchema\fP (\fBSchema\fP *schema)"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBgetSchema\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetAttributeName\fP (\fBColumnHeader\fP &header)"
+.br
+.ti -1c
+.RI "\fBColumnHeader\fP \fBgetAttributeName\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetDataBlock\fP (\fBBlock\fP &block)"
+.br
+.ti -1c
+.RI "\fBBlockStreamBase\fP * \fBgetDataBlock\fP (\fBSchema\fP *schema) const "
+.br
+.ti -1c
+.RI "void \fBsetData\fP (string s)"
+.br
+.ti -1c
+.RI "int \fBserialize\fP (char *&buffer) const "
+.br
+.ti -1c
+.RI "void \fBdeserialize\fP (const char *received_buffer, int recieved_bytes_length)"
+.br
+.ti -1c
+.RI "void \fBsetChange\fP (std::string info)"
+.br
+.ti -1c
+.RI "std::string \fBgetChange\fP () const "
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBstatus\fP"
+.br
+.ti -1c
+.RI "int \fBlength\fP"
+.br
+.ti -1c
+.RI "std::string \fBcontent\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

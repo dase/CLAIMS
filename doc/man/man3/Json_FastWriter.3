@@ -1,0 +1,48 @@
+.TH "Json::FastWriter" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::FastWriter \- 
+.PP
+Outputs a \fBValue\fP in \fCJSON\fP format without formatting (not human friendly)\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.PP
+Inherits \fBJson::Writer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBenableYAMLCompatibility\fP ()"
+.br
+.ti -1c
+.RI "void \fBdropNullPlaceholders\fP ()"
+.br
+.RI "\fIDrop the 'null' string from the writer's output for nullValues\&. Strictly speaking, this is not valid JSON\&. But when the output is being fed to a browser's Javascript, it makes for smaller output and the browser can handle the output just fine\&. \fP"
+.ti -1c
+.RI "void \fBomitEndingLineFeed\fP ()"
+.br
+.ti -1c
+.RI "virtual std::string \fBwrite\fP (const \fBValue\fP &root)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Outputs a \fBValue\fP in \fCJSON\fP format without formatting (not human friendly)\&. 
+
+The JSON document is written in a single line\&. It is not intended for 'human' consumption, but may be usefull to support feature such as RPC where bandwith is limited\&. 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBReader\fP, \fBValue\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

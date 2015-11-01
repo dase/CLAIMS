@@ -14,7 +14,7 @@
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
 
 static int test_logical_csb_index_building()
 {
@@ -73,20 +73,24 @@ static int test_logical_csb_index_building()
 			LogicalOperator* csb_building = new LogicalCSBIndexBuilding(table_1->getProjectoin(0)->getProjectionID(), table_1->getAttribute(3), "sec_code_index");
 			const NodeID collector_node_id=0;
 			LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::RESULTCOLLECTOR);
-			root->print();
-			BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
+<<<<<<< HEAD
+			root->Print();
+=======
+			root->Print();
+>>>>>>> master-yk-150927
+			PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
-			executable_query_plan->open();
+			executable_query_plan->Open();
 			cout << "open finished!\n";
-			while (executable_query_plan->next(0));
+			while (executable_query_plan->Next(0));
 			cout << "next finished!\n";
-			executable_query_plan->close();
+			executable_query_plan->Close();
 			cout << "close finished!\n";
 
 //			ResultSet* result_set = executable_query_plan->getResultSet();
 
-			executable_query_plan->~BlockStreamIteratorBase();
+			executable_query_plan->~PhysicalOperatorBase();
 			root->~LogicalOperator();
 cout << "index building finished!\n";
 /********************************* Logical Index Scan *********************************/
@@ -121,15 +125,19 @@ cout << "index building finished!\n";
 
 			LogicalOperator* index_scan = new LogicalIndexScan(table_1->getProjectoin(0)->getProjectionID(), table_1->getAttribute(3), q_range);
 			root=new LogicalQueryPlanRoot(collector_node_id,index_scan,LogicalQueryPlanRoot::PRINT);
-			root->print();
-			executable_query_plan=root->getIteratorTree(1024*64);
+<<<<<<< HEAD
+			root->Print();
+=======
+			root->Print();
+>>>>>>> master-yk-150927
+			executable_query_plan=root->GetPhysicalPlan(1024*64);
 //			executable_query_plan->print();
 //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");
-			executable_query_plan->open();
-			while (executable_query_plan->next(0));
-			executable_query_plan->close();
+			executable_query_plan->Open();
+			while (executable_query_plan->Next(0));
+			executable_query_plan->Close();
 
-			executable_query_plan->~BlockStreamIteratorBase();
+			executable_query_plan->~PhysicalOperatorBase();
 			root->~LogicalOperator();
 
 		}

@@ -1,0 +1,62 @@
+.TH "partition_schema" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+partition_schema \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpartition_mode\fP { \fBhash\fP, \fBbroadcase\fP, \fBrange\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBisHashPartition\fP () const "
+.br
+.ti -1c
+.RI "bool \fBisBoardcastPartition\fP () const "
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBpartition_schema\fP \fBset_hash_partition\fP (int _partition_key_index=0)"
+.br
+.ti -1c
+.RI "static \fBpartition_schema\fP \fBset_broadcast_partition\fP ()"
+.br
+.ti -1c
+.RI "static \fBpartition_schema\fP \fBset_range_partition\fP (int _number_of_ranges)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "partition_mode \fBmode\fP"
+.br
+.ti -1c
+.RI "unsigned \fBpartition_key_index\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
