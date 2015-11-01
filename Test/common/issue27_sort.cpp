@@ -4,6 +4,7 @@
  *  Created on: Apr 1, 2014
  *      Author: wangli
  */
+
 // This file will not be used in current version,because it is not contained by
 // Makefile.am
 #ifndef ISSUE27_SORT_CPP_
@@ -15,8 +16,8 @@
 #include "../../utility/rdtsc.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-#include "../../logical_query_plan/logical_project.h"
-#include "../../physical_query_plan/BlockStreamAggregationIterator.h"
+#include "../../logical_operator/logical_project.h"
+#include "../../physical_operator/physical_aggregation.h"
 
 static void query_select_sort() {
   /*
@@ -74,7 +75,7 @@ static void query_select_sort() {
       new LogicalQueryPlanRoot(0, sort, LogicalQueryPlanRoot::PRINT);
 
   cout << "performance is ok!" << endl;
-  BlockStreamIteratorBase* physical_iterator_tree =
+  PhysicalOperatorBase* physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
   physical_iterator_tree->Open();
@@ -154,14 +155,14 @@ static void query_select_sort_string() {
   //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
   //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
   //	std::vector<BlockStreamAggregationIterator::State::aggregation>
-  // aggregation_function;
+  //aggregation_function;
 
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
   //	LogicalOperator* aggregation=new
-  // Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+  //Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
   //==========================project=========================
   //	vector< vector<ExpressionItem> >expr_list2;
   //
@@ -208,7 +209,7 @@ static void query_select_sort_string() {
   getchar();
   getchar();
   //	BlockStreamIteratorBase*
-  // physical_iterator_tree=root->getIteratorTree(64*1024);
+  //physical_iterator_tree=root->getIteratorTree(64*1024);
   ////	physical_iterator_tree->print();
   //	physical_iterator_tree->open();
   //	while(physical_iterator_tree->next(0));

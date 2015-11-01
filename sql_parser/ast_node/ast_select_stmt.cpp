@@ -38,17 +38,17 @@
 #include "../../Environment.h"
 #include "../../Catalog/Attribute.h"
 #include "../../Catalog/table.h"
-#include "../../logical_query_plan/logical_equal_join.h"
-#include "../../logical_query_plan/logical_cross_join.h"
-#include "../../logical_query_plan/logical_filter.h"
-#include "../../logical_query_plan/logical_scan.h"
+#include "../../logical_operator/logical_equal_join.h"
+#include "../../logical_operator/logical_cross_join.h"
+#include "../../logical_operator/logical_filter.h"
+#include "../../logical_operator/logical_scan.h"
 
 #include "../ast_node/ast_node.h"
 
-using claims::logical_query_plan::LogicalCrossJoin;
-using claims::logical_query_plan::LogicalEqualJoin;
-using claims::logical_query_plan::LogicalFilter;
-using claims::logical_query_plan::LogicalScan;
+using claims::logical_operator::LogicalCrossJoin;
+using claims::logical_operator::LogicalEqualJoin;
+using claims::logical_operator::LogicalFilter;
+using claims::logical_operator::LogicalScan;
 using std::bitset;
 using std::endl;
 using std::cout;

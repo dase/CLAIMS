@@ -32,8 +32,8 @@
 #include <utility>
 
 #include "../../common/Expression/qnode.h"
-#include "../../logical_query_plan/logical_operator.h"
-using claims::logical_query_plan::LogicalOperator;
+#include "../../logical_operator/logical_operator.h"
+using claims::logical_operator::LogicalOperator;
 using std::vector;
 using std::pair;
 using std::map;
