@@ -1,0 +1,115 @@
+.TH "PartitionFunction" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PartitionFunction \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBRoundRobinPartitionFunction\fP, and \fBUniformRangePartitionFunction\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBPartitionStyle\fP { \fBhash_f\fP, \fBrange_f\fP, \fBround_robin_f\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionFunction\fP ()"
+.br
+.ti -1c
+.RI "\fBPartitionFunction\fP (int min, int max, unsigned int k)"
+.br
+.ti -1c
+.RI "virtual PartitionStyle \fBgetPartitionFashion\fP () const =0"
+.br
+.ti -1c
+.RI "virtual unsigned int \fBget_partition_value\fP (const int &value) const =0"
+.br
+.ti -1c
+.RI "virtual unsigned int \fBget_partition_value\fP (const double &value) const =0"
+.br
+.ti -1c
+.RI "virtual unsigned int \fBget_partition_value\fP (const unsigned long &) const =0"
+.br
+.ti -1c
+.RI "virtual unsigned int \fBgetNumberOfPartitions\fP () const =0"
+.br
+.ti -1c
+.RI "bool \fBequal\fP (\fBPartitionFunction\fP *function_) const "
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBmin_\fP"
+.br
+.ti -1c
+.RI "int \fBmax_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBk_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionFunction::PartitionFunction ()\fC [inline]\fP"
+Creates a new hashing object, rounding the number of buckets \fIk\fP to the next power of two\&. Formally \fIk\fP will become $ k = 2^{\lceil{\log_2{k}}\rceil} $ 
+.PP
+\fBParameters:\fP
+.RS 4
+\fImin\fP Minimum hash value 
+.br
+\fImax\fP Maximum hash value 
+.br
+\fIk\fP Number of buckets\&. Value will be rounded to the next higher power of two\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual unsigned int PartitionFunction::get_partition_value (const int &value) const\fC [pure virtual]\fP"
+Returns the bucket number $n\in[0,k)$ for this \fIvalue\fP\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP Value to hash\&. Must be within bounds\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Bucket number\&. 
+.RE
+.PP
+
+.PP
+Implemented in \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBUniformRangePartitionFunction\fP, and \fBRoundRobinPartitionFunction\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned long int PartitionFunction::k_\fC [protected]\fP"
+$ \_k=log_2(k) $, where $k$ is number of buckets 
+.PP
+Referenced by UniformRangePartitionFunction::get_partition_value(), and ModuloHashFunction::get_partition_value()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

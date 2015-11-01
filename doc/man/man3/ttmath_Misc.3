@@ -1,0 +1,90 @@
+.TH "ttmath::Misc" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ttmath::Misc \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ttmathmisc\&.h>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBAssignString\fP (std::string &result, const char *str)"
+.br
+.ti -1c
+.RI "static void \fBAssignString\fP (std::wstring &result, const char *str)"
+.br
+.ti -1c
+.RI "static void \fBAssignString\fP (std::wstring &result, const std::string &str)"
+.br
+.ti -1c
+.RI "static void \fBAssignString\fP (std::string &result, const wchar_t *str)"
+.br
+.ti -1c
+.RI "static void \fBAssignString\fP (std::string &result, const std::wstring &str)"
+.br
+.ti -1c
+.RI "static void \fBAddString\fP (std::string &result, const char *str)"
+.br
+.ti -1c
+.RI "static void \fBAddString\fP (std::wstring &result, const char *str)"
+.br
+.ti -1c
+.RI "template<class char_type > static void \fBSkipWhiteCharacters\fP (const char_type *&c)"
+.br
+.ti -1c
+.RI "static \fBuint\fP \fBCharToDigit\fP (\fBuint\fP c)"
+.br
+.ti -1c
+.RI "static sint \fBCharToDigit\fP (\fBuint\fP c, \fBuint\fP base)"
+.br
+.ti -1c
+.RI "static \fBuint\fP \fBDigitToChar\fP (\fBuint\fP digit)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+some helpful functions 
+.SH "Member Function Documentation"
+.PP 
+.SS "static void ttmath::Misc::AddString (std::string &result, const char *str)\fC [inline]\fP, \fC [static]\fP"
+result += str 
+.SS "static void ttmath::Misc::AddString (std::wstring &result, const char *str)\fC [inline]\fP, \fC [static]\fP"
+result += str 
+.SS "static void ttmath::Misc::AssignString (std::string &result, const char *str)\fC [inline]\fP, \fC [static]\fP"
+result = str 
+.PP
+Referenced by AssignString()\&.
+.SS "static void ttmath::Misc::AssignString (std::wstring &result, const char *str)\fC [inline]\fP, \fC [static]\fP"
+result = str 
+.SS "static void ttmath::Misc::AssignString (std::wstring &result, const std::string &str)\fC [inline]\fP, \fC [static]\fP"
+result = str 
+.PP
+References AssignString()\&.
+.SS "static void ttmath::Misc::AssignString (std::string &result, const wchar_t *str)\fC [inline]\fP, \fC [static]\fP"
+result = str 
+.SS "static void ttmath::Misc::AssignString (std::string &result, const std::wstring &str)\fC [inline]\fP, \fC [static]\fP"
+result = str 
+.PP
+References AssignString()\&.
+.SS "static \fBuint\fP ttmath::Misc::CharToDigit (\fBuint\fPc)\fC [inline]\fP, \fC [static]\fP"
+this static method converts one character into its value
+.PP
+for example: 1 -> 1 8 -> 8 A -> 10 f -> 15
+.PP
+this method don't check whether c is correct or not 
+.SS "static sint ttmath::Misc::CharToDigit (\fBuint\fPc, \fBuint\fPbase)\fC [inline]\fP, \fC [static]\fP"
+this method changes a character 'c' into its value (if there can't be a correct value it returns -1)
+.PP
+for example: c=2, base=10 -> function returns 2 c=A, base=10 -> function returns -1 c=A, base=16 -> function returns 10 
+.SS "static \fBuint\fP ttmath::Misc::DigitToChar (\fBuint\fPdigit)\fC [inline]\fP, \fC [static]\fP"
+this method converts a digit into a char digit should be from <0,F> (we don't have to get a base)
+.PP
+for example: 1 -> 1 8 -> 8 10 -> A 15 -> F 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

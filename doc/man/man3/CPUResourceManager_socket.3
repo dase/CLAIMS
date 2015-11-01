@@ -1,0 +1,53 @@
+.TH "CPUResourceManager::socket" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CPUResourceManager::socket \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsocket\fP (int number_of_cores)"
+.br
+.ti -1c
+.RI "void \fBaddCore\fP (int core_id)"
+.br
+.ti -1c
+.RI "int \fBgetNumberOfFreeCores\fP ()"
+.br
+.ti -1c
+.RI "int \fBtryApplyCore\fP ()"
+.br
+.ti -1c
+.RI "int \fBapplyCore\fP ()"
+.br
+.ti -1c
+.RI "bool \fBfreeCore\fP (int core_id)"
+.br
+.ti -1c
+.RI "void \fBprint\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBbusy_cores\fP"
+.br
+.ti -1c
+.RI "\fBsemaphore\fP \fBsem_in_socket_available_cores\fP"
+.br
+.ti -1c
+.RI "int \fBnumber_of_cores\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBcore\fP > \fBcores\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

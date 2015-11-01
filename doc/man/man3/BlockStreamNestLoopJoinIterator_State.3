@@ -1,0 +1,54 @@
+.TH "BlockStreamNestLoopJoinIterator::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamNestLoopJoinIterator::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBBlockStreamIteratorBase\fP *child_left, \fBBlockStreamIteratorBase\fP *child_right, \fBSchema\fP *input_schema_left, \fBSchema\fP *input_schema_right, \fBSchema\fP *output_schema, unsigned block_size)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_left\fP"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_right\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBinput_schema_left\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBinput_schema_right\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBoutput_schema\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamNestLoopJoinIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

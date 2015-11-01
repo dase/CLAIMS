@@ -1,0 +1,137 @@
+.TH "decimal::NValue" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+decimal::NValue \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBcreateDecimalFromString\fP (const std::string &txt)"
+.br
+.ti -1c
+.RI "std::string \fBcreateStringFromDecimal\fP (unsigned number_of_fractinal_digits=12) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBopMultiplyDecimals\fP (const \fBNValue\fP &lhs, const \fBNValue\fP &rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBopDivideDecimals\fP (const \fBNValue\fP lhs, const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBisNull\fP () const "
+.br
+.ti -1c
+.RI "void \fBserializeToExport\fP (\fBExportSerializeOutput\fP &, void *para=0) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBop_add\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBop_subtract\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBop_multiply\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBop_divide\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBop_max\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBop_min\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBop_equals\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBop_not_equals\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBop_less\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBop_less_equals\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBop_great\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "bool \fBop_great_equals\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "int \fBcompare\fP (const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBTTInt\fP & \fBgetDecimal\fP ()"
+.br
+.ti -1c
+.RI "const \fBTTInt\fP & \fBgetDecimal\fP () const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBopAddDecimals\fP (const \fBNValue\fP lhs, const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "\fBNValue\fP \fBopSubtractDecimals\fP (const \fBNValue\fP lhs, const \fBNValue\fP rhs) const "
+.br
+.ti -1c
+.RI "int \fBcompareDecimalValue\fP (const \fBNValue\fP rhs) const "
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBNValue\fP \fBgetDecimalValueFromString\fP (const std::string &value)"
+.br
+.ti -1c
+.RI "static \fBNValue\fP \fBgetDecimalValue\fP (\fBTTInt\fP value)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "char \fBm_data\fP [16]"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const int64_t \fBkMaxScaleFactor\fP = 1000000000000"
+.br
+.ti -1c
+.RI "static const uint16_t \fBkMaxDecScale\fP = 12"
+.br
+.ti -1c
+.RI "static \fBTTInt\fP \fBs_maxDecimalValue\fP"
+.br
+.ti -1c
+.RI "static \fBTTInt\fP \fBs_minDecimalValue\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "int decimal::NValue::compareDecimalValue (const \fBNValue\fPrhs) const\fC [inline]\fP"
+Get the type of the value\&. This information is private to prevent code outside of \fBNValue\fP from branching based on the type of a value\&. 
+.SS "void decimal::NValue::createDecimalFromString (const std::string &txt)"
+set a decimal value from a serialized representation Check for invalid characters
+.PP
+References ttmath::Int< value_size >::SetSign()\&.
+.SS "std::string decimal::NValue::createStringFromDecimal (unsignednumber_of_fractinal_digits = \fC12\fP) const"
+Serialize sign and value using radix point (no exponent)\&. 
+.PP
+References ttmath::Int< value_size >::ChangeSign(), ttmath::Int< value_size >::IsSign(), and ttmath::Int< value_size >::ToString()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "char decimal::NValue::m_data[16]"
+16 bytes of storage for \fBNValue\fP data\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

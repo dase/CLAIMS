@@ -1,0 +1,73 @@
+.TH "claims::logical_operator::PlanContext" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::PlanContext \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <plan_context\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPlanContext\fP (const \fBPlanContext\fP &plan_context)"
+.br
+.ti -1c
+.RI "unsigned long \fBGetAggregatedDatasize\fP () const "
+.br
+.ti -1c
+.RI "unsigned long \fBGetAggregatedDataCardinality\fP () const "
+.br
+.ti -1c
+.RI "bool \fBIsHashPartitioned\fP () const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBGetSchema\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBGetTupleSize\fP () const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBGetAttribute\fP (std::string name) const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBGetAttribute\fP (std::string tbname, std::string colname) const "
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBAttribute\fP > \fBattribute_list_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBcommu_cost_\fP"
+.br
+.ti -1c
+.RI "\fBPlanPartitioner\fP \fBplan_partitioner_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBLogcalOperator\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+maintain the data property of the plan after having completed current operator, mainly include the attribute_list_, commu_cost_ and plan_partitioner_\&. the \fBPlanContext\fP originates the leaf of the plan (i\&.e\&. scan operator), the \fBPlanContext\fP of current operator generates from it's children\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned long claims::logical_operator::PlanContext::GetAggregatedDatasize () const"
+after having executing current operator, the data size could be changed, the data size = total tuples * tuple size\&. 
+.PP
+Referenced by claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalCrossJoin::GetPlanContext(), and claims::logical_operator::LogicalAggregation::GetPlanContext()\&.
+.SS "\fBSchema\fP * claims::logical_operator::PlanContext::GetSchema () const"
+Only fixed schema is supported now\&. TODO(wangli): support other schemas\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

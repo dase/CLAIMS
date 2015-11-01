@@ -1,0 +1,96 @@
+.TH "claims::logical_operator::LogicalCrossJoin" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::LogicalCrossJoin \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLogicalCrossJoin\fP (\fBLogicalOperator\fP *left_child, \fBLogicalOperator\fP *right_child)"
+.br
+.ti -1c
+.RI "\fBPlanContext\fP \fBGetPlanContext\fP ()"
+.br
+.RI "\fIMethod description: return the output of the plan context of the dedicated operator\&. \fP"
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &blocksize)"
+.br
+.RI "\fIMethod description: get the sub physical execution plan of the current local operator\&. \fP"
+.ti -1c
+.RI "void \fBPrint\fP (int level=0) const "
+.br
+.in -1c
+.SS "Protected Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBJoinPolicy\fP { \fBkUninitialized\fP, \fBkLeftBroadcast\fP, \fBkRightBroadcast\fP, \fBkLocalJoin\fP }"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBget_join_policy_\fP ()"
+.br
+.RI "\fIMethod description: get the decided join police\&. \fP"
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBclaims::logical_operator::LogicalCrossJoin::JoinPolicy\fP\fC [protected]\fP"
+The enum JoinPolicy is to enumerate the join policy used in the Cartesian product, it includes: KLocalJoin: local join which joined on the local node leftbroadcast: which broadcast the left table to the nodes which contains the partitions of the right table rightbroadcast: which broadcast the right table to the nodes which contains the partitions of the left table 
+.SH "Member Function Documentation"
+.PP 
+.SS "int claims::logical_operator::LogicalCrossJoin::get_join_policy_ ()\fC [protected]\fP"
+
+.PP
+Method description: get the decided join police\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fI@return\fP error no or the decided join police in the cross join
+.RE
+.PP
+  (additional) 
+.SS "\fBBlockStreamIteratorBase\fP * claims::logical_operator::LogicalCrossJoin::GetPhysicalPlan (const unsigned &block_size)\fC [virtual]\fP"
+
+.PP
+Method description: get the sub physical execution plan of the current local operator\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fI@return\fP 
+.RE
+.PP
+  (additional) 
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References GetPlanContext(), and claims::logical_operator::LogicalOperator::GetPlanContext()\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalCrossJoin::GetPlanContext ()\fC [virtual]\fP"
+
+.PP
+Method description: return the output of the plan context of the dedicated operator\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fI@return\fP 
+.RE
+.PP
+  (additional) 
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References claims::logical_operator::PlanContext::GetAggregatedDatasize(), and claims::logical_operator::LogicalOperator::GetPlanContext()\&.
+.PP
+Referenced by GetPhysicalPlan()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

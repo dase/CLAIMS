@@ -1,0 +1,62 @@
+.TH "MemoryChunkStore" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MemoryChunkStore \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBputValue\fP (string chunkId, void *value)"
+.br
+.ti -1c
+.RI "bool \fBapplyChunk\fP (\fBChunkID\fP chunk_id, void *&start_address)"
+.br
+.ti -1c
+.RI "void \fBreturnChunk\fP (const \fBChunkID\fP &chunk_id)"
+.br
+.ti -1c
+.RI "bool \fBupdateChunkInfo\fP (const \fBChunkID\fP &chunk_id, const \fBHdfsInMemoryChunk\fP &chunk_info)"
+.br
+.ti -1c
+.RI "void * \fBgetChunk\fP (string blockId)"
+.br
+.ti -1c
+.RI "bool \fBgetChunk\fP (const \fBChunkID\fP &chunk_id, \fBHdfsInMemoryChunk\fP &chunk_info)"
+.br
+.ti -1c
+.RI "bool \fBputChunk\fP (const \fBChunkID\fP &chunk_id, \fBHdfsInMemoryChunk\fP &chunk_info)"
+.br
+.ti -1c
+.RI "bool \fBremove\fP (string blockId)"
+.br
+.ti -1c
+.RI "bool \fBcontains\fP (string blockId)"
+.br
+.ti -1c
+.RI "unsigned \fBgetSize\fP (string blockId)"
+.br
+.ti -1c
+.RI "bool \fBtryToPut\fP (string chunkId, void *value)"
+.br
+.ti -1c
+.RI "bool \fBensureFreeSpace\fP ()"
+.br
+.ti -1c
+.RI "vector< string > \fBgetFileLocation\fP (string partition_file_name)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBMemoryChunkStore\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

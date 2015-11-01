@@ -21,26 +21,26 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
- * 
+ *
  * Description:
  *
  */
 
-
 #include <string.h>
 #include <iostream>
 #include "./error_no.h"
+
 namespace claims {
 namespace common {
 
 const char* CStrError(int errorno) {
-#define likely(x)     __builtin_expect(!!(x), 1)
-#define unlikely(x)   __builtin_expect(!!(x), 0)
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
 
   const char* res = "Unknown Error";
-  if (likely(errorno <= 0 && errorno > -ERROR_MAX_NUMBER)) {
-    res = ERROR_MESSEGE[-errorno];
-//    std::cout<<res<<"----"<<std::endl;
+  if (likely(errorno <= 0 && errorno > -kErrorMaxNumber)) {
+    res = kErrorMessage[-errorno];
+    //    std::cout<<res<<"----"<<std::endl;
     if (unlikely(NULL == res)) {
       res = "Unknown Error";
     }
@@ -49,23 +49,34 @@ const char* CStrError(int errorno) {
 }
 
 ErrorInit::ErrorInit() {
-  memset(ERROR_MESSEGE, 0, sizeof(ERROR_MESSEGE));
-  DefineErrorAndMessage(C_SUCCESS, "Success");
+  memset(kErrorMessage, 0, sizeof(kErrorMessage));
+  DefineErrorAndMessage(kSuccess, "Success");
 
   /* errorno for common  -1 ~ -1000 */
-  DefineErrorAndMessage(C_TYPE_ERROR, "Type error");
-  DefineErrorAndMessage(C_NOT_INIT, "Not initialize");
+  DefineErrorAndMessage(kTypeError, "Type error");
+  DefineErrorAndMessage(kNotInit, "Not initialize");
 
   /* errorno for SQL parser -1001 ~ -2000  */
-  DefineErrorAndMessage(C_NO_TABLE_FOUND, "No such table found");
+  DefineErrorAndMessage(kNoTableFound, "No such table found");
 
   /* errorno for codegen -3001 ~ -4000 */
-  DefineErrorAndMessage(C_TEST_ERROR, "test it is error ");
+  DefineErrorAndMessage(kTestError, "test it is error ");
 
-//  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
+  /* errorno for logical_operator -4001~ -5000 */
+  DefineErrorAndMessage(kUninitializedJoinPolicy,
+                        "the dedicated join police is not initialized, e.g., "
+                        "in corss join, equal join logical operator");
+  DefineErrorAndMessage(kGeneratePlanContextFailed,
+                        "generate the dataflow failed in the logical operator");
+
+  /* errorno for physical query plan -5001 ~ -6000 */
+  DefineErrorAndMessage(kGenerateSubPhyPlanFailed,
+                        "generate the sub physical plan failed");
+  DefineErrorAndMessage(kNoPartitionIdScan,
+                        "The partition id does not existed.");
+  DefineErrorAndMessage(kCodegenFailed, "codegen failed.");
+
+  //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common
 }  // namespace claims
-
-
-

@@ -52,13 +52,13 @@ bool PartitionFunction::equal(PartitionFunction* function_)const{
 //	return 1 << k_;
 //}
 
-PartitionFunction::partition_fashion ModuloHashFunction::getPartitionFashion()const{
+PartitionFunction::PartitionStyle ModuloHashFunction::getPartitionFashion()const{
 	return hash_f;
 }
-PartitionFunction::partition_fashion RoundRobinPartitionFunction::getPartitionFashion()const{
+PartitionFunction::PartitionStyle RoundRobinPartitionFunction::getPartitionFashion()const{
 	return round_robin_f;
 }
-PartitionFunction::partition_fashion UniformRangePartitionFunction::getPartitionFashion()const{
+PartitionFunction::PartitionStyle UniformRangePartitionFunction::getPartitionFashion()const{
 	return range_f;
 }
 
@@ -77,6 +77,6 @@ PartitionFunction* PartitionFunctionFactory::createGeneralModuloFunction(const i
 }
 
 
-PartitionFunction::partition_fashion GeneralModuloFunction::getPartitionFashion()const{
+PartitionFunction::PartitionStyle GeneralModuloFunction::getPartitionFashion()const{
 	return hash_f;
 }

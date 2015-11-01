@@ -1,0 +1,78 @@
+.TH "claims::logical_operator::PlanPartitioner" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::PlanPartitioner \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <plan_partitioner\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPlanPartitioner\fP (const \fBPartitioner\fP &partitoiner)"
+.br
+.ti -1c
+.RI "\fBPlanPartitioner\fP (const \fBPlanPartitioner\fP &)"
+.br
+.ti -1c
+.RI "bool \fBHasSamePartitionLocation\fP (const \fBPlanPartitioner\fP &target) const "
+.br
+.ti -1c
+.RI "unsigned \fBGetAggregatedDataSize\fP () const "
+.br
+.ti -1c
+.RI "unsigned long \fBGetAggregatedDataCardinality\fP () const "
+.br
+.ti -1c
+.RI "PartitionFunction::PartitionStyle \fBGetPartitionStyle\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBGetNumberOfPartitions\fP () const "
+.br
+.ti -1c
+.RI "\fBPlanPartitionInfo\fP * \fBGetPartition\fP (unsigned id) const "
+.br
+.ti -1c
+.RI "std::vector< \fBPlanPartitionInfo\fP > \fBget_partition_list\fP () const "
+.br
+.ti -1c
+.RI "void \fBset_partition_list\fP (const std::vector< \fBPlanPartitionInfo\fP > &)"
+.br
+.ti -1c
+.RI "void \fBset_partition_func\fP (\fBPartitionFunction\fP *partition_function)"
+.br
+.ti -1c
+.RI "\fBPartitionFunction\fP * \fBget_partition_func\fP () const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBget_partition_key\fP () const "
+.br
+.ti -1c
+.RI "void \fBset_partition_key\fP (const \fBAttribute\fP &partitionkey)"
+.br
+.ti -1c
+.RI "void \fBAddShadowPartitionKey\fP (const \fBAttribute\fP &partitionkey)"
+.br
+.ti -1c
+.RI "bool \fBHasShadowPartitionKey\fP () const "
+.br
+.ti -1c
+.RI "std::vector< \fBAttribute\fP > \fBget_shadow_partition_keys\fP () const "
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+describe how the \fBPlanContext\fP are partitioned and the partition property between them\&. I think that, in the current design, the \fBPlanContext\fP descriptor fails to contain the information describing how the data is processed since it is release from the source, i\&.e\&., Scan operator\&. the information of every partition is described by the \fBPlanPartitionInfo\fP\&. all this information originates from the partition information of the raw dataset\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool claims::logical_operator::PlanPartitioner::HasSamePartitionLocation (const \fBPlanPartitioner\fP &target) const"
+if no party is filtered\&.
+.PP
+Referenced by claims::logical_operator::LogicalEqualJoin::GetPlanContext()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

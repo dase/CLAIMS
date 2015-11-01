@@ -22,21 +22,20 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
-#include "../LogicalQueryPlan/Scan.h"
-#include "../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../LogicalQueryPlan/EqualJoin.h"
-#include "../LogicalQueryPlan/filter.h"
-#include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/Buffer.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_aggregation.h"
 
+#include "../logical_operator/logical_filter.h"
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
+#include "../logical_operator/logical_limit.h"
+#include "../logical_operator/logical_query_plan_root.h"
 #define SQL_Parser
 using namespace std;
-
 #define SQL_Parser
 
 const int INT_LENGTH = 10;
@@ -1003,33 +1002,33 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set, bool& result_fl
 		Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
 		if(lexpr->offset==NULL)
 		{
-			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
 		}
 		else
 		{
-			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+			root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector,LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
 		}
 	}
 	else
 	{
-		root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+		root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector);
 	}
 
 #ifdef SQL_Parser
-	root->print(0);
+	root->Print(0);
 #endif
 
-	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 	//					puts("+++++++++++++++++++++begin time++++++++++++++++");
 	unsigned long long start=curtick();
-	physical_iterator_tree->print();
+	physical_iterator_tree->Print();
 
-	physical_iterator_tree->open();
+	physical_iterator_tree->Open();
 
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 	//					printf("++++++++++++++++Q1: execution time: %4.4f second.++++++++++++++\n",getSecond(start));
-	result_set=physical_iterator_tree->getResultSet();
+	result_set=physical_iterator_tree->GetResultSet();
 	cout<<"execute "<<result_set->query_time_<<" s"<<endl;
 	result_flag=true;
 

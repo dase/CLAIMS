@@ -1,0 +1,51 @@
+.TH "IndexScanIterator::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IndexScanIterator::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBProjectionID\fP projection_id, \fBSchema\fP *schema, unsigned long index_id, vector< \fBquery_range\fP > query_range__, unsigned block_size)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBProjectionID\fP \fBprojection_id_\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBschema_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBindex_id_\fP"
+.br
+.ti -1c
+.RI "vector< \fBquery_range\fP > \fBquery_range_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBIndexScanIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
