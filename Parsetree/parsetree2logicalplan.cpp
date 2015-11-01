@@ -1,21 +1,17 @@
 #ifndef __PARSERTREE__
 #define __PARSERTREE__
+#include <string.h>
 #include <cstdio>
-
 #include <map>
 #include <new>
 #include <set>
 #include <string>
 #include <vector>
-#include <string.h>
-
 #include "sql_node_struct.h"
 #include "../Environment.h"
-
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-
 #include "../common/Comparator.h"
 #include "../common/ExpressionItem.h"
 #include "../common/Logging.h"
@@ -23,12 +19,9 @@
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
-
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
-
-#include "../logical_query_plan/logical_operator.h"
-
+#include "../logical_operator/logical_operator.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include <string.h>
@@ -36,17 +29,17 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 #include <assert.h>
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_cross_join.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_project.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_sort.h"
+#include "../physical_operator/physical_aggregation.h"
 
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../logical_query_plan/logical_cross_join.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_project.h"
-#include "../logical_query_plan/logical_scan.h"
-#include "../logical_query_plan/logical_sort.h"
-#include "../physical_query_plan/BlockStreamAggregationIterator.h"
-
-using namespace claims::logical_query_plan;
+using namespace claims::logical_operator;
+using claims::physical_operator::PhysicalAggregation;
 static LogicalOperator *parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem> &expr, Node *node,
                                   LogicalOperator *input);
@@ -272,7 +265,8 @@ static LogicalOperator *solve_insubquery(Node *exprnode,
           }  // 2.2在1中的logicalplan上做groupby
           LogicalOperator *aggrection_sublogicalplan = new LogicalAggregation(
               group_by_attributes, std::vector<Attribute>(),
-              std::vector<BlockStreamAggregationIterator::State::aggregation>(),
+
+              std::vector<PhysicalAggregation::State::Aggregation>(),
               sublogicalplan);
           vector<LogicalEqualJoin::JoinPair> join_pair_list;
           Node *lp, *sp;
@@ -518,8 +512,7 @@ static char *get_expr_str(Node *node) {
 
 static void get_aggregation_args(
     Node *selectlist, vector<Attribute> &aggregation_attributes,
-    vector<BlockStreamAggregationIterator::State::aggregation> &
-        aggregation_function,
+    vector<PhysicalAggregation::State::Aggregation> &aggregation_function,
     LogicalOperator *input) {
   if (selectlist == NULL) {
     //	puts("get_aggregation_args is null");
@@ -542,12 +535,10 @@ static void get_aggregation_args(
     case t_expr_func: {
       Expr_func *funcnode = (Expr_func *)selectlist;
       if (strcmp(funcnode->funname, "FCOUNTALL") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::count);
+        aggregation_function.push_back(PhysicalAggregation::State::kCount);
         aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
       } else if (strcmp(funcnode->funname, "FCOUNT") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::count);
+        aggregation_function.push_back(PhysicalAggregation::State::kCount);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -560,8 +551,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FSUM") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::sum);
+        aggregation_function.push_back(PhysicalAggregation::State::kSum);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -574,8 +564,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FMIN") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::min);
+        aggregation_function.push_back(PhysicalAggregation::State::kMin);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -588,8 +577,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FMAX") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::max);
+        aggregation_function.push_back(PhysicalAggregation::State::kMax);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -602,8 +590,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FAVG") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::avg);
+        aggregation_function.push_back(PhysicalAggregation::State::kAvg);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -1131,8 +1118,8 @@ static LogicalOperator *groupby_select_where_from2logicalplan(
       where_from2logicalplan(node->from_list);
   vector<Attribute> group_by_attributes;
   vector<Attribute> aggregation_attributes;
-  vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
+
+  vector<PhysicalAggregation::State::Aggregation> aggregation_function;
   int agg_has_expr, agg_in_expr, has_agg, sid = 0;
   agg_has_expr = agg_in_expr = has_agg = 0;
   judge_selectlist_agg_has_or_in_expr(node->select_list, has_agg, agg_has_expr,

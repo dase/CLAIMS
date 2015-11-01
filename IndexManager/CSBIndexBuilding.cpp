@@ -230,7 +230,7 @@ bottomLayerSorting::~bottomLayerSorting()
 
 }
 
-bottomLayerSorting::State::State(Schema* schema, BlockStreamIteratorBase* child, unsigned block_size, ProjectionID projection_id, unsigned key_indexing, std::string index_name)
+bottomLayerSorting::State::State(Schema* schema, PhysicalOperatorBase* child, unsigned block_size, ProjectionID projection_id, unsigned key_indexing, std::string index_name)
 : schema_(schema), child_(child), block_size_(block_size), projection_id_(projection_id), key_indexing_(key_indexing), index_name_(index_name) {
 
 }

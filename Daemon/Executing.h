@@ -16,21 +16,14 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
-#include "../logical_query_plan/logical_query_plan_root.h"
+#include "../logical_operator/logical_query_plan_root.h"
 class Executing {
-public:
-	Executing();
-	virtual ~Executing();
-	static ResultSet* run_sql(std::string sql,std::string& error);
-	static void run_sql(
-			const std::string &cmd,
-			ResultSet *&result,
-			bool &status,
-			std::string &error_info,
-			std::string &info,
-			int fd
-		);
-
+ public:
+  Executing();
+  virtual ~Executing();
+  static ResultSet *run_sql(std::string sql, std::string &error);
+  static void run_sql(const std::string &cmd, ResultSet *&result, bool &status,
+                      std::string &error_info, std::string &info, int fd);
 };
 
 #endif /* EXECUTING_H_ */

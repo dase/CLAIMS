@@ -21,7 +21,7 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
- * 
+ *
  * Description:
  *
  */
@@ -34,13 +34,12 @@ namespace claims {
 namespace common {
 
 const char* CStrError(int errorno) {
-#define likely(x)     __builtin_expect(!!(x), 1)
-#define unlikely(x)   __builtin_expect(!!(x), 0)
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
 
   const char* res = "Unknown Error";
   if (likely(errorno <= 0 && errorno > -kErrorMaxNumber)) {
     res = kErrorMessage[-errorno];
-//    std::cout<<res<<"----"<<std::endl;
     if (unlikely(NULL == res)) {
       res = "Unknown Error";
     }
@@ -62,7 +61,7 @@ ErrorInit::ErrorInit() {
   /* errorno for codegen -3001 ~ -4000 */
   DefineErrorAndMessage(kTestError, "test it is error ");
 
-  /* errorno for logical_query_plan -4001~ -5000 */
+  /* errorno for logical_operator -4001~ -5000 */
   DefineErrorAndMessage(kUninitializedJoinPolicy,
                         "the dedicated join police is not initialized, e.g., "
                         "in corss join, equal join logical operator");
@@ -72,9 +71,14 @@ ErrorInit::ErrorInit() {
   /* errorno for physical query plan -5001 ~ -6000 */
   DefineErrorAndMessage(kGenerateSubPhyPlanFailed,
                         "generate the sub physical plan failed");
+  /* errorno for physical query plan -5001 ~ -6000 */
+  DefineErrorAndMessage(kGenerateSubPhyPlanFailed,
+                        "generate the sub physical plan failed");
+  DefineErrorAndMessage(kNoPartitionIdScan,
+                        "The partition id does not existed.");
+  DefineErrorAndMessage(kCodegenFailed, "codegen failed.");
 
-//  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
+  //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common
 }  // namespace claims
-

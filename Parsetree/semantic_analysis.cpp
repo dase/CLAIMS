@@ -19,18 +19,16 @@
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
-
-#include "../logical_query_plan/logical_operator.h"
 #include "sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
 #include <ostream>
-
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_scan.h"
-#include "../physical_query_plan/BlockStreamAggregationIterator.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_operator.h"
+#include "../logical_operator/logical_scan.h"
+#include "../physical_operator/physical_aggregation.h"
 using namespace std;
 bool semantic_analysis(Node *parsetree, bool issubquery);
 bool wherecondition_analysis(Query_stmt *qstmt, Node *cur,
@@ -89,8 +87,9 @@ int subquery_has_column(char *colname, Node *subquery) {
           result++;
         }
       } else {
-        //				SQLParse_elog("the column in subquery should
-        //be aliased");
+        //				SQLParse_elog("the column in subquery
+        // should
+        // be aliased");
       }
     }
     p = slist->next;
@@ -243,52 +242,55 @@ int selectlist_expr_analysis(Node *slnode, Query_stmt *qstmt, Node *node,
   switch (node->type) {
     case t_expr_func:  // judge using the function is ok ? including the
                        // parameter type and number
-    {
-      Expr_func *funcnode = (Expr_func *)node;
-      if (strcmp(funcnode->funname, "FCOUNTALL") == 0) {
-        return 3;
-      } else {
-        int result = 0;
-        if (funcnode->args != NULL) {
-          result =
-              selectlist_expr_analysis(slnode, qstmt, funcnode->args, rtable);
-          if (result == 3 || result == 0) return result;
-        }
-        if (funcnode->parameter1 != NULL) {
-          result = selectlist_expr_analysis(slnode, qstmt, funcnode->parameter1,
-                                            rtable);
-          if (result == 3 || result == 0) return result;
-        }
-        if (funcnode->parameter2 != NULL) {
-          result = selectlist_expr_analysis(slnode, qstmt, funcnode->parameter2,
-                                            rtable);
-          if (result == 3 || result == 0) return result;
-        }
-        if (funcnode->next != NULL)  // there are next in case_list
-        {
-          result =
-              selectlist_expr_analysis(slnode, qstmt, funcnode->next, rtable);
-          if (result == 3 || result == 0) return result;
+      {
+        Expr_func *funcnode = (Expr_func *)node;
+        if (strcmp(funcnode->funname, "FCOUNTALL") == 0) {
+          return 3;
+        } else {
+          int result = 0;
+          if (funcnode->args != NULL) {
+            result =
+                selectlist_expr_analysis(slnode, qstmt, funcnode->args, rtable);
+            if (result == 3 || result == 0) return result;
+          }
+          if (funcnode->parameter1 != NULL) {
+            result = selectlist_expr_analysis(slnode, qstmt,
+                                              funcnode->parameter1, rtable);
+            if (result == 3 || result == 0) return result;
+          }
+          if (funcnode->parameter2 != NULL) {
+            result = selectlist_expr_analysis(slnode, qstmt,
+                                              funcnode->parameter2, rtable);
+            if (result == 3 || result == 0) return result;
+          }
+          if (funcnode->next != NULL)  // there are next in case_list
+          {
+            result =
+                selectlist_expr_analysis(slnode, qstmt, funcnode->next, rtable);
+            if (result == 3 || result == 0) return result;
+          }
         }
       }
-    } break;
+      break;
     case t_expr_cal:  // judge using the expr ok? like the parameter type of the
                       // expression ,the divided !=0 etc.
-    {
-      Expr_cal *calnode = (Expr_cal *)node;
-      int result = 0;
-      if (calnode->lnext == 0) {
-        result = 1;
-      } else {
-        result =
-            selectlist_expr_analysis(slnode, qstmt, calnode->lnext, rtable);
+      {
+        Expr_cal *calnode = (Expr_cal *)node;
+        int result = 0;
+        if (calnode->lnext == 0) {
+          result = 1;
+        } else {
+          result =
+              selectlist_expr_analysis(slnode, qstmt, calnode->lnext, rtable);
+        }
+        if (result == 0) {
+          return false;
+        } else {
+          return selectlist_expr_analysis(slnode, qstmt, calnode->rnext,
+                                          rtable);
+        }
       }
-      if (result == 0) {
-        return false;
-      } else {
-        return selectlist_expr_analysis(slnode, qstmt, calnode->rnext, rtable);
-      }
-    } break;
+      break;
     case t_name: {
       Columns *col = (Columns *)node;
       char *astablename = "";
@@ -385,9 +387,8 @@ bool selectlist_analysis(Query_stmt *qstmt, vector<Node *> rtable) {
       Select_list *selectlist = (Select_list *)p;
       if (selectlist->isall == 0) {
         Select_expr *sexpr = (Select_expr *)selectlist->args;
-        Node *node =
-            (Node *)sexpr->colname;  // selectexpr including
-                                     // expr_func,t_name,t_name_name,expr_cal
+        Node *node = (Node *)sexpr->colname;  // selectexpr including
+        // expr_func,t_name,t_name_name,expr_cal
         int result = selectlist_expr_analysis(p, qstmt, node, rtable);
         if (result == 3)  // special case:fcountall
         {
@@ -848,7 +849,6 @@ bool groupby_analysis(Query_stmt *qstmt, Node *cur, vector<Node *> rtable) {
       Columns *col = (Columns *)cur;
       char *astablename;
       int result = table_has_column(col->parameter2, rtable, astablename);
-
       if (result == 1) {
         col->parameter1 = astablename;
         stringstream ss;
@@ -898,10 +898,12 @@ bool groupby_analysis(Query_stmt *qstmt, Node *cur, vector<Node *> rtable) {
            << string(col->parameter2).c_str();
         col->parameter2 = (char *)malloc(ss.str().length() + 1);
         strcpy(col->parameter2, ss.str().c_str());
+
         //				if(Environment::getInstance()->getCatalog()->isAttributeExist(tablename,col->parameter2)==0)
         //				{
-        //					SQLParse_elog("groupby_analysis %s
-        //can't find",col->parameter2);
+        //					SQLParse_elog("groupby_analysis
+        //%s
+        // can't find",col->parameter2);
         //					return false;
         //				}
       } else if (fg == 2) {
@@ -913,6 +915,7 @@ bool groupby_analysis(Query_stmt *qstmt, Node *cur, vector<Node *> rtable) {
            << string(col->parameter2).c_str();
         col->parameter2 = (char *)malloc(ss.str().length() + 1);
         strcpy(col->parameter2, ss.str().c_str());
+
         return true;
       }
 
