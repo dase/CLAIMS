@@ -1,0 +1,32 @@
+.TH "Logging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Logging \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBAdaptiveEndPointLogging\fP, \fBBlockStreamExpanderLogging\fP, \fBBufferManagerLogging\fP, \fBCatalogLogging\fP, \fBCoordinatorLogging\fP, \fBEnvironmentLogging\fP, \fBExchangeIteratorEagerLogging\fP, \fBExchangeIteratorEagerLowerLogging\fP, \fBExchangeIteratorSenderMaterialized\fP, \fBExchangeTrackerLogging\fP, \fBExpanderTrackerLogging\fP, \fBIteratorExecutorMasterLogging\fP, \fBIteratorExecutorSlaveLogging\fP, \fBPerformanceTopLogging\fP, \fBResourceManagerMasterLogging\fP, \fBResourceManagerSlaveLogging\fP, \fBStorageManagerLogging\fP, and \fBStorageManagerMasterLogging\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBlog\fP (const char *format,\&.\&.\&.)=0"
+.br
+.ti -1c
+.RI "virtual void \fBelog\fP (const char *format,\&.\&.\&.)=0"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void Logging::elog (const char *format, \&.\&.\&.)\fC [pure virtual]\fP"
+print the error information to stderr\&. 
+.PP
+Implemented in \fBExpanderTrackerLogging\fP, \fBExchangeTrackerLogging\fP, \fBCoordinatorLogging\fP, \fBAdaptiveEndPointLogging\fP, \fBEnvironmentLogging\fP, \fBIteratorExecutorSlaveLogging\fP, and \fBIteratorExecutorMasterLogging\fP\&.
+.PP
+Referenced by Coordinator::Coordinator(), Environment::Environment(), and ExpandableBlockStreamExchangeLowerEfficient::Open()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

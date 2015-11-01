@@ -1,0 +1,4 @@
+\form#0:$ k = 2^{\lceil{\log_2{k}}\rceil} $
+\form#1:$n\in[0,k)$
+\form#2:$ \_k=log_2(k) $
+\form#3:$k$

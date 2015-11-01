@@ -1,0 +1,65 @@
+.TH "claims::logical_operator::PlanPartitionInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::PlanPartitionInfo \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <plan_partition_info\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPlanPartitionInfo\fP (unsigned partitoin_id, int cardinality, NodeID location)"
+.br
+.ti -1c
+.RI "\fBPlanPartitionInfo\fP (const \fBPlanPartitionInfo\fP &part)"
+.br
+.ti -1c
+.RI "unsigned \fBget_cardinality\fP () const "
+.br
+.ti -1c
+.RI "void \fBset_cardinality\fP (const unsigned &)"
+.br
+.ti -1c
+.RI "bool \fBIsAvaliable\fP () const "
+.br
+.ti -1c
+.RI "void \fBset_filtered\fP ()"
+.br
+.ti -1c
+.RI "NodeID \fBget_location\fP () const "
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBpartition_id_\fP"
+.br
+.ti -1c
+.RI "int \fBcardinality_\fP"
+.br
+.ti -1c
+.RI "NodeID \fBlocation_\fP"
+.br
+.ti -1c
+.RI "bool \fBfiltered_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBPlanPartitioner\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+the partition info of every partition is changing during executing them\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

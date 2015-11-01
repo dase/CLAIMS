@@ -294,7 +294,7 @@ expr_func getExprFunc(QNode* qnode, Schema* schema) {
     return ret;
   }
 }
-expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema,
+ExprFuncTwoTuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema,
                                           Schema* r_schema) {
   CodeGenerator::getInstance()->lock();
   llvm::Function* fun = getExprLLVMFuncForTwoTuples(qnode, l_schema, r_schema);
@@ -303,8 +303,8 @@ expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema,
     return NULL;
   }
   else {
-    expr_func_two_tuples ret =
-        (expr_func_two_tuples) CodeGenerator::getInstance()->getExecutionEngine()
+    ExprFuncTwoTuples ret =
+        (ExprFuncTwoTuples) CodeGenerator::getInstance()->getExecutionEngine()
             ->getPointerToFunction(fun);
     CodeGenerator::getInstance()->release();
     return ret;
@@ -976,7 +976,7 @@ QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s,
   return ret;
 }
 
-llvm_memcpy getMemcpy(unsigned length) {
+LLVMMemcpy getMemcpy(unsigned length) {
   llvm::IRBuilder<>* builder = CodeGenerator::getInstance()->getBuilder();
   CodeGenerator::getInstance()->lock();
   std::vector<llvm::Type *> parameter_types;
@@ -1011,14 +1011,14 @@ llvm_memcpy getMemcpy(unsigned length) {
   verifyFunction(*F);
 //	F->dump();
   CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-  llvm_memcpy ret = (llvm_memcpy) CodeGenerator::getInstance()
+  LLVMMemcpy ret = (LLVMMemcpy) CodeGenerator::getInstance()
       ->getExecutionEngine()->getPointerToFunction(F);
   CodeGenerator::getInstance()->release();
   return ret;
 
 }
 
-llvm_memcat getMemcat(unsigned length1, unsigned length2) {
+LLVMMemcat getMemcat(unsigned length1, unsigned length2) {
   llvm::IRBuilder<>* builder = CodeGenerator::getInstance()->getBuilder();
   CodeGenerator::getInstance()->lock();
   std::vector<llvm::Type *> parameter_types;
@@ -1068,7 +1068,7 @@ llvm_memcat getMemcat(unsigned length1, unsigned length2) {
   verifyFunction(*F);
 //	F->dump();
   CodeGenerator::getInstance()->getFunctionPassManager()->run(*F);
-  llvm_memcat ret = (llvm_memcat) CodeGenerator::getInstance()
+  LLVMMemcat ret = (LLVMMemcat) CodeGenerator::getInstance()
       ->getExecutionEngine()->getPointerToFunction(F);
   CodeGenerator::getInstance()->release();
   return ret;

@@ -1,0 +1,39 @@
+.TH "BlockStreamBuffer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamBuffer \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBMonitorableBuffer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamBuffer\fP (unsigned block_size, unsigned block_count, \fBSchema\fP *schema)"
+.br
+.ti -1c
+.RI "void \fBinsertBlock\fP (\fBBlockStreamBase\fP *block)"
+.br
+.ti -1c
+.RI "bool \fBgetBlock\fP (\fBBlockStreamBase\fP &block)"
+.br
+.ti -1c
+.RI "unsigned \fBgetBlockInBuffer\fP ()"
+.br
+.ti -1c
+.RI "bool \fBEmpty\fP ()"
+.br
+.ti -1c
+.RI "double \fBgetBufferUsage\fP ()"
+.br
+.ti -1c
+.RI "long \fBgetReceivedDataSizeInKbytes\fP ()"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

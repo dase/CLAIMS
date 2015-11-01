@@ -1,0 +1,59 @@
+.TH "ModuloHashFunction" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ModuloHashFunction \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBPartitionFunction\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBModuloHashFunction\fP ()"
+.br
+.ti -1c
+.RI "\fBModuloHashFunction\fP (int min, unsigned int range, unsigned int skipbits)"
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const int &value) const "
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const double &value) const "
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const unsigned long &value) const "
+.br
+.ti -1c
+.RI "PartitionStyle \fBgetPartitionFashion\fP () const "
+.br
+.ti -1c
+.RI "unsigned int \fBgetNumberOfPartitions\fP () const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ModuloHashFunction::ModuloHashFunction ()\fC [inline]\fP"
+Skipbits parameter defines number of least-significant bits which will be discarded before computing the hash\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned int ModuloHashFunction::get_partition_value (const int &value) const\fC [inline]\fP, \fC [virtual]\fP"
+Return h(x) = x mod k\&. 
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::k_\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

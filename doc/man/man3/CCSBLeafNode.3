@@ -1,0 +1,60 @@
+.TH "CCSBLeafNode< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CCSBLeafNode< T > \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCCSBNode< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBsetUsedKeys\fP (int count)"
+.br
+.ti -1c
+.RI "\fBdata_offset\fP< T > \fBgetElement\fP (unsigned i)"
+.br
+.ti -1c
+.RI "bool \fBsetElement\fP (unsigned i, \fBdata_offset\fP< T > data)"
+.br
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBgetPointer\fP ()"
+.br
+.ti -1c
+.RI "bool \fBInsert\fP (\fBdata_offset\fP< T > value)"
+.br
+.ti -1c
+.RI "bool \fBDelete\fP (T value)"
+.br
+.ti -1c
+.RI "T \fBSplitInsert\fP (\fBCCSBNode\fP< T > *pNode, \fBdata_offset\fP< T > data)"
+.br
+.ti -1c
+.RI "bool \fBCombine\fP (\fBCCSBNode\fP< T > *pNode)"
+.br
+.ti -1c
+.RI "void \fBDeleteChildren\fP ()"
+.br
+.ti -1c
+.RI "bool \fBserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "bool \fBdeserialize\fP (FILE *filename)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBdata_offset\fP< T > * \fBnode_datas\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

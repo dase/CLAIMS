@@ -17,7 +17,7 @@ endif
 LDADD = 	\
 		../libindexmanager.a \
 		../../Catalog/libcatalog.a \
-		../../logical_query_plan/liblogicalqueryplan.a \
+		../../logical_operator/liblogicalqueryplan.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../BlockStreamIterator/libblockstreamiterator.a \
 		../../Resource/libresource.a \

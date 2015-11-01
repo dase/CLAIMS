@@ -1,0 +1,83 @@
+---
+title: "Download"
+layout: base
+---
+<div class="row">
+	<div class="col-xs-12">
+		<h2 class="header-title">Overview</h2>
+		<p>
+			CLAIMS is an open source system for concurrent data ingestion & data analysis running on a distributed in-memory cluster. CLAIMS extends traditional parallel database technologies with runtime dynamic execution as well as high throughput concurrent data ingestion to achieve real-time data analysis together with data which are being ingesting right after newly produced, as well as provides expressive and optimizable programming interfaces and at the same time efficient and scalable execution. 
+		</p>
+	</div>
+</div>
+<div class="blank"></div>
+<div class="row">
+  <div class="col-sm-9 col-xs-12">
+		<h2 class="header-title">Downloads</h2>
+		<div class="row">
+			<div class="col-xs-2" style="text-align: center">
+				<i class="fa fa-download" style="font-size: 6em;"></i>
+			</div>
+			<div class="col-xs-10">
+				<p>
+					CLuster-Aware In-Memory Sql engine.
+				</p>
+				<p>
+					CLAIMS is an In-memory parallel database prototype, which runs on a cluster of commodity servers and provides real-time data analysis over relational dataset.
+				</p>
+			</div>
+		</div>
+		<p>
+			Click Here to visit project CLAIMS on Github:
+			<a href="https://github.com/dase/CLAIMS">https://github.com/dase/CLAIMS</a>
+		</p>
+		<p>
+			Click Here to download the third party package:
+			<a href="{{ site.baseurl }}/claims/download/Thirdparty.tar.gz">Thirdparty Library Packages</a>
+		</p>
+  </div>
+	<div class="col-sm-3 col-xs-12">
+		<h2 class="header-title">QR code</h2>
+		<div id="qr">
+    	<img id="qr-img" src="/claims/img/qr_code.jpg"></img>
+		</div>
+	</div>
+</div>
+<div class="blank"></div>
+<div class="row">
+	<div class="col-sm-4 col-xs-12">
+	  <h2 class="header-title">Quick Start</h2>
+	  <p>There are <b>two ways</b> shooting CLAIMS.</p>
+	  <p><button type="button" class="btn my-btn">Click Here</button> or <button type="button" class="btn my-btn">Click Here</button> so that you can launch it easily.</p>
+	  <p>You may also turn to <a href="{{ site.baseurl }}/claims/2015/08/12/QuickStart.html">QuickStart</a> for help.</p>
+	</div>
+  <div class="col-sm-4 col-xs-12">
+	  <h2 class="header-title">Documents</h2>
+	  <div class="row">
+	    <div class="col-xs-9">
+    	  <ul class="list-group document-list">
+    	  {% for document in site.posts limit:3 %}
+      	  <li class="list-group-item"><span>{{ document.date | date_to_string }}</span> &raquo;
+        	  <a href="{{ site.baseurl }}{{ document.url }}">{{ document.title }}</a>
+      	  </li>
+    	  {% endfor %}
+    	  </ul>
+		  </div>
+	    <div class="col-xs-3">
+    	  <a href="{{ site.baseurl }}/claims/documents/index.html" id="document-more">see more &raquo;</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-4 col-xs-12">
+		<h2 class="header-title">Contact</h2>
+			<div markdown="1">
+				<p>Contact us (see <a href="{{ site.baseurl }}/claims/feature/index.html#team">Team</a> for emails) if you are interested in joining us!</p>
+				<p><b><i>East China Normal University</i></b></p>
+				<p><b><i>Institute for Data Science and Engineering</i></b></p>
+				<p><i>3663 N.Zhongshan Rd. 200062 Shanghai China</i></p>
+		</div>
+	</div>
+</div>
+<div class="blank"></div>
+<div class="blank"></div>
+

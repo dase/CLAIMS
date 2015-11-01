@@ -8,24 +8,15 @@
 #ifndef TPC_H_TEST_CPP_
 #define TPC_H_TEST_CPP_
 #include "../../Environment.h"
-
 #include "../../Catalog/table.h"
-
 #include "../../Loader/Hdfsloader.h"
-
-#include "../../physical_query_plan/BlockStreamIteratorBase.h"
-
-
-#include "../../logical_query_plan/logical_aggregation.h"
-#include "../../logical_query_plan/logical_scan.h"
-#include "../../logical_query_plan/logical_equal_join.h"
-
+#include "../../physical_operator/physical_operator_base.h"
+#include "../../logical_operator/logical_aggregation.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/logical_equal_join.h"
 #include "../../common/AttributeComparator.h"
-
 #include "../../common/types/NValue.hpp"
-
 #include "../../utility/rdtsc.h"
-
 #include "../set_up_environment.h"
 #include "../../Executor/IteratorExecutorSlave.h"
 
@@ -51,13 +42,12 @@ static void query_1() {
       table->getAttribute("LINEITEM.L_EXTENDEDPRICE"));
   aggregation_attributes.push_back(table->getAttribute("LINEITEM.L_DISCOUNT"));
   aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+  aggregation_function.push_back(PhysicalAggregation::State::kSum);
+  aggregation_function.push_back(PhysicalAggregation::State::kSum);
+  aggregation_function.push_back(PhysicalAggregation::State::kSum);
+  aggregation_function.push_back(PhysicalAggregation::State::kCount);
   LogicalOperator* aggregation =
       new LogicalAggregation(group_by_attributes, aggregation_attributes,
                              aggregation_function, filter);
@@ -65,7 +55,7 @@ static void query_1() {
   LogicalOperator* root =
       new LogicalQueryPlanRoot(0, filter, LogicalQueryPlanRoot::kPerformance);
 
-  BlockStreamIteratorBase* physical_iterator_tree =
+  PhysicalOperatorBase* physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
   //	physical_iterator_tree->print();
   IteratorExecutorSlave::executePhysicalQueryPlan(
@@ -136,9 +126,8 @@ static void query_2() {
   std::vector<Attribute> aggregation_attributes;
   aggregation_attributes.push_back(
       s_ps_join->GetPlanContext().GetAttribute("PARTSUPP.PS_SUPPLYCOST"));
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::min);
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+  aggregation_function.push_back(PhysicalAggregation::State::kMin);
   LogicalOperator* aggregation =
       new LogicalAggregation(std::vector<Attribute>(), aggregation_attributes,
                              aggregation_function, s_ps_n_join);
@@ -146,7 +135,7 @@ static void query_2() {
   LogicalOperator* root = new LogicalQueryPlanRoot(
       0, s_ps_n_join, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* sub_physical_iterator_tree =
+  PhysicalOperatorBase* sub_physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
 
   sub_physical_iterator_tree->Open();
@@ -154,13 +143,13 @@ static void query_2() {
     ;
   sub_physical_iterator_tree->Close();
 
-  ResultSet* result_set = sub_physical_iterator_tree->getResultSet();
+  ResultSet* result_set = sub_physical_iterator_tree->GetResultSet();
 
   BlockStreamBase::BlockStreamTraverseIterator* it =
       result_set->createIterator().atomicNextBlock()->createIterator();
   NValue sub_query_result = *(NValue*)it->nextTuple();
   it->~BlockStreamTraverseIterator();
-  sub_physical_iterator_tree->~BlockStreamIteratorBase();
+  sub_physical_iterator_tree->~PhysicalOperatorBase();
 
   LogicalFilter::Condition p_filter_condition_1;
   p_filter_condition_1.add(part->getAttribute("PART.P_SIZE"),
@@ -215,7 +204,7 @@ static void query_2() {
 
   LogicalOperator* root_father = new LogicalQueryPlanRoot(
       0, r_n_s_p_ps_farther_join, LogicalQueryPlanRoot::kPerformance);
-  BlockStreamIteratorBase* final_physical_iterator_tree =
+  PhysicalOperatorBase* final_physical_iterator_tree =
       root_father->GetPhysicalPlan(64 * 1024);
   //
   //	final_physical_iterator_tree->open();
@@ -224,7 +213,7 @@ static void query_2() {
 
   printf("Q2: execution time: %4.4f second.\n", getSecond(start));
 
-  final_physical_iterator_tree->~BlockStreamIteratorBase();
+  final_physical_iterator_tree->~PhysicalOperatorBase();
   root->~LogicalOperator();
   root_father->~LogicalOperator();
 }
@@ -285,17 +274,16 @@ static void query_3() {
       c_o_l_join->GetPlanContext().GetAttribute("LINEITEM.L_EXTENDEDPRICE"));
   aggregation_attributes.push_back(
       c_o_l_join->GetPlanContext().GetAttribute("LINEITEM.L_DISCOUNT"));
-  std::vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-  aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
+  aggregation_function.push_back(PhysicalAggregation::State::kSum);
+  aggregation_function.push_back(PhysicalAggregation::State::kSum);
   LogicalOperator* aggregation =
       new LogicalAggregation(groupby_attributes, aggregation_attributes,
                              aggregation_function, c_o_l_join);
 
   LogicalOperator* root = new LogicalQueryPlanRoot(
-      0, aggregation, LogicalQueryPlanRoot::kPerformance);
-  BlockStreamIteratorBase* final_physical_iterator_tree =
+      0, Aggregation, LogicalQueryPlanRoot::kPerformance);
+  PhysicalOperatorBase* final_physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
 
   final_physical_iterator_tree->Open();
@@ -305,7 +293,7 @@ static void query_3() {
 
   printf("Q3: execution time: %4.4f second.\n", getSecond(start));
 
-  final_physical_iterator_tree->~BlockStreamIteratorBase();
+  final_physical_iterator_tree->~PhysicalOperatorBase();
   root->~LogicalOperator();
 }
 

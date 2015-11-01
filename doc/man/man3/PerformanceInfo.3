@@ -1,0 +1,75 @@
+.TH "PerformanceInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PerformanceInfo \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBentry\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPerformanceInfo\fP (\fBExpandabilityShrinkability\fP *expand_shrink)"
+.br
+.ti -1c
+.RI "void \fBprocessed_one_block\fP ()"
+.br
+.ti -1c
+.RI "double \fBreport_instance_performance_in_millibytes\fP ()"
+.br
+.ti -1c
+.RI "void \fBinitialize\fP ()"
+.br
+.ti -1c
+.RI "void \fBeclipseTimeSlices\fP (unsigned offset)"
+.br
+.ti -1c
+.RI "void \fBhitCurrentSlice\fP ()"
+.br
+.ti -1c
+.RI "void \fBupdateTimeSlicesToCurrentTicks\fP ()"
+.br
+.ti -1c
+.RI "unsigned long \fBgetBlockSumInAllSlices\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "ticks \fBcurrent_time_slice_start_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBnblocks_in_current_slice_\fP"
+.br
+.ti -1c
+.RI "\fBSpineLock\fP \fBlock_\fP"
+.br
+.ti -1c
+.RI "unsigned * \fBslices\fP"
+.br
+.ti -1c
+.RI "unsigned long long int \fBinit_ticks_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBentry\fP > \fBscalability_vector_\fP"
+.br
+.ti -1c
+.RI "\fBExpandabilityShrinkability\fP * \fBexpand_shrink_\fP"
+.br
+.ti -1c
+.RI "timestamp \fBlast_update_\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

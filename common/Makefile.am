@@ -11,7 +11,6 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-
 #LDADD = 	../BlockStreamIterator/Serialization/libserialization.a \
 #		../BlockStreamIterator/libblockstreamiterator.a \
 #		../storage/libstorage.a \
@@ -50,3 +49,4 @@ libcommon_a_SOURCES = \
 
 SUBDIRS = Block log Schema types Expression serialization expression
 DIST_SUBDIRS = Block log Schema types Expression serialization expression
+

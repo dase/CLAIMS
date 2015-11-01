@@ -14,9 +14,9 @@
 
 using namespace std;
 typedef void (*expr_func)(void*, void*);
-typedef void (*expr_func_two_tuples)(void*, void*, void*);
-typedef void (*llvm_memcpy)(void* desc, void* src);
-typedef void (*llvm_memcat)(void* desc, void* src1, void* src2);
+typedef void (*ExprFuncTwoTuples)(void*, void*, void*);
+typedef void (*LLVMMemcpy)(void* desc, void* src);
+typedef void (*LLVMMemcat)(void* desc, void* src1, void* src2);
 
 typedef void (*filter_process_func)(void*, int*, int, void*, int*, int);
 namespace myllvm {
@@ -49,13 +49,13 @@ static void process_func(char* b_start, int * b_cur_addr, int b_tuple_count,
   *c_cur_addr = c_cur;
 }
 
-llvm_memcpy getMemcpy(unsigned length);
+LLVMMemcpy getMemcpy(unsigned length);
 
-llvm_memcat getMemcat(unsigned length1, unsigned length2);
+LLVMMemcat getMemcat(unsigned length1, unsigned length2);
 
 expr_func getExprFunc(QNode* qnode, Schema* schema);
 
-expr_func_two_tuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema,
+ExprFuncTwoTuples getExprFuncTwoTuples(QNode* qnode, Schema* l_schema,
                                           Schema* r_schema);
 
 filter_process_func getFilterProcessFunc(QNode* qnode, Schema* schema);

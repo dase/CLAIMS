@@ -1,5 +1,3 @@
-#include "../../logical_query_plan/logical_query_plan_root.h"
-
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -34,7 +32,10 @@
 #include <stdio.h>  //NOLINT
 #include "../parser/parser.h"
 #include "../ast_node/ast_node.h"
-using claims::logical_query_plan::LogicalQueryPlanRoot;
+#include "../../logical_operator/logical_query_plan_root.h"
+#include "../../physical_operator/physical_operator_base.h"
+using claims::logical_operator::LogicalQueryPlanRoot;
+using claims::physical_operator::PhysicalOperatorBase;
 using std::endl;
 using std::cout;
 
@@ -64,7 +65,7 @@ int TestNewSql() {
       logic_plan->Print();
       cout << "--------------begin physical plan -------------------" << endl;
 
-      BlockStreamIteratorBase* physical_plan =
+      PhysicalOperatorBase* physical_plan =
           logic_plan->GetPhysicalPlan(64 * 1024);
 
       physical_plan->Print();
@@ -74,7 +75,7 @@ int TestNewSql() {
       physical_plan->Open();
       while (physical_plan->Next(NULL)) {
       }
-      ResultSet* result_set = physical_plan->getResultSet();
+      ResultSet* result_set = physical_plan->GetResultSet();
       physical_plan->Close();
 
       result_set->print();

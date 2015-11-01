@@ -1,0 +1,54 @@
+.TH "DynamicBlockBuffer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+DynamicBlockBuffer \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <DynamicBlockBuffer\&.h>\fP
+.PP
+Inherited by \fBResultSet\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBIterator\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDynamicBlockBuffer\fP (const \fBDynamicBlockBuffer\fP &r)"
+.br
+.ti -1c
+.RI "bool \fBappendNewBlock\fP (\fBBlockStreamBase\fP *new_block)"
+.br
+.ti -1c
+.RI "bool \fBatomicAppendNewBlock\fP (\fBBlockStreamBase\fP *new_block)"
+.br
+.ti -1c
+.RI "\fBBlockStreamBase\fP * \fBgetBlock\fP (unsigned index) const "
+.br
+.ti -1c
+.RI "\fBIterator\fP \fBcreateIterator\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetNumberOfBlocks\fP ()"
+.br
+.ti -1c
+.RI "void \fBdestory\fP ()"
+.br
+.ti -1c
+.RI "unsigned long \fBgetNumberOftuples\fP () const "
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+A container which buffers serialized blocks\&. The number of blocks in the buffer is not known when constructing and is growing dynamically on the fly\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

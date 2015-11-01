@@ -1,0 +1,48 @@
+.TH "Json::StaticString" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::StaticString \- 
+.PP
+Lightweight wrapper to tag static string\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBStaticString\fP (const char *czstring)"
+.br
+.ti -1c
+.RI "\fBoperator const char *\fP () const "
+.br
+.ti -1c
+.RI "const char * \fBc_str\fP () const "
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Lightweight wrapper to tag static string\&. 
+
+\fBValue\fP constructor and objectValue member assignement takes advantage of the \fBStaticString\fP and avoid the cost of string duplication when storing the string or the member name\&.
+.PP
+Example of usage: 
+.PP
+.nf
+* Json::Value aValue( StaticString("some text") );
+* Json::Value object;
+* static const StaticString code("code");
+* object[code] = 1234;
+* 
+
+.fi
+.PP
+ 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

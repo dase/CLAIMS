@@ -1,0 +1,157 @@
+.TH "ExpressionItem" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExpressionItem \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBItemType\fP { \fBconst_type\fP, \fBvariable_type\fP, \fBoperator_type\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprint\fP ()"
+.br
+.ti -1c
+.RI "void \fBprint_value\fP ()"
+.br
+.ti -1c
+.RI "bool \fBsetValue\fP (void *, data_type)"
+.br
+.ti -1c
+.RI "bool \fBsetData\fP (\fBdata__\fP &)"
+.br
+.ti -1c
+.RI "bool \fBsetData\fP (\fBdata__\fP &, data_type)"
+.br
+.ti -1c
+.RI "bool \fBsetIntValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetIntValue\fP (int)"
+.br
+.ti -1c
+.RI "bool \fBsetFloatValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetFloatValue\fP (float &)"
+.br
+.ti -1c
+.RI "bool \fBsetDoubleValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetDoubleValue\fP (double &)"
+.br
+.ti -1c
+.RI "bool \fBsetULongValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetULongValue\fP (unsigned long)"
+.br
+.ti -1c
+.RI "bool \fBsetStringValue\fP (std::string)"
+.br
+.ti -1c
+.RI "bool \fBsetStringValue\fP (const char *str)"
+.br
+.ti -1c
+.RI "bool \fBsetVariable\fP (const char *, const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetVariable\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetDecimalValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetOperator\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetDateValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetDatetimeValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetTimeValue\fP (const char *)"
+.br
+.ti -1c
+.RI "bool \fBsetBooleanValue\fP (bool)"
+.br
+.ti -1c
+.RI "bool \fBsetSmallIntValue\fP (short &)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.ti -1c
+.RI "std::string \fBgetOperatorName\fP () const "
+.br
+.ti -1c
+.RI "bool \fBgetType\fP (const char *type_str)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   \fBvariable\fP \fBvar\fP"
+.br
+.ti -1c
+.RI "   \fBdata__\fP \fBdata\fP"
+.br
+.ti -1c
+.RI "   \fBexpress_operator\fP \fBop\fP"
+.br
+.ti -1c
+.RI "} \fBcontent\fP"
+.br
+.ti -1c
+.RI "ItemType \fBtype\fP"
+.br
+.ti -1c
+.RI "date \fB_date\fP"
+.br
+.ti -1c
+.RI "time_duration \fB_time\fP"
+.br
+.ti -1c
+.RI "ptime \fB_datetime\fP"
+.br
+.ti -1c
+.RI "\fBNValue\fP \fB_decimal\fP"
+.br
+.ti -1c
+.RI "std::string \fB_string\fP"
+.br
+.ti -1c
+.RI "std::string \fBitem_name\fP"
+.br
+.ti -1c
+.RI "data_type \fBreturn_type\fP"
+.br
+.ti -1c
+.RI "unsigned \fBsize\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

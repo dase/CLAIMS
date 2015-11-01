@@ -1,0 +1,67 @@
+.TH "PartitionStorage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PartitionStorage \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBAtomicPartitionReaderIterator\fP"
+.br
+.ti -1c
+.RI "class \fBPartitionReaderItetaor\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionStorage\fP (const \fBPartitionID\fP &partition_id, const unsigned &number_of_chunks, const StorageLevel &)"
+.br
+.ti -1c
+.RI "void \fBaddNewChunk\fP ()"
+.br
+.ti -1c
+.RI "void \fBupdateChunksWithInsertOrAppend\fP (const \fBPartitionID\fP &partition_id, const unsigned &number_of_chunks, const StorageLevel &storage_level)"
+.br
+.ti -1c
+.RI "void \fBremoveAllChunks\fP (const \fBPartitionID\fP &partition_id)"
+.br
+.ti -1c
+.RI "\fBPartitionReaderItetaor\fP * \fBcreateReaderIterator\fP ()"
+.br
+.ti -1c
+.RI "\fBPartitionReaderItetaor\fP * \fBcreateAtomicReaderIterator\fP ()"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionID\fP \fBpartition_id_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBnumber_of_chunks_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBChunkStorage\fP * > \fBchunk_list_\fP"
+.br
+.ti -1c
+.RI "StorageLevel \fBdesirable_storage_level_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBPartitionReaderItetaor\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
