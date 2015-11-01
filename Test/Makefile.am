@@ -38,7 +38,6 @@ LDADD =	TestSuit/libtestsuit.a \
 
 noinst_LIBRARIES=libtest.a
 libtest_a_SOURCES = 
-
 #	Environment_test.cpp 		MultiToMulti.cpp \
 #	TestMain.cpp 			block_stream_iterator_serilaization_test.cpp \
 #	block_stream_test.cpp 		gtest.h \

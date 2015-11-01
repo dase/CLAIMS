@@ -8,11 +8,12 @@
 //#ifndef LOGICALINDEXFILTER_H_
 //#define LOGICALINDEXFILTER_H_
 //
-//#include "../logical_query_plan/logical_operator.h"
+
+//#include "../logical_operator/logical_operator.h"
 //#include "../iterator/FilterIterator.h"
 //#include "CSBPlusTree.h"
 //
-//class LogicalIndexFilter :public LogicalOperator {
+// class LogicalIndexFilter :public LogicalOperator {
 //	public:
 //	class Condition{
 //	public:
@@ -20,8 +21,10 @@
 //		Condition(){}
 //		Condition(const Condition& r);
 //		~Condition();
-//		void add(const Attribute& attr,const comparison& com,const void*const& const_value);
-//		void add(const Attribute& attr,const comparison& com,std::string str_exp);
+//		void add(const Attribute& attr,const comparison& com,const
+//void*const& const_value);
+//		void add(const Attribute& attr,const comparison& com,std::string
+//str_exp);
 //		void print(int level=0)const;
 //	private:
 //		unsigned getCompaisonNumber()const;
@@ -31,19 +34,21 @@
 //		std::vector<void*> const_value_list_;
 //	};
 //
-//public:
+// public:
 //	LogicalIndexFilter(const Condition& condition, LogicalOperator* child);
 //	virtual ~LogicalIndexFilter();
 //
 //	Dataflow getDataflow();
 //	BlockStreamIteratorBase* getIteratorTree(const unsigned& blocksize);
-//	bool GetOptimalPhysicalPlan(Requirement requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned & block_size=4096*1024);
+//	bool GetOptimalPhysicalPlan(Requirement
+//requirement,PhysicalPlanDescriptor& physical_plan_descriptor, const unsigned &
+//block_size=4096*1024);
 //	void print(int level=0)const;
 //
-//private:
+// private:
 //	void generateComparatorList(const Dataflow& dataflow);
 //
-//private:
+// private:
 //	LogicalOperator* child_;
 //	Condition condition_;
 //	vector<FilterIterator::AttributeComparator> comparator_list_;

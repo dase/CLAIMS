@@ -1,0 +1,94 @@
+.TH "ExpandableBlockStreamExchangeLowerEfficient" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExpandableBlockStreamExchangeLowerEfficient \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamExchangeLowerBase\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBState\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBExpandableBlockStreamExchangeLowerEfficient\fP (\fBState\fP state)"
+.br
+.ti -1c
+.RI "bool \fBOpen\fP (const PartitionOffset &partition_index=0)"
+.br
+.ti -1c
+.RI "bool \fBNext\fP (\fBBlockStreamBase\fP *)"
+.br
+.ti -1c
+.RI "bool \fBClose\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBExpandableBlockStreamExchangeEpoll\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ExpandableBlockStreamExchangeLowerEfficient::Close ()\fC [virtual]\fP"
+free temporary space 
+.PP
+Implements \fBBlockStreamExchangeLowerBase\fP\&.
+.SS "bool ExpandableBlockStreamExchangeLowerEfficient::Next (\fBBlockStreamBase\fP *)\fC [virtual]\fP"
+if a blocks is obtained from child, we partition the tuples in the block\&.
+.PP
+for each tuple in the newly obtained block, insert the tuple to one partitioned block according to the partition hash value
+.PP
+calculate the tuple size for the current tuple
+.PP
+insert the tuple into the corresponding partitioned block
+.PP
+if the destination block is full, we insert the block into the buffer
+.PP
+thread arriving here means that the space for the tuple is successfully allocated, so we copy the tuple
+.PP
+the child iterator is exhausted\&. We add the current block stream block into the buffer, but it's only for hash mode, not for broadcast mode\&.
+.PP
+The following lines send an empty block to the upper, indicating that all the data from current sent has been transmit to the uppers\&.
+.PP
+waiting until all the block in the buffer has been transformed to the uppers\&.
+.PP
+Implements \fBBlockStreamExchangeLowerBase\fP\&.
+.SS "bool ExpandableBlockStreamExchangeLowerEfficient::Open (const PartitionOffset &partition_index = \fC0\fP)\fC [virtual]\fP"
+initialize the block stream that is used to accumulate the block obtained by calling child iterator's next()
+.PP
+buffer stores the tuples received from child iterator\&. Note the tuples are partitioned and stored\&.
+.PP
+the temporary block that is used to transfer a block from partitioned data buffer into sending buffer\&.
+.PP
+Initialize the buffer that is used to hold the blocks being sent\&. There are nuppers block, each corresponding to a merger\&.
+.PP
+Initialized the temporary block to hold the serialized block stream\&.
+.PP
+Initialize the blocks that are used to accumulate the tuples from child so that the insertion to the buffer can be conducted at the granularity of blocks rather than tuples\&.
+.PP
+connect to all the mergers
+.PP
+create the sender thread 
+.PP
+Implements \fBBlockStreamExchangeLowerBase\fP\&.
+.PP
+References Logging::elog()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

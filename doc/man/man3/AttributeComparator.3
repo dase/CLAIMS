@@ -1,0 +1,58 @@
+.TH "AttributeComparator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AttributeComparator \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBComparator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAttributeComparator\fP (\fBcolumn_type\fP x, \fBcolumn_type\fP y, Comparator::comparison c, unsigned index, void *value)"
+.br
+.ti -1c
+.RI "\fBAttributeComparator\fP (\fBcolumn_type\fP x, Comparator::comparison c, unsigned index, void *value)"
+.br
+.ti -1c
+.RI "\fBAttributeComparator\fP (const \fBAttributeComparator\fP &c_a)"
+.br
+.ti -1c
+.RI "bool \fBfilter\fP (void *x) const __attribute__((always_inline))"
+.br
+.ti -1c
+.RI "unsigned \fBget_index\fP () const "
+.br
+.ti -1c
+.RI "void * \fBget_value\fP () const "
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "void * \fBvalue_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBindex\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBFilterIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

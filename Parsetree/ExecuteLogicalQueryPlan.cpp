@@ -21,23 +21,17 @@
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
-
-#include "../logical_query_plan/logical_scan.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_aggregation.h"
-
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_limit.h"
-
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_filter.h"
 #include "../utility/rdtsc.h"
 
 #include "../Loader/Hdfsloader.h"
 
 #include "../Client/ClaimsServer.h"
-#include "../logical_query_plan/logical_query_plan_root.h"
-#define SQL_Parser
-using namespace std;
-#define SQL_Parser
+#include "../logical_operator/logical_limit.h"
+#include "../logical_operator/logical_query_plan_root.h"
 
 const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
@@ -563,8 +557,9 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
   //				}
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve the
-  //dirty
+  //			catalog->restoreCatalog();// commented by li to solve
+  // the
+  // dirty
   // read after insert
   result_flag = true;
   info = "create table successfully";
@@ -992,8 +987,9 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
   }
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve the
-  //dirty
+  //			catalog->restoreCatalog();// commented by li to solve
+  // the
+  // dirty
   // read after insert
 
   result_flag = true;
@@ -1111,10 +1107,10 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
   root->Print(0);
 #endif
 
-  BlockStreamIteratorBase *physical_iterator_tree =
+  PhysicalOperatorBase *physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
   //					puts("+++++++++++++++++++++begin
-  //time++++++++++++++++");
+  // time++++++++++++++++");
   unsigned long long start = curtick();
   physical_iterator_tree->Print();
 
@@ -1123,9 +1119,10 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
   while (physical_iterator_tree->Next(0))
     ;
   physical_iterator_tree->Close();
-  //					printf("++++++++++++++++Q1: execution time: %4.4f
-  //second.++++++++++++++\n",getSecond(start));
-  result_set = physical_iterator_tree->getResultSet();
+  //					printf("++++++++++++++++Q1: execution time:
+  //%4.4f
+  // second.++++++++++++++\n",getSecond(start));
+  result_set = physical_iterator_tree->GetResultSet();
   cout << "execute " << result_set->query_time_ << " s" << endl;
   result_flag = true;
 
@@ -1327,7 +1324,7 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
       Environment::getInstance()->getCatalog()->getTable(table_name);
   if (table == NULL) {
     //				ASTParserLogging::elog("The table %s does not
-    //exist!",
+    // exist!",
     // table_name.c_str());
     error_msg = "The table " + table_name + " does not exist!";
     result_flag = false;
@@ -1374,8 +1371,9 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
            position++) {
         // check value count
         if (insert_value == NULL) {
-          //							ASTParserLogging::elog("Value count
-          //is
+          //							ASTParserLogging::elog("Value
+          // count
+          // is
           // too few");
           is_correct = false;
           error_msg = "Value count is too few";
@@ -1490,8 +1488,9 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
   Hl->append(ostr.str());
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog(); // commented by li to solve the
-  //dirty
+  //			catalog->restoreCatalog(); // commented by li to solve
+  // the
+  // dirty
   // read after insert
 
   result_flag = true;

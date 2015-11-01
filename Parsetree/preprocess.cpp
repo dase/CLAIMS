@@ -12,17 +12,17 @@
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
 
-#include "../logical_query_plan/logical_operator.h"
 #include "sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_scan.h"
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../physical_query_plan/BlockStreamAggregationIterator.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_operator.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../physical_operator/physical_aggregation.h"
 
 int getlevel(Expr_cal *calnode) {
   int level = 0;
@@ -382,7 +382,8 @@ void solve_const_value_in_wherecondition(Node *&cur) {
           if (strcmp(datefunc->funname, "INTERVAL_DAY") == 0) {
             date_duration dd(atof(((Expr *)datefunc->args)->data));
             constdate = date(from_string(datestr)) + dd;
-            //						date_duration *dd=new date_duration(atof(((Expr
+            //						date_duration *dd=new
+            //date_duration(atof(((Expr
             //*)datefunc->args)->data));
             //						constdate=from_string(datestr)+(*(date_duration
             //*)dd);
@@ -402,8 +403,9 @@ void solve_const_value_in_wherecondition(Node *&cur) {
           datestr = to_iso_extended_string(constdate);
           char *datechar = (char *)malloc(datestr.length() + 2);
           strcpy(datechar, datestr.c_str());
-          //					SQLParse_log("the date result after date_add,
-          //string= %s ------------------\n",datechar);
+          //					SQLParse_log("the date result after
+          //date_add,
+          // string= %s ------------------\n",datechar);
           // free(cur);
           cur = (Node *)newExpr(t_stringval, datechar, NULL);
         }
@@ -434,8 +436,9 @@ void solve_const_value_in_wherecondition(Node *&cur) {
           datestr = to_simple_string(constdate);
           char *datechar = (char *)malloc(datestr.length() + 2);
           strcpy(datechar, datestr.c_str());
-          //					SQLParse_log("the date result after date_sub,
-          //string= %s ------------------\n",datechar);
+          //					SQLParse_log("the date result after
+          //date_sub,
+          // string= %s ------------------\n",datechar);
           // free(cur);
           cur = (Node *)newExpr(t_stringval, datechar, NULL);
         }

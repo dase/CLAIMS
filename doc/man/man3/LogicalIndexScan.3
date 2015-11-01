@@ -1,0 +1,57 @@
+.TH "LogicalIndexScan" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+LogicalIndexScan \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLogicalIndexScan\fP (\fBProjectionID\fP projection_id, \fBAttribute\fP index_attr, vector< \fBIndexScanIterator::query_range\fP > q_range)"
+.br
+.ti -1c
+.RI "\fBPlanContext\fP \fBGetPlanContext\fP ()"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &blocksize)"
+.br
+.ti -1c
+.RI "bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size=4096 *1024)"
+.br
+.ti -1c
+.RI "void \fBPrint\fP (int level=0) const "
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "bool LogicalIndexScan::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096*1024\fP)\fC [virtual]\fP"
+get the optimal Physical plan that meets the requirement\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "\fBBlockStreamIteratorBase\fP * LogicalIndexScan::GetPhysicalPlan (const unsigned &)\fC [virtual]\fP"
+generate the iterator tree based on the computed plan_context\&. Hence, this function can only be called after the calling of \fBGetPlanContext()\fP\&. 
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "\fBPlanContext\fP LogicalIndexScan::GetPlanContext ()\fC [virtual]\fP"
+get the plan context which describes the property of the data after having executed corresponding operator\&. 
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References ProjectionBinding::BindingEntireProjection()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

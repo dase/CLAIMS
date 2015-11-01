@@ -1,0 +1,63 @@
+.TH "IndexManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IndexManager \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBaddIndexToList\fP (unsigned key_indexing, map< \fBChunkID\fP, void * > attr_index)"
+.br
+.ti -1c
+.RI "bool \fBinsertIndexToList\fP (std::string index_name, unsigned key_indexing, map< \fBChunkID\fP, void * > attr_index)"
+.br
+.ti -1c
+.RI "template<typename T > std::map< \fBChunkID\fP, \fBCSBPlusTree\fP
+.br
+< T > * > \fBgetIndexList\fP (\fBAttribute\fP attribute)"
+.br
+.ti -1c
+.RI "template<typename T > std::map< \fBChunkID\fP, \fBCSBPlusTree\fP
+.br
+< T > * > \fBgetIndexList\fP (unsigned long attr_index_id)"
+.br
+.ti -1c
+.RI "std::map< \fBChunkID\fP, void * > \fBgetAttrIndex\fP (unsigned long attr_index_id)"
+.br
+.ti -1c
+.RI "template<typename T > bool \fBdeleteIndexFromList\fP (unsigned long index_id)"
+.br
+.ti -1c
+.RI "data_type \fBgetIndexType\fP (unsigned long index_id)"
+.br
+.ti -1c
+.RI "bool \fBisIndexExist\fP (\fBAttribute\fP attr)"
+.br
+.ti -1c
+.RI "bool \fBisIndexExist\fP (unsigned long index_id)"
+.br
+.ti -1c
+.RI "unsigned long \fBgetIndexID\fP (\fBAttribute\fP attr)"
+.br
+.ti -1c
+.RI "bool \fBserialize\fP (std::string file_name)"
+.br
+.ti -1c
+.RI "bool \fBdeserialize\fP (std::string file_name)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBIndexManager\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

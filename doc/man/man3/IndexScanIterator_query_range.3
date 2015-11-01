@@ -1,0 +1,54 @@
+.TH "IndexScanIterator::query_range" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+IndexScanIterator::query_range \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBquery_range\fP (void *value_low_, comparison comp_low_, void *value_high_, comparison comp_high_, \fBcolumn_type\fP c_type_)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "void * \fBvalue_low\fP"
+.br
+.ti -1c
+.RI "comparison \fBcomp_low\fP"
+.br
+.ti -1c
+.RI "void * \fBvalue_high\fP"
+.br
+.ti -1c
+.RI "comparison \fBcomp_high\fP"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBc_type\fP"
+.br
+.ti -1c
+.RI "std::vector< char > \fBvaluebytes_low\fP"
+.br
+.ti -1c
+.RI "std::vector< char > \fBvaluebytes_high\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

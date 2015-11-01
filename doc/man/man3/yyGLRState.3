@@ -1,0 +1,59 @@
+.TH "yyGLRState" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+yyGLRState \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "yybool \fByyisState\fP"
+.br
+.ti -1c
+.RI "yybool \fByyresolved\fP"
+.br
+.ti -1c
+.RI "yyStateNum \fByylrState\fP"
+.br
+.ti -1c
+.RI "\fByyGLRState\fP * \fByypred\fP"
+.br
+.ti -1c
+.RI "size_t \fByyposn\fP"
+.br
+.ti -1c
+.RI "union {"
+.br
+.ti -1c
+.RI "   \fByySemanticOption\fP * \fByyfirstVal\fP"
+.br
+.ti -1c
+.RI "   \fBYYSTYPE\fP \fByysval\fP"
+.br
+.ti -1c
+.RI "} \fByysemantics\fP"
+.br
+.in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fByySemanticOption\fP* yyGLRState::yyfirstVal"
+First in a chain of alternative reductions producing the non-terminal corresponding to this state, threaded through yynext\&. 
+.SS "yybool yyGLRState::yyisState"
+Type tag: always true\&. 
+.SS "yyStateNum yyGLRState::yylrState"
+Number of corresponding LALR(1) machine state\&. 
+.SS "size_t yyGLRState::yyposn"
+Source position of the first token produced by my symbol 
+.SS "\fByyGLRState\fP* yyGLRState::yypred"
+Preceding state in this stack 
+.SS "yybool yyGLRState::yyresolved"
+Type tag for yysemantics\&. If true, yysval applies, otherwise yyfirstVal applies\&. 
+.SS "\fBYYSTYPE\fP yyGLRState::yysval"
+Semantic value for this state\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

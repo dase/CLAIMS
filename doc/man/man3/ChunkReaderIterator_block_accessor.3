@@ -1,0 +1,41 @@
+.TH "ChunkReaderIterator::block_accessor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ChunkReaderIterator::block_accessor \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ChunkStorage\&.h>\fP
+.PP
+Inherited by \fBChunkReaderIterator::InDiskBlockAccessor\fP, \fBChunkReaderIterator::InHDFSBlockAccessor\fP, and \fBChunkReaderIterator::InMemeryBlockAccessor\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBgetBlock\fP (\fBBlockStreamBase\fP *&block) const "
+.br
+.ti -1c
+.RI "unsigned \fBgetBlockSize\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetBlockSize\fP (unsigned blockSize)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBblock_size\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This structure maintains all the information needed to access a block in in-memory chunk, in-disk chunk, or in-hdfs chunk\&.
+.PP
+The underlying reason for using this structure is to\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

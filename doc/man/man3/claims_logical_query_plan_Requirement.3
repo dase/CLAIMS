@@ -1,0 +1,65 @@
+.TH "claims::logical_operator::Requirement" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::Requirement \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetRequiredPartitionkey\fP (const \fBAttribute\fP partition_key)"
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBgetPartitionKey\fP () const "
+.br
+.ti -1c
+.RI "bool \fBhasReuiredPartitionKey\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetRequiredPartitionFucntion\fP (\fBPartitionFunction\fP *partition)"
+.br
+.ti -1c
+.RI "\fBPartitionFunction\fP * \fBgetPartitionFunction\fP () const "
+.br
+.ti -1c
+.RI "bool \fBhasRequiredPartitionFunction\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetRequiredLocations\fP (std::vector< NodeID > location_list)"
+.br
+.ti -1c
+.RI "std::vector< NodeID > \fBgetRequiredLocations\fP () const "
+.br
+.ti -1c
+.RI "bool \fBhasRequiredLocations\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetRequiredCost\fP (const unsigned long cost)"
+.br
+.ti -1c
+.RI "NetworkTransfer \fBrequireNetworkTransfer\fP (const \fBPlanContext\fP &plan_context) const "
+.br
+.ti -1c
+.RI "bool \fBpassLimits\fP (const unsigned long cost) const "
+.br
+.ti -1c
+.RI "bool \fBtryMerge\fP (const \fBRequirement\fP req, \fBRequirement\fP &target) const "
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "NetworkTransfer claims::logical_operator::Requirement::requireNetworkTransfer (const \fBPlanContext\fP &plan_context) const"
+there is partition key requirement 
+.PP
+Referenced by claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), and claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
+.SS "bool claims::logical_operator::Requirement::tryMerge (const \fBRequirement\fPreq, \fBRequirement\fP &target) const"
+try to merge the req if *this and req are compatible\&. return true if successful 
+.PP
+Referenced by claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

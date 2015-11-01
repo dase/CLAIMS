@@ -9,7 +9,7 @@
 #include "queryfunc.h"
 #include "qnode.h"
 #include "../../Parsetree/sql_node_struct.h"
-#include "../../logical_query_plan/logical_operator.h"
+#include "../../logical_operator/logical_operator.h"
 /*
  * the transformqual() transform the ast(the parsetree) to expression tree
  */
@@ -70,7 +70,6 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_divide, t_qexpr_cal, calnode->str);
         return qcalnode;
-
       } else if (strcmp(calnode->sign, "%") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
@@ -469,7 +468,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
     case t_name_name: {
       Columns *col = (Columns *)node;
       //			data_type
-      // a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+      //a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
       data_type a_type = child->GetPlanContext()
                              .GetAttribute(string(col->parameter2))
                              .attrType->type;
@@ -537,8 +536,6 @@ void InitExprAtLogicalPlan(QNode *node, data_type r_type,
       QExpr_binary *cmpnode = (QExpr_binary *)(node);
       cmpnode->return_type = r_type;  // Li: I believe the return type for
                                       // compare expression should be t_boolean
-      // if select a>b; the return_type should be t_boolean, but if (a>b)+1, the
-      // return_type would be t_int
       InitExprAtLogicalPlan(cmpnode->lnext, cmpnode->actual_type, colindex,
                             schema);
       InitExprAtLogicalPlan(cmpnode->rnext, cmpnode->actual_type, colindex,
@@ -621,9 +618,7 @@ void InitExprAtLogicalPlan(QNode *node, data_type r_type,
       qcol->return_type = r_type;
       if (qcol->return_type == t_string)
         qcol->length = max(schema->getcolumn(qcol->id).get_length(),
-                           (unsigned int)BASE_SIZE);  // if strcat(), that could
-                                                      // be a problem, length
-                                                      // increase
+                           (unsigned int)BASE_SIZE);
       else
         qcol->length = schema->getcolumn(qcol->id).size;
       qcol->isnull = false;  // TODO
@@ -644,7 +639,6 @@ void InitExprAtLogicalPlan(QNode *node, data_type r_type,
  * set node->FuncId
  * allocate room for storing value
  */
-
 void InitExprAtPhysicalPlan(QNode *node) {
   if (node == NULL) return;
   switch (node->type) {
@@ -750,18 +744,17 @@ void InitExprAtPhysicalPlan(QNode *node) {
     } break;
     case t_qexpr:  // copy the value from conststring to node->value,and the
                    // data type has casted
-      {
-        QExpr *qexpr = (QExpr *)(node);
-        qexpr->FuncId = getConst;
-        qexpr->value = memalign(cacheline_size, qexpr->length);
-        strcpy((char *)qexpr->value,
-               qexpr->const_value.c_str());  // change the storage style from
-                                             // string to char *,so store the
-                                             // value in the return_type[]
-        TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->value,
-                                                               qexpr->value);
-      }
-      break;
+    {
+      QExpr *qexpr = (QExpr *)(node);
+      qexpr->FuncId = getConst;
+      qexpr->value = memalign(cacheline_size, qexpr->length);
+      strcpy((char *)qexpr->value,
+             qexpr->const_value.c_str());  // change the storage style from
+                                           // string to char *,so store the
+                                           // value in the return_type[]
+      TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->value,
+                                                             qexpr->value);
+    } break;
     default: {}
   }
 }

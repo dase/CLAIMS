@@ -1,0 +1,35 @@
+.TH "Json::Reader::StructuredError" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::Reader::StructuredError \- 
+.PP
+An error tagged with where in the JSON text it was encountered\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "size_t \fBoffset_start\fP"
+.br
+.ti -1c
+.RI "size_t \fBoffset_limit\fP"
+.br
+.ti -1c
+.RI "std::string \fBmessage\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+An error tagged with where in the JSON text it was encountered\&. 
+
+The offsets give the [start, limit) range of bytes within the text\&. Note that this is bytes, not codepoints\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

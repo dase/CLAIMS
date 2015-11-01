@@ -1,0 +1,43 @@
+.TH "claims::logical_operator::LimitConstraint" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::LimitConstraint \- 
+.PP
+Method description:limit operator is a simple operator\&. start_position_:the fault value is 0,it means the position where we should acquire data\&. return_tuples_:the fault value is -1, it means that all rows are needed\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <logical_limit\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLimitConstraint\fP (unsigned long return_tuples)"
+.br
+.ti -1c
+.RI "\fBLimitConstraint\fP (unsigned long return_tuples, unsigned long position)"
+.br
+.ti -1c
+.RI "bool \fBCanBeOmitted\fP () const "
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned long \fBstart_position_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBreturned_tuples_\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Method description:limit operator is a simple operator\&. start_position_:the fault value is 0,it means the position where we should acquire data\&. return_tuples_:the fault value is -1, it means that all rows are needed\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

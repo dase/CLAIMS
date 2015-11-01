@@ -38,7 +38,6 @@ config.status
 config.sub
 configure
 depcomp
-doc
 include/
 install-sh
 install/
@@ -47,6 +46,7 @@ log
 ltmain.sh
 missing
 stamp-h1
+<<<<<<< HEAD
 Makefile.in
 *.Po
 Debug.h
@@ -70,6 +70,9 @@ include/
 compile
 thirdparty/
 ar-lib
+=======
+thirdparty/
+>>>>>>> master
 缺省值
 *sql.output
 *.doxyfile
