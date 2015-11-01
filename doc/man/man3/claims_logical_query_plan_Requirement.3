@@ -1,8 +1,8 @@
-.TH "claims::logical_query_plan::Requirement" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::logical_operator::Requirement" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-claims::logical_query_plan::Requirement \- 
+claims::logical_operator::Requirement \- 
 .SH SYNOPSIS
 .br
 .PP
@@ -51,14 +51,14 @@ claims::logical_query_plan::Requirement \-
 .in -1c
 .SH "Member Function Documentation"
 .PP 
-.SS "NetworkTransfer claims::logical_query_plan::Requirement::requireNetworkTransfer (const \fBPlanContext\fP &plan_context) const"
+.SS "NetworkTransfer claims::logical_operator::Requirement::requireNetworkTransfer (const \fBPlanContext\fP &plan_context) const"
 there is partition key requirement 
 .PP
-Referenced by claims::logical_query_plan::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_query_plan::LogicalFilter::GetOptimalPhysicalPlan(), and claims::logical_query_plan::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
-.SS "bool claims::logical_query_plan::Requirement::tryMerge (const \fBRequirement\fPreq, \fBRequirement\fP &target) const"
+Referenced by claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), and claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
+.SS "bool claims::logical_operator::Requirement::tryMerge (const \fBRequirement\fPreq, \fBRequirement\fP &target) const"
 try to merge the req if *this and req are compatible\&. return true if successful 
 .PP
-Referenced by claims::logical_query_plan::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
+Referenced by claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()\&.
 
 .SH "Author"
 .PP 

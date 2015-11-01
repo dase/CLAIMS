@@ -1,13 +1,13 @@
-.TH "claims::logical_query_plan::LogicalQueryPlanRoot" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::logical_operator::LogicalQueryPlanRoot" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-claims::logical_query_plan::LogicalQueryPlanRoot \- 
+claims::logical_operator::LogicalQueryPlanRoot \- 
 .SH SYNOPSIS
 .br
 .PP
 .PP
-Inherits \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
 .SS "Public Types"
 
 .in +1c
@@ -41,11 +41,11 @@ Inherits \fBclaims::logical_query_plan::LogicalOperator\fP\&.
 .SS "Additional Inherited Members"
 .SH "Member Enumeration Documentation"
 .PP 
-.SS "enum \fBclaims::logical_query_plan::LogicalQueryPlanRoot::OutputStyle\fP"
+.SS "enum \fBclaims::logical_operator::LogicalQueryPlanRoot::OutputStyle\fP"
 three styles decide which one the top physical operator is: 1) \fBBlockStreamPrint\fP: print result on console directly 2) \fBBlockStreamPerformanceMonitorTop\fP: calculate the real-time performance and print 3) \fBBlockStreamResultCollector\fP : collect result and store it in block buffer, then return to client 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "claims::logical_query_plan::LogicalQueryPlanRoot::LogicalQueryPlanRoot (NodeIDcollecter_node_id, \fBLogicalOperator\fP *child, const \fBOutputStyle\fP &fashion = \fCkPerformance\fP, \fBLimitConstraint\fPlimit_constraint = \fC\fBLimitConstraint\fP()\fP)"
+.SS "claims::logical_operator::LogicalQueryPlanRoot::LogicalQueryPlanRoot (NodeIDcollecter_node_id, \fBLogicalOperator\fP *child, const \fBOutputStyle\fP &fashion = \fCkPerformance\fP, \fBLimitConstraint\fPlimit_constraint = \fC\fBLimitConstraint\fP()\fP)"
 
 .PP
 Method description: 
@@ -62,17 +62,17 @@ Method description:
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool claims::logical_query_plan::LogicalQueryPlanRoot::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
+.SS "bool claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
 
 .PP
 Method description: NOT USED NOW !!! get the optimal physical plan\&. no requirement
 .PP
 with requirement 
 .PP
-Reimplemented from \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::PlanContext::GetAggregatedDatasize(), claims::logical_query_plan::LogicalOperator::GetOptimalPhysicalPlan(), claims::logical_query_plan::Requirement::requireNetworkTransfer(), and claims::logical_query_plan::Requirement::tryMerge()\&.
-.SS "\fBBlockStreamIteratorBase\fP * claims::logical_query_plan::LogicalQueryPlanRoot::GetPhysicalPlan (const unsigned &block_size)\fC [virtual]\fP"
+References claims::logical_operator::PlanContext::GetAggregatedDatasize(), claims::logical_operator::LogicalOperator::GetOptimalPhysicalPlan(), claims::logical_operator::Requirement::requireNetworkTransfer(), and claims::logical_operator::Requirement::tryMerge()\&.
+.SS "\fBBlockStreamIteratorBase\fP * claims::logical_operator::LogicalQueryPlanRoot::GetPhysicalPlan (const unsigned &block_size)\fC [virtual]\fP"
 
 .PP
 Method description: generate a few physical operators according to this logical operator\&. 
@@ -91,18 +91,18 @@ get \fBPlanContext\fP and child physical plan from child , consider \fBPlanConte
 .PP
 choose one of three top physical operators depend on fashion_, return complete physical plan If the number of partitions in the child \fBPlanContext\fP is 1 and the the location is right in the collector, then exchange is not necessary\&.
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::LogicalOperator::GetPhysicalPlan(), GetPlanContext(), and Config::initial_degree_of_parallelism\&.
-.SS "\fBPlanContext\fP claims::logical_query_plan::LogicalQueryPlanRoot::GetPlanContext ()\fC [virtual]\fP"
+References claims::logical_operator::LogicalOperator::GetPhysicalPlan(), GetPlanContext(), and Config::initial_degree_of_parallelism\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalQueryPlanRoot::GetPlanContext ()\fC [virtual]\fP"
 get \fBPlanContext\fP from child and return 
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::LogicalOperator::GetPlanContext()\&.
+References claims::logical_operator::LogicalOperator::GetPlanContext()\&.
 .PP
 Referenced by GetPhysicalPlan()\&.
-.SS "void claims::logical_query_plan::LogicalQueryPlanRoot::Print (intlevel = \fC0\fP) const\fC [virtual]\fP"
+.SS "void claims::logical_operator::LogicalQueryPlanRoot::Print (intlevel = \fC0\fP) const\fC [virtual]\fP"
 
 .PP
 Method description: print the limit info and call child to print their logical operator info\&. 
@@ -119,7 +119,7 @@ void
 .PP
 
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 
 .SH "Author"
 .PP 

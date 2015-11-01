@@ -1,8 +1,8 @@
-.TH "claims::logical_query_plan::PlanPartitioner" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::logical_operator::PlanPartitioner" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-claims::logical_query_plan::PlanPartitioner \- 
+claims::logical_operator::PlanPartitioner \- 
 .SH SYNOPSIS
 .br
 .PP
@@ -68,10 +68,10 @@ claims::logical_query_plan::PlanPartitioner \-
 describe how the \fBPlanContext\fP are partitioned and the partition property between them\&. I think that, in the current design, the \fBPlanContext\fP descriptor fails to contain the information describing how the data is processed since it is release from the source, i\&.e\&., Scan operator\&. the information of every partition is described by the \fBPlanPartitionInfo\fP\&. all this information originates from the partition information of the raw dataset\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool claims::logical_query_plan::PlanPartitioner::HasSamePartitionLocation (const \fBPlanPartitioner\fP &target) const"
+.SS "bool claims::logical_operator::PlanPartitioner::HasSamePartitionLocation (const \fBPlanPartitioner\fP &target) const"
 if no party is filtered\&.
 .PP
-Referenced by claims::logical_query_plan::LogicalEqualJoin::GetPlanContext()\&.
+Referenced by claims::logical_operator::LogicalEqualJoin::GetPlanContext()\&.
 
 .SH "Author"
 .PP 

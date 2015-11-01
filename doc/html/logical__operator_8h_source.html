@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: logical_query_plan/logical_operator.h Source File</title>
+<title>My Project: logical_operator/logical_operator.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -124,7 +124,7 @@ $(document).ready(function(){initNavTree('logical__operator_8h_source.html','');
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> * See the License for the specific language governing permissions and</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> * limitations under the License.</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * /CLAIMS/logical_query_plan/logical_operator.h</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * /CLAIMS/logical_operator/logical_operator.h</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> *  Created on: Nov 7, 2013</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"> *      Author: wangli, fzh</span></div>
@@ -139,11 +139,11 @@ $(document).ready(function(){initNavTree('logical__operator_8h_source.html','');
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;./plan_context.h&quot;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;../common/Schema/SchemaFix.h&quot;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;../physical_query_plan/BlockStreamIteratorBase.h&quot;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;../logical_query_plan/Requirement.h&quot;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;../physical_operator/physical_operator_base.h&quot;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/Requirement.h&quot;</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>claims {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span>logical_query_plan {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span>logical_operator {</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">enum</span> OperatorType {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  kLogicalScan,</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  kLogicalFilter,</div>
@@ -194,27 +194,27 @@ $(document).ready(function(){initNavTree('logical__operator_8h_source.html','');
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  OperatorType operator_type_;</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;};</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}  <span class="comment">// namespace logical_query_plan</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}  <span class="comment">// namespace logical_operator</span></div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;}  <span class="comment">// namespace claims</span></div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#endif  // LOGICAL_QUERY_PLAN_LOGICAL_OPERATOR_H_</span></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html">claims::logical_query_plan::Requirement</a></div><div class="ttdef"><b>Definition:</b> Requirement.h:23</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html">claims::logical_operator::Requirement</a></div><div class="ttdef"><b>Definition:</b> Requirement.h:23</div></div>
 <div class="ttc" id="structAttribute_html"><div class="ttname"><a href="structAttribute.html">Attribute</a></div><div class="ttdef"><b>Definition:</b> Attribute.h:19</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html_a06f66bf15487a3e00e6fb64b8930cc19"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a06f66bf15487a3e00e6fb64b8930cc19">claims::logical_query_plan::LogicalOperator::GetPhysicalPlan</a></div><div class="ttdeci">virtual BlockStreamIteratorBase * GetPhysicalPlan(const unsigned &amp;)=0</div></div>
-<div class="ttc" id="structclaims_1_1logical__query__plan_1_1PhysicalPlanDescriptor_html"><div class="ttname"><a href="structclaims_1_1logical__query__plan_1_1PhysicalPlanDescriptor.html">claims::logical_query_plan::PhysicalPlanDescriptor</a></div><div class="ttdef"><b>Definition:</b> logical_operator.h:51</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">claims::logical_query_plan::PlanPartitioner</a></div><div class="ttdef"><b>Definition:</b> plan_partitioner.h:45</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html">claims::logical_query_plan::PlanContext</a></div><div class="ttdef"><b>Definition:</b> plan_context.h:43</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html">claims::logical_query_plan::LogicalOperator</a></div><div class="ttdef"><b>Definition:</b> logical_operator.h:64</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html_a59f89f6f150d6e995cf5a4cfb86ad715"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_query_plan::LogicalOperator::GetPlanContext</a></div><div class="ttdeci">virtual PlanContext GetPlanContext()=0</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html_a9acebc48e86bbb81ac63c23f4aa96d26"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a9acebc48e86bbb81ac63c23f4aa96d26">claims::logical_query_plan::LogicalOperator::GetOptimalPhysicalPlan</a></div><div class="ttdeci">virtual bool GetOptimalPhysicalPlan(Requirement requirement, PhysicalPlanDescriptor &amp;physical_plan_descriptor, const unsigned &amp;block_size=4096 *1024)</div><div class="ttdef"><b>Definition:</b> logical_operator.h:86</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html_a06f66bf15487a3e00e6fb64b8930cc19"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a06f66bf15487a3e00e6fb64b8930cc19">claims::logical_operator::LogicalOperator::GetPhysicalPlan</a></div><div class="ttdeci">virtual BlockStreamIteratorBase * GetPhysicalPlan(const unsigned &amp;)=0</div></div>
+<div class="ttc" id="structclaims_1_1logical__query__plan_1_1PhysicalPlanDescriptor_html"><div class="ttname"><a href="structclaims_1_1logical__query__plan_1_1PhysicalPlanDescriptor.html">claims::logical_operator::PhysicalPlanDescriptor</a></div><div class="ttdef"><b>Definition:</b> logical_operator.h:51</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">claims::logical_operator::PlanPartitioner</a></div><div class="ttdef"><b>Definition:</b> plan_partitioner.h:45</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html">claims::logical_operator::PlanContext</a></div><div class="ttdef"><b>Definition:</b> plan_context.h:43</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html">claims::logical_operator::LogicalOperator</a></div><div class="ttdef"><b>Definition:</b> logical_operator.h:64</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html_a59f89f6f150d6e995cf5a4cfb86ad715"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_operator::LogicalOperator::GetPlanContext</a></div><div class="ttdeci">virtual PlanContext GetPlanContext()=0</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LogicalOperator_html_a9acebc48e86bbb81ac63c23f4aa96d26"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a9acebc48e86bbb81ac63c23f4aa96d26">claims::logical_operator::LogicalOperator::GetOptimalPhysicalPlan</a></div><div class="ttdeci">virtual bool GetOptimalPhysicalPlan(Requirement requirement, PhysicalPlanDescriptor &amp;physical_plan_descriptor, const unsigned &amp;block_size=4096 *1024)</div><div class="ttdef"><b>Definition:</b> logical_operator.h:86</div></div>
 <div class="ttc" id="classBlockStreamIteratorBase_html"><div class="ttname"><a href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a></div><div class="ttdef"><b>Definition:</b> BlockStreamIteratorBase.h:27</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_query_plan</a></li><li class="navelem"><b>logical_operator.h</b></li>
+    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_operator</a></li><li class="navelem"><b>logical_operator.h</b></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

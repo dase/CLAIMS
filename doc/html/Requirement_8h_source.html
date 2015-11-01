@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: logical_query_plan/Requirement.h Source File</title>
+<title>My Project: logical_operator/Requirement.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -119,9 +119,9 @@ $(document).ready(function(){initNavTree('Requirement_8h_source.html','');});
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;../common/ids.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;../common/hash.h&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;../Catalog/Attribute.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../logical_query_plan/plan_context.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/plan_context.h&quot;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>claims {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span>logical_query_plan {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span>logical_operator {</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">enum</span> NetworkTransfer { NONE, Shuffle, piped };</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
@@ -157,21 +157,21 @@ $(document).ready(function(){initNavTree('Requirement_8h_source.html','');});
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> cost_limit_;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;};</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}  <span class="comment">// namespace logical_query_plan</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}  <span class="comment">// namespace logical_operator</span></div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}  <span class="comment">// namespace claims</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif  // LOGICAL_QUERY_PLAN_REQUIREMENT_H_</span></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html">claims::logical_query_plan::Requirement</a></div><div class="ttdef"><b>Definition:</b> Requirement.h:23</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html_ad05d43ba2ea60cfb58a23f71b6e630cc"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html#ad05d43ba2ea60cfb58a23f71b6e630cc">claims::logical_query_plan::Requirement::tryMerge</a></div><div class="ttdeci">bool tryMerge(const Requirement req, Requirement &amp;target) const </div><div class="ttdef"><b>Definition:</b> Requirement.cpp:117</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html">claims::logical_operator::Requirement</a></div><div class="ttdef"><b>Definition:</b> Requirement.h:23</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html_ad05d43ba2ea60cfb58a23f71b6e630cc"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html#ad05d43ba2ea60cfb58a23f71b6e630cc">claims::logical_operator::Requirement::tryMerge</a></div><div class="ttdeci">bool tryMerge(const Requirement req, Requirement &amp;target) const </div><div class="ttdef"><b>Definition:</b> Requirement.cpp:117</div></div>
 <div class="ttc" id="structAttribute_html"><div class="ttname"><a href="structAttribute.html">Attribute</a></div><div class="ttdef"><b>Definition:</b> Attribute.h:19</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html_a9f9a819dfc4d060b32f2d29017f0085a"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html#a9f9a819dfc4d060b32f2d29017f0085a">claims::logical_query_plan::Requirement::requireNetworkTransfer</a></div><div class="ttdeci">NetworkTransfer requireNetworkTransfer(const PlanContext &amp;plan_context) const </div><div class="ttdef"><b>Definition:</b> Requirement.cpp:49</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1Requirement_html_a9f9a819dfc4d060b32f2d29017f0085a"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1Requirement.html#a9f9a819dfc4d060b32f2d29017f0085a">claims::logical_operator::Requirement::requireNetworkTransfer</a></div><div class="ttdeci">NetworkTransfer requireNetworkTransfer(const PlanContext &amp;plan_context) const </div><div class="ttdef"><b>Definition:</b> Requirement.cpp:49</div></div>
 <div class="ttc" id="classPartitionFunction_html"><div class="ttname"><a href="classPartitionFunction.html">PartitionFunction</a></div><div class="ttdef"><b>Definition:</b> hash.h:32</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html">claims::logical_query_plan::PlanContext</a></div><div class="ttdef"><b>Definition:</b> plan_context.h:43</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html">claims::logical_operator::PlanContext</a></div><div class="ttdef"><b>Definition:</b> plan_context.h:43</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_query_plan</a></li><li class="navelem"><b>Requirement.h</b></li>
+    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_operator</a></li><li class="navelem"><b>Requirement.h</b></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

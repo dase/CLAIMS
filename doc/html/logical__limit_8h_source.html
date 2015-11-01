@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: logical_query_plan/logical_limit.h Source File</title>
+<title>My Project: logical_operator/logical_limit.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -124,7 +124,7 @@ $(document).ready(function(){initNavTree('logical__limit_8h_source.html','');});
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> * See the License for the specific language governing permissions and</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> * limitations under the License.</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * /CLAIMS/logical_query_plan/logical_limit.h</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * /CLAIMS/logical_operator/logical_limit.h</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> *  Created on: Sep 18, 2015</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"> *      Author: wangli，HanZhang</span></div>
@@ -136,9 +136,9 @@ $(document).ready(function(){initNavTree('logical__limit_8h_source.html','');});
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#ifndef LOGICAL_QUERY_PLAN_LOGICAL_LIMIT_H_</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define LOGICAL_QUERY_PLAN_LOGICAL_LIMIT_H_</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;../logical_query_plan/logical_operator.h&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/logical_operator.h&quot;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">namespace </span>claims {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>logical_query_plan {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>logical_operator {</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__query__plan_1_1LimitConstraint.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="classclaims_1_1logical__query__plan_1_1LimitConstraint.html">LimitConstraint</a> {</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; <span class="keyword">public</span>:</div>
@@ -155,17 +155,17 @@ $(document).ready(function(){initNavTree('logical__limit_8h_source.html','');});
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> returned_tuples_;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}  <span class="comment">// namespace logical_query_plan</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}  <span class="comment">// namespace logical_operator</span></div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}  <span class="comment">// namespace claims</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif  //  LOGICAL_QUERY_PLAN_LOGICAL_LIMIT_H_</span></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LimitConstraint_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LimitConstraint.html">claims::logical_query_plan::LimitConstraint</a></div><div class="ttdoc">Method description:limit operator is a simple operator. start_position_:the fault value is 0...</div><div class="ttdef"><b>Definition:</b> logical_limit.h:42</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1LimitConstraint_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1LimitConstraint.html">claims::logical_operator::LimitConstraint</a></div><div class="ttdoc">Method description:limit operator is a simple operator. start_position_:the fault value is 0...</div><div class="ttdef"><b>Definition:</b> logical_limit.h:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_query_plan</a></li><li class="navelem"><b>logical_limit.h</b></li>
+    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_operator</a></li><li class="navelem"><b>logical_limit.h</b></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

@@ -8,8 +8,8 @@ var dir_140b809db859a5f094c90c4f2a02164f =
     [ "BlockStreamLimit.h", "BlockStreamLimit_8h_source.html", null ],
     [ "BlockStreamPerformanceMonitorTop.h", "BlockStreamPerformanceMonitorTop_8h_source.html", null ],
     [ "BlockStreamPerformanceTest.h", "BlockStreamPerformanceTest_8h_source.html", null ],
-    [ "BlockStreamPrint.h", "BlockStreamPrint_8h_source.html", null ],
+    [ "result_printer.h", "BlockStreamPrint_8h_source.html", null ],
     [ "BlockStreamRandomMemAccess.h", "BlockStreamRandomMemAccess_8h_source.html", null ],
-    [ "BlockStreamResultCollector.h", "BlockStreamResultCollector_8h_source.html", null ],
+    [ "result_collector.h", "BlockStreamResultCollector_8h_source.html", null ],
     [ "BlockStreamSingleColumnScan.h", "BlockStreamSingleColumnScan_8h_source.html", null ]
 ];

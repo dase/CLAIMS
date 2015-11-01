@@ -16,7 +16,7 @@
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
-#include "../logical_query_plan/logical_query_plan_root.h"
+#include "../logical_operator/logical_query_plan_root.h"
 class Executing {
 public:
 	Executing();

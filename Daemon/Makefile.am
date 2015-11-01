@@ -14,7 +14,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../Parsetree/libparsetree.a \
-		../logical_query_plan/liblogicalqueryplan.a \
+		../logical_operator/liblogicalqueryplan.a \
 		../common/Block/libblock.a \
 		../utility/libutility.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\

@@ -28,6 +28,6 @@ var searchData=
   ['opt_5fcsc',['Opt_csc',['../structOpt__csc.html',1,'']]],
   ['orderby_5fexpr',['Orderby_expr',['../structOrderby__expr.html',1,'']]],
   ['orderby_5flist',['Orderby_list',['../structOrderby__list.html',1,'']]],
-  ['orderbyattr',['OrderByAttr',['../structclaims_1_1logical__query__plan_1_1LogicalSort_1_1OrderByAttr.html',1,'claims::logical_query_plan::LogicalSort']]],
-  ['outputstyle',['OutputStyle',['../classclaims_1_1logical__query__plan_1_1LogicalQueryPlanRoot.html#a5cdb80763101a1fa914f17b31f1bb7a5',1,'claims::logical_query_plan::LogicalQueryPlanRoot']]]
+  ['orderbyattr',['OrderByAttr',['../structclaims_1_1logical__query__plan_1_1LogicalSort_1_1OrderByAttr.html',1,'claims::logical_operator::LogicalSort']]],
+  ['outputstyle',['OutputStyle',['../classclaims_1_1logical__query__plan_1_1LogicalQueryPlanRoot.html#a5cdb80763101a1fa914f17b31f1bb7a5',1,'claims::logical_operator::LogicalQueryPlanRoot']]]
 ];

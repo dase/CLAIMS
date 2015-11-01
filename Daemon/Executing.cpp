@@ -44,7 +44,7 @@ ResultSet* Executing::run_sql(std::string sql,std::string& error){
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::kResultCollector);
 	//	unsigned long long int timer_start=curtick();
 
-	BlockStreamIteratorBase* collector = root->GetPhysicalPlan(
+	PhysicalOperatorBase* collector = root->GetPhysicalPlan(
 			1024 * 64 - sizeof(unsigned));
 	collector->Print();
 	collector->Open();

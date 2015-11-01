@@ -1,8 +1,8 @@
-.TH "claims::logical_query_plan::PlanContext" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::logical_operator::PlanContext" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-claims::logical_query_plan::PlanContext \- 
+claims::logical_operator::PlanContext \- 
 .SH SYNOPSIS
 .br
 .PP
@@ -61,11 +61,11 @@ claims::logical_query_plan::PlanContext \-
 maintain the data property of the plan after having completed current operator, mainly include the attribute_list_, commu_cost_ and plan_partitioner_\&. the \fBPlanContext\fP originates the leaf of the plan (i\&.e\&. scan operator), the \fBPlanContext\fP of current operator generates from it's children\&. 
 .SH "Member Function Documentation"
 .PP 
-.SS "unsigned long claims::logical_query_plan::PlanContext::GetAggregatedDatasize () const"
+.SS "unsigned long claims::logical_operator::PlanContext::GetAggregatedDatasize () const"
 after having executing current operator, the data size could be changed, the data size = total tuples * tuple size\&. 
 .PP
-Referenced by claims::logical_query_plan::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_query_plan::LogicalFilter::GetOptimalPhysicalPlan(), claims::logical_query_plan::LogicalQueryPlanRoot::GetOptimalPhysicalPlan(), claims::logical_query_plan::LogicalCrossJoin::GetPlanContext(), and claims::logical_query_plan::LogicalAggregation::GetPlanContext()\&.
-.SS "\fBSchema\fP * claims::logical_query_plan::PlanContext::GetSchema () const"
+Referenced by claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalCrossJoin::GetPlanContext(), and claims::logical_operator::LogicalAggregation::GetPlanContext()\&.
+.SS "\fBSchema\fP * claims::logical_operator::PlanContext::GetSchema () const"
 Only fixed schema is supported now\&. TODO(wangli): support other schemas\&.
 
 .SH "Author"

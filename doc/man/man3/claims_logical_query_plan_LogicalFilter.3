@@ -1,8 +1,8 @@
-.TH "claims::logical_query_plan::LogicalFilter" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::logical_operator::LogicalFilter" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-claims::logical_query_plan::LogicalFilter \- 
+claims::logical_operator::LogicalFilter \- 
 .PP
 Method description: Logical Operator 'filter', is used to screen out the info we don't need, so as to lessen time cost\&.  
 
@@ -12,7 +12,7 @@ Method description: Logical Operator 'filter', is used to screen out the info we
 .PP
 \fC#include <logical_filter\&.h>\fP
 .PP
-Inherits \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
@@ -46,7 +46,7 @@ Inherits \fBclaims::logical_query_plan::LogicalOperator\fP\&.
 Method description: Logical Operator 'filter', is used to screen out the info we don't need, so as to lessen time cost\&. 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "claims::logical_query_plan::LogicalFilter::LogicalFilter (\fBLogicalOperator\fP *child, vector< \fBQNode\fP * >qual)"
+.SS "claims::logical_operator::LogicalFilter::LogicalFilter (\fBLogicalOperator\fP *child, vector< \fBQNode\fP * >qual)"
 
 .PP
 Method description: Construction\&. 
@@ -61,7 +61,7 @@ Method description: Construction\&.
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool claims::logical_query_plan::LogicalFilter::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
+.SS "bool claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
 get the optimal Physical plan that meets the requirement\&. 
 .PP
 \fBReturns:\fP
@@ -71,10 +71,10 @@ true if find physical plan that meets the requirement and store the physical pla
 .PP
 The input plan context should be transfered in the network to meet the requirement\&. TODO(wangli): Implement OneToOne Exchange
 .PP
-Reimplemented from \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::PlanContext::GetAggregatedDatasize(), claims::logical_query_plan::LogicalOperator::GetOptimalPhysicalPlan(), GetPlanContext(), and claims::logical_query_plan::Requirement::requireNetworkTransfer()\&.
-.SS "\fBBlockStreamIteratorBase\fP * claims::logical_query_plan::LogicalFilter::GetPhysicalPlan (const unsigned &blocksize)\fC [virtual]\fP"
+References claims::logical_operator::PlanContext::GetAggregatedDatasize(), claims::logical_operator::LogicalOperator::GetOptimalPhysicalPlan(), GetPlanContext(), and claims::logical_operator::Requirement::requireNetworkTransfer()\&.
+.SS "\fBBlockStreamIteratorBase\fP * claims::logical_operator::LogicalFilter::GetPhysicalPlan (const unsigned &blocksize)\fC [virtual]\fP"
 
 .PP
 Method description: To get the Iterator Tree from its child logical operator, generates a state for establishing a physical execution plan, finally give it to its father logical operator\&. 
@@ -91,10 +91,10 @@ BlockStreamIteratorBase*: A block stream iterator pointer, pointing to the root 
 .PP
 
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::LogicalOperator::GetPhysicalPlan(), and GetPlanContext()\&.
-.SS "\fBPlanContext\fP claims::logical_query_plan::LogicalFilter::GetPlanContext ()\fC [virtual]\fP"
+References claims::logical_operator::LogicalOperator::GetPhysicalPlan(), and GetPlanContext()\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalFilter::GetPlanContext ()\fC [virtual]\fP"
 
 .PP
 Method description: To get the plan context from its child logical operator, operates on it, thus give it to its father logical operator\&. 
@@ -108,12 +108,12 @@ In the currently implementation, we assume that the boolean operator between eac
 .PP
 Should predict the volume of data that passes the filter\&. TODO(wangli): A precious prediction is needed based on the statistic of the input data, which may be maintained in the catalog module\&.
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::LogicalOperator::GetPlanContext()\&.
+References claims::logical_operator::LogicalOperator::GetPlanContext()\&.
 .PP
 Referenced by GetOptimalPhysicalPlan(), and GetPhysicalPlan()\&.
-.SS "void claims::logical_query_plan::LogicalFilter::Print (intlevel = \fC0\fP) const\fC [virtual]\fP"
+.SS "void claims::logical_operator::LogicalFilter::Print (intlevel = \fC0\fP) const\fC [virtual]\fP"
 
 .PP
 Method description: To print information of qual_\&. 
@@ -125,7 +125,7 @@ Method description: To print information of qual_\&.
 .PP
 
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 
 .SH "Author"
 .PP 

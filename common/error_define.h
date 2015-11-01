@@ -58,7 +58,7 @@ const int kNoTableFound = -1001;
 /* errorno for codegen -3001 ~ -4000 */
 const int kTestError = -3001;
 
-/* errorno for logical_query_plan -4001 ~ -5000*/
+/* errorno for logical_operator -4001 ~ -5000*/
 const int kUninitializedJoinPolicy = -4001;
 
 const int kGeneratePlanContextFailed = -4002;
@@ -66,7 +66,7 @@ const int kGeneratePlanContextFailed = -4002;
 const int kGenerateDataflowFailed = -4003;
 
 
-/* errorno for physical_query_plan -5001 ~ -6000 */
+/* errorno for physical_operator -5001 ~ -6000 */
 const int kGenerateSubPhyPlanFailed = -5001;
 const int kNoPartitionIdScan = -5002;
 // the optimization of filter function failed;

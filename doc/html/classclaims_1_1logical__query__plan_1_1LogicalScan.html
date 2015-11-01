@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: claims::logical_query_plan::LogicalScan Class Reference</title>
+<title>My Project: claims::logical_operator::LogicalScan Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('classclaims_1_1logical__query__plan_1_
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classclaims_1_1logical__query__plan_1_1LogicalScan-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">claims::logical_query_plan::LogicalScan Class Reference</div>  </div>
+<div class="title">claims::logical_operator::LogicalScan Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -117,12 +117,12 @@ $(document).ready(function(){initNavTree('classclaims_1_1logical__query__plan_1_
 
 <p><code>#include &lt;<a class="el" href="logical__scan_8h_source.html">logical_scan.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for claims::logical_query_plan::LogicalScan:</div>
+Inheritance diagram for claims::logical_operator::LogicalScan:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classclaims_1_1logical__query__plan_1_1LogicalScan.png" usemap="#claims::logical_query_plan::LogicalScan_map" alt=""/>
-  <map id="claims::logical_query_plan::LogicalScan_map" name="claims::logical_query_plan::LogicalScan_map">
-<area href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html" alt="claims::logical_query_plan::LogicalOperator" shape="rect" coords="0,0,258,24"/>
+  <img src="classclaims_1_1logical__query__plan_1_1LogicalScan.png" usemap="#claims::logical_operator::LogicalScan_map" alt=""/>
+  <map id="claims::logical_operator::LogicalScan_map" name="claims::logical_operator::LogicalScan_map">
+<area href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html" alt="claims::logical_operator::LogicalOperator" shape="rect" coords="0,0,258,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -152,7 +152,7 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html">claims::logical_query_plan::LogicalOperator</a></td></tr>
+<tr class="inherit_header pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html">claims::logical_operator::LogicalOperator</a></td></tr>
 <tr class="memitem:ad8dafe8cdff00e9ceb9b48921f13a2d4 inherit pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8dafe8cdff00e9ceb9b48921f13a2d4"></a>
 <a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>GetSchema</b> (const std::vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt; &amp;) const </td></tr>
 <tr class="separator:ad8dafe8cdff00e9ceb9b48921f13a2d4 inherit pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,7 +186,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool claims::logical_query_plan::LogicalScan::GetOptimalPhysicalPlan </td>
+          <td class="memname">bool claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classclaims_1_1logical__query__plan_1_1Requirement.html">Requirement</a>&#160;</td>
           <td class="paramname"><em>requirement</em>, </td>
@@ -219,9 +219,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
 <dl class="section return"><dt>Returns</dt><dd>true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor. </dd></dl>
 <p>Currently, the join output size cannot be predicted due to the absence of data statistics. We just use the magic number as following</p>
 
-<p>Reimplemented from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a9acebc48e86bbb81ac63c23f4aa96d26">claims::logical_query_plan::LogicalOperator</a>.</p>
+<p>Reimplemented from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a9acebc48e86bbb81ac63c23f4aa96d26">claims::logical_operator::LogicalOperator</a>.</p>
 
-<p>References <a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html#ae0ff21761d28abad9e602d0b70b3f36f">claims::logical_query_plan::PlanContext::GetAggregatedDatasize()</a>, <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalScan.html#ad5a029bd18cacd363057b7083216306f">GetPlanContext()</a>, and <a class="el" href="classclaims_1_1logical__query__plan_1_1Requirement.html#a9f9a819dfc4d060b32f2d29017f0085a">claims::logical_query_plan::Requirement::requireNetworkTransfer()</a>.</p>
+<p>References <a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html#ae0ff21761d28abad9e602d0b70b3f36f">claims::logical_operator::PlanContext::GetAggregatedDatasize()</a>, <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalScan.html#ad5a029bd18cacd363057b7083216306f">GetPlanContext()</a>, and <a class="el" href="classclaims_1_1logical__query__plan_1_1Requirement.html#a9f9a819dfc4d060b32f2d29017f0085a">claims::logical_operator::Requirement::requireNetworkTransfer()</a>.</p>
 
 </div>
 </div>
@@ -233,7 +233,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a> claims::logical_query_plan::LogicalScan::GetPlanContext </td>
+          <td class="memname"><a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a> claims::logical_operator::LogicalScan::GetPlanContext </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -249,7 +249,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
 <p>It can generate many projection. We need the smallest cost of projections, so we should choose the best one what we need with traversing scan_attribute_list_. </p>
 <p>build the <a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a></p>
 
-<p>Implements <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_query_plan::LogicalOperator</a>.</p>
+<p>Implements <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_operator::LogicalOperator</a>.</p>
 
 <p>References <a class="el" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf">ProjectionBinding::BindingEntireProjection()</a>, and <a class="el" href="classProjectionDescriptor.html#a8a664135e20ca7d53183f02cfbe19982">ProjectionDescriptor::getProjectionCost()</a>.</p>
 
@@ -258,15 +258,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>logical_query_plan/<a class="el" href="logical__scan_8h_source.html">logical_scan.h</a></li>
-<li>logical_query_plan/logical_scan.cpp</li>
+<li>logical_operator/<a class="el" href="logical__scan_8h_source.html">logical_scan.h</a></li>
+<li>logical_operator/logical_scan.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespaceclaims.html">claims</a></li><li class="navelem"><b>logical_query_plan</b></li><li class="navelem"><a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalScan.html">LogicalScan</a></li>
+    <li class="navelem"><a class="el" href="namespaceclaims.html">claims</a></li><li class="navelem"><b>logical_operator</b></li><li class="navelem"><a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalScan.html">LogicalScan</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

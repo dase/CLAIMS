@@ -1,8 +1,8 @@
-.TH "claims::logical_query_plan::LogicalEqualJoin" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::logical_operator::LogicalEqualJoin" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-claims::logical_query_plan::LogicalEqualJoin \- 
+claims::logical_operator::LogicalEqualJoin \- 
 .PP
 Generate equal join logical plan\&.  
 
@@ -12,7 +12,7 @@ Generate equal join logical plan\&.
 .PP
 \fC#include <logical_equal_join\&.h>\fP
 .PP
-Inherits \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
 .SS "Classes"
 
 .in +1c
@@ -54,7 +54,7 @@ Generate equal join logical plan\&.
 EqualJoin operator achieves the join statement tables\&.It requires equivalent conditions\&.As for implementation, one is to send all data to a same machine\&.But the generated table will be too big to store and it is inefficient\&.So we partition the data to several machines\&.Each of them does some join and return\&. 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "claims::logical_query_plan::LogicalEqualJoin::LogicalEqualJoin (std::vector< \fBJoinPair\fP >joinpair_list, \fBLogicalOperator\fP *left_input, \fBLogicalOperator\fP *right_input)"
+.SS "claims::logical_operator::LogicalEqualJoin::LogicalEqualJoin (std::vector< \fBJoinPair\fP >joinpair_list, \fBLogicalOperator\fP *left_input, \fBLogicalOperator\fP *right_input)"
 
 .PP
 Method description:Create a EqualJoin implement\&. 
@@ -71,7 +71,7 @@ Method description:Create a EqualJoin implement\&.
 
 .SH "Member Function Documentation"
 .PP 
-.SS "bool claims::logical_query_plan::LogicalEqualJoin::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
+.SS "bool claims::logical_operator::LogicalEqualJoin::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
 get the optimal Physical plan that meets the requirement\&. 
 .PP
 \fBReturns:\fP
@@ -81,14 +81,14 @@ true if find physical plan that meets the requirement and store the physical pla
 .PP
 
 .PP
-Reimplemented from \fBclaims::logical_query_plan::LogicalOperator\fP\&.
-.SS "\fBBlockStreamIteratorBase\fP * claims::logical_query_plan::LogicalEqualJoin::GetPhysicalPlan (const unsigned &)\fC [virtual]\fP"
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "\fBBlockStreamIteratorBase\fP * claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan (const unsigned &)\fC [virtual]\fP"
 generate the iterator tree based on the computed plan_context\&. Hence, this function can only be called after the calling of \fBGetPlanContext()\fP\&. In the initial implementation, I set the bucket size to be up round to cache line size, e\&.g\&., 64Bytes\&. Finally, I realized that different from aggregation,the hash table bucket in the build phase of hash join is filled very quickly and hence a * a relatively large bucket size could reduce the number of overflowing buckets and avoid the random memory access caused by acceesing overflowing buckets\&.
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::LogicalOperator::GetPhysicalPlan(), claims::logical_query_plan::LogicalOperator::GetPlanContext(), GetPlanContext(), and Config::initial_degree_of_parallelism\&.
-.SS "\fBPlanContext\fP claims::logical_query_plan::LogicalEqualJoin::GetPlanContext ()\fC [virtual]\fP"
+References claims::logical_operator::LogicalOperator::GetPhysicalPlan(), claims::logical_operator::LogicalOperator::GetPlanContext(), GetPlanContext(), and Config::initial_degree_of_parallelism\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalEqualJoin::GetPlanContext ()\fC [virtual]\fP"
 
 .PP
 Method description: Get the child information\&. The mostly important member is 'property' and 'attributes
@@ -104,9 +104,9 @@ set the generated data size
 .PP
 TODO(admin): the repartition strategy (e\&.g\&., the degree of parallelism and the partition function) in such case is not decided by any child data flow\&. Additional optimization can be made by adopting the partition strategy which benefits the remaining work\&.
 .PP
-Implements \fBclaims::logical_query_plan::LogicalOperator\fP\&.
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References claims::logical_query_plan::LogicalOperator::GetPlanContext(), and claims::logical_query_plan::PlanPartitioner::HasSamePartitionLocation()\&.
+References claims::logical_operator::LogicalOperator::GetPlanContext(), and claims::logical_operator::PlanPartitioner::HasSamePartitionLocation()\&.
 .PP
 Referenced by GetPhysicalPlan()\&.
 

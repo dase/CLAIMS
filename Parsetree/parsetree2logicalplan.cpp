@@ -27,7 +27,7 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 
-#include "../logical_query_plan/logical_operator.h"
+#include "../logical_operator/logical_operator.h"
 
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
@@ -36,17 +36,18 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 #include <assert.h>
-#include "../logical_query_plan/logical_aggregation.h"
-#include "../logical_query_plan/logical_cross_join.h"
-#include "../logical_query_plan/logical_equal_join.h"
-#include "../logical_query_plan/logical_filter.h"
-#include "../logical_query_plan/logical_project.h"
-#include "../logical_query_plan/logical_scan.h"
-#include "../logical_query_plan/logical_sort.h"
-#include "../physical_query_plan/physical_aggregation.h"
 
-using namespace claims::logical_query_plan;
-using claims::physical_query_plan::PhysicalAggregation;
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_cross_join.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_project.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_sort.h"
+#include "../physical_operator/physical_aggregation.h"
+
+using namespace claims::logical_operator;
+using claims::physical_operator::PhysicalAggregation;
 static LogicalOperator *parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem> &expr, Node *node,
                                   LogicalOperator *input);

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: claims::logical_query_plan::LogicalEqualJoin Class Reference</title>
+<title>My Project: claims::logical_operator::LogicalEqualJoin Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -110,7 +110,7 @@ $(document).ready(function(){initNavTree('classclaims_1_1logical__query__plan_1_
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">claims::logical_query_plan::LogicalEqualJoin Class Reference</div>  </div>
+<div class="title">claims::logical_operator::LogicalEqualJoin Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -119,12 +119,12 @@ $(document).ready(function(){initNavTree('classclaims_1_1logical__query__plan_1_
 
 <p><code>#include &lt;<a class="el" href="logical__equal__join_8h_source.html">logical_equal_join.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for claims::logical_query_plan::LogicalEqualJoin:</div>
+Inheritance diagram for claims::logical_operator::LogicalEqualJoin:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.png" usemap="#claims::logical_query_plan::LogicalEqualJoin_map" alt=""/>
-  <map id="claims::logical_query_plan::LogicalEqualJoin_map" name="claims::logical_query_plan::LogicalEqualJoin_map">
-<area href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html" alt="claims::logical_query_plan::LogicalOperator" shape="rect" coords="0,0,262,24"/>
+  <img src="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.png" usemap="#claims::logical_operator::LogicalEqualJoin_map" alt=""/>
+  <map id="claims::logical_operator::LogicalEqualJoin_map" name="claims::logical_operator::LogicalEqualJoin_map">
+<area href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html" alt="claims::logical_operator::LogicalOperator" shape="rect" coords="0,0,262,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -162,7 +162,7 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html">claims::logical_query_plan::LogicalOperator</a></td></tr>
+<tr class="inherit_header pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html">claims::logical_operator::LogicalOperator</a></td></tr>
 <tr class="memitem:ad8dafe8cdff00e9ceb9b48921f13a2d4 inherit pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8dafe8cdff00e9ceb9b48921f13a2d4"></a>
 <a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>GetSchema</b> (const std::vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt; &amp;) const </td></tr>
 <tr class="separator:ad8dafe8cdff00e9ceb9b48921f13a2d4 inherit pro_methods_classclaims_1_1logical__query__plan_1_1LogicalOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -194,7 +194,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">claims::logical_query_plan::LogicalEqualJoin::LogicalEqualJoin </td>
+          <td class="memname">claims::logical_operator::LogicalEqualJoin::LogicalEqualJoin </td>
           <td>(</td>
           <td class="paramtype">std::vector&lt; <a class="el" href="structclaims_1_1logical__query__plan_1_1LogicalEqualJoin_1_1JoinPair.html">JoinPair</a> &gt;&#160;</td>
           <td class="paramname"><em>joinpair_list</em>, </td>
@@ -240,7 +240,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool claims::logical_query_plan::LogicalEqualJoin::GetOptimalPhysicalPlan </td>
+          <td class="memname">bool claims::logical_operator::LogicalEqualJoin::GetOptimalPhysicalPlan </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classclaims_1_1logical__query__plan_1_1Requirement.html">Requirement</a>&#160;</td>
           <td class="paramname"><em>requirement</em>, </td>
@@ -272,7 +272,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
 <p>get the optimal Physical plan that meets the requirement. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor. </dd></dl>
 
-<p>Reimplemented from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a9acebc48e86bbb81ac63c23f4aa96d26">claims::logical_query_plan::LogicalOperator</a>.</p>
+<p>Reimplemented from <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a9acebc48e86bbb81ac63c23f4aa96d26">claims::logical_operator::LogicalOperator</a>.</p>
 
 </div>
 </div>
@@ -284,7 +284,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a> * claims::logical_query_plan::LogicalEqualJoin::GetPhysicalPlan </td>
+          <td class="memname"><a class="el" href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a> * claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan </td>
           <td>(</td>
           <td class="paramtype">const unsigned &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -300,9 +300,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
 <p>generate the iterator tree based on the computed plan_context. Hence, this function can only be called after the calling of <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html#a77041ca59b50996fd3822044759fd462" title="Method description: Get the child information. ">GetPlanContext()</a>. </p>
 <p>In the initial implementation, I set the bucket size to be up round to cache line size, e.g., 64Bytes. Finally, I realized that different from aggregation,the hash table bucket in the build phase of hash join is filled very quickly and hence a * a relatively large bucket size could reduce the number of overflowing buckets and avoid the random memory access caused by acceesing overflowing buckets.</p>
 
-<p>Implements <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a06f66bf15487a3e00e6fb64b8930cc19">claims::logical_query_plan::LogicalOperator</a>.</p>
+<p>Implements <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a06f66bf15487a3e00e6fb64b8930cc19">claims::logical_operator::LogicalOperator</a>.</p>
 
-<p>References <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a06f66bf15487a3e00e6fb64b8930cc19">claims::logical_query_plan::LogicalOperator::GetPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_query_plan::LogicalOperator::GetPlanContext()</a>, <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html#a77041ca59b50996fd3822044759fd462">GetPlanContext()</a>, and <a class="el" href="classConfig.html#a26796209d4eb0791a0f608e1f08262b1">Config::initial_degree_of_parallelism</a>.</p>
+<p>References <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a06f66bf15487a3e00e6fb64b8930cc19">claims::logical_operator::LogicalOperator::GetPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_operator::LogicalOperator::GetPlanContext()</a>, <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html#a77041ca59b50996fd3822044759fd462">GetPlanContext()</a>, and <a class="el" href="classConfig.html#a26796209d4eb0791a0f608e1f08262b1">Config::initial_degree_of_parallelism</a>.</p>
 
 </div>
 </div>
@@ -314,7 +314,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_operator_type</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a> claims::logical_query_plan::LogicalEqualJoin::GetPlanContext </td>
+          <td class="memname"><a class="el" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a> claims::logical_operator::LogicalEqualJoin::GetPlanContext </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -337,24 +337,24 @@ list". When getting data from child, we make some choices according to JoinPolic
 <p>set the generated data size</p>
 <p>TODO(admin): the repartition strategy (e.g., the degree of parallelism and the partition function) in such case is not decided by any child data flow. Additional optimization can be made by adopting the partition strategy which benefits the remaining work.</p>
 
-<p>Implements <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_query_plan::LogicalOperator</a>.</p>
+<p>Implements <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_operator::LogicalOperator</a>.</p>
 
-<p>References <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_query_plan::LogicalOperator::GetPlanContext()</a>, and <a class="el" href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html#a7c0cdedfb4ef8362613a36b9d0567546">claims::logical_query_plan::PlanPartitioner::HasSamePartitionLocation()</a>.</p>
+<p>References <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalOperator.html#a59f89f6f150d6e995cf5a4cfb86ad715">claims::logical_operator::LogicalOperator::GetPlanContext()</a>, and <a class="el" href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html#a7c0cdedfb4ef8362613a36b9d0567546">claims::logical_operator::PlanPartitioner::HasSamePartitionLocation()</a>.</p>
 
 <p>Referenced by <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html#a24fb262b7eb9f3e5e11379a290ab570c">GetPhysicalPlan()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>logical_query_plan/<a class="el" href="logical__equal__join_8h_source.html">logical_equal_join.h</a></li>
-<li>logical_query_plan/logical_equal_join.cpp</li>
+<li>logical_operator/<a class="el" href="logical__equal__join_8h_source.html">logical_equal_join.h</a></li>
+<li>logical_operator/logical_equal_join.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespaceclaims.html">claims</a></li><li class="navelem"><b>logical_query_plan</b></li><li class="navelem"><a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html">LogicalEqualJoin</a></li>
+    <li class="navelem"><a class="el" href="namespaceclaims.html">claims</a></li><li class="navelem"><b>logical_operator</b></li><li class="navelem"><a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html">LogicalEqualJoin</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

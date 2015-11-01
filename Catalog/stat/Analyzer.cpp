@@ -15,16 +15,16 @@
 #include "../../common/Block/DynamicBlockBuffer.h"
 #include "../../common/Block/ResultSet.h"
 #include "../../common/data_type.h"
-#include "../../logical_query_plan/logical_aggregation.h"
-#include "../../logical_query_plan/logical_query_plan_root.h"
-#include "../../logical_query_plan/logical_scan.h"
-#include "../../physical_query_plan/physical_aggregation.h"
+#include "../../logical_operator/logical_aggregation.h"
+#include "../../logical_operator/logical_query_plan_root.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../physical_operator/physical_aggregation.h"
 #include "../Catalog.h"
 #include "../table.h"
 
 #include "StatManager.h"
-using namespace claims::logical_query_plan;
-using claims::physical_query_plan::PhysicalAggregation;
+using namespace claims::logical_operator;
+using claims::physical_operator::PhysicalAggregation;
 using std::map;
 
 typedef void* TuplePtr;
@@ -80,7 +80,7 @@ void Analyzer::analyse(const AttributeID& attrID) {
   LogicalOperator* root = new LogicalQueryPlanRoot(
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->Open();
@@ -265,7 +265,7 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
   LogicalOperator* root =
       new LogicalQueryPlanRoot(0, agg, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
   collector->Open();
   collector->Next(0);
@@ -393,7 +393,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
   LogicalOperator* root = new LogicalQueryPlanRoot(
       0, count_agg, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
   collector->Open();
   collector->Next(0);
@@ -405,7 +405,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
   const unsigned long distinct_cardinality = *(unsigned long*)b_it->nextTuple();
 
   resultset->destory();
-  collector->~BlockStreamIteratorBase();
+  collector->~PhysicalOperatorBase();
   root->~LogicalOperator();
   return distinct_cardinality;
 }
@@ -459,7 +459,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
   LogicalOperator* root = new LogicalQueryPlanRoot(
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
 
-  BlockStreamIteratorBase* collector =
+  PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->Open();

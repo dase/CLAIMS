@@ -14,8 +14,8 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../Catalog/Catalog.h"
 #include "../../Catalog/table.h"
-#include "../../physical_query_plan/BlockStreamPrint.h"
-#include "../../physical_query_plan/physical_projection_scan.h"
+#include "../../physical_operator/physical_projection_scan.h"
+#include "../../physical_operator/result_printer.h"
 
 static int test_index_scan_iterator()
 {
@@ -84,7 +84,7 @@ static int test_index_scan_iterator()
 			unsigned block_size = 64*1024;
 			bottomLayerCollecting::State blc_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, 3, block_size);
 //			ExpandableBlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
-			BlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
+			PhysicalOperatorBase* blc = new bottomLayerCollecting(blc_state);
 
 			vector<column_type> bls_column_list;
 			bls_column_list.push_back(t_int);	//chunk offset
@@ -95,7 +95,7 @@ static int test_index_scan_iterator()
 			Schema* bls_schema = new SchemaFix(bls_column_list);
 			bottomLayerSorting::State bls_state(bls_schema, blc, block_size, catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3, "sec_code_index");
 //			ExpandableBlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
-			BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
+			PhysicalOperatorBase* bls = new bottomLayerSorting(bls_state);
 
 			bls->Open();
 			BlockStreamBase* block;
@@ -132,7 +132,7 @@ static int test_index_scan_iterator()
 			q_range.push_back(q2);
 
 			IndexScanIterator::State isi_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema, index_id, q_range, block_size);
-			BlockStreamIteratorBase* isi = new IndexScanIterator(isi_state);
+			PhysicalOperatorBase* isi = new IndexScanIterator(isi_state);
 
 			std::vector<std::string> attribute_name;
 			attribute_name.clear();
@@ -142,8 +142,8 @@ static int test_index_scan_iterator()
 			attribute_name.push_back("sec_code");
 			attribute_name.push_back("trade_dir");
 			attribute_name.push_back("order_type");
-			BlockStreamPrint::State bsp_state(blc_schema, isi, block_size, attribute_name, "\t");
-			BlockStreamIteratorBase* bsp = new BlockStreamPrint(bsp_state);
+			ResultPrinter::State bsp_state(blc_schema, isi, block_size, attribute_name, "\t");
+			PhysicalOperatorBase* bsp = new ResultPrinter(bsp_state);
 			bsp->Open();
 			while(bsp->Next(block))
 			{

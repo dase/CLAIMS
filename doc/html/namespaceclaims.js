@@ -3,7 +3,7 @@ var namespaceclaims =
     [ "common", null, [
       [ "Logging", "classclaims_1_1common_1_1Logging.html", "classclaims_1_1common_1_1Logging" ]
     ] ],
-    [ "logical_query_plan", null, [
+    [ "logical_operator", null, [
       [ "LogicalAggregation", "classclaims_1_1logical__query__plan_1_1LogicalAggregation.html", "classclaims_1_1logical__query__plan_1_1LogicalAggregation" ],
       [ "LogicalCrossJoin", "classclaims_1_1logical__query__plan_1_1LogicalCrossJoin.html", "classclaims_1_1logical__query__plan_1_1LogicalCrossJoin" ],
       [ "LogicalEqualJoin", "classclaims_1_1logical__query__plan_1_1LogicalEqualJoin.html", "classclaims_1_1logical__query__plan_1_1LogicalEqualJoin" ],

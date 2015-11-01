@@ -6,5 +6,5 @@ var searchData=
   ['touint',['ToUInt',['../classttmath_1_1UInt.html#a5256521eb28353635711b43771d8dcf8',1,'ttmath::UInt']]],
   ['towstring',['ToWString',['../classttmath_1_1Int.html#ad84d9cdf8b60dd59e3b28867fe2a37a0',1,'ttmath::Int']]],
   ['tryapplycore',['tryApplyCore',['../classCPUResourceManager.html#a50013a45a5680fe0ab849ba276d58aae',1,'CPUResourceManager']]],
-  ['trymerge',['tryMerge',['../classclaims_1_1logical__query__plan_1_1Requirement.html#ad05d43ba2ea60cfb58a23f71b6e630cc',1,'claims::logical_query_plan::Requirement']]]
+  ['trymerge',['tryMerge',['../classclaims_1_1logical__query__plan_1_1Requirement.html#ad05d43ba2ea60cfb58a23f71b6e630cc',1,'claims::logical_operator::Requirement']]]
 ];

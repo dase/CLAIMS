@@ -9,7 +9,7 @@ var searchData=
   ['addone',['AddOne',['../classttmath_1_1Int.html#abdf555b866fd8a2e9bcadde81e253053',1,'ttmath::Int::AddOne()'],['../classttmath_1_1UInt.html#aaa62dbe97d8e2ceb434c5c3cac9cd0e1',1,'ttmath::UInt::AddOne()']]],
   ['addstring',['AddString',['../classttmath_1_1Misc.html#acfe3356acfeb0a444481e6d6ccb5ba78',1,'ttmath::Misc::AddString(std::string &amp;result, const char *str)'],['../classttmath_1_1Misc.html#a8ba27713a01ba16eb923d9e4beeacf8c',1,'ttmath::Misc::AddString(std::wstring &amp;result, const char *str)']]],
   ['addtwoints',['AddTwoInts',['../classttmath_1_1Int.html#ae6048eadce899968d5ccdaa1c2b3cf1f',1,'ttmath::Int']]],
-  ['aggregationstyle',['AggregationStyle',['../classclaims_1_1logical__query__plan_1_1LogicalAggregation.html#a7817d681860d1a0e997c8b716ae56525',1,'claims::logical_query_plan::LogicalAggregation']]],
+  ['aggregationstyle',['AggregationStyle',['../classclaims_1_1logical__query__plan_1_1LogicalAggregation.html#a7817d681860d1a0e997c8b716ae56525',1,'claims::logical_operator::LogicalAggregation']]],
   ['all',['all',['../classJson_1_1Features.html#a63894da6e2c100b38741fa933f3d33ae',1,'Json::Features']]],
   ['allblockinfo',['AllBlockInfo',['../classAllBlockInfo.html',1,'']]],
   ['allocate',['allocate',['../classJson_1_1BatchAllocator.html#a4909756c2d33bd0f07662e88e4f850dd',1,'Json::BatchAllocator']]],

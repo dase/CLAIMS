@@ -19,7 +19,7 @@ var searchData=
   ['trim_5fzeroes',['trim_zeroes',['../structttmath_1_1Conv.html#a8091e5fbba450554994ba4babc115575',1,'ttmath::Conv']]],
   ['truncate_5fstmt',['Truncate_stmt',['../structTruncate__stmt.html',1,'']]],
   ['tryapplycore',['tryApplyCore',['../classCPUResourceManager.html#a50013a45a5680fe0ab849ba276d58aae',1,'CPUResourceManager']]],
-  ['trymerge',['tryMerge',['../classclaims_1_1logical__query__plan_1_1Requirement.html#ad05d43ba2ea60cfb58a23f71b6e630cc',1,'claims::logical_query_plan::Requirement']]],
+  ['trymerge',['tryMerge',['../classclaims_1_1logical__query__plan_1_1Requirement.html#ad05d43ba2ea60cfb58a23f71b6e630cc',1,'claims::logical_operator::Requirement']]],
   ['ttmath',['ttmath',['../namespacettmath.html',1,'']]],
   ['ttmath_5farithmetic_5fmax_5floop',['TTMATH_ARITHMETIC_MAX_LOOP',['../ttmathtypes_8h.html#a3a26c74e34f27589bfceefd0f2e497a8',1,'ttmathtypes.h']]],
   ['ttmath_5fbits',['TTMATH_BITS',['../ttmathtypes_8h.html#afda6fd96d6a33c25f9b0dd86ca01a4de',1,'ttmathtypes.h']]],

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: logical_query_plan/plan_partitioner.h Source File</title>
+<title>My Project: logical_operator/plan_partitioner.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -137,10 +137,10 @@ $(document).ready(function(){initNavTree('plan__partitioner_8h_source.html','');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define LOGICAL_QUERY_PLAN_PLAN_PARTITIONER_H_</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;../Catalog/Partitioner.h&quot;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;../logical_query_plan/plan_partition_info.h&quot;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/plan_partition_info.h&quot;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span>claims {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>logical_query_plan {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>logical_operator {</div>
 <div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">   45</a></span>&#160;<span class="keyword">class </span><a class="code" href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">PlanPartitioner</a> {</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">PlanPartitioner</a>() : partition_func_(0){};</div>
@@ -174,21 +174,21 @@ $(document).ready(function(){initNavTree('plan__partitioner_8h_source.html','');
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;};</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}  <span class="comment">// namespace logical_query_plan</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}  <span class="comment">// namespace logical_operator</span></div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}  <span class="comment">// namespace claims</span></div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">#endif  // LOGICAL_QUERY_PLAN_PLAN_PARTITIONER_H_</span></div>
 <div class="ttc" id="structAttribute_html"><div class="ttname"><a href="structAttribute.html">Attribute</a></div><div class="ttdef"><b>Definition:</b> Attribute.h:19</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitionInfo_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitionInfo.html">claims::logical_query_plan::PlanPartitionInfo</a></div><div class="ttdef"><b>Definition:</b> plan_partition_info.h:36</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitionInfo_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitionInfo.html">claims::logical_operator::PlanPartitionInfo</a></div><div class="ttdef"><b>Definition:</b> plan_partition_info.h:36</div></div>
 <div class="ttc" id="classPartitionFunction_html"><div class="ttname"><a href="classPartitionFunction.html">PartitionFunction</a></div><div class="ttdef"><b>Definition:</b> hash.h:32</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">claims::logical_query_plan::PlanPartitioner</a></div><div class="ttdef"><b>Definition:</b> plan_partitioner.h:45</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html_a7c0cdedfb4ef8362613a36b9d0567546"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html#a7c0cdedfb4ef8362613a36b9d0567546">claims::logical_query_plan::PlanPartitioner::HasSamePartitionLocation</a></div><div class="ttdeci">bool HasSamePartitionLocation(const PlanPartitioner &amp;target) const </div><div class="ttdef"><b>Definition:</b> plan_partitioner.cpp:52</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">claims::logical_operator::PlanPartitioner</a></div><div class="ttdef"><b>Definition:</b> plan_partitioner.h:45</div></div>
+<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html_a7c0cdedfb4ef8362613a36b9d0567546"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html#a7c0cdedfb4ef8362613a36b9d0567546">claims::logical_operator::PlanPartitioner::HasSamePartitionLocation</a></div><div class="ttdeci">bool HasSamePartitionLocation(const PlanPartitioner &amp;target) const </div><div class="ttdef"><b>Definition:</b> plan_partitioner.cpp:52</div></div>
 <div class="ttc" id="classPartitioner_html"><div class="ttname"><a href="classPartitioner.html">Partitioner</a></div><div class="ttdef"><b>Definition:</b> Partitioner.h:229</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_query_plan</a></li><li class="navelem"><b>plan_partitioner.h</b></li>
+    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_operator</a></li><li class="navelem"><b>plan_partitioner.h</b></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
