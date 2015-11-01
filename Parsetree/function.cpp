@@ -1133,7 +1133,7 @@ void output(Node * oldnode, int floor)
 			cout<<"Expr_list: ";cout<<endl;
 			
 			if(node->data!=NULL) output(node->data,floor+1);
-			if(node->next!=NULL) output(node->next,floor);//---3.14fzh---
+			if(node->Next!=NULL) output(node->Next,floor);//---3.14fzh---
 			
 			
 			
@@ -1151,8 +1151,8 @@ void output(Node * oldnode, int floor)
 				cout<<node->parameter2<<" ";
 				
 			cout<<endl;
-			if (node->next)
-				output(node->next, floor + 1);
+			if (node->Next)
+				output(node->Next, floor + 1);
 			
 			break;
 		}
@@ -1210,7 +1210,7 @@ void output(Node * oldnode, int floor)
 			output(node->args, floor + 1);
 			output(node->parameter1, floor + 1);
 			output(node->parameter2, floor + 1);
-			output(node->next, floor + 1);
+			output(node->Next, floor + 1);
 			break;
 		}
 		
@@ -1242,7 +1242,7 @@ void output(Node * oldnode, int floor)
 		//	}
 			Node * p;
 			Expr_list_header * lists=(Expr_list_header *)node->whcdn;
-			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->next)
+			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->Next)
 			{
 				
 				output(p,floor+1);
@@ -1290,7 +1290,7 @@ void output(Node * oldnode, int floor)
 
 			cout<<endl;
 			output(node->args, floor + 1);
-			output(node->next, floor);//---3.14fzh---
+			output(node->Next, floor);//---3.14fzh---
 			
 			break;
 		}
@@ -1320,12 +1320,12 @@ void output(Node * oldnode, int floor)
 			//output(node->condition, floor + 1);////////////////////////////////
 			Node * p;
 			Expr_list_header * lists=(Expr_list_header *)node->whcdn;
-			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->next)
+			for(p=lists->header;p!=NULL;p=((Expr_list *)p)->Next)
 			{
 				output(p,floor+1);
 			}
 			output(node->args, floor + 1);
-			output(node->next, floor + 1);
+			output(node->Next, floor + 1);
 			
 			break;
 		}
@@ -1338,7 +1338,7 @@ void output(Node * oldnode, int floor)
 			if(node->astablename)
 				cout<<node->astablename;
 			cout<<endl;
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		case t_where_list:
@@ -1350,7 +1350,7 @@ void output(Node * oldnode, int floor)
 			if(node->wherestring)
 				cout<<node->wherestring;
 			cout<<endl;
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		case t_groupby_list:
@@ -1364,7 +1364,7 @@ void output(Node * oldnode, int floor)
 			if (node->with_rollup)
 				cout<<node->with_rollup<<" ";
 			cout<<endl;
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		case t_groupby_expr:
@@ -1378,7 +1378,7 @@ void output(Node * oldnode, int floor)
 				cout<<node->sorttype<<" ";
 			cout<<endl;
 			output(node->args, floor+1);
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		
@@ -1392,7 +1392,7 @@ void output(Node * oldnode, int floor)
 				cout<<node->havingstring<<" ";
 
 			cout<<endl;
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		case t_orderby_list:
@@ -1405,7 +1405,7 @@ void output(Node * oldnode, int floor)
 				cout<<node->orderbystring<<" ";
 				
 			cout<<endl;
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		
@@ -1420,7 +1420,7 @@ void output(Node * oldnode, int floor)
 
 			cout<<endl;
 			output(node->args, floor+1);
-			output(node->next, floor+1);
+			output(node->Next, floor+1);
 			break;
 		}
 		

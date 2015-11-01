@@ -1,6 +1,3 @@
-
-//#include <Test/TestMain.cpp>
-
 #include <startup.h>
 #include <getopt.h>
 #include <string>

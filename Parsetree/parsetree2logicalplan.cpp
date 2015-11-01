@@ -1,21 +1,17 @@
 #ifndef __PARSERTREE__
 #define __PARSERTREE__
+#include <string.h>
 #include <cstdio>
-
 #include <map>
 #include <new>
 #include <set>
 #include <string>
 #include <vector>
-#include <string.h>
-
 #include "sql_node_struct.h"
 #include "../Environment.h"
-
 #include "../Catalog/Attribute.h"
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
-
 #include "../common/Comparator.h"
 #include "../common/ExpressionItem.h"
 #include "../common/Logging.h"
@@ -23,17 +19,9 @@
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
-
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
-
-#include "../LogicalQueryPlan/EqualJoin.h"
-#include "../LogicalQueryPlan/filter.h"
-#include "../LogicalQueryPlan/LogicalOperator.h"
-#include "../LogicalQueryPlan/Scan.h"
-#include "../LogicalQueryPlan/Aggregation.h"
-#include "../LogicalQueryPlan/Project.h"
-#include "../LogicalQueryPlan/Sort.h"
+#include "../logical_operator/logical_operator.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include <string.h>
@@ -41,16 +29,24 @@
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
 #include <assert.h>
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-#include "../LogicalQueryPlan/CrossJoin.h"
+#include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_cross_join.h"
+#include "../logical_operator/logical_equal_join.h"
+#include "../logical_operator/logical_filter.h"
+#include "../logical_operator/logical_project.h"
+#include "../logical_operator/logical_scan.h"
+#include "../logical_operator/logical_sort.h"
+#include "../physical_operator/physical_aggregation.h"
 
+using namespace claims::logical_operator;
+using claims::physical_operator::PhysicalAggregation;
 static LogicalOperator *parsetree2logicalplan(Node *parsetree);
 static void get_a_expression_item(vector<ExpressionItem> &expr, Node *node,
                                   LogicalOperator *input);
-
-/*static void getfiltercondition(Node * wcexpr,Filter::Condition
+// because Filter::Condition no longer exists
+/*
+static void getfiltercondition(Node * wcexpr,Filter::Condition
 &filter_condition,char * tablename,bool &hasin,LogicalOperator* loperator){
-
         SQLParse_log("getfiltercondition   ");
         //filter_condition.add(catalog->getTable(node->tablename)->getAttribute(4),AttributeComparator::EQ,&order_type_);
 //	cout<<"wcexpr->type  "<<wcexpr->type<<endl;
@@ -174,7 +170,7 @@ static void get_a_expression_item(vector<ExpressionItem> &expr, Node *node,
         }
 }*/
 static int getjoinpairlist(Node *wcexpr,
-                           vector<EqualJoin::JoinPair> &join_pair_list,
+                           vector<LogicalEqualJoin::JoinPair> &join_pair_list,
                            LogicalOperator *filter_1,
                            LogicalOperator *filter_2) {
   switch (wcexpr->type) {
@@ -207,20 +203,20 @@ static int getjoinpairlist(Node *wcexpr,
             // where LINEITEM.row_id=PART.row_id and PART.row_id<20;
 
             Attribute la =
-                filter_1->getDataflow().getAttribute(lnode->parameter2);
+                filter_1->GetPlanContext().GetAttribute(lnode->parameter2);
             Attribute ra =
-                filter_2->getDataflow().getAttribute(rnode->parameter2);
+                filter_2->GetPlanContext().GetAttribute(rnode->parameter2);
 
             if (strcmp(la.attrName.c_str(), "NULL") != 0 &&
                 strcmp(ra.attrName.c_str(), "NULL") != 0) {
-              join_pair_list.push_back(EqualJoin::JoinPair(la, ra));
+              join_pair_list.push_back(LogicalEqualJoin::JoinPair(la, ra));
               return 1;
             }
-            la = filter_1->getDataflow().getAttribute(rnode->parameter2);
-            ra = filter_2->getDataflow().getAttribute(lnode->parameter2);
+            la = filter_1->GetPlanContext().GetAttribute(rnode->parameter2);
+            ra = filter_2->GetPlanContext().GetAttribute(lnode->parameter2);
             if (strcmp(la.attrName.c_str(), "NULL") != 0 &&
                 strcmp(ra.attrName.c_str(), "NULL") != 0) {
-              join_pair_list.push_back(EqualJoin::JoinPair(la, ra));
+              join_pair_list.push_back(LogicalEqualJoin::JoinPair(la, ra));
               return 1;
             } else {
               assert(false);
@@ -262,15 +258,15 @@ static LogicalOperator *solve_insubquery(Node *exprnode,
             Select_list *selectlist = (Select_list *)p;
             Select_expr *sexpr = (Select_expr *)selectlist->args;
             group_by_attributes.push_back(
-                sublogicalplan->getDataflow().getAttribute(
+                sublogicalplan->GetPlanContext().GetAttribute(
                     sexpr->ascolname));  ///????
             p = selectlist->next;
           }  // 2.2在1中的logicalplan上做groupby
-          LogicalOperator *aggrection_sublogicalplan = new Aggregation(
+          LogicalOperator *aggrection_sublogicalplan = new LogicalAggregation(
               group_by_attributes, std::vector<Attribute>(),
-              std::vector<BlockStreamAggregationIterator::State::aggregation>(),
+              std::vector<PhysicalAggregation::State::Aggregation>(),
               sublogicalplan);
-          vector<EqualJoin::JoinPair> join_pair_list;
+          vector<LogicalEqualJoin::JoinPair> join_pair_list;
           Node *lp, *sp;
           for (lp = node->lnext, sp = ((Query_stmt *)node->rnext)->select_list;
                lp != NULL;)  // 3.1获得equaljoin的左右属性
@@ -279,14 +275,15 @@ static LogicalOperator *solve_insubquery(Node *exprnode,
             Columns *lcol = (Columns *)lpexpr->data;
             Select_list *spexpr = (Select_list *)sp;
             Columns *rcol = (Columns *)spexpr->args;
-            join_pair_list.push_back(EqualJoin::JoinPair(
-                input->getDataflow().getAttribute(lcol->parameter2),
-                sublogicalplan->getDataflow().getAttribute(rcol->parameter2)));
+            join_pair_list.push_back(LogicalEqualJoin::JoinPair(
+                input->GetPlanContext().GetAttribute(lcol->parameter2),
+                sublogicalplan->GetPlanContext().GetAttribute(
+                    rcol->parameter2)));
             lp = lpexpr->next;
             sp = spexpr->next;
           }
-          LogicalOperator *join_logicalplan =
-              new EqualJoin(join_pair_list, input, aggrection_sublogicalplan);
+          LogicalOperator *join_logicalplan = new LogicalEqualJoin(
+              join_pair_list, input, aggrection_sublogicalplan);
           return join_logicalplan;
         }
       }
@@ -316,13 +313,13 @@ static LogicalOperator *where_from2logicalplan(
 
         //				// change for selecting best projection
         //				tablescan=new
-        //LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->get_table_id());//
+        // LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->get_table_id());//
       } else  // need to modify the output_schema_attrname from the subquery to
               // the form of subquery's alias.attrname
       {
         tablescan = parsetree2logicalplan(node->subquery);
         vector<Attribute> output_attribute =
-            tablescan->getDataflow().attribute_list_;
+            tablescan->GetPlanContext().attribute_list_;
         vector<QNode *> exprTree;
         string subquery_alias = string(node->astablename);
         for (int i = 0; i < output_attribute.size(); i++) {
@@ -399,7 +396,7 @@ static LogicalOperator *where_from2logicalplan(
       }
       Expr_list_header *whcdn = (Expr_list_header *)node->whcdn;
       if (whcdn->header != NULL) {
-        vector<EqualJoin::JoinPair> join_pair_list;
+        vector<LogicalEqualJoin::JoinPair> join_pair_list;
         Node *p;
         vector<QNode *> v_qual;
         vector<Node *> raw_qual;
@@ -412,10 +409,10 @@ static LogicalOperator *where_from2logicalplan(
           }
         }
         if (join_pair_list.size() > 0) {
-          lopfrom = new EqualJoin(join_pair_list, filter_1, filter_2);
+          lopfrom = new LogicalEqualJoin(join_pair_list, filter_1, filter_2);
         } else  // other join
         {
-          lopfrom = new CrossJoin(filter_1, filter_2);
+          lopfrom = new LogicalCrossJoin(filter_1, filter_2);
         }
         for (int i = 0; i < raw_qual.size(); i++) {
           v_qual.push_back(transformqual(raw_qual[i], lopfrom));
@@ -426,7 +423,7 @@ static LogicalOperator *where_from2logicalplan(
         return lopfrom;
       } else  // other to crossjoin
       {
-        lopfrom = new CrossJoin(filter_1, filter_2);
+        lopfrom = new LogicalCrossJoin(filter_1, filter_2);
         return lopfrom;
       }
 
@@ -436,7 +433,7 @@ static LogicalOperator *where_from2logicalplan(
       LogicalOperator *filter_1 = where_from2logicalplan(node->lnext);
       LogicalOperator *filter_2 = where_from2logicalplan(node->rnext);
       if (node->condition != NULL) {
-        vector<EqualJoin::JoinPair> join_pair_list;
+        vector<LogicalEqualJoin::JoinPair> join_pair_list;
         Node *p;
         vector<QNode *> v_qual;
         vector<Node *> raw_qual;
@@ -451,10 +448,10 @@ static LogicalOperator *where_from2logicalplan(
 
         LogicalOperator *join;
         if (join_pair_list.size() > 0) {
-          join = new EqualJoin(join_pair_list, filter_1, filter_2);
+          join = new LogicalEqualJoin(join_pair_list, filter_1, filter_2);
         } else  // other join
         {
-          join = new CrossJoin(filter_1, filter_2);
+          join = new LogicalCrossJoin(filter_1, filter_2);
         }
         for (int i = 0; i < raw_qual.size(); i++) {
           v_qual.push_back(transformqual(raw_qual[i], join));
@@ -465,7 +462,7 @@ static LogicalOperator *where_from2logicalplan(
         return join;
       } else  // other to crossjoin
       {
-        LogicalOperator *join = new CrossJoin(filter_1, filter_2);
+        LogicalOperator *join = new LogicalCrossJoin(filter_1, filter_2);
         return join;
       }
 
@@ -513,8 +510,7 @@ static char *get_expr_str(Node *node) {
 
 static void get_aggregation_args(
     Node *selectlist, vector<Attribute> &aggregation_attributes,
-    vector<BlockStreamAggregationIterator::State::aggregation> &
-        aggregation_function,
+    vector<PhysicalAggregation::State::Aggregation> &aggregation_function,
     LogicalOperator *input) {
   if (selectlist == NULL) {
     //	puts("get_aggregation_args is null");
@@ -537,12 +533,10 @@ static void get_aggregation_args(
     case t_expr_func: {
       Expr_func *funcnode = (Expr_func *)selectlist;
       if (strcmp(funcnode->funname, "FCOUNTALL") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::count);
+        aggregation_function.push_back(PhysicalAggregation::State::kCount);
         aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
       } else if (strcmp(funcnode->funname, "FCOUNT") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::count);
+        aggregation_function.push_back(PhysicalAggregation::State::kCount);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -551,12 +545,11 @@ static void get_aggregation_args(
                   ->getTable(funccol->parameter1)
                   ->getAttribute(funccol->parameter2));
         } else {
-          aggregation_attributes.push_back(input->getDataflow().getAttribute(
+          aggregation_attributes.push_back(input->GetPlanContext().GetAttribute(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FSUM") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::sum);
+        aggregation_function.push_back(PhysicalAggregation::State::kSum);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -565,12 +558,11 @@ static void get_aggregation_args(
                   ->getTable(funccol->parameter1)
                   ->getAttribute(funccol->parameter2));
         } else {
-          aggregation_attributes.push_back(input->getDataflow().getAttribute(
+          aggregation_attributes.push_back(input->GetPlanContext().GetAttribute(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FMIN") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::min);
+        aggregation_function.push_back(PhysicalAggregation::State::kMin);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -579,12 +571,11 @@ static void get_aggregation_args(
                   ->getTable(funccol->parameter1)
                   ->getAttribute(funccol->parameter2));
         } else {
-          aggregation_attributes.push_back(input->getDataflow().getAttribute(
+          aggregation_attributes.push_back(input->GetPlanContext().GetAttribute(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FMAX") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::max);
+        aggregation_function.push_back(PhysicalAggregation::State::kMax);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -593,12 +584,11 @@ static void get_aggregation_args(
                   ->getTable(funccol->parameter1)
                   ->getAttribute(funccol->parameter2));
         } else {
-          aggregation_attributes.push_back(input->getDataflow().getAttribute(
+          aggregation_attributes.push_back(input->GetPlanContext().GetAttribute(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FAVG") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::avg);
+        aggregation_function.push_back(PhysicalAggregation::State::kAvg);
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -607,7 +597,7 @@ static void get_aggregation_args(
                   ->getTable(funccol->parameter1)
                   ->getAttribute(funccol->parameter2));
         } else {
-          aggregation_attributes.push_back(input->getDataflow().getAttribute(
+          aggregation_attributes.push_back(input->GetPlanContext().GetAttribute(
               get_expr_str(funcnode->parameter1)));
         }
       } else {
@@ -676,15 +666,15 @@ static void get_group_by_attributes(Node *groupby_node,
     case t_name_name:
     case t_column: {
       group_by_attributes.push_back(
-          input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+          input->GetPlanContext().GetAttribute(get_expr_str(groupby_node)));
     } break;
     case t_expr_cal: {
       group_by_attributes.push_back(
-          input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+          input->GetPlanContext().GetAttribute(get_expr_str(groupby_node)));
     } break;
     case t_expr_func: {
       group_by_attributes.push_back(
-          input->getDataflow().getAttribute(get_expr_str(groupby_node)));
+          input->GetPlanContext().GetAttribute(get_expr_str(groupby_node)));
     } break;
     default: { SQLParse_elog("get_group_by_attributes case is null"); }
   }
@@ -1126,8 +1116,7 @@ static LogicalOperator *groupby_select_where_from2logicalplan(
       where_from2logicalplan(node->from_list);
   vector<Attribute> group_by_attributes;
   vector<Attribute> aggregation_attributes;
-  vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
+  vector<PhysicalAggregation::State::Aggregation> aggregation_function;
   int agg_has_expr, agg_in_expr, has_agg, sid = 0;
   agg_has_expr = agg_in_expr = has_agg = 0;
   judge_selectlist_agg_has_or_in_expr(node->select_list, has_agg, agg_has_expr,
@@ -1177,8 +1166,8 @@ static LogicalOperator *groupby_select_where_from2logicalplan(
       //#endif
     }
     LogicalOperator *projection_or_aggregation =
-        new Aggregation(group_by_attributes, aggregation_attributes,
-                        aggregation_function, select_logicalplan);
+        new LogicalAggregation(group_by_attributes, aggregation_attributes,
+                               aggregation_function, select_logicalplan);
     if (!CanCancelProject2(((Query_stmt *)parsetree)->select_list)) {
       select_logicalplan = select_where_from2logicalplan(
           parsetree, projection_or_aggregation, 2);
@@ -1289,7 +1278,7 @@ static LogicalOperator *orderby_having_select_groupby_where_from2logicalplan(
     //		for(int i=obstr.size()-1;i>=0;i--)
     //		{
     //			obcol.push_back(new
-    //LogicalSort::OrderByAttr(obstr[i].c_str()));
+    // LogicalSort::OrderByAttr(obstr[i].c_str()));
     //		}
     //	obcol.push_back(&LogicalSort::OrderByAttr("LINEITEM.L_LINESTATUS"));
     reverse(obcol.begin(), obcol.end());
