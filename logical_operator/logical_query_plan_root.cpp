@@ -140,11 +140,7 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
         expander_state.schema_->duplicateSchema(), expander,
         limit_constraint_.returned_tuples_, block_size,
         limit_constraint_.start_position_);
-<<<<<<< HEAD:logical_query_plan/logical_query_plan_root.cpp
-    BlockStreamIteratorBase* limit = new PhysicaLimit(limit_state);
-=======
     PhysicalOperatorBase* limit = new PhysicalLimit(limit_state);
->>>>>>> new_style_dase:logical_operator/logical_query_plan_root.cpp
     middle_tier = limit;
   } else {
     middle_tier = expander;
