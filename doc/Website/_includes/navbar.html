@@ -1,0 +1,69 @@
+  	<!-- Top navbar. -->
+		<div id="navbar-upper">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-6" id="navbar-upper-img">
+						<img src="/claims/img/dase.jpg" />
+					</div>
+					<div>
+						<p class="navbar-upper-header">CLAIMS</p>
+						<p class="navbar-upper-para">CLuster-Aware In-Memory SQL Engine</p>
+					</div>
+				</div>
+			</div>
+		</div>
+    <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+		        <span class="sr-only">collapse</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		    	</button>
+				</div>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+          <ul class="nav navbar-nav">
+						<!-- Home -->
+						<li{% if page.url == '/claims/index.html' %} class="active"{% endif %}>
+							<a href="{{ site.baseurl }}/claims/index.html" class="navbar-tab">
+								Home
+							</a>
+						</li>							
+						<!-- QuickStart -->
+						<li{% if page.url == '/claims/2015/08/12/QuickStart.html' %} class="active"{% endif %}>
+							<a href="{{ site.baseurl }}/claims/2015/08/12/QuickStart.html" class="navbar-tab">
+								Quick Start
+							</a>
+						</li>							
+						<!-- Feature -->
+						<li{% if page.url == '/claims/feature/index.html' %} class="active"{% endif %}>
+							<a href="{{ site.baseurl }}/claims/feature/index.html" class="navbar-tab">
+								Feature
+							</a>
+						</li>
+						<!-- Demo -->
+						<li{% if page.url == '/claims/demo.html' %} class="active"{% endif %}>
+							<a href="{{ site.baseurl }}/claims/demo/index.html" class="navbar-tab">
+								Demo
+							</a>
+						</li>
+					</ul>
+          <ul class="nav navbar-nav navbar-right">
+						<!-- Download -->
+						<li{% if page.url == '/claims/download/index.html' %} class="active"{% endif %}>
+							<a href="{{ site.baseurl }}/claims/download/index.html" class="navbar-tab">
+								Download
+							</a>
+						</li>
+ 						<!-- Documents -->
+						<li{% if page.url == '/claims/documents/index.html' %} class="active"{% endif %}>
+							<a href="{{ site.baseurl }}/claims/documents/index.html" class="navbar-tab">
+								Documents
+							</a>
+						</li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container -->
+    </nav>
+</div>

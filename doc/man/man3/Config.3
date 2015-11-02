@@ -1,0 +1,101 @@
+.TH "Config" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Config \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Config\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprint_configure\fP () const "
+.br
+.ti -1c
+.RI "void \fBprint_configure\fP () const "
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBConfig\fP * \fBgetInstance\fP ()"
+.br
+.ti -1c
+.RI "static \fBConfig\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static std::string \fBconfig_file\fP"
+.br
+.ti -1c
+.RI "static std::string \fBdata_dir\fP"
+.br
+.ti -1c
+.RI "static int \fBmax_degree_of_parallelism\fP"
+.br
+.ti -1c
+.RI "static int \fBinitial_degree_of_parallelism\fP"
+.br
+.ti -1c
+.RI "static bool \fBenable_expander_adaptivity\fP"
+.br
+.ti -1c
+.RI "static int \fBexpander_adaptivity_check_frequency\fP"
+.br
+.ti -1c
+.RI "static int \fBscan_batch\fP"
+.br
+.ti -1c
+.RI "static std::string \fBhdfs_master_ip\fP"
+.br
+.ti -1c
+.RI "static int \fBhdfs_master_port\fP"
+.br
+.ti -1c
+.RI "static std::string \fBlogfile\fP"
+.br
+.ti -1c
+.RI "static bool \fBmaster\fP"
+.br
+.ti -1c
+.RI "static bool \fBlocal_disk_mode\fP"
+.br
+.ti -1c
+.RI "static bool \fBpipelined_exchange\fP"
+.br
+.ti -1c
+.RI "static int \fBclient_listener_port\fP"
+.br
+.ti -1c
+.RI "static bool \fBenable_codegen\fP"
+.br
+.ti -1c
+.RI "static std::string \fBcatalog_file\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class maintains all the parameter values, which are specified in 'config' file\&. In the debug version, in the initialization phase, default values are usded in case that the value is not given in 'config' file\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "static std::string Config::data_dir\fC [static]\fP"
+parameter values\&. Note: these values are static, so that they can be accessed directly, like \fBConfig::data_dir\fP\&. Static value must be defined in *\&.cpp file, otherwise compiler will complain\&. 
+.SS "static int Config::initial_degree_of_parallelism\fC [static]\fP"
+This parameter sets the initial degree of parallelism for each segment\&. 
+.PP
+Referenced by claims::logical_operator::LogicalQueryPlanRoot::GetPhysicalPlan(), claims::logical_operator::LogicalAggregation::GetPhysicalPlan(), claims::logical_operator::LogicalSort::GetPhysicalPlan(), and claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan()\&.
+.SS "static int Config::max_degree_of_parallelism\fC [static]\fP"
+This parameter specifies the maximum degrees of parallelism for each expander\&. 
+.SS "static bool Config::pipelined_exchange\fC [static]\fP"
+THis parameter determines whether the data transmission in data exchanges is pipelined\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

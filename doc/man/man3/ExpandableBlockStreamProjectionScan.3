@@ -1,0 +1,60 @@
+.TH "ExpandableBlockStreamProjectionScan" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExpandableBlockStreamProjectionScan \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBPhysicalOperator\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBallocated_block\fP"
+.br
+.ti -1c
+.RI "class \fBscan_thread_context\fP"
+.br
+.ti -1c
+.RI "class \fBState\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBExpandableBlockStreamProjectionScan\fP (\fBState\fP state)"
+.br
+.ti -1c
+.RI "bool \fBOpen\fP (const PartitionOffset &partition_offset=0)"
+.br
+.ti -1c
+.RI "bool \fBNext\fP (\fBBlockStreamBase\fP *block)"
+.br
+.ti -1c
+.RI "bool \fBClose\fP ()"
+.br
+.ti -1c
+.RI "void \fBPrint\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ExpandableBlockStreamProjectionScan::Open (const PartitionOffset &part_off = \fC0\fP)\fC [virtual]\fP"
+Because that boost::serialization will allocate an instance of this class when deserializing, and hence the following three virtual method cannot be pure\&. 
+.PP
+Reimplemented from \fBPhysicalOperator\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

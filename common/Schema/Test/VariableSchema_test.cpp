@@ -15,21 +15,19 @@
 
 #include "../../../common/Block/BlockStream.h"
 
-#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
-#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
+#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_projection_scan.h"
+#include "../../../BlockStreamIterator/ParallelBlockStreamIterator/physical_filter.h"
 
-#include "../../../BlockStreamIterator/BlockStreamPrint.h"
-#include "../../../BlockStreamIterator/BlockStreamIteratorBase.h"
-
-#include "../../../LogicalQueryPlan/Scan.h"
-#include "../../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../../LogicalQueryPlan/EqualJoin.h"
-#include "../../../LogicalQueryPlan/Filter.h"
-#include "../../../LogicalQueryPlan/Aggregation.h"
-
+#include "../../../BlockStreamIterator/result_printer.h"
+#include "../../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../../logical_operator/Filter.h"
 #include "../../../Catalog/ProjectionBinding.h"
 
 #include "../../../Environment.h"
+#include "../../../logical_operator/logical_aggregation.h"
+#include "../../../logical_operator/logical_equal_join.h"
+#include "../../../logical_operator/logical_scan.h"
+#include "../../../physical_operator/physical_operator_base.h"
 
 using namespace std;
 
@@ -70,12 +68,12 @@ static int variable_schema_test(){
 	column_list.push_back(column_type(t_int));
 	column_list.push_back(column_type(t_double));
 	column_list.push_back(column_type(t_string));
-	ExpandableBlockStreamProjectionScan::State scan_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),new SchemaVar(column_list),64*1024-sizeof(unsigned));
-	BlockStreamIteratorBase* scan=new ExpandableBlockStreamProjectionScan(scan_state);
+	PhysicalProjectionScan::State scan_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),new SchemaVar(column_list),64*1024-sizeof(unsigned));
+	PhysicalOperatorBase* scan=new PhysicalProjectionScan(scan_state);
 	//------------------------------------------------------------------
 
 	/*******************filter******************/
-	ExpandableBlockStreamFilter::State filter_state;
+	PhysicalFilter::State filter_state;
 
 	int f0=1;
 	AttributeComparator filter0(column_type(t_int),Comparator::EQ,0,&f0);
@@ -95,23 +93,23 @@ static int variable_schema_test(){
 	filter_state.comparator_list_=ComparatorList;
 	filter_state.child_=scan;
 
-	BlockStreamIteratorBase* filter=new ExpandableBlockStreamFilter(filter_state);
+	PhysicalOperatorBase* filter=new PhysicalFilter(filter_state);
 	//------------------------------------------------------------------
 
 	/*******************print******************/
-	BlockStreamPrint::State print_state;
+	ResultPrinter::State print_state;
 	print_state.block_size_=64*1024-sizeof(unsigned);
 	print_state.child_=filter;
 	print_state.schema_=filter_state.schema_;
 	print_state.spliter_="-|-";
 
-	BlockStreamIteratorBase* print=new BlockStreamPrint(print_state);
+	PhysicalOperatorBase* print=new ResultPrinter(print_state);
 
 
 	/*******************show******************/
-	print->open();
-	print->next(0);
-	print->close();
+	print->Open();
+	print->Next(0);
+	print->Close();
 
 //	IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(print,"127.0.0.1");
 	return 0;

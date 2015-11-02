@@ -1,0 +1,52 @@
+.TH "BlockManagerMaster" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockManagerMaster \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBBlockInfo\fP"
+.br
+.ti -1c
+.RI "class \fBBlockManagerMasterActor\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBstorageLevel\fP { \fBmemory\fP, \fBdisk\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinitialize\fP ()"
+.br
+.ti -1c
+.RI "void \fBtestForPoc\fP ()"
+.br
+.ti -1c
+.RI "bool \fBSendBindingMessage\fP (const \fBPartitionID\fP &, const unsigned &number_of_chunks, const StorageLevel &, const NodeID &) const "
+.br
+.ti -1c
+.RI "bool \fBSendUnbindingMessage\fP (const \fBPartitionID\fP &partition_id, NodeID &target) const "
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBBlockManagerMaster\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,25 @@
+var classOperateULong =
+[
+    [ "OperateULong", "classOperateULong.html#a7291db03a0a27ce30f903ec44e141d1a", null ],
+    [ "~OperateULong", "classOperateULong.html#a8d7763ab8898f32f945be6c019cb43e4", null ],
+    [ "add", "classOperateULong.html#a0376111bcf730e755f918886c1bd9c17", null ],
+    [ "assignment", "classOperateULong.html#ac9ea104c4a36ad4d2f43505b88ef1ae8", null ],
+    [ "compare", "classOperateULong.html#ad0649847e7190e4dfb0608e2c7508360", null ],
+    [ "duplicateOperator", "classOperateULong.html#a82bbbeb0a31219cdc5bdf564fd633146", null ],
+    [ "equal", "classOperateULong.html#a737f855fc80a59ca866b02ebf5398427", null ],
+    [ "GetADDFunction", "classOperateULong.html#adca0b9b577446bc3e52446d467faeb83", null ],
+    [ "GetAVGFunction", "classOperateULong.html#a946897640b11048cfaa0dbfb4c4aa4aa", null ],
+    [ "GetIncreateByOneFunction", "classOperateULong.html#a0af62d8cf26c0e9007f5bec141b38432", null ],
+    [ "GetMAXFunction", "classOperateULong.html#a1583612a5dd831cf2afa44e5cd31b4d3", null ],
+    [ "GetMINFunction", "classOperateULong.html#aa7603908a7419d86a3be60a3ea1b2b14", null ],
+    [ "getPartitionValue", "classOperateULong.html#a5867df0b3b42a4134d78a0cfab0c9cf7", null ],
+    [ "getPartitionValue", "classOperateULong.html#a99ce8d2f360d02cce7405c957f1f984d", null ],
+    [ "getPartitionValue", "classOperateULong.html#a70533572223864be91067879a4587d2a", null ],
+    [ "greate", "classOperateULong.html#a4052c1e62d9e6b4a0e312c6196c77969", null ],
+    [ "isNull", "classOperateULong.html#a7f129ff44b5d9a50d455a90cf95b9794", null ],
+    [ "less", "classOperateULong.html#a4a4f3a0e0019f956712a07ec936e20b6", null ],
+    [ "multiple", "classOperateULong.html#a3d953534c58c4348ea38f44943a11e5c", null ],
+    [ "setNull", "classOperateULong.html#aa22f93d63f815ce2998d488e2533c191", null ],
+    [ "toString", "classOperateULong.html#ae4644eb011ab357aceb1e7a684f78d54", null ],
+    [ "toValue", "classOperateULong.html#a267f92fbce912955a85bfcb6fb98e46b", null ]
+];

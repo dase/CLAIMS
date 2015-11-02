@@ -1,0 +1,83 @@
+.TH "Attribute" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Attribute \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBColumn\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAttribute\fP (TableID tableid, unsigned pos, const std::string &name, data_type type, unsigned size=0, bool unqiue=false, bool can_be_null=true)"
+.br
+.ti -1c
+.RI "\fBAttribute\fP (const \fBAttribute\fP &att)"
+.br
+.ti -1c
+.RI "\fBAttribute\fP & \fBoperator=\fP (const \fBAttribute\fP &att)"
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const \fBAttribute\fP &att) const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP (unsigned symbol=ATTRIBUTE_NULL)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBAttribute\fP &r) const "
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBAttribute\fP &r) const "
+.br
+.ti -1c
+.RI "bool \fBisNULL\fP () const "
+.br
+.ti -1c
+.RI "bool \fBisANY\fP () const "
+.br
+.ti -1c
+.RI "bool \fBisUnique\fP () const "
+.br
+.ti -1c
+.RI "std::string \fBgetName\fP () const "
+.br
+.ti -1c
+.RI "\fBAttributeID\fP \fBgetID\fP () const "
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBattrName\fP"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP * \fBattrType\fP"
+.br
+.ti -1c
+.RI "unsigned \fBindex\fP"
+.br
+.ti -1c
+.RI "TableID \fBtable_id_\fP"
+.br
+.ti -1c
+.RI "bool \fBunique\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,43 @@
+.TH "ExchangeTracker" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExchangeTracker \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBRegisterExchange\fP (\fBExchangeID\fP exchange_id, std::string port)"
+.br
+.ti -1c
+.RI "void \fBLogoutExchange\fP (const \fBExchangeID\fP &exchange_id)"
+.br
+.ti -1c
+.RI "bool \fBAskForSocketConnectionInfo\fP (\fBExchangeID\fP exchange_id, NodeID target_id, \fBNodeAddress\fP &node_addr)"
+.br
+.ti -1c
+.RI "void \fBprintAllExchangeId\fP () const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBRegisterActor\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ExchangeTracker::AskForSocketConnectionInfo (\fBExchangeID\fPexchange_id, NodeIDtarget_id, \fBNodeAddress\fP &node_addr)"
+TODO: In current version, the request is only tried once\&. In the future, the request should be sent repeatedly until the reply is received or the times of timeouts exceeds some threshold\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class RegisterActor\fC [friend]\fP"
+RegisterActor 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

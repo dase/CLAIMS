@@ -1,0 +1,57 @@
+.TH "SchemaVar" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SchemaVar \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBSchema\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSchemaVar\fP (std::vector< \fBcolumn_type\fP > columns)"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetTupleMaxSize\fP () const "
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetTupleActualSize\fP (void *tuple) const "
+.br
+.ti -1c
+.RI "virtual unsigned \fBcopyTuple\fP (void *src, void *desc) const "
+.br
+.ti -1c
+.RI "virtual Schema::schema_type \fBgetSchemaType\fP () const "
+.br
+.ti -1c
+.RI "virtual void \fBgetColumnValue\fP (unsigned index, void *src, void *desc)"
+.br
+.ti -1c
+.RI "int \fBgetColumnOffset\fP (unsigned index) const "
+.br
+.ti -1c
+.RI "virtual \fBSchema\fP * \fBgetSubSchema\fP (std::vector< unsigned >) const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBduplicateSchema\fP () const "
+.br
+.ti -1c
+.RI "virtual void * \fBgetColumnAddess\fP (const unsigned &index, const void *const &column_start) const __attribute__((always_inline))"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

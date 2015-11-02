@@ -62,7 +62,7 @@ TEST_F(DMLTestPOC1Partition,Filter){
 		EXPECT_EQ(0,1);
 	}
 }
-TEST_F(DMLTestPOC1Partition,Aggregation){
+TEST_F(DMLTestPOC1Partition,LogicalAggregation){
 	std::string sql="select min(row_id), max(row_id) from cj;";
 	query_result result;
 	if(query(sql,result)){

@@ -1,0 +1,57 @@
+.TH "column_type" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+column_type \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcolumn_type\fP (data_type type, unsigned _size=0, bool _nullable=true)"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP (const \fBcolumn_type\fP &r)"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP & \fBoperator=\fP (const \fBcolumn_type\fP &r)"
+.br
+.ti -1c
+.RI "unsigned \fBget_length\fP () const "
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const class \fBcolumn_type\fP &c) const "
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const class \fBcolumn_type\fP &c) const "
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBOperate\fP * \fBoperate\fP"
+.br
+.ti -1c
+.RI "data_type \fBtype\fP"
+.br
+.ti -1c
+.RI "bool \fBnullable\fP"
+.br
+.ti -1c
+.RI "unsigned \fBsize\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

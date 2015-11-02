@@ -1,0 +1,45 @@
+.TH "Comparator::Pair" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Comparator::Pair \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPair\fP (\fBcolumn_type\fP first, \fBcolumn_type\fP second)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const struct \fBComparator::Pair\fP &p) const "
+.br
+.ti -1c
+.RI "bool \fBoperator<\fP (const struct \fBComparator::Pair\fP &p) const "
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBcolumn_type\fP \fBfirst\fP"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP \fBsecond\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

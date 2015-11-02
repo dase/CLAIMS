@@ -26,8 +26,8 @@ THERON_DEFINE_REGISTERED_MESSAGE(PartitionUnbindingMessage)
 
 void PhysicalQueryPlan::run()
 {
-	block_stream_iterator_root_->open();
-	while(block_stream_iterator_root_->next(0));
-	block_stream_iterator_root_->close();
+	block_stream_iterator_root_->Open();
+	while(block_stream_iterator_root_->Next(0));
+	block_stream_iterator_root_->Close();
 
 }

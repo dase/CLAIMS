@@ -26,4 +26,4 @@ libschema_a_SOURCES = 	\
 	TupleConvertor.cpp 	TupleConvertor.h
 	
 SUBDIRS = Test
-DIST_SUBDIRS = Test
+DIST_SUBDIRS = Test	

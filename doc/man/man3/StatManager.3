@@ -1,0 +1,47 @@
+.TH "StatManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+StatManager \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHistogram\fP * \fBgetHistogram\fP (const \fBAttributeID\fP attID)"
+.br
+.ti -1c
+.RI "\fBHistogram\fP * \fBgetStat\fP (const \fBAttributeID\fP attID, const \fBPartitionID\fP partID)"
+.br
+.ti -1c
+.RI "void \fBaddStat\fP (const \fBAttributeID\fP attId, \fBHistogram\fP *stat)"
+.br
+.ti -1c
+.RI "void \fBaddStat\fP (const \fBAttributeID\fP attId, const \fBPartitionID\fP partId, const \fBHistogram\fP *stat)"
+.br
+.ti -1c
+.RI "\fBTableStatistic\fP * \fBgetTableStatistic\fP (const TableID &table_id) const "
+.br
+.ti -1c
+.RI "\fBAttributeStatistics\fP * \fBgetAttributeStatistic\fP (const \fBAttributeID\fP &attrId) const "
+.br
+.ti -1c
+.RI "\fBAttributeStatistics\fP * \fBgetAttributeStatistic\fP (const \fBAttribute\fP &attr) const "
+.br
+.ti -1c
+.RI "void \fBsetTableStatistic\fP (const TableID &table_id, \fBTableStatistic\fP *tab_stat)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBStatManager\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

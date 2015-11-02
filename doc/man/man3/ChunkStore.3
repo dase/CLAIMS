@@ -1,0 +1,31 @@
+.TH "ChunkStore" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ChunkStore \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual bool \fBstoreChunk\fP (\fBChunkID\fP chunk_id, void *value, unsigned length=CHUNK_SIZE)=0"
+.br
+.ti -1c
+.RI "virtual void * \fBgetChunk\fP (\fBChunkID\fP chunk_id)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBremove\fP (\fBChunkID\fP chunk_id)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBcontains\fP (\fBChunkID\fP chunk_id)=0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetSize\fP (\fBChunkID\fP chunk_id)=0"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

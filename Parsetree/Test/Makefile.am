@@ -15,7 +15,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../libparsetree.a \
-		../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../logical_operator/liblogicalqueryplan.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../Catalog/libcatalog.a \
 		../../Executor/libexecutor.a \
@@ -28,4 +28,4 @@ LDADD = 	../libparsetree.a \
 		${THERON_HOME}/Lib/libtherond.a 
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES = parser_test.cpp
+libtest_a_SOURCES = 

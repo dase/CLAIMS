@@ -7,12 +7,12 @@
  * Description:
  */
 
+#include "./logging.h"
 #include <glog/logging.h>
 #include <stdlib.h>
 #include <iosfwd>
 #include <string>
 #include <ios>
-#include "logging.h"
 namespace claims {
 namespace common {
 

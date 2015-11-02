@@ -1,0 +1,41 @@
+.TH "Client" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Client \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBquery_result\fP { \fBresult\fP, \fBerror\fP, \fBmessage\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBconnection\fP (std::string host, int port)"
+.br
+.ti -1c
+.RI "\fBClientResponse\fP * \fBsubmitQuery\fP (std::string args)"
+.br
+.ti -1c
+.RI "\fBquery_result\fP \fBsubmit\fP (std::string command, std::string &message, \fBResultSet\fP &rt)"
+.br
+.ti -1c
+.RI "\fBClientResponse\fP * \fBreceive\fP ()"
+.br
+.ti -1c
+.RI "void \fBshutdown\fP ()"
+.br
+.ti -1c
+.RI "bool \fBconnected\fP () const "
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

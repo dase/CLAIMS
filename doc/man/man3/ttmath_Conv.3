@@ -1,0 +1,81 @@
+.TH "ttmath::Conv" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ttmath::Conv \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ttmathtypes\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBuint\fP \fBbase\fP"
+.br
+.ti -1c
+.RI "bool \fBscient\fP"
+.br
+.ti -1c
+.RI "sint \fBscient_from\fP"
+.br
+.ti -1c
+.RI "bool \fBbase_round\fP"
+.br
+.ti -1c
+.RI "sint \fBround\fP"
+.br
+.ti -1c
+.RI "bool \fBtrim_zeroes\fP"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBcomma\fP"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBcomma2\fP"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBgroup\fP"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBgroup_exp\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+this struct is used when converting to/from a string /temporarily only in Big::ToString() and Big::FromString()/ 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBuint\fP ttmath::Conv::base"
+base (radix) on which the value will be shown (or read) default: 10 
+.SS "bool ttmath::Conv::base_round"
+if 'base_round' is true and 'base' is different from 2, 4, 8, or 16 and the result value is not an integer then we make an additional rounding (after converting the last digit from the result is skipped) default: true
+.PP
+e\&.g\&. \fBConv\fP c; c\&.base_round = false; Big<1, 1> a = '0\&.1'; // decimal input std::cout << a\&.ToString(c) << std::endl; // the result is: 0\&.099999999 
+.SS "\fBuint\fP ttmath::Conv::comma"
+the main comma operator (used when reading and writing) default is a dot '\&.' 
+.SS "\fBuint\fP ttmath::Conv::comma2"
+additional comma operator (used only when reading) if you don't want it just set it to zero default is a comma ','
+.PP
+this allowes you to convert from a value: 123\&.45 as well as from 123,45 
+.SS "\fBuint\fP ttmath::Conv::group"
+it sets the character which is used for grouping if group=' ' then: 1234,56789 will be printed as: 1 234,567 89
+.PP
+if you don't want grouping just set it to zero (which is default) 
+.SS "sint ttmath::Conv::round"
+used only in Big::ToString() tells how many digits after comma are possible default: -1 which means all digits are printed
+.PP
+set it to zero if you want integer value only
+.PP
+for example when the value is: 12\&.345678 and 'round' is 4 then the result will be 12\&.3457 (the last digit was rounded) 
+.SS "bool ttmath::Conv::scient"
+used only in Big::ToString() if true the value will be always shown in the scientific mode, e\&.g: 123e+30 default: false 
+.SS "sint ttmath::Conv::scient_from"
+used only in Big::ToString() if scient is false then the value will be print in the scientific mode only if the exponent is greater than scien_from default: 15 
+.SS "bool ttmath::Conv::trim_zeroes"
+if true that not mattered digits in the mantissa will be cut off (zero characters at the end -- after the comma operator) e\&.g\&. 1234,78000 will be: 1234,78 default: true 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

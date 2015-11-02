@@ -9,10 +9,6 @@ AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
-  BlockStreamIterator/Makefile 
-  BlockStreamIterator/ParallelBlockStreamIterator/Makefile
-  BlockStreamIterator/ParallelBlockStreamIterator/Test/Makefile
-  BlockStreamIterator/Serialization/Makefile 
   Catalog/Makefile
   Catalog/Test/Makefile
   Catalog/stat/Makefile 
@@ -36,8 +32,9 @@ AC_CONFIG_FILES([
   IndexManager/Test/Makefile
   Loader/Makefile
   Loader/Test/Makefile
-  LogicalQueryPlan/Makefile 
-  LogicalQueryPlan/Test/Makefile 
+  common/serialization/Makefile 
+  physical_operator/Makefile
+  logical_operator/Makefile 
   Parsetree/Makefile 
   Parsetree/Test/Makefile 
   Resource/Makefile 
