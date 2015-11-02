@@ -21,10 +21,10 @@
 #include "../../utility/test_tool.h"
 #include "../../utility/rdtsc.h"
 
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/LogicalOperator.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/Filter.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/logical_operator.h"
 
 #include "../../BlockStreamIterator/BlockStreamPerformanceMonitorTop.h"
 
@@ -66,16 +66,21 @@ static void test_logical_index_building()
 	TableDescriptor* table = Catalog::getInstance()->getTable("cj");
 	LogicalOperator* csb_building = new LogicalCSBIndexBuilding(table->getProjectoin(0)->getProjectionID(), table->getAttribute(3), "sec_code_index");
 	const NodeID collector_node_id=0;
+<<<<<<< HEAD
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::RESULTCOLLECTOR);
-	root->print();
-	BlockStreamIteratorBase* executable_query_plan=root->getIteratorTree(1024*64);
-	executable_query_plan->open();
-	while (executable_query_plan->next(0));
-	executable_query_plan->close();
+	root->Print();
+=======
+	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,csb_building,LogicalQueryPlanRoot::kResultCollector);
+	root->Print();
+>>>>>>> master-yk-150927
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64);
+	executable_query_plan->Open();
+	while (executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	ResultSet* result_set = executable_query_plan->getResultSet();
 
-	executable_query_plan->~BlockStreamIteratorBase();
+	executable_query_plan->~PhysicalOperatorBase();
 	root->~LogicalOperator();
 	cout << "index building finished!\n";
 }
@@ -114,12 +119,16 @@ static void test_logical_index_scan()
 
 		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
 		const NodeID collector_node_id = 0;
+<<<<<<< HEAD
 		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PRINT);
-		BlockStreamIteratorBase* executable_query_plan = root->getIteratorTree(1024 * 64);
-		executable_query_plan->open();
-		while (executable_query_plan->next(0));
-		executable_query_plan->close();
-		executable_query_plan->~BlockStreamIteratorBase();
+=======
+		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::kPrint);
+>>>>>>> master-yk-150927
+		PhysicalOperatorBase* executable_query_plan = root->GetPhysicalPlan(1024 * 64);
+		executable_query_plan->Open();
+		while (executable_query_plan->Next(0));
+		executable_query_plan->Close();
+		executable_query_plan->~PhysicalOperatorBase();
 		root->~LogicalOperator();
 	}
 }
@@ -151,16 +160,20 @@ static void bulk_test_logical_index_scan()
 
 		LogicalOperator* index_scan = new LogicalIndexScan(table->getProjectoin(0)->getProjectionID(), table->getAttribute("sec_code"), q_range);
 		const NodeID collector_node_id = 0;
+<<<<<<< HEAD
 		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::RESULTCOLLECTOR);
-		BlockStreamIteratorBase* executable_query_plan = root->getIteratorTree(1024 * 64);
-		executable_query_plan->open();
-		while (executable_query_plan->next(0));
-		executable_query_plan->close();
+=======
+		LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::kResultCollector);
+>>>>>>> master-yk-150927
+		PhysicalOperatorBase* executable_query_plan = root->GetPhysicalPlan(1024 * 64);
+		executable_query_plan->Open();
+		while (executable_query_plan->Next(0));
+		executable_query_plan->Close();
 
 		ResultSet* result_set = executable_query_plan->getResultSet();
 
 		const unsigned long int number_of_tuples = result_set->getNumberOftuples();
-		executable_query_plan->~BlockStreamIteratorBase();
+		executable_query_plan->~PhysicalOperatorBase();
 		root->~LogicalOperator();
 		cout << 1022-count << ": Sec_code: " << value << "\t Result: " << number_of_tuples << endl;
 		if(!print_test_name_result(number_of_tuples == expect_num,"Index Scan")){
@@ -178,23 +191,23 @@ static void test_scan_filter_performance(int value)
 	TableDescriptor* table=Catalog::getInstance()->getTable("cj");
 	LogicalOperator* cj_scan=new LogicalScan(table->getProjectoin(0));
 
-	Filter::Condition filter_condition_1;
+	LogicalFilter::Condition filter_condition_1;
 	filter_condition_1.add(table->getAttribute(3),AttributeComparator::GEQ,std::string("10107"));
 	filter_condition_1.add(table->getAttribute(3),AttributeComparator::L,(void*)&value);
-	LogicalOperator* filter_1=new Filter(filter_condition_1,cj_scan);
+	LogicalOperator* filter_1=new LogicalFilter(filter_condition_1,cj_scan);
 
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::PERFORMANCE);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024*64);
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64);
 //	executable_query_plan->print();
-	executable_query_plan->open();
-	while(executable_query_plan->next(0));
-	executable_query_plan->close();
+	executable_query_plan->Open();
+	while(executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	printf("execution time: %4.4f seconds.\n",getSecond(start));
 	if(!print_test_name_result(number_of_tuples==26820,"Low selectivity filter")){
 		printf("\tExpected:26695 actual: %d\n",number_of_tuples);
@@ -228,14 +241,14 @@ static void test_index_filter_performance(int value_high)
 	const NodeID collector_node_id = 0;
 	LogicalOperator* root = new LogicalQueryPlanRoot(collector_node_id, index_scan, LogicalQueryPlanRoot::PERFORMANCE);
 //	root->print();
-	BlockStreamPerformanceMonitorTop* executable_query_plan = (BlockStreamPerformanceMonitorTop*)root->getIteratorTree(1024 * 64);
-	executable_query_plan->open();
-	while (executable_query_plan->next(0));
-	executable_query_plan->close();
+	PerformanceMonitor* executable_query_plan = (PerformanceMonitor*)root->GetPhysicalPlan(1024 * 64);
+	executable_query_plan->Open();
+	while (executable_query_plan->Next(0));
+	executable_query_plan->Close();
 
 //	ResultSet* result_set = executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples = executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples = executable_query_plan->GetNumberOfTuples();
 	delete executable_query_plan;
 	root->~LogicalOperator();
 //	cout << "Sec_code: " << value_low << "\t Result: " << number_of_tuples << endl;

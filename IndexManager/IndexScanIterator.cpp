@@ -11,11 +11,11 @@
 
 IndexScanIterator::IndexScanIterator():partition_reader_iterator_(0), chunk_reader_iterator_(0)  {
 	// TODO Auto-generated constructor stub
-	initialize_expanded_status();
+	InitExpandedStatus();
 }
 
 IndexScanIterator::IndexScanIterator(State state):state_(state), partition_reader_iterator_(0), chunk_reader_iterator_(0) {
-	initialize_expanded_status();
+	InitExpandedStatus();
 	csb_index_list_.clear();
 }
 
@@ -33,29 +33,29 @@ IndexScanIterator::State::State(ProjectionID projection_id, Schema* schema, unsi
 
 }
 
-bool IndexScanIterator::open(const PartitionOffset& partition_off)
+bool IndexScanIterator::Open(const PartitionOffset& partition_off)
 {
 	AtomicPushBlockStream(BlockStreamBase::createBlockWithDesirableSerilaizedSize(state_.schema_, state_.block_size_));
-	if(tryEntryIntoSerializedSection()){
+	if(TryEntryIntoSerializedSection()){
 
 		/* this is the first expanded thread*/
 		csb_index_list_ = IndexManager::getInstance()->getAttrIndex(state_.index_id_);
 		PartitionStorage* partition_handle_;
 		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_off)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_off).getName().c_str());
-			setReturnStatus(false);
+			SetReturnStatus(false);
 		}
 		else{
 			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
 //			chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		}
-		setReturnStatus(true);
+		SetReturnStatus(true);
 	}
-	barrierArrive();
-	return getReturnStatus();
+	BarrierArrive();
+	return GetReturnStatus();
 }
 
-bool IndexScanIterator::next(BlockStreamBase* block)
+bool IndexScanIterator::Next(BlockStreamBase* block)
 {
 	remaining_block rb;
 	void* tuple_from_index_search;
@@ -128,9 +128,9 @@ bool IndexScanIterator::next(BlockStreamBase* block)
 	return false;
 }
 
-bool IndexScanIterator::close()
+bool IndexScanIterator::Close()
 {
-	initialize_expanded_status();
+	InitExpandedStatus();
 	delete partition_reader_iterator_																																										;
 	remaining_block_list_.clear();
 	block_stream_list_.clear();

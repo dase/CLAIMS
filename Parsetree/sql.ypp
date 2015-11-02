@@ -6,7 +6,7 @@
 
 %glr-parser
 %expect 8
-%expect-rr 79
+%expect-rr 80
 %defines
 %{
 #include <stdlib.h>
@@ -620,7 +620,9 @@ opt_as: /* nil */
 
 opt_as_alias: AS NAME { $$=$2; /*puts("opt_as_alias1");*/ }
   | NAME              { $$=$1; /*puts("opt_as_alias2");*/ }
-  | /* nil */         { $$=NULL; /*puts("opt_as_alias3");*/ }
+  | AS STRING 		  { $$ = $2; /*puts("opt_as_alias3");*/ }
+  | STRING 			  { $$ = $1; /*puts("opt_as_alias4");*/ }	
+  | /* nil */         { $$=NULL; /*puts("opt_as_alias5");*/ }
   ;
 
 /*
@@ -819,13 +821,13 @@ stmt: replace_stmt { emit("STMT"); }
 replace_stmt: REPLACE insert_opts opt_into NAME
      opt_col_names
      VALUES insert_vals_list
-     opt_ondupupdate { emit("REPLACEVALS %d %d %s", $2, $7, $4); free($4) }
+     opt_ondupupdate { emit("REPLACEVALS %d %d %s", $2, $7, $4); free($4); }
    ;
 
 replace_stmt: REPLACE insert_opts opt_into NAME
     SET insert_asgn_list
     opt_ondupupdate
-     { emit("REPLACEASGN %d %d %s", $2, $6, $4); free($4) }
+     { emit("REPLACEASGN %d %d %s", $2, $6, $4); free($4); }
    ;
 
 replace_stmt: REPLACE insert_opts opt_into NAME opt_col_names

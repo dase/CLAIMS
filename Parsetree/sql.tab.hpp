@@ -1,9 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton interface for Bison GLR parsers in C
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,6 +30,15 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+#ifndef YY_YY_SQL_TAB_HPP_INCLUDED
+# define YY_YY_SQL_TAB_HPP_INCLUDED
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -366,12 +374,10 @@
    };
 #endif
 
-
-#ifndef YYSTYPE
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-
-/* Line 2638 of glr.c  */
+/* Line 2579 of glr.c  */
 #line 23 "sql.ypp"
 
 	int intval;		
@@ -381,27 +387,15 @@ typedef union YYSTYPE
 	struct Node * ast_node;
 
 
-
-/* Line 2638 of glr.c  */
-#line 387 "sql.tab.hpp"
+/* Line 2579 of glr.c  */
+#line 392 "sql.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-#endif
-
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE
-{
-
-  char yydummy;
-
-} YYLTYPE;
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
+# define YYSTYPE_IS_DECLARED 1
 #endif
 
 
+int yyparse (struct ParseResult* result);
 
-
-
-
-
+#endif /* !YY_YY_SQL_TAB_HPP_INCLUDED  */

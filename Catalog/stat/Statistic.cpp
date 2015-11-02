@@ -56,7 +56,7 @@ void Histogram::setMostCommonValues(void **mcvList, double *seleList) {
 	m_staNumbers2 = seleList;
 }
 
-void Histogram::print(column_type type) {
+void Histogram::Print(column_type type) {
 
 	printf("Tuple Count: %d\n\n", m_staCount);
 

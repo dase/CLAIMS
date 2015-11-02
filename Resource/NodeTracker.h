@@ -22,11 +22,11 @@ typedef int NodeID;
 class NodeTracker {
 public:
 
-	static NodeTracker* getInstance();
+	static NodeTracker* GetInstance();
 	virtual ~NodeTracker();
 	int RegisterNode(NodeAddress);
-	std::string getNodeIP(const NodeID&)const;
-	std::vector<NodeID> getNodeIDList()const;
+	std::string GetNodeIP(const NodeID&)const;
+	std::vector<NodeID> GetNodeIDList()const;
 private:
 	NodeTracker();
 	boost::unordered_map<NodeAddress,NodeID> address_to_id_;

@@ -8,12 +8,11 @@
 #include <iostream>
 #include "../../Environment.h"
 
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/Buffer.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/logical_equal_join.h"
+#include "../../logical_operator/Filter.h"
+#include "../../logical_operator/logical_aggregation.h"
 
 #include "../../Catalog/ProjectionBinding.h"
 
