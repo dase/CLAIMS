@@ -33,6 +33,28 @@
 
 typedef int RetCode;  // means return code
 
+#define EXEC_AND_ONLY_LOG_ERROR(f, err_info) \
+  ret = f;                                   \
+  if (ret != kSuccess) {                     \
+    LOG(ERROR) << err_info << std::endl;     \
+  }
+
+#define EXEC_AND_LOG(f, info, err_info)  \
+  ret = f;                               \
+  if (ret == kSuccess) {                 \
+    LOG(INFO) << info << std::endl;      \
+  } else {                               \
+    LOG(ERROR) << err_info << std::endl; \
+  }
+
+#define EXEC_AND_PLOG(f, info, err_info)  \
+  ret = f;                                \
+  if (ret == kSuccess) {                  \
+    LOG(INFO) << info << std::endl;       \
+  } else {                                \
+    PLOG(ERROR) << err_info << std::endl; \
+  }
+
 namespace claims {
 namespace common {
 
@@ -57,12 +79,18 @@ const int ELSeekDiskFileFail = -9;
 const int ELSeekHdfsFileFail = -10;
 const int ECloseDiskFileFail = -11;
 const int ECloseHdfsFileFail = -12;
-const int EParamInvalid = -13;
+const int EFileEOF = -13;
+const int EParamInvalid = -14;
+
+const int ENoMemory = -14;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int kNoTableFound = -1001;
 
-/* errorno for Loader -2001 ~ -3000  */
+const int EInvalidInsertData = -1002;
+
+/* errorno for loader -2001 ~ -3000  */
+const int EUnbindEntireProjectionFail = -2001;
 
 /* errorno for codegen -3001 ~ -4000 */
 const int kTestError = -3001;

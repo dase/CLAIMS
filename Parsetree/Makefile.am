@@ -13,10 +13,10 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = ../Catalog/libcatalog.a \
-		../Catalog/stat/libstat.a \
+LDADD = ../catalog/libcatalog.a \
+		../catalog/stat/libstat.a \
 		../logical_query_plan/liblogicalqueryplan.a \
-		../Loader/libloader.a \
+		../loader/libloader.a \
 		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../common/libcommon.a \
 		../common/Expression/libexpression.a \

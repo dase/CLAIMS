@@ -16,7 +16,7 @@
 #include<vector>
 #include<stdlib.h>
 #include "../../Parsetree/sql_node_struct.h"
-#include "../../Catalog/Attribute.h"
+#include "../../catalog/attribute.h"
 #include "../../common/Schema/Schema.h"
 #include "qnode.h"
 using namespace std;

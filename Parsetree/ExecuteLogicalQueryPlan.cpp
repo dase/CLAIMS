@@ -7,47 +7,56 @@
 
 #ifndef __EXECLOGICALQUERYPLAN__
 #define __EXECLOGICALQUERYPLAN__
+#include <glog/logging.h>
 
 #include <iostream>
 #include <cstring>
 #include <string>
 #include "../Environment.h"
 
-#include "../Catalog/stat/Analyzer.h"
-
-#include "../Catalog/ProjectionBinding.h"
+#include "../catalog/catalog.h"
+#include "../catalog/projection_binding.h"
 
 #include "../Parsetree/sql_node_struct.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
+#include "../catalog/stat/Analyzer.h"
+#include "../common/memory_handle.h"
 #include "../logical_query_plan/logical_scan.h"
 #include "../logical_query_plan/logical_equal_join.h"
 #include "../logical_query_plan/logical_aggregation.h"
-
 #include "../logical_query_plan/logical_filter.h"
 #include "../logical_query_plan/logical_limit.h"
+#include "../logical_query_plan/logical_query_plan_root.h"
 
 #include "../utility/rdtsc.h"
 
-#include "../Loader/Hdfsloader.h"
+#include "../loader/Hdfsloader.h"
+#include "../loader/data_injector.h"
 
 #include "../Client/ClaimsServer.h"
-#include "../logical_query_plan/logical_query_plan_root.h"
-#define SQL_Parser
+
 using namespace std;
+using claims::catalog::Catalog;
+using claims::loader::DataInjector;
+
+#define NEW_LOADER
 #define SQL_Parser
 
 const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
-#define SQL_Parser
 timeval start_time;  // 2014-5-4---add---by Yu
 
-void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
-                             bool &result_flag, string &error_msg, string &info,
-                             int fd) {
+void ExecuteLogicalQueryPlan(
+    const string &sql, ExecutedResult *result
+    //                             ResultSet *&result_set,
+    //                             bool &result_flag, string &error_msg, string
+    //                             &info,
+    //                             int fd
+    ) {
   Environment::getInstance(true);
   ResourceManagerMaster *rmms =
       Environment::getInstance()->getResourceManagerMaster();
@@ -58,9 +67,10 @@ void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
   Node *oldnode = getparsetreeroot(&presult, sql.c_str());
   if (oldnode == NULL) {
     FreeAllNode(presult.node_pointer);
-    error_msg = "There are some errors during parsing time";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "There are some errors during parsing time";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("There are some errors during parsing time");
     return;
   }
   Stmt *stmtList = (Stmt *)oldnode;
@@ -68,51 +78,50 @@ void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
     Node *node = (Node *)stmtList->data;
     switch (node->type) {
       case t_create_table_stmt: {
-        CreateTable(catalog, node, result_set, result_flag, error_msg, info);
+        CreateTable(catalog, node, result);
         break;
       }
       case t_create_projection_stmt: {
-        CreateProjection(catalog, node, result_set, result_flag, error_msg,
-                         info);
+        CreateProjection(catalog, node, result);
         break;
       }
       case t_query_stmt: {
-        Query(catalog, node, result_set, result_flag, error_msg, info, false);
+        Query(catalog, node, result, false);
         break;
       }
       case t_load_table_stmt: {
-        LoadData(catalog, node, result_set, result_flag, error_msg, info);
+        LoadData(catalog, node, result);
         break;
       }
-      case t_insert_stmt:  // 2014-4-19---add---by Yu	//
-                           // 2014-5-1---modify---by
-                           // Yu
-        {
-          InsertData(catalog, node, result_set, result_flag, error_msg, info);
-          break;
-        }
+      case t_insert_stmt: {
+        InsertData(catalog, node, result);
+        break;
+      }
       case t_show_stmt: {
-        ShowTable(catalog, node, result_set, result_flag, error_msg, info);
+        ShowTable(catalog, node, result);
         break;
       }
       case t_drop_stmt: {
-        DropTable(catalog, node, result_set, result_flag, error_msg, info);
+        DropTable(catalog, node, result);
         break;
       }
       default: {
         cout << node->type << endl;
         puts("nothing matched!\n");
-        error_msg = "no sentence matched";
-        result_flag = false;
-        result_set = NULL;
+        //        error_msg = "no sentence matched";
+        //        result_flag = false;
+        //        result_set = NULL;
+        result->SetError("no sentence matched");
       }
     }
-    if (result_flag == false) {
+    if (result->status_ == false) {
       FreeAllNode(&allnode);  // -Yu 2015-3-2
     }
     stmtList = (Stmt *)stmtList->next;
   }
+  FreeAllNode(&allnode);
 }
+/*
 
 void ExecuteLogicalQueryPlan() {
   Environment::getInstance(true);
@@ -127,7 +136,7 @@ void ExecuteLogicalQueryPlan() {
     vector<Node *> allnode;
     struct ParseResult presult = {NULL, NULL, NULL, 0, &allnode};
     Node *oldnode = getparsetreeroot(&presult);
-    // get parser time	//2014-5-4---add---by Yu
+    // get parser time  // 2014-5-4---add---by Yu
     timeval finish_parser_time;
     gettimeofday(&finish_parser_time, NULL);
     cout << "parser use "
@@ -135,8 +144,7 @@ void ExecuteLogicalQueryPlan() {
                 (finish_parser_time.tv_sec - start_time.tv_sec) * 1000 << " ms"
          << endl;
 
-    if (oldnode == NULL)  // 2014-2-24---增加node为空的判断---by余楷
-    {
+    if (oldnode == NULL) {  // 2014-2-24---增加node为空的判断---by余楷
       printf("[ERROR]there are some wrong in statement! please try again!!\n");
       FreeAllNode(presult.node_pointer);  //释放SQL解析过程忠所有申请的内存
                                           ////
@@ -170,7 +178,8 @@ void ExecuteLogicalQueryPlan() {
           CreateProjection(catalog, node, result_set, result_flag, error_msg,
                            info);
         } break;
-        case t_query_stmt:  // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
+        case t_query_stmt:  //
+2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
         {
           Query(catalog, node, result_set, result_flag, error_msg, info, true);
         } break;
@@ -211,20 +220,18 @@ void ExecuteLogicalQueryPlan() {
     //		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
   }
 }
+*/
 
 bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
                          unsigned position, ostringstream &ostr) {
   bool has_warning = true;
-  if (insert_value->value_type == 0)  // 指定具体的值
-  {
+  if (insert_value->value_type == 0) {  // 指定具体的值
     // check whether the column type match value type
     has_warning = CheckType(table->getAttribute(position).attrType,
                             (Expr *)insert_value->expr);
 
-    switch (
-        insert_value->expr
-            ->type)  // 2014-4-17---only these type are supported now---by Yu
-    {
+    switch (insert_value->expr->type) {
+      // 2014-4-17---only these type are supported now---by Yu
       case t_stringval:
       case t_intnum:
       case t_approxnum:
@@ -270,7 +277,7 @@ bool CheckType(
       return (insert_value_type != t_approxnum);
     case t_string:
       return (insert_value_type != t_stringval) ||
-             strlen(expr->data) > col_type->get_length();  //---5.27fzh---
+             strlen(expr->data) > col_type->get_length() - 1;  //---5.27fzh---
     // case t_u_long: return (insert_value_type != t_intnum) ||
     // strlen(expr->data) > INT_LENGTH || (expr->data[0] == '-');	// =='-'
     // 实际不可行，‘-’不会被识别进expr中
@@ -293,8 +300,7 @@ bool CheckType(
   }
 }
 
-void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-                 bool &result_flag, string &error_msg, string &info) {
+void CreateTable(Catalog *catalog, Node *node, ExecutedResult *result) {
   /* nodetype type, int create_type, int check, char * name1, char * name2, Node
    * * list, Node * select_stmt */
   Create_table_stmt *ctnode = (Create_table_stmt *)node;
@@ -304,19 +310,22 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
   } else if (ctnode->name1 != NULL) {
     tablename = ctnode->name1;
   } else {
-    error_msg = "No table name during creating table!";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "No table name during creating table!";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("No table name during creating table!");
     return;
   }
 
   TableDescriptor *new_table =
       Environment::getInstance()->getCatalog()->getTable(tablename);
   if (new_table != NULL) {
-    error_msg =
-        "The table " + tablename + " has existed during creating table!";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg =
+    //        "The table " + tablename + " has existed during creating table!";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("The table " + tablename +
+                     " has existed during creating table!");
     return;
   }
 
@@ -408,9 +417,12 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
             cout << colname << " is created" << endl;
           } else {
             // TODO:no supports
-            error_msg = "This type is not supported during creating table!";
-            result_flag = false;
-            result_set = NULL;
+            //            error_msg = "This type is not supported during
+            //            creating table!";
+            //            result_flag = false;
+            //            result_set = NULL;
+            result->SetError(
+                "This type is not supported during creating table!");
           }
           break;
         }
@@ -442,16 +454,18 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
         case 11: {
           if (datatype->length) {
             Length *l = (Length *)datatype->length;
+            unsigned data_length = 8;
+            if (NULL != l) data_length = l->data1;
 
             if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_decimal), l->data1,
-                                      true, false);
+              new_table->addAttribute(colname, data_type(t_decimal),
+                                      data_length, true, false);
             } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_decimal), l->data1,
-                                      true, true);
+              new_table->addAttribute(colname, data_type(t_decimal),
+                                      data_length, true, true);
             } else {
-              new_table->addAttribute(colname, data_type(t_decimal), l->data1,
-                                      true);
+              new_table->addAttribute(colname, data_type(t_decimal),
+                                      data_length, true);
             }
             cout << colname << " is created" << endl;
           } else {
@@ -513,14 +527,15 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
             Length *l = (Length *)datatype->length;
 
             if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_string), l->data1,
-                                      true, false);
+              // the extra one char is prepared for '\0'
+              new_table->addAttribute(colname, data_type(t_string),
+                                      l->data1 + 1, true, false);
             } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_string), l->data1,
-                                      true, true);
+              new_table->addAttribute(colname, data_type(t_string),
+                                      l->data1 + 1, true, true);
             } else {
-              new_table->addAttribute(colname, data_type(t_string), l->data1,
-                                      true);
+              new_table->addAttribute(colname, data_type(t_string),
+                                      l->data1 + 1, true);
             }
           } else {
             if (column_atts && (column_atts->datatype & 01)) {
@@ -537,15 +552,18 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
           break;
         }
         default: {
-          error_msg = "This type is not supported now during creating table!";
-          result_flag = false;
-          result_set = NULL;
+          //          error_msg = "This type is not supported now during
+          //          creating table!";
+          //          result_flag = false;
+          //          result_set = NULL;
+          result->SetError(
+              "This type is not supported now during creating table!");
         }
       }
     }
     list = (Create_col_list *)list->next;
   }
-  if (result_flag == false) return;
+  if (result->status_ == false) return;
 
   //	cout<<"the first attribute
   // Name:"<<new_table->getAttribute(0).getName()<<endl;
@@ -563,13 +581,15 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
   //				}
 
   catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve
-  // the
-  // dirty
-  // read after insert
-  result_flag = true;
-  info = "create table successfully";
-  result_set = NULL;
+  /*
+  // commented by li to solve the dirty read after insert
+  catalog->restoreCatalog();
+  */
+  //  result_flag = true;
+  //  info = "create table successfully";
+  //  result_set = NULL;
+  result->SetResult("create table successfully", NULL);
+
   return;
 }
 /*
@@ -918,8 +938,7 @@ catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartiti
 }
 */
 
-void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
-                      bool &result_flag, string &error_msg, string &info) {
+void CreateProjection(Catalog *catalog, Node *node, ExecutedResult *result) {
   bool is_correct = true;
   Create_projection_stmt *newnode = (Create_projection_stmt *)node;
   int partition_num = newnode->partition_num;
@@ -929,10 +948,14 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
   if ((table = catalog->getTable(tablename)) ==
       NULL)  // 2014-4-30---add check---by Yu
   {
-    error_msg =
-        "There is no table named " + tablename + " during creating projection";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg =
+    //        "There is no table named " + tablename + " during creating
+    //        projection";
+    //    result_flag = false;
+    //    result_set = NULL;
+
+    result->SetError("There is no table named " + tablename +
+                     " during creating projection");
     return;
     is_correct = false;
     return;
@@ -951,9 +974,12 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
     } else if (col_list->parameter1 != NULL) {
       colname = col_list->parameter1;
     } else {
-      error_msg = "NO column name during creating projection!";
-      result_flag = false;
-      result_set = NULL;
+      //      error_msg = "NO column name during creating projection!";
+      //      result_flag = false;
+      //      result_set = NULL;
+
+      result->SetError("NO column name during creating projection!");
+
       return;
       is_correct = false;
       break;
@@ -963,17 +989,19 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
                        colname))  // 2014-4-30---add check---by Yu
       index.push_back(table->getAttribute(colname).index);
     else {
-      error_msg = "The column " + colname +
-                  " is not existed! during creating projection";
-      result_flag = false;
-      result_set = NULL;
+      //      error_msg = "The column " + colname +
+      //                  " is not existed! during creating projection";
+      //      result_flag = false;
+      //      result_set = NULL;
+      result->SetError("The column " + colname +
+                       " is not existed! during creating projection");
       return;
       is_correct = false;
       break;
     }
     col_list = (Columns *)col_list->next;
   }
-  if (result_flag == false) return;
+  if (result->status_ == false) return;
   if (!is_correct) return;
 
   catalog->getTable(table_id)->createHashPartitionedProjection(
@@ -998,10 +1026,12 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
   // dirty
   // read after insert
 
-  result_flag = true;
-  result_set = NULL;
-  info = "create projection successfully";
-  result_set = NULL;
+  //  result_flag = true;
+  //  result_set = NULL;
+  //  info = "create projection successfully";
+  //  result_set = NULL;
+
+  result->SetResult("create projection successfully", NULL);
   return;
 }
 /*
@@ -1066,13 +1096,14 @@ i=0;i<catalog->getTable(table_id)->getProjectoin(projection_index)->getPartition
 }
 */
 
-void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
-           bool &result_flag, string &error_msg, string &info,
+void Query(Catalog *catalog, Node *node, ExecutedResult *result,
            const bool local_mode) {
   if (!semantic_analysis(node, false)) {
-    error_msg = "semantic analysis error";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "semantic analysis error";
+    //    result_flag = false;
+    //    result_set = NULL;
+
+    result->SetError("semantic analysis error");
     return;
   }
   output(node, 0);
@@ -1121,16 +1152,17 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
 
   physical_iterator_tree->Open();
 
-  while (physical_iterator_tree->Next(0))
-    ;
+  while (physical_iterator_tree->Next(0)) {
+  }
   physical_iterator_tree->Close();
   //					printf("++++++++++++++++Q1: execution
   // time:
   //%4.4f
   // second.++++++++++++++\n",getSecond(start));
-  result_set = physical_iterator_tree->getResultSet();
+  ResultSet *result_set = physical_iterator_tree->getResultSet();
   cout << "execute " << result_set->query_time_ << " s" << endl;
-  result_flag = true;
+  //  result_flag = true;
+  result->SetResult("", result_set);
 
   if (local_mode) {
     result_set->print();
@@ -1225,8 +1257,7 @@ time: %4.4f second.++++++++++++++\n",getSecond(start));
 }
 */
 
-void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set,
-              bool &result_flag, string &error_msg, string &info) {
+void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
   Loadtable_stmt *new_node = (Loadtable_stmt *)node;
 
   string table_name(new_node->table_name);
@@ -1234,19 +1265,24 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set,
 
   // 2014-4-17---check the exist of table---by Yu
   if (table == NULL) {
-    error_msg = "the table " + table_name + " does not exist during loading!";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "the table " + table_name + " does not exist during
+    //    loading!";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("the table " + table_name +
+                     " does not exist during loading!");
     return;
   } else if (table->getNumberOfProjection() == 0) {
-    error_msg = "the table has not been created a projection!";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "the table has not been created a projection!";
+    //    result_flag = false;
+    //    result_set = NULL;
+
+    result->SetError("the table has not been created a projection!");
     return;
   }
   string column_separator(new_node->column_separator);
   string tuple_separator(new_node->tuple_separator);
-  //			printf("wef:%s\n",new_node->tuple_separator);
+  //  printf("wef:%s\n", new_node->tuple_separator);
   Expr_list *path_node = (Expr_list *)new_node->path;
 
   ASTParserLogging::log("load file\'s name:");
@@ -1265,19 +1301,42 @@ void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set,
       "The separator are :%c,%c, The sample is %lf, mode is %d\n",
       column_separator[0], tuple_separator[0], new_node->sample,
       new_node->mode);
-  HdfsLoader *loader =
-      new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table,
-                     (open_flag)new_node->mode);
+
+  GETCURRENTTIME(start_time);
+#ifdef NEW_LOADER
+  DataInjector *injector =
+      new DataInjector(table, column_separator[0], tuple_separator[0]);
+  int ret = injector->LoadFromFile(path_names,
+                                   static_cast<FileOpenFlag>(new_node->mode),
+                                   result, new_node->sample);
+  if (ret != kSuccess) {
+    LOG(ERROR) << "failed to load files: ";
+    for (auto it : path_names) {
+      LOG(ERROR) << it << " ";
+    }
+    LOG(ERROR) << " into table " << table->getTableName() << endl;
+
+    if (result->error_info_ != "") result->SetError("failed to load data");
+  } else {
+    //    result_flag = true;
+    //    info = "load data successfully";
+    //    result_set = NULL;
+    result->SetResult("load data successfully", NULL);
+  }
+  DELETE_PTR(injector);
+#else
+  Hdfsloader *loader =
+      new Hdfsloader(column_separator[0], tuple_separator[0], path_names, table,
+                     (FileOpenFlag)new_node->mode);
   loader->load(new_node->sample);
 
-  result_flag = true;
-  result_set = NULL;
-  info = "load data successfully";
-  result_set = NULL;
+  result->SetResult("load data successfully", NULL);
+#endif
 
   catalog->saveCatalog();
-  //	catalog->restoreCatalog();// commented by li to solve the dirty read
-  // after insert
+  double elapsed_time = GetElapsedTime(start_time);
+  cout << "execute " << elapsed_time / 1000 << " s" << endl;
+  LOG(INFO) << "execute " << elapsed_time / 1000 << " s" << endl;
 }
 /*
 
@@ -1316,15 +1375,14 @@ be loaded
 or "###"
         ASTParserLogging::log("The separator are :%c,%c", column_separator[0],
 tuple_separator[0]);
-        HdfsLoader *loader = new HdfsLoader(column_separator[0],
+        Hdfsloader *loader = new Hdfsloader(column_separator[0],
 tuple_separator[0], path_names, table);
         loader->load();
         catalog->saveCatalog();
 }
 */
 
-void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
-                bool &result_flag, string &error_msg, string &info) {
+void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
   bool has_warning = false;
   bool is_correct = true;
   bool is_all_col = false;
@@ -1336,9 +1394,10 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
   if (table == NULL) {
     // ASTParserLogging::elog("The table %s does not exist!",
     // table_name.c_str());
-    error_msg = "The table " + table_name + " does not exist!";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "The table " + table_name + " does not exist!";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("The table " + table_name + " does not exist!");
     return;
   }
 
@@ -1354,17 +1413,18 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
   Insert_val_list *insert_value_list =
       (Insert_val_list *)insert_stmt->insert_val_list;
   if (insert_value_list == NULL) {
-    //				ASTParserLogging::elog("No value!");
-    error_msg = "No value!";
-    result_flag = false;
-    result_set = NULL;
+    LOG(ERROR) << "No value!" << endl;
+    //    error_msg = "No value!";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("No value!");
     return;
   }
 
   ostringstream ostr;
   int changed_row_num = 0;
   // 循环获得 （……），（……），（……）中的每一个（……）
-  while (nsert_value_list) {
+  while (insert_value_list) {
     // make sure: the insert column count = insert value count = used column
     // count = used value count
 
@@ -1372,8 +1432,7 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
     Insert_vals *insert_value = (Insert_vals *)insert_value_list->insert_vals;
     col = (Columns *)insert_stmt->col_list;
 
-    if (is_all_col)  // insert all columns
-    {
+    if (is_all_col) {  // insert all columns
       // by scdong: Claims adds a default row_id attribute for all tables which
       // is attribute(0), when inserting tuples we should begin to construct the
       // string_tuple from the second attribute.
@@ -1381,19 +1440,19 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
            position++) {
         // check value count
         if (insert_value == NULL) {
-          //							ASTParserLogging::elog("Value
-          // count
-          // is
-          // too few");
+          LOG(ERROR) << "Value count is too few" << endl;
           is_correct = false;
-          error_msg = "Value count is too few";
-          result_flag = false;
-          result_set = NULL;
+          //          error_msg = "Value count is too few";
+          //          result_flag = false;
+          //          result_set = NULL;
+
+          result->SetError("Value count is too few");
           break;
         }
-
-        // insert value to ostringstream and if has warning return 1;	look
-        // out the order!
+        /**
+         * insert value to ostringstream and if has warning return 1;
+         * look out the order !
+         */
         has_warning =
             InsertValueToStream(insert_value, table, position, ostr) ||
             has_warning;
@@ -1407,16 +1466,15 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
 
       // check insert value count
       if (insert_value) {
-        //						ASTParserLogging::elog("Value
-        // count is too many");
-        error_msg = "Value count is too many";
-        result_flag = false;
-        result_set = NULL;
+        LOG(ERROR) << "Value count is too many " << endl;
+        //        error_msg = "Value count is too many";
+        //        result_flag = false;
+        //        result_set = NULL;
+        result->SetError("Value count is too many");
         is_correct = false;
         break;
       }
-    } else  // insert part of columns
-    {
+    } else {  // insert part of columns
       // get insert value count and check whether it match column count
       unsigned insert_value_count = 0;
       while (insert_value) {
@@ -1424,11 +1482,11 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
         insert_value = (Insert_vals *)insert_value->next;
       }
       if (insert_value_count != col_count) {
-        //						ASTParserLogging::elog("Column
-        // count doesn't match value count");
-        error_msg = "Column count doesn't match value count";
-        result_flag = false;
-        result_set = NULL;
+        LOG(ERROR) << "Column count doesn't match value count" << endl;
+        //        error_msg = "Column count doesn't match value count";
+        //        result_flag = false;
+        //        result_set = NULL;
+        result->SetError("Column count doesn't match value count");
         is_correct = false;
         break;
       }
@@ -1464,16 +1522,16 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
               InsertValueToStream(insert_value, table, position, ostr) ||
               has_warning;
         }
-
         ostr << "|";
       }  // end for
 
       // check if every insert column is existed
       if (used_col_count != col_count) {
         //  ASTParserLogging::elog("Some columns don't exist");
-        error_msg = "Some columns don't exist";
-        result_flag = false;
-        result_set = NULL;
+        //        error_msg = "Some columns don't exist";
+        //        result_flag = false;
+        //        result_set = NULL;
+        result->SetError("Some columns don't exist");
         is_correct = false;
         break;
       }
@@ -1492,185 +1550,39 @@ void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
     ASTParserLogging::log("[WARNING]: The type is not matched!\n");
   ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
 
-  HdfsLoader *Hl = new HdfsLoader(table);
-  string tmp = ostr.str();
+#ifdef NEW_LOADER
+  DataInjector *injector = new DataInjector(table);
+
+  // str() will copy string buffer without the last '\n'
+  int ret = injector->InsertFromString(ostr.str() + "\n", result);
+  if (kSuccess == ret) {
+    ostr.clear();
+    ostr.str("");
+    ostr << "insert data successfully. " << changed_row_num << " rows changed.";
+    //    result_flag = true;
+    //    info = ostr.str();
+    //    result_set = NULL;
+    result->SetResult(ostr.str(), NULL);
+  } else {
+    LOG(ERROR) << "failed to insert tuples into table:" << table->getTableName()
+               << endl;
+    //    result_flag = false;
+    //    info = "failed to insert tuples into table ";
+    //    result_set = NULL;
+
+    result->SetError("failed to insert tuples into table ");
+  }
+  DELETE_PTR(injector);
+#else
+  Hdfsloader *Hl = new Hdfsloader(table);
   Hl->append(ostr.str());
+  delete Hl;
+#endif
 
   catalog->saveCatalog();
-
-  result_flag = true;
-  ostr.clear();
-  ostr.str("");
-  ostr << "insert data successfully. " << changed_row_num << " rows changed.";
-  info = ostr.str();
-  result_set = NULL;
 }
-/*
 
-void InsertData(Catalog *catalog, Node *node) {
-
-        bool has_warning = false;
-        bool is_all_col = false;
-        Insert_stmt *insert_stmt = (Insert_stmt *)node;
-
-        string table_name(insert_stmt->tablename);
-        TableDescriptor *table =
-Environment::getInstance()->getCatalog()->getTable(table_name);
-        if(table == NULL)
-        {
-                ASTParserLogging::elog("The table %s does not exist!",
-table_name.c_str());
-                return;
-        }
-
-        unsigned col_count = 0;
-        Columns *col = (Columns *)insert_stmt->col_list;
-        if (col == NULL) {	// insert all columns
-                is_all_col = true;
-        }
-        else {	// get insert column count
-                ++col_count;
-                while(col = (Columns *)col->next) ++col_count;
-        }
-
-        Insert_val_list *insert_value_list =
-(Insert_val_list*)insert_stmt->insert_val_list;
-        if (insert_value_list == NULL) {
-                ASTParserLogging::elog("No value!");
-                return;
-        }
-
-        ostringstream ostr;
-        while(insert_value_list)	// 循环获得
-（……），（……），（……）中的每一个（……）
-        {
-                // make sure: the insert column count = insert value count =
-used column count = used value count
-
-                // init
-                Insert_vals *insert_value = (Insert_vals
-*)insert_value_list->insert_vals;
-                col = (Columns *)insert_stmt->col_list;
-
-                if (is_all_col)	// insert all columns
-                {
-                        // by scdong: Claims adds a default row_id attribute for
-all tables which is attribute(0), when inserting tuples we should begin to
-construct the string_tuple from the second attribute.
-                        for(unsigned int position = 1; position <
-table->getNumberOfAttribute(); position++)
-                        {
-                                // check value count
-                                if (insert_value == NULL)
-                                {
-                                        ASTParserLogging::elog("Value count is
-too few");
-                                        return;
-                                }
-
-                                // insert value to ostringstream and if has
-warning return 1;	look out the order!
-                                has_warning = InsertValueToStream(insert_value,
-table, position, ostr) || has_warning;
-
-                                // move back
-                                insert_value = (Insert_vals*)insert_value->next;
-                                ostr<<"|";
-                        }
-
-                        // check insert value count
-                        if (insert_value)
-                        {
-                                ASTParserLogging::elog("Value count is too
-many");
-                                return;
-                        }
-                }
-                else	//insert part of columns
-                {	//TODO:必须确认 不能为空的列有数据插入
-                        // get insert value count and check whether it match
-column count
-                        unsigned insert_value_count = 0;
-                        while (insert_value)
-                        {
-                                ++insert_value_count;
-                                insert_value = (Insert_vals*)insert_value->next;
-                        }
-                        if (insert_value_count != col_count)
-                        {
-                                ASTParserLogging::elog("Column count doesn't
-match value count");
-                                return;
-                        }
-
-                        unsigned int used_col_count = 0;
-
-                        // by scdong: Claims adds a default row_id attribute for
-all tables which is attribute(0), when inserting tuples we should begin to
-construct the string_tuple from the second attribute.
-                        for(unsigned int position = 1; position <
-table->getNumberOfAttribute(); position++)
-                        {
-                                // find the matched column and value by name
-                                col = (Columns*)insert_stmt->col_list;
-                                Insert_vals *insert_value = (Insert_vals
-*)insert_value_list->insert_vals;
-
-                                // take attention that attrName is
-tablename.colname
-                                while (col &&
-(table->getAttribute(position).attrName).compare(table->getTableName() +"."+
-col->parameter1))
-                                {
-                                        col = (Columns*)col->next;
-                                        insert_value =
-(Insert_vals*)insert_value->next;
-                                }
-
-                                // if find
-                                // the column count is proved to match the
-insert value count, so column exist, then insert_value exist
-                                if (col && insert_value)
-                                {
-                                        ++used_col_count;
-                                        // insert value to ostringstream and if
-has warning return 1; look out the order!
-                                        has_warning =
-InsertValueToStream(insert_value, table, position, ostr) || has_warning;
-                                }
-
-                                ostr<<"|";
-                        }//end for
-
-                        // check if every insert column is existed
-                        if (used_col_count != col_count)
-                        {
-                                ASTParserLogging::elog("Some columns don't
-exist");
-                                return;
-                        }
-                }//end else
-
-                insert_value_list = (Insert_val_list*)insert_value_list->next;
-                if(insert_value_list != NULL)
-                        ostr<<"\n";
-        }// end while
-
-        if (has_warning)
-                ASTParserLogging::log("[WARNING]: The type is not matched!\n");
-        ASTParserLogging::log("the insert content is
-\n%s\n",ostr.str().c_str());
-
-        HdfsLoader* Hl = new HdfsLoader(table);
-        string tmp = ostr.str().c_str();
-        Hl->append(ostr.str().c_str());
-
-        catalog->saveCatalog();
-}
-*/
-
-void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-               bool &result_flag, string &error_msg, string &info) {
+void ShowTable(Catalog *catalog, Node *node, ExecutedResult *result) {
   Show_stmt *show_stmt = (Show_stmt *)node;
   ostringstream ostr;
   switch (show_stmt->show_type) {
@@ -1679,15 +1591,17 @@ void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set,
       for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
         ostr << catalog->getTable(i)->getTableName() << endl;
       }
-      info = ostr.str();
-      result_flag = true;
-      result_set = NULL;
+      //      info = ostr.str();
+      //      result_flag = true;
+      //      result_set = NULL;
+      result->SetResult(ostr.str(), NULL);
     } break;
     default: {
       ASTParserLogging::elog("Sorry, not supported now!");
-      error_msg = "not supported now!";
-      result_flag = false;
-      result_set = NULL;
+      //      error_msg = "not supported now!";
+      //      result_flag = false;
+      //      result_set = NULL;
+      result->SetError("not supported now!");
     }
   }
 }
@@ -1712,8 +1626,7 @@ void ShowTable(Catalog *catalog, Node *node) {
 }
 */
 
-void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-               bool &result_flag, string &error_msg, string &info) {
+void DropTable(Catalog *catalog, Node *node, ExecutedResult *result) {
   assert(node != NULL);
   Droptable_stmt *drop_stmt = (Droptable_stmt *)node;
   Tablelist *table_list = (Tablelist *)(drop_stmt->table_list);

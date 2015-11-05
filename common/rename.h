@@ -14,6 +14,12 @@
 #include <stdio.h>
 #include <assert.h>
 
+#define NO_COPY_AND_ASSIGN(TypeName) \
+ private:                            \
+  TypeName(const TypeName &);        \
+  void operator=(const TypeName &);  \
+                                     \
+ public:
 typedef int64_t int64;
 
 typedef int(f)(int);

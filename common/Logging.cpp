@@ -8,8 +8,8 @@
 #include <iostream>
 #include "log/logging.h"
 
-#define   likely(x)        __builtin_expect(!!(x), 1)
-#define   unlikely(x)      __builtin_expect(!!(x), 0)
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
 
 //#define CLAIMS_QUEIT
 //#ifndef CLAIMS_QUEIT  // If defined, all the output information is binded.
@@ -59,7 +59,8 @@
 
 void RawLog(const char* where, const char* format, va_list args) {
   const int message_max_length = 1000;  // set initial message length
-  static char p[message_max_length];
+  char p[message_max_length];
+  memset(p, 0, sizeof(p));
 
   int real_length = vsnprintf(p, message_max_length, format, args);
 
@@ -73,7 +74,7 @@ void RawLog(const char* where, const char* format, va_list args) {
     char* temp = new char[new_message_length];
     if (temp == NULL) {
       std::cerr << "new " << new_message_length << " bytes failed."
-          << strerror(errno) << std::endl;
+                << strerror(errno) << std::endl;
       return;
     }
     // if enough space got, do it again
@@ -83,10 +84,10 @@ void RawLog(const char* where, const char* format, va_list args) {
   }
 }
 
-
 void RawElog(const char* where, const char* format, va_list args) {
   const int message_max_length = 1000;  // set initial message length
-  static char p[message_max_length];
+  char p[message_max_length];
+  memset(p, 0, sizeof(p));
 
   int real_length = vsnprintf(p, message_max_length, format, args);
   // if it worked, output the message
@@ -99,7 +100,7 @@ void RawElog(const char* where, const char* format, va_list args) {
     char* temp = new char[new_message_length];
     if (temp == NULL) {
       std::cerr << "new " << new_message_length << " bytes failed."
-          << strerror(errno) << std::endl;
+                << strerror(errno) << std::endl;
       return;
     }
     // if enough space got, do it again

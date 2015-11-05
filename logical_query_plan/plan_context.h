@@ -28,10 +28,15 @@
 #ifndef LOGICAL_QUERY_PLAN_PLAN_CONTEXT_H_
 #define LOGICAL_QUERY_PLAN_PLAN_CONTEXT_H_
 #include <vector>
-#include "../Catalog/Column.h"
-#include "../Catalog/Partitioner.h"
+#include "../catalog/column.h"
+#include "../catalog/partitioner.h"
 #include "../logical_query_plan/plan_partitioner.h"
 #include "../common/Schema/Schema.h"
+#include "../catalog/attribute.h"
+
+using namespace claims::catalog;
+class Schema;
+
 namespace claims {
 namespace logical_query_plan {
 /**
@@ -42,6 +47,7 @@ namespace logical_query_plan {
  */
 class PlanContext {
   friend class LogcalOperator;
+
  public:
   PlanContext();
   PlanContext(const PlanContext& plan_context);

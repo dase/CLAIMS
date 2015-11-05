@@ -30,7 +30,7 @@
 #ifndef LOGICAL_QUERY_PLAN_LOGICAL_AGGREGATION_H_
 #define LOGICAL_QUERY_PLAN_LOGICAL_AGGREGATION_H_
 #include <vector>
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamAggregationIterator.h"
 

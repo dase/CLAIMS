@@ -20,7 +20,7 @@ LDADD = 	../libschema.a \
 		../../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../../BlockStreamIterator/libblockstreamiterator.a \
 		../../../logical_query_plan/liblogicalqueryplan.a \
-		../../../Catalog/libcatalog.a \
+		../../../catalog/libcatalog.a \
 		../../../common/Block/libblock.a \
 		../../libcommon.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \

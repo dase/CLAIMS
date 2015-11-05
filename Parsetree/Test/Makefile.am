@@ -17,7 +17,7 @@ endif
 LDADD = 	../libparsetree.a \
 		../../logical_query_plan/liblogicalqueryplan.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
-		../../Catalog/libcatalog.a \
+		../../catalog/libcatalog.a \
 		../../Executor/libexecutor.a \
 		../../common/libcommon.a \
 		../../utility/libutility.a \

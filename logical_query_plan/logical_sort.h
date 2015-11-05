@@ -32,7 +32,7 @@
 #include <string.h>
 #include <vector>
 #include <iostream>
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "..//physical_query_plan/BlockStreamSortIterator.h"

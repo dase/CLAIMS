@@ -6,7 +6,8 @@
  */
 
 #include "LogicalCSBIndexBuilding.h"
-#include "../Catalog/Catalog.h"
+
+#include "../catalog/catalog.h"
 #include "CSBIndexBuilding.h"
 
 LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(ProjectionID projection_id, Attribute index_attr, std::string index_name)

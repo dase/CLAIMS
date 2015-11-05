@@ -44,7 +44,8 @@ libcommon_a_SOURCES = \
 	hashtable.cpp 		hashtable.h \
 	ids.cpp 			ids.h \
 	rename.h			error_define.h \
-	error_no.h			error_no.cpp
+	error_no.h			error_no.cpp \
+	memory.h
 
-SUBDIRS = Block log Schema types Expression serialization
-DIST_SUBDIRS = Block log Schema types Expression serialization
+SUBDIRS = Block file_handle log Schema types Expression serialization
+DIST_SUBDIRS = Block file_handle log Schema types Expression serialization

@@ -11,6 +11,7 @@
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Sort_test.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/Expanded_iterators_test.cpp"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/Test/in_iterator_test.cpp"
+#include "../catalog/Test/statistic_manager_test.cpp"
 
 #include "../Executor/Test/Executor.cpp"
 
@@ -24,13 +25,11 @@
 #include "../common/Schema/Test/VariableSchema_test.cpp"
 #include "../common/Schema/Test/generateVariableData_test.cpp"
 
-#include "../Catalog/Test/statistic_manager_test.cpp"
-
 #include "../Daemon/Test/daemon_test.h"
 
 #include "../Client/Test/TestSeverClient.cpp"
 
-#include "../Loader/Test/test_load.cpp"
+#include "../loader/Test/test_load.cpp"
 
 #include "../IndexManager/Test/test_csb_classes.cpp"
 #include "../IndexManager/Test/test_csb_indexing.cpp"

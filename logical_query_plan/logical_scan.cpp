@@ -31,7 +31,8 @@
 #include <stdio.h>
 #include <glog/logging.h>
 #include <iostream>
-#include "../Catalog/Catalog.h"
+
+#include "../catalog/catalog.h"
 #include "../IDsGenerator.h"
 #include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 #include "../physical_query_plan/ExpandableBlockStreamProjectionScan.h"

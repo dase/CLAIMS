@@ -13,7 +13,7 @@
 #include <time.h>
 
 int gettimeofday(struct timeval *tv, struct timezone *tz);
-static double get_current_ms()
+static double GetCurrentMs()
 {
 	timeval t_start;
 	gettimeofday(&t_start,NULL);

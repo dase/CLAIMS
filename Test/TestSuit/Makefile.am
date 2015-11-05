@@ -15,8 +15,8 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../libtest.a \
-		../../Catalog/libcatalog.a \
-		../../Loader/libloader.a \
+		../../catalog/libcatalog.a \
+		../../loader/libloader.a \
 		../../logical_query_plan/liblogicalqueryplan.a \
 		../../BlockStreamIterator/libblockstreamiterator.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \

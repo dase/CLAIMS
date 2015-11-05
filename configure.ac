@@ -9,15 +9,17 @@ AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
-  Catalog/Makefile
-  Catalog/Test/Makefile
-  Catalog/stat/Makefile 
+  catalog/Makefile
+  catalog/Test/Makefile
+  catalog/stat/Makefile 
   Client/Makefile 
   Client/Test/Makefile 
   Client/json/Makefile
   common/Makefile 
   common/Block/Makefile 
   common/Expression/Makefile 
+  common/file_handle/Makefile
+  common/file_handle/test/Makefile
   common/log/Makefile
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
@@ -30,8 +32,8 @@ AC_CONFIG_FILES([
   Executor/Test/Makefile 
   IndexManager/Makefile
   IndexManager/Test/Makefile
-  Loader/Makefile
-  Loader/Test/Makefile
+  loader/Makefile
+  loader/test/Makefile
   common/serialization/Makefile 
   physical_query_plan/Makefile
   logical_query_plan/Makefile 

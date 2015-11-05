@@ -95,21 +95,20 @@ void* Daemon::worker(void* para) {
     remote_command rc = Daemon::getInstance()->getRemoteCommand();
 
     // assume all commands are sql commands.
-    executed_result result;
-    result.fd = rc.socket_fd;
-    result.status = true;
+    ExecutedResult result;
+    result.fd_ = rc.socket_fd;
+    result.status_ = true;
 
     // result is a pointer, which now is NULL and should be assigned in
     // function.
 
-    ClientListener::checkFdValid(result.fd);
+    ClientListener::checkFdValid(result.fd_);
 
-    Executing::run_sql(rc.cmd, result.result, result.status, result.error_info,
-                       result.info, result.fd);
+    Executing::run_sql(rc.cmd, &result);
     ClientLogging::log(
         "after running sql, the result is : status-%d, err-%s, info-%s",
-        result.status, result.error_info.c_str(), result.info.c_str());
-    ClientListener::checkFdValid(result.fd);
+        result.status_, result.error_info_.c_str(), result.info_.c_str());
+    ClientListener::checkFdValid(result.fd_);
     printf("-Worker add result into the queue!\n");
     Daemon::getInstance()->addExecutedResult(result);
   }
@@ -134,10 +133,10 @@ remote_command Daemon::getRemoteCommand() {
   return ret;
 }
 
-executed_result Daemon::getExecutedResult() {
+ExecutedResult Daemon::getExecutedResult() {
   semaphore_result_queue_.wait();
   LOG(INFO) << "semaphore_result_queue_ waited" << endl;
-  executed_result ret;
+  ExecutedResult ret;
   lock_->acquire();
   ret = executed_result_queue_.front();
   executed_result_queue_.pop_front();
@@ -146,7 +145,7 @@ executed_result Daemon::getExecutedResult() {
   return ret;
 }
 
-void Daemon::addExecutedResult(const executed_result& item) {
+void Daemon::addExecutedResult(const ExecutedResult& item) {
   lock_->acquire();
   executed_result_queue_.push_back(item);
   LOG(INFO) << "pushed result into result queue" << endl;

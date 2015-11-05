@@ -17,51 +17,63 @@
 #endif
 #include "../data_type.h"
 
-
 class Schema {
-public:
-	enum schema_type{fixed,varaible};
-	Schema(const std::vector<column_type>& columns);
-	Schema(const Schema& r);
-	Schema(){};
-	virtual ~Schema();
-	virtual unsigned getTupleMaxSize()const=0;
+ public:
+  enum schema_type { fixed, varaible };
+  Schema(const std::vector<column_type>& columns);
+  Schema(const Schema& r);
+  Schema(){};
+  virtual ~Schema();
+  virtual unsigned getTupleMaxSize() const = 0;
 
-	inline virtual unsigned getTupleActualSize(void* tuple) const=0;
-	virtual void getColumnValue(unsigned index,void* src, void* desc)=0;
+  inline virtual unsigned getTupleActualSize(void* tuple) const = 0;
+  virtual void getColumnValue(unsigned index, void* src, void* desc) = 0;
 
-	/*get the offset of the specified tuple
-	 * Note this function is only applicable for the fixed schema, since the offset
-	 * for a given column in variable schema could varies from tuples to tuples.
-	 */
-	virtual int getColumnOffset(unsigned index)const =0;
+  /*get the offset of the specified tuple
+   * Note this function is only applicable for the fixed schema, since the
+   * offset
+   * for a given column in variable schema could varies from tuples to tuples.
+   */
+  virtual int getColumnOffset(unsigned index) const = 0;
 
-	inline virtual void* getColumnAddess(const unsigned& index,const void* const & column_start) const __attribute__((always_inline)) =0;
-	inline virtual unsigned copyTuple(void* src, void* desc) const =0;
-	unsigned getncolumns()const;
-	virtual Schema* getSubSchema(std::vector<unsigned>)const=0;
-	virtual Schema* duplicateSchema()const=0;
-	inline const column_type& getcolumn(const unsigned index) const {
-			return columns[index];
-		}
-	virtual schema_type getSchemaType()const=0;
-	virtual void addColumn(column_type ct,unsigned size){};
-	virtual void displayTuple(const void* tuple_start_address,const char* spliter="|")const;
-	virtual void toValue(std::string text_tuple, void* binary_tuple, const char attr_separator){};
-	inline virtual void showAccum_off(){};
-	bool hasSameSchema(Schema* schema);
-	std::vector<column_type> columns;
+  inline virtual void* getColumnAddess(const unsigned& index,
+                                       const void* const& column_start) const
+      __attribute__((always_inline)) = 0;
+  inline virtual unsigned copyTuple(void* src, void* desc) const = 0;
+  unsigned getncolumns() const;
+  virtual Schema* getSubSchema(std::vector<unsigned>) const = 0;
+  virtual Schema* duplicateSchema() const = 0;
+  inline const column_type& getcolumn(const unsigned index) const {
+    return columns[index];
+  }
+  virtual schema_type getSchemaType() const = 0;
+  virtual void addColumn(column_type ct, unsigned size){};
+  virtual void displayTuple(const void* tuple_start_address,
+                            const char* spliter = "|") const;
 
-	virtual std::string getColumnValue(const void *tuple_start_address, int i);
-protected:
+  /**
+   * @brief Method description: transform a string into memory according schema
+   * @param
+   * @return  the index of columns that have warning
+   * @details   (additional)
+   */
+  virtual vector<unsigned> toValue(std::string text_tuple, void* binary_tuple,
+                                   const char attr_separator) {
+    assert(false);
+  }
+  inline virtual void showAccum_off(){};
+  bool hasSameSchema(Schema* schema);
+  std::vector<column_type> columns;
 
-private:
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive &ar, const unsigned int version)
-	{
-		ar & columns;
-	}
+  virtual std::string getColumnValue(const void* tuple_start_address, int i);
+
+ protected:
+ private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar& columns;
+  }
 };
 
 #endif /* SCHEMA_H_ */

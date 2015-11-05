@@ -38,7 +38,7 @@
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/qnode.h"
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamProjectIterator.h"
 

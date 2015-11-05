@@ -65,10 +65,17 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(EParamInvalid, "parameter of function is invalid");
   DefineErrorAndMessage(ECloseDiskFileFail, "failed to close disk file");
   DefineErrorAndMessage(ECloseHdfsFileFail, "failed to close hdfs file");
+  DefineErrorAndMessage(EFileEOF, "reached the end of file");
+
+  DefineErrorAndMessage(ENoMemory, "failed to allocate memory from system");
 
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(kNoTableFound, "No such table found");
+  DefineErrorAndMessage(EInvalidInsertData, "data to insert is invalid");
 
+  /* errorno for loader -2001 ~ -3000  */
+  DefineErrorAndMessage(EUnbindEntireProjectionFail,
+                        "failed to unbind entire projection");
   /* errorno for codegen -3001 ~ -4000 */
   DefineErrorAndMessage(kTestError, "test it is error ");
 

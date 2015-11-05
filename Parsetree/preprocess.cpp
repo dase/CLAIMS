@@ -6,9 +6,7 @@
 #include <vector>
 #include<malloc.h>
 #include<string.h>
-#include "../Catalog/Attribute.h"
-#include "../Catalog/Catalog.h"
-#include "../Catalog/table.h"
+#include "../catalog/table.h"
 #include "../common/Comparator.h"
 #include "../common/Logging.h"
 #include "../logical_query_plan/logical_operator.h"
@@ -17,6 +15,8 @@
 #include "../common/Logging.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
 
+#include "../catalog/attribute.h"
+#include "../catalog/catalog.h"
 #include "../logical_query_plan/logical_aggregation.h"
 #include "../logical_query_plan/logical_equal_join.h"
 #include "../logical_query_plan/logical_filter.h"

@@ -28,8 +28,10 @@
 #ifndef LOGICAL_QUERY_PLAN_PLAN_PARTITIONER_H_
 #define LOGICAL_QUERY_PLAN_PLAN_PARTITIONER_H_
 #include <vector>
-#include "../Catalog/Partitioner.h"
+#include "../catalog/partitioner.h"
 #include "../logical_query_plan/plan_partition_info.h"
+
+using namespace claims::catalog;
 
 namespace claims {
 namespace logical_query_plan {
@@ -44,8 +46,8 @@ namespace logical_query_plan {
  */
 class PlanPartitioner {
  public:
-  PlanPartitioner() : partition_func_(0){};
-  PlanPartitioner(const Partitioner& partitoiner);
+  PlanPartitioner() : partition_func_(0) {}
+  explicit PlanPartitioner(const Partitioner& partitoiner);
   PlanPartitioner(const PlanPartitioner&);
   virtual ~PlanPartitioner();
   bool HasSamePartitionLocation(const PlanPartitioner& target) const;

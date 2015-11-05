@@ -7,6 +7,7 @@
 
 #include "Environment.h"
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 #include <libconfig.h++>
 #include <iostream>
@@ -20,6 +21,7 @@
 #include "common/Expression/queryfunc.h"
 #include "common/error_define.h"
 #include "codegen/CodeGenerator.h"
+#include "catalog/catalog.h"
 
 using namespace claims::common;
 

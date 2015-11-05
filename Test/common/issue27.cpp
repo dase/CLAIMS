@@ -9,9 +9,9 @@
 #define ISSUE27_CPP_
 #include "../../Environment.h"
 
-#include "../../Catalog/table.h"
+#include "../../catalog/table.h"
 
-#include "../../Loader/Hdfsloader.h"
+#include "../../loader/Hdfsloader.h"
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 

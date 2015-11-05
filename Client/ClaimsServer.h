@@ -7,6 +7,7 @@
 
 #ifndef CLAIMSSERVER_H_
 #define CLAIMSSERVER_H_
+
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -18,7 +19,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cstdio>
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../Daemon/Daemon.h"
 #include "ClientResponse.h"
 #include "json/json.h"
@@ -46,7 +47,7 @@ private:
 	static void* receiveHandler(void *);
 	static void* sendHandler(void *);
 
-	static void sendJsonPacket(ClientResponse &cr, executed_result &res);
+	static void sendJsonPacket(ClientResponse &cr, ExecutedResult &res);
 	static void generateSqlStmt(int type, char *&buf);
 
 	bool isFull() const {

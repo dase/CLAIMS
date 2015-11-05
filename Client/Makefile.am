@@ -12,7 +12,7 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = 	../Catalog/libcatalog.a \
+LDADD = 	../catalog/libcatalog.a \
 		../Daemon/libdaemon.a \
 		../common/Block/libblock.a \
 		../common/Schema/libschema.a \

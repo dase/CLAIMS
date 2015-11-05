@@ -8,10 +8,10 @@
 #ifndef LOGICALINDEXSCAN_H_
 #define LOGICALINDEXSCAN_H_
 
+#include "../catalog/table.h"
 #include "../logical_query_plan/logical_operator.h"
 #include "../common/ids.h"
 #include "IndexScanIterator.h"
-#include "../Catalog/table.h"
 using namespace claims::logical_query_plan;
 
 class LogicalIndexScan :public LogicalOperator{

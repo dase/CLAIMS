@@ -31,8 +31,8 @@
 
 #include <vector>
 #include "../common/ids.h"
-#include "../Catalog/Attribute.h"
-#include "../Catalog/table.h"
+#include "../catalog/attribute.h"
+#include "../catalog/table.h"
 #include "../logical_query_plan/logical_operator.h"
 
 namespace claims {

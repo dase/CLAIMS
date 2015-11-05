@@ -8,8 +8,8 @@
 //#ifndef TEST_NEW
 //#define TEST_NEW
 //#include "../../Environment.h"
-//#include "../../Catalog/table.h"
-//#include "../../Loader/Hdfsloader.h"
+//#include "../../catalog/table.h"
+//#include "../../loader/Hdfsloader.h"
 //#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
 //#include "../../logical_query_plan/logical_aggregation.h"
 //#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"

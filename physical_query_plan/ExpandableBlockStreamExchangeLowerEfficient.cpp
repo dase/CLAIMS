@@ -16,18 +16,20 @@
 #include "../../Environment.h"
 #include "../../utility/ThreadSafe.h"
 #include "../../utility/rdtsc.h"
-ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient(
-    State state)
+ExpandableBlockStreamExchangeLowerEfficient::
+    ExpandableBlockStreamExchangeLowerEfficient(State state)
     : state_(state) {
   logging_ = new ExchangeIteratorEagerLowerLogging();
   assert(state.partition_schema_.partition_key_index < 100);
 }
 
-ExpandableBlockStreamExchangeLowerEfficient::ExpandableBlockStreamExchangeLowerEfficient() {
+ExpandableBlockStreamExchangeLowerEfficient::
+    ExpandableBlockStreamExchangeLowerEfficient() {
   logging_ = new ExchangeIteratorEagerLowerLogging();
 }
 
-ExpandableBlockStreamExchangeLowerEfficient::~ExpandableBlockStreamExchangeLowerEfficient() {
+ExpandableBlockStreamExchangeLowerEfficient::
+    ~ExpandableBlockStreamExchangeLowerEfficient() {
   // TODO Auto-generated destructor stub
   delete logging_;
   delete state_.schema_;
@@ -42,69 +44,76 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Open(const PartitionOffset&) {
   state_.child_->Open(state_.partition_offset_);
 
   nuppers_ = state_.upper_id_list_.size();
-  partition_function_ = PartitionFunctionFactory::createBoostHashFunction(
-      nuppers_);
+  partition_function_ =
+      PartitionFunctionFactory::createBoostHashFunction(nuppers_);
   socket_fd_upper_list = new int[nuppers_];
 
-  /** initialize the block stream that is used to accumulate the block obtained by calling child iterator's next() **/
-  block_stream_for_asking_ = BlockStreamBase::createBlock(state_.schema_,
-                                                          state_.block_size_);
+  /** initialize the block stream that is used to accumulate the block obtained
+   * by calling child iterator's next() **/
+  block_stream_for_asking_ =
+      BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
 
-  /** buffer stores the tuples received from child iterator. Note the tuples are partitioned and stored. **/
+  /** buffer stores the tuples received from child iterator. Note the tuples are
+   * partitioned and stored. **/
   partitioned_data_buffer_ = new PartitionedBlockBuffer(
       nuppers_, block_stream_for_asking_->getSerializedBlockSize());
 
-  /** the temporary block that is used to transfer a block from partitioned data buffer into sending buffer.**/
-  block_for_buffer_ = new BlockContainer(
-      block_stream_for_asking_->getSerializedBlockSize());
+  /** the temporary block that is used to transfer a block from partitioned data
+   * buffer into sending buffer.**/
+  block_for_buffer_ =
+      new BlockContainer(block_stream_for_asking_->getSerializedBlockSize());
 
-  /** Initialize the buffer that is used to hold the blocks being sent. There are nuppers block, each corresponding
+  /** Initialize the buffer that is used to hold the blocks being sent. There
+   * are nuppers block, each corresponding
    * to a merger. **/
   sending_buffer_ = new PartitionedBlockContainer(
       nuppers_, block_stream_for_asking_->getSerializedBlockSize());
 
   /** Initialized the temporary block to hold the serialized block stream. **/
-  block_for_serialization_ = new Block(
-      block_stream_for_asking_->getSerializedBlockSize());
+  block_for_serialization_ =
+      new Block(block_stream_for_asking_->getSerializedBlockSize());
 
-  /** Initialize the blocks that are used to accumulate the tuples from child so that the insertion to the buffer
+  /** Initialize the blocks that are used to accumulate the tuples from child so
+   * that the insertion to the buffer
    * can be conducted at the granularity of blocks rather than tuples.
    */
-  partitioned_block_stream_ = new BlockStreamBase*[nuppers_];
+  partitioned_block_stream_ = new BlockStreamBase* [nuppers_];
   for (unsigned i = 0; i < nuppers_; i++) {
-    partitioned_block_stream_[i] = BlockStreamBase::createBlock(
-        state_.schema_, state_.block_size_);
+    partitioned_block_stream_[i] =
+        BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   }
 
   /** connect to all the mergers **/
   for (unsigned upper_offset = 0; upper_offset < state_.upper_id_list_.size();
-      upper_offset++) {
-
+       upper_offset++) {
     logging_->log("[%ld,%d] try to connect to upper (%d) %s\n",
                   state_.exchange_id_, state_.partition_offset_, upper_offset,
                   state_.upper_id_list_[upper_offset]);
     if (ConnectToUpper(ExchangeID(state_.exchange_id_, upper_offset),
                        state_.upper_id_list_[upper_offset],
-                       socket_fd_upper_list[upper_offset], logging_) != true) return false;
+                       socket_fd_upper_list[upper_offset], logging_) != true)
+      return false;
     printf("[%ld,%d] connected to upper [%d,%d] on Node %d\n",
            state_.exchange_id_, state_.partition_offset_, state_.exchange_id_,
            upper_offset, state_.upper_id_list_[upper_offset]);
   }
 
   /** create the sender thread **/
-//	if (true == g_thread_pool_used) {
-//		Environment::getInstance()->getThreadPool()->add_task(sender, this);
-//	}
-//	else {
+  //	if (true == g_thread_pool_used) {
+  //		Environment::getInstance()->getThreadPool()->add_task(sender,
+  // this);
+  //	}
+  //	else {
   int error;
   error = pthread_create(&sender_tid, NULL, sender, this);
   if (error != 0) {
     logging_->elog(
-        "Failed to create the sender thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
+        "Failed to create the sender "
+        "thread>>>>>>>>>>>>>>>>>>>>>>>>>>>>@@#@#\n\n.");
     return false;
   }
-//	}
-//	pthread_create(&debug_tid,NULL,debug,this);
+  //	}
+  //	pthread_create(&debug_tid,NULL,debug,this);
   /*debug*/
   return true;
 }
@@ -114,25 +123,29 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Next(BlockStreamBase*) {
   while (true) {
     block_stream_for_asking_->setEmpty();
     if (state_.child_->Next(block_stream_for_asking_)) {
-      /** if a blocks is obtained from child, we partition the tuples in the block. **/
+      /** if a blocks is obtained from child, we partition the tuples in the
+       * block. **/
       if (state_.partition_schema_.isHashPartition()) {
         BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
             block_stream_for_asking_->createIterator();
         while ((tuple_from_child = traverse_iterator->nextTuple()) > 0) {
-          /** for each tuple in the newly obtained block, insert the tuple to one partitioned block according to the
+          /** for each tuple in the newly obtained block, insert the tuple to
+           * one partitioned block according to the
            * partition hash value**/
-          const unsigned partition_id = hash(
-              tuple_from_child, state_.schema_,
-              state_.partition_schema_.partition_key_index, nuppers_);
+          const unsigned partition_id =
+              hash(tuple_from_child, state_.schema_,
+                   state_.partition_schema_.partition_key_index, nuppers_);
 
           /** calculate the tuple size for the current tuple **/
-          const unsigned bytes = state_.schema_->getTupleActualSize(
-              tuple_from_child);
+          const unsigned bytes =
+              state_.schema_->getTupleActualSize(tuple_from_child);
 
           /** insert the tuple into the corresponding partitioned block **/
           while (!(tuple_in_cur_block_stream =
-              partitioned_block_stream_[partition_id]->allocateTuple(bytes))) {
-            /** if the destination block is full, we insert the block into the buffer **/
+                       partitioned_block_stream_[partition_id]->allocateTuple(
+                           bytes))) {
+            /** if the destination block is full, we insert the block into the
+             * buffer **/
 
             partitioned_block_stream_[partition_id]->serialize(
                 *block_for_serialization_);
@@ -140,27 +153,28 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Next(BlockStreamBase*) {
                 block_for_serialization_, partition_id);
             partitioned_block_stream_[partition_id]->setEmpty();
           }
-          /** thread arriving here means that the space for the tuple is successfully allocated, so we copy the tuple **/
+          /** thread arriving here means that the space for the tuple is
+           * successfully allocated, so we copy the tuple **/
           state_.schema_->copyTuple(tuple_from_child,
                                     tuple_in_cur_block_stream);
         }
-      }
-      else if (state_.partition_schema_.isBoardcastPartition()) {
+      } else if (state_.partition_schema_.isBoardcastPartition()) {
         block_stream_for_asking_->serialize(*block_for_serialization_);
         for (unsigned i = 0; i < nuppers_; i++) {
           partitioned_data_buffer_->insertBlockToPartitionedList(
               block_for_serialization_, i);
         }
       }
-    }
-    else {
-      /* the child iterator is exhausted. We add the cur block steram block into the buffer*/
+    } else {
+      /* the child iterator is exhausted. We add the cur block steram block into
+       * the buffer*/
       for (unsigned i = 0; i < nuppers_; i++) {
         partitioned_block_stream_[i]->serialize(*block_for_serialization_);
         partitioned_data_buffer_->insertBlockToPartitionedList(
             block_for_serialization_, i);
 
-        /* The following lines send an empty block to the upper, indicating that all
+        /* The following lines send an empty block to the upper, indicating that
+         * all
          * the data from current sent has been transmit to the uppers.
          */
         if (!partitioned_block_stream_[i]->Empty()) {
@@ -172,7 +186,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Next(BlockStreamBase*) {
       }
 
       /*
-       * waiting until all the block in the buffer has been transformed to the uppers.
+       * waiting until all the block in the buffer has been transformed to the
+       * uppers.
        */
       logging_->log("Waiting until all the blocks in the buffer is sent!");
       while (!partitioned_data_buffer_->isEmpty()) {
@@ -180,7 +195,8 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Next(BlockStreamBase*) {
       }
 
       /*
-       * waiting until all the uppers send the close notification which means that
+       * waiting until all the uppers send the close notification which means
+       * that
        * blocks in the uppers' socket buffer have all been consumed.
        */
       logging_->log("Waiting for close notification!");
@@ -193,12 +209,13 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Next(BlockStreamBase*) {
   }
 }
 
-//unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
-//	const void* hash_key_address=state.schema->getColumnAddess(state.partition_key_index,value);
-//	return state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,nuppers);
+// unsigned ExpandableBlockStreamExchangeLowerEfficient::hash(void* value){
+//	const void*
+// hash_key_address=state.schema->getColumnAddess(state.partition_key_index,value);
+//	return
+// state.schema->getcolumn(state.partition_key_index).operate->getPartitionValue(hash_key_address,nuppers);
 //}
 bool ExpandableBlockStreamExchangeLowerEfficient::Close() {
-
   cancelSenderThread();
 
   state_.child_->Close();
@@ -222,7 +239,7 @@ bool ExpandableBlockStreamExchangeLowerEfficient::Close() {
 
 void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg) {
   ExpandableBlockStreamExchangeLowerEfficient* Pthis =
-      (ExpandableBlockStreamExchangeLowerEfficient*) arg;
+      (ExpandableBlockStreamExchangeLowerEfficient*)arg;
   Pthis->logging_->log("[%ld,%d] sender thread created!",
                        Pthis->state_.exchange_id_,
                        Pthis->state_.partition_offset_);
@@ -233,17 +250,16 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg) {
       pthread_testcancel();
       bool consumed = false;
       BlockContainer* block_for_sending;
-      int partition_id = Pthis->sending_buffer_->getBlockForSending(
-          block_for_sending);
+      int partition_id =
+          Pthis->sending_buffer_->getBlockForSending(block_for_sending);
       if (partition_id >= 0) {
         pthread_testcancel();
         if (block_for_sending->GetRestSize() > 0) {
           int recvbytes;
-          recvbytes = send(
-              Pthis->socket_fd_upper_list[partition_id],
-              (char*) block_for_sending->getBlock()
-                  + block_for_sending->GetCurSize(),
-              block_for_sending->GetRestSize(), MSG_DONTWAIT);
+          recvbytes = send(Pthis->socket_fd_upper_list[partition_id],
+                           (char*)block_for_sending->getBlock() +
+                               block_for_sending->GetCurSize(),
+                           block_for_sending->GetRestSize(), MSG_DONTWAIT);
           if (recvbytes == -1) {
             if (errno == EAGAIN) {
               continue;
@@ -252,58 +268,66 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg) {
                    Pthis->socket_fd_upper_list[partition_id]);
             Pthis->logging_->elog("Send error!\n");
             break;
-          }
-          else {
+          } else {
             if (recvbytes < block_for_sending->GetRestSize()) {
               /* the block is not entirely sent. */
               Pthis->logging_->log("**not entire sent! bytes=%d, rest size=%d",
                                    recvbytes, block_for_sending->GetRestSize());
               block_for_sending->IncreaseActualSize(recvbytes);
               continue;
-            }
-            else {
+            } else {
               /** the block is sent in entirety. **/
               block_for_sending->IncreaseActualSize(recvbytes);
               ++Pthis->sendedblocks;
               // can not be executed in case of abort in glog in this phase
               // one of the following should be executed after rewriting
-//              Pthis->logging_->log(
-//                  "[%llu,%u]Send the %u block(bytes=%d, rest size=%d) to [%d]",
-//                  Pthis->state_.exchange_id_, Pthis->state_.partition_offset_,
-//                  Pthis->sendedblocks, recvbytes,
-//                  block_for_sending->GetRestSize(),
-//                  Pthis->state_.upper_id_list_[partition_id]);
-//              LOG(INFO) << "[ExchangeEagerLower]: " << "["
-//                  << Pthis->state_.exchange_id_ << ","
-//                  << Pthis->state_.partition_offset_ << "]Send the "
-//                  << Pthis->sendedblocks << " block(bytes=" << recvbytes
-//                  << ", rest size=" << block_for_sending->GetRestSize()
-//                  << ") to [" << Pthis->state_.upper_id_list_[partition_id]
-//                  << "]" << std::endl;
-//              cout << "[ExchangeEagerLower]: " << "["
-//                  << Pthis->state_.exchange_id_ << ","
-//                  << Pthis->state_.partition_offset_ << "]Send the "
-//                  << Pthis->sendedblocks << " block(bytes=" << recvbytes
-//                  << ", rest size=" << block_for_sending->GetRestSize()
-//                  << ") to [" << Pthis->state_.upper_id_list_[partition_id]
-//                  << "]" << std::endl;
+              //              Pthis->logging_->log(
+              //                  "[%llu,%u]Send the %u block(bytes=%d, rest
+              //                  size=%d) to [%d]",
+              //                  Pthis->state_.exchange_id_,
+              //                  Pthis->state_.partition_offset_,
+              //                  Pthis->sendedblocks, recvbytes,
+              //                  block_for_sending->GetRestSize(),
+              //                  Pthis->state_.upper_id_list_[partition_id]);
+              //              LOG(INFO) << "[ExchangeEagerLower]: " << "["
+              //                  << Pthis->state_.exchange_id_ << ","
+              //                  << Pthis->state_.partition_offset_ << "]Send
+              //                  the "
+              //                  << Pthis->sendedblocks << " block(bytes=" <<
+              //                  recvbytes
+              //                  << ", rest size=" <<
+              //                  block_for_sending->GetRestSize()
+              //                  << ") to [" <<
+              //                  Pthis->state_.upper_id_list_[partition_id]
+              //                  << "]" << std::endl;
+              //              cout << "[ExchangeEagerLower]: " << "["
+              //                  << Pthis->state_.exchange_id_ << ","
+              //                  << Pthis->state_.partition_offset_ << "]Send
+              //                  the "
+              //                  << Pthis->sendedblocks << " block(bytes=" <<
+              //                  recvbytes
+              //                  << ", rest size=" <<
+              //                  block_for_sending->GetRestSize()
+              //                  << ") to [" <<
+              //                  Pthis->state_.upper_id_list_[partition_id]
+              //                  << "]" << std::endl;
               consumed = true;
             }
           }
-        }
-        else {
+        } else {
           consumed = true;
         }
-      }
-      else {
-        /* "partition_id<0" means that block_for_sending is empty, so we get one block from the buffer into the block_for_sending_*/
+      } else {
+        /* "partition_id<0" means that block_for_sending is empty, so we get one
+         * block from the buffer into the block_for_sending_*/
         unsigned index = Pthis->partitioned_data_buffer_->getBlock(
             *Pthis->block_for_buffer_);
         Pthis->block_for_buffer_->reset();
         Pthis->sending_buffer_->insert(index, Pthis->block_for_buffer_);
       }
       if (consumed == true) {
-        /* In the current loop, we have sent an entire block to the receiver, so we should get a new block
+        /* In the current loop, we have sent an entire block to the receiver, so
+         * we should get a new block
          * into the block_for_sender_*/
         pthread_testcancel();
         if (Pthis->partitioned_data_buffer_->getBlock(*Pthis->block_for_buffer_,
@@ -311,9 +335,9 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg) {
           Pthis->block_for_buffer_->reset();
           Pthis->sending_buffer_->insert(partition_id,
                                          Pthis->block_for_buffer_);
-        }
-        else {
-          /**TODO: test the effort of the following sleeping statement and consider
+        } else {
+          /**TODO: test the effort of the following sleeping statement and
+           * consider
            * whether it should be replaced by conditioned wait **/
           usleep(1);
         }
@@ -325,7 +349,7 @@ void* ExpandableBlockStreamExchangeLowerEfficient::sender(void* arg) {
 }
 void* ExpandableBlockStreamExchangeLowerEfficient::debug(void* arg) {
   ExpandableBlockStreamExchangeLowerEfficient* Pthis =
-      (ExpandableBlockStreamExchangeLowerEfficient*) arg;
+      (ExpandableBlockStreamExchangeLowerEfficient*)arg;
   while (true) {
     usleep(100000);
   }

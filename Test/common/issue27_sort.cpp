@@ -9,9 +9,9 @@
 #define ISSUE27_SORT_CPP_
 #include "../../Environment.h"
 
-#include "../../Catalog/table.h"
+#include "../../catalog/table.h"
 
-#include "../../Loader/Hdfsloader.h"
+#include "../../loader/Hdfsloader.h"
 
 #include "../../logical_query_plan/Scan.h"
 #include "../../logical_query_plan/Filter.h"

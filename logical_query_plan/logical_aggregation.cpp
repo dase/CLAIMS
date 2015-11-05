@@ -37,7 +37,7 @@
 #include "../IDsGenerator.h"
 #include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"
 #include "../physical_query_plan/BlockStreamExpander.h"
-#include "../Catalog/stat/StatManager.h"
+#include "../catalog/stat/StatManager.h"
 #include "../Config.h"
 #include <glog/logging.h>
 namespace claims {

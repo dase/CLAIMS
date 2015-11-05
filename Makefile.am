@@ -37,14 +37,15 @@ LDADD =  \
 	physical_query_plan/libphysicalqueryplan.a \
 	storage/libstorage.a \
 	Resource/libresouce.a \
-	Catalog/libcatalog.a \
-	Catalog/Test/libtest.a \
-	Catalog/stat/libstat.a \
-	Loader/libloader.a \
-	Loader/Test/libtest.a \
+	catalog/libcatalog.a \
+	catalog/stat/libstat.a \
+	loader/libloader.a \
+	loader/test/libtest.a \
 	common/libcommon.a \
 	common/Block/libblock.a \
 	common/Expression/libexpression.a \
+	common/file_handle/libfilehandle.a \
+	common/file_handle/test/libtest.a \
 	common/log/liblog.a \
 	common/Schema/libschema.a \
 	common/Schema/Test/libtest.a \
@@ -96,10 +97,10 @@ test_SOURCES = Test/gtest_main.cpp\
 				
 
 
-SUBDIRS=  Catalog Client common Daemon Executor IndexManager\
-Loader physical_query_plan logical_query_plan Parsetree Resource \
+SUBDIRS=  catalog Client common Daemon Executor IndexManager\
+loader physical_query_plan logical_query_plan Parsetree Resource \
 storage Test utility codegen
 
-DIST_SUBDIRS =  Catalog Client common Daemon Executor IndexManager\
-Loader physical_query_plan logical_query_plan Parsetree Resource \
+DIST_SUBDIRS =  catalog Client common Daemon Executor IndexManager\
+loader physical_query_plan logical_query_plan Parsetree Resource \
 storage Test utility codegen

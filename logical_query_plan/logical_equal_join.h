@@ -29,7 +29,8 @@
 #ifndef LOGICAL_QUERY_PLAN_LOGICAL_EQUAL_JOIN_H_
 #define LOGICAL_QUERY_PLAN_LOGICAL_EQUAL_JOIN_H_
 #include <vector>
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
+#include "../catalog/partitioner.h"
 #include "../logical_query_plan/logical_operator.h"
 #include "../physical_query_plan/BlockStreamSortIterator.h"
 
@@ -71,7 +72,7 @@ class LogicalEqualJoin : public LogicalOperator {
    * @param  LogicalOperator* right_input
    */
   LogicalEqualJoin(std::vector<JoinPair>, LogicalOperator* left_input,
-            LogicalOperator* right_input);
+                   LogicalOperator* right_input);
   virtual ~LogicalEqualJoin();
   /**
    * @brief Method description: Get the child information.
@@ -127,9 +128,8 @@ class LogicalEqualJoin : public LogicalOperator {
    * @param const DataflowPartitioningDescriptor& partitoiner
    * @return bool
    */
-  bool CanOmitHashRepartition(
-      const std::vector<Attribute>& join_key_list,
-      const PlanPartitioner& partitoiner) const;
+  bool CanOmitHashRepartition(const std::vector<Attribute>& join_key_list,
+                              const PlanPartitioner& partitoiner) const;
   /**
    * @brief Method description:Check whether two partition_keys in the same
    * join_pair.
@@ -149,11 +149,13 @@ class LogicalEqualJoin : public LogicalOperator {
    * TODO(admin): Consider not only data size but also other factors, such as
    * parallelism, resource, etc.
    */
-  JoinPolicy DecideLeftOrRightRepartition(const PlanContext& left_dataflow,
-                                          const PlanContext& right_dataflow) const;
+  JoinPolicy DecideLeftOrRightRepartition(
+      const PlanContext& left_dataflow,
+      const PlanContext& right_dataflow) const;
 
   PlanPartitioner DecideOutputDataflowProperty(
-      const PlanContext& left_dataflow, const PlanContext& right_dataflow) const;
+      const PlanContext& left_dataflow,
+      const PlanContext& right_dataflow) const;
   void Print(int level = 0) const;
 
   /**

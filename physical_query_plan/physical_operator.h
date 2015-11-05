@@ -16,7 +16,7 @@
 
 #include "../physical_query_plan/BlockStreamIteratorBase.h"
 #include "../common/Block/BlockStream.h"
-#include "../Catalog/Partitioner.h"
+#include "../catalog/partitioner.h"
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif

@@ -19,40 +19,56 @@
 #define EXECUTED_RESULT_STATUS_OK 0
 #define EXECUTED_RESULT_STATUS_ERROR 1
 
-struct remote_command{
-	std::string cmd;
-	int socket_fd;
+struct remote_command {
+  std::string cmd;
+  int socket_fd;
 };
-struct executed_result{
-	bool status;	// ture is OK
-	int fd;
-	ResultSet* result;
-	std::string error_info;
-	std::string info;
+struct ExecutedResult {
+  bool status_;  // ture is OK
+  int fd_;
+  ResultSet* result_;
+  std::string error_info_;
+  std::string info_;
+  std::string warning_;
+  void SetError(string err_info, string warning_info = "") {
+    status_ = false;
+    result_ = NULL;
+    error_info_ = err_info;
+    info_ = "";
+    warning_ = warning_info;
+  }
+
+  void SetResult(string info, ResultSet* result) {
+    status_ = true;
+    result_ = result;
+    info_ = info;
+  }
+  void AppendWarning(string warning_info) { warning_ += warning_info; }
 };
 class Daemon {
-public:
+ public:
+  static Daemon* getInstance();
+  static void* worker(void*);
 
-	static Daemon* getInstance();
-	static void* worker(void*);
+  void addRemoteCommand(const remote_command& rc);
 
-	void addRemoteCommand(const remote_command& rc);
+  ExecutedResult getExecutedResult();
 
-	executed_result getExecutedResult();
-private:
-	Daemon();
-	virtual ~Daemon();
-	remote_command getRemoteCommand();
-	void addExecutedResult(const executed_result& item);
-private:
-	static Daemon* instance_;
-	std::list<remote_command> remote_command_queue_;
-	semaphore semaphore_command_queue_;
+ private:
+  Daemon();
+  virtual ~Daemon();
+  remote_command getRemoteCommand();
+  void addExecutedResult(const ExecutedResult& item);
 
-	std::list<executed_result> executed_result_queue_;
-	semaphore semaphore_result_queue_;
+ private:
+  static Daemon* instance_;
+  std::list<remote_command> remote_command_queue_;
+  semaphore semaphore_command_queue_;
 
-	static Lock* lock_;
+  std::list<ExecutedResult> executed_result_queue_;
+  semaphore semaphore_result_queue_;
+
+  static Lock* lock_;
 };
 
 #endif /* DAEMON_H_ */

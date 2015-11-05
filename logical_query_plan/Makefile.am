@@ -15,8 +15,8 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../logical_query_plan/liblogicalqueryplan.a \
-		../Catalog/libcatalog.a \
-		../Catalog/stat/libstat.a \
+		../catalog/libcatalog.a \
+		../catalog/stat/libstat.a \
 		../Schema/libschema.a \
 		../Resource/libresource.a \
 		../common/libcommon.a \

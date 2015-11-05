@@ -10,7 +10,7 @@
 #include <vector>
 #include "../common/ids.h"
 #include "../common/hash.h"
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
 #include "../logical_query_plan/plan_context.h"
 /**
  * This class describes what properties are required to the child data flow.

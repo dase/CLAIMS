@@ -32,10 +32,10 @@
 #include <iostream>
 #include <vector>
 
+#include "../catalog/stat/StatManager.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
-#include "../Catalog/stat/StatManager.h"
 #include "../physical_query_plan/BlockStreamExpander.h"
 #include "../physical_query_plan/BlockStreamJoinIterator.h"
 #include "../physical_query_plan/ExpandableBlockStreamExchangeEpoll.h"

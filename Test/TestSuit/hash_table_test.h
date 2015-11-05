@@ -17,7 +17,7 @@
 
 #include "../../common/Block/BlockStreamBuffer.h"
 
-#include "../../Catalog/Column.h"
+#include "../../catalog/Column.h"
 
 #include "../../physical_query_plan/BlockStreamIteratorBase.h"
 

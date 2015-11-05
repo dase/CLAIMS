@@ -15,9 +15,7 @@
 #include <string>
 #include <vector>
 #include<iostream>
-#include "../Catalog/Attribute.h"
-#include "../Catalog/Catalog.h"
-#include "../Catalog/table.h"
+#include "../catalog/table.h"
 #include "../common/Comparator.h"
 #include "../logical_query_plan/logical_operator.h"
 #include"sql_node_struct.h"
@@ -25,6 +23,8 @@
 #include "../common/Logging.h"
 #include <ostream>
 
+#include "../catalog/attribute.h"
+#include "../catalog/catalog.h"
 #include "../logical_query_plan/logical_aggregation.h"
 #include "../logical_query_plan/logical_equal_join.h"
 #include "../logical_query_plan/logical_filter.h"

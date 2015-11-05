@@ -29,7 +29,7 @@
 
 #include "../logical_query_plan/logical_sort.h"
 
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../physical_query_plan/BlockStreamExpander.h"

@@ -14,9 +14,9 @@
 #include "../../logical_query_plan/Filter.h"
 #include "../../logical_query_plan/logical_aggregation.h"
 
-#include "../../Catalog/ProjectionBinding.h"
+#include "../../catalog/projection_binding.h"
 
-#include "../../Catalog/stat/Analyzer.h"
+#include "../../catalog/stat/Analyzer.h"
 
 #include "../../utility/rdtsc.h"
 
