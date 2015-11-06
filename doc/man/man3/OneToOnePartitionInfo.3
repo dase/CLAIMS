@@ -1,0 +1,63 @@
+.TH "OneToOnePartitionInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+OneToOnePartitionInfo \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBPartitionInfo\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBOneToOnePartitionInfo\fP (\fBPartitionID\fP pid)"
+.br
+.ti -1c
+.RI "\fBOneToOnePartitionInfo\fP (\fBPartitionID\fP pid, string file_name)"
+.br
+.ti -1c
+.RI "\fBOneToOnePartitionInfo\fP (\fBPartitionID\fP pid, string file_name, unsigned number_of_blocks, unsigned number_of_tuples)"
+.br
+.ti -1c
+.RI "binding_mode \fBget_mode\fP () const "
+.br
+.ti -1c
+.RI "void \fBadd_one_block\fP ()"
+.br
+.ti -1c
+.RI "void \fBadd_mutiple_block\fP (unsigned number_of_new_blocks)"
+.br
+.ti -1c
+.RI "bool \fBbind_one_block\fP (BlockID blockid, NodeID target)"
+.br
+.ti -1c
+.RI "bool \fBbind_all_blocks\fP (NodeID target)"
+.br
+.ti -1c
+.RI "bool \fBis_all_blocks_bound\fP ()"
+.br
+.ti -1c
+.RI "void \fBunbind_all_blocks\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_colocated\fP (const \fBPartitionInfo\fP &) const "
+.br
+.ti -1c
+.RI "NodeID \fBget_location\fP () const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

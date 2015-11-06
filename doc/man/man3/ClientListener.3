@@ -1,0 +1,38 @@
+.TH "ClientListener" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ClientListener \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBClientListener\fP (int port)"
+.br
+.ti -1c
+.RI "void \fBconfigure\fP ()"
+.br
+.ti -1c
+.RI "void \fBshutdown\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBcheckFdValid\fP (int fd)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void ClientListener::configure ()"
+configure the socket parameter, bind to the specific ip/port startup the send/receive threads 
+.SS "void ClientListener::shutdown ()"
+Thread shut down the server when it receives 'shut down' command from a client\&. shut down the server 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

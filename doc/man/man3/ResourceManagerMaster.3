@@ -1,0 +1,47 @@
+.TH "ResourceManagerMaster" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ResourceManagerMaster \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBResourceManagerMasterActor\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "NodeID \fBRegisterNewSlave\fP (\fBNodeAddress\fP)"
+.br
+.ti -1c
+.RI "bool \fBRegisterDiskBuget\fP (NodeID report_node_id, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "bool \fBRegisterMemoryBuget\fP (NodeID report_node_id, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "std::vector< NodeID > \fBgetSlaveIDList\fP ()"
+.br
+.ti -1c
+.RI "bool \fBApplyDiskBuget\fP (NodeID target, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "bool \fBReturnDiskBuget\fP (NodeID target, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "bool \fBApplyMemoryBuget\fP (NodeID target, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "bool \fBReturnMemoryBuget\fP (NodeID target, unsigned size_in_mb)"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

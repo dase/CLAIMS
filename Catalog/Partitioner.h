@@ -261,7 +261,7 @@ public:
 	binding_mode get_binding_mode_()const{
 		return mode_;
 	}
-	PartitionFunction::partition_fashion getPartitionFashion()const;
+	PartitionFunction::PartitionStyle getPartitionFashion()const;
 	Attribute getPartitionKey()const;
 	PartitionFunction* getPartitionFunction()const;
 	ProjectionID getProejctionID()const;

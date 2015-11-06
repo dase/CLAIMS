@@ -1,0 +1,81 @@
+.TH "SchemaFix" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SchemaFix \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBSchema\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSchemaFix\fP (const std::vector< \fBcolumn_type\fP > &columns)"
+.br
+.ti -1c
+.RI "\fBSchemaFix\fP (const \fBSchemaFix\fP &r)"
+.br
+.ti -1c
+.RI "unsigned \fBgetTupleMaxSize\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetTupleActualSize\fP (void *tuple) const "
+.br
+.ti -1c
+.RI "unsigned \fBingetTupleActualSize\fP (void *tuple) const "
+.br
+.ti -1c
+.RI "unsigned \fBgetTupleSize\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBcopy\fP (void *src, void *desc) const "
+.br
+.ti -1c
+.RI "void \fBgetColumnValue\fP (unsigned index, void *src, void *desc)"
+.br
+.ti -1c
+.RI "void * \fBgetColumnAddess\fP (const unsigned &index, const void *const &column_start) const __attribute__((always_inline))"
+.br
+.ti -1c
+.RI "int \fBgetColumnOffset\fP (unsigned index) const "
+.br
+.ti -1c
+.RI "unsigned \fBcopyTuple\fP (void *src, void *desc) const "
+.br
+.ti -1c
+.RI "Schema::schema_type \fBgetSchemaType\fP () const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBgetSubSchema\fP (std::vector< unsigned >) const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBduplicateSchema\fP () const "
+.br
+.ti -1c
+.RI "void \fBaddColumn\fP (\fBcolumn_type\fP ct, unsigned size)"
+.br
+.ti -1c
+.RI "unsigned \fBgetColumnOffset\fP (unsigned index)"
+.br
+.ti -1c
+.RI "void \fBtoValue\fP (std::string text_tuple, void *binary_tuple, const char attr_separator)"
+.br
+.ti -1c
+.RI "void \fBshowAccum_off\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

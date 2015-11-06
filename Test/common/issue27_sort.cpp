@@ -13,14 +13,12 @@
 
 #include "../../Loader/Hdfsloader.h"
 
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/Sort.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
+#include "../../logical_operator/Scan.h"
+#include "../../logical_operator/Filter.h"
+#include "../../logical_operator/Sort.h"
+#include "../../logical_operator/EqualJoin.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/Aggregation.h"
 
 #include "../../common/types/NValue.hpp"
 
@@ -28,7 +26,8 @@
 
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-#include "../../LogicalQueryPlan/logical_project.h"
+#include "../../logical_operator/logical_project.h"
+#include "../../physical_operator/physical_aggregation.h"
 
 static void query_select_sort() {
 	/*
@@ -83,11 +82,11 @@ static void query_select_sort() {
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,sort,LogicalQueryPlanRoot::PRINT);
 
 	cout<<"performance is ok!"<<endl;
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 }
 static void get_orderby_att(vector<LogicalSort::OrderByAttr * >  & vo)

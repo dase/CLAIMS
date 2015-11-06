@@ -1,0 +1,49 @@
+.TH "CCSBInternalNodeGroup< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CCSBInternalNodeGroup< T > \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCCSBNodeGroup< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCCSBInternalNodeGroup\fP (unsigned n)"
+.br
+.ti -1c
+.RI "bool \fBsetUsedNodes\fP (unsigned n)"
+.br
+.ti -1c
+.RI "\fBCCSBNode\fP< T > * \fBgetNode\fP (unsigned i)"
+.br
+.ti -1c
+.RI "void \fBsetNode\fP (unsigned i, \fBCCSBNode\fP< T > *node)"
+.br
+.ti -1c
+.RI "bool \fBInsert\fP (unsigned node_off, T key)"
+.br
+.ti -1c
+.RI "void \fBDeleteChildren\fP ()"
+.br
+.ti -1c
+.RI "bool \fBserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "bool \fBdeserialize\fP (FILE *filename)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBCCSBNode\fP< T > ** \fBinternal_nodes\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

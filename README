@@ -1,11 +1,12 @@
 setup steps:
 
+1. ./build.sh init
+2. mkdir build
+3. cd build
+4. ../configure --prefix=/your/install/path 
+5. make -j8
+6. make install
 
-1  ./build.sh init
-2  mkdir build
-3  cd build
-4  ../configure  
-5  make -j4
 
 cleanup steps:
 

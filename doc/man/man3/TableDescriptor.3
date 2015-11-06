@@ -1,0 +1,127 @@
+.TH "TableDescriptor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TableDescriptor \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBTableDescriptor\fP (const string &name, const TableID table_id)"
+.br
+.ti -1c
+.RI "void \fBaddAttribute\fP (\fBAttribute\fP attr)"
+.br
+.ti -1c
+.RI "bool \fBaddAttribute\fP (string attname, data_type dt, unsigned max_length=0, bool unique=false, bool can_be_null=true)"
+.br
+.ti -1c
+.RI "bool \fBcreateHashPartitionedProjection\fP (vector< ColumnOffset > column_list, ColumnOffset partition_key_index, unsigned number_of_partitions)"
+.br
+.ti -1c
+.RI "bool \fBcreateHashPartitionedProjection\fP (vector< ColumnOffset > column_list, std::string partition_attribute_name, unsigned number_of_partitions)"
+.br
+.ti -1c
+.RI "bool \fBcreateHashPartitionedProjection\fP (vector< \fBAttribute\fP > column_list, std::string partition_attribute_name, unsigned number_of_partitions)"
+.br
+.ti -1c
+.RI "bool \fBcreateHashPartitionedProjectionOnAllAttribute\fP (std::string partition_attribute_name, unsigned number_of_partitions)"
+.br
+.ti -1c
+.RI "bool \fBisExist\fP (const string &name) const "
+.br
+.ti -1c
+.RI "string \fBgetTableName\fP () const "
+.br
+.ti -1c
+.RI "ColumnOffset \fBgetColumnID\fP (const string &attrName) const "
+.br
+.ti -1c
+.RI "map< string, set< string > > \fBgetColumnLocations\fP (const string &attrName) const "
+.br
+.ti -1c
+.RI "vector< \fBAttribute\fP > \fBgetAttributes\fP () const "
+.br
+.ti -1c
+.RI "vector< \fBAttribute\fP > \fBgetAttributes\fP (vector< unsigned > index_list) const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBgetAttribute\fP (unsigned offset) const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBgetAttribute\fP (const std::string &name) const "
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBgetAttribute2\fP (const std::string &name) const "
+.br
+.ti -1c
+.RI "void \fBaddColumn\fP (\fBProjectionDescriptor\fP *column)"
+.br
+.ti -1c
+.RI "string \fBget_table_name\fP () const "
+.br
+.ti -1c
+.RI "TableID \fBget_table_id\fP () const "
+.br
+.ti -1c
+.RI "\fBProjectionDescriptor\fP * \fBgetProjectoin\fP (ProjectionOffset) const "
+.br
+.ti -1c
+.RI "unsigned \fBgetNumberOfProjection\fP () const "
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBgetSchema\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetRowNumber\fP (unsigned long row_number)"
+.br
+.ti -1c
+.RI "unsigned long \fBgetRowNumber\fP ()"
+.br
+.ti -1c
+.RI "unsigned long \fBisEmpty\fP ()"
+.br
+.ti -1c
+.RI "unsigned int \fBgetNumberOfAttribute\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "string \fBtableName\fP"
+.br
+.ti -1c
+.RI "vector< \fBAttribute\fP > \fBattributes\fP"
+.br
+.ti -1c
+.RI "TableID \fBtable_id_\fP"
+.br
+.ti -1c
+.RI "vector< \fBProjectionDescriptor\fP * > \fBprojection_list_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBrow_number_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,54 @@
+.TH "BlockStreamLimit" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamLimit \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamIteratorBase\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBState\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamLimit\fP (\fBState\fP state)"
+.br
+.ti -1c
+.RI "bool \fBOpen\fP (const PartitionOffset &)"
+.br
+.ti -1c
+.RI "bool \fBNext\fP (\fBBlockStreamBase\fP *)"
+.br
+.ti -1c
+.RI "bool \fBClose\fP ()"
+.br
+.ti -1c
+.RI "void \fBPrint\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "bool BlockStreamLimit::Next (\fBBlockStreamBase\fP *block)\fC [virtual]\fP"
+if the limit has already been exhausted, the current loop breaks to fetch the next block from child iterator\&. TODO: ideally, fetching blocks from child iterator in cases that the limit is exhausted is not necessary\&. However, in the current implementation, the child iterator sub-tree leaded by exchange lower iterator cannot be closed if not all the blocks are called\&.
+.PP
+Implements \fBBlockStreamIteratorBase\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

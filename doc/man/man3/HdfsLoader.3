@@ -1,0 +1,70 @@
+.TH "HdfsLoader" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HdfsLoader \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHdfsLoader\fP (\fBTableDescriptor\fP *tableDescriptor, const char c_separator= '|', const char r_separator= '\\n', open_flag open_flag_=APPENDD)"
+.br
+.ti -1c
+.RI "\fBHdfsLoader\fP (const char c_separator, const char r_separator, std::vector< std::string > file_name, \fBTableDescriptor\fP *tableDescriptor, open_flag open_flag_=CREATEE)"
+.br
+.ti -1c
+.RI "const char \fBget_c_separator\fP ()"
+.br
+.ti -1c
+.RI "const char \fBget_r_separator\fP ()"
+.br
+.ti -1c
+.RI "vector< string > \fBget_file_list\fP ()"
+.br
+.ti -1c
+.RI "bool \fBinsertRecords\fP ()"
+.br
+.ti -1c
+.RI "bool \fBload\fP (double sample_rate=1)"
+.br
+.ti -1c
+.RI "bool \fBappend\fP (std::string tuple_string)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBTableDescriptor\fP * \fBtable_descriptor_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBrow_id\fP"
+.br
+.ti -1c
+.RI "vector< \fBPartitionFunction\fP * > \fBpartition_functin_list_\fP"
+.br
+.ti -1c
+.RI "vector< int > \fBpartition_key_index\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "bool HdfsLoader::insertRecords ()"
+\fIfor testing begin\fP/
+.PP
+\fIfor testing end\fP/ 
+.PP
+Referenced by load()\&.
+.SS "bool HdfsLoader::load (doublesample_rate = \fC1\fP)"
+\fIfor testing begin\fP/
+.PP
+\fIfor testing end\fP/ 
+.PP
+References insertRecords(), and ProjectionBinding::UnbindingEntireProjection()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,46 @@
+.TH "SpineLock" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SpineLock \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <lock\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBacquire\fP ()"
+.br
+.ti -1c
+.RI "bool \fBtry_lock\fP ()"
+.br
+.ti -1c
+.RI "int \fBfakelock\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetvalue\fP ()"
+.br
+.ti -1c
+.RI "void \fBrelease\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Non-recursive spinlock\&. Using \fCxchg\fP and \fCldstub\fP as in PostgresSQL\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void SpineLock::acquire ()\fC [inline]\fP"
+Call blocks and retunrs only when it has the lock\&. 
+.PP
+Referenced by InsertOptimizedHashTable::insertBlock()\&.
+.SS "void SpineLock::release ()\fC [inline]\fP"
+Unlocks the lock object\&. 
+.PP
+Referenced by InsertOptimizedHashTable::insertBlock()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

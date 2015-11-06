@@ -1,0 +1,57 @@
+.TH "ExpandableBlockStreamFilter::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExpandableBlockStreamFilter::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBSchema\fP *schema, \fBBlockStreamIteratorBase\fP *child, vector< \fBQNode\fP * >qual, map< string, int >colindex, unsigned block_size)"
+.br
+.ti -1c
+.RI "\fBState\fP (\fBSchema\fP *s, \fBBlockStreamIteratorBase\fP *child, std::vector< \fBAttributeComparator\fP > comparator_list, unsigned block_size)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBSchema\fP * \fBschema_\fP"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.ti -1c
+.RI "vector< \fBQNode\fP * > \fBqual_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBAttributeComparator\fP > \fBcomparator_list_\fP"
+.br
+.ti -1c
+.RI "vector< ExpressItem_List > \fBv_ei_\fP"
+.br
+.ti -1c
+.RI "map< string, int > \fBcolindex_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBExpandableBlockStreamFilter\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,65 @@
+.TH "BoostHashFunctin" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BoostHashFunctin \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBPartitionFunction\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBoostHashFunctin\fP (const int &range)"
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const int &value) const "
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const unsigned long &value) const "
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const double &value) const "
+.br
+.ti -1c
+.RI "unsigned int \fBget_partition_value\fP (const long &value) const "
+.br
+.ti -1c
+.RI "PartitionStyle \fBgetPartitionFashion\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetNumberOfPartitions\fP () const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned int BoostHashFunctin::get_partition_value (const int &value) const\fC [inline]\fP, \fC [virtual]\fP"
+Returns the bucket number $n\in[0,k)$ for this \fIvalue\fP\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP Value to hash\&. Must be within bounds\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Bucket number\&. 
+.RE
+.PP
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

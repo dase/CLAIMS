@@ -1,0 +1,64 @@
+.TH "CCSBLeafNodeGroup< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CCSBLeafNodeGroup< T > \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBCCSBNodeGroup< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCCSBLeafNodeGroup\fP (unsigned n)"
+.br
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBgetHeaderNG\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetHeaderNG\fP (\fBCCSBNodeGroup\fP< T > *header)"
+.br
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBgetTailerNG\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetTailerNG\fP (\fBCCSBNodeGroup\fP< T > *tailer)"
+.br
+.ti -1c
+.RI "bool \fBsetUsedNodes\fP (unsigned n)"
+.br
+.ti -1c
+.RI "\fBCCSBNode\fP< T > * \fBgetNode\fP (unsigned i)"
+.br
+.ti -1c
+.RI "void \fBsetNode\fP (unsigned i, \fBCCSBNode\fP< T > *node)"
+.br
+.ti -1c
+.RI "void \fBDeleteChildren\fP ()"
+.br
+.ti -1c
+.RI "bool \fBserialize\fP (FILE *filename)"
+.br
+.ti -1c
+.RI "bool \fBdeserialize\fP (FILE *filename)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBCCSBNode\fP< T > ** \fBleaf_nodes\fP"
+.br
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBp_header\fP"
+.br
+.ti -1c
+.RI "\fBCCSBNodeGroup\fP< T > * \fBp_tailer\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

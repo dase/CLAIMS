@@ -1,0 +1,45 @@
+.TH "Json::BatchAllocator< AllocatedType, objectPerAllocation >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::BatchAllocator< AllocatedType, objectPerAllocation > \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBatchAllocator\fP (unsigned int objectsPerPage=255)"
+.br
+.ti -1c
+.RI "AllocatedType * \fBallocate\fP ()"
+.br
+.ti -1c
+.RI "void \fBrelease\fP (AllocatedType *object)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename AllocatedType , const unsigned int objectPerAllocation> AllocatedType* \fBJson::BatchAllocator\fP< AllocatedType, objectPerAllocation >::allocate ()\fC [inline]\fP"
+allocate space for an array of objectPerAllocation object\&. 
+.PP
+\fBWarning:\fP
+.RS 4
+it is the responsability of the caller to call objects constructors\&. 
+.RE
+.PP
+
+.SS "template<typename AllocatedType , const unsigned int objectPerAllocation> void \fBJson::BatchAllocator\fP< AllocatedType, objectPerAllocation >::release (AllocatedType *object)\fC [inline]\fP"
+Release the object\&. 
+.PP
+\fBWarning:\fP
+.RS 4
+it is the responsability of the caller to actually destruct the object\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

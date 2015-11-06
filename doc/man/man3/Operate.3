@@ -1,0 +1,94 @@
+.TH "Operate" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Operate \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBOperateBool\fP, \fBOperateDate\fP, \fBOperateDatetime\fP, \fBOperateDecimal\fP, \fBOperateDouble\fP, \fBOperateFloat\fP, \fBOperateInt\fP, \fBOperateSmallInt\fP, \fBOperateString\fP, \fBOperateTime\fP, \fBOperateULong\fP, and \fBOperateUSmallInt\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBOperate\fP (bool _nullable=true)"
+.br
+.ti -1c
+.RI "void \fBass\fP (void *src, void *desc)"
+.br
+.ti -1c
+.RI "virtual void \fBassignment\fP (const void *const &src, void *const &desc) const =0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetPartitionValue\fP (const void *key, const \fBPartitionFunction\fP *partition_function) const =0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetPartitionValue\fP (const void *key, const unsigned long &mod) const =0"
+.br
+.ti -1c
+.RI "virtual unsigned \fBgetPartitionValue\fP (const void *key) const =0"
+.br
+.ti -1c
+.RI "virtual std::string \fBtoString\fP (void *value)=0"
+.br
+.ti -1c
+.RI "virtual void \fBtoValue\fP (void *target, const char *string)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBequal\fP (const void *const &a, const void *const &b) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBless\fP (const void *&a, const void *&b) const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBgreate\fP (const void *&a, const void *&b) const =0"
+.br
+.ti -1c
+.RI "virtual void \fBadd\fP (void *target, void *increment)=0"
+.br
+.ti -1c
+.RI "virtual void \fBmultiple\fP (void *target, void *increment)=0"
+.br
+.ti -1c
+.RI "virtual int \fBcompare\fP (const void *a, const void *b) const =0"
+.br
+.ti -1c
+.RI "virtual fun \fBGetADDFunction\fP ()=0"
+.br
+.ti -1c
+.RI "virtual fun \fBGetMINFunction\fP ()=0"
+.br
+.ti -1c
+.RI "virtual fun \fBGetMAXFunction\fP ()=0"
+.br
+.ti -1c
+.RI "virtual fun \fBGetIncreateByOneFunction\fP ()=0"
+.br
+.ti -1c
+.RI "virtual fun \fBGetAVGFunction\fP ()=0"
+.br
+.ti -1c
+.RI "virtual \fBOperate\fP * \fBduplicateOperator\fP () const =0"
+.br
+.ti -1c
+.RI "virtual bool \fBsetNull\fP (void *value)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBisNull\fP (void *value) const =0"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "void(* \fBassign\fP )(const void *const &src, void *const &desc)"
+.br
+.ti -1c
+.RI "bool \fBnullable\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

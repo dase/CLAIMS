@@ -1,0 +1,88 @@
+.TH "ExpandableBlockStreamExchangeLowerMaterialized" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ExpandableBlockStreamExchangeLowerMaterialized \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamExchangeLowerBase\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBState\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBExpandableBlockStreamExchangeLowerMaterialized\fP (\fBState\fP state)"
+.br
+.ti -1c
+.RI "bool \fBOpen\fP (const PartitionOffset &part_off=0)"
+.br
+.ti -1c
+.RI "bool \fBNext\fP (\fBBlockStreamBase\fP *)"
+.br
+.ti -1c
+.RI "bool \fBClose\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBExpandableBlockStreamExchangeEpoll\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ExpandableBlockStreamExchangeLowerMaterialized::Next (\fBBlockStreamBase\fP *)\fC [virtual]\fP"
+a new block is obtained from child iterator
+.PP
+for each tuple in the newly obtained block, insert the tuple to one partitioned block according to the partition hash value
+.PP
+calculate the tuple size for the current tuple
+.PP
+insert the tuple into the corresponding partitioned block
+.PP
+if the destination block is full, we insert the block into the buffer
+.PP
+thread arriving here means that the space for the tuple is successfully allocated, so we copy the tuple 
+.PP
+Implements \fBBlockStreamExchangeLowerBase\fP\&.
+.PP
+References PartitionedBlockBuffer::insertBlockToPartitionedList()\&.
+.SS "bool ExpandableBlockStreamExchangeLowerMaterialized::Open (const PartitionOffset &part_off = \fC0\fP)\fC [virtual]\fP"
+get the number of mergers
+.PP
+set the child exhausted bit
+.PP
+socket fd for mergers, each corresponding to one merger\&.
+.PP
+fd for local partition on disk\&.
+.PP
+initialize a temporary structure that holds the space for calling child's next()
+.PP
+initialize a block that is used for sending
+.PP
+initialize a block that is used as the intermediate structure for block serialization
+.PP
+initialize a partitioned block streams to accumulate the tuples obtained from child iterator's next()
+.PP
+connect to the mergers
+.PP
+create the sender thread 
+.PP
+Implements \fBBlockStreamExchangeLowerBase\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

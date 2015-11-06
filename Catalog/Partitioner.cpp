@@ -148,7 +148,7 @@ NodeID Partitioner::getPartitionLocation(unsigned partition_offset)const{
 	}
 }
 
-PartitionFunction::partition_fashion Partitioner::getPartitionFashion()const{
+PartitionFunction::PartitionStyle Partitioner::getPartitionFashion()const{
 	return partition_function_->getPartitionFashion();
 }
 Attribute Partitioner::getPartitionKey()const{
