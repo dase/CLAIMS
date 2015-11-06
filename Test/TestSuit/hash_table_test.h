@@ -19,9 +19,9 @@
 
 #include "../../Catalog/Column.h"
 
-#include "../../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../../physical_operator/physical_operator_base.h"
 
-#include "../../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamProjectionScan.h"
+#include "../../BlockStreamIterator/ParallelBlockStreamIterator/physical_projection_scan.h"
 
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"
@@ -210,7 +210,7 @@ struct Arg{
 	BasicHashTable ** hash_table;
 	Schema* schema;
 	PartitionFunction* hash;
-	BlockStreamIteratorBase* iterator;
+	PhysicalOperatorBase* iterator;
 	PartitionStorage::PartitionReaderItetaor* partition_reader;
 	Barrier* barrier;
 	unsigned tid;
@@ -282,20 +282,20 @@ static double projection_scan(unsigned degree_of_parallelism){
 
 
 	LogicalScan* scan=new LogicalScan(table->getProjectoin(1));
-	scan->GetDataflow();
-	BlockStreamIteratorBase* warm_up_iterator=scan->GetIteratorTree(1024*64);
+	scan->GetPlanContext();
+	PhysicalOperatorBase* warm_up_iterator=scan->GetPhysicalPlan(1024*64);
 
-	ExpandableBlockStreamProjectionScan::State ps_state;
+	PhysicalProjectionScan::State ps_state;
 	ps_state.block_size_=1024*64;
 	ps_state.projection_id_=table->getProjectoin(1)->getProjectionID();
 	ps_state.schema_=schema;
 
 	BlockStreamBase* block_for_asking=BlockStreamBase::createBlockWithDesirableSerilaizedSize(schema,64*1024);
-	warm_up_iterator->open(0);
-	while(warm_up_iterator->next(block_for_asking)){
+	warm_up_iterator->Open(0);
+	while(warm_up_iterator->Next(block_for_asking)){
 
 	}
-	warm_up_iterator->close();
+	warm_up_iterator->Close();
 
 	Arg arg;
 	arg.hash=PartitionFunctionFactory::createBoostHashFunction(nbuckets);

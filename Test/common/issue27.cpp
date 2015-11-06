@@ -15,17 +15,14 @@
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../LogicalQueryPlan/LogicalQueryPlanRoot.h"
-#include "../../LogicalQueryPlan/Aggregation.h"
-#include "../../LogicalQueryPlan/Scan.h"
-#include "../../LogicalQueryPlan/Filter.h"
-#include "../../LogicalQueryPlan/EqualJoin.h"
-
+#include "../../logical_operator/logical_aggregation.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/logical_filter.h"
+#include "../../logical_operator/logical_equal_join.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-
 #include "../../common/types/NValue.hpp"
-#include "../../LogicalQueryPlan/logical_project.h"
+#include "../../logical_operator/logical_project.h"
 #include "../../utility/rdtsc.h"
 
 static void query_select_aggregation(){
@@ -211,7 +208,7 @@ static void query_select_aggregation(){
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
 
 	//==========================project=========================
 	vector< vector<ExpressionItem> >expr_list2;
@@ -220,11 +217,11 @@ static void query_select_aggregation(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	cout<<"performance is ok!"<<endl;
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetIteratorTree(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	physical_iterator_tree->print();
-	physical_iterator_tree->open();
-	while(physical_iterator_tree->next(0));
-	physical_iterator_tree->close();
+	physical_iterator_tree->Open();
+	while(physical_iterator_tree->Next(0));
+	physical_iterator_tree->Close();
 	printf("Q1: execution time: %4.4f second.\n",getSecond(start));
 
 }

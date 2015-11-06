@@ -36,7 +36,7 @@ IteratorExecutorMaster* IteratorExecutorMaster::getInstance()
 		return _instance;
 }
 
-bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamIteratorBase* it, std::vector<std::string> ip_list){
+bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(PhysicalOperatorBase* it, std::vector<std::string> ip_list){
 
 	PhysicalQueryPlan im(it);
 
@@ -65,7 +65,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(BlockStreamItera
 
 	return true;
 }
-bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(BlockStreamIteratorBase* it,NodeID target_id){
+bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(PhysicalOperatorBase* it,NodeID target_id){
 	PhysicalQueryPlan* im = new PhysicalQueryPlan(it);
 
 //	GETCURRENTTIME(s);

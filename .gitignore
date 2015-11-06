@@ -1,8 +1,9 @@
-!thirdparty/
 *.Po
 *.a
 *.dat*
+*.doxyfile
 *.o
+*sql.output
 .cproject
 .gitignore.swp
 .history
@@ -17,6 +18,7 @@ Makefile.in
 aclocal.m4
 ar-lib
 autom4te.cache/
+bin/
 build
 claims.log
 claimsserver
@@ -34,7 +36,6 @@ config.status
 config.sub
 configure
 depcomp
-doc
 include/
 install-sh
 install/
@@ -42,6 +43,5 @@ libtool
 ltmain.sh
 missing
 stamp-h1
+thirdparty/
 缺省值
-*sql.output
-*.doxyfile

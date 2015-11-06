@@ -18,14 +18,10 @@ LDADD =	TestSuit/libtestsuit.a \
 		../Executor/libexecutor.a \
 		../Executor/Test/libtest.a \
 		../Parsetree/Test/libtest.a \
-		../LogicalQueryPlan/Test/libtest.a \
 		../Daemon/Test/libtest.a \
 		../Client/Test/libtest.a \
 		../Loader/Test/libtest.a \
 		../IndexManager/Test/libtest.a \
-		../BlockStreamIterator/libblockstreamiterator.a \
-		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
-		../BlockStreamIterator/ParallelBlockStreamIterator/Test/libtest.a \
 		../Catalog/Test/libtest.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \
