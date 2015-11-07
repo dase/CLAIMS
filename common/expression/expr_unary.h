@@ -12,32 +12,34 @@
 #include <string>
 #include <map>
 #include "./expr_node.h"
-
+namespace claims {
+namespace common {
 class ExprUnary : public ExprNode {
  public:
-    OperType oper_type_;
-    ExprNode* arg0_;
-    DataTypeOperFunc DataTypeOperFunc_;
-    ExprUnary(ExprNodeType expr_node_type, data_type actual_type,
-              const char* alias, OperType oper_type, ExprNode* arg0);
-    explicit ExprUnary(ExprUnary* expr);
-    ~ExprUnary() {
-        delete arg0_;
-    }
-    void* ExprEvaluate(void *tuple, Schema *schema);
-    void InitExprAtLogicalPlan(data_type return_type,
-                               const std::map<std::string, int>& column_index,
-                               Schema* schema);
-    void InitExprAtPhysicalPlan();
-    ExprNode* ExprCoyp();
+  OperType oper_type_;
+  ExprNode* arg0_;
+  DataTypeOperFunc data_type_oper_func_;
+  ExprUnary(ExprNodeType expr_node_type, data_type actual_type, string alias,
+            OperType oper_type, ExprNode* arg0);
+  explicit ExprUnary(ExprUnary* expr);
+  ExprUnary() {}
+  ~ExprUnary() { delete arg0_; }
+  virtual void* ExprEvaluate(void* tuple, Schema* schema);
+  virtual void* ExprEvaluate(void* tuple, Schema* schema, void* last_value);
+  virtual void* ExprEvaluate(void* value, void* last_value);
+  virtual void InitExprAtLogicalPlan(
+      data_type return_type, const std::map<std::string, int>& column_index,
+      Schema* schema);
+  virtual void InitExprAtPhysicalPlan();
+  virtual ExprNode* ExprCopy();
 
  private:
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(const Archive &ar, const unsigned int version) {
-        ar & boost::serialization::base_object<ExprNode>(*this) & oper_type_
-                & arg0_;
-    }
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(const Archive& ar, const unsigned int version) {
+    ar& boost::serialization::base_object<ExprNode>(*this) & oper_type_ & arg0_;
+  }
 };
-
-#endif /* COMMON_EXPRESSION_EXPR_UNARY_H_ */
+}  // namespace common
+}  // namespace claims
+#endif  // COMMON_EXPRESSION_EXPR_UNARY_H_

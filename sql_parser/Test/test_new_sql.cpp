@@ -48,8 +48,11 @@ int TestNewSql() {
       raw_ast->Print();
       cout << "--------------begin semantic analysis---------------" << endl;
       SemanticContext sem_cnxt;
-      cout << "semantic analysis result= : "
-           << raw_ast->SemanticAnalisys(&sem_cnxt) << endl;
+      ErrorNo ret = raw_ast->SemanticAnalisys(&sem_cnxt);
+      if (eOK != ret) {
+        cout << "semantic analysis error result= : " << ret << endl;
+        continue;
+      }
       raw_ast->Print();
       cout << "--------------begin push down condition ------------" << endl;
       raw_ast->PushDownCondition(NULL);
@@ -61,7 +64,7 @@ int TestNewSql() {
 
       logic_plan = new LogicalQueryPlanRoot(
           0, logic_plan, LogicalQueryPlanRoot::kResultCollector);
-
+      logic_plan->GetPlanContext();
       logic_plan->Print();
       cout << "--------------begin physical plan -------------------" << endl;
 

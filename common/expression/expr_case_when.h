@@ -17,36 +17,40 @@
 #include <iostream>
 #include "../../common/Schema/Schema.h"
 #include "./expr_type_cast.h"
-
+namespace claims {
+namespace common {
 class ExprCaseWhen : public ExprNode {
  public:
-    std::vector<ExprNode*> mywhen_;
-    std::vector<ExprNode*> mythen_;
-    ExprCaseWhen(ExprNodeType expr_node_type, data_type actual_type,
-                 const char* alias, const std::vector<ExprNode*>&mycase,
-                 const std::vector<ExprNode*>&mywhen);
-    explicit ExprCaseWhen(ExprCaseWhen* expr);
-    ~ExprCaseWhen() {
-        for (int i = 0; i < mywhen_.size(); i++) {
-            delete mywhen_[i];
-        }
-        for (int i = 0; i < mythen_.size(); i++) {
-            delete mythen_[i];
-        }
+  std::vector<ExprNode*> mywhen_;
+  std::vector<ExprNode*> mythen_;
+  ExprCaseWhen(ExprNodeType expr_node_type, data_type actual_type,
+               const char* alias, const std::vector<ExprNode*>& mycase,
+               const std::vector<ExprNode*>& mywhen);
+  explicit ExprCaseWhen(ExprCaseWhen* expr);
+  ExprCaseWhen() {}
+  ~ExprCaseWhen() {
+    for (int i = 0; i < mywhen_.size(); i++) {
+      delete mywhen_[i];
     }
-    void* ExprEvaluate(void *tuple, Schema *schema);
-    void InitExprAtLogicalPlan(data_type return_type,
-                               const std::map<std::string, int>&column_index,
-                               Schema* schema);
-    void InitExprAtPhysicalPlan();
-    ExprNode* ExprCoyp();
+    for (int i = 0; i < mythen_.size(); i++) {
+      delete mythen_[i];
+    }
+  }
+  void* ExprEvaluate(void* tuple, Schema* schema);
+  void InitExprAtLogicalPlan(data_type return_type,
+                             const std::map<std::string, int>& column_index,
+                             Schema* schema);
+  void InitExprAtPhysicalPlan();
+  ExprNode* ExprCopy();
 
  private:
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(const Archive &ar, const unsigned int version) {
-        ar & boost::serialization::base_object<ExprNode>(*this) & mywhen_
-                & mythen_;
-    }
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(const Archive& ar, const unsigned int version) {
+    ar& boost::serialization::base_object<ExprNode>(*this) & mywhen_ & mythen_;
+  }
 };
-#endif /* COMMON_EXPRESSION_EXPR_CASE_WHEN_H_ */
+
+}  // namespace common
+}  // namespace claims
+#endif  // COMMON_EXPRESSION_EXPR_CASE_WHEN_H_

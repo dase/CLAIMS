@@ -10,7 +10,12 @@
 #include "./data_type_oper.h"
 
 #include "./expr_node.h"
-DataTypeOperFunc DataTypeOper::data_type_oper_func_[DATA_TYPE_NUM]
-                                                    [OPER_TYPE_NUM];
-AvgDivide DataTypeOper::avg_divide[DATA_TYPE_NUM];
+
+namespace claims {
+namespace common {
+DataTypeOperFunc
+    DataTypeOper::data_type_oper_func_[DATA_TYPE_NUM][OPER_TYPE_NUM];
+AvgDivide DataTypeOper::avg_divide_[DATA_TYPE_NUM];
 // the avg_divide array store the AvgDivide function according to the datatype
+}  // namespace common
+}  // namespace claims

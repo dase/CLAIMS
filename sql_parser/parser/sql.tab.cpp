@@ -3214,7 +3214,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 #line 740 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
-          AST_EXPR_FUNC, "TRIM_TRAILING",
+          AST_EXPR_FUNC, "TRIM_BOTH",
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((3) - (4))].yystate.yysemantics.yysval.ast_node),
           NULL, NULL);

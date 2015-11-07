@@ -29,6 +29,7 @@
 #include "../logical_operator/logical_scan.h"
 #include <stdio.h>
 #include <glog/logging.h>
+#include <iosfwd>
 #include <iostream>
 #include <vector>
 
@@ -67,6 +68,16 @@ LogicalScan::LogicalScan(ProjectionDescriptor* projection,
   target_projection_ = projection;
   set_operator_type(kLogicalScan);
 }
+LogicalScan::LogicalScan(ProjectionDescriptor* projection,
+                         const string table_alias, const float sample_rate)
+    : sample_rate_(sample_rate),
+      table_alias_(table_alias),
+      plan_context_(NULL) {
+  scan_attribute_list_ = projection->getAttributeList();
+  ChangeAliasAttr();
+  target_projection_ = projection;
+  set_operator_type(kLogicalScan);
+}
 LogicalScan::LogicalScan(
     const TableID& table_id,
     const std::vector<unsigned>& selected_attribute_index_list)
@@ -86,6 +97,14 @@ LogicalScan::~LogicalScan() {
   if (NULL != plan_context_) {
     delete plan_context_;
     plan_context_ = NULL;
+  }
+}
+void LogicalScan::ChangeAliasAttr() {
+  for (int i = 0; i < scan_attribute_list_.size(); ++i) {
+    scan_attribute_list_[i].attrName =
+        table_alias_ +
+        scan_attribute_list_[i].attrName.substr(
+            scan_attribute_list_[i].attrName.find('.'));
   }
 }
 
@@ -276,11 +295,12 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     return false;
 }
 void LogicalScan::Print(int level) const {
-  printf("%*.sScan: %s\n", level * 8, " ",
+  printf("%*.sScan: %s  alias: %s\n", level * 8, " ",
          Catalog::getInstance()
              ->getTable(target_projection_->getProjectionID().table_id)
              ->getTableName()
-             .c_str());
+             .c_str(),
+         table_alias_.c_str());
 }
 
 }  // namespace logical_operator

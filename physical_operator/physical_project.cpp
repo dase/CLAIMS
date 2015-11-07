@@ -28,6 +28,10 @@
 
 #include "../physical_operator/physical_project.h"
 
+#include <vector>
+using claims::common::ExprNode;
+
+#include "../common/expression/expr_node.h"
 namespace claims {
 namespace physical_operator {
 PhysicalProject::PhysicalProject() { InitExpandedStatus(); }
@@ -46,6 +50,15 @@ PhysicalProject::State::State(Schema* schema_input, Schema* schema_output,
       child_(children),
       block_size_(block_size),
       expr_tree_(expr_tree) {}
+
+PhysicalProject::State::State(Schema* schema_input, Schema* schema_output,
+                              PhysicalOperatorBase* children,
+                              unsigned block_size, vector<ExprNode*> expr_list)
+    : schema_input_(schema_input),
+      schema_output_(schema_output),
+      child_(children),
+      block_size_(block_size),
+      expr_list_(expr_list) {}
 
 /**
  * Generate ProjectThreadContext and initialize the expression of this operator.
@@ -110,9 +123,15 @@ bool PhysicalProject::CopyNewValue(void* tuple, void* result, int length) {
 
 void PhysicalProject::Print() {
   std::cout << "proj:" << endl;
+#ifdef NEWCONDI
   for (int i = 0; i < state_.expr_tree_.size(); i++) {
     printf("  %s\n", state_.expr_tree_[i]->alias.c_str());
   }
+#else
+  for (int i = 0; i < state_.expr_list_.size(); ++i) {
+    cout << "    " << state_.expr_list_[i]->alias_ << endl;
+  }
+#endif
   state_.child_->Print();
 }
 
@@ -128,9 +147,16 @@ void PhysicalProject::ProcessInLogic(BlockStreamBase* block,
   while (NULL !=
          (tuple_from_child = tc->block_stream_iterator_->currentTuple())) {
     if (NULL != (tuple = block->allocateTuple(total_length))) {
+#ifdef NEWCONDI
       for (int i = 0; i < tc->thread_qual_.size(); i++) {
         void* result = tc->thread_qual_[i]->FuncId(
             tc->thread_qual_[i], tuple_from_child, state_.schema_input_);
+#else
+      for (int i = 0; i < tc->thread_expr_.size(); ++i) {
+        void* result = tc->thread_expr_[i]->ExprEvaluate(tuple_from_child,
+                                                         state_.schema_input_);
+
+#endif
         CopyNewValue(tuple, result,
                      state_.schema_output_->getcolumn(i).get_length());
         tuple = reinterpret_cast<char*>(tuple) +
@@ -156,11 +182,19 @@ ThreadContext* PhysicalProject::CreateContext() {
   ptc->temp_block_ =
       BlockStreamBase::createBlock(state_.schema_output_, state_.block_size_);
   ptc->block_stream_iterator_ = ptc->block_for_asking_->createIterator();
+#ifdef NEWCONDI
   ptc->thread_qual_ = state_.expr_tree_;
   for (int i = 0; i < state_.expr_tree_.size(); i++) {
     Expr_copy(state_.expr_tree_[i], ptc->thread_qual_[i]);
     InitExprAtPhysicalPlan(ptc->thread_qual_[i]);
   }
+#else
+  ptc->thread_expr_ = state_.expr_list_;
+  for (int i = 0; i < state_.expr_list_.size(); ++i) {
+    ptc->thread_expr_[i] = state_.expr_list_[i]->ExprCopy();
+    ptc->thread_expr_[i]->InitExprAtPhysicalPlan();
+  }
+#endif
   return ptc;
 }
 

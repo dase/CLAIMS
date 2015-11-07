@@ -38,7 +38,9 @@
 #include "../common/ExpressionItem.h"
 #include "../common/Expression/qnode.h"
 #include "../logical_operator/logical_operator.h"
+#include "../common/expression/expr_node.h"
 
+using claims::common::ExprNode;
 namespace claims {
 namespace logical_operator {
 
@@ -54,6 +56,7 @@ class LogicalFilter : public LogicalOperator {
    * @param qual: Pointing to the root of the expression tree.
    */
   LogicalFilter(LogicalOperator* child, vector<QNode*> qual);
+  LogicalFilter(LogicalOperator* child, vector<ExprNode*> condi);
 
   /**
    * @brief Method description: Destruction.
@@ -116,9 +119,10 @@ class LogicalFilter : public LogicalOperator {
   LogicalOperator* child_;
   map<string, int> column_id_;
   vector<QNode*> condi_;
+  vector<ExprNode*> condition_;
 };
 
-}   // namespace logical_operator
-}   // namespace claims
+}  // namespace logical_operator
+}  // namespace claims
 
 #endif  //  LOGICAL_OPERATOR_LOGICAL_FILTER_H_

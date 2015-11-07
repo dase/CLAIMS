@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "./ast_node.h"
+#include "../../common/expression/expr_node.h"
 using std::string;
 using std::vector;
 // namespace claims {
@@ -48,6 +49,8 @@ class AstSelectList : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+
   bool is_all_;
   AstNode* args_;
   AstNode* next_;
@@ -66,6 +69,7 @@ class AstSelectExpr : public AstNode {
                           bool is_select);
   string expr_alias_;
   AstNode* expr_;
+  bool have_agg_func_;
 };
 /**
  * @brief The AST of from list.
@@ -183,6 +187,7 @@ class AstWhereClause : public AstNode {
   ~AstWhereClause();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  void RecoverExprName(string& name);
   AstNode* expr_;
 };
 /**
@@ -197,6 +202,7 @@ class AstGroupByList : public AstNode {
   // different from each other
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
+  ErrorNo ExchangeSelectAliasWithGroupBy(const vector<AstNode*>& select_expr);
 
   AstNode* expr_;
   AstNode* next_;
@@ -212,7 +218,7 @@ class AstGroupByClause : public AstNode {
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
-
+  ErrorNo ReplaceSelectAlias(const vector<AstNode*>& select_expr);
   AstGroupByList* groupby_list_;
   bool with_roolup_;
 };
@@ -301,7 +307,8 @@ class AstColumn : public AstNode {
   void RecoverExprName(string& name);
   void GetRefTable(set<string>& ref_table);
   ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
-
+  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+                         LogicalOperator* child_logic_plan);
   string relation_name_;
   string column_name_;
   AstNode* next_;
@@ -310,6 +317,9 @@ class AstColumn : public AstNode {
  * @brief The AST of select statement.
  * @details AstSelectStmt is the beginning of a SQL AST. So it has pointers to
  * all other clauses.
+ * NOTE: A select_expr can be given an alias using AS alias_name. The alias is
+ * used as the expression's column name and can be used in GROUP BY, ORDER BY,
+ * or HAVING clauses.
  */
 class AstSelectStmt : public AstNode {
  public:
@@ -328,7 +338,9 @@ class AstSelectStmt : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
-  ErrorNo GetLogicalPlanOfAggeration(LogicalOperator* logic_plan);
+  ErrorNo GetLogicalPlanOfAggeration(LogicalOperator*& logic_plan);
+  ErrorNo GetLogicalPlanOfProject(LogicalOperator*& logic_plan);
+
   string select_str_;
   SelectOpts select_opts_;
   AstNode* select_list_;

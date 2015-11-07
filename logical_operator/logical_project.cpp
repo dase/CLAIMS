@@ -1,6 +1,3 @@
-#include "../physical_operator/physical_project.h"
-
-using claims::physical_operator::PhysicalProject;
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -34,11 +31,16 @@ using claims::physical_operator::PhysicalProject;
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
 #include "../logical_operator/logical_project.h"
+#include "../logical_operator/logical_operator.h"
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Expression/initquery.h"
 #include "../common/log/logging.h"
+#include "../common/expression/expr_node.h"
+#include "../physical_operator/physical_project.h"
 
+using claims::common::ExprNode;
+using claims::physical_operator::PhysicalProject;
 namespace claims {
 namespace logical_operator {
 
@@ -47,7 +49,11 @@ LogicalProject::LogicalProject(LogicalOperator* child,
     : child_(child), expression_tree_(expression_tree), plan_context_(NULL) {
   set_operator_type(kLogicalProject);
 }
-
+LogicalProject::LogicalProject(LogicalOperator* child,
+                               vector<ExprNode*> expr_list)
+    : child_(child), expr_list_(expr_list), plan_context_(NULL) {
+  set_operator_type(kLogicalProject);
+}
 LogicalProject::~LogicalProject() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -75,11 +81,13 @@ PlanContext LogicalProject::GetPlanContext() {
   Schema* input_ = GetSchema(child_plan_context.attribute_list_);
   // get the index of attributes in child PlanContext
   SetColumnID(child_plan_context);
-  /**
-   * if the expression type is compare,then the new column will be boolean
-   * type,
-   * else will be it's actual type according to the variable
-   */
+/**
+ * if the expression type is compare,then the new column will be boolean
+ * type,
+ * else will be it's actual type according to the variable
+ */
+
+#ifdef NEWCONDI
   for (int i = 0; i < expression_tree_.size(); ++i) {
     if (expression_tree_[i]->type == t_qexpr_cmp) {
       InitExprAtLogicalPlan(expression_tree_[i], t_boolean, column_id_, input_);
@@ -114,6 +122,30 @@ PlanContext LogicalProject::GetPlanContext() {
     // construct an attribute list
     ret_attrs.push_back(attr_alais);
   }
+#else
+  for (int i = 0; i < expr_list_.size(); ++i) {
+    expr_list_[i]->InitExprAtLogicalPlan(expr_list_[i]->actual_type_,
+                                         column_id_, input_);
+  }
+  ret_attrs.clear();
+  for (int i = 0; i < expr_list_.size(); ++i) {
+    column_type* column = NULL;
+    if (t_string == expr_list_[i]->return_type_ ||
+        t_decimal == expr_list_[i]->return_type_) {
+      column = new column_type(expr_list_[i]->return_type_,
+                               expr_list_[i]->value_size_);
+    } else {
+      column = new column_type(expr_list_[i]->return_type_);
+    }
+    // set TableID
+    const unsigned kTableID = INTERMEIDATE_TABLEID;
+    // construct attribute
+    Attribute attr_alais(kTableID, i, expr_list_[i]->alias_, column->type,
+                         column->size);
+    // construct an attribute list
+    ret_attrs.push_back(attr_alais);
+  }
+#endif
   // set the attribute list of the PlanContext to be returned
   ret.attribute_list_ = ret_attrs;
   plan_context_ = new PlanContext();
@@ -146,6 +178,7 @@ PhysicalOperatorBase* LogicalProject::GetPhysicalPlan(
   state.schema_input_ = GetSchema(child_plan_context.attribute_list_);
   state.schema_output_ = GetOutputSchema();
   state.expr_tree_ = expression_tree_;
+  state.expr_list_ = expr_list_;
   return new PhysicalProject(state);
 }
 
@@ -159,10 +192,16 @@ Schema* LogicalProject::GetOutputSchema() {
 void LogicalProject::Print(int level) const {
   printf("project:\n");
   LOG(INFO) << "project:\n" << endl;
+#ifdef NEWCONDI
   for (int i = 0; i < expression_tree_.size(); i++) {
     printf("%s\n", expression_tree_[i]->alias.c_str());
     LOG(INFO) << expression_tree_[i]->alias.c_str() << endl;
   }
+#else
+  for (int i = 0; i < expr_list_.size(); ++i) {
+    cout << "   " << expr_list_[i]->alias_ << endl;
+  }
+#endif
   child_->Print(level + 1);
 }
 

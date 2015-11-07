@@ -39,6 +39,8 @@
 #include <set>
 #include <string>
 #include <vector>
+
+#include "../../common/expression/expr_node.h"
 #include "../ast_node/ast_node.h"
 using std::string;
 using std::set;
@@ -61,6 +63,8 @@ class AstExprConst : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
+  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+                         LogicalOperator* child_logic_plan);
   string expr_type_;
   string data_;
 };
@@ -79,8 +83,8 @@ class AstExprUnary : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
-
+  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+                         LogicalOperator* child_logic_plan);
   AstNode* arg0_;
   string expr_type_;
 };
@@ -98,7 +102,8 @@ class AstExprFunc : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
+  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+                         LogicalOperator* child_logic_plan);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -121,7 +126,8 @@ class AstExprCalBinary : public AstNode {
   void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   void GetRefTable(set<string>& ref_table);
   ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
-
+  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+                         LogicalOperator* child_logic_plan);
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
@@ -144,7 +150,8 @@ class AstExprCmpBinary : public AstNode {
                           bool is_select);
   void GetRefTable(set<string>& ref_table);
   ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
-
+  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+                         LogicalOperator* child_logic_plan);
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;

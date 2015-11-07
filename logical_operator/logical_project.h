@@ -33,6 +33,8 @@
 #include <string>
 #include <vector>
 #include <map>
+
+#include "../common/expression/expr_node.h"
 #include "../common/Mapping.h"
 #include "../common/ExpressionItem.h"
 #include "../common/TypePromotionMap.h"
@@ -43,13 +45,14 @@
 #include "../logical_operator/Requirement.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_project.h"
-
+using claims::common::ExprNode;
 namespace claims {
 namespace logical_operator {
 
 class LogicalProject : public LogicalOperator {
  public:
   LogicalProject(LogicalOperator* child, vector<QNode*> expression_tree);
+  LogicalProject(LogicalOperator* child, vector<ExprNode*> expression_list);
 
   virtual ~LogicalProject();
 
@@ -96,7 +99,7 @@ class LogicalProject : public LogicalOperator {
  private:
   PlanContext* plan_context_;
   LogicalOperator* child_;
-
+  std::vector<ExprNode*> expr_list_;
   std::vector<QNode*> expression_tree_;
   std::map<std::string, int> column_id_;
 };

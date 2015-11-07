@@ -28,33 +28,51 @@
  * operator and generating corresponding physical operator.
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES  // avoid macro conflict
-#include "../logical_operator/logical_aggregation.h"
+#include <glog/logging.h>
 #include <vector>
+#include <algorithm>
+#include <string>
+#include <map>
+#include "../common/expression/expr_node.h"
+#include "../common/expression/expr_column.h"
+#include "../common/expression/expr_const.h"
+#include "../common/expression/expr_unary.h"
+#include "../logical_operator/logical_aggregation.h"
 #include "../logical_operator/plan_context.h"
 #include "../IDsGenerator.h"
 #include "../physical_operator/exchange_merger.h"
 #include "../physical_operator/expander.h"
 #include "../Catalog/stat/StatManager.h"
 #include "../Config.h"
-#include <glog/logging.h>
 #include "../physical_operator/physical_aggregation.h"
 
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::Expander;
+using std::vector;
+using claims::common::ExprNode;
+using claims::common::ExprNodeType;
+using claims::common::ExprUnary;
+using claims::common::OperType;
+using claims::common::ExprConst;
+using claims::common::ExprColumn;
+
 namespace claims {
 namespace logical_operator {
 LogicalAggregation::LogicalAggregation(
     std::vector<Attribute> group_by_attribute_list,
     std::vector<Attribute> aggregation_attribute_list,
     std::vector<PhysicalAggregation::State::Aggregation>
-        aggregation_function_list, LogicalOperator* child)
-    : group_by_attribute_list_(group_by_attribute_list),
-      aggregation_attribute_list_(aggregation_attribute_list),
-      aggregation_function_list_(aggregation_function_list),
+        aggregation_function_list, LogicalOperator* child) {
+  assert(false);
+}
+
+LogicalAggregation::LogicalAggregation(vector<ExprNode*> group_by_attrs,
+                                       vector<ExprUnary*> aggregation_attrs,
+                                       LogicalOperator* child)
+    : group_by_attrs_(group_by_attrs),
+      aggregation_attrs_(aggregation_attrs),
       plan_context_(NULL),
       child_(child) {
-  assert(aggregation_attribute_list_.size() ==
-         aggregation_function_list_.size());
   set_operator_type(kLogicalAggregation);
 }
 
@@ -68,20 +86,64 @@ LogicalAggregation::~LogicalAggregation() {
     child_ = NULL;
   }
 }
+// due to avg() column may be aliased, so judge the agg type by oper_type_
+void LogicalAggregation::ChangeAggAttrsForAVG() {
+  for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+    if (OperType::oper_agg_avg == aggregation_attrs_[i]->oper_type_) {
+      // change the operation type avg to sum
+      aggregation_attrs_[i]->oper_type_ = OperType::oper_agg_sum;
+      avg_id_in_agg_.push_back(i);
+    }
+  }
+  if (avg_id_in_agg_.size() > 0) {
+    // if there isn't count() in agg, then add it and push the id into
+    // avg_id_in_agg
+    count_column_id_ = -1;
+    for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+      if (OperType::oper_agg_count == aggregation_attrs_[i]->oper_type_) {
+        count_column_id_ = i;
+        break;
+      }
+    }
+    // if there isn't count(), append count(1)
+    if (count_column_id_ == -1) {
+      count_column_id_ = aggregation_attrs_.size();
+      aggregation_attrs_.push_back(new ExprUnary(
+          ExprNodeType::t_qexpr_unary, t_u_long, "ACOUNT(1)",
+          OperType::oper_agg_count,
+          new ExprConst(ExprNodeType::t_qexpr, t_u_long, "COUNT(1)", "1")));
+    }
+  }
+}
+
 PlanContext LogicalAggregation::GetPlanContext() {
   if (NULL != plan_context_) return *plan_context_;
   PlanContext ret;
   const PlanContext child_context = child_->GetPlanContext();
+
+  ChangeAggAttrsForAVG();
+  // initialize expression of group_by_attrs and aggregation_attrs
+  Schema* input_schema = GetSchema(child_context.attribute_list_);
+  set_column_id(child_context);
+  for (int i = 0; i < group_by_attrs_.size(); ++i) {
+    group_by_attrs_[i]->InitExprAtLogicalPlan(group_by_attrs_[i]->actual_type_,
+                                              column_id_, input_schema);
+  }
+  for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+    aggregation_attrs_[i]->InitExprAtLogicalPlan(
+        aggregation_attrs_[i]->actual_type_, column_id_, input_schema);
+  }
+
   if (CanOmitHashRepartition(child_context)) {
-    aggregation_style_ = kAgg;
-    LOG(INFO) << "Aggregation style: kAgg" << std::endl;
+    aggregation_style_ = kLocalAgg;
+    LOG(INFO) << "Aggregation style: kLocalAgg" << std::endl;
   } else {  // as for the kLocalAggReparGlobalAgg style is optimal
             // to kReparAndGlobalAgg so it's set to be default.
     aggregation_style_ = kLocalAggReparGlobalAgg;
     LOG(INFO) << "Aggregation style: kLocalAggReparGlobalAgg" << std::endl;
   }
   switch (aggregation_style_) {
-    case kAgg: {
+    case kLocalAgg: {
       ret.attribute_list_ = GetAttrsAfterAgg();
       ret.commu_cost_ = child_context.commu_cost_;
       ret.plan_partitioner_ = child_context.plan_partitioner_;
@@ -104,7 +166,7 @@ PlanContext LogicalAggregation::GetPlanContext() {
        * repartition aggregation is currently simplified.
        */
 
-      // TODO(fzh): ideally, the partition properties (especially the the number
+      // TODO(FZH): ideally, the partition properties (especially the the number
       // of partitions and partition style) after repartition aggregation should
       // be decided by the partition property enforcement.
       ret.attribute_list_ = GetAttrsAfterAgg();
@@ -112,15 +174,26 @@ PlanContext LogicalAggregation::GetPlanContext() {
           child_context.commu_cost_ + child_context.GetAggregatedDatasize();
       ret.plan_partitioner_.set_partition_func(
           child_context.plan_partitioner_.get_partition_func());
-      if (group_by_attribute_list_.empty()) {
+      // set partition key
+      if (group_by_attrs_.empty()) {
         ret.plan_partitioner_.set_partition_key(Attribute());
       } else {
-        const Attribute partition_key = group_by_attribute_list_[0];
-        ret.plan_partitioner_.set_partition_key(partition_key);
+        int id = 0;
+        // if there is column in groupby attributes, so move it to the front, in
+        // order to get partition by one column not one expression
+        for (int i = 0; i < group_by_attrs_.size(); ++i) {
+          if (group_by_attrs_[i]->expr_node_type_ == t_qcolcumns) {
+            id = i;
+            break;
+          }
+        }
+        std::swap(group_by_attrs_[0], group_by_attrs_[id]);
+        ret.plan_partitioner_.set_partition_key(
+            group_by_attrs_[0]->ExprNodeToAttr(0));
       }
+
       NodeID location = 0;
-      unsigned long data_cardinality =
-          EstimateGroupByCardinality(child_context);
+      int64_t data_cardinality = EstimateGroupByCardinality(child_context);
       PartitionOffset offset = 0;
       PlanPartitionInfo par(offset, data_cardinality, location);
       std::vector<PlanPartitionInfo> partition_list;
@@ -148,50 +221,64 @@ bool LogicalAggregation::CanOmitHashRepartition(
    */
   const Attribute partition_key =
       child_plan_context.plan_partitioner_.get_partition_key();
-  for (unsigned i = 0; i < group_by_attribute_list_.size(); i++) {
-    if (group_by_attribute_list_[i] == partition_key) return true;
+  for (int i = 0; i < group_by_attrs_.size(); ++i) {
+    if (group_by_attrs_[i]->IsEqualAttr(partition_key)) {
+      return true;
+    }
   }
   return false;
 }
-
-void LogicalAggregation::ChangeSchemaForAVG(
-    PhysicalAggregation::State& state_) {
-  state_.avg_index_.clear();
-  for (unsigned i = 0; i < state_.aggregations_.size(); i++) {
-    if (state_.aggregations_[i] == PhysicalAggregation::State::kAvg) {
-      state_.aggregations_[i] = PhysicalAggregation::State::kSum;
-      state_.avg_index_.push_back(i);
-    }
+void LogicalAggregation::set_column_id(const PlanContext& plan_context) {
+  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
+    /**
+     * Traverse the attribute_list_，store the attribute name and index into
+     * column_id.
+     */
+    column_id_[plan_context.attribute_list_[i].attrName] = i;
   }
-  state_.hash_schema_ = state_.output_->duplicateSchema();
-
-  // if the agg style isn kLocalAggReparGlobalAgg
-  // at local, output_schema = hash_schema, but for global,
-  // input_schema = hash_schema
-  // the hash_schema has to replace the column of avg() with sum() and append
-  // one count() column at the end.
-
-  if (state_.avg_index_.size() > 0) {
-    column_type count_column_type = column_type(t_u_long, 8);
-    state_.hash_schema_->addColumn(count_column_type, 8);
-    if (state_.agg_node_type_ ==
-        PhysicalAggregation::State::kHybridAggPrivate) {
-      state_.aggregations_.push_back(PhysicalAggregation::State::kCount);
-      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
-                                          state_.index_of_group_by_.size());
-      state_.output_ = state_.hash_schema_->duplicateSchema();
-    } else if (state_.agg_node_type_ ==
-               PhysicalAggregation::State::kHybridAggGlobal) {
-      state_.aggregations_.push_back(PhysicalAggregation::State::kSum);
-      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
-                                          state_.index_of_group_by_.size());
-      state_.input_ = state_.hash_schema_->duplicateSchema();
-    } else if (state_.agg_node_type_ ==
-               PhysicalAggregation::State::kNotHybridAgg) {
-      state_.aggregations_.push_back(PhysicalAggregation::State::kCount);
-      state_.aggregation_index_.push_back(state_.aggregation_index_.size() +
-                                          state_.index_of_group_by_.size());
-    }
+}
+/** replace each group by output attributes with one column, and change every
+ * agg(expr) to agg(column[agg_expr_name]), for example: select sum(c)/2 from
+ * TB group by a+b; => select sum(column["NULL_AGG","sum(c)/2"]) from TB group
+ * by column[ "NULL_AGG", "a+b" ];
+ * then initialize the new expression.
+ */
+void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
+    vector<ExprNode*>& group_by_attrs, vector<ExprUnary*>& aggregation_attrs,
+    Schema* input_schema) {
+  ExprNode* group_by_node = NULL;
+  ExprUnary* agg_node = NULL;
+  map<string, int> column_to_id;
+  int group_by_size = group_by_attrs_.size();
+  // map column name to id
+  for (int i = 0; i < group_by_size; ++i) {
+    column_to_id["NULL_AGG." + group_by_attrs_[i]->alias_] = i;
+  }
+  for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+    column_to_id["NULL_AGG." + aggregation_attrs_[i]->alias_] =
+        i + group_by_size;
+  }
+  // reconstruct group by attributes and initialize them
+  for (int i = 0; i < group_by_attrs_.size(); ++i) {
+    group_by_node = new ExprColumn(
+        ExprNodeType::t_qcolcumns, group_by_attrs_[i]->actual_type_,
+        group_by_attrs_[i]->alias_, "NULL_AGG", group_by_attrs_[i]->alias_);
+    group_by_node->InitExprAtLogicalPlan(group_by_node->actual_type_,
+                                         column_to_id, input_schema);
+    group_by_attrs.push_back(group_by_node);
+  }
+  // reconstruct aggregation attributes and initialize them
+  for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+    agg_node = new ExprUnary(
+        ExprNodeType::t_qexpr_unary, aggregation_attrs_[i]->actual_type_,
+        aggregation_attrs_[i]->alias_, aggregation_attrs_[i]->oper_type_,
+        new ExprColumn(ExprNodeType::t_qexpr,
+                       aggregation_attrs_[i]->actual_type_,
+                       aggregation_attrs_[i]->alias_, "NULL_AGG",
+                       aggregation_attrs_[i]->alias_));
+    agg_node->InitExprAtLogicalPlan(agg_node->actual_type_, column_to_id,
+                                    input_schema);
+    aggregation_attrs.push_back(agg_node);
   }
 }
 /**
@@ -205,45 +292,38 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
   }
   PhysicalOperatorBase* ret;
   const PlanContext child_plan_context = child_->GetPlanContext();
-  PhysicalAggregation::State aggregation_state;
-  aggregation_state.index_of_group_by_ =
-      GetInvolvedAttrIdList(group_by_attribute_list_, child_plan_context);
-  aggregation_state.aggregation_index_ =
-      GetInvolvedAttrIdList(aggregation_attribute_list_, child_plan_context);
-  aggregation_state.aggregations_ = aggregation_function_list_;
-  aggregation_state.block_size_ = block_size;
-  aggregation_state.num_of_buckets_ =
+  PhysicalAggregation::State local_agg_state;
+  local_agg_state.group_by_attrs_ = group_by_attrs_;
+  local_agg_state.aggregation_attrs_ = aggregation_attrs_;
+  local_agg_state.block_size_ = block_size;
+  local_agg_state.num_of_buckets_ =
       EstimateGroupByCardinality(child_plan_context);
-  aggregation_state.bucket_size_ = 64;
-  aggregation_state.input_ = GetSchema(child_plan_context.attribute_list_);
-  aggregation_state.output_ = GetSchema(plan_context_->attribute_list_);
-  aggregation_state.child_ = child_->GetPhysicalPlan(block_size);
-
+  local_agg_state.bucket_size_ = 64;
+  local_agg_state.input_schema_ = GetSchema(child_plan_context.attribute_list_);
+  local_agg_state.output_schema_ = GetSchema(plan_context_->attribute_list_);
+  local_agg_state.child_ = child_->GetPhysicalPlan(block_size);
+  local_agg_state.avg_index_ = avg_id_in_agg_;
+  local_agg_state.count_column_id_ = count_column_id_;
+  local_agg_state.hash_schema_ =
+      local_agg_state.output_schema_->duplicateSchema();
   switch (aggregation_style_) {
-    case kAgg: {
-      aggregation_state.agg_node_type_ =
+    case kLocalAgg: {
+      local_agg_state.agg_node_type_ =
           PhysicalAggregation::State::kNotHybridAgg;
-      ChangeSchemaForAVG(aggregation_state);
-      ret = new PhysicalAggregation(aggregation_state);
+      ret = new PhysicalAggregation(local_agg_state);
       break;
     }
     case kLocalAggReparGlobalAgg: {
-      aggregation_state.agg_node_type_ =
-          PhysicalAggregation::State::kHybridAggPrivate;  // as regard to
-                                                          // AVG(),for partition
-                                                          // node and
-      // global node ,we should do change schema.
-      ChangeSchemaForAVG(aggregation_state);
-
+      local_agg_state.agg_node_type_ =
+          PhysicalAggregation::State::kHybridAggLocal;
       PhysicalAggregation* local_aggregation =
-          new PhysicalAggregation(aggregation_state);
+          new PhysicalAggregation(local_agg_state);
       Expander::State expander_state;
       expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
       expander_state.block_size_ = block_size;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = local_aggregation;
-      expander_state.schema_ =
-          aggregation_state.hash_schema_->duplicateSchema();
+      expander_state.schema_ = local_agg_state.hash_schema_->duplicateSchema();
       PhysicalOperatorBase* expander_lower = new Expander(expander_state);
 
       ExchangeMerger::State exchange_state;
@@ -255,131 +335,44 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
           GetInvolvedNodeID(child_->GetPlanContext().plan_partitioner_);
       exchange_state.upper_id_list_ =
           GetInvolvedNodeID(plan_context_->plan_partitioner_);
-      if (group_by_attribute_list_.empty()) {
-        exchange_state.partition_schema_ =
-            partition_schema::set_hash_partition(0);
-      } else {
-        exchange_state.partition_schema_ =
-            partition_schema::set_hash_partition(GetInvolvedAttrIdList(
-                GetGroupByAttrsAfterAgg(), *plan_context_)[0]);
-      }
-      exchange_state.schema_ =
-          aggregation_state.hash_schema_->duplicateSchema();
+      exchange_state.partition_schema_ =
+          partition_schema::set_hash_partition(0);
+      exchange_state.schema_ = local_agg_state.hash_schema_->duplicateSchema();
       PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
-
-      PhysicalAggregation::State global_aggregation_state;
-      global_aggregation_state.aggregation_index_ =
-          GetInvolvedAttrIdList(GetAggAttrsAfterAgg(), *plan_context_);
-      global_aggregation_state.aggregations_ =
-          ChangeForGlobalAggregation(aggregation_function_list_);
-      global_aggregation_state.block_size_ = block_size;
-      global_aggregation_state.bucket_size_ = 64;
-      global_aggregation_state.child_ = exchange;
-      global_aggregation_state.index_of_group_by_ =
-          GetInvolvedAttrIdList(GetGroupByAttrsAfterAgg(), *plan_context_);
-      global_aggregation_state.input_ =
-          GetSchema(plan_context_->attribute_list_);
-      global_aggregation_state.num_of_buckets_ =
-          aggregation_state.num_of_buckets_;
-      global_aggregation_state.output_ =
-          GetSchema(plan_context_->attribute_list_);
-      global_aggregation_state.agg_node_type_ =
+      PhysicalAggregation::State global_agg_state;
+      global_agg_state.agg_node_type_ =
           PhysicalAggregation::State::kHybridAggGlobal;
-      ChangeSchemaForAVG(global_aggregation_state);
+      global_agg_state.input_schema_ =
+          GetSchema(plan_context_->attribute_list_);
+      global_agg_state.output_schema_ =
+          GetSchema(plan_context_->attribute_list_);
+      global_agg_state.hash_schema_ =
+          global_agg_state.output_schema_->duplicateSchema();
+      // change each aggregation expression and group by expression to one
+      // attribute
+      SetGroupbyAndAggAttrsForGlobalAgg(global_agg_state.group_by_attrs_,
+                                        global_agg_state.aggregation_attrs_,
+                                        global_agg_state.input_schema_);
+      global_agg_state.block_size_ = block_size;
+      global_agg_state.bucket_size_ = 64;
+      global_agg_state.child_ = exchange;
+      global_agg_state.num_of_buckets_ = local_agg_state.num_of_buckets_;
+      global_agg_state.avg_index_ = avg_id_in_agg_;
+      global_agg_state.count_column_id_ = count_column_id_;
       PhysicalOperatorBase* global_aggregation =
-          new PhysicalAggregation(global_aggregation_state);
+          new PhysicalAggregation(global_agg_state);
       ret = global_aggregation;
       break;
     }
     case kReparGlobalAgg: {
-      // the corresponding physical operation is't implemented
-      Expander::State expander_state;
-      expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
-      expander_state.block_size_ = block_size;
-      expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
-      expander_state.child_ = child_->GetPhysicalPlan(block_size);
-      expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
-      PhysicalOperatorBase* expander = new Expander(expander_state);
-      ExchangeMerger::State exchange_state;
-      exchange_state.block_size_ = block_size;
-      exchange_state.child_ = expander;  // child_->getIteratorTree(block_size);
-      exchange_state.exchange_id_ =
-          IDsGenerator::getInstance()->generateUniqueExchangeID();
-      exchange_state.lower_id_list_ =
-          GetInvolvedNodeID(child_->GetPlanContext().plan_partitioner_);
-      exchange_state.upper_id_list_ =
-          GetInvolvedNodeID(plan_context_->plan_partitioner_);
-      if (group_by_attribute_list_.empty()) {
-        /**
-         * scalar aggregation allows parallel partitions to be partitioned in
-         * any fashion.
-         * In the current implementation, we use the first aggregation attribute
-         * as the
-         * partition attribute.
-         */
+      assert(false);
+    }
+  }
+  return ret;
+}
 
-        // TODO(fzh): select the proper partition attribute by considering the
-        // cardinality and load balance.
-        exchange_state.partition_schema_ =
-            partition_schema::set_hash_partition(GetInvolvedAttrIdList(
-                aggregation_attribute_list_, child_plan_context)[0]);
-      } else {
-        exchange_state.partition_schema_ =
-            partition_schema::set_hash_partition(GetInvolvedAttrIdList(
-                group_by_attribute_list_, child_plan_context)[0]);
-      }
-      exchange_state.schema_ = GetSchema(child_plan_context.attribute_list_);
-      PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
-      aggregation_state.agg_node_type_ =
-          PhysicalAggregation::State::kNotHybridAgg;
-      ChangeSchemaForAVG(aggregation_state);
-      aggregation_state.child_ = exchange;
-      ret = new PhysicalAggregation(aggregation_state);
-      break;
-    }
-  }
-  return ret;
-}
-std::vector<unsigned> LogicalAggregation::GetInvolvedAttrIdList(
-    const std::vector<Attribute>& attribute_list,
-    const PlanContext& plan_context) const {
-  std::vector<unsigned> ret;
-  for (unsigned i = 0; i < attribute_list.size(); i++) {
-    bool found = false;
-    for (unsigned j = 0; j < plan_context.attribute_list_.size(); j++) {
-      /*
-       * @brief: attribute_list[j].isANY()
-       */
-      if (attribute_list[i].isANY() ||
-          (plan_context.attribute_list_[j] == attribute_list[i])) {
-        found = true;
-        ret.push_back(j);
-        break;
-      }
-    }
-    if (found == false) {
-      LOG(ERROR) << "can't find attrbute in plan context in "
-                    "LogicalAggeration::GetInvolvedAttributeIdList"
-                 << std::endl;
-    }
-  }
-  return ret;
-}
 float LogicalAggregation::EstimateSelectivity() const { return 0.1; }
 
-std::vector<PhysicalAggregation::State::Aggregation>
-LogicalAggregation::ChangeForGlobalAggregation(
-    const std::vector<PhysicalAggregation::State::Aggregation> list) const {
-  std::vector<PhysicalAggregation::State::Aggregation> ret;
-  for (unsigned i = 0; i < list.size(); i++) {
-    if (list[i] == PhysicalAggregation::State::kCount) {
-      ret.push_back(PhysicalAggregation::State::kSum);
-    } else {
-      ret.push_back(list[i]);
-    }
-  }
-  return ret;
-}
 /**
  * In the current implementation, we assume that aggregation creates a new
  * table, i.e., intermediate table.
@@ -395,69 +388,28 @@ std::vector<Attribute> LogicalAggregation::GetAttrsAfterAgg() const {
 }
 std::vector<Attribute> LogicalAggregation::GetGroupByAttrsAfterAgg() const {
   std::vector<Attribute> ret;
-
-  for (unsigned i = 0; i < group_by_attribute_list_.size(); i++) {
-    Attribute temp = group_by_attribute_list_[i];
-    temp.index = i;
-    temp.table_id_ = INTERMEIDATE_TABLEID;
-    ret.push_back(temp);
+  for (int i = 0; i < group_by_attrs_.size(); ++i) {
+    ret.push_back(group_by_attrs_[i]->ExprNodeToAttr(i));
   }
   return ret;
 }
 std::vector<Attribute> LogicalAggregation::GetAggAttrsAfterAgg() const {
   std::vector<Attribute> ret;
-
-  unsigned aggregation_start_index = group_by_attribute_list_.size();
-  for (unsigned i = 0; i < aggregation_attribute_list_.size(); i++) {
-    Attribute temp = aggregation_attribute_list_[i];
-
-    switch (aggregation_function_list_[i]) {
-      case PhysicalAggregation::State::kCount: {
-        if (!(temp.isNULL() || temp.isANY())) temp.attrType->~column_type();
-        temp.attrType = new column_type(t_u_long, 8);
-        temp.attrName = "count(" + temp.getName() + ")";
-        temp.index = aggregation_start_index++;
-        temp.table_id_ = INTERMEIDATE_TABLEID;
-        break;
-      }
-      case PhysicalAggregation::State::kMax: {
-        temp.attrName = "max(" + temp.getName() + ")";
-        temp.index = aggregation_start_index++;
-        temp.table_id_ = INTERMEIDATE_TABLEID;
-        break;
-      }
-      case PhysicalAggregation::State::kMin: {
-        temp.attrName = "min(" + temp.getName() + ")";
-        temp.index = aggregation_start_index++;
-        temp.table_id_ = INTERMEIDATE_TABLEID;
-        break;
-      }
-      case PhysicalAggregation::State::kSum: {
-        temp.attrName = "sum(" + temp.getName() + ")";
-        temp.index = aggregation_start_index++;
-        temp.table_id_ = INTERMEIDATE_TABLEID;
-        break;
-      }
-      case PhysicalAggregation::State::kAvg: {
-        temp.attrName = "avg(" + temp.getName() + ")";
-        temp.index = aggregation_start_index++;
-        temp.table_id_ = INTERMEIDATE_TABLEID;
-      } break;
-      default: { assert(false); }
-    }
-    ret.push_back(temp);
+  int base_id = group_by_attrs_.size();
+  for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+    ret.push_back(aggregation_attrs_[i]->ExprNodeToAttr(base_id + i));
   }
   return ret;
 }
-unsigned long LogicalAggregation::EstimateGroupByCardinality(
+int64_t LogicalAggregation::EstimateGroupByCardinality(
     const PlanContext& plan_context) const {
-  if (group_by_attribute_list_.size() == 0) {
+  if (group_by_attrs_.size() == 0) {
     return 1;
   }
-  const unsigned long max_limits = 1024 * 1024;
-  const unsigned long min_limits = 1024 * 512;
-  unsigned long data_card = plan_context.GetAggregatedDataCardinality();
-  unsigned long ret;
+  const int64_t max_limits = 1024 * 1024;
+  const int64_t min_limits = 1024 * 512;
+  int64_t ret = plan_context.GetAggregatedDataCardinality();
+#ifndef NEWCONDI
   for (unsigned i = 0; i < group_by_attribute_list_.size(); i++) {
     if (group_by_attribute_list_[i].isUnique()) {
       ret = ret < max_limits ? ret : max_limits;
@@ -465,7 +417,7 @@ unsigned long LogicalAggregation::EstimateGroupByCardinality(
       return ret;
     }
   }
-  unsigned long group_by_domain_size = 1;
+  int64_t group_by_domain_size = 1;
   for (unsigned i = 0; i < group_by_attribute_list_.size(); i++) {
     AttributeStatistics* attr_stat =
         StatManager::getInstance()->getAttributeStatistic(
@@ -476,19 +428,20 @@ unsigned long LogicalAggregation::EstimateGroupByCardinality(
       group_by_domain_size *= attr_stat->getDistinctCardinality();
     }
   }
-  ret = group_by_domain_size;  // TODO(fzh): This is only the upper bound of
-                               // group_by
-                               // domain size;
+  ret = group_by_domain_size;
+// TODO(fzh): This is only the upper bound of group_by domain size;
 
+#else
   ret = ret < max_limits ? ret : max_limits;
   ret = ret > min_limits ? ret : min_limits;
   return ret;
+#endif
 }
 void LogicalAggregation::Print(int level) const {
-  printf("%*.sAggregation:", level * 8, " ");
+  printf("%*.sAggregation: aggregation_style: ", level * 8, " ");
   switch (aggregation_style_) {
-    case kAgg: {
-      printf("kAgg\n");
+    case kLocalAgg: {
+      printf("kLocalAgg\n");
       break;
     }
     case kReparGlobalAgg: {
@@ -501,37 +454,17 @@ void LogicalAggregation::Print(int level) const {
     }
     default: { printf("aggregation style is not given!\n"); }
   }
-  printf("group-by attributes:\n");
-  for (unsigned i = 0; i < this->group_by_attribute_list_.size(); i++) {
-    printf("%*.s", level * 8, " ");
-    printf("%s\n", group_by_attribute_list_[i].attrName.c_str());
+
+  cout << setw(level * kTabSize) << " "
+       << "group by attributes:" << endl;
+  for (int i = 0; i < group_by_attrs_.size(); ++i) {
+    cout << setw(level * kTabSize) << " " << group_by_attrs_[i]->alias_ << endl;
   }
-  printf("%*.saggregation attributes:\n", level * 8, " ");
-  for (unsigned i = 0; i < aggregation_attribute_list_.size(); i++) {
-    printf("%*.s", level * 8, " ");
-    switch (aggregation_function_list_[i]) {
-      case PhysicalAggregation::State::kCount: {
-        printf("Count: %s\n", aggregation_attribute_list_[i].attrName.c_str());
-        break;
-      }
-      case PhysicalAggregation::State::kMax: {
-        printf("Max: %s\n", aggregation_attribute_list_[i].attrName.c_str());
-        break;
-      }
-      case PhysicalAggregation::State::kMin: {
-        printf("Min: %s\n", aggregation_attribute_list_[i].attrName.c_str());
-        break;
-      }
-      case PhysicalAggregation::State::kSum: {
-        printf("Sum: %s\n", aggregation_attribute_list_[i].attrName.c_str());
-        break;
-      }
-      case PhysicalAggregation::State::kAvg: {
-        printf("Avg: %s\n", aggregation_attribute_list_[i].attrName.c_str());
-        break;
-      }
-      default: { break; }
-    }
+  cout << setw(level * kTabSize) << " "
+       << "aggregation attributes:" << endl;
+  for (int i = 0; i < aggregation_attrs_.size(); ++i) {
+    cout << setw(level * kTabSize) << " " << aggregation_attrs_[i]->alias_
+         << endl;
   }
   child_->Print(level + 1);
 }

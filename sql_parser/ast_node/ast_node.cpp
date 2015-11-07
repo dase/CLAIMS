@@ -232,7 +232,7 @@ void SemanticContext::GetTableAllColumn(string table,
     }
   }
 }
-void SemanticContext::RemoveMore(set<AstNode*>& new_set) {
+void SemanticContext::GetUniqueAggAttr(set<AstNode*>& new_set) {
   map<string, AstNode*> temp_map;
   bool exist = false;
   for (auto it = new_set.begin(); it != new_set.end(); ++it) {
@@ -377,7 +377,7 @@ ErrorNo SemanticContext::AddSelectAttrs(AstNode* select_node) {
 }
 set<AstNode*> SemanticContext::get_aggregation() { return aggregation_; }
 set<AstNode*> SemanticContext::get_groupby_attrs() {
-  RemoveMore(groupby_attrs_);
+  GetUniqueAggAttr(groupby_attrs_);
   return groupby_attrs_;
 }
 set<AstNode*> SemanticContext::get_select_attrs() { return select_attrs_; }
