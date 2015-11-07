@@ -58,16 +58,25 @@ int SchemaFix::getColumnOffset(unsigned index) const {
 /**
  * Attention: if columns with type is string that length is less than real data
  * length , data will be truncated.
- * TODO(yukai): after datatype.h modifies, whether have warning is depended on
- * Operate.toValue()
  */
-vector<unsigned> SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
-                                    const char attr_separator) {
+/*
+ * TODO(ANYONE): 检查源数据是否合法,如果来自kSQL, 若出现error则直接返回,
+ * 若只有warning,放入warning_columns_index,
+ * 同时处理warning(字符串过长,截断;数字类型不在合法范围内设为默认值);
+ * 如果来自kFile, 出现error将值设为默认值, 视为warning对待.
+ *
+ * 完成以上功能,可以在Operate类加入以下函数:
+ * int Check(const string& raw_string), 返回0:success, 1: warning, 2: error
+ * void SetDefault(string& raw_string) 设置源数据为默认值
+ */
+bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
+                        const char attr_separator,
+                        RawDataSource raw_data_source,
+                        vector<unsigned>& warning_columns_index) {
   string::size_type prev_pos = 0;
   string::size_type pos = 0;
 
   // store the index of columns that max length is less than real data length
-  vector<unsigned> warning_columns_index;
   warning_columns_index.clear();
 
   for (int i = 0; i < columns.size(); i++) {
@@ -79,7 +88,9 @@ vector<unsigned> SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
       int copy_length = actual_column_data_length;
       string text_column = text_tuple.substr(prev_pos, pos - prev_pos);
 
-      /**
+      // TODO(ANYONE): add more type checking include error check and warning
+      // check
+      /*
        * check the real data size of column whose type is string and choose the
        * minimum, and set the last char of string to '\0'
        */
@@ -94,8 +105,9 @@ vector<unsigned> SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
           warning_columns_index.push_back(i);
         }
       }
-      columns[i].operate->toValue((char*)binary_tuple + accum_offsets[i],
-                                  text_column.c_str());
+      columns[i].operate->toValue(
+          static_cast<char*>(binary_tuple) + accum_offsets[i],
+          text_column.c_str());
 
       //      cout << "Original: "
       //           << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
@@ -107,7 +119,7 @@ vector<unsigned> SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
       prev_pos = pos;
     }
   }
-  return warning_columns_index;
+  return true;
 }
 void SchemaFix::addColumn(column_type ct, unsigned size) {
   accum_offsets.push_back(totalsize);

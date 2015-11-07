@@ -17,6 +17,8 @@
 #endif
 #include "../data_type.h"
 
+enum RawDataSource { kFile = 0, kSQL };
+
 class Schema {
  public:
   enum schema_type { fixed, varaible };
@@ -50,15 +52,12 @@ class Schema {
   virtual void addColumn(column_type ct, unsigned size){};
   virtual void displayTuple(const void* tuple_start_address,
                             const char* spliter = "|") const;
-
   /**
-   * @brief Method description: transform a string into memory according schema
-   * @param
-   * @return  the index of columns that have warning
-   * @details   (additional)
+   * @brief Method description: see more in its derived class
    */
-  virtual vector<unsigned> toValue(std::string text_tuple, void* binary_tuple,
-                                   const char attr_separator) {
+  virtual bool toValue(std::string text_tuple, void* binary_tuple,
+                       const char attr_separator, RawDataSource raw_data_source,
+                       vector<unsigned>& warning_columns_index) {
     assert(false);
   }
   inline virtual void showAccum_off(){};

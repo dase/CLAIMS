@@ -93,9 +93,10 @@ class DataInjector {
    * @return true if tuple is not valid even though there are some warnings
    */
   bool CheckTupleValidity(string tuple_string, void* tuple_buffer,
+                          RawDataSource raw_data_source,
                           vector<unsigned>& warning_indexs);
 
-  RetCode AddRowIdColumn(const string& tuple_string);
+  inline RetCode AddRowIdColumn(const string& tuple_string);
 
   RetCode InsertSubTupleIntoProjection(int proj_index, void* tuple_buffer);
 
@@ -104,6 +105,10 @@ class DataInjector {
   RetCode FlushNotFullBlock();
 
   RetCode PrepareInitInfo(FileOpenFlag open_flag);
+
+  RetCode HandleSingleLine(string tuple_record, void* tuple_buffer,
+                           string data_source, uint64_t row_id_in_raw_data,
+                           ExecutedResult* result);
 
  private:
   TableDescriptor* table_;

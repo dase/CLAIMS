@@ -50,8 +50,22 @@ class SchemaFix : public Schema {
   // spliter)const;
   void addColumn(column_type ct, unsigned size);
   unsigned getColumnOffset(unsigned index);
-  vector<unsigned> toValue(std::string text_tuple, void* binary_tuple,
-                           const char attr_separator);
+
+  /**
+   * @brief Method description: check the validity of raw data, maybe reset raw
+   *        data value to default or truncate raw data value depend on raw data
+   *        source, and store raw data at binary_tuple
+   * @param text_tuple: store the raw data
+   * @param binary_tuple: the memory where data is stored
+   * @param attr_separator: column separator
+   * @param raw_data_source: kFile means that error raw data will be set default
+   *        value and treated as a warning; kSQL acts normally
+   * @param warning_columns_index: the index of columns that have warning
+   * @return true only if there is no error
+   */
+  bool toValue(std::string text_tuple, void* binary_tuple,
+               const char attr_separator, RawDataSource raw_data_source,
+               vector<unsigned>& warning_columns_index);
   inline void showAccum_off() {
     for (int i = 0; i < accum_offsets.size(); i++) {
       printf("%d  %d\n", i, accum_offsets[i]);

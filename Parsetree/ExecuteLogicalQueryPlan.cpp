@@ -263,10 +263,9 @@ bool query(const string& sql, query_result& result_set) {
 */
 bool CheckType(
     const column_type *col_type,
-    Expr *expr)  // check whether the string is digit, can use strtol()
-{
+    Expr *expr) {  // check whether the string is digit, can use strtol()
   nodetype insert_value_type = expr->type;
-  // TODO	对类型为int的列不能插入字符串等。。。
+  // TODO(ANYONE): 对类型为int的列不能插入字符串等。。。
   switch (col_type->type) {
     case t_int:
       return (insert_value_type != t_intnum) || strlen(expr->data) > INT_LENGTH;
@@ -277,9 +276,9 @@ bool CheckType(
       return (insert_value_type != t_approxnum);
     case t_string:
       return (insert_value_type != t_stringval) ||
-             strlen(expr->data) > col_type->get_length() - 1;  //---5.27fzh---
+             strlen(expr->data) > col_type->get_length() - 1;  // ---5.27fzh---
     // case t_u_long: return (insert_value_type != t_intnum) ||
-    // strlen(expr->data) > INT_LENGTH || (expr->data[0] == '-');	// =='-'
+    // strlen(expr->data) > INT_LENGTH || (expr->data[0] == '-'); // =='-'
     // 实际不可行，‘-’不会被识别进expr中
     case t_date:
       return false;
@@ -294,7 +293,7 @@ bool CheckType(
       return (insert_value_type != t_intnum);
     // case t_u_smallInt: return (insert_value_type != t_intnum) ||
     // (expr->data[0] == '-') || length(expr->data) > INT_LENGTH;
-    //	strtol();
+    //  strtol();
     default:
       return true;
   }
@@ -1309,6 +1308,7 @@ void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
   int ret = injector->LoadFromFile(path_names,
                                    static_cast<FileOpenFlag>(new_node->mode),
                                    result, new_node->sample);
+  LOG(INFO) << " load time: " << GetElapsedTime(start_time) / 1000.0 << endl;
   if (ret != kSuccess) {
     LOG(ERROR) << "failed to load files: ";
     for (auto it : path_names) {
@@ -1333,7 +1333,10 @@ void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
   result->SetResult("load data successfully", NULL);
 #endif
 
+  GETCURRENTTIME(start_save_catalog_time);
   catalog->saveCatalog();
+  LOG(INFO) << "save catalog time: "
+            << GetElapsedTime(start_save_catalog_time) / 1000.0 << std::endl;
   double elapsed_time = GetElapsedTime(start_time);
   cout << "execute " << elapsed_time / 1000 << " s" << endl;
   LOG(INFO) << "execute " << elapsed_time / 1000 << " s" << endl;
@@ -1449,7 +1452,7 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
           result->SetError("Value count is too few");
           break;
         }
-        /**
+        /*
          * insert value to ostringstream and if has warning return 1;
          * look out the order !
          */

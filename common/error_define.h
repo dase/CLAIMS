@@ -34,22 +34,19 @@
 typedef int RetCode;  // means return code
 
 #define EXEC_AND_ONLY_LOG_ERROR(f, err_info) \
-  ret = f;                                   \
-  if (ret != kSuccess) {                     \
+  if (kSuccess == (ret = f)) {               \
     LOG(ERROR) << err_info << std::endl;     \
   }
 
 #define EXEC_AND_LOG(f, info, err_info)  \
-  ret = f;                               \
-  if (ret == kSuccess) {                 \
+  if (kSuccess == (ret = f)) {           \
     LOG(INFO) << info << std::endl;      \
   } else {                               \
     LOG(ERROR) << err_info << std::endl; \
   }
 
 #define EXEC_AND_PLOG(f, info, err_info)  \
-  ret = f;                                \
-  if (ret == kSuccess) {                  \
+  if (kSuccess == (ret = f)) {            \
     LOG(INFO) << info << std::endl;       \
   } else {                                \
     PLOG(ERROR) << err_info << std::endl; \

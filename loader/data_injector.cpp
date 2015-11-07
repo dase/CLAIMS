@@ -28,6 +28,7 @@
 
 #include "./data_injector.h"
 
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -53,6 +54,7 @@
 #include "../catalog/projection_binding.h"
 #include "../Daemon/Daemon.h"
 #include "../utility/maths.h"
+#include "boost/date_time/posix_time/time_formatters.hpp"
 
 #define HDFS_LOAD
 
@@ -65,6 +67,7 @@ using claims::catalog::ProjectionBinding;
 using claims::catalog::Partitioner;
 using claims::catalog::ProjectionDescriptor;
 using claims::catalog::Catalog;
+using boost::lexical_cast;
 using namespace claims::common;
 
 DataInjector::DataInjector(TableDescriptor* table, const char col_separator,
@@ -182,12 +185,21 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
                                    FileOpenFlag open_flag,
                                    ExecutedResult* result, double sample_rate) {
   int ret = kSuccess;
+
+  GETCURRENTTIME(prepare_start_time);
   ret = PrepareInitInfo(open_flag);
+  LOG(INFO) << "prepare time: " << GetElapsedTime(prepare_start_time) << endl;
+
+  GETCURRENTTIME(open_start_time);
   ret = connector_->Open(open_flag);
   if (kSuccess != ret) {
     LOG(ERROR) << " failed to open connector" << endl;
     return ret;
   }
+  LOG(INFO) << "open connector time: " << GetElapsedTime(open_start_time)
+            << endl;
+
+  GETCURRENTTIME(unbind_time);
   if (FileOpenFlag::kCreateFile == open_flag) {
     /*
      * Before overwriting data, it is need to unbind all projection, as well as
@@ -215,12 +227,21 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     row_id_ = table_->getRowNumber();
     LOG(INFO) << "\n------------------Append  Begin!-----------------------\n";
   }
+  LOG(INFO) << "unbind time: " << GetElapsedTime(unbind_time) << endl;
 
   // read every raw data file
   int file_count = 0;
   uint64_t row_id_in_file = 0;
   uint64_t inserted_tuples_in_file = 0;
   uint64_t total_tuple_count = 0;
+  double total_check_time = 0;
+  double total_insert_time = 0;
+  double total_add_time = 0;
+  string tuple_record;
+
+  void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
+  if (tuple_buffer == NULL) return ENoMemory;
+
   for (auto file_name : input_file_names) {
     ifstream input_file(file_name.c_str());
     if (!input_file.good()) {
@@ -228,30 +249,33 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       result->SetError("Cannot open source file:" + file_name);
       return EOpenDiskFileFail;
     }
-    string tuple_record;
+
     // read every line
     while (getline(input_file, tuple_record, row_separator_) &&
            !input_file.eof()) {
-      /////////////////////////////////////////////
       ++row_id_in_file;
       // sample
       if (GetRandomDecimal() >= sample_rate) continue;
 
+      GETCURRENTTIME(add_time);
       EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple_record),
                               "failed to add row_id column for tuple");
+      total_add_time += GetElapsedTime(add_time);
 
-      void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
-      if (tuple_buffer == NULL) return ENoMemory;
+      LOG(INFO) << "after adding row id, tuple is:" << tuple_record << endl;
 
+      GETCURRENTTIME(start_check_time);
       vector<unsigned> warning_indexs;
-      if (!CheckTupleValidity(tuple_record, tuple_buffer, warning_indexs)) {
+      memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
+      if (!CheckTupleValidity(tuple_record, tuple_buffer, RawDataSource::kFile,
+                              warning_indexs)) {
         ostringstream oss;
         oss << "The data in " << file_name << ":" << row_id_in_file
             << " line is invalid " << std::endl;
         LOG(ERROR) << oss.str();
         result->SetError(oss.str());
+        return EInvalidInsertData;
       }
-
       for (auto it : warning_indexs) {
         ostringstream oss;
         oss << "Data truncated from " << table_->getAttribute(it).attrName
@@ -260,42 +284,44 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
         result->AppendWarning(oss.str());
         LOG(WARNING) << oss.str();
       }
+      total_check_time += GetElapsedTime(start_check_time);
 
-      ret = InsertSingleTuple(tuple_buffer);
-      if (kSuccess != ret)
-        LOG(ERROR) << "failed to insert tuple in " << file_name << ": line "
-                   << row_id_in_file << "" << std::endl;
+      GETCURRENTTIME(start_insert_time);
+      EXEC_AND_ONLY_LOG_ERROR(InsertSingleTuple(tuple_buffer),
+                              "failed to insert tuple in " << file_name
+                                                           << " at line "
+                                                           << row_id_in_file);
+
+      total_insert_time += GetElapsedTime(start_insert_time);
+
+      ++row_id_;
       tuple_record.clear();
-      DELETE_PTR(tuple_buffer);
-      ///////////////////////////////////
     }
+    LOG(INFO) << "insert all " << row_id_in_file << " line from " << file_name
+              << " into blocks" << endl;
+    DELETE_PTR(tuple_buffer);
     input_file.close();
     ++file_count;
   }
   LOG(INFO) << "handled " << file_count << " file, then flush unfilled block "
             << endl;
 
+  LOG(INFO) << "  total add time: " << total_add_time / 1000.0
+            << "  total check time: " << total_check_time / 1000.0
+            << "  total insert time: " << total_insert_time / 1000.0 << endl;
+
   EXEC_AND_LOG(FlushNotFullBlock(), "flush all last block that are not full",
                "failed to flush all last block");
 
-//  if (kSuccess == (ret = FlushNotFullBlock()))
-//    LOG(INFO) << "flush all last block that are not full" << endl;
-//  else
-//    LOG(ERROR) << "failed to flush all last block" << endl;
-
 #ifdef HDFS_LOAD
-  //  if (kSuccess != (ret = connector_->Close()))
-  //    LOG(ERROR) << "Failed to close connector." << endl;
-  //  else
-  //    LOG(INFO) << "closed connector." << endl;
-
   EXEC_AND_LOG(connector_->Close(), "Failed to close connector.",
                "closed connector.");
 #endif
 
-  if (kSuccess != (ret = UpdateCatalog(open_flag))) {
-    LOG(ERROR) << "failed to update catalog information" << endl;
-  }
+  GETCURRENTTIME(update_time);
+  EXEC_AND_ONLY_LOG_ERROR(UpdateCatalog(open_flag),
+                          "failed to update catalog information");
+  LOG(INFO) << "update time: " << GetElapsedTime(update_time) << endl;
 
   LOG(INFO) << "\n-----------------------"
             << (kCreateFile == open_flag ? "Load" : "Append")
@@ -330,26 +356,36 @@ RetCode DataInjector::InsertFromString(const string tuples,
   string::size_type cur = 0;
   int prev_cur = 0;
   int line = 0;
+  vector<void*> correct_tuple_buffer;
+
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
     ++line;
-    string tuple = tuples.substr(prev_cur, cur);
-    LOG(INFO) << "row " << line << ": " << tuple << endl;
 
-    EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple),
+    string tuple_record = tuples.substr(prev_cur, cur);
+    LOG(INFO) << "row " << line << ": " << tuple_record << endl;
+
+    EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple_record),
                             "failed to add row_id column for tuple");
-    void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
-    if (tuple_buffer == NULL) return ENoMemory;
 
     vector<unsigned> warning_indexs;
-    if (!CheckTupleValidity(tuple, tuple_buffer, warning_indexs)) {
+    void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
+    if (tuple_buffer == NULL) return ENoMemory;
+    if (!CheckTupleValidity(tuple_record, tuple_buffer, RawDataSource::kSQL,
+                            warning_indexs)) {
+      row_id_ -= correct_tuple_buffer.size();
+      for (auto it : correct_tuple_buffer) {
+        DELETE_PTR(it);
+      }
+      correct_tuple_buffer.clear();
+
       ostringstream oss;
-      oss << "The data in "
-          << ":" << line << " line is invalid " << std::endl;
+      oss << "The data at " << line << " line is invalid " << std::endl;
       LOG(ERROR) << oss.str();
       result->SetError(oss.str());
       return EInvalidInsertData;
     }
 
+    correct_tuple_buffer.push_back(tuple_buffer);
     for (auto it : warning_indexs) {
       ostringstream oss;
       oss << "Data truncated from " << table_->getAttribute(it).attrName
@@ -357,28 +393,28 @@ RetCode DataInjector::InsertFromString(const string tuples,
       result->AppendWarning(oss.str());
       LOG(WARNING) << oss.str();
     }
+    ++row_id_;
+    prev_cur = cur + 1;
+  }
 
-    ret = InsertSingleTuple(tuple_buffer);
+  for (auto it : correct_tuple_buffer) {
+    ret = InsertSingleTuple(it);
     if (kSuccess != ret) {
       LOG(ERROR) << "failed to insert tuple in line " << line << ""
                  << std::endl;
-      return ret;
     }
-    prev_cur = cur + 1;
+    DELETE_PTR(it);
   }
-  LOG(INFO) << "totally inserted " << line << " rows data into blocks";
-
-  ret = FlushNotFullBlock();
-
+  correct_tuple_buffer.clear();
+  LOG(INFO) << "totally inserted " << line << " rows data into blocks" << endl;
+  EXEC_AND_LOG(FlushNotFullBlock(), "flush all last block that are not full",
+               "failed to flush all last block");
 #ifdef HDFS_LOAD
   EXEC_AND_LOG(connector_->Close(), "closed connector.",
                "Failed to close connector.");
 #endif
-
-  ret = UpdateCatalog(kAppendFile);
-  if (kSuccess != ret) {
-    LOG(ERROR) << "failed to update catalog information" << endl;
-  }
+  EXEC_AND_ONLY_LOG_ERROR(UpdateCatalog(kAppendFile),
+                          "failed to update catalog information");
 
   LOG(INFO) << "\n---------------------Insert End!---------------------\n";
   return ret;
@@ -437,11 +473,22 @@ RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
   return ret;
 }
 
-RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
-  column_type* tmp = new column_type(t_u_long);
-  std::string tmp_str = tmp->operate->toString(&row_id_);
-  delete tmp;
-  tuple_string = tmp_str + col_separator_ + tuple_string;
+inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
+  static column_type row_id(t_u_long);
+  tuple_string =
+      row_id.operate->toString(&row_id_) + col_separator_ + tuple_string;
+
+  // tuple_string = lexical_cast<string>(row_id_) + col_separator_ +
+  // tuple_string;
+
+  //  ostringstream oss;
+  //  oss << row_id_ << col_separator_ << tuple_string;
+  //  tuple_string = oss.str();
+
+  //  char res[21] = {0};
+  //  snprintf(res, sizeof(res), "%lu", row_id_);
+  //  tuple_string = string(res) + col_separator_ + tuple_string;
+
   return kSuccess;
 }
 
@@ -473,7 +520,7 @@ RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
                      partition_functin_list_[i]->getNumberOfPartitions());
 
   LOG(INFO) << "insert tuple into partition: " << part << endl;
-  tuples_per_partition[i][part]++;
+  ++tuples_per_partition[i][part];
 
   // copy tuple to buffer
   void* block_tuple_addr = pj_buffer[i][part]->allocateTuple(tuple_max_length);
@@ -498,7 +545,7 @@ RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
                << tuple_max_length << std::endl;
   }
 
-  free(target);
+  DELETE_PTR(target);
   return ret;
 }
 
@@ -516,20 +563,75 @@ RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
   return ret;
 }
 
+/**
+ * TODO(ANYONE):
+ * if called by load/append from files, always return true and set all value
+ * that is invalid to default value
+ * if called by insert from SQL, return true or false depending on whether there
+ * is invalid data value
+ */
 bool DataInjector::CheckTupleValidity(string tuple_string, void* tuple_buffer,
+                                      RawDataSource raw_data_source,
                                       vector<unsigned>& warning_indexs) {
   if (tuple_string.length() == 0) {
     LOG(ERROR) << "The tuple record is null!\n";
     return false;
   }
-  warning_indexs =
-      table_schema_->toValue(tuple_string, tuple_buffer, col_separator_);
-  row_id_++;
+  bool success =
+      table_schema_->toValue(tuple_string, tuple_buffer, col_separator_,
+                             raw_data_source, warning_indexs);
 
-  LOG(INFO) << "text : " << tuple_string << endl;
-  LOG(INFO) << "tuple: ";
-  table_->getSchema()->displayTuple(tuple_buffer, " | ");
-  return true;
+  //  LOG(INFO) << "text : " << tuple_string << endl;
+  //  LOG(INFO) << "tuple: ";
+  //  table_->getSchema()->displayTuple(tuple_buffer, " | ");
+  return success;
 }
+
+/*RetCode DataInjector::HandleSingleLine(string tuple_record, void*
+tuple_buffer,
+                                       string data_source,
+                                       uint64_t row_id_in_raw_data,
+                                       ExecutedResult* result) {
+  int ret = kSuccess;
+  if (NULL == tuple_buffer) {
+    LOG(ERROR) << "tuple_buffer point to NULL" << endl;
+    return (ret = EParamInvalid);
+  } else if (tuple_record == "") {
+    LOG(ERROR) << "tuple_record is NULL" << endl;
+    return (ret = EParamInvalid);
+  }
+  memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
+
+  EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple_record),
+                          "failed to add row_id column for tuple");
+
+  GETCURRENTTIME(start_check_time);
+  vector<unsigned> warning_indexs;
+  if (!CheckTupleValidity(tuple_record, tuple_buffer, warning_indexs)) {
+    ostringstream oss;
+    oss << "The data in " << data_source << ":" << row_id_in_raw_data
+        << " line is invalid " << std::endl;
+    LOG(ERROR) << oss.str();
+    result->SetError(oss.str());
+    return EInvalidInsertData;
+  }
+  for (auto it : warning_indexs) {
+    ostringstream oss;
+    oss << "Data truncated from " << table_->getAttribute(it).attrName
+        << " at line: " << row_id_in_raw_data << " in : " << data_source
+        << "\n";
+    result->AppendWarning(oss.str());
+    LOG(WARNING) << oss.str();
+  }
+  ++row_id_;
+
+  GETCURRENTTIME(start_insert_time);
+  ret = InsertSingleTuple(tuple_buffer);
+
+  if (kSuccess != ret)
+    LOG(ERROR) << "failed to insert tuple in " << data_source << ": line "
+               << row_id_in_raw_data << "" << std::endl;
+  tuple_record.clear();
+}*/
 } /* namespace loader */
 } /* namespace claims */
