@@ -34,7 +34,7 @@
 typedef int RetCode;  // means return code
 
 #define EXEC_AND_ONLY_LOG_ERROR(f, err_info) \
-  if (kSuccess == (ret = f)) {               \
+  if (kSuccess != (ret = f)) {               \
     LOG(ERROR) << err_info << std::endl;     \
   }
 

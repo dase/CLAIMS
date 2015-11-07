@@ -26,6 +26,10 @@
  *
  */
 
+// this macro decides whether write DLOG message into log file.
+// Open means no DLOG message.
+#define NDEBUG
+
 #include "./disk_file_handle_imp.h"
 
 #include <glog/logging.h>
@@ -82,27 +86,30 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
         write(fd_, static_cast<const char*>(buffer) + total_write_num,
               length - total_write_num);
     if (-1 == write_num) {
-      PLOG(ERROR) << "failed to write to file(" << fd_ << "): " << file_name_
-                  << endl;
+      PLOG(ERROR) << "failed to write buffer(" << buffer << ") to file(" << fd_
+                  << "): " << file_name_ << endl;
       return EWriteDiskFileFail;
     }
     total_write_num += write_num;
   }
   if (length > 100) {
-    LOG(INFO) << "write " << length << " length data from " << buffer
-              << " into disk file:" << file_name_ << endl;
+    DLOG(INFO) << "write " << length << " length data from " << buffer
+               << " into disk file:" << file_name_ << endl;
   } else {
-    LOG(INFO) << "write " << length
-              << " length data :" << static_cast<const char*>(buffer)
-              << " from " << buffer << " into  disk file:" << file_name_
-              << endl;
+    DLOG(INFO) << "write " << length
+               << " length data :" << static_cast<const char*>(buffer)
+               << " from " << buffer << " into  disk file:" << file_name_
+               << endl;
   }
   return kSuccess;
 }
 
 RetCode DiskFileHandleImp::Close() {
-  if (-1 == fd_ || 0 == FileClose(fd_)) {
-    LOG(INFO) << "closed file " << file_name_ << " whose fd is" << fd_ << endl;
+  if (-1 == fd_) {
+    return kSuccess;
+  } else if (0 == FileClose(fd_)) {
+    LOG(INFO) << "closed file: " << file_name_ << " whose fd is " << fd_
+              << endl;
     fd_ = -1;
     return kSuccess;
   } else {

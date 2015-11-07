@@ -26,6 +26,10 @@
  *
  */
 
+// this macro decides whether write DLOG message into log file.
+// Open means no DLOG message.
+#define NDEBUG
+
 #include "./data_injector.h"
 
 #include <stdlib.h>
@@ -33,6 +37,9 @@
 #include <string>
 #include <vector>
 
+#include "./file_connector.h"
+#include "./table_file_connector.h"
+#include "./single_file_connector.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/Schema/TupleConvertor.h"
@@ -44,18 +51,16 @@
 
 #include "../catalog/projection.h"
 #include "../catalog/table.h"
+#include "../catalog/catalog.h"
+#include "../catalog/projection_binding.h"
 
 #include "../Config.h"
 #include "../Debug.h"
-#include "./file_connector.h"
-#include "./table_file_connector.h"
-#include "./single_file_connector.h"
-#include "../catalog/catalog.h"
-#include "../catalog/projection_binding.h"
 #include "../Daemon/Daemon.h"
 #include "../utility/maths.h"
-#include "boost/date_time/posix_time/time_formatters.hpp"
 
+// this macro decides whether really write data into data file.
+// Open means no write.
 #define HDFS_LOAD
 
 namespace claims {
@@ -262,7 +267,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
                               "failed to add row_id column for tuple");
       total_add_time += GetElapsedTime(add_time);
 
-      LOG(INFO) << "after adding row id, tuple is:" << tuple_record << endl;
+      DLOG(INFO) << "after adding row id, tuple is:" << tuple_record << endl;
 
       GETCURRENTTIME(start_check_time);
       vector<unsigned> warning_indexs;
@@ -291,7 +296,6 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
                               "failed to insert tuple in " << file_name
                                                            << " at line "
                                                            << row_id_in_file);
-
       total_insert_time += GetElapsedTime(start_insert_time);
 
       ++row_id_;
@@ -314,8 +318,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
                "failed to flush all last block");
 
 #ifdef HDFS_LOAD
-  EXEC_AND_LOG(connector_->Close(), "Failed to close connector.",
-               "closed connector.");
+  EXEC_AND_LOG(connector_->Close(), "closed connector.",
+               "Failed to close connector.");
 #endif
 
   GETCURRENTTIME(update_time);
@@ -466,8 +470,8 @@ RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
             ->UpdatePartitionWithNumberOfChunksToBlockManager(
                 j, blocks_per_partition[i][j]);
       }
-      LOG(INFO) << "Number of blocks " << i << "\t" << j
-                << "\t: " << blocks_per_partition[i][j] << endl;
+      LOG(INFO) << "Number of blocks in " << i << "th projection, " << j
+                << "th partition\t: " << blocks_per_partition[i][j] << endl;
     }
   }
   return ret;
@@ -519,7 +523,8 @@ RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
                      partition_key_addr,
                      partition_functin_list_[i]->getNumberOfPartitions());
 
-  LOG(INFO) << "insert tuple into partition: " << part << endl;
+  DLOG(INFO) << "insert tuple into projection: " << i << ", partition: " << part
+             << endl;
   ++tuples_per_partition[i][part];
 
   // copy tuple to buffer
@@ -557,7 +562,6 @@ RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
 RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
   int ret = kSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
-    LOG(INFO) << "begin to insert tuple into projection: " << i << endl;
     ret = InsertSubTupleIntoProjection(i, tuple_buffer);
   }
   return ret;
@@ -570,9 +574,10 @@ RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
  * if called by insert from SQL, return true or false depending on whether there
  * is invalid data value
  */
-bool DataInjector::CheckTupleValidity(string tuple_string, void* tuple_buffer,
-                                      RawDataSource raw_data_source,
-                                      vector<unsigned>& warning_indexs) {
+inline bool DataInjector::CheckTupleValidity(string tuple_string,
+                                             void* tuple_buffer,
+                                             RawDataSource raw_data_source,
+                                             vector<unsigned>& warning_indexs) {
   if (tuple_string.length() == 0) {
     LOG(ERROR) << "The tuple record is null!\n";
     return false;
@@ -633,5 +638,6 @@ tuple_buffer,
                << row_id_in_raw_data << "" << std::endl;
   tuple_record.clear();
 }*/
+
 } /* namespace loader */
 } /* namespace claims */

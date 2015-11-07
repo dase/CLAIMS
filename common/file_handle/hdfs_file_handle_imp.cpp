@@ -26,12 +26,17 @@
  *
  */
 
-#include "../file_handle/hdfs_file_handle_imp.h"
+// this macro decides whether write DLOG message into log file.
+// Open means no DLOG message.
+#define NDEBUG
+
+#include "./hdfs_file_handle_imp.h"
 #include <glog/logging.h>
 #include <string>
 
 #include "../../Config.h"
 #include "../memory_handle.h"
+
 namespace claims {
 namespace common {
 
@@ -48,7 +53,9 @@ HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
 }
 
 HdfsFileHandleImp::~HdfsFileHandleImp() {
-  int ret = hdfsDisconnect(fs_);
+  int ret = Close();
+  if (kSuccess != kSuccess) LOG(ERROR) << "failed to close " << endl;
+  ret = hdfsDisconnect(fs_);
   if (ret != 0) LOG(ERROR) << "failed to disconnect to hdfs" << endl;
 }
 
@@ -90,27 +97,31 @@ RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
         fs_, file_, static_cast<const char*>(buffer) + total_write_num,
         length - total_write_num);
     if (-1 == write_num) {
-      PLOG(ERROR) << "failed to write to file: " << file_name_ << endl;
+      PLOG(ERROR) << "failed to write buffer(" << buffer
+                  << ") to file: " << file_name_ << endl;
       return EWriteDiskFileFail;
     }
     total_write_num += write_num;
   }
   if (length > 100) {
-    LOG(INFO) << "write " << length << " length data from " << buffer
-              << " into hdfs file:" << file_name_ << endl;
+    DLOG(INFO) << "write " << length << " length data from " << buffer
+               << " into hdfs file:" << file_name_ << endl;
   } else {
-    LOG(INFO) << "write " << length
-              << " length data :" << static_cast<const char*>(buffer)
-              << " from " << buffer << " into  hdfs file:" << file_name_
-              << endl;
+    DLOG(INFO) << "write " << length
+               << " length data :" << static_cast<const char*>(buffer)
+               << " from " << buffer << " into  hdfs file:" << file_name_
+               << endl;
   }
   return kSuccess;
 }
 
 RetCode HdfsFileHandleImp::Close() {
+  if (NULL == file_) {
+    return kSuccess;
+  }
   assert(fs_ != NULL && "failed to connect hdfs");
   if (0 != hdfsCloseFile(fs_, file_)) {
-    LOG(ERROR) << "failed to close hdfs file " << file_name_ << endl;
+    LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
     return ECloseHdfsFileFail;
   }
   file_ = NULL;

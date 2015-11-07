@@ -92,9 +92,9 @@ class DataInjector {
    * @param warning_indexs: store the index of columns which have warning
    * @return true if tuple is not valid even though there are some warnings
    */
-  bool CheckTupleValidity(string tuple_string, void* tuple_buffer,
-                          RawDataSource raw_data_source,
-                          vector<unsigned>& warning_indexs);
+  inline bool CheckTupleValidity(string tuple_string, void* tuple_buffer,
+                                 RawDataSource raw_data_source,
+                                 vector<unsigned>& warning_indexs);
 
   inline RetCode AddRowIdColumn(const string& tuple_string);
 

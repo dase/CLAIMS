@@ -5,13 +5,17 @@
  *      Author: wangli
  */
 
-#include "SchemaFix.h"
+// this macro decides whether write DLOG message into log file.
+// Open means no DLOG message.
+#define NDEBUG
 
+#include "SchemaFix.h"
+#include <memory.h>
 #include <glog/logging.h>
 #include <string>
-#include <memory.h>
 #include <algorithm>
 #include <vector>
+
 SchemaFix::SchemaFix(const std::vector<column_type>& col) : Schema(col) {
   //	accum_offsets=new unsigned[columns.size()];	//new
   totalsize = 0;
@@ -60,7 +64,8 @@ int SchemaFix::getColumnOffset(unsigned index) const {
  * length , data will be truncated.
  */
 /*
- * TODO(ANYONE): 检查源数据是否合法,如果来自kSQL, 若出现error则直接返回,
+ * TODO(yukai, lizhifang): 检查源数据是否合法,如果来自kSQL,
+ * 若出现error则直接返回,
  * 若只有warning,放入warning_columns_index,
  * 同时处理warning(字符串过长,截断;数字类型不在合法范围内设为默认值);
  * 如果来自kFile, 出现error将值设为默认值, 视为warning对待.
@@ -75,49 +80,40 @@ bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
                         vector<unsigned>& warning_columns_index) {
   string::size_type prev_pos = 0;
   string::size_type pos = 0;
-
-  // store the index of columns that max length is less than real data length
   warning_columns_index.clear();
 
-  for (int i = 0; i < columns.size(); i++) {
-    for (; (attr_separator != text_tuple[pos]) && (pos < text_tuple.length());
-         pos++) {
-    }
-    if (prev_pos <= pos) {
-      int actual_column_data_length = pos - prev_pos;
-      int copy_length = actual_column_data_length;
-      string text_column = text_tuple.substr(prev_pos, pos - prev_pos);
+  for (int i = 0; i < columns.size(); ++i) {
+    pos = text_tuple.find(attr_separator, prev_pos);
 
-      // TODO(ANYONE): add more type checking include error check and warning
-      // check
-      /*
-       * check the real data size of column whose type is string and choose the
-       * minimum, and set the last char of string to '\0'
-       */
-      if (0 == strcmp(typeid(*(columns[i].operate)).name(),
-                      typeid(OperateString).name())) {
-        int column_max_length = columns[i].size - 1;
+    int actual_column_data_length = pos - prev_pos;
+    string text_column = text_tuple.substr(prev_pos, pos - prev_pos);
 
-        if (actual_column_data_length > column_max_length) {
-          LOG(WARNING) << "Data truncated for column " << i << std::endl;
-          copy_length = column_max_length;
-          text_column = text_tuple.substr(prev_pos, copy_length) + "\0 ";
-          warning_columns_index.push_back(i);
-        }
+    // TODO(yukai, lizhifang): should be implemented by Operate.Check()
+    /*
+     * check the real data size of column whose type is string and choose the
+     * minimum, and set the last char of string to '\0'
+     */
+    if (0 == strcmp(typeid(*(columns[i].operate)).name(),
+                    typeid(OperateString).name())) {
+      int column_max_length = columns[i].size - 1;
+
+      if (actual_column_data_length > column_max_length) {
+        LOG(WARNING) << "Data truncated for column " << i << std::endl;
+        text_column = text_tuple.substr(prev_pos, column_max_length) + "\0 ";
+        warning_columns_index.push_back(i);
       }
-      columns[i].operate->toValue(
-          static_cast<char*>(binary_tuple) + accum_offsets[i],
-          text_column.c_str());
-
-      //      cout << "Original: "
-      //           << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
-      //           << "\t Transfer: "
-      //           << columns[i].operate->toString(binary_tuple +
-      //           accum_offsets[i])
-      //           << endl;
-      pos++;
-      prev_pos = pos;
     }
+
+    columns[i].operate->toValue(
+        static_cast<char*>(binary_tuple) + accum_offsets[i],
+        text_column.c_str());
+
+    DLOG(INFO) << "Original: "
+               << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
+               << "\t Transfer: "
+               << columns[i].operate->toString(binary_tuple + accum_offsets[i])
+               << endl;
+    prev_pos = pos + 1;
   }
   return true;
 }
