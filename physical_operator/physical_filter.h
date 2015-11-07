@@ -51,7 +51,8 @@
 #include "../common/Expression/qnode.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
-
+#include "../common/expression/expr_node.h"
+using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
 /**
@@ -66,6 +67,7 @@ class PhysicalFilter : public PhysicalOperator {
     BlockStreamBase* temp_block_;
     BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
     vector<QNode*> thread_qual_;
+    vector<ExprNode*> thread_condi_;
     ~FilterThreadContext();
   };
 
@@ -100,6 +102,7 @@ class PhysicalFilter : public PhysicalOperator {
     PhysicalOperatorBase* child_;
     unsigned block_size_;
     vector<QNode*> qual_;
+    vector<ExprNode*> condition_;
     std::vector<AttributeComparator> comparator_list_;
     map<string, int> column_id_;
 

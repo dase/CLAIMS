@@ -8,11 +8,13 @@
  */
 
 #include "./expr_type_cast.h"
+namespace claims {
+
+namespace common {
 TypeCastFunc ExprTypeCast::type_cast_func_[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
-ExprTypeCast::ExprTypeCast() {
-}
+ExprTypeCast::ExprTypeCast() {}
 
-ExprTypeCast::~ExprTypeCast() {
-}
+ExprTypeCast::~ExprTypeCast() {}
 
-
+}  // namespace common
+}  // namespace claims

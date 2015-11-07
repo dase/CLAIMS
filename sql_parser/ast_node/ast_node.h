@@ -31,9 +31,12 @@
 #include <vector>
 #include <utility>
 
+//#include "./ast_select_stmt.h"
 #include "../../common/Expression/qnode.h"
 #include "../../logical_operator/logical_operator.h"
+#include "../../common/expression/expr_node.h"
 using claims::logical_operator::LogicalOperator;
+using claims::common::ExprNode;
 using std::vector;
 using std::pair;
 using std::map;
@@ -147,6 +150,7 @@ enum ErrorNoType {
   eLeftTableIsNULLInJoin,
   eNoDataTypeInConst,
   eEqualJoinCondiInATable,
+  eEqualJoinCondiNotMatch,
 };
 // the order should be keep
 enum SubExprType {
@@ -191,7 +195,8 @@ class SemanticContext {
   ErrorNo AddSelectAttrs(AstNode* select_node);
   void GetTableAllColumn(const string table,
                          multimap<string, string>& new_columns);
-  void RemoveMore(set<AstNode*>& new_set);
+  void GetUniqueAggAttr(set<AstNode*>& new_set);
+  void ClearSelectAttrs() { select_attrs_.clear(); }
   set<AstNode*> get_aggregation();
   set<AstNode*> get_groupby_attrs();
   set<AstNode*> get_select_attrs();
@@ -203,6 +208,7 @@ class SemanticContext {
   void PrintContext();
   SQLClauseType clause_type_;
   bool have_agg;
+  vector<AstNode*> select_expr_;
 
  private:
   set<AstNode*> aggregation_;
@@ -261,6 +267,10 @@ class AstNode {
   }
   virtual ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan) { return eOK; }
   virtual ErrorNo GetLogicalPlan(QNode*& logic_expr,
+                                 LogicalOperator* child_logic_plan) {
+    return eOK;
+  }
+  virtual ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                                  LogicalOperator* child_logic_plan) {
     return eOK;
   }

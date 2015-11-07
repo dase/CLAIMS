@@ -41,7 +41,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "+") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_add, t_qexpr_cal, calnode->str);
@@ -49,7 +49,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "-") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_minus, t_qexpr_cal, calnode->str);
@@ -57,7 +57,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "*") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_multiply, t_qexpr_cal, calnode->str);
@@ -65,7 +65,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "/") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_divide, t_qexpr_cal, calnode->str);
@@ -73,7 +73,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "%") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_mod, t_qexpr_cal, calnode->str);
@@ -81,7 +81,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "LIKE") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *likenode = new QExpr_binary(
             lnode, rnode, a_type, oper_like, t_qexpr_cmp, calnode->str);
@@ -89,7 +89,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "NLIKE") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *likenode = new QExpr_binary(
             lnode, rnode, a_type, oper_not_like, t_qexpr_cmp, calnode->str);
@@ -123,7 +123,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         }
         vector<QNode *> cmpnode;
         for (int i = 0; i < lnode.size(); i++) {
-          data_type a_type = TypePromotion::arith_type_promotion_map
+          data_type a_type = TypePromotionMatrix::type_conversion_matrix
               [lnode[i]->actual_type][rnode[0][i]->actual_type];
           QExpr_binary *qcalnode =
               new QExpr_binary(lnode[i], rnode[0][i], a_type, oper_equal,
@@ -164,7 +164,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         for (int i = 0; i < lnode.size();
              i++)  // more comparisons form one list
         {
-          data_type a_type = TypePromotion::arith_type_promotion_map
+          data_type a_type = TypePromotionMatrix::type_conversion_matrix
               [lnode[i]->actual_type][rnode[0][i]->actual_type];
           QExpr_binary *qcalnode =
               new QExpr_binary(lnode[i], rnode[0][i], a_type, oper_equal,
@@ -176,7 +176,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "CMP") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [lnode->actual_type][rnode->actual_type];
         switch (calnode->cmp) {
           case 1:  //"<"
@@ -379,7 +379,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         QNode *arg = transformqual(funcnode->args, child);
         QNode *param1 = transformqual(funcnode->parameter1, child);
         QNode *param2 = transformqual(funcnode->parameter2, child);
-        data_type a_type = TypePromotion::arith_type_promotion_map
+        data_type a_type = TypePromotionMatrix::type_conversion_matrix
             [arg->actual_type][param1->actual_type];
         QNode *lnext = new QExpr_binary(arg, param1, a_type, oper_great_equal,
                                         t_qexpr_cmp, "arg>=parma1");

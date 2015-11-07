@@ -38,7 +38,7 @@
 
 namespace claims {
 namespace logical_operator {
-
+#define kTabSize 4
 using claims::physical_operator::PhysicalOperatorBase;
 enum OperatorType {
   kLogicalScan,

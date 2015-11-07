@@ -350,19 +350,24 @@ bool PhysicalHashJoin::Close() {
 
 void PhysicalHashJoin::Print() {
   LOG(INFO) << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
+  cout << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
+
   LOG(INFO) << "------Join Left-------" << endl;
+  cout << "------Join Left-------" << endl;
+
   state_.child_left_->Print();
   LOG(INFO) << "------Join Right-------" << endl;
+  cout << "------Join Right-------" << endl;
 
   state_.child_right_->Print();
 }
 
 inline void PhysicalHashJoin::IsMatch(void* l_tuple_addr, void* r_tuple_addr,
-                                  void* return_addr,
-                                  vector<unsigned>& l_join_index,
-                                  vector<unsigned>& r_join_index,
-                                  Schema* l_schema, Schema* r_schema,
-                                  ExprFuncTwoTuples func) {
+                                      void* return_addr,
+                                      vector<unsigned>& l_join_index,
+                                      vector<unsigned>& r_join_index,
+                                      Schema* l_schema, Schema* r_schema,
+                                      ExprFuncTwoTuples func) {
   bool key_exit = true;
   for (unsigned i = 0; i < r_join_index.size(); i++) {
     void* key_in_input =
@@ -378,12 +383,10 @@ inline void PhysicalHashJoin::IsMatch(void* l_tuple_addr, void* r_tuple_addr,
   *(bool*)return_addr = key_exit;
 }
 
-inline void PhysicalHashJoin::IsMatchCodegen(void* l_tuple_addr, void* r_tuple_addr,
-                                         void* return_addr,
-                                         vector<unsigned>& l_join_index,
-                                         vector<unsigned>& r_join_index,
-                                         Schema* l_schema, Schema* r_schema,
-                                         ExprFuncTwoTuples func) {
+inline void PhysicalHashJoin::IsMatchCodegen(
+    void* l_tuple_addr, void* r_tuple_addr, void* return_addr,
+    vector<unsigned>& l_join_index, vector<unsigned>& r_join_index,
+    Schema* l_schema, Schema* r_schema, ExprFuncTwoTuples func) {
   func(l_tuple_addr, r_tuple_addr, return_addr);
 }
 

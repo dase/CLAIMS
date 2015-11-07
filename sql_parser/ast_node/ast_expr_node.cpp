@@ -25,19 +25,29 @@
  *
  */
 
-#include "../ast_node/ast_expr_node.h"
-
 #include <assert.h>
 #include <glog/logging.h>
-
 #include <iostream>  //  NOLINT
 #include <iomanip>
 #include <string>
 #include <bitset>
-
+#include "../ast_node/ast_expr_node.h"
 #include "./ast_select_stmt.h"
 #include "../../common/data_type.h"
-#include "../../common/TypePromotionMap.h"
+#include "../../common/expression/expr_node.h"
+#include "../../common/expression/type_conversion_matrix.h"
+#include "../../common/expression/expr_const.h"
+#include "../../common/expression/expr_binary.h"
+#include "../../common/expression/expr_ternary.h"
+#include "../../common/expression/expr_unary.h"
+
+using claims::common::ExprBinary;
+using claims::common::ExprNodeType;
+using claims::common::ExprConst;
+using claims::common::ExprTernary;
+using claims::common::ExprUnary;
+using claims::common::OperType;
+using claims::common::TypeConversionMatrix;
 using std::cout;
 using std::endl;
 using std::cin;
@@ -101,6 +111,30 @@ ErrorNo AstExprConst::GetLogicalPlan(QNode*& logic_expr,
   }
   logic_expr = new QExpr(const_cast<char*>(data_.c_str()), actual_type,
                          const_cast<char*>(data_.c_str()));
+  return eOK;
+}
+ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
+                                     LogicalOperator* child_logic_plan) {
+  data_type actual_type = t_string;
+  if (expr_type_ == "CONST_INT") {
+    if (atol(data_.c_str()) > INT_MAX) {
+      actual_type = t_u_long;
+    } else {
+      actual_type = t_int;
+    }
+  } else if (expr_type_ == "CONST_BOOL") {
+    actual_type = t_boolean;
+  } else if (expr_type_ == "CONST_STRING") {
+    actual_type = t_string;
+  } else if (expr_type_ == "CONST_DOUBLE") {
+    actual_type = t_double;
+  } else if (expr_type_ == "CONST") {
+    actual_type = t_string;
+  } else {
+    LOG(ERROR) << "no actual_type!" << endl;
+    return eNoDataTypeInConst;
+  }
+  logic_expr = new ExprConst(ExprNodeType::t_qexpr, actual_type, data_, data_);
   return eOK;
 }
 
@@ -206,8 +240,59 @@ void AstExprUnary::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprUnary::GetLogicalPlan(QNode*& logic_expr,
+ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
                                      LogicalOperator* child_logic_plan) {
+  data_type get_type, actual_type;
+  OperType oper;
+  oper = OperType::oper_none;
+  if (expr_type_ == "+") {
+  } else if (expr_type_ == "-") {
+    oper = OperType::oper_negative;
+  } else if (expr_type_ == "!" || expr_type_ == "NOT") {
+    oper = OperType::oper_not;
+  } else if (expr_type_ == "IS_NULL") {
+  } else if (expr_type_ == "IS_NOT_NULL") {
+  } else if (expr_type_ == "IS_BOOL") {
+  } else if (expr_type_ == "IS_NOT_BOOL") {
+  } else if (expr_type_ == "EXSIST") {
+  } else if (expr_type_ == "NOT_EXSIST") {
+  } else if (expr_type_ == "COUNT_ALL") {
+    oper = OperType::oper_agg_count;
+  } else if (expr_type_ == "COUNT") {
+    oper = OperType::oper_agg_count;
+
+  } else if (expr_type_ == "MAX") {
+    oper = OperType::oper_agg_max;
+
+  } else if (expr_type_ == "MIN") {
+    oper = OperType::oper_agg_min;
+
+  } else if (expr_type_ == "AVG") {
+    oper = OperType::oper_agg_avg;
+
+  } else if (expr_type_ == "SUM") {
+    oper = OperType::oper_agg_sum;
+  }
+  if (oper == OperType::oper_none) {
+    LOG(ERROR) << "not support now!" << endl;
+    assert(false);
+  }
+  ExprNode* child_logic_expr = NULL;
+  ErrorNo ret = eOK;
+  // count(*) = count(1)
+  if (expr_type_ == "COUNT_ALL" || expr_type_ == "COUNT") {
+    child_logic_expr =
+        new ExprConst(ExprNodeType::t_qexpr, t_u_long, "COUNT(1)", "1");
+  } else {
+    ret = arg0_->GetLogicalPlan(child_logic_expr, child_logic_plan);
+  }
+  if (eOK != ret) {
+    return ret;
+  }
+  assert(NULL != child_logic_expr);
+  logic_expr =
+      new ExprUnary(ExprNodeType::t_qexpr_unary, child_logic_expr->actual_type_,
+                    expr_str_, oper, child_logic_expr);
   return eOK;
 }
 
@@ -336,7 +421,66 @@ ErrorNo AstExprCalBinary::GetLogicalPlan(QNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   return eOK;
 }
-
+ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
+                                         LogicalOperator* child_logic_plan) {
+  ExprNode* left_expr_node = NULL;
+  ExprNode* right_expr_node = NULL;
+  ErrorNo ret = eOK;
+  ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  data_type get_type = TypeConversionMatrix::type_conversion_matrix
+      [left_expr_node->actual_type_][right_expr_node->actual_type_];
+  data_type actual_type = get_type;
+  if (ast_node_type_ == AST_EXPR_BOOL_BINARY) {
+    get_type = t_boolean;
+    actual_type = t_boolean;
+  } else {
+    if (left_expr_node->actual_type_ == t_boolean &&
+        right_expr_node->actual_type_ == t_boolean) {
+      get_type = t_smallInt;
+      actual_type = t_smallInt;
+    }
+  }
+  OperType oper = OperType::oper_equal;
+  if (expr_type_ == "+") {
+    oper = OperType::oper_add;
+  } else if (expr_type_ == "-") {
+    oper = OperType::oper_minus;
+  } else if (expr_type_ == "*") {
+    oper = OperType::oper_multiply;
+  } else if (expr_type_ == "/") {
+    oper = OperType::oper_divide;
+  } else if (expr_type_ == "%" || expr_type_ == "MOD") {
+    oper = OperType::oper_mod;
+  } else if (expr_type_ == "AND") {
+    oper = OperType::oper_and;
+  } else if (expr_type_ == "OR") {
+    oper = OperType::oper_or;
+  } else if (expr_type_ == "XOR") {
+    oper = OperType::oper_xor;
+  } else if (expr_type_ == "|") {
+    oper = OperType::oper_or;
+  } else if (expr_type_ == "^") {
+    oper = OperType::oper_xor;
+  } else if (expr_type_ == "LIKE") {
+    oper = OperType::oper_like;
+    actual_type = t_boolean;
+  } else if (expr_type_ == "NOT_LIKE") {
+    oper = OperType::oper_not_like;
+    actual_type = t_boolean;
+  } else {
+    oper = OperType::oper_none;
+  }
+  logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, actual_type, get_type,
+                              expr_str_, oper, left_expr_node, right_expr_node);
+  return eOK;
+}
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string expr_type,
                                    AstNode* arg0, AstNode* arg1)
     : AstNode(ast_node_type),
@@ -376,7 +520,10 @@ AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string cmp_para,
       expr_type_ = "<=>";
       break;
     }
-    default: { expr_type_ = "error type"; }
+    default: {
+      expr_type_ = "error type";
+      assert(false);
+    }
   }
 }
 AstExprCmpBinary::~AstExprCmpBinary() {
@@ -469,17 +616,63 @@ ErrorNo AstExprCmpBinary::GetLogicalPlan(QNode*& logic_expr,
   if (eOK != ret) {
     return ret;
   }
-  data_type actual_type = TypePromotion::arith_type_promotion_map
+  data_type actual_type = TypeConversionMatrix::type_conversion_matrix
       [left_expr_node->actual_type][right_expr_node->actual_type];
   oper_type oper = oper_equal;
   if (expr_type_ == "<") {
     oper = oper_less;
+  } else if (expr_type_ == ">") {
+    oper = oper_great;
+  } else if (expr_type_ == "=") {
+    oper = oper_equal;
+  } else if (expr_type_ == ">=") {
+    oper = oper_great_equal;
+  } else if (expr_type_ == "<=") {
+    oper = oper_less_equal;
+  } else if (expr_type_ == "!=") {
+    oper = oper_not_equal;
+  } else if (expr_type_ == "<=>") {
+    oper = oper_not_equal;
   }
   logic_expr = new QExpr_binary(left_expr_node, right_expr_node, actual_type,
                                 oper, t_qexpr_cmp, expr_str_.c_str());
   return eOK;
 }
-
+ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
+                                         LogicalOperator* child_logic_plan) {
+  ExprNode* left_expr_node = NULL;
+  ExprNode* right_expr_node = NULL;
+  ErrorNo ret = eOK;
+  ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  data_type get_type = TypeConversionMatrix::type_conversion_matrix
+      [left_expr_node->actual_type_][right_expr_node->actual_type_];
+  OperType oper = OperType::oper_equal;
+  if (expr_type_ == "<") {
+    oper = OperType::oper_less;
+  } else if (expr_type_ == ">") {
+    oper = OperType::oper_great;
+  } else if (expr_type_ == "=") {
+    oper = OperType::oper_equal;
+  } else if (expr_type_ == ">=") {
+    oper = OperType::oper_great_equal;
+  } else if (expr_type_ == "<=") {
+    oper = OperType::oper_less_equal;
+  } else if (expr_type_ == "!=") {
+    oper = OperType::oper_not_equal;
+  } else if (expr_type_ == "<=>") {
+    oper = OperType::oper_not_equal;
+  }
+  logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cmp, t_boolean, get_type,
+                              expr_str_, oper, left_expr_node, right_expr_node);
+  return eOK;
+}
 AstExprList::AstExprList(AstNodeType ast_node_type, AstNode* expr,
                          AstNode* next)
     : AstNode(ast_node_type), expr_(expr), next_(next) {}
@@ -609,7 +802,13 @@ void AstExprFunc::RecoverExprName(string& name) {
   string arg0_name = "";
   string arg1_name = "";
   string arg2_name = "";
-  expr_str_ = expr_type_ + "(";
+  if (expr_type_.substr(0, 4) == "SUBS") {
+    expr_str_ = "SUBSTR(";
+  } else if (expr_type_.substr(0, 4) == "TRIM") {
+    expr_str_ = "TRIM(";
+  } else {
+    expr_str_ = expr_type_ + "(";
+  }
   if (NULL != arg0_) {
     arg0_->RecoverExprName(arg0_name);
     expr_str_ = expr_str_ + arg0_name;
@@ -685,8 +884,55 @@ void AstExprFunc::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprFunc::GetLogicalPlan(QNode*& logic_expr,
+ErrorNo AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
                                     LogicalOperator* child_logic_plan) {
+  ExprNode* arg0_logic_expr = NULL;
+  ExprNode* arg1_logic_expr = NULL;
+  ExprNode* arg2_logic_expr = NULL;
+  if (NULL != arg0_) {
+    arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+  }
+  if (NULL != arg1_) {
+    arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+  }
+  if (NULL != arg2_) {
+    arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+  }
+  if (expr_type_ == "UPPER") {
+    logic_expr = new ExprUnary(ExprNodeType::t_qexpr_unary, t_string, expr_str_,
+                               OperType::oper_upper, arg0_logic_expr);
+  } else if (expr_type_ == "SUBSTRING_EXPR_EXPR" ||
+             expr_type_ == "SUBSTRING_EXPR_FROM_EXPR") {
+    arg2_logic_expr = new ExprConst(ExprNodeType::t_qexpr, t_int, string("64"),
+                                    string("64"));  // 64 is the size of value
+    logic_expr =
+        new ExprTernary(ExprNodeType::t_qexpr_ternary, t_string, expr_str_,
+                        OperType::oper_substring, arg0_logic_expr,
+                        arg1_logic_expr, arg2_logic_expr);
+  } else if (expr_type_ == "SUBSTRING_EXPR_EXPR_EXPR" ||
+             expr_type_ == "SUBSTRING_EXPR_FROM_EXPR_FOR_EXPR") {
+    logic_expr =
+        new ExprTernary(ExprNodeType::t_qexpr_ternary, t_string, expr_str_,
+                        OperType::oper_substring, arg0_logic_expr,
+                        arg1_logic_expr, arg2_logic_expr);
+  } else if (expr_type_ == "TRIM_TRAILING") {
+    logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, t_string, t_string,
+                                expr_str_, OperType::oper_trailing_trim,
+                                arg0_logic_expr, arg1_logic_expr);
+  } else if (expr_type_ == "TRIM_LEADING") {
+    logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, t_string, t_string,
+                                expr_str_, OperType::oper_leading_trim,
+                                arg0_logic_expr, arg1_logic_expr);
+  } else if (expr_type_ == "TRIM_BOTH") {
+    if (NULL == arg1_) {
+      arg1_logic_expr =
+          new ExprConst(ExprNodeType::t_qexpr, t_string, string(" "),
+                        string(" "));  // trim both ' '
+    }
+    logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, t_string, t_string,
+                                expr_str_, OperType::oper_both_trim,
+                                arg0_logic_expr, arg1_logic_expr);
+  }
   return eOK;
 }
 

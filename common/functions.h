@@ -172,7 +172,7 @@ static void adds(ExpressionItemStack& stack, ExpressionItem& target){
 	if(!check_data_type_for_add(left.return_type)){
 		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
 	}
-	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	target.return_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 }
 
 static void add(ExpressionItemStack& stack, ExpressionItem& target){
@@ -189,7 +189,7 @@ static void add(ExpressionItemStack& stack, ExpressionItem& target){
 		printf("%s is not supported for +!\n",getReturnTypeName(left.return_type).c_str());
 	}
 
-	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	target.return_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 	if(target.return_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][target.return_type](left);
 	}
@@ -212,7 +212,7 @@ static void minss(ExpressionItemStack& stack, ExpressionItem& target){
 	if(!check_data_type_for_add(left.return_type)){
 		printf("%s is not supported for -s l!\n",getReturnTypeName(left.return_type).c_str());
 	}
-	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	target.return_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 }
 
 static void mins(ExpressionItemStack& stack, ExpressionItem& target){
@@ -230,7 +230,7 @@ static void mins(ExpressionItemStack& stack, ExpressionItem& target){
 		printf("%s is not supported for - l!\n",getReturnTypeName(left.return_type).c_str());
 	}
 
-	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	target.return_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 	if(target.return_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][target.return_type](left);
 	}
@@ -252,7 +252,7 @@ static void muls(ExpressionItemStack& stack, ExpressionItem& target){
 	if(!check_data_type_for_add(left.return_type)){
 		printf("%s is not supported for *!\n",getReturnTypeName(left.return_type).c_str());
 	}
-	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	target.return_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 }
 
 static void mul(ExpressionItemStack& stack, ExpressionItem& target){
@@ -268,7 +268,7 @@ static void mul(ExpressionItemStack& stack, ExpressionItem& target){
 		printf("%s is not supported for *!\n",getReturnTypeName(left.return_type).c_str());
 	}
 
-	target.return_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	target.return_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(target.return_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][target.return_type](left);
@@ -495,7 +495,7 @@ static void compare_less(ExpressionItemStack& stack, ExpressionItem& target){
 	/**In the current implementation, arithmetic type promotion map is used.
 	 * TODO: Use specific mapping for compare function if needed.
 	 */
-	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	data_type promoted_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
@@ -520,7 +520,7 @@ static void compare_great(ExpressionItemStack& stack, ExpressionItem& target){
 	/**In the current implementation, arithmetic type promotion map is used.
 	 * TODO: Use specific mapping for compare function if needed.
 	 */
-	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	data_type promoted_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
@@ -545,7 +545,7 @@ static void compare_equal(ExpressionItemStack& stack, ExpressionItem& target){
 	/**In the current implementation, arithmetic type promotion map is used.
 	 * TODO: Use specific mapping for compare function if needed.
 	 */
-	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	data_type promoted_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
@@ -570,7 +570,7 @@ static void compare_not_equal(ExpressionItemStack& stack, ExpressionItem& target
 	/**In the current implementation, arithmetic type promotion map is used.
 	 * TODO: Use specific mapping for compare function if needed.
 	 */
-	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	data_type promoted_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
@@ -595,7 +595,7 @@ static void compare_less_equal(ExpressionItemStack& stack, ExpressionItem& targe
 	/**In the current implementation, arithmetic type promotion map is used.
 	 * TODO: Use specific mapping for compare function if needed.
 	 */
-	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	data_type promoted_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);
@@ -620,7 +620,7 @@ static void compare_great_equal(ExpressionItemStack& stack, ExpressionItem& targ
 	/**In the current implementation, arithmetic type promotion map is used.
 	 * TODO: Use specific mapping for compare function if needed.
 	 */
-	data_type promoted_type=TypePromotion::arith_type_promotion_map[left.return_type][right.return_type];
+	data_type promoted_type=TypePromotionMatrix::type_conversion_matrix[left.return_type][right.return_type];
 
 	if(promoted_type!=left.return_type){
 		TypeCast::type_cast_functions[left.return_type][promoted_type](left);

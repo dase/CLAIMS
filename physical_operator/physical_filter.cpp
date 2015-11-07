@@ -42,6 +42,7 @@
 #include "../Parsetree/sql_node_struct.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
+#include "../common/expression/expr_node.h"
 
 using namespace claims::common;
 
@@ -97,6 +98,7 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
       CreateOrReuseContext(crm_core_sensitive));
 
   if (TryEntryIntoSerializedSection()) {
+#ifdef NEWCONDI
     if (Config::enable_codegen) {
       ticks start = curtick();
       generated_filter_processing_fucntoin_ =
@@ -121,6 +123,9 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
       filter_function_ = ComputeFilter;
       LOG(INFO) << "CodeGen closed!" << std::endl;
     }
+#else
+// should null
+#endif
   }
   bool ret = state_.child_->Open(kPartitiontOffset);
   SetReturnStatus(ret);
@@ -186,6 +191,7 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
     while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) >
            0) {
       bool pass_filter = true;
+#ifdef NEWCONDI
 #ifdef NEWCONDITION
       filter_function_(pass_filter, tuple_from_child,
                        generated_filter_function_, state_.schema_,
@@ -199,6 +205,10 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
           break;
         }
       }
+#endif
+#else
+      pass_filter = tc->thread_condi_[0]->MoreExprEvaluate(
+          tc->thread_condi_, tuple_from_child, state_.schema_);
 #endif
       if (pass_filter) {
         const unsigned bytes =
@@ -228,9 +238,15 @@ bool PhysicalFilter::Close() {
 
 void PhysicalFilter::Print() {
   printf("filter: \n");
+#ifdef NEWCONDI
   for (int i = 0; i < state_.qual_.size(); i++) {
     printf("  %s\n", state_.qual_[i]->alias.c_str());
   }
+#else
+  for (int i = 0; i < state_.condition_.size(); ++i) {
+    cout << "    " << state_.condition_[i]->alias_ << endl;
+  }
+#endif
   state_.child_->Print();
 }
 
@@ -261,12 +277,21 @@ PhysicalFilter::FilterThreadContext::~FilterThreadContext() {
     delete block_stream_iterator_;
     block_stream_iterator_ = NULL;
   }
+#ifdef NEWCONDI
   for (int i = 0; i < thread_qual_.size(); i++) {
     if (NULL != thread_qual_[i]) {
       delete thread_qual_[i];
       thread_qual_[i] = NULL;
     }
   }
+#else
+  for (int i = 0; i < thread_condi_.size(); ++i) {
+    if (NULL != thread_condi_[i]) {
+      delete thread_condi_[i];
+      thread_condi_[i] = NULL;
+    }
+  }
+#endif
 }
 
 /**
@@ -280,11 +305,19 @@ ThreadContext* PhysicalFilter::CreateContext() {
   ftc->temp_block_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
+#ifdef NEWCONDI
   ftc->thread_qual_ = state_.qual_;
   for (int i = 0; i < state_.qual_.size(); i++) {
     Expr_copy(state_.qual_[i], ftc->thread_qual_[i]);
     InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
   }
+#else
+  ftc->thread_condi_ = state_.condition_;
+  for (int i = 0; i < state_.condition_.size(); ++i) {
+    ftc->thread_condi_[i] = state_.condition_[i]->ExprCopy();
+    ftc->thread_condi_[i]->InitExprAtPhysicalPlan();
+  }
+#endif
   return ftc;
 }
 

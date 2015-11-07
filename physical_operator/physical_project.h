@@ -34,6 +34,7 @@
 #include <map>
 #include <list>
 
+#include "../common/expression/expr_node.h"
 #include "../common/ExpressionCalculator.h"
 #include "../common/ExpressionItem.h"
 #include "../common/Mapping.h"
@@ -43,7 +44,7 @@
 #include "../common/Expression/execfunc.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
-
+using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
 
@@ -60,6 +61,8 @@ class PhysicalProject : public PhysicalOperator {
     BlockStreamBase *temp_block_;
     BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
     vector<QNode *> thread_qual_;
+    vector<ExprNode *> thread_expr_;
+
     ~ProjectThreadContext() {
       if (NULL != block_for_asking_) {
         delete block_for_asking_;
@@ -79,6 +82,12 @@ class PhysicalProject : public PhysicalOperator {
           thread_qual_[i] = NULL;
         }
       }
+      for (int i = 0; i < thread_expr_.size(); ++i) {
+        if (NULL != thread_expr_[i]) {
+          delete thread_expr_[i];
+          thread_expr_[i] = NULL;
+        }
+      }
     }
   };
 
@@ -89,6 +98,9 @@ class PhysicalProject : public PhysicalOperator {
     State(Schema *schema_input, Schema *schema_output,
           PhysicalOperatorBase *children, unsigned block_size,
           vector<QNode *> expr_tree);
+    State(Schema *schema_input, Schema *schema_output,
+          PhysicalOperatorBase *children, unsigned block_size,
+          vector<ExprNode *> expr_list);
     State(){};
 
    public:
@@ -104,7 +116,7 @@ class PhysicalProject : public PhysicalOperator {
     // select list, this expr is the result of the getIteratorTree to construct
     // a schema. getDataflow() can generate a schema by using the SQLExpression
     // and Expression can be computed by SQLExpression
-
+    vector<ExprNode *> expr_list_;
     vector<QNode *> expr_tree_;
     unsigned block_size_;
     PhysicalOperatorBase *child_;

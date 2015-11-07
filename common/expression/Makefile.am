@@ -19,16 +19,16 @@ LDADD = 	../../Catalog/libcatalog.a \
 
 noinst_LIBRARIES=libexpression.a
 
-libexpression_a_SOURCES = 	
-#\
-#	expr_node.cpp		expr_node.h			\
-#	expr_column.cpp		expr_column.h		\
-#	data_type_oper.cpp	data_type_oper.h	\
-#	expr_const.cpp		expr_const.h		\
-#	expr_binary.cpp		expr_binary.h		\
-#	expr_case_when.cpp	expr_case_when.h	\
-#	expr_date.cpp		expr_date.h			\
-#	expr_in.cpp			expr_in.h			\
-#	expr_ternary.cpp	expr_ternary.h		\
-#	expr_type_cast.cpp	expr_type_cast.h	\
-#	expr_unary.cpp		expr_unary.h		
+libexpression_a_SOURCES = 	\
+	expr_node.cpp				expr_node.h			\
+	expr_column.cpp				expr_column.h		\
+	data_type_oper.cpp			data_type_oper.h	\
+	expr_const.cpp				expr_const.h		\
+	expr_binary.cpp				expr_binary.h		\
+	expr_case_when.cpp			expr_case_when.h	\
+	expr_date.cpp				expr_date.h			\
+	expr_in.cpp					expr_in.h			\
+	expr_ternary.cpp			expr_ternary.h		\
+	expr_type_cast.cpp			expr_type_cast.h	\
+	type_conversion_matrix.cpp 	type_conversion_matrix.h	\
+	expr_unary.cpp				expr_unary.h		

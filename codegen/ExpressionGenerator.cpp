@@ -955,7 +955,7 @@ QNode* createEqualJoinExpression(Schema* l_s, Schema* r_s,
                                         "R.A");
     r_column->id = r_join_index[i];
     r_column->tab_index = 1;
-    data_type return_type = TypePromotion::arith_type_promotion_map
+    data_type return_type = TypePromotionMatrix::type_conversion_matrix
         [l_s->getcolumn(l_join_index[i]).type]
          [r_s->getcolumn(r_join_index[i]).type];
     l_column->return_type = return_type;
