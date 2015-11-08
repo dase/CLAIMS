@@ -126,7 +126,7 @@ void* BlockManager::getLocal(string blockId){
 	if(exists){
 		// 如果存在就代表文件从hdfs上已经被拉到local了
 		if((*it_).second->level_==BlockManager::memory){
-			// spark中的storageLevel是磁盘和内存中都有的，在storageLevel.scala中
+			// spark中的storageLevel是磁盘和内存中都有的，在stor ageLevel.scala中
 			// 我们有那样的应用吗？todo: 在此预留的序列化和反序列化接口，序列化与否也是
 			// 在storageLevel中的，是否备份也是在storageLevel中
 			rt=memstore_->getChunk(blockId);
