@@ -120,6 +120,7 @@ class LogicalFilter : public LogicalOperator {
   map<string, int> column_id_;
   vector<QNode*> condi_;
   vector<ExprNode*> condition_;
+  PlanContext* plan_context_;
 };
 
 }  // namespace logical_operator

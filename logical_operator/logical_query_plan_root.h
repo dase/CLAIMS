@@ -110,6 +110,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
   LogicalOperator* child_;
   OutputStyle style_;
   LimitConstraint limit_constraint_;
+  PlanContext* plan_context_;
 };
 
 }  // namespace logical_operator

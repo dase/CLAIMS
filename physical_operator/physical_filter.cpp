@@ -51,14 +51,16 @@ namespace physical_operator {
 #define NEWCONDITION
 
 PhysicalFilter::PhysicalFilter(State state)
-    : state_(state),
+    : PhysicalOperator(1, 1),
+      state_(state),
       generated_filter_function_(NULL),
       generated_filter_processing_fucntoin_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalFilter::PhysicalFilter()
-    : generated_filter_function_(NULL),
+    : PhysicalOperator(1, 1),
+      generated_filter_function_(NULL),
       generated_filter_processing_fucntoin_(NULL) {
   InitExpandedStatus();
 }

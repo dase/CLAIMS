@@ -1047,8 +1047,8 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_int][oper_less] = int_less;
   DataTypeOper::data_type_oper_func_[t_int][oper_less_equal] = int_less_equal;
   DataTypeOper::data_type_oper_func_[t_int][oper_negative] = int_negative;
-  DataTypeOper::data_type_oper_func_[t_int][oper_agg_max] = int_agg_max;
-  DataTypeOper::data_type_oper_func_[t_int][oper_agg_min] = int_agg_min;
+  DataTypeOper::data_type_oper_func_[t_int][oper_max] = int_agg_max;
+  DataTypeOper::data_type_oper_func_[t_int][oper_min] = int_agg_min;
   DataTypeOper::data_type_oper_func_[t_int][oper_agg_sum] = int_agg_sum;
   DataTypeOper::data_type_oper_func_[t_int][oper_agg_count] = int_agg_count;
   /*****************int********************/
@@ -1074,8 +1074,8 @@ inline void InitOperatorFunc() {
       u_long_less_equal;
   DataTypeOper::data_type_oper_func_[t_u_long][oper_negative] =
       oper_not_support;
-  DataTypeOper::data_type_oper_func_[t_u_long][oper_agg_max] = u_long_agg_max;
-  DataTypeOper::data_type_oper_func_[t_u_long][oper_agg_min] = u_long_agg_min;
+  DataTypeOper::data_type_oper_func_[t_u_long][oper_max] = u_long_agg_max;
+  DataTypeOper::data_type_oper_func_[t_u_long][oper_min] = u_long_agg_min;
   DataTypeOper::data_type_oper_func_[t_u_long][oper_agg_sum] = u_long_agg_sum;
   DataTypeOper::data_type_oper_func_[t_u_long][oper_agg_count] =
       u_long_agg_count;
@@ -1100,8 +1100,8 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_float][oper_less_equal] =
       float_less_equal;
   DataTypeOper::data_type_oper_func_[t_float][oper_negative] = float_negative;
-  DataTypeOper::data_type_oper_func_[t_float][oper_agg_max] = float_agg_max;
-  DataTypeOper::data_type_oper_func_[t_float][oper_agg_min] = float_agg_min;
+  DataTypeOper::data_type_oper_func_[t_float][oper_max] = float_agg_max;
+  DataTypeOper::data_type_oper_func_[t_float][oper_min] = float_agg_min;
   DataTypeOper::data_type_oper_func_[t_float][oper_agg_sum] = float_agg_sum;
   DataTypeOper::data_type_oper_func_[t_float][oper_agg_count] = float_agg_count;
   /*****************float********************/
@@ -1127,8 +1127,8 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_double][oper_less_equal] =
       double_less_equal;
   DataTypeOper::data_type_oper_func_[t_double][oper_negative] = double_negative;
-  DataTypeOper::data_type_oper_func_[t_double][oper_agg_max] = double_agg_max;
-  DataTypeOper::data_type_oper_func_[t_double][oper_agg_min] = double_agg_min;
+  DataTypeOper::data_type_oper_func_[t_double][oper_max] = double_agg_max;
+  DataTypeOper::data_type_oper_func_[t_double][oper_min] = double_agg_min;
   DataTypeOper::data_type_oper_func_[t_double][oper_agg_sum] = double_agg_sum;
   DataTypeOper::data_type_oper_func_[t_double][oper_agg_count] =
       double_agg_count;
@@ -1156,9 +1156,9 @@ inline void InitOperatorFunc() {
       smallInt_less_equal;
   DataTypeOper::data_type_oper_func_[t_smallInt][oper_negative] =
       smallInt_negative;
-  DataTypeOper::data_type_oper_func_[t_smallInt][oper_agg_max] =
+  DataTypeOper::data_type_oper_func_[t_smallInt][oper_max] =
       smallInt_agg_max;
-  DataTypeOper::data_type_oper_func_[t_smallInt][oper_agg_min] =
+  DataTypeOper::data_type_oper_func_[t_smallInt][oper_min] =
       smallInt_agg_min;
   DataTypeOper::data_type_oper_func_[t_smallInt][oper_agg_sum] =
       smallInt_agg_sum;
@@ -1214,8 +1214,8 @@ inline void InitOperatorFunc() {
       decimal_less_equal;
   DataTypeOper::data_type_oper_func_[t_decimal][oper_negative] =
       decimal_negative;
-  DataTypeOper::data_type_oper_func_[t_decimal][oper_agg_max] = decimal_agg_max;
-  DataTypeOper::data_type_oper_func_[t_decimal][oper_agg_min] = decimal_agg_min;
+  DataTypeOper::data_type_oper_func_[t_decimal][oper_max] = decimal_agg_max;
+  DataTypeOper::data_type_oper_func_[t_decimal][oper_min] = decimal_agg_min;
   DataTypeOper::data_type_oper_func_[t_decimal][oper_agg_sum] = decimal_agg_sum;
   DataTypeOper::data_type_oper_func_[t_decimal][oper_agg_count] =
       decimal_agg_count;
@@ -1289,8 +1289,8 @@ inline void InitOperatorFunc() {
       date_sub_month;
   DataTypeOper::data_type_oper_func_[t_date][oper_date_sub_year] =
       date_sub_year;
-  DataTypeOper::data_type_oper_func_[t_date][oper_agg_max] = date_agg_max;
-  DataTypeOper::data_type_oper_func_[t_date][oper_agg_min] = date_agg_min;
+  DataTypeOper::data_type_oper_func_[t_date][oper_max] = date_agg_max;
+  DataTypeOper::data_type_oper_func_[t_date][oper_min] = date_agg_min;
   /*****************date********************/
 
   /*****************time********************/
@@ -1301,8 +1301,8 @@ inline void InitOperatorFunc() {
       time_great_equal;
   DataTypeOper::data_type_oper_func_[t_time][oper_less] = time_less;
   DataTypeOper::data_type_oper_func_[t_time][oper_less_equal] = time_less_equal;
-  DataTypeOper::data_type_oper_func_[t_time][oper_agg_max] = time_agg_max;
-  DataTypeOper::data_type_oper_func_[t_time][oper_agg_min] = time_agg_min;
+  DataTypeOper::data_type_oper_func_[t_time][oper_max] = time_agg_max;
+  DataTypeOper::data_type_oper_func_[t_time][oper_min] = time_agg_min;
   /*****************time********************/
 
   /*****************datetime********************/
@@ -1315,9 +1315,9 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_datetime][oper_less] = datetime_less;
   DataTypeOper::data_type_oper_func_[t_datetime][oper_less_equal] =
       datetime_less_equal;
-  DataTypeOper::data_type_oper_func_[t_datetime][oper_agg_max] =
+  DataTypeOper::data_type_oper_func_[t_datetime][oper_max] =
       datetime_agg_max;
-  DataTypeOper::data_type_oper_func_[t_datetime][oper_agg_min] =
+  DataTypeOper::data_type_oper_func_[t_datetime][oper_min] =
       datetime_agg_min;
   /*****************datetime********************/
 }

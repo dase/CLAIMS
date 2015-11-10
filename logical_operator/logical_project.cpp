@@ -46,14 +46,16 @@ namespace logical_operator {
 
 LogicalProject::LogicalProject(LogicalOperator* child,
                                vector<QNode*> expression_tree)
-    : child_(child), expression_tree_(expression_tree), plan_context_(NULL) {
-  set_operator_type(kLogicalProject);
-}
+    : LogicalOperator(kLogicalProject),
+      child_(child),
+      expression_tree_(expression_tree),
+      plan_context_(NULL) {}
 LogicalProject::LogicalProject(LogicalOperator* child,
                                vector<ExprNode*> expr_list)
-    : child_(child), expr_list_(expr_list), plan_context_(NULL) {
-  set_operator_type(kLogicalProject);
-}
+    : LogicalOperator(kLogicalProject),
+      child_(child),
+      expr_list_(expr_list),
+      plan_context_(NULL) {}
 LogicalProject::~LogicalProject() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -66,7 +68,11 @@ LogicalProject::~LogicalProject() {
 }
 // construct a PlanContext from child
 PlanContext LogicalProject::GetPlanContext() {
-  if (NULL != plan_context_) return *plan_context_;
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   PlanContext ret;
   // get the PlanContext of child
   const PlanContext child_plan_context = child_->GetPlanContext();
@@ -151,6 +157,7 @@ PlanContext LogicalProject::GetPlanContext() {
   plan_context_ = new PlanContext();
   // set the PlanContext to be returned
   *plan_context_ = ret;
+  lock_->release();
   return ret;
 }
 

@@ -35,6 +35,7 @@
 #include "../logical_operator/plan_context.h"
 #include "../logical_operator/Requirement.h"
 #include "../physical_operator/physical_operator_base.h"
+#include "../utility/lock.h"
 
 namespace claims {
 namespace logical_operator {
@@ -48,7 +49,8 @@ enum OperatorType {
   kLogicalProject,
   kLogicalSort,
   kLogicalQueryPlanRoot,
-  kLogicalCrossJoin
+  kLogicalCrossJoin,
+  kLogicalLimit
 };
 
 typedef PhysicalOperatorBase* PhysicalPlan;
@@ -68,6 +70,9 @@ typedef struct PhysicalPlanDescriptor {
 class LogicalOperator {
  public:
   LogicalOperator(){};
+  LogicalOperator(OperatorType operator_type) : operator_type_(operator_type) {
+    lock_ = new Lock();
+  }
   virtual ~LogicalOperator(){};
   /**
    * get the plan context which describes the property of the data after having
@@ -107,6 +112,8 @@ class LogicalOperator {
   inline void set_operator_type(OperatorType operator_type) {
     operator_type_ = operator_type;
   }
+
+  Lock* lock_;
 
  private:
   OperatorType operator_type_;

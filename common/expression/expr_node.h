@@ -89,8 +89,8 @@ enum OperType {
 
   oper_agg_sum,
   oper_agg_avg,
-  oper_agg_max,
-  oper_agg_min,
+  oper_max,
+  oper_min,
   oper_agg_count,
 };
 class ExprNode {

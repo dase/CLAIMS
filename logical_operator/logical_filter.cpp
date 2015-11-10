@@ -44,13 +44,15 @@ namespace claims {
 namespace logical_operator {
 
 LogicalFilter::LogicalFilter(LogicalOperator* child, vector<QNode*> qual)
-    : child_(child), condi_(qual) {
-  set_operator_type(kLogicalFilter);
-}
+    : LogicalOperator(kLogicalFilter),
+      child_(child),
+      condi_(qual),
+      plan_context_(NULL) {}
 LogicalFilter::LogicalFilter(LogicalOperator* child, vector<ExprNode*> condi)
-    : child_(child), condition_(condi) {
-  set_operator_type(kLogicalFilter);
-}
+    : LogicalOperator(kLogicalFilter),
+      child_(child),
+      condition_(condi),
+      plan_context_(NULL) {}
 LogicalFilter::~LogicalFilter() {
   if (NULL != child_) {
     delete child_;
@@ -62,6 +64,11 @@ PlanContext LogicalFilter::GetPlanContext() {
   /** In the currently implementation, we assume that the boolean operator
    * between each AttributeComparator is "AND".
    */
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   PlanContext plan_context = child_->GetPlanContext();
   if (plan_context.IsHashPartitioned()) {
     for (unsigned i = 0;
@@ -97,6 +104,8 @@ PlanContext LogicalFilter::GetPlanContext() {
     condition_[i]->InitExprAtLogicalPlan(t_boolean, column_id_, input_);
   }
 #endif
+  *plan_context_ = plan_context;
+  lock_->release();
   return plan_context;
 }
 
