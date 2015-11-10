@@ -97,7 +97,14 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
       CreateOrReuseContext(crm_core_sensitive));
 
   if (TryEntryIntoSerializedSection()) {
-    if (Config::enable_codegen) {
+    /*
+     * In current version, LLVM is used based on
+     * that all expression is merged into one expression.
+     * so make sure there is one expression
+     * TODO(yukai, fangzhuhe): expand LLVM to support multiple expressions
+     *  or merge multiple expressions into one
+     */
+    if (Config::enable_codegen && 1 == state_.qual_.size()) {
       ticks start = curtick();
       generated_filter_processing_fucntoin_ =
           getFilterProcessFunc(state_.qual_[0], state_.schema_);
