@@ -28,6 +28,7 @@
 
 #include "../logical_operator/logical_query_plan_root.h"
 
+#include <glog/logging.h>
 #include <vector>
 #include <string>
 
@@ -56,12 +57,12 @@ LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
                                            LogicalOperator* child,
                                            const OutputStyle& style,
                                            LimitConstraint limit_constraint)
-    : collecter_node(collecter),
+    : LogicalOperator(kLogicalQueryPlanRoot),
+      collecter_node(collecter),
       child_(child),
       style_(style),
-      limit_constraint_(limit_constraint) {
-  set_operator_type(kLogicalQueryPlanRoot);
-}
+      limit_constraint_(limit_constraint),
+      plan_context_(NULL) {}
 
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
   if (NULL != child_) {
@@ -183,10 +184,18 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
  * get PlanContext from child and return
  */
 PlanContext LogicalQueryPlanRoot::GetPlanContext() {
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   PlanContext ret = child_->GetPlanContext();
-  QueryOptimizationLogging::log(
-      "Communication cost:%ld, predicted ouput size=%ld\n", ret.commu_cost_,
-      ret.plan_partitioner_.GetAggregatedDataCardinality());
+  LOG(INFO) << "Communication cost: " << ret.commu_cost_
+            << " predicted ouput size= "
+            << ret.plan_partitioner_.GetAggregatedDataCardinality() << endl;
+  plan_context_ = new PlanContext;
+  *plan_context_ = ret;
+  lock_->release();
   return ret;
 }
 

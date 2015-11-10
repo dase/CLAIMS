@@ -236,7 +236,7 @@ class AstOrderByList : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
   AstNode* expr_;
-  string orderby_type_;
+  string orderby_direction_;
   AstNode* next_;
 };
 /**
@@ -251,6 +251,7 @@ class AstOrderByClause : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
   AstOrderByList* orderby_list_;
 };
 /**
@@ -265,6 +266,7 @@ class AstHavingClause : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool is_select);
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
   AstNode* expr_;
 };
 /**

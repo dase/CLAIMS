@@ -262,10 +262,10 @@ ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
     oper = OperType::oper_agg_count;
 
   } else if (expr_type_ == "MAX") {
-    oper = OperType::oper_agg_max;
+    oper = OperType::oper_max;
 
   } else if (expr_type_ == "MIN") {
-    oper = OperType::oper_agg_min;
+    oper = OperType::oper_min;
 
   } else if (expr_type_ == "AVG") {
     oper = OperType::oper_agg_avg;

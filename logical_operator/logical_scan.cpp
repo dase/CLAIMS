@@ -46,42 +46,45 @@ using claims::physical_operator::PhysicalProjectionScan;
 namespace claims {
 namespace logical_operator {
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
-    : scan_attribute_list_(attribute_list),
+    : LogicalOperator(kLogicalScan),
+      scan_attribute_list_(attribute_list),
       target_projection_(NULL),
-      plan_context_(NULL) {
-  set_operator_type(kLogicalScan);
-}
+      plan_context_(NULL) {}
 
 LogicalScan::LogicalScan(const TableID& table_id)
-    : target_projection_(NULL), plan_context_(NULL) {
+    : LogicalOperator(kLogicalScan),
+      target_projection_(NULL),
+      plan_context_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
     LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
   }
   scan_attribute_list_ = table->getAttributes();
-  set_operator_type(kLogicalScan);
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,
                          const float sample_rate)
-    : sample_rate_(sample_rate), plan_context_(NULL) {
+    : LogicalOperator(kLogicalScan),
+      sample_rate_(sample_rate),
+      plan_context_(NULL) {
   scan_attribute_list_ = projection->getAttributeList();
   target_projection_ = projection;
-  set_operator_type(kLogicalScan);
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,
                          const string table_alias, const float sample_rate)
-    : sample_rate_(sample_rate),
+    : LogicalOperator(kLogicalScan),
+      sample_rate_(sample_rate),
       table_alias_(table_alias),
       plan_context_(NULL) {
   scan_attribute_list_ = projection->getAttributeList();
   ChangeAliasAttr();
   target_projection_ = projection;
-  set_operator_type(kLogicalScan);
 }
 LogicalScan::LogicalScan(
     const TableID& table_id,
     const std::vector<unsigned>& selected_attribute_index_list)
-    : target_projection_(NULL), plan_context_(NULL) {
+    : LogicalOperator(kLogicalScan),
+      target_projection_(NULL),
+      plan_context_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
     LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
@@ -90,7 +93,6 @@ LogicalScan::LogicalScan(
     scan_attribute_list_.push_back(
         table->getAttribute(selected_attribute_index_list[i]));
   }
-  set_operator_type(kLogicalScan);
 }
 
 LogicalScan::~LogicalScan() {
@@ -114,7 +116,11 @@ void LogicalScan::ChangeAliasAttr() {
  * scan_attribute_list_.
  */
 PlanContext LogicalScan::GetPlanContext() {
-  if (NULL != plan_context_) return *plan_context_;
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   plan_context_ = new PlanContext();
 
   TableID table_id = scan_attribute_list_[0].table_id_;
@@ -177,6 +183,7 @@ PlanContext LogicalScan::GetPlanContext() {
   Partitioner* par = target_projection_->getPartitioner();
   plan_context_->plan_partitioner_ = PlanPartitioner(*par);
   plan_context_->commu_cost_ = 0;
+  lock_->release();
   return *plan_context_;
 }
 

@@ -51,7 +51,8 @@ namespace logical_operator {
 LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
                                    LogicalOperator* left_input,
                                    LogicalOperator* right_input)
-    : joinkey_pair_list_(joinpair_list),
+    : LogicalOperator(kLogicalEqualJoin),
+      joinkey_pair_list_(joinpair_list),
       left_child_(left_input),
       right_child_(right_input),
       join_policy_(kNull),
@@ -60,7 +61,6 @@ LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
     left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
     right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
   }
-  set_operator_type(kLogicalEqualJoin);
 }
 
 LogicalEqualJoin::~LogicalEqualJoin() {
@@ -79,8 +79,10 @@ LogicalEqualJoin::~LogicalEqualJoin() {
 }
 
 PlanContext LogicalEqualJoin::GetPlanContext() {
+  lock_->acquire();
   if (NULL != dataflow_) {
     // the data flow has been computed*/
+    lock_->release();
     return *dataflow_;
   }
 
@@ -276,7 +278,7 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
 
   dataflow_ = new PlanContext();
   *dataflow_ = ret;
-
+  lock_->release();
   return ret;
 }
 

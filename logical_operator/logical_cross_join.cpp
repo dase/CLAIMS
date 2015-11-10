@@ -46,21 +46,19 @@ namespace claims {
 namespace logical_operator {
 
 LogicalCrossJoin::LogicalCrossJoin()
-    : left_child_(NULL),
+    : LogicalOperator(kLogicalCrossJoin),
+      left_child_(NULL),
       right_child_(NULL),
       plan_context_(NULL),
-      join_policy_(kUninitialized) {
-  set_operator_type(kLogicalCrossJoin);
-}
+      join_policy_(kUninitialized) {}
 
 LogicalCrossJoin::LogicalCrossJoin(LogicalOperator* left_child,
                                    LogicalOperator* right_child)
-    : left_child_(left_child),
+    : LogicalOperator(kLogicalCrossJoin),
+      left_child_(left_child),
       right_child_(right_child),
       plan_context_(NULL),
-      join_policy_(kUninitialized) {
-  set_operator_type(kLogicalCrossJoin);
-}
+      join_policy_(kUninitialized) {}
 LogicalCrossJoin::~LogicalCrossJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -102,8 +100,9 @@ int LogicalCrossJoin::get_join_policy_() {
  */
 
 PlanContext LogicalCrossJoin::GetPlanContext() {
+  lock_->acquire();
   if (NULL != plan_context_) {
-    /* the plan context has been computed already！*/
+    lock_->release();
     return *plan_context_;
   }
   PlanContext left_plan_context = left_child_->GetPlanContext();
@@ -190,13 +189,13 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
     }
     plan_context_ = new PlanContext();
     *plan_context_ = ret;
-    return ret;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
                  << "[" << kErrorMessage[kGeneratePlanContextFailed] << "],"
                  << std::endl;
-    return ret;
   }
+  lock_->release();
+  return *plan_context_;
 }
 
 /**

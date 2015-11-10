@@ -45,6 +45,8 @@
 #include "../../logical_operator/logical_filter.h"
 #include "../../logical_operator/logical_project.h"
 #include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/logical_sort.h"
+
 #include "../ast_node/ast_expr_node.h"
 #include "../ast_node/ast_node.h"
 
@@ -56,6 +58,8 @@ using claims::logical_operator::LogicalEqualJoin;
 using claims::logical_operator::LogicalFilter;
 using claims::logical_operator::LogicalProject;
 using claims::logical_operator::LogicalScan;
+using claims::logical_operator::LogicalSort;
+
 using std::bitset;
 using std::endl;
 using std::cout;
@@ -916,7 +920,7 @@ AstOrderByList::AstOrderByList(AstNodeType ast_node_type, AstNode* expr,
                                int orderby_type, AstNode* next)
     : AstNode(ast_node_type),
       expr_(expr),
-      orderby_type_(orderby_type == 0 ? "ASC" : "DESC"),
+      orderby_direction_(orderby_type == 0 ? "ASC" : "DESC"),
       next_(next) {}
 
 AstOrderByList::~AstOrderByList() {
@@ -929,7 +933,7 @@ void AstOrderByList::Print(int level) const {
        << "|orderby list| " << endl;
   if (expr_ != NULL) expr_->Print(level + 1);
   cout << setw((level + 1) * TAB_SIZE) << " "
-       << "orderby type: " << orderby_type_ << endl;
+       << "orderby direction: " << orderby_direction_ << endl;
   if (next_ != NULL) {
     next_->Print(level);
   }
@@ -1014,6 +1018,20 @@ void AstOrderByClause::ReplaceAggregation(AstNode*& agg_column,
     orderby_list_->ReplaceAggregation(agg_column, agg_node, is_select);
   }
 }
+ErrorNo AstOrderByClause::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  vector<pair<ExprNode*, int>> orderby_expr;
+  ExprNode* tmp_expr = NULL;
+  int direction = 0;
+  AstOrderByList* orderby = orderby_list_;
+  while (NULL != orderby) {
+    orderby->expr_->GetLogicalPlan(tmp_expr, logic_plan);
+    direction = orderby->orderby_direction_ == "ASC" ? 0 : 1;
+    orderby_expr.push_back(make_pair(tmp_expr, direction));
+    orderby = orderby->next_;
+  }
+  logic_plan = new LogicalSort(logic_plan, orderby_expr);
+  return eOK;
+}
 AstHavingClause::AstHavingClause(AstNodeType ast_node_type, AstNode* expr)
     : AstNode(ast_node_type), expr_(expr) {}
 
@@ -1047,6 +1065,16 @@ void AstHavingClause::ReplaceAggregation(AstNode*& agg_column,
   if (NULL != expr_) {
     expr_->ReplaceAggregation(agg_column, agg_node, is_select);
   }
+}
+ErrorNo AstHavingClause::GetLogicalPlan(LogicalOperator*& logic_plan) {
+  if (NULL != expr_) {
+    vector<ExprNode*> having_expr;
+    ExprNode* expr = NULL;
+    expr_->GetLogicalPlan(expr, logic_plan);
+    having_expr.push_back(expr);
+    logic_plan = new LogicalFilter(logic_plan, having_expr);
+  }
+  return eOK;
 }
 AstLimitClause::AstLimitClause(AstNodeType ast_node_type, AstNode* offset,
                                AstNode* row_count)
@@ -1472,6 +1500,7 @@ ErrorNo AstSelectStmt::GetLogicalPlanOfProject(LogicalOperator*& logic_plan) {
     expr_list.push_back(tmp_expr);
   }
   logic_plan = new LogicalProject(logic_plan, expr_list);
+  return eOK;
 }
 
 //#define SUPPORT
@@ -1489,13 +1518,6 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
-  if (NULL != select_list_) {
-    ret = GetLogicalPlanOfProject(logic_plan);
-    if (eOK != ret) {
-      return ret;
-    }
-  }
-#ifdef SUPPORT
   if (NULL != having_clause_) {
     ret = having_clause_->GetLogicalPlan(logic_plan);
     if (eOK != ret) {
@@ -1508,6 +1530,13 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
+  if (NULL != select_list_) {
+    ret = GetLogicalPlanOfProject(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+#ifdef SUPPORT
   if (NULL != limit_clause_) {
     cout << "not support limit now !" << endl;
     return eOK;

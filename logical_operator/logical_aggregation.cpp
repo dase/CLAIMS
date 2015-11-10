@@ -62,19 +62,19 @@ LogicalAggregation::LogicalAggregation(
     std::vector<Attribute> group_by_attribute_list,
     std::vector<Attribute> aggregation_attribute_list,
     std::vector<PhysicalAggregation::State::Aggregation>
-        aggregation_function_list, LogicalOperator* child) {
+        aggregation_function_list, LogicalOperator* child)
+    : LogicalOperator(kLogicalAggregation) {
   assert(false);
 }
 
 LogicalAggregation::LogicalAggregation(vector<ExprNode*> group_by_attrs,
                                        vector<ExprUnary*> aggregation_attrs,
                                        LogicalOperator* child)
-    : group_by_attrs_(group_by_attrs),
+    : LogicalOperator(kLogicalAggregation),
+      group_by_attrs_(group_by_attrs),
       aggregation_attrs_(aggregation_attrs),
       plan_context_(NULL),
-      child_(child) {
-  set_operator_type(kLogicalAggregation);
-}
+      child_(child) {}
 
 LogicalAggregation::~LogicalAggregation() {
   if (NULL != plan_context_) {
@@ -117,7 +117,11 @@ void LogicalAggregation::ChangeAggAttrsForAVG() {
 }
 
 PlanContext LogicalAggregation::GetPlanContext() {
-  if (NULL != plan_context_) return *plan_context_;
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   PlanContext ret;
   const PlanContext child_context = child_->GetPlanContext();
 
@@ -204,6 +208,7 @@ PlanContext LogicalAggregation::GetPlanContext() {
   }
   plan_context_ = new PlanContext();
   *plan_context_ = ret;
+  lock_->release();
   return ret;
 }
 
