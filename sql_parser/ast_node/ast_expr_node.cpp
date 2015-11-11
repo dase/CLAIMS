@@ -216,7 +216,7 @@ void AstExprUnary::ReplaceAggregation(AstNode*& agg_column,
   // like a leaf node
   if (expr_type_ == "COUNT_ALL" || expr_type_ == "SUM" || expr_type_ == "MAX" ||
       expr_type_ == "MIN" || expr_type_ == "AVG" || expr_type_ == "COUNT") {
-    agg_column = new AstColumn(AST_COLUMN, "NULL_AGG", expr_str_, expr_str_);
+    agg_column = new AstColumn(AST_COLUMN, "NULL_MID", expr_str_, expr_str_);
     if (is_select) {
       agg_node.insert(this);
     }

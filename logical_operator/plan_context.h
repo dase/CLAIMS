@@ -41,7 +41,6 @@ namespace logical_operator {
  * operator), the PlanContext of current operator generates from it's children.
  */
 class PlanContext {
-  friend class LogcalOperator;
  public:
   PlanContext();
   PlanContext(const PlanContext& plan_context);

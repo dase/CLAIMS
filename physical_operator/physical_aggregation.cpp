@@ -79,6 +79,20 @@ PhysicalAggregation::~PhysicalAggregation() {
     delete state_.child_;
     state_.child_ = NULL;
   }
+  for (int i = 0; i < state_.group_by_attrs_.size(); ++i) {
+    if (NULL != state_.group_by_attrs_[i]) {
+      delete state_.group_by_attrs_[i];
+      state_.group_by_attrs_[i] = NULL;
+    }
+  }
+  state_.group_by_attrs_.clear();
+  for (int i = 0; i < state_.aggregation_attrs_.size(); ++i) {
+    if (NULL != state_.aggregation_attrs_[i]) {
+      delete state_.aggregation_attrs_[i];
+      state_.aggregation_attrs_[i] = NULL;
+    }
+  }
+  state_.aggregation_attrs_.clear();
 }
 
 PhysicalAggregation::State::State(
@@ -101,7 +115,8 @@ PhysicalAggregation::State::State(
       count_column_id_(count_column_id) {}
 
 /**
- * while one thread starts Open(), the thread will be registered to all barriers
+ * while one thread starts Open(), the thread will be registered to all
+ * barriers
  * to synchronize other threads.
  * Open() aggregate tuples from child's block in private hashtable by several
  * threads.
@@ -110,9 +125,11 @@ PhysicalAggregation::State::State(
  * firstly check it whether in this private hash table.
  * operate the prepared aggregation function to update new tuple into private
  * hash table if the tuple key exists.
- * otherwise, allocate new bucket and assign every value of column in the tuple
+ * otherwise, allocate new bucket and assign every value of column in the
+ * tuple
  * to the new bucket as the first tuple value in the new bucket.
- * after all block from child be processed. merge private hash table into shared
+ * after all block from child be processed. merge private hash table into
+ * shared
  * hash table thread by thread synchronized by the hash table lock.
  */
 bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
@@ -160,7 +177,8 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
    * results. All the private hash table should be merged
    * at the final phase to complete the aggregation. Aggregation using private
    * hash tables is called private aggregation. Although
-   * consuming larger memory, private aggregation is more efficient than shared
+   * consuming larger memory, private aggregation is more efficient than
+   * shared
    * aggregation for scalar aggregation or aggregation
    * with small groups, as private aggregation avoids the contention to the
    * shared hash table.
@@ -405,7 +423,8 @@ bool PhysicalAggregation::Next(BlockStreamBase *block) {
     while (NULL != (cur_in_ht = it_.readCurrent())) {
       if (NULL != (tuple = block->allocateTuple(
                        state_.output_schema_->getTupleMaxSize()))) {
-        // copy the whole tuple, and update the corresponding column if there is
+        // copy the whole tuple, and update the corresponding column if there
+        // is
         // avg()
         memcpy(tuple, cur_in_ht, state_.output_schema_->getTupleMaxSize());
         // update the sum=sum/count if there is avg()
@@ -449,16 +468,7 @@ bool PhysicalAggregation::Close() {
     delete hashtable_;
     hashtable_ = NULL;
   }
-  for (int i = 0; i < state_.group_by_attrs_.size(); ++i) {
-    delete state_.group_by_attrs_[i];
-    state_.group_by_attrs_[i] = NULL;
-  }
-  state_.group_by_attrs_.clear();
-  for (int i = 0; i < state_.aggregation_attrs_.size(); ++i) {
-    delete state_.aggregation_attrs_[i];
-    state_.aggregation_attrs_[i] = NULL;
-  }
-  state_.aggregation_attrs_.clear();
+
   state_.child_->Close();
   return true;
 }

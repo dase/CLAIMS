@@ -110,7 +110,8 @@ class PhysicalFilter : public PhysicalOperator {
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-      ar& schema_& child_& block_size_& qual_& comparator_list_& column_id_;
+      ar& schema_& child_& block_size_& qual_& comparator_list_& column_id_&
+          condition_& column_id_;
     }
   };
 

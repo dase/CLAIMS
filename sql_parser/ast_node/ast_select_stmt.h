@@ -308,7 +308,6 @@ class AstColumn : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
   string relation_name_;

@@ -79,14 +79,15 @@ Attribute ExprNode::ExprNodeToAttr(const int id) {
   }
   // set TableID
   const unsigned kTableID = INTERMEIDATE_TABLEID;
-  // construct attribute
-  string relation_name = "NULL_AGG";
-  if (t_qcolcumns == this->expr_node_type_) {
+  string attr_name = "NULL_MID." + alias_;
+  if (t_qcolcumns == expr_node_type_) {
     ExprColumn* column = reinterpret_cast<ExprColumn*>(this);
-    relation_name = column->table_name_;
+    if (alias_ == column->column_name_ ||
+        alias_ == column->table_name_ + "." + column->column_name_) {
+      attr_name = column->table_name_ + "." + column->column_name_;
+    }  // else is for the case it's aliased
   }
-  Attribute attr_alais(kTableID, id, relation_name + "." + this->alias_,
-                       column->type, column->size);
+  Attribute attr_alais(kTableID, id, attr_name, column->type, column->size);
   return attr_alais;
 }
 }  // namespace common
