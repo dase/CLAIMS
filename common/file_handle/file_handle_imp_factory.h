@@ -40,6 +40,10 @@ namespace claims {
 namespace common {
 
 enum FilePlatform { kDisk, kHdfs };
+
+/***
+ * @brief factory class as singleton for generating specify FileHandleImp
+ */
 class FileHandleImpFactory {
  public:
   static FileHandleImpFactory& Instance() {

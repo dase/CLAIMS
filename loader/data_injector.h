@@ -55,6 +55,13 @@ class FileConnector;
 class DataInjector {
  public:
   //  DataInjector() {}
+  /**
+   * @brief Method description: get necessary info from table and init
+   * connector_
+   * @param table: table to load
+   * @param col_separator: column separator
+   * @param row_separator: row separator
+   */
   DataInjector(TableDescriptor* table, const char col_separator = '|',
                const char row_separator = '\n');
 
@@ -82,6 +89,11 @@ class DataInjector {
   RetCode InsertFromString(const string tuples, ExecutedResult* result);
 
  private:
+  /**
+   * @brief Method description: handle memory which store single line
+   * @param tuple_buffer: single tuple memory
+   * @return  kSuccess if succeed
+   */
   RetCode InsertSingleTuple(void* tuple_buffer);
 
   /**
@@ -96,12 +108,25 @@ class DataInjector {
                                  RawDataSource raw_data_source,
                                  vector<unsigned>& warning_indexs);
 
+  /**
+   * @brief Method description: add row_id column value
+   */
   inline RetCode AddRowIdColumn(const string& tuple_string);
 
-  RetCode InsertSubTupleIntoProjection(int proj_index, void* tuple_buffer);
+  /**
+   * @brief Method description: insert single tuple insert the proj_index
+   * projection
+   * @param proj_index: the id of projection
+   * @param tuple_buffer: the memory of tuple to be write
+   */
+  RetCode InsertTupleIntoProjection(int proj_index, void* tuple_buffer);
 
   RetCode UpdateCatalog(FileOpenFlag open_flag);
 
+  /**
+   * @brief Method description: after handle all tuple, flush all block that are
+   *        not full into file
+   */
   RetCode FlushNotFullBlock();
 
   RetCode PrepareInitInfo(FileOpenFlag open_flag);
@@ -131,6 +156,12 @@ class DataInjector {
   char col_separator_;
   char row_separator_;
   uint64_t row_id_;
+  /******************debug********************/
+ public:
+  static double total_get_substr_time_;
+  static double total_check_string_time_;
+  static double total_to_value_time_;
+  static double total_to_value_func_time_;
 };
 
 } /* namespace loader */

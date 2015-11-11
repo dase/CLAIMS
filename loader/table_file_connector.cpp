@@ -93,8 +93,12 @@ RetCode TableFileConnector::Close() {
   int ret = kSuccess;
   for (int i = 0; i < file_handles_.size(); ++i)
     for (int j = 0; j < file_handles_[i].size(); ++j)
-      if (kSuccess != (ret = file_handles_[i][j]->Close()))
-        LOG(ERROR) << "failed to close " << write_path_name_[i][j] << std::endl;
+      EXEC_AND_ONLY_LOG_ERROR(file_handles_[i][j]->Close(),
+                              "failed to close " << write_path_name_[i][j]
+                                                 << ". ret:" << ret);
+  //      if (kSuccess != (ret = file_handles_[i][j]->Close()))
+  //        LOG(ERROR) << "failed to close " << write_path_name_[i][j] <<
+  //        std::endl;
 
   if (kSuccess == ret) LOG(INFO) << "closed all file handles" << std::endl;
   return ret;
@@ -104,11 +108,10 @@ RetCode TableFileConnector::Flush(unsigned projection_offset,
                                   unsigned partition_offset, const void* source,
                                   unsigned length) {
   assert(file_handles_.size() != 0 && "make sure file handles is not empty");
-  int ret =
-      file_handles_[projection_offset][partition_offset]->Write(source, length);
-  if (ret != kSuccess) {
-    LOG(ERROR) << "failed to write file" << std::endl;
-  }
+  int ret = kSuccess;
+  EXEC_AND_ONLY_LOG_ERROR(
+      file_handles_[projection_offset][partition_offset]->Write(source, length),
+      "failed to write file. ret:" << ret);
   return ret;
 }
 

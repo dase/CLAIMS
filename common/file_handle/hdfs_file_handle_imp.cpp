@@ -53,16 +53,16 @@ HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
 }
 
 HdfsFileHandleImp::~HdfsFileHandleImp() {
-  int ret = Close();
-  if (kSuccess != kSuccess) LOG(ERROR) << "failed to close " << endl;
+  int ret = kSuccess;
+  EXEC_AND_ONLY_LOG_ERROR(Close(), "failed to close ");
   ret = hdfsDisconnect(fs_);
   if (ret != 0) LOG(ERROR) << "failed to disconnect to hdfs" << endl;
 }
 
 RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
+  assert(fs_ != NULL && "failed to connect hdfs");
   open_flag_ = open_flag;
   file_name_ = file_name;
-  assert(fs_ != NULL && "failed to connect hdfs");
 
   if (kCreateFile == open_flag) {
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);

@@ -47,7 +47,7 @@ using std::string;
 
 DiskFileHandleImp::~DiskFileHandleImp() {
   int ret = Close();
-  if (ret != 0) LOG(ERROR) << "failed to close file fd" << endl;
+  if (ret != 0) LOG(ERROR) << "failed to close file fd. ret:" << ret << endl;
 }
 
 RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {

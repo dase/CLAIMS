@@ -61,7 +61,7 @@
 
 // this macro decides whether really write data into data file.
 // Open means no write.
-#define HDFS_LOAD
+#define DATA_DO_LOAD
 
 namespace claims {
 namespace loader {
@@ -74,6 +74,11 @@ using claims::catalog::ProjectionDescriptor;
 using claims::catalog::Catalog;
 using boost::lexical_cast;
 using namespace claims::common;
+
+static double DataInjector::total_get_substr_time_ = 0;
+static double DataInjector::total_check_string_time_ = 0;
+static double DataInjector::total_to_value_time_ = 0;
+static double DataInjector::total_to_value_func_time_ = 0;
 
 DataInjector::DataInjector(TableDescriptor* table, const char col_separator,
                            const char row_separator)
@@ -120,7 +125,7 @@ DataInjector::DataInjector(TableDescriptor* table, const char col_separator,
 
   sblock = new Block(BLOCK_SIZE);
 
-#ifdef HDFS_LOAD
+#ifdef DATA_DO_LOAD
   connector_ = new TableFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
       write_path_);
@@ -191,9 +196,14 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
                                    ExecutedResult* result, double sample_rate) {
   int ret = kSuccess;
 
+  total_get_substr_time_ = 0;
+  total_check_string_time_ = 0;
+  total_to_value_time_ = 0;
+  total_to_value_func_time_ = 0;
   GETCURRENTTIME(prepare_start_time);
   ret = PrepareInitInfo(open_flag);
-  LOG(INFO) << "prepare time: " << GetElapsedTime(prepare_start_time) << endl;
+  LOG(INFO) << "prepare time: " << GetElapsedTime(prepare_start_time) / 1000
+            << endl;
 
   GETCURRENTTIME(open_start_time);
   ret = connector_->Open(open_flag);
@@ -201,7 +211,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     LOG(ERROR) << " failed to open connector" << endl;
     return ret;
   }
-  LOG(INFO) << "open connector time: " << GetElapsedTime(open_start_time)
+  LOG(INFO) << "open connector time: " << GetElapsedTime(open_start_time) / 1000
             << endl;
 
   GETCURRENTTIME(unbind_time);
@@ -247,6 +257,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
   if (tuple_buffer == NULL) return ENoMemory;
 
+  GETCURRENTTIME(start_read_time);
   for (auto file_name : input_file_names) {
     ifstream input_file(file_name.c_str());
     if (!input_file.good()) {
@@ -263,8 +274,9 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       if (GetRandomDecimal() >= sample_rate) continue;
 
       GETCURRENTTIME(add_time);
-      EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple_record),
-                              "failed to add row_id column for tuple");
+      EXEC_AND_ONLY_LOG_ERROR(
+          AddRowIdColumn(tuple_record),
+          "failed to add row_id column for tuple. ret:" << ret);
       total_add_time += GetElapsedTime(add_time);
 
       DLOG(INFO) << "after adding row id, tuple is:" << tuple_record << endl;
@@ -293,9 +305,9 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 
       GETCURRENTTIME(start_insert_time);
       EXEC_AND_ONLY_LOG_ERROR(InsertSingleTuple(tuple_buffer),
-                              "failed to insert tuple in " << file_name
-                                                           << " at line "
-                                                           << row_id_in_file);
+                              "failed to insert tuple in "
+                                  << file_name << " at line " << row_id_in_file
+                                  << ". ret:" << ret);
       total_insert_time += GetElapsedTime(start_insert_time);
 
       ++row_id_;
@@ -307,24 +319,30 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     input_file.close();
     ++file_count;
   }
-  LOG(INFO) << "handled " << file_count << " file, then flush unfilled block "
-            << endl;
+  LOG(INFO) << "used " << GetElapsedTime(start_read_time) / 1000
+            << " time to handled " << file_count
+            << " file, then flush unfilled block " << endl;
 
   LOG(INFO) << "  total add time: " << total_add_time / 1000.0
+            << "  total get substring time: " << total_get_substr_time_ / 1000
+            << "  total check string time: " << total_check_string_time_ / 1000
+            << "  total to value time: " << total_to_value_time_ / 1000.0
+            << "  total to value func time: "
+            << total_to_value_func_time_ / 1000
             << "  total check time: " << total_check_time / 1000.0
             << "  total insert time: " << total_insert_time / 1000.0 << endl;
 
   EXEC_AND_LOG(FlushNotFullBlock(), "flush all last block that are not full",
-               "failed to flush all last block");
+               "failed to flush all last block. ret:" << ret);
 
-#ifdef HDFS_LOAD
+#ifdef DATA_DO_LOAD
   EXEC_AND_LOG(connector_->Close(), "closed connector.",
-               "Failed to close connector.");
+               "Failed to close connector. ret:" << ret);
 #endif
 
   GETCURRENTTIME(update_time);
   EXEC_AND_ONLY_LOG_ERROR(UpdateCatalog(open_flag),
-                          "failed to update catalog information");
+                          "failed to update catalog information. ret:" << ret);
   LOG(INFO) << "update time: " << GetElapsedTime(update_time) << endl;
 
   LOG(INFO) << "\n-----------------------"
@@ -334,6 +352,11 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   return ret;
 }
 
+/**
+ * check validity of all tuples, if all OK, then insert into file and update
+ * catalog;
+ * else return error to client
+ */
 RetCode DataInjector::InsertFromString(const string tuples,
                                        ExecutedResult* result) {
   int ret = kSuccess;
@@ -351,7 +374,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
                           "failed to prepare initialization info");
   ret = connector_->Open(kAppendFile);
   if (kSuccess != ret) {
-    LOG(ERROR) << " failed to open connector" << endl;
+    LOG(ERROR) << " failed to open connector. ret:" << ret << endl;
     return ret;
   }
   row_id_ = table_->getRowNumber();
@@ -368,18 +391,18 @@ RetCode DataInjector::InsertFromString(const string tuples,
     string tuple_record = tuples.substr(prev_cur, cur);
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
-    EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple_record),
-                            "failed to add row_id column for tuple");
+    EXEC_AND_ONLY_LOG_ERROR(
+        AddRowIdColumn(tuple_record),
+        "failed to add row_id column for tuple. ret:" << ret);
 
     vector<unsigned> warning_indexs;
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
     if (tuple_buffer == NULL) return ENoMemory;
     if (!CheckTupleValidity(tuple_record, tuple_buffer, RawDataSource::kSQL,
                             warning_indexs)) {
+      // eliminate the side effect of AddRowIdColumn() in row_id_
       row_id_ -= correct_tuple_buffer.size();
-      for (auto it : correct_tuple_buffer) {
-        DELETE_PTR(it);
-      }
+      for (auto it : correct_tuple_buffer) DELETE_PTR(it);
       correct_tuple_buffer.clear();
 
       ostringstream oss;
@@ -402,18 +425,16 @@ RetCode DataInjector::InsertFromString(const string tuples,
   }
 
   for (auto it : correct_tuple_buffer) {
-    ret = InsertSingleTuple(it);
-    if (kSuccess != ret) {
-      LOG(ERROR) << "failed to insert tuple in line " << line << ""
-                 << std::endl;
-    }
+    EXEC_AND_ONLY_LOG_ERROR(InsertSingleTuple(it),
+                            "failed to insert tuple in line "
+                                << line << ". ret:" << ret)
     DELETE_PTR(it);
   }
   correct_tuple_buffer.clear();
   LOG(INFO) << "totally inserted " << line << " rows data into blocks" << endl;
   EXEC_AND_LOG(FlushNotFullBlock(), "flush all last block that are not full",
                "failed to flush all last block");
-#ifdef HDFS_LOAD
+#ifdef DATA_DO_LOAD
   EXEC_AND_LOG(connector_->Close(), "closed connector.",
                "Failed to close connector.");
 #endif
@@ -435,15 +456,15 @@ RetCode DataInjector::FlushNotFullBlock() {
       if (!pj_buffer[i][j]->Empty()) {
         pj_buffer[i][j]->serialize(*sblock);
 
-#ifdef HDFS_LOAD
+#ifdef DATA_DO_LOAD
         EXEC_AND_LOG(
             connector_->Flush(i, j, sblock->getBlock(), sblock->getsize()),
             "flushed the last block from buffer(" << i << "," << j
                                                   << ") into file",
             "failed to flush the last block from buffer(" << i << "," << j
-                                                          << ")");
+                                                          << "). ret:" << ret);
 #endif
-        blocks_per_partition[i][j]++;
+        ++blocks_per_partition[i][j];
         pj_buffer[i][j]->setEmpty();
       }
     }
@@ -485,6 +506,7 @@ inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
   // tuple_string = lexical_cast<string>(row_id_) + col_separator_ +
   // tuple_string;
 
+  //// it has best performance
   //  ostringstream oss;
   //  oss << row_id_ << col_separator_ << tuple_string;
   //  tuple_string = oss.str();
@@ -496,9 +518,9 @@ inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
   return kSuccess;
 }
 
-// TODO(yukai): can be executed by multithreading
-RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
-                                                   void* tuple_buffer) {
+// TODO(yukai): may be executed by multithreading
+RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
+                                                void* tuple_buffer) {
   int ret = kSuccess;
   if (proj_index >= table_->getNumberOfProjection()) {
     LOG(ERROR) << "projection index is " << proj_index
@@ -531,14 +553,19 @@ RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
   void* block_tuple_addr = pj_buffer[i][part]->allocateTuple(tuple_max_length);
   if (NULL == block_tuple_addr) {
 // if buffer is full, write buffer(64K) to HDFS/disk
-#ifdef HDFS_LOAD
+#ifdef DATA_DO_LOAD
     pj_buffer[i][part]->serialize(*sblock);
-    if (kSuccess != (ret = connector_->Flush(i, part, sblock->getBlock(),
-                                             sblock->getsize()))) {
-      LOG(ERROR) << "failed to write to data file. ErrCode: " << ret << endl;
-    } else {
-      LOG(INFO) << row_id_ << "\t64KB has been written to HDFS!\n";
-    }
+    //    if (kSuccess != (ret = connector_->Flush(i, part, sblock->getBlock(),
+    //                                             sblock->getsize()))) {
+    //      LOG(ERROR) << "failed to write to data file. ErrCode: " << ret <<
+    //      endl;
+    //    } else {
+    //      LOG(INFO) << row_id_ << "\t64KB has been written to file!\n";
+    //    }
+    EXEC_AND_LOG(
+        connector_->Flush(i, part, sblock->getBlock(), sblock->getsize()),
+        row_id_ << "\t64KB has been written to file!",
+        "failed to write to data file. ret:" << ret);
 #endif
     ++blocks_per_partition[i][part];
     pj_buffer[i][part]->setEmpty();
@@ -562,7 +589,7 @@ RetCode DataInjector::InsertSubTupleIntoProjection(int proj_index,
 RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
   int ret = kSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
-    ret = InsertSubTupleIntoProjection(i, tuple_buffer);
+    ret = InsertTupleIntoProjection(i, tuple_buffer);
   }
   return ret;
 }

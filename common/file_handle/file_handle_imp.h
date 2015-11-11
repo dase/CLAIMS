@@ -43,9 +43,30 @@ class FileHandleImp {
   FileHandleImp() {}
   virtual ~FileHandleImp() {}
   virtual RetCode Open(std::string file_name, FileOpenFlag open_flag) = 0;
+  /**
+   * @brief Method description: write buffer into file and make sure write
+   *        length char
+   * @param buffer: the data
+   * @param length: the no. of bytes to write
+   * @return kSuccess if wrote length bytes
+   */
   virtual RetCode Write(const void* buffer, const size_t length) = 0;
   virtual RetCode Close() = 0;
+  /**
+   * @brief Method description: read total file into memory, update length to
+   * the length of file
+   * @param buffer: new memory buffer to hold length bytes read from file
+   * @param length: hold the no. bytes of the all file
+   * @return kSuccess if succeed
+   */
   virtual RetCode ReadTotalFile(void*& buffer, size_t* length) = 0;
+  /**
+   * @brief Method description: read length bytes from file into memory, usually
+   *        called after SetPosition()
+   * @param buffer: hold the data read from file
+   * @param length: the no. of bytes to read
+   * @return kSuccess if succeed
+   */
   virtual RetCode Read(void* buffer, size_t length) = 0;
   virtual bool CanAccess(std::string file_name) = 0;
   virtual RetCode SetPosition(size_t pos) = 0;

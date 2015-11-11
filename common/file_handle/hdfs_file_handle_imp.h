@@ -33,6 +33,7 @@
 #include <string>
 
 #include "./file_handle_imp.h"
+#include "../../common/rename.h"
 
 namespace claims {
 namespace common {
@@ -45,12 +46,20 @@ class HdfsFileHandleImp : public FileHandleImp {
  private:
   HdfsFileHandleImp();
 
+  NO_COPY_AND_ASSIGN(HdfsFileHandleImp);
+
  public:
+  /**
+   * @brief Method description: call Close() and disconnect HDFS
+   */
   virtual ~HdfsFileHandleImp();
   virtual RetCode Open(std::string file_name, FileOpenFlag open_flag);
+  // see more in FileHandleImp class
   virtual RetCode Write(const void* buffer, const size_t length);
   virtual RetCode Close();
+  // see more in FileHandleImp class
   virtual RetCode ReadTotalFile(void*& buffer, size_t* length);
+  // see more in FileHandleImp class
   virtual RetCode Read(void* buffer, size_t length);
   virtual bool CanAccess(std::string file_name) {
     assert(fs_ != NULL && "failed to connect hdfs");

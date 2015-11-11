@@ -15,6 +15,10 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include "../../utility/Timer.h"
+#include "../../loader/data_injector.h"
+
+using claims::loader::DataInjector;
 
 SchemaFix::SchemaFix(const std::vector<column_type>& col) : Schema(col) {
   //	accum_offsets=new unsigned[columns.size()];	//new
@@ -82,17 +86,21 @@ bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
   string::size_type pos = 0;
   warning_columns_index.clear();
 
+  GETCURRENTTIME(to_value_func_time_);
   for (int i = 0; i < columns.size(); ++i) {
+    GETCURRENTTIME(get_substr_time);
     pos = text_tuple.find(attr_separator, prev_pos);
 
     int actual_column_data_length = pos - prev_pos;
     string text_column = text_tuple.substr(prev_pos, pos - prev_pos);
+    DataInjector::total_get_substr_time_ += GetElapsedTime(get_substr_time);
 
     // TODO(yukai, lizhifang): should be implemented by Operate.Check()
     /*
      * check the real data size of column whose type is string and choose the
      * minimum, and set the last char of string to '\0'
      */
+    GETCURRENTTIME(check_string_time);
     if (0 == strcmp(typeid(*(columns[i].operate)).name(),
                     typeid(OperateString).name())) {
       int column_max_length = columns[i].size - 1;
@@ -103,7 +111,9 @@ bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
         warning_columns_index.push_back(i);
       }
     }
+    DataInjector::total_check_string_time_ += GetElapsedTime(check_string_time);
 
+    GETCURRENTTIME(to_value_time);
     columns[i].operate->toValue(
         static_cast<char*>(binary_tuple) + accum_offsets[i],
         text_column.c_str());
@@ -114,7 +124,10 @@ bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
                << columns[i].operate->toString(binary_tuple + accum_offsets[i])
                << endl;
     prev_pos = pos + 1;
+    DataInjector::total_to_value_time_ += GetElapsedTime(to_value_time);
   }
+  DataInjector::total_to_value_func_time_ +=
+      GetElapsedTime(to_value_func_time_);
   return true;
 }
 void SchemaFix::addColumn(column_type ct, unsigned size) {

@@ -48,6 +48,11 @@ class TableFileConnector : public FileConnector {
   virtual RetCode Open(common::FileOpenFlag open_flag_);
   virtual RetCode Close();
 
+  /**
+   * @brief Method description: flush length bytes data from source into file
+   *        whose projection id is projection_offset and partition id is
+   *        partition_offset
+   */
   virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
                         const void* source, unsigned length);
   virtual RetCode Flush(const void* source, unsigned length) {
