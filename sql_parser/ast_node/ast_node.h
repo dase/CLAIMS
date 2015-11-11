@@ -205,7 +205,7 @@ class SemanticContext {
   void ClearColumn();
   void ClearTable();
   AstNode* agg_upper_;
-  void PrintContext();
+  void PrintContext(string flag);
   SQLClauseType clause_type_;
   bool have_agg;
   vector<AstNode*> select_expr_;

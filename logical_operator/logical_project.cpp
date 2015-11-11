@@ -129,28 +129,13 @@ PlanContext LogicalProject::GetPlanContext() {
     ret_attrs.push_back(attr_alais);
   }
 #else
+  ret_attrs.clear();
   for (int i = 0; i < expr_list_.size(); ++i) {
     expr_list_[i]->InitExprAtLogicalPlan(expr_list_[i]->actual_type_,
                                          column_id_, input_);
+    ret_attrs.push_back(expr_list_[i]->ExprNodeToAttr(i));
   }
-  ret_attrs.clear();
-  for (int i = 0; i < expr_list_.size(); ++i) {
-    column_type* column = NULL;
-    if (t_string == expr_list_[i]->return_type_ ||
-        t_decimal == expr_list_[i]->return_type_) {
-      column = new column_type(expr_list_[i]->return_type_,
-                               expr_list_[i]->value_size_);
-    } else {
-      column = new column_type(expr_list_[i]->return_type_);
-    }
-    // set TableID
-    const unsigned kTableID = INTERMEIDATE_TABLEID;
-    // construct attribute
-    Attribute attr_alais(kTableID, i, expr_list_[i]->alias_, column->type,
-                         column->size);
-    // construct an attribute list
-    ret_attrs.push_back(attr_alais);
-  }
+
 #endif
   // set the attribute list of the PlanContext to be returned
   ret.attribute_list_ = ret_attrs;

@@ -101,7 +101,10 @@ class ExprNode {
   explicit ExprNode(ExprNode* expr);
   ExprNode() {}
   virtual ~ExprNode() {
-    if (value_ != NULL) free(value_);
+    if (value_ != NULL) {
+      free(value_);
+      value_ = NULL;
+    }
   }
   ExprNodeType expr_node_type_;
   data_type actual_type_, return_type_, get_type_;

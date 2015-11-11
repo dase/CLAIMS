@@ -244,8 +244,8 @@ void LogicalAggregation::set_column_id(const PlanContext& plan_context) {
 }
 /** replace each group by output attributes with one column, and change every
  * agg(expr) to agg(column[agg_expr_name]), for example: select sum(c)/2 from
- * TB group by a+b; => select sum(column["NULL_AGG","sum(c)/2"]) from TB group
- * by column[ "NULL_AGG", "a+b" ];
+ * TB group by a+b; => select sum(column["NULL_MID","sum(c)/2"]) from TB group
+ * by column[ "NULL_MID", "a+b" ];
  * then initialize the new expression.
  */
 void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
@@ -257,17 +257,17 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
   int group_by_size = group_by_attrs_.size();
   // map column name to id
   for (int i = 0; i < group_by_size; ++i) {
-    column_to_id["NULL_AGG." + group_by_attrs_[i]->alias_] = i;
+    column_to_id["NULL_MID." + group_by_attrs_[i]->alias_] = i;
   }
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
-    column_to_id["NULL_AGG." + aggregation_attrs_[i]->alias_] =
+    column_to_id["NULL_MID." + aggregation_attrs_[i]->alias_] =
         i + group_by_size;
   }
   // reconstruct group by attributes and initialize them
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
     group_by_node = new ExprColumn(
         ExprNodeType::t_qcolcumns, group_by_attrs_[i]->actual_type_,
-        group_by_attrs_[i]->alias_, "NULL_AGG", group_by_attrs_[i]->alias_);
+        group_by_attrs_[i]->alias_, "NULL_MID", group_by_attrs_[i]->alias_);
     group_by_node->InitExprAtLogicalPlan(group_by_node->actual_type_,
                                          column_to_id, input_schema);
     group_by_attrs.push_back(group_by_node);
@@ -279,7 +279,7 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
         aggregation_attrs_[i]->alias_, aggregation_attrs_[i]->oper_type_,
         new ExprColumn(ExprNodeType::t_qexpr,
                        aggregation_attrs_[i]->actual_type_,
-                       aggregation_attrs_[i]->alias_, "NULL_AGG",
+                       aggregation_attrs_[i]->alias_, "NULL_MID",
                        aggregation_attrs_[i]->alias_));
     agg_node->InitExprAtLogicalPlan(agg_node->actual_type_, column_to_id,
                                     input_schema);
@@ -461,15 +461,14 @@ void LogicalAggregation::Print(int level) const {
   }
 
   cout << setw(level * kTabSize) << " "
-       << "group by attributes:" << endl;
+       << "## group by attributes:" << endl;
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
-    cout << setw(level * kTabSize) << " " << group_by_attrs_[i]->alias_ << endl;
+    cout << "    " << group_by_attrs_[i]->alias_ << endl;
   }
   cout << setw(level * kTabSize) << " "
-       << "aggregation attributes:" << endl;
+       << "## aggregation attributes:" << endl;
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
-    cout << setw(level * kTabSize) << " " << aggregation_attrs_[i]->alias_
-         << endl;
+    cout << "    " << aggregation_attrs_[i]->alias_ << endl;
   }
   child_->Print(level + 1);
 }

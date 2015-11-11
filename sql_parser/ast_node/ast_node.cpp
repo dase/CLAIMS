@@ -250,18 +250,25 @@ ErrorNo SemanticContext::AddNewTableColumn(set<AstNode*>& new_set,
   multimap<string, string> new_columns;
   new_columns.clear();
   for (auto it = new_set.begin(); it != new_set.end(); ++it) {
-    if (AST_COLUMN == (*it)->ast_node_type_) {
-      // because the column may be aliased, so new column attr=col->expr_str_(=
-      // alias, if not aliased initially, the alias = column or table.column, so
-      // should remove "table." from "table.column")
-      AstColumn* col = reinterpret_cast<AstColumn*>(*it);
-      new_columns.insert(
-          make_pair(col->expr_str_.substr(col->expr_str_.find('.') + 1),
-                    col->relation_name_));
-    } else if (AST_COLUMN_ALL == (*it)->ast_node_type_) {
+    if (AST_COLUMN_ALL == (*it)->ast_node_type_) {
       // add the columns whose table=table.*
       AstColumn* col = reinterpret_cast<AstColumn*>(*it);
       GetTableAllColumn(col->relation_name_, new_columns);
+    } else if (AST_COLUMN == (*it)->ast_node_type_) {
+      // because the column may be aliased, so new column
+      //                =
+      // alias, if not aliased initially, the alias = column or
+      //            table.column, so
+      // should remove "table." from "table.column")
+      //            attr=col->expr_str_(
+
+      AstColumn* col = reinterpret_cast<AstColumn*>(*it);
+      if (col->expr_str_ == (col->relation_name_ + "." + col->column_name_) ||
+          col->expr_str_ == col->column_name_) {
+        new_columns.insert(make_pair(col->column_name_, col->relation_name_));
+      } else {  // the column is aliased
+        new_columns.insert(make_pair(col->expr_str_, "NULL_MID"));
+      }
     } else if (AST_COLUMN_ALL_ALL == (*it)->ast_node_type_) {
       // must just one *.* in select, and the columns_to_table_ couldn't change
       if (new_set.size() != 1) {
@@ -270,8 +277,8 @@ ErrorNo SemanticContext::AddNewTableColumn(set<AstNode*>& new_set,
       }
       assert(new_set.size() == 1);
       return eOK;
-    } else {
-      new_columns.insert(make_pair((*it)->expr_str_, "NULL_AGG"));
+    } else {  // expr_str_ = tb.col, alias, col and expr_name
+      new_columns.insert(make_pair((*it)->expr_str_, "NULL_MID"));
     }
   }
   if (need_clear) {
@@ -389,7 +396,8 @@ void SemanticContext::ClearColumn() { column_to_table_.clear(); }
 
 void SemanticContext::ClearTable() { tables_.clear(); }
 
-void SemanticContext::PrintContext() {
+void SemanticContext::PrintContext(string flag) {
+  cout << "~~~~~~~~~~~~~~~~" << flag << "~~~~~~~~~~~~~~~~~~" << endl;
   cout << "++++print Tables++++  " << tables_.size() << endl;
   for (auto it = tables_.begin(); it != tables_.end(); ++it) {
     cout << (*it) << endl;

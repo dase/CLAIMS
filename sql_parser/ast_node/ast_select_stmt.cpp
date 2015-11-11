@@ -335,22 +335,6 @@ ErrorNo AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
       logic_plan = new LogicalCrossJoin(args_lplan, next_lplan);
     }
     if (normal_condition_.size() > 0) {
-#ifdef NEWCONDI
-      vector<QNode*> condition;
-      condition.clear();
-      QNode* qnode = NULL;
-      for (auto it = normal_condition_.begin(); it != normal_condition_.end();
-           ++it) {
-        ret = (*it)->GetLogicalPlan(qnode, logic_plan);
-        if (eOK != ret) {
-          LOG(ERROR) << "get normal condition upon from list, due to [err: "
-                     << ret << " ] !" << endl;
-          return ret;
-        }
-        assert(NULL != qnode);
-        condition.push_back(qnode);
-      }
-#else
       vector<ExprNode*> condition;
       condition.clear();
       ExprNode* qnode = NULL;
@@ -365,7 +349,6 @@ ErrorNo AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
         assert(NULL != qnode);
         condition.push_back(qnode);
       }
-#endif
       logic_plan = new LogicalFilter(logic_plan, condition);
     }
   } else {
@@ -461,21 +444,6 @@ ErrorNo AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
     return eEqualJoinCondiInATable;
   }
   if (normal_condition_.size() > 0) {
-#ifdef NEWCONDI
-    vector<QNode*> condition;
-    QNode* qnode = NULL;
-    for (auto it = normal_condition_.begin(); it != normal_condition_.end();
-         ++it) {
-      ret = (*it)->GetLogicalPlan(qnode, logic_plan);
-      if (eOK != ret) {
-        LOG(ERROR) << "get normal condition upon a table, due to [err: " << ret
-                   << " ] !" << endl;
-        return ret;
-      }
-      assert(NULL != qnode);
-      condition.push_back(qnode);
-    }
-#else
     vector<ExprNode*> condition;
     ExprNode* qnode = NULL;
     for (auto it = normal_condition_.begin(); it != normal_condition_.end();
@@ -489,7 +457,7 @@ ErrorNo AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
       assert(NULL != qnode);
       condition.push_back(qnode);
     }
-#endif
+
     logic_plan = new LogicalFilter(logic_plan, condition);
   }
   return eOK;
@@ -1199,7 +1167,7 @@ void AstColumn::RecoverExprName(string& name) {
 /**
  * because GetRefTable from where clause, so there couldn't be AST_COLUMN_ALL or
  * AST_COLUMN_ALL_ALL
- * relation_name_=="NULL" is illegal, but "NULL_AGG" means for aggregation, so
+ * relation_name_=="NULL" is illegal, but "NULL_MID" means for aggregation, so
  * it's legal
  */
 void AstColumn::GetRefTable(set<string>& ref_table) {
@@ -1209,19 +1177,16 @@ void AstColumn::GetRefTable(set<string>& ref_table) {
   ref_table.insert(relation_name_);
 }
 
-ErrorNo AstColumn::GetLogicalPlan(QNode*& logic_expr,
-                                  LogicalOperator* child_logic_plan) {
-  ErrorNo ret = eOK;
-  logic_expr = new QColcumns(
-      relation_name_.c_str(), column_name_.c_str(),
-      child_logic_plan->GetPlanContext()
-          .GetAttribute(relation_name_, relation_name_ + "." + column_name_)
-          .attrType->type,
-      "");
-  return eOK;
-}
 ErrorNo AstColumn::GetLogicalPlan(ExprNode*& logic_expr,
                                   LogicalOperator* child_logic_plan) {
+  //  Attribute attr =
+  //  child_logic_plan->GetPlanContext().GetAttribute(expr_str_);
+  //  if (attr.attrName == "NULL") {
+  //    LOG(ERROR) << "AstColumn::GetLogicalPlan get attr shouldn't be NULL"
+  //               << endl;
+  //    cout << "AstColumn::GetLogicalPlan get attr shouldn't be NULL" << endl;
+  //    assert(false);
+  //  }
   logic_expr = new ExprColumn(
       ExprNodeType::t_qcolcumns,
       child_logic_plan->GetPlanContext()
@@ -1306,7 +1271,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
   }
 
-  sem_cnxt->PrintContext();
+  sem_cnxt->PrintContext("after scan");
   // first recover select attr name
   // collect all aggregation functions
   agg_attrs_.clear();
@@ -1357,7 +1322,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       LOG(ERROR) << "there are confiction in new schema after agg!" << endl;
       return ret;
     }
-    sem_cnxt->PrintContext();
+    sem_cnxt->PrintContext("after aggregation");
 
     // check whether other column except from aggregation funcs and groupby
     // expressions in select expressions
@@ -1368,6 +1333,9 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return eAggSelectExprHaveOtherColumn;
     }
   }
+  // for select clause rebuild table column
+  sem_cnxt->RebuildTableColumn();
+  sem_cnxt->PrintContext("after select");
   // having clause exist only if have aggregation
   if (NULL != having_clause_) {
     if (!have_aggeragion_) {
@@ -1408,8 +1376,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return ret;
     }
   }
-  sem_cnxt->RebuildTableColumn();
-  sem_cnxt->PrintContext();
+
   return ret;
 }
 
@@ -1518,6 +1485,12 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
+  if (NULL != select_list_) {
+    ret = GetLogicalPlanOfProject(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
   if (NULL != having_clause_) {
     ret = having_clause_->GetLogicalPlan(logic_plan);
     if (eOK != ret) {
@@ -1526,12 +1499,6 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
   }
   if (NULL != orderby_clause_) {
     ret = orderby_clause_->GetLogicalPlan(logic_plan);
-    if (eOK != ret) {
-      return ret;
-    }
-  }
-  if (NULL != select_list_) {
-    ret = GetLogicalPlanOfProject(logic_plan);
     if (eOK != ret) {
       return ret;
     }
