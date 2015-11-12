@@ -26,7 +26,7 @@
 
 using namespace boost::gregorian;
 using namespace boost::posix_time;
-
+using boost::lexical_cast;
 #include "types/NValue.hpp"
 using namespace decimal;
 #define DATA_TYPE_NUMBER 20
@@ -68,10 +68,9 @@ typedef void (*fun)(void*, void*);
 #define NULL_DECIMAL nvalue_null
 #define NULL_U_SMALL_INT USHRT_MAX
 #define NULL_BOOLEAN 2
-
 static NValue nvalue_null = NValue::getDecimalValueFromString(
     "99999999999999999999999999.999999999999");
-
+const int max_double_length = 1+308;
 // static int count_open_for_data_column=0;
 
 /**
@@ -296,17 +295,30 @@ class OperateInt : public Operate {
     return false;
   }
   Operate* duplicateOperator() const { return new OperateInt(this->nullable); }
+
   TransformRet CheckSet(string & str) const {
     TransformRet ret = kSuccess;
+    if(str == "" && nullable) return kSuccess;
+    if(str == "" && !nullable) return kError;
+    if(!isdigit(str[0])) return kError;
+    for(auto i = 0;i<str.length();i++)
+      if(!isdigit(str[i]) && str[i]!='.') {
+        str = str.substr(0,i);
+        ret = kWarning;
+        break;
+      }
     long value = atol(str.c_str());
-    if(value < INT_MIN){
-      str = string(INT_MIN);
-      return kWarning;
+    if(value < INT_MIN) {
+       str = lexical_cast<string>(INT_MIN);
+       ret = kWarning;
+    } else if(value > INT_MAX || (value == INT_MAX && !nullable)) {
+      str = lexical_cast<string>(INT_MAX-1);
+      ret = kWarning;
     }
-    else if(value == INT)
+    return ret;
   }
   void SetDefault(string & str) const {
-
+    str = string("0");
   }
 };
 
@@ -383,10 +395,28 @@ class OperateFloat : public Operate {
     return false;
   }
   TransformRet CheckSet(string & str) const {
-
+    TransformRet ret = kSuccess;
+    if (str=="" && nullable) return kSuccess;
+    if (str=="" && !nullable) return kError;
+    if (!isdigit(str[0])) return kError;
+    for(auto i = 0;i<str.length();i++)
+      if(!isdigit(str[i]) && str[i]!='.') {
+        str = str.substr(0,i);
+        ret = kWarning;
+        break;
+      }
+    double value = atof(str.c_str());
+    if (value < FLT_MIN) {
+      str = lexical_cast<string>(FLT_MIN);
+      ret = kWarning;
+    } else if (value > FLT_MAX || (value == FLT_MAX && !nullable)) {
+      str = lexical_cast<string>(FLT_MAX - 1e23);
+      ret = kWarning;
+    }
+    return ret;
   }
   void SetDefault(string & str) const {
-
+    str = string("0");
   }
 };
 
@@ -463,10 +493,31 @@ class OperateDouble : public Operate {
     return false;
   }
   TransformRet CheckSet(string & str) const {
-
+     TransformRet ret = kSuccess;
+     if (str=="" && nullable) return kSuccess;
+     if (str=="" && !nullable)return kError;
+     if (!isdigit(str[0])) return kError;
+     for(auto i = 0;i<str.length();i++)
+       if(!isdigit(str[i]) && str[i]!='.') {
+         str = str.substr(0,i);
+         ret = kWarning;
+         break;
+       }
+     /*
+      * @brief integer part of a double number
+      */
+     auto len = 0;
+     for(auto i = str.begin();i!=str.end();i++,len++)
+       if(*i=='.') break;
+     if(len>=309){
+       if(str[0]=='-') str = lexical_cast<string>(DBL_MIN);
+       else str = lexical_cast<string>(DBL_MAX-1e305);
+       ret = kWarning;
+     }
+     return ret;
   }
   void SetDefault(string & str) const {
-
+    str = string("0");
   }
 };
 
@@ -543,10 +594,28 @@ class OperateULong : public Operate {
     return false;
   }
   TransformRet CheckSet(string & str) const {
-
+    TransformRet ret = kSuccess;
+    if(str=="" && nullable) return kSuccess;
+    if(str=="" && !nullable) return kError;
+    if(!isdigit(str[0])) return kError;
+    for(auto i = 0;i<str.length();i++)
+      if(!isdigit(str[i]) && str[i]!='.') {
+        str = str.substr(0,i);
+        ret = kWarning;
+        break;
+      }
+    auto len = 0;
+    for(auto i = str.begin();i!=str.end();i++,len++)
+      if(*i=='.') break;
+    if(str.length()>=20) {
+      if(str[0]=='-') str = "0";
+      else  str = lexical_cast<string>(ULONG_LONG_MAX-1);
+      ret = kWarning;
+    }
+    return ret;
   }
   void SetDefault(string & str) const {
-
+    str = string("0");
   }
 };
 
@@ -632,7 +701,7 @@ class OperateString : public Operate {
 
   }
   void SetDefault(string & str) const {
-
+    str = "";
   }
 };
 
@@ -731,7 +800,7 @@ class OperateDate : public Operate {
 
   }
   void SetDefault(string & str) const {
-
+    str = "1400-01-01";
   }
 };
 
@@ -819,7 +888,7 @@ class OperateTime : public Operate {
 
   }
   void SetDefault(string & str) const {
-
+    str = "00:00:00.000000";
   }
 };
 
@@ -905,7 +974,7 @@ class OperateDatetime : public Operate {
 
   }
   void SetDefault(string & str) const {
-
+    str = "1400-01-01 00:00:00.000000";
   }
 };
 
@@ -986,10 +1055,28 @@ class OperateSmallInt : public Operate {
     return false;
   }
   TransformRet CheckSet(string & str) const {
-
+    TransformRet ret = kSuccess;
+    if (str=="" && nullable) return kSuccess;
+    if (str=="" && !nullable) return kError;
+    if (!isdigit(str[0])) return kError;
+    for(auto i = 0;i<str.length();i++)
+      if (!isdigit(str[i]) && str[i]!='.') {
+        str = str.substr(0,i);
+        ret = kWarning;
+        break;
+      }
+    long value = atol(str.c_str());
+    if (value < SHRT_MIN) {
+      str = lexical_cast<string>(value);
+      ret = kWarning;
+    } else if (value > SHRT_MAX || (value==SHRT_MAX && !nullable)) {
+      str = lexical_cast<string>(SHRT_MAX-1);
+      ret = kWarning;
+    }
+    return ret;
   }
   void SetDefault(string & str) const {
-
+    str = "0";
   }
 };
 
@@ -1068,10 +1155,28 @@ class OperateUSmallInt : public Operate {
     return false;
   }
   TransformRet CheckSet(string & str) const {
-
+    TransformRet ret = kSuccess;
+    if (str=="" && nullable) return kSuccess;
+    if (str=="" && !nullable)return kError;
+    if (!isdigit(str[0])) return kError;
+    for(auto i=0;i<str.length();i++)
+      if (!isdigit(str[i]) && str[i]!='.') {
+        str = str.substr(0,i);
+        ret = kWarning;
+        break;
+      }
+    long value = atol(str.c_str());
+    if (value < 0) {
+      str = "0";
+      ret = kWarning;
+    } else if (value > USHRT_MAX || (value==USHRT_MAX && !nullable)) {
+      str = lexical_cast<string>(USHRT_MAX-1);
+      ret = kWarning;
+    }
+    return ret;
   }
   void SetDefault(string & str) const {
-
+    str = "0";
   }
 };
 
@@ -1193,7 +1298,7 @@ class OperateDecimal : public Operate {
 
   }
   void SetDefault(string & str) const {
-
+    str = string("0");
   }
 
 };
@@ -1276,10 +1381,14 @@ class OperateBool : public Operate {
     return false;
   }
   TransformRet CheckSet(string & str) const {
-
+    TransformRet ret = kSuccess;
+     if (str=="" && nullable) return kSuccess;
+     if (str=="" && !nullable) return kError;
+     if (str!="false" && str!="true") return kError;
+     return ret;
   }
   void SetDefault(string & str) const {
-
+    str = "false";
   }
 };
 
