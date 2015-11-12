@@ -109,7 +109,7 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   PlanContext ret;
-  if (kSuccess == DecideJoinPolicy(left_plan_context, right_plan_context)) {
+  if (claims::common::kSuccess == DecideJoinPolicy(left_plan_context, right_plan_context)) {
     const Attribute left_partition_key =
         left_plan_context.plan_partitioner_.get_partition_key();
     const Attribute right_partition_key =
@@ -221,7 +221,7 @@ int LogicalCrossJoin::DecideJoinPolicy(const PlanContext& left_plan_context,
     }
   }
   if (kUninitialized != join_policy_) {
-    return kSuccess;
+    return claims::common::kSuccess;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
                  << "[" << kErrorMessage[kUninitializedJoinPolicy] << ",]"
@@ -265,7 +265,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     PhysicalOperatorBase*& left_child_iterator_tree,
     PhysicalOperatorBase*& right_child_iterator_tree,
     const unsigned& blocksize) {
-  int ret = kSuccess;
+  int ret = claims::common::kSuccess;
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   switch (join_policy_) {

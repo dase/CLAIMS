@@ -43,11 +43,10 @@
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
 
-using namespace claims::common;
+#define NEWCONDITION
 
 namespace claims {
 namespace physical_operator {
-#define NEWCONDITION
 
 PhysicalFilter::PhysicalFilter(State state)
     : state_(state),
@@ -121,7 +120,7 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
                     << getMilliSecond(start) << "ms)" << std::endl;
         } else {
           filter_function_ = ComputeFilter;
-          LOG(ERROR) << "filter:" << kErrorMessage[kCodegenFailed] << std::endl;
+          LOG(ERROR) << "filter:" << claims::common::kErrorMessage[claims::common::kCodegenFailed] << std::endl;
         }
       }
     } else {
@@ -302,9 +301,9 @@ ThreadContext* PhysicalFilter::CreateContext() {
 int PhysicalFilter::DecideFilterFunction(
     expr_func const& generate_filter_function) {
   if (generate_filter_function) {
-    return kSuccess;
+    return claims::common::kSuccess;
   } else {
-    return kCodegenFailed;
+    return claims::common::kCodegenFailed;
   }
 }
 
