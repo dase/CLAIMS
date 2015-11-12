@@ -443,34 +443,44 @@ int64_t LogicalAggregation::EstimateGroupByCardinality(
 #endif
 }
 void LogicalAggregation::Print(int level) const {
-  printf("%*.sAggregation: aggregation_style: ", level * 8, " ");
+  cout << setw(level * kTabSize) << " "
+       << "Aggregation: " << endl;
+  ++level;
   switch (aggregation_style_) {
     case kLocalAgg: {
-      printf("kLocalAgg\n");
+      cout << setw(level * kTabSize) << " "
+           << "kLocalAgg" << endl;
       break;
     }
     case kReparGlobalAgg: {
-      printf("kReparGlobalAgg\n");
+      cout << setw(level * kTabSize) << " "
+           << "kReparGlobalAgg" << endl;
       break;
     }
     case kLocalAggReparGlobalAgg: {
-      printf("kLocalAggReparGlobalAgg!\n");
+      cout << setw(level * kTabSize) << " "
+           << "kLocalAggReparGlobalAgg!" << endl;
       break;
     }
-    default: { printf("aggregation style is not given!\n"); }
+    default: {
+      cout << setw(level * kTabSize) << " "
+           << "aggregation style is not given!" << endl;
+    }
   }
 
-  cout << setw(level * kTabSize) << " "
+  cout << setw((level - 1) * kTabSize) << " "
        << "## group by attributes:" << endl;
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
     cout << "    " << group_by_attrs_[i]->alias_ << endl;
   }
-  cout << setw(level * kTabSize) << " "
+  cout << setw((level - 1) * kTabSize) << " "
        << "## aggregation attributes:" << endl;
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
-    cout << "    " << aggregation_attrs_[i]->alias_ << endl;
+    cout << setw(level * kTabSize) << " " << aggregation_attrs_[i]->alias_
+         << endl;
   }
-  child_->Print(level + 1);
+  --level;
+  child_->Print(level);
 }
 }  // namespace logical_operator
 }  // namespace claims

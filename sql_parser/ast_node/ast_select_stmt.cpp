@@ -46,6 +46,7 @@
 #include "../../logical_operator/logical_project.h"
 #include "../../logical_operator/logical_scan.h"
 #include "../../logical_operator/logical_sort.h"
+#include "../../logical_operator/logical_subquery.h"
 
 #include "../ast_node/ast_expr_node.h"
 #include "../ast_node/ast_node.h"
@@ -59,6 +60,7 @@ using claims::logical_operator::LogicalFilter;
 using claims::logical_operator::LogicalProject;
 using claims::logical_operator::LogicalScan;
 using claims::logical_operator::LogicalSort;
+using claims::logical_operator::LogicalSubquery;
 
 using std::bitset;
 using std::endl;
@@ -521,7 +523,7 @@ ErrorNo AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (eOK != ret) {
     return ret;
   }
-
+  // reconstruct the output attribute in subquery
   multimap<string, string> column_to_table;
   ret = sub_sem_cnxt.GetAliasColumn(subquery_alias_, column_to_table);
   if (eOK != ret) {
@@ -547,7 +549,13 @@ ErrorNo AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
 }
 // may be deliver subquery output schema
 ErrorNo AstSubquery::GetLogicalPlan(LogicalOperator*& logic_plan) {
-  return subquery_->GetLogicalPlan(logic_plan);
+  ErrorNo ret = eOK;
+  ret = subquery_->GetLogicalPlan(logic_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  logic_plan = new LogicalSubquery(logic_plan, subquery_alias_);
+  return eOK;
 }
 
 AstJoinCondition::AstJoinCondition(AstNodeType ast_node_type,

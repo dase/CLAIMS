@@ -739,33 +739,44 @@ PlanPartitioner LogicalEqualJoin::DecideOutputDataflowProperty(
   return ret;
 }
 void LogicalEqualJoin::Print(int level) const {
-  printf("%*.sEqualJoin:", level * 8, " ");
+  cout << setw(level * kTabSize) << " "
+       << "EqualJoin:" << endl;
+  ++level;
   switch (join_policy_) {
     case kNoRepartition: {
-      printf("no_repartition\n");
+      cout << setw(level * kTabSize) << " "
+           << "no_repartition" << endl;
       break;
     }
     case kLeftRepartition: {
-      printf("left_repartition\n");
+      cout << setw(level * kTabSize) << " "
+           << "left_repartition" << endl;
       break;
     }
     case kRightRepartition: {
-      printf("right_repartition!\n");
+      cout << setw(level * kTabSize) << " "
+           << "right_repartition!" << endl;
       break;
     }
     case kCompleteRepartition: {
-      printf("complete_repartition!\n");
+      cout << setw(level * kTabSize) << " "
+           << "complete_repartition!" << endl;
       break;
     }
-    default: { printf("not given!\n"); }
+    default: {
+      cout << setw(level * kTabSize) << " "
+           << "not given!" << endl;
+    }
   }
   for (unsigned i = 0; i < this->joinkey_pair_list_.size(); i++) {
-    printf("%*.s", level * 8, " ");
-    printf("%s=%s\n", joinkey_pair_list_[i].left_join_attr_.attrName.c_str(),
-           joinkey_pair_list_[i].right_join_attr_.attrName.c_str());
+    cout << setw(level * kTabSize) << " "
+         << joinkey_pair_list_[i].left_join_attr_.attrName
+         << joinkey_pair_list_[i].right_join_attr_.attrName << endl;
+    cout << endl;
   }
-  left_child_->Print(level + 1);
-  right_child_->Print(level + 1);
+  --level;
+  left_child_->Print(level);
+  right_child_->Print(level);
 }
 double LogicalEqualJoin::PredictEqualJoinSelectivity(
     const PlanContext& left_dataflow, const PlanContext& right_dataflow) const {
