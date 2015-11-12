@@ -146,7 +146,7 @@ class PhysicalProjectionScan : public PhysicalOperator {
   // like a buffer
   input_dataset input_dataset_;
 
-  const PerformanceInfo* kPerfInfo;
+  PerformanceInfo* perf_info_;
 
   // The following code is for boost serialization.
  private:

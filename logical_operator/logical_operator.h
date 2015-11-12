@@ -50,7 +50,8 @@ enum OperatorType {
   kLogicalSort,
   kLogicalQueryPlanRoot,
   kLogicalCrossJoin,
-  kLogicalLimit
+  kLogicalLimit,
+  kLogicalSubquery
 };
 
 typedef PhysicalOperatorBase* PhysicalPlan;
@@ -73,9 +74,15 @@ class LogicalOperator {
   LogicalOperator(OperatorType operator_type) : operator_type_(operator_type) {
     lock_ = new Lock();
   }
-  virtual ~LogicalOperator(){};
+  virtual ~LogicalOperator() {
+    if (NULL != lock_) {
+      delete lock_;
+      lock_ = NULL;
+    }
+  }
   /**
-   * get the plan context which describes the property of the data after having
+   * get the plan context which describes the property of the data after
+   * having
    * executed corresponding operator.
    */
   virtual PlanContext GetPlanContext() = 0;
@@ -88,7 +95,8 @@ class LogicalOperator {
 
   /**
    * get the optimal Physical plan that meets the requirement.
-   * @return true if find physical plan that meets the requirement and store the
+   * @return true if find physical plan that meets the requirement and store
+   * the
    * physical plan and
    * its corresponding information in physical_plan_descriptor.
    */

@@ -1156,10 +1156,8 @@ inline void InitOperatorFunc() {
       smallInt_less_equal;
   DataTypeOper::data_type_oper_func_[t_smallInt][oper_negative] =
       smallInt_negative;
-  DataTypeOper::data_type_oper_func_[t_smallInt][oper_max] =
-      smallInt_agg_max;
-  DataTypeOper::data_type_oper_func_[t_smallInt][oper_min] =
-      smallInt_agg_min;
+  DataTypeOper::data_type_oper_func_[t_smallInt][oper_max] = smallInt_agg_max;
+  DataTypeOper::data_type_oper_func_[t_smallInt][oper_min] = smallInt_agg_min;
   DataTypeOper::data_type_oper_func_[t_smallInt][oper_agg_sum] =
       smallInt_agg_sum;
   DataTypeOper::data_type_oper_func_[t_smallInt][oper_agg_count] =
@@ -1315,10 +1313,8 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_datetime][oper_less] = datetime_less;
   DataTypeOper::data_type_oper_func_[t_datetime][oper_less_equal] =
       datetime_less_equal;
-  DataTypeOper::data_type_oper_func_[t_datetime][oper_max] =
-      datetime_agg_max;
-  DataTypeOper::data_type_oper_func_[t_datetime][oper_min] =
-      datetime_agg_min;
+  DataTypeOper::data_type_oper_func_[t_datetime][oper_max] = datetime_agg_max;
+  DataTypeOper::data_type_oper_func_[t_datetime][oper_min] = datetime_agg_min;
   /*****************datetime********************/
 }
 inline void avg_error_divide(void *sum_value, int64_t tuple_number,

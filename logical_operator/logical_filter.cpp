@@ -362,20 +362,22 @@ float LogicalFilter::PredictSelectivity() const {
   return ret;
 }
 void LogicalFilter::Print(int level) const {
-  // condition_.print(level);
-  printf("filter:\n");
+  cout << setw(level * kTabSize) << " "
+       << "Filter:" << endl;
 #ifdef NEWCONDI
 
   for (int i = 0; i < condi_.size(); ++i) {
     printf("  %s\n", condi_[i]->alias.c_str());
   }
 #else
+  ++level;
   for (int i = 0; i < condition_.size(); ++i) {
-    cout << "    " << condition_[i]->alias_ << endl;
+    cout << setw(level * kTabSize) << " " << condition_[i]->alias_ << endl;
   }
+  --level;
 #endif
 
-  child_->Print(level + 1);
+  child_->Print(level);
 }
 
 }  // namespace logical_operator

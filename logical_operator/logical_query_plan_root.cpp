@@ -353,13 +353,16 @@ std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(
   return attribute_name_list;
 }
 void LogicalQueryPlanRoot::Print(int level) const {
-  printf("Root\n");
+  cout << setw(level * kTabSize) << " "
+       << "Root" << endl;
+  ++level;
   if (!limit_constraint_.CanBeOmitted()) {
     printf("With limit constaint: %ld, %ld\n",
            limit_constraint_.start_position_,
            limit_constraint_.returned_tuples_);
   }
-  child_->Print(level + 1);
+  --level;
+  child_->Print(level);
 }
 
 }  // namespace logical_operator
