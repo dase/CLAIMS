@@ -65,7 +65,7 @@ TEST_F(ErrorNoTest, B) {
 }
 
 TEST_F(ErrorNoTest, C) {
-  int errerno = kSuccess;
+  int errerno = claims::common::kSuccess;
 
 //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
