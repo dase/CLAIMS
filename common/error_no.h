@@ -21,7 +21,7 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
- * 
+ *
  * Description:
  *
  */
@@ -30,9 +30,12 @@
 #ifndef COMMON_ERROR_NO_H_
 #define COMMON_ERROR_NO_H_
 
-#include "./error_define.h"
 namespace claims {
 namespace common {
+
+const int kErrorMaxNumber = 10000;
+
+static const char* kErrorMessage[kErrorMaxNumber];
 
 const char* CStrError(int errorno);
 
@@ -42,10 +45,9 @@ static struct ErrorInit {
   static inline void DefineErrorAndMessage(int value, const char* messege) {
     kErrorMessage[-value] = messege;
   }
-}local_init;
+} local_init;
 
 }  // end namespace common
 }  // end namespace claims
 
 #endif  // COMMON_ERROR_NO_H_
-

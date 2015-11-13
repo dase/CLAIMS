@@ -23,4 +23,5 @@ LDADD = ../../catalog/libcatalog.a \
 noinst_LIBRARIES=libtest.a
 libtest_a_SOURCES = \
 	single_file_connector_test.h	single_file_connector_test.cpp\
-	table_file_connector_test.h		table_file_connector_test.cpp
+	table_file_connector_test.h		table_file_connector_test.cpp \
+	data_injector_test.cpp			data_injector_test.h

@@ -33,6 +33,7 @@
 
 #include "../../catalog/table.h"
 #include "../../catalog/attribute.h"
+#include "../../common/Block/ResultSet.h"
 using claims::catalog::TableDescriptor;
 using claims::catalog::Attribute;
 using std::string;
@@ -41,25 +42,16 @@ using std::vector;
 namespace claims {
 namespace loader {
 
-DataInjectorTest::DataInjectorTest() {
-  // TODO Auto-generated constructor stub
-}
-
-DataInjectorTest::~DataInjectorTest() {
-  // TODO Auto-generated destructor stub
-}
-
 TEST_F(DataInjectorTest, Load) {
-  EXPECT_TRUE(client_.connected());
+  //  EXPECT_TRUE(client_.connected());
   ResultSet rs;
   string command = "";
+  std::cout << "it is load" << std::endl;
 }
 
 TEST_F(DataInjectorTest, Append) {}
 
 TEST_F(DataInjectorTest, Insert) {}
-
-void DataInjectorTest::SetUpTestCase() {}
 
 } /* namespace loader */
 } /* namespace claims */

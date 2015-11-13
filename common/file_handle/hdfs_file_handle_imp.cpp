@@ -54,7 +54,7 @@ HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
 
 HdfsFileHandleImp::~HdfsFileHandleImp() {
   int ret = kSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(Close(), "failed to close ");
+  EXEC_AND_ONLY_LOG_ERROR(ret,Close(), "failed to close ");
   ret = hdfsDisconnect(fs_);
   if (ret != 0) LOG(ERROR) << "failed to disconnect to hdfs" << endl;
 }

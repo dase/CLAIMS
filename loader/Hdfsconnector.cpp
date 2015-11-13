@@ -44,8 +44,9 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_) {
             prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(),
                                                  O_WRONLY | O_CREAT, 0, 0, 0));
             break;
-            //					cout << "[ERROR: Hdfsconnector.cpp->assgin_open_file()]:
-            //The file " << *par_writepath << "is not exits!\n";
+            //					cout << "[ERROR:
+            //Hdfsconnector.cpp->assgin_open_file()]:
+            // The file " << *par_writepath << "is not exits!\n";
             //					return false;
           }
           prj_writefile.push_back(hdfsOpenFile(fs, (*par_writepath).c_str(),

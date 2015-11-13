@@ -28,19 +28,21 @@
 
 #include <string.h>
 #include <iostream>
+#include <string>
 #include "./error_no.h"
+#include "./error_define.h"
 
 namespace claims {
 namespace common {
 
-const char* CStrError(int errorno) {
+static const char* CStrError(int errorno) {
 #define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
   const char* res = "Unknown Error";
-  if (likely(errorno <= 0 && errorno > -kErrorMaxNumber)) {
+  if (likely(errorno <= 0 && errorno > -kErrorMaxNumber &&
+             NULL != kErrorMessage[-errorno])) {
     res = kErrorMessage[-errorno];
-    if (unlikely(NULL == res)) res = "Unknown Error";
   }
   return res;
 }

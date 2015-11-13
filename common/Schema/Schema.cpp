@@ -19,10 +19,10 @@ unsigned Schema::getncolumns() const { return columns.size(); }
 void Schema::displayTuple(const void* tuple_start_address,
                           const char* spliter) const {
   for (unsigned i = 0; i < columns.size(); i++) {
-    LOG(INFO) << columns[i].operate->toString(
-                     getColumnAddess(i, tuple_start_address)) << spliter;
+    DLOG(INFO) << columns[i].operate->toString(
+                      getColumnAddess(i, tuple_start_address)) << spliter;
   }
-  LOG(INFO) << endl;
+  DLOG(INFO) << endl;
 }
 
 std::string Schema::getColumnValue(const void* tuple_start_address, int i) {

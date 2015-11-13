@@ -93,7 +93,7 @@ RetCode TableFileConnector::Close() {
   int ret = kSuccess;
   for (int i = 0; i < file_handles_.size(); ++i)
     for (int j = 0; j < file_handles_[i].size(); ++j)
-      EXEC_AND_ONLY_LOG_ERROR(file_handles_[i][j]->Close(),
+      EXEC_AND_ONLY_LOG_ERROR(ret,file_handles_[i][j]->Close(),
                               "failed to close " << write_path_name_[i][j]
                                                  << ". ret:" << ret);
   //      if (kSuccess != (ret = file_handles_[i][j]->Close()))
@@ -109,7 +109,7 @@ RetCode TableFileConnector::Flush(unsigned projection_offset,
                                   unsigned length) {
   assert(file_handles_.size() != 0 && "make sure file handles is not empty");
   int ret = kSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(
+  EXEC_AND_ONLY_LOG_ERROR(ret,
       file_handles_[projection_offset][partition_offset]->Write(source, length),
       "failed to write file. ret:" << ret);
   return ret;

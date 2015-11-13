@@ -34,6 +34,7 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <istream>
 #include <string>
 #include <vector>
 
@@ -66,6 +67,7 @@
 namespace claims {
 namespace loader {
 
+using std::basic_istream;
 using claims::catalog::TableDescriptor;
 using claims::catalog::Attribute;
 using claims::catalog::ProjectionBinding;
@@ -80,8 +82,8 @@ static double DataInjector::total_check_string_time_ = 0;
 static double DataInjector::total_to_value_time_ = 0;
 static double DataInjector::total_to_value_func_time_ = 0;
 
-DataInjector::DataInjector(TableDescriptor* table, const char col_separator,
-                           const char row_separator)
+DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
+                           const string row_separator)
     : table_(table),
       col_separator_(col_separator),
       row_separator_(row_separator) {
@@ -261,13 +263,15 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   for (auto file_name : input_file_names) {
     ifstream input_file(file_name.c_str());
     if (!input_file.good()) {
-      PLOG(ERROR) << "Cannot open source file:" << file_name << ", reason: ";
-      result->SetError("Cannot open source file:" + file_name);
-      return EOpenDiskFileFail;
+      ret = EOpenDiskFileFail;
+      PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ]"
+                  << "File name:" << file_name << ". Reason";
+      result->SetError("Can't open file :" + file_name);
+      return ret;
     }
 
     // read every line
-    while (getline(input_file, tuple_record, row_separator_) &&
+    while (getline(input_file, tuple_record, row_separator_[0]) &&
            !input_file.eof()) {
       ++row_id_in_file;
       // sample
@@ -275,7 +279,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 
       GETCURRENTTIME(add_time);
       EXEC_AND_ONLY_LOG_ERROR(
-          AddRowIdColumn(tuple_record),
+          ret, AddRowIdColumn(tuple_record),
           "failed to add row_id column for tuple. ret:" << ret);
       total_add_time += GetElapsedTime(add_time);
 
@@ -304,7 +308,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       total_check_time += GetElapsedTime(start_check_time);
 
       GETCURRENTTIME(start_insert_time);
-      EXEC_AND_ONLY_LOG_ERROR(InsertSingleTuple(tuple_buffer),
+      EXEC_AND_ONLY_LOG_ERROR(ret, InsertSingleTuple(tuple_buffer),
                               "failed to insert tuple in "
                                   << file_name << " at line " << row_id_in_file
                                   << ". ret:" << ret);
@@ -332,16 +336,17 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
             << "  total check time: " << total_check_time / 1000.0
             << "  total insert time: " << total_insert_time / 1000.0 << endl;
 
-  EXEC_AND_LOG(FlushNotFullBlock(), "flush all last block that are not full",
+  EXEC_AND_LOG(ret, FlushNotFullBlock(),
+               "flush all last block that are not full",
                "failed to flush all last block. ret:" << ret);
 
 #ifdef DATA_DO_LOAD
-  EXEC_AND_LOG(connector_->Close(), "closed connector.",
+  EXEC_AND_LOG(ret, connector_->Close(), "closed connector.",
                "Failed to close connector. ret:" << ret);
 #endif
 
   GETCURRENTTIME(update_time);
-  EXEC_AND_ONLY_LOG_ERROR(UpdateCatalog(open_flag),
+  EXEC_AND_ONLY_LOG_ERROR(ret, UpdateCatalog(open_flag),
                           "failed to update catalog information. ret:" << ret);
   LOG(INFO) << "update time: " << GetElapsedTime(update_time) << endl;
 
@@ -370,7 +375,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
     LOG(WARNING) << "tuples string ends with " << *tuples.end()
                  << ", but not '\\n' " << endl;
   }
-  EXEC_AND_ONLY_LOG_ERROR(PrepareInitInfo(kAppendFile),
+  EXEC_AND_ONLY_LOG_ERROR(ret, PrepareInitInfo(kAppendFile),
                           "failed to prepare initialization info");
   ret = connector_->Open(kAppendFile);
   if (kSuccess != ret) {
@@ -392,7 +397,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
     EXEC_AND_ONLY_LOG_ERROR(
-        AddRowIdColumn(tuple_record),
+        ret, AddRowIdColumn(tuple_record),
         "failed to add row_id column for tuple. ret:" << ret);
 
     vector<unsigned> warning_indexs;
@@ -425,20 +430,21 @@ RetCode DataInjector::InsertFromString(const string tuples,
   }
 
   for (auto it : correct_tuple_buffer) {
-    EXEC_AND_ONLY_LOG_ERROR(InsertSingleTuple(it),
+    EXEC_AND_ONLY_LOG_ERROR(ret, InsertSingleTuple(it),
                             "failed to insert tuple in line "
-                                << line << ". ret:" << ret)
+                                << line << ". ret:" << ret);
     DELETE_PTR(it);
   }
   correct_tuple_buffer.clear();
   LOG(INFO) << "totally inserted " << line << " rows data into blocks" << endl;
-  EXEC_AND_LOG(FlushNotFullBlock(), "flush all last block that are not full",
+  EXEC_AND_LOG(ret, FlushNotFullBlock(),
+               "flush all last block that are not full",
                "failed to flush all last block");
 #ifdef DATA_DO_LOAD
-  EXEC_AND_LOG(connector_->Close(), "closed connector.",
+  EXEC_AND_LOG(ret, connector_->Close(), "closed connector.",
                "Failed to close connector.");
 #endif
-  EXEC_AND_ONLY_LOG_ERROR(UpdateCatalog(kAppendFile),
+  EXEC_AND_ONLY_LOG_ERROR(ret, UpdateCatalog(kAppendFile),
                           "failed to update catalog information");
 
   LOG(INFO) << "\n---------------------Insert End!---------------------\n";
@@ -458,7 +464,7 @@ RetCode DataInjector::FlushNotFullBlock() {
 
 #ifdef DATA_DO_LOAD
         EXEC_AND_LOG(
-            connector_->Flush(i, j, sblock->getBlock(), sblock->getsize()),
+            ret, connector_->Flush(i, j, sblock->getBlock(), sblock->getsize()),
             "flushed the last block from buffer(" << i << "," << j
                                                   << ") into file",
             "failed to flush the last block from buffer(" << i << "," << j
@@ -555,15 +561,8 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
 // if buffer is full, write buffer(64K) to HDFS/disk
 #ifdef DATA_DO_LOAD
     pj_buffer[i][part]->serialize(*sblock);
-    //    if (kSuccess != (ret = connector_->Flush(i, part, sblock->getBlock(),
-    //                                             sblock->getsize()))) {
-    //      LOG(ERROR) << "failed to write to data file. ErrCode: " << ret <<
-    //      endl;
-    //    } else {
-    //      LOG(INFO) << row_id_ << "\t64KB has been written to file!\n";
-    //    }
     EXEC_AND_LOG(
-        connector_->Flush(i, part, sblock->getBlock(), sblock->getsize()),
+        ret, connector_->Flush(i, part, sblock->getBlock(), sblock->getsize()),
         row_id_ << "\t64KB has been written to file!",
         "failed to write to data file. ret:" << ret);
 #endif
@@ -613,10 +612,37 @@ inline bool DataInjector::CheckTupleValidity(string tuple_string,
       table_schema_->toValue(tuple_string, tuple_buffer, col_separator_,
                              raw_data_source, warning_indexs);
 
-  //  LOG(INFO) << "text : " << tuple_string << endl;
-  //  LOG(INFO) << "tuple: ";
+  DLOG(INFO) << "text : " << tuple_string << endl;
+  DLOG(INFO) << "tuple: ";
   //  table_->getSchema()->displayTuple(tuple_buffer, " | ");
   return success;
+}
+
+istream& DataInjector::GetTupleTerminatedBy(ifstream& ifs, string& res,
+                                            const string& terminator) {
+  res.clear();
+  if (1 == terminator.length()) {
+    return getline(ifs, res, static_cast<char>(terminator[0]));
+  }
+  int c = 0;
+  while (EOF != (c = ifs.get())) {
+    res += c;
+    if (c == terminator[0]) {
+      int coincide_length = 1;
+      while (EOF != (c = ifs.get())) {
+        res += c;
+        if (terminator[coincide_length - 1] == c) {
+          if (++coincide_length == terminator.length())
+            return ifs;
+          else
+            continue;
+        } else {
+          break;
+        }
+      }
+    }
+  }
+  return ifs;
 }
 
 /*RetCode DataInjector::HandleSingleLine(string tuple_record, void*
@@ -634,7 +660,7 @@ tuple_buffer,
   }
   memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
 
-  EXEC_AND_ONLY_LOG_ERROR(AddRowIdColumn(tuple_record),
+  EXEC_AND_ONLY_LOG_ERROR(ret,AddRowIdColumn(tuple_record),
                           "failed to add row_id column for tuple");
 
   GETCURRENTTIME(start_check_time);

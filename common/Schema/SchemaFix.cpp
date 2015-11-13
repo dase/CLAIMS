@@ -79,7 +79,7 @@ int SchemaFix::getColumnOffset(unsigned index) const {
  * void SetDefault(string& raw_string) 设置源数据为默认值
  */
 bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
-                        const char attr_separator,
+                        const string attr_separator,
                         RawDataSource raw_data_source,
                         vector<unsigned>& warning_columns_index) {
   string::size_type prev_pos = 0;

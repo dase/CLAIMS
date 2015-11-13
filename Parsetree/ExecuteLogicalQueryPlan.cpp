@@ -1297,14 +1297,14 @@ void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
   // split sign should be considered carefully, in case of it may be "||" or
   // "###"
   ASTParserLogging::log(
-      "The separator are :%c,%c, The sample is %lf, mode is %d\n",
-      column_separator[0], tuple_separator[0], new_node->sample,
+      "The separator are :%s,%s, The sample is %lf, mode is %d\n",
+      column_separator.c_str(), tuple_separator.c_str(), new_node->sample,
       new_node->mode);
 
   GETCURRENTTIME(start_time);
 #ifdef NEW_LOADER
   DataInjector *injector =
-      new DataInjector(table, column_separator[0], tuple_separator[0]);
+      new DataInjector(table, column_separator, tuple_separator);
   int ret = injector->LoadFromFile(path_names,
                                    static_cast<FileOpenFlag>(new_node->mode),
                                    result, new_node->sample);
@@ -1316,7 +1316,7 @@ void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
     }
     LOG(ERROR) << " into table " << table->getTableName() << endl;
 
-    if (result->error_info_ != "") result->SetError("failed to load data");
+    if (result->error_info_ == "") result->SetError("failed to load data");
   } else {
     //    result_flag = true;
     //    info = "load data successfully";

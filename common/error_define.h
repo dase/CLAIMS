@@ -30,33 +30,40 @@
 #define COMMON_ERROR_DEFINE_H_
 
 #include <stdlib.h>
+#include "./error_no.h"
 
 typedef int RetCode;  // means return code
-
-#define EXEC_AND_ONLY_LOG_ERROR(f, err_info) \
-  if (kSuccess != (ret = f)) {               \
-    LOG(ERROR) << err_info << std::endl;     \
-  }
-
-#define EXEC_AND_LOG(f, info, err_info)  \
-  if (kSuccess == (ret = f)) {           \
-    LOG(INFO) << info << std::endl;      \
-  } else {                               \
-    LOG(ERROR) << err_info << std::endl; \
-  }
-
-#define EXEC_AND_PLOG(f, info, err_info)  \
-  if (kSuccess == (ret = f)) {            \
-    LOG(INFO) << info << std::endl;       \
-  } else {                                \
-    PLOG(ERROR) << err_info << std::endl; \
-  }
-
+using claims::common::CStrError;
 namespace claims {
 namespace common {
 
-const int kErrorMaxNumber = 10000;
-static const char* kErrorMessage[kErrorMaxNumber];
+#define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info)                              \
+  do {                                                                         \
+    if (kSuccess != (ret = f)) {                                               \
+      LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
+                 << std::endl;                                                 \
+    }                                                                          \
+  } while (0)
+
+#define EXEC_AND_LOG(ret, f, info, err_info)                                   \
+  do {                                                                         \
+    if (kSuccess == (ret = f)) {                                               \
+      LOG(INFO) << info << std::endl;                                          \
+    } else {                                                                   \
+      LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
+                 << std::endl;                                                 \
+    }                                                                          \
+  } while (0)
+
+#define EXEC_AND_PLOG(ret, f, info, err_info)                       \
+  do {                                                              \
+    if (kSuccess == (ret = f)) {                                    \
+      LOG(INFO) << info << std::endl;                               \
+    } else {                                                        \
+      PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " \
+                  << err_info << std::endl;                         \
+    }                                                               \
+  } while (0)
 
 const int kSuccess = EXIT_SUCCESS;
 const int kFailure = EXIT_FAILURE;
@@ -79,7 +86,7 @@ const int ECloseHdfsFileFail = -12;
 const int EFileEOF = -13;
 const int EParamInvalid = -14;
 
-const int ENoMemory = -14;
+const int ENoMemory = -15;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int kNoTableFound = -1001;

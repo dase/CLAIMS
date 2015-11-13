@@ -28,27 +28,94 @@
 
 #ifndef LOADER_TEST_DATA_INJECTOR_TEST_H_
 #define LOADER_TEST_DATA_INJECTOR_TEST_H_
+
 #include <gtest/gtest.h>
+#include <iosfwd>
 #include <string>
+#include "../../loader/data_injector.h"
+#include "../../catalog/catalog.h"
+
+using std::ofstream;
+using claims::catalog::Catalog;
 
 namespace claims {
 namespace loader {
 
 class DataInjectorTest : public ::testing::Test {
  public:
-  DataInjectorTest();
-  virtual ~DataInjectorTest();
-
-  void SetUpTestCase();
-
-  void TearDownTestCase() { client_.shutdown(); }
+  DataInjectorTest() {}
+  virtual ~DataInjectorTest() {}
 
  public:
-  Client client_;
+  //  Client client_;
   std::string ip_;
   int port_;
 };
 
+TEST_F(DataInjectorTest, GetTuple1) {
+  char* data[2] = {"sf|sfs||sfssfs|\n", "sfsf\fw|fsfegbf,s,nn|fwnelweh\n"};
+
+  ofstream ofs("test_for_DI_GetTuple");
+  for (int i = 0; i < 2; ++i) ofs << data[i];
+
+  ifstream ifs("test_for_DI_GetTuple");
+  string res;
+  string ter("\n");
+  int i = 0;
+  while (DataInjector::GetTupleTerminatedBy(ifs, res, ter)) {
+    EXPECT_STREQ(data[i++], res.c_str());
+    res.clear();
+  }
+}
+
+TEST_F(DataInjectorTest, GetTuple2) {
+  char* data[2] = {"sf|sfs||sfssfs|\n", "sfsf\fw|fsfegbf,s,nn|fwnelweh\n|\n"};
+
+  ofstream ofs("test_for_DI_GetTuple");
+  for (int i = 0; i < 2; ++i) ofs << data[i];
+
+  ifstream ifs("test_for_DI_GetTuple");
+  string res;
+  string ter = "|\n";
+  int i = 0;
+  while (DataInjector::GetTupleTerminatedBy(ifs, res, ter)) {
+    EXPECT_STREQ(data[i++], res.c_str());
+    res.clear();
+  }
+}
+TEST_F(DataInjectorTest, GetTuple3) {
+  char* data[3] = {"sf|sfs||sfssfs|\n", "sfsf\fw|fsfegbf,s,nn|fwnelweh\n|\n",
+                   "|\n"};
+
+  ofstream ofs("test_for_DI_GetTuple");
+  for (int i = 0; i < 3; ++i) ofs << data[i];
+
+  ifstream ifs("test_for_DI_GetTuple");
+  string res;
+  string ter = "|\n";
+  int i = 0;
+  while (DataInjector::GetTupleTerminatedBy(ifs, res, ter)) {
+    EXPECT_STREQ(data[i++], res.c_str());
+    res.clear();
+  }
+}
+
+TEST_F(DataInjectorTest, GetTuple4) {
+  char* data[4] = {"sf|sfs||sfssfs||||",
+                   "sfsf\fw|fsfe|||gbf,s,nn|fwnelweh\n||||", "|\n||||", "sfsf"};
+
+  ofstream ofs("test_for_DI_GetTuple");
+  for (int i = 0; i < 4; ++i) ofs << data[i];
+
+  ifstream ifs("test_for_DI_GetTuple");
+  string res;
+  string ter = "||||";
+  int i = 0;
+  while (DataInjector::GetTupleTerminatedBy(ifs, res, ter)) {
+    EXPECT_STREQ(data[i++], res.c_str());
+    res.clear();
+  }
+}
 } /* namespace loader */
 } /* namespace claims */
 

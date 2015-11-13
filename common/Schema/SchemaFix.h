@@ -64,7 +64,7 @@ class SchemaFix : public Schema {
    * @return true only if there is no error
    */
   bool toValue(std::string text_tuple, void* binary_tuple,
-               const char attr_separator, RawDataSource raw_data_source,
+               const string attr_separator, RawDataSource raw_data_source,
                vector<unsigned>& warning_columns_index);
   inline void showAccum_off() {
     for (int i = 0; i < accum_offsets.size(); i++) {

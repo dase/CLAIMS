@@ -62,8 +62,8 @@ class DataInjector {
    * @param col_separator: column separator
    * @param row_separator: row separator
    */
-  DataInjector(TableDescriptor* table, const char col_separator = '|',
-               const char row_separator = '\n');
+  DataInjector(TableDescriptor* table, const string col_separator = "|",
+               const string row_separator = "\n");
 
   virtual ~DataInjector();
 
@@ -135,6 +135,10 @@ class DataInjector {
                            string data_source, uint64_t row_id_in_raw_data,
                            ExecutedResult* result);
 
+ public:
+  static istream& GetTupleTerminatedBy(ifstream& ifs, string& res,
+                                       const string& terminator);
+
  private:
   TableDescriptor* table_;
   FileConnector* connector_;
@@ -153,8 +157,8 @@ class DataInjector {
   vector<vector<size_t>> tuples_per_partition;
   vector<vector<BlockStreamBase*>> pj_buffer;
 
-  char col_separator_;
-  char row_separator_;
+  string col_separator_;
+  string row_separator_;
   uint64_t row_id_;
   /******************debug********************/
  public:
