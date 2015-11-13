@@ -1,4 +1,4 @@
-.TH "ChunkID" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ChunkID" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ ChunkID \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ids\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBChunkID\fP (\fBPartitionID\fP partition_id, ChunkOffset chunk_offset)"
+.RI "\fBChunkID\fP ()"
+.br
+.ti -1c
+.RI "\fBChunkID\fP (\fBPartitionID\fP \fBpartition_id\fP, \fBChunkOffset\fP chunk_offset)"
 .br
 .ti -1c
 .RI "\fBChunkID\fP (const \fBChunkID\fP &r)"
@@ -29,10 +34,40 @@ ChunkID \-
 .RI "\fBPartitionID\fP \fBpartition_id\fP"
 .br
 .ti -1c
-.RI "ChunkOffset \fBchunk_off\fP"
+.RI "\fBChunkOffset\fP \fBchunk_off\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ChunkID::ChunkID ()\fC [inline]\fP"
+
+.SS "ChunkID::ChunkID (\fBPartitionID\fPpartition_id, \fBChunkOffset\fPchunk_offset)\fC [inline]\fP"
+
+.SS "ChunkID::ChunkID (const \fBChunkID\fP &r)\fC [inline]\fP"
+
+.PP
+References chunk_off, and partition_id\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ChunkID::operator< (const \fBChunkID\fP &r) const\fC [inline]\fP"
+
+.PP
+References chunk_off, and partition_id\&.
+.SS "bool ChunkID::operator== (const \fBChunkID\fP &r) const\fC [inline]\fP"
+
+.PP
+References chunk_off, and partition_id\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBChunkOffset\fP ChunkID::chunk_off"
+
+.PP
+Referenced by MemoryChunkStore::applyChunk(), ChunkID(), DiskChunkReaderIteraror::DiskChunkReaderIteraror(), hash_value(), HDFSChunkReaderIterator::HDFSChunkReaderIterator(), BlockManager::loadFromDisk(), BlockManager::loadFromHdfs(), bottomLayerSorting::Next(), operator<(), and operator==()\&.
+.SS "\fBPartitionID\fP ChunkID::partition_id"
+
+.PP
+Referenced by ChunkID(), DiskChunkReaderIteraror::DiskChunkReaderIteraror(), hash_value(), HDFSChunkReaderIterator::HDFSChunkReaderIterator(), BlockManager::loadFromDisk(), BlockManager::loadFromHdfs(), bottomLayerSorting::Next(), operator<(), and operator==()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "LogicalCSBIndexBuilding" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "LogicalCSBIndexBuilding" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ LogicalCSBIndexBuilding \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <LogicalCSBIndexBuilding\&.h>\fP
 .PP
 Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
 .SS "Public Member Functions"
@@ -15,19 +17,59 @@ Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
 .RI "\fBLogicalCSBIndexBuilding\fP (\fBProjectionID\fP projection_id, \fBAttribute\fP index_attr, std::string index_name)"
 .br
 .ti -1c
+.RI "virtual \fB~LogicalCSBIndexBuilding\fP ()"
+.br
+.ti -1c
 .RI "\fBPlanContext\fP \fBGetPlanContext\fP ()"
 .br
 .ti -1c
-.RI "\fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &)"
+.RI "\fBPhysicalOperatorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &)"
 .br
 .ti -1c
-.RI "bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size=4096 *1024)"
+.RI "bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &\fBblock_size\fP=4096 *1024)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBPrint\fP (int level=0) const "
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBProjectionID\fP \fBprojection_id_\fP"
+.br
+.ti -1c
+.RI "\fBAttribute\fP \fBindex_attr_\fP"
+.br
+.ti -1c
+.RI "std::string \fBindex_name_\fP"
+.br
+.ti -1c
+.RI "\fBProjectionDescriptor\fP * \fBscan_projection_\fP"
+.br
+.ti -1c
+.RI "\fBPlanContext\fP \fBblc_dataflow_\fP"
+.br
+.ti -1c
+.RI "\fBPlanContext\fP \fBbls_dataflow_\fP"
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "LogicalCSBIndexBuilding::LogicalCSBIndexBuilding (\fBProjectionID\fPprojection_id, \fBAttribute\fPindex_attr, std::stringindex_name)"
+
+.PP
+References Catalog::getInstance(), TableDescriptor::getProjectoin(), Catalog::getTable(), index_attr_, projection_id_, ProjectionID::projection_off, scan_projection_, and Attribute::table_id_\&.
+.SS "LogicalCSBIndexBuilding::~LogicalCSBIndexBuilding ()\fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
-.SS "bool LogicalCSBIndexBuilding::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096*1024\fP)\fC [virtual]\fP"
+.SS "bool LogicalCSBIndexBuilding::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
 get the optimal Physical plan that meets the requirement\&. 
 .PP
 \fBReturns:\fP
@@ -38,17 +80,49 @@ true if find physical plan that meets the requirement and store the physical pla
 
 .PP
 Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
-.SS "\fBBlockStreamIteratorBase\fP * LogicalCSBIndexBuilding::GetPhysicalPlan (const unsigned &)\fC [virtual]\fP"
+.SS "\fBPhysicalOperatorBase\fP * LogicalCSBIndexBuilding::GetPhysicalPlan (const unsigned &)\fC [virtual]\fP"
 generate the iterator tree based on the computed plan_context\&. Hence, this function can only be called after the calling of \fBGetPlanContext()\fP\&. 
 .PP
 Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References claims::logical_operator::PlanContext::attribute_list_, blc_dataflow_, block_size, bottomLayerCollecting::State::block_size_, bottomLayerSorting::State::block_size_, bottomLayerSorting::State::child_, Schema::getcolumn(), claims::logical_operator::LogicalOperator::GetSchema(), index_attr_, index_name_, bottomLayerSorting::State::index_name_, bottomLayerCollecting::State::key_indexing_, bottomLayerSorting::State::key_indexing_, projection_id_, bottomLayerCollecting::State::projection_id_, bottomLayerSorting::State::projection_id_, bottomLayerCollecting::State::schema_, bottomLayerSorting::State::schema_, t_int, and t_u_smallInt\&.
 .SS "\fBPlanContext\fP LogicalCSBIndexBuilding::GetPlanContext ()\fC [virtual]\fP"
 get the plan context which describes the property of the data after having executed corresponding operator\&. 
 .PP
 Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
 .PP
-References ProjectionBinding::BindingEntireProjection()\&.
+References ProjectionDescriptor::AllPartitionBound(), claims::logical_operator::PlanContext::attribute_list_, ProjectionBinding::BindingEntireProjection(), blc_dataflow_, claims::logical_operator::PlanContext::commu_cost_, DESIRIABLE_STORAGE_LEVEL, ProjectionDescriptor::getAttributeList(), Catalog::getBindingModele(), Catalog::getInstance(), ProjectionDescriptor::getPartitioner(), claims::logical_operator::PlanContext::plan_partitioner_, and scan_projection_\&.
+.SS "void LogicalCSBIndexBuilding::Print (intlevel = \fC0\fP) const\fC [private]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References Catalog::getInstance(), ProjectionDescriptor::getProjectionID(), scan_projection_, and ProjectionID::table_id\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPlanContext\fP LogicalCSBIndexBuilding::blc_dataflow_\fC [private]\fP"
+
+.PP
+Referenced by GetPhysicalPlan(), and GetPlanContext()\&.
+.SS "\fBPlanContext\fP LogicalCSBIndexBuilding::bls_dataflow_\fC [private]\fP"
+
+.SS "\fBAttribute\fP LogicalCSBIndexBuilding::index_attr_\fC [private]\fP"
+
+.PP
+Referenced by GetPhysicalPlan(), and LogicalCSBIndexBuilding()\&.
+.SS "std::string LogicalCSBIndexBuilding::index_name_\fC [private]\fP"
+
+.PP
+Referenced by GetPhysicalPlan()\&.
+.SS "\fBProjectionID\fP LogicalCSBIndexBuilding::projection_id_\fC [private]\fP"
+
+.PP
+Referenced by GetPhysicalPlan(), and LogicalCSBIndexBuilding()\&.
+.SS "\fBProjectionDescriptor\fP* LogicalCSBIndexBuilding::scan_projection_\fC [private]\fP"
+
+.PP
+Referenced by GetPlanContext(), LogicalCSBIndexBuilding(), and Print()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

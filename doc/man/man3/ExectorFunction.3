@@ -1,4 +1,4 @@
-.TH "ExectorFunction" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ExectorFunction" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,29 @@ ExectorFunction \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <queryfunc\&.h>\fP
 .SS "Static Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static ExecFunc \fBoperator_function\fP [DATA_TYPE_NUM][OPER_TYPE_NUM]"
+.RI "static \fBExecFunc\fP \fBoperator_function\fP [\fBDATA_TYPE_NUM\fP][\fBOPER_TYPE_NUM\fP]"
 .br
 .ti -1c
-.RI "static AvgDivide \fBavg_divide\fP [DATA_TYPE_NUM]"
+.RI "static \fBAvgDivide\fP \fBavg_divide\fP [\fBDATA_TYPE_NUM\fP]"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBAvgDivide\fP ExectorFunction::avg_divide\fC [static]\fP"
+
+.PP
+Referenced by InitAvgDivide()\&.
+.SS "\fBExecFunc\fP ExectorFunction::operator_function\fC [static]\fP"
+
+.PP
+Referenced by InitExprAtPhysicalPlan(), and initialize_operator_function()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

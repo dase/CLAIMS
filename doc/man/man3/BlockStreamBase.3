@@ -1,4 +1,4 @@
-.TH "BlockStreamBase" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BlockStreamBase" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ BlockStreamBase \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <BlockStream\&.h>\fP
 .PP
 Inherits \fBBlock\fP\&.
 .PP
@@ -21,13 +23,16 @@ Inherited by \fBBlockStreamFix\fP, and \fBBlockStreamVar\fP\&.
 
 .in +1c
 .ti -1c
-.RI "\fBBlockStreamBase\fP (unsigned block_size)"
+.RI "\fBBlockStreamBase\fP (unsigned \fBblock_size\fP)"
 .br
 .ti -1c
-.RI "\fBBlockStreamBase\fP (unsigned block_size, void *start_addr)"
+.RI "\fBBlockStreamBase\fP (unsigned \fBblock_size\fP, void *start_addr)"
 .br
 .ti -1c
 .RI "virtual \fBBlockStreamBase\fP * \fBcreateBlockAndDeepCopy\fP ()=0"
+.br
+.ti -1c
+.RI "virtual \fB~BlockStreamBase\fP ()"
 .br
 .ti -1c
 .RI "virtual void * \fBallocateTuple\fP (unsigned bytes)=0"
@@ -82,10 +87,10 @@ Inherited by \fBBlockStreamFix\fP, and \fBBlockStreamVar\fP\&.
 
 .in +1c
 .ti -1c
-.RI "static \fBBlockStreamBase\fP * \fBcreateBlock\fP (const \fBSchema\fP *const &schema, unsigned block_size)"
+.RI "static \fBBlockStreamBase\fP * \fBcreateBlock\fP (const \fBSchema\fP *const &schema, unsigned \fBblock_size\fP)"
 .br
 .ti -1c
-.RI "static \fBBlockStreamBase\fP * \fBcreateBlockWithDesirableSerilaizedSize\fP (\fBSchema\fP *schema, unsigned block_size)"
+.RI "static \fBBlockStreamBase\fP * \fBcreateBlockWithDesirableSerilaizedSize\fP (\fBSchema\fP *schema, unsigned \fBblock_size\fP)"
 .br
 .in -1c
 .SS "Protected Member Functions"
@@ -103,8 +108,46 @@ Inherited by \fBBlockStreamFix\fP, and \fBBlockStreamVar\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BlockStreamBase::BlockStreamBase (unsignedblock_size)\fC [inline]\fP"
+
+.SS "BlockStreamBase::BlockStreamBase (unsignedblock_size, void *start_addr)\fC [inline]\fP"
+
+.SS "virtual BlockStreamBase::~BlockStreamBase ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Referenced by claims::physical_operator::PerformanceMonitor::Close(), claims::physical_operator::ResultPrinter::Close(), claims::physical_operator::PhysicalLimit::Close(), and claims::physical_operator::ResultCollector::DeallocateBlockStream()\&.
 .SH "Member Function Documentation"
 .PP 
+.SS "virtual void* BlockStreamBase::allocateTuple (unsignedbytes)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by generate_BlockStreamBuffer(), generateBlockStreamBuffer(), generateVariableData_test(), initial_input_date(), mainasfasdf22(), bottomLayerCollecting::Next(), claims::physical_operator::PhysicalLimit::Next(), claims::physical_operator::CombineTuple::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::PhysicalAggregation::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalSort::Next(), IndexScanIterator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalFilter::ProcessInLogic(), and claims::physical_operator::PhysicalProject::ProcessInLogic()\&.
+.SS "virtual void BlockStreamBase::constructFromBlock (const \fBBlock\fP &block)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by ChunkReaderIterator::InMemeryBlockAccessor::getBlock(), InMemoryChunkReaderItetaor::nextBlock(), DiskChunkReaderIteraror::nextBlock(), and HDFSChunkReaderIterator::nextBlock()\&.
+.SS "virtual void BlockStreamBase::copyBlock (void *addr, unsignedlength)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.SS "\fBBlockStreamBase\fP * BlockStreamBase::createBlock (const \fBSchema\fP *const &schema, unsignedblock_size)\fC [static]\fP"
+
+.PP
+References Schema::fixed, Schema::getSchemaType(), and Schema::getTupleMaxSize()\&.
+.PP
+Referenced by BlockStreamBuffer::BlockStreamBuffer(), claims::physical_operator::PhysicalSort::CreateBlock(), claims::physical_operator::ResultCollector::CreateBlockStream(), claims::physical_operator::PhysicalNestLoopJoin::CreateBlockStream(), claims::physical_operator::PhysicalFilter::CreateContext(), claims::physical_operator::PhysicalHashJoin::CreateContext(), claims::physical_operator::PhysicalProject::CreateContext(), claims::physical_operator::Expander::ExpandedWork(), ClientResponse::getDataBlock(), HdfsLoader::HdfsLoader(), claims::physical_operator::PerformanceMonitor::Open(), claims::physical_operator::ResultPrinter::Open(), claims::physical_operator::PhysicalLimit::Open(), claims::physical_operator::ExchangeSenderMaterialized::Open(), claims::physical_operator::InOperator::Open(), claims::physical_operator::ExchangeSenderPipeline::Open(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::ExchangeMerger::Open(), bottomLayerSorting::Open(), and test_block_construct()\&.
+.SS "virtual \fBBlockStreamBase\fP* BlockStreamBase::createBlockAndDeepCopy ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by InsertOptimizedHashTable::insertBlock()\&.
 .SS "\fBBlockStreamBase\fP * BlockStreamBase::createBlockWithDesirableSerilaizedSize (\fBSchema\fP *schema, unsignedblock_size)\fC [static]\fP"
 
 .PD 0
@@ -114,12 +157,92 @@ Inherited by \fBBlockStreamFix\fP, and \fBBlockStreamVar\fP\&.
 .PP
 
 .PP
-Referenced by bottomLayerCollecting::Open(), and IndexScanIterator::Open()\&.
+References Schema::fixed, Schema::getSchemaType(), and Schema::getTupleMaxSize()\&.
+.PP
+Referenced by generate_BlockStreamBuffer(), generateBlockStreamBuffer(), initial_input_date(), insert_into_hash_table(), insert_into_hash_table_from_projection(), bottomLayerCollecting::Open(), IndexScanIterator::Open(), and projection_scan()\&.
+.SS "\fBBlockStreamTraverseIterator\fP* BlockStreamBase::createIterator ()\fC [inline]\fP"
+
+.PP
+Referenced by Analyzer::analyse(), Analyzer::compute_table_stat(), Analyzer::computeHistogram(), claims::physical_operator::PhysicalFilter::CreateContext(), claims::physical_operator::PhysicalHashJoin::CreateContext(), claims::physical_operator::PhysicalProject::CreateContext(), filter_test(), Analyzer::getDistinctCardinality(), insert_into_hash_table(), insert_into_hash_table_from_projection(), insert_into_insert_optimized_hash_table(), mainasfasdf22(), claims::physical_operator::PerformanceMonitor::Next(), claims::physical_operator::ResultPrinter::Next(), bottomLayerCollecting::Next(), claims::physical_operator::PhysicalLimit::Next(), claims::physical_operator::ExchangeSenderMaterialized::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::ExchangeSenderPipeline::Next(), IndexScanIterator::Next(), claims::physical_operator::PhysicalFilter::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalProject::Next(), claims::physical_operator::PhysicalNestLoopJoin::Open(), claims::physical_operator::InOperator::Open(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::PhysicalSort::Open(), claims::physical_operator::PhysicalHashJoin::Open(), bottomLayerSorting::Open(), ResultSet::print(), query_2(), ClientListener::sendJsonPacket(), TEST(), TEST_F(), test_multiple_scan_filter_Scalar_Aggregation(), and test_scan_filter_Scalar_Aggregation()\&.
 .SS "virtual void BlockStreamBase::deepCopy (const \fBBlock\fP *block)\fC [pure virtual]\fP"
 deep copy from block, including block content and member variables that maintain the block status\&. the user should guarantee that rest block and desc block are of equal derived class type(e\&.g\&., both are \fBBlockStreamFix\fP), otherwise the copy may be incomplete\&. 
 .PP
 Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by BlockStreamFix::createBlockAndDeepCopy(), and BlockStreamBuffer::insertBlock()\&.
+.SS "virtual bool BlockStreamBase::deserialize (\fBBlock\fP *block)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::ExchangeMerger::Receiver()\&.
+.SS "virtual bool BlockStreamBase::Empty () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::Expander::ExpandedWork(), bottomLayerCollecting::Next(), claims::physical_operator::PhysicalLimit::Next(), claims::physical_operator::CombineTuple::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::PhysicalAggregation::Next(), claims::physical_operator::InOperator::Next(), IndexScanIterator::Next(), claims::physical_operator::PhysicalFilter::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalProject::Next(), and claims::physical_operator::ExchangeMerger::Receiver()\&.
+.SS "virtual bool BlockStreamBase::Full () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::PhysicalFilter::Next(), and claims::physical_operator::PhysicalProject::Next()\&.
+.SS "virtual unsigned BlockStreamBase::getBlockCapacityInTuples () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::PhysicalFilter::ProcessInLogic()\&.
+.SS "virtual void* BlockStreamBase::getBlockDataAddress ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.SS "virtual unsigned BlockStreamBase::getSerializedBlockSize () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by ChunkReaderIterator::InMemeryBlockAccessor::getBlock(), claims::physical_operator::ExchangeSenderMaterialized::Materialize(), claims::physical_operator::ExchangeSenderMaterialized::Open(), claims::physical_operator::ExchangeSenderPipeline::Open(), and claims::physical_operator::ExchangeMerger::Open()\&.
+.SS "virtual void* BlockStreamBase::getTuple (unsignedoffset) const\fC [protected]\fP, \fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.SS "virtual unsigned BlockStreamBase::getTuplesInBlock () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::Expander::ExpandedWork(), DynamicBlockBuffer::getNumberOftuples(), claims::physical_operator::ResultCollector::GetNumberOftuples(), claims::physical_operator::PerformanceMonitor::Next(), and claims::physical_operator::PhysicalFilter::ProcessInLogic()\&.
+.SS "virtual bool BlockStreamBase::insert (void *dest, void *src, unsignedbytes)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::PhysicalFilter::ProcessInLogic()\&.
+.SS "virtual bool BlockStreamBase::serialize (\fBBlock\fP &block) const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by generateVariableData_test(), claims::physical_operator::ExchangeSenderMaterialized::Next(), claims::physical_operator::ExchangeSenderPipeline::Next(), and ClientListener::sendHandler()\&.
+.SS "virtual void BlockStreamBase::setEmpty ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by claims::physical_operator::Expander::ExpandedWork(), generate_BlockStreamBuffer(), generateBlockStreamBuffer(), initial_input_date(), mainasdfaf234(), claims::physical_operator::PerformanceMonitor::Next(), claims::physical_operator::ResultPrinter::Next(), bottomLayerCollecting::Next(), claims::physical_operator::ExchangeSenderMaterialized::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::ExchangeSenderPipeline::Next(), IndexScanIterator::Next(), claims::physical_operator::PhysicalFilter::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalProject::Next(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::InOperator::Open(), claims::physical_operator::PhysicalHashJoin::Open(), bottomLayerSorting::Open(), claims::physical_operator::PhysicalFilter::ProcessInLogic(), and claims::physical_operator::PhysicalProject::ProcessInLogic()\&.
+.SS "virtual bool BlockStreamBase::switchBlock (\fBBlockStreamBase\fP &block)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamVar\fP, and \fBBlockStreamFix\fP\&.
+.PP
+Referenced by BlockStreamBuffer::getBlock(), and BlockStreamBuffer::insertBlock()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBBlockStreamTraverseIterator\fP\fC [friend]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

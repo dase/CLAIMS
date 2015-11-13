@@ -8,6 +8,8 @@ var classCCSBNode =
     [ "deserialize", "classCCSBNode.html#a123136ec807c0ba0efee5a7ed0e8f788", null ],
     [ "getElement", "classCCSBNode.html#a5784315a39a4160419959ffb38b1606d", null ],
     [ "getFather", "classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c", null ],
+    [ "getMaxDatas", "classCCSBNode.html#af62bac89800e97f8fa101e70c1468e1b", null ],
+    [ "getMaxKeys", "classCCSBNode.html#a88f1030b814536fee9ff14c566546542", null ],
     [ "getPointer", "classCCSBNode.html#a34696da5897218053ef56b5d59216230", null ],
     [ "getUsedKeys", "classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8", null ],
     [ "Insert", "classCCSBNode.html#a70e8897cd0e8bf2d7dff1fd4737a159d", null ],

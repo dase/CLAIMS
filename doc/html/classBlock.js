@@ -11,5 +11,6 @@ var classBlock =
     [ "setIsReference", "classBlock.html#a81731d125799d916b0099aba20719347", null ],
     [ "setsize", "classBlock.html#a5a4eab8a3f9edd817a32a752661faf20", null ],
     [ "BlockSize", "classBlock.html#af9841acaa0ad69a51f494cee74239200", null ],
+    [ "isReference_", "classBlock.html#a198d7e8ea6e129fb297eb94e4796baa0", null ],
     [ "start", "classBlock.html#a99141189c72a66ebadab57dba364118c", null ]
 ];

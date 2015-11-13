@@ -1,4 +1,4 @@
-.TH "ttmath::Misc" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ttmath::Misc" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -39,7 +39,7 @@ ttmath::Misc \-
 .RI "static \fBuint\fP \fBCharToDigit\fP (\fBuint\fP c)"
 .br
 .ti -1c
-.RI "static sint \fBCharToDigit\fP (\fBuint\fP c, \fBuint\fP base)"
+.RI "static \fBsint\fP \fBCharToDigit\fP (\fBuint\fP c, \fBuint\fP base)"
 .br
 .ti -1c
 .RI "static \fBuint\fP \fBDigitToChar\fP (\fBuint\fP digit)"
@@ -76,7 +76,9 @@ this static method converts one character into its value
 for example: 1 -> 1 8 -> 8 A -> 10 f -> 15
 .PP
 this method don't check whether c is correct or not 
-.SS "static sint ttmath::Misc::CharToDigit (\fBuint\fPc, \fBuint\fPbase)\fC [inline]\fP, \fC [static]\fP"
+.PP
+Referenced by ttmath::UInt< value_size >::FromStringBase(), ttmath::Int< value_size >::InputFromStream(), and ttmath::UInt< value_size >::InputFromStream()\&.
+.SS "static \fBsint\fP ttmath::Misc::CharToDigit (\fBuint\fPc, \fBuint\fPbase)\fC [inline]\fP, \fC [static]\fP"
 this method changes a character 'c' into its value (if there can't be a correct value it returns -1)
 .PP
 for example: c=2, base=10 -> function returns 2 c=A, base=10 -> function returns -1 c=A, base=16 -> function returns 10 
@@ -84,7 +86,13 @@ for example: c=2, base=10 -> function returns 2 c=A, base=10 -> function returns
 this method converts a digit into a char digit should be from <0,F> (we don't have to get a base)
 .PP
 for example: 1 -> 1 8 -> 8 10 -> A 15 -> F 
+.PP
+Referenced by ttmath::UInt< value_size >::ToStringBase()\&.
+.SS "template<class char_type > static void ttmath::Misc::SkipWhiteCharacters (const char_type *&c)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by ttmath::Int< value_size >::FromStringBase(), and ttmath::UInt< value_size >::FromStringBase()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

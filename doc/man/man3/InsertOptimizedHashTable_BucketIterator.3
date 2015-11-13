@@ -1,4 +1,4 @@
-.TH "InsertOptimizedHashTable::BucketIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "InsertOptimizedHashTable::BucketIterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ InsertOptimizedHashTable::BucketIterator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <InsertOptimizedHashTable\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -16,7 +18,39 @@ InsertOptimizedHashTable::BucketIterator \-
 .RI "void * \fBnextTuple\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBtuple_cur\fP"
+.br
+.ti -1c
+.RI "\fBInsertOptimizedHashTable::bucket\fP * \fBbucket_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "InsertOptimizedHashTable::BucketIterator::BucketIterator (\fBbucket\fP *buck)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void* InsertOptimizedHashTable::BucketIterator::nextTuple ()\fC [inline]\fP"
+
+.PP
+References bucket_, InsertOptimizedHashTable::bucket::entrys, InsertOptimizedHashTable::bucket::head, InsertOptimizedHashTable::meta_data::next, InsertOptimizedHashTable::entry::pointer, and tuple_cur\&.
+.PP
+Referenced by fill_insert_optimized_hash_table(), and TEST()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBInsertOptimizedHashTable::bucket\fP* InsertOptimizedHashTable::BucketIterator::bucket_\fC [private]\fP"
+
+.PP
+Referenced by nextTuple()\&.
+.SS "unsigned InsertOptimizedHashTable::BucketIterator::tuple_cur\fC [private]\fP"
+
+.PP
+Referenced by nextTuple()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

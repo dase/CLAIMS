@@ -1,4 +1,4 @@
-.TH "BlockManager::BlockManagerWorkerActor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BlockManager::BlockManagerWorkerActor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ BlockManager::BlockManagerWorkerActor \-
 .br
 .PP
 .PP
+\fC#include <BlockManager\&.h>\fP
+.PP
 Inherits Actor\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBBlockManagerWorkerActor\fP (Theron::Framework *framework, const char *name, \fBBlockManager\fP *bm)"
+.br
+.ti -1c
+.RI "virtual \fB~BlockManagerWorkerActor\fP ()"
 .br
 .ti -1c
 .RI "bool \fB_reigisterToMaster\fP (\fBBlockManagerId\fP *bMId)"
@@ -27,6 +32,35 @@ Inherits Actor\&.
 .RI "string \fB_askformatch\fP (string filename, \fBBlockManagerId\fP bmi)"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBgetBlock\fP (const \fBMessage256\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBputBlock\fP (const \fBMessage256\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBBindingPartition\fP (const \fBPartitionBindingMessage\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBUnbindingPartition\fP (const \fBPartitionUnbindingMessage\fP &message, const Theron::Address from)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBTimeOutReceiver\fP * \fBtor_\fP"
+.br
+.ti -1c
+.RI "string \fBreceiverId_\fP"
+.br
+.ti -1c
+.RI "\fBBlockManager\fP * \fBbm_\fP"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -34,7 +68,65 @@ Inherits Actor\&.
 .RI "class \fBBlockManager\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor (Theron::Framework *framework, const char *name, \fBBlockManager\fP *bm)"
+
+.PP
+References BindingPartition(), getBlock(), putBlock(), and UnbindingPartition()\&.
+.SS "BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "string BlockManager::BlockManagerWorkerActor::_askformatch (stringfilename, \fBBlockManagerId\fPbmi)"
+
+.PP
+Referenced by BlockManager::askForMatch()\&.
+.SS "bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster (\fBBlockManagerId\fP *bMId)"
+
+.PP
+Referenced by BlockManager::registerToMaster()\&.
+.SS "bool BlockManager::BlockManagerWorkerActor::_reportBlockStatus (stringblockId)"
+
+.PP
+Referenced by BlockManager::tryToReportBlockStatus()\&.
+.SS "bool BlockManager::BlockManagerWorkerActor::_sendHeartBeat ()"
+
+.PP
+Referenced by BlockManager::heartBeat()\&.
+.SS "void BlockManager::BlockManagerWorkerActor::BindingPartition (const \fBPartitionBindingMessage\fP &message, const Theron::Addressfrom)\fC [private]\fP"
+
+.PP
+References PartitionBindingMessage::number_of_chunks, PartitionBindingMessage::partition_id, and PartitionBindingMessage::storage_level\&.
+.PP
+Referenced by BlockManagerWorkerActor()\&.
+.SS "void BlockManager::BlockManagerWorkerActor::getBlock (const \fBMessage256\fP &message, const Theron::Addressfrom)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+Referenced by BlockManagerWorkerActor()\&.
+.SS "void BlockManager::BlockManagerWorkerActor::putBlock (const \fBMessage256\fP &message, const Theron::Addressfrom)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+Referenced by BlockManagerWorkerActor()\&.
+.SS "void BlockManager::BlockManagerWorkerActor::UnbindingPartition (const \fBPartitionUnbindingMessage\fP &message, const Theron::Addressfrom)\fC [private]\fP"
+
+.PP
+References PartitionUnbindingMessage::partition_id\&.
+.PP
+Referenced by BlockManagerWorkerActor()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBBlockManager\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBBlockManager\fP* BlockManager::BlockManagerWorkerActor::bm_\fC [private]\fP"
+
+.SS "string BlockManager::BlockManagerWorkerActor::receiverId_\fC [private]\fP"
+
+.SS "\fBTimeOutReceiver\fP* BlockManager::BlockManagerWorkerActor::tor_\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

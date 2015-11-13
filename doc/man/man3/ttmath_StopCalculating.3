@@ -1,4 +1,4 @@
-.TH "ttmath::StopCalculating" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ttmath::StopCalculating" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,13 +14,24 @@ ttmath::StopCalculating \-
 .ti -1c
 .RI "virtual bool \fBWasStopSignal\fP () const volatile"
 .br
+.ti -1c
+.RI "virtual \fB~StopCalculating\fP ()"
+.br
 .in -1c
 .SH "Detailed Description"
 .PP 
 this simple class can be used in multithreading model (you can write your own class derived from this one)
 .PP
-for example: in some functions like Factorial() /at the moment only Factorial/ you can give a pointer to the 'stop object', if the method WasStopSignal() of this object returns true that means we should break the calculating and return 
+for example: in some functions like Factorial() /at the moment only Factorial/ you can give a pointer to the 'stop object', if the method \fBWasStopSignal()\fP of this object returns true that means we should break the calculating and return 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "virtual ttmath::StopCalculating::~StopCalculating ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool ttmath::StopCalculating::WasStopSignal () const volatile\fC [inline]\fP, \fC [virtual]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

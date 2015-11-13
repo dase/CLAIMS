@@ -1,4 +1,4 @@
-.TH "Json::ValueIteratorBase" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::ValueIteratorBase" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -35,6 +35,9 @@ std::bidirectional_iterator_tag \fBiterator_category\fP"
 
 .in +1c
 .ti -1c
+.RI "\fBValueIteratorBase\fP ()"
+.br
+.ti -1c
 .RI "\fBValueIteratorBase\fP (const Value::ObjectValues::iterator &current)"
 .br
 .ti -1c
@@ -44,13 +47,13 @@ std::bidirectional_iterator_tag \fBiterator_category\fP"
 .RI "bool \fBoperator!=\fP (const \fBSelfType\fP &other) const "
 .br
 .ti -1c
-.RI "difference_type \fBoperator-\fP (const \fBSelfType\fP &other) const "
+.RI "\fBdifference_type\fP \fBoperator-\fP (const \fBSelfType\fP &other) const "
 .br
 .ti -1c
 .RI "\fBValue\fP \fBkey\fP () const "
 .br
 .ti -1c
-.RI "UInt \fBindex\fP () const "
+.RI "\fBUInt\fP \fBindex\fP () const "
 .br
 .RI "\fIReturn the index of the referenced \fBValue\fP\&. -1 if it is not an arrayValue\&. \fP"
 .ti -1c
@@ -70,7 +73,7 @@ std::bidirectional_iterator_tag \fBiterator_category\fP"
 .RI "void \fBdecrement\fP ()"
 .br
 .ti -1c
-.RI "difference_type \fBcomputeDistance\fP (const \fBSelfType\fP &other) const "
+.RI "\fBdifference_type\fP \fBcomputeDistance\fP (const \fBSelfType\fP &other) const "
 .br
 .ti -1c
 .RI "bool \fBisEqual\fP (const \fBSelfType\fP &other) const "
@@ -79,22 +82,96 @@ std::bidirectional_iterator_tag \fBiterator_category\fP"
 .RI "void \fBcopy\fP (const \fBSelfType\fP &other)"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "Value::ObjectValues::iterator \fBcurrent_\fP"
+.br
+.ti -1c
+.RI "bool \fBisNull_\fP"
+.br
+.in -1c
 .SH "Detailed Description"
 .PP 
 base class for \fBValue\fP iterators\&. 
 
 
+.SH "Member Typedef Documentation"
+.PP 
+.SS "typedef int \fBJson::ValueIteratorBase::difference_type\fP"
+
+.SS "typedef std::bidirectional_iterator_tag \fBJson::ValueIteratorBase::iterator_category\fP"
+
+.SS "typedef \fBValueIteratorBase\fP \fBJson::ValueIteratorBase::SelfType\fP"
+
+.SS "typedef unsigned int \fBJson::ValueIteratorBase::size_t\fP"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::ValueIteratorBase::ValueIteratorBase ()"
+
+.SS "Json::ValueIteratorBase::ValueIteratorBase (const Value::ObjectValues::iterator &current)\fC [explicit]\fP"
+
 .SH "Member Function Documentation"
 .PP 
+.SS "\fBValueIteratorBase::difference_type\fP Json::ValueIteratorBase::computeDistance (const \fBSelfType\fP &other) const\fC [protected]\fP"
+
+.PP
+References current_, and isNull_\&.
+.SS "void Json::ValueIteratorBase::copy (const \fBSelfType\fP &other)\fC [protected]\fP"
+
+.PP
+References current_, and isNull_\&.
+.PP
+Referenced by Json::ValueConstIterator::operator=(), and Json::ValueIterator::operator=()\&.
+.SS "void Json::ValueIteratorBase::decrement ()\fC [protected]\fP"
+
+.PP
+References current_\&.
+.SS "\fBValue\fP & Json::ValueIteratorBase::deref () const\fC [protected]\fP"
+
+.PP
+References current_\&.
+.SS "void Json::ValueIteratorBase::increment ()\fC [protected]\fP"
+
+.PP
+References current_\&.
+.SS "\fBUInt\fP Json::ValueIteratorBase::index () const"
+
+.PP
+Return the index of the referenced \fBValue\fP\&. -1 if it is not an arrayValue\&. 
+.PP
+References Json::Value::CZString::c_str(), and Json::Value::CZString::index()\&.
+.SS "bool Json::ValueIteratorBase::isEqual (const \fBSelfType\fP &other) const\fC [protected]\fP"
+
+.PP
+References current_, and isNull_\&.
 .SS "\fBValue\fP Json::ValueIteratorBase::key () const"
 Return either the index or the member name of the referenced value as a \fBValue\fP\&. 
 .PP
-References memberName()\&.
+References Json::Value::CZString::c_str(), Json::Value::CZString::index(), Json::Value::CZString::isStaticString(), and memberName()\&.
 .SS "const char * Json::ValueIteratorBase::memberName () const"
 Return the member name of the referenced \fBValue\fP\&. '' if it is not an objectValue\&. 
 .PP
 Referenced by key()\&.
+.SS "bool Json::ValueIteratorBase::operator!= (const \fBSelfType\fP &other) const\fC [inline]\fP"
+
+.SS "\fBdifference_type\fP Json::ValueIteratorBase::operator- (const \fBSelfType\fP &other) const\fC [inline]\fP"
+
+.SS "bool Json::ValueIteratorBase::operator== (const \fBSelfType\fP &other) const\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "Value::ObjectValues::iterator Json::ValueIteratorBase::current_\fC [private]\fP"
+
+.PP
+Referenced by computeDistance(), copy(), decrement(), deref(), increment(), and isEqual()\&.
+.SS "bool Json::ValueIteratorBase::isNull_\fC [private]\fP"
+
+.PP
+Referenced by computeDistance(), copy(), and isEqual()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

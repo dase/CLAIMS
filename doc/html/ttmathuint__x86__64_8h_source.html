@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/types/ttmath/ttmathuint_x86_64.h Source File</title>
+<title>Claims: common/types/ttmath/ttmathuint_x86_64.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="title">ttmathuint_x86_64.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ttmathuint__x86__64_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * This file is a part of TTMath Bignum Library</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * and is distributed under the (new) BSD licence.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Author: Tomasz Sowa &lt;t.sowa@ttmath.org&gt;</span></div>
@@ -181,7 +181,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">template</span>&lt;u<span class="keywordtype">int</span> value_size&gt;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> * UInt&lt;value_size&gt;::LibTypeStr()</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code" href="classttmath_1_1UInt.html#aafb80303e776de21d226d10ed8e2cd2a">UInt&lt;value_size&gt;::LibTypeStr</a>()</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    {</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">        #ifdef _MSC_VER</span></div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor"></span>            <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> info[] = <span class="stringliteral">&quot;asm_vc_64&quot;</span>;</div>
@@ -196,14 +196,14 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keyword">template</span>&lt;u<span class="keywordtype">int</span> value_size&gt;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">LibTypeCode</a> UInt&lt;value_size&gt;::LibType()</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">LibTypeCode</a> <a class="code" href="classttmath_1_1UInt.html#a93a9987a235ebaeeffa1824fee7d30f0">UInt&lt;value_size&gt;::LibType</a>()</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    {</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">        #ifdef _MSC_VER</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor"></span>            <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">LibTypeCode</a> info = asm_vc_64;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor"></span>            <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">LibTypeCode</a> info = <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799ad1d739ca97ab8ad9952b3a2a6b0ac8f8">asm_vc_64</a>;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">        #ifdef __GNUC__</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor"></span>            <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">LibTypeCode</a> info = asm_gcc_64;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor"></span>            <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">LibTypeCode</a> info = <a class="code" href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799ac63b373eb7423bb0a345b6f41ecac31c">asm_gcc_64</a>;</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">return</span> info;</div>
@@ -211,7 +211,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keyword">template</span>&lt;u<span class="keywordtype">int</span> value_size&gt;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::Add(<span class="keyword">const</span> UInt&lt;value_size&gt; &amp; ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="classttmath_1_1UInt.html#af69f4f1a71948175abc653a82a728665">UInt&lt;value_size&gt;::Add</a>(<span class="keyword">const</span> UInt&lt;value_size&gt; &amp; ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    {</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b = value_size;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
@@ -255,7 +255,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::Add&quot;</span>, c)</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::Add&quot;</span>, c)</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    return c;</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    }</div>
@@ -263,13 +263,13 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
 <div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::AddInt(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> index)</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::AddInt(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> index)</div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    {</div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b = value_size;</div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c;</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        TTMATH_ASSERT( index &lt; value_size )</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( index &lt; value_size )</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="preprocessor">#if !defined(__GNUC__) &amp;&amp; !defined(_MSC_VER)</span></div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="preprocessor"></span><span class="preprocessor">            #error &quot;another compiler than GCC or Microsoft VC is currently not supported in 64bit mode, you can compile with TTMATH_NOASM macro&quot;</span></div>
@@ -307,7 +307,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::AddInt&quot;</span>, c)</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::AddInt&quot;</span>, c)</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    return c;</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    }</div>
@@ -315,13 +315,13 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::AddTwoInts(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> x2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> x1, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> index)</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::AddTwoInts(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> x2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> x1, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> index)</div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    {</div>
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b = value_size;</div>
 <div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
 <div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c;</div>
 <div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        TTMATH_ASSERT( index &lt; value_size - 1 )</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( index &lt; value_size - 1 )</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <span class="preprocessor">#if !defined(__GNUC__) &amp;&amp; !defined(_MSC_VER)</span></div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="preprocessor"></span><span class="preprocessor">            #error &quot;another compiler than GCC or Microsoft VC is currently not supported in 64bit mode, you can compile with TTMATH_NOASM macro&quot;</span></div>
@@ -363,7 +363,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;</div>
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::AddTwoInts&quot;</span>, c)</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::AddTwoInts&quot;</span>, c)</div>
 <div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;</div>
 <div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    return c;</div>
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    }</div>
@@ -371,9 +371,9 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;</div>
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::AddVector(const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss1, const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss1_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss2_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result)</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::AddVector(const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss1, const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss1_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss2_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result)</div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    {</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        TTMATH_ASSERT( ss1_size &gt;= ss2_size )</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( ss1_size &gt;= ss2_size )</div>
 <div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
 <div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c;</div>
 <div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;</div>
@@ -431,7 +431,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        TTMATH_VECTOR_LOGC(<span class="stringliteral">&quot;UInt::AddVector&quot;</span>, c, result, ss1_size)</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a20f2bda1b7ed5379b03615bf1c859413">TTMATH_VECTOR_LOGC</a>(<span class="stringliteral">&quot;UInt::AddVector&quot;</span>, c, result, ss1_size)</div>
 <div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;</div>
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    return c;</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    }</div>
@@ -439,7 +439,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;</div>
 <div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;</div>
 <div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::Sub(const UInt&lt;value_size&gt; &amp; ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::Sub(const <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt; &amp; ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
 <div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    {</div>
 <div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b = value_size;</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
@@ -483,7 +483,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;</div>
 <div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::Sub&quot;</span>, c)</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::Sub&quot;</span>, c)</div>
 <div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;</div>
 <div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    return c;</div>
 <div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    }</div>
@@ -491,13 +491,13 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;</div>
 <div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;</div>
 <div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::SubInt(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> index)</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::SubInt(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> index)</div>
 <div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    {</div>
 <div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b = value_size;</div>
 <div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
 <div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c;</div>
 <div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        TTMATH_ASSERT( index &lt; value_size )</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( index &lt; value_size )</div>
 <div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;</div>
 <div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        <span class="preprocessor">#if !defined(__GNUC__) &amp;&amp; !defined(_MSC_VER)</span></div>
 <div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;<span class="preprocessor"></span><span class="preprocessor">            #error &quot;another compiler than GCC or Microsoft VC is currently not supported in 64bit mode, you can compile with TTMATH_NOASM macro&quot;</span></div>
@@ -535,16 +535,16 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;</div>
 <div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::SubInt&quot;</span>, c)</div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::SubInt&quot;</span>, c)</div>
 <div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;</div>
 <div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;    return c;</div>
 <div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;    }</div>
 <div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;</div>
 <div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;</div>
 <div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::SubVector(const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss1, const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss1_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss2_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result)</div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::SubVector(const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss1, const <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * ss2, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss1_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> ss2_size, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result)</div>
 <div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;    {</div>
-<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;        TTMATH_ASSERT( ss1_size &gt;= ss2_size )</div>
+<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( ss1_size &gt;= ss2_size )</div>
 <div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160;</div>
 <div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;        <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c;</div>
 <div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;</div>
@@ -604,16 +604,16 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;</div>
 <div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;        TTMATH_VECTOR_LOGC(<span class="stringliteral">&quot;UInt::SubVector&quot;</span>, c, result, ss1_size)</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a20f2bda1b7ed5379b03615bf1c859413">TTMATH_VECTOR_LOGC</a>(<span class="stringliteral">&quot;UInt::SubVector&quot;</span>, c, result, ss1_size)</div>
 <div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;</div>
 <div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;    return c;</div>
 <div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;    }</div>
 <div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;</div>
 <div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;</div>
 <div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::Rcl2_one(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
+<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::Rcl2_one(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
 <div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;    {</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;    sint b = value_size;</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;    <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a> b = value_size;</div>
 <div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
 <div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;</div>
 <div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;</div>
@@ -650,16 +650,16 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;</div>
 <div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::Rcl2_one&quot;</span>, c)</div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::Rcl2_one&quot;</span>, c)</div>
 <div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;</div>
 <div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;    return c;</div>
 <div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;    }</div>
 <div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;</div>
 <div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;</div>
 <div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::Rcr2_one(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::Rcr2_one(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
 <div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;    {</div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    sint b = value_size;</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a> b = value_size;</div>
 <div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
 <div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;</div>
 <div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;</div>
@@ -694,7 +694,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;</div>
 <div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::Rcr2_one&quot;</span>, c)</div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::Rcr2_one&quot;</span>, c)</div>
 <div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;</div>
 <div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;    return c;</div>
 <div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;    }</div>
@@ -702,9 +702,9 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;</div>
 <div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;</div>
 <div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::Rcl2(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> bits, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
+<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::Rcl2(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> bits, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
 <div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;    {</div>
-<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;    TTMATH_ASSERT( bits&gt;0 &amp;&amp; bits&lt;<a class="code" href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a> )</div>
+<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;    <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( bits&gt;0 &amp;&amp; bits&lt;<a class="code" href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a> )</div>
 <div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;</div>
 <div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b = value_size;</div>
 <div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
@@ -759,18 +759,18 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;</div>
 <div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::Rcl2&quot;</span>, c)</div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::Rcl2&quot;</span>, c)</div>
 <div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;</div>
 <div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;    return c;</div>
 <div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;    }</div>
 <div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;</div>
 <div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;</div>
 <div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::Rcr2(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> bits, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
+<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::Rcr2(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> bits, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c)</div>
 <div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;    {</div>
-<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;    TTMATH_ASSERT( bits&gt;0 &amp;&amp; bits&lt;<a class="code" href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a> )</div>
+<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;    <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( bits&gt;0 &amp;&amp; bits&lt;<a class="code" href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a> )</div>
 <div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;</div>
-<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;    sint b = value_size;</div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;    <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a> b = value_size;</div>
 <div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * p1 = table;</div>
 <div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;</div>
 <div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;        <span class="preprocessor">#if !defined(__GNUC__) &amp;&amp; !defined(_MSC_VER)</span></div>
@@ -825,7 +825,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;</div>
 <div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="preprocessor">        #endif</span></div>
 <div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;        TTMATH_LOGC(<span class="stringliteral">&quot;UInt::Rcr2&quot;</span>, c)</div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;        <a class="code" href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a>(<span class="stringliteral">&quot;UInt::Rcr2&quot;</span>, c)</div>
 <div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;</div>
 <div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;    return c;</div>
 <div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;    }</div>
@@ -838,9 +838,9 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;<span class="comment">        ***this method is created only on a 64bit platform***</span></div>
 <div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;<span class="comment">    */</span></div>
 <div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;    template&lt;<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> value_size&gt;</div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;    sint UInt&lt;value_size&gt;::FindLeadingBitInWord(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> x)</div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;    <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a> <a class="code" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&lt;value_size&gt;::FindLeadingBitInWord(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> x)</div>
 <div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;    {</div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    sint result;</div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a> result;</div>
 <div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;</div>
 <div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;</div>
 <div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;<span class="preprocessor">        #if !defined(__GNUC__) &amp;&amp; !defined(_MSC_VER)</span></div>
@@ -881,9 +881,9 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;</div>
 <div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;</div>
 <div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;    <span class="keyword">template</span>&lt;u<span class="keywordtype">int</span> value_size&gt;</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> UInt&lt;value_size&gt;::SetBitInWord(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> &amp; value, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> bit)</div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="classttmath_1_1UInt.html#ae50b571f0b9eb4f1f0ccdee3dc6b12a2">UInt&lt;value_size&gt;::SetBitInWord</a>(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> &amp; value, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> bit)</div>
 <div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    {</div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;        TTMATH_ASSERT( bit &lt; <a class="code" href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a> )</div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( bit &lt; <a class="code" href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a> )</div>
 <div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;</div>
 <div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;        <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> old_bit;</div>
 <div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;        <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> v = value;</div>
@@ -919,7 +919,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;</div>
 <div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;</div>
 <div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;    <span class="keyword">template</span>&lt;u<span class="keywordtype">int</span> value_size&gt;</div>
-<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;    <span class="keywordtype">void</span> UInt&lt;value_size&gt;::MulTwoWords(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> a, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result_high, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result_low)</div>
+<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classttmath_1_1UInt.html#a725e31c2fbe12368c18c5c308da7239f">UInt&lt;value_size&gt;::MulTwoWords</a>(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> a, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result_high, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * result_low)</div>
 <div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;    {</div>
 <div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;    <span class="comment">/*</span></div>
 <div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;<span class="comment">        we must use these temporary variables in order to inform the compilator</span></div>
@@ -962,7 +962,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;</div>
 <div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;</div>
 <div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    <span class="keyword">template</span>&lt;u<span class="keywordtype">int</span> value_size&gt;</div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;    <span class="keywordtype">void</span> UInt&lt;value_size&gt;::DivTwoWords(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> a,<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * r, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * rest)</div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classttmath_1_1UInt.html#aa5e5fcf1bccc940c90896362908bc88a">UInt&lt;value_size&gt;::DivTwoWords</a>(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> a,<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> b, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * r, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> * rest)</div>
 <div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;    {</div>
 <div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;        <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> r_;</div>
 <div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;        <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> rest_;</div>
@@ -971,7 +971,7 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="comment">            the multiplication algorithm MulTwoWords</span></div>
 <div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;<span class="comment">        */</span></div>
 <div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;</div>
-<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;        TTMATH_ASSERT( c != 0 )</div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;        <a class="code" href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a>( c != 0 )</div>
 <div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;</div>
 <div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;        <span class="preprocessor">#if !defined(__GNUC__) &amp;&amp; !defined(_MSC_VER)</span></div>
 <div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="preprocessor"></span><span class="preprocessor">            #error &quot;another compiler than GCC or Microsoft VC is currently not supported in 64bit mode, you can compile with TTMATH_NOASM macro&quot;</span></div>
@@ -1012,15 +1012,28 @@ $(document).ready(function(){initNavTree('ttmathuint__x86__64_8h_source.html',''
 <div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;</div>
+<div class="ttc" id="namespaceJson_html_a800fb90eb6ee8d5d62b600c06f87f7d4"><div class="ttname"><a href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">Json::UInt</a></div><div class="ttdeci">unsigned int UInt</div><div class="ttdef"><b>Definition:</b> json-forwards.h:177</div></div>
+<div class="ttc" id="ttmathtypes_8h_html_a47660063c4dcc32c826ee2ff38a008b5"><div class="ttname"><a href="ttmathtypes_8h.html#a47660063c4dcc32c826ee2ff38a008b5">TTMATH_LOGC</a></div><div class="ttdeci">#define TTMATH_LOGC(msg, carry)</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:580</div></div>
+<div class="ttc" id="classttmath_1_1UInt_html_ae50b571f0b9eb4f1f0ccdee3dc6b12a2"><div class="ttname"><a href="classttmath_1_1UInt.html#ae50b571f0b9eb4f1f0ccdee3dc6b12a2">ttmath::UInt::SetBitInWord</a></div><div class="ttdeci">static uint SetBitInWord(uint &amp;value, uint bit)</div></div>
+<div class="ttc" id="namespacettmath_html_a5c3bd12cd3d050852a60e022e5e12799ad1d739ca97ab8ad9952b3a2a6b0ac8f8"><div class="ttname"><a href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799ad1d739ca97ab8ad9952b3a2a6b0ac8f8">ttmath::asm_vc_64</a></div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:285</div></div>
+<div class="ttc" id="classttmath_1_1UInt_html_a93a9987a235ebaeeffa1824fee7d30f0"><div class="ttname"><a href="classttmath_1_1UInt.html#a93a9987a235ebaeeffa1824fee7d30f0">ttmath::UInt::LibType</a></div><div class="ttdeci">static LibTypeCode LibType()</div></div>
+<div class="ttc" id="namespacettmath_html_a300d86e7599787a118808c8c5972670f"><div class="ttname"><a href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">ttmath::sint</a></div><div class="ttdeci">signed int sint</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:120</div></div>
+<div class="ttc" id="classttmath_1_1UInt_html_a725e31c2fbe12368c18c5c308da7239f"><div class="ttname"><a href="classttmath_1_1UInt.html#a725e31c2fbe12368c18c5c308da7239f">ttmath::UInt::MulTwoWords</a></div><div class="ttdeci">static void MulTwoWords(uint a, uint b, uint *result_high, uint *result_low)</div></div>
 <div class="ttc" id="namespacettmath_html_a5c3bd12cd3d050852a60e022e5e12799"><div class="ttname"><a href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799">ttmath::LibTypeCode</a></div><div class="ttdeci">LibTypeCode</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:284</div></div>
+<div class="ttc" id="classttmath_1_1UInt_html_aafb80303e776de21d226d10ed8e2cd2a"><div class="ttname"><a href="classttmath_1_1UInt.html#aafb80303e776de21d226d10ed8e2cd2a">ttmath::UInt::LibTypeStr</a></div><div class="ttdeci">static const char * LibTypeStr()</div></div>
+<div class="ttc" id="ttmathtypes_8h_html_aab92b8471379b141e76268df4398bfca"><div class="ttname"><a href="ttmathtypes_8h.html#aab92b8471379b141e76268df4398bfca">TTMATH_ASSERT</a></div><div class="ttdeci">#define TTMATH_ASSERT(expression)</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:564</div></div>
 <div class="ttc" id="ttmathtypes_8h_html_aef936ab7a0d7f0c34a9a794b3072cf6a"><div class="ttname"><a href="ttmathtypes_8h.html#aef936ab7a0d7f0c34a9a794b3072cf6a">TTMATH_BITS_PER_UINT</a></div><div class="ttdeci">#define TTMATH_BITS_PER_UINT</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:139</div></div>
+<div class="ttc" id="namespacettmath_html_a5c3bd12cd3d050852a60e022e5e12799ac63b373eb7423bb0a345b6f41ecac31c"><div class="ttname"><a href="namespacettmath.html#a5c3bd12cd3d050852a60e022e5e12799ac63b373eb7423bb0a345b6f41ecac31c">ttmath::asm_gcc_64</a></div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:285</div></div>
 <div class="ttc" id="namespacettmath_html_a9897e861179132b64f0e2640dde9d7b7"><div class="ttname"><a href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">ttmath::uint</a></div><div class="ttdeci">unsigned int uint</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:119</div></div>
+<div class="ttc" id="ttmathtypes_8h_html_a20f2bda1b7ed5379b03615bf1c859413"><div class="ttname"><a href="ttmathtypes_8h.html#a20f2bda1b7ed5379b03615bf1c859413">TTMATH_VECTOR_LOGC</a></div><div class="ttdeci">#define TTMATH_VECTOR_LOGC(msg, carry, vector, len)</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:582</div></div>
+<div class="ttc" id="classttmath_1_1UInt_html_af69f4f1a71948175abc653a82a728665"><div class="ttname"><a href="classttmath_1_1UInt.html#af69f4f1a71948175abc653a82a728665">ttmath::UInt::Add</a></div><div class="ttdeci">uint Add(const UInt&lt; value_size &gt; &amp;ss2, uint c=0)</div></div>
+<div class="ttc" id="classttmath_1_1UInt_html_aa5e5fcf1bccc940c90896362908bc88a"><div class="ttname"><a href="classttmath_1_1UInt.html#aa5e5fcf1bccc940c90896362908bc88a">ttmath::UInt::DivTwoWords</a></div><div class="ttdeci">static void DivTwoWords(uint a, uint b, uint c, uint *r, uint *rest)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_5e953e4c44cfc1de659ef65a951fb4ef.html">types</a></li><li class="navelem"><a class="el" href="dir_550639b0137366821fb2de89a539d818.html">ttmath</a></li><li class="navelem"><b>ttmathuint_x86_64.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_5e953e4c44cfc1de659ef65a951fb4ef.html">types</a></li><li class="navelem"><a class="el" href="dir_550639b0137366821fb2de89a539d818.html">ttmath</a></li><li class="navelem"><a class="el" href="ttmathuint__x86__64_8h.html">ttmathuint_x86_64.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

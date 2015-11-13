@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Member List</title>
+<title>Claims: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -112,9 +112,16 @@ $(document).ready(function(){initNavTree('classJson_1_1BatchAllocator.html','');
 <p>This is the complete list of members for <a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#a4909756c2d33bd0f07662e88e4f850dd">allocate</a>()</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>BatchAllocator</b>(unsigned int objectsPerPage=255) (defined in <a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a>)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#aceb116aceb6bb5bbcfd05433abc04ba5">release</a>(AllocatedType *object)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>~BatchAllocator</b>() (defined in <a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a>)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#a41f6367bbed5bdf39d2c8dc8f6bbf29d">allocateBatch</a>(unsigned int objectsPerPage)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#a96aae4d9032847b074e72a0cf32bc9ea">BatchAllocator</a>(unsigned int objectsPerPage=255)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#af240399628f3cf1099ede92ef1ec4274">BatchAllocator</a>(const BatchAllocator &amp;)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#ab96f6d89d8754359cdb59587d8eed5b5">batches_</a></td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#af300cf30cc086974f34effcc893e8dea">currentBatch_</a></td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#a7532989b88c9f124f83394f24737378a">freeHead_</a></td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#aa7a906cb96f6c92cb06f519b15539a5c">objectsPerPage_</a></td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#ad2ab8896da0685b6c7eb5f7bfd5304d3">operator=</a>(const BatchAllocator &amp;)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#aceb116aceb6bb5bbcfd05433abc04ba5">release</a>(AllocatedType *object)</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html#a823a98097ec40ccc8d88da9378be228d">~BatchAllocator</a>()</td><td class="entry"><a class="el" href="classJson_1_1BatchAllocator.html">Json::BatchAllocator&lt; AllocatedType, objectPerAllocation &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

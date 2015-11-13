@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Executor/IteratorExecutorMaster.h Source File</title>
+<title>Claims: Executor/IteratorExecutorMaster.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('IteratorExecutorMaster_8h_source.html'
 <div class="title">IteratorExecutorMaster.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="IteratorExecutorMaster_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * IteratorExecutorMaster.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Jun 21, 2013</span></div>
@@ -118,40 +118,53 @@ $(document).ready(function(){initNavTree('IteratorExecutorMaster_8h_source.html'
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;Theron/Theron.h&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;Theron/Defines.h&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;libconfig.h++&gt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#ifdef DMALLOC</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;../physical_operator/physical_operator_base.h&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;../common/Logging.h&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;../utility/Timer.h&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classIteratorExecutorMaster.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a> {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a>();</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a>();</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a>* getInstance();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">bool</span> ExecuteBlockStreamIteratorsOnSites(<a class="code" href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a>* it,std::vector&lt;std::string&gt; ip_list);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">bool</span> ExecuteBlockStreamIteratorsOnSite(<a class="code" href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a>* it,NodeID target_ip);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">bool</span> Propogation(<span class="keyword">const</span> <span class="keywordtype">int</span>,std::string target);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a>* _instance;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    Theron::EndPoint* endpoint;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    Theron::Framework* framework;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classLogging.html">Logging</a>* logging_;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ITERATOREXECUTORMASTER_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;libconfig.h++&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../physical_operator/physical_operator_base.h&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;../common/Logging.h&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;../utility/Timer.h&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">using</span> <a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">claims::physical_operator::PhysicalOperatorBase</a>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classIteratorExecutorMaster.html">   21</a></span>&#160;<span class="keyword">class </span><a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a> {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <a class="code" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb">IteratorExecutorMaster</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classIteratorExecutorMaster.html#a16a9e47e9c55e7880edde617842e13f8">~IteratorExecutorMaster</a>();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">static</span> <a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a>* <a class="code" href="classIteratorExecutorMaster.html#a6c9509d129d4ac308db8d54d455ea7f2">getInstance</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classIteratorExecutorMaster.html#ad36ff018a4010b91aa7a28b78b6d2fc1">ExecuteBlockStreamIteratorsOnSites</a>(<a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">PhysicalOperatorBase</a>* it,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                          std::vector&lt;std::string&gt; ip_list);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e">ExecuteBlockStreamIteratorsOnSite</a>(<a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">PhysicalOperatorBase</a>* it,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                                         <a class="code" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> target_ip);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classIteratorExecutorMaster.html#a766cc5603c08f980985a77608043a36a">Propogation</a>(<span class="keyword">const</span> <span class="keywordtype">int</span>, std::string target);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classIteratorExecutorMaster.html#a4f601eccfeffce546ad657f1c23e9451">   33</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a>* <a class="code" href="classIteratorExecutorMaster.html#a4f601eccfeffce546ad657f1c23e9451">_instance</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classIteratorExecutorMaster.html#a162a863368f775d102e68321e536dcd5">   34</a></span>&#160;  Theron::EndPoint* <a class="code" href="classIteratorExecutorMaster.html#a162a863368f775d102e68321e536dcd5">endpoint</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classIteratorExecutorMaster.html#a17889b8cdf1055c14fa6f262aba92dfa">   35</a></span>&#160;  Theron::Framework* <a class="code" href="classIteratorExecutorMaster.html#a17889b8cdf1055c14fa6f262aba92dfa">framework</a>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classIteratorExecutorMaster.html#af012e00933039eeccfd262526a4a77e2">   36</a></span>&#160;  <a class="code" href="classLogging.html">Logging</a>* <a class="code" href="classIteratorExecutorMaster.html#af012e00933039eeccfd262526a4a77e2">logging_</a>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ITERATOREXECUTORMASTER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a162a863368f775d102e68321e536dcd5"><div class="ttname"><a href="classIteratorExecutorMaster.html#a162a863368f775d102e68321e536dcd5">IteratorExecutorMaster::endpoint</a></div><div class="ttdeci">Theron::EndPoint * endpoint</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.h:34</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_af012e00933039eeccfd262526a4a77e2"><div class="ttname"><a href="classIteratorExecutorMaster.html#af012e00933039eeccfd262526a4a77e2">IteratorExecutorMaster::logging_</a></div><div class="ttdeci">Logging * logging_</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.h:36</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a6c9509d129d4ac308db8d54d455ea7f2"><div class="ttname"><a href="classIteratorExecutorMaster.html#a6c9509d129d4ac308db8d54d455ea7f2">IteratorExecutorMaster::getInstance</a></div><div class="ttdeci">static IteratorExecutorMaster * getInstance()</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.cpp:29</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a17889b8cdf1055c14fa6f262aba92dfa"><div class="ttname"><a href="classIteratorExecutorMaster.html#a17889b8cdf1055c14fa6f262aba92dfa">IteratorExecutorMaster::framework</a></div><div class="ttdeci">Theron::Framework * framework</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.h:35</div></div>
+<div class="ttc" id="classclaims_1_1physical__operator_1_1PhysicalOperatorBase_html"><div class="ttname"><a href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">claims::physical_operator::PhysicalOperatorBase</a></div><div class="ttdef"><b>Definition:</b> physical_operator_base.h:38</div></div>
 <div class="ttc" id="classLogging_html"><div class="ttname"><a href="classLogging.html">Logging</a></div><div class="ttdef"><b>Definition:</b> Logging.h:21</div></div>
-<div class="ttc" id="classIteratorExecutorMaster_html"><div class="ttname"><a href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a></div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.h:22</div></div>
-<div class="ttc" id="classBlockStreamIteratorBase_html"><div class="ttname"><a href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a></div><div class="ttdef"><b>Definition:</b> BlockStreamIteratorBase.h:27</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a2c1320de06b69838a5e07f0531d1ebdb"><div class="ttname"><a href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb">IteratorExecutorMaster::IteratorExecutorMaster</a></div><div class="ttdeci">IteratorExecutorMaster()</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.cpp:15</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html"><div class="ttname"><a href="classIteratorExecutorMaster.html">IteratorExecutorMaster</a></div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.h:21</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_ad36ff018a4010b91aa7a28b78b6d2fc1"><div class="ttname"><a href="classIteratorExecutorMaster.html#ad36ff018a4010b91aa7a28b78b6d2fc1">IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites</a></div><div class="ttdeci">bool ExecuteBlockStreamIteratorsOnSites(PhysicalOperatorBase *it, std::vector&lt; std::string &gt; ip_list)</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.cpp:39</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a4f601eccfeffce546ad657f1c23e9451"><div class="ttname"><a href="classIteratorExecutorMaster.html#a4f601eccfeffce546ad657f1c23e9451">IteratorExecutorMaster::_instance</a></div><div class="ttdeci">static IteratorExecutorMaster * _instance</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.h:33</div></div>
+<div class="ttc" id="ids_8h_html_ae8d9d0f49cd0dc16ba088be027f2939f"><div class="ttname"><a href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a></div><div class="ttdeci">int NodeID</div><div class="ttdef"><b>Definition:</b> ids.h:22</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_aa4274d14dcec6648c56da32efac7ad4e"><div class="ttname"><a href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e">IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite</a></div><div class="ttdeci">bool ExecuteBlockStreamIteratorsOnSite(PhysicalOperatorBase *it, NodeID target_ip)</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.cpp:68</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a16a9e47e9c55e7880edde617842e13f8"><div class="ttname"><a href="classIteratorExecutorMaster.html#a16a9e47e9c55e7880edde617842e13f8">IteratorExecutorMaster::~IteratorExecutorMaster</a></div><div class="ttdeci">virtual ~IteratorExecutorMaster()</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.cpp:24</div></div>
+<div class="ttc" id="classIteratorExecutorMaster_html_a766cc5603c08f980985a77608043a36a"><div class="ttname"><a href="classIteratorExecutorMaster.html#a766cc5603c08f980985a77608043a36a">IteratorExecutorMaster::Propogation</a></div><div class="ttdeci">bool Propogation(const int, std::string target)</div><div class="ttdef"><b>Definition:</b> IteratorExecutorMaster.cpp:106</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c28da5c14a0a8a5cbc4b8a0ff68e9b34.html">Executor</a></li><li class="navelem"><b>IteratorExecutorMaster.h</b></li>
+    <li class="navelem"><a class="el" href="dir_c28da5c14a0a8a5cbc4b8a0ff68e9b34.html">Executor</a></li><li class="navelem"><a class="el" href="IteratorExecutorMaster_8h.html">IteratorExecutorMaster.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

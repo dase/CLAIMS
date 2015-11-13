@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: SubTuple Class Reference</title>
+<title>Claims: SubTuple Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,24 +106,190 @@ $(document).ready(function(){initNavTree('classSubTuple.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classSubTuple-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">SubTuple Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="TupleConvertor_8h_source.html">TupleConvertor.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for SubTuple:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSubTuple__coll__graph.png" border="0" usemap="#SubTuple_coll__map" alt="Collaboration graph"/></div>
+<map name="SubTuple_coll__map" id="SubTuple_coll__map">
+<area shape="rect" id="node2" href="classSchema.html" title="Schema" alt="" coords="9,5,79,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abd0aa8d39cdfd70e85fd68a597f6f3c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd0aa8d39cdfd70e85fd68a597f6f3c2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SubTuple</b> (<a class="el" href="classSchema.html">Schema</a> *srouce, <a class="el" href="classSchema.html">Schema</a> *target, std::vector&lt; unsigned &gt; index)</td></tr>
+<tr class="memitem:abd0aa8d39cdfd70e85fd68a597f6f3c2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSubTuple.html#abd0aa8d39cdfd70e85fd68a597f6f3c2">SubTuple</a> (<a class="el" href="classSchema.html">Schema</a> *srouce, <a class="el" href="classSchema.html">Schema</a> *target, std::vector&lt; unsigned &gt; index)</td></tr>
 <tr class="separator:abd0aa8d39cdfd70e85fd68a597f6f3c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c3a34e826bb8ab6333cd99728632b3a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6c3a34e826bb8ab6333cd99728632b3a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>getSubTuple</b> (void *&amp;tuple, void *&amp;target)</td></tr>
+<tr class="memitem:a6c3a34e826bb8ab6333cd99728632b3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSubTuple.html#a6c3a34e826bb8ab6333cd99728632b3a">getSubTuple</a> (void *&amp;tuple, void *&amp;target)</td></tr>
 <tr class="separator:a6c3a34e826bb8ab6333cd99728632b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a162a8eb08fc773c4f1845b2d2a986849"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSubTuple.html#a162a8eb08fc773c4f1845b2d2a986849">source_schema_</a></td></tr>
+<tr class="separator:a162a8eb08fc773c4f1845b2d2a986849"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bae600d2381d3860725f56bc46b77f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSubTuple.html#a1bae600d2381d3860725f56bc46b77f3">target_schema_</a></td></tr>
+<tr class="separator:a1bae600d2381d3860725f56bc46b77f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a832db6007dee2d98412ed37a47aca3ec"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSubTuple.html#a832db6007dee2d98412ed37a47aca3ec">index_</a></td></tr>
+<tr class="separator:a832db6007dee2d98412ed37a47aca3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="abd0aa8d39cdfd70e85fd68a597f6f3c2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SubTuple::SubTuple </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classSchema.html">Schema</a> *&#160;</td>
+          <td class="paramname"><em>srouce</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classSchema.html">Schema</a> *&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; unsigned &gt;&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6c3a34e826bb8ab6333cd99728632b3a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SubTuple::getSubTuple </td>
+          <td>(</td>
+          <td class="paramtype">void *&amp;&#160;</td>
+          <td class="paramname"><em>tuple</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&amp;&#160;</td>
+          <td class="paramname"><em>target</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classOperate.html#ab2f650b67c01ffb6e5fb40fd4d5bf535">Operate::assignment()</a>, <a class="el" href="classSchema.html#ab9ed94ee57490c2636220a316f93be86">Schema::getcolumn()</a>, <a class="el" href="classSchema.html#a1b785aecbf1e23308d28eabb93b2e97c">Schema::getColumnAddess()</a>, <a class="el" href="classSubTuple.html#a832db6007dee2d98412ed37a47aca3ec">index_</a>, <a class="el" href="classcolumn__type.html#a8d92c5e0ae992dbef3ac2001f30dd208">column_type::operate</a>, <a class="el" href="classSubTuple.html#a162a8eb08fc773c4f1845b2d2a986849">source_schema_</a>, and <a class="el" href="classSubTuple.html#a1bae600d2381d3860725f56bc46b77f3">target_schema_</a>.</p>
+
+<p>Referenced by <a class="el" href="SubTuple__test_8cpp.html#a44a83e1f7ecdf59eae6d3197d32861ca">sub_tuple_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_cgraph.png" border="0" usemap="#classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_cgraph" alt=""/></div>
+<map name="classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_cgraph" id="classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_cgraph">
+<area shape="rect" id="node2" href="classOperate.html#ab2f650b67c01ffb6e5fb40fd4d5bf535" title="Operate::assignment" alt="" coords="235,5,378,32"/><area shape="rect" id="node3" href="classSchema.html#ab9ed94ee57490c2636220a316f93be86" title="Schema::getcolumn" alt="" coords="237,56,376,83"/><area shape="rect" id="node4" href="classSchema.html#a1b785aecbf1e23308d28eabb93b2e97c" title="Schema::getColumnAddess" alt="" coords="214,107,399,133"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_icgraph.png" border="0" usemap="#classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_icgraph" alt=""/></div>
+<map name="classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_icgraph" id="classSubTuple_a6c3a34e826bb8ab6333cd99728632b3a_icgraph">
+<area shape="rect" id="node2" href="SubTuple__test_8cpp.html#a44a83e1f7ecdf59eae6d3197d32861ca" title="sub_tuple_test" alt="" coords="213,5,320,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a832db6007dee2d98412ed37a47aca3ec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;unsigned&gt; SubTuple::index_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classSubTuple.html#a6c3a34e826bb8ab6333cd99728632b3a">getSubTuple()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a162a8eb08fc773c4f1845b2d2a986849"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSchema.html">Schema</a>* SubTuple::source_schema_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classSubTuple.html#a6c3a34e826bb8ab6333cd99728632b3a">getSubTuple()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1bae600d2381d3860725f56bc46b77f3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSchema.html">Schema</a>* SubTuple::target_schema_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classSubTuple.html#a6c3a34e826bb8ab6333cd99728632b3a">getSubTuple()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>common/Schema/<a class="el" href="TupleConvertor_8h_source.html">TupleConvertor.h</a></li>
-<li>common/Schema/TupleConvertor.cpp</li>
+<li>common/Schema/<a class="el" href="TupleConvertor_8cpp.html">TupleConvertor.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

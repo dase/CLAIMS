@@ -1,4 +1,4 @@
-.TH "yyGLRStackItem" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "yyGLRStackItem" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -19,7 +19,17 @@ yyGLRStackItem \-
 .SH "Detailed Description"
 .PP 
 Type of the items in the GLR stack\&. The yyisState field indicates which item of the union is valid\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fByySemanticOption\fP yyGLRStackItem::yyoption"
+
+.PP
+Referenced by yyaddDeferredAction(), and yyexpandGLRStack()\&.
+.SS "\fByyGLRState\fP yyGLRStackItem::yystate"
+
+.PP
+Referenced by yycompressStack(), yydoAction(), yyexpandGLRStack(), yyglrShift(), yyglrShiftDefer(), yynewGLRStackItem(), yyresolveAction(), and yyuserAction()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

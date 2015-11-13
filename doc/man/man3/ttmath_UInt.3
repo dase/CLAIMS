@@ -1,4 +1,4 @@
-.TH "ttmath::UInt< value_size >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ttmath::UInt< value_size >" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -20,13 +20,13 @@ Inherited by \fBttmath::Int< value_size >\fP\&.
 .RI "void \fBhash\fP (std::size_t &seed) const "
 .br
 .ti -1c
-.RI "template<class ostream_type > void \fBPrintTable\fP (ostream_type &output) const "
+.RI "template<class ostream_type > void \fBPrintTable\fP (ostream_type &\fBoutput\fP) const "
 .br
 .ti -1c
-.RI "template<class char_type , class ostream_type > void \fBPrintLog\fP (const char_type *msg, ostream_type &output) const "
+.RI "template<class char_type , class ostream_type > void \fBPrintLog\fP (const char_type *msg, ostream_type &\fBoutput\fP) const "
 .br
 .ti -1c
-.RI "template<class char_type , class ostream_type > void \fBPrintLog\fP (const char_type *msg, \fBuint\fP carry, ostream_type &output) const "
+.RI "template<class char_type , class ostream_type > void \fBPrintLog\fP (const char_type *msg, \fBuint\fP carry, ostream_type &\fBoutput\fP) const "
 .br
 .ti -1c
 .RI "\fBuint\fP \fBSize\fP () const "
@@ -182,10 +182,10 @@ Inherited by \fBttmath::Int< value_size >\fP\&.
 .RI "\fBUInt\fP (\fBuint\fP i)"
 .br
 .ti -1c
-.RI "\fBUInt\fP< value_size > & \fBoperator=\fP (sint i)"
+.RI "\fBUInt\fP< value_size > & \fBoperator=\fP (\fBsint\fP i)"
 .br
 .ti -1c
-.RI "\fBUInt\fP (sint i)"
+.RI "\fBUInt\fP (\fBsint\fP i)"
 .br
 .ti -1c
 .RI "\fBUInt\fP (const char *s)"
@@ -251,19 +251,19 @@ Inherited by \fBttmath::Int< value_size >\fP\&.
 .RI "\fBUInt\fP< value_size > & \fBoperator=\fP (const std::wstring &s)"
 .br
 .ti -1c
-.RI "bool \fBCmpSmaller\fP (const \fBUInt\fP< value_size > &l, sint index=-1) const "
+.RI "bool \fBCmpSmaller\fP (const \fBUInt\fP< value_size > &l, \fBsint\fP index=-1) const "
 .br
 .ti -1c
-.RI "bool \fBCmpBigger\fP (const \fBUInt\fP< value_size > &l, sint index=-1) const "
+.RI "bool \fBCmpBigger\fP (const \fBUInt\fP< value_size > &l, \fBsint\fP index=-1) const "
 .br
 .ti -1c
-.RI "bool \fBCmpEqual\fP (const \fBUInt\fP< value_size > &l, sint index=-1) const "
+.RI "bool \fBCmpEqual\fP (const \fBUInt\fP< value_size > &l, \fBsint\fP index=-1) const "
 .br
 .ti -1c
-.RI "bool \fBCmpSmallerEqual\fP (const \fBUInt\fP< value_size > &l, sint index=-1) const "
+.RI "bool \fBCmpSmallerEqual\fP (const \fBUInt\fP< value_size > &l, \fBsint\fP index=-1) const "
 .br
 .ti -1c
-.RI "bool \fBCmpBiggerEqual\fP (const \fBUInt\fP< value_size > &l, sint index=-1) const "
+.RI "bool \fBCmpBiggerEqual\fP (const \fBUInt\fP< value_size > &l, \fBsint\fP index=-1) const "
 .br
 .ti -1c
 .RI "bool \fBoperator<\fP (const \fBUInt\fP< value_size > &l) const "
@@ -357,10 +357,10 @@ Inherited by \fBttmath::Int< value_size >\fP\&.
 
 .in +1c
 .ti -1c
-.RI "template<class char_type , class ostream_type > static void \fBPrintVectorLog\fP (const char_type *msg, ostream_type &output, const \fBuint\fP *vector, \fBuint\fP vector_len)"
+.RI "template<class char_type , class ostream_type > static void \fBPrintVectorLog\fP (const char_type *msg, ostream_type &\fBoutput\fP, const \fBuint\fP *vector, \fBuint\fP vector_len)"
 .br
 .ti -1c
-.RI "template<class char_type , class ostream_type > static void \fBPrintVectorLog\fP (const char_type *msg, \fBuint\fP carry, ostream_type &output, const \fBuint\fP *vector, \fBuint\fP vector_len)"
+.RI "template<class char_type , class ostream_type > static void \fBPrintVectorLog\fP (const char_type *msg, \fBuint\fP carry, ostream_type &\fBoutput\fP, const \fBuint\fP *vector, \fBuint\fP vector_len)"
 .br
 .ti -1c
 .RI "static \fBuint\fP \fBAddTwoWords\fP (\fBuint\fP a, \fBuint\fP b, \fBuint\fP carry, \fBuint\fP *result)"
@@ -381,7 +381,7 @@ Inherited by \fBttmath::Int< value_size >\fP\&.
 .RI "static \fBuint\fP \fBSubVector\fP (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBuint\fP ss1_size, \fBuint\fP ss2_size, \fBuint\fP *result)"
 .br
 .ti -1c
-.RI "static sint \fBFindLeadingBitInWord\fP (\fBuint\fP x)"
+.RI "static \fBsint\fP \fBFindLeadingBitInWord\fP (\fBuint\fP x)"
 .br
 .ti -1c
 .RI "static \fBuint\fP \fBSetBitInWord\fP (\fBuint\fP &value, \fBuint\fP bit)"
@@ -398,6 +398,98 @@ Inherited by \fBttmath::Int< value_size >\fP\&.
 .in +1c
 .ti -1c
 .RI "\fBuint\fP \fBtable\fP [value_size]"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBRclMoveAllWords\fP (\fBuint\fP &rest_bits, \fBuint\fP &last_c, \fBuint\fP bits, \fBuint\fP c)"
+.br
+.ti -1c
+.RI "void \fBRcrMoveAllWords\fP (\fBuint\fP &rest_bits, \fBuint\fP &last_c, \fBuint\fP bits, \fBuint\fP c)"
+.br
+.ti -1c
+.RI "template<uint ss_size> void \fBMul2Big2\fP (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBUInt\fP< ss_size *2 > &result)"
+.br
+.ti -1c
+.RI "template<uint ss_size> void \fBMul2Big3\fP (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBUInt\fP< ss_size *2 > &result, \fBuint\fP x1start, \fBuint\fP x1size, \fBuint\fP x2start, \fBuint\fP x2size)"
+.br
+.ti -1c
+.RI "template<uint ss_size> void \fBMul3Big2\fP (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBuint\fP *result)"
+.br
+.ti -1c
+.RI "template<uint first_size, uint second_size, uint result_size> void \fBMul3Big3\fP (const \fBuint\fP *x1, const \fBuint\fP *x0, const \fBuint\fP *y1, const \fBuint\fP *y0, \fBuint\fP *result)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv_StandardTest\fP (const \fBUInt\fP< value_size > &v, \fBuint\fP &m, \fBuint\fP &n, \fBUInt\fP< value_size > *remainder=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv_CalculatingSize\fP (const \fBUInt\fP< value_size > &v, \fBuint\fP &m, \fBuint\fP &n)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv1_Calculate\fP (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > &rest)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv2_Calculate\fP (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder, \fBuint\fP &bits_diff)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv2_FindLeadingBitsAndCheck\fP (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder, \fBuint\fP &table_id, \fBuint\fP &index, \fBuint\fP &divisor_table_id, \fBuint\fP &divisor_index)"
+.br
+.ti -1c
+.RI "bool \fBDiv2_DivisorGreaterOrEqual\fP (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder, \fBuint\fP table_id, \fBuint\fP index, \fBuint\fP divisor_index)"
+.br
+.ti -1c
+.RI "void \fBDiv3_Division\fP (\fBUInt\fP< value_size > v, \fBUInt\fP< value_size > *remainder, \fBuint\fP m, \fBuint\fP n)"
+.br
+.ti -1c
+.RI "void \fBDiv3_MakeNewU\fP (\fBUInt\fP< value_size+1 > &uu, \fBuint\fP j, \fBuint\fP n, \fBuint\fP u_max)"
+.br
+.ti -1c
+.RI "void \fBDiv3_CopyNewU\fP (const \fBUInt\fP< value_size+1 > &uu, \fBuint\fP j, \fBuint\fP n)"
+.br
+.ti -1c
+.RI "void \fBDiv3_MakeBiggerV\fP (const \fBUInt\fP< value_size > &v, \fBUInt\fP< value_size+1 > &vv)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv3_Normalize\fP (\fBUInt\fP< value_size > &v, \fBuint\fP n, \fBuint\fP &d)"
+.br
+.ti -1c
+.RI "void \fBDiv3_Unnormalize\fP (\fBUInt\fP< value_size > *remainder, \fBuint\fP n, \fBuint\fP d)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBDiv3_Calculate\fP (\fBuint\fP u2, \fBuint\fP u1, \fBuint\fP u0, \fBuint\fP v1, \fBuint\fP v0)"
+.br
+.ti -1c
+.RI "void \fBDiv3_MultiplySubtract\fP (\fBUInt\fP< value_size+1 > &uu, const \fBUInt\fP< value_size+1 > &vv, \fBuint\fP &qp)"
+.br
+.ti -1c
+.RI "template<class string_type > void \fBToStringBase\fP (string_type &result, \fBuint\fP b=10) const "
+.br
+.ti -1c
+.RI "template<class char_type > \fBuint\fP \fBFromStringBase\fP (const char_type *s, \fBuint\fP b=10, const char_type **after_source=0, bool *value_read=0)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBRcl2_one\fP (\fBuint\fP c)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBRcr2_one\fP (\fBuint\fP c)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBRcl2\fP (\fBuint\fP bits, \fBuint\fP c)"
+.br
+.ti -1c
+.RI "\fBuint\fP \fBRcr2\fP (\fBuint\fP bits, \fBuint\fP c)"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class ostream_type , class string_type > static ostream_type & \fBOutputToStream\fP (ostream_type &s, const \fBUInt\fP< value_size > &l)"
+.br
+.ti -1c
+.RI "template<class istream_type , class string_type , class char_type > static istream_type & \fBInputFromStream\fP (istream_type &s, \fBUInt\fP< value_size > &l)"
 .br
 .in -1c
 .SS "Friends"
@@ -429,7 +521,7 @@ value_size - how many bytes specify our value on 32bit platforms: value_size=1 -
 a constructor for converting the uint to this class 
 .PP
 References ttmath::UInt< value_size >::FromUInt()\&.
-.SS "template<uint value_size> \fBttmath::UInt\fP< value_size >::\fBUInt\fP (sinti)\fC [inline]\fP"
+.SS "template<uint value_size> \fBttmath::UInt\fP< value_size >::\fBUInt\fP (\fBsint\fPi)\fC [inline]\fP"
 a constructor for converting the sint to this class
 .PP
 look at the description of \fBUInt::operator=(sint)\fP 
@@ -455,10 +547,12 @@ References ttmath::UInt< value_size >::FromString()\&.
 a default constructor
 .PP
 we don't clear the table 
+.PP
+References ttmath::UInt< value_size >::table\&.
 .SS "template<uint value_size> \fBttmath::UInt\fP< value_size >::\fBUInt\fP (const \fBUInt\fP< value_size > &u)\fC [inline]\fP"
 a copy constructor 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> template<uint argument_size> \fBttmath::UInt\fP< value_size >::\fBUInt\fP (const \fBUInt\fP< argument_size > &u)\fC [inline]\fP"
 a template for producting constructors for copying from another types 
 .PP
@@ -467,41 +561,61 @@ References ttmath::UInt< value_size >::FromUInt()\&.
 a destructor 
 .SH "Member Function Documentation"
 .PP 
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Add (const \fBUInt\fP< value_size > &ss2, \fBuint\fPc = \fC0\fP)"
+
+.PP
+Referenced by ttmath::Int< value_size >::Add(), ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div3_MultiplySubtract(), ttmath::UInt< value_size >::FromStringBase(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::operator+(), ttmath::UInt< value_size >::operator+=(), and ttmath::UInt< value_size >::Sqrt()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::AddInt (\fBuint\fPvalue, \fBuint\fPindex = \fC0\fP)"
+
+.PP
+Referenced by ttmath::Int< value_size >::AddInt(), ttmath::UInt< value_size >::AddOne(), and ttmath::UInt< value_size >::MulInt()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::AddOne ()\fC [inline]\fP"
 basic mathematic functions
 .PP
 this method adds one to the existing value 
 .PP
+References ttmath::UInt< value_size >::AddInt()\&.
+.PP
 Referenced by ttmath::Int< value_size >::AddOne(), and ttmath::UInt< value_size >::operator++()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::AddTwoInts (\fBuint\fPx2, \fBuint\fPx1, \fBuint\fPindex)"
+
+.PP
+Referenced by ttmath::Int< value_size >::AddTwoInts(), ttmath::UInt< value_size >::Mul2Big3(), and ttmath::UInt< value_size >::MulInt()\&.
+.SS "template<uint value_size> static \fBuint\fP \fBttmath::UInt\fP< value_size >::AddTwoWords (\fBuint\fPa, \fBuint\fPb, \fBuint\fPcarry, \fBuint\fP *result)\fC [static]\fP"
+
+.SS "template<uint value_size> static \fBuint\fP \fBttmath::UInt\fP< value_size >::AddVector (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBuint\fPss1_size, \fBuint\fPss2_size, \fBuint\fP *result)\fC [static]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Mul3Big3()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::BitAnd (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
 this method performs a bitwise operation AND 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::BitNot ()\fC [inline]\fP"
 this method performs a bitwise operation NOT 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::BitNot2 ()\fC [inline]\fP"
 this method performs a bitwise operation NOT but only on the range of <0, leading_bit>
 .PP
 for example: BitNot2(8) = BitNot2( 1000(bin) ) = 111(bin) = 7 
 .PP
-References ttmath::UInt< value_size >::FindLeadingBit(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, and TTMATH_UINT_MAX_VALUE\&.
+References ttmath::UInt< value_size >::FindLeadingBit(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, TTMATH_LOG, and TTMATH_UINT_MAX_VALUE\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::BitOr (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
 this method performs a bitwise operation OR 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::BitXor (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
 this method performs a bitwise operation XOR 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::ClearFirstBits (\fBuint\fPn)\fC [inline]\fP"
 this method sets n first bits to value zero
 .PP
 For example: let n=2 then if there's a value 111 (bin) there'll be '100' (bin) 
 .PP
-References ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, and TTMATH_UINT_MAX_VALUE\&.
-.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpBigger (const \fBUInt\fP< value_size > &l, sintindex = \fC-1\fP) const\fC [inline]\fP"
+References ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, TTMATH_LOG, and TTMATH_UINT_MAX_VALUE\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpBigger (const \fBUInt\fP< value_size > &l, \fBsint\fPindex = \fC-1\fP) const\fC [inline]\fP"
 this method returns true if 'this' is bigger than 'l'
 .PP
 'index' is an index of the first word from will be the comparison performed (note: we start the comparison from back - from the last word, when index is -1 /default/ it is automatically set into the last word)
@@ -509,21 +623,25 @@ this method returns true if 'this' is bigger than 'l'
 I introduced it for some kind of optimization made in the second division algorithm (Div2) 
 .PP
 References ttmath::UInt< value_size >::table\&.
-.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpBiggerEqual (const \fBUInt\fP< value_size > &l, sintindex = \fC-1\fP) const\fC [inline]\fP"
+.PP
+Referenced by ttmath::UInt< value_size >::operator>()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpBiggerEqual (const \fBUInt\fP< value_size > &l, \fBsint\fPindex = \fC-1\fP) const\fC [inline]\fP"
 this method returns true if 'this' is bigger than or equal 'l'
 .PP
 'index' is an index of the first word from will be the comparison performed (note: we start the comparison from back - from the last word, when index is -1 /default/ it is automatically set into the last word) 
 .PP
 References ttmath::UInt< value_size >::table\&.
 .PP
-Referenced by ttmath::UInt< value_size >::Div2()\&.
-.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpEqual (const \fBUInt\fP< value_size > &l, sintindex = \fC-1\fP) const\fC [inline]\fP"
+Referenced by ttmath::UInt< value_size >::Div2(), and ttmath::UInt< value_size >::operator>=()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpEqual (const \fBUInt\fP< value_size > &l, \fBsint\fPindex = \fC-1\fP) const\fC [inline]\fP"
 this method returns true if 'this' is equal 'l'
 .PP
 'index' is an index of the first word from will be the comparison performed (note: we start the comparison from back - from the last word, when index is -1 /default/ it is automatically set into the last word) 
 .PP
 References ttmath::UInt< value_size >::table\&.
-.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpSmaller (const \fBUInt\fP< value_size > &l, sintindex = \fC-1\fP) const\fC [inline]\fP"
+.PP
+Referenced by ttmath::UInt< value_size >::operator==()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpSmaller (const \fBUInt\fP< value_size > &l, \fBsint\fPindex = \fC-1\fP) const\fC [inline]\fP"
 methods for comparing
 .PP
 this method returns true if 'this' is smaller than 'l'
@@ -531,16 +649,20 @@ this method returns true if 'this' is smaller than 'l'
 'index' is an index of the first word from will be the comparison performed (note: we start the comparison from back - from the last word, when index is -1 /default/ it is automatically set into the last word) I introduced it for some kind of optimization made in the second division algorithm (Div2) 
 .PP
 References ttmath::UInt< value_size >::table\&.
-.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpSmallerEqual (const \fBUInt\fP< value_size > &l, sintindex = \fC-1\fP) const\fC [inline]\fP"
+.PP
+Referenced by ttmath::UInt< value_size >::Div2_Calculate(), and ttmath::UInt< value_size >::operator<()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::CmpSmallerEqual (const \fBUInt\fP< value_size > &l, \fBsint\fPindex = \fC-1\fP) const\fC [inline]\fP"
 this method returns true if 'this' is smaller than or equal 'l'
 .PP
 'index' is an index of the first word from will be the comparison performed (note: we start the comparison from back - from the last word, when index is -1 /default/ it is automatically set into the last word) 
 .PP
 References ttmath::UInt< value_size >::table\&.
+.PP
+Referenced by ttmath::UInt< value_size >::operator<=()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::CompensationToLeft ()\fC [inline]\fP"
 this method moves all bits into the left side (it returns value how many bits have been moved) 
 .PP
-References ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::table, and TTMATH_BITS_PER_UINT\&.
+References ttmath::UInt< value_size >::FindLeadingBitInWord(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, and TTMATH_LOG\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder = \fC0\fP, \fBuint\fPalgorithm = \fC3\fP)\fC [inline]\fP"
 division this = this / ss2
 .PP
@@ -548,27 +670,125 @@ return values: 0 - ok 1 - division by zero 'this' will be the quotient 'remainde
 .PP
 References ttmath::UInt< value_size >::Div1(), ttmath::UInt< value_size >::Div2(), and ttmath::UInt< value_size >::Div3()\&.
 .PP
-Referenced by ttmath::Int< value_size >::Div()\&.
+Referenced by ttmath::Int< value_size >::Div(), ttmath::UInt< value_size >::Div(), ttmath::UInt< value_size >::operator%(), ttmath::UInt< value_size >::operator%=(), ttmath::UInt< value_size >::operator/(), and ttmath::UInt< value_size >::operator/=()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > &remainder, \fBuint\fPalgorithm = \fC3\fP)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div1 (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder = \fC0\fP)\fC [inline]\fP"
 the first division algorithm radix 2 
 .PP
+References ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div_StandardTest(), and myllvm::test()\&.
+.PP
 Referenced by ttmath::UInt< value_size >::Div()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div1_Calculate (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > &rest)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Add(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::Sub(), TTMATH_BITS_PER_UINT, TTMATH_LOG, and TTMATH_REFERENCE_ASSERT\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div1()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div2 (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder = \fC0\fP)\fC [inline]\fP"
 the second division algorithm
 .PP
 return values: 0 - ok 1 - division by zero 
 .PP
-References ttmath::UInt< value_size >::CmpBiggerEqual(), ttmath::UInt< value_size >::SetBit(), ttmath::UInt< value_size >::SetZero(), and TTMATH_REFERENCE_ASSERT\&.
+References ttmath::UInt< value_size >::CmpBiggerEqual(), ttmath::UInt< value_size >::Div2_Calculate(), ttmath::UInt< value_size >::SetBit(), ttmath::UInt< value_size >::SetZero(), TTMATH_LOG, and TTMATH_REFERENCE_ASSERT\&.
 .PP
-Referenced by ttmath::UInt< value_size >::Div()\&.
+Referenced by ttmath::UInt< value_size >::Div(), and ttmath::UInt< value_size >::Div2()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div2 (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > &remainder)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div2()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div2_Calculate (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder, \fBuint\fP &bits_diff)\fC [inline]\fP, \fC [private]\fP"
+return values: 0 - we've calculated the division 1 - division by zero 2 - we have to still calculate 
+.PP
+References ttmath::UInt< value_size >::CmpSmaller(), ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::Rcr(), ttmath::UInt< value_size >::Sub(), and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div2()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::Div2_DivisorGreaterOrEqual (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder, \fBuint\fPtable_id, \fBuint\fPindex, \fBuint\fPdivisor_index)\fC [inline]\fP, \fC [private]\fP"
+return values: true if divisor is equal or greater than 'this' 
+.PP
+References ttmath::UInt< value_size >::SetOne(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div2_FindLeadingBitsAndCheck (const \fBUInt\fP< value_size > &divisor, \fBUInt\fP< value_size > *remainder, \fBuint\fP &table_id, \fBuint\fP &index, \fBuint\fP &divisor_table_id, \fBuint\fP &divisor_index)\fC [inline]\fP, \fC [private]\fP"
+return values: 0 - we've calculated the division 1 - division by zero 2 - we have to still calculate 
+.PP
+References ttmath::UInt< value_size >::Div2_DivisorGreaterOrEqual(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::FindLeadingBit(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div2_Calculate()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div3 (const \fBUInt\fP< value_size > &v, \fBUInt\fP< value_size > *remainder = \fC0\fP)\fC [inline]\fP"
 the third division algorithm
 .PP
 this algorithm is described in the following book: 'The art of computer programming 2' (4\&.3\&.1 page 272) Donald E\&. Knuth 
 .PP
-References ttmath::UInt< value_size >::DivInt(), and TTMATH_REFERENCE_ASSERT\&.
+References ttmath::UInt< value_size >::Div3_Division(), ttmath::UInt< value_size >::Div_StandardTest(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::table, myllvm::test(), TTMATH_LOG, and TTMATH_REFERENCE_ASSERT\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Div()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div3_Calculate (\fBuint\fPu2, \fBuint\fPu1, \fBuint\fPu0, \fBuint\fPv1, \fBuint\fPv0)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::MulTwoWords(), ttmath::UInt< value_size >::SubOne(), ttmath::UInt< value_size >::table, TTMATH_ASSERT, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Div3_CopyNewU (const \fBUInt\fP< value_size+1 > &uu, \fBuint\fPj, \fBuint\fPn)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Div3_Division (\fBUInt\fP< value_size >v, \fBUInt\fP< value_size > *remainder, \fBuint\fPm, \fBuint\fPn)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div3_Calculate(), ttmath::UInt< value_size >::Div3_CopyNewU(), ttmath::UInt< value_size >::Div3_MakeBiggerV(), ttmath::UInt< value_size >::Div3_MakeNewU(), ttmath::UInt< value_size >::Div3_MultiplySubtract(), ttmath::UInt< value_size >::Div3_Normalize(), ttmath::UInt< value_size >::Div3_Unnormalize(), ttmath::UInt< value_size >::table, TTMATH_ASSERT, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Div3_MakeBiggerV (const \fBUInt\fP< value_size > &v, \fBUInt\fP< value_size+1 > &vv)\fC [inline]\fP, \fC [private]\fP"
+we're making the new 'vv' the value is actually the same but the 'table' is bigger (value_size+1) 
+.PP
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Div3_MakeNewU (\fBUInt\fP< value_size+1 > &uu, \fBuint\fPj, \fBuint\fPn, \fBuint\fPu_max)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Div3_MultiplySubtract (\fBUInt\fP< value_size+1 > &uu, const \fBUInt\fP< value_size+1 > &vv, \fBuint\fP &qp)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Add(), ttmath::UInt< value_size >::MulInt(), ttmath::UInt< value_size >::Sub(), and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div3_Normalize (\fBUInt\fP< value_size > &v, \fBuint\fPn, \fBuint\fP &d)\fC [inline]\fP, \fC [private]\fP"
+we're moving all bits from 'v' into the left side of the n-1 word (the highest bit at v\&.table[n-1] will be equal one, the bits from 'this' we're moving the same times as 'v')
+.PP
+return values: d - how many times we've moved return - the next-left value from 'this' (that after table[value_size-1]) 
+.PP
+References ttmath::UInt< value_size >::FindLeadingBitInWord(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Div3_Unnormalize (\fBUInt\fP< value_size > *remainder, \fBuint\fPn, \fBuint\fPd)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Rcr(), ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Division()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div_CalculatingSize (const \fBUInt\fP< value_size > &v, \fBuint\fP &m, \fBuint\fP &n)\fC [inline]\fP, \fC [private]\fP"
+return values: 0 - ok 'm' - is the index (from 0) of last non-zero word in table ('this') 'n' - is the index (from 0) of last non-zero word in v\&.table 1 - v is zero 2 - 'this' is zero 3 - 'this' is smaller than v 4 - 'this' is equal v
+.PP
+if the return value is different than zero the 'm' and 'n' are undefined 
+.PP
+References ttmath::UInt< value_size >::table\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div_StandardTest()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Div_StandardTest (const \fBUInt\fP< value_size > &v, \fBuint\fP &m, \fBuint\fP &n, \fBUInt\fP< value_size > *remainder = \fC0\fP)\fC [inline]\fP, \fC [private]\fP"
+return values: 0 - none has to be done 1 - division by zero 2 - division should be made 
+.PP
+References ttmath::UInt< value_size >::Div_CalculatingSize(), ttmath::UInt< value_size >::SetOne(), ttmath::UInt< value_size >::SetZero(), and TTMATH_LOG\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div1(), and ttmath::UInt< value_size >::Div3()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::DivInt (\fBuint\fPdivisor, \fBuint\fP *remainder = \fC0\fP)\fC [inline]\fP"
 Division
 .PP
@@ -576,9 +796,17 @@ division by one unsigned word
 .PP
 returns 1 when divisor is zero 
 .PP
-References ttmath::UInt< value_size >::SetZero(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::DivTwoWords(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .PP
-Referenced by ttmath::UInt< value_size >::Div3(), and ttmath::Int< value_size >::DivInt()\&.
+Referenced by ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck(), ttmath::UInt< value_size >::Div3(), ttmath::UInt< value_size >::Div3_Calculate(), ttmath::Int< value_size >::DivInt(), ttmath::UInt< value_size >::DivInt(), and ttmath::UInt< value_size >::ToStringBase()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::DivInt (\fBuint\fPdivisor, \fBuint\fP &remainder)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::DivInt()\&.
+.SS "template<uint value_size> static void \fBttmath::UInt\fP< value_size >::DivTwoWords (\fBuint\fPa, \fBuint\fPb, \fBuint\fPc, \fBuint\fP *r, \fBuint\fP *rest)\fC [static]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::DivInt()\&.
 .SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::FindLeadingBit (\fBuint\fP &table_id, \fBuint\fP &index) const\fC [inline]\fP"
 this method looks for the highest set bit
 .PP
@@ -586,9 +814,13 @@ result: if 'this' is not zero: return value - true 'table_id' - the index of a w
 .PP
 if 'this' is zero: return value - false both 'table_id' and 'index' are zero 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::FindLeadingBitInWord(), and ttmath::UInt< value_size >::table\&.
 .PP
-Referenced by ttmath::UInt< value_size >::BitNot2()\&.
+Referenced by ttmath::UInt< value_size >::BitNot2(), and ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck()\&.
+.SS "template<uint value_size> static \fBsint\fP \fBttmath::UInt\fP< value_size >::FindLeadingBitInWord (\fBuint\fPx)\fC [static]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::Div3_Normalize(), and ttmath::UInt< value_size >::FindLeadingBit()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::FromString (const char *s, \fBuint\fPb = \fC10\fP, const char **after_source = \fC0\fP, bool *value_read = \fC0\fP)\fC [inline]\fP"
 this method converts a string into its value it returns carry=1 if the value will be too big or an incorrect base 'b' is given
 .PP
@@ -602,9 +834,13 @@ after_source (if exists) is pointing at the end of the parsed string
 .PP
 value_read (if exists) tells whether something has actually been read (at least one digit) 
 .PP
-Referenced by ttmath::UInt< value_size >::FromString(), ttmath::UInt< value_size >::operator=(), and ttmath::UInt< value_size >::UInt()\&.
+References ttmath::UInt< value_size >::FromStringBase()\&.
+.PP
+Referenced by ttmath::UInt< value_size >::FromString(), ttmath::UInt< value_size >::InputFromStream(), ttmath::UInt< value_size >::operator=(), and ttmath::UInt< value_size >::UInt()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::FromString (const wchar_t *s, \fBuint\fPb = \fC10\fP, const wchar_t **after_source = \fC0\fP, bool *value_read = \fC0\fP)\fC [inline]\fP"
 this method converts a string into its value 
+.PP
+References ttmath::UInt< value_size >::FromStringBase()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::FromString (const std::string &s, \fBuint\fPb = \fC10\fP)\fC [inline]\fP"
 this method converts a string into its value
 .PP
@@ -617,6 +853,12 @@ this method converts a string into its value
 (it returns carry=1 if the value will be too big or an incorrect base 'b' is given) 
 .PP
 References ttmath::UInt< value_size >::FromString()\&.
+.SS "template<uint value_size> template<class char_type > \fBuint\fP \fBttmath::UInt\fP< value_size >::FromStringBase (const char_type *s, \fBuint\fPb = \fC10\fP, const char_type **after_source = \fC0\fP, bool *value_read = \fC0\fP)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for converting from a string 
+.PP
+References ttmath::UInt< value_size >::Add(), ttmath::Misc::CharToDigit(), ttmath::UInt< value_size >::Mul(), ttmath::UInt< value_size >::SetZero(), ttmath::Misc::SkipWhiteCharacters(), ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
+.PP
+Referenced by ttmath::UInt< value_size >::FromString()\&.
 .SS "template<uint value_size> template<uint argument_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::FromUInt (const \fBUInt\fP< argument_size > &p)\fC [inline]\fP"
 conversion methods
 .PP
@@ -626,27 +868,47 @@ this operation has mainly sense if the value from p is equal or smaller than tha
 .PP
 it returns a carry if the value 'p' is too big 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
 .PP
 Referenced by ttmath::UInt< value_size >::operator=(), and ttmath::UInt< value_size >::UInt()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::FromUInt (\fBuint\fPvalue)\fC [inline]\fP"
 this method converts the uint type to this class 
+.PP
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::GetBit (\fBuint\fPbit_index) const\fC [inline]\fP"
 setting the 'bit_index' bit
 .PP
 bit_index bigger or equal zero 
 .PP
-References ttmath::UInt< value_size >::table, and TTMATH_BITS_PER_UINT\&.
+References ttmath::UInt< value_size >::SetBitInWord(), ttmath::UInt< value_size >::table, TTMATH_ASSERT, and TTMATH_BITS_PER_UINT\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::hash (std::size_t &seed) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::table\&.
+.SS "template<uint value_size> template<class istream_type , class string_type , class char_type > static istream_type& \fBttmath::UInt\fP< value_size >::InputFromStream (istream_type &s, \fBUInt\fP< value_size > &l)\fC [inline]\fP, \fC [static]\fP, \fC [private]\fP"
+an auxiliary method for reading from standard streams 
+.PP
+References ttmath::Misc::CharToDigit(), and ttmath::UInt< value_size >::FromString()\&.
 .SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::IsTheHighestBitSet () const\fC [inline]\fP"
 this method returns true if the highest bit of the value is set 
+.PP
+References ttmath::UInt< value_size >::table\&.
 .PP
 Referenced by ttmath::Int< value_size >::IsSign()\&.
 .SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::IsTheLowestBitSet () const\fC [inline]\fP"
 this method returns true if the lowest bit of the value is set 
+.PP
+References ttmath::UInt< value_size >::table\&.
 .SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::IsZero () const\fC [inline]\fP"
 this method returns true if the value is equal zero 
 .PP
-Referenced by ttmath::UInt< value_size >::Pow(), and ttmath::UInt< value_size >::Sqrt()\&.
+References ttmath::UInt< value_size >::table\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Pow(), ttmath::UInt< value_size >::Sqrt(), and ttmath::UInt< value_size >::ToStringBase()\&.
+.SS "template<uint value_size> static \fBLibTypeCode\fP \fBttmath::UInt\fP< value_size >::LibType ()\fC [static]\fP"
+
+.SS "template<uint value_size> static const char* \fBttmath::UInt\fP< value_size >::LibTypeStr ()\fC [static]\fP"
+
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Mul (const \fBUInt\fP< value_size > &ss2, \fBuint\fPalgorithm = \fC100\fP)\fC [inline]\fP"
 the multiplication 'this' = 'this' * ss2
 .PP
@@ -654,7 +916,7 @@ algorithm: 100 - means automatically choose the fastest algorithm
 .PP
 References ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::Mul2(), ttmath::UInt< value_size >::Mul3(), and ttmath::UInt< value_size >::MulFastest()\&.
 .PP
-Referenced by ttmath::UInt< value_size >::Pow()\&.
+Referenced by ttmath::UInt< value_size >::FromStringBase(), ttmath::UInt< value_size >::operator*(), ttmath::UInt< value_size >::operator*=(), and ttmath::UInt< value_size >::Pow()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Mul1 (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
 the first version of the multiplication algorithm
 .PP
@@ -662,7 +924,7 @@ multiplication: this = this * ss2
 .PP
 it returns carry if it has been 
 .PP
-References ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::SetZero(), TTMATH_BITS_PER_UINT, and TTMATH_REFERENCE_ASSERT\&.
+References ttmath::UInt< value_size >::Add(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::SetZero(), TTMATH_BITS_PER_UINT, TTMATH_LOGC, and TTMATH_REFERENCE_ASSERT\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Mul(), and ttmath::UInt< value_size >::Mul1Big()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Mul1Big (const \fBUInt\fP< value_size > &ss2_, \fBUInt\fP< value_size *2 > &result)\fC [inline]\fP"
@@ -670,7 +932,7 @@ multiplication: result = this * ss2
 .PP
 result is twice bigger than 'this' and 'ss2' this method never returns carry 
 .PP
-References ttmath::UInt< value_size >::Mul1(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .PP
 Referenced by ttmath::UInt< value_size >::MulBig()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Mul2 (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
@@ -682,7 +944,7 @@ multiplication: this = this * ss2
 .PP
 it returns carry if it has been 
 .PP
-References ttmath::UInt< value_size >::Mul2Big(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::Mul2Big(), ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Mul()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Mul2Big (const \fBUInt\fP< value_size > &ss2, \fBUInt\fP< value_size *2 > &result)\fC [inline]\fP"
@@ -690,9 +952,17 @@ multiplication: result = this * ss2
 .PP
 result is twice bigger than this and ss2 this method never returns carry 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Mul2(), ttmath::UInt< value_size >::MulBig(), and ttmath::UInt< value_size >::MulFastestBig()\&.
+.SS "template<uint value_size> template<uint ss_size> void \fBttmath::UInt\fP< value_size >::Mul2Big2 (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBUInt\fP< ss_size *2 > &result)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for calculating the multiplication
+.PP
+arguments we're taking as pointers (this is to improve the \fBMul3Big2()\fP- avoiding unnecessary copying objects), the result should be taken as a pointer too, but at the moment there is no method \fBAddTwoInts()\fP which can operate on pointers 
+.SS "template<uint value_size> template<uint ss_size> void \fBttmath::UInt\fP< value_size >::Mul2Big3 (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBUInt\fP< ss_size *2 > &result, \fBuint\fPx1start, \fBuint\fPx1size, \fBuint\fPx2start, \fBuint\fPx2size)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for calculating the multiplication 
+.PP
+References ttmath::UInt< value_size >::AddTwoInts(), ttmath::UInt< value_size >::MulTwoWords(), and ttmath::UInt< value_size >::SetZero()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Mul3 (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
 multiplication: this = this * ss2
 .PP
@@ -702,7 +972,7 @@ Karatsuba multiplication: Assume we have: this = x = x1*B^m + x0 ss2 = y = y1*B^
 .PP
 Our objects 'this' and 'ss2' we divide into two parts and by using recurrence we calculate the multiplication\&. Karatsuba multiplication has O( n^(ln(3)/ln(2)) ) 
 .PP
-References ttmath::UInt< value_size >::Mul3Big(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::Mul3Big(), ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Mul()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Mul3Big (const \fBUInt\fP< value_size > &ss2, \fBUInt\fP< value_size *2 > &result)\fC [inline]\fP"
@@ -710,9 +980,27 @@ multiplication: result = this * ss2
 .PP
 result is twice bigger than this and ss2, this method never returns carry, (Karatsuba multiplication) 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Mul3(), ttmath::UInt< value_size >::MulBig(), and ttmath::UInt< value_size >::MulFastestBig()\&.
+.SS "template<uint value_size> template<uint ss_size> void \fBttmath::UInt\fP< value_size >::Mul3Big2 (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBuint\fP *result)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for calculating the Karatsuba multiplication
+.PP
+result_size is equal ss_size*2 
+.PP
+References ttmath::UInt< value_size >::Mul3Big3(), ttmath::UInt< value_size >::MulTwoWords(), ttmath::UInt< value_size >::table, and TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE\&.
+.SS "template<uint value_size> template<uint first_size, uint second_size, uint result_size> void \fBttmath::UInt\fP< value_size >::Mul3Big3 (const \fBuint\fP *x1, const \fBuint\fP *x0, const \fBuint\fP *y1, const \fBuint\fP *y0, \fBuint\fP *result)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for calculating the Karatsuba multiplication
+.PP
+x = x1*B^m + x0 y = y1*B^m + y0
+.PP
+first_size - is the size of vectors: x0 and y0 second_size - is the size of vectors: x1 and y1 (can be either equal first_size or smaller about one from first_size)
+.PP
+x*y = (x1*B^m + x0)(y1*B^m + y0) = z2*B^(2m) + z1*B^m + z0 where z0 = x0*y0 z2 = x1*y1 z1 = (x1 + x0)*(y1 + y0) - z2 - z0 
+.PP
+References ttmath::UInt< value_size >::AddVector(), ttmath::UInt< value_size >::SubVector(), ttmath::UInt< value_size >::table, and TTMATH_ASSERT\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Mul3Big2()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::MulBig (const \fBUInt\fP< value_size > &ss2, \fBUInt\fP< value_size *2 > &result, \fBuint\fPalgorithm = \fC100\fP)\fC [inline]\fP"
 the multiplication 'result' = 'this' * ss2
 .PP
@@ -724,7 +1012,7 @@ References ttmath::UInt< value_size >::Mul1Big(), ttmath::UInt< value_size >::Mu
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::MulFastest (const \fBUInt\fP< value_size > &ss2)\fC [inline]\fP"
 multiplication this = this * ss2 
 .PP
-References ttmath::UInt< value_size >::MulFastestBig(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::MulFastestBig(), ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Mul()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::MulFastestBig (const \fBUInt\fP< value_size > &ss2, \fBUInt\fP< value_size *2 > &result)\fC [inline]\fP"
@@ -732,7 +1020,7 @@ multiplication result = this * ss2
 .PP
 this method is trying to select the fastest algorithm (in the future this method can be improved) 
 .PP
-References ttmath::UInt< value_size >::Mul2Big(), ttmath::UInt< value_size >::Mul3Big(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, and TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE\&.
+References ttmath::UInt< value_size >::Mul2Big(), ttmath::UInt< value_size >::Mul3Big(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, TTMATH_LOG, and TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE\&.
 .PP
 Referenced by ttmath::UInt< value_size >::MulBig(), and ttmath::UInt< value_size >::MulFastest()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::MulInt (\fBuint\fPss2)\fC [inline]\fP"
@@ -742,13 +1030,45 @@ multiplication: this = this * ss2
 .PP
 it can return a carry 
 .PP
-References ttmath::UInt< value_size >::SetZero(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::AddInt(), ttmath::UInt< value_size >::AddTwoInts(), ttmath::UInt< value_size >::MulTwoWords(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_MultiplySubtract()\&.
 .SS "template<uint value_size> template<uint result_size> void \fBttmath::UInt\fP< value_size >::MulInt (\fBuint\fPss2, \fBUInt\fP< result_size > &result) const\fC [inline]\fP"
 multiplication: result = this * ss2
 .PP
 we're using this method only when result_size is greater than value_size if so there will not be a carry 
 .PP
-References ttmath::UInt< value_size >::SetZero(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::AddTwoInts(), ttmath::UInt< value_size >::MulTwoWords(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, TTMATH_ASSERT, and TTMATH_VECTOR_LOG\&.
+.SS "template<uint value_size> static void \fBttmath::UInt\fP< value_size >::MulTwoWords (\fBuint\fPa, \fBuint\fPb, \fBuint\fP *result_high, \fBuint\fP *result_low)\fC [static]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Calculate(), ttmath::UInt< value_size >::Mul2Big3(), ttmath::UInt< value_size >::Mul3Big2(), and ttmath::UInt< value_size >::MulInt()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::operator!= (const \fBUInt\fP< value_size > &l) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::operator==()\&.
+.PP
+Referenced by ttmath::Int< value_size >::operator!=()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator% (const \fBUInt\fP< value_size > &p2) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator%= (const \fBUInt\fP< value_size > &p2)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div(), and ttmath::UInt< value_size >::operator=()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator* (const \fBUInt\fP< value_size > &p2) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Mul()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator*= (const \fBUInt\fP< value_size > &p2)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Mul()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator+ (const \fBUInt\fP< value_size > &p2) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Add()\&.
 .SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator++ ()\fC [inline]\fP"
 Prefix operator e\&.g ++variable 
 .PP
@@ -757,23 +1077,67 @@ References ttmath::UInt< value_size >::AddOne()\&.
 Postfix operator e\&.g variable++ 
 .PP
 References ttmath::UInt< value_size >::AddOne()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator+= (const \fBUInt\fP< value_size > &p2)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Add()\&.
 .SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator- (const \fBUInt\fP< value_size > &p2) const\fC [inline]\fP"
 standard mathematical operators 
+.PP
+References ttmath::UInt< value_size >::Sub()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator-- ()\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::SubOne()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator-- (int)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::SubOne()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator-= (const \fBUInt\fP< value_size > &p2)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Sub()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator/ (const \fBUInt\fP< value_size > &p2) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator/= (const \fBUInt\fP< value_size > &p2)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Div()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::operator< (const \fBUInt\fP< value_size > &l) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::CmpSmaller()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator<< (intmove)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Rcl()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator<<= (intmove)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Rcl()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::operator<= (const \fBUInt\fP< value_size > &l) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::CmpSmallerEqual()\&.
 .SS "template<uint value_size> template<uint argument_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator= (const \fBUInt\fP< argument_size > &p)\fC [inline]\fP"
 this operator converts an UInt<another_size> type to this class
 .PP
 it doesn't return a carry 
 .PP
 References ttmath::UInt< value_size >::FromUInt()\&.
+.PP
+Referenced by ttmath::UInt< value_size >::operator%=()\&.
 .SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator= (const \fBUInt\fP< value_size > &p)\fC [inline]\fP"
 the assignment operator 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator= (\fBuint\fPi)\fC [inline]\fP"
 this method converts the uint type to this class 
 .PP
 References ttmath::UInt< value_size >::FromUInt()\&.
-.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator= (sinti)\fC [inline]\fP"
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator= (\fBsint\fPi)\fC [inline]\fP"
 this method converts the sint type to this class
 .PP
 we provide operator(sint) and the constructor(sint) in order to allow the programmer do that: UInt<\&.\&.> type = 10;
@@ -797,12 +1161,44 @@ References ttmath::UInt< value_size >::FromString()\&.
 this operator converts a string into its value (with base = 10) 
 .PP
 References ttmath::UInt< value_size >::FromString()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::operator== (const \fBUInt\fP< value_size > &l) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::CmpEqual()\&.
+.PP
+Referenced by ttmath::UInt< value_size >::operator!=(), and ttmath::Int< value_size >::operator==()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::operator> (const \fBUInt\fP< value_size > &l) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::CmpBigger()\&.
+.SS "template<uint value_size> bool \fBttmath::UInt\fP< value_size >::operator>= (const \fBUInt\fP< value_size > &l) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::CmpBiggerEqual()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size> \fBttmath::UInt\fP< value_size >::operator>> (intmove)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Rcr()\&.
+.SS "template<uint value_size> \fBUInt\fP<value_size>& \fBttmath::UInt\fP< value_size >::operator>>= (intmove)\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::Rcr()\&.
+.SS "template<uint value_size> template<class ostream_type , class string_type > static ostream_type& \fBttmath::UInt\fP< value_size >::OutputToStream (ostream_type &s, const \fBUInt\fP< value_size > &l)\fC [inline]\fP, \fC [static]\fP, \fC [private]\fP"
+input/output operators for standard streams
+.PP
+(they are very simple, in the future they should be changed)
+.PP
+an auxiliary method for outputing to standard streams 
+.PP
+References ttmath::UInt< value_size >::ToString()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Pow (\fBUInt\fP< value_size >pow)\fC [inline]\fP"
 power this = this ^ pow binary algorithm (r-to-l)
 .PP
 return values: 0 - ok 1 - carry 2 - incorrect argument (0^0) 
 .PP
-References ttmath::UInt< value_size >::IsZero(), ttmath::UInt< value_size >::Mul(), ttmath::UInt< value_size >::SetOne(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::IsZero(), ttmath::UInt< value_size >::Mul(), ttmath::UInt< value_size >::Rcr2_one(), ttmath::UInt< value_size >::SetOne(), ttmath::UInt< value_size >::table, and TTMATH_LOGC\&.
+.PP
+Referenced by ttmath::Int< value_size >::Pow2()\&.
 .SS "template<uint value_size> template<class char_type , class ostream_type > void \fBttmath::UInt\fP< value_size >::PrintLog (const char_type *msg, ostream_type &output) const\fC [inline]\fP"
 this method is used when macro TTMATH_DEBUG_LOG is defined 
 .PP
@@ -834,9 +1230,25 @@ bits is from a range of <0, man * TTMATH_BITS_PER_UINT> or it can be even bigger
 .PP
 the value c will be set into the lowest bits and the method returns state of the last moved bit 
 .PP
-References TTMATH_BITS_PER_UINT\&.
+References ttmath::UInt< value_size >::Rcl2(), ttmath::UInt< value_size >::Rcl2_one(), ttmath::UInt< value_size >::RclMoveAllWords(), TTMATH_BITS_PER_UINT, TTMATH_LOG, and TTMATH_LOGC\&.
 .PP
-Referenced by ttmath::UInt< value_size >::CompensationToLeft(), and ttmath::UInt< value_size >::Mul1()\&.
+Referenced by ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div2_Calculate(), ttmath::UInt< value_size >::Div3_Normalize(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::operator<<(), and ttmath::UInt< value_size >::operator<<=()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Rcl2 (\fBuint\fPbits, \fBuint\fPc)\fC [private]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Rcl()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Rcl2_one (\fBuint\fPc)\fC [private]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Rcl()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::RclMoveAllWords (\fBuint\fP &rest_bits, \fBuint\fP &last_c, \fBuint\fPbits, \fBuint\fPc)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for moving bits into the left hand side
+.PP
+this method moves only words 
+.PP
+References ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, TTMATH_LOG, and TTMATH_UINT_MAX_VALUE\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Rcl()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Rcr (\fBuint\fPbits, \fBuint\fPc = \fC0\fP)\fC [inline]\fP"
 moving all bits into the right side 'bits' times c -> this -> return value
 .PP
@@ -844,17 +1256,37 @@ bits is from a range of <0, man * TTMATH_BITS_PER_UINT> or it can be even bigger
 .PP
 the value c will be set into the highest bits and the method returns state of the last moved bit 
 .PP
-References TTMATH_BITS_PER_UINT\&.
+References ttmath::UInt< value_size >::Rcr2(), ttmath::UInt< value_size >::Rcr2_one(), ttmath::UInt< value_size >::RcrMoveAllWords(), TTMATH_BITS_PER_UINT, TTMATH_LOG, and TTMATH_LOGC\&.
 .PP
-Referenced by ttmath::UInt< value_size >::Sqrt()\&.
+Referenced by ttmath::UInt< value_size >::Div2_Calculate(), ttmath::UInt< value_size >::Div3_Unnormalize(), ttmath::UInt< value_size >::operator>>(), ttmath::UInt< value_size >::operator>>=(), and ttmath::UInt< value_size >::Sqrt()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Rcr2 (\fBuint\fPbits, \fBuint\fPc)\fC [private]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Rcr()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Rcr2_one (\fBuint\fPc)\fC [private]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Pow(), and ttmath::UInt< value_size >::Rcr()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::RcrMoveAllWords (\fBuint\fP &rest_bits, \fBuint\fP &last_c, \fBuint\fPbits, \fBuint\fPc)\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for moving bits into the right hand side
+.PP
+this method moves only words 
+.PP
+References ttmath::UInt< value_size >::table, TTMATH_BITS_PER_UINT, TTMATH_LOG, TTMATH_UINT_HIGHEST_BIT, and TTMATH_UINT_MAX_VALUE\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Rcr()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::SetBit (\fBuint\fPbit_index)\fC [inline]\fP"
 setting the 'bit_index' bit and returning the last state of the bit
 .PP
 bit_index bigger or equal zero 
 .PP
-References ttmath::UInt< value_size >::table, and TTMATH_BITS_PER_UINT\&.
+References ttmath::UInt< value_size >::SetBitInWord(), ttmath::UInt< value_size >::table, TTMATH_ASSERT, TTMATH_BITS_PER_UINT, and TTMATH_LOG\&.
 .PP
 Referenced by ttmath::UInt< value_size >::Div2()\&.
+.SS "template<uint value_size> static \fBuint\fP \fBttmath::UInt\fP< value_size >::SetBitInWord (\fBuint\fP &value, \fBuint\fPbit)\fC [static]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::GetBit(), and ttmath::UInt< value_size >::SetBit()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::SetFromTable (const \fBuint\fP *temp_table, \fBuint\fPtemp_table_len)\fC [inline]\fP"
 this method copies the value stored in an another table (warning: first values in temp_table are the highest words -- it's different from our table)
 .PP
@@ -864,45 +1296,85 @@ if temp_table_len is bigger than value_size we'll try to round the lowest word f
 .PP
 and if temp_table_len is smaller than value_size we'll clear the rest words in the table 
 .PP
-References ttmath::UInt< value_size >::table, TTMATH_UINT_HIGHEST_BIT, and TTMATH_UINT_MAX_VALUE\&.
+References ttmath::UInt< value_size >::table, TTMATH_LOG, TTMATH_UINT_HIGHEST_BIT, and TTMATH_UINT_MAX_VALUE\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::SetMax ()\fC [inline]\fP"
 this method sets the max value which this class can hold (all bits will be one) 
 .PP
-References ttmath::UInt< value_size >::table, and TTMATH_UINT_MAX_VALUE\&.
+References ttmath::UInt< value_size >::table, TTMATH_LOG, and TTMATH_UINT_MAX_VALUE\&.
 .PP
 Referenced by ttmath::Int< value_size >::SetMax(), and ttmath::Int< value_size >::SetSignOne()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::SetMin ()\fC [inline]\fP"
 this method sets the min value which this class can hold (for an unsigned integer value the zero is the smallest value) 
 .PP
-References ttmath::UInt< value_size >::SetZero()\&.
+References ttmath::UInt< value_size >::SetZero(), and TTMATH_LOG\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::SetOne ()\fC [inline]\fP"
 this method sets one 
 .PP
-References ttmath::UInt< value_size >::SetZero(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .PP
-Referenced by ttmath::Int< value_size >::Pow(), and ttmath::UInt< value_size >::Pow()\&.
+Referenced by ttmath::UInt< value_size >::Div2_DivisorGreaterOrEqual(), ttmath::UInt< value_size >::Div_StandardTest(), ttmath::Int< value_size >::Pow(), and ttmath::UInt< value_size >::Pow()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::SetZero ()\fC [inline]\fP"
 this method sets zero 
 .PP
-References ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
 .PP
-Referenced by ttmath::Int< value_size >::ChangeSign(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::Div2(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::MulFastestBig(), ttmath::UInt< value_size >::MulInt(), ttmath::Int< value_size >::SetMin(), ttmath::UInt< value_size >::SetMin(), ttmath::UInt< value_size >::SetOne(), and ttmath::UInt< value_size >::Sqrt()\&.
+Referenced by ttmath::Int< value_size >::ChangeSign(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div2(), ttmath::UInt< value_size >::Div2_DivisorGreaterOrEqual(), ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck(), ttmath::UInt< value_size >::Div_StandardTest(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::FromStringBase(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::Mul2Big3(), ttmath::UInt< value_size >::MulFastestBig(), ttmath::UInt< value_size >::MulInt(), ttmath::Int< value_size >::SetMin(), ttmath::UInt< value_size >::SetMin(), ttmath::UInt< value_size >::SetOne(), and ttmath::UInt< value_size >::Sqrt()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Size () const\fC [inline]\fP"
 this method returns the size of the table 
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::Sqrt ()\fC [inline]\fP"
 square root e\&.g\&. Sqrt(9) = 3 ('digit-by-digit' algorithm) 
 .PP
-References ttmath::UInt< value_size >::IsZero(), ttmath::UInt< value_size >::Rcr(), ttmath::UInt< value_size >::SetZero(), and ttmath::UInt< value_size >::table\&.
+References ttmath::UInt< value_size >::Add(), ttmath::UInt< value_size >::IsZero(), ttmath::UInt< value_size >::Rcr(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::Sub(), ttmath::UInt< value_size >::table, and TTMATH_LOG\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::Sub (const \fBUInt\fP< value_size > &ss2, \fBuint\fPc = \fC0\fP)"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div2_Calculate(), ttmath::UInt< value_size >::Div3_MultiplySubtract(), ttmath::UInt< value_size >::operator-(), ttmath::UInt< value_size >::operator-=(), ttmath::UInt< value_size >::Sqrt(), and ttmath::Int< value_size >::Sub()\&.
+.SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::SubInt (\fBuint\fPvalue, \fBuint\fPindex = \fC0\fP)"
+
+.PP
+Referenced by ttmath::Int< value_size >::SubInt(), and ttmath::UInt< value_size >::SubOne()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::SubOne ()\fC [inline]\fP"
 this method subtracts one from the existing value 
 .PP
-Referenced by ttmath::Int< value_size >::SubOne()\&.
+References ttmath::UInt< value_size >::SubInt()\&.
+.PP
+Referenced by ttmath::UInt< value_size >::Div3_Calculate(), ttmath::UInt< value_size >::operator--(), and ttmath::Int< value_size >::SubOne()\&.
+.SS "template<uint value_size> static \fBuint\fP \fBttmath::UInt\fP< value_size >::SubTwoWords (\fBuint\fPa, \fBuint\fPb, \fBuint\fPcarry, \fBuint\fP *result)\fC [static]\fP"
+
+.SS "template<uint value_size> static \fBuint\fP \fBttmath::UInt\fP< value_size >::SubVector (const \fBuint\fP *ss1, const \fBuint\fP *ss2, \fBuint\fPss1_size, \fBuint\fPss2_size, \fBuint\fP *result)\fC [static]\fP"
+
+.PP
+Referenced by ttmath::UInt< value_size >::Mul3Big3()\&.
 .SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::ToString (std::string &result, \fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
 this method converts the value to a string with a base equal 'b' 
+.PP
+References ttmath::UInt< value_size >::ToStringBase()\&.
+.PP
+Referenced by ttmath::UInt< value_size >::OutputToStream(), and ttmath::Int< value_size >::ToStringBase()\&.
+.SS "template<uint value_size> void \fBttmath::UInt\fP< value_size >::ToString (std::wstring &result, \fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::ToStringBase()\&.
+.SS "template<uint value_size> std::string \fBttmath::UInt\fP< value_size >::ToString (\fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::ToStringBase()\&.
+.SS "template<uint value_size> template<class string_type > void \fBttmath::UInt\fP< value_size >::ToStringBase (string_type &result, \fBuint\fPb = \fC10\fP) const\fC [inline]\fP, \fC [private]\fP"
+an auxiliary method for converting to a string 
+.PP
+References ttmath::Misc::DigitToChar(), ttmath::UInt< value_size >::DivInt(), and ttmath::UInt< value_size >::IsZero()\&.
+.PP
+Referenced by ttmath::UInt< value_size >::ToString(), and ttmath::UInt< value_size >::ToWString()\&.
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::ToUInt () const\fC [inline]\fP"
 this method returns the lowest value from table
 .PP
 we must be sure when we using this method whether the value will hold in an uint type or not (the rest value from the table must be zero) 
+.PP
+References ttmath::UInt< value_size >::table\&.
+.SS "template<uint value_size> std::wstring \fBttmath::UInt\fP< value_size >::ToWString (\fBuint\fPb = \fC10\fP) const\fC [inline]\fP"
+
+.PP
+References ttmath::UInt< value_size >::ToStringBase()\&.
 .SH "Friends And Related Function Documentation"
 .PP 
 .SS "template<uint value_size> std::ostream& operator<< (std::ostream &s, const \fBUInt\fP< value_size > &l)\fC [friend]\fP"
@@ -918,8 +1390,8 @@ input from standard streams
 .SS "template<uint value_size> \fBuint\fP \fBttmath::UInt\fP< value_size >::table[value_size]"
 buffer for the integer value table[0] - the lowest word of the value 
 .PP
-Referenced by ttmath::UInt< value_size >::BitAnd(), ttmath::UInt< value_size >::BitNot(), ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::BitOr(), ttmath::UInt< value_size >::BitXor(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::CmpBigger(), ttmath::UInt< value_size >::CmpBiggerEqual(), ttmath::UInt< value_size >::CmpEqual(), ttmath::UInt< value_size >::CmpSmaller(), ttmath::UInt< value_size >::CmpSmallerEqual(), ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::FindLeadingBit(), ttmath::UInt< value_size >::FromUInt(), ttmath::UInt< value_size >::GetBit(), ttmath::UInt< value_size >::Mul1Big(), ttmath::UInt< value_size >::Mul2(), ttmath::UInt< value_size >::Mul2Big(), ttmath::UInt< value_size >::Mul3(), ttmath::UInt< value_size >::Mul3Big(), ttmath::UInt< value_size >::MulFastest(), ttmath::UInt< value_size >::MulFastestBig(), ttmath::UInt< value_size >::MulInt(), ttmath::UInt< value_size >::operator=(), ttmath::UInt< value_size >::Pow(), ttmath::UInt< value_size >::PrintLog(), ttmath::UInt< value_size >::PrintTable(), ttmath::UInt< value_size >::SetBit(), ttmath::UInt< value_size >::SetFromTable(), ttmath::UInt< value_size >::SetMax(), ttmath::UInt< value_size >::SetOne(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::Sqrt(), and ttmath::UInt< value_size >::UInt()\&.
+Referenced by ttmath::UInt< value_size >::BitAnd(), ttmath::UInt< value_size >::BitNot(), ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::BitOr(), ttmath::UInt< value_size >::BitXor(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::CmpBigger(), ttmath::UInt< value_size >::CmpBiggerEqual(), ttmath::UInt< value_size >::CmpEqual(), ttmath::UInt< value_size >::CmpSmaller(), ttmath::UInt< value_size >::CmpSmallerEqual(), ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::Div2_DivisorGreaterOrEqual(), ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck(), ttmath::UInt< value_size >::Div3(), ttmath::UInt< value_size >::Div3_Calculate(), ttmath::UInt< value_size >::Div3_CopyNewU(), ttmath::UInt< value_size >::Div3_Division(), ttmath::UInt< value_size >::Div3_MakeBiggerV(), ttmath::UInt< value_size >::Div3_MakeNewU(), ttmath::UInt< value_size >::Div3_Normalize(), ttmath::UInt< value_size >::Div3_Unnormalize(), ttmath::UInt< value_size >::Div_CalculatingSize(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::FindLeadingBit(), ttmath::UInt< value_size >::FromStringBase(), ttmath::UInt< value_size >::FromUInt(), ttmath::Int< value_size >::FromUIntOrInt(), ttmath::UInt< value_size >::GetBit(), ttmath::UInt< value_size >::hash(), ttmath::UInt< value_size >::IsTheHighestBitSet(), ttmath::UInt< value_size >::IsTheLowestBitSet(), ttmath::UInt< value_size >::IsZero(), ttmath::UInt< value_size >::Mul1Big(), ttmath::UInt< value_size >::Mul2(), ttmath::UInt< value_size >::Mul2Big(), ttmath::UInt< value_size >::Mul3(), ttmath::UInt< value_size >::Mul3Big(), ttmath::UInt< value_size >::Mul3Big2(), ttmath::UInt< value_size >::Mul3Big3(), ttmath::UInt< value_size >::MulFastest(), ttmath::UInt< value_size >::MulFastestBig(), ttmath::UInt< value_size >::MulInt(), ttmath::Int< value_size >::operator<(), ttmath::Int< value_size >::operator<=(), ttmath::UInt< value_size >::operator=(), ttmath::Int< value_size >::operator>(), ttmath::Int< value_size >::operator>=(), ttmath::UInt< value_size >::Pow(), ttmath::Int< value_size >::Pow2(), ttmath::UInt< value_size >::PrintLog(), ttmath::UInt< value_size >::PrintTable(), ttmath::UInt< value_size >::RclMoveAllWords(), ttmath::UInt< value_size >::RcrMoveAllWords(), ttmath::UInt< value_size >::SetBit(), ttmath::UInt< value_size >::SetFromTable(), ttmath::UInt< value_size >::SetMax(), ttmath::UInt< value_size >::SetOne(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::Sqrt(), ttmath::UInt< value_size >::ToUInt(), and ttmath::UInt< value_size >::UInt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

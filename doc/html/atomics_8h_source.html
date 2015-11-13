@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/atomics.h Source File</title>
+<title>Claims: utility/atomics.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('atomics_8h_source.html','');});
 <div class="title">atomics.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="atomics_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">    Copyright 2011, Spyros Blanas.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">    This program is free software: you can redistribute it and/or modify</span></div>
@@ -126,7 +126,7 @@ $(document).ready(function(){initNavTree('atomics_8h_source.html','');});
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifndef __MYATOMICS__</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define __MYATOMICS__</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span>* atomic_compare_and_swap(<span class="keywordtype">void</span>** ptr, <span class="keywordtype">void</span>* oldval, <span class="keywordtype">void</span>* newval)</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="atomics_8h.html#a04638547d5e47f83ce8fe74c45fde483">   27</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span>* <a class="code" href="atomics_8h.html#a04638547d5e47f83ce8fe74c45fde483">atomic_compare_and_swap</a>(<span class="keywordtype">void</span>** ptr, <span class="keywordtype">void</span>* oldval, <span class="keywordtype">void</span>* newval)</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">//#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#if defined(Roanldo)</span></div>
@@ -162,7 +162,7 @@ $(document).ready(function(){initNavTree('atomics_8h_source.html','');});
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span>    <span class="keywordflow">return</span> newval;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> atomic_compare_and_swap(<span class="keywordtype">int</span>* ptr,<span class="keywordtype">int</span> oldval,<span class="keywordtype">int</span> newval)</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="atomics_8h.html#a19c2481bde6cbf232ed7032ecbeb5267">   63</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="atomics_8h.html#a04638547d5e47f83ce8fe74c45fde483">atomic_compare_and_swap</a>(<span class="keywordtype">int</span>* ptr,<span class="keywordtype">int</span> oldval,<span class="keywordtype">int</span> newval)</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;{</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">//#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#if defined(Roanldo)</span></div>
@@ -176,7 +176,7 @@ $(document).ready(function(){initNavTree('atomics_8h_source.html','');});
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor"></span>    <span class="keywordflow">return</span> newval;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">char</span>* atomic_compare_and_swap(<span class="keywordtype">char</span>** ptr,<span class="keywordtype">char</span>* oldval,<span class="keywordtype">char</span>* newval)</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="atomics_8h.html#a264a5bd87e1b9acd5cebcfbed0966ab5">   77</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">char</span>* <a class="code" href="atomics_8h.html#a04638547d5e47f83ce8fe74c45fde483">atomic_compare_and_swap</a>(<span class="keywordtype">char</span>** ptr,<span class="keywordtype">char</span>* oldval,<span class="keywordtype">char</span>* newval)</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;{</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">//#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)</span></div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#if defined(Roanldo)</span></div>
@@ -191,12 +191,13 @@ $(document).ready(function(){initNavTree('atomics_8h_source.html','');});
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor"></span>    <span class="keywordflow">return</span> newval;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="atomics_8h_html_a04638547d5e47f83ce8fe74c45fde483"><div class="ttname"><a href="atomics_8h.html#a04638547d5e47f83ce8fe74c45fde483">atomic_compare_and_swap</a></div><div class="ttdeci">void * atomic_compare_and_swap(void **ptr, void *oldval, void *newval)</div><div class="ttdef"><b>Definition:</b> atomics.h:27</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>atomics.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="atomics_8h.html">atomics.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

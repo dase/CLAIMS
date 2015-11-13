@@ -1,4 +1,4 @@
-.TH "QColcumns" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "QColcumns" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,23 @@ QColcumns \-
 .br
 .PP
 .PP
+\fC#include <qnode\&.h>\fP
+.PP
 Inherits \fBQNode\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBQColcumns\fP (const char *tbl, const char *coln, data_type a_type, const char *t_alias)"
+.RI "\fBQColcumns\fP (const char *tbl, const char *coln, \fBdata_type\fP a_type, const char *t_alias)"
 .br
 .ti -1c
 .RI "\fBQColcumns\fP (\fBQColcumns\fP *node)"
+.br
+.ti -1c
+.RI "\fBQColcumns\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~QColcumns\fP ()"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -34,6 +42,13 @@ Inherits \fBQNode\fP\&.
 .RI "int \fBtab_index\fP"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -41,7 +56,47 @@ Inherits \fBQNode\fP\&.
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QColcumns::QColcumns (const char *tbl, const char *coln, \fBdata_type\fPa_type, const char *t_alias)"
+
+.PP
+References QNode::actual_type, QNode::alias, col, NULL, t_qcolcumns, tab_index, table, QNode::type, and QNode::value\&.
+.SS "QColcumns::QColcumns (\fBQColcumns\fP *node)"
+
+.PP
+References QNode::actual_type, QNode::alias, col, id, QNode::isnull, QNode::length, QNode::return_type, tab_index, table, and QNode::type\&.
+.SS "QColcumns::QColcumns ()\fC [inline]\fP"
+
+.SS "virtual QColcumns::~QColcumns ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class Archive > void QColcumns::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "string QColcumns::col"
+
+.PP
+Referenced by InitExprAtLogicalPlan(), and QColcumns()\&.
+.SS "int QColcumns::id"
+
+.PP
+Referenced by codegen_column(), createEqualJoinExpression(), getcol(), InitExprAtLogicalPlan(), and QColcumns()\&.
+.SS "int QColcumns::tab_index"
+
+.PP
+Referenced by codegen(), createEqualJoinExpression(), and QColcumns()\&.
+.SS "string QColcumns::table"
+
+.PP
+Referenced by QColcumns()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

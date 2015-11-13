@@ -1,4 +1,4 @@
-.TH "HdfsConnector" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "HdfsConnector" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ HdfsConnector \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Hdfsconnector\&.h>\fP
 .PP
 Inherits \fBConnector\fP\&.
 .SS "Public Member Functions"
@@ -15,7 +17,10 @@ Inherits \fBConnector\fP\&.
 .RI "\fBHdfsConnector\fP (vector< vector< string > > hdfs_writepath)"
 .br
 .ti -1c
-.RI "bool \fBopenFiles\fP (open_flag open_flag_)"
+.RI "virtual \fB~HdfsConnector\fP ()"
+.br
+.ti -1c
+.RI "bool \fBopenFiles\fP (\fBopen_flag\fP open_flag_)"
 .br
 .ti -1c
 .RI "bool \fBcloseFiles\fP ()"
@@ -24,9 +29,69 @@ Inherits \fBConnector\fP\&.
 .RI "int \fBflush\fP (unsigned projection_offset, unsigned partition_offset, void *source, unsigned length)"
 .br
 .in -1c
-.SS "Additional Inherited Members"
+.SS "Private Member Functions"
 
+.in +1c
+.ti -1c
+.RI "bool \fBassgin_open_file\fP (\fBopen_flag\fP open_flag_)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "hdfsFS \fBfs\fP"
+.br
+.ti -1c
+.RI "vector< vector< hdfsFile > > \fBfile_handles_\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HdfsConnector::HdfsConnector (vector< vector< string > >hdfs_writepath)"
+
+.PP
+References fs, Config::hdfs_master_ip, and Config::hdfs_master_port\&.
+.SS "HdfsConnector::~HdfsConnector ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool HdfsConnector::assgin_open_file (\fBopen_flag\fPopen_flag_)\fC [private]\fP"
+
+.PP
+References APPENDD, CREATEE, file_handles_, fs, and Connector::writepath\&.
+.PP
+Referenced by openFiles()\&.
+.SS "bool HdfsConnector::closeFiles ()\fC [virtual]\fP"
+
+.PP
+Implements \fBConnector\fP\&.
+.PP
+References file_handles_, and fs\&.
+.SS "int HdfsConnector::flush (unsignedprojection_offset, unsignedpartition_offset, void *source, unsignedlength)\fC [virtual]\fP"
+
+.PP
+Implements \fBConnector\fP\&.
+.PP
+References file_handles_, and fs\&.
+.SS "bool HdfsConnector::openFiles (\fBopen_flag\fPopen_flag_)\fC [virtual]\fP"
+
+.PP
+Implements \fBConnector\fP\&.
+.PP
+References assgin_open_file(), file_handles_, and fs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "vector<vector<hdfsFile> > HdfsConnector::file_handles_\fC [private]\fP"
+
+.PP
+Referenced by assgin_open_file(), closeFiles(), flush(), and openFiles()\&.
+.SS "hdfsFS HdfsConnector::fs\fC [private]\fP"
+
+.PP
+Referenced by assgin_open_file(), closeFiles(), flush(), HdfsConnector(), and openFiles()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

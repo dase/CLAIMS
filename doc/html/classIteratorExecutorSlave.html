@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: IteratorExecutorSlave Class Reference</title>
+<title>Claims: IteratorExecutorSlave Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -109,12 +109,23 @@ $(document).ready(function(){initNavTree('classIteratorExecutorSlave.html','');}
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classIteratorExecutorSlave-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">IteratorExecutorSlave Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="IteratorExecutorSlave_8h_source.html">IteratorExecutorSlave.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for IteratorExecutorSlave:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave__coll__graph.png" border="0" usemap="#IteratorExecutorSlave_coll__map" alt="Collaboration graph"/></div>
+<map name="IteratorExecutorSlave_coll__map" id="IteratorExecutorSlave_coll__map">
+<area shape="rect" id="node3" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html" title="IteratorExecutorSlave\l::ExecuteIteratorActor" alt="" coords="13,187,163,229"/><area shape="rect" id="node2" href="classLogging.html" title="Logging" alt="" coords="5,5,72,32"/><area shape="rect" id="node4" href="classSpineLock.html" title="SpineLock" alt="" coords="96,5,179,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -123,31 +134,410 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3cc0b073b3bdc8b9104881ddc96d5edd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3cc0b073b3bdc8b9104881ddc96d5edd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>createNewThreadAndRun</b> (<a class="el" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> *)</td></tr>
+<tr class="memitem:a9a52a393b4cea4a8463481c1c5f7788f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f">IteratorExecutorSlave</a> ()</td></tr>
+<tr class="separator:a9a52a393b4cea4a8463481c1c5f7788f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75e7b9cb9f811b81c749c64c4aa0c9fc"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a75e7b9cb9f811b81c749c64c4aa0c9fc">~IteratorExecutorSlave</a> ()</td></tr>
+<tr class="separator:a75e7b9cb9f811b81c749c64c4aa0c9fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cc0b073b3bdc8b9104881ddc96d5edd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd">createNewThreadAndRun</a> (<a class="el" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> *)</td></tr>
 <tr class="separator:a3cc0b073b3bdc8b9104881ddc96d5edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a6740aedc32a4e40587c80d662eea3be9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6740aedc32a4e40587c80d662eea3be9"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>executePhysicalQueryPlan</b> (<a class="el" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> plan)</td></tr>
+<tr class="memitem:a6740aedc32a4e40587c80d662eea3be9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a6740aedc32a4e40587c80d662eea3be9">executePhysicalQueryPlan</a> (<a class="el" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> plan)</td></tr>
 <tr class="separator:a6740aedc32a4e40587c80d662eea3be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a61b7d0f349636212f291d072ee995aef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61b7d0f349636212f291d072ee995aef"></a>
-<a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>logging_</b></td></tr>
+<tr class="memitem:a61b7d0f349636212f291d072ee995aef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">logging_</a></td></tr>
 <tr class="separator:a61b7d0f349636212f291d072ee995aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a8360db6de40d132043b78488f43687ba"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba">run_iterator</a> (void *)</td></tr>
+<tr class="separator:a8360db6de40d132043b78488f43687ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a3135b99f875ccbaa4793475d4ba7d6b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a3135b99f875ccbaa4793475d4ba7d6b1">execute_iterator_actor</a></td></tr>
+<tr class="separator:a3135b99f875ccbaa4793475d4ba7d6b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94672707e37c46c806fe85fecb0216ea"><td class="memItemLeft" align="right" valign="top">Theron::Framework *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a94672707e37c46c806fe85fecb0216ea">framework</a></td></tr>
+<tr class="separator:a94672707e37c46c806fe85fecb0216ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08ed8168d8758d377e7faa7d73eaea96"><td class="memItemLeft" align="right" valign="top">Theron::EndPoint *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a08ed8168d8758d377e7faa7d73eaea96">endpoint</a></td></tr>
+<tr class="separator:a08ed8168d8758d377e7faa7d73eaea96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada71067a0f23bdeb5badaff23305323e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#ada71067a0f23bdeb5badaff23305323e">slave_id</a></td></tr>
+<tr class="separator:ada71067a0f23bdeb5badaff23305323e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16ec1e85e2c1f239c2b28cc063b3b205"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpineLock.html">SpineLock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a16ec1e85e2c1f239c2b28cc063b3b205">lock_</a></td></tr>
+<tr class="separator:a16ec1e85e2c1f239c2b28cc063b3b205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa147c4e706bdca2e4af9c0c195ecbfe2"><td class="memItemLeft" align="right" valign="top">std::set&lt; pthread_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#aa147c4e706bdca2e4af9c0c195ecbfe2">busy_thread_list_</a></td></tr>
+<tr class="separator:aa147c4e706bdca2e4af9c0c195ecbfe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a62fb0365eafb28374681aa0d5d1171ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62fb0365eafb28374681aa0d5d1171ce"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>ExecuteIteratorActor</b></td></tr>
+<tr class="memitem:a62fb0365eafb28374681aa0d5d1171ce"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIteratorExecutorSlave.html#a62fb0365eafb28374681aa0d5d1171ce">ExecuteIteratorActor</a></td></tr>
 <tr class="separator:a62fb0365eafb28374681aa0d5d1171ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a9a52a393b4cea4a8463481c1c5f7788f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IteratorExecutorSlave::IteratorExecutorSlave </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classIteratorExecutorSlave.html#a08ed8168d8758d377e7faa7d73eaea96">endpoint</a>, <a class="el" href="classIteratorExecutorSlave.html#a3135b99f875ccbaa4793475d4ba7d6b1">execute_iterator_actor</a>, <a class="el" href="classIteratorExecutorSlave.html#a62fb0365eafb28374681aa0d5d1171ce">ExecuteIteratorActor</a>, <a class="el" href="classIteratorExecutorSlave.html#a94672707e37c46c806fe85fecb0216ea">framework</a>, <a class="el" href="classEnvironment.html#a231ead4cffb4ff8fab471932be0f9f88">Environment::getEndPoint()</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, <a class="el" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057">Environment::getNodeID()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">logging_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a9a52a393b4cea4a8463481c1c5f7788f_cgraph.png" border="0" usemap="#classIteratorExecutorSlave_a9a52a393b4cea4a8463481c1c5f7788f_cgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a9a52a393b4cea4a8463481c1c5f7788f_cgraph" id="classIteratorExecutorSlave_a9a52a393b4cea4a8463481c1c5f7788f_cgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#a231ead4cffb4ff8fab471932be0f9f88" title="Environment::getEndPoint" alt="" coords="211,5,386,32"/><area shape="rect" id="node3" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="213,659,384,685"/><area shape="rect" id="node46" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057" title="Environment::getNodeID" alt="" coords="1213,1228,1379,1255"/><area shape="rect" id="node18" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1691,777,1783,804"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="435,859,611,885"/><area shape="rect" id="node5" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1247,209,1345,236"/><area shape="rect" id="node6" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="682,1255,854,1281"/><area shape="rect" id="node11" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="700,1103,836,1129"/><area shape="rect" id="node12" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="675,1153,861,1180"/><area shape="rect" id="node14" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="697,1204,839,1231"/><area shape="rect" id="node16" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="669,783,867,809"/><area shape="rect" id="node20" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="675,935,861,977"/><area shape="rect" id="node23" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="676,1458,860,1499"/><area shape="rect" id="node28" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="659,228,877,255"/><area shape="rect" id="node29" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="951,719,1124,761"/><area shape="rect" id="node31" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="661,491,875,533"/><area shape="rect" id="node39" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="665,162,871,203"/><area shape="rect" id="node41" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="671,1052,865,1079"/><area shape="rect" id="node47" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="660,833,876,860"/><area shape="rect" id="node49" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="675,1001,861,1028"/><area shape="rect" id="node50" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="688,279,848,305"/><area shape="rect" id="node7" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="948,1407,1127,1433"/><area shape="rect" id="node8" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="1207,1319,1385,1345"/><area shape="rect" id="node9" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="1206,1370,1386,1411"/><area shape="rect" id="node10" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="1222,1436,1370,1463"/><area shape="rect" id="node13" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="934,1237,1141,1264"/><area shape="rect" id="node15" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="977,1288,1097,1315"/><area shape="rect" id="node17" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="1204,778,1388,819"/><area shape="rect" id="node19" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="1448,829,1637,870"/><area shape="rect" id="node21" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1205,953,1387,980"/><area shape="rect" id="node22" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="1443,953,1643,980"/><area shape="rect" id="node24" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="956,1512,1119,1539"/><area shape="rect" id="node25" href="classClientListenerLogging.html#a52a19994634ec81023f81299ab4cec1e" title="ClientListenerLogging::log" alt="" coords="1457,1537,1629,1564"/><area shape="rect" id="node26" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8" title="ClientListener::receiveHandler" alt="" coords="1197,1537,1395,1564"/><area shape="rect" id="node27" href="classClientListener.html#ad13c4304fac33c02aeef2101f0cb5651" title="ClientListener::sendHandler" alt="" coords="1205,1588,1387,1615"/><area shape="rect" id="node30" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1217,676,1375,703"/><area shape="rect" id="node32" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="942,523,1133,565"/><area shape="rect" id="node33" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="957,589,1118,630"/><area shape="rect" id="node34" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="976,654,1099,695"/><area shape="rect" id="node35" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="971,275,1104,317"/><area shape="rect" id="node36" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="926,341,1149,368"/><area shape="rect" id="node37" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="951,393,1124,434"/><area shape="rect" id="node38" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="951,458,1124,499"/><area shape="rect" id="node40" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="948,107,1127,149"/><area shape="rect" id="node42" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="965,1121,1110,1162"/><area shape="rect" id="node43" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="947,1004,1128,1031"/><area shape="rect" id="node44" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="965,1055,1110,1097"/><area shape="rect" id="node45" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="957,1187,1117,1213"/><area shape="rect" id="node48" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="969,837,1105,878"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a75e7b9cb9f811b81c749c64c4aa0c9fc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IteratorExecutorSlave::~IteratorExecutorSlave </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classIteratorExecutorSlave.html#a3135b99f875ccbaa4793475d4ba7d6b1">execute_iterator_actor</a>, <a class="el" href="classIteratorExecutorSlave.html#a94672707e37c46c806fe85fecb0216ea">framework</a>, and <a class="el" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">logging_</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a3cc0b073b3bdc8b9104881ddc96d5edd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IteratorExecutorSlave::createNewThreadAndRun </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> *&#160;</td>
+          <td class="paramname"><em>it</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d">SpineLock::acquire()</a>, <a class="el" href="classIteratorExecutorSlave.html#aa147c4e706bdca2e4af9c0c195ecbfe2">busy_thread_list_</a>, <a class="el" href="classIteratorExecutorSlave.html#a16ec1e85e2c1f239c2b28cc063b3b205">lock_</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">logging_</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="classSpineLock.html#abef911b1f34767662e4adc11536f7148">SpineLock::release()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba">run_iterator()</a>.</p>
+
+<p>Referenced by <a class="el" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e">IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_cgraph.png" border="0" usemap="#classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_cgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_cgraph" id="classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_cgraph">
+<area shape="rect" id="node2" href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d" title="SpineLock::acquire" alt="" coords="459,5,592,32"/><area shape="rect" id="node4" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="479,123,571,149"/><area shape="rect" id="node5" href="classSpineLock.html#abef911b1f34767662e4adc11536f7148" title="SpineLock::release" alt="" coords="459,173,592,200"/><area shape="rect" id="node6" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba" title="IteratorExecutorSlave\l::run_iterator" alt="" coords="235,57,383,98"/><area shape="rect" id="node3" href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5" title="SpineLock::tas" alt="" coords="692,5,801,32"/><area shape="rect" id="node7" href="classIteratorExecutorSlave.html#a6740aedc32a4e40587c80d662eea3be9" title="IteratorExecutorSlave\l::executePhysicalQueryPlan" alt="" coords="432,57,619,98"/><area shape="rect" id="node8" href="classPhysicalQueryPlan.html#a481a0a92521e1ad817984c13333d1167" title="PhysicalQueryPlan::run" alt="" coords="667,64,826,91"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_icgraph.png" border="0" usemap="#classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_icgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_icgraph" id="classIteratorExecutorSlave_a3cc0b073b3bdc8b9104881ddc96d5edd_icgraph">
+<area shape="rect" id="node2" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="235,5,437,61"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#ab6b4227a743c59854619af3a7db5b584" title="serialize the next child plan and sent it to all lower senders. " alt="" coords="486,5,695,61"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="744,13,915,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6740aedc32a4e40587c80d662eea3be9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IteratorExecutorSlave::executePhysicalQueryPlan </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>&#160;</td>
+          <td class="paramname"><em>plan</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPhysicalQueryPlan.html#a481a0a92521e1ad817984c13333d1167">PhysicalQueryPlan::run()</a>.</p>
+
+<p>Referenced by <a class="el" href="tpc__h__test_8cpp.html#a9ff9f39c3d7781592fe62999a015ef8b">query_1()</a>, <a class="el" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba">run_iterator()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a6290d73f7365353ae5bf85fe5fdd764e">test_complete_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a22460ff4e3bf9a2419852ecba4b69f60">test_complete_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aef79a636a8ffc28a52e820d27781b124">test_no_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a12b92a2894140df14955d05c3323f920">test_no_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a20ceaeaa29f391e541972713e60bec9f">test_scan_Aggregation_large_Groups()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aec012a9c18b17adf552dd84e2d289edd">test_scan_Aggregation_small_Groups()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a3acdb1abdde67d27dfd32c8a7e32db91">test_scan_filter_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aa63931a6f57eac2fd5fe4d4e62282d22">test_scan_filter_high_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aebdfa81bae65b4bac7f60e587940d726">test_scan_filter_low_selectivity()</a>, and <a class="el" href="ExpanderFrameTest_8h.html#ac78568813f8c1156cd91b5c9c14deb43">test_scan_filter_Scalar_Aggregation()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_cgraph.png" border="0" usemap="#classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_cgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_cgraph" id="classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_cgraph">
+<area shape="rect" id="node2" href="classPhysicalQueryPlan.html#a481a0a92521e1ad817984c13333d1167" title="PhysicalQueryPlan::run" alt="" coords="241,12,399,39"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_icgraph.png" border="0" usemap="#classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_icgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_icgraph" id="classIteratorExecutorSlave_a6740aedc32a4e40587c80d662eea3be9_icgraph">
+<area shape="rect" id="node2" href="tpc__h__test_8cpp.html#a9ff9f39c3d7781592fe62999a015ef8b" title="query_1" alt="" coords="299,56,367,83"/><area shape="rect" id="node5" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba" title="IteratorExecutorSlave\l::run_iterator" alt="" coords="259,107,407,149"/><area shape="rect" id="node10" href="ExpanderFrameTest_8h.html#a6290d73f7365353ae5bf85fe5fdd764e" title="test_complete_repartition\l_filtered_join" alt="" coords="249,173,417,214"/><area shape="rect" id="node11" href="ExpanderFrameTest_8h.html#a22460ff4e3bf9a2419852ecba4b69f60" title="test_complete_repartition\l_scan_join" alt="" coords="249,238,417,279"/><area shape="rect" id="node12" href="ExpanderFrameTest_8h.html#aef79a636a8ffc28a52e820d27781b124" title="test_no_repartition\l_filtered_join" alt="" coords="269,303,398,345"/><area shape="rect" id="node13" href="ExpanderFrameTest_8h.html#a12b92a2894140df14955d05c3323f920" title="test_no_repartition\l_scan_join" alt="" coords="269,369,398,410"/><area shape="rect" id="node14" href="ExpanderFrameTest_8h.html#a20ceaeaa29f391e541972713e60bec9f" title="test_scan_Aggregation\l_large_Groups" alt="" coords="256,434,411,475"/><area shape="rect" id="node15" href="ExpanderFrameTest_8h.html#aec012a9c18b17adf552dd84e2d289edd" title="test_scan_Aggregation\l_small_Groups" alt="" coords="256,499,411,541"/><area shape="rect" id="node17" href="ExpanderFrameTest_8h.html#a3acdb1abdde67d27dfd32c8a7e32db91" title="test_scan_filter_Aggregation" alt="" coords="240,565,427,592"/><area shape="rect" id="node18" href="ExpanderFrameTest_8h.html#aa63931a6f57eac2fd5fe4d4e62282d22" title="test_scan_filter_high\l_selectivity" alt="" coords="262,617,405,658"/><area shape="rect" id="node19" href="ExpanderFrameTest_8h.html#aebdfa81bae65b4bac7f60e587940d726" title="test_scan_filter_low\l_selectivity" alt="" coords="264,682,403,723"/><area shape="rect" id="node20" href="ExpanderFrameTest_8h.html#ac78568813f8c1156cd91b5c9c14deb43" title="test_scan_filter_Scalar\l_Aggregation" alt="" coords="256,747,411,789"/><area shape="rect" id="node3" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="485,5,645,32"/><area shape="rect" id="node4" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="486,56,645,83"/><area shape="rect" id="node6" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd" title="IteratorExecutorSlave\l::createNewThreadAndRun" alt="" coords="475,107,655,149"/><area shape="rect" id="node7" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="705,100,906,156"/><area shape="rect" id="node8" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#ab6b4227a743c59854619af3a7db5b584" title="serialize the next child plan and sent it to all lower senders. " alt="" coords="955,100,1165,156"/><area shape="rect" id="node9" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="1213,107,1384,149"/><area shape="rect" id="node16" href="ExpanderFrameTest_8h.html#ad69d0c9ff900192046525817b3ee18c6" title="test_expanderFramework\l_single_node" alt="" coords="481,499,650,541"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8360db6de40d132043b78488f43687ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * IteratorExecutorSlave::run_iterator </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d">SpineLock::acquire()</a>, <a class="el" href="classIteratorExecutorSlave.html#aa147c4e706bdca2e4af9c0c195ecbfe2">busy_thread_list_</a>, <a class="el" href="classIteratorExecutorSlave.html#a6740aedc32a4e40587c80d662eea3be9">executePhysicalQueryPlan()</a>, <a class="el" href="classIteratorExecutorSlave.html#a16ec1e85e2c1f239c2b28cc063b3b205">lock_</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">logging_</a>, and <a class="el" href="classSpineLock.html#abef911b1f34767662e4adc11536f7148">SpineLock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd">createNewThreadAndRun()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_cgraph.png" border="0" usemap="#classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_cgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_cgraph" id="classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_cgraph">
+<area shape="rect" id="node2" href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d" title="SpineLock::acquire" alt="" coords="229,5,363,32"/><area shape="rect" id="node4" href="classIteratorExecutorSlave.html#a6740aedc32a4e40587c80d662eea3be9" title="IteratorExecutorSlave\l::executePhysicalQueryPlan" alt="" coords="203,57,389,98"/><area shape="rect" id="node6" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="250,123,342,149"/><area shape="rect" id="node7" href="classSpineLock.html#abef911b1f34767662e4adc11536f7148" title="SpineLock::release" alt="" coords="229,173,363,200"/><area shape="rect" id="node3" href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5" title="SpineLock::tas" alt="" coords="463,5,572,32"/><area shape="rect" id="node5" href="classPhysicalQueryPlan.html#a481a0a92521e1ad817984c13333d1167" title="PhysicalQueryPlan::run" alt="" coords="438,64,597,91"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_icgraph.png" border="0" usemap="#classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_icgraph" alt=""/></div>
+<map name="classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_icgraph" id="classIteratorExecutorSlave_a8360db6de40d132043b78488f43687ba_icgraph">
+<area shape="rect" id="node2" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd" title="IteratorExecutorSlave\l::createNewThreadAndRun" alt="" coords="203,13,383,54"/><area shape="rect" id="node3" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="433,5,634,61"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#ab6b4227a743c59854619af3a7db5b584" title="serialize the next child plan and sent it to all lower senders. " alt="" coords="683,5,893,61"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="941,13,1112,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="a62fb0365eafb28374681aa0d5d1171ce"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f">IteratorExecutorSlave()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aa147c4e706bdca2e4af9c0c195ecbfe2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::set&lt;pthread_t&gt; IteratorExecutorSlave::busy_thread_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd">createNewThreadAndRun()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba">run_iterator()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a08ed8168d8758d377e7faa7d73eaea96"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::EndPoint* IteratorExecutorSlave::endpoint</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f">IteratorExecutorSlave()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3135b99f875ccbaa4793475d4ba7d6b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a>* IteratorExecutorSlave::execute_iterator_actor</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f">IteratorExecutorSlave()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a75e7b9cb9f811b81c749c64c4aa0c9fc">~IteratorExecutorSlave()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a94672707e37c46c806fe85fecb0216ea"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Framework* IteratorExecutorSlave::framework</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f">IteratorExecutorSlave()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a75e7b9cb9f811b81c749c64c4aa0c9fc">~IteratorExecutorSlave()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a16ec1e85e2c1f239c2b28cc063b3b205"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSpineLock.html">SpineLock</a> IteratorExecutorSlave::lock_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd">createNewThreadAndRun()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba">run_iterator()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a61b7d0f349636212f291d072ee995aef"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogging.html">Logging</a>* IteratorExecutorSlave::logging_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classIteratorExecutorSlave.html#a3cc0b073b3bdc8b9104881ddc96d5edd">createNewThreadAndRun()</a>, <a class="el" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f">IteratorExecutorSlave()</a>, <a class="el" href="classIteratorExecutorSlave.html#a8360db6de40d132043b78488f43687ba">run_iterator()</a>, and <a class="el" href="classIteratorExecutorSlave.html#a75e7b9cb9f811b81c749c64c4aa0c9fc">~IteratorExecutorSlave()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ada71067a0f23bdeb5badaff23305323e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string IteratorExecutorSlave::slave_id</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Executor/<a class="el" href="IteratorExecutorSlave_8h_source.html">IteratorExecutorSlave.h</a></li>
-<li>Executor/IteratorExecutorSlave.cpp</li>
+<li>Executor/<a class="el" href="IteratorExecutorSlave_8cpp.html">IteratorExecutorSlave.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

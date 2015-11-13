@@ -22,7 +22,14 @@ var classPartitioner =
     [ "print", "classPartitioner.html#a33863fbf5d25d7488948aa868340e3f7", null ],
     [ "RegisterPartition", "classPartitioner.html#a35bea05b1b5068c0f9109be3ebaf955f", null ],
     [ "RegisterPartitionWithNumberOfBlocks", "classPartitioner.html#a312e71b3e09b6bf3ffd5083c8e68acd4", null ],
+    [ "serialize", "classPartitioner.html#a7c5cdaf2708078ceba3ddfb2adafbfa7", null ],
     [ "unbindPartitionToNode", "classPartitioner.html#a251c47330fa49b49f1068a017a27b6f1", null ],
     [ "UpdatePartitionWithNumberOfChunksToBlockManager", "classPartitioner.html#a2232c5ea585c56c8842e411d50369519", null ],
-    [ "boost::serialization::access", "classPartitioner.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "boost::serialization::access", "classPartitioner.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "mode_", "classPartitioner.html#aed8e4412ac404481518d4259283f9f6b", null ],
+    [ "number_of_partitions_", "classPartitioner.html#aa380e9fc619650b51234468816a4c9c4", null ],
+    [ "partition_function_", "classPartitioner.html#a4de0d89c7a342e0687375a4d22b80723", null ],
+    [ "partition_info_list", "classPartitioner.html#a38305aaba2174dc1578e7e72afd2dbec", null ],
+    [ "partition_key_", "classPartitioner.html#ac75fff2bb601e539dd7b6ad3a6458940", null ],
+    [ "projection_id_", "classPartitioner.html#a43dafea8c33cb80512e7916efdc016ea", null ]
 ];

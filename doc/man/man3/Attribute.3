@@ -1,4 +1,4 @@
-.TH "Attribute" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Attribute" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,14 @@ Attribute \-
 .br
 .PP
 .PP
+\fC#include <Attribute\&.h>\fP
+.PP
 Inherited by \fBColumn\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBAttribute\fP (TableID tableid, unsigned pos, const std::string &name, data_type type, unsigned size=0, bool unqiue=false, bool can_be_null=true)"
+.RI "\fBAttribute\fP (\fBTableID\fP tableid, unsigned pos, const std::string &name, \fBdata_type\fP type, unsigned size=0, bool unqiue=false, bool can_be_null=true)"
 .br
 .ti -1c
 .RI "\fBAttribute\fP (const \fBAttribute\fP &att)"
@@ -24,7 +26,10 @@ Inherited by \fBColumn\fP\&.
 .RI "bool \fBoperator<\fP (const \fBAttribute\fP &att) const "
 .br
 .ti -1c
-.RI "\fBAttribute\fP (unsigned symbol=ATTRIBUTE_NULL)"
+.RI "\fBAttribute\fP (unsigned symbol=\fBATTRIBUTE_NULL\fP)"
+.br
+.ti -1c
+.RI "\fB~Attribute\fP ()"
 .br
 .ti -1c
 .RI "bool \fBoperator==\fP (const \fBAttribute\fP &r) const "
@@ -64,7 +69,7 @@ Inherited by \fBColumn\fP\&.
 .RI "unsigned \fBindex\fP"
 .br
 .ti -1c
-.RI "TableID \fBtable_id_\fP"
+.RI "\fBTableID\fP \fBtable_id_\fP"
 .br
 .ti -1c
 .RI "bool \fBunique\fP"
@@ -77,7 +82,99 @@ Inherited by \fBColumn\fP\&.
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Attribute::Attribute (\fBTableID\fPtableid, unsignedpos, const std::string &name, \fBdata_type\fPtype, unsignedsize = \fC0\fP, boolunqiue = \fCfalse\fP, boolcan_be_null = \fCtrue\fP)\fC [inline]\fP"
+
+.PP
+References attrName, attrType, index, table_id_, and unique\&.
+.SS "Attribute::Attribute (const \fBAttribute\fP &att)\fC [inline]\fP"
+
+.PP
+References ATTRIBUTE_ANY, attrName, attrType, index, table_id_, and unique\&.
+.SS "Attribute::Attribute (unsignedsymbol = \fC\fBATTRIBUTE_NULL\fP\fP)\fC [inline]\fP"
+
+.PP
+References ATTRIBUTE_ANY, ATTRIBUTE_NULL, and attrName\&.
+.SS "Attribute::~Attribute ()\fC [inline]\fP"
+
+.PP
+References ATTRIBUTE_ANY, attrType, table_id_, and column_type::~column_type()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBAttributeID\fP Attribute::getID () const\fC [inline]\fP"
+
+.PP
+References index, and table_id_\&.
+.PP
+Referenced by StatManager::getAttributeStatistic()\&.
+.SS "std::string Attribute::getName () const\fC [inline]\fP"
+
+.PP
+References attrName\&.
+.PP
+Referenced by init_single_node_tpc_h_envoriment_ing()\&.
+.SS "bool Attribute::isANY () const\fC [inline]\fP"
+
+.PP
+References ATTRIBUTE_ANY, and table_id_\&.
+.SS "bool Attribute::isNULL () const\fC [inline]\fP"
+
+.PP
+References ATTRIBUTE_NULL, and table_id_\&.
+.PP
+Referenced by claims::logical_operator::Requirement::hasReuiredPartitionKey(), claims::logical_operator::Requirement::requireNetworkTransfer(), and claims::logical_operator::Requirement::tryMerge()\&.
+.SS "bool Attribute::isUnique () const\fC [inline]\fP"
+
+.PP
+References unique\&.
+.SS "bool Attribute::operator!= (const \fBAttribute\fP &r) const\fC [inline]\fP"
+
+.PP
+References index, and table_id_\&.
+.SS "bool Attribute::operator< (const \fBAttribute\fP &att) const\fC [inline]\fP"
+
+.PP
+References index, and table_id_\&.
+.SS "\fBAttribute\fP& Attribute::operator= (const \fBAttribute\fP &att)\fC [inline]\fP"
+
+.PP
+References ATTRIBUTE_ANY, attrName, attrType, index, table_id_, and unique\&.
+.SS "bool Attribute::operator== (const \fBAttribute\fP &r) const\fC [inline]\fP"
+
+.PP
+References index, and table_id_\&.
+.SS "template<class Archive > void Attribute::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References attrName, attrType, index, table_id_, and unique\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string Attribute::attrName"
+
+.PP
+Referenced by Attribute(), IndexManager::deserialize(), claims::stmt_handler::InsertExec::Execute(), AstNode::GetEqualJoinPair(), IndexManager::getIndexID(), IndexManager::getIndexList(), getjoinpairlist(), getName(), InsertData(), IndexManager::insertIndexToList(), claims::common::ExprNode::IsEqualAttr(), operator=(), claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair(), IndexManager::serialize(), and serialize()\&.
+.SS "\fBcolumn_type\fP* Attribute::attrType"
+
+.PP
+Referenced by Analyzer::analyse(), Attribute(), Analyzer::computeHistogram(), IndexManager::deserialize(), Analyzer::equiDepthAnalyse(), Estimation::estEqualJoin(), Estimation::estEqualOper(), Estimation::estRangeOper(), AstColumn::GetLogicalPlan(), claims::stmt_handler::InsertExec::InsertValueToStream(), InsertValueToStream(), claims::common::ExprNode::IsEqualAttr(), Analyzer::mcvAnalyse(), operator=(), IndexManager::serialize(), serialize(), transformqual(), and ~Attribute()\&.
+.SS "unsigned Attribute::index"
+
+.PP
+Referenced by Attribute(), CreateProjection(), IndexManager::deserialize(), getID(), ProjectionDescriptor::hasAttribute(), operator!=(), operator<(), operator=(), operator==(), IndexManager::serialize(), and serialize()\&.
+.SS "\fBTableID\fP Attribute::table_id_"
+
+.PP
+Referenced by Attribute(), IndexManager::deserialize(), StatManager::getAttributeStatistic(), getID(), claims::logical_operator::LogicalAggregation::GetPlanContext(), isANY(), isNULL(), LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(), LogicalIndexScan::LogicalIndexScan(), operator!=(), operator<(), operator=(), operator==(), claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair(), IndexManager::serialize(), serialize(), and ~Attribute()\&.
+.SS "bool Attribute::unique"
+
+.PP
+Referenced by Attribute(), IndexManager::deserialize(), isUnique(), operator=(), IndexManager::serialize(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

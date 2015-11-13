@@ -1,4 +1,4 @@
-.TH "Limit_expr" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Limit_expr" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Limit_expr \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "\fBNode\fP * \fBoffset\fP"
@@ -19,7 +21,21 @@ Limit_expr \-
 .RI "\fBNode\fP * \fBrow_count\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Limit_expr::offset"
+
+.PP
+Referenced by newLimitExpr(), output(), and Query()\&.
+.SS "\fBNode\fP* Limit_expr::row_count"
+
+.PP
+Referenced by newLimitExpr(), output(), and Query()\&.
+.SS "\fBnodetype\fP Limit_expr::type"
+
+.PP
+Referenced by newLimitExpr()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

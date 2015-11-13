@@ -1,4 +1,4 @@
-.TH "Altertable_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Altertable_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Altertable_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBisignore\fP"
@@ -22,7 +24,25 @@ Altertable_stmt \-
 .RI "\fBNode\fP * \fBparameter\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Altertable_stmt::isignore"
+
+.PP
+Referenced by newAlterTableStmt()\&.
+.SS "char* Altertable_stmt::name"
+
+.PP
+Referenced by newAlterTableStmt()\&.
+.SS "\fBNode\fP* Altertable_stmt::parameter"
+
+.PP
+Referenced by newAlterTableStmt()\&.
+.SS "\fBnodetype\fP Altertable_stmt::type"
+
+.PP
+Referenced by newAlterTableStmt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Catalog/stat/StatManager.h Source File</title>
+<title>Claims: Catalog/stat/StatManager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('StatManager_8h_source.html','');});
 <div class="title">StatManager.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="StatManager_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * StatManager.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2014年1月18日</span></div>
@@ -120,55 +120,69 @@ $(document).ready(function(){initNavTree('StatManager_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;boost/unordered_map.hpp&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../../common/ids.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;Statistic.h&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;TableStatistic.h&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Statistic_8h.html">Statistic.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="TableStatistic_8h.html">TableStatistic.h</a>&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;../Attribute.h&quot;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classStatManager.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classStatManager.html">StatManager</a> {</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">static</span> <a class="code" href="classStatManager.html">StatManager</a> *getInstance();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classStatManager.html">StatManager</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">static</span> <a class="code" href="classStatManager.html">StatManager</a> *<a class="code" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">getInstance</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classStatManager.html#a5e84b26fc29426b05e44353f51cd32ee">~StatManager</a>();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="classHistogram.html">Histogram</a>* getHistogram(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attID);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classHistogram.html">Histogram</a>* getStat(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attID, <span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a> partID);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="classHistogram.html">Histogram</a>* <a class="code" href="classStatManager.html#a67a237c3b8c51bbc06f65d1e2d1d8ee8">getHistogram</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attID);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classHistogram.html">Histogram</a>* <a class="code" href="classStatManager.html#acdbfebafd1a3dcb62b85de4d0e45a423">getStat</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attID, <span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a> partID);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> addStat(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attId, <a class="code" href="classHistogram.html">Histogram</a> *stat);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">void</span> addStat(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attId, <span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a> partId,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classStatManager.html#ac14b6eca404678c493045f3a0cababed">addStat</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attId, <a class="code" href="classHistogram.html">Histogram</a> *stat);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classStatManager.html#ac14b6eca404678c493045f3a0cababed">addStat</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> attId, <span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a> partId,</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keyword">const</span> <a class="code" href="classHistogram.html">Histogram</a> *stat);</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">//TODO update method</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classTableStatistic.html">TableStatistic</a>* getTableStatistic(<span class="keyword">const</span> TableID&amp; table_id)<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classTableStatistic.html">TableStatistic</a>* <a class="code" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24">getTableStatistic</a>(<span class="keyword">const</span> <a class="code" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&amp; table_id)<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* getAttributeStatistic(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> &amp;attrId) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* getAttributeStatistic(<span class="keyword">const</span> <a class="code" href="structAttribute.html">Attribute</a>&amp; attr)<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* <a class="code" href="classStatManager.html#ad14daa728a4f2978cd1d615435c02552">getAttributeStatistic</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a> &amp;attrId) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* <a class="code" href="classStatManager.html#ad14daa728a4f2978cd1d615435c02552">getAttributeStatistic</a>(<span class="keyword">const</span> <a class="code" href="structAttribute.html">Attribute</a>&amp; attr)<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> setTableStatistic(<span class="keyword">const</span> TableID&amp; table_id,<a class="code" href="classTableStatistic.html">TableStatistic</a>* tab_stat);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classStatManager.html#a3d3fa289e4ab9dd1c4812b130733d97b">setTableStatistic</a>(<span class="keyword">const</span> <a class="code" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&amp; table_id,<a class="code" href="classTableStatistic.html">TableStatistic</a>* tab_stat);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classStatManager.html">StatManager</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classStatManager.html#af6ecf38473038592bec56edce2b24289">StatManager</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">static</span> <a class="code" href="classStatManager.html">StatManager</a> *m_singleton;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classStatManager.html#aa9ed50cb87cefba74518aa4664db1a2a">   43</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classStatManager.html">StatManager</a> *<a class="code" href="classStatManager.html#aa9ed50cb87cefba74518aa4664db1a2a">m_singleton</a>;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">//  boost::unordered_map&lt;AttributeID, StatisticOnTable*&gt; m_stat;</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    boost::unordered_map&lt;TableID,TableStatistic*&gt; tab_stat_list_;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classStatManager.html#afb1b30a1daf93168502cf94ea17f55c8">   46</a></span>&#160;    boost::unordered_map&lt;TableID,TableStatistic*&gt; <a class="code" href="classStatManager.html#afb1b30a1daf93168502cf94ea17f55c8">tab_stat_list_</a>;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* STATMANAGER_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classStatManager_html"><div class="ttname"><a href="classStatManager.html">StatManager</a></div><div class="ttdef"><b>Definition:</b> StatManager.h:19</div></div>
+<div class="ttc" id="Statistic_8h_html"><div class="ttname"><a href="Statistic_8h.html">Statistic.h</a></div></div>
+<div class="ttc" id="classStatManager_html_afb1b30a1daf93168502cf94ea17f55c8"><div class="ttname"><a href="classStatManager.html#afb1b30a1daf93168502cf94ea17f55c8">StatManager::tab_stat_list_</a></div><div class="ttdeci">boost::unordered_map&lt; TableID, TableStatistic * &gt; tab_stat_list_</div><div class="ttdef"><b>Definition:</b> StatManager.h:46</div></div>
+<div class="ttc" id="classStatManager_html_acdbfebafd1a3dcb62b85de4d0e45a423"><div class="ttname"><a href="classStatManager.html#acdbfebafd1a3dcb62b85de4d0e45a423">StatManager::getStat</a></div><div class="ttdeci">Histogram * getStat(const AttributeID attID, const PartitionID partID)</div><div class="ttdef"><b>Definition:</b> StatManager.cpp:38</div></div>
+<div class="ttc" id="classStatManager_html_a5e84b26fc29426b05e44353f51cd32ee"><div class="ttname"><a href="classStatManager.html#a5e84b26fc29426b05e44353f51cd32ee">StatManager::~StatManager</a></div><div class="ttdeci">virtual ~StatManager()</div><div class="ttdef"><b>Definition:</b> StatManager.cpp:69</div></div>
+<div class="ttc" id="classStatManager_html_a67a237c3b8c51bbc06f65d1e2d1d8ee8"><div class="ttname"><a href="classStatManager.html#a67a237c3b8c51bbc06f65d1e2d1d8ee8">StatManager::getHistogram</a></div><div class="ttdeci">Histogram * getHistogram(const AttributeID attID)</div><div class="ttdef"><b>Definition:</b> StatManager.cpp:29</div></div>
 <div class="ttc" id="structAttribute_html"><div class="ttname"><a href="structAttribute.html">Attribute</a></div><div class="ttdef"><b>Definition:</b> Attribute.h:19</div></div>
+<div class="ttc" id="classStatManager_html_a0144876543d59f74d63d61d43aed5d24"><div class="ttname"><a href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24">StatManager::getTableStatistic</a></div><div class="ttdeci">TableStatistic * getTableStatistic(const TableID &amp;table_id) const </div><div class="ttdef"><b>Definition:</b> StatManager.cpp:50</div></div>
+<div class="ttc" id="ids_8h_html_a3a5820fc61fdb2199526c3a30cec8924"><div class="ttname"><a href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a></div><div class="ttdeci">unsigned TableID</div><div class="ttdef"><b>Definition:</b> ids.h:24</div></div>
+<div class="ttc" id="classStatManager_html_ac14b6eca404678c493045f3a0cababed"><div class="ttname"><a href="classStatManager.html#ac14b6eca404678c493045f3a0cababed">StatManager::addStat</a></div><div class="ttdeci">void addStat(const AttributeID attId, Histogram *stat)</div></div>
 <div class="ttc" id="classAttributeStatistics_html"><div class="ttname"><a href="classAttributeStatistics.html">AttributeStatistics</a></div><div class="ttdef"><b>Definition:</b> AttributeStatistics.h:12</div></div>
+<div class="ttc" id="TableStatistic_8h_html"><div class="ttname"><a href="TableStatistic_8h.html">TableStatistic.h</a></div></div>
 <div class="ttc" id="classHistogram_html"><div class="ttname"><a href="classHistogram.html">Histogram</a></div><div class="ttdef"><b>Definition:</b> Statistic.h:25</div></div>
 <div class="ttc" id="structPartitionID_html"><div class="ttname"><a href="structPartitionID.html">PartitionID</a></div><div class="ttdef"><b>Definition:</b> ids.h:144</div></div>
 <div class="ttc" id="classTableStatistic_html"><div class="ttname"><a href="classTableStatistic.html">TableStatistic</a></div><div class="ttdef"><b>Definition:</b> TableStatistic.h:12</div></div>
+<div class="ttc" id="classStatManager_html_ad14daa728a4f2978cd1d615435c02552"><div class="ttname"><a href="classStatManager.html#ad14daa728a4f2978cd1d615435c02552">StatManager::getAttributeStatistic</a></div><div class="ttdeci">AttributeStatistics * getAttributeStatistic(const AttributeID &amp;attrId) const </div><div class="ttdef"><b>Definition:</b> StatManager.cpp:56</div></div>
+<div class="ttc" id="classStatManager_html_af6ecf38473038592bec56edce2b24289"><div class="ttname"><a href="classStatManager.html#af6ecf38473038592bec56edce2b24289">StatManager::StatManager</a></div><div class="ttdeci">StatManager()</div><div class="ttdef"><b>Definition:</b> StatManager.cpp:18</div></div>
+<div class="ttc" id="classStatManager_html_a3d3fa289e4ab9dd1c4812b130733d97b"><div class="ttname"><a href="classStatManager.html#a3d3fa289e4ab9dd1c4812b130733d97b">StatManager::setTableStatistic</a></div><div class="ttdeci">void setTableStatistic(const TableID &amp;table_id, TableStatistic *tab_stat)</div><div class="ttdef"><b>Definition:</b> StatManager.cpp:71</div></div>
 <div class="ttc" id="structAttributeID_html"><div class="ttname"><a href="structAttributeID.html">AttributeID</a></div><div class="ttdef"><b>Definition:</b> ids.h:55</div></div>
+<div class="ttc" id="classStatManager_html_aa9ed50cb87cefba74518aa4664db1a2a"><div class="ttname"><a href="classStatManager.html#aa9ed50cb87cefba74518aa4664db1a2a">StatManager::m_singleton</a></div><div class="ttdeci">static StatManager * m_singleton</div><div class="ttdef"><b>Definition:</b> StatManager.h:43</div></div>
+<div class="ttc" id="classStatManager_html_a1b668abdb5a0308e1b9d2d98e5e56363"><div class="ttname"><a href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">StatManager::getInstance</a></div><div class="ttdeci">static StatManager * getInstance()</div><div class="ttdef"><b>Definition:</b> StatManager.cpp:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_3bf4fa49c8aa808631e3bc6b141a2264.html">Catalog</a></li><li class="navelem"><a class="el" href="dir_731a434a51b251fdd0a2224321d8f4f8.html">stat</a></li><li class="navelem"><b>StatManager.h</b></li>
+    <li class="navelem"><a class="el" href="dir_3bf4fa49c8aa808631e3bc6b141a2264.html">Catalog</a></li><li class="navelem"><a class="el" href="dir_731a434a51b251fdd0a2224321d8f4f8.html">stat</a></li><li class="navelem"><a class="el" href="StatManager_8h.html">StatManager.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

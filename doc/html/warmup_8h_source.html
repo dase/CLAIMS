@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/warmup.h Source File</title>
+<title>Claims: utility/warmup.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('warmup_8h_source.html','');});
 <div class="title">warmup.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="warmup_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * warmup.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: May 29, 2014</span></div>
@@ -116,16 +116,16 @@ $(document).ready(function(){initNavTree('warmup_8h_source.html','');});
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifndef WARMUP_H_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define WARMUP_H_</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;xmmintrin.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">typedef</span> __m128 Unit;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">   11</a></span>&#160;<span class="keyword">typedef</span> __m128 <a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a>;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> * This function read the data block specified by start address and length to warm up the cache</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">inline</span> Unit warmup(<span class="keywordtype">void</span>* start_addr,<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> length){</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">unsigned</span>  num=length/<span class="keyword">sizeof</span>(Unit);</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="warmup_8h.html#a8271b258015c49d2e8875d963a922c10">   15</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a> <a class="code" href="warmup_8h.html#a8271b258015c49d2e8875d963a922c10">warmup</a>(<span class="keywordtype">void</span>* start_addr,<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> length){</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">unsigned</span>  num=length/<span class="keyword">sizeof</span>(<a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a>);</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">unsigned</span> i=0;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    Unit result;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">volatile</span> Unit cheat;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordflow">for</span>(Unit* pointer=(Unit*)start_addr;i&lt;num;i++,pointer++){</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a> result;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">volatile</span> <a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a> cheat;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordflow">for</span>(<a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a>* pointer=(<a class="code" href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a>*)start_addr;i&lt;num;i++,pointer++){</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        result=_mm_and_ps(result,*pointer);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">//      result+=*pointer;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    }</div>
@@ -134,12 +134,14 @@ $(document).ready(function(){initNavTree('warmup_8h_source.html','');});
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* WARMUP_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="warmup_8h_html_a5e3e315f946f193642429a079d98d5e0"><div class="ttname"><a href="warmup_8h.html#a5e3e315f946f193642429a079d98d5e0">Unit</a></div><div class="ttdeci">__m128 Unit</div><div class="ttdef"><b>Definition:</b> warmup.h:11</div></div>
+<div class="ttc" id="warmup_8h_html_a8271b258015c49d2e8875d963a922c10"><div class="ttname"><a href="warmup_8h.html#a8271b258015c49d2e8875d963a922c10">warmup</a></div><div class="ttdeci">Unit warmup(void *start_addr, unsigned long length)</div><div class="ttdef"><b>Definition:</b> warmup.h:15</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>warmup.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="warmup_8h.html">warmup.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

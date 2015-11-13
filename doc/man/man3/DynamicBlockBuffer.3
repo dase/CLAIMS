@@ -1,4 +1,4 @@
-.TH "DynamicBlockBuffer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "DynamicBlockBuffer" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,7 +21,13 @@ Inherited by \fBResultSet\fP\&.
 
 .in +1c
 .ti -1c
+.RI "\fBDynamicBlockBuffer\fP ()"
+.br
+.ti -1c
 .RI "\fBDynamicBlockBuffer\fP (const \fBDynamicBlockBuffer\fP &r)"
+.br
+.ti -1c
+.RI "virtual \fB~DynamicBlockBuffer\fP ()"
 .br
 .ti -1c
 .RI "bool \fBappendNewBlock\fP (\fBBlockStreamBase\fP *new_block)"
@@ -45,10 +51,82 @@ Inherited by \fBResultSet\fP\&.
 .RI "unsigned long \fBgetNumberOftuples\fP () const "
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBBlockStreamBase\fP * > \fBblock_list_\fP"
+.br
+.ti -1c
+.RI "\fBLock\fP \fBlock_\fP"
+.br
+.in -1c
 .SH "Detailed Description"
 .PP 
 A container which buffers serialized blocks\&. The number of blocks in the buffer is not known when constructing and is growing dynamically on the fly\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "DynamicBlockBuffer::DynamicBlockBuffer ()"
+
+.SS "DynamicBlockBuffer::DynamicBlockBuffer (const \fBDynamicBlockBuffer\fP &r)"
+
+.PP
+References block_list_, and lock_\&.
+.SS "DynamicBlockBuffer::~DynamicBlockBuffer ()\fC [virtual]\fP"
+
+.PP
+References block_list_\&.
+.PP
+Referenced by TEST()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool DynamicBlockBuffer::appendNewBlock (\fBBlockStreamBase\fP *new_block)"
+
+.PP
+References block_list_\&.
+.PP
+Referenced by atomicAppendNewBlock(), Client::submit(), and testServerClient()\&.
+.SS "bool DynamicBlockBuffer::atomicAppendNewBlock (\fBBlockStreamBase\fP *new_block)"
+
+.PP
+References Lock::acquire(), appendNewBlock(), lock_, and Lock::release()\&.
+.PP
+Referenced by claims::physical_operator::ResultCollector::CollectResult(), claims::physical_operator::PhysicalNestLoopJoin::Open(), and claims::physical_operator::PhysicalSort::Open()\&.
+.SS "\fBDynamicBlockBuffer::Iterator\fP DynamicBlockBuffer::createIterator () const"
+
+.PP
+Referenced by Analyzer::analyse(), Analyzer::compute_table_stat(), Analyzer::computeHistogram(), destory(), fill_insert_optimized_hash_table(), filter_test(), Analyzer::getDistinctCardinality(), getNumberOftuples(), claims::physical_operator::ResultCollector::GetNumberOftuples(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::ResultCollector::Open(), ResultSet::print(), query_2(), ClientListener::sendHandler(), ClientListener::sendJsonPacket(), TEST(), TEST_F(), test_multiple_scan_filter_Scalar_Aggregation(), and test_scan_filter_Scalar_Aggregation()\&.
+.SS "void DynamicBlockBuffer::destory ()"
+
+.PP
+References block_list_, createIterator(), and DynamicBlockBuffer::Iterator::nextBlock()\&.
+.PP
+Referenced by Analyzer::analyse(), Analyzer::compute_table_stat(), Analyzer::computeHistogram(), and Analyzer::getDistinctCardinality()\&.
+.SS "\fBBlockStreamBase\fP * DynamicBlockBuffer::getBlock (unsignedindex) const"
+
+.PP
+References block_list_\&.
+.SS "unsigned DynamicBlockBuffer::getNumberOfBlocks ()"
+
+.PP
+References Lock::acquire(), block_list_, lock_, and Lock::release()\&.
+.SS "unsigned long DynamicBlockBuffer::getNumberOftuples () const"
+
+.PP
+References createIterator(), BlockStreamBase::getTuplesInBlock(), and DynamicBlockBuffer::Iterator::nextBlock()\&.
+.PP
+Referenced by Analyzer::analyse(), bulk_test_logical_index_scan(), Analyzer::computeHistogram(), lineitem_scan_aggregation(), ResultSet::print(), sb_scan_aggregation(), TEST(), test_complete_repartition_filtered_join(), test_complete_repartition_scan_join(), TEST_F(), test_multiple_complete_repartition_filtered_join(), test_multiple_complete_repartition_scan_join(), test_multiple_no_repartition_filtered_join(), test_multiple_no_repartition_scan_join(), test_no_repartition_filtered_join(), test_no_repartition_scan_join(), test_scan_Aggregation_large_Groups(), and test_scan_Aggregation_small_Groups()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<\fBBlockStreamBase\fP*> DynamicBlockBuffer::block_list_\fC [private]\fP"
+
+.PP
+Referenced by appendNewBlock(), destory(), DynamicBlockBuffer(), getBlock(), getNumberOfBlocks(), and ~DynamicBlockBuffer()\&.
+.SS "\fBLock\fP DynamicBlockBuffer::lock_\fC [private]\fP"
+
+.PP
+Referenced by atomicAppendNewBlock(), DynamicBlockBuffer::Iterator::atomicNextBlock(), DynamicBlockBuffer(), getNumberOfBlocks(), and DynamicBlockBuffer::Iterator::Iterator()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

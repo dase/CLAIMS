@@ -1,4 +1,4 @@
-.TH "DMLTestPOC1Partition" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "DMLTestPOC1Partition" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ DMLTestPOC1Partition \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_query_test\&.h>\fP
 .PP
 Inherits Test\&.
 .SS "Static Protected Member Functions"
@@ -18,7 +20,17 @@ Inherits Test\&.
 .RI "static void \fBTearDownTestCase\fP ()"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static void DMLTestPOC1Partition::SetUpTestCase ()\fC [inline]\fP, \fC [static]\fP, \fC [protected]\fP"
+
+.PP
+References create_poc_data_one_partitions(), and Environment::getInstance()\&.
+.SS "static void DMLTestPOC1Partition::TearDownTestCase ()\fC [inline]\fP, \fC [static]\fP, \fC [protected]\fP"
+
+.PP
+References Environment::getInstance(), and Environment::~Environment()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

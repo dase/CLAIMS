@@ -1,4 +1,4 @@
-.TH "YYSTYPE" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "YYSTYPE" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ YYSTYPE \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql\&.tab\&.hpp>\fP
 .SS "Public Attributes"
 
 .in +1c
@@ -24,8 +26,25 @@ YYSTYPE \-
 .ti -1c
 .RI "struct \fBNode\fP * \fBast_node\fP"
 .br
+.ti -1c
+.RI "class \fBAstNode\fP * \fBast_node\fP"
+.br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "struct \fBNode\fP* YYSTYPE::ast_node"
+
+.SS "class \fBAstNode\fP* YYSTYPE::ast_node"
+
+.SS "double YYSTYPE::floatval"
+
+.SS "int YYSTYPE::intval"
+
+.SS "char * YYSTYPE::strval"
+
+.SS "int YYSTYPE::subtok"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

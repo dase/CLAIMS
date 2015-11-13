@@ -1,13 +1,19 @@
 var NAVTREE =
 [
-  [ "My Project", "index.html", [
+  [ "Claims", "index.html", [
+    [ "2015-08-12-QuickStart", "md_doc_Website__posts_2015-08-12-QuickStart.html", null ],
+    [ "2015-08-16-GoogleTestConfigure", "md_doc_Website__posts_2015-08-16-GoogleTestConfigure.html", null ],
+    [ "2015-08-16-InstallingLLVM", "md_doc_Website__posts_2015-08-16-InstallingLLVM.html", null ],
+    [ "index", "md_doc_Website_claims_feature_index.html", null ],
+    [ "index", "md_doc_Website_claims_index.html", null ],
     [ "README", "md_README.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Namespaces", null, [
       [ "Namespace List", "namespaces.html", "namespaces" ],
       [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Functions", "namespacemembers_func.html", null ],
+        [ "All", "namespacemembers.html", "namespacemembers_dup" ],
+        [ "Functions", "namespacemembers_func.html", "namespacemembers_func" ],
+        [ "Variables", "namespacemembers_vars.html", null ],
         [ "Typedefs", "namespacemembers_type.html", null ],
         [ "Enumerations", "namespacemembers_enum.html", null ],
         [ "Enumerator", "namespacemembers_eval.html", null ]
@@ -20,16 +26,23 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", null ],
+        [ "Variables", "functions_vars.html", "functions_vars" ],
+        [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
+        [ "Enumerator", "functions_eval.html", null ],
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
-        [ "Macros", "globals_defs.html", null ]
+        [ "All", "globals.html", "globals_dup" ],
+        [ "Functions", "globals_func.html", "globals_func" ],
+        [ "Variables", "globals_vars.html", null ],
+        [ "Typedefs", "globals_type.html", null ],
+        [ "Enumerations", "globals_enum.html", null ],
+        [ "Enumerator", "globals_eval.html", "globals_eval" ],
+        [ "Macros", "globals_defs.html", "globals_defs" ]
       ] ]
     ] ]
   ] ]
@@ -37,24 +50,50 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"classBlockManager.html#ae0ab2b2c356970380595461f650a7042",
-"classBlockStreamJoinIterator_1_1State.html#af1eccca4ee32809c0aff4e9a86d5a995",
-"classCCSBNodeGroup.html#a040ef8fa7f856bfe93c3eced0bebf86f",
-"classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057",
-"classExpressionItem.html#a6e03e7022966a9c236a76ab5a7785188a3ff8db570317ae0aeff393e4547b95d0",
+"AdaptiveEndPoint_8cpp.html",
+"ExecuteLogicalQueryPlan_8h.html#a5882fe9d1f33e9cbcd35b7e6167c835a",
+"Logging_8h.html#ad75cbb3193e33a5d7512301e78ef3ed2",
+"Parsetree_2sql_8lex_8h.html#aa2f1a918be586b44bf08126bde2d7cc9",
+"Parsetree_2sql_8tab_8hpp.html#a15c9f7bd2f0e9686df5d9df4f3314aa9a19457fc25f14bccab07ebb738bc09dc3",
+"Parsetree_2sql_8tab_8hpp.html#a15c9f7bd2f0e9686df5d9df4f3314aa9a802cda28b9346b57d0c6d66dc44723e8",
+"Parsetree_2sql_8tab_8hpp.html#a15c9f7bd2f0e9686df5d9df4f3314aa9adc6f24fd6915a3f2786a1b7045406924",
+"TypeCast_8h.html#a529cfccb50118364dbc7c7cff9091e02",
+"classAstColumn.html#a3cb65c24a93ef014b6d801fb96e56367",
+"classAstIndexColList.html#a4aeb6156b19547d1028e950851b8b24e",
+"classAttributeStatistics.html#aa4f2a1ffe18c4a687c2d8bcf8f934fdb",
+"classBlockStreamFix.html#a73f77f570de78d2cd6ab0ac81ad0085a",
+"classCatalogLogging.html#a66e5f13d9d5996132209024d20d396b1",
+"classCreateTableMessage.html#ab66996fd3b8c9d2d6216ddc383c4b47e",
+"classExpressionCalculator.html#a2dfdc84a13b4a422e9da2a128e454d45",
+"classIteratorExecutorMaster.html",
 "classJson_1_1Value.html#a341cdf2e01f8b3c5b7317aa2f0768c53",
-"classOperate.html#a5a9bb41cd24832df38bc42cbd82c877b",
-"classOperateULong.html#a70533572223864be91067879a4587d2a",
-"classQExpr__case__when.html#af204437c26a79dc573bafbc6e4b14c8c",
-"classThreadManager.html#aadaf09012c31bb2f57244179bbf11ccd",
-"classcolumn__type.html#a4f8d2994ae5b197ab9cba09eb7807ec1",
-"classttmath_1_1UInt.html#adef5243a8390314fb21339145e3a154c",
-"structBlockInfo.html#a830aac8aa370093559287563c2a7e71e",
-"structExpandableBlockStreamExchangeEpoll_1_1State.html#a0d4f705e89d22ca786482c0f61b6bd2f",
-"structNodeAddress.html",
-"structdisk__info.html#a9686c77ed3795fc9b8f6d29ad556de26",
-"value__defs_8h_source.html"
+"classModuloHashFunction.html#aad922a2baaceda651c12427f3c2ee5c7",
+"classOperateInt.html#abae6e96554a9af06690e7f4a1806e7d6",
+"classPartitioner.html#a8a79b1bf2c0b3827fbcc18a4c64a52e9",
+"classRoundRobinPartitionFunction.html#ae9ffccccf26d5dd6d723dc886c00ab70",
+"classThreadPoolLogging.html#a02871ef1b375ebaee2870c1a0eedd0aa",
+"classclaims_1_1common_1_1ExprUnary.html#afca7464fa17dc6451219f6a3559f6f83",
+"classclaims_1_1logical__operator_1_1PlanPartitioner.html#abbaaeceb3c9c95b6a56b7a63736d108e",
+"classclaims_1_1physical__operator_1_1InOperator_1_1State.html#ac98d07dd8f7b70e16ccb9a01abf56b9c",
+"classclaims_1_1physical__operator_1_1PhysicalOperator.html#a94d6230e952a90d898b4c2062b040582",
+"classdecimal_1_1NValue.html#a245f835055d70eb06749bb14daed85fb",
+"classttmath_1_1UInt.html#aa05536ad0b4ff594bb3f6b9afc7aa3d8",
+"data__type__oper_8h.html#a2b52527c08b427d42cee8b6c9ca8cb6f",
+"error__define_8h.html#af95897682fa0a13891aa6ecae05c2a5d",
+"function_8cpp.html#a15ea2547ae528134863fede49b938007",
+"globals_eval_0x62.html",
+"json_8h.html#a4d43b0ff222bd3975bcf1babca0b978f",
+"parsetree2logicalplan_8cpp.html#aff2bed0da9741982a15002fdb40b41f1",
+"queryfunc_8h.html#adab6df5321f1d0999f566a7053b5f499",
+"sql__parser_2parser_2lex_8yy_8cpp.html#a2e73b2c75126814585525fb2e9d51159",
+"sql__parser_2parser_2sql_8tab_8cpp.html#a35a2d4f99ba6484204457d26ecd41eed",
+"sql__parser_2parser_2sql_8tab_8hpp.html#a15c9f7bd2f0e9686df5d9df4f3314aa9a3278fd035226215822c903790a1eee73",
+"sql__parser_2parser_2sql_8tab_8hpp.html#a15c9f7bd2f0e9686df5d9df4f3314aa9a92c3c18ecdc80cdb068c54b0a44009dc",
+"sql__parser_2parser_2sql_8tab_8hpp.html#a15c9f7bd2f0e9686df5d9df4f3314aa9af6b54e2f964c3204c88d0d82a509f65a",
+"structCreate__select__stmt.html#af6b3102dc994351499455abe23083ed7",
+"structMessage4K.html#aa884510ec3a9d831a09b775d35dbdc12",
+"structclaims_1_1logical__operator_1_1LogicalEqualJoin_1_1JoinPair.html#aa039fc343681381b3563e10a41e5f3a1",
+"structyyGLRState.html#a0cb891d9e927c1809a36352034995e10"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

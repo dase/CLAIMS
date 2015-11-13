@@ -1,4 +1,4 @@
-.TH "semaphore" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "semaphore" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ semaphore \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <lock\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -34,7 +36,70 @@ semaphore \-
 .RI "int \fBget_value\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "sem_t \fBsem\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "semaphore::semaphore (intinitialValue = \fC0\fP)\fC [inline]\fP"
+
+.PP
+References sem\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void semaphore::destroy ()\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by BlockStreamBuffer::~BlockStreamBuffer(), and claims::physical_operator::PhysicalOperator::~PhysicalOperator()\&.
+.SS "int semaphore::get_value ()\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by BlockStreamBuffer::BlockStreamBuffer(), PartitionedBlockBuffer::getBlockInBuffer(), CPUResourceManager::socket::getNumberOfFreeCores(), PartitionedBlockBuffer::isEmpty(), and PartitionedBlockBuffer::~PartitionedBlockBuffer()\&.
+.SS "void semaphore::post (inttimes = \fC1\fP)\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by Daemon::addExecutedResult(), Daemon::addRemoteCommand(), BlockStreamBuffer::BlockStreamBuffer(), claims::physical_operator::InOperator::Close(), claims::physical_operator::ResultCollector::CollectResult(), CPUResourceManager::CPUResourceManager(), CPUResourceManager::freeCore(), BlockStreamBuffer::getBlock(), PartitionedBlockBuffer::getBlock(), PartitionedBlockBuffer::insertBlockToPartitionedList(), and claims::physical_operator::ExchangeMerger::Receiver()\&.
+.SS "void semaphore::set_value (intvalue)\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by claims::physical_operator::ResultCollector::Close(), claims::physical_operator::PhysicalOperator::InitExpandedStatus(), claims::physical_operator::InOperator::InOperator(), PartitionedBlockBuffer::PartitionedBlockBuffer(), claims::physical_operator::ResultCollector::ResultCollector(), and CPUResourceManager::socket::socket()\&.
+.SS "bool semaphore::timed_wait (intmillisecond)\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by claims::physical_operator::ExchangeMerger::Next()\&.
+.SS "bool semaphore::try_wait ()\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by claims::physical_operator::ResultCollector::Open(), claims::physical_operator::InOperator::Open(), CPUResourceManager::tryApplyCore(), and claims::physical_operator::PhysicalOperator::TryEntryIntoSerializedSection()\&.
+.SS "void semaphore::wait ()\fC [inline]\fP"
+
+.PP
+References sem\&.
+.PP
+Referenced by CPUResourceManager::applyCore(), claims::physical_operator::Expander::CreateWorkingThread(), PartitionedBlockBuffer::getBlock(), Daemon::getExecutedResult(), Daemon::getRemoteCommand(), BlockStreamBuffer::insertBlock(), PartitionedBlockBuffer::insertBlockToPartitionedList(), and claims::physical_operator::ResultCollector::Open()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "sem_t semaphore::sem\fC [private]\fP"
+
+.PP
+Referenced by destroy(), get_value(), post(), semaphore(), set_value(), timed_wait(), try_wait(), and wait()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "OperateDecimal" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "OperateDecimal" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ OperateDecimal \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <data_type\&.h>\fP
 .PP
 Inherits \fBOperate\fP\&.
 .SS "Public Member Functions"
@@ -42,19 +44,19 @@ Inherits \fBOperate\fP\&.
 .RI "void \fBmultiple\fP (void *target, void *increment)"
 .br
 .ti -1c
-.RI "fun \fBGetADDFunction\fP ()"
+.RI "\fBfun\fP \fBGetADDFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMINFunction\fP ()"
+.RI "\fBfun\fP \fBGetMINFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMAXFunction\fP ()"
+.RI "\fBfun\fP \fBGetMAXFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetIncreateByOneFunction\fP ()"
+.RI "\fBfun\fP \fBGetIncreateByOneFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetAVGFunction\fP ()"
+.RI "\fBfun\fP \fBGetAVGFunction\fP ()"
 .br
 .ti -1c
 .RI "unsigned \fBgetPartitionValue\fP (const void *key, const \fBPartitionFunction\fP *partition_function) const "
@@ -89,7 +91,127 @@ Inherits \fBOperate\fP\&.
 .RI "unsigned \fBnumber_of_decimal_digits_\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "OperateDecimal::OperateDecimal (unsignednumber_of_decimal_digits = \fC12\fP, bool_nullable = \fCtrue\fP)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void OperateDecimal::add (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References ADD_FUNC< NValue * >()\&.
+.SS "void OperateDecimal::assignment (const void *const &src, void *const &desc) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "int OperateDecimal::compare (const void *a, const void *b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBOperate\fP* OperateDecimal::duplicateOperator () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateDecimal::equal (const void *const &a, const void *const &b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateDecimal::GetADDFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References ADD_FUNC< NValue * >()\&.
+.SS "\fBfun\fP OperateDecimal::GetAVGFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References ADD_IncreaseByOne< NValue * >()\&.
+.SS "\fBfun\fP OperateDecimal::GetIncreateByOneFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References IncreaseByOne< NValue * >()\&.
+.SS "\fBfun\fP OperateDecimal::GetMAXFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References MAX< NValue * >()\&.
+.SS "\fBfun\fP OperateDecimal::GetMINFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References MIN< NValue * >()\&.
+.SS "unsigned OperateDecimal::getPartitionValue (const void *key, const \fBPartitionFunction\fP *partition_function) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References PartitionFunction::get_partition_value()\&.
+.SS "unsigned OperateDecimal::getPartitionValue (const void *key) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "unsigned OperateDecimal::getPartitionValue (const void *key, const unsigned long &mod) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateDecimal::greate (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References decimal::NValue::op_equals(), and decimal::NValue::op_min()\&.
+.SS "bool OperateDecimal::isNull (void *value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References compare(), and NULL_DECIMAL\&.
+.SS "bool OperateDecimal::less (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References decimal::NValue::op_equals(), and decimal::NValue::op_min()\&.
+.SS "void OperateDecimal::multiple (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateDecimal::setNull (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_DECIMAL\&.
+.SS "std::string OperateDecimal::toString (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References compare(), and NULL_DECIMAL\&.
+.PP
+Referenced by query_2()\&.
+.SS "static std::string OperateDecimal::toString (const \fBNValue\fPv, unsignedn_o_d_d = \fC12\fP)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "void OperateDecimal::toValue (void *target, const char *string)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_DECIMAL\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned OperateDecimal::number_of_decimal_digits_"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

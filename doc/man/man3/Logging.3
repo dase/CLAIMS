@@ -1,4 +1,4 @@
-.TH "Logging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Logging" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ Logging \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Logging\&.h>\fP
 .PP
 Inherited by \fBAdaptiveEndPointLogging\fP, \fBBlockStreamExpanderLogging\fP, \fBBufferManagerLogging\fP, \fBCatalogLogging\fP, \fBCoordinatorLogging\fP, \fBEnvironmentLogging\fP, \fBExchangeIteratorEagerLogging\fP, \fBExchangeIteratorEagerLowerLogging\fP, \fBExchangeIteratorSenderMaterialized\fP, \fBExchangeTrackerLogging\fP, \fBExpanderTrackerLogging\fP, \fBIteratorExecutorMasterLogging\fP, \fBIteratorExecutorSlaveLogging\fP, \fBPerformanceTopLogging\fP, \fBResourceManagerMasterLogging\fP, \fBResourceManagerSlaveLogging\fP, \fBStorageManagerLogging\fP, and \fBStorageManagerMasterLogging\fP\&.
 .SS "Public Member Functions"
@@ -17,16 +19,29 @@ Inherited by \fBAdaptiveEndPointLogging\fP, \fBBlockStreamExpanderLogging\fP, \f
 .ti -1c
 .RI "virtual void \fBelog\fP (const char *format,\&.\&.\&.)=0"
 .br
+.ti -1c
+.RI "virtual \fB~Logging\fP ()"
+.br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "virtual Logging::~Logging ()\fC [inline]\fP, \fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "virtual void Logging::elog (const char *format, \&.\&.\&.)\fC [pure virtual]\fP"
 print the error information to stderr\&. 
 .PP
-Implemented in \fBExpanderTrackerLogging\fP, \fBExchangeTrackerLogging\fP, \fBCoordinatorLogging\fP, \fBAdaptiveEndPointLogging\fP, \fBEnvironmentLogging\fP, \fBIteratorExecutorSlaveLogging\fP, and \fBIteratorExecutorMasterLogging\fP\&.
+Implemented in \fBPerformanceTopLogging\fP, \fBBlockStreamExpanderLogging\fP, \fBBufferManagerLogging\fP, \fBStorageManagerMasterLogging\fP, \fBStorageManagerLogging\fP, \fBResourceManagerSlaveLogging\fP, \fBResourceManagerMasterLogging\fP, \fBCatalogLogging\fP, \fBExchangeIteratorSenderMaterialized\fP, \fBExchangeIteratorEagerLowerLogging\fP, \fBExchangeIteratorEagerLogging\fP, \fBExpanderTrackerLogging\fP, \fBExchangeTrackerLogging\fP, \fBCoordinatorLogging\fP, \fBAdaptiveEndPointLogging\fP, \fBEnvironmentLogging\fP, \fBIteratorExecutorSlaveLogging\fP, and \fBIteratorExecutorMasterLogging\fP\&.
 .PP
-Referenced by Coordinator::Coordinator(), Environment::Environment(), and ExpandableBlockStreamExchangeLowerEfficient::Open()\&.
+Referenced by AdaptiveEndPoint::AdaptiveEndPoint(), Catalog::add_table(), AdaptiveEndPoint::ConnectToCoordinateEndPoint(), Coordinator::Coordinator(), Environment::Environment(), IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(), AdaptiveEndPoint::GetCoordinatorEndPointPort(), Environment::initializeEndPoint(), Coordinator::ListeningNewNode(), BlockManager::loadFromDisk(), BlockManager::loadFromHdfs(), Coordinator::PrepareTheSocket(), InstanceResourceManager::Register(), ResourceManagerMaster::RegisterNewSlave(), BlockManager::removePartition(), Catalog::restoreCatalog(), AdaptiveEndPoint::SayHelloToCoordinator(), BlockManagerMaster::SendBindingMessage(), Coordinator::SendCoordinatorEndPointPort(), BlockManagerMaster::SendUnbindingMessage(), and AdaptiveEndPoint::WaitForReadySignalFromCoordinator()\&.
+.SS "virtual void Logging::log (const char *format, \&.\&.\&.)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBPerformanceTopLogging\fP, \fBBlockStreamExpanderLogging\fP, \fBBufferManagerLogging\fP, \fBStorageManagerMasterLogging\fP, \fBStorageManagerLogging\fP, \fBResourceManagerSlaveLogging\fP, \fBResourceManagerMasterLogging\fP, \fBCatalogLogging\fP, \fBExchangeIteratorSenderMaterialized\fP, \fBExchangeIteratorEagerLowerLogging\fP, \fBExchangeIteratorEagerLogging\fP, \fBExpanderTrackerLogging\fP, \fBExchangeTrackerLogging\fP, \fBCoordinatorLogging\fP, \fBAdaptiveEndPointLogging\fP, \fBEnvironmentLogging\fP, \fBIteratorExecutorSlaveLogging\fP, and \fBIteratorExecutorMasterLogging\fP\&.
+.PP
+Referenced by AdaptiveEndPoint::AdaptiveEndPoint(), Catalog::add_table(), BlockManager::addPartition(), BufferManager::applyStorageDedget(), BufferManager::BufferManager(), AdaptiveEndPoint::ConnectToCoordinateEndPoint(), Coordinator::CreateListeningThread(), IteratorExecutorSlave::createNewThreadAndRun(), ExpanderTracker::decideExpandingOrShrinking(), Environment::Environment(), ExchangeTracker::ExchangeTracker(), IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(), IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(), ExpanderTracker::ExpanderTracker(), AdaptiveEndPoint::GetCoordinatorEndPointPort(), Environment::initializeEndPoint(), IteratorExecutorSlave::IteratorExecutorSlave(), Coordinator::ListeningNewNode(), BlockManager::loadFromDisk(), BlockManager::loadFromHdfs(), ExchangeTracker::LogoutExchange(), ExpanderTracker::monitoringThread(), Coordinator::PrepareTheSocket(), InstanceResourceManager::Register(), ResourceManagerMaster::RegisterDiskBuget(), ExchangeTracker::RegisterExchange(), ResourceManagerMaster::RegisterMemoryBuget(), ExpanderTracker::registerNewExpander(), ResourceManagerMaster::RegisterNewSlave(), IteratorExecutorSlave::run_iterator(), BlockManagerMaster::SendBindingMessage(), Coordinator::SendCoordinatorEndPointPort(), Coordinator::SendReadyNotificationToNewNode(), BlockManagerMaster::SendUnbindingMessage(), Coordinator::SetupTheTheron(), and AdaptiveEndPoint::WaitForReadySignalFromCoordinator()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

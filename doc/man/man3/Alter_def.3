@@ -1,4 +1,4 @@
-.TH "Alter_def" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Alter_def" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Alter_def \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBaltertype\fP"
@@ -34,7 +36,41 @@ Alter_def \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Alter_def::altertype"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "int Alter_def::coltype"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "int Alter_def::datatype"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "char* Alter_def::name1"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "char* Alter_def::name2"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "\fBNode\fP* Alter_def::next"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "\fBNode\fP* Alter_def::parameter"
+
+.PP
+Referenced by newAlterDef()\&.
+.SS "\fBnodetype\fP Alter_def::type"
+
+.PP
+Referenced by newAlterDef()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -8,5 +8,6 @@ var classDiskStore =
     [ "getFile", "classDiskStore.html#aa75e0d2419c5a78101e689b3694d3fd4", null ],
     [ "getSize", "classDiskStore.html#a284ca273466861cb09fbff9707c268f2", null ],
     [ "putValue", "classDiskStore.html#a62d2b78239f85f156ddf262f99c59789", null ],
-    [ "remove", "classDiskStore.html#a80971afa023d086dfab20145ffa203cf", null ]
+    [ "remove", "classDiskStore.html#a80971afa023d086dfab20145ffa203cf", null ],
+    [ "rootDirs_", "classDiskStore.html#a4eaf7e595840f76af22191df9e74f310", null ]
 ];

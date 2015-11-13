@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: IDsGenerator.h Source File</title>
+<title>Claims: IDsGenerator.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('IDsGenerator_8h_source.html','');});
 <div class="title">IDsGenerator.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="IDsGenerator_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * IDsGenerator.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Nov 13, 2013</span></div>
@@ -116,32 +116,44 @@ $(document).ready(function(){initNavTree('IDsGenerator_8h_source.html','');});
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifndef IDSGENERATOR_H_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define IDSGENERATOR_H_</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;common/ids.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;utility/lock.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ids_8h.html">common/ids.h</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="lock_8h.html">utility/lock.h</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classIDsGenerator.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="classIDsGenerator.html">IDsGenerator</a> {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIDsGenerator.html">IDsGenerator</a>* getInstance();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classIDsGenerator.html">IDsGenerator</a>();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> generateUniqueExchangeID();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    ExpanderID getUniqueExpanderID();</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIDsGenerator.html">IDsGenerator</a>* <a class="code" href="classIDsGenerator.html#a15c3511c3c14f4cf44a97f5eaf936ee7">getInstance</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classIDsGenerator.html#aafa8a9d2cd5154aa9656d9700e0c5e33">~IDsGenerator</a>();</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="classIDsGenerator.html#a4bcf16d02f1950be690fed4ecd33608f">generateUniqueExchangeID</a>();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> <a class="code" href="classIDsGenerator.html#a8605fdd3d67146e0ba67982ec3125d7e">getUniqueExpanderID</a>();</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classIDsGenerator.html">IDsGenerator</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> exchange_id_cursor_;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    ExpanderID expander_id_cursor_;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classLock.html">Lock</a> lock_;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIDsGenerator.html">IDsGenerator</a>* instance_;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classIDsGenerator.html#a7b41f2e11f6adeadd7957fd94dd59dca">IDsGenerator</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classIDsGenerator.html#a5a1c92b1b91008b02a69bd621f910b20">   22</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="classIDsGenerator.html#a5a1c92b1b91008b02a69bd621f910b20">exchange_id_cursor_</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classIDsGenerator.html#af9c1f84d3fb3a3d8e57b9a74a0c17c0e">   23</a></span>&#160;    <a class="code" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> <a class="code" href="classIDsGenerator.html#af9c1f84d3fb3a3d8e57b9a74a0c17c0e">expander_id_cursor_</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classIDsGenerator.html#a16e19f470ce58ea569e27efb583a734c">   24</a></span>&#160;    <a class="code" href="classLock.html">Lock</a> <a class="code" href="classIDsGenerator.html#a16e19f470ce58ea569e27efb583a734c">lock_</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classIDsGenerator.html#a0f01a5769d45f44d694e21401aece038">   25</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classIDsGenerator.html">IDsGenerator</a>* <a class="code" href="classIDsGenerator.html#a0f01a5769d45f44d694e21401aece038">instance_</a>;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;};</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* IDSGENERATOR_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classIDsGenerator_html_a4bcf16d02f1950be690fed4ecd33608f"><div class="ttname"><a href="classIDsGenerator.html#a4bcf16d02f1950be690fed4ecd33608f">IDsGenerator::generateUniqueExchangeID</a></div><div class="ttdeci">unsigned long long int generateUniqueExchangeID()</div><div class="ttdef"><b>Definition:</b> IDsGenerator.cpp:20</div></div>
+<div class="ttc" id="lock_8h_html"><div class="ttname"><a href="lock_8h.html">lock.h</a></div></div>
+<div class="ttc" id="classIDsGenerator_html_a5a1c92b1b91008b02a69bd621f910b20"><div class="ttname"><a href="classIDsGenerator.html#a5a1c92b1b91008b02a69bd621f910b20">IDsGenerator::exchange_id_cursor_</a></div><div class="ttdeci">unsigned long long int exchange_id_cursor_</div><div class="ttdef"><b>Definition:</b> IDsGenerator.h:22</div></div>
+<div class="ttc" id="classIDsGenerator_html_a15c3511c3c14f4cf44a97f5eaf936ee7"><div class="ttname"><a href="classIDsGenerator.html#a15c3511c3c14f4cf44a97f5eaf936ee7">IDsGenerator::getInstance</a></div><div class="ttdeci">static IDsGenerator * getInstance()</div><div class="ttdef"><b>Definition:</b> IDsGenerator.cpp:35</div></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
+<div class="ttc" id="classIDsGenerator_html_aafa8a9d2cd5154aa9656d9700e0c5e33"><div class="ttname"><a href="classIDsGenerator.html#aafa8a9d2cd5154aa9656d9700e0c5e33">IDsGenerator::~IDsGenerator</a></div><div class="ttdeci">virtual ~IDsGenerator()</div><div class="ttdef"><b>Definition:</b> IDsGenerator.cpp:16</div></div>
+<div class="ttc" id="classIDsGenerator_html_a16e19f470ce58ea569e27efb583a734c"><div class="ttname"><a href="classIDsGenerator.html#a16e19f470ce58ea569e27efb583a734c">IDsGenerator::lock_</a></div><div class="ttdeci">Lock lock_</div><div class="ttdef"><b>Definition:</b> IDsGenerator.h:24</div></div>
+<div class="ttc" id="ids_8h_html"><div class="ttname"><a href="ids_8h.html">ids.h</a></div></div>
+<div class="ttc" id="classIDsGenerator_html_a0f01a5769d45f44d694e21401aece038"><div class="ttname"><a href="classIDsGenerator.html#a0f01a5769d45f44d694e21401aece038">IDsGenerator::instance_</a></div><div class="ttdeci">static IDsGenerator * instance_</div><div class="ttdef"><b>Definition:</b> IDsGenerator.h:25</div></div>
+<div class="ttc" id="classIDsGenerator_html_a8605fdd3d67146e0ba67982ec3125d7e"><div class="ttname"><a href="classIDsGenerator.html#a8605fdd3d67146e0ba67982ec3125d7e">IDsGenerator::getUniqueExpanderID</a></div><div class="ttdeci">ExpanderID getUniqueExpanderID()</div><div class="ttdef"><b>Definition:</b> IDsGenerator.cpp:27</div></div>
+<div class="ttc" id="classIDsGenerator_html_a7b41f2e11f6adeadd7957fd94dd59dca"><div class="ttname"><a href="classIDsGenerator.html#a7b41f2e11f6adeadd7957fd94dd59dca">IDsGenerator::IDsGenerator</a></div><div class="ttdeci">IDsGenerator()</div><div class="ttdef"><b>Definition:</b> IDsGenerator.cpp:10</div></div>
+<div class="ttc" id="classIDsGenerator_html_af9c1f84d3fb3a3d8e57b9a74a0c17c0e"><div class="ttname"><a href="classIDsGenerator.html#af9c1f84d3fb3a3d8e57b9a74a0c17c0e">IDsGenerator::expander_id_cursor_</a></div><div class="ttdeci">ExpanderID expander_id_cursor_</div><div class="ttdef"><b>Definition:</b> IDsGenerator.h:23</div></div>
 <div class="ttc" id="classIDsGenerator_html"><div class="ttname"><a href="classIDsGenerator.html">IDsGenerator</a></div><div class="ttdef"><b>Definition:</b> IDsGenerator.h:14</div></div>
+<div class="ttc" id="ids_8h_html_a1a928d56a19339d0a6e7142a0057e027"><div class="ttname"><a href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a></div><div class="ttdeci">unsigned long ExpanderID</div><div class="ttdef"><b>Definition:</b> ids.h:30</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>IDsGenerator.h</b></li>
+    <li class="navelem"><a class="el" href="IDsGenerator_8h.html">IDsGenerator.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

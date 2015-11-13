@@ -1,4 +1,4 @@
-.TH "QExpr" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "QExpr" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,23 @@ QExpr \-
 .br
 .PP
 .PP
+\fC#include <qnode\&.h>\fP
+.PP
 Inherits \fBQNode\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBQExpr\fP (char *val, data_type r_type, char *t_alias)"
+.RI "\fBQExpr\fP (char *val, \fBdata_type\fP a_type, char *t_alias)"
 .br
 .ti -1c
 .RI "\fBQExpr\fP (\fBQExpr\fP *node)"
+.br
+.ti -1c
+.RI "\fBQExpr\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~QExpr\fP ()"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -25,6 +33,13 @@ Inherits \fBQNode\fP\&.
 .RI "string \fBconst_value\fP"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -32,7 +47,35 @@ Inherits \fBQNode\fP\&.
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QExpr::QExpr (char *val, \fBdata_type\fPa_type, char *t_alias)"
+
+.PP
+References QNode::actual_type, QNode::alias, const_value, NULL, t_qexpr, QNode::type, and QNode::value\&.
+.SS "QExpr::QExpr (\fBQExpr\fP *node)"
+
+.PP
+References QNode::actual_type, QNode::alias, const_value, QNode::isnull, QNode::length, QNode::return_type, and QNode::type\&.
+.SS "QExpr::QExpr ()\fC [inline]\fP"
+
+.SS "virtual QExpr::~QExpr ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class Archive > void QExpr::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "string QExpr::const_value"
+
+.PP
+Referenced by codegen_const(), InitExprAtLogicalPlan(), InitExprAtPhysicalPlan(), and QExpr()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

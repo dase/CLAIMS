@@ -7,6 +7,7 @@ var classJson_1_1ValueConstIterator =
     [ "size_t", "classJson_1_1ValueConstIterator.html#a8685219d214dbd2b763357ae94fb0f27", null ],
     [ "value_type", "classJson_1_1ValueConstIterator.html#aa5f1707dcef4bfe73e23ddc14dbe760d", null ],
     [ "ValueConstIterator", "classJson_1_1ValueConstIterator.html#a1b10a46f1606421b0663492a5f9a2aad", null ],
+    [ "ValueConstIterator", "classJson_1_1ValueConstIterator.html#aa0a87edf5f1097f91dca5f2a389c4abd", null ],
     [ "operator*", "classJson_1_1ValueConstIterator.html#aeb44153d71c61ac9397a84d5ecc244c5", null ],
     [ "operator++", "classJson_1_1ValueConstIterator.html#ab3f0c2edbfc8f7d60645f3d597d05e28", null ],
     [ "operator++", "classJson_1_1ValueConstIterator.html#a2cfe2f7a94a688186efdafb1b181c319", null ],

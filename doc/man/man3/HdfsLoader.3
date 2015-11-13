@@ -1,4 +1,4 @@
-.TH "HdfsLoader" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "HdfsLoader" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,14 +6,22 @@ HdfsLoader \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Hdfsloader\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBHdfsLoader\fP (\fBTableDescriptor\fP *tableDescriptor, const char c_separator= '|', const char r_separator= '\\n', open_flag open_flag_=APPENDD)"
+.RI "\fBHdfsLoader\fP ()"
 .br
 .ti -1c
-.RI "\fBHdfsLoader\fP (const char c_separator, const char r_separator, std::vector< std::string > file_name, \fBTableDescriptor\fP *tableDescriptor, open_flag open_flag_=CREATEE)"
+.RI "\fBHdfsLoader\fP (\fBTableDescriptor\fP *tableDescriptor, const char c_separator= '|', const char r_separator= '\\n', \fBopen_flag\fP \fBopen_flag_\fP=\fBAPPENDD\fP)"
+.br
+.ti -1c
+.RI "\fBHdfsLoader\fP (const char c_separator, const char r_separator, std::vector< std::string > file_name, \fBTableDescriptor\fP *tableDescriptor, \fBopen_flag\fP \fBopen_flag_\fP=\fBCREATEE\fP)"
+.br
+.ti -1c
+.RI "virtual \fB~HdfsLoader\fP ()"
 .br
 .ti -1c
 .RI "const char \fBget_c_separator\fP ()"
@@ -50,21 +58,190 @@ HdfsLoader \-
 .RI "vector< int > \fBpartition_key_index\fP"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBConnector\fP * \fBconnector_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size\fP"
+.br
+.ti -1c
+.RI "const char \fBcol_separator\fP"
+.br
+.ti -1c
+.RI "const char \fBrow_separator\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBfile_list\fP"
+.br
+.ti -1c
+.RI "vector< vector< string > > \fBwritepath\fP"
+.br
+.ti -1c
+.RI "\fBBlock\fP * \fBsblock\fP"
+.br
+.ti -1c
+.RI "std::string \fBs_record\fP"
+.br
+.ti -1c
+.RI "vector< vector
+.br
+< \fBBlockStreamBase\fP * > > \fBpj_buffer\fP"
+.br
+.ti -1c
+.RI "vector< vector< unsigned long > > \fBblocks_per_partition\fP"
+.br
+.ti -1c
+.RI "vector< vector< unsigned long > > \fBtuples_per_partition\fP"
+.br
+.ti -1c
+.RI "vector< \fBSubTuple\fP * > \fBsub_tuple_generator\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBtable_schema\fP"
+.br
+.ti -1c
+.RI "vector< \fBSchema\fP * > \fBprojection_schema\fP"
+.br
+.ti -1c
+.RI "\fBopen_flag\fP \fBopen_flag_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HdfsLoader::HdfsLoader ()"
+
+.SS "HdfsLoader::HdfsLoader (\fBTableDescriptor\fP *tableDescriptor, const charc_separator = \fC'|'\fP, const charr_separator = \fC'\\n'\fP, \fBopen_flag\fPopen_flag_ = \fC\fBAPPENDD\fP\fP)"
+
+.PP
+References APPENDD, BLOCK_SIZE, block_size, blocks_per_partition, BlockStreamBase::createBlock(), ProjectionDescriptor::getAttributeIndex(), ProjectionDescriptor::getAttributeList(), Partitioner::getNumberOfPartitions(), TableDescriptor::getNumberOfProjection(), Partitioner::getPartitionBlocks(), Partitioner::getPartitionCardinality(), ProjectionDescriptor::getPartitioner(), Partitioner::getPartitionFunction(), Partitioner::getPartitionKey(), ProjectionDescriptor::getProjectionID(), TableDescriptor::getProjectoin(), TableDescriptor::getRowNumber(), ProjectionDescriptor::getSchema(), TableDescriptor::getSchema(), partition_functin_list_, partition_key_index, pj_buffer, projection_schema, row_id, sblock, sub_tuple_generator, table_descriptor_, table_schema, tuples_per_partition, and writepath\&.
+.SS "HdfsLoader::HdfsLoader (const charc_separator, const charr_separator, std::vector< std::string >file_name, \fBTableDescriptor\fP *tableDescriptor, \fBopen_flag\fPopen_flag_ = \fC\fBCREATEE\fP\fP)"
+
+.PP
+References APPENDD, BLOCK_SIZE, block_size, blocks_per_partition, BlockStreamBase::createBlock(), ProjectionDescriptor::getAttributeIndex(), ProjectionDescriptor::getAttributeList(), Partitioner::getNumberOfPartitions(), TableDescriptor::getNumberOfProjection(), Partitioner::getPartitionBlocks(), Partitioner::getPartitionCardinality(), ProjectionDescriptor::getPartitioner(), Partitioner::getPartitionFunction(), Partitioner::getPartitionKey(), ProjectionDescriptor::getProjectionID(), TableDescriptor::getProjectoin(), TableDescriptor::getRowNumber(), ProjectionDescriptor::getSchema(), TableDescriptor::getSchema(), partition_functin_list_, partition_key_index, pj_buffer, projection_schema, row_id, sblock, sub_tuple_generator, table_descriptor_, table_schema, tuples_per_partition, and writepath\&.
+.SS "HdfsLoader::~HdfsLoader ()\fC [virtual]\fP"
+
+.PP
+References connector_, file_list, row_id, table_descriptor_, and writepath\&.
+.PP
+Referenced by load_tpc_h_4_partition()\&.
 .SH "Member Function Documentation"
 .PP 
+.SS "bool HdfsLoader::append (std::stringtuple_string)"
+
+.PP
+References blocks_per_partition, Connector::closeFiles(), connector_, Connector::flush(), Block::getBlock(), Partitioner::getNumberOfPartitions(), TableDescriptor::getNumberOfProjection(), ProjectionDescriptor::getPartitioner(), TableDescriptor::getProjectoin(), Block::getsize(), insertRecords(), Config::local_disk_mode, open_flag_, Connector::openFiles(), pj_buffer, Partitioner::RegisterPartitionWithNumberOfBlocks(), row_id, s_record, sblock, TableDescriptor::setRowNumber(), table_descriptor_, Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager(), and writepath\&.
+.PP
+Referenced by claims::stmt_handler::InsertExec::Execute(), and inmemory_append_test()\&.
+.SS "const char HdfsLoader::get_c_separator ()"
+
+.PP
+References col_separator\&.
+.SS "vector< string > HdfsLoader::get_file_list ()"
+
+.PP
+References file_list\&.
+.SS "const char HdfsLoader::get_r_separator ()"
+
+.PP
+References row_separator\&.
 .SS "bool HdfsLoader::insertRecords ()"
 \fIfor testing begin\fP/
 .PP
 \fIfor testing end\fP/ 
 .PP
-Referenced by load()\&.
+References blocks_per_partition, col_separator, connector_, Connector::flush(), Block::getBlock(), TableDescriptor::getNumberOfProjection(), Block::getsize(), Schema::getTupleMaxSize(), partition_functin_list_, partition_key_index, pj_buffer, projection_schema, row_id, s_record, sblock, sub_tuple_generator, t_u_long, table_descriptor_, table_schema, Schema::toValue(), and tuples_per_partition\&.
+.PP
+Referenced by append(), and load()\&.
 .SS "bool HdfsLoader::load (doublesample_rate = \fC1\fP)"
 \fIfor testing begin\fP/
 .PP
 \fIfor testing end\fP/ 
 .PP
-References insertRecords(), and ProjectionBinding::UnbindingEntireProjection()\&.
+References Partitioner::allPartitionBound(), APPENDD, blocks_per_partition, Connector::closeFiles(), connector_, CREATEE, file_list, Connector::flush(), Catalog::getBindingModele(), Block::getBlock(), Catalog::getInstance(), Partitioner::getNumberOfPartitions(), TableDescriptor::getNumberOfProjection(), ProjectionDescriptor::getPartitioner(), TableDescriptor::getProjectoin(), Block::getsize(), insertRecords(), Config::local_disk_mode, open_flag_, Connector::openFiles(), pj_buffer, Partitioner::RegisterPartitionWithNumberOfBlocks(), row_id, row_separator, s_record, sblock, TableDescriptor::setRowNumber(), table_descriptor_, ProjectionBinding::UnbindingEntireProjection(), Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager(), and writepath\&.
+.PP
+Referenced by append_test(), create_load_test(), claims::stmt_handler::LoadExec::Execute(), load_tpc_h_4_partition(), and LoadData()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned HdfsLoader::block_size\fC [private]\fP"
+
+.PP
+Referenced by HdfsLoader()\&.
+.SS "vector<vector <unsigned long> > HdfsLoader::blocks_per_partition\fC [private]\fP"
+
+.PP
+Referenced by append(), HdfsLoader(), insertRecords(), and load()\&.
+.SS "const char HdfsLoader::col_separator\fC [private]\fP"
+
+.PP
+Referenced by get_c_separator(), and insertRecords()\&.
+.SS "\fBConnector\fP* HdfsLoader::connector_\fC [private]\fP"
+
+.PP
+Referenced by append(), insertRecords(), load(), and ~HdfsLoader()\&.
+.SS "std::vector<std::string> HdfsLoader::file_list\fC [private]\fP"
+
+.PP
+Referenced by get_file_list(), load(), and ~HdfsLoader()\&.
+.SS "\fBopen_flag\fP HdfsLoader::open_flag_\fC [private]\fP"
+
+.PP
+Referenced by append(), and load()\&.
+.SS "vector<\fBPartitionFunction\fP*> HdfsLoader::partition_functin_list_"
+
+.PP
+Referenced by HdfsLoader(), and insertRecords()\&.
+.SS "vector<int> HdfsLoader::partition_key_index"
+
+.PP
+Referenced by HdfsLoader(), and insertRecords()\&.
+.SS "vector< vector<\fBBlockStreamBase\fP*> > HdfsLoader::pj_buffer\fC [private]\fP"
+
+.PP
+Referenced by append(), HdfsLoader(), insertRecords(), and load()\&.
+.SS "vector<\fBSchema\fP*> HdfsLoader::projection_schema\fC [private]\fP"
+
+.PP
+Referenced by HdfsLoader(), and insertRecords()\&.
+.SS "unsigned long HdfsLoader::row_id"
+
+.PP
+Referenced by append(), HdfsLoader(), insertRecords(), load(), and ~HdfsLoader()\&.
+.SS "const char HdfsLoader::row_separator\fC [private]\fP"
+
+.PP
+Referenced by get_r_separator(), and load()\&.
+.SS "std::string HdfsLoader::s_record\fC [private]\fP"
+
+.PP
+Referenced by append(), insertRecords(), and load()\&.
+.SS "\fBBlock\fP* HdfsLoader::sblock\fC [private]\fP"
+
+.PP
+Referenced by append(), HdfsLoader(), insertRecords(), and load()\&.
+.SS "vector<\fBSubTuple\fP*> HdfsLoader::sub_tuple_generator\fC [private]\fP"
+
+.PP
+Referenced by HdfsLoader(), and insertRecords()\&.
+.SS "\fBTableDescriptor\fP* HdfsLoader::table_descriptor_"
+
+.PP
+Referenced by append(), HdfsLoader(), insertRecords(), load(), and ~HdfsLoader()\&.
+.SS "\fBSchema\fP* HdfsLoader::table_schema\fC [private]\fP"
+
+.PP
+Referenced by HdfsLoader(), and insertRecords()\&.
+.SS "vector<vector <unsigned long> > HdfsLoader::tuples_per_partition\fC [private]\fP"
+
+.PP
+Referenced by HdfsLoader(), and insertRecords()\&.
+.SS "vector<vector<string> > HdfsLoader::writepath\fC [private]\fP"
+
+.PP
+Referenced by append(), HdfsLoader(), load(), and ~HdfsLoader()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

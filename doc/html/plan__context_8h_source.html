@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: logical_operator/plan_context.h Source File</title>
+<title>Claims: logical_operator/plan_context.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('plan__context_8h_source.html','');});
 <div class="title">plan_context.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="plan__context_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright [2012-2015] DaSE@ECNU</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</span></div>
@@ -133,54 +133,62 @@ $(document).ready(function(){initNavTree('plan__context_8h_source.html','');});
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment"> * Description:</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#ifndef LOGICAL_QUERY_PLAN_PLAN_CONTEXT_H_</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define LOGICAL_QUERY_PLAN_PLAN_CONTEXT_H_</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#ifndef LOGICAL_OPERATOR_PLAN_CONTEXT_H_</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define LOGICAL_OPERATOR_PLAN_CONTEXT_H_</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &quot;../Catalog/Column.h&quot;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;../Catalog/Partitioner.h&quot;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/plan_partitioner.h&quot;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;../common/Schema/Schema.h&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;../common/Schema/Schema.h&quot;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/plan_partitioner.h&quot;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>claims {</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>logical_operator {</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">   43</a></span>&#160;<span class="keyword">class </span><a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a> {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span>LogcalOperator;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a>();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a>(<span class="keyword">const</span> <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a>&amp; plan_context);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keyword">virtual</span> ~<a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html">PlanContext</a>();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html#ae0ff21761d28abad9e602d0b70b3f36f">GetAggregatedDatasize</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="comment">// cardinality = tuple number</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> GetAggregatedDataCardinality() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">bool</span> IsHashPartitioned() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanContext.html#a8d686b43ea2db4eea014aca3a7cab31a">GetSchema</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordtype">unsigned</span> GetTupleSize() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <a class="code" href="structAttribute.html">Attribute</a> GetAttribute(std::string name) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <a class="code" href="structAttribute.html">Attribute</a> GetAttribute(std::string tbname, std::string colname) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  std::vector&lt;Attribute&gt; attribute_list_;  <span class="comment">// maintain the output attributes</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                           <span class="comment">// after having completed current</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                                           <span class="comment">// operator.</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> commu_cost_;               <span class="comment">// communication cost</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="comment">// describe the information of the data partition</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <a class="code" href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">PlanPartitioner</a> plan_partitioner_;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}  <span class="comment">// namespace logical_operator</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}  <span class="comment">// namespace claims</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif  // LOGICAL_QUERY_PLAN_PLAN_CONTEXT_H_</span></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html_a8d686b43ea2db4eea014aca3a7cab31a"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html#a8d686b43ea2db4eea014aca3a7cab31a">claims::logical_operator::PlanContext::GetSchema</a></div><div class="ttdeci">Schema * GetSchema() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:55</div></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__operator_1_1PlanContext.html">   43</a></span>&#160;<span class="keyword">class </span><a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html">PlanContext</a> {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#ae13d31fa8ecd839e9d5c3a74f17b3a90">PlanContext</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#ae13d31fa8ecd839e9d5c3a74f17b3a90">PlanContext</a>(<span class="keyword">const</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html">PlanContext</a>&amp; plan_context);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a100ad949cbdc9a3adee11b7ac4592ba7">~PlanContext</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a87842c46c2162654c64793e9202d5da3">GetAggregatedDatasize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="comment">// cardinality = tuple number</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#adef4629760cfb1bf0081ea76adfcf5cd">GetAggregatedDataCardinality</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#ac563882d258900ce3fdcc16a6a7c6718">IsHashPartitioned</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a4280d86cc37385d31dcaf9d8056716e8">GetSchema</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a84e9961620ed671ced3f9260020b2fdd">GetTupleSize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <a class="code" href="structAttribute.html">Attribute</a> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a95b72a4ea67ab09177737fd99c3e1484">GetAttribute</a>(std::string name) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <a class="code" href="structAttribute.html">Attribute</a> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a95b72a4ea67ab09177737fd99c3e1484">GetAttribute</a>(std::string tbname, std::string colname) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__operator_1_1PlanContext.html#a5c7c727cee9b73d120f58e0b76fa9345">   62</a></span>&#160;  std::vector&lt;Attribute&gt; <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a5c7c727cee9b73d120f58e0b76fa9345">attribute_list_</a>;  <span class="comment">// maintain the output attributes</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                                           <span class="comment">// after having completed current</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                           <span class="comment">// operator.</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__operator_1_1PlanContext.html#aac79193898866dce8b5d227ab354a1ed">   65</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#aac79193898866dce8b5d227ab354a1ed">commu_cost_</a>;               <span class="comment">// communication cost</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="comment">// describe the information of the data partition</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classclaims_1_1logical__operator_1_1PlanContext.html#a2efda7b16d7adae26285207b2ddc54dc">   67</a></span>&#160;  <a class="code" href="classclaims_1_1logical__operator_1_1PlanPartitioner.html">PlanPartitioner</a> <a class="code" href="classclaims_1_1logical__operator_1_1PlanContext.html#a2efda7b16d7adae26285207b2ddc54dc">plan_partitioner_</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}  <span class="comment">// namespace logical_operator</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}  <span class="comment">// namespace claims</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif  // LOGICAL_OPERATOR_PLAN_CONTEXT_H_</span></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_aac79193898866dce8b5d227ab354a1ed"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#aac79193898866dce8b5d227ab354a1ed">claims::logical_operator::PlanContext::commu_cost_</a></div><div class="ttdeci">unsigned long commu_cost_</div><div class="ttdef"><b>Definition:</b> plan_context.h:65</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanPartitioner_html"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanPartitioner.html">claims::logical_operator::PlanPartitioner</a></div><div class="ttdef"><b>Definition:</b> plan_partitioner.h:45</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a100ad949cbdc9a3adee11b7ac4592ba7"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a100ad949cbdc9a3adee11b7ac4592ba7">claims::logical_operator::PlanContext::~PlanContext</a></div><div class="ttdeci">virtual ~PlanContext()</div><div class="ttdef"><b>Definition:</b> plan_context.cpp:41</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a87842c46c2162654c64793e9202d5da3"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a87842c46c2162654c64793e9202d5da3">claims::logical_operator::PlanContext::GetAggregatedDatasize</a></div><div class="ttdeci">unsigned long GetAggregatedDatasize() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:47</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_ac563882d258900ce3fdcc16a6a7c6718"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#ac563882d258900ce3fdcc16a6a7c6718">claims::logical_operator::PlanContext::IsHashPartitioned</a></div><div class="ttdeci">bool IsHashPartitioned() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:54</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html">claims::logical_operator::PlanContext</a></div><div class="ttdef"><b>Definition:</b> plan_context.h:43</div></div>
 <div class="ttc" id="structAttribute_html"><div class="ttname"><a href="structAttribute.html">Attribute</a></div><div class="ttdef"><b>Definition:</b> Attribute.h:19</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanPartitioner_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanPartitioner.html">claims::logical_operator::PlanPartitioner</a></div><div class="ttdef"><b>Definition:</b> plan_partitioner.h:45</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html">claims::logical_operator::PlanContext</a></div><div class="ttdef"><b>Definition:</b> plan_context.h:43</div></div>
-<div class="ttc" id="classclaims_1_1logical__query__plan_1_1PlanContext_html_ae0ff21761d28abad9e602d0b70b3f36f"><div class="ttname"><a href="classclaims_1_1logical__query__plan_1_1PlanContext.html#ae0ff21761d28abad9e602d0b70b3f36f">claims::logical_operator::PlanContext::GetAggregatedDatasize</a></div><div class="ttdeci">unsigned long GetAggregatedDatasize() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:45</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a5c7c727cee9b73d120f58e0b76fa9345"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a5c7c727cee9b73d120f58e0b76fa9345">claims::logical_operator::PlanContext::attribute_list_</a></div><div class="ttdeci">std::vector&lt; Attribute &gt; attribute_list_</div><div class="ttdef"><b>Definition:</b> plan_context.h:62</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a4280d86cc37385d31dcaf9d8056716e8"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a4280d86cc37385d31dcaf9d8056716e8">claims::logical_operator::PlanContext::GetSchema</a></div><div class="ttdeci">Schema * GetSchema() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:57</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_ae13d31fa8ecd839e9d5c3a74f17b3a90"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#ae13d31fa8ecd839e9d5c3a74f17b3a90">claims::logical_operator::PlanContext::PlanContext</a></div><div class="ttdeci">PlanContext()</div><div class="ttdef"><b>Definition:</b> plan_context.cpp:39</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a84e9961620ed671ced3f9260020b2fdd"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a84e9961620ed671ced3f9260020b2fdd">claims::logical_operator::PlanContext::GetTupleSize</a></div><div class="ttdeci">unsigned GetTupleSize() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:68</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a2efda7b16d7adae26285207b2ddc54dc"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a2efda7b16d7adae26285207b2ddc54dc">claims::logical_operator::PlanContext::plan_partitioner_</a></div><div class="ttdeci">PlanPartitioner plan_partitioner_</div><div class="ttdef"><b>Definition:</b> plan_context.h:67</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_a95b72a4ea67ab09177737fd99c3e1484"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#a95b72a4ea67ab09177737fd99c3e1484">claims::logical_operator::PlanContext::GetAttribute</a></div><div class="ttdeci">Attribute GetAttribute(std::string name) const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:75</div></div>
+<div class="ttc" id="classclaims_1_1logical__operator_1_1PlanContext_html_adef4629760cfb1bf0081ea76adfcf5cd"><div class="ttname"><a href="classclaims_1_1logical__operator_1_1PlanContext.html#adef4629760cfb1bf0081ea76adfcf5cd">claims::logical_operator::PlanContext::GetAggregatedDataCardinality</a></div><div class="ttdeci">unsigned long GetAggregatedDataCardinality() const </div><div class="ttdef"><b>Definition:</b> plan_context.cpp:51</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b944f759abe08f1043aa9275bde3151c.html">logical_operator</a></li><li class="navelem"><b>plan_context.h</b></li>
+    <li class="navelem"><a class="el" href="dir_09641256660da02130024f7bbcfb5a3e.html">logical_operator</a></li><li class="navelem"><a class="el" href="plan__context_8h.html">plan_context.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

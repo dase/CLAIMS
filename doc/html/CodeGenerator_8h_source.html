@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: codegen/CodeGenerator.h Source File</title>
+<title>Claims: codegen/CodeGenerator.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('CodeGenerator_8h_source.html','');});
 <div class="title">CodeGenerator.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="CodeGenerator_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * CodeGenerator.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Mar 21, 2015</span></div>
@@ -133,35 +133,50 @@ $(document).ready(function(){initNavTree('CodeGenerator_8h_source.html','');});
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">using</span> llvm::ExecutionEngine;</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classCodeGenerator.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCodeGenerator.html">CodeGenerator</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCodeGenerator.html">CodeGenerator</a>* getInstance();</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classCodeGenerator.html">CodeGenerator</a>();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">const</span> Module * getModule()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    llvm::IRBuilder&lt;&gt;* getBuilder()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    FunctionPassManager* getFunctionPassManager()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    ExecutionEngine* getExecutionEngine()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> lock();</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> release();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCodeGenerator.html">CodeGenerator</a>* <a class="code" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e">getInstance</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classCodeGenerator.html#ad272915898f3ed69614de37c0442c357">~CodeGenerator</a>();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">const</span> Module * <a class="code" href="classCodeGenerator.html#ac4ce824c8cbbd675c81b0227beacc3ef">getModule</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    llvm::IRBuilder&lt;&gt;* <a class="code" href="classCodeGenerator.html#a68a2d19f3ba4b5f0f42a3809006d4a0e">getBuilder</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    FunctionPassManager* <a class="code" href="classCodeGenerator.html#abdca7ae597f4d1288b27a7b48e176b20">getFunctionPassManager</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    ExecutionEngine* <a class="code" href="classCodeGenerator.html#a67d8b903aa500eaaef01a4f6b3bbce5d">getExecutionEngine</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classCodeGenerator.html#a871871783e54e24219d0a5751d97cd92">lock</a>();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classCodeGenerator.html#a513a1ebb8483799c16dab83c97079591">release</a>();</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classCodeGenerator.html">CodeGenerator</a>();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> llvm::IRBuilder&lt;&gt;* builder_;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">static</span> Module* module_;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">static</span> FunctionPassManager* fpm_;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCodeGenerator.html">CodeGenerator</a>* instance_;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">static</span> ExecutionEngine* engine_;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11">CodeGenerator</a>();</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classCodeGenerator.html#ad776e76feaadccb759cd257f15182e8c">   38</a></span>&#160;    <span class="keyword">static</span> llvm::IRBuilder&lt;&gt;* <a class="code" href="classCodeGenerator.html#ad776e76feaadccb759cd257f15182e8c">builder_</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classCodeGenerator.html#a223362d68da6927813b857622b2be16d">   39</a></span>&#160;    <span class="keyword">static</span> Module* <a class="code" href="classCodeGenerator.html#a223362d68da6927813b857622b2be16d">module_</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classCodeGenerator.html#a1a0dc9fc4b5b629eee192d2e72eb8f2b">   40</a></span>&#160;    <span class="keyword">static</span> FunctionPassManager* <a class="code" href="classCodeGenerator.html#a1a0dc9fc4b5b629eee192d2e72eb8f2b">fpm_</a>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classCodeGenerator.html#af30647956c9f9aa698bfad6d7444b785">   41</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classCodeGenerator.html">CodeGenerator</a>* <a class="code" href="classCodeGenerator.html#af30647956c9f9aa698bfad6d7444b785">instance_</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classCodeGenerator.html#a5effb9a937b27f4a7d4934c21db2e5fc">   42</a></span>&#160;    <span class="keyword">static</span> ExecutionEngine* <a class="code" href="classCodeGenerator.html#a5effb9a937b27f4a7d4934c21db2e5fc">engine_</a>;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classLock.html">Lock</a> lock_;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classCodeGenerator.html#aff81b81e56010b3a0fde62aad5ff0109">   44</a></span>&#160;    <a class="code" href="classLock.html">Lock</a> <a class="code" href="classCodeGenerator.html#aff81b81e56010b3a0fde62aad5ff0109">lock_</a>;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* CODEGENERATOR_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
+<div class="ttc" id="classCodeGenerator_html_a5effb9a937b27f4a7d4934c21db2e5fc"><div class="ttname"><a href="classCodeGenerator.html#a5effb9a937b27f4a7d4934c21db2e5fc">CodeGenerator::engine_</a></div><div class="ttdeci">static ExecutionEngine * engine_</div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:42</div></div>
+<div class="ttc" id="classCodeGenerator_html_a1a0dc9fc4b5b629eee192d2e72eb8f2b"><div class="ttname"><a href="classCodeGenerator.html#a1a0dc9fc4b5b629eee192d2e72eb8f2b">CodeGenerator::fpm_</a></div><div class="ttdeci">static FunctionPassManager * fpm_</div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:40</div></div>
+<div class="ttc" id="classCodeGenerator_html_a513a1ebb8483799c16dab83c97079591"><div class="ttname"><a href="classCodeGenerator.html#a513a1ebb8483799c16dab83c97079591">CodeGenerator::release</a></div><div class="ttdeci">void release()</div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:53</div></div>
+<div class="ttc" id="classCodeGenerator_html_af30647956c9f9aa698bfad6d7444b785"><div class="ttname"><a href="classCodeGenerator.html#af30647956c9f9aa698bfad6d7444b785">CodeGenerator::instance_</a></div><div class="ttdeci">static CodeGenerator * instance_</div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:41</div></div>
+<div class="ttc" id="classCodeGenerator_html_a8dd417760886f58da2fc83d60a2b1a11"><div class="ttname"><a href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11">CodeGenerator::CodeGenerator</a></div><div class="ttdeci">CodeGenerator()</div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:58</div></div>
+<div class="ttc" id="classCodeGenerator_html_abdca7ae597f4d1288b27a7b48e176b20"><div class="ttname"><a href="classCodeGenerator.html#abdca7ae597f4d1288b27a7b48e176b20">CodeGenerator::getFunctionPassManager</a></div><div class="ttdeci">FunctionPassManager * getFunctionPassManager() const </div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:41</div></div>
+<div class="ttc" id="classCodeGenerator_html_a223362d68da6927813b857622b2be16d"><div class="ttname"><a href="classCodeGenerator.html#a223362d68da6927813b857622b2be16d">CodeGenerator::module_</a></div><div class="ttdeci">static Module * module_</div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:39</div></div>
+<div class="ttc" id="classCodeGenerator_html_a67d8b903aa500eaaef01a4f6b3bbce5d"><div class="ttname"><a href="classCodeGenerator.html#a67d8b903aa500eaaef01a4f6b3bbce5d">CodeGenerator::getExecutionEngine</a></div><div class="ttdeci">ExecutionEngine * getExecutionEngine() const </div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:45</div></div>
+<div class="ttc" id="classCodeGenerator_html_ad776e76feaadccb759cd257f15182e8c"><div class="ttname"><a href="classCodeGenerator.html#ad776e76feaadccb759cd257f15182e8c">CodeGenerator::builder_</a></div><div class="ttdeci">static llvm::IRBuilder * builder_</div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:38</div></div>
+<div class="ttc" id="classCodeGenerator_html_ac4ce824c8cbbd675c81b0227beacc3ef"><div class="ttname"><a href="classCodeGenerator.html#ac4ce824c8cbbd675c81b0227beacc3ef">CodeGenerator::getModule</a></div><div class="ttdeci">const Module * getModule() const </div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:33</div></div>
+<div class="ttc" id="classCodeGenerator_html_aff81b81e56010b3a0fde62aad5ff0109"><div class="ttname"><a href="classCodeGenerator.html#aff81b81e56010b3a0fde62aad5ff0109">CodeGenerator::lock_</a></div><div class="ttdeci">Lock lock_</div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:44</div></div>
+<div class="ttc" id="classCodeGenerator_html_a871871783e54e24219d0a5751d97cd92"><div class="ttname"><a href="classCodeGenerator.html#a871871783e54e24219d0a5751d97cd92">CodeGenerator::lock</a></div><div class="ttdeci">void lock()</div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:49</div></div>
 <div class="ttc" id="classCodeGenerator_html"><div class="ttname"><a href="classCodeGenerator.html">CodeGenerator</a></div><div class="ttdef"><b>Definition:</b> CodeGenerator.h:26</div></div>
+<div class="ttc" id="classCodeGenerator_html_ad272915898f3ed69614de37c0442c357"><div class="ttname"><a href="classCodeGenerator.html#ad272915898f3ed69614de37c0442c357">CodeGenerator::~CodeGenerator</a></div><div class="ttdeci">virtual ~CodeGenerator()</div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:71</div></div>
+<div class="ttc" id="classCodeGenerator_html_a68a2d19f3ba4b5f0f42a3809006d4a0e"><div class="ttname"><a href="classCodeGenerator.html#a68a2d19f3ba4b5f0f42a3809006d4a0e">CodeGenerator::getBuilder</a></div><div class="ttdeci">llvm::IRBuilder * getBuilder() const </div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:37</div></div>
+<div class="ttc" id="classCodeGenerator_html_adcda87d7c14f433f0e89e3007a6c835e"><div class="ttname"><a href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e">CodeGenerator::getInstance</a></div><div class="ttdeci">static CodeGenerator * getInstance()</div><div class="ttdef"><b>Definition:</b> CodeGenerator.cpp:26</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_0255d041b3ce7964bcd7b11954959c22.html">codegen</a></li><li class="navelem"><b>CodeGenerator.h</b></li>
+    <li class="navelem"><a class="el" href="dir_0255d041b3ce7964bcd7b11954959c22.html">codegen</a></li><li class="navelem"><a class="el" href="CodeGenerator_8h.html">CodeGenerator.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

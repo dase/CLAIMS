@@ -1,4 +1,4 @@
-.TH "Daemon" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Daemon" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ Daemon \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Daemon\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -26,7 +28,123 @@ Daemon \-
 .RI "static void * \fBworker\fP (void *)"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDaemon\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~Daemon\fP ()"
+.br
+.ti -1c
+.RI "\fBremote_command\fP \fBgetRemoteCommand\fP ()"
+.br
+.ti -1c
+.RI "void \fBaddExecutedResult\fP (const \fBexecuted_result\fP &item)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::list< \fBremote_command\fP > \fBremote_command_queue_\fP"
+.br
+.ti -1c
+.RI "\fBsemaphore\fP \fBsemaphore_command_queue_\fP"
+.br
+.ti -1c
+.RI "std::list< \fBexecuted_result\fP > \fBexecuted_result_queue_\fP"
+.br
+.ti -1c
+.RI "\fBsemaphore\fP \fBsemaphore_result_queue_\fP"
+.br
+.ti -1c
+.RI "\fBLock\fP \fBlock_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBDaemon\fP * \fBinstance_\fP = 0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Daemon::Daemon ()\fC [private]\fP"
+
+.PP
+References NULL, WORK_THREAD_COUNT, and worker()\&.
+.PP
+Referenced by getInstance()\&.
+.SS "Daemon::~Daemon ()\fC [private]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void Daemon::addExecutedResult (const \fBexecuted_result\fP &item)\fC [private]\fP"
+
+.PP
+References Lock::acquire(), executed_result_queue_, lock_, semaphore::post(), Lock::release(), and semaphore_result_queue_\&.
+.PP
+Referenced by worker()\&.
+.SS "void Daemon::addRemoteCommand (const \fBremote_command\fP &rc)"
+
+.PP
+References Lock::acquire(), lock_, semaphore::post(), Lock::release(), remote_command_queue_, and semaphore_command_queue_\&.
+.PP
+Referenced by ClientListener::receiveRequest()\&.
+.SS "\fBexecuted_result\fP Daemon::getExecutedResult ()"
+
+.PP
+References Lock::acquire(), executed_result_queue_, lock_, Lock::release(), semaphore_result_queue_, and semaphore::wait()\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "\fBDaemon\fP * Daemon::getInstance ()\fC [static]\fP"
+
+.PP
+References Daemon(), and instance_\&.
+.PP
+Referenced by ClientListener::receiveRequest(), ClientListener::sendHandler(), and worker()\&.
+.SS "\fBremote_command\fP Daemon::getRemoteCommand ()\fC [private]\fP"
+
+.PP
+References Lock::acquire(), lock_, Lock::release(), remote_command_queue_, semaphore_command_queue_, and semaphore::wait()\&.
+.PP
+Referenced by worker()\&.
+.SS "void * Daemon::worker (void *para)\fC [static]\fP"
+
+.PP
+References addExecutedResult(), ClientListener::checkFdValid(), remote_command::cmd, executed_result::error_info, executed_result::fd, getInstance(), getRemoteCommand(), executed_result::info, ClientLogging::log(), NULL, executed_result::result, Executing::run_sql(), remote_command::socket_fd, and executed_result::status\&.
+.PP
+Referenced by Daemon()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::list<\fBexecuted_result\fP> Daemon::executed_result_queue_\fC [private]\fP"
+
+.PP
+Referenced by addExecutedResult(), and getExecutedResult()\&.
+.SS "\fBDaemon\fP * Daemon::instance_ = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance()\&.
+.SS "\fBLock\fP Daemon::lock_\fC [private]\fP"
+
+.PP
+Referenced by addExecutedResult(), addRemoteCommand(), getExecutedResult(), and getRemoteCommand()\&.
+.SS "std::list<\fBremote_command\fP> Daemon::remote_command_queue_\fC [private]\fP"
+
+.PP
+Referenced by addRemoteCommand(), and getRemoteCommand()\&.
+.SS "\fBsemaphore\fP Daemon::semaphore_command_queue_\fC [private]\fP"
+
+.PP
+Referenced by addRemoteCommand(), and getRemoteCommand()\&.
+.SS "\fBsemaphore\fP Daemon::semaphore_result_queue_\fC [private]\fP"
+
+.PP
+Referenced by addExecutedResult(), and getExecutedResult()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -211,19 +211,20 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
     } else {
       /* the child iterator is exhausted. We add the last block stream block
        * which would be not full into the buffer for hash partitioned case.
+       * but for broadcast, it mean to add one empty block at the end.
        */
-      if (state_.partition_schema_.isHashPartition()) {
-        for (unsigned i = 0; i < upper_num_; ++i) {
-          partitioned_block_stream_[i]->serialize(*block_for_serialization_);
-          partitioned_data_buffer_->insertBlockToPartitionedList(
-              block_for_serialization_, i);
-        }
+
+      for (unsigned i = 0; i < upper_num_; ++i) {
+        partitioned_block_stream_[i]->serialize(*block_for_serialization_);
+        partitioned_data_buffer_->insertBlockToPartitionedList(
+            block_for_serialization_, i);
       }
+
       /* The following lines send an empty block to the upper, indicating that
        * all the data from current sent has been transmit to the uppers.
        */
       for (unsigned i = 0; i < upper_num_; ++i) {
-        if (!partitioned_block_stream_[i]->Empty()) {
+        if (!partitioned_block_stream_[i]->Empty()) {  // only for hash
           partitioned_block_stream_[i]->setEmpty();
           partitioned_block_stream_[i]->serialize(*block_for_serialization_);
           partitioned_data_buffer_->insertBlockToPartitionedList(

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ExpanderTracker Class Reference</title>
+<title>Claims: ExpanderTracker Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -109,67 +109,1023 @@ $(document).ready(function(){initNavTree('classExpanderTracker.html','');});
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classExpanderTracker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ExpanderTracker Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="expander__tracker_8h_source.html">expander_tracker.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for ExpanderTracker:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker__coll__graph.png" border="0" usemap="#ExpanderTracker_coll__map" alt="Collaboration graph"/></div>
+<map name="ExpanderTracker_coll__map" id="ExpanderTracker_coll__map">
+<area shape="rect" id="node2" href="classLogging.html" title="Logging" alt="" coords="5,5,72,32"/><area shape="rect" id="node3" href="classLock.html" title="Lock" alt="" coords="96,5,147,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structExpanderTracker_1_1ExpandedThreadStatus.html">ExpandedThreadStatus</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structExpanderTracker_1_1ExpanderStatus.html">ExpanderStatus</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aaec90a2051274b237ed3d204742a5244"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaec90a2051274b237ed3d204742a5244"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>registerNewExpandedThreadStatus</b> (expanded_thread_id id, ExpanderID exp_id)</td></tr>
+<tr class="memitem:ac054f97e0122a87afed459b25001b8bc"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#ac054f97e0122a87afed459b25001b8bc">~ExpanderTracker</a> ()</td></tr>
+<tr class="separator:ac054f97e0122a87afed459b25001b8bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaec90a2051274b237ed3d204742a5244"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#aaec90a2051274b237ed3d204742a5244">registerNewExpandedThreadStatus</a> (<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a> id, <a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> exp_id)</td></tr>
 <tr class="separator:aaec90a2051274b237ed3d204742a5244"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26ce8fc03887d02b2c032f50e66210a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26ce8fc03887d02b2c032f50e66210a4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>deleteExpandedThreadStatus</b> (expanded_thread_id id)</td></tr>
+<tr class="memitem:a26ce8fc03887d02b2c032f50e66210a4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a26ce8fc03887d02b2c032f50e66210a4">deleteExpandedThreadStatus</a> (<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a> id)</td></tr>
 <tr class="separator:a26ce8fc03887d02b2c032f50e66210a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbbc804c4548638678f6121a6aad13d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abbbc804c4548638678f6121a6aad13d8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isExpandedThreadCallBack</b> (expanded_thread_id id)</td></tr>
+<tr class="memitem:abbbc804c4548638678f6121a6aad13d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#abbbc804c4548638678f6121a6aad13d8">isExpandedThreadCallBack</a> (<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a> id)</td></tr>
 <tr class="separator:abbbc804c4548638678f6121a6aad13d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a169161b4a7eb0fe015338f53c0a5840a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a169161b4a7eb0fe015338f53c0a5840a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>callbackExpandedThread</b> (expanded_thread_id id)</td></tr>
+<tr class="memitem:a169161b4a7eb0fe015338f53c0a5840a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a169161b4a7eb0fe015338f53c0a5840a">callbackExpandedThread</a> (<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a> id)</td></tr>
 <tr class="separator:a169161b4a7eb0fe015338f53c0a5840a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d92c1c5490e5db604817b8064249afe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d92c1c5490e5db604817b8064249afe"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>addNewStageEndpoint</b> (expanded_thread_id, <a class="el" href="structLocalStageEndPoint.html">LocalStageEndPoint</a>)</td></tr>
+<tr class="memitem:a3d92c1c5490e5db604817b8064249afe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a3d92c1c5490e5db604817b8064249afe">addNewStageEndpoint</a> (<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>, <a class="el" href="structLocalStageEndPoint.html">LocalStageEndPoint</a>)</td></tr>
 <tr class="separator:a3d92c1c5490e5db604817b8064249afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82fa9ff9faa8aebc566507c77fac383b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82fa9ff9faa8aebc566507c77fac383b"></a>
-<a class="el" href="structPerformanceInfo.html">PerformanceInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getPerformanceInfo</b> (expanded_thread_id)</td></tr>
+<tr class="memitem:a82fa9ff9faa8aebc566507c77fac383b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerformanceInfo.html">PerformanceInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a82fa9ff9faa8aebc566507c77fac383b">getPerformanceInfo</a> (<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>)</td></tr>
 <tr class="separator:a82fa9ff9faa8aebc566507c77fac383b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2457d3037ca514deb08c965340343425"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2457d3037ca514deb08c965340343425"></a>
-ExpanderID&#160;</td><td class="memItemRight" valign="bottom"><b>registerNewExpander</b> (<a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a> *buffer, <a class="el" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a> *expand_shrink)</td></tr>
+<tr class="memitem:a2457d3037ca514deb08c965340343425"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a2457d3037ca514deb08c965340343425">registerNewExpander</a> (<a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a> *buffer, <a class="el" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a> *expand_shrink)</td></tr>
 <tr class="separator:a2457d3037ca514deb08c965340343425"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae13dfd7a3acabb3ce36546ecab3c6e4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae13dfd7a3acabb3ce36546ecab3c6e4f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unregisterExpander</b> (ExpanderID expander_id)</td></tr>
+<tr class="memitem:ae13dfd7a3acabb3ce36546ecab3c6e4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#ae13dfd7a3acabb3ce36546ecab3c6e4f">unregisterExpander</a> (<a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> expander_id)</td></tr>
 <tr class="separator:ae13dfd7a3acabb3ce36546ecab3c6e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a943b4c53c3b772d016ff5529fc2685"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a943b4c53c3b772d016ff5529fc2685"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>trackExpander</b> (ExpanderID id) const </td></tr>
+<tr class="memitem:a8a943b4c53c3b772d016ff5529fc2685"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a8a943b4c53c3b772d016ff5529fc2685">trackExpander</a> (<a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> id) const </td></tr>
 <tr class="separator:a8a943b4c53c3b772d016ff5529fc2685"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:af367481c76ebecea3de71d97098a60fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af367481c76ebecea3de71d97098a60fb"></a>
-static <a class="el" href="classExpanderTracker.html">ExpanderTracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> ()</td></tr>
+<tr class="memitem:af367481c76ebecea3de71d97098a60fb"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classExpanderTracker.html">ExpanderTracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb">getInstance</a> ()</td></tr>
 <tr class="separator:af367481c76ebecea3de71d97098a60fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb5b54720bd30534a782d8be9e11fb9b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeb5b54720bd30534a782d8be9e11fb9b"></a>
-static segment_status&#160;</td><td class="memItemRight" valign="bottom"><b>getSegmentStatus</b> (<a class="el" href="structlocal__stage.html">local_stage</a> &amp;)</td></tr>
+<tr class="memitem:aeb5b54720bd30534a782d8be9e11fb9b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24">segment_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#aeb5b54720bd30534a782d8be9e11fb9b">getSegmentStatus</a> (<a class="el" href="structlocal__stage.html">local_stage</a> &amp;)</td></tr>
 <tr class="separator:aeb5b54720bd30534a782d8be9e11fb9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aed49f27ed01f1e565e484d8a49f7f4ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aed49f27ed01f1e565e484d8a49f7f4ac"></a>
-std::map&lt; expanded_thread_id, <br class="typebreak"/>
-ExpandedThreadStatus &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>id_to_status_</b></td></tr>
+<tr class="memitem:aed49f27ed01f1e565e484d8a49f7f4ac"><td class="memItemLeft" align="right" valign="top">std::map&lt; <a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>, <br class="typebreak"/>
+<a class="el" href="structExpanderTracker_1_1ExpandedThreadStatus.html">ExpandedThreadStatus</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#aed49f27ed01f1e565e484d8a49f7f4ac">id_to_status_</a></td></tr>
 <tr class="separator:aed49f27ed01f1e565e484d8a49f7f4ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72fd794aeb48b5fde6202feaec81a2ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a72fd794aeb48b5fde6202feaec81a2ed"></a>
-<a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>log_</b></td></tr>
+<tr class="memitem:a72fd794aeb48b5fde6202feaec81a2ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a72fd794aeb48b5fde6202feaec81a2ed">log_</a></td></tr>
 <tr class="separator:a72fd794aeb48b5fde6202feaec81a2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4af4f5f5a8f4b0fe13a15b6dae8d2f3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4af4f5f5a8f4b0fe13a15b6dae8d2f3"></a>
-pthread_t&#160;</td><td class="memItemRight" valign="bottom"><b>monitor_thread_id_</b></td></tr>
+<tr class="memitem:ac4af4f5f5a8f4b0fe13a15b6dae8d2f3"><td class="memItemLeft" align="right" valign="top">pthread_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#ac4af4f5f5a8f4b0fe13a15b6dae8d2f3">monitor_thread_id_</a></td></tr>
 <tr class="separator:ac4af4f5f5a8f4b0fe13a15b6dae8d2f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:a8a9140f9918aaaf6313ddd71cd24ce24"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24">segment_status</a> { <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24af7e307272902ccb9e3003a0e1afd1e74">seg_no_producing</a>, 
+<a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24a98495d3e60d5bf5bd562c9ce6db207b7">seg_normal_producing</a>, 
+<a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24a9b5cc3392812ac274c70db885546a620">seg_over_producing</a>, 
+<a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24aa318d5327987a2e5d8199b06237fc36a">seg_under_producing</a>
+ }</td></tr>
+<tr class="separator:a8a9140f9918aaaf6313ddd71cd24ce24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a177a000aa37fb5987783a77ad288adfd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd">ExpanderTracker</a> ()</td></tr>
+<tr class="separator:a177a000aa37fb5987783a77ad288adfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18b31b59ab535f9fe62bc3a1ccffb767"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767">decideExpandingOrShrinking</a> (<a class="el" href="structlocal__stage.html">local_stage</a> &amp;current_stage, unsigned int current_degree_of_parallelism, bool print=true)</td></tr>
+<tr class="separator:a18b31b59ab535f9fe62bc3a1ccffb767"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f0a6432f63884dcdd20a1fdf4bafd1d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a8f0a6432f63884dcdd20a1fdf4bafd1d">expandeIfNotExceedTheMaxDegreeOfParallelism</a> (int current_degree_of_parallelism) const </td></tr>
+<tr class="separator:a8f0a6432f63884dcdd20a1fdf4bafd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fbedeef2955c49a85f6daf213acd1d5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a0fbedeef2955c49a85f6daf213acd1d5">shrinkIfNotExceedTheMinDegreeOfParallelims</a> (int current_degree_of_parallelism) const </td></tr>
+<tr class="separator:a0fbedeef2955c49a85f6daf213acd1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adda2f99fca43e878259bc68699419058"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#adda2f99fca43e878259bc68699419058">printStatus</a> ()</td></tr>
+<tr class="separator:adda2f99fca43e878259bc68699419058"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:add587f48f3613937f08c94f0570478aa"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread</a> (void *arg)</td></tr>
+<tr class="separator:add587f48f3613937f08c94f0570478aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a765fa3dfd12455170825d99d6b12947d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLock.html">Lock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a></td></tr>
+<tr class="separator:a765fa3dfd12455170825d99d6b12947d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa32d375c9d8a760cb085e1947b816b0e"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>, <br class="typebreak"/>
+<a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a></td></tr>
+<tr class="separator:aa32d375c9d8a760cb085e1947b816b0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7fcfad3d2aedcc99bf9d70145ef839e"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>, <a class="el" href="structExpanderTracker_1_1ExpanderStatus.html">ExpanderStatus</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a></td></tr>
+<tr class="separator:ae7fcfad3d2aedcc99bf9d70145ef839e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd1ce54993c4e7166045d92d4dbf09d7"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>, <br class="typebreak"/>
+<a class="el" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a></td></tr>
+<tr class="separator:abd1ce54993c4e7166045d92d4dbf09d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a6c73decd091751ab1b04f6099dba4308"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classExpanderTracker.html">ExpanderTracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExpanderTracker.html#a6c73decd091751ab1b04f6099dba4308">instance_</a> = 0</td></tr>
+<tr class="separator:a6c73decd091751ab1b04f6099dba4308"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="a8a9140f9918aaaf6313ddd71cd24ce24"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24">ExpanderTracker::segment_status</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a8a9140f9918aaaf6313ddd71cd24ce24af7e307272902ccb9e3003a0e1afd1e74"></a>seg_no_producing</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a8a9140f9918aaaf6313ddd71cd24ce24a98495d3e60d5bf5bd562c9ce6db207b7"></a>seg_normal_producing</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a8a9140f9918aaaf6313ddd71cd24ce24a9b5cc3392812ac274c70db885546a620"></a>seg_over_producing</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a8a9140f9918aaaf6313ddd71cd24ce24aa318d5327987a2e5d8199b06237fc36a"></a>seg_under_producing</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ac054f97e0122a87afed459b25001b8bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ExpanderTracker::~ExpanderTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExpanderTracker.html#a6c73decd091751ab1b04f6099dba4308">instance_</a>, <a class="el" href="classExpanderTracker.html#a72fd794aeb48b5fde6202feaec81a2ed">log_</a>, and <a class="el" href="classExpanderTracker.html#ac4af4f5f5a8f4b0fe13a15b6dae8d2f3">monitor_thread_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a177a000aa37fb5987783a77ad288adfd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ExpanderTracker::ExpanderTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classExpanderTracker.html#a72fd794aeb48b5fde6202feaec81a2ed">log_</a>, <a class="el" href="classExpanderTracker.html#ac4af4f5f5a8f4b0fe13a15b6dae8d2f3">monitor_thread_id_</a>, and <a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread()</a>.</p>
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb">getInstance()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_cgraph.png" border="0" usemap="#classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_cgraph" id="classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="838,132,930,158"/><area shape="rect" id="node3" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="237,114,427,155"/><area shape="rect" id="node4" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="559,45,620,72"/><area shape="rect" id="node5" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="539,96,639,122"/><area shape="rect" id="node6" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="539,146,639,173"/><area shape="rect" id="node7" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767" title="ExpanderTracker::decideExpanding\lOrShrinking" alt="" coords="475,248,703,290"/><area shape="rect" id="node8" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3" title="MonitorableBuffer::\lgetBufferUsage" alt="" coords="818,183,950,224"/><area shape="rect" id="node9" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7" title="MonitorableBuffer::\linputComplete" alt="" coords="818,248,950,290"/><area shape="rect" id="node10" href="classExpanderTracker.html#a8f0a6432f63884dcdd20a1fdf4bafd1d" title="ExpanderTracker::expande\lIfNotExceedTheMaxDegreeOfParallelism" alt="" coords="753,314,1015,355"/><area shape="rect" id="node11" href="classExpanderTracker.html#a0fbedeef2955c49a85f6daf213acd1d5" title="ExpanderTracker::shrinkIf\lNotExceedTheMinDegreeOfParallelims" alt="" coords="759,379,1009,420"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_icgraph.png" border="0" usemap="#classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_icgraph" id="classExpanderTracker_a177a000aa37fb5987783a77ad288adfd_icgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="237,1985,435,2012"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="531,1259,707,1285"/><area shape="rect" id="node37" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="809,1681,980,1722"/><area shape="rect" id="node38" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="483,1710,754,1751"/><area shape="rect" id="node23" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="1324,1857,1495,1898"/><area shape="rect" id="node39" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="533,1827,704,1869"/><area shape="rect" id="node40" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="803,1798,986,1839"/><area shape="rect" id="node41" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="499,1945,738,1986"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="525,2010,713,2051"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951" title="claims::physical_operator\l::PhysicalAggregation::Next" alt="" coords="526,2075,711,2117"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="531,2141,706,2182"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="519,2206,718,2247"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="501,2272,736,2328"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="515,2353,722,2394"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391" title=": fetch block from child operator. " alt="" coords="517,2418,721,2459"/><area shape="rect" id="node4" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="809,947,980,973"/><area shape="rect" id="node5" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1081,136,1228,163"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1091,187,1218,213"/><area shape="rect" id="node7" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1037,238,1272,279"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1076,303,1233,345"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1364,340,1455,367"/><area shape="rect" id="node10" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1057,420,1253,447"/><area shape="rect" id="node11" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1078,471,1231,513"/><area shape="rect" id="node12" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1069,537,1240,578"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1037,602,1273,643"/><area shape="rect" id="node14" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1095,668,1214,695"/><area shape="rect" id="node15" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1081,719,1228,761"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1081,785,1228,826"/><area shape="rect" id="node17" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1108,851,1201,877"/><area shape="rect" id="node20" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1035,902,1275,943"/><area shape="rect" id="node21" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1055,968,1254,1024"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1045,1827,1265,1869"/><area shape="rect" id="node24" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1059,1049,1250,1090"/><area shape="rect" id="node25" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1105,1115,1205,1141"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1083,1166,1227,1207"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1080,1231,1229,1273"/><area shape="rect" id="node28" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1061,1297,1248,1338"/><area shape="rect" id="node19" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1545,1428,1666,1455"/><area shape="rect" id="node29" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1054,1413,1255,1469"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1323,1363,1495,1389"/><area shape="rect" id="node30" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1095,1544,1215,1571"/><area shape="rect" id="node31" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1081,1595,1228,1621"/><area shape="rect" id="node32" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1069,1645,1240,1672"/><area shape="rect" id="node33" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1066,1697,1243,1738"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1077,1762,1232,1803"/><area shape="rect" id="node35" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="1077,5,1232,46"/><area shape="rect" id="node36" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="1087,70,1222,111"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="809,1945,980,1986"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="809,2279,980,2321"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a3d92c1c5490e5db604817b8064249afe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExpanderTracker::addNewStageEndpoint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>&#160;</td>
+          <td class="paramname"><em>tid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structLocalStageEndPoint.html">LocalStageEndPoint</a>&#160;</td>
+          <td class="paramname"><em>endpoint</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c">claims::physical_operator::PhysicalNestLoopJoin::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c">claims::physical_operator::PhysicalAggregation::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d">claims::physical_operator::ExchangeMerger::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41">claims::physical_operator::PhysicalProjectionScan::Open()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5">claims::physical_operator::PhysicalHashJoin::Open()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_cgraph.png" border="0" usemap="#classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_cgraph" id="classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="265,5,365,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="265,56,365,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_icgraph.png" border="0" usemap="#classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_icgraph" id="classExpanderTracker_a3d92c1c5490e5db604817b8064249afe_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="269,5,467,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="274,70,462,111"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="283,135,453,177"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="265,201,471,242"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="281,266,455,307"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a169161b4a7eb0fe015338f53c0a5840a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExpanderTracker::callbackExpandedThread </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#aed49f27ed01f1e565e484d8a49f7f4ac">id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e">claims::physical_operator::Expander::TerminateWorkingThread()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_cgraph.png" border="0" usemap="#classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_cgraph" id="classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="233,5,333,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="233,56,333,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_icgraph.png" border="0" usemap="#classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_icgraph" id="classExpanderTracker_a169161b4a7eb0fe015338f53c0a5840a_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="233,5,471,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="520,5,691,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a18b31b59ab535f9fe62bc3a1ccffb767"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ExpanderTracker::decideExpandingOrShrinking </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structlocal__stage.html">local_stage</a> &amp;&#160;</td>
+          <td class="paramname"><em>current_stage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>current_degree_of_parallelism</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>print</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>In the initial implementation, if all expanded threads are shrunk and the condition for expanding will never be triggered due to the exhaust of input data-flow, then the remaining work will never be done.</p>
+<p>To avoid this problem, we should first check whether the dataflow is exhausted. If so, we should guarantee that there is at least one expanded threads to process the remaining data in buffer.</p>
+<p>Currently, for the stage without synchronization all_merged_data_buffer_, the workload is not known and hence maximum degree of parallelism is used.</p>
+
+<p>References <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264a6f0c5ffb2e24446ed7fe128be45a3cbf">local_stage::buffer_to_buffer</a>, <a class="el" href="structlocal__stage.html#a158c4a88eb7f479e84248dc75aaed20d">local_stage::dataflow_desc_</a>, <a class="el" href="structlocal__stage.html#a3b0ad5f80553ca98e251b5ef504b47f0">local_stage::dataflow_src_</a>, <a class="el" href="expander__tracker_8cpp.html#af1294b05c101f5fc7622c6c8bb0e81d9">DECISION_EXPAND</a>, <a class="el" href="expander__tracker_8cpp.html#a7e6304f79fcad02ec04a0f903aa96fc5">DECISION_KEEP</a>, <a class="el" href="expander__tracker_8cpp.html#ae91f24da6b17bb2c26be72834709f6dd">DECISION_SHRINK</a>, <a class="el" href="classExpanderTracker.html#a8f0a6432f63884dcdd20a1fdf4bafd1d">expandeIfNotExceedTheMaxDegreeOfParallelism()</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264a3ed9031934469c65b9e0d2218630ad91">local_stage::from_buffer</a>, <a class="el" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3">MonitorableBuffer::getBufferUsage()</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264aac3f22190c615fcc484400cb9c718610">local_stage::incomplete</a>, <a class="el" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7">MonitorableBuffer::inputComplete()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classExpanderTracker.html#a72fd794aeb48b5fde6202feaec81a2ed">log_</a>, <a class="el" href="classConfig.html#a7a79cc0f3b2aeaff3d6e0755a95e09af">Config::max_degree_of_parallelism</a>, <a class="el" href="structLocalStageEndPoint.html#a062463fad25bc72380e591f44c4b826a">LocalStageEndPoint::monitorable_buffer</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264afc2f2ff147674157260d35842dc53696">local_stage::no_buffer</a>, <a class="el" href="classExpanderTracker.html#a0fbedeef2955c49a85f6daf213acd1d5">shrinkIfNotExceedTheMinDegreeOfParallelims()</a>, <a class="el" href="expander__tracker_8cpp.html#aa2949c3dc6f3bdac1ec7b5a36decb41d">SWITCHER</a>, <a class="el" href="expander__tracker_8cpp.html#a8becb8f29f1b204a4df9d45da22db39f">THRESHOLD_EMPTY</a>, <a class="el" href="expander__tracker_8cpp.html#a831f1112e8d5c7aa52ab63bcbd423c53">THRESHOLD_FULL</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264aca8bc6d0f6d5e1b11f21404777265554">local_stage::to_buffer</a>, and <a class="el" href="structlocal__stage.html#a6a50a20d567215b7d0c9229723496c86">local_stage::type_</a>.</p>
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_cgraph.png" border="0" usemap="#classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_cgraph" id="classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_cgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#a8f0a6432f63884dcdd20a1fdf4bafd1d" title="ExpanderTracker::expande\lIfNotExceedTheMaxDegreeOfParallelism" alt="" coords="283,5,546,46"/><area shape="rect" id="node3" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3" title="MonitorableBuffer::\lgetBufferUsage" alt="" coords="349,70,481,111"/><area shape="rect" id="node4" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7" title="MonitorableBuffer::\linputComplete" alt="" coords="349,135,481,177"/><area shape="rect" id="node5" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="369,201,461,228"/><area shape="rect" id="node6" href="classExpanderTracker.html#a0fbedeef2955c49a85f6daf213acd1d5" title="ExpanderTracker::shrinkIf\lNotExceedTheMinDegreeOfParallelims" alt="" coords="289,253,540,294"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_icgraph.png" border="0" usemap="#classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_icgraph" id="classExpanderTracker_a18b31b59ab535f9fe62bc3a1ccffb767_icgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="283,1847,472,1889"/><area shape="rect" id="node3" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="520,1847,704,1889"/><area shape="rect" id="node4" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="752,1855,949,1881"/><area shape="rect" id="node5" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1045,1164,1221,1191"/><area shape="rect" id="node37" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="1324,1550,1495,1591"/><area shape="rect" id="node38" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="998,1579,1269,1621"/><area shape="rect" id="node25" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="1839,1726,2009,1767"/><area shape="rect" id="node39" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="1048,1697,1219,1738"/><area shape="rect" id="node40" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="1318,1667,1501,1709"/><area shape="rect" id="node41" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="1014,1814,1253,1855"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="1039,1879,1227,1921"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951" title="claims::physical_operator\l::PhysicalAggregation::Next" alt="" coords="1041,1945,1226,1986"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="1046,2010,1221,2051"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="1034,2075,1233,2117"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="1016,2141,1251,2197"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="1030,2222,1237,2263"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391" title=": fetch block from child operator. " alt="" coords="1031,2287,1235,2329"/><area shape="rect" id="node6" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1324,880,1495,907"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1596,136,1743,163"/><area shape="rect" id="node8" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1606,187,1733,213"/><area shape="rect" id="node9" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1552,238,1787,279"/><area shape="rect" id="node10" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1591,303,1748,345"/><area shape="rect" id="node11" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1879,340,1969,367"/><area shape="rect" id="node12" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1571,420,1767,447"/><area shape="rect" id="node13" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1593,471,1746,513"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1584,537,1755,578"/><area shape="rect" id="node15" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1551,602,1787,643"/><area shape="rect" id="node16" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1610,668,1729,695"/><area shape="rect" id="node17" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1596,719,1743,761"/><area shape="rect" id="node18" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1596,785,1743,826"/><area shape="rect" id="node19" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1623,851,1716,877"/><area shape="rect" id="node22" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1549,902,1789,943"/><area shape="rect" id="node23" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1570,968,1769,1024"/><area shape="rect" id="node24" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1559,1697,1779,1738"/><area shape="rect" id="node26" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1574,1049,1765,1090"/><area shape="rect" id="node27" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1619,1115,1719,1141"/><area shape="rect" id="node28" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1597,1166,1741,1207"/><area shape="rect" id="node29" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1595,1231,1744,1273"/><area shape="rect" id="node30" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1576,1297,1763,1338"/><area shape="rect" id="node21" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="2059,1428,2181,1455"/><area shape="rect" id="node31" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1569,1413,1770,1469"/><area shape="rect" id="node20" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1838,1363,2010,1389"/><area shape="rect" id="node32" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1609,1544,1729,1571"/><area shape="rect" id="node33" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1596,1595,1743,1621"/><area shape="rect" id="node34" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1584,1645,1755,1672"/><area shape="rect" id="node35" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1581,5,1758,46"/><area shape="rect" id="node36" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1592,70,1747,111"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="1324,1814,1495,1855"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="1324,2149,1495,2190"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a26ce8fc03887d02b2c032f50e66210a4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExpanderTracker::deleteExpandedThreadStatus </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#aed49f27ed01f1e565e484d8a49f7f4ac">id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18">claims::physical_operator::Expander::ExpandedWork()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_cgraph.png" border="0" usemap="#classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_cgraph" id="classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="278,5,378,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="278,56,378,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_icgraph.png" border="0" usemap="#classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_icgraph" id="classExpanderTracker_a26ce8fc03887d02b2c032f50e66210a4_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="278,38,461,79"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="510,38,730,79"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="779,5,949,46"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1Expander.html#a3c6b61083fe322ea865a99d7f442aace" title="claims::physical_operator\l::Expander::Expand" alt="" coords="779,70,949,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8f0a6432f63884dcdd20a1fdf4bafd1d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ExpanderTracker::expandeIfNotExceedTheMaxDegreeOfParallelism </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>current_degree_of_parallelism</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="expander__tracker_8cpp.html#af1294b05c101f5fc7622c6c8bb0e81d9">DECISION_EXPAND</a>, <a class="el" href="expander__tracker_8cpp.html#a7e6304f79fcad02ec04a0f903aa96fc5">DECISION_KEEP</a>, and <a class="el" href="classConfig.html#a7a79cc0f3b2aeaff3d6e0755a95e09af">Config::max_degree_of_parallelism</a>.</p>
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767">decideExpandingOrShrinking()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a8f0a6432f63884dcdd20a1fdf4bafd1d_icgraph.png" border="0" usemap="#classExpanderTracker_a8f0a6432f63884dcdd20a1fdf4bafd1d_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a8f0a6432f63884dcdd20a1fdf4bafd1d_icgraph" id="classExpanderTracker_a8f0a6432f63884dcdd20a1fdf4bafd1d_icgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767" title="ExpanderTracker::decideExpanding\lOrShrinking" alt="" coords="318,1785,546,1826"/><area shape="rect" id="node3" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="595,1785,784,1826"/><area shape="rect" id="node4" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="832,1785,1016,1826"/><area shape="rect" id="node5" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="1064,1792,1261,1819"/><area shape="rect" id="node6" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1357,1127,1533,1153"/><area shape="rect" id="node37" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="1636,1487,1807,1529"/><area shape="rect" id="node38" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="1310,1517,1581,1558"/><area shape="rect" id="node26" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="2151,1663,2321,1705"/><area shape="rect" id="node39" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="1360,1634,1531,1675"/><area shape="rect" id="node40" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="1630,1605,1813,1646"/><area shape="rect" id="node41" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="1326,1751,1565,1793"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="1351,1817,1539,1858"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951" title="claims::physical_operator\l::PhysicalAggregation::Next" alt="" coords="1353,1882,1538,1923"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="1358,1947,1533,1989"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="1346,2013,1545,2054"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="1328,2079,1563,2135"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="1342,2159,1549,2201"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391" title=": fetch block from child operator. " alt="" coords="1343,2225,1547,2266"/><area shape="rect" id="node7" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1636,839,1807,865"/><area shape="rect" id="node8" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1908,123,2055,149"/><area shape="rect" id="node9" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1918,173,2045,200"/><area shape="rect" id="node10" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1864,225,2099,266"/><area shape="rect" id="node11" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1903,342,2060,383"/><area shape="rect" id="node12" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="2191,320,2281,347"/><area shape="rect" id="node13" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1883,408,2079,435"/><area shape="rect" id="node14" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1905,459,2058,501"/><area shape="rect" id="node15" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1896,525,2067,566"/><area shape="rect" id="node16" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1863,590,2099,631"/><area shape="rect" id="node17" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1922,656,2041,683"/><area shape="rect" id="node18" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1908,707,2055,749"/><area shape="rect" id="node19" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1908,773,2055,814"/><area shape="rect" id="node20" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1935,1351,2028,1377"/><area shape="rect" id="node23" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1861,890,2101,931"/><area shape="rect" id="node24" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1882,956,2081,1012"/><area shape="rect" id="node25" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1871,1634,2091,1675"/><area shape="rect" id="node27" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1886,1037,2077,1078"/><area shape="rect" id="node28" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1931,1103,2031,1129"/><area shape="rect" id="node29" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1909,1154,2053,1195"/><area shape="rect" id="node30" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1907,1219,2056,1261"/><area shape="rect" id="node31" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1888,1285,2075,1326"/><area shape="rect" id="node22" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="2371,1416,2493,1443"/><area shape="rect" id="node32" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1881,1401,2082,1457"/><area shape="rect" id="node21" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="2150,1351,2322,1377"/><area shape="rect" id="node33" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1921,1532,2041,1559"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1908,1583,2055,1609"/><area shape="rect" id="node35" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1896,5,2067,32"/><area shape="rect" id="node36" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1893,57,2070,98"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="1636,1751,1807,1793"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="1636,2086,1807,2127"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af367481c76ebecea3de71d97098a60fb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classExpanderTracker.html">ExpanderTracker</a> * ExpanderTracker::getInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd">ExpanderTracker()</a>, and <a class="el" href="classExpanderTracker.html#a6c73decd091751ab1b04f6099dba4308">instance_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82">claims::physical_operator::PhysicalOperator::CheckTerminateRequest()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024">claims::physical_operator::Expander::Close()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb">claims::physical_operator::ExchangeMerger::CreatePerformanceInfo()</a>, <a class="el" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2">Environment::Environment()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18">claims::physical_operator::Expander::ExpandedWork()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951">claims::physical_operator::PhysicalAggregation::Next()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391">claims::physical_operator::PhysicalProjectionScan::Next()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62">claims::physical_operator::Expander::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c">claims::physical_operator::PhysicalNestLoopJoin::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c">claims::physical_operator::PhysicalAggregation::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d">claims::physical_operator::ExchangeMerger::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41">claims::physical_operator::PhysicalProjectionScan::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5">claims::physical_operator::PhysicalHashJoin::Open()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e">claims::physical_operator::Expander::TerminateWorkingThread()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_af367481c76ebecea3de71d97098a60fb_cgraph.png" border="0" usemap="#classExpanderTracker_af367481c76ebecea3de71d97098a60fb_cgraph" alt=""/></div>
+<map name="classExpanderTracker_af367481c76ebecea3de71d97098a60fb_cgraph" id="classExpanderTracker_af367481c76ebecea3de71d97098a60fb_cgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="251,38,435,79"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1083,132,1175,158"/><area shape="rect" id="node4" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="483,114,672,155"/><area shape="rect" id="node5" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="804,45,865,72"/><area shape="rect" id="node6" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="785,96,885,122"/><area shape="rect" id="node7" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="785,146,885,173"/><area shape="rect" id="node8" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767" title="ExpanderTracker::decideExpanding\lOrShrinking" alt="" coords="721,248,949,290"/><area shape="rect" id="node9" href="classExpanderTracker.html#a8f0a6432f63884dcdd20a1fdf4bafd1d" title="ExpanderTracker::expande\lIfNotExceedTheMaxDegreeOfParallelism" alt="" coords="998,183,1261,224"/><area shape="rect" id="node10" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3" title="MonitorableBuffer::\lgetBufferUsage" alt="" coords="1063,248,1195,290"/><area shape="rect" id="node11" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7" title="MonitorableBuffer::\linputComplete" alt="" coords="1063,314,1195,355"/><area shape="rect" id="node12" href="classExpanderTracker.html#a0fbedeef2955c49a85f6daf213acd1d5" title="ExpanderTracker::shrinkIf\lNotExceedTheMinDegreeOfParallelims" alt="" coords="1004,379,1255,420"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_af367481c76ebecea3de71d97098a60fb_icgraph.png" border="0" usemap="#classExpanderTracker_af367481c76ebecea3de71d97098a60fb_icgraph" alt=""/></div>
+<map name="classExpanderTracker_af367481c76ebecea3de71d97098a60fb_icgraph" id="classExpanderTracker_af367481c76ebecea3de71d97098a60fb_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="269,1108,504,1164"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="301,1399,472,1441"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="251,1749,522,1790"/><area shape="rect" id="node7" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="299,1465,475,1492"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="571,1595,754,1637"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951" title="claims::physical_operator\l::PhysicalAggregation::Next" alt="" coords="294,1618,479,1659"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391" title=": fetch block from child operator. " alt="" coords="285,1683,489,1725"/><area shape="rect" id="node27" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="1092,1909,1263,1950"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="287,1814,486,1855"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="293,1879,481,1921"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="577,1705,748,1746"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="283,1997,490,2038"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="299,2062,474,2103"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="267,2127,506,2169"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="577,941,748,982"/><area shape="rect" id="node8" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="577,1007,748,1033"/><area shape="rect" id="node9" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="849,121,996,148"/><area shape="rect" id="node10" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="859,172,986,199"/><area shape="rect" id="node11" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="805,223,1040,265"/><area shape="rect" id="node12" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="844,341,1001,382"/><area shape="rect" id="node13" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1132,319,1223,345"/><area shape="rect" id="node14" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="825,407,1021,433"/><area shape="rect" id="node15" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="846,458,999,499"/><area shape="rect" id="node16" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="837,523,1008,565"/><area shape="rect" id="node17" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="805,589,1041,630"/><area shape="rect" id="node18" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="863,655,982,681"/><area shape="rect" id="node19" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="849,706,996,747"/><area shape="rect" id="node20" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="849,771,996,813"/><area shape="rect" id="node21" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="876,1349,969,1376"/><area shape="rect" id="node24" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="803,889,1043,930"/><area shape="rect" id="node25" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="823,955,1022,1011"/><area shape="rect" id="node26" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="813,1879,1033,1921"/><area shape="rect" id="node28" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="827,1035,1018,1077"/><area shape="rect" id="node29" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="873,1101,973,1128"/><area shape="rect" id="node30" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="851,1153,995,1194"/><area shape="rect" id="node31" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="848,1218,997,1259"/><area shape="rect" id="node32" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="829,1283,1016,1325"/><area shape="rect" id="node23" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1313,1415,1434,1441"/><area shape="rect" id="node33" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="822,1400,1023,1456"/><area shape="rect" id="node22" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1091,1349,1263,1376"/><area shape="rect" id="node34" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="863,1531,983,1557"/><area shape="rect" id="node35" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="849,1581,996,1608"/><area shape="rect" id="node36" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="837,1632,1008,1659"/><area shape="rect" id="node37" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="834,1683,1011,1725"/><area shape="rect" id="node38" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="845,1749,1000,1790"/><area shape="rect" id="node39" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="845,1814,1000,1855"/><area shape="rect" id="node40" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="855,5,990,46"/><area shape="rect" id="node41" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="850,71,995,97"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="577,2127,748,2169"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a82fa9ff9faa8aebc566507c77fac383b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPerformanceInfo.html">PerformanceInfo</a> * ExpanderTracker::getPerformanceInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>&#160;</td>
+          <td class="paramname"><em>tid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb">claims::physical_operator::ExchangeMerger::CreatePerformanceInfo()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c">claims::physical_operator::PhysicalAggregation::Open()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41">claims::physical_operator::PhysicalProjectionScan::Open()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_cgraph.png" border="0" usemap="#classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_cgraph" id="classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="297,5,397,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="297,56,397,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_icgraph.png" border="0" usemap="#classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_icgraph" id="classExpanderTracker_a82fa9ff9faa8aebc566507c77fac383b_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="297,5,567,46"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="338,70,526,111"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="329,135,535,177"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="616,5,787,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aeb5b54720bd30534a782d8be9e11fb9b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24">ExpanderTracker::segment_status</a> ExpanderTracker::getSegmentStatus </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structlocal__stage.html">local_stage</a> &amp;&#160;</td>
+          <td class="paramname"><em>current_stage</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264a6f0c5ffb2e24446ed7fe128be45a3cbf">local_stage::buffer_to_buffer</a>, <a class="el" href="structlocal__stage.html#a158c4a88eb7f479e84248dc75aaed20d">local_stage::dataflow_desc_</a>, <a class="el" href="structlocal__stage.html#a3b0ad5f80553ca98e251b5ef504b47f0">local_stage::dataflow_src_</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264a3ed9031934469c65b9e0d2218630ad91">local_stage::from_buffer</a>, <a class="el" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3">MonitorableBuffer::getBufferUsage()</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264aac3f22190c615fcc484400cb9c718610">local_stage::incomplete</a>, <a class="el" href="structLocalStageEndPoint.html#a062463fad25bc72380e591f44c4b826a">LocalStageEndPoint::monitorable_buffer</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264afc2f2ff147674157260d35842dc53696">local_stage::no_buffer</a>, <a class="el" href="expander__tracker_8cpp.html#a2c38be7019a0676fb1fc6f29630d82ce">refine</a>, <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24af7e307272902ccb9e3003a0e1afd1e74">seg_no_producing</a>, <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24a98495d3e60d5bf5bd562c9ce6db207b7">seg_normal_producing</a>, <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24a9b5cc3392812ac274c70db885546a620">seg_over_producing</a>, <a class="el" href="classExpanderTracker.html#a8a9140f9918aaaf6313ddd71cd24ce24aa318d5327987a2e5d8199b06237fc36a">seg_under_producing</a>, <a class="el" href="expander__tracker_8cpp.html#a8becb8f29f1b204a4df9d45da22db39f">THRESHOLD_EMPTY</a>, <a class="el" href="expander__tracker_8cpp.html#a831f1112e8d5c7aa52ab63bcbd423c53">THRESHOLD_FULL</a>, <a class="el" href="structlocal__stage.html#ae50e2af771ab144577b62a5f8ade6264aca8bc6d0f6d5e1b11f21404777265554">local_stage::to_buffer</a>, and <a class="el" href="structlocal__stage.html#a6a50a20d567215b7d0c9229723496c86">local_stage::type_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_aeb5b54720bd30534a782d8be9e11fb9b_cgraph.png" border="0" usemap="#classExpanderTracker_aeb5b54720bd30534a782d8be9e11fb9b_cgraph" alt=""/></div>
+<map name="classExpanderTracker_aeb5b54720bd30534a782d8be9e11fb9b_cgraph" id="classExpanderTracker_aeb5b54720bd30534a782d8be9e11fb9b_cgraph">
+<area shape="rect" id="node2" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3" title="MonitorableBuffer::\lgetBufferUsage" alt="" coords="254,5,386,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="abbbc804c4548638678f6121a6aad13d8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExpanderTracker::isExpandedThreadCallBack </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#aed49f27ed01f1e565e484d8a49f7f4ac">id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82">claims::physical_operator::PhysicalOperator::CheckTerminateRequest()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_cgraph.png" border="0" usemap="#classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_cgraph" alt=""/></div>
+<map name="classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_cgraph" id="classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="251,5,351,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="251,56,351,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_icgraph.png" border="0" usemap="#classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_icgraph" alt=""/></div>
+<map name="classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_icgraph" id="classExpanderTracker_abbbc804c4548638678f6121a6aad13d8_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="251,5,485,61"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="533,13,704,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="add587f48f3613937f08c94f0570478aa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * ExpanderTracker::monitoringThread </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa">curtick()</a>, <a class="el" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767">decideExpandingOrShrinking()</a>, <a class="el" href="expander__tracker_8cpp.html#af1294b05c101f5fc7622c6c8bb0e81d9">DECISION_EXPAND</a>, <a class="el" href="expander__tracker_8cpp.html#ae91f24da6b17bb2c26be72834709f6dd">DECISION_SHRINK</a>, <a class="el" href="classConfig.html#a6f03f7c464da9b45183252442c2de224">Config::enable_expander_adaptivity</a>, <a class="el" href="classConfig.html#a8b08b453a3fba78b6201bf53135e119c">Config::expander_adaptivity_check_frequency</a>, <a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a>, <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classExpanderTracker.html#a72fd794aeb48b5fde6202feaec81a2ed">log_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="expander__tracker_8cpp.html#aa2949c3dc6f3bdac1ec7b5a36decb41d">SWITCHER</a>.</p>
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd">ExpanderTracker()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_add587f48f3613937f08c94f0570478aa_cgraph.png" border="0" usemap="#classExpanderTracker_add587f48f3613937f08c94f0570478aa_cgraph" alt=""/></div>
+<map name="classExpanderTracker_add587f48f3613937f08c94f0570478aa_cgraph" id="classExpanderTracker_add587f48f3613937f08c94f0570478aa_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="307,67,407,93"/><area shape="rect" id="node3" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="327,117,388,144"/><area shape="rect" id="node4" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767" title="ExpanderTracker::decideExpanding\lOrShrinking" alt="" coords="243,169,471,210"/><area shape="rect" id="node8" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="606,267,698,293"/><area shape="rect" id="node10" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="307,285,407,312"/><area shape="rect" id="node5" href="classExpanderTracker.html#a8f0a6432f63884dcdd20a1fdf4bafd1d" title="ExpanderTracker::expande\lIfNotExceedTheMaxDegreeOfParallelism" alt="" coords="521,5,783,46"/><area shape="rect" id="node6" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3" title="MonitorableBuffer::\lgetBufferUsage" alt="" coords="586,70,718,111"/><area shape="rect" id="node7" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7" title="MonitorableBuffer::\linputComplete" alt="" coords="586,135,718,177"/><area shape="rect" id="node9" href="classExpanderTracker.html#a0fbedeef2955c49a85f6daf213acd1d5" title="ExpanderTracker::shrinkIf\lNotExceedTheMinDegreeOfParallelims" alt="" coords="527,201,777,242"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_add587f48f3613937f08c94f0570478aa_icgraph.png" border="0" usemap="#classExpanderTracker_add587f48f3613937f08c94f0570478aa_icgraph" alt=""/></div>
+<map name="classExpanderTracker_add587f48f3613937f08c94f0570478aa_icgraph" id="classExpanderTracker_add587f48f3613937f08c94f0570478aa_icgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="243,1601,427,1642"/><area shape="rect" id="node3" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="475,1608,672,1635"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="739,1020,973,1076"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="771,1283,941,1325"/><area shape="rect" id="node7" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="721,1633,991,1674"/><area shape="rect" id="node9" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="768,1349,944,1376"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="1041,1479,1223,1521"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951" title="claims::physical_operator\l::PhysicalAggregation::Next" alt="" coords="763,1502,949,1543"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391" title=": fetch block from child operator. " alt="" coords="754,1567,958,1609"/><area shape="rect" id="node29" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="1561,1793,1732,1834"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="757,1698,955,1739"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="762,1763,950,1805"/><area shape="rect" id="node8" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="1047,1589,1217,1630"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="753,1881,959,1922"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="769,1946,943,1987"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="737,2011,975,2053"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="1047,882,1217,923"/><area shape="rect" id="node10" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1047,948,1217,975"/><area shape="rect" id="node11" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1319,136,1465,163"/><area shape="rect" id="node12" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1329,187,1455,213"/><area shape="rect" id="node13" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1275,238,1509,279"/><area shape="rect" id="node14" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1313,355,1471,397"/><area shape="rect" id="node15" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1601,333,1692,360"/><area shape="rect" id="node16" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1294,421,1490,448"/><area shape="rect" id="node17" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1315,473,1469,514"/><area shape="rect" id="node18" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1307,538,1477,579"/><area shape="rect" id="node19" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1274,603,1510,645"/><area shape="rect" id="node20" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1333,669,1451,696"/><area shape="rect" id="node21" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1319,721,1465,762"/><area shape="rect" id="node22" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1319,786,1465,827"/><area shape="rect" id="node23" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1345,1364,1439,1391"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1272,903,1512,945"/><area shape="rect" id="node27" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1293,969,1491,1025"/><area shape="rect" id="node28" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1282,1763,1502,1805"/><area shape="rect" id="node30" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1297,1050,1487,1091"/><area shape="rect" id="node31" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1342,1116,1442,1143"/><area shape="rect" id="node32" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1320,1167,1464,1209"/><area shape="rect" id="node33" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1317,1233,1467,1274"/><area shape="rect" id="node34" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1299,1298,1485,1339"/><area shape="rect" id="node25" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1782,1429,1903,1456"/><area shape="rect" id="node35" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1291,1415,1493,1471"/><area shape="rect" id="node24" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1561,1364,1733,1391"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1332,1545,1452,1572"/><area shape="rect" id="node37" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1319,1596,1465,1623"/><area shape="rect" id="node38" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1307,1647,1477,1673"/><area shape="rect" id="node39" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1303,1698,1481,1739"/><area shape="rect" id="node40" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1315,5,1469,46"/><area shape="rect" id="node41" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="1315,70,1469,111"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="1047,2011,1217,2053"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="adda2f99fca43e878259bc68699419058"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ExpanderTracker::printStatus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a>, <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>, <a class="el" href="classExpanderTracker.html#aed49f27ed01f1e565e484d8a49f7f4ac">id_to_status_</a>, and <a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aaec90a2051274b237ed3d204742a5244"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExpanderTracker::registerNewExpandedThreadStatus </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>&#160;</td>
+          <td class="paramname"><em>exp_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="structExpanderTracker_1_1ExpandedThreadStatus.html#a68f1692f28373fb9c7a3dfa4ce2a4754">ExpanderTracker::ExpandedThreadStatus::call_back_</a>, <a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a>, <a class="el" href="classExpanderTracker.html#aed49f27ed01f1e565e484d8a49f7f4ac">id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18">claims::physical_operator::Expander::ExpandedWork()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_aaec90a2051274b237ed3d204742a5244_cgraph.png" border="0" usemap="#classExpanderTracker_aaec90a2051274b237ed3d204742a5244_cgraph" alt=""/></div>
+<map name="classExpanderTracker_aaec90a2051274b237ed3d204742a5244_cgraph" id="classExpanderTracker_aaec90a2051274b237ed3d204742a5244_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="241,5,341,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="241,56,341,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_aaec90a2051274b237ed3d204742a5244_icgraph.png" border="0" usemap="#classExpanderTracker_aaec90a2051274b237ed3d204742a5244_icgraph" alt=""/></div>
+<map name="classExpanderTracker_aaec90a2051274b237ed3d204742a5244_icgraph" id="classExpanderTracker_aaec90a2051274b237ed3d204742a5244_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="241,38,423,79"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="473,38,693,79"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="741,5,912,46"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1Expander.html#a3c6b61083fe322ea865a99d7f442aace" title="claims::physical_operator\l::Expander::Expand" alt="" coords="741,70,912,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2457d3037ca514deb08c965340343425"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a> ExpanderTracker::registerNewExpander </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a> *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a> *&#160;</td>
+          <td class="paramname"><em>expand_shrink</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a>, <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>, <a class="el" href="classIDsGenerator.html#a15c3511c3c14f4cf44a97f5eaf936ee7">IDsGenerator::getInstance()</a>, <a class="el" href="classIDsGenerator.html#a8605fdd3d67146e0ba67982ec3125d7e">IDsGenerator::getUniqueExpanderID()</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classExpanderTracker.html#a72fd794aeb48b5fde6202feaec81a2ed">log_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="expander__tracker_8h.html#a3bd93a44d4f767d114caabe620f7e772a1b1109bee21327fa4ea25754eb26429d">stage_desc</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62">claims::physical_operator::Expander::Open()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a2457d3037ca514deb08c965340343425_cgraph.png" border="0" usemap="#classExpanderTracker_a2457d3037ca514deb08c965340343425_cgraph" alt=""/></div>
+<map name="classExpanderTracker_a2457d3037ca514deb08c965340343425_cgraph" id="classExpanderTracker_a2457d3037ca514deb08c965340343425_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="555,81,655,108"/><area shape="rect" id="node3" href="classIDsGenerator.html#a15c3511c3c14f4cf44a97f5eaf936ee7" title="IDsGenerator::getInstance" alt="" coords="257,5,433,32"/><area shape="rect" id="node5" href="classIDsGenerator.html#a8605fdd3d67146e0ba67982ec3125d7e" title="IDsGenerator::getUniqueExpanderID" alt="" coords="227,107,463,133"/><area shape="rect" id="node7" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="299,157,391,184"/><area shape="rect" id="node6" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="555,183,655,209"/><area shape="rect" id="node4" href="classIDsGenerator.html#a7b41f2e11f6adeadd7957fd94dd59dca" title="IDsGenerator::IDsGenerator" alt="" coords="512,5,699,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a2457d3037ca514deb08c965340343425_icgraph.png" border="0" usemap="#classExpanderTracker_a2457d3037ca514deb08c965340343425_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a2457d3037ca514deb08c965340343425_icgraph" id="classExpanderTracker_a2457d3037ca514deb08c965340343425_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="227,5,397,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0fbedeef2955c49a85f6daf213acd1d5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ExpanderTracker::shrinkIfNotExceedTheMinDegreeOfParallelims </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>current_degree_of_parallelism</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="expander__tracker_8cpp.html#a7e6304f79fcad02ec04a0f903aa96fc5">DECISION_KEEP</a>, and <a class="el" href="expander__tracker_8cpp.html#ae91f24da6b17bb2c26be72834709f6dd">DECISION_SHRINK</a>.</p>
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767">decideExpandingOrShrinking()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_a0fbedeef2955c49a85f6daf213acd1d5_icgraph.png" border="0" usemap="#classExpanderTracker_a0fbedeef2955c49a85f6daf213acd1d5_icgraph" alt=""/></div>
+<map name="classExpanderTracker_a0fbedeef2955c49a85f6daf213acd1d5_icgraph" id="classExpanderTracker_a0fbedeef2955c49a85f6daf213acd1d5_icgraph">
+<area shape="rect" id="node2" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767" title="ExpanderTracker::decideExpanding\lOrShrinking" alt="" coords="305,1471,533,1513"/><area shape="rect" id="node3" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="581,1471,771,1513"/><area shape="rect" id="node4" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="819,1471,1003,1513"/><area shape="rect" id="node5" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="1051,1479,1248,1505"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1PhysicalOperator.html#a1227cc6bcce2742b03e842d7abfb1d82" title="claims::physical_operator\l::PhysicalOperator::CheckTerminate\lRequest" alt="" coords="1315,919,1549,975"/><area shape="rect" id="node8" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="1347,1154,1517,1195"/><area shape="rect" id="node9" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a00f4d8ab1cd612af0118c14b17be3dcb" title="claims::physical_operator\l::ExchangeMerger::CreatePerformanceInfo" alt="" coords="1297,1503,1567,1545"/><area shape="rect" id="node11" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1344,1220,1520,1247"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="1617,1350,1799,1391"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#a4c907d66cf263a9aadc01c6b527f2951" title="claims::physical_operator\l::PhysicalAggregation::Next" alt="" coords="1339,1373,1525,1414"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a83ea8c8bd0aa99811db1e599ab021391" title=": fetch block from child operator. " alt="" coords="1330,1438,1534,1479"/><area shape="rect" id="node31" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="2137,1663,2308,1705"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1PhysicalNestLoopJoin.html#a8a7e3262d3639aa87bae440b80b3c49c" title="Method description : describe the open method which gets results from the left child and copy them in..." alt="" coords="1333,1569,1531,1610"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1PhysicalAggregation.html#af51058690025fad7cf047a3df01fdd0c" title="claims::physical_operator\l::PhysicalAggregation::Open" alt="" coords="1338,1634,1526,1675"/><area shape="rect" id="node10" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="1623,1459,1793,1501"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="1329,1751,1535,1793"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1PhysicalHashJoin.html#abbde8dcaa584e9c9d9bc70df9c70c6e5" title="Method description: Map between join_index_left_, payload_left_, payload_right_ and output_index_..." alt="" coords="1345,1817,1519,1858"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1Expander.html#ad8236c997270505fc39eca426c5e7e4e" title="claims::physical_operator\l::Expander::TerminateWorkingThread" alt="" coords="1313,1882,1551,1923"/><area shape="rect" id="node7" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="1623,802,1793,843"/><area shape="rect" id="node12" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1623,868,1793,895"/><area shape="rect" id="node13" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1895,123,2041,149"/><area shape="rect" id="node14" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1905,173,2031,200"/><area shape="rect" id="node15" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1851,225,2085,266"/><area shape="rect" id="node16" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1889,342,2047,383"/><area shape="rect" id="node17" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="2177,320,2268,347"/><area shape="rect" id="node18" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1870,408,2066,435"/><area shape="rect" id="node19" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1891,459,2045,501"/><area shape="rect" id="node20" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1883,525,2053,566"/><area shape="rect" id="node21" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1850,590,2086,631"/><area shape="rect" id="node22" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1909,656,2027,683"/><area shape="rect" id="node23" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1895,707,2041,749"/><area shape="rect" id="node24" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1895,773,2041,814"/><area shape="rect" id="node25" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1921,1351,2015,1377"/><area shape="rect" id="node28" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1848,890,2088,931"/><area shape="rect" id="node29" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1869,956,2067,1012"/><area shape="rect" id="node30" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1858,1634,2078,1675"/><area shape="rect" id="node32" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1873,1037,2063,1078"/><area shape="rect" id="node33" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1918,1103,2018,1129"/><area shape="rect" id="node34" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1896,1154,2040,1195"/><area shape="rect" id="node35" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1893,1219,2043,1261"/><area shape="rect" id="node36" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1875,1285,2061,1326"/><area shape="rect" id="node27" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="2358,1416,2479,1443"/><area shape="rect" id="node37" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1867,1401,2069,1457"/><area shape="rect" id="node26" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="2137,1351,2309,1377"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1908,1532,2028,1559"/><area shape="rect" id="node39" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1895,1583,2041,1609"/><area shape="rect" id="node40" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1883,5,2053,32"/><area shape="rect" id="node41" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1879,57,2057,98"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1Expander.html#ac895877abb8f75a96d2e92602d8439c6" title="claims::physical_operator\l::Expander::Shrink" alt="" coords="1623,1882,1793,1923"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8a943b4c53c3b772d016ff5529fc2685"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExpanderTracker::trackExpander </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a>, and <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae13dfd7a3acabb3ce36546ecab3c6e4f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ExpanderTracker::unregisterExpander </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>&#160;</td>
+          <td class="paramname"><em>expander_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExpanderTracker.html#abd1ce54993c4e7166045d92d4dbf09d7">expander_id_to_expand_shrink_</a>, <a class="el" href="classExpanderTracker.html#ae7fcfad3d2aedcc99bf9d70145ef839e">expander_id_to_status_</a>, <a class="el" href="classExpanderTracker.html#a765fa3dfd12455170825d99d6b12947d">lock_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="classExpanderTracker.html#aa32d375c9d8a760cb085e1947b816b0e">thread_id_to_expander_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024">claims::physical_operator::Expander::Close()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_cgraph.png" border="0" usemap="#classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_cgraph" alt=""/></div>
+<map name="classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_cgraph" id="classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="241,5,341,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="241,56,341,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_icgraph.png" border="0" usemap="#classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_icgraph" alt=""/></div>
+<map name="classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_icgraph" id="classExpanderTracker_ae13dfd7a3acabb3ce36546ecab3c6e4f_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="240,5,411,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="abd1ce54993c4e7166045d92d4dbf09d7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>,<a class="el" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>*&gt; ExpanderTracker::expander_id_to_expand_shrink_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread()</a>, <a class="el" href="classExpanderTracker.html#adda2f99fca43e878259bc68699419058">printStatus()</a>, <a class="el" href="classExpanderTracker.html#aaec90a2051274b237ed3d204742a5244">registerNewExpandedThreadStatus()</a>, <a class="el" href="classExpanderTracker.html#a2457d3037ca514deb08c965340343425">registerNewExpander()</a>, <a class="el" href="classExpanderTracker.html#a8a943b4c53c3b772d016ff5529fc2685">trackExpander()</a>, and <a class="el" href="classExpanderTracker.html#ae13dfd7a3acabb3ce36546ecab3c6e4f">unregisterExpander()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae7fcfad3d2aedcc99bf9d70145ef839e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>,<a class="el" href="structExpanderTracker_1_1ExpanderStatus.html">ExpanderStatus</a>*&gt; ExpanderTracker::expander_id_to_status_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a3d92c1c5490e5db604817b8064249afe">addNewStageEndpoint()</a>, <a class="el" href="classExpanderTracker.html#a82fa9ff9faa8aebc566507c77fac383b">getPerformanceInfo()</a>, <a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread()</a>, <a class="el" href="classExpanderTracker.html#adda2f99fca43e878259bc68699419058">printStatus()</a>, <a class="el" href="classExpanderTracker.html#a2457d3037ca514deb08c965340343425">registerNewExpander()</a>, <a class="el" href="classExpanderTracker.html#a8a943b4c53c3b772d016ff5529fc2685">trackExpander()</a>, and <a class="el" href="classExpanderTracker.html#ae13dfd7a3acabb3ce36546ecab3c6e4f">unregisterExpander()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aed49f27ed01f1e565e484d8a49f7f4ac"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>,<a class="el" href="structExpanderTracker_1_1ExpandedThreadStatus.html">ExpandedThreadStatus</a>&gt; ExpanderTracker::id_to_status_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a169161b4a7eb0fe015338f53c0a5840a">callbackExpandedThread()</a>, <a class="el" href="classExpanderTracker.html#a26ce8fc03887d02b2c032f50e66210a4">deleteExpandedThreadStatus()</a>, <a class="el" href="classExpanderTracker.html#abbbc804c4548638678f6121a6aad13d8">isExpandedThreadCallBack()</a>, <a class="el" href="classExpanderTracker.html#adda2f99fca43e878259bc68699419058">printStatus()</a>, and <a class="el" href="classExpanderTracker.html#aaec90a2051274b237ed3d204742a5244">registerNewExpandedThreadStatus()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6c73decd091751ab1b04f6099dba4308"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classExpanderTracker.html">ExpanderTracker</a> * ExpanderTracker::instance_ = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Ideally, this should be guaranteed by resource manager. </p>
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb">getInstance()</a>, and <a class="el" href="classExpanderTracker.html#ac054f97e0122a87afed459b25001b8bc">~ExpanderTracker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a765fa3dfd12455170825d99d6b12947d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLock.html">Lock</a> ExpanderTracker::lock_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a3d92c1c5490e5db604817b8064249afe">addNewStageEndpoint()</a>, <a class="el" href="classExpanderTracker.html#a169161b4a7eb0fe015338f53c0a5840a">callbackExpandedThread()</a>, <a class="el" href="classExpanderTracker.html#a26ce8fc03887d02b2c032f50e66210a4">deleteExpandedThreadStatus()</a>, <a class="el" href="classExpanderTracker.html#a82fa9ff9faa8aebc566507c77fac383b">getPerformanceInfo()</a>, <a class="el" href="classExpanderTracker.html#abbbc804c4548638678f6121a6aad13d8">isExpandedThreadCallBack()</a>, <a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread()</a>, <a class="el" href="classExpanderTracker.html#aaec90a2051274b237ed3d204742a5244">registerNewExpandedThreadStatus()</a>, <a class="el" href="classExpanderTracker.html#a2457d3037ca514deb08c965340343425">registerNewExpander()</a>, and <a class="el" href="classExpanderTracker.html#ae13dfd7a3acabb3ce36546ecab3c6e4f">unregisterExpander()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a72fd794aeb48b5fde6202feaec81a2ed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogging.html">Logging</a>* ExpanderTracker::log_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a18b31b59ab535f9fe62bc3a1ccffb767">decideExpandingOrShrinking()</a>, <a class="el" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd">ExpanderTracker()</a>, <a class="el" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa">monitoringThread()</a>, <a class="el" href="classExpanderTracker.html#a2457d3037ca514deb08c965340343425">registerNewExpander()</a>, and <a class="el" href="classExpanderTracker.html#ac054f97e0122a87afed459b25001b8bc">~ExpanderTracker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac4af4f5f5a8f4b0fe13a15b6dae8d2f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pthread_t ExpanderTracker::monitor_thread_id_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd">ExpanderTracker()</a>, and <a class="el" href="classExpanderTracker.html#ac054f97e0122a87afed459b25001b8bc">~ExpanderTracker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa32d375c9d8a760cb085e1947b816b0e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="expander__tracker_8h.html#aec063a04a6ff9a9d37c355c333a4edae">expanded_thread_id</a>,<a class="el" href="ids_8h.html#a1a928d56a19339d0a6e7142a0057e027">ExpanderID</a>&gt; ExpanderTracker::thread_id_to_expander_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExpanderTracker.html#a3d92c1c5490e5db604817b8064249afe">addNewStageEndpoint()</a>, <a class="el" href="classExpanderTracker.html#a26ce8fc03887d02b2c032f50e66210a4">deleteExpandedThreadStatus()</a>, <a class="el" href="classExpanderTracker.html#a82fa9ff9faa8aebc566507c77fac383b">getPerformanceInfo()</a>, <a class="el" href="classExpanderTracker.html#adda2f99fca43e878259bc68699419058">printStatus()</a>, <a class="el" href="classExpanderTracker.html#aaec90a2051274b237ed3d204742a5244">registerNewExpandedThreadStatus()</a>, and <a class="el" href="classExpanderTracker.html#ae13dfd7a3acabb3ce36546ecab3c6e4f">unregisterExpander()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>Executor/<a class="el" href="ExpanderTracker_8h_source.html">ExpanderTracker.h</a></li>
-<li>Executor/ExpanderTracker.cpp</li>
+<li>Executor/<a class="el" href="expander__tracker_8h_source.html">expander_tracker.h</a></li>
+<li>Executor/<a class="el" href="expander__tracker_8cpp.html">expander_tracker.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

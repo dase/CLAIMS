@@ -1,4 +1,4 @@
-.TH "RegisterSlaveMessage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "RegisterSlaveMessage" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ RegisterSlaveMessage \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBRegisterSlaveMessage\fP (std::string ip, std::string port)"
+.RI "\fBRegisterSlaveMessage\fP ()"
+.br
+.ti -1c
+.RI "\fBRegisterSlaveMessage\fP (std::string \fBip\fP, std::string \fBport\fP)"
 .br
 .in -1c
 .SS "Static Public Member Functions"
@@ -20,7 +25,7 @@ RegisterSlaveMessage \-
 .RI "static \fBRegisterSlaveMessage\fP \fBdeserialize\fP (\fBMessage256\fP message)"
 .br
 .ti -1c
-.RI "static \fBMessage256\fP \fBserialize\fP (\fBRegisterSlaveMessage\fP input)"
+.RI "static \fBMessage256\fP \fBserialize\fP (\fBRegisterSlaveMessage\fP \fBinput\fP)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -33,6 +38,13 @@ RegisterSlaveMessage \-
 .RI "std::string \fBport\fP"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -40,7 +52,39 @@ RegisterSlaveMessage \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "RegisterSlaveMessage::RegisterSlaveMessage ()\fC [inline]\fP"
+
+.SS "RegisterSlaveMessage::RegisterSlaveMessage (std::stringip, std::stringport)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBRegisterSlaveMessage\fP RegisterSlaveMessage::deserialize (\fBMessage256\fPmessage)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBMessage256\fP RegisterSlaveMessage::serialize (\fBRegisterSlaveMessage\fPinput)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References input()\&.
+.SS "template<class Archive > void RegisterSlaveMessage::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ip, and port\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string RegisterSlaveMessage::ip"
+
+.PP
+Referenced by serialize()\&.
+.SS "std::string RegisterSlaveMessage::port"
+
+.PP
+Referenced by serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "Analyzer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Analyzer" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,23 @@ Analyzer \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Analyzer\&.h>\fP
 .SS "Public Types"
 
 .in +1c
 .ti -1c
 .RI "enum \fBanalysis_level\fP { \fBa_l_table\fP, \fBa_l_attribute\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAnalyzer\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~Analyzer\fP ()"
 .br
 .in -1c
 .SS "Static Public Member Functions"
@@ -20,7 +32,7 @@ Analyzer \-
 .RI "static void \fBanalyse\fP (const \fBAttributeID\fP &attrID)"
 .br
 .ti -1c
-.RI "static void \fBanalyse\fP (TableID tableID, analysis_level level=a_l_table)"
+.RI "static void \fBanalyse\fP (\fBTableID\fP tableID, \fBanalysis_level\fP level=\fBa_l_table\fP)"
 .br
 .ti -1c
 .RI "static void \fBanalyse_on_project\fP (\fBProjectionID\fP projection_id)"
@@ -32,16 +44,101 @@ Analyzer \-
 .RI "static void \fBcompute_attribute_stat\fP (const \fBAttributeID\fP &attr_id)"
 .br
 .ti -1c
-.RI "static void \fBcompute_table_stat\fP (const TableID &tab_id)"
+.RI "static void \fBcompute_table_stat\fP (const \fBTableID\fP &tab_id)"
 .br
 .in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBmcvAnalyse\fP (void **list, const unsigned long size, const \fBAttribute\fP &attr, \fBHistogram\fP *stat)"
+.br
+.ti -1c
+.RI "static void \fBequiDepthAnalyse\fP (void **list, const unsigned long size, const \fBAttribute\fP &attr, \fBHistogram\fP *stat)"
+.br
+.ti -1c
+.RI "static unsigned long \fBgetDistinctCardinality\fP (const \fBAttributeID\fP &attr_id)"
+.br
+.ti -1c
+.RI "static bool \fBisBeneficalFromHistrogram\fP (unsigned distinct_values, unsigned cardinality)"
+.br
+.ti -1c
+.RI "static \fBHistogram\fP * \fBcomputeHistogram\fP (const \fBAttributeID\fP &attr, const unsigned nbuckets=20)"
+.br
+.ti -1c
+.RI "static unsigned \fBdecideNumberOfBucketsForHistogram\fP (const int distinct_cardinality, const int cardinality)"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBAnalyzer::analysis_level\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIa_l_table \fP\fP
+.TP
+\fB\fIa_l_attribute \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Analyzer::Analyzer ()"
+
+.SS "Analyzer::~Analyzer ()\fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
+.SS "void Analyzer::analyse (const \fBAttributeID\fP &attrID)\fC [static]\fP"
+
+.PP
+References DynamicBlockBuffer::Iterator::atomicNextBlock(), Attribute::attrType, claims::physical_operator::PhysicalOperatorBase::Close(), compare(), DynamicBlockBuffer::createIterator(), BlockStreamBase::createIterator(), DynamicBlockBuffer::destory(), TableDescriptor::getAttribute(), getFrequency(), StatManager::getInstance(), Catalog::getInstance(), TableDescriptor::getNumberOfProjection(), DynamicBlockBuffer::getNumberOftuples(), claims::logical_operator::LogicalOperator::GetPhysicalPlan(), TableDescriptor::getProjectoin(), claims::physical_operator::PhysicalOperatorBase::GetResultSet(), Catalog::getTable(), StatManager::getTableStatistic(), ProjectionDescriptor::hasAttribute(), claims::logical_operator::LogicalQueryPlanRoot::kResultCollector, claims::physical_operator::PhysicalOperatorBase::Next(), BlockStreamBase::BlockStreamTraverseIterator::nextTuple(), NULL, AttributeID::offset, claims::physical_operator::PhysicalOperatorBase::Open(), column_type::operate, Histogram::setTupleCount(), Histogram::setValueCount(), and AttributeID::table_id\&.
+.PP
+Referenced by statistic_manager_test()\&.
+.SS "void Analyzer::analyse (\fBTableID\fPtableID, \fBanalysis_level\fPlevel = \fC\fBa_l_table\fP\fP)\fC [static]\fP"
+
+.PP
+References TableDescriptor::getAttributes(), StatManager::getInstance(), Catalog::getInstance(), Catalog::getTable(), and StatManager::getTableStatistic()\&.
 .SS "void Analyzer::analyse_on_project (\fBProjectionID\fPprojection_id)\fC [static]\fP"
 First make sure that the table statistic is available, and then make attribute-level-analyze on each attribute within this projection\&.
+.PP
+References ProjectionDescriptor::getAttributeList(), StatManager::getInstance(), Catalog::getInstance(), Catalog::getProjection(), StatManager::getTableStatistic(), and ProjectionID::table_id\&.
 .SS "void Analyzer::compute_attribute_stat (const \fBAttributeID\fP &attr_id)\fC [static]\fP"
 for attribute that has UNIQUE property, gathering the number of distinct values is unnecessary\&.
+.PP
+References TableStatistic::addAttributeStatistics(), computeHistogram(), TableStatistic::getAttributeStatistics(), getDistinctCardinality(), StatManager::getInstance(), Catalog::getInstance(), StatManager::getTableStatistic(), isBeneficalFromHistrogram(), TableStatistic::number_of_tuples_, AttributeID::offset, AttributeStatistics::print(), Histogram::Print(), AttributeStatistics::setDistinctCardinality(), AttributeStatistics::setHistogram(), and AttributeID::table_id\&.
+.SS "void Analyzer::compute_histogram (const \fBAttributeID\fP &attr_id)\fC [static]\fP"
+
+.SS "void Analyzer::compute_table_stat (const \fBTableID\fP &tab_id)\fC [static]\fP"
+
+.PP
+References ATTRIBUTE_ANY, claims::physical_operator::PhysicalOperatorBase::Close(), DynamicBlockBuffer::createIterator(), BlockStreamBase::createIterator(), DynamicBlockBuffer::destory(), StatManager::getInstance(), Catalog::getInstance(), claims::logical_operator::LogicalOperator::GetPhysicalPlan(), TableDescriptor::getProjectoin(), claims::physical_operator::PhysicalOperatorBase::GetResultSet(), Catalog::getTable(), claims::logical_operator::LogicalQueryPlanRoot::kResultCollector, claims::physical_operator::PhysicalOperatorBase::Next(), DynamicBlockBuffer::Iterator::nextBlock(), BlockStreamBase::BlockStreamTraverseIterator::nextTuple(), TableStatistic::number_of_tuples_, claims::physical_operator::PhysicalOperatorBase::Open(), TableStatistic::print(), StatManager::setTableStatistic(), and claims::logical_operator::LogicalOperator::~LogicalOperator()\&.
+.SS "\fBHistogram\fP * Analyzer::computeHistogram (const \fBAttributeID\fP &attr, const unsignednbuckets = \fC20\fP)\fC [static]\fP, \fC [private]\fP"
+get histogram if any, otherwise compute it\&. 
+.PP
+References DynamicBlockBuffer::Iterator::atomicNextBlock(), Attribute::attrType, claims::physical_operator::PhysicalOperatorBase::Close(), compare(), DynamicBlockBuffer::createIterator(), BlockStreamBase::createIterator(), DynamicBlockBuffer::destory(), TableDescriptor::getAttribute(), getFrequency(), Catalog::getInstance(), TableDescriptor::getNumberOfProjection(), DynamicBlockBuffer::getNumberOftuples(), claims::logical_operator::LogicalOperator::GetPhysicalPlan(), TableDescriptor::getProjectoin(), claims::physical_operator::PhysicalOperatorBase::GetResultSet(), ProjectionDescriptor::hasAttribute(), claims::logical_operator::LogicalQueryPlanRoot::kResultCollector, claims::physical_operator::PhysicalOperatorBase::Next(), BlockStreamBase::BlockStreamTraverseIterator::nextTuple(), NULL, AttributeID::offset, claims::physical_operator::PhysicalOperatorBase::Open(), column_type::operate, Histogram::setTupleCount(), Histogram::setValueCount(), and AttributeID::table_id\&.
+.PP
+Referenced by compute_attribute_stat()\&.
+.SS "unsigned Analyzer::decideNumberOfBucketsForHistogram (const intdistinct_cardinality, const intcardinality)\fC [static]\fP, \fC [private]\fP"
+
+.SS "void Analyzer::equiDepthAnalyse (void **list, const unsigned longsize, const \fBAttribute\fP &attr, \fBHistogram\fP *stat)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References Operate::assign, Attribute::attrType, column_type::get_length(), Histogram::getBucketCnt(), getFrequency(), Histogram::getTupleCount(), column_type::operate, and Histogram::setEquithDepthBound()\&.
+.SS "unsigned long Analyzer::getDistinctCardinality (const \fBAttributeID\fP &attr_id)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References ATTRIBUTE_ANY, claims::physical_operator::PhysicalOperatorBase::Close(), DynamicBlockBuffer::createIterator(), BlockStreamBase::createIterator(), DynamicBlockBuffer::destory(), Catalog::getInstance(), claims::logical_operator::LogicalOperator::GetPhysicalPlan(), claims::physical_operator::PhysicalOperatorBase::GetResultSet(), claims::logical_operator::LogicalQueryPlanRoot::kResultCollector, claims::physical_operator::PhysicalOperatorBase::Next(), DynamicBlockBuffer::Iterator::nextBlock(), BlockStreamBase::BlockStreamTraverseIterator::nextTuple(), AttributeID::offset, claims::physical_operator::PhysicalOperatorBase::Open(), AttributeID::table_id, claims::logical_operator::LogicalOperator::~LogicalOperator(), and claims::physical_operator::PhysicalOperatorBase::~PhysicalOperatorBase()\&.
+.PP
+Referenced by compute_attribute_stat()\&.
+.SS "bool Analyzer::isBeneficalFromHistrogram (unsigneddistinct_values, unsignedcardinality)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by compute_attribute_stat()\&.
+.SS "void Analyzer::mcvAnalyse (void **list, const unsigned longsize, const \fBAttribute\fP &attr, \fBHistogram\fP *stat)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References Operate::assign, Attribute::attrType, column_type::get_length(), Histogram::getBucketCnt(), getFrequency(), Histogram::getTupleCount(), column_type::operate, and Histogram::setMostCommonValues()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

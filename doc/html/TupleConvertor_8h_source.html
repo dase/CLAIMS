@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Schema/TupleConvertor.h Source File</title>
+<title>Claims: common/Schema/TupleConvertor.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('TupleConvertor_8h_source.html','');});
 <div class="title">TupleConvertor.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="TupleConvertor_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * TupleConventor.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * This class makes varous tuple conversions.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
@@ -120,11 +120,11 @@ $(document).ready(function(){initNavTree('TupleConvertor_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifdef DMALLOC</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;Schema.h&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="Schema_8h.html">Schema.h</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classTupleConvertor.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classTupleConvertor.html">TupleConvertor</a> {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classTupleConvertor.html">TupleConvertor</a>();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classTupleConvertor.html">TupleConvertor</a>();</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classTupleConvertor.html#a55ba94e6e05ebad7e75bc2b29bab9a06">TupleConvertor</a>();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classTupleConvertor.html#a82f82a7f7e1c6ffd6088e0569ac26ce0">~TupleConvertor</a>();</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="comment">/*</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">     * extract sub-tuple from a tuple. The index for the columns that appear in the desc tuple are specified in</span></div>
@@ -133,31 +133,40 @@ $(document).ready(function(){initNavTree('TupleConvertor_8h_source.html','');});
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">     * src_s and des_c describe the schema for tuple and desc tuple.</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">     * memory of desc tuple shoulbe be allocated before calling this method.</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> sub_tuple(<span class="keyword">const</span> <a class="code" href="classSchema.html">Schema</a>*&amp; src_s,<span class="keyword">const</span> <a class="code" href="classSchema.html">Schema</a>*&amp; des_c,<span class="keyword">const</span> <span class="keywordtype">void</span>* <span class="keyword">const</span>&amp; tuple, <span class="keywordtype">void</span>* desc, std::vector&lt;unsigned&gt; index);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTupleConvertor.html#ae8a522231ab99305b50d7f5728f0e811">sub_tuple</a>(<span class="keyword">const</span> <a class="code" href="classSchema.html">Schema</a>*&amp; src_s,<span class="keyword">const</span> <a class="code" href="classSchema.html">Schema</a>*&amp; des_c,<span class="keyword">const</span> <span class="keywordtype">void</span>* <span class="keyword">const</span>&amp; tuple, <span class="keywordtype">void</span>* desc, std::vector&lt;unsigned&gt; index);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">//  void sub_tuple(const Schema* const src_s,const Schema* const des_s, void*&amp; const tuple,void*&amp; const desc);</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classSubTuple.html">   32</a></span>&#160;<span class="keyword">class </span><a class="code" href="classSubTuple.html">SubTuple</a>{</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classSubTuple.html">SubTuple</a>(<a class="code" href="classSchema.html">Schema</a>* srouce, <a class="code" href="classSchema.html">Schema</a>* target, std::vector&lt;unsigned&gt; index);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> getSubTuple(<span class="keywordtype">void</span>*&amp; tuple, <span class="keywordtype">void</span>*&amp; target);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classSubTuple.html#abd0aa8d39cdfd70e85fd68a597f6f3c2">SubTuple</a>(<a class="code" href="classSchema.html">Schema</a>* srouce, <a class="code" href="classSchema.html">Schema</a>* target, std::vector&lt;unsigned&gt; index);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classSubTuple.html#a6c3a34e826bb8ab6333cd99728632b3a">getSubTuple</a>(<span class="keywordtype">void</span>*&amp; tuple, <span class="keywordtype">void</span>*&amp; target);</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* source_schema_;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* target_schema_;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::vector&lt;unsigned&gt; index_;</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classSubTuple.html#a162a8eb08fc773c4f1845b2d2a986849">   37</a></span>&#160;    <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classSubTuple.html#a162a8eb08fc773c4f1845b2d2a986849">source_schema_</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classSubTuple.html#a1bae600d2381d3860725f56bc46b77f3">   38</a></span>&#160;    <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classSubTuple.html#a1bae600d2381d3860725f56bc46b77f3">target_schema_</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classSubTuple.html#a832db6007dee2d98412ed37a47aca3ec">   39</a></span>&#160;    std::vector&lt;unsigned&gt; <a class="code" href="classSubTuple.html#a832db6007dee2d98412ed37a47aca3ec">index_</a>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* TUPLECONVENTOR_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classTupleConvertor_html_a82f82a7f7e1c6ffd6088e0569ac26ce0"><div class="ttname"><a href="classTupleConvertor.html#a82f82a7f7e1c6ffd6088e0569ac26ce0">TupleConvertor::~TupleConvertor</a></div><div class="ttdeci">virtual ~TupleConvertor()</div><div class="ttdef"><b>Definition:</b> TupleConvertor.cpp:15</div></div>
+<div class="ttc" id="Schema_8h_html"><div class="ttname"><a href="Schema_8h.html">Schema.h</a></div></div>
+<div class="ttc" id="classTupleConvertor_html_a55ba94e6e05ebad7e75bc2b29bab9a06"><div class="ttname"><a href="classTupleConvertor.html#a55ba94e6e05ebad7e75bc2b29bab9a06">TupleConvertor::TupleConvertor</a></div><div class="ttdeci">TupleConvertor()</div><div class="ttdef"><b>Definition:</b> TupleConvertor.cpp:10</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
 <div class="ttc" id="classSubTuple_html"><div class="ttname"><a href="classSubTuple.html">SubTuple</a></div><div class="ttdef"><b>Definition:</b> TupleConvertor.h:32</div></div>
+<div class="ttc" id="classSubTuple_html_abd0aa8d39cdfd70e85fd68a597f6f3c2"><div class="ttname"><a href="classSubTuple.html#abd0aa8d39cdfd70e85fd68a597f6f3c2">SubTuple::SubTuple</a></div><div class="ttdeci">SubTuple(Schema *srouce, Schema *target, std::vector&lt; unsigned &gt; index)</div><div class="ttdef"><b>Definition:</b> TupleConvertor.cpp:26</div></div>
 <div class="ttc" id="classTupleConvertor_html"><div class="ttname"><a href="classTupleConvertor.html">TupleConvertor</a></div><div class="ttdef"><b>Definition:</b> TupleConvertor.h:16</div></div>
+<div class="ttc" id="classSubTuple_html_a1bae600d2381d3860725f56bc46b77f3"><div class="ttname"><a href="classSubTuple.html#a1bae600d2381d3860725f56bc46b77f3">SubTuple::target_schema_</a></div><div class="ttdeci">Schema * target_schema_</div><div class="ttdef"><b>Definition:</b> TupleConvertor.h:38</div></div>
+<div class="ttc" id="classTupleConvertor_html_ae8a522231ab99305b50d7f5728f0e811"><div class="ttname"><a href="classTupleConvertor.html#ae8a522231ab99305b50d7f5728f0e811">TupleConvertor::sub_tuple</a></div><div class="ttdeci">void sub_tuple(const Schema *&amp;src_s, const Schema *&amp;des_c, const void *const &amp;tuple, void *desc, std::vector&lt; unsigned &gt; index)</div><div class="ttdef"><b>Definition:</b> TupleConvertor.cpp:18</div></div>
+<div class="ttc" id="classSubTuple_html_a832db6007dee2d98412ed37a47aca3ec"><div class="ttname"><a href="classSubTuple.html#a832db6007dee2d98412ed37a47aca3ec">SubTuple::index_</a></div><div class="ttdeci">std::vector&lt; unsigned &gt; index_</div><div class="ttdef"><b>Definition:</b> TupleConvertor.h:39</div></div>
+<div class="ttc" id="classSubTuple_html_a162a8eb08fc773c4f1845b2d2a986849"><div class="ttname"><a href="classSubTuple.html#a162a8eb08fc773c4f1845b2d2a986849">SubTuple::source_schema_</a></div><div class="ttdeci">Schema * source_schema_</div><div class="ttdef"><b>Definition:</b> TupleConvertor.h:37</div></div>
+<div class="ttc" id="classSubTuple_html_a6c3a34e826bb8ab6333cd99728632b3a"><div class="ttname"><a href="classSubTuple.html#a6c3a34e826bb8ab6333cd99728632b3a">SubTuple::getSubTuple</a></div><div class="ttdeci">void getSubTuple(void *&amp;tuple, void *&amp;target)</div><div class="ttdef"><b>Definition:</b> TupleConvertor.cpp:31</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_1523ae91887966064d2231b811493f28.html">Schema</a></li><li class="navelem"><b>TupleConvertor.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_1523ae91887966064d2231b811493f28.html">Schema</a></li><li class="navelem"><a class="el" href="TupleConvertor_8h.html">TupleConvertor.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

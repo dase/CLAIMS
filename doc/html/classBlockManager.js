@@ -8,12 +8,14 @@ var classBlockManager =
       [ "offline", "classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069aca012ed4e00aea5a1157b93e658d016c", null ]
     ] ],
     [ "~BlockManager", "classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe", null ],
+    [ "BlockManager", "classBlockManager.html#a93282216d97540def52c1fa4029eb693", null ],
     [ "addPartition", "classBlockManager.html#ad1046961c4107766bb57b376c07aecdb", null ],
     [ "askForMatch", "classBlockManager.html#ae32ee78daa8c53787401fc4d438c58c4", null ],
     [ "asyncReregister", "classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb", null ],
     [ "containsPartition", "classBlockManager.html#aef887f84cd2e5ba4d3027319233dd181", null ],
     [ "get", "classBlockManager.html#ae0ab2b2c356970380595461f650a7042", null ],
     [ "getId", "classBlockManager.html#ab54877265aa654fca48fbb9655ac3198", null ],
+    [ "getInstance", "classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92", null ],
     [ "getLocal", "classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558", null ],
     [ "getMemoryChunkStore", "classBlockManager.html#ae4f0a3a061c1a7a15898872e50bfff8f", null ],
     [ "getPartitionHandle", "classBlockManager.html#a12f753739e865549cb2307ab42e81890", null ],
@@ -29,5 +31,17 @@ var classBlockManager =
     [ "reportBlockStatus", "classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367", null ],
     [ "reregister", "classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331", null ],
     [ "tryToReportBlockStatus", "classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0", null ],
-    [ "BlockManagerWorkerActor", "classBlockManager.html#a6aaa44c442e5f67c335f5831dce4568a", null ]
+    [ "BlockManagerWorkerActor", "classBlockManager.html#a6aaa44c442e5f67c335f5831dce4568a", null ],
+    [ "actor_", "classBlockManager.html#a19f59618de62e5251c9212ca52e4141a", null ],
+    [ "blockInfoPool_", "classBlockManager.html#ad412c155f8b2933cfaa5a74268927bfe", null ],
+    [ "blockmanager_", "classBlockManager.html#a2ee03876f74a71cab65fcfdd451bd456", null ],
+    [ "blockManagerId_", "classBlockManager.html#abb38f940dd808ed994b97fb64440e0d4", null ],
+    [ "diskstore_", "classBlockManager.html#a20b2e66969497219288c72f788ffba17", null ],
+    [ "file_proj_", "classBlockManager.html#abf757af6c4fc8690997ce6f4e02d4192", null ],
+    [ "framework_", "classBlockManager.html#ae9d59ee884f93c25ee26827a489bf088", null ],
+    [ "lock", "classBlockManager.html#a8f2433e4dad0d3e55035e6cdaba64371", null ],
+    [ "logging_", "classBlockManager.html#a10343a3dd8925edaad51d0bb21852184", null ],
+    [ "memstore_", "classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69", null ],
+    [ "partition_id_to_storage_", "classBlockManager.html#a6404e33c0f25357ce2485ecbfce614c5", null ],
+    [ "worker_", "classBlockManager.html#a972196fdf61348fd5f2d567d57ba845d", null ]
 ];

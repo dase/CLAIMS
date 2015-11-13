@@ -1,4 +1,4 @@
-.TH "Json::PathArgument" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::PathArgument" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,13 +15,36 @@ Experimental and untested: represents an element of the 'path' to access a node\
 
 .in +1c
 .ti -1c
-.RI "\fBPathArgument\fP (ArrayIndex index)"
+.RI "\fBPathArgument\fP ()"
+.br
+.ti -1c
+.RI "\fBPathArgument\fP (\fBArrayIndex\fP index)"
 .br
 .ti -1c
 .RI "\fBPathArgument\fP (const char *key)"
 .br
 .ti -1c
 .RI "\fBPathArgument\fP (const std::string &key)"
+.br
+.in -1c
+.SS "Private Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBKind\fP { \fBkindNone\fP = 0, \fBkindIndex\fP, \fBkindKey\fP }"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBkey_\fP"
+.br
+.ti -1c
+.RI "\fBArrayIndex\fP \fBindex_\fP"
+.br
+.ti -1c
+.RI "\fBKind\fP \fBkind_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -34,7 +57,48 @@ Experimental and untested: represents an element of the 'path' to access a node\
 .SH "Detailed Description"
 .PP 
 Experimental and untested: represents an element of the 'path' to access a node\&. 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBJson::PathArgument::Kind\fP\fC [private]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIkindNone \fP\fP
+.TP
+\fB\fIkindIndex \fP\fP
+.TP
+\fB\fIkindKey \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::PathArgument::PathArgument ()"
+
+.SS "Json::PathArgument::PathArgument (\fBArrayIndex\fPindex)"
+
+.SS "Json::PathArgument::PathArgument (const char *key)"
+
+.SS "Json::PathArgument::PathArgument (const std::string &key)"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBPath\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBArrayIndex\fP Json::PathArgument::index_\fC [private]\fP"
+
+.PP
+Referenced by Json::Path::make(), and Json::Path::resolve()\&.
+.SS "std::string Json::PathArgument::key_\fC [private]\fP"
+
+.PP
+Referenced by Json::Path::make(), and Json::Path::resolve()\&.
+.SS "\fBKind\fP Json::PathArgument::kind_\fC [private]\fP"
+
+.PP
+Referenced by Json::Path::make(), and Json::Path::resolve()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

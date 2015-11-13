@@ -1,4 +1,4 @@
-.TH "Do_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Do_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,29 @@ Do_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "\fBNode\fP * \fBdata\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Do_stmt::data"
+
+.PP
+Referenced by newDoStmt()\&.
+.SS "\fBnodetype\fP Do_stmt::type"
+
+.PP
+Referenced by newDoStmt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -8,5 +8,7 @@ var classModuloHashFunction =
     [ "get_partition_value", "classModuloHashFunction.html#a4184e31b9639c2c80e2773f392e19341", null ],
     [ "getNumberOfPartitions", "classModuloHashFunction.html#aca5bca97d0f1c51fcb54c2731724340a", null ],
     [ "getPartitionFashion", "classModuloHashFunction.html#a4239ca1071bb114355dc4ae4947a45bc", null ],
-    [ "boost::serialization::access", "classModuloHashFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "serialize", "classModuloHashFunction.html#a176922e9c15c017e043db3efc1fab81b", null ],
+    [ "boost::serialization::access", "classModuloHashFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "skipbits_", "classModuloHashFunction.html#aad922a2baaceda651c12427f3c2ee5c7", null ]
 ];

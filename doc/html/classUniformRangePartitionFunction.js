@@ -8,5 +8,6 @@ var classUniformRangePartitionFunction =
     [ "get_partition_value", "classUniformRangePartitionFunction.html#a09690893237843e2f607faac56f8f0a8", null ],
     [ "getNumberOfPartitions", "classUniformRangePartitionFunction.html#af5ca4389f0a06112ed4e361962ecef7f", null ],
     [ "getPartitionFashion", "classUniformRangePartitionFunction.html#aa06729c38493c856e4f57148170bb05c", null ],
+    [ "serialize", "classUniformRangePartitionFunction.html#a643a070ea04bc396254aadf1f9a78c43", null ],
     [ "boost::serialization::access", "classUniformRangePartitionFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
 ];

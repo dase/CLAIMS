@@ -1,4 +1,4 @@
-.TH "CPUResourceManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CPUResourceManager" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ CPUResourceManager \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <CPUResource\&.h>\fP
 .SS "Classes"
 
 .in +1c
@@ -19,6 +21,12 @@ CPUResourceManager \-
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBCPUResourceManager\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~CPUResourceManager\fP ()"
+.br
 .ti -1c
 .RI "int \fBtryApplyCore\fP ()"
 .br
@@ -39,17 +47,85 @@ CPUResourceManager \-
 .RI "static \fBCPUResourceManager\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBsemaphore\fP \fBsem_available_cores_\fP"
+.br
+.ti -1c
+.RI "int \fBnumber_of_sockets_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBsocket\fP > \fBsockets_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBCPUResourceManager\fP * \fBinstance_\fP =0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CPUResourceManager::CPUResourceManager ()"
+
+.PP
+References number_of_sockets_, semaphore::post(), sem_available_cores_, and sockets_\&.
+.PP
+Referenced by getInstance()\&.
+.SS "CPUResourceManager::~CPUResourceManager ()\fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "int CPUResourceManager::applyCore ()"
 apply for a core, return id of allocated core, blocked if no cores are available\&. 
+.PP
+References number_of_sockets_, sem_available_cores_, sockets_, and semaphore::wait()\&.
+.PP
+Referenced by cpu_resource_manager_test()\&.
 .SS "void CPUResourceManager::freeCore (intcore_id = \fC-1\fP)"
 return the core to the Cpu resource core_id should be given if the caller is not running of the thread bound to the core\&. 
+.PP
+References semaphore::post(), sem_available_cores_, and sockets_\&.
+.PP
+Referenced by cpu_resource_manager_test()\&.
+.SS "\fBCPUResourceManager\fP * CPUResourceManager::getInstance ()\fC [static]\fP"
+
+.PP
+References CPUResourceManager(), and instance_\&.
 .SS "void CPUResourceManager::print ()"
 print the status of the cores in an array form\&. 
+.PP
+References number_of_sockets_, and sockets_\&.
+.PP
+Referenced by cpu_resource_manager_test()\&.
 .SS "int CPUResourceManager::tryApplyCore ()"
 apply for a core available on any socket, this function returns the id of the core, or return -1 when there is not any core available\&. 
+.PP
+References number_of_sockets_, sem_available_cores_, sockets_, and semaphore::try_wait()\&.
+.PP
+Referenced by cpu_resource_manager_test()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBCPUResourceManager\fP * CPUResourceManager::instance_ =0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance()\&.
+.SS "int CPUResourceManager::number_of_sockets_\fC [private]\fP"
+
+.PP
+Referenced by applyCore(), CPUResourceManager(), print(), and tryApplyCore()\&.
+.SS "\fBsemaphore\fP CPUResourceManager::sem_available_cores_\fC [private]\fP"
+
+.PP
+Referenced by applyCore(), CPUResourceManager(), freeCore(), and tryApplyCore()\&.
+.SS "std::vector<\fBsocket\fP> CPUResourceManager::sockets_\fC [private]\fP"
+
+.PP
+Referenced by applyCore(), CPUResourceManager(), freeCore(), print(), and tryApplyCore()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

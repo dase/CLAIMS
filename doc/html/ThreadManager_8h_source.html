@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Resource/ThreadManager.h Source File</title>
+<title>Claims: Resource/ThreadManager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ThreadManager_8h_source.html','');});
 <div class="title">ThreadManager.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ThreadManager_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * ThreadManager.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Sep 25, 2014</span></div>
@@ -120,25 +120,32 @@ $(document).ready(function(){initNavTree('ThreadManager_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classThreadManager.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="classThreadManager.html">ThreadManager</a> {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">static</span> <a class="code" href="classThreadManager.html">ThreadManager</a>* getInstance();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classThreadManager.html">ThreadManager</a>();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> add(pthread_t t);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">static</span> <a class="code" href="classThreadManager.html">ThreadManager</a>* <a class="code" href="classThreadManager.html#a22aa9404f50cf194e0bdc21bc58fb380">getInstance</a>();</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classThreadManager.html#aea1b559718ac37404943bced96f64f27">~ThreadManager</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classThreadManager.html#abf29b29dfe79f899ee9bce4ca7efc798">add</a>(pthread_t t);</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">void</span> <span class="keyword">remove</span>(pthread_t t);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">int</span> getNumOfThreads()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classThreadManager.html#aadaf09012c31bb2f57244179bbf11ccd">getNumOfThreads</a>()<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classThreadManager.html">ThreadManager</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    std::set&lt;pthread_t&gt; threads_;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">static</span> <a class="code" href="classThreadManager.html">ThreadManager</a>* instance_;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classThreadManager.html#a613b13ebf45502e4d86c2f9317ec5871">ThreadManager</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classThreadManager.html#ac2bd3475c062b9860560cb6fb9d390f4">   22</a></span>&#160;    std::set&lt;pthread_t&gt; <a class="code" href="classThreadManager.html#ac2bd3475c062b9860560cb6fb9d390f4">threads_</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classThreadManager.html#aeaf314f6bfcfe81cc03ef9d94c9de4cf">   23</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classThreadManager.html">ThreadManager</a>* <a class="code" href="classThreadManager.html#aeaf314f6bfcfe81cc03ef9d94c9de4cf">instance_</a>;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* THREADMANAGER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classThreadManager_html_a22aa9404f50cf194e0bdc21bc58fb380"><div class="ttname"><a href="classThreadManager.html#a22aa9404f50cf194e0bdc21bc58fb380">ThreadManager::getInstance</a></div><div class="ttdeci">static ThreadManager * getInstance()</div></div>
 <div class="ttc" id="classThreadManager_html"><div class="ttname"><a href="classThreadManager.html">ThreadManager</a></div><div class="ttdef"><b>Definition:</b> ThreadManager.h:13</div></div>
+<div class="ttc" id="classThreadManager_html_aadaf09012c31bb2f57244179bbf11ccd"><div class="ttname"><a href="classThreadManager.html#aadaf09012c31bb2f57244179bbf11ccd">ThreadManager::getNumOfThreads</a></div><div class="ttdeci">int getNumOfThreads() const </div></div>
+<div class="ttc" id="classThreadManager_html_aeaf314f6bfcfe81cc03ef9d94c9de4cf"><div class="ttname"><a href="classThreadManager.html#aeaf314f6bfcfe81cc03ef9d94c9de4cf">ThreadManager::instance_</a></div><div class="ttdeci">static ThreadManager * instance_</div><div class="ttdef"><b>Definition:</b> ThreadManager.h:23</div></div>
+<div class="ttc" id="classThreadManager_html_aea1b559718ac37404943bced96f64f27"><div class="ttname"><a href="classThreadManager.html#aea1b559718ac37404943bced96f64f27">ThreadManager::~ThreadManager</a></div><div class="ttdeci">virtual ~ThreadManager()</div></div>
+<div class="ttc" id="classThreadManager_html_a613b13ebf45502e4d86c2f9317ec5871"><div class="ttname"><a href="classThreadManager.html#a613b13ebf45502e4d86c2f9317ec5871">ThreadManager::ThreadManager</a></div><div class="ttdeci">ThreadManager()</div></div>
+<div class="ttc" id="classThreadManager_html_abf29b29dfe79f899ee9bce4ca7efc798"><div class="ttname"><a href="classThreadManager.html#abf29b29dfe79f899ee9bce4ca7efc798">ThreadManager::add</a></div><div class="ttdeci">void add(pthread_t t)</div></div>
+<div class="ttc" id="classThreadManager_html_ac2bd3475c062b9860560cb6fb9d390f4"><div class="ttname"><a href="classThreadManager.html#ac2bd3475c062b9860560cb6fb9d390f4">ThreadManager::threads_</a></div><div class="ttdeci">std::set&lt; pthread_t &gt; threads_</div><div class="ttdef"><b>Definition:</b> ThreadManager.h:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_9ddeeb997bc2af5957d3bd0d4b3d2f72.html">Resource</a></li><li class="navelem"><b>ThreadManager.h</b></li>
+    <li class="navelem"><a class="el" href="dir_9ddeeb997bc2af5957d3bd0d4b3d2f72.html">Resource</a></li><li class="navelem"><a class="el" href="ThreadManager_8h.html">ThreadManager.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

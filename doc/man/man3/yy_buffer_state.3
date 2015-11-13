@@ -1,4 +1,4 @@
-.TH "yy_buffer_state" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "yy_buffer_state" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ yy_buffer_state \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql\&.lex\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
@@ -19,10 +21,10 @@ yy_buffer_state \-
 .RI "char * \fByy_buf_pos\fP"
 .br
 .ti -1c
-.RI "yy_size_t \fByy_buf_size\fP"
+.RI "\fByy_size_t\fP \fByy_buf_size\fP"
 .br
 .ti -1c
-.RI "yy_size_t \fByy_n_chars\fP"
+.RI "\fByy_size_t\fP \fByy_n_chars\fP"
 .br
 .ti -1c
 .RI "int \fByy_is_our_buffer\fP"
@@ -48,11 +50,55 @@ yy_buffer_state \-
 .in -1c
 .SH "Member Data Documentation"
 .PP 
+.SS "int yy_buffer_state::yy_at_bol"
+
+.PP
+Referenced by yy_flush_buffer(), and yy_scan_buffer()\&.
 .SS "int yy_buffer_state::yy_bs_column"
 The column count\&. 
+.PP
+Referenced by yy_init_buffer()\&.
 .SS "int yy_buffer_state::yy_bs_lineno"
 The line count\&. 
+.PP
+Referenced by yy_init_buffer()\&.
+.SS "char * yy_buffer_state::yy_buf_pos"
+
+.PP
+Referenced by yy_flush_buffer(), and yy_scan_buffer()\&.
+.SS "\fByy_size_t\fP yy_buffer_state::yy_buf_size"
+
+.PP
+Referenced by yy_create_buffer(), yy_get_next_buffer(), and yy_scan_buffer()\&.
+.SS "int yy_buffer_state::yy_buffer_status"
+
+.PP
+Referenced by yy_flush_buffer(), and yy_scan_buffer()\&.
+.SS "char * yy_buffer_state::yy_ch_buf"
+
+.PP
+Referenced by yy_create_buffer(), yy_delete_buffer(), yy_flush_buffer(), yy_get_next_buffer(), and yy_scan_buffer()\&.
+.SS "int yy_buffer_state::yy_fill_buffer"
+
+.PP
+Referenced by yy_init_buffer(), and yy_scan_buffer()\&.
+.SS "FILE * yy_buffer_state::yy_input_file"
+
+.PP
+Referenced by yy_init_buffer(), and yy_scan_buffer()\&.
+.SS "int yy_buffer_state::yy_is_interactive"
+
+.PP
+Referenced by yy_init_buffer(), and yy_scan_buffer()\&.
+.SS "int yy_buffer_state::yy_is_our_buffer"
+
+.PP
+Referenced by yy_create_buffer(), yy_delete_buffer(), yy_get_next_buffer(), yy_scan_buffer(), and yy_scan_bytes()\&.
+.SS "\fByy_size_t\fP yy_buffer_state::yy_n_chars"
+
+.PP
+Referenced by yy_flush_buffer(), and yy_scan_buffer()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

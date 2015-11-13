@@ -1,4 +1,4 @@
-.TH "ChunkReaderIterator::InHDFSBlockAccessor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ChunkReaderIterator::InHDFSBlockAccessor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ChunkReaderIterator::InHDFSBlockAccessor \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ChunkStorage\&.h>\fP
 .PP
 Inherits \fBChunkReaderIterator::block_accessor\fP\&.
 .SS "Public Member Functions"
@@ -33,9 +35,69 @@ Inherits \fBChunkReaderIterator::block_accessor\fP\&.
 .RI "void \fBsetChunkSize\fP (unsigned chunkSize)"
 .br
 .in -1c
-.SS "Additional Inherited Members"
+.SS "Private Attributes"
 
+.in +1c
+.ti -1c
+.RI "unsigned \fBchunk_size\fP"
+.br
+.ti -1c
+.RI "\fBChunkID\fP \fBchunk_id\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_cur\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "void ChunkReaderIterator::InHDFSBlockAccessor::getBlock (\fBBlockStreamBase\fP *&block) const\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBChunkReaderIterator::block_accessor\fP\&.
+.SS "unsigned ChunkReaderIterator::InHDFSBlockAccessor::getBlockCur () const\fC [inline]\fP"
+
+.PP
+References block_cur\&.
+.SS "const \fBChunkID\fP& ChunkReaderIterator::InHDFSBlockAccessor::getChunkId () const\fC [inline]\fP"
+
+.PP
+References chunk_id\&.
+.SS "unsigned ChunkReaderIterator::InHDFSBlockAccessor::getChunkSize () const\fC [inline]\fP"
+
+.PP
+References chunk_size\&.
+.SS "void ChunkReaderIterator::InHDFSBlockAccessor::setBlockCur (unsignedblockCur)\fC [inline]\fP"
+
+.PP
+References block_cur\&.
+.PP
+Referenced by HDFSChunkReaderIterator::getNextBlockAccessor()\&.
+.SS "void ChunkReaderIterator::InHDFSBlockAccessor::setChunkId (const \fBChunkID\fP &chunkId)\fC [inline]\fP"
+
+.PP
+References chunk_id\&.
+.PP
+Referenced by HDFSChunkReaderIterator::getNextBlockAccessor()\&.
+.SS "void ChunkReaderIterator::InHDFSBlockAccessor::setChunkSize (unsignedchunkSize)\fC [inline]\fP"
+
+.PP
+References chunk_size\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned ChunkReaderIterator::InHDFSBlockAccessor::block_cur\fC [private]\fP"
+
+.PP
+Referenced by getBlockCur(), and setBlockCur()\&.
+.SS "\fBChunkID\fP ChunkReaderIterator::InHDFSBlockAccessor::chunk_id\fC [private]\fP"
+
+.PP
+Referenced by getChunkId(), and setChunkId()\&.
+.SS "unsigned ChunkReaderIterator::InHDFSBlockAccessor::chunk_size\fC [private]\fP"
+
+.PP
+Referenced by getChunkSize(), and setChunkSize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

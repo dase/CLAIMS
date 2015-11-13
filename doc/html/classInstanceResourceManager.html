@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: InstanceResourceManager Class Reference</title>
+<title>Claims: InstanceResourceManager Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,27 +106,257 @@ $(document).ready(function(){initNavTree('classInstanceResourceManager.html','')
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classInstanceResourceManager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">InstanceResourceManager Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ResourceManagerSlave_8h_source.html">ResourceManagerSlave.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for InstanceResourceManager:</div>
+<div class="dyncontent">
+<div class="center"><img src="classInstanceResourceManager__coll__graph.png" border="0" usemap="#InstanceResourceManager_coll__map" alt="Collaboration graph"/></div>
+<map name="InstanceResourceManager_coll__map" id="InstanceResourceManager_coll__map">
+<area shape="rect" id="node2" href="classLogging.html" title="Logging" alt="" coords="7,96,73,123"/><area shape="rect" id="node3" href="classCPUResourceManager.html" title="CPUResourceManager" alt="" coords="97,96,255,123"/><area shape="rect" id="node4" href="classsemaphore.html" title="semaphore" alt="" coords="133,5,219,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa501a0d978c7fe57f3e3981e86f39d54"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa501a0d978c7fe57f3e3981e86f39d54"></a>
-NodeID&#160;</td><td class="memItemRight" valign="bottom"><b>Register</b> ()</td></tr>
+<tr class="memitem:a1d378f6c1e0ece181a642e30777a7e25"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25">InstanceResourceManager</a> ()</td></tr>
+<tr class="separator:a1d378f6c1e0ece181a642e30777a7e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008dd346570fe0b00406424bba9e670b"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#a008dd346570fe0b00406424bba9e670b">~InstanceResourceManager</a> ()</td></tr>
+<tr class="separator:a008dd346570fe0b00406424bba9e670b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa501a0d978c7fe57f3e3981e86f39d54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54">Register</a> ()</td></tr>
 <tr class="separator:aa501a0d978c7fe57f3e3981e86f39d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10e6142a7a0544c1ce96060af639cee6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10e6142a7a0544c1ce96060af639cee6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>ReportStorageBudget</b> (<a class="el" href="structStorageBudgetMessage.html">StorageBudgetMessage</a> &amp;)</td></tr>
+<tr class="memitem:a10e6142a7a0544c1ce96060af639cee6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#a10e6142a7a0544c1ce96060af639cee6">ReportStorageBudget</a> (<a class="el" href="structStorageBudgetMessage.html">StorageBudgetMessage</a> &amp;)</td></tr>
 <tr class="separator:a10e6142a7a0544c1ce96060af639cee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa19b214bf1cf7c45f82ae0926a62b634"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa19b214bf1cf7c45f82ae0926a62b634"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setStorageBudget</b> (unsigned long memory, unsigned long disk)</td></tr>
+<tr class="memitem:aa19b214bf1cf7c45f82ae0926a62b634"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#aa19b214bf1cf7c45f82ae0926a62b634">setStorageBudget</a> (unsigned long memory, unsigned long disk)</td></tr>
 <tr class="separator:aa19b214bf1cf7c45f82ae0926a62b634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a12f74ee832817134ca3889f2e6672612"><td class="memItemLeft" align="right" valign="top">Theron::Framework *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">framework_</a></td></tr>
+<tr class="separator:a12f74ee832817134ca3889f2e6672612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a072a303668f67caf8baaafa511068e4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">logging_</a></td></tr>
+<tr class="separator:a072a303668f67caf8baaafa511068e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af19f208b6ba2dbaeb41d0d36ad12bb7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPUResourceManager.html">CPUResourceManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInstanceResourceManager.html#af19f208b6ba2dbaeb41d0d36ad12bb7b">cpu_resource_</a></td></tr>
+<tr class="separator:af19f208b6ba2dbaeb41d0d36ad12bb7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a1d378f6c1e0ece181a642e30777a7e25"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">InstanceResourceManager::InstanceResourceManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">framework_</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, and <a class="el" href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">logging_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classInstanceResourceManager_a1d378f6c1e0ece181a642e30777a7e25_cgraph.png" border="0" usemap="#classInstanceResourceManager_a1d378f6c1e0ece181a642e30777a7e25_cgraph" alt=""/></div>
+<map name="classInstanceResourceManager_a1d378f6c1e0ece181a642e30777a7e25_cgraph" id="classInstanceResourceManager_a1d378f6c1e0ece181a642e30777a7e25_cgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="240,1267,411,1293"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="459,871,635,897"/><area shape="rect" id="node4" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1271,887,1369,913"/><area shape="rect" id="node5" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="706,79,878,105"/><area shape="rect" id="node10" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="724,1165,860,1192"/><area shape="rect" id="node11" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="699,145,885,172"/><area shape="rect" id="node13" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="721,227,863,253"/><area shape="rect" id="node15" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="693,1216,891,1243"/><area shape="rect" id="node21" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="699,1369,885,1410"/><area shape="rect" id="node24" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="700,339,884,381"/><area shape="rect" id="node29" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="683,845,901,872"/><area shape="rect" id="node30" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="975,770,1148,811"/><area shape="rect" id="node32" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="685,527,899,569"/><area shape="rect" id="node40" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="689,1099,895,1141"/><area shape="rect" id="node42" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="695,997,889,1024"/><area shape="rect" id="node47" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="684,947,900,973"/><area shape="rect" id="node17" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1715,1095,1807,1121"/><area shape="rect" id="node49" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="699,1048,885,1075"/><area shape="rect" id="node50" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="712,795,872,821"/><area shape="rect" id="node6" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="972,71,1151,97"/><area shape="rect" id="node7" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="1231,121,1409,148"/><area shape="rect" id="node8" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="1230,5,1410,46"/><area shape="rect" id="node9" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="1246,71,1394,97"/><area shape="rect" id="node12" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="958,121,1165,148"/><area shape="rect" id="node14" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1001,172,1121,199"/><area shape="rect" id="node16" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="969,1251,1153,1293"/><area shape="rect" id="node18" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="1225,985,1415,1026"/><area shape="rect" id="node19" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="1517,863,1617,889"/><area shape="rect" id="node20" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="1517,952,1617,979"/><area shape="rect" id="node22" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1229,1317,1411,1344"/><area shape="rect" id="node23" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="1467,1297,1667,1324"/><area shape="rect" id="node25" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="980,223,1143,249"/><area shape="rect" id="node26" href="classClientListenerLogging.html#a52a19994634ec81023f81299ab4cec1e" title="ClientListenerLogging::log" alt="" coords="1481,223,1653,249"/><area shape="rect" id="node27" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8" title="ClientListener::receiveHandler" alt="" coords="1221,273,1419,300"/><area shape="rect" id="node28" href="classClientListener.html#ad13c4304fac33c02aeef2101f0cb5651" title="ClientListener::sendHandler" alt="" coords="1229,172,1411,199"/><area shape="rect" id="node31" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1241,836,1399,863"/><area shape="rect" id="node33" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="966,339,1157,381"/><area shape="rect" id="node34" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="981,405,1142,446"/><area shape="rect" id="node35" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1000,470,1123,511"/><area shape="rect" id="node36" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="995,535,1128,577"/><area shape="rect" id="node37" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="950,601,1173,628"/><area shape="rect" id="node38" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="975,653,1148,694"/><area shape="rect" id="node39" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="975,274,1148,315"/><area shape="rect" id="node41" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="972,1186,1151,1227"/><area shape="rect" id="node43" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="989,1121,1134,1162"/><area shape="rect" id="node44" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="971,1004,1152,1031"/><area shape="rect" id="node45" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="989,1055,1134,1097"/><area shape="rect" id="node46" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="981,1317,1141,1344"/><area shape="rect" id="node48" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="993,938,1129,979"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a008dd346570fe0b00406424bba9e670b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">InstanceResourceManager::~InstanceResourceManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">framework_</a>, and <a class="el" href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">logging_</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aa501a0d978c7fe57f3e3981e86f39d54"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> InstanceResourceManager::Register </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">framework_</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, <a class="el" href="classEnvironment.html#a1e9d74a190b5cdbf5c2dfd06f6e17c2b">Environment::getIp()</a>, <a class="el" href="classEnvironment.html#a924a9e3192a03cf62b31777b752b973b">Environment::getPort()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">logging_</a>, and <a class="el" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8">TimeOutReceiver::TimeOutWait()</a>.</p>
+
+<p>Referenced by <a class="el" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976">Environment::initializeResourceManager()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_cgraph.png" border="0" usemap="#classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_cgraph" alt=""/></div>
+<map name="classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_cgraph" id="classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1004,693,1103,720"/><area shape="rect" id="node3" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="232,1256,403,1282"/><area shape="rect" id="node47" href="classEnvironment.html#a1e9d74a190b5cdbf5c2dfd06f6e17c2b" title="Environment::getIp" alt="" coords="251,1441,383,1468"/><area shape="rect" id="node48" href="classEnvironment.html#a924a9e3192a03cf62b31777b752b973b" title="Environment::getPort" alt="" coords="245,1492,390,1518"/><area shape="rect" id="node17" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1699,1044,1791,1070"/><area shape="rect" id="node49" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8" title="TimeOutReceiver::TimeOutWait" alt="" coords="949,1421,1158,1448"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="451,860,627,886"/><area shape="rect" id="node5" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="698,717,870,744"/><area shape="rect" id="node10" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="716,834,852,861"/><area shape="rect" id="node11" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="691,885,877,912"/><area shape="rect" id="node13" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="713,936,855,962"/><area shape="rect" id="node15" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="685,1088,883,1114"/><area shape="rect" id="node20" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="691,1139,877,1180"/><area shape="rect" id="node23" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="692,223,876,264"/><area shape="rect" id="node26" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="675,380,893,406"/><area shape="rect" id="node27" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="697,768,871,810"/><area shape="rect" id="node29" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="677,431,891,472"/><area shape="rect" id="node37" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="681,1307,887,1348"/><area shape="rect" id="node38" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="687,1205,881,1232"/><area shape="rect" id="node43" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="676,565,892,592"/><area shape="rect" id="node45" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="691,986,877,1013"/><area shape="rect" id="node46" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="704,666,864,693"/><area shape="rect" id="node6" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="964,744,1143,770"/><area shape="rect" id="node7" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="1219,728,1397,754"/><area shape="rect" id="node8" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="1218,779,1398,820"/><area shape="rect" id="node9" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="1234,677,1382,704"/><area shape="rect" id="node12" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="950,896,1157,922"/><area shape="rect" id="node14" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="993,946,1113,973"/><area shape="rect" id="node16" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="961,1070,1145,1111"/><area shape="rect" id="node18" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="1213,1120,1403,1162"/><area shape="rect" id="node19" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="1520,1370,1581,1397"/><area shape="rect" id="node21" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1217,1186,1399,1213"/><area shape="rect" id="node22" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="1451,1182,1651,1209"/><area shape="rect" id="node24" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="972,133,1135,160"/><area shape="rect" id="node25" href="classClientListenerLogging.html#a52a19994634ec81023f81299ab4cec1e" title="ClientListenerLogging::log" alt="" coords="1222,133,1394,160"/><area shape="rect" id="node28" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="974,794,1133,821"/><area shape="rect" id="node30" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="958,366,1149,407"/><area shape="rect" id="node31" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="973,431,1134,472"/><area shape="rect" id="node32" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="992,496,1115,538"/><area shape="rect" id="node33" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="987,562,1120,603"/><area shape="rect" id="node34" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="942,184,1165,210"/><area shape="rect" id="node35" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="967,235,1140,276"/><area shape="rect" id="node36" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="967,300,1140,342"/><area shape="rect" id="node39" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="981,1187,1126,1228"/><area shape="rect" id="node40" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="963,1253,1144,1280"/><area shape="rect" id="node41" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="981,1304,1126,1346"/><area shape="rect" id="node42" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="973,1370,1133,1397"/><area shape="rect" id="node44" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="985,627,1121,668"/><area shape="rect" id="node50" href="rdtsc_8h.html#aad9fa653ac913a1e9e869ba253f1c844" title="getMilliSecond" alt="" coords="1255,1370,1361,1397"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_icgraph.png" border="0" usemap="#classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_icgraph" alt=""/></div>
+<map name="classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_icgraph" id="classInstanceResourceManager_aa501a0d978c7fe57f3e3981e86f39d54_icgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="233,1357,439,1398"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="488,1368,664,1395"/><area shape="rect" id="node4" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="712,1396,883,1423"/><area shape="rect" id="node5" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="977,5,1124,32"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="987,56,1114,83"/><area shape="rect" id="node7" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="933,107,1168,149"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="972,173,1129,214"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1260,209,1351,236"/><area shape="rect" id="node10" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="953,289,1149,316"/><area shape="rect" id="node11" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="974,341,1127,382"/><area shape="rect" id="node12" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="965,406,1136,447"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="933,471,1169,513"/><area shape="rect" id="node14" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="991,537,1110,564"/><area shape="rect" id="node15" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="977,589,1124,630"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="977,654,1124,695"/><area shape="rect" id="node17" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1004,1297,1097,1324"/><area shape="rect" id="node20" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="931,771,1171,813"/><area shape="rect" id="node21" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="951,837,1150,893"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="941,918,1161,959"/><area shape="rect" id="node23" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="955,983,1146,1025"/><area shape="rect" id="node24" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1001,1049,1101,1076"/><area shape="rect" id="node25" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="979,1101,1123,1142"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="976,1166,1125,1207"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="957,1231,1144,1273"/><area shape="rect" id="node19" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1441,1596,1562,1623"/><area shape="rect" id="node28" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="950,1348,1151,1404"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1219,1363,1391,1389"/><area shape="rect" id="node29" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="991,1479,1111,1505"/><area shape="rect" id="node30" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="977,1529,1124,1556"/><area shape="rect" id="node31" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="965,1580,1136,1607"/><area shape="rect" id="node32" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="962,1631,1139,1673"/><area shape="rect" id="node33" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="973,1697,1128,1738"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="973,1762,1128,1803"/><area shape="rect" id="node35" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="983,1981,1118,2022"/><area shape="rect" id="node37" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="978,1879,1123,1905"/><area shape="rect" id="node38" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="981,2046,1121,2087"/><area shape="rect" id="node40" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="981,2594,1121,2635"/><area shape="rect" id="node42" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="981,2659,1121,2701"/><area shape="rect" id="node44" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="985,2112,1117,2139"/><area shape="rect" id="node45" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="971,2163,1131,2189"/><area shape="rect" id="node46" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="975,2214,1127,2255"/><area shape="rect" id="node47" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1009,720,1092,747"/><area shape="rect" id="node48" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="969,2331,1133,2373"/><area shape="rect" id="node49" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25" title="InstanceResourceManager\l::InstanceResourceManager" alt="" coords="957,2397,1144,2438"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="937,2463,1164,2519"/><area shape="rect" id="node36" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="1237,1959,1374,1985"/><area shape="rect" id="node39" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="1234,2167,1377,2193"/><area shape="rect" id="node43" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="1219,2696,1391,2723"/><area shape="rect" id="node41" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="1225,2572,1385,2599"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a10e6142a7a0544c1ce96060af639cee6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InstanceResourceManager::ReportStorageBudget </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structStorageBudgetMessage.html">StorageBudgetMessage</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">framework_</a>, and <a class="el" href="ResourceManagerSlave_8cpp.html#aae3f46b78ac86d579d661d5c1a443474">ResourceManagerMasterName</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">BlockManager::initialize()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classInstanceResourceManager_a10e6142a7a0544c1ce96060af639cee6_icgraph.png" border="0" usemap="#classInstanceResourceManager_a10e6142a7a0544c1ce96060af639cee6_icgraph" alt=""/></div>
+<map name="classInstanceResourceManager_a10e6142a7a0544c1ce96060af639cee6_icgraph" id="classInstanceResourceManager_a10e6142a7a0544c1ce96060af639cee6_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="232,1364,392,1391"/><area shape="rect" id="node3" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="440,1339,635,1365"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="683,1339,859,1365"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="907,1364,1077,1391"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1172,5,1319,32"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1182,56,1309,83"/><area shape="rect" id="node8" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1128,107,1363,149"/><area shape="rect" id="node9" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1167,225,1324,266"/><area shape="rect" id="node10" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1455,203,1545,229"/><area shape="rect" id="node11" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1147,291,1343,317"/><area shape="rect" id="node12" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1169,342,1322,383"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1160,407,1331,449"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1127,473,1363,514"/><area shape="rect" id="node15" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1186,539,1305,565"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1172,590,1319,631"/><area shape="rect" id="node17" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1172,655,1319,697"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1199,721,1292,748"/><area shape="rect" id="node21" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1125,773,1365,814"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1146,839,1345,895"/><area shape="rect" id="node23" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1135,919,1355,961"/><area shape="rect" id="node24" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1150,985,1341,1026"/><area shape="rect" id="node25" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1195,1051,1295,1077"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1173,1102,1317,1143"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1171,1167,1320,1209"/><area shape="rect" id="node28" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1152,1233,1339,1274"/><area shape="rect" id="node20" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1635,1597,1757,1624"/><area shape="rect" id="node29" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1145,1349,1346,1405"/><area shape="rect" id="node19" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1414,1364,1586,1391"/><area shape="rect" id="node30" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1185,1480,1305,1507"/><area shape="rect" id="node31" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1172,1531,1319,1557"/><area shape="rect" id="node32" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1160,1581,1331,1608"/><area shape="rect" id="node33" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1157,1633,1334,1674"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1168,1698,1323,1739"/><area shape="rect" id="node35" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="1168,1763,1323,1805"/><area shape="rect" id="node36" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="1178,1931,1313,1973"/><area shape="rect" id="node38" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1173,1880,1318,1907"/><area shape="rect" id="node39" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="1175,2215,1315,2257"/><area shape="rect" id="node41" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="1175,2493,1315,2534"/><area shape="rect" id="node43" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="1175,2661,1315,2702"/><area shape="rect" id="node45" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1179,2099,1311,2125"/><area shape="rect" id="node46" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="1169,2150,1321,2191"/><area shape="rect" id="node47" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1204,1429,1287,1456"/><area shape="rect" id="node48" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="1163,2281,1327,2322"/><area shape="rect" id="node49" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25" title="InstanceResourceManager\l::InstanceResourceManager" alt="" coords="1152,2346,1339,2387"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1132,2412,1359,2468"/><area shape="rect" id="node37" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="1431,1968,1569,1995"/><area shape="rect" id="node40" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="1429,2136,1571,2163"/><area shape="rect" id="node44" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="1414,2624,1586,2651"/><area shape="rect" id="node42" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="1420,2544,1580,2571"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aa19b214bf1cf7c45f82ae0926a62b634"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InstanceResourceManager::setStorageBudget </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>memory</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>disk</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="af19f208b6ba2dbaeb41d0d36ad12bb7b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPUResourceManager.html">CPUResourceManager</a> InstanceResourceManager::cpu_resource_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a12f74ee832817134ca3889f2e6672612"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Framework* InstanceResourceManager::framework_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25">InstanceResourceManager()</a>, <a class="el" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54">Register()</a>, <a class="el" href="classInstanceResourceManager.html#a10e6142a7a0544c1ce96060af639cee6">ReportStorageBudget()</a>, and <a class="el" href="classInstanceResourceManager.html#a008dd346570fe0b00406424bba9e670b">~InstanceResourceManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a072a303668f67caf8baaafa511068e4e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogging.html">Logging</a>* InstanceResourceManager::logging_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25">InstanceResourceManager()</a>, <a class="el" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54">Register()</a>, and <a class="el" href="classInstanceResourceManager.html#a008dd346570fe0b00406424bba9e670b">~InstanceResourceManager()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Resource/<a class="el" href="ResourceManagerSlave_8h_source.html">ResourceManagerSlave.h</a></li>
-<li>Resource/ResourceManagerSlave.cpp</li>
+<li>Resource/<a class="el" href="ResourceManagerSlave_8cpp.html">ResourceManagerSlave.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

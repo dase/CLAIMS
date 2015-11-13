@@ -1,4 +1,4 @@
-.TH "BlockStreamFix" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BlockStreamFix" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,27 @@ BlockStreamFix \-
 .br
 .PP
 .PP
+\fC#include <BlockStream\&.h>\fP
+.PP
 Inherits \fBBlockStreamBase\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBtail_info\fP"
+.br
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBBlockStreamFix\fP (unsigned block_size, unsigned tuple_size)"
+.RI "\fBBlockStreamFix\fP (unsigned \fBblock_size\fP, unsigned tuple_size)"
 .br
 .ti -1c
-.RI "\fBBlockStreamFix\fP (unsigned block_size, unsigned tuple_size, void *start_addr, unsigned ntuples)"
+.RI "\fBBlockStreamFix\fP (unsigned \fBblock_size\fP, unsigned tuple_size, void *start_addr, unsigned ntuples)"
+.br
+.ti -1c
+.RI "virtual \fB~BlockStreamFix\fP ()"
 .br
 .ti -1c
 .RI "void * \fBallocateTuple\fP (unsigned bytes)"
@@ -90,17 +102,133 @@ Inherits \fBBlockStreamBase\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BlockStreamFix::BlockStreamFix (unsignedblock_size, unsignedtuple_size)"
+
+.PP
+References free_, and Block::start\&.
+.PP
+Referenced by createBlockAndDeepCopy()\&.
+.SS "BlockStreamFix::BlockStreamFix (unsignedblock_size, unsignedtuple_size, void *start_addr, unsignedntuples)"
+
+.SS "BlockStreamFix::~BlockStreamFix ()\fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
+.SS "void* BlockStreamFix::allocateTuple (unsignedbytes)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
 .SS "void BlockStreamFix::constructFromBlock (const \fBBlock\fP &block)\fC [virtual]\fP"
 a remedy for the data loading bug\&.\&.\&.
 .PP
 Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, free_, Block::getBlock(), Block::getsize(), Block::start, and tuple_size_\&.
+.SS "void BlockStreamFix::copyBlock (void *addr, unsignedlength)\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, free_, and Block::start\&.
+.SS "\fBBlockStreamBase\fP * BlockStreamFix::createBlockAndDeepCopy ()\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, BlockStreamFix(), BlockStreamBase::deepCopy(), Block::getBlock(), getTuplesInBlock(), Block::isIsReference(), and tuple_size_\&.
 .SS "void BlockStreamFix::deepCopy (const \fBBlock\fP *block)\fC [virtual]\fP"
 deep copy from block, including block content and member variables that maintain the block status\&. the user should guarantee that rest block and desc block are of equal derived class type(e\&.g\&., both are \fBBlockStreamFix\fP), otherwise the copy may be incomplete\&. 
 .PP
 Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, free_, Block::getBlock(), Block::getsize(), Block::start, and tuple_size_\&.
+.SS "bool BlockStreamFix::deserialize (\fBBlock\fP *block)\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, free_, Block::getBlock(), Block::getsize(), Block::start, and tuple_size_\&.
+.SS "bool BlockStreamFix::Empty () const\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References free_, and Block::start\&.
+.SS "bool BlockStreamFix::Full () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.SS "unsigned BlockStreamFix::getBlockCapacityInTuples () const\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, and tuple_size_\&.
+.SS "void * BlockStreamFix::getBlockDataAddress ()\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::start\&.
+.SS "unsigned BlockStreamFix::getSerializedBlockSize () const\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize\&.
+.SS "void* BlockStreamFix::getTuple (unsignedoffset) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.SS "unsigned BlockStreamFix::getTuplesInBlock () const\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References free_, Block::start, and tuple_size_\&.
+.PP
+Referenced by createBlockAndDeepCopy()\&.
+.SS "bool BlockStreamFix::insert (void *dest, void *src, unsignedbytes)\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.SS "bool BlockStreamFix::serialize (\fBBlock\fP &block) const\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, free_, Block::getBlock(), Block::getsize(), Block::start, BlockStreamFix::tail_info::tuple_count, and tuple_size_\&.
+.SS "void BlockStreamFix::setEmpty ()\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References free_, and Block::start\&.
+.SS "void BlockStreamFix::setTuplesInBlock (unsignedn)\fC [inline]\fP"
+
+.SS "bool BlockStreamFix::switchBlock (\fBBlockStreamBase\fP &block)\fC [virtual]\fP"
+
+.PP
+Implements \fBBlockStreamBase\fP\&.
+.PP
+References Block::BlockSize, free_, and Block::start\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBBlockStreamBase\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "char* BlockStreamFix::free_"
+
+.PP
+Referenced by BlockStreamFix(), constructFromBlock(), copyBlock(), deepCopy(), deserialize(), Empty(), getTuplesInBlock(), serialize(), setEmpty(), and switchBlock()\&.
+.SS "unsigned BlockStreamFix::tuple_size_"
+
+.PP
+Referenced by constructFromBlock(), createBlockAndDeepCopy(), deepCopy(), deserialize(), getBlockCapacityInTuples(), getTuplesInBlock(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

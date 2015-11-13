@@ -23,6 +23,7 @@ var classSchema =
     [ "getTupleActualSize", "classSchema.html#a7f139b193864366eb6a119248ab7c0b4", null ],
     [ "getTupleMaxSize", "classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c", null ],
     [ "hasSameSchema", "classSchema.html#a075026649e63b68e15dae9b710294c87", null ],
+    [ "serialize", "classSchema.html#a05369528186148a03efeec9e4d413524", null ],
     [ "showAccum_off", "classSchema.html#a6d1a65c9d3d50de4122e5348140db0e3", null ],
     [ "toValue", "classSchema.html#a6e18cfa58e2868a5b41bd11d18835a84", null ],
     [ "boost::serialization::access", "classSchema.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],

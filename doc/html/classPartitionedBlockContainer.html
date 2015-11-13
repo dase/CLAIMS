@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: PartitionedBlockContainer Class Reference</title>
+<title>Claims: PartitionedBlockContainer Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,27 +107,156 @@ $(document).ready(function(){initNavTree('classPartitionedBlockContainer.html','
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classPartitionedBlockContainer-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">PartitionedBlockContainer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="PartitionedBlockContainer_8h_source.html">PartitionedBlockContainer.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPartitionedBlockContainer_1_1status.html">status</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afd13f7a92573b2251d9cfe6d40a438d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd13f7a92573b2251d9cfe6d40a438d6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PartitionedBlockContainer</b> (unsigned partitions, unsigned block_size)</td></tr>
+<tr class="memitem:afd13f7a92573b2251d9cfe6d40a438d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#afd13f7a92573b2251d9cfe6d40a438d6">PartitionedBlockContainer</a> (unsigned partitions, unsigned <a class="el" href="hash__table__test_8h.html#a9766f5ceca5e25981858ec7384456072">block_size</a>)</td></tr>
 <tr class="separator:afd13f7a92573b2251d9cfe6d40a438d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6832a98c772a09d836cb005b30c4e8c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6832a98c772a09d836cb005b30c4e8c8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getBlockForSending</b> (<a class="el" href="classBlockContainer.html">BlockContainer</a> *&amp;block)</td></tr>
+<tr class="memitem:a96cca07e34b0884bbf53bf6e3d4c2838"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a96cca07e34b0884bbf53bf6e3d4c2838">~PartitionedBlockContainer</a> ()</td></tr>
+<tr class="separator:a96cca07e34b0884bbf53bf6e3d4c2838"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6832a98c772a09d836cb005b30c4e8c8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a6832a98c772a09d836cb005b30c4e8c8">getBlockForSending</a> (<a class="el" href="classBlockContainer.html">BlockContainer</a> *&amp;block)</td></tr>
 <tr class="separator:a6832a98c772a09d836cb005b30c4e8c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fa5e23575af1dd4e16a59f4c429bed0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a6fa5e23575af1dd4e16a59f4c429bed0">insert</a> (unsigned partition_id, <a class="el" href="classBlockContainer.html">BlockContainer</a> *&amp;block)</td></tr>
 <tr class="separator:a6fa5e23575af1dd4e16a59f4c429bed0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a112ba05e6ec7d82e91cf5081fc881a7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a112ba05e6ec7d82e91cf5081fc881a7f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Initialized</b> ()</td></tr>
+<tr class="memitem:a112ba05e6ec7d82e91cf5081fc881a7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a112ba05e6ec7d82e91cf5081fc881a7f">Initialized</a> ()</td></tr>
 <tr class="separator:a112ba05e6ec7d82e91cf5081fc881a7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a4bce07aa6d3fc1ac95d5b1840b67bfb2"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a4bce07aa6d3fc1ac95d5b1840b67bfb2">partition_count_</a></td></tr>
+<tr class="separator:a4bce07aa6d3fc1ac95d5b1840b67bfb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48c7a8b19dfb4ab132eea9f102cc2caf"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a48c7a8b19dfb4ab132eea9f102cc2caf">block_size_</a></td></tr>
+<tr class="separator:a48c7a8b19dfb4ab132eea9f102cc2caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7133fe3f2f81aad7e6a7119ebcc958b2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classBlockContainer.html">BlockContainer</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a7133fe3f2f81aad7e6a7119ebcc958b2">block_list_</a></td></tr>
+<tr class="separator:a7133fe3f2f81aad7e6a7119ebcc958b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99dd6c31cd057d0844b4b9f8aaa6a446"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structPartitionedBlockContainer_1_1status.html">status</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionedBlockContainer.html#a99dd6c31cd057d0844b4b9f8aaa6a446">status_list_</a></td></tr>
+<tr class="separator:a99dd6c31cd057d0844b4b9f8aaa6a446"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="afd13f7a92573b2251d9cfe6d40a438d6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PartitionedBlockContainer::PartitionedBlockContainer </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>partitions</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>block_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionedBlockContainer.html#a7133fe3f2f81aad7e6a7119ebcc958b2">block_list_</a>, <a class="el" href="classPartitionedBlockContainer.html#a48c7a8b19dfb4ab132eea9f102cc2caf">block_size_</a>, <a class="el" href="classPartitionedBlockContainer.html#a4bce07aa6d3fc1ac95d5b1840b67bfb2">partition_count_</a>, and <a class="el" href="classPartitionedBlockContainer.html#a99dd6c31cd057d0844b4b9f8aaa6a446">status_list_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a96cca07e34b0884bbf53bf6e3d4c2838"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">PartitionedBlockContainer::~PartitionedBlockContainer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionedBlockContainer.html#a7133fe3f2f81aad7e6a7119ebcc958b2">block_list_</a>, and <a class="el" href="classPartitionedBlockContainer.html#a99dd6c31cd057d0844b4b9f8aaa6a446">status_list_</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6832a98c772a09d836cb005b30c4e8c8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PartitionedBlockContainer::getBlockForSending </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlockContainer.html">BlockContainer</a> *&amp;&#160;</td>
+          <td class="paramname"><em>block</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionedBlockContainer.html#a7133fe3f2f81aad7e6a7119ebcc958b2">block_list_</a>, and <a class="el" href="classPartitionedBlockContainer.html#a4bce07aa6d3fc1ac95d5b1840b67bfb2">partition_count_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a3b3982a957bc9c3ea1308f40ac3f39d2">claims::physical_operator::ExchangeSenderPipeline::Sender()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionedBlockContainer_a6832a98c772a09d836cb005b30c4e8c8_icgraph.png" border="0" usemap="#classPartitionedBlockContainer_a6832a98c772a09d836cb005b30c4e8c8_icgraph" alt=""/></div>
+<map name="classPartitionedBlockContainer_a6832a98c772a09d836cb005b30c4e8c8_icgraph" id="classPartitionedBlockContainer_a6832a98c772a09d836cb005b30c4e8c8_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a3b3982a957bc9c3ea1308f40ac3f39d2" title="claims::physical_operator\l::ExchangeSenderPipeline\l::Sender" alt="" coords="227,5,402,61"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a7d58bd7a85462944f855314b1bddd53d" title="claims::physical_operator\l::ExchangeSenderPipeline::Open" alt="" coords="451,13,666,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a112ba05e6ec7d82e91cf5081fc881a7f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PartitionedBlockContainer::Initialized </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionedBlockContainer.html#a7133fe3f2f81aad7e6a7119ebcc958b2">block_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a3b3982a957bc9c3ea1308f40ac3f39d2">claims::physical_operator::ExchangeSenderPipeline::Sender()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionedBlockContainer_a112ba05e6ec7d82e91cf5081fc881a7f_icgraph.png" border="0" usemap="#classPartitionedBlockContainer_a112ba05e6ec7d82e91cf5081fc881a7f_icgraph" alt=""/></div>
+<map name="classPartitionedBlockContainer_a112ba05e6ec7d82e91cf5081fc881a7f_icgraph" id="classPartitionedBlockContainer_a112ba05e6ec7d82e91cf5081fc881a7f_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a3b3982a957bc9c3ea1308f40ac3f39d2" title="claims::physical_operator\l::ExchangeSenderPipeline\l::Sender" alt="" coords="227,5,402,61"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a7d58bd7a85462944f855314b1bddd53d" title="claims::physical_operator\l::ExchangeSenderPipeline::Open" alt="" coords="451,13,666,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a6fa5e23575af1dd4e16a59f4c429bed0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -153,11 +282,113 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Initialized</b> ()</t
 </div><div class="memdoc">
 <p>swap the block container </p>
 
+<p>References <a class="el" href="classPartitionedBlockContainer.html#a7133fe3f2f81aad7e6a7119ebcc958b2">block_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a3b3982a957bc9c3ea1308f40ac3f39d2">claims::physical_operator::ExchangeSenderPipeline::Sender()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionedBlockContainer_a6fa5e23575af1dd4e16a59f4c429bed0_icgraph.png" border="0" usemap="#classPartitionedBlockContainer_a6fa5e23575af1dd4e16a59f4c429bed0_icgraph" alt=""/></div>
+<map name="classPartitionedBlockContainer_a6fa5e23575af1dd4e16a59f4c429bed0_icgraph" id="classPartitionedBlockContainer_a6fa5e23575af1dd4e16a59f4c429bed0_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a3b3982a957bc9c3ea1308f40ac3f39d2" title="claims::physical_operator\l::ExchangeSenderPipeline\l::Sender" alt="" coords="227,5,402,61"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a7d58bd7a85462944f855314b1bddd53d" title="claims::physical_operator\l::ExchangeSenderPipeline::Open" alt="" coords="451,13,666,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7133fe3f2f81aad7e6a7119ebcc958b2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classBlockContainer.html">BlockContainer</a>*&gt; PartitionedBlockContainer::block_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionedBlockContainer.html#a6832a98c772a09d836cb005b30c4e8c8">getBlockForSending()</a>, <a class="el" href="classPartitionedBlockContainer.html#a112ba05e6ec7d82e91cf5081fc881a7f">Initialized()</a>, <a class="el" href="classPartitionedBlockContainer.html#a6fa5e23575af1dd4e16a59f4c429bed0">insert()</a>, <a class="el" href="classPartitionedBlockContainer.html#afd13f7a92573b2251d9cfe6d40a438d6">PartitionedBlockContainer()</a>, and <a class="el" href="classPartitionedBlockContainer.html#a96cca07e34b0884bbf53bf6e3d4c2838">~PartitionedBlockContainer()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a48c7a8b19dfb4ab132eea9f102cc2caf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned PartitionedBlockContainer::block_size_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionedBlockContainer.html#afd13f7a92573b2251d9cfe6d40a438d6">PartitionedBlockContainer()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4bce07aa6d3fc1ac95d5b1840b67bfb2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned PartitionedBlockContainer::partition_count_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionedBlockContainer.html#a6832a98c772a09d836cb005b30c4e8c8">getBlockForSending()</a>, and <a class="el" href="classPartitionedBlockContainer.html#afd13f7a92573b2251d9cfe6d40a438d6">PartitionedBlockContainer()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a99dd6c31cd057d0844b4b9f8aaa6a446"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structPartitionedBlockContainer_1_1status.html">status</a>&gt; PartitionedBlockContainer::status_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionedBlockContainer.html#afd13f7a92573b2251d9cfe6d40a438d6">PartitionedBlockContainer()</a>, and <a class="el" href="classPartitionedBlockContainer.html#a96cca07e34b0884bbf53bf6e3d4c2838">~PartitionedBlockContainer()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>common/Block/<a class="el" href="PartitionedBlockContainer_8h_source.html">PartitionedBlockContainer.h</a></li>
-<li>common/Block/PartitionedBlockContainer.cpp</li>
+<li>common/Block/<a class="el" href="PartitionedBlockContainer_8cpp.html">PartitionedBlockContainer.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

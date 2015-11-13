@@ -1,4 +1,4 @@
-.TH "Json::Reader::StructuredError" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::Reader::StructuredError" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -29,7 +29,21 @@ An error tagged with where in the JSON text it was encountered\&.
 An error tagged with where in the JSON text it was encountered\&. 
 
 The offsets give the [start, limit) range of bytes within the text\&. Note that this is bytes, not codepoints\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string Json::Reader::StructuredError::message"
+
+.PP
+Referenced by Json::Reader::getStructuredErrors()\&.
+.SS "size_t Json::Reader::StructuredError::offset_limit"
+
+.PP
+Referenced by Json::Reader::getStructuredErrors()\&.
+.SS "size_t Json::Reader::StructuredError::offset_start"
+
+.PP
+Referenced by Json::Reader::getStructuredErrors()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: PortManager Class Reference</title>
+<title>Claims: PortManager Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,30 +107,455 @@ $(document).ready(function(){initNavTree('classPortManager.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classPortManager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">PortManager Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="PortManager_8h_source.html">PortManager.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for PortManager:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager__coll__graph.png" border="0" usemap="#PortManager_coll__map" alt="Collaboration graph"/></div>
+<map name="PortManager_coll__map" id="PortManager_coll__map">
+<area shape="rect" id="node2" href="classLock.html" title="Lock" alt="" coords="28,5,79,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5aa82953c31a8e919d60dd51154a53b5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5aa82953c31a8e919d60dd51154a53b5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>applyPort</b> ()</td></tr>
+<tr class="memitem:a4c9290346835cec69acf90cbe0d412e3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3">PortManager</a> ()</td></tr>
+<tr class="separator:a4c9290346835cec69acf90cbe0d412e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a629210585df10a40523a59904f91b3e1"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a629210585df10a40523a59904f91b3e1">~PortManager</a> ()</td></tr>
+<tr class="separator:a629210585df10a40523a59904f91b3e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aa82953c31a8e919d60dd51154a53b5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5">applyPort</a> ()</td></tr>
 <tr class="separator:a5aa82953c31a8e919d60dd51154a53b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfeecf973ce39914dd041226859ab2c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acfeecf973ce39914dd041226859ab2c2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>returnPort</b> (unsigned port)</td></tr>
+<tr class="memitem:acfeecf973ce39914dd041226859ab2c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#acfeecf973ce39914dd041226859ab2c2">returnPort</a> (unsigned port)</td></tr>
 <tr class="separator:acfeecf973ce39914dd041226859ab2c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a9be2293fcc132d40171dfa792ee4408d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9be2293fcc132d40171dfa792ee4408d"></a>
-static <a class="el" href="classPortManager.html">PortManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> ()</td></tr>
+<tr class="memitem:a9be2293fcc132d40171dfa792ee4408d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classPortManager.html">PortManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d">getInstance</a> ()</td></tr>
 <tr class="separator:a9be2293fcc132d40171dfa792ee4408d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a49e518d8c71eafd8d04ff64fc47253c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0">getConfigure</a> ()</td></tr>
+<tr class="separator:a49e518d8c71eafd8d04ff64fc47253c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51bc2c5a010450ae943340579324b89b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b">generateFreePorts</a> ()</td></tr>
+<tr class="separator:a51bc2c5a010450ae943340579324b89b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a0860f71eaefe673fd9c183fb9973d06c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a0860f71eaefe673fd9c183fb9973d06c">start</a></td></tr>
+<tr class="separator:a0860f71eaefe673fd9c183fb9973d06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2a5fe73ed35b3a12878609b4e454d61"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#ac2a5fe73ed35b3a12878609b4e454d61">end</a></td></tr>
+<tr class="separator:ac2a5fe73ed35b3a12878609b4e454d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcc3065d3328a7ca6a0cfd19f04d9e72"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#adcc3065d3328a7ca6a0cfd19f04d9e72">free_ports</a></td></tr>
+<tr class="separator:adcc3065d3328a7ca6a0cfd19f04d9e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe837f5a44739d886fdfca2cea0e48a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#afe837f5a44739d886fdfca2cea0e48a3">used_ports</a></td></tr>
+<tr class="separator:afe837f5a44739d886fdfca2cea0e48a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d505da108b32922006c31485133de9d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLock.html">Lock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a2d505da108b32922006c31485133de9d">l</a></td></tr>
+<tr class="separator:a2d505da108b32922006c31485133de9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a2f3c6110d91c4fb2689ab71e65282399"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classPortManager.html">PortManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPortManager.html#a2f3c6110d91c4fb2689ab71e65282399">_instance</a> =0</td></tr>
+<tr class="separator:a2f3c6110d91c4fb2689ab71e65282399"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a4c9290346835cec69acf90cbe0d412e3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PortManager::PortManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPortManager.html#ac2a5fe73ed35b3a12878609b4e454d61">end</a>, <a class="el" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b">generateFreePorts()</a>, <a class="el" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0">getConfigure()</a>, <a class="el" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30">Logging_PortManager()</a>, and <a class="el" href="classPortManager.html#a0860f71eaefe673fd9c183fb9973d06c">start</a>.</p>
+
+<p>Referenced by <a class="el" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d">getInstance()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a4c9290346835cec69acf90cbe0d412e3_cgraph.png" border="0" usemap="#classPortManager_a4c9290346835cec69acf90cbe0d412e3_cgraph" alt=""/></div>
+<map name="classPortManager_a4c9290346835cec69acf90cbe0d412e3_cgraph" id="classPortManager_a4c9290346835cec69acf90cbe0d412e3_cgraph">
+<area shape="rect" id="node2" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="233,5,413,46"/><area shape="rect" id="node3" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="233,71,412,97"/><area shape="rect" id="node4" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="249,121,397,148"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a4c9290346835cec69acf90cbe0d412e3_icgraph.png" border="0" usemap="#classPortManager_a4c9290346835cec69acf90cbe0d412e3_icgraph" alt=""/></div>
+<map name="classPortManager_a4c9290346835cec69acf90cbe0d412e3_icgraph" id="classPortManager_a4c9290346835cec69acf90cbe0d412e3_icgraph">
+<area shape="rect" id="node2" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="233,1257,405,1284"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="477,1232,653,1259"/><area shape="rect" id="node46" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1007,2492,1201,2519"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a0bd8607e640742a9af7b2f71b2732c16" title="prepare socket at this node, waiting senders connect it " alt="" coords="454,1334,677,1375"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2" title="claims::physical_operator\l::ExchangeMerger::CloseSocket" alt="" coords="725,571,936,613"/><area shape="rect" id="node4" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="745,1232,916,1259"/><area shape="rect" id="node5" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1031,71,1177,97"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1041,121,1167,148"/><area shape="rect" id="node7" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="987,173,1221,214"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1025,290,1183,331"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1313,268,1404,295"/><area shape="rect" id="node10" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1006,356,1202,383"/><area shape="rect" id="node11" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1027,407,1181,449"/><area shape="rect" id="node12" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1019,5,1189,46"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="986,473,1222,514"/><area shape="rect" id="node14" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1045,539,1163,565"/><area shape="rect" id="node15" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1031,590,1177,631"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1031,655,1177,697"/><area shape="rect" id="node17" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1057,823,1151,849"/><area shape="rect" id="node20" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="984,925,1224,966"/><area shape="rect" id="node21" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1005,991,1203,1047"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="994,1071,1214,1113"/><area shape="rect" id="node23" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1009,1137,1199,1178"/><area shape="rect" id="node24" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1054,1203,1154,1229"/><area shape="rect" id="node25" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1032,1254,1176,1295"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1029,1319,1179,1361"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1011,1385,1197,1426"/><area shape="rect" id="node19" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1494,760,1615,787"/><area shape="rect" id="node28" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1003,1451,1205,1507"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1273,797,1445,824"/><area shape="rect" id="node29" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1044,1531,1164,1557"/><area shape="rect" id="node30" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1031,1581,1177,1608"/><area shape="rect" id="node31" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1019,1632,1189,1659"/><area shape="rect" id="node32" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1015,1683,1193,1725"/><area shape="rect" id="node33" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1027,1749,1181,1790"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="1027,1814,1181,1855"/><area shape="rect" id="node35" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="1037,1879,1171,1921"/><area shape="rect" id="node36" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1031,1945,1177,1972"/><area shape="rect" id="node37" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="1034,1997,1174,2038"/><area shape="rect" id="node38" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="1034,2062,1174,2103"/><area shape="rect" id="node39" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="1034,2127,1174,2169"/><area shape="rect" id="node40" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1038,2193,1170,2220"/><area shape="rect" id="node41" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="1024,2244,1184,2271"/><area shape="rect" id="node42" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="1028,2295,1180,2337"/><area shape="rect" id="node43" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1063,873,1145,900"/><area shape="rect" id="node44" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="1022,2361,1186,2402"/><area shape="rect" id="node45" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25" title="InstanceResourceManager\l::InstanceResourceManager" alt="" coords="1011,2426,1197,2467"/><area shape="rect" id="node47" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="1277,2492,1441,2519"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="745,1334,916,1375"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a629210585df10a40523a59904f91b3e1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">PortManager::~PortManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPortManager.html#a2f3c6110d91c4fb2689ab71e65282399">_instance</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a5aa82953c31a8e919d60dd51154a53b5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PortManager::applyPort </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classPortManager.html#adcc3065d3328a7ca6a0cfd19f04d9e72">free_ports</a>, <a class="el" href="classPortManager.html#a2d505da108b32922006c31485133de9d">l</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410">Environment::initializeEndPoint()</a>, and <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">Coordinator::SetupTheTheron()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a5aa82953c31a8e919d60dd51154a53b5_cgraph.png" border="0" usemap="#classPortManager_a5aa82953c31a8e919d60dd51154a53b5_cgraph" alt=""/></div>
+<map name="classPortManager_a5aa82953c31a8e919d60dd51154a53b5_cgraph" id="classPortManager_a5aa82953c31a8e919d60dd51154a53b5_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="214,5,314,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="214,56,314,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a5aa82953c31a8e919d60dd51154a53b5_icgraph.png" border="0" usemap="#classPortManager_a5aa82953c31a8e919d60dd51154a53b5_icgraph" alt=""/></div>
+<map name="classPortManager_a5aa82953c31a8e919d60dd51154a53b5_icgraph" id="classPortManager_a5aa82953c31a8e919d60dd51154a53b5_icgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="213,1835,387,1877"/><area shape="rect" id="node49" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="901,2676,1094,2703"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="435,1545,611,1572"/><area shape="rect" id="node4" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="659,1397,829,1424"/><area shape="rect" id="node5" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="924,57,1071,84"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="934,108,1061,135"/><area shape="rect" id="node7" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="880,159,1115,201"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="919,225,1076,266"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1207,120,1297,147"/><area shape="rect" id="node10" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="899,356,1095,383"/><area shape="rect" id="node11" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="921,407,1074,449"/><area shape="rect" id="node12" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="912,473,1083,514"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="879,538,1115,579"/><area shape="rect" id="node14" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="938,604,1057,631"/><area shape="rect" id="node15" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="924,655,1071,697"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="924,721,1071,762"/><area shape="rect" id="node17" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="951,1895,1044,1921"/><area shape="rect" id="node20" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="877,838,1117,879"/><area shape="rect" id="node21" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="898,904,1097,960"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="887,985,1107,1026"/><area shape="rect" id="node23" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="902,1050,1093,1091"/><area shape="rect" id="node24" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="947,1116,1047,1143"/><area shape="rect" id="node25" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="925,1167,1069,1209"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="923,1233,1072,1274"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="904,1298,1091,1339"/><area shape="rect" id="node19" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1387,1529,1509,1556"/><area shape="rect" id="node28" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="897,1415,1098,1471"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1166,1695,1338,1721"/><area shape="rect" id="node29" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="937,1545,1057,1572"/><area shape="rect" id="node30" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="924,1596,1071,1623"/><area shape="rect" id="node31" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="912,1647,1083,1673"/><area shape="rect" id="node32" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="909,1698,1086,1739"/><area shape="rect" id="node33" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="920,1763,1075,1805"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="920,1829,1075,1870"/><area shape="rect" id="node35" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="930,2610,1065,2651"/><area shape="rect" id="node37" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="925,1945,1070,1972"/><area shape="rect" id="node38" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="927,290,1067,331"/><area shape="rect" id="node40" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="927,2047,1067,2089"/><area shape="rect" id="node41" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="927,2113,1067,2154"/><area shape="rect" id="node42" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="931,2179,1063,2205"/><area shape="rect" id="node43" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="917,2229,1077,2256"/><area shape="rect" id="node44" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="921,2281,1073,2322"/><area shape="rect" id="node45" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="956,1996,1039,2023"/><area shape="rect" id="node46" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="915,2398,1079,2439"/><area shape="rect" id="node47" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25" title="InstanceResourceManager\l::InstanceResourceManager" alt="" coords="904,2463,1091,2505"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="884,2529,1111,2585"/><area shape="rect" id="node36" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="1183,2483,1321,2509"/><area shape="rect" id="node39" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="1181,543,1323,569"/><area shape="rect" id="node50" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="1170,2676,1334,2703"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a51bc2c5a010450ae943340579324b89b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PortManager::generateFreePorts </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPortManager.html#ac2a5fe73ed35b3a12878609b4e454d61">end</a>, <a class="el" href="classPortManager.html#adcc3065d3328a7ca6a0cfd19f04d9e72">free_ports</a>, and <a class="el" href="classPortManager.html#a0860f71eaefe673fd9c183fb9973d06c">start</a>.</p>
+
+<p>Referenced by <a class="el" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3">PortManager()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a51bc2c5a010450ae943340579324b89b_icgraph.png" border="0" usemap="#classPortManager_a51bc2c5a010450ae943340579324b89b_icgraph" alt=""/></div>
+<map name="classPortManager_a51bc2c5a010450ae943340579324b89b_icgraph" id="classPortManager_a51bc2c5a010450ae943340579324b89b_icgraph">
+<area shape="rect" id="node2" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="235,1228,413,1255"/><area shape="rect" id="node3" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="462,1228,634,1255"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="707,1203,883,1229"/><area shape="rect" id="node46" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1237,2427,1430,2453"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a0bd8607e640742a9af7b2f71b2732c16" title="prepare socket at this node, waiting senders connect it " alt="" coords="683,1305,906,1346"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2" title="claims::physical_operator\l::ExchangeMerger::CloseSocket" alt="" coords="955,571,1165,613"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="975,1203,1145,1229"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1260,71,1407,97"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1270,121,1397,148"/><area shape="rect" id="node8" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1216,173,1451,214"/><area shape="rect" id="node9" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1255,290,1412,331"/><area shape="rect" id="node10" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1543,268,1633,295"/><area shape="rect" id="node11" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1235,356,1431,383"/><area shape="rect" id="node12" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1257,407,1410,449"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1248,5,1419,46"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1215,473,1451,514"/><area shape="rect" id="node15" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1274,539,1393,565"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1260,590,1407,631"/><area shape="rect" id="node17" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1260,655,1407,697"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1287,823,1380,849"/><area shape="rect" id="node21" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1213,925,1453,966"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1234,991,1433,1047"/><area shape="rect" id="node23" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1223,1071,1443,1113"/><area shape="rect" id="node24" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1238,1137,1429,1178"/><area shape="rect" id="node25" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1283,1203,1383,1229"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1261,1254,1405,1295"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1259,1319,1408,1361"/><area shape="rect" id="node28" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1240,1385,1427,1426"/><area shape="rect" id="node20" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1723,760,1845,787"/><area shape="rect" id="node29" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1233,1451,1434,1507"/><area shape="rect" id="node19" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1502,797,1674,824"/><area shape="rect" id="node30" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1273,1531,1393,1557"/><area shape="rect" id="node31" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1260,1581,1407,1608"/><area shape="rect" id="node32" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1248,1632,1419,1659"/><area shape="rect" id="node33" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1245,1683,1422,1725"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1256,1749,1411,1790"/><area shape="rect" id="node35" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="1256,1814,1411,1855"/><area shape="rect" id="node36" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="1266,1879,1401,1921"/><area shape="rect" id="node37" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1261,1945,1406,1972"/><area shape="rect" id="node38" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="1263,1997,1403,2038"/><area shape="rect" id="node39" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="1263,2062,1403,2103"/><area shape="rect" id="node40" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="1263,2127,1403,2169"/><area shape="rect" id="node41" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1267,2193,1399,2220"/><area shape="rect" id="node42" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="1253,2244,1413,2271"/><area shape="rect" id="node43" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="1257,2295,1409,2337"/><area shape="rect" id="node44" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1292,873,1375,900"/><area shape="rect" id="node45" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="1251,2361,1415,2402"/><area shape="rect" id="node47" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="1506,2427,1670,2453"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="975,1305,1145,1346"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a49e518d8c71eafd8d04ff64fc47253c0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PortManager::getConfigure </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classConfig.html#a66ee93fe10b62e415657c88fe4de5d7d">Config::config_file</a>, <a class="el" href="classPortManager.html#ac2a5fe73ed35b3a12878609b4e454d61">end</a>, and <a class="el" href="classPortManager.html#a0860f71eaefe673fd9c183fb9973d06c">start</a>.</p>
+
+<p>Referenced by <a class="el" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3">PortManager()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a49e518d8c71eafd8d04ff64fc47253c0_icgraph.png" border="0" usemap="#classPortManager_a49e518d8c71eafd8d04ff64fc47253c0_icgraph" alt=""/></div>
+<map name="classPortManager_a49e518d8c71eafd8d04ff64fc47253c0_icgraph" id="classPortManager_a49e518d8c71eafd8d04ff64fc47253c0_icgraph">
+<area shape="rect" id="node2" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="232,1228,411,1255"/><area shape="rect" id="node3" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="459,1228,631,1255"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="704,1203,880,1229"/><area shape="rect" id="node46" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1234,2427,1427,2453"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a0bd8607e640742a9af7b2f71b2732c16" title="prepare socket at this node, waiting senders connect it " alt="" coords="681,1305,903,1346"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2" title="claims::physical_operator\l::ExchangeMerger::CloseSocket" alt="" coords="952,571,1163,613"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="972,1203,1143,1229"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1257,71,1404,97"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1267,121,1394,148"/><area shape="rect" id="node8" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1213,173,1448,214"/><area shape="rect" id="node9" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1252,290,1409,331"/><area shape="rect" id="node10" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1540,268,1631,295"/><area shape="rect" id="node11" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="1233,356,1429,383"/><area shape="rect" id="node12" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="1254,407,1407,449"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1245,5,1416,46"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1213,473,1449,514"/><area shape="rect" id="node15" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1271,539,1390,565"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="1257,590,1404,631"/><area shape="rect" id="node17" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="1257,655,1404,697"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1284,823,1377,849"/><area shape="rect" id="node21" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="1211,925,1451,966"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1231,991,1430,1047"/><area shape="rect" id="node23" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1221,1071,1441,1113"/><area shape="rect" id="node24" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1235,1137,1426,1178"/><area shape="rect" id="node25" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1281,1203,1381,1229"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1259,1254,1403,1295"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1256,1319,1405,1361"/><area shape="rect" id="node28" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="1237,1385,1424,1426"/><area shape="rect" id="node20" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1721,760,1842,787"/><area shape="rect" id="node29" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1230,1451,1431,1507"/><area shape="rect" id="node19" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1499,797,1671,824"/><area shape="rect" id="node30" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1271,1531,1391,1557"/><area shape="rect" id="node31" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1257,1581,1404,1608"/><area shape="rect" id="node32" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="1245,1632,1416,1659"/><area shape="rect" id="node33" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="1242,1683,1419,1725"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="1253,1749,1408,1790"/><area shape="rect" id="node35" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="1253,1814,1408,1855"/><area shape="rect" id="node36" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="1263,1879,1398,1921"/><area shape="rect" id="node37" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1258,1945,1403,1972"/><area shape="rect" id="node38" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="1261,1997,1401,2038"/><area shape="rect" id="node39" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="1261,2062,1401,2103"/><area shape="rect" id="node40" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="1261,2127,1401,2169"/><area shape="rect" id="node41" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1265,2193,1397,2220"/><area shape="rect" id="node42" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="1251,2244,1411,2271"/><area shape="rect" id="node43" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="1255,2295,1407,2337"/><area shape="rect" id="node44" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1289,873,1372,900"/><area shape="rect" id="node45" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="1249,2361,1413,2402"/><area shape="rect" id="node47" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="1503,2427,1667,2453"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="972,1305,1143,1346"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9be2293fcc132d40171dfa792ee4408d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPortManager.html">PortManager</a> * PortManager::getInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPortManager.html#a2f3c6110d91c4fb2689ab71e65282399">_instance</a>, and <a class="el" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3">PortManager()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2">claims::physical_operator::ExchangeMerger::CloseSocket()</a>, <a class="el" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2">Environment::Environment()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a0bd8607e640742a9af7b2f71b2732c16">claims::physical_operator::ExchangeMerger::PrepareSocket()</a>, and <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">Coordinator::SetupTheTheron()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a9be2293fcc132d40171dfa792ee4408d_cgraph.png" border="0" usemap="#classPortManager_a9be2293fcc132d40171dfa792ee4408d_cgraph" alt=""/></div>
+<map name="classPortManager_a9be2293fcc132d40171dfa792ee4408d_cgraph" id="classPortManager_a9be2293fcc132d40171dfa792ee4408d_cgraph">
+<area shape="rect" id="node2" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="227,71,405,97"/><area shape="rect" id="node3" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="454,5,634,46"/><area shape="rect" id="node4" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="455,71,633,97"/><area shape="rect" id="node5" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="470,121,618,148"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_a9be2293fcc132d40171dfa792ee4408d_icgraph.png" border="0" usemap="#classPortManager_a9be2293fcc132d40171dfa792ee4408d_icgraph" alt=""/></div>
+<map name="classPortManager_a9be2293fcc132d40171dfa792ee4408d_icgraph" id="classPortManager_a9be2293fcc132d40171dfa792ee4408d_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2" title="claims::physical_operator\l::ExchangeMerger::CloseSocket" alt="" coords="499,202,709,244"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="251,704,427,731"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a0bd8607e640742a9af7b2f71b2732c16" title="prepare socket at this node, waiting senders connect it " alt="" coords="227,112,450,153"/><area shape="rect" id="node48" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="781,2608,974,2635"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="792,44,963,85"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="519,1339,689,1366"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="804,320,951,347"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="814,371,941,398"/><area shape="rect" id="node8" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="760,422,995,464"/><area shape="rect" id="node9" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="799,488,956,529"/><area shape="rect" id="node10" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1087,524,1177,551"/><area shape="rect" id="node11" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="779,604,975,631"/><area shape="rect" id="node12" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="801,656,954,697"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="759,721,995,762"/><area shape="rect" id="node14" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="818,787,937,814"/><area shape="rect" id="node15" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="804,838,951,880"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="804,904,951,945"/><area shape="rect" id="node17" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="831,1626,924,1652"/><area shape="rect" id="node20" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#aa0ef1069e595f2d939e0685b616d6aa6" title="Method description: constructor about creating a table. " alt="" coords="757,969,997,1010"/><area shape="rect" id="node21" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="778,1035,977,1091"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="767,1116,987,1157"/><area shape="rect" id="node23" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="782,1181,973,1222"/><area shape="rect" id="node24" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="827,1247,927,1274"/><area shape="rect" id="node25" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="805,1298,949,1340"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="803,1364,952,1405"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="784,1429,971,1470"/><area shape="rect" id="node19" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1267,2312,1389,2339"/><area shape="rect" id="node28" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="777,1546,978,1602"/><area shape="rect" id="node18" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1046,2067,1218,2094"/><area shape="rect" id="node29" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="817,1676,937,1703"/><area shape="rect" id="node30" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="804,1727,951,1754"/><area shape="rect" id="node31" href="classAstTable.html#a98f7f7f407c955e2ab1f8ff3a247d3e3" title="AstTable::GetLogicalPlan" alt="" coords="792,1778,963,1804"/><area shape="rect" id="node32" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="789,1829,966,1870"/><area shape="rect" id="node33" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="800,1894,955,1936"/><area shape="rect" id="node34" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="800,1960,955,2001"/><area shape="rect" id="node35" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="810,2025,945,2066"/><area shape="rect" id="node36" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="805,2091,950,2118"/><area shape="rect" id="node37" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="807,2142,947,2184"/><area shape="rect" id="node38" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="807,2208,947,2249"/><area shape="rect" id="node39" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="807,2273,947,2314"/><area shape="rect" id="node40" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="811,2339,943,2366"/><area shape="rect" id="node41" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="797,2390,957,2416"/><area shape="rect" id="node42" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="801,2441,953,2482"/><area shape="rect" id="node43" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="836,1495,919,1522"/><area shape="rect" id="node44" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a650c6ced6dd030618cea68b0da16a5a8" title="Method description: the executor about insert data to tables. " alt="" coords="795,109,959,150"/><area shape="rect" id="node45" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25" title="InstanceResourceManager\l::InstanceResourceManager" alt="" coords="784,174,971,216"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="764,240,991,296"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="1047,117,1217,158"/><area shape="rect" id="node49" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="1050,2608,1214,2635"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acfeecf973ce39914dd041226859ab2c2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PortManager::returnPort </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>port</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classPortManager.html#adcc3065d3328a7ca6a0cfd19f04d9e72">free_ports</a>, <a class="el" href="classPortManager.html#a2d505da108b32922006c31485133de9d">l</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2">claims::physical_operator::ExchangeMerger::CloseSocket()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_acfeecf973ce39914dd041226859ab2c2_cgraph.png" border="0" usemap="#classPortManager_acfeecf973ce39914dd041226859ab2c2_cgraph" alt=""/></div>
+<map name="classPortManager_acfeecf973ce39914dd041226859ab2c2_cgraph" id="classPortManager_acfeecf973ce39914dd041226859ab2c2_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="217,5,317,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="217,56,317,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPortManager_acfeecf973ce39914dd041226859ab2c2_icgraph.png" border="0" usemap="#classPortManager_acfeecf973ce39914dd041226859ab2c2_icgraph" alt=""/></div>
+<map name="classPortManager_acfeecf973ce39914dd041226859ab2c2_icgraph" id="classPortManager_acfeecf973ce39914dd041226859ab2c2_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6545b027bb5d9d629fec3232bb9819e2" title="claims::physical_operator\l::ExchangeMerger::CloseSocket" alt="" coords="216,5,427,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="475,5,645,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a2f3c6110d91c4fb2689ab71e65282399"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPortManager.html">PortManager</a> * PortManager::_instance =0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d">getInstance()</a>, and <a class="el" href="classPortManager.html#a629210585df10a40523a59904f91b3e1">~PortManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac2a5fe73ed35b3a12878609b4e454d61"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned PortManager::end</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b">generateFreePorts()</a>, <a class="el" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0">getConfigure()</a>, and <a class="el" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3">PortManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adcc3065d3328a7ca6a0cfd19f04d9e72"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;unsigned&gt; PortManager::free_ports</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5">applyPort()</a>, <a class="el" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b">generateFreePorts()</a>, and <a class="el" href="classPortManager.html#acfeecf973ce39914dd041226859ab2c2">returnPort()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2d505da108b32922006c31485133de9d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLock.html">Lock</a> PortManager::l</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5">applyPort()</a>, and <a class="el" href="classPortManager.html#acfeecf973ce39914dd041226859ab2c2">returnPort()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0860f71eaefe673fd9c183fb9973d06c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned PortManager::start</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b">generateFreePorts()</a>, <a class="el" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0">getConfigure()</a>, and <a class="el" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3">PortManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afe837f5a44739d886fdfca2cea0e48a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;unsigned&gt; PortManager::used_ports</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Executor/<a class="el" href="PortManager_8h_source.html">PortManager.h</a></li>
-<li>Executor/PortManager.cpp</li>
+<li>Executor/<a class="el" href="PortManager_8cpp.html">PortManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

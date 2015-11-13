@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ttmath::StopCalculating Class Reference</title>
+<title>Claims: ttmath::StopCalculating Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -116,14 +116,63 @@ $(document).ready(function(){initNavTree('classttmath_1_1StopCalculating.html','
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a456b5aec8b4d299c87799751b8a0e27e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a456b5aec8b4d299c87799751b8a0e27e"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>WasStopSignal</b> () const volatile</td></tr>
+<tr class="memitem:a456b5aec8b4d299c87799751b8a0e27e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classttmath_1_1StopCalculating.html#a456b5aec8b4d299c87799751b8a0e27e">WasStopSignal</a> () const volatile</td></tr>
 <tr class="separator:a456b5aec8b4d299c87799751b8a0e27e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ad966288cd27880f2b2bc061c869d0f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classttmath_1_1StopCalculating.html#a2ad966288cd27880f2b2bc061c869d0f">~StopCalculating</a> ()</td></tr>
+<tr class="separator:a2ad966288cd27880f2b2bc061c869d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>this simple class can be used in multithreading model (you can write your own class derived from this one)</p>
-<p>for example: in some functions like Factorial() /at the moment only Factorial/ you can give a pointer to the 'stop object', if the method WasStopSignal() of this object returns true that means we should break the calculating and return </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<p>for example: in some functions like Factorial() /at the moment only Factorial/ you can give a pointer to the 'stop object', if the method <a class="el" href="classttmath_1_1StopCalculating.html#a456b5aec8b4d299c87799751b8a0e27e">WasStopSignal()</a> of this object returns true that means we should break the calculating and return </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a2ad966288cd27880f2b2bc061c869d0f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual ttmath::StopCalculating::~StopCalculating </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a456b5aec8b4d299c87799751b8a0e27e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ttmath::StopCalculating::WasStopSignal </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const volatile</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>common/types/ttmath/<a class="el" href="ttmathtypes_8h_source.html">ttmathtypes.h</a></li>
 </ul>
 </div><!-- contents -->

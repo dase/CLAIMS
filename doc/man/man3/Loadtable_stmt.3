@@ -1,4 +1,4 @@
-.TH "Loadtable_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Loadtable_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Loadtable_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBtable_name\fP"
@@ -31,7 +33,37 @@ Loadtable_stmt \-
 .RI "int \fBmode\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Loadtable_stmt::column_separator"
+
+.PP
+Referenced by LoadData(), and newLoadTable()\&.
+.SS "int Loadtable_stmt::mode"
+
+.PP
+Referenced by LoadData(), and newLoadTable()\&.
+.SS "\fBNode\fP* Loadtable_stmt::path"
+
+.PP
+Referenced by LoadData(), and newLoadTable()\&.
+.SS "double Loadtable_stmt::sample"
+
+.PP
+Referenced by LoadData(), and newLoadTable()\&.
+.SS "char* Loadtable_stmt::table_name"
+
+.PP
+Referenced by LoadData(), and newLoadTable()\&.
+.SS "char* Loadtable_stmt::tuple_separator"
+
+.PP
+Referenced by LoadData(), and newLoadTable()\&.
+.SS "\fBnodetype\fP Loadtable_stmt::type"
+
+.PP
+Referenced by newLoadTable()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

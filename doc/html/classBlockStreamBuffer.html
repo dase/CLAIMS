@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: BlockStreamBuffer Class Reference</title>
+<title>Claims: BlockStreamBuffer Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,55 +106,546 @@ $(document).ready(function(){initNavTree('classBlockStreamBuffer.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classBlockStreamBuffer-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">BlockStreamBuffer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="BlockStreamBuffer_8h_source.html">BlockStreamBuffer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for BlockStreamBuffer:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classBlockStreamBuffer.png" usemap="#BlockStreamBuffer_map" alt=""/>
-  <map id="BlockStreamBuffer_map" name="BlockStreamBuffer_map">
-<area href="classMonitorableBuffer.html" alt="MonitorableBuffer" shape="rect" coords="0,0,117,24"/>
-</map>
- </div></div>
+<div class="center"><img src="classBlockStreamBuffer__inherit__graph.png" border="0" usemap="#BlockStreamBuffer_inherit__map" alt="Inheritance graph"/></div>
+<map name="BlockStreamBuffer_inherit__map" id="BlockStreamBuffer_inherit__map">
+<area shape="rect" id="node2" href="classMonitorableBuffer.html" title="MonitorableBuffer" alt="" coords="9,5,132,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<div class="dynheader">
+Collaboration diagram for BlockStreamBuffer:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer__coll__graph.png" border="0" usemap="#BlockStreamBuffer_coll__map" alt="Collaboration graph"/></div>
+<map name="BlockStreamBuffer_coll__map" id="BlockStreamBuffer_coll__map">
+<area shape="rect" id="node2" href="classMonitorableBuffer.html" title="MonitorableBuffer" alt="" coords="5,5,128,32"/><area shape="rect" id="node3" href="classsemaphore.html" title="semaphore" alt="" coords="153,5,239,32"/><area shape="rect" id="node4" href="classLock.html" title="Lock" alt="" coords="327,5,377,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a37ad443b416651d49ca9e87792d9d103"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37ad443b416651d49ca9e87792d9d103"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>BlockStreamBuffer</b> (unsigned block_size, unsigned block_count, <a class="el" href="classSchema.html">Schema</a> *schema)</td></tr>
+<tr class="memitem:a37ad443b416651d49ca9e87792d9d103"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a37ad443b416651d49ca9e87792d9d103">BlockStreamBuffer</a> (unsigned <a class="el" href="hash__table__test_8h.html#a9766f5ceca5e25981858ec7384456072">block_size</a>, unsigned block_count, <a class="el" href="classSchema.html">Schema</a> *schema)</td></tr>
 <tr class="separator:a37ad443b416651d49ca9e87792d9d103"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b48817e660867b1e989bd113f7dbff5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3b48817e660867b1e989bd113f7dbff5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>insertBlock</b> (<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> *block)</td></tr>
+<tr class="memitem:a6051abaae8da0d71ed26e06ec05b0ab6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a6051abaae8da0d71ed26e06ec05b0ab6">~BlockStreamBuffer</a> ()</td></tr>
+<tr class="separator:a6051abaae8da0d71ed26e06ec05b0ab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b48817e660867b1e989bd113f7dbff5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock</a> (<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> *block)</td></tr>
 <tr class="separator:a3b48817e660867b1e989bd113f7dbff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c904a7deee4ff0f2d0daaa4a4eb4126"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c904a7deee4ff0f2d0daaa4a4eb4126"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getBlock</b> (<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> &amp;block)</td></tr>
+<tr class="memitem:a2c904a7deee4ff0f2d0daaa4a4eb4126"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a2c904a7deee4ff0f2d0daaa4a4eb4126">getBlock</a> (<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> &amp;block)</td></tr>
 <tr class="separator:a2c904a7deee4ff0f2d0daaa4a4eb4126"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bafbfbb42565e4cf9d8291c8b4be1c0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7bafbfbb42565e4cf9d8291c8b4be1c0"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>getBlockInBuffer</b> ()</td></tr>
+<tr class="memitem:a7bafbfbb42565e4cf9d8291c8b4be1c0"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a7bafbfbb42565e4cf9d8291c8b4be1c0">getBlockInBuffer</a> ()</td></tr>
 <tr class="separator:a7bafbfbb42565e4cf9d8291c8b4be1c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c09df725d869ee98e131d9404d2c7c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c09df725d869ee98e131d9404d2c7c8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>Empty</b> ()</td></tr>
+<tr class="memitem:a0c09df725d869ee98e131d9404d2c7c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a0c09df725d869ee98e131d9404d2c7c8">Empty</a> ()</td></tr>
 <tr class="separator:a0c09df725d869ee98e131d9404d2c7c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa6f0fb0267531b36cc44ceaf6d0bf7b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa6f0fb0267531b36cc44ceaf6d0bf7b"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>getBufferUsage</b> ()</td></tr>
+<tr class="memitem:aaa6f0fb0267531b36cc44ceaf6d0bf7b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#aaa6f0fb0267531b36cc44ceaf6d0bf7b">getBufferUsage</a> ()</td></tr>
 <tr class="separator:aaa6f0fb0267531b36cc44ceaf6d0bf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addb5215108ef6e4bbd21d39a9dee81df"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="addb5215108ef6e4bbd21d39a9dee81df"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>getReceivedDataSizeInKbytes</b> ()</td></tr>
+<tr class="memitem:addb5215108ef6e4bbd21d39a9dee81df"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#addb5215108ef6e4bbd21d39a9dee81df">getReceivedDataSizeInKbytes</a> ()</td></tr>
 <tr class="separator:addb5215108ef6e4bbd21d39a9dee81df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classMonitorableBuffer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classMonitorableBuffer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td></tr>
-<tr class="memitem:ac4b944bcc1d2a1efede8ab37d643a709 inherit pub_methods_classMonitorableBuffer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4b944bcc1d2a1efede8ab37d643a709"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setInputComplete</b> ()</td></tr>
+<tr class="memitem:aa90a8f4287998b8f09690f387cdf0cab inherit pub_methods_classMonitorableBuffer"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMonitorableBuffer.html#aa90a8f4287998b8f09690f387cdf0cab">MonitorableBuffer</a> ()</td></tr>
+<tr class="separator:aa90a8f4287998b8f09690f387cdf0cab inherit pub_methods_classMonitorableBuffer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a528355a5205e10172a1b36ce4da56591 inherit pub_methods_classMonitorableBuffer"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMonitorableBuffer.html#a528355a5205e10172a1b36ce4da56591">~MonitorableBuffer</a> ()</td></tr>
+<tr class="separator:a528355a5205e10172a1b36ce4da56591 inherit pub_methods_classMonitorableBuffer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4b944bcc1d2a1efede8ab37d643a709 inherit pub_methods_classMonitorableBuffer"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMonitorableBuffer.html#ac4b944bcc1d2a1efede8ab37d643a709">setInputComplete</a> ()</td></tr>
 <tr class="separator:ac4b944bcc1d2a1efede8ab37d643a709 inherit pub_methods_classMonitorableBuffer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06e10b5331d5dab464ae48b87e3275e7 inherit pub_methods_classMonitorableBuffer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06e10b5331d5dab464ae48b87e3275e7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>inputComplete</b> () const </td></tr>
+<tr class="memitem:a06e10b5331d5dab464ae48b87e3275e7 inherit pub_methods_classMonitorableBuffer"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7">inputComplete</a> () const </td></tr>
 <tr class="separator:a06e10b5331d5dab464ae48b87e3275e7 inherit pub_methods_classMonitorableBuffer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:abea39cf0b3506acac6d22bbcf9d3d11e"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#abea39cf0b3506acac6d22bbcf9d3d11e">block_stream_empty_list_</a></td></tr>
+<tr class="separator:abea39cf0b3506acac6d22bbcf9d3d11e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44104e4a43ac9297af2f1816af1f8395"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a></td></tr>
+<tr class="separator:a44104e4a43ac9297af2f1816af1f8395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada5779d04dd3d0b4481cccc767f11354"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsemaphore.html">semaphore</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#ada5779d04dd3d0b4481cccc767f11354">sema_empty_block_</a></td></tr>
+<tr class="separator:ada5779d04dd3d0b4481cccc767f11354"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a353a5b5e1ca7320e71af839763731509"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLock.html">Lock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a></td></tr>
+<tr class="separator:a353a5b5e1ca7320e71af839763731509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acabe381c7aa950f7639d91af2f3ea22e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#acabe381c7aa950f7639d91af2f3ea22e">total_block_count_</a></td></tr>
+<tr class="separator:acabe381c7aa950f7639d91af2f3ea22e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f5a1de9c85f0766914c4935f2b315db"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#a3f5a1de9c85f0766914c4935f2b315db">block_size_</a></td></tr>
+<tr class="separator:a3f5a1de9c85f0766914c4935f2b315db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af434374190795a52c20af6e9a4575954"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockStreamBuffer.html#af434374190795a52c20af6e9a4575954">received_block_count_</a></td></tr>
+<tr class="separator:af434374190795a52c20af6e9a4575954"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a37ad443b416651d49ca9e87792d9d103"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BlockStreamBuffer::BlockStreamBuffer </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>block_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>block_count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classSchema.html">Schema</a> *&#160;</td>
+          <td class="paramname"><em>schema</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classBlockStreamBuffer.html#abea39cf0b3506acac6d22bbcf9d3d11e">block_stream_empty_list_</a>, <a class="el" href="classBlockStreamBase.html#a95d8d7c85b6615954677f7a9457451e2">BlockStreamBase::createBlock()</a>, <a class="el" href="classsemaphore.html#a3ec2918ab24b1313ef5a64cc1d1bfc1f">semaphore::get_value()</a>, <a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a>, <a class="el" href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14">semaphore::post()</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, and <a class="el" href="classBlockStreamBuffer.html#ada5779d04dd3d0b4481cccc767f11354">sema_empty_block_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a37ad443b416651d49ca9e87792d9d103_cgraph.png" border="0" usemap="#classBlockStreamBuffer_a37ad443b416651d49ca9e87792d9d103_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a37ad443b416651d49ca9e87792d9d103_cgraph" id="classBlockStreamBuffer_a37ad443b416651d49ca9e87792d9d103_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="247,5,347,32"/><area shape="rect" id="node3" href="classBlockStreamBase.html#a95d8d7c85b6615954677f7a9457451e2" title="BlockStreamBase::createBlock" alt="" coords="195,56,399,83"/><area shape="rect" id="node6" href="classsemaphore.html#a3ec2918ab24b1313ef5a64cc1d1bfc1f" title="semaphore::get_value" alt="" coords="222,107,373,133"/><area shape="rect" id="node7" href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14" title="semaphore::post" alt="" coords="238,157,357,184"/><area shape="rect" id="node8" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="247,208,347,235"/><area shape="rect" id="node4" href="classSchema.html#ade0ea3c1c495b3434b68f8f177702c41" title="Schema::getSchemaType" alt="" coords="451,31,624,57"/><area shape="rect" id="node5" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c" title="Schema::getTupleMaxSize" alt="" coords="448,81,627,108"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6051abaae8da0d71ed26e06ec05b0ab6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BlockStreamBuffer::~BlockStreamBuffer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockStreamBuffer.html#abea39cf0b3506acac6d22bbcf9d3d11e">block_stream_empty_list_</a>, <a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a>, <a class="el" href="classsemaphore.html#a72ea11635fea772cf24b8e44bbca4228">semaphore::destroy()</a>, and <a class="el" href="classBlockStreamBuffer.html#ada5779d04dd3d0b4481cccc767f11354">sema_empty_block_</a>.</p>
+
+<p>Referenced by <a class="el" href="hash__table__test_8h.html#a07c606f6785bfa2c1b91cbcea37361e3">fill_basic_hash_table()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_cgraph.png" border="0" usemap="#classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_cgraph" id="classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_cgraph">
+<area shape="rect" id="node2" href="classsemaphore.html#a72ea11635fea772cf24b8e44bbca4228" title="semaphore::destroy" alt="" coords="195,12,333,39"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_icgraph.png" border="0" usemap="#classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_icgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_icgraph" id="classBlockStreamBuffer_a6051abaae8da0d71ed26e06ec05b0ab6_icgraph">
+<area shape="rect" id="node2" href="hash__table__test_8h.html#a07c606f6785bfa2c1b91cbcea37361e3" title="fill_basic_hash_table" alt="" coords="195,12,338,39"/><area shape="rect" id="node3" href="hash__table__test_8h.html#a5b213e2a7f0601eece39cc0e8afcabe5" title="basic_hash_table_test" alt="" coords="387,12,539,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0c09df725d869ee98e131d9404d2c7c8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockStreamBuffer::Empty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a>, <a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#af75db5a409d222c7a2320d045330729c">claims::physical_operator::Expander::ChildExhausted()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_cgraph.png" border="0" usemap="#classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_cgraph" id="classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="195,5,295,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="195,56,295,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_icgraph.png" border="0" usemap="#classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_icgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_icgraph" id="classBlockStreamBuffer_a0c09df725d869ee98e131d9404d2c7c8_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#af75db5a409d222c7a2320d045330729c" title="claims::physical_operator\l::Expander::ChildExhausted" alt="" coords="195,38,381,79"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1Expander.html#ad21a0b401a9e8b1b80c51bc3ddca5cc2" title="claims::physical_operator\l::Expander::Next" alt="" coords="436,5,607,46"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="430,70,613,111"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="662,70,882,111"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="931,37,1101,78"/><area shape="rect" id="node7" href="classclaims_1_1physical__operator_1_1Expander.html#a3c6b61083fe322ea865a99d7f442aace" title="claims::physical_operator\l::Expander::Expand" alt="" coords="931,102,1101,143"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2c904a7deee4ff0f2d0daaa4a4eb4126"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockStreamBuffer::getBlock </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> &amp;&#160;</td>
+          <td class="paramname"><em>block</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classBlockStreamBuffer.html#abea39cf0b3506acac6d22bbcf9d3d11e">block_stream_empty_list_</a>, <a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a>, <a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a>, <a class="el" href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14">semaphore::post()</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, <a class="el" href="classBlockStreamBuffer.html#ada5779d04dd3d0b4481cccc767f11354">sema_empty_block_</a>, and <a class="el" href="classBlockStreamBase.html#abbdd092a2dc841ecac4929599adaafa5">BlockStreamBase::switchBlock()</a>.</p>
+
+<p>Referenced by <a class="el" href="hash__table__test_8h.html#a2417e92038ff52412ff6cbaff7ea831b">insert_into_hash_table()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#ad21a0b401a9e8b1b80c51bc3ddca5cc2">claims::physical_operator::Expander::Next()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599">claims::physical_operator::ExchangeMerger::Next()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_cgraph.png" border="0" usemap="#classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_cgraph" id="classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="249,5,349,32"/><area shape="rect" id="node3" href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14" title="semaphore::post" alt="" coords="239,56,358,83"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="249,107,349,133"/><area shape="rect" id="node5" href="classBlockStreamBase.html#abbdd092a2dc841ecac4929599adaafa5" title="BlockStreamBase::switchBlock" alt="" coords="195,157,402,184"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_icgraph.png" border="0" usemap="#classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_icgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_icgraph" id="classBlockStreamBuffer_a2c904a7deee4ff0f2d0daaa4a4eb4126_icgraph">
+<area shape="rect" id="node2" href="hash__table__test_8h.html#a2417e92038ff52412ff6cbaff7ea831b" title="insert_into_hash_table" alt="" coords="204,5,356,32"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1Expander.html#ad21a0b401a9e8b1b80c51bc3ddca5cc2" title="claims::physical_operator\l::Expander::Next" alt="" coords="195,57,365,98"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afde8c50ac302e667d1853108e10f6599" title="fetch block from all_merged_block_buffer and return. " alt="" coords="195,122,365,163"/><area shape="rect" id="node3" href="hash__table__test_8h.html#a07c606f6785bfa2c1b91cbcea37361e3" title="fill_basic_hash_table" alt="" coords="414,5,557,32"/><area shape="rect" id="node4" href="hash__table__test_8h.html#a5b213e2a7f0601eece39cc0e8afcabe5" title="basic_hash_table_test" alt="" coords="605,5,757,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a7bafbfbb42565e4cf9d8291c8b4be1c0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned BlockStreamBuffer::getBlockInBuffer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a>, <a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#aaa6f0fb0267531b36cc44ceaf6d0bf7b">getBufferUsage()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_cgraph.png" border="0" usemap="#classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_cgraph" id="classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="195,5,295,32"/><area shape="rect" id="node3" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="195,56,295,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_icgraph.png" border="0" usemap="#classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_icgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_icgraph" id="classBlockStreamBuffer_a7bafbfbb42565e4cf9d8291c8b4be1c0_icgraph">
+<area shape="rect" id="node2" href="classBlockStreamBuffer.html#aaa6f0fb0267531b36cc44ceaf6d0bf7b" title="BlockStreamBuffer::\lgetBufferUsage" alt="" coords="195,5,335,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aaa6f0fb0267531b36cc44ceaf6d0bf7b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double BlockStreamBuffer::getBufferUsage </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3">MonitorableBuffer</a>.</p>
+
+<p>References <a class="el" href="classBlockStreamBuffer.html#a7bafbfbb42565e4cf9d8291c8b4be1c0">getBlockInBuffer()</a>, and <a class="el" href="classBlockStreamBuffer.html#acabe381c7aa950f7639d91af2f3ea22e">total_block_count_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_aaa6f0fb0267531b36cc44ceaf6d0bf7b_cgraph.png" border="0" usemap="#classBlockStreamBuffer_aaa6f0fb0267531b36cc44ceaf6d0bf7b_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_aaa6f0fb0267531b36cc44ceaf6d0bf7b_cgraph" id="classBlockStreamBuffer_aaa6f0fb0267531b36cc44ceaf6d0bf7b_cgraph">
+<area shape="rect" id="node2" href="classBlockStreamBuffer.html#a7bafbfbb42565e4cf9d8291c8b4be1c0" title="BlockStreamBuffer::\lgetBlockInBuffer" alt="" coords="195,23,335,65"/><area shape="rect" id="node3" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="385,5,485,32"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="385,56,485,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="addb5215108ef6e4bbd21d39a9dee81df"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long BlockStreamBuffer::getReceivedDataSizeInKbytes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classMonitorableBuffer.html#ad36415c360d5d7c11f61e794e0cdfefa">MonitorableBuffer</a>.</p>
+
+<p>References <a class="el" href="classBlockStreamBuffer.html#a3f5a1de9c85f0766914c4935f2b315db">block_size_</a>, and <a class="el" href="classBlockStreamBuffer.html#af434374190795a52c20af6e9a4575954">received_block_count_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024">claims::physical_operator::Expander::Close()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_addb5215108ef6e4bbd21d39a9dee81df_icgraph.png" border="0" usemap="#classBlockStreamBuffer_addb5215108ef6e4bbd21d39a9dee81df_icgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_addb5215108ef6e4bbd21d39a9dee81df_icgraph" id="classBlockStreamBuffer_addb5215108ef6e4bbd21d39a9dee81df_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#ad557a15a4de7d73101306d2497fa3024" title="claims::physical_operator\l::Expander::Close" alt="" coords="256,5,427,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a3b48817e660867b1e989bd113f7dbff5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockStreamBuffer::insertBlock </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> *&#160;</td>
+          <td class="paramname"><em>block</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classBlockStreamBuffer.html#abea39cf0b3506acac6d22bbcf9d3d11e">block_stream_empty_list_</a>, <a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a>, <a class="el" href="classBlockStreamBase.html#ae1d4851efb68f3cc6b138cd477ec7343">BlockStreamBase::deepCopy()</a>, <a class="el" href="classBlock.html#a60a4f0e9e4e14985d20d1605d0525959">Block::isIsReference()</a>, <a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a>, <a class="el" href="classBlockStreamBuffer.html#af434374190795a52c20af6e9a4575954">received_block_count_</a>, <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>, <a class="el" href="classBlockStreamBuffer.html#ada5779d04dd3d0b4481cccc767f11354">sema_empty_block_</a>, <a class="el" href="classBlockStreamBase.html#abbdd092a2dc841ecac4929599adaafa5">BlockStreamBase::switchBlock()</a>, and <a class="el" href="classsemaphore.html#a4a9497728a40405ad5365f84ff455dba">semaphore::wait()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18">claims::physical_operator::Expander::ExpandedWork()</a>, <a class="el" href="hash__table__test_8h.html#ad30254d53c8a2d7fae15f7c20fcf5940">initial_input_date()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a1a85aab2c471c07663877afbea102a1a">claims::physical_operator::ExchangeMerger::Receiver()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_cgraph.png" border="0" usemap="#classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_cgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_cgraph" id="classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="249,5,349,32"/><area shape="rect" id="node3" href="classBlockStreamBase.html#ae1d4851efb68f3cc6b138cd477ec7343" title="BlockStreamBase::deepCopy" alt="" coords="201,56,396,83"/><area shape="rect" id="node4" href="classBlock.html#a60a4f0e9e4e14985d20d1605d0525959" title="Block::isIsReference" alt="" coords="227,107,371,133"/><area shape="rect" id="node5" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="249,157,349,184"/><area shape="rect" id="node6" href="classBlockStreamBase.html#abbdd092a2dc841ecac4929599adaafa5" title="BlockStreamBase::switchBlock" alt="" coords="195,208,402,235"/><area shape="rect" id="node7" href="classsemaphore.html#a4a9497728a40405ad5365f84ff455dba" title="semaphore::wait" alt="" coords="239,259,358,285"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_icgraph.png" border="0" usemap="#classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_icgraph" alt=""/></div>
+<map name="classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_icgraph" id="classBlockStreamBuffer_a3b48817e660867b1e989bd113f7dbff5_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1Expander.html#a973520d68277d4a062d888fecc5c3a18" title="claims::physical_operator\l::Expander::ExpandedWork" alt="" coords="198,70,381,111"/><area shape="rect" id="node6" href="hash__table__test_8h.html#ad30254d53c8a2d7fae15f7c20fcf5940" title="initial_input_date" alt="" coords="230,136,349,163"/><area shape="rect" id="node9" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a1a85aab2c471c07663877afbea102a1a" title="claims::physical_operator\l::ExchangeMerger::Receiver" alt="" coords="195,190,383,231"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="435,70,655,111"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1Expander.html#aadbca077979db489ff4d3006b72bfe62" title="claims::physical_operator\l::Expander::Open" alt="" coords="707,5,877,46"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1Expander.html#a3c6b61083fe322ea865a99d7f442aace" title="claims::physical_operator\l::Expander::Expand" alt="" coords="707,70,877,111"/><area shape="rect" id="node7" href="hash__table__test_8h.html#a07c606f6785bfa2c1b91cbcea37361e3" title="fill_basic_hash_table" alt="" coords="474,136,617,163"/><area shape="rect" id="node8" href="hash__table__test_8h.html#a5b213e2a7f0601eece39cc0e8afcabe5" title="basic_hash_table_test" alt="" coords="716,136,868,163"/><area shape="rect" id="node10" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#abf45f7767bb23438b3055c58b8aeaca4" title="claims::physical_operator\l::ExchangeMerger::CreateReceiver\lThread" alt="" coords="432,187,659,243"/><area shape="rect" id="node11" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="707,194,877,235"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a3f5a1de9c85f0766914c4935f2b315db"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned BlockStreamBuffer::block_size_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#addb5215108ef6e4bbd21d39a9dee81df">getReceivedDataSizeInKbytes()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abea39cf0b3506acac6d22bbcf9d3d11e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt;<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a>*&gt; BlockStreamBuffer::block_stream_empty_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#a37ad443b416651d49ca9e87792d9d103">BlockStreamBuffer()</a>, <a class="el" href="classBlockStreamBuffer.html#a2c904a7deee4ff0f2d0daaa4a4eb4126">getBlock()</a>, <a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock()</a>, and <a class="el" href="classBlockStreamBuffer.html#a6051abaae8da0d71ed26e06ec05b0ab6">~BlockStreamBuffer()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a44104e4a43ac9297af2f1816af1f8395"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt;<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a>*&gt; BlockStreamBuffer::block_stream_used_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#a0c09df725d869ee98e131d9404d2c7c8">Empty()</a>, <a class="el" href="classBlockStreamBuffer.html#a2c904a7deee4ff0f2d0daaa4a4eb4126">getBlock()</a>, <a class="el" href="classBlockStreamBuffer.html#a7bafbfbb42565e4cf9d8291c8b4be1c0">getBlockInBuffer()</a>, <a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock()</a>, and <a class="el" href="classBlockStreamBuffer.html#a6051abaae8da0d71ed26e06ec05b0ab6">~BlockStreamBuffer()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a353a5b5e1ca7320e71af839763731509"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLock.html">Lock</a> BlockStreamBuffer::lock_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#a37ad443b416651d49ca9e87792d9d103">BlockStreamBuffer()</a>, <a class="el" href="classBlockStreamBuffer.html#a0c09df725d869ee98e131d9404d2c7c8">Empty()</a>, <a class="el" href="classBlockStreamBuffer.html#a2c904a7deee4ff0f2d0daaa4a4eb4126">getBlock()</a>, <a class="el" href="classBlockStreamBuffer.html#a7bafbfbb42565e4cf9d8291c8b4be1c0">getBlockInBuffer()</a>, and <a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af434374190795a52c20af6e9a4575954"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long BlockStreamBuffer::received_block_count_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#addb5215108ef6e4bbd21d39a9dee81df">getReceivedDataSizeInKbytes()</a>, and <a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ada5779d04dd3d0b4481cccc767f11354"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsemaphore.html">semaphore</a> BlockStreamBuffer::sema_empty_block_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#a37ad443b416651d49ca9e87792d9d103">BlockStreamBuffer()</a>, <a class="el" href="classBlockStreamBuffer.html#a2c904a7deee4ff0f2d0daaa4a4eb4126">getBlock()</a>, <a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock()</a>, and <a class="el" href="classBlockStreamBuffer.html#a6051abaae8da0d71ed26e06ec05b0ab6">~BlockStreamBuffer()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acabe381c7aa950f7639d91af2f3ea22e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned BlockStreamBuffer::total_block_count_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockStreamBuffer.html#aaa6f0fb0267531b36cc44ceaf6d0bf7b">getBufferUsage()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>common/Block/<a class="el" href="BlockStreamBuffer_8h_source.html">BlockStreamBuffer.h</a></li>
-<li>common/Block/BlockStreamBuffer.cpp</li>
+<li>common/Block/<a class="el" href="BlockStreamBuffer_8cpp.html">BlockStreamBuffer.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,4 +1,4 @@
-.TH "decimal::NValue" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "decimal::NValue" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ decimal::NValue \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <NValue\&.hpp>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBNValue\fP ()"
+.br
 .ti -1c
 .RI "void \fBcreateDecimalFromString\fP (const std::string &txt)"
 .br
@@ -115,23 +120,145 @@ decimal::NValue \-
 .RI "static \fBTTInt\fP \fBs_minDecimalValue\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "decimal::NValue::NValue ()\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
+.SS "int decimal::NValue::compare (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
 .SS "int decimal::NValue::compareDecimalValue (const \fBNValue\fPrhs) const\fC [inline]\fP"
 Get the type of the value\&. This information is private to prevent code outside of \fBNValue\fP from branching based on the type of a value\&. 
+.PP
+References getDecimal(), VALUE_COMPARE_EQUAL, VALUE_COMPARE_GREATERTHAN, and VALUE_COMPARE_LESSTHAN\&.
 .SS "void decimal::NValue::createDecimalFromString (const std::string &txt)"
 set a decimal value from a serialized representation Check for invalid characters
 .PP
 References ttmath::Int< value_size >::SetSign()\&.
+.PP
+Referenced by getDecimalValueFromString(), and TEST_F()\&.
 .SS "std::string decimal::NValue::createStringFromDecimal (unsignednumber_of_fractinal_digits = \fC12\fP) const"
 Serialize sign and value using radix point (no exponent)\&. 
 .PP
 References ttmath::Int< value_size >::ChangeSign(), ttmath::Int< value_size >::IsSign(), and ttmath::Int< value_size >::ToString()\&.
+.PP
+Referenced by opAddDecimals(), opDivideDecimals(), opMultiplyDecimals(), opSubtractDecimals(), test_add(), and test_multiple()\&.
+.SS "\fBTTInt\fP& decimal::NValue::getDecimal ()\fC [inline]\fP"
+
+.PP
+Referenced by compareDecimalValue(), getDecimalValue(), opAddDecimals(), opDivideDecimals(), opMultiplyDecimals(), and opSubtractDecimals()\&.
+.SS "const \fBTTInt\fP& decimal::NValue::getDecimal () const\fC [inline]\fP"
+
+.SS "static \fBNValue\fP decimal::NValue::getDecimalValue (\fBTTInt\fPvalue)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References getDecimal()\&.
+.SS "static \fBNValue\fP decimal::NValue::getDecimalValueFromString (const std::string &value)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References createDecimalFromString()\&.
+.SS "bool decimal::NValue::isNull () const\fC [inline]\fP"
+
+.PP
+References OBJECT_NULL_BIT, and ttmath::Int< value_size >::SetMin()\&.
+.PP
+Referenced by opAddDecimals(), opDivideDecimals(), opMultiplyDecimals(), and opSubtractDecimals()\&.
+.SS "\fBNValue\fP decimal::NValue::op_add (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+Referenced by add_in_same_type()\&.
+.SS "\fBNValue\fP decimal::NValue::op_divide (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.SS "bool decimal::NValue::op_equals (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by compare_equal_in_same_type(), claims::common::decimal_to_boolean(), decimal_to_boolean(), great< NValue *, NValue * >(), OperateDecimal::greate(), OperateDecimal::less(), and NValueEqual()\&.
+.SS "bool decimal::NValue::op_great (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by compare_great_in_same_type(), and NValueGreat()\&.
+.SS "bool decimal::NValue::op_great_equals (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by compare_great_equal_in_same_type(), and NValueGreatEqual()\&.
+.SS "bool decimal::NValue::op_less (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by compare_less_in_same_type(), and NValueLess()\&.
+.SS "bool decimal::NValue::op_less_equals (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by compare_less_equal_in_same_type(), and NValueLessEqual()\&.
+.SS "\fBNValue\fP decimal::NValue::op_max (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by great< NValue *, NValue * >()\&.
+.SS "\fBNValue\fP decimal::NValue::op_min (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by OperateDecimal::greate(), and OperateDecimal::less()\&.
+.SS "\fBNValue\fP decimal::NValue::op_multiply (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+Referenced by muls_in_same_type()\&.
+.SS "bool decimal::NValue::op_not_equals (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References compare()\&.
+.PP
+Referenced by compare_not_equal_in_same_type(), get_boolean_expr(), and NValueNotEqual()\&.
+.SS "\fBNValue\fP decimal::NValue::op_subtract (const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+Referenced by mins_in_same_type()\&.
+.SS "\fBNValue\fP decimal::NValue::opAddDecimals (const \fBNValue\fPlhs, const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References createStringFromDecimal(), getDecimal(), isNull(), and ttmath::Int< value_size >::SetMin()\&.
+.SS "\fBNValue\fP decimal::NValue::opDivideDecimals (const \fBNValue\fPlhs, const \fBNValue\fPrhs) const"
+
+.PP
+References createStringFromDecimal(), ttmath::Int< value_size >::Div(), ttmath::Int< value_size >::FromInt(), getDecimal(), isNull(), ttmath::Int< value_size >::SetMin(), and ttmath::Int< value_size >::ToString()\&.
+.SS "\fBNValue\fP decimal::NValue::opMultiplyDecimals (const \fBNValue\fP &lhs, const \fBNValue\fP &rhs) const"
+
+.PP
+References createStringFromDecimal(), ttmath::Int< value_size >::FromInt(), getDecimal(), isNull(), ttmath::Int< value_size >::SetMin(), and ttmath::Int< value_size >::ToString()\&.
+.SS "\fBNValue\fP decimal::NValue::opSubtractDecimals (const \fBNValue\fPlhs, const \fBNValue\fPrhs) const\fC [inline]\fP"
+
+.PP
+References createStringFromDecimal(), getDecimal(), isNull(), and ttmath::Int< value_size >::SetMin()\&.
+.SS "void decimal::NValue::serializeToExport (\fBExportSerializeOutput\fP &io, void *para = \fC0\fP) const\fC [inline]\fP"
+
+.PP
+References decimal::ExportSerializeOutput::writeBinaryString()\&.
 .SH "Member Data Documentation"
 .PP 
+.SS "const uint16_t decimal::NValue::kMaxDecScale = 12\fC [static]\fP"
+
+.SS "const int64_t decimal::NValue::kMaxScaleFactor = 1000000000000\fC [static]\fP"
+
 .SS "char decimal::NValue::m_data[16]"
 16 bytes of storage for \fBNValue\fP data\&. 
+.SS "\fBTTInt\fP decimal::NValue::s_maxDecimalValue\fC [static]\fP"
+
+.SS "\fBTTInt\fP decimal::NValue::s_minDecimalValue\fC [static]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

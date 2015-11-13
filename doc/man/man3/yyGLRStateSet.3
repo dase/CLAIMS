@@ -1,4 +1,4 @@
-.TH "yyGLRStateSet" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "yyGLRStateSet" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,7 +13,7 @@ yyGLRStateSet \-
 .RI "\fByyGLRState\fP ** \fByystates\fP"
 .br
 .ti -1c
-.RI "yybool * \fByylookaheadNeeds\fP"
+.RI "\fByybool\fP * \fByylookaheadNeeds\fP"
 .br
 .ti -1c
 .RI "size_t \fByysize\fP"
@@ -24,9 +24,23 @@ yyGLRStateSet \-
 .in -1c
 .SH "Member Data Documentation"
 .PP 
-.SS "yybool* yyGLRStateSet::yylookaheadNeeds"
+.SS "size_t yyGLRStateSet::yycapacity"
+
+.PP
+Referenced by yyinitStateSet(), and yysplitStack()\&.
+.SS "\fByybool\fP * yyGLRStateSet::yylookaheadNeeds"
 During nondeterministic operation, yylookaheadNeeds tracks which stacks have actually needed the current lookahead\&. During deterministic operation, yylookaheadNeeds[0] is not maintained since it would merely duplicate yychar != YYEMPTY\&. 
+.PP
+Referenced by yyaddDeferredAction(), yyfreeStateSet(), yyinitStateSet(), yyparse(), yyprocessOneStack(), yyremoveDeletes(), and yysplitStack()\&.
+.SS "size_t yyGLRStateSet::yysize"
+
+.PP
+Referenced by yycompressStack(), yyexpandGLRStack(), yyglrReduce(), yyinitStateSet(), yyparse(), yyrecoverSyntaxError(), yyremoveDeletes(), yysplitStack(), and yyundeleteLastStack()\&.
+.SS "\fByyGLRState\fP ** yyGLRStateSet::yystates"
+
+.PP
+Referenced by yycompressStack(), yydoAction(), yyexpandGLRStack(), yyfreeStateSet(), yyglrReduce(), yyglrShift(), yyglrShiftDefer(), yyinitStateSet(), yymarkStackDeleted(), yyparse(), yyprocessOneStack(), yyrecoverSyntaxError(), yyremoveDeletes(), yyreportSyntaxError(), yyresolveStack(), yysplitStack(), and yyundeleteLastStack()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

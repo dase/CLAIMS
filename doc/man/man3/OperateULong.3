@@ -1,4 +1,4 @@
-.TH "OperateULong" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "OperateULong" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ OperateULong \-
 .br
 .PP
 .PP
+\fC#include <data_type\&.h>\fP
+.PP
 Inherits \fBOperate\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBOperateULong\fP (bool _nullable=true)"
+.br
+.ti -1c
+.RI "\fB~OperateULong\fP ()"
 .br
 .ti -1c
 .RI "void \fBassignment\fP (const void *const &src, void *const &desc) const "
@@ -42,19 +47,19 @@ Inherits \fBOperate\fP\&.
 .RI "void \fBmultiple\fP (void *target, void *increment)"
 .br
 .ti -1c
-.RI "fun \fBGetADDFunction\fP ()"
+.RI "\fBfun\fP \fBGetADDFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMINFunction\fP ()"
+.RI "\fBfun\fP \fBGetMINFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMAXFunction\fP ()"
+.RI "\fBfun\fP \fBGetMAXFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetIncreateByOneFunction\fP ()"
+.RI "\fBfun\fP \fBGetIncreateByOneFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetAVGFunction\fP ()"
+.RI "\fBfun\fP \fBGetAVGFunction\fP ()"
 .br
 .ti -1c
 .RI "unsigned \fBgetPartitionValue\fP (const void *key, const \fBPartitionFunction\fP *partition_function) const "
@@ -76,8 +81,109 @@ Inherits \fBOperate\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "OperateULong::OperateULong (bool_nullable = \fCtrue\fP)\fC [inline]\fP"
 
+.SS "OperateULong::~OperateULong ()\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void OperateULong::add (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "void OperateULong::assignment (const void *const &src, void *const &desc) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "int OperateULong::compare (const void *a, const void *b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBOperate\fP* OperateULong::duplicateOperator () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateULong::equal (const void *const &a, const void *const &b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateULong::GetADDFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateULong::GetAVGFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateULong::GetIncreateByOneFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateULong::GetMAXFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateULong::GetMINFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "unsigned OperateULong::getPartitionValue (const void *key, const \fBPartitionFunction\fP *partition_function) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References PartitionFunction::get_partition_value()\&.
+.SS "unsigned OperateULong::getPartitionValue (const void *key) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References hash_value()\&.
+.SS "unsigned OperateULong::getPartitionValue (const void *key, const unsigned long &mod) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References hash_value()\&.
+.SS "bool OperateULong::greate (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateULong::isNull (void *value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_U_LONG\&.
+.SS "bool OperateULong::less (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "void OperateULong::multiple (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateULong::setNull (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_U_LONG\&.
+.SS "std::string OperateULong::toString (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_U_LONG\&.
+.SS "void OperateULong::toValue (void *target, const char *string)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_U_LONG\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

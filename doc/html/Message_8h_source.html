@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Message.h Source File</title>
+<title>Claims: common/Message.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Message_8h_source.html','');});
 <div class="title">Message.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Message_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Message.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: May 12, 2013</span></div>
@@ -115,514 +115,557 @@ $(document).ready(function(){initNavTree('Message_8h_source.html','');});
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifndef MESSAGE_H_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define MESSAGE_H_</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#ifdef DMALLOC</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"></span><span class="comment">/*</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> * Message.h</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> *  Created on: May 11, 2013</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> *      Author: wangli</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> *      This header defines all kinds of messages that are transformed by Theron.</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include&lt;arpa/inet.h&gt;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;boost/archive/text_oarchive.hpp&gt;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;boost/archive/text_iarchive.hpp&gt;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;boost/archive/binary_iarchive.hpp&gt;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;boost/archive/binary_oarchive.hpp&gt;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;boost/serialization/vector.hpp&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;boost/iostreams/stream.hpp&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;boost/iostreams/device/back_inserter.hpp&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;assert.h&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;Theron/Defines.h&quot;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;Theron/Theron.h&quot;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;serialization/RegisterDerivedClass.h&quot;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;../physical_operator/physical_operator_base.h&quot;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &quot;../Debug.h&quot;</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;../storage/StorageLevel.h&quot;</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &quot;ids.h&quot;</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">//It&#39;s better to use fixed length information for implementation concern.</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structExchangeID.html">ExchangeID</a>)</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structStorageBudgetMessage.html">   43</a></span>&#160;struct <a class="code" href="structStorageBudgetMessage.html">StorageBudgetMessage</a>{</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">explicit</span> StorageBudgetMessage(<span class="keyword">const</span> <span class="keywordtype">int</span> &amp;disk_budget,<span class="keyword">const</span> <span class="keywordtype">int</span> &amp; memory_budget,<span class="keyword">const</span> <span class="keywordtype">int</span> &amp; nodeid)</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    :disk_budget(disk_budget),memory_budget(memory_budget),nodeid(nodeid){</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">int</span> disk_budget;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">int</span> memory_budget;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">int</span> nodeid;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structStorageBudgetMessage.html">StorageBudgetMessage</a>)</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structPartitionBindingMessage.html">   54</a></span>&#160;struct <a class="code" href="structPartitionBindingMessage.html">PartitionBindingMessage</a>{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    PartitionBindingMessage(<span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a>&amp; pid,<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; num,<span class="keyword">const</span> StorageLevel&amp; level)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    :partition_id(pid),number_of_chunks(num),storage_level(level){};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="structPartitionID.html">PartitionID</a> partition_id;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">unsigned</span> number_of_chunks;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    StorageLevel storage_level;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structPartitionBindingMessage.html">PartitionBindingMessage</a>)</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structPartitionUnbindingMessage.html">   63</a></span>&#160;struct <a class="code" href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a>{</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    PartitionUnbindingMessage(<span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a>&amp; pid)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    :partition_id(pid){};</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="structPartitionID.html">PartitionID</a> partition_id;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a>)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structRegisterStorageRespond.html">   70</a></span>&#160;struct <a class="code" href="structRegisterStorageRespond.html">RegisterStorageRespond</a>{</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">explicit</span> RegisterStorageRespond(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> text){</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        mText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        memcpy(mText,text,REGISTER_MESSAGE_LEN);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">char</span> mText[REGISTER_MESSAGE_LEN];</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;};</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structRegisterStorageRespond.html">RegisterStorageRespond</a>)</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="structHeartBeatMessage.html">   79</a></span>&#160;struct <a class="code" href="structHeartBeatMessage.html">HeartBeatMessage</a>{</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">explicit</span> HeartBeatMessage(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> text){</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        mText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        memcpy(mText,text,HEARTBEAT_MESSAGE_LEN);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">char</span> mText[HEARTBEAT_MESSAGE_LEN];</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;};</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structHeartBeatMessage.html">HeartBeatMessage</a>)</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structHeartBeatRespond.html">   88</a></span>&#160;struct <a class="code" href="structHeartBeatRespond.html">HeartBeatRespond</a>{</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keyword">explicit</span> HeartBeatRespond(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> text){</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        mText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        memcpy(mText,text,HEARTBEAT_MESSAGE_LEN);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">char</span> mText[HEARTBEAT_MESSAGE_LEN];</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;};</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structHeartBeatRespond.html">HeartBeatRespond</a>)</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="structBlockStatusMessage.html">   97</a></span>&#160;struct <a class="code" href="structBlockStatusMessage.html">BlockStatusMessage</a>{</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">explicit</span> BlockStatusMessage(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> text){</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        mText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        memcpy(mText,text,BLOCK_STATUS_MESSAGE_LEN);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">char</span> mText[BLOCK_STATUS_MESSAGE_LEN];</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;};</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structBlockStatusMessage.html">BlockStatusMessage</a>)</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="structBlockStatusRespond.html">  106</a></span>&#160;struct <a class="code" href="structBlockStatusRespond.html">BlockStatusRespond</a>{</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">explicit</span> BlockStatusRespond(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> text){</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        mText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        memcpy(mText,text,BLOCK_STATUS_MESSAGE_LEN);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">char</span> mText[BLOCK_STATUS_MESSAGE_LEN];</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;};</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structBlockStatusRespond.html">BlockStatusRespond</a>)</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
-<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="structMatcherMessage.html">  115</a></span>&#160;struct <a class="code" href="structMatcherMessage.html">MatcherMessage</a>{</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keyword">explicit</span> MatcherMessage(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> filename,<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span> bmi){</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        filenameText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        memcpy(filenameText,filename,MATCHER_MESSAGE_FILENAME_LEN);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        bmiText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        memcpy(bmiText,bmi,MATCHER_MESSAGE_BMI_LEN);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">char</span> filenameText[MATCHER_MESSAGE_FILENAME_LEN];</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">char</span> bmiText[MATCHER_MESSAGE_BMI_LEN];</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMatcherMessage.html">MatcherMessage</a>)</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="structMatcherRespond.html">  127</a></span>&#160;struct <a class="code" href="structMatcherRespond.html">MatcherRespond</a>{</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keyword">explicit</span> MatcherRespond(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> text){</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        mText[0]=<span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        memcpy(mText,text,MATCHER_MESSAGE_PROJECT_LEN);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    }</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordtype">char</span> mText[MATCHER_MESSAGE_PROJECT_LEN];</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;};</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMatcherRespond.html">MatcherRespond</a>)</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment">/* NodeRegisterMessage has the same function compared with NodeConnectionMessage except for that</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="comment"> * NodeRegisterMessage is fixed-length.*/</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html">  138</a></span>&#160;struct <a class="code" href="structNodeRegisterMessage.html">NodeRegisterMessage</a>{</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keyword">explicit</span> NodeRegisterMessage(std::string node_ip,<span class="keywordtype">unsigned</span> node_port){</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        port=node_port;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        ip=inet_addr(node_ip.c_str());</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    }</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordtype">void</span> set_ip(std::string _ip){</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        ip=inet_addr(_ip.c_str());</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    }</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    std::string get_ip()<span class="keyword">const</span>{</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        in_addr add;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        add.s_addr=ip;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        ostringstream str;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        str&lt;&lt;inet_ntoa(add);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        std::string ret;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        ret=str.str();</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    }</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">unsigned</span> ip;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordtype">unsigned</span> port;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;};</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structNodeRegisterMessage.html">NodeRegisterMessage</a>)</div>
-<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="structMessage256.html">  159</a></span>&#160;struct <a class="code" href="structMessage256.html">Message256</a></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;{</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordtype">unsigned</span> length;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordtype">char</span> message[256-<span class="keyword">sizeof</span>(unsigned)];</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">unsigned</span> Capacity()</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordflow">return</span> 256-<span class="keyword">sizeof</span>(unsigned);</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    }</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;};</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMessage256.html">Message256</a>)</div>
-<div class="line"><a name="l00169"></a><span class="lineno"><a class="line" href="structMessage4K.html">  169</a></span>&#160;struct <a class="code" href="structMessage4K.html">Message4K</a><span class="comment">//temporary ways to expand the the serialization capacity</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;{</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="keywordtype">unsigned</span> length;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">char</span> message[4096*50-<span class="keyword">sizeof</span>(unsigned)];</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">unsigned</span> Capacity()</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    {</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordflow">return</span> 4096*50-<span class="keyword">sizeof</span>(unsigned);</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;};</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMessage4K.html">Message4K</a>)</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<span class="keywordtype">int</span>)</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span>)</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;template&lt;typename T&gt;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;static T Deserialize(<a class="code" href="structMessage256.html">Message256</a> input)</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;{</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    std::string received(input.message,input.length);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    boost::iostreams::basic_array_source&lt;char&gt; device(received.data(),received.size());</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    boost::iostreams::stream&lt;boost::iostreams::basic_array_source&lt;char&gt; &gt; s(device);</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    boost::archive::binary_iarchive ia(s);</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    T ret;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    ia&gt;&gt;ret;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment">//  ostringstream ostr;</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment">//  ostr.write(input.message,input.length);</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment">//  std::string tmp=ostr.str();</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="comment">//  istringstream istr(tmp);</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment">//  T ret;</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="comment">//  boost::archive::text_iarchive ia(istr);</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment">//  ia&gt;&gt;ret;</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="comment">//  return ret;</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;}</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> Serialize(T <span class="keywordtype">object</span>)</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;{</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    std::string serial_str;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    boost::iostreams::back_insert_device&lt;std::string&gt; inserter(serial_str);</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    boost::iostreams::stream&lt;boost::iostreams::back_insert_device&lt;std::string&gt; &gt; ostr(inserter);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    boost::archive::binary_oarchive oa(ostr);</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    oa&lt;&lt;object;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    ostr.flush();</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <a class="code" href="structMessage256.html">Message256</a> ret;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    assert(serial_str.size()&lt;=Message256::Capacity());</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    memcpy(ret.message,serial_str.data(),serial_str.size());</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    ret.length=serial_str.size();</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment">//  ostringstream ostr;</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="comment">//  boost::archive::text_oarchive oa(ostr);</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment">//  oa&lt;&lt;object;</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment">//  //get the string</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment">//  std::string str=ostr.str();</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment">//  //in=str;</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment">//  assert(Message4K::Capacity()&gt;=str.length());</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment">//  //copy the string into the message and set the length.</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">//  Message256 ret;</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment">//  ret.length=str.length();</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment">//  //memcpy(&amp;ret.message,&amp;str,ret.length);</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment">//  str.copy(ret.message,ret.length);</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;}</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="keyword">static</span> T Deserialize(<a class="code" href="structMessage4K.html">Message4K</a> input)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;{</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    std::string received(input.message,input.length);</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    boost::iostreams::basic_array_source&lt;char&gt; device(received.data(),received.size());</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    boost::iostreams::stream&lt;boost::iostreams::basic_array_source&lt;char&gt; &gt; s(device);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    boost::archive::binary_iarchive ia(s);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    T ret;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    ia&gt;&gt;ret;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment">//  ostringstream ostr;</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment">//  ostr.write(input.message,input.length);</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment">//  std::string tmp=ostr.str();</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment">//  istringstream istr(tmp);</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment">//  T ret;</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment">//  boost::archive::text_iarchive ia(istr);</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment">//  ia&gt;&gt;ret;</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment">//  return ret;</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;}</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="keyword">static</span> <a class="code" href="structMessage4K.html">Message4K</a> Serialize4K(T &amp;<span class="keywordtype">object</span>)</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;{</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;../common/Message.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;arpa/inet.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;boost/archive/text_oarchive.hpp&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;boost/archive/text_iarchive.hpp&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;boost/archive/binary_iarchive.hpp&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;boost/archive/binary_oarchive.hpp&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;boost/serialization/vector.hpp&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &lt;boost/iostreams/stream.hpp&gt;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;boost/iostreams/device/back_inserter.hpp&gt;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;assert.h&gt;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;Theron/Defines.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;Theron/Theron.h&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="RegisterDerivedClass_8h.html">serialization/RegisterDerivedClass.h</a>&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;../physical_operator/physical_operator_base.h&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;../Debug.h&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;../storage/StorageLevel.h&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ids_8h.html">ids.h</a>&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">using</span> <a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">claims::physical_operator::PhysicalOperatorBase</a>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">// It&#39;s better to use fixed length information for implementation concern.</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structExchangeID.html">ExchangeID</a>)</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structStorageBudgetMessage.html">   36</a></span>&#160;struct <a class="code" href="structStorageBudgetMessage.html">StorageBudgetMessage</a> {</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structStorageBudgetMessage.html#a8faacd8ce1fdd2025b22ac57f021b954">   37</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structStorageBudgetMessage.html#a8faacd8ce1fdd2025b22ac57f021b954">StorageBudgetMessage</a>(<span class="keyword">const</span> <span class="keywordtype">int</span>&amp; disk_budget,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                                <span class="keyword">const</span> <span class="keywordtype">int</span>&amp; memory_budget, <span class="keyword">const</span> <span class="keywordtype">int</span>&amp; nodeid)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      : disk_budget(disk_budget),</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        memory_budget(memory_budget),</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        nodeid(nodeid) {}</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structStorageBudgetMessage.html#ab35eb386883173e61deedc41293b0352">   42</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="structStorageBudgetMessage.html#ab35eb386883173e61deedc41293b0352">disk_budget</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structStorageBudgetMessage.html#a3257e7ede01dcf9dda0db542c7255286">   43</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="structStorageBudgetMessage.html#a3257e7ede01dcf9dda0db542c7255286">memory_budget</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structStorageBudgetMessage.html#a23dab0db9c2e51869c9e1a7bae8e566d">   44</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="structStorageBudgetMessage.html#a23dab0db9c2e51869c9e1a7bae8e566d">nodeid</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structStorageBudgetMessage.html">StorageBudgetMessage</a>)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structPartitionBindingMessage.html">   48</a></span>&#160;struct <a class="code" href="structPartitionBindingMessage.html">PartitionBindingMessage</a> {</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="structPartitionBindingMessage.html#a3fcb0097ae8a4b42601fd2b2943140c3">   49</a></span>&#160;  <a class="code" href="structPartitionBindingMessage.html#a3fcb0097ae8a4b42601fd2b2943140c3">PartitionBindingMessage</a>(<span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a>&amp; pid, <span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; num,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                          <span class="keyword">const</span> <a class="code" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a>&amp; level)</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structPartitionBindingMessage.html#aa727466fef4c1de983708b812b016588">   51</a></span>&#160;      : partition_id(pid), number_of_chunks(num), storage_level(level){};</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <a class="code" href="structPartitionID.html">PartitionID</a> partition_id;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structPartitionBindingMessage.html#aa153de292ad9e7e0869601bf4e53b810">   53</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="structPartitionBindingMessage.html#aa153de292ad9e7e0869601bf4e53b810">number_of_chunks</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structPartitionBindingMessage.html#a688e62ecb5924052054fb27ee3a2f4a0">   54</a></span>&#160;  <a class="code" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> <a class="code" href="structPartitionBindingMessage.html#a688e62ecb5924052054fb27ee3a2f4a0">storage_level</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structPartitionBindingMessage.html">PartitionBindingMessage</a>)</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structPartitionUnbindingMessage.html">   58</a></span>&#160;struct <a class="code" href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a> {</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structPartitionUnbindingMessage.html#a096471098d18c6f0ad37f76719319170">   59</a></span>&#160;  <a class="code" href="structPartitionUnbindingMessage.html#a096471098d18c6f0ad37f76719319170">PartitionUnbindingMessage</a>(<span class="keyword">const</span> <a class="code" href="structPartitionID.html">PartitionID</a>&amp; pid) : partition_id(pid){};</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <a class="code" href="structPartitionID.html">PartitionID</a> partition_id;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a>)</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structRegisterStorageRespond.html">   64</a></span>&#160;struct <a class="code" href="structRegisterStorageRespond.html">RegisterStorageRespond</a> {</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structRegisterStorageRespond.html#a440aadab37795076955dc82106236b2a">   65</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structRegisterStorageRespond.html#a440aadab37795076955dc82106236b2a">RegisterStorageRespond</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> text) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    mText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    memcpy(mText, text, <a class="code" href="Debug_8h.html#abc50376a1fd44d9ceb34661c6c271a46">REGISTER_MESSAGE_LEN</a>);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  }</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="structRegisterStorageRespond.html#a27492e4d8e2484b8c1e042f0688329af">   69</a></span>&#160;  <span class="keywordtype">char</span> mText[<a class="code" href="Debug_8h.html#abc50376a1fd44d9ceb34661c6c271a46">REGISTER_MESSAGE_LEN</a>];</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structRegisterStorageRespond.html">RegisterStorageRespond</a>)</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structHeartBeatMessage.html">   73</a></span>&#160;struct <a class="code" href="structHeartBeatMessage.html">HeartBeatMessage</a> {</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="structHeartBeatMessage.html#a96e6b72bf9c230db29a44414d70dcca4">   74</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structHeartBeatMessage.html#a96e6b72bf9c230db29a44414d70dcca4">HeartBeatMessage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> text) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    mText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    memcpy(mText, text, <a class="code" href="Debug_8h.html#a3b7104904c4a6438df6a2822fef043d8">HEARTBEAT_MESSAGE_LEN</a>);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  }</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structHeartBeatMessage.html#a499ccc204ab9158377555f12b712eac7">   78</a></span>&#160;  <span class="keywordtype">char</span> mText[<a class="code" href="Debug_8h.html#a3b7104904c4a6438df6a2822fef043d8">HEARTBEAT_MESSAGE_LEN</a>];</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structHeartBeatMessage.html">HeartBeatMessage</a>)</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="structHeartBeatRespond.html">   82</a></span>&#160;struct <a class="code" href="structHeartBeatRespond.html">HeartBeatRespond</a> {</div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="structHeartBeatRespond.html#a4775f5f10e19108276b079eb8a999a49">   83</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structHeartBeatRespond.html#a4775f5f10e19108276b079eb8a999a49">HeartBeatRespond</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> text) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    mText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    memcpy(mText, text, <a class="code" href="Debug_8h.html#a3b7104904c4a6438df6a2822fef043d8">HEARTBEAT_MESSAGE_LEN</a>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  }</div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="structHeartBeatRespond.html#ad5bfc62500043e404d54a692c30ee1dc">   87</a></span>&#160;  <span class="keywordtype">char</span> mText[<a class="code" href="Debug_8h.html#a3b7104904c4a6438df6a2822fef043d8">HEARTBEAT_MESSAGE_LEN</a>];</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;};</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structHeartBeatRespond.html">HeartBeatRespond</a>)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="structBlockStatusMessage.html">   91</a></span>&#160;struct <a class="code" href="structBlockStatusMessage.html">BlockStatusMessage</a> {</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="structBlockStatusMessage.html#a70dd6a6f1a653dcf6fada50bd52c64f4">   92</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structBlockStatusMessage.html#a70dd6a6f1a653dcf6fada50bd52c64f4">BlockStatusMessage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> text) {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    mText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    memcpy(mText, text, <a class="code" href="Debug_8h.html#a7de89b532a58eb42da1f830e8a89be4a">BLOCK_STATUS_MESSAGE_LEN</a>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  }</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="structBlockStatusMessage.html#abbfe2457028f7e169f927c39109640ed">   96</a></span>&#160;  <span class="keywordtype">char</span> mText[<a class="code" href="Debug_8h.html#a7de89b532a58eb42da1f830e8a89be4a">BLOCK_STATUS_MESSAGE_LEN</a>];</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;};</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structBlockStatusMessage.html">BlockStatusMessage</a>)</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="structBlockStatusRespond.html">  100</a></span>&#160;struct <a class="code" href="structBlockStatusRespond.html">BlockStatusRespond</a> {</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="structBlockStatusRespond.html#a49755045031be20aa0cc16c5dc85580b">  101</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structBlockStatusRespond.html#a49755045031be20aa0cc16c5dc85580b">BlockStatusRespond</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> text) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    mText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    memcpy(mText, text, <a class="code" href="Debug_8h.html#a7de89b532a58eb42da1f830e8a89be4a">BLOCK_STATUS_MESSAGE_LEN</a>);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  }</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="structBlockStatusRespond.html#a217332dfe450d990d05f8ccb2f168e38">  105</a></span>&#160;  <span class="keywordtype">char</span> mText[<a class="code" href="Debug_8h.html#a7de89b532a58eb42da1f830e8a89be4a">BLOCK_STATUS_MESSAGE_LEN</a>];</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;};</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structBlockStatusRespond.html">BlockStatusRespond</a>)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="structMatcherMessage.html">  109</a></span>&#160;struct <a class="code" href="structMatcherMessage.html">MatcherMessage</a> {</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="structMatcherMessage.html#a6fb3c7dbe35e950627d9dc874834c939">  110</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structMatcherMessage.html#a6fb3c7dbe35e950627d9dc874834c939">MatcherMessage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> filename, <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> bmi) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    filenameText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    memcpy(filenameText, filename, <a class="code" href="Debug_8h.html#a4d3cd6cca00aab91b51277e1ec7e82e7">MATCHER_MESSAGE_FILENAME_LEN</a>);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    bmiText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    memcpy(bmiText, bmi, <a class="code" href="Debug_8h.html#a416634e98e5b4ab7a86205d59e151fc6">MATCHER_MESSAGE_BMI_LEN</a>);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  }</div>
+<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="structMatcherMessage.html#a076773f18cb35530a90503b29a59118d">  116</a></span>&#160;  <span class="keywordtype">char</span> filenameText[<a class="code" href="Debug_8h.html#a4d3cd6cca00aab91b51277e1ec7e82e7">MATCHER_MESSAGE_FILENAME_LEN</a>];</div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="structMatcherMessage.html#ad8486ab4283cfd3f8d54bf2d12a40388">  117</a></span>&#160;  <span class="keywordtype">char</span> bmiText[<a class="code" href="Debug_8h.html#a416634e98e5b4ab7a86205d59e151fc6">MATCHER_MESSAGE_BMI_LEN</a>];</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;};</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMatcherMessage.html">MatcherMessage</a>)</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="structMatcherRespond.html">  121</a></span>&#160;struct <a class="code" href="structMatcherRespond.html">MatcherRespond</a> {</div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="structMatcherRespond.html#aed08b3242af23d0e7f9329cfa6082fae">  122</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structMatcherRespond.html#aed08b3242af23d0e7f9329cfa6082fae">MatcherRespond</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> text) {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    mText[0] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    memcpy(mText, text, <a class="code" href="Debug_8h.html#a6efdb92708b84ac6cbc21cd7d188787a">MATCHER_MESSAGE_PROJECT_LEN</a>);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  }</div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="structMatcherRespond.html#a8113aae4ab201768f73766ff33cf73a8">  126</a></span>&#160;  <span class="keywordtype">char</span> mText[<a class="code" href="Debug_8h.html#a6efdb92708b84ac6cbc21cd7d188787a">MATCHER_MESSAGE_PROJECT_LEN</a>];</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;};</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMatcherRespond.html">MatcherRespond</a>)</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment">/* NodeRegisterMessage has the same function compared with NodeConnectionMessage</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="comment"> * except for that</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment"> * NodeRegisterMessage is fixed-length.*/</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html">  133</a></span>&#160;struct <a class="code" href="structNodeRegisterMessage.html">NodeRegisterMessage</a> {</div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html#a617e1785ffb896379eca9168cf22ad39">  134</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structNodeRegisterMessage.html#a617e1785ffb896379eca9168cf22ad39">NodeRegisterMessage</a>(std::string node_ip, <span class="keywordtype">unsigned</span> node_port) {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    port = node_port;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    ip = inet_addr(node_ip.c_str());</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  }</div>
+<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html#acc256b194be6aa6f5d297de2ced7892f">  138</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structNodeRegisterMessage.html#acc256b194be6aa6f5d297de2ced7892f">set_ip</a>(std::string _ip) { ip = inet_addr(_ip.c_str()); }</div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html#a866ee9bbead75b8f963e2085f39e7dc3">  139</a></span>&#160;  std::string <a class="code" href="structNodeRegisterMessage.html#a866ee9bbead75b8f963e2085f39e7dc3">get_ip</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    in_addr <a class="code" href="functions_8h.html#ad0ba88eef56eb307a47c7eb3766bd0f4">add</a>;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    add.s_addr = ip;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    ostringstream str;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    str &lt;&lt; inet_ntoa(add);</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    std::string ret;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    ret = str.str();</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  }</div>
+<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html#a17d4405adecd9daa6e8cbe8c72914896">  148</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="structNodeRegisterMessage.html#a17d4405adecd9daa6e8cbe8c72914896">ip</a>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="structNodeRegisterMessage.html#a7333e8e7afdaf26a0cc6db4d75f4c1d3">  149</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="structNodeRegisterMessage.html#a7333e8e7afdaf26a0cc6db4d75f4c1d3">port</a>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;};</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structNodeRegisterMessage.html">NodeRegisterMessage</a>)</div>
+<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="structMessage256.html">  152</a></span>&#160;struct <a class="code" href="structMessage256.html">Message256</a> {</div>
+<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="structMessage256.html#ad2c5822b43d133cc3eb8346efcceac22">  153</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="structMessage256.html#ad2c5822b43d133cc3eb8346efcceac22">length</a>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="structMessage256.html#a0f68f078c5b9aa50ff750b5c29da10bc">  154</a></span>&#160;  <span class="keywordtype">char</span> message[256 - <span class="keyword">sizeof</span>(unsigned)];</div>
+<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="structMessage256.html#a35cacd873d569dcd5f376e5ec289d8e1">  155</a></span>&#160;  <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <a class="code" href="structMessage256.html#a35cacd873d569dcd5f376e5ec289d8e1">Capacity</a>() { <span class="keywordflow">return</span> 256 - <span class="keyword">sizeof</span>(unsigned); }</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;};</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMessage256.html">Message256</a>)</div>
+<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="structMessage4K.html">  158</a></span>&#160;struct <a class="code" href="structMessage4K.html">Message4K</a>  <span class="comment">// temporary ways to expand the the serialization capacity</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    {</div>
+<div class="line"><a name="l00160"></a><span class="lineno"><a class="line" href="structMessage4K.html#a5cd73146960ab7b160cad25a92004347">  160</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="structMessage4K.html#a5cd73146960ab7b160cad25a92004347">length</a>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="structMessage4K.html#acc7778b2c532cd571768b05e02e4df75">  161</a></span>&#160;  <span class="keywordtype">char</span> message[4096 * 50 - <span class="keyword">sizeof</span>(unsigned)];</div>
+<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="structMessage4K.html#aa884510ec3a9d831a09b775d35dbdc12">  162</a></span>&#160;  <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <a class="code" href="structMessage4K.html#aa884510ec3a9d831a09b775d35dbdc12">Capacity</a>() { <span class="keywordflow">return</span> 4096 * 50 - <span class="keyword">sizeof</span>(unsigned); }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;};</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<a class="code" href="structMessage4K.html">Message4K</a>)</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<span class="keywordtype">int</span>)</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;THERON_DECLARE_REGISTERED_MESSAGE(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span>)</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;template &lt;typename T&gt;</div>
+<div class="line"><a name="l00168"></a><span class="lineno"><a class="line" href="Message_8h.html#af3456e3f6e70d15effa4f7ffecee8dfd">  168</a></span>&#160;static T <a class="code" href="Message_8h.html#af3456e3f6e70d15effa4f7ffecee8dfd">Deserialize</a>(<a class="code" href="structMessage256.html">Message256</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  std::string received(input.message, input.length);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  boost::iostreams::basic_array_source&lt;char&gt; device(received.data(),</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                                                    received.size());</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  boost::iostreams::stream&lt;boost::iostreams::basic_array_source&lt;char&gt; &gt; s(</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;      device);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  boost::archive::binary_iarchive ia(s);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  T ret;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  ia &gt;&gt; ret;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="comment">//    ostringstream ostr;</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <span class="comment">//    ostr.write(input.message,input.length);</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <span class="comment">//    std::string tmp=ostr.str();</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  <span class="comment">//    istringstream istr(tmp);</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  <span class="comment">//    T ret;</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;  <span class="comment">//    boost::archive::text_iarchive ia(istr);</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <span class="comment">//    ia&gt;&gt;ret;</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  <span class="comment">//    return ret;</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;}</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="Message_8h.html#a4d3277047af3c597b4db22457b230a47">  193</a></span>&#160;<span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> <a class="code" href="Message_8h.html#a4d3277047af3c597b4db22457b230a47">Serialize</a>(T <span class="keywordtype">object</span>) {</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  std::string serial_str;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  boost::iostreams::back_insert_device&lt;std::string&gt; inserter(serial_str);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  boost::iostreams::stream&lt;boost::iostreams::back_insert_device&lt;std::string&gt; &gt;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;      ostr(inserter);</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  boost::archive::binary_oarchive oa(ostr);</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  oa &lt;&lt; object;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  ostr.flush();</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <a class="code" href="structMessage256.html">Message256</a> ret;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  assert(serial_str.size() &lt;= <a class="code" href="structMessage256.html#a35cacd873d569dcd5f376e5ec289d8e1">Message256::Capacity</a>());</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  memcpy(ret.<a class="code" href="structMessage256.html#a0f68f078c5b9aa50ff750b5c29da10bc">message</a>, serial_str.data(), serial_str.size());</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  ret.<a class="code" href="structMessage256.html#ad2c5822b43d133cc3eb8346efcceac22">length</a> = serial_str.size();</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  <span class="comment">//    ostringstream ostr;</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;  <span class="comment">//    boost::archive::text_oarchive oa(ostr);</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  <span class="comment">//    oa&lt;&lt;object;</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="comment">//    //get the string</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  <span class="comment">//    std::string str=ostr.str();</span></div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;  <span class="comment">//    //in=str;</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;  <span class="comment">//    assert(Message4K::Capacity()&gt;=str.length());</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  <span class="comment">//    //copy the string into the message and set the length.</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  <span class="comment">//    Message256 ret;</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  <span class="comment">//    ret.length=str.length();</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  <span class="comment">//    //memcpy(&amp;ret.message,&amp;str,ret.length);</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;  <span class="comment">//    str.copy(ret.message,ret.length);</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;}</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00226"></a><span class="lineno"><a class="line" href="Message_8h.html#a1f84501f13d087cba75a1aa4315635bd">  226</a></span>&#160;<span class="keyword">static</span> T <a class="code" href="Message_8h.html#af3456e3f6e70d15effa4f7ffecee8dfd">Deserialize</a>(<a class="code" href="structMessage4K.html">Message4K</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;  std::string received(input.<a class="code" href="structMessage4K.html#acc7778b2c532cd571768b05e02e4df75">message</a>, input.<a class="code" href="structMessage4K.html#a5cd73146960ab7b160cad25a92004347">length</a>);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  boost::iostreams::basic_array_source&lt;char&gt; device(received.data(),</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                                                    received.size());</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  boost::iostreams::stream&lt;boost::iostreams::basic_array_source&lt;char&gt; &gt; s(</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;      device);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  boost::archive::binary_iarchive ia(s);</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;  T ret;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;  ia &gt;&gt; ret;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;  <span class="comment">//    ostringstream ostr;</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  <span class="comment">//    ostr.write(input.message,input.length);</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;  <span class="comment">//    std::string tmp=ostr.str();</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  <span class="comment">//    istringstream istr(tmp);</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;  <span class="comment">//    T ret;</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;  <span class="comment">//    boost::archive::text_iarchive ia(istr);</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;  <span class="comment">//    ia&gt;&gt;ret;</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  <span class="comment">//    return ret;</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;}</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00251"></a><span class="lineno"><a class="line" href="Message_8h.html#ade1e8cd2d6b7f1c97ce0176a241a50be">  251</a></span>&#160;<span class="keyword">static</span> <a class="code" href="structMessage4K.html">Message4K</a> <a class="code" href="Message_8h.html#ade1e8cd2d6b7f1c97ce0176a241a50be">Serialize4K</a>(T&amp; <span class="keywordtype">object</span>) {</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  std::string serial_str;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  boost::iostreams::back_insert_device&lt;std::string&gt; inserter(serial_str);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  boost::iostreams::stream&lt;boost::iostreams::back_insert_device&lt;std::string&gt; &gt;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;      ostr(inserter);</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  boost::archive::binary_oarchive oa(ostr);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  oa &lt;&lt; object;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;  ostr.flush();</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <a class="code" href="structMessage4K.html">Message4K</a> ret;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  assert(serial_str.size() &lt;= <a class="code" href="structMessage4K.html#aa884510ec3a9d831a09b775d35dbdc12">Message4K::Capacity</a>() &amp;&amp; serial_str.size() != 0);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  memcpy(ret.<a class="code" href="structMessage4K.html#acc7778b2c532cd571768b05e02e4df75">message</a>, serial_str.data(), serial_str.size());</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  ret.<a class="code" href="structMessage4K.html#a5cd73146960ab7b160cad25a92004347">length</a> = serial_str.size();</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    std::string serial_str;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    boost::iostreams::back_insert_device&lt;std::string&gt; inserter(serial_str);</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    boost::iostreams::stream&lt;boost::iostreams::back_insert_device&lt;std::string&gt; &gt; ostr(inserter);</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    boost::archive::binary_oarchive oa(ostr);</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    oa&lt;&lt;object;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    ostr.flush();</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <a class="code" href="structMessage4K.html">Message4K</a> ret;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    assert(serial_str.size()&lt;=Message4K::Capacity()&amp;&amp;serial_str.size()!=0);</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    memcpy(ret.message,serial_str.data(),serial_str.size());</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    ret.length=serial_str.size();</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="comment">//  ostringstream ostr;</span></div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="comment"></span><span class="comment">//  boost::archive::text_oarchive oa(ostr);</span></div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="comment"></span><span class="comment">//  oa&lt;&lt;object;</span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="comment"></span><span class="comment">//  //get the string</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;<span class="comment">//  std::string str=ostr.str();</span></div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="comment">//  //in=str;</span></div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="comment">//  assert(Message4K::Capacity()&gt;=str.length());</span></div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="comment"></span><span class="comment">//  //copy the string into the message and set the length.</span></div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="comment">//  Message4K ret;</span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="comment"></span><span class="comment">//  ret.length=str.length();</span></div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="comment"></span><span class="comment">//  //memcpy(&amp;ret.message,&amp;str,ret.length);</span></div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="comment">//  str.copy(ret.message,ret.length);</span></div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="comment">//  return ret;</span></div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;}</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;</div>
-<div class="line"><a name="l00310"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html">  310</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCreateTableRespond.html">CreateTableRespond</a></div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;{</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <a class="code" href="classCreateTableRespond.html">CreateTableRespond</a>(){};</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <a class="code" href="classCreateTableRespond.html">CreateTableRespond</a>(<span class="keywordtype">bool</span> result):result(result){};</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCreateTableRespond.html">CreateTableRespond</a> deserialize(<a class="code" href="structMessage256.html">Message256</a> message)</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    {</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;CreateTableRespond&gt;(message);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    }</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> serialize(<a class="code" href="classCreateTableRespond.html">CreateTableRespond</a> input)</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    {</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <span class="keywordflow">return</span> Serialize&lt;CreateTableRespond&gt;(input);</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    }</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordtype">bool</span> result;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version)</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        ar &amp; result;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    }</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;};</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;</div>
-<div class="line"><a name="l00336"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html">  336</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCreateTableMessage.html">CreateTableMessage</a></div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;{</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <a class="code" href="classCreateTableMessage.html">CreateTableMessage</a>(){};</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    <a class="code" href="classCreateTableMessage.html">CreateTableMessage</a>(<span class="keywordtype">unsigned</span> table_id,std::vector&lt;data_type&gt; type_list):table_id(table_id),type_list(type_list){};</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="keywordtype">unsigned</span> table_id;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    std::vector&lt;data_type&gt; type_list;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCreateTableMessage.html">CreateTableMessage</a> deserializae(<a class="code" href="structMessage256.html">Message256</a> message)</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    {</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <span class="comment">//    ostringstream ostr;</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="comment"></span>  <span class="comment">//    boost::archive::text_oarchive oa(ostr);</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="comment"></span>  <span class="comment">//    oa&lt;&lt;object;</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment"></span>  <span class="comment">//    //get the string</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  <span class="comment">//    std::string str=ostr.str();</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  <span class="comment">//    //in=str;</span></div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  <span class="comment">//    assert(Message4K::Capacity()&gt;=str.length());</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="comment"></span>  <span class="comment">//    //copy the string into the message and set the length.</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  <span class="comment">//    Message4K ret;</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment"></span>  <span class="comment">//    ret.length=str.length();</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="comment"></span>  <span class="comment">//    //memcpy(&amp;ret.message,&amp;str,ret.length);</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  <span class="comment">//    str.copy(ret.message,ret.length);</span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="comment">//    return ret;</span></div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;}</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
+<div class="line"><a name="l00291"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html">  291</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCreateTableRespond.html">CreateTableRespond</a> {</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00293"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#a46ac048c9618a7b93fc547e73a95096c">  293</a></span>&#160;  <a class="code" href="classCreateTableRespond.html#a46ac048c9618a7b93fc547e73a95096c">CreateTableRespond</a>(){};</div>
+<div class="line"><a name="l00294"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#aa410862320ffafff5eb8d0ce936b07aa">  294</a></span>&#160;  <a class="code" href="classCreateTableRespond.html#aa410862320ffafff5eb8d0ce936b07aa">CreateTableRespond</a>(<span class="keywordtype">bool</span> <a class="code" href="classCreateTableRespond.html#a6fa72d410de5d978d9c4f6b0c26f32a8">result</a>) : result(result){};</div>
+<div class="line"><a name="l00295"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#aa27a8706421cddd14a0b69596c362dbf">  295</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classCreateTableRespond.html">CreateTableRespond</a> <a class="code" href="classCreateTableRespond.html#aa27a8706421cddd14a0b69596c362dbf">deserialize</a>(<a class="code" href="structMessage256.html">Message256</a> message) {</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;CreateTableRespond&gt;(message);</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;  }</div>
+<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#acd559b01909328c8c3e8eb19961bce53">  298</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> <a class="code" href="classCreateTableRespond.html#acd559b01909328c8c3e8eb19961bce53">serialize</a>(<a class="code" href="classCreateTableRespond.html">CreateTableRespond</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">return</span> Serialize&lt;CreateTableRespond&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  }</div>
+<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#a6fa72d410de5d978d9c4f6b0c26f32a8">  301</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classCreateTableRespond.html#a6fa72d410de5d978d9c4f6b0c26f32a8">result</a>;</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00304"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">  304</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classCreateTableRespond.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00306"></a><span class="lineno"><a class="line" href="classCreateTableRespond.html#af537d0963d96bc5c9834386fae62b04d">  306</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classCreateTableRespond.html#af537d0963d96bc5c9834386fae62b04d">serialize</a>(Archive&amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version) {</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    ar&amp; <a class="code" href="classCreateTableRespond.html#a6fa72d410de5d978d9c4f6b0c26f32a8">result</a>;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;  }</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;};</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
+<div class="line"><a name="l00311"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html">  311</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCreateTableMessage.html">CreateTableMessage</a> {</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00313"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#ab66996fd3b8c9d2d6216ddc383c4b47e">  313</a></span>&#160;  <a class="code" href="classCreateTableMessage.html#ab66996fd3b8c9d2d6216ddc383c4b47e">CreateTableMessage</a>(){};</div>
+<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#ae45df5bc33d67168e56c1c19f6053966">  314</a></span>&#160;  <a class="code" href="classCreateTableMessage.html#ae45df5bc33d67168e56c1c19f6053966">CreateTableMessage</a>(<span class="keywordtype">unsigned</span> <a class="code" href="classCreateTableMessage.html#ab88a05edf0205bc96617a76fc1cc62bc">table_id</a>, std::vector&lt;data_type&gt; <a class="code" href="classCreateTableMessage.html#ae46a99cee620770fdde65cc7b7f4acf3">type_list</a>)</div>
+<div class="line"><a name="l00315"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#ab88a05edf0205bc96617a76fc1cc62bc">  315</a></span>&#160;      : table_id(table_id), type_list(type_list){};</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="classCreateTableMessage.html#ab88a05edf0205bc96617a76fc1cc62bc">table_id</a>;</div>
+<div class="line"><a name="l00318"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#ae46a99cee620770fdde65cc7b7f4acf3">  318</a></span>&#160;  std::vector&lt;data_type&gt; <a class="code" href="classCreateTableMessage.html#ae46a99cee620770fdde65cc7b7f4acf3">type_list</a>;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
+<div class="line"><a name="l00320"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#a78afedcdcff27a76c3a74efdd3c5cd9a">  320</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classCreateTableMessage.html">CreateTableMessage</a> <a class="code" href="classCreateTableMessage.html#a78afedcdcff27a76c3a74efdd3c5cd9a">deserializae</a>(<a class="code" href="structMessage256.html">Message256</a> message) {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;CreateTableMessage&gt;(message);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;  }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;</div>
+<div class="line"><a name="l00324"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#adaf4bc6a14b32bcb31ee9fc2e7a49a95">  324</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> <a class="code" href="classCreateTableMessage.html#adaf4bc6a14b32bcb31ee9fc2e7a49a95">serializae</a>(<a class="code" href="classCreateTableMessage.html">CreateTableMessage</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keywordflow">return</span> Serialize&lt;CreateTableMessage&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;  }</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00329"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">  329</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classCreateTableMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00331"></a><span class="lineno"><a class="line" href="classCreateTableMessage.html#a6528c92cd017e3150a5e90a294d09aa5">  331</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classCreateTableMessage.html#a6528c92cd017e3150a5e90a294d09aa5">serialize</a>(Archive&amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version) {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    ar&amp; <a class="code" href="classCreateTableMessage.html#ab88a05edf0205bc96617a76fc1cc62bc">table_id</a>;</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    ar&amp; <a class="code" href="classCreateTableMessage.html#ae46a99cee620770fdde65cc7b7f4acf3">type_list</a>;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;  }</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;};</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;</div>
+<div class="line"><a name="l00337"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html">  337</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a> {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00339"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#a024d3fd3b6e5ab6dda58d8cbda653e85">  339</a></span>&#160;  <a class="code" href="classRegisterSlaveMessage.html#a024d3fd3b6e5ab6dda58d8cbda653e85">RegisterSlaveMessage</a>(){};</div>
+<div class="line"><a name="l00340"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#a52692783327e737b7272bcedf6cfc934">  340</a></span>&#160;  <a class="code" href="classRegisterSlaveMessage.html#a52692783327e737b7272bcedf6cfc934">RegisterSlaveMessage</a>(std::string <a class="code" href="classRegisterSlaveMessage.html#a61dba3c2b456a28699c377245b0371a9">ip</a>, std::string <a class="code" href="classRegisterSlaveMessage.html#ace619263235ab2e6577198f7e2497543">port</a>) : ip(ip), port(port){};</div>
+<div class="line"><a name="l00341"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#a28a54ad0f5116a5b2657abaaf92d74b6">  341</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a> <a class="code" href="classRegisterSlaveMessage.html#a28a54ad0f5116a5b2657abaaf92d74b6">deserialize</a>(<a class="code" href="structMessage256.html">Message256</a> message) {</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;RegisterSlaveMessage&gt;(message);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  }</div>
+<div class="line"><a name="l00344"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#add6b52bc40eaddac07c1cf5572d0859c">  344</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> <a class="code" href="classRegisterSlaveMessage.html#add6b52bc40eaddac07c1cf5572d0859c">serialize</a>(<a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="keywordflow">return</span> Serialize&lt;RegisterSlaveMessage&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;  }</div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;CreateTableMessage&gt;(message);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    }</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> serializae(<a class="code" href="classCreateTableMessage.html">CreateTableMessage</a> input)</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    {</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        <span class="keywordflow">return</span> Serialize&lt;CreateTableMessage&gt;(input);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    }</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version)</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    {</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        ar &amp; table_id;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        ar &amp; type_list;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    }</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;};</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;</div>
-<div class="line"><a name="l00369"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html">  369</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;{</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a>(){};</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a>(std::string ip,std::string port):ip(ip),port(port){};</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    <span class="keyword">static</span> <a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a> deserialize(<a class="code" href="structMessage256.html">Message256</a> message)</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    {</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;RegisterSlaveMessage&gt;(message);</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    }</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> serialize(<a class="code" href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a> input)</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    {</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        <span class="keywordflow">return</span> Serialize&lt;RegisterSlaveMessage&gt;(input);</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    }</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    std::string ip;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    std::string port;</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version)</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    {</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        ar &amp; ip;</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        ar &amp; port;</div>
+<div class="line"><a name="l00348"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#a61dba3c2b456a28699c377245b0371a9">  348</a></span>&#160;  std::string <a class="code" href="classRegisterSlaveMessage.html#a61dba3c2b456a28699c377245b0371a9">ip</a>;</div>
+<div class="line"><a name="l00349"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#ace619263235ab2e6577198f7e2497543">  349</a></span>&#160;  std::string <a class="code" href="classRegisterSlaveMessage.html#ace619263235ab2e6577198f7e2497543">port</a>;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00352"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">  352</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classRegisterSlaveMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="classRegisterSlaveMessage.html#a902e4bb3a6e7631306e6758d4757f677">  354</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classRegisterSlaveMessage.html#a902e4bb3a6e7631306e6758d4757f677">serialize</a>(Archive&amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version) {</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    ar&amp; <a class="code" href="classRegisterSlaveMessage.html#a61dba3c2b456a28699c377245b0371a9">ip</a>;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    ar&amp; <a class="code" href="classRegisterSlaveMessage.html#ace619263235ab2e6577198f7e2497543">port</a>;</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  }</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;};</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="comment"> * The early version of this class is only for the iterator serials,</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="comment"> * the block stream iterator is also added here to save our labor.</span></div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="comment"> * TODO: In the release version, this class should be divided into two</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment"> * classes to make the codes more readable.</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html">  366</a></span>&#160;<span class="keyword">class </span><a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> {</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00368"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#a75175225a05bae9058b20b9b1bdde6be">  368</a></span>&#160;  <a class="code" href="classPhysicalQueryPlan.html#a75175225a05bae9058b20b9b1bdde6be">PhysicalQueryPlan</a>(<a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">PhysicalOperatorBase</a>* it)</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;      : <a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a>(it){};</div>
+<div class="line"><a name="l00370"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#ac7964a19eeeb9dae05f5360a9403f6eb">  370</a></span>&#160;  <a class="code" href="classPhysicalQueryPlan.html#ac7964a19eeeb9dae05f5360a9403f6eb">PhysicalQueryPlan</a>(<span class="keyword">const</span> <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>&amp; r) {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a> = r.<a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a>;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;  }</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;</div>
+<div class="line"><a name="l00374"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#ab3ed3d6242f03c938e991ed426cf2b51">  374</a></span>&#160;  <a class="code" href="classPhysicalQueryPlan.html#ab3ed3d6242f03c938e991ed426cf2b51">PhysicalQueryPlan</a>() : <a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a>(0){};</div>
+<div class="line"><a name="l00375"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#a3e4a58f3ed1f209bc1a59b9b384a8d9f">  375</a></span>&#160;  <a class="code" href="classPhysicalQueryPlan.html#a3e4a58f3ed1f209bc1a59b9b384a8d9f">~PhysicalQueryPlan</a>(){</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;      <span class="comment">//        if(tuple_stream_iterator_root_&gt;0)</span></div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;      <span class="comment">//            tuple_stream_iterator_root_-&gt;~Iterator();</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;      <span class="comment">//        if(block_stream_iterator_root_&gt;0)</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;      <span class="comment">//            block_stream_iterator_root_-&gt;~BlockStreamIteratorBase();</span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;  };</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;  <span class="comment">/* the member varaibles&#39; destrution code is implemented in this function to</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="comment">   * avoid</span></div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="comment">   * the undesirable destruction of iterator caused by the default destructor of</span></div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="comment">   * IteratorMessage</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00387"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#a9f16254ab3148155cd70b550a4937604">  387</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classPhysicalQueryPlan.html#a9f16254ab3148155cd70b550a4937604">destory</a>() { <a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a>-&gt;<a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a4e97ce54feb668d023e504a54a63cf38">~PhysicalOperatorBase</a>(); }</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classPhysicalQueryPlan.html#a481a0a92521e1ad817984c13333d1167">run</a>();</div>
+<div class="line"><a name="l00389"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#a0bfa22a4b1a6ad782ba8f283361a02df">  389</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> <a class="code" href="classPhysicalQueryPlan.html#a0bfa22a4b1a6ad782ba8f283361a02df">deserialize</a>(<a class="code" href="structMessage256.html">Message256</a> message) {</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;PhysicalQueryPlan&gt;(message);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  }</div>
 <div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    }</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;};</div>
+<div class="line"><a name="l00393"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#ad3eae48ec9298aed228aa14c5cc8741d">  393</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> <a class="code" href="classPhysicalQueryPlan.html#ad3eae48ec9298aed228aa14c5cc8741d">serialize</a>(<a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    <span class="keywordflow">return</span> Serialize&lt;PhysicalQueryPlan&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;  }</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="comment"> * The early version of this class is only for the iterator serials,</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="comment"> * the block stream iterator is also added here to save our labor.</span></div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="comment"> * TODO: In the release version, this class should be divided into two</span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="comment"> * classes to make the codes more readable.</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html">  403</a></span>&#160;<span class="keyword">class </span><a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;{</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>(<a class="code" href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a>* it)</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;        :block_stream_iterator_root_(it)</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        {};</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>(<span class="keyword">const</span> <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>&amp; r){</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        block_stream_iterator_root_=r.block_stream_iterator_root_;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    }</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>():block_stream_iterator_root_(0){};</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    ~<a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>(){</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="comment">//      if(tuple_stream_iterator_root_&gt;0)</span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="comment">//          tuple_stream_iterator_root_-&gt;~Iterator();</span></div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="comment">//      if(block_stream_iterator_root_&gt;0)</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="comment">//          block_stream_iterator_root_-&gt;~BlockStreamIteratorBase();</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    };</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    <span class="comment">/* the member varaibles&#39; destrution code is implemented in this function to avoid</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="comment">     * the undesirable destruction of iterator caused by the default destructor of</span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="comment">     * IteratorMessage</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keywordtype">void</span> destory(){</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        block_stream_iterator_root_-&gt;~BlockStreamIteratorBase();</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;    }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    <span class="keywordtype">void</span> run();</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="keyword">static</span> <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> deserialize(<a class="code" href="structMessage256.html">Message256</a> message)</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;PhysicalQueryPlan&gt;(message);</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    }</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> serialize(<a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> input)</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    {</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;        <span class="keywordflow">return</span> Serialize&lt;PhysicalQueryPlan&gt;(input);</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    }</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    <span class="keyword">static</span> <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> deserialize4K(<a class="code" href="structMessage4K.html">Message4K</a> message)</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    {</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;PhysicalQueryPlan&gt;(message);</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    }</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage4K.html">Message4K</a> serialize4K(<a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>&amp; input)</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    {</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;<span class="comment">//      std::cout&lt;&lt;&quot;in the serialize4K func!&quot;&lt;&lt;std::endl;</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        <span class="keywordflow">return</span> Serialize4K&lt;PhysicalQueryPlan&gt;(input);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;    }</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <a class="code" href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a>* block_stream_iterator_root_;</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version)</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    {</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        Register_Schemas(ar);</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        Register_Block_Stream_Iterator(ar);</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        ar  &amp; block_stream_iterator_root_;</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="comment">//      ar &amp; block_stream_iterator_root_;</span></div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    }</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;};</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;</div>
-<div class="line"><a name="l00464"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html">  464</a></span>&#160;<span class="keyword">class </span><a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a>{</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    <a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a>(){};</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    <a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a>(std::string ip,std::string port):ip(ip),port(port){};</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    std::string ip;</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;    std::string port;</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version){</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        ar &amp; ip &amp; port;</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    }</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;    <span class="keyword">static</span> <a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> deserialize(<a class="code" href="structMessage256.html">Message256</a> message){</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;NodeConnectionMessage&gt;(message);</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    }</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> serialize(<a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> input){</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        <span class="keywordflow">return</span> Serialize&lt;NodeConnectionMessage&gt;(input);</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;    }</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;    <span class="keyword">static</span> <a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> deserialize4K(<a class="code" href="structMessage4K.html">Message4K</a> message){</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;        <span class="keywordflow">return</span> Deserialize&lt;NodeConnectionMessage&gt;(message);</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;    }</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    <span class="keyword">static</span> <a class="code" href="structMessage4K.html">Message4K</a> serialize4K(<a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> input){</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;        <span class="keywordflow">return</span> Serialize4K&lt;NodeConnectionMessage&gt;(input);</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    }</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;};</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* MESSAGE_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="structPartitionUnbindingMessage_html"><div class="ttname"><a href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:63</div></div>
-<div class="ttc" id="classCreateTableMessage_html"><div class="ttname"><a href="classCreateTableMessage.html">CreateTableMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:336</div></div>
+<div class="line"><a name="l00397"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#aaccaeb432997ba5291337ae5ce3e1864">  397</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a> <a class="code" href="classPhysicalQueryPlan.html#aaccaeb432997ba5291337ae5ce3e1864">deserialize4K</a>(<a class="code" href="structMessage4K.html">Message4K</a> message) {</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;PhysicalQueryPlan&gt;(message);</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;  }</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;</div>
+<div class="line"><a name="l00401"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#ae824bea176da5a09cb85e2957cab835b">  401</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage4K.html">Message4K</a> <a class="code" href="classPhysicalQueryPlan.html#ae824bea176da5a09cb85e2957cab835b">serialize4K</a>(<a class="code" href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a>&amp; <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="comment">//      std::cout&lt;&lt;&quot;in the serialize4K func!&quot;&lt;&lt;std::endl;</span></div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    <span class="keywordflow">return</span> Serialize4K&lt;PhysicalQueryPlan&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;  }</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00407"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">  407</a></span>&#160;  <a class="code" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">PhysicalOperatorBase</a>* <a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a>;</div>
+<div class="line"><a name="l00408"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">  408</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classPhysicalQueryPlan.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00410"></a><span class="lineno"><a class="line" href="classPhysicalQueryPlan.html#a2e31a1ab72c91c7074b6b0207c8576de">  410</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classPhysicalQueryPlan.html#a2e31a1ab72c91c7074b6b0207c8576de">serialize</a>(Archive&amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version) {</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    <a class="code" href="RegisterDerivedClass_8h.html#a48742fd12c04795b2f35ee956c18715e">Register_Schemas</a>(ar);</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    <a class="code" href="RegisterDerivedClass_8cpp.html#a649ba5ba6071f513dc58ce90490c8921">Register_Block_Stream_Iterator</a>(ar);</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    ar&amp; <a class="code" href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">block_stream_iterator_root_</a>;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <span class="comment">//      ar &amp; block_stream_iterator_root_;</span></div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  }</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;};</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;</div>
+<div class="line"><a name="l00418"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html">  418</a></span>&#160;<span class="keyword">class </span><a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> {</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00420"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a0891a6f32e41782e308cf38ee062d625">  420</a></span>&#160;  <a class="code" href="classNodeConnectionMessage.html#a0891a6f32e41782e308cf38ee062d625">NodeConnectionMessage</a>(){};</div>
+<div class="line"><a name="l00421"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a8d72c90bf5d935d314668c6531a73f8e">  421</a></span>&#160;  <a class="code" href="classNodeConnectionMessage.html#a8d72c90bf5d935d314668c6531a73f8e">NodeConnectionMessage</a>(std::string <a class="code" href="classNodeConnectionMessage.html#a950fcf884e811b077dc214f0a3494e0e">ip</a>, std::string <a class="code" href="classNodeConnectionMessage.html#a2846d14cb6fbd234c26572c72914b5f3">port</a>)</div>
+<div class="line"><a name="l00422"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a950fcf884e811b077dc214f0a3494e0e">  422</a></span>&#160;      : ip(ip), port(port){};</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;  std::string <a class="code" href="classNodeConnectionMessage.html#a950fcf884e811b077dc214f0a3494e0e">ip</a>;</div>
+<div class="line"><a name="l00424"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a2846d14cb6fbd234c26572c72914b5f3">  424</a></span>&#160;  std::string <a class="code" href="classNodeConnectionMessage.html#a2846d14cb6fbd234c26572c72914b5f3">port</a>;</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00427"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">  427</a></span>&#160;  <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classNodeConnectionMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00429"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33">  429</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33">serialize</a>(Archive&amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version) {</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    ar&amp; <a class="code" href="classNodeConnectionMessage.html#a950fcf884e811b077dc214f0a3494e0e">ip</a>&amp; <a class="code" href="classNodeConnectionMessage.html#a2846d14cb6fbd234c26572c72914b5f3">port</a>;</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;  }</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00434"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a58243b7f01dbcf81edbae6401adac475">  434</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> <a class="code" href="classNodeConnectionMessage.html#a58243b7f01dbcf81edbae6401adac475">deserialize</a>(<a class="code" href="structMessage256.html">Message256</a> message) {</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;NodeConnectionMessage&gt;(message);</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;  }</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;</div>
+<div class="line"><a name="l00438"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a933e854b045840bc966b29658d0e7493">  438</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage256.html">Message256</a> <a class="code" href="classNodeConnectionMessage.html#a933e854b045840bc966b29658d0e7493">serialize</a>(<a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    <span class="keywordflow">return</span> Serialize&lt;NodeConnectionMessage&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;  }</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;</div>
+<div class="line"><a name="l00442"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a9f92dfaf8c1477d5f935bbdec23f4a0f">  442</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> <a class="code" href="classNodeConnectionMessage.html#a9f92dfaf8c1477d5f935bbdec23f4a0f">deserialize4K</a>(<a class="code" href="structMessage4K.html">Message4K</a> message) {</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    <span class="keywordflow">return</span> Deserialize&lt;NodeConnectionMessage&gt;(message);</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;  }</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;</div>
+<div class="line"><a name="l00446"></a><span class="lineno"><a class="line" href="classNodeConnectionMessage.html#a4c48b2c231cb07e552461dd84147682b">  446</a></span>&#160;  <span class="keyword">static</span> <a class="code" href="structMessage4K.html">Message4K</a> <a class="code" href="classNodeConnectionMessage.html#a4c48b2c231cb07e552461dd84147682b">serialize4K</a>(<a class="code" href="classNodeConnectionMessage.html">NodeConnectionMessage</a> <a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>) {</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;    <span class="keywordflow">return</span> Serialize4K&lt;NodeConnectionMessage&gt;(<a class="code" href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a>);</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;  }</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;};</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* MESSAGE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_a2e31a1ab72c91c7074b6b0207c8576de"><div class="ttname"><a href="classPhysicalQueryPlan.html#a2e31a1ab72c91c7074b6b0207c8576de">PhysicalQueryPlan::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> Message.h:410</div></div>
+<div class="ttc" id="structPartitionUnbindingMessage_html"><div class="ttname"><a href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:58</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a9f92dfaf8c1477d5f935bbdec23f4a0f"><div class="ttname"><a href="classNodeConnectionMessage.html#a9f92dfaf8c1477d5f935bbdec23f4a0f">NodeConnectionMessage::deserialize4K</a></div><div class="ttdeci">static NodeConnectionMessage deserialize4K(Message4K message)</div><div class="ttdef"><b>Definition:</b> Message.h:442</div></div>
+<div class="ttc" id="Message_8h_html_af3456e3f6e70d15effa4f7ffecee8dfd"><div class="ttname"><a href="Message_8h.html#af3456e3f6e70d15effa4f7ffecee8dfd">Deserialize</a></div><div class="ttdeci">static T Deserialize(Message256 input)</div><div class="ttdef"><b>Definition:</b> Message.h:168</div></div>
+<div class="ttc" id="structRegisterStorageRespond_html_a440aadab37795076955dc82106236b2a"><div class="ttname"><a href="structRegisterStorageRespond.html#a440aadab37795076955dc82106236b2a">RegisterStorageRespond::RegisterStorageRespond</a></div><div class="ttdeci">RegisterStorageRespond(const char *const text)</div><div class="ttdef"><b>Definition:</b> Message.h:65</div></div>
+<div class="ttc" id="structMessage256_html_ad2c5822b43d133cc3eb8346efcceac22"><div class="ttname"><a href="structMessage256.html#ad2c5822b43d133cc3eb8346efcceac22">Message256::length</a></div><div class="ttdeci">unsigned length</div><div class="ttdef"><b>Definition:</b> Message.h:153</div></div>
+<div class="ttc" id="classCreateTableMessage_html"><div class="ttname"><a href="classCreateTableMessage.html">CreateTableMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:311</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="classPhysicalQueryPlan.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">PhysicalQueryPlan::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> Message.h:408</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a0891a6f32e41782e308cf38ee062d625"><div class="ttname"><a href="classNodeConnectionMessage.html#a0891a6f32e41782e308cf38ee062d625">NodeConnectionMessage::NodeConnectionMessage</a></div><div class="ttdeci">NodeConnectionMessage()</div><div class="ttdef"><b>Definition:</b> Message.h:420</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a291bc63c613ea2279cd892be0bceed33"><div class="ttname"><a href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33">NodeConnectionMessage::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> Message.h:429</div></div>
 <div class="ttc" id="structExchangeID_html"><div class="ttname"><a href="structExchangeID.html">ExchangeID</a></div><div class="ttdef"><b>Definition:</b> ids.h:214</div></div>
-<div class="ttc" id="classNodeConnectionMessage_html"><div class="ttname"><a href="classNodeConnectionMessage.html">NodeConnectionMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:464</div></div>
-<div class="ttc" id="structNodeRegisterMessage_html"><div class="ttname"><a href="structNodeRegisterMessage.html">NodeRegisterMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:138</div></div>
-<div class="ttc" id="structMatcherMessage_html"><div class="ttname"><a href="structMatcherMessage.html">MatcherMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:115</div></div>
-<div class="ttc" id="structBlockStatusRespond_html"><div class="ttname"><a href="structBlockStatusRespond.html">BlockStatusRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:106</div></div>
-<div class="ttc" id="classPhysicalQueryPlan_html"><div class="ttname"><a href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a></div><div class="ttdef"><b>Definition:</b> Message.h:403</div></div>
-<div class="ttc" id="structMessage4K_html"><div class="ttname"><a href="structMessage4K.html">Message4K</a></div><div class="ttdef"><b>Definition:</b> Message.h:169</div></div>
-<div class="ttc" id="structHeartBeatMessage_html"><div class="ttname"><a href="structHeartBeatMessage.html">HeartBeatMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:79</div></div>
-<div class="ttc" id="structRegisterStorageRespond_html"><div class="ttname"><a href="structRegisterStorageRespond.html">RegisterStorageRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:70</div></div>
-<div class="ttc" id="classCreateTableRespond_html"><div class="ttname"><a href="classCreateTableRespond.html">CreateTableRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:310</div></div>
-<div class="ttc" id="structMatcherRespond_html"><div class="ttname"><a href="structMatcherRespond.html">MatcherRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:127</div></div>
-<div class="ttc" id="structHeartBeatRespond_html"><div class="ttname"><a href="structHeartBeatRespond.html">HeartBeatRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:88</div></div>
-<div class="ttc" id="structPartitionBindingMessage_html"><div class="ttname"><a href="structPartitionBindingMessage.html">PartitionBindingMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:54</div></div>
-<div class="ttc" id="structStorageBudgetMessage_html"><div class="ttname"><a href="structStorageBudgetMessage.html">StorageBudgetMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:43</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_a75175225a05bae9058b20b9b1bdde6be"><div class="ttname"><a href="classPhysicalQueryPlan.html#a75175225a05bae9058b20b9b1bdde6be">PhysicalQueryPlan::PhysicalQueryPlan</a></div><div class="ttdeci">PhysicalQueryPlan(PhysicalOperatorBase *it)</div><div class="ttdef"><b>Definition:</b> Message.h:368</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_ae824bea176da5a09cb85e2957cab835b"><div class="ttname"><a href="classPhysicalQueryPlan.html#ae824bea176da5a09cb85e2957cab835b">PhysicalQueryPlan::serialize4K</a></div><div class="ttdeci">static Message4K serialize4K(PhysicalQueryPlan &amp;input)</div><div class="ttdef"><b>Definition:</b> Message.h:401</div></div>
+<div class="ttc" id="StorageLevel_8h_html_aecffb9b02dbc48bdeaaef165744d06e4"><div class="ttname"><a href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a></div><div class="ttdeci">unsigned StorageLevel</div><div class="ttdef"><b>Definition:</b> StorageLevel.h:13</div></div>
+<div class="ttc" id="Debug_8h_html_a3b7104904c4a6438df6a2822fef043d8"><div class="ttname"><a href="Debug_8h.html#a3b7104904c4a6438df6a2822fef043d8">HEARTBEAT_MESSAGE_LEN</a></div><div class="ttdeci">#define HEARTBEAT_MESSAGE_LEN</div><div class="ttdef"><b>Definition:</b> Debug.h:30</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html"><div class="ttname"><a href="classNodeConnectionMessage.html">NodeConnectionMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:418</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_ac7964a19eeeb9dae05f5360a9403f6eb"><div class="ttname"><a href="classPhysicalQueryPlan.html#ac7964a19eeeb9dae05f5360a9403f6eb">PhysicalQueryPlan::PhysicalQueryPlan</a></div><div class="ttdeci">PhysicalQueryPlan(const PhysicalQueryPlan &amp;r)</div><div class="ttdef"><b>Definition:</b> Message.h:370</div></div>
+<div class="ttc" id="classCreateTableRespond_html_a46ac048c9618a7b93fc547e73a95096c"><div class="ttname"><a href="classCreateTableRespond.html#a46ac048c9618a7b93fc547e73a95096c">CreateTableRespond::CreateTableRespond</a></div><div class="ttdeci">CreateTableRespond()</div><div class="ttdef"><b>Definition:</b> Message.h:293</div></div>
+<div class="ttc" id="classCreateTableRespond_html_a6fa72d410de5d978d9c4f6b0c26f32a8"><div class="ttname"><a href="classCreateTableRespond.html#a6fa72d410de5d978d9c4f6b0c26f32a8">CreateTableRespond::result</a></div><div class="ttdeci">bool result</div><div class="ttdef"><b>Definition:</b> Message.h:301</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_aaccaeb432997ba5291337ae5ce3e1864"><div class="ttname"><a href="classPhysicalQueryPlan.html#aaccaeb432997ba5291337ae5ce3e1864">PhysicalQueryPlan::deserialize4K</a></div><div class="ttdeci">static PhysicalQueryPlan deserialize4K(Message4K message)</div><div class="ttdef"><b>Definition:</b> Message.h:397</div></div>
+<div class="ttc" id="RegisterDerivedClass_8h_html"><div class="ttname"><a href="RegisterDerivedClass_8h.html">RegisterDerivedClass.h</a></div></div>
+<div class="ttc" id="Parsetree_2lex_8yy_8cpp_html_a5a634cf4429798b1c921a81de8250051"><div class="ttname"><a href="Parsetree_2lex_8yy_8cpp.html#a5a634cf4429798b1c921a81de8250051">input</a></div><div class="ttdeci">static int input(yyscan_t yyscanner)</div><div class="ttdef"><b>Definition:</b> lex.yy.cpp:3739</div></div>
+<div class="ttc" id="structMatcherRespond_html_aed08b3242af23d0e7f9329cfa6082fae"><div class="ttname"><a href="structMatcherRespond.html#aed08b3242af23d0e7f9329cfa6082fae">MatcherRespond::MatcherRespond</a></div><div class="ttdeci">MatcherRespond(const char *const text)</div><div class="ttdef"><b>Definition:</b> Message.h:122</div></div>
+<div class="ttc" id="structNodeRegisterMessage_html_a17d4405adecd9daa6e8cbe8c72914896"><div class="ttname"><a href="structNodeRegisterMessage.html#a17d4405adecd9daa6e8cbe8c72914896">NodeRegisterMessage::ip</a></div><div class="ttdeci">unsigned ip</div><div class="ttdef"><b>Definition:</b> Message.h:148</div></div>
+<div class="ttc" id="structNodeRegisterMessage_html_a7333e8e7afdaf26a0cc6db4d75f4c1d3"><div class="ttname"><a href="structNodeRegisterMessage.html#a7333e8e7afdaf26a0cc6db4d75f4c1d3">NodeRegisterMessage::port</a></div><div class="ttdeci">unsigned port</div><div class="ttdef"><b>Definition:</b> Message.h:149</div></div>
+<div class="ttc" id="structNodeRegisterMessage_html"><div class="ttname"><a href="structNodeRegisterMessage.html">NodeRegisterMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:133</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_ab3ed3d6242f03c938e991ed426cf2b51"><div class="ttname"><a href="classPhysicalQueryPlan.html#ab3ed3d6242f03c938e991ed426cf2b51">PhysicalQueryPlan::PhysicalQueryPlan</a></div><div class="ttdeci">PhysicalQueryPlan()</div><div class="ttdef"><b>Definition:</b> Message.h:374</div></div>
+<div class="ttc" id="structMatcherMessage_html"><div class="ttname"><a href="structMatcherMessage.html">MatcherMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:109</div></div>
+<div class="ttc" id="classclaims_1_1physical__operator_1_1PhysicalOperatorBase_html"><div class="ttname"><a href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html">claims::physical_operator::PhysicalOperatorBase</a></div><div class="ttdef"><b>Definition:</b> physical_operator_base.h:38</div></div>
+<div class="ttc" id="structHeartBeatMessage_html_a96e6b72bf9c230db29a44414d70dcca4"><div class="ttname"><a href="structHeartBeatMessage.html#a96e6b72bf9c230db29a44414d70dcca4">HeartBeatMessage::HeartBeatMessage</a></div><div class="ttdeci">HeartBeatMessage(const char *const text)</div><div class="ttdef"><b>Definition:</b> Message.h:74</div></div>
+<div class="ttc" id="ids_8h_html"><div class="ttname"><a href="ids_8h.html">ids.h</a></div></div>
+<div class="ttc" id="classCreateTableMessage_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="classCreateTableMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">CreateTableMessage::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> Message.h:329</div></div>
+<div class="ttc" id="structBlockStatusRespond_html"><div class="ttname"><a href="structBlockStatusRespond.html">BlockStatusRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:100</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_a3e4a58f3ed1f209bc1a59b9b384a8d9f"><div class="ttname"><a href="classPhysicalQueryPlan.html#a3e4a58f3ed1f209bc1a59b9b384a8d9f">PhysicalQueryPlan::~PhysicalQueryPlan</a></div><div class="ttdeci">~PhysicalQueryPlan()</div><div class="ttdef"><b>Definition:</b> Message.h:375</div></div>
+<div class="ttc" id="RegisterDerivedClass_8cpp_html_a649ba5ba6071f513dc58ce90490c8921"><div class="ttname"><a href="RegisterDerivedClass_8cpp.html#a649ba5ba6071f513dc58ce90490c8921">Register_Block_Stream_Iterator</a></div><div class="ttdeci">void Register_Block_Stream_Iterator(Archive &amp;ar)</div><div class="ttdef"><b>Definition:</b> RegisterDerivedClass.cpp:70</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_ab2957d558dfb8b2905f6e40b09263574"><div class="ttname"><a href="classPhysicalQueryPlan.html#ab2957d558dfb8b2905f6e40b09263574">PhysicalQueryPlan::block_stream_iterator_root_</a></div><div class="ttdeci">PhysicalOperatorBase * block_stream_iterator_root_</div><div class="ttdef"><b>Definition:</b> Message.h:407</div></div>
+<div class="ttc" id="RegisterDerivedClass_8h_html_a48742fd12c04795b2f35ee956c18715e"><div class="ttname"><a href="RegisterDerivedClass_8h.html#a48742fd12c04795b2f35ee956c18715e">Register_Schemas</a></div><div class="ttdeci">void Register_Schemas(Archive &amp;ar)</div><div class="ttdef"><b>Definition:</b> RegisterDerivedClass.h:17</div></div>
+<div class="ttc" id="classCreateTableMessage_html_ae46a99cee620770fdde65cc7b7f4acf3"><div class="ttname"><a href="classCreateTableMessage.html#ae46a99cee620770fdde65cc7b7f4acf3">CreateTableMessage::type_list</a></div><div class="ttdeci">std::vector&lt; data_type &gt; type_list</div><div class="ttdef"><b>Definition:</b> Message.h:318</div></div>
+<div class="ttc" id="structPartitionBindingMessage_html_aa153de292ad9e7e0869601bf4e53b810"><div class="ttname"><a href="structPartitionBindingMessage.html#aa153de292ad9e7e0869601bf4e53b810">PartitionBindingMessage::number_of_chunks</a></div><div class="ttdeci">unsigned number_of_chunks</div><div class="ttdef"><b>Definition:</b> Message.h:53</div></div>
+<div class="ttc" id="Debug_8h_html_a7de89b532a58eb42da1f830e8a89be4a"><div class="ttname"><a href="Debug_8h.html#a7de89b532a58eb42da1f830e8a89be4a">BLOCK_STATUS_MESSAGE_LEN</a></div><div class="ttdeci">#define BLOCK_STATUS_MESSAGE_LEN</div><div class="ttdef"><b>Definition:</b> Debug.h:32</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html"><div class="ttname"><a href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a></div><div class="ttdef"><b>Definition:</b> Message.h:366</div></div>
+<div class="ttc" id="Debug_8h_html_abc50376a1fd44d9ceb34661c6c271a46"><div class="ttname"><a href="Debug_8h.html#abc50376a1fd44d9ceb34661c6c271a46">REGISTER_MESSAGE_LEN</a></div><div class="ttdeci">#define REGISTER_MESSAGE_LEN</div><div class="ttdef"><b>Definition:</b> Debug.h:31</div></div>
+<div class="ttc" id="classCreateTableRespond_html_acd559b01909328c8c3e8eb19961bce53"><div class="ttname"><a href="classCreateTableRespond.html#acd559b01909328c8c3e8eb19961bce53">CreateTableRespond::serialize</a></div><div class="ttdeci">static Message256 serialize(CreateTableRespond input)</div><div class="ttdef"><b>Definition:</b> Message.h:298</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_a0bfa22a4b1a6ad782ba8f283361a02df"><div class="ttname"><a href="classPhysicalQueryPlan.html#a0bfa22a4b1a6ad782ba8f283361a02df">PhysicalQueryPlan::deserialize</a></div><div class="ttdeci">static PhysicalQueryPlan deserialize(Message256 message)</div><div class="ttdef"><b>Definition:</b> Message.h:389</div></div>
+<div class="ttc" id="classCreateTableMessage_html_ab66996fd3b8c9d2d6216ddc383c4b47e"><div class="ttname"><a href="classCreateTableMessage.html#ab66996fd3b8c9d2d6216ddc383c4b47e">CreateTableMessage::CreateTableMessage</a></div><div class="ttdeci">CreateTableMessage()</div><div class="ttdef"><b>Definition:</b> Message.h:313</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_ad3eae48ec9298aed228aa14c5cc8741d"><div class="ttname"><a href="classPhysicalQueryPlan.html#ad3eae48ec9298aed228aa14c5cc8741d">PhysicalQueryPlan::serialize</a></div><div class="ttdeci">static Message256 serialize(PhysicalQueryPlan input)</div><div class="ttdef"><b>Definition:</b> Message.h:393</div></div>
+<div class="ttc" id="structNodeRegisterMessage_html_a866ee9bbead75b8f963e2085f39e7dc3"><div class="ttname"><a href="structNodeRegisterMessage.html#a866ee9bbead75b8f963e2085f39e7dc3">NodeRegisterMessage::get_ip</a></div><div class="ttdeci">std::string get_ip() const </div><div class="ttdef"><b>Definition:</b> Message.h:139</div></div>
+<div class="ttc" id="structMessage4K_html"><div class="ttname"><a href="structMessage4K.html">Message4K</a></div><div class="ttdef"><b>Definition:</b> Message.h:158</div></div>
+<div class="ttc" id="classCreateTableRespond_html_aa410862320ffafff5eb8d0ce936b07aa"><div class="ttname"><a href="classCreateTableRespond.html#aa410862320ffafff5eb8d0ce936b07aa">CreateTableRespond::CreateTableRespond</a></div><div class="ttdeci">CreateTableRespond(bool result)</div><div class="ttdef"><b>Definition:</b> Message.h:294</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a4c48b2c231cb07e552461dd84147682b"><div class="ttname"><a href="classNodeConnectionMessage.html#a4c48b2c231cb07e552461dd84147682b">NodeConnectionMessage::serialize4K</a></div><div class="ttdeci">static Message4K serialize4K(NodeConnectionMessage input)</div><div class="ttdef"><b>Definition:</b> Message.h:446</div></div>
+<div class="ttc" id="Message_8h_html_a4d3277047af3c597b4db22457b230a47"><div class="ttname"><a href="Message_8h.html#a4d3277047af3c597b4db22457b230a47">Serialize</a></div><div class="ttdeci">static Message256 Serialize(T object)</div><div class="ttdef"><b>Definition:</b> Message.h:193</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_ace619263235ab2e6577198f7e2497543"><div class="ttname"><a href="classRegisterSlaveMessage.html#ace619263235ab2e6577198f7e2497543">RegisterSlaveMessage::port</a></div><div class="ttdeci">std::string port</div><div class="ttdef"><b>Definition:</b> Message.h:349</div></div>
+<div class="ttc" id="structStorageBudgetMessage_html_ab35eb386883173e61deedc41293b0352"><div class="ttname"><a href="structStorageBudgetMessage.html#ab35eb386883173e61deedc41293b0352">StorageBudgetMessage::disk_budget</a></div><div class="ttdeci">int disk_budget</div><div class="ttdef"><b>Definition:</b> Message.h:42</div></div>
+<div class="ttc" id="structHeartBeatMessage_html"><div class="ttname"><a href="structHeartBeatMessage.html">HeartBeatMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:73</div></div>
+<div class="ttc" id="structBlockStatusRespond_html_a49755045031be20aa0cc16c5dc85580b"><div class="ttname"><a href="structBlockStatusRespond.html#a49755045031be20aa0cc16c5dc85580b">BlockStatusRespond::BlockStatusRespond</a></div><div class="ttdeci">BlockStatusRespond(const char *const text)</div><div class="ttdef"><b>Definition:</b> Message.h:101</div></div>
+<div class="ttc" id="Debug_8h_html_a416634e98e5b4ab7a86205d59e151fc6"><div class="ttname"><a href="Debug_8h.html#a416634e98e5b4ab7a86205d59e151fc6">MATCHER_MESSAGE_BMI_LEN</a></div><div class="ttdeci">#define MATCHER_MESSAGE_BMI_LEN</div><div class="ttdef"><b>Definition:</b> Debug.h:34</div></div>
+<div class="ttc" id="classCreateTableRespond_html_aa27a8706421cddd14a0b69596c362dbf"><div class="ttname"><a href="classCreateTableRespond.html#aa27a8706421cddd14a0b69596c362dbf">CreateTableRespond::deserialize</a></div><div class="ttdeci">static CreateTableRespond deserialize(Message256 message)</div><div class="ttdef"><b>Definition:</b> Message.h:295</div></div>
+<div class="ttc" id="structNodeRegisterMessage_html_acc256b194be6aa6f5d297de2ced7892f"><div class="ttname"><a href="structNodeRegisterMessage.html#acc256b194be6aa6f5d297de2ced7892f">NodeRegisterMessage::set_ip</a></div><div class="ttdeci">void set_ip(std::string _ip)</div><div class="ttdef"><b>Definition:</b> Message.h:138</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a8d72c90bf5d935d314668c6531a73f8e"><div class="ttname"><a href="classNodeConnectionMessage.html#a8d72c90bf5d935d314668c6531a73f8e">NodeConnectionMessage::NodeConnectionMessage</a></div><div class="ttdeci">NodeConnectionMessage(std::string ip, std::string port)</div><div class="ttdef"><b>Definition:</b> Message.h:421</div></div>
+<div class="ttc" id="structRegisterStorageRespond_html"><div class="ttname"><a href="structRegisterStorageRespond.html">RegisterStorageRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:64</div></div>
+<div class="ttc" id="structMessage4K_html_a5cd73146960ab7b160cad25a92004347"><div class="ttname"><a href="structMessage4K.html#a5cd73146960ab7b160cad25a92004347">Message4K::length</a></div><div class="ttdeci">unsigned length</div><div class="ttdef"><b>Definition:</b> Message.h:160</div></div>
+<div class="ttc" id="classCreateTableRespond_html"><div class="ttname"><a href="classCreateTableRespond.html">CreateTableRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:291</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_a024d3fd3b6e5ab6dda58d8cbda653e85"><div class="ttname"><a href="classRegisterSlaveMessage.html#a024d3fd3b6e5ab6dda58d8cbda653e85">RegisterSlaveMessage::RegisterSlaveMessage</a></div><div class="ttdeci">RegisterSlaveMessage()</div><div class="ttdef"><b>Definition:</b> Message.h:339</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="classRegisterSlaveMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">RegisterSlaveMessage::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> Message.h:352</div></div>
+<div class="ttc" id="structStorageBudgetMessage_html_a3257e7ede01dcf9dda0db542c7255286"><div class="ttname"><a href="structStorageBudgetMessage.html#a3257e7ede01dcf9dda0db542c7255286">StorageBudgetMessage::memory_budget</a></div><div class="ttdeci">int memory_budget</div><div class="ttdef"><b>Definition:</b> Message.h:43</div></div>
+<div class="ttc" id="structMatcherRespond_html"><div class="ttname"><a href="structMatcherRespond.html">MatcherRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:121</div></div>
+<div class="ttc" id="structMessage256_html_a0f68f078c5b9aa50ff750b5c29da10bc"><div class="ttname"><a href="structMessage256.html#a0f68f078c5b9aa50ff750b5c29da10bc">Message256::message</a></div><div class="ttdeci">char message[256-sizeof(unsigned)]</div><div class="ttdef"><b>Definition:</b> Message.h:154</div></div>
+<div class="ttc" id="structHeartBeatRespond_html"><div class="ttname"><a href="structHeartBeatRespond.html">HeartBeatRespond</a></div><div class="ttdef"><b>Definition:</b> Message.h:82</div></div>
+<div class="ttc" id="structPartitionUnbindingMessage_html_a096471098d18c6f0ad37f76719319170"><div class="ttname"><a href="structPartitionUnbindingMessage.html#a096471098d18c6f0ad37f76719319170">PartitionUnbindingMessage::PartitionUnbindingMessage</a></div><div class="ttdeci">PartitionUnbindingMessage(const PartitionID &amp;pid)</div><div class="ttdef"><b>Definition:</b> Message.h:59</div></div>
+<div class="ttc" id="classCreateTableMessage_html_ab88a05edf0205bc96617a76fc1cc62bc"><div class="ttname"><a href="classCreateTableMessage.html#ab88a05edf0205bc96617a76fc1cc62bc">CreateTableMessage::table_id</a></div><div class="ttdeci">unsigned table_id</div><div class="ttdef"><b>Definition:</b> Message.h:315</div></div>
+<div class="ttc" id="structMessage4K_html_aa884510ec3a9d831a09b775d35dbdc12"><div class="ttname"><a href="structMessage4K.html#aa884510ec3a9d831a09b775d35dbdc12">Message4K::Capacity</a></div><div class="ttdeci">static unsigned Capacity()</div><div class="ttdef"><b>Definition:</b> Message.h:162</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_a902e4bb3a6e7631306e6758d4757f677"><div class="ttname"><a href="classRegisterSlaveMessage.html#a902e4bb3a6e7631306e6758d4757f677">RegisterSlaveMessage::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> Message.h:354</div></div>
+<div class="ttc" id="Debug_8h_html_a6efdb92708b84ac6cbc21cd7d188787a"><div class="ttname"><a href="Debug_8h.html#a6efdb92708b84ac6cbc21cd7d188787a">MATCHER_MESSAGE_PROJECT_LEN</a></div><div class="ttdeci">#define MATCHER_MESSAGE_PROJECT_LEN</div><div class="ttdef"><b>Definition:</b> Debug.h:35</div></div>
+<div class="ttc" id="structStorageBudgetMessage_html_a23dab0db9c2e51869c9e1a7bae8e566d"><div class="ttname"><a href="structStorageBudgetMessage.html#a23dab0db9c2e51869c9e1a7bae8e566d">StorageBudgetMessage::nodeid</a></div><div class="ttdeci">int nodeid</div><div class="ttdef"><b>Definition:</b> Message.h:44</div></div>
+<div class="ttc" id="functions_8h_html_ad0ba88eef56eb307a47c7eb3766bd0f4"><div class="ttname"><a href="functions_8h.html#ad0ba88eef56eb307a47c7eb3766bd0f4">add</a></div><div class="ttdeci">static void add(ExpressionItemStack &amp;stack, ExpressionItem &amp;target)</div><div class="ttdef"><b>Definition:</b> functions.h:178</div></div>
+<div class="ttc" id="classCreateTableMessage_html_adaf4bc6a14b32bcb31ee9fc2e7a49a95"><div class="ttname"><a href="classCreateTableMessage.html#adaf4bc6a14b32bcb31ee9fc2e7a49a95">CreateTableMessage::serializae</a></div><div class="ttdeci">static Message256 serializae(CreateTableMessage input)</div><div class="ttdef"><b>Definition:</b> Message.h:324</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_a61dba3c2b456a28699c377245b0371a9"><div class="ttname"><a href="classRegisterSlaveMessage.html#a61dba3c2b456a28699c377245b0371a9">RegisterSlaveMessage::ip</a></div><div class="ttdeci">std::string ip</div><div class="ttdef"><b>Definition:</b> Message.h:348</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_a481a0a92521e1ad817984c13333d1167"><div class="ttname"><a href="classPhysicalQueryPlan.html#a481a0a92521e1ad817984c13333d1167">PhysicalQueryPlan::run</a></div><div class="ttdeci">void run()</div><div class="ttdef"><b>Definition:</b> Message.cpp:27</div></div>
+<div class="ttc" id="structMessage4K_html_acc7778b2c532cd571768b05e02e4df75"><div class="ttname"><a href="structMessage4K.html#acc7778b2c532cd571768b05e02e4df75">Message4K::message</a></div><div class="ttdeci">char message[4096 *50-sizeof(unsigned)]</div><div class="ttdef"><b>Definition:</b> Message.h:161</div></div>
+<div class="ttc" id="structPartitionBindingMessage_html"><div class="ttname"><a href="structPartitionBindingMessage.html">PartitionBindingMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:48</div></div>
+<div class="ttc" id="classCreateTableMessage_html_ae45df5bc33d67168e56c1c19f6053966"><div class="ttname"><a href="classCreateTableMessage.html#ae45df5bc33d67168e56c1c19f6053966">CreateTableMessage::CreateTableMessage</a></div><div class="ttdeci">CreateTableMessage(unsigned table_id, std::vector&lt; data_type &gt; type_list)</div><div class="ttdef"><b>Definition:</b> Message.h:314</div></div>
+<div class="ttc" id="structStorageBudgetMessage_html"><div class="ttname"><a href="structStorageBudgetMessage.html">StorageBudgetMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:36</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a58243b7f01dbcf81edbae6401adac475"><div class="ttname"><a href="classNodeConnectionMessage.html#a58243b7f01dbcf81edbae6401adac475">NodeConnectionMessage::deserialize</a></div><div class="ttdeci">static NodeConnectionMessage deserialize(Message256 message)</div><div class="ttdef"><b>Definition:</b> Message.h:434</div></div>
+<div class="ttc" id="classCreateTableMessage_html_a78afedcdcff27a76c3a74efdd3c5cd9a"><div class="ttname"><a href="classCreateTableMessage.html#a78afedcdcff27a76c3a74efdd3c5cd9a">CreateTableMessage::deserializae</a></div><div class="ttdeci">static CreateTableMessage deserializae(Message256 message)</div><div class="ttdef"><b>Definition:</b> Message.h:320</div></div>
 <div class="ttc" id="structPartitionID_html"><div class="ttname"><a href="structPartitionID.html">PartitionID</a></div><div class="ttdef"><b>Definition:</b> ids.h:144</div></div>
-<div class="ttc" id="classBlockStreamIteratorBase_html"><div class="ttname"><a href="classBlockStreamIteratorBase.html">BlockStreamIteratorBase</a></div><div class="ttdef"><b>Definition:</b> BlockStreamIteratorBase.h:27</div></div>
-<div class="ttc" id="structBlockStatusMessage_html"><div class="ttname"><a href="structBlockStatusMessage.html">BlockStatusMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:97</div></div>
-<div class="ttc" id="classRegisterSlaveMessage_html"><div class="ttname"><a href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:369</div></div>
-<div class="ttc" id="structMessage256_html"><div class="ttname"><a href="structMessage256.html">Message256</a></div><div class="ttdef"><b>Definition:</b> Message.h:159</div></div>
+<div class="ttc" id="structHeartBeatRespond_html_a4775f5f10e19108276b079eb8a999a49"><div class="ttname"><a href="structHeartBeatRespond.html#a4775f5f10e19108276b079eb8a999a49">HeartBeatRespond::HeartBeatRespond</a></div><div class="ttdeci">HeartBeatRespond(const char *const text)</div><div class="ttdef"><b>Definition:</b> Message.h:83</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a950fcf884e811b077dc214f0a3494e0e"><div class="ttname"><a href="classNodeConnectionMessage.html#a950fcf884e811b077dc214f0a3494e0e">NodeConnectionMessage::ip</a></div><div class="ttdeci">std::string ip</div><div class="ttdef"><b>Definition:</b> Message.h:422</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_add6b52bc40eaddac07c1cf5572d0859c"><div class="ttname"><a href="classRegisterSlaveMessage.html#add6b52bc40eaddac07c1cf5572d0859c">RegisterSlaveMessage::serialize</a></div><div class="ttdeci">static Message256 serialize(RegisterSlaveMessage input)</div><div class="ttdef"><b>Definition:</b> Message.h:344</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html_a9f16254ab3148155cd70b550a4937604"><div class="ttname"><a href="classPhysicalQueryPlan.html#a9f16254ab3148155cd70b550a4937604">PhysicalQueryPlan::destory</a></div><div class="ttdeci">void destory()</div><div class="ttdef"><b>Definition:</b> Message.h:387</div></div>
+<div class="ttc" id="Message_8h_html_ade1e8cd2d6b7f1c97ce0176a241a50be"><div class="ttname"><a href="Message_8h.html#ade1e8cd2d6b7f1c97ce0176a241a50be">Serialize4K</a></div><div class="ttdeci">static Message4K Serialize4K(T &amp;object)</div><div class="ttdef"><b>Definition:</b> Message.h:251</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_a52692783327e737b7272bcedf6cfc934"><div class="ttname"><a href="classRegisterSlaveMessage.html#a52692783327e737b7272bcedf6cfc934">RegisterSlaveMessage::RegisterSlaveMessage</a></div><div class="ttdeci">RegisterSlaveMessage(std::string ip, std::string port)</div><div class="ttdef"><b>Definition:</b> Message.h:340</div></div>
+<div class="ttc" id="structPartitionBindingMessage_html_a688e62ecb5924052054fb27ee3a2f4a0"><div class="ttname"><a href="structPartitionBindingMessage.html#a688e62ecb5924052054fb27ee3a2f4a0">PartitionBindingMessage::storage_level</a></div><div class="ttdeci">StorageLevel storage_level</div><div class="ttdef"><b>Definition:</b> Message.h:54</div></div>
+<div class="ttc" id="structPartitionBindingMessage_html_a3fcb0097ae8a4b42601fd2b2943140c3"><div class="ttname"><a href="structPartitionBindingMessage.html#a3fcb0097ae8a4b42601fd2b2943140c3">PartitionBindingMessage::PartitionBindingMessage</a></div><div class="ttdeci">PartitionBindingMessage(const PartitionID &amp;pid, const unsigned &amp;num, const StorageLevel &amp;level)</div><div class="ttdef"><b>Definition:</b> Message.h:49</div></div>
+<div class="ttc" id="Debug_8h_html_a4d3cd6cca00aab91b51277e1ec7e82e7"><div class="ttname"><a href="Debug_8h.html#a4d3cd6cca00aab91b51277e1ec7e82e7">MATCHER_MESSAGE_FILENAME_LEN</a></div><div class="ttdeci">#define MATCHER_MESSAGE_FILENAME_LEN</div><div class="ttdef"><b>Definition:</b> Debug.h:33</div></div>
+<div class="ttc" id="structBlockStatusMessage_html"><div class="ttname"><a href="structBlockStatusMessage.html">BlockStatusMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:91</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html"><div class="ttname"><a href="classRegisterSlaveMessage.html">RegisterSlaveMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:337</div></div>
+<div class="ttc" id="structMatcherMessage_html_a6fb3c7dbe35e950627d9dc874834c939"><div class="ttname"><a href="structMatcherMessage.html#a6fb3c7dbe35e950627d9dc874834c939">MatcherMessage::MatcherMessage</a></div><div class="ttdeci">MatcherMessage(const char *const filename, const char *const bmi)</div><div class="ttdef"><b>Definition:</b> Message.h:110</div></div>
+<div class="ttc" id="classCreateTableRespond_html_af537d0963d96bc5c9834386fae62b04d"><div class="ttname"><a href="classCreateTableRespond.html#af537d0963d96bc5c9834386fae62b04d">CreateTableRespond::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> Message.h:306</div></div>
+<div class="ttc" id="classRegisterSlaveMessage_html_a28a54ad0f5116a5b2657abaaf92d74b6"><div class="ttname"><a href="classRegisterSlaveMessage.html#a28a54ad0f5116a5b2657abaaf92d74b6">RegisterSlaveMessage::deserialize</a></div><div class="ttdeci">static RegisterSlaveMessage deserialize(Message256 message)</div><div class="ttdef"><b>Definition:</b> Message.h:341</div></div>
+<div class="ttc" id="structStorageBudgetMessage_html_a8faacd8ce1fdd2025b22ac57f021b954"><div class="ttname"><a href="structStorageBudgetMessage.html#a8faacd8ce1fdd2025b22ac57f021b954">StorageBudgetMessage::StorageBudgetMessage</a></div><div class="ttdeci">StorageBudgetMessage(const int &amp;disk_budget, const int &amp;memory_budget, const int &amp;nodeid)</div><div class="ttdef"><b>Definition:</b> Message.h:37</div></div>
+<div class="ttc" id="structMessage256_html_a35cacd873d569dcd5f376e5ec289d8e1"><div class="ttname"><a href="structMessage256.html#a35cacd873d569dcd5f376e5ec289d8e1">Message256::Capacity</a></div><div class="ttdeci">static unsigned Capacity()</div><div class="ttdef"><b>Definition:</b> Message.h:155</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a2846d14cb6fbd234c26572c72914b5f3"><div class="ttname"><a href="classNodeConnectionMessage.html#a2846d14cb6fbd234c26572c72914b5f3">NodeConnectionMessage::port</a></div><div class="ttdeci">std::string port</div><div class="ttdef"><b>Definition:</b> Message.h:424</div></div>
+<div class="ttc" id="structMessage256_html"><div class="ttname"><a href="structMessage256.html">Message256</a></div><div class="ttdef"><b>Definition:</b> Message.h:152</div></div>
+<div class="ttc" id="classclaims_1_1physical__operator_1_1PhysicalOperatorBase_html_a4e97ce54feb668d023e504a54a63cf38"><div class="ttname"><a href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a4e97ce54feb668d023e504a54a63cf38">claims::physical_operator::PhysicalOperatorBase::~PhysicalOperatorBase</a></div><div class="ttdeci">virtual ~PhysicalOperatorBase()</div><div class="ttdef"><b>Definition:</b> physical_operator_base.cpp:36</div></div>
+<div class="ttc" id="structNodeRegisterMessage_html_a617e1785ffb896379eca9168cf22ad39"><div class="ttname"><a href="structNodeRegisterMessage.html#a617e1785ffb896379eca9168cf22ad39">NodeRegisterMessage::NodeRegisterMessage</a></div><div class="ttdeci">NodeRegisterMessage(std::string node_ip, unsigned node_port)</div><div class="ttdef"><b>Definition:</b> Message.h:134</div></div>
+<div class="ttc" id="structBlockStatusMessage_html_a70dd6a6f1a653dcf6fada50bd52c64f4"><div class="ttname"><a href="structBlockStatusMessage.html#a70dd6a6f1a653dcf6fada50bd52c64f4">BlockStatusMessage::BlockStatusMessage</a></div><div class="ttdeci">BlockStatusMessage(const char *const text)</div><div class="ttdef"><b>Definition:</b> Message.h:92</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="classNodeConnectionMessage.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">NodeConnectionMessage::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> Message.h:427</div></div>
+<div class="ttc" id="classNodeConnectionMessage_html_a933e854b045840bc966b29658d0e7493"><div class="ttname"><a href="classNodeConnectionMessage.html#a933e854b045840bc966b29658d0e7493">NodeConnectionMessage::serialize</a></div><div class="ttdeci">static Message256 serialize(NodeConnectionMessage input)</div><div class="ttdef"><b>Definition:</b> Message.h:438</div></div>
+<div class="ttc" id="classCreateTableRespond_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="classCreateTableRespond.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">CreateTableRespond::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> Message.h:304</div></div>
+<div class="ttc" id="classCreateTableMessage_html_a6528c92cd017e3150a5e90a294d09aa5"><div class="ttname"><a href="classCreateTableMessage.html#a6528c92cd017e3150a5e90a294d09aa5">CreateTableMessage::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> Message.h:331</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><b>Message.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="Message_8h.html">Message.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

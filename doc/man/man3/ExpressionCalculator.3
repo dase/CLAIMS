@@ -1,4 +1,4 @@
-.TH "ExpressionCalculator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ExpressionCalculator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,29 +6,101 @@ ExpressionCalculator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ExpressionCalculator\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBExpressionCalculator\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~ExpressionCalculator\fP ()"
+.br
+.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "static void \fBcalcuate\fP (Expression &exp, \fBExpressionItem\fP &result)"
+.RI "static void \fBcalcuate\fP (\fBExpression\fP &exp, \fBExpressionItem\fP &result)"
 .br
 .ti -1c
-.RI "static void \fBcalcualte\fP (Expression &exp, ExpressionItemStack &stack)"
+.RI "static void \fBcalcualte\fP (\fBExpression\fP &exp, \fBExpressionItemStack\fP &stack)"
 .br
 .ti -1c
-.RI "static void \fBcompute\fP (\fBExpressionItem\fP operator_item, ExpressionItemStack &stack)"
+.RI "static void \fBcompute\fP (\fBExpressionItem\fP operator_item, \fBExpressionItemStack\fP &stack)"
 .br
 .ti -1c
-.RI "static void \fBcomputes\fP (\fBExpressionItem\fP operator_item, ExpressionItemStack &stack)"
+.RI "static void \fBcomputes\fP (\fBExpressionItem\fP operator_item, \fBExpressionItemStack\fP &stack)"
 .br
 .ti -1c
-.RI "static data_type \fBgetOutputType\fP (vector< \fBExpressionItem\fP > &exp)"
+.RI "static \fBdata_type\fP \fBgetOutputType\fP (vector< \fBExpressionItem\fP > &exp)"
 .br
 .ti -1c
 .RI "static \fBcolumn_type\fP \fBgetOutputType_\fP (vector< \fBExpressionItem\fP > &exp)"
 .br
 .in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBisComposeOperator\fP (\fBop_type\fP tp)"
+.br
+.ti -1c
+.RI "static void \fBreverse_stack\fP (\fBExpressionItemStack\fP &stack)"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ExpressionCalculator::ExpressionCalculator ()"
+
+.SS "ExpressionCalculator::~ExpressionCalculator ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static void ExpressionCalculator::calcualte (\fBExpression\fP &exp, \fBExpressionItemStack\fP &stack)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References compute(), isComposeOperator(), and ExpressionItem::operator_type\&.
+.PP
+Referenced by calcuate()\&.
+.SS "static void ExpressionCalculator::calcuate (\fBExpression\fP &exp, \fBExpressionItem\fP &result)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References calcualte()\&.
+.PP
+Referenced by do_case(), test_add(), test_add_(), test_case_exp(), test_cast(), test_com_less(), test_multiple(), test_multiple_(), test_substring(), test_trim(), and test_upper()\&.
+.SS "void ExpressionCalculator::compute (\fBExpressionItem\fPoperator_item, \fBExpressionItemStack\fP &stack)\fC [static]\fP"
+
+.PP
+References add(), andop(), cast(), compare_equal(), compare_great(), compare_great_equal(), compare_less(), compare_less_equal(), compare_not_equal(), ExpressionItem::const_type, ExpressionItem::content, do_case(), mins(), mul(), notop(), ExpressionItem::op, express_operator::op_, op_add, op_and, op_case, op_cast, op_com_EQ, op_com_G, op_com_GEQ, op_com_L, op_com_LEQ, op_com_NEQ, op_mins, op_multiple, op_not, op_or, op_substring, op_trim, op_upper, orop(), reverse_stack(), substring(), trim(), ExpressionItem::type, and upper()\&.
+.PP
+Referenced by calcualte()\&.
+.SS "void ExpressionCalculator::computes (\fBExpressionItem\fPoperator_item, \fBExpressionItemStack\fP &stack)\fC [static]\fP"
+
+.PP
+References adds(), ExpressionItem::const_type, ExpressionItem::content, do_case(), get_compare_return_type(), minss(), muls(), ExpressionItem::op, express_operator::op_, op_add, op_and, op_case, op_cast, op_com_EQ, op_com_G, op_com_GEQ, op_com_L, op_com_LEQ, op_com_NEQ, op_mins, op_multiple, op_not, op_or, op_substring, op_trim, op_upper, reverse_stack(), and ExpressionItem::type\&.
+.PP
+Referenced by getOutputType(), and getOutputType_()\&.
+.SS "\fBdata_type\fP ExpressionCalculator::getOutputType (std::vector< \fBExpressionItem\fP > &exp)\fC [static]\fP"
+
+.PP
+References computes(), isComposeOperator(), and ExpressionItem::operator_type\&.
+.SS "\fBcolumn_type\fP ExpressionCalculator::getOutputType_ (std::vector< \fBExpressionItem\fP > &exp)\fC [static]\fP"
+
+.PP
+References computes(), isComposeOperator(), ExpressionItem::operator_type, and t_string\&.
+.SS "static bool ExpressionCalculator::isComposeOperator (\fBop_type\fPtp)\fC [inline]\fP, \fC [static]\fP, \fC [private]\fP"
+Compose operator refers to a kind of operators, the number of input parameter of witch is decided by the semantic\&. e\&.g\&., CASE WHEN \&.\&.\&. THEN\&.\&.\&. [WHEN \&.\&.\&. THEN\&.\&.\&.][N] ELSE \&.\&.\&.\&.\&. END 
+.PP
+References op_case\&.
+.PP
+Referenced by calcualte(), getOutputType(), and getOutputType_()\&.
+.SS "static void ExpressionCalculator::reverse_stack (\fBExpressionItemStack\fP &stack)\fC [inline]\fP, \fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by compute(), and computes()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

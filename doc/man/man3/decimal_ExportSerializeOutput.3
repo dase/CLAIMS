@@ -1,4 +1,4 @@
-.TH "decimal::ExportSerializeOutput" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "decimal::ExportSerializeOutput" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ decimal::ExportSerializeOutput \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ExportSerializeIo\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBExportSerializeOutput\fP (void *buffer, size_t capacity)"
+.br
+.ti -1c
+.RI "virtual \fB~ExportSerializeOutput\fP ()"
 .br
 .ti -1c
 .RI "void \fBwriteBinaryString\fP (const void *value, size_t length)"
@@ -35,7 +40,47 @@ decimal::ExportSerializeOutput \-
 .RI "size_t \fBcapacity_\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "decimal::ExportSerializeOutput::ExportSerializeOutput (void *buffer, size_tcapacity)\fC [inline]\fP"
+
+.PP
+References buffer_, capacity_, and position_\&.
+.SS "virtual decimal::ExportSerializeOutput::~ExportSerializeOutput ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void decimal::ExportSerializeOutput::assureExpand (size_tnext_write)\fC [inline]\fP"
+
+.PP
+References capacity_, and position_\&.
+.PP
+Referenced by writeBinaryString()\&.
+.SS "void decimal::ExportSerializeOutput::position (std::size_tpos)\fC [inline]\fP"
+
+.PP
+References position_\&.
+.SS "void decimal::ExportSerializeOutput::writeBinaryString (const void *value, size_tlength)\fC [inline]\fP"
+
+.PP
+References assureExpand(), buffer_, and position_\&.
+.PP
+Referenced by decimal::NValue::serializeToExport()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "char* decimal::ExportSerializeOutput::buffer_"
+
+.PP
+Referenced by ExportSerializeOutput(), and writeBinaryString()\&.
+.SS "size_t decimal::ExportSerializeOutput::capacity_"
+
+.PP
+Referenced by assureExpand(), and ExportSerializeOutput()\&.
+.SS "size_t decimal::ExportSerializeOutput::position_"
+
+.PP
+Referenced by assureExpand(), ExportSerializeOutput(), position(), and writeBinaryString()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

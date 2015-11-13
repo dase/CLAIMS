@@ -7,5 +7,6 @@ var classBlockContainer =
     [ "GetMaxSize", "classBlockContainer.html#ac883355fef0e7dd8aabbe5dd3c2db3a7", null ],
     [ "GetRestSize", "classBlockContainer.html#a366bdbd9a3f2a9d2ef136e58adbe86fd", null ],
     [ "IncreaseActualSize", "classBlockContainer.html#ac5cc24d00213c0496515ca90690fb0bc", null ],
-    [ "reset", "classBlockContainer.html#a8147a4917222747c66205b2c4d31d038", null ]
+    [ "reset", "classBlockContainer.html#a8147a4917222747c66205b2c4d31d038", null ],
+    [ "actual_size_", "classBlockContainer.html#a3058202ca689cfe4ed017127864b8c5c", null ]
 ];

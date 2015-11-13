@@ -9,6 +9,7 @@ var classJson_1_1ValueIterator =
     [ "ValueIterator", "classJson_1_1ValueIterator.html#a09425cf4dc12244072a942f290a5c0ec", null ],
     [ "ValueIterator", "classJson_1_1ValueIterator.html#aa85aa208670891670392259efa0143bb", null ],
     [ "ValueIterator", "classJson_1_1ValueIterator.html#a7d5e58a9a4a553968acdf3064b39d21c", null ],
+    [ "ValueIterator", "classJson_1_1ValueIterator.html#afb06ea21add440c78c27dc49570460a5", null ],
     [ "operator*", "classJson_1_1ValueIterator.html#aaa5be3457eedf0526a03b8a3b4c7c0a0", null ],
     [ "operator++", "classJson_1_1ValueIterator.html#abcf4ddd994a010742cd4a436d65acd08", null ],
     [ "operator++", "classJson_1_1ValueIterator.html#a92146c46f8249e2b2d12869e70cd4cee", null ],

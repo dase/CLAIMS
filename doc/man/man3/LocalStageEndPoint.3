@@ -1,4 +1,4 @@
-.TH "LocalStageEndPoint" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "LocalStageEndPoint" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,15 @@ LocalStageEndPoint \-
 .br
 .PP
 .PP
-\fC#include <ExpanderTracker\&.h>\fP
+\fC#include <expander_tracker\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBLocalStageEndPoint\fP (endpoint_type tp, std::string name='Not Given', MonitorableBuffer *buffer_handle=0)"
+.RI "\fBLocalStageEndPoint\fP (\fBendpoint_type\fP tp, std::string name='Not Given', MonitorableBuffer *buffer_handle=0)"
+.br
+.ti -1c
+.RI "\fBLocalStageEndPoint\fP ()"
 .br
 .ti -1c
 .RI "\fBLocalStageEndPoint\fP (const \fBLocalStageEndPoint\fP &r)"
@@ -22,7 +25,7 @@ LocalStageEndPoint \-
 
 .in +1c
 .ti -1c
-.RI "endpoint_type \fBtype\fP"
+.RI "\fBendpoint_type\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "\fBMonitorableBuffer\fP * \fBmonitorable_buffer\fP"
@@ -34,7 +37,31 @@ LocalStageEndPoint \-
 .SH "Detailed Description"
 .PP 
 Local \fBlocal_stage\fP endpoint refers to the start or the end of a stage within a segment\&. It could be either exchange, state, or expander\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "LocalStageEndPoint::LocalStageEndPoint (\fBendpoint_type\fPtp, std::stringname = \fC'Not Given'\fP, \fBMonitorableBuffer\fP *buffer_handle = \fC0\fP)\fC [inline]\fP"
+
+.SS "LocalStageEndPoint::LocalStageEndPoint ()\fC [inline]\fP"
+
+.SS "LocalStageEndPoint::LocalStageEndPoint (const \fBLocalStageEndPoint\fP &r)\fC [inline]\fP"
+
+.PP
+References end_point_name, monitorable_buffer, and type\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string LocalStageEndPoint::end_point_name"
+
+.PP
+Referenced by LocalStageEndPoint(), and local_stage::print()\&.
+.SS "\fBMonitorableBuffer\fP* LocalStageEndPoint::monitorable_buffer"
+
+.PP
+Referenced by ExpanderTracker::decideExpandingOrShrinking(), ExpanderTracker::getSegmentStatus(), local_stage::local_stage(), and LocalStageEndPoint()\&.
+.SS "\fBendpoint_type\fP LocalStageEndPoint::type"
+
+.PP
+Referenced by ExpanderTracker::ExpanderStatus::addNewEndpoint(), and LocalStageEndPoint()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

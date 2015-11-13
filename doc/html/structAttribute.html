@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Attribute Struct Reference</title>
+<title>Claims: Attribute Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -113,83 +113,619 @@ $(document).ready(function(){initNavTree('structAttribute.html','');});
 <div class="title">Attribute Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Attribute_8h_source.html">Attribute.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Attribute:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="structAttribute.png" usemap="#Attribute_map" alt=""/>
-  <map id="Attribute_map" name="Attribute_map">
-<area href="classColumn.html" alt="Column" shape="rect" coords="0,56,59,80"/>
-</map>
- </div></div>
+<div class="center"><img src="structAttribute__inherit__graph.png" border="0" usemap="#Attribute_inherit__map" alt="Inheritance graph"/></div>
+<map name="Attribute_inherit__map" id="Attribute_inherit__map">
+<area shape="rect" id="node2" href="classColumn.html" title="Column" alt="" coords="7,80,73,107"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<div class="dynheader">
+Collaboration diagram for Attribute:</div>
+<div class="dyncontent">
+<div class="center"><img src="structAttribute__coll__graph.png" border="0" usemap="#Attribute_coll__map" alt="Collaboration graph"/></div>
+<map name="Attribute_coll__map" id="Attribute_coll__map">
+<area shape="rect" id="node2" href="classcolumn__type.html" title="column_type" alt="" coords="5,96,101,123"/><area shape="rect" id="node3" href="classOperate.html" title="Operate" alt="" coords="19,5,87,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6cc78615c3440ecbfe39c3d8d3af4028"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6cc78615c3440ecbfe39c3d8d3af4028"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Attribute</b> (TableID tableid, unsigned pos, const std::string &amp;name, data_type type, unsigned size=0, bool unqiue=false, bool can_be_null=true)</td></tr>
+<tr class="memitem:a6cc78615c3440ecbfe39c3d8d3af4028"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a6cc78615c3440ecbfe39c3d8d3af4028">Attribute</a> (<a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> tableid, unsigned pos, const std::string &amp;name, <a class="el" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14">data_type</a> type, unsigned size=0, bool unqiue=false, bool can_be_null=true)</td></tr>
 <tr class="separator:a6cc78615c3440ecbfe39c3d8d3af4028"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75417d155e44f30e9b0ae0abda751def"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a75417d155e44f30e9b0ae0abda751def"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Attribute</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att)</td></tr>
+<tr class="memitem:a75417d155e44f30e9b0ae0abda751def"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a75417d155e44f30e9b0ae0abda751def">Attribute</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att)</td></tr>
 <tr class="separator:a75417d155e44f30e9b0ae0abda751def"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a064951750ebc690473fcfa0e72b3d423"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a064951750ebc690473fcfa0e72b3d423"></a>
-<a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att)</td></tr>
+<tr class="memitem:a064951750ebc690473fcfa0e72b3d423"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a064951750ebc690473fcfa0e72b3d423">operator=</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att)</td></tr>
 <tr class="separator:a064951750ebc690473fcfa0e72b3d423"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41ee8e2fbe496359665f2e5f8672ea84"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41ee8e2fbe496359665f2e5f8672ea84"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att) const </td></tr>
+<tr class="memitem:a41ee8e2fbe496359665f2e5f8672ea84"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a41ee8e2fbe496359665f2e5f8672ea84">operator&lt;</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att) const </td></tr>
 <tr class="separator:a41ee8e2fbe496359665f2e5f8672ea84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a613a0210f026c0660cf2b7b48aa220b0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a613a0210f026c0660cf2b7b48aa220b0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Attribute</b> (unsigned symbol=ATTRIBUTE_NULL)</td></tr>
+<tr class="memitem:a613a0210f026c0660cf2b7b48aa220b0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a613a0210f026c0660cf2b7b48aa220b0">Attribute</a> (unsigned symbol=<a class="el" href="Attribute_8h.html#af3b99f15241fa771eb10ae5948926919">ATTRIBUTE_NULL</a>)</td></tr>
 <tr class="separator:a613a0210f026c0660cf2b7b48aa220b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9904e565bbc096abc660feed73ad43d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af9904e565bbc096abc660feed73ad43d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;r) const </td></tr>
+<tr class="memitem:a28ab087bb886728670e4ae5791bc2ea8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a28ab087bb886728670e4ae5791bc2ea8">~Attribute</a> ()</td></tr>
+<tr class="separator:a28ab087bb886728670e4ae5791bc2ea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9904e565bbc096abc660feed73ad43d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#af9904e565bbc096abc660feed73ad43d">operator==</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;r) const </td></tr>
 <tr class="separator:af9904e565bbc096abc660feed73ad43d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8e163567d51ee97bfcd108fff470ce1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8e163567d51ee97bfcd108fff470ce1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;r) const </td></tr>
+<tr class="memitem:af8e163567d51ee97bfcd108fff470ce1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#af8e163567d51ee97bfcd108fff470ce1">operator!=</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;r) const </td></tr>
 <tr class="separator:af8e163567d51ee97bfcd108fff470ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a023bcb159de431ba2248f6763aa2df9b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a023bcb159de431ba2248f6763aa2df9b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isNULL</b> () const </td></tr>
+<tr class="memitem:a023bcb159de431ba2248f6763aa2df9b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a023bcb159de431ba2248f6763aa2df9b">isNULL</a> () const </td></tr>
 <tr class="separator:a023bcb159de431ba2248f6763aa2df9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98ce5489420d1e8595a4026e05d2cff1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98ce5489420d1e8595a4026e05d2cff1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isANY</b> () const </td></tr>
+<tr class="memitem:a98ce5489420d1e8595a4026e05d2cff1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a98ce5489420d1e8595a4026e05d2cff1">isANY</a> () const </td></tr>
 <tr class="separator:a98ce5489420d1e8595a4026e05d2cff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a200fa46f26d6e14055fe90680cca23a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a200fa46f26d6e14055fe90680cca23a6"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isUnique</b> () const </td></tr>
+<tr class="memitem:a200fa46f26d6e14055fe90680cca23a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a200fa46f26d6e14055fe90680cca23a6">isUnique</a> () const </td></tr>
 <tr class="separator:a200fa46f26d6e14055fe90680cca23a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27fb88961e5f4d3deb81630208e070c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a27fb88961e5f4d3deb81630208e070c2"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>getName</b> () const </td></tr>
+<tr class="memitem:a27fb88961e5f4d3deb81630208e070c2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a27fb88961e5f4d3deb81630208e070c2">getName</a> () const </td></tr>
 <tr class="separator:a27fb88961e5f4d3deb81630208e070c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79a057b19669089667aec5c8a86f0300"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a79a057b19669089667aec5c8a86f0300"></a>
-<a class="el" href="structAttributeID.html">AttributeID</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getID</b> () const </td></tr>
+<tr class="memitem:a79a057b19669089667aec5c8a86f0300"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAttributeID.html">AttributeID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a79a057b19669089667aec5c8a86f0300">getID</a> () const </td></tr>
 <tr class="separator:a79a057b19669089667aec5c8a86f0300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cd6f19886e3eb0d703b3f7f94836c91"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6cd6f19886e3eb0d703b3f7f94836c91"></a>
-template&lt;class Archive &gt; </td></tr>
-<tr class="memitem:a6cd6f19886e3eb0d703b3f7f94836c91"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>serialize</b> (Archive &amp;ar, const unsigned int version)</td></tr>
+<tr class="memitem:a6cd6f19886e3eb0d703b3f7f94836c91"><td class="memTemplParams" colspan="2">template&lt;class Archive &gt; </td></tr>
+<tr class="memitem:a6cd6f19886e3eb0d703b3f7f94836c91"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structAttribute.html#a6cd6f19886e3eb0d703b3f7f94836c91">serialize</a> (Archive &amp;ar, const unsigned int version)</td></tr>
 <tr class="separator:a6cd6f19886e3eb0d703b3f7f94836c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aecb21247f59aba0e4de3d492a3873152"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aecb21247f59aba0e4de3d492a3873152"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>attrName</b></td></tr>
+<tr class="memitem:aecb21247f59aba0e4de3d492a3873152"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a></td></tr>
 <tr class="separator:aecb21247f59aba0e4de3d492a3873152"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ef686818631a56fbd898a01d5299227"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ef686818631a56fbd898a01d5299227"></a>
-<a class="el" href="classcolumn__type.html">column_type</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>attrType</b></td></tr>
+<tr class="memitem:a5ef686818631a56fbd898a01d5299227"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcolumn__type.html">column_type</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">attrType</a></td></tr>
 <tr class="separator:a5ef686818631a56fbd898a01d5299227"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8b084cee376d6cd8e1066e227af0ceb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8b084cee376d6cd8e1066e227af0ceb"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>index</b></td></tr>
+<tr class="memitem:ad8b084cee376d6cd8e1066e227af0ceb"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a></td></tr>
 <tr class="separator:ad8b084cee376d6cd8e1066e227af0ceb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd405f925d5424ba03564063ac487adb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd405f925d5424ba03564063ac487adb"></a>
-TableID&#160;</td><td class="memItemRight" valign="bottom"><b>table_id_</b></td></tr>
+<tr class="memitem:afd405f925d5424ba03564063ac487adb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a></td></tr>
 <tr class="separator:afd405f925d5424ba03564063ac487adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44decd9ff14a5d67764df8a8ea195bc4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44decd9ff14a5d67764df8a8ea195bc4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>unique</b></td></tr>
+<tr class="memitem:a44decd9ff14a5d67764df8a8ea195bc4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#a44decd9ff14a5d67764df8a8ea195bc4">unique</a></td></tr>
 <tr class="separator:a44decd9ff14a5d67764df8a8ea195bc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization::access</b></td></tr>
+<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAttribute.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a></td></tr>
 <tr class="separator:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a6cc78615c3440ecbfe39c3d8d3af4028"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Attribute::Attribute </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&#160;</td>
+          <td class="paramname"><em>tableid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14">data_type</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>size</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>unqiue</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>can_be_null</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">attrType</a>, <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>, and <a class="el" href="structAttribute.html#a44decd9ff14a5d67764df8a8ea195bc4">unique</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a75417d155e44f30e9b0ae0abda751def"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Attribute::Attribute </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>att</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, <a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">attrType</a>, <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>, and <a class="el" href="structAttribute.html#a44decd9ff14a5d67764df8a8ea195bc4">unique</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a613a0210f026c0660cf2b7b48aa220b0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Attribute::Attribute </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>symbol</em> = <code><a class="el" href="Attribute_8h.html#af3b99f15241fa771eb10ae5948926919">ATTRIBUTE_NULL</a></code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, <a class="el" href="Attribute_8h.html#af3b99f15241fa771eb10ae5948926919">ATTRIBUTE_NULL</a>, and <a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a28ab087bb886728670e4ae5791bc2ea8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Attribute::~Attribute </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">attrType</a>, <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>, and <a class="el" href="classcolumn__type.html#aa64079063cb47eac6fbc763723b12b40">column_type::~column_type()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structAttribute_a28ab087bb886728670e4ae5791bc2ea8_cgraph.png" border="0" usemap="#structAttribute_a28ab087bb886728670e4ae5791bc2ea8_cgraph" alt=""/></div>
+<map name="structAttribute_a28ab087bb886728670e4ae5791bc2ea8_cgraph" id="structAttribute_a28ab087bb886728670e4ae5791bc2ea8_cgraph">
+<area shape="rect" id="node2" href="classcolumn__type.html#aa64079063cb47eac6fbc763723b12b40" title="column_type::~column_type" alt="" coords="189,5,376,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a79a057b19669089667aec5c8a86f0300"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAttributeID.html">AttributeID</a> Attribute::getID </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, and <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classStatManager.html#a20b38c4cef062c14f8966285ae634685">StatManager::getAttributeStatistic()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structAttribute_a79a057b19669089667aec5c8a86f0300_icgraph.png" border="0" usemap="#structAttribute_a79a057b19669089667aec5c8a86f0300_icgraph" alt=""/></div>
+<map name="structAttribute_a79a057b19669089667aec5c8a86f0300_icgraph" id="structAttribute_a79a057b19669089667aec5c8a86f0300_icgraph">
+<area shape="rect" id="node2" href="classStatManager.html#a20b38c4cef062c14f8966285ae634685" title="StatManager::getAttribute\lStatistic" alt="" coords="165,5,336,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a27fb88961e5f4d3deb81630208e070c2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Attribute::getName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a>.</p>
+
+<p>Referenced by <a class="el" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c">init_single_node_tpc_h_envoriment_ing()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structAttribute_a27fb88961e5f4d3deb81630208e070c2_icgraph.png" border="0" usemap="#structAttribute_a27fb88961e5f4d3deb81630208e070c2_icgraph" alt=""/></div>
+<map name="structAttribute_a27fb88961e5f4d3deb81630208e070c2_icgraph" id="structAttribute_a27fb88961e5f4d3deb81630208e070c2_icgraph">
+<area shape="rect" id="node2" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="187,5,327,46"/><area shape="rect" id="node3" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="376,12,536,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a98ce5489420d1e8595a4026e05d2cff1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::isANY </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, and <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a023bcb159de431ba2248f6763aa2df9b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::isNULL </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#af3b99f15241fa771eb10ae5948926919">ATTRIBUTE_NULL</a>, and <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1Requirement.html#ae59eae2b64a6df49210d7586cefde6be">claims::logical_operator::Requirement::hasReuiredPartitionKey()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1Requirement.html#a9fc3b52b97790162edc85842ba9fb6cf">claims::logical_operator::Requirement::requireNetworkTransfer()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1Requirement.html#aadfc569a0584568596c64c9cd5e2b105">claims::logical_operator::Requirement::tryMerge()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structAttribute_a023bcb159de431ba2248f6763aa2df9b_icgraph.png" border="0" usemap="#structAttribute_a023bcb159de431ba2248f6763aa2df9b_icgraph" alt=""/></div>
+<map name="structAttribute_a023bcb159de431ba2248f6763aa2df9b_icgraph" id="structAttribute_a023bcb159de431ba2248f6763aa2df9b_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1Requirement.html#ae59eae2b64a6df49210d7586cefde6be" title="claims::logical_operator\l::Requirement::hasReuiredPartitionKey" alt="" coords="177,106,426,147"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1Requirement.html#a9fc3b52b97790162edc85842ba9fb6cf" title="claims::logical_operator\l::Requirement::requireNetworkTransfer" alt="" coords="177,41,425,82"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1Requirement.html#aadfc569a0584568596c64c9cd5e2b105" title="claims::logical_operator\l::Requirement::tryMerge" alt="" coords="220,171,383,213"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578" title="claims::logical_operator\l::LogicalFilter::GetOptimalPhysicalPlan" alt="" coords="475,70,725,111"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe" title="Method description: NOT USED NOW !!! get the optimal physical plan. " alt="" coords="514,136,686,192"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="475,5,725,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a200fa46f26d6e14055fe90680cca23a6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::isUnique </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#a44decd9ff14a5d67764df8a8ea195bc4">unique</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af8e163567d51ee97bfcd108fff470ce1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>r</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, and <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a41ee8e2fbe496359665f2e5f8672ea84"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>att</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, and <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a064951750ebc690473fcfa0e72b3d423"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAttribute.html">Attribute</a>&amp; Attribute::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>att</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, <a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">attrType</a>, <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>, and <a class="el" href="structAttribute.html#a44decd9ff14a5d67764df8a8ea195bc4">unique</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af9904e565bbc096abc660feed73ad43d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>r</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, and <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6cd6f19886e3eb0d703b3f7f94836c91"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Archive &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Attribute::serialize </td>
+          <td>(</td>
+          <td class="paramtype">Archive &amp;&#160;</td>
+          <td class="paramname"><em>ar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>version</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structAttribute.html#aecb21247f59aba0e4de3d492a3873152">attrName</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">attrType</a>, <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">index</a>, <a class="el" href="structAttribute.html#afd405f925d5424ba03564063ac487adb">table_id_</a>, and <a class="el" href="structAttribute.html#a44decd9ff14a5d67764df8a8ea195bc4">unique</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class boost::serialization::access</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aecb21247f59aba0e4de3d492a3873152"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Attribute::attrName</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="structAttribute.html#a6cc78615c3440ecbfe39c3d8d3af4028">Attribute()</a>, <a class="el" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36">claims::stmt_handler::InsertExec::Execute()</a>, <a class="el" href="classAstNode.html#a10e8c10b393c61b8a6aceef629e1da76">AstNode::GetEqualJoinPair()</a>, <a class="el" href="classIndexManager.html#a643ae55b67ea1ab3165e0001fd689613">IndexManager::getIndexID()</a>, <a class="el" href="classIndexManager.html#a293bb9b870c03dc099dab522a3b0dc4f">IndexManager::getIndexList()</a>, <a class="el" href="parsetree2logicalplan_8cpp.html#a1c5d96d9f3d07e2498e817842ffbf23c">getjoinpairlist()</a>, <a class="el" href="structAttribute.html#a27fb88961e5f4d3deb81630208e070c2">getName()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909">InsertData()</a>, <a class="el" href="classIndexManager.html#a3c7fab8d9b333e0a892da5cd1dd2b564">IndexManager::insertIndexToList()</a>, <a class="el" href="classclaims_1_1common_1_1ExprNode.html#ac1f1c1109e5cf0a91ec048ec59ac8c7f">claims::common::ExprNode::IsEqualAttr()</a>, <a class="el" href="structAttribute.html#a064951750ebc690473fcfa0e72b3d423">operator=()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a6c12c84550f16965748e837b207a5480">claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()</a>, <a class="el" href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">IndexManager::serialize()</a>, and <a class="el" href="structAttribute.html#a6cd6f19886e3eb0d703b3f7f94836c91">serialize()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5ef686818631a56fbd898a01d5299227"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcolumn__type.html">column_type</a>* Attribute::attrType</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11">Analyzer::analyse()</a>, <a class="el" href="structAttribute.html#a6cc78615c3440ecbfe39c3d8d3af4028">Attribute()</a>, <a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">Analyzer::computeHistogram()</a>, <a class="el" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize()</a>, <a class="el" href="classAnalyzer.html#ad04f404250da626aeb66cdaedf3ac058">Analyzer::equiDepthAnalyse()</a>, <a class="el" href="classEstimation.html#a1d5609d93dfee7806fa6c5d695c8c9e9">Estimation::estEqualJoin()</a>, <a class="el" href="classEstimation.html#a32aa7fb39861400279a8c71d01e869d6">Estimation::estEqualOper()</a>, <a class="el" href="classEstimation.html#a5220a43122b33a11a7b645ca32bb3704">Estimation::estRangeOper()</a>, <a class="el" href="classAstColumn.html#ad1e4be3e6ed22903db88bc2ec022292b">AstColumn::GetLogicalPlan()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#afea1733fd0f066010f97059353cf5a52">claims::stmt_handler::InsertExec::InsertValueToStream()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a30eeb02107153bbdf6556f6844c42e2d">InsertValueToStream()</a>, <a class="el" href="classclaims_1_1common_1_1ExprNode.html#ac1f1c1109e5cf0a91ec048ec59ac8c7f">claims::common::ExprNode::IsEqualAttr()</a>, <a class="el" href="classAnalyzer.html#ad4ea1ae66a83a592870657275cfd546c">Analyzer::mcvAnalyse()</a>, <a class="el" href="structAttribute.html#a064951750ebc690473fcfa0e72b3d423">operator=()</a>, <a class="el" href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">IndexManager::serialize()</a>, <a class="el" href="structAttribute.html#a6cd6f19886e3eb0d703b3f7f94836c91">serialize()</a>, <a class="el" href="initquery_8h.html#a64107350191726c80a384af224a375cc">transformqual()</a>, and <a class="el" href="structAttribute.html#a28ab087bb886728670e4ae5791bc2ea8">~Attribute()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad8b084cee376d6cd8e1066e227af0ceb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned Attribute::index</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="structAttribute.html#a6cc78615c3440ecbfe39c3d8d3af4028">Attribute()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, <a class="el" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize()</a>, <a class="el" href="structAttribute.html#a79a057b19669089667aec5c8a86f0300">getID()</a>, <a class="el" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7">ProjectionDescriptor::hasAttribute()</a>, <a class="el" href="structAttribute.html#af8e163567d51ee97bfcd108fff470ce1">operator!=()</a>, <a class="el" href="structAttribute.html#a41ee8e2fbe496359665f2e5f8672ea84">operator&lt;()</a>, <a class="el" href="structAttribute.html#a064951750ebc690473fcfa0e72b3d423">operator=()</a>, <a class="el" href="structAttribute.html#af9904e565bbc096abc660feed73ad43d">operator==()</a>, <a class="el" href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">IndexManager::serialize()</a>, and <a class="el" href="structAttribute.html#a6cd6f19886e3eb0d703b3f7f94836c91">serialize()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd405f925d5424ba03564063ac487adb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> Attribute::table_id_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="structAttribute.html#a6cc78615c3440ecbfe39c3d8d3af4028">Attribute()</a>, <a class="el" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize()</a>, <a class="el" href="classStatManager.html#a20b38c4cef062c14f8966285ae634685">StatManager::getAttributeStatistic()</a>, <a class="el" href="structAttribute.html#a79a057b19669089667aec5c8a86f0300">getID()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalAggregation.html#a75fc1e15a9a97ce607b7ae844752aa34">claims::logical_operator::LogicalAggregation::GetPlanContext()</a>, <a class="el" href="structAttribute.html#a98ce5489420d1e8595a4026e05d2cff1">isANY()</a>, <a class="el" href="structAttribute.html#a023bcb159de431ba2248f6763aa2df9b">isNULL()</a>, <a class="el" href="classLogicalCSBIndexBuilding.html#a30532c087e70264faf2cd9b1b94d9a7e">LogicalCSBIndexBuilding::LogicalCSBIndexBuilding()</a>, <a class="el" href="classLogicalIndexScan.html#a49e4d56de40506fbef13fae63ccf3be7">LogicalIndexScan::LogicalIndexScan()</a>, <a class="el" href="structAttribute.html#af8e163567d51ee97bfcd108fff470ce1">operator!=()</a>, <a class="el" href="structAttribute.html#a41ee8e2fbe496359665f2e5f8672ea84">operator&lt;()</a>, <a class="el" href="structAttribute.html#a064951750ebc690473fcfa0e72b3d423">operator=()</a>, <a class="el" href="structAttribute.html#af9904e565bbc096abc660feed73ad43d">operator==()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a6c12c84550f16965748e837b207a5480">claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()</a>, <a class="el" href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">IndexManager::serialize()</a>, <a class="el" href="structAttribute.html#a6cd6f19886e3eb0d703b3f7f94836c91">serialize()</a>, and <a class="el" href="structAttribute.html#a28ab087bb886728670e4ae5791bc2ea8">~Attribute()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a44decd9ff14a5d67764df8a8ea195bc4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Attribute::unique</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="structAttribute.html#a6cc78615c3440ecbfe39c3d8d3af4028">Attribute()</a>, <a class="el" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize()</a>, <a class="el" href="structAttribute.html#a200fa46f26d6e14055fe90680cca23a6">isUnique()</a>, <a class="el" href="structAttribute.html#a064951750ebc690473fcfa0e72b3d423">operator=()</a>, <a class="el" href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">IndexManager::serialize()</a>, and <a class="el" href="structAttribute.html#a6cd6f19886e3eb0d703b3f7f94836c91">serialize()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>Catalog/<a class="el" href="Attribute_8h_source.html">Attribute.h</a></li>
 </ul>

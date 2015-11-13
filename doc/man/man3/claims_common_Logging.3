@@ -1,4 +1,4 @@
-.TH "claims::common::Logging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "claims::common::Logging" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,14 +6,27 @@ claims::common::Logging \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <logging\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBLogging\fP (char *program)"
 .br
+.ti -1c
+.RI "\fB~Logging\fP ()"
+.br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Logging::Logging (char *program)\fC [explicit]\fP"
+
+.PP
+References claims::common::GlogSignalHandle(), LOGDIR, and MKDIR\&.
+.SS "Logging::~Logging ()"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

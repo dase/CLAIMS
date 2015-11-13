@@ -1,4 +1,4 @@
-.TH "ResourceManagerMaster" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ResourceManagerMaster" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ResourceManagerMaster \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ResourceManagerMaster\&.h>\fP
 .SS "Classes"
 
 .in +1c
@@ -17,31 +19,141 @@ ResourceManagerMaster \-
 
 .in +1c
 .ti -1c
-.RI "NodeID \fBRegisterNewSlave\fP (\fBNodeAddress\fP)"
+.RI "\fBResourceManagerMaster\fP ()"
 .br
 .ti -1c
-.RI "bool \fBRegisterDiskBuget\fP (NodeID report_node_id, unsigned size_in_mb)"
+.RI "virtual \fB~ResourceManagerMaster\fP ()"
 .br
 .ti -1c
-.RI "bool \fBRegisterMemoryBuget\fP (NodeID report_node_id, unsigned size_in_mb)"
+.RI "\fBNodeID\fP \fBRegisterNewSlave\fP (\fBNodeAddress\fP)"
 .br
 .ti -1c
-.RI "std::vector< NodeID > \fBgetSlaveIDList\fP ()"
+.RI "bool \fBRegisterDiskBuget\fP (\fBNodeID\fP report_node_id, unsigned size_in_mb)"
 .br
 .ti -1c
-.RI "bool \fBApplyDiskBuget\fP (NodeID target, unsigned size_in_mb)"
+.RI "bool \fBRegisterMemoryBuget\fP (\fBNodeID\fP report_node_id, unsigned size_in_mb)"
 .br
 .ti -1c
-.RI "bool \fBReturnDiskBuget\fP (NodeID target, unsigned size_in_mb)"
+.RI "std::vector< \fBNodeID\fP > \fBgetSlaveIDList\fP ()"
 .br
 .ti -1c
-.RI "bool \fBApplyMemoryBuget\fP (NodeID target, unsigned size_in_mb)"
+.RI "bool \fBApplyDiskBuget\fP (\fBNodeID\fP target, unsigned size_in_mb)"
 .br
 .ti -1c
-.RI "bool \fBReturnMemoryBuget\fP (NodeID target, unsigned size_in_mb)"
+.RI "bool \fBReturnDiskBuget\fP (\fBNodeID\fP target, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "bool \fBApplyMemoryBuget\fP (\fBNodeID\fP target, unsigned size_in_mb)"
+.br
+.ti -1c
+.RI "bool \fBReturnMemoryBuget\fP (\fBNodeID\fP target, unsigned size_in_mb)"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "boost::unordered_map< \fBNodeID\fP, 
+.br
+\fBInstanceResourceInfo\fP * > \fBnode_to_resourceinfo_\fP"
+.br
+.ti -1c
+.RI "\fBNodeTracker\fP * \fBnode_tracker_\fP"
+.br
+.ti -1c
+.RI "\fBLogging\fP * \fBlogging_\fP"
+.br
+.ti -1c
+.RI "Theron::EndPoint * \fBendpoint_\fP"
+.br
+.ti -1c
+.RI "Theron::Framework * \fBframework\fP"
+.br
+.ti -1c
+.RI "\fBResourceManagerMasterActor\fP * \fBacter_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ResourceManagerMaster::ResourceManagerMaster ()"
+
+.PP
+References acter_, endpoint_, framework, Environment::getEndPoint(), NodeTracker::GetInstance(), Environment::getInstance(), logging_, and node_tracker_\&.
+.SS "ResourceManagerMaster::~ResourceManagerMaster ()\fC [virtual]\fP"
+
+.PP
+References acter_, framework, node_tracker_, NodeTracker::~NodeTracker(), and ResourceManagerMaster::ResourceManagerMasterActor::~ResourceManagerMasterActor()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ResourceManagerMaster::ApplyDiskBuget (\fBNodeID\fPtarget, unsignedsize_in_mb)"
+
+.PP
+References node_to_resourceinfo_\&.
+.PP
+Referenced by ProjectionBinding::BindingEntireProjection()\&.
+.SS "bool ResourceManagerMaster::ApplyMemoryBuget (\fBNodeID\fPtarget, unsignedsize_in_mb)"
+
+.PP
+References node_to_resourceinfo_\&.
+.PP
+Referenced by ProjectionBinding::BindingEntireProjection()\&.
+.SS "std::vector< \fBNodeID\fP > ResourceManagerMaster::getSlaveIDList ()"
+
+.PP
+References node_to_resourceinfo_\&.
+.PP
+Referenced by ProjectionBinding::BindingEntireProjection()\&.
+.SS "bool ResourceManagerMaster::RegisterDiskBuget (\fBNodeID\fPreport_node_id, unsignedsize_in_mb)"
+
+.PP
+References Logging::log(), logging_, and node_to_resourceinfo_\&.
+.SS "bool ResourceManagerMaster::RegisterMemoryBuget (\fBNodeID\fPreport_node_id, unsignedsize_in_mb)"
+
+.PP
+References Logging::log(), logging_, and node_to_resourceinfo_\&.
+.SS "\fBNodeID\fP ResourceManagerMaster::RegisterNewSlave (\fBNodeAddress\fPnew_slave_address)"
+
+.PP
+References Logging::elog(), NodeAddress::ip, Logging::log(), logging_, node_to_resourceinfo_, node_tracker_, NodeAddress::port, and NodeTracker::RegisterNode()\&.
+.SS "bool ResourceManagerMaster::ReturnDiskBuget (\fBNodeID\fPtarget, unsignedsize_in_mb)"
+
+.PP
+References node_to_resourceinfo_\&.
+.PP
+Referenced by ProjectionBinding::UnbindingEntireProjection()\&.
+.SS "bool ResourceManagerMaster::ReturnMemoryBuget (\fBNodeID\fPtarget, unsignedsize_in_mb)"
+
+.PP
+References node_to_resourceinfo_\&.
+.PP
+Referenced by ProjectionBinding::UnbindingEntireProjection()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBResourceManagerMasterActor\fP* ResourceManagerMaster::acter_\fC [private]\fP"
+
+.PP
+Referenced by ResourceManagerMaster(), and ~ResourceManagerMaster()\&.
+.SS "Theron::EndPoint* ResourceManagerMaster::endpoint_\fC [private]\fP"
+
+.PP
+Referenced by ResourceManagerMaster()\&.
+.SS "Theron::Framework* ResourceManagerMaster::framework\fC [private]\fP"
+
+.PP
+Referenced by ResourceManagerMaster(), and ~ResourceManagerMaster()\&.
+.SS "\fBLogging\fP* ResourceManagerMaster::logging_\fC [private]\fP"
+
+.PP
+Referenced by RegisterDiskBuget(), RegisterMemoryBuget(), RegisterNewSlave(), and ResourceManagerMaster()\&.
+.SS "boost::unordered_map<\fBNodeID\fP,\fBInstanceResourceInfo\fP*> ResourceManagerMaster::node_to_resourceinfo_\fC [private]\fP"
+
+.PP
+Referenced by ApplyDiskBuget(), ApplyMemoryBuget(), getSlaveIDList(), RegisterDiskBuget(), RegisterMemoryBuget(), RegisterNewSlave(), ReturnDiskBuget(), and ReturnMemoryBuget()\&.
+.SS "\fBNodeTracker\fP* ResourceManagerMaster::node_tracker_\fC [private]\fP"
+
+.PP
+Referenced by RegisterNewSlave(), ResourceManagerMaster(), and ~ResourceManagerMaster()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

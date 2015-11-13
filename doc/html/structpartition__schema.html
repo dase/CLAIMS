@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: partition_schema Struct Reference</title>
+<title>Claims: partition_schema Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -115,55 +115,327 @@ $(document).ready(function(){initNavTree('structpartition__schema.html','');});
 <div class="title">partition_schema Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="partition__functions_8h_source.html">partition_functions.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:af600214472b5dbe28a88c40de36decc5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>partition_mode</b> { <b>hash</b>, 
-<b>broadcase</b>, 
-<b>range</b>
+<tr class="memitem:af600214472b5dbe28a88c40de36decc5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_mode</a> { <a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">hash</a>, 
+<a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">broadcase</a>, 
+<a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5ab1c92c358e53e2ebd18707a37d4c2371">range</a>
  }</td></tr>
 <tr class="separator:af600214472b5dbe28a88c40de36decc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a99b3ef77114b2168b089c2af5ed34f4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99b3ef77114b2168b089c2af5ed34f4d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isHashPartition</b> () const </td></tr>
+<tr class="memitem:a99b3ef77114b2168b089c2af5ed34f4d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a99b3ef77114b2168b089c2af5ed34f4d">isHashPartition</a> () const </td></tr>
 <tr class="separator:a99b3ef77114b2168b089c2af5ed34f4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a569175983e00f592b76278d58f34d200"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a569175983e00f592b76278d58f34d200"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isBoardcastPartition</b> () const </td></tr>
+<tr class="memitem:a569175983e00f592b76278d58f34d200"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a569175983e00f592b76278d58f34d200">isBoardcastPartition</a> () const </td></tr>
 <tr class="separator:a569175983e00f592b76278d58f34d200"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ee2f4918b63ab61b2e40d9e891ea568"><td class="memTemplParams" colspan="2"><a class="anchor" id="a8ee2f4918b63ab61b2e40d9e891ea568"></a>
-template&lt;class Archive &gt; </td></tr>
-<tr class="memitem:a8ee2f4918b63ab61b2e40d9e891ea568"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>serialize</b> (Archive &amp;ar, const unsigned int version)</td></tr>
+<tr class="memitem:a8ee2f4918b63ab61b2e40d9e891ea568"><td class="memTemplParams" colspan="2">template&lt;class Archive &gt; </td></tr>
+<tr class="memitem:a8ee2f4918b63ab61b2e40d9e891ea568"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a8ee2f4918b63ab61b2e40d9e891ea568">serialize</a> (Archive &amp;ar, const unsigned int version)</td></tr>
 <tr class="separator:a8ee2f4918b63ab61b2e40d9e891ea568"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a421251c985d2c3af249cc3e3c577aeac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a421251c985d2c3af249cc3e3c577aeac"></a>
-static <a class="el" href="structpartition__schema.html">partition_schema</a>&#160;</td><td class="memItemRight" valign="bottom"><b>set_hash_partition</b> (int _partition_key_index=0)</td></tr>
+<tr class="memitem:a421251c985d2c3af249cc3e3c577aeac"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structpartition__schema.html">partition_schema</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a421251c985d2c3af249cc3e3c577aeac">set_hash_partition</a> (int _partition_key_index=0)</td></tr>
 <tr class="separator:a421251c985d2c3af249cc3e3c577aeac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4012c2d23f1eb20671f18d4c33bf293"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4012c2d23f1eb20671f18d4c33bf293"></a>
-static <a class="el" href="structpartition__schema.html">partition_schema</a>&#160;</td><td class="memItemRight" valign="bottom"><b>set_broadcast_partition</b> ()</td></tr>
+<tr class="memitem:ab4012c2d23f1eb20671f18d4c33bf293"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structpartition__schema.html">partition_schema</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#ab4012c2d23f1eb20671f18d4c33bf293">set_broadcast_partition</a> ()</td></tr>
 <tr class="separator:ab4012c2d23f1eb20671f18d4c33bf293"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f7db96443c0d3d0e7f3d0dd9c78bd1c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f7db96443c0d3d0e7f3d0dd9c78bd1c"></a>
-static <a class="el" href="structpartition__schema.html">partition_schema</a>&#160;</td><td class="memItemRight" valign="bottom"><b>set_range_partition</b> (int _number_of_ranges)</td></tr>
+<tr class="memitem:a9f7db96443c0d3d0e7f3d0dd9c78bd1c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structpartition__schema.html">partition_schema</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a9f7db96443c0d3d0e7f3d0dd9c78bd1c">set_range_partition</a> (int _number_of_ranges)</td></tr>
 <tr class="separator:a9f7db96443c0d3d0e7f3d0dd9c78bd1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a202631b9d2e6038365d3e63de141f6ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a202631b9d2e6038365d3e63de141f6ed"></a>
-partition_mode&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b></td></tr>
+<tr class="memitem:a202631b9d2e6038365d3e63de141f6ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a></td></tr>
 <tr class="separator:a202631b9d2e6038365d3e63de141f6ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bec669d65e189c5c5cbc5826e2d2e51"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5bec669d65e189c5c5cbc5826e2d2e51"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>partition_key_index</b></td></tr>
+<tr class="memitem:a5bec669d65e189c5c5cbc5826e2d2e51"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a></td></tr>
 <tr class="separator:a5bec669d65e189c5c5cbc5826e2d2e51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization::access</b></td></tr>
+<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structpartition__schema.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a></td></tr>
 <tr class="separator:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="af600214472b5dbe28a88c40de36decc5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_schema::partition_mode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda"></a>hash</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295"></a>broadcase</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="af600214472b5dbe28a88c40de36decc5ab1c92c358e53e2ebd18707a37d4c2371"></a>range</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a569175983e00f592b76278d58f34d200"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool partition_schema::isBoardcastPartition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">broadcase</a>, and <a class="el" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a414cd1be4cc147988c06de5af37c776c">claims::physical_operator::ExchangeSenderMaterialized::Next()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a6c2f8f9457c02cad507dc39b2d3580ef">claims::physical_operator::ExchangeSenderPipeline::Next()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structpartition__schema_a569175983e00f592b76278d58f34d200_icgraph.png" border="0" usemap="#structpartition__schema_a569175983e00f592b76278d58f34d200_icgraph" alt=""/></div>
+<map name="structpartition__schema_a569175983e00f592b76278d58f34d200_icgraph" id="structpartition__schema_a569175983e00f592b76278d58f34d200_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a414cd1be4cc147988c06de5af37c776c" title="claims::physical_operator\l::ExchangeSenderMaterialized::Next" alt="" coords="253,5,488,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a6c2f8f9457c02cad507dc39b2d3580ef" title="claims::physical_operator\l::ExchangeSenderPipeline::Next" alt="" coords="265,70,476,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a99b3ef77114b2168b089c2af5ed34f4d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool partition_schema::isHashPartition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">hash</a>, and <a class="el" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a414cd1be4cc147988c06de5af37c776c">claims::physical_operator::ExchangeSenderMaterialized::Next()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a6c2f8f9457c02cad507dc39b2d3580ef">claims::physical_operator::ExchangeSenderPipeline::Next()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structpartition__schema_a99b3ef77114b2168b089c2af5ed34f4d_icgraph.png" border="0" usemap="#structpartition__schema_a99b3ef77114b2168b089c2af5ed34f4d_icgraph" alt=""/></div>
+<map name="structpartition__schema_a99b3ef77114b2168b089c2af5ed34f4d_icgraph" id="structpartition__schema_a99b3ef77114b2168b089c2af5ed34f4d_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a414cd1be4cc147988c06de5af37c776c" title="claims::physical_operator\l::ExchangeSenderMaterialized::Next" alt="" coords="224,5,459,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a6c2f8f9457c02cad507dc39b2d3580ef" title="claims::physical_operator\l::ExchangeSenderPipeline::Next" alt="" coords="236,70,447,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8ee2f4918b63ab61b2e40d9e891ea568"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Archive &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void partition_schema::serialize </td>
+          <td>(</td>
+          <td class="paramtype">Archive &amp;&#160;</td>
+          <td class="paramname"><em>ar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>version</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>, and <a class="el" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab4012c2d23f1eb20671f18d4c33bf293"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structpartition__schema.html">partition_schema</a> partition_schema::set_broadcast_partition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">broadcase</a>, <a class="el" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>, and <a class="el" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalCrossJoin.html#a89f8cf62d9ed1da2ab7b92c4b44f9339">claims::logical_operator::LogicalCrossJoin::GenerateChildPhysicalQueryPlan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structpartition__schema_ab4012c2d23f1eb20671f18d4c33bf293_icgraph.png" border="0" usemap="#structpartition__schema_ab4012c2d23f1eb20671f18d4c33bf293_icgraph" alt=""/></div>
+<map name="structpartition__schema_ab4012c2d23f1eb20671f18d4c33bf293_icgraph" id="structpartition__schema_ab4012c2d23f1eb20671f18d4c33bf293_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalCrossJoin.html#a89f8cf62d9ed1da2ab7b92c4b44f9339" title="Method description : generate the child sub physical plan for the Cartesian product. " alt="" coords="200,5,421,61"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalCrossJoin.html#a99dc3e08ba1ff1a785a2087db0f9f868" title="Method description: get the sub physical execution plan of the current local operator. " alt="" coords="469,13,704,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a421251c985d2c3af249cc3e3c577aeac"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structpartition__schema.html">partition_schema</a> partition_schema::set_hash_partition </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>_partition_key_index</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">hash</a>, <a class="el" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>, and <a class="el" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f">claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578">claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe">claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a2c2cdd0aa638a1651743e8256ff23f32">claims::logical_operator::LogicalQueryPlanRoot::GetPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0">claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalSort.html#ae37e28818d6f2427854235888dec572f">claims::logical_operator::LogicalSort::GetPhysicalPlan()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1LogicalAggregation.html#a0da9517a1f3811848f2423d4efd39c4e">claims::logical_operator::LogicalAggregation::GetPhysicalPlan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="structpartition__schema_a421251c985d2c3af249cc3e3c577aeac_icgraph.png" border="0" usemap="#structpartition__schema_a421251c985d2c3af249cc3e3c577aeac_icgraph" alt=""/></div>
+<map name="structpartition__schema_a421251c985d2c3af249cc3e3c577aeac_icgraph" id="structpartition__schema_a421251c985d2c3af249cc3e3c577aeac_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="200,5,451,46"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578" title="claims::logical_operator\l::LogicalFilter::GetOptimalPhysicalPlan" alt="" coords="200,70,451,111"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe" title="Method description: NOT USED NOW !!! get the optimal physical plan. " alt="" coords="239,136,411,192"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a2c2cdd0aa638a1651743e8256ff23f32" title="Method description: generate a few physical operators according to this logical operator. " alt="" coords="245,216,405,272"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0" title="claims::logical_operator\l::LogicalEqualJoin::GetPhysicalPlan" alt="" coords="209,297,442,338"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1LogicalSort.html#ae37e28818d6f2427854235888dec572f" title="Method description: Generate logical query plan and return physical operator instance. " alt="" coords="225,362,425,403"/><area shape="rect" id="node8" href="classclaims_1_1logical__operator_1_1LogicalAggregation.html#a0da9517a1f3811848f2423d4efd39c4e" title="claims::logical_operator\l::LogicalAggregation::GetPhysicalPlan" alt="" coords="203,427,448,469"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9f7db96443c0d3d0e7f3d0dd9c78bd1c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structpartition__schema.html">partition_schema</a> partition_schema::set_range_partition </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>_number_of_ranges</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class boost::serialization::access</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a202631b9d2e6038365d3e63de141f6ed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_mode</a> partition_schema::mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="structpartition__schema.html#a569175983e00f592b76278d58f34d200">isBoardcastPartition()</a>, <a class="el" href="structpartition__schema.html#a99b3ef77114b2168b089c2af5ed34f4d">isHashPartition()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a97147c6f400c956e2ffceec6e1a0594d">claims::physical_operator::ExchangeMerger::Print()</a>, <a class="el" href="structpartition__schema.html#a8ee2f4918b63ab61b2e40d9e891ea568">serialize()</a>, <a class="el" href="structpartition__schema.html#ab4012c2d23f1eb20671f18d4c33bf293">set_broadcast_partition()</a>, and <a class="el" href="structpartition__schema.html#a421251c985d2c3af249cc3e3c577aeac">set_hash_partition()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5bec669d65e189c5c5cbc5826e2d2e51"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned partition_schema::partition_key_index</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a6f1cb5771c0f1627463969d39481066a">claims::physical_operator::ExchangeMerger::ExchangeMerger()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a8c9802847b949ce4ac829e3201619ba1">claims::physical_operator::ExchangeSenderPipeline::ExchangeSenderPipeline()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a414cd1be4cc147988c06de5af37c776c">claims::physical_operator::ExchangeSenderMaterialized::Next()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a6c2f8f9457c02cad507dc39b2d3580ef">claims::physical_operator::ExchangeSenderPipeline::Next()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a97147c6f400c956e2ffceec6e1a0594d">claims::physical_operator::ExchangeMerger::Print()</a>, <a class="el" href="structpartition__schema.html#a8ee2f4918b63ab61b2e40d9e891ea568">serialize()</a>, <a class="el" href="structpartition__schema.html#ab4012c2d23f1eb20671f18d4c33bf293">set_broadcast_partition()</a>, and <a class="el" href="structpartition__schema.html#a421251c985d2c3af249cc3e3c577aeac">set_hash_partition()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>common/<a class="el" href="partition__functions_8h_source.html">partition_functions.h</a></li>
 </ul>

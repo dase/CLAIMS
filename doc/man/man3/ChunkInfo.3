@@ -1,4 +1,4 @@
-.TH "ChunkInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ChunkInfo" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ChunkInfo \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <BlockManager\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
@@ -16,7 +18,15 @@ ChunkInfo \-
 .RI "void * \fBhook\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBChunkID\fP ChunkInfo::chunkId"
+
+.SS "void* ChunkInfo::hook"
+
+.PP
+Referenced by BlockManager::getLocal(), and BlockManager::loadFromHdfs()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

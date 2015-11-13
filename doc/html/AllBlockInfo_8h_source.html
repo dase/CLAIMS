@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: storage/AllBlockInfo.h Source File</title>
+<title>Claims: storage/AllBlockInfo.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('AllBlockInfo_8h_source.html','');});
 <div class="title">AllBlockInfo.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="AllBlockInfo_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * AllBlockInfo.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2013-10-26</span></div>
@@ -133,7 +133,7 @@ $(document).ready(function(){initNavTree('AllBlockInfo_8h_source.html','');});
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment"> * */</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classAllBlockInfo.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classAllBlockInfo.html">AllBlockInfo</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">static</span> <a class="code" href="classAllBlockInfo.html">AllBlockInfo</a>* getInstance(){</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classAllBlockInfo.html#a5a2463a7cd8c62c80eea828a0601d343">   28</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classAllBlockInfo.html">AllBlockInfo</a>* <a class="code" href="classAllBlockInfo.html#a5a2463a7cd8c62c80eea828a0601d343">getInstance</a>(){</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">if</span>(abi_==0){</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            abi_=<span class="keyword">new</span> <a class="code" href="classAllBlockInfo.html">AllBlockInfo</a>();</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        }</div>
@@ -147,20 +147,24 @@ $(document).ready(function(){initNavTree('AllBlockInfo_8h_source.html','');});
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classAllBlockInfo.html">AllBlockInfo</a>();</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">static</span> <a class="code" href="classAllBlockInfo.html">AllBlockInfo</a> *abi_;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    vector&lt;string&gt; vv_;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classLock.html">Lock</a> lock_;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classAllBlockInfo.html#a8db8e7369efce8601cdb7828860e87e1">   42</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classAllBlockInfo.html">AllBlockInfo</a> *<a class="code" href="classAllBlockInfo.html#a8db8e7369efce8601cdb7828860e87e1">abi_</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classAllBlockInfo.html#ad062dc89c16ba3970fe8b64afe701e0f">   43</a></span>&#160;    vector&lt;string&gt; <a class="code" href="classAllBlockInfo.html#ad062dc89c16ba3970fe8b64afe701e0f">vv_</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classAllBlockInfo.html#a6e317486c2e2a4f346d99fab27de4f09">   44</a></span>&#160;    <a class="code" href="classLock.html">Lock</a> <a class="code" href="classAllBlockInfo.html#a6e317486c2e2a4f346d99fab27de4f09">lock_</a>;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ALLBLOCKINFO_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classAllBlockInfo_html_ad062dc89c16ba3970fe8b64afe701e0f"><div class="ttname"><a href="classAllBlockInfo.html#ad062dc89c16ba3970fe8b64afe701e0f">AllBlockInfo::vv_</a></div><div class="ttdeci">vector&lt; string &gt; vv_</div><div class="ttdef"><b>Definition:</b> AllBlockInfo.h:43</div></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
+<div class="ttc" id="classAllBlockInfo_html_a8db8e7369efce8601cdb7828860e87e1"><div class="ttname"><a href="classAllBlockInfo.html#a8db8e7369efce8601cdb7828860e87e1">AllBlockInfo::abi_</a></div><div class="ttdeci">static AllBlockInfo * abi_</div><div class="ttdef"><b>Definition:</b> AllBlockInfo.h:42</div></div>
 <div class="ttc" id="classAllBlockInfo_html"><div class="ttname"><a href="classAllBlockInfo.html">AllBlockInfo</a></div><div class="ttdef"><b>Definition:</b> AllBlockInfo.h:26</div></div>
+<div class="ttc" id="classAllBlockInfo_html_a6e317486c2e2a4f346d99fab27de4f09"><div class="ttname"><a href="classAllBlockInfo.html#a6e317486c2e2a4f346d99fab27de4f09">AllBlockInfo::lock_</a></div><div class="ttdeci">Lock lock_</div><div class="ttdef"><b>Definition:</b> AllBlockInfo.h:44</div></div>
+<div class="ttc" id="classAllBlockInfo_html_a5a2463a7cd8c62c80eea828a0601d343"><div class="ttname"><a href="classAllBlockInfo.html#a5a2463a7cd8c62c80eea828a0601d343">AllBlockInfo::getInstance</a></div><div class="ttdeci">static AllBlockInfo * getInstance()</div><div class="ttdef"><b>Definition:</b> AllBlockInfo.h:28</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_70f20ecf11358dff00a0daf546d3147e.html">storage</a></li><li class="navelem"><b>AllBlockInfo.h</b></li>
+    <li class="navelem"><a class="el" href="dir_70f20ecf11358dff00a0daf546d3147e.html">storage</a></li><li class="navelem"><a class="el" href="AllBlockInfo_8h.html">AllBlockInfo.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

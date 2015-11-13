@@ -1,4 +1,4 @@
-.TH "Dropdatabase_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Dropdatabase_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Dropdatabase_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBdroptype\fP"
@@ -22,7 +24,25 @@ Dropdatabase_stmt \-
 .RI "char * \fBname\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Dropdatabase_stmt::check"
+
+.PP
+Referenced by newDropDatabase()\&.
+.SS "int Dropdatabase_stmt::droptype"
+
+.PP
+Referenced by newDropDatabase()\&.
+.SS "char* Dropdatabase_stmt::name"
+
+.PP
+Referenced by newDropDatabase()\&.
+.SS "\fBnodetype\fP Dropdatabase_stmt::type"
+
+.PP
+Referenced by newDropDatabase()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

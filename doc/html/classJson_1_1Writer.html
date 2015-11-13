@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Json::Writer Class Reference</title>
+<title>Claims: Json::Writer Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -119,25 +119,74 @@ $(document).ready(function(){initNavTree('classJson_1_1Writer.html','');});
 <div class="dynheader">
 Inheritance diagram for Json::Writer:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classJson_1_1Writer.png" usemap="#Json::Writer_map" alt=""/>
-  <map id="Json::Writer_map" name="Json::Writer_map">
-<area href="classJson_1_1FastWriter.html" title="Outputs a Value in JSON format without formatting (not human friendly). " alt="Json::FastWriter" shape="rect" coords="0,56,114,80"/>
-<area href="classJson_1_1StyledWriter.html" title="Writes a Value in JSON format in a human friendly way. " alt="Json::StyledWriter" shape="rect" coords="124,56,238,80"/>
-</map>
- </div></div>
+<div class="center"><img src="classJson_1_1Writer__inherit__graph.png" border="0" usemap="#Json_1_1Writer_inherit__map" alt="Inheritance graph"/></div>
+<map name="Json_1_1Writer_inherit__map" id="Json_1_1Writer_inherit__map">
+<area shape="rect" id="node2" href="classJson_1_1FastWriter.html" title="Outputs a Value in JSON format without formatting (not human friendly). " alt="" coords="5,80,123,107"/><area shape="rect" id="node3" href="classJson_1_1StyledWriter.html" title="Writes a Value in JSON format in a human friendly way. " alt="" coords="148,80,279,107"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7b2273a4ffd6f32b369ac8a53b7b5a0d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b2273a4ffd6f32b369ac8a53b7b5a0d"></a>
-virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;root)=0</td></tr>
+<tr class="memitem:a3e618564336f26b14921f0d840db668c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1Writer.html#a3e618564336f26b14921f0d840db668c">~Writer</a> ()</td></tr>
+<tr class="separator:a3e618564336f26b14921f0d840db668c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b2273a4ffd6f32b369ac8a53b7b5a0d"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1Writer.html#a7b2273a4ffd6f32b369ac8a53b7b5a0d">write</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;root)=0</td></tr>
 <tr class="separator:a7b2273a4ffd6f32b369ac8a53b7b5a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class for writers. </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a3e618564336f26b14921f0d840db668c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Writer::~Writer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a7b2273a4ffd6f32b369ac8a53b7b5a0d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string Json::Writer::write </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classJson_1_1StyledWriter.html#a56f0fd80f60272b3f3c85690aae66e7d">Json::StyledWriter</a>, and <a class="el" href="classJson_1_1FastWriter.html#aa66218a56447222f91d64db618935a19">Json::FastWriter</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>Client/json/<a class="el" href="json_8h_source.html">json.h</a></li>
-<li>Client/jsoncpp.cpp</li>
+<li>Client/<a class="el" href="jsoncpp_8cpp.html">jsoncpp.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

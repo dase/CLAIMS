@@ -1,4 +1,4 @@
-.TH "ASTParserLogging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ASTParserLogging" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ASTParserLogging \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Logging\&.h>\fP
 .SS "Static Public Member Functions"
 
 .in +1c
@@ -16,7 +18,21 @@ ASTParserLogging \-
 .RI "static void \fBelog\fP (const char *format,\&.\&.\&.)"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void ASTParserLogging::elog (const char *format, \&.\&.\&.)\fC [static]\fP"
+
+.PP
+References RawElog()\&.
+.PP
+Referenced by ExecuteLogicalQueryPlan(), StreamBuffer::MoveForwardEnd(), and ShowTable()\&.
+.SS "void ASTParserLogging::log (const char *format, \&.\&.\&.)\fC [static]\fP"
+
+.PP
+References RawLog()\&.
+.PP
+Referenced by ExecuteLogicalQueryPlan(), InsertData(), and LoadData()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

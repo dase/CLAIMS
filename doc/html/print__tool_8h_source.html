@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/print_tool.h Source File</title>
+<title>Claims: utility/print_tool.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('print__tool_8h_source.html','');});
 <div class="title">print_tool.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="print__tool_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * print_tool.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Sep 20, 2014</span></div>
@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('print__tool_8h_source.html','');});
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PRINT_TOOL_H_</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;stdarg.h&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> p_red(<span class="keyword">const</span> <span class="keywordtype">char</span>* format,...){</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="print__tool_8h.html#a8cb81e4e659f720fb9e5fd600da05626">   17</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="print__tool_8h.html#a8cb81e4e659f720fb9e5fd600da05626">p_red</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* format,...){</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    va_list arg;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    va_start (arg, format);</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    printf(<span class="stringliteral">&quot;\033[;31m&quot;</span>);</div>
@@ -126,7 +126,7 @@ $(document).ready(function(){initNavTree('print__tool_8h_source.html','');});
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    va_end (arg);</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> p_green(<span class="keyword">const</span> <span class="keywordtype">char</span>* format,...){</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="print__tool_8h.html#a1355389fc213851450e72242776b5105">   26</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="print__tool_8h.html#a1355389fc213851450e72242776b5105">p_green</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* format,...){</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    va_list arg;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    va_start (arg, format);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    printf(<span class="stringliteral">&quot;\033[;32m&quot;</span>);</div>
@@ -139,12 +139,14 @@ $(document).ready(function(){initNavTree('print__tool_8h_source.html','');});
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* PRINT_TOOL_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="print__tool_8h_html_a8cb81e4e659f720fb9e5fd600da05626"><div class="ttname"><a href="print__tool_8h.html#a8cb81e4e659f720fb9e5fd600da05626">p_red</a></div><div class="ttdeci">void p_red(const char *format,...)</div><div class="ttdef"><b>Definition:</b> print_tool.h:17</div></div>
+<div class="ttc" id="print__tool_8h_html_a1355389fc213851450e72242776b5105"><div class="ttname"><a href="print__tool_8h.html#a1355389fc213851450e72242776b5105">p_green</a></div><div class="ttdeci">void p_green(const char *format,...)</div><div class="ttdef"><b>Definition:</b> print_tool.h:26</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>print_tool.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="print__tool_8h.html">print_tool.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

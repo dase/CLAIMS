@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/ThreadPool.h Source File</title>
+<title>Claims: utility/ThreadPool.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ThreadPool_8h_source.html','');});
 <div class="title">ThreadPool.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ThreadPool_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * ThreadPool.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2014-8-17</span></div>
@@ -129,20 +129,20 @@ $(document).ready(function(){initNavTree('ThreadPool_8h_source.html','');});
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">using namespace </span>std;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> g_thread_pool_used = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="ThreadPool_8h.html#ab30bf6c6ce2c7c7684b4292cf07e4080">   24</a></span>&#160;<span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="ThreadPool_8h.html#ab30bf6c6ce2c7c7684b4292cf07e4080">g_thread_pool_used</a> = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">//static bool g_thread_pool_used = false;</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classThreadPool.html">   27</a></span>&#160;<span class="keyword">class </span><a class="code" href="classThreadPool.html">ThreadPool</a></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">struct </span>Task{</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        Task();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        Task(<span class="keywordtype">void</span>* (*f)(<span class="keywordtype">void</span> *), <span class="keywordtype">void</span> *a, <span class="keywordtype">bool</span> e):func(f),arg(a),end(e){}</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structThreadPool_1_1Task.html">   30</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structThreadPool_1_1Task.html">Task</a>{</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="structThreadPool_1_1Task.html">Task</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structThreadPool_1_1Task.html#a5098d87f9fe97d29a2252009a4f20f41">   32</a></span>&#160;        <a class="code" href="structThreadPool_1_1Task.html#a5098d87f9fe97d29a2252009a4f20f41">Task</a>(<span class="keywordtype">void</span>* (*<a class="code" href="rename_8h.html#a8dd5ae91af204ce196b8767f7780b5af">f</a>)(<span class="keywordtype">void</span> *), <span class="keywordtype">void</span> *a, <span class="keywordtype">bool</span> e):func(<a class="code" href="rename_8h.html#a8dd5ae91af204ce196b8767f7780b5af">f</a>),arg(a),end(e){}</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">void</span>* (*func)(<span class="keywordtype">void</span> *arg);   <span class="comment">// pointer to function</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">void</span> *arg;                      <span class="comment">// the parameter of function</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">bool</span> end;                       <span class="comment">// whether exit thread</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> destroy_task(Task *task){</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structThreadPool_1_1Task.html#a1b787a6c659ea3957b9d791cc041bf7e">   34</a></span>&#160;        <span class="keywordtype">void</span>* (*func)(<span class="keywordtype">void</span> *arg);   <span class="comment">// pointer to function</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structThreadPool_1_1Task.html#adeb94a2e5861c79148790750f306b360">   35</a></span>&#160;        <span class="keywordtype">void</span> *<a class="code" href="structThreadPool_1_1Task.html#adeb94a2e5861c79148790750f306b360">arg</a>;                      <span class="comment">// the parameter of function</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structThreadPool_1_1Task.html#afd6f56fd985c16f5dc19dfb8f0ccdf98">   36</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="structThreadPool_1_1Task.html#afd6f56fd985c16f5dc19dfb8f0ccdf98">end</a>;                       <span class="comment">// whether exit thread</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structThreadPool_1_1Task.html#a54748c6723a2b6b6a3639bea7c2ddcf9">   37</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structThreadPool_1_1Task.html#a54748c6723a2b6b6a3639bea7c2ddcf9">destroy_task</a>(<a class="code" href="structThreadPool_1_1Task.html">Task</a> *task){</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="comment">// todo:the arg has no specified type</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">//          delete task-&gt;arg;</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
@@ -168,31 +168,48 @@ $(document).ready(function(){initNavTree('ThreadPool_8h_source.html','');});
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">//  attfinity_start_cpu;</span></div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    sem_t undo_task_sem;    <span class="comment">// undo task count</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classThreadPool.html#ab7638baef2a9609095ccfe4874c34429">   63</a></span>&#160;    sem_t <a class="code" href="classThreadPool.html#ab7638baef2a9609095ccfe4874c34429">undo_task_sem</a>;    <span class="comment">// undo task count</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    pthread_t *thread_list_;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classThreadPool.html#aee453d9e44011ff38118d4140e73f42e">   65</a></span>&#160;    pthread_t *<a class="code" href="classThreadPool.html#aee453d9e44011ff38118d4140e73f42e">thread_list_</a>;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    queue&lt;Task*&gt; task_queue_;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    pthread_mutex_t task_queue_lock;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classThreadPool.html#a228172a1a7088798071b15e28b6f6b2d">   67</a></span>&#160;    queue&lt;Task*&gt; <a class="code" href="classThreadPool.html#a228172a1a7088798071b15e28b6f6b2d">task_queue_</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classThreadPool.html#ae338fedd3df57b65969983426069c984">   68</a></span>&#160;    pthread_mutex_t <a class="code" href="classThreadPool.html#ae338fedd3df57b65969983426069c984">task_queue_lock</a>;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">int</span> thread_count;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">int</span> free_thread_count;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    pthread_mutex_t free_thread_count_lock;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classThreadPool.html#a2afae09e8cf76646af1407cdb63493be">   70</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classThreadPool.html#a2afae09e8cf76646af1407cdb63493be">thread_count</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classThreadPool.html#a0c715ae1dd0bd5bdd57775f5e007dbbc">   71</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classThreadPool.html#a0c715ae1dd0bd5bdd57775f5e007dbbc">free_thread_count</a>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classThreadPool.html#a8c1338201b380b36fdf9b4c5c9cb6170">   72</a></span>&#160;    pthread_mutex_t <a class="code" href="classThreadPool.html#a8c1338201b380b36fdf9b4c5c9cb6170">free_thread_count_lock</a>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">int</span> task_count;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">int</span> undo_task_count;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    pthread_mutex_t undo_task_count_lock;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classThreadPool.html#ab1a9effd0068882234421f93d56e0fcf">   74</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classThreadPool.html#ab1a9effd0068882234421f93d56e0fcf">task_count</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classThreadPool.html#a353473262e64d140c3d066966ba47fe7">   75</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classThreadPool.html#a353473262e64d140c3d066966ba47fe7">undo_task_count</a>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classThreadPool.html#a37eccfa184107c76489187737e03338c">   76</a></span>&#160;    pthread_mutex_t <a class="code" href="classThreadPool.html#a37eccfa184107c76489187737e03338c">undo_task_count_lock</a>;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;};</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* THREADPOOL_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="structThreadPool_1_1Task_html_afd6f56fd985c16f5dc19dfb8f0ccdf98"><div class="ttname"><a href="structThreadPool_1_1Task.html#afd6f56fd985c16f5dc19dfb8f0ccdf98">ThreadPool::Task::end</a></div><div class="ttdeci">bool end</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:36</div></div>
+<div class="ttc" id="classThreadPool_html_a8c1338201b380b36fdf9b4c5c9cb6170"><div class="ttname"><a href="classThreadPool.html#a8c1338201b380b36fdf9b4c5c9cb6170">ThreadPool::free_thread_count_lock</a></div><div class="ttdeci">pthread_mutex_t free_thread_count_lock</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:72</div></div>
+<div class="ttc" id="classThreadPool_html_aee453d9e44011ff38118d4140e73f42e"><div class="ttname"><a href="classThreadPool.html#aee453d9e44011ff38118d4140e73f42e">ThreadPool::thread_list_</a></div><div class="ttdeci">pthread_t * thread_list_</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:65</div></div>
+<div class="ttc" id="classThreadPool_html_a353473262e64d140c3d066966ba47fe7"><div class="ttname"><a href="classThreadPool.html#a353473262e64d140c3d066966ba47fe7">ThreadPool::undo_task_count</a></div><div class="ttdeci">int undo_task_count</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:75</div></div>
+<div class="ttc" id="classThreadPool_html_a0c715ae1dd0bd5bdd57775f5e007dbbc"><div class="ttname"><a href="classThreadPool.html#a0c715ae1dd0bd5bdd57775f5e007dbbc">ThreadPool::free_thread_count</a></div><div class="ttdeci">int free_thread_count</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:71</div></div>
+<div class="ttc" id="rename_8h_html_a8dd5ae91af204ce196b8767f7780b5af"><div class="ttname"><a href="rename_8h.html#a8dd5ae91af204ce196b8767f7780b5af">f</a></div><div class="ttdeci">int( f)(int)</div><div class="ttdef"><b>Definition:</b> rename.h:19</div></div>
 <div class="ttc" id="classThreadPool_html"><div class="ttname"><a href="classThreadPool.html">ThreadPool</a></div><div class="ttdef"><b>Definition:</b> ThreadPool.h:27</div></div>
+<div class="ttc" id="classThreadPool_html_ae338fedd3df57b65969983426069c984"><div class="ttname"><a href="classThreadPool.html#ae338fedd3df57b65969983426069c984">ThreadPool::task_queue_lock</a></div><div class="ttdeci">pthread_mutex_t task_queue_lock</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:68</div></div>
+<div class="ttc" id="classThreadPool_html_ab7638baef2a9609095ccfe4874c34429"><div class="ttname"><a href="classThreadPool.html#ab7638baef2a9609095ccfe4874c34429">ThreadPool::undo_task_sem</a></div><div class="ttdeci">sem_t undo_task_sem</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:63</div></div>
+<div class="ttc" id="classThreadPool_html_a228172a1a7088798071b15e28b6f6b2d"><div class="ttname"><a href="classThreadPool.html#a228172a1a7088798071b15e28b6f6b2d">ThreadPool::task_queue_</a></div><div class="ttdeci">queue&lt; Task * &gt; task_queue_</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:67</div></div>
+<div class="ttc" id="classThreadPool_html_a37eccfa184107c76489187737e03338c"><div class="ttname"><a href="classThreadPool.html#a37eccfa184107c76489187737e03338c">ThreadPool::undo_task_count_lock</a></div><div class="ttdeci">pthread_mutex_t undo_task_count_lock</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:76</div></div>
+<div class="ttc" id="ThreadPool_8h_html_ab30bf6c6ce2c7c7684b4292cf07e4080"><div class="ttname"><a href="ThreadPool_8h.html#ab30bf6c6ce2c7c7684b4292cf07e4080">g_thread_pool_used</a></div><div class="ttdeci">static bool g_thread_pool_used</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:24</div></div>
+<div class="ttc" id="structThreadPool_1_1Task_html_a5098d87f9fe97d29a2252009a4f20f41"><div class="ttname"><a href="structThreadPool_1_1Task.html#a5098d87f9fe97d29a2252009a4f20f41">ThreadPool::Task::Task</a></div><div class="ttdeci">Task(void *(*f)(void *), void *a, bool e)</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:32</div></div>
+<div class="ttc" id="classThreadPool_html_ab1a9effd0068882234421f93d56e0fcf"><div class="ttname"><a href="classThreadPool.html#ab1a9effd0068882234421f93d56e0fcf">ThreadPool::task_count</a></div><div class="ttdeci">int task_count</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:74</div></div>
+<div class="ttc" id="structThreadPool_1_1Task_html"><div class="ttname"><a href="structThreadPool_1_1Task.html">ThreadPool::Task</a></div><div class="ttdef"><b>Definition:</b> ThreadPool.h:30</div></div>
+<div class="ttc" id="structThreadPool_1_1Task_html_a54748c6723a2b6b6a3639bea7c2ddcf9"><div class="ttname"><a href="structThreadPool_1_1Task.html#a54748c6723a2b6b6a3639bea7c2ddcf9">ThreadPool::Task::destroy_task</a></div><div class="ttdeci">static void destroy_task(Task *task)</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:37</div></div>
+<div class="ttc" id="classThreadPool_html_a2afae09e8cf76646af1407cdb63493be"><div class="ttname"><a href="classThreadPool.html#a2afae09e8cf76646af1407cdb63493be">ThreadPool::thread_count</a></div><div class="ttdeci">int thread_count</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:70</div></div>
+<div class="ttc" id="structThreadPool_1_1Task_html_adeb94a2e5861c79148790750f306b360"><div class="ttname"><a href="structThreadPool_1_1Task.html#adeb94a2e5861c79148790750f306b360">ThreadPool::Task::arg</a></div><div class="ttdeci">void * arg</div><div class="ttdef"><b>Definition:</b> ThreadPool.h:35</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>ThreadPool.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="ThreadPool_8h.html">ThreadPool.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

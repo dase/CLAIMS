@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Json::Reader::StructuredError Struct Reference</title>
+<title>Claims: Json::Reader::StructuredError Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -119,20 +119,60 @@ $(document).ready(function(){initNavTree('structJson_1_1Reader_1_1StructuredErro
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a160dae4eb3464a2209b743c755baf65f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a160dae4eb3464a2209b743c755baf65f"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>offset_start</b></td></tr>
+<tr class="memitem:a160dae4eb3464a2209b743c755baf65f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJson_1_1Reader_1_1StructuredError.html#a160dae4eb3464a2209b743c755baf65f">offset_start</a></td></tr>
 <tr class="separator:a160dae4eb3464a2209b743c755baf65f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80747dae744bcc80a9bc81c94fd42e13"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80747dae744bcc80a9bc81c94fd42e13"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>offset_limit</b></td></tr>
+<tr class="memitem:a80747dae744bcc80a9bc81c94fd42e13"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJson_1_1Reader_1_1StructuredError.html#a80747dae744bcc80a9bc81c94fd42e13">offset_limit</a></td></tr>
 <tr class="separator:a80747dae744bcc80a9bc81c94fd42e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8755e5201b78c6ae077338f8819e6e6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8755e5201b78c6ae077338f8819e6e6"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>message</b></td></tr>
+<tr class="memitem:ab8755e5201b78c6ae077338f8819e6e6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJson_1_1Reader_1_1StructuredError.html#ab8755e5201b78c6ae077338f8819e6e6">message</a></td></tr>
 <tr class="separator:ab8755e5201b78c6ae077338f8819e6e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An error tagged with where in the JSON text it was encountered. </p>
 <p>The offsets give the [start, limit) range of bytes within the text. Note that this is bytes, not codepoints. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab8755e5201b78c6ae077338f8819e6e6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Json::Reader::StructuredError::message</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1Reader.html#a08c2ea5ffc7d2a9c9e35020835624f0b">Json::Reader::getStructuredErrors()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a80747dae744bcc80a9bc81c94fd42e13"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t Json::Reader::StructuredError::offset_limit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1Reader.html#a08c2ea5ffc7d2a9c9e35020835624f0b">Json::Reader::getStructuredErrors()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a160dae4eb3464a2209b743c755baf65f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t Json::Reader::StructuredError::offset_start</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1Reader.html#a08c2ea5ffc7d2a9c9e35020835624f0b">Json::Reader::getStructuredErrors()</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>Client/json/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Member List</title>
+<title>Claims: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,14 +111,24 @@ $(document).ready(function(){initNavTree('classThreadPool.html','');});
 
 <p>This is the complete list of members for <a class="el" href="classThreadPool.html">ThreadPool</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>add_task</b>(void *(*)(void *), void *arg, bool e=false) (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>bind_cpu</b>() (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>destroy_pool</b>(ThreadPool *tp) (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>thread_exec</b>(void *arg) (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>thread_exec_with_cond</b>(void *arg) (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Thread_Pool_init</b>(int thread_count_in_pool_) (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ThreadPool</b>() (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>~ThreadPool</b>() (defined in <a class="el" href="classThreadPool.html">ThreadPool</a>)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#aa8b72a50cdff919ef6df259714139463">add_task</a>(void *(*)(void *), void *arg, bool e=false)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#a6f1ace78a708c270d0abd375d6f186da">bind_cpu</a>()</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#ae73ed6a1b24fd904011eda865e52819b">destroy_pool</a>(ThreadPool *tp)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#a0c715ae1dd0bd5bdd57775f5e007dbbc">free_thread_count</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#a8c1338201b380b36fdf9b4c5c9cb6170">free_thread_count_lock</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#ab1a9effd0068882234421f93d56e0fcf">task_count</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#a228172a1a7088798071b15e28b6f6b2d">task_queue_</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#ae338fedd3df57b65969983426069c984">task_queue_lock</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#a2afae09e8cf76646af1407cdb63493be">thread_count</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#a67a31cb85ba4c5b565fc8d15778a54a4">thread_exec</a>(void *arg)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#af35cd3583f10a719f185c1b370a7e765">thread_exec_with_cond</a>(void *arg)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#aee453d9e44011ff38118d4140e73f42e">thread_list_</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05">Thread_Pool_init</a>(int thread_count_in_pool_)</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#a3225e86aa7835545b3f6c2c8d363d5e5">ThreadPool</a>()</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#a353473262e64d140c3d066966ba47fe7">undo_task_count</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#a37eccfa184107c76489187737e03338c">undo_task_count_lock</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classThreadPool.html#ab7638baef2a9609095ccfe4874c34429">undo_task_sem</a></td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classThreadPool.html#a44d3d2ab618970605e684efc216655eb">~ThreadPool</a>()</td><td class="entry"><a class="el" href="classThreadPool.html">ThreadPool</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

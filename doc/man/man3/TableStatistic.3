@@ -1,4 +1,4 @@
-.TH "TableStatistic" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "TableStatistic" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,17 @@ TableStatistic \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <TableStatistic\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBTableStatistic\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~TableStatistic\fP ()"
+.br
 .ti -1c
 .RI "void \fBaddAttributeStatistics\fP (const \fBAttributeID\fP &attr_id, \fBAttributeStatistics\fP *stat)"
 .br
@@ -29,7 +37,60 @@ TableStatistic \-
 .RI "unsigned long \fBnumber_of_tuples_\fP"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "boost::unordered_map
+.br
+< \fBAttributeID\fP, 
+.br
+\fBAttributeStatistics\fP * > \fBatt_stat_list_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "TableStatistic::TableStatistic ()"
+
+.SS "TableStatistic::~TableStatistic ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void TableStatistic::addAttributeStatistics (const \fBAttributeID\fP &attr_id, \fBAttributeStatistics\fP *stat)"
+
+.PP
+References att_stat_list_\&.
+.PP
+Referenced by Analyzer::compute_attribute_stat()\&.
+.SS "\fBAttributeStatistics\fP * TableStatistic::getAttributeStatistics (const \fBAttributeID\fP &attr_id) const"
+
+.PP
+References att_stat_list_\&.
+.PP
+Referenced by Analyzer::compute_attribute_stat(), and StatManager::getAttributeStatistic()\&.
+.SS "unsigned long TableStatistic::getCardinality () const"
+
+.PP
+References number_of_tuples_\&.
+.PP
+Referenced by claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()\&.
+.SS "void TableStatistic::print () const"
+
+.PP
+References number_of_tuples_\&.
+.PP
+Referenced by Analyzer::compute_table_stat()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "boost::unordered_map<\fBAttributeID\fP,\fBAttributeStatistics\fP*> TableStatistic::att_stat_list_\fC [private]\fP"
+
+.PP
+Referenced by addAttributeStatistics(), and getAttributeStatistics()\&.
+.SS "unsigned long TableStatistic::number_of_tuples_"
+
+.PP
+Referenced by Analyzer::compute_attribute_stat(), Analyzer::compute_table_stat(), getCardinality(), and print()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

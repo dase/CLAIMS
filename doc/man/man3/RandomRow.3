@@ -1,4 +1,4 @@
-.TH "RandomRow" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "RandomRow" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,60 @@ RandomRow \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <generator\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
+.RI "\fBRandomRow\fP ()"
+.br
+.ti -1c
 .RI "void \fBaddIntUniformColumn\fP (int min=0, int max=1024 *1024, int seed=0)"
+.br
+.ti -1c
+.RI "\fB~RandomRow\fP ()"
 .br
 .ti -1c
 .RI "std::vector< \fBcolumn_metadata\fP > \fBgetColumns\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBcolumn_metadata\fP > \fBcolumns_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "RandomRow::RandomRow ()\fC [inline]\fP"
+
+.SS "RandomRow::~RandomRow ()\fC [inline]\fP"
+
+.PP
+References columns_\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void RandomRow::addIntUniformColumn (intmin = \fC0\fP, intmax = \fC1024*1024\fP, intseed = \fC0\fP)\fC [inline]\fP"
+
+.PP
+References columns_, column_metadata::dis, t_int, and column_metadata::type\&.
+.PP
+Referenced by filter_test()\&.
+.SS "std::vector<\fBcolumn_metadata\fP> RandomRow::getColumns ()\fC [inline]\fP"
+
+.PP
+References columns_\&.
+.PP
+Referenced by filter_test()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<\fBcolumn_metadata\fP> RandomRow::columns_\fC [private]\fP"
+
+.PP
+Referenced by addIntUniformColumn(), getColumns(), and ~RandomRow()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

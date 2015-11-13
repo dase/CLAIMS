@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: TableDescriptor Class Reference</title>
+<title>Claims: TableDescriptor Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -114,122 +114,1108 @@ $(document).ready(function(){initNavTree('classTableDescriptor.html','');});
 <div class="title">TableDescriptor Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="table_8h_source.html">table.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae3b3eb008ca2afb928efbfe54646faa7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3b3eb008ca2afb928efbfe54646faa7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>TableDescriptor</b> (const string &amp;name, const TableID table_id)</td></tr>
+<tr class="memitem:a222155fc9bc83dd15f8f082929019b97"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a222155fc9bc83dd15f8f082929019b97">TableDescriptor</a> ()</td></tr>
+<tr class="separator:a222155fc9bc83dd15f8f082929019b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3b3eb008ca2afb928efbfe54646faa7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ae3b3eb008ca2afb928efbfe54646faa7">TableDescriptor</a> (const string &amp;name, const <a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> table_id)</td></tr>
 <tr class="separator:ae3b3eb008ca2afb928efbfe54646faa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbaf70da17c8707fe1ad9a4c4f305a8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abbaf70da17c8707fe1ad9a4c4f305a8e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addAttribute</b> (<a class="el" href="structAttribute.html">Attribute</a> attr)</td></tr>
+<tr class="memitem:ac19edcf924cedebbd5d68c15dc536e64"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ac19edcf924cedebbd5d68c15dc536e64">~TableDescriptor</a> ()</td></tr>
+<tr class="separator:ac19edcf924cedebbd5d68c15dc536e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbaf70da17c8707fe1ad9a4c4f305a8e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#abbaf70da17c8707fe1ad9a4c4f305a8e">addAttribute</a> (<a class="el" href="structAttribute.html">Attribute</a> attr)</td></tr>
 <tr class="separator:abbaf70da17c8707fe1ad9a4c4f305a8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3b20ca9e3a6dc14643b4bc1df58e3a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3b20ca9e3a6dc14643b4bc1df58e3a3"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>addAttribute</b> (string attname, data_type dt, unsigned max_length=0, bool unique=false, bool can_be_null=true)</td></tr>
+<tr class="memitem:ae3b20ca9e3a6dc14643b4bc1df58e3a3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ae3b20ca9e3a6dc14643b4bc1df58e3a3">addAttribute</a> (string attname, <a class="el" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14">data_type</a> dt, unsigned max_length=0, bool unique=false, bool can_be_null=true)</td></tr>
 <tr class="separator:ae3b20ca9e3a6dc14643b4bc1df58e3a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abdc128c7a058de8032f93c4bf7aed466"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abdc128c7a058de8032f93c4bf7aed466"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>createHashPartitionedProjection</b> (vector&lt; ColumnOffset &gt; column_list, ColumnOffset partition_key_index, unsigned number_of_partitions)</td></tr>
+<tr class="memitem:abdc128c7a058de8032f93c4bf7aed466"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#abdc128c7a058de8032f93c4bf7aed466">createHashPartitionedProjection</a> (vector&lt; <a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a> &gt; column_list, <a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a> partition_key_index, unsigned number_of_partitions)</td></tr>
 <tr class="separator:abdc128c7a058de8032f93c4bf7aed466"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b0057061e5dfb9f1f7746b24d1e2a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab2b0057061e5dfb9f1f7746b24d1e2a8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>createHashPartitionedProjection</b> (vector&lt; ColumnOffset &gt; column_list, std::string partition_attribute_name, unsigned number_of_partitions)</td></tr>
+<tr class="memitem:ab2b0057061e5dfb9f1f7746b24d1e2a8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ab2b0057061e5dfb9f1f7746b24d1e2a8">createHashPartitionedProjection</a> (vector&lt; <a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a> &gt; column_list, std::string partition_attribute_name, unsigned number_of_partitions)</td></tr>
 <tr class="separator:ab2b0057061e5dfb9f1f7746b24d1e2a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab987bc10934790199ee26dd572f96e8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab987bc10934790199ee26dd572f96e8c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>createHashPartitionedProjection</b> (vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt; column_list, std::string partition_attribute_name, unsigned number_of_partitions)</td></tr>
+<tr class="memitem:ab987bc10934790199ee26dd572f96e8c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ab987bc10934790199ee26dd572f96e8c">createHashPartitionedProjection</a> (vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt; column_list, std::string partition_attribute_name, unsigned number_of_partitions)</td></tr>
 <tr class="separator:ab987bc10934790199ee26dd572f96e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adcfb73143054116fa570b84236a56ce7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adcfb73143054116fa570b84236a56ce7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>createHashPartitionedProjectionOnAllAttribute</b> (std::string partition_attribute_name, unsigned number_of_partitions)</td></tr>
+<tr class="memitem:adcfb73143054116fa570b84236a56ce7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#adcfb73143054116fa570b84236a56ce7">createHashPartitionedProjectionOnAllAttribute</a> (std::string partition_attribute_name, unsigned number_of_partitions)</td></tr>
 <tr class="separator:adcfb73143054116fa570b84236a56ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1bbc8fb9e16713cf9f4f960a773c5eea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1bbc8fb9e16713cf9f4f960a773c5eea"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isExist</b> (const string &amp;name) const </td></tr>
+<tr class="memitem:a1bbc8fb9e16713cf9f4f960a773c5eea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a1bbc8fb9e16713cf9f4f960a773c5eea">isExist</a> (const string &amp;name) const </td></tr>
 <tr class="separator:a1bbc8fb9e16713cf9f4f960a773c5eea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a06d7f13791ee2b3c7bc399e9a266d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a06d7f13791ee2b3c7bc399e9a266d3"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>getTableName</b> () const </td></tr>
+<tr class="memitem:a7a06d7f13791ee2b3c7bc399e9a266d3"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a7a06d7f13791ee2b3c7bc399e9a266d3">getTableName</a> () const </td></tr>
 <tr class="separator:a7a06d7f13791ee2b3c7bc399e9a266d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ea38169bf4f74708cd1ebdb8f0e8e41"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ea38169bf4f74708cd1ebdb8f0e8e41"></a>
-ColumnOffset&#160;</td><td class="memItemRight" valign="bottom"><b>getColumnID</b> (const string &amp;attrName) const </td></tr>
+<tr class="memitem:a4ea38169bf4f74708cd1ebdb8f0e8e41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a4ea38169bf4f74708cd1ebdb8f0e8e41">getColumnID</a> (const string &amp;attrName) const </td></tr>
 <tr class="separator:a4ea38169bf4f74708cd1ebdb8f0e8e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f66fefbc2b7380d83ff0358c1a78fb9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f66fefbc2b7380d83ff0358c1a78fb9"></a>
-map&lt; string, set&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getColumnLocations</b> (const string &amp;attrName) const </td></tr>
+<tr class="memitem:a5f66fefbc2b7380d83ff0358c1a78fb9"><td class="memItemLeft" align="right" valign="top">map&lt; string, set&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a5f66fefbc2b7380d83ff0358c1a78fb9">getColumnLocations</a> (const string &amp;attrName) const </td></tr>
 <tr class="separator:a5f66fefbc2b7380d83ff0358c1a78fb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60c455d9e20eb9e341a58af3e79f2663"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60c455d9e20eb9e341a58af3e79f2663"></a>
-vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getAttributes</b> () const </td></tr>
+<tr class="memitem:a60c455d9e20eb9e341a58af3e79f2663"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663">getAttributes</a> () const </td></tr>
 <tr class="separator:a60c455d9e20eb9e341a58af3e79f2663"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9abc08c03321d59540b91fb521c1641b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9abc08c03321d59540b91fb521c1641b"></a>
-vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getAttributes</b> (vector&lt; unsigned &gt; index_list) const </td></tr>
+<tr class="memitem:a9abc08c03321d59540b91fb521c1641b"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a9abc08c03321d59540b91fb521c1641b">getAttributes</a> (vector&lt; unsigned &gt; index_list) const </td></tr>
 <tr class="separator:a9abc08c03321d59540b91fb521c1641b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab01a15fe7003d1641b8ea003c7d94414"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab01a15fe7003d1641b8ea003c7d94414"></a>
-<a class="el" href="structAttribute.html">Attribute</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getAttribute</b> (unsigned offset) const </td></tr>
+<tr class="memitem:ab01a15fe7003d1641b8ea003c7d94414"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAttribute.html">Attribute</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414">getAttribute</a> (unsigned offset) const </td></tr>
 <tr class="separator:ab01a15fe7003d1641b8ea003c7d94414"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24413ea116363cf1ebe68ce564849e0a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a24413ea116363cf1ebe68ce564849e0a"></a>
-<a class="el" href="structAttribute.html">Attribute</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getAttribute</b> (const std::string &amp;name) const </td></tr>
+<tr class="memitem:a24413ea116363cf1ebe68ce564849e0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAttribute.html">Attribute</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a24413ea116363cf1ebe68ce564849e0a">getAttribute</a> (const std::string &amp;name) const </td></tr>
 <tr class="separator:a24413ea116363cf1ebe68ce564849e0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25b892d77eea486c3bba7e02d8d4e66b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a25b892d77eea486c3bba7e02d8d4e66b"></a>
-<a class="el" href="structAttribute.html">Attribute</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getAttribute2</b> (const std::string &amp;name) const </td></tr>
+<tr class="memitem:a25b892d77eea486c3bba7e02d8d4e66b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAttribute.html">Attribute</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a25b892d77eea486c3bba7e02d8d4e66b">getAttribute2</a> (const std::string &amp;name) const </td></tr>
 <tr class="separator:a25b892d77eea486c3bba7e02d8d4e66b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1068b6e506a0daf5b24de91a758296b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1068b6e506a0daf5b24de91a758296b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addColumn</b> (<a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> *column)</td></tr>
+<tr class="memitem:ab1068b6e506a0daf5b24de91a758296b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ab1068b6e506a0daf5b24de91a758296b">addColumn</a> (<a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> *column)</td></tr>
 <tr class="separator:ab1068b6e506a0daf5b24de91a758296b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87eb0cc26f2dc7b27c0346bc70d34d0d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87eb0cc26f2dc7b27c0346bc70d34d0d"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>get_table_name</b> () const </td></tr>
+<tr class="memitem:a87eb0cc26f2dc7b27c0346bc70d34d0d"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a87eb0cc26f2dc7b27c0346bc70d34d0d">get_table_name</a> () const </td></tr>
 <tr class="separator:a87eb0cc26f2dc7b27c0346bc70d34d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51b7c83cb4cb5ef770a82395151d1b27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a51b7c83cb4cb5ef770a82395151d1b27"></a>
-TableID&#160;</td><td class="memItemRight" valign="bottom"><b>get_table_id</b> () const </td></tr>
+<tr class="memitem:a51b7c83cb4cb5ef770a82395151d1b27"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a51b7c83cb4cb5ef770a82395151d1b27">get_table_id</a> () const </td></tr>
 <tr class="separator:a51b7c83cb4cb5ef770a82395151d1b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a545c744806947794c34d36444c2854fa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a545c744806947794c34d36444c2854fa"></a>
-<a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getProjectoin</b> (ProjectionOffset) const </td></tr>
+<tr class="memitem:a545c744806947794c34d36444c2854fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">getProjectoin</a> (<a class="el" href="ids_8h.html#a57a5e9860b8835979e76d34c54eb4ac2">ProjectionOffset</a>) const </td></tr>
 <tr class="separator:a545c744806947794c34d36444c2854fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea8ac99022d03b520d6a29c423998e40"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aea8ac99022d03b520d6a29c423998e40"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfProjection</b> () const </td></tr>
+<tr class="memitem:aea8ac99022d03b520d6a29c423998e40"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">getNumberOfProjection</a> () const </td></tr>
 <tr class="separator:aea8ac99022d03b520d6a29c423998e40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd6e310a2ce0b9d5b8b983adf60e402d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd6e310a2ce0b9d5b8b983adf60e402d"></a>
-<a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getSchema</b> () const </td></tr>
+<tr class="memitem:acd6e310a2ce0b9d5b8b983adf60e402d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d">getSchema</a> () const </td></tr>
 <tr class="separator:acd6e310a2ce0b9d5b8b983adf60e402d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c9d3afa0aa222819cb3558b2862d138"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c9d3afa0aa222819cb3558b2862d138"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setRowNumber</b> (unsigned long row_number)</td></tr>
+<tr class="memitem:a0c9d3afa0aa222819cb3558b2862d138"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a0c9d3afa0aa222819cb3558b2862d138">setRowNumber</a> (unsigned long row_number)</td></tr>
 <tr class="separator:a0c9d3afa0aa222819cb3558b2862d138"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae942a85aceed60e4c7bd6cde6c76d84d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae942a85aceed60e4c7bd6cde6c76d84d"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>getRowNumber</b> ()</td></tr>
+<tr class="memitem:ae942a85aceed60e4c7bd6cde6c76d84d"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ae942a85aceed60e4c7bd6cde6c76d84d">getRowNumber</a> ()</td></tr>
 <tr class="separator:ae942a85aceed60e4c7bd6cde6c76d84d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab23733bd6fe5a02250c160f928b942d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab23733bd6fe5a02250c160f928b942d"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>isEmpty</b> ()</td></tr>
+<tr class="memitem:aab23733bd6fe5a02250c160f928b942d"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#aab23733bd6fe5a02250c160f928b942d">isEmpty</a> ()</td></tr>
 <tr class="separator:aab23733bd6fe5a02250c160f928b942d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59f1dfdaefb46510c89c2cf4f0d593ab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a59f1dfdaefb46510c89c2cf4f0d593ab"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfAttribute</b> ()</td></tr>
+<tr class="memitem:a59f1dfdaefb46510c89c2cf4f0d593ab"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a59f1dfdaefb46510c89c2cf4f0d593ab">getNumberOfAttribute</a> ()</td></tr>
 <tr class="separator:a59f1dfdaefb46510c89c2cf4f0d593ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a1e2ca63ee6ec5bc38310d34d773fa4c6"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1e2ca63ee6ec5bc38310d34d773fa4c6"></a>
-template&lt;class Archive &gt; </td></tr>
-<tr class="memitem:a1e2ca63ee6ec5bc38310d34d773fa4c6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>serialize</b> (Archive &amp;ar, const unsigned int version)</td></tr>
+<tr class="memitem:a1e2ca63ee6ec5bc38310d34d773fa4c6"><td class="memTemplParams" colspan="2">template&lt;class Archive &gt; </td></tr>
+<tr class="memitem:a1e2ca63ee6ec5bc38310d34d773fa4c6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a1e2ca63ee6ec5bc38310d34d773fa4c6">serialize</a> (Archive &amp;ar, const unsigned int version)</td></tr>
 <tr class="separator:a1e2ca63ee6ec5bc38310d34d773fa4c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a2305d6fe8739db4f2817ce0b72f1e3b6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2305d6fe8739db4f2817ce0b72f1e3b6"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>tableName</b></td></tr>
+<tr class="memitem:a2305d6fe8739db4f2817ce0b72f1e3b6"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a2305d6fe8739db4f2817ce0b72f1e3b6">tableName</a></td></tr>
 <tr class="separator:a2305d6fe8739db4f2817ce0b72f1e3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd08287cb8f1035688b76d01c95e4d74"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd08287cb8f1035688b76d01c95e4d74"></a>
-vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>attributes</b></td></tr>
+<tr class="memitem:acd08287cb8f1035688b76d01c95e4d74"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a></td></tr>
 <tr class="separator:acd08287cb8f1035688b76d01c95e4d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a020d5a5acdb67667d7e237d1854f400d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a020d5a5acdb67667d7e237d1854f400d"></a>
-TableID&#160;</td><td class="memItemRight" valign="bottom"><b>table_id_</b></td></tr>
+<tr class="memitem:a020d5a5acdb67667d7e237d1854f400d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#a020d5a5acdb67667d7e237d1854f400d">table_id_</a></td></tr>
 <tr class="separator:a020d5a5acdb67667d7e237d1854f400d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae58b130cdee5d229afb2d2f67e550733"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae58b130cdee5d229afb2d2f67e550733"></a>
-vector&lt; <a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>projection_list_</b></td></tr>
+<tr class="memitem:ae58b130cdee5d229afb2d2f67e550733"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a></td></tr>
 <tr class="separator:ae58b130cdee5d229afb2d2f67e550733"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab450e79232543a9abaa1c3c22b9fa014"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab450e79232543a9abaa1c3c22b9fa014"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>row_number_</b></td></tr>
+<tr class="memitem:ab450e79232543a9abaa1c3c22b9fa014"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ab450e79232543a9abaa1c3c22b9fa014">row_number_</a></td></tr>
 <tr class="separator:ab450e79232543a9abaa1c3c22b9fa014"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization::access</b></td></tr>
+<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableDescriptor.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a></td></tr>
 <tr class="separator:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a222155fc9bc83dd15f8f082929019b97"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TableDescriptor::TableDescriptor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae3b3eb008ca2afb928efbfe54646faa7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TableDescriptor::TableDescriptor </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&#160;</td>
+          <td class="paramname"><em>table_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac19edcf924cedebbd5d68c15dc536e64"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TableDescriptor::~TableDescriptor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="abbaf70da17c8707fe1ad9a4c4f305a8e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TableDescriptor::addAttribute </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAttribute.html">Attribute</a>&#160;</td>
+          <td class="paramname"><em>attr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>.</p>
+
+<p>Referenced by <a class="el" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca">BindingTest()</a>, <a class="el" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e">create_load_test()</a>, <a class="el" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2">create_poc_data_four_partitions()</a>, <a class="el" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439">create_poc_data_one_partitions()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb">CreateTable()</a>, <a class="el" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122">execting_test()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5">claims::stmt_handler::CreateTableExec::Execute()</a>, <a class="el" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149">init_multi_node_tpc_h_envoriment_()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89">init_poc_environment()</a>, <a class="el" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c">init_single_node_tpc_h_envoriment_()</a>, <a class="el" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c">init_single_node_tpc_h_envoriment_ing()</a>, <a class="el" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570">init_single_node_tpc_h_envoriment_sort()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1">init_tt_environment()</a>, <a class="el" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463">load_tpc_h_4_partition()</a>, <a class="el" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f">loadData()</a>, <a class="el" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7">startup_catalog()</a>, <a class="el" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5">startup_mulitple_node_environment_of_poc()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998">startup_multiple_node_environment()</a>, <a class="el" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43">startup_multiple_node_environment_of_stock()</a>, <a class="el" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523">startup_multiple_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc">startup_single_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9">startup_single_node_one_partition_environment_of_tpch()</a>, <a class="el" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57">statistic_manager_test()</a>, <a class="el" href="Partitioner__test_8cpp.html#a46457a5aafab8894fb77c1496db92809">TableDescriptor_test()</a>, <a class="el" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9">test_CSBIndexBuilding()</a>, <a class="el" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83">test_index_scan_iterator()</a>, <a class="el" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c">test_logical_csb_index_building()</a>, and <a class="el" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9">variable_schema_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_abbaf70da17c8707fe1ad9a4c4f305a8e_icgraph.png" border="0" usemap="#classTableDescriptor_abbaf70da17c8707fe1ad9a4c4f305a8e_icgraph" alt=""/></div>
+<map name="classTableDescriptor_abbaf70da17c8707fe1ad9a4c4f305a8e_icgraph" id="classTableDescriptor_abbaf70da17c8707fe1ad9a4c4f305a8e_icgraph">
+<area shape="rect" id="node2" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="293,5,384,32"/><area shape="rect" id="node4" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="279,56,398,83"/><area shape="rect" id="node6" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="265,107,412,149"/><area shape="rect" id="node7" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="265,173,412,214"/><area shape="rect" id="node15" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="292,239,385,265"/><area shape="rect" id="node17" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="289,391,389,417"/><area shape="rect" id="node19" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="245,442,432,483"/><area shape="rect" id="node20" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="271,507,406,549"/><area shape="rect" id="node22" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="266,573,411,600"/><area shape="rect" id="node24" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="269,625,409,666"/><area shape="rect" id="node26" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="269,690,409,731"/><area shape="rect" id="node28" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="269,755,409,797"/><area shape="rect" id="node30" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="273,821,405,848"/><area shape="rect" id="node31" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="263,872,415,899"/><area shape="rect" id="node32" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="301,923,376,949"/><area shape="rect" id="node33" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7" title="startup_catalog" alt="" coords="283,289,394,316"/><area shape="rect" id="node36" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5" title="startup_mulitple_node\l_environment_of_poc" alt="" coords="264,974,413,1015"/><area shape="rect" id="node37" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998" title="startup_multiple_node\l_environment" alt="" coords="264,1039,413,1081"/><area shape="rect" id="node39" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43" title="startup_multiple_node\l_environment_of_stock" alt="" coords="260,1105,417,1146"/><area shape="rect" id="node40" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523" title="startup_multiple_node\l_environment_of_tpch" alt="" coords="263,1170,414,1211"/><area shape="rect" id="node42" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc" title="startup_single_node\l_environment_of_tpch" alt="" coords="263,1235,414,1277"/><area shape="rect" id="node44" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9" title="startup_single_node\l_one_partition_environment\l_of_tpch" alt="" coords="500,340,681,396"/><area shape="rect" id="node45" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="261,1301,416,1328"/><area shape="rect" id="node46" href="Partitioner__test_8cpp.html#a46457a5aafab8894fb77c1496db92809" title="TableDescriptor_test" alt="" coords="267,1352,410,1379"/><area shape="rect" id="node47" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="260,1403,417,1429"/><area shape="rect" id="node48" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="257,1453,421,1480"/><area shape="rect" id="node49" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="261,1505,416,1546"/><area shape="rect" id="node50" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="264,1571,413,1597"/><area shape="rect" id="node3" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="531,5,651,32"/><area shape="rect" id="node5" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="553,56,628,83"/><area shape="rect" id="node8" href="classDMLTestPOC1Partition.html#aa36f70199bd11febc38114bfc3f030ed" title="DMLTestPOC1Partition\l::SetUpTestCase" alt="" coords="511,107,671,149"/><area shape="rect" id="node9" href="set__up__environment_8h.html#abb86496e74986b738530fd97ececb7c1" title="startup_single_node\l_environment_of_poc" alt="" coords="517,173,664,214"/><area shape="rect" id="node10" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="774,231,895,257"/><area shape="rect" id="node11" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="757,282,912,323"/><area shape="rect" id="node12" href="sql__parser__test_8h.html#ada81e0e56e70ea035c4047dda18a2a1e" title="sql_parser_test" alt="" coords="779,63,890,89"/><area shape="rect" id="node13" href="in__segment__scalability__test_8cpp.html#aec5d76713db05ef4ce0ce4c48a8e361a" title="test_block_construct" alt="" coords="763,113,906,140"/><area shape="rect" id="node14" href="ExpanderFrameTest_8h.html#ad69d0c9ff900192046525817b3ee18c6" title="test_expanderFramework\l_single_node" alt="" coords="750,165,919,206"/><area shape="rect" id="node16" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="505,239,677,265"/><area shape="rect" id="node18" href="daemon__test_8h.html#a6618e90ac81a581bdd325929e6bf9752" title="daemon_test" alt="" coords="542,420,639,447"/><area shape="rect" id="node21" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="522,515,659,541"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="521,573,660,600"/><area shape="rect" id="node25" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="519,632,662,659"/><area shape="rect" id="node27" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="511,697,671,724"/><area shape="rect" id="node29" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="505,763,677,789"/><area shape="rect" id="node34" href="hash__table__test_8h.html#a0cea0945e75d1d827b21beeb8b8eb762" title="scalability_test" alt="" coords="536,289,645,316"/><area shape="rect" id="node35" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="757,347,912,389"/><area shape="rect" id="node38" href="ExpanderFrameTest_8h.html#a03c95c864f1218cff17c62230ef2e77b" title="test_multiple_expanderFramework\l_single_node" alt="" coords="480,1039,701,1081"/><area shape="rect" id="node41" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="511,1177,671,1204"/><area shape="rect" id="node43" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="511,1243,670,1269"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae3b20ca9e3a6dc14643b4bc1df58e3a3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TableDescriptor::addAttribute </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>attname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14">data_type</a>&#160;</td>
+          <td class="paramname"><em>dt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_length</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>unique</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>can_be_null</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, <a class="el" href="classTableDescriptor.html#a020d5a5acdb67667d7e237d1854f400d">table_id_</a>, and <a class="el" href="classTableDescriptor.html#a2305d6fe8739db4f2817ce0b72f1e3b6">tableName</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab1068b6e506a0daf5b24de91a758296b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TableDescriptor::addColumn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> *&#160;</td>
+          <td class="paramname"><em>column</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abdc128c7a058de8032f93c4bf7aed466"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TableDescriptor::createHashPartitionedProjection </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a> &gt;&#160;</td>
+          <td class="paramname"><em>column_list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a>&#160;</td>
+          <td class="paramname"><em>partition_key_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>number_of_partitions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, <a class="el" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975">PartitionFunctionFactory::createGeneralModuloFunction()</a>, <a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a>, and <a class="el" href="classTableDescriptor.html#a020d5a5acdb67667d7e237d1854f400d">table_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca">BindingTest()</a>, <a class="el" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e">create_load_test()</a>, <a class="el" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2">create_poc_data_four_partitions()</a>, <a class="el" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439">create_poc_data_one_partitions()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, <a class="el" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122">execting_test()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89">init_poc_environment()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1">init_tt_environment()</a>, <a class="el" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f">loadData()</a>, <a class="el" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7">startup_catalog()</a>, <a class="el" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5">startup_mulitple_node_environment_of_poc()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998">startup_multiple_node_environment()</a>, <a class="el" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57">statistic_manager_test()</a>, <a class="el" href="Partitioner__test_8cpp.html#a46457a5aafab8894fb77c1496db92809">TableDescriptor_test()</a>, <a class="el" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9">test_CSBIndexBuilding()</a>, <a class="el" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83">test_index_scan_iterator()</a>, <a class="el" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c">test_logical_csb_index_building()</a>, and <a class="el" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9">variable_schema_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_cgraph.png" border="0" usemap="#classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_cgraph" alt=""/></div>
+<map name="classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_cgraph" id="classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_cgraph">
+<area shape="rect" id="node2" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975" title="PartitionFunctionFactory\l::createGeneralModuloFunction" alt="" coords="243,5,445,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_icgraph.png" border="0" usemap="#classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_icgraph" alt=""/></div>
+<map name="classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_icgraph" id="classTableDescriptor_abdc128c7a058de8032f93c4bf7aed466_icgraph">
+<area shape="rect" id="node2" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="280,5,371,32"/><area shape="rect" id="node4" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="266,57,385,84"/><area shape="rect" id="node6" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="252,113,399,154"/><area shape="rect" id="node7" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="252,178,399,219"/><area shape="rect" id="node16" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6" title="CreateProjection" alt="" coords="266,244,385,271"/><area shape="rect" id="node19" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="275,345,375,372"/><area shape="rect" id="node21" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="253,396,398,423"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="259,447,391,473"/><area shape="rect" id="node24" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="288,497,363,524"/><area shape="rect" id="node25" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7" title="startup_catalog" alt="" coords="270,295,381,321"/><area shape="rect" id="node31" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5" title="startup_mulitple_node\l_environment_of_poc" alt="" coords="251,549,400,590"/><area shape="rect" id="node32" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998" title="startup_multiple_node\l_environment" alt="" coords="251,614,400,655"/><area shape="rect" id="node34" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="248,680,403,707"/><area shape="rect" id="node35" href="Partitioner__test_8cpp.html#a46457a5aafab8894fb77c1496db92809" title="TableDescriptor_test" alt="" coords="254,731,397,757"/><area shape="rect" id="node36" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="247,781,404,808"/><area shape="rect" id="node37" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="243,832,407,859"/><area shape="rect" id="node38" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="248,883,403,925"/><area shape="rect" id="node39" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="251,949,400,976"/><area shape="rect" id="node3" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="507,5,627,32"/><area shape="rect" id="node5" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="529,56,604,83"/><area shape="rect" id="node8" href="classDMLTestPOC1Partition.html#aa36f70199bd11febc38114bfc3f030ed" title="DMLTestPOC1Partition\l::SetUpTestCase" alt="" coords="487,107,647,149"/><area shape="rect" id="node9" href="set__up__environment_8h.html#abb86496e74986b738530fd97ececb7c1" title="startup_single_node\l_environment_of_poc" alt="" coords="493,225,640,266"/><area shape="rect" id="node10" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="750,101,871,128"/><area shape="rect" id="node11" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="733,319,888,361"/><area shape="rect" id="node13" href="sql__parser__test_8h.html#ada81e0e56e70ea035c4047dda18a2a1e" title="sql_parser_test" alt="" coords="755,152,866,179"/><area shape="rect" id="node14" href="in__segment__scalability__test_8cpp.html#aec5d76713db05ef4ce0ce4c48a8e361a" title="test_block_construct" alt="" coords="739,203,882,229"/><area shape="rect" id="node15" href="ExpanderFrameTest_8h.html#ad69d0c9ff900192046525817b3ee18c6" title="test_expanderFramework\l_single_node" alt="" coords="726,254,895,295"/><area shape="rect" id="node12" href="in__segment__scalability__test_8cpp.html#a549e3bf15223d77bc720ef7ffc975a14" title="in_segment_scalability_test" alt="" coords="945,327,1127,353"/><area shape="rect" id="node17" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="481,173,653,200"/><area shape="rect" id="node18" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="745,51,876,77"/><area shape="rect" id="node20" href="daemon__test_8h.html#a6618e90ac81a581bdd325929e6bf9752" title="daemon_test" alt="" coords="518,377,615,404"/><area shape="rect" id="node22" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="497,428,636,455"/><area shape="rect" id="node26" href="hash__table__test_8h.html#a0cea0945e75d1d827b21beeb8b8eb762" title="scalability_test" alt="" coords="512,327,621,353"/><area shape="rect" id="node27" href="hash__table__test_8h.html#a5b213e2a7f0601eece39cc0e8afcabe5" title="basic_hash_table_test" alt="" coords="735,385,887,412"/><area shape="rect" id="node28" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="733,437,888,478"/><area shape="rect" id="node29" href="hash__table__test_8h.html#aa9f1c43aea3f0cf1c905bb18309e8aa1" title="insert_optimized_hash\l_table_test" alt="" coords="735,502,887,543"/><area shape="rect" id="node30" href="hash__table__test_8h.html#a11ae6f0a0b6f29298226b1b7e7a2b497" title="hash_table_test" alt="" coords="979,509,1093,536"/><area shape="rect" id="node33" href="ExpanderFrameTest_8h.html#a03c95c864f1218cff17c62230ef2e77b" title="test_multiple_expanderFramework\l_single_node" alt="" coords="456,614,677,655"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab2b0057061e5dfb9f1f7746b24d1e2a8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TableDescriptor::createHashPartitionedProjection </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a> &gt;&#160;</td>
+          <td class="paramname"><em>column_list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>partition_attribute_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>number_of_partitions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, <a class="el" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975">PartitionFunctionFactory::createGeneralModuloFunction()</a>, <a class="el" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414">getAttribute()</a>, <a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a>, and <a class="el" href="classTableDescriptor.html#a020d5a5acdb67667d7e237d1854f400d">table_id_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_ab2b0057061e5dfb9f1f7746b24d1e2a8_cgraph.png" border="0" usemap="#classTableDescriptor_ab2b0057061e5dfb9f1f7746b24d1e2a8_cgraph" alt=""/></div>
+<map name="classTableDescriptor_ab2b0057061e5dfb9f1f7746b24d1e2a8_cgraph" id="classTableDescriptor_ab2b0057061e5dfb9f1f7746b24d1e2a8_cgraph">
+<area shape="rect" id="node2" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975" title="PartitionFunctionFactory\l::createGeneralModuloFunction" alt="" coords="243,5,445,46"/><area shape="rect" id="node3" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414" title="TableDescriptor::getAttribute" alt="" coords="249,71,439,97"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab987bc10934790199ee26dd572f96e8c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TableDescriptor::createHashPartitionedProjection </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td>
+          <td class="paramname"><em>column_list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>partition_attribute_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>number_of_partitions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, <a class="el" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975">PartitionFunctionFactory::createGeneralModuloFunction()</a>, <a class="el" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414">getAttribute()</a>, <a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a>, and <a class="el" href="classTableDescriptor.html#a020d5a5acdb67667d7e237d1854f400d">table_id_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_ab987bc10934790199ee26dd572f96e8c_cgraph.png" border="0" usemap="#classTableDescriptor_ab987bc10934790199ee26dd572f96e8c_cgraph" alt=""/></div>
+<map name="classTableDescriptor_ab987bc10934790199ee26dd572f96e8c_cgraph" id="classTableDescriptor_ab987bc10934790199ee26dd572f96e8c_cgraph">
+<area shape="rect" id="node2" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975" title="PartitionFunctionFactory\l::createGeneralModuloFunction" alt="" coords="243,5,445,46"/><area shape="rect" id="node3" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414" title="TableDescriptor::getAttribute" alt="" coords="249,71,439,97"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="adcfb73143054116fa570b84236a56ce7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>partition_attribute_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>number_of_partitions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, <a class="el" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975">PartitionFunctionFactory::createGeneralModuloFunction()</a>, <a class="el" href="classTableDescriptor.html#a25b892d77eea486c3bba7e02d8d4e66b">getAttribute2()</a>, <a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a>, and <a class="el" href="classTableDescriptor.html#a020d5a5acdb67667d7e237d1854f400d">table_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149">init_multi_node_tpc_h_envoriment_()</a>, <a class="el" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c">init_single_node_tpc_h_envoriment_()</a>, <a class="el" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c">init_single_node_tpc_h_envoriment_ing()</a>, <a class="el" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570">init_single_node_tpc_h_envoriment_sort()</a>, <a class="el" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463">load_tpc_h_4_partition()</a>, <a class="el" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523">startup_multiple_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc">startup_single_node_environment_of_tpch()</a>, and <a class="el" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9">startup_single_node_one_partition_environment_of_tpch()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_adcfb73143054116fa570b84236a56ce7_cgraph.png" border="0" usemap="#classTableDescriptor_adcfb73143054116fa570b84236a56ce7_cgraph" alt=""/></div>
+<map name="classTableDescriptor_adcfb73143054116fa570b84236a56ce7_cgraph" id="classTableDescriptor_adcfb73143054116fa570b84236a56ce7_cgraph">
+<area shape="rect" id="node2" href="classPartitionFunctionFactory.html#a0fbd1551ffe93e1c5884790cd7afd975" title="PartitionFunctionFactory\l::createGeneralModuloFunction" alt="" coords="277,5,480,46"/><area shape="rect" id="node3" href="classTableDescriptor.html#a25b892d77eea486c3bba7e02d8d4e66b" title="TableDescriptor::getAttribute2" alt="" coords="281,71,477,97"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_adcfb73143054116fa570b84236a56ce7_icgraph.png" border="0" usemap="#classTableDescriptor_adcfb73143054116fa570b84236a56ce7_icgraph" alt=""/></div>
+<map name="classTableDescriptor_adcfb73143054116fa570b84236a56ce7_icgraph" id="classTableDescriptor_adcfb73143054116fa570b84236a56ce7_icgraph">
+<area shape="rect" id="node2" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="301,5,435,46"/><area shape="rect" id="node4" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="298,70,438,111"/><area shape="rect" id="node6" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="298,135,438,177"/><area shape="rect" id="node8" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="298,201,438,242"/><area shape="rect" id="node10" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="292,267,444,293"/><area shape="rect" id="node11" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523" title="startup_multiple_node\l_environment_of_tpch" alt="" coords="293,318,443,359"/><area shape="rect" id="node13" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc" title="startup_single_node\l_environment_of_tpch" alt="" coords="293,383,443,425"/><area shape="rect" id="node15" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9" title="startup_single_node\l_one_partition_environment\l_of_tpch" alt="" coords="277,449,459,505"/><area shape="rect" id="node3" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="525,12,662,39"/><area shape="rect" id="node5" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="522,77,665,104"/><area shape="rect" id="node7" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="513,143,673,169"/><area shape="rect" id="node9" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="507,208,679,235"/><area shape="rect" id="node12" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="513,325,673,352"/><area shape="rect" id="node14" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="514,391,673,417"/><area shape="rect" id="node16" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="516,457,671,498"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a51b7c83cb4cb5ef770a82395151d1b27"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> TableDescriptor::get_table_id </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCatalog.html#a5dd611230e1ab94e8608baed5f2f6a3c">Catalog::add_table()</a>, <a class="el" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e">create_load_test()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, and <a class="el" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57">statistic_manager_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a51b7c83cb4cb5ef770a82395151d1b27_icgraph.png" border="0" usemap="#classTableDescriptor_a51b7c83cb4cb5ef770a82395151d1b27_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a51b7c83cb4cb5ef770a82395151d1b27_icgraph" id="classTableDescriptor_a51b7c83cb4cb5ef770a82395151d1b27_icgraph">
+<area shape="rect" id="node2" href="classCatalog.html#a5dd611230e1ab94e8608baed5f2f6a3c" title="Catalog::add_table" alt="" coords="195,818,325,844"/><area shape="rect" id="node48" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="201,1406,319,1432"/><area shape="rect" id="node50" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6" title="CreateProjection" alt="" coords="201,384,319,411"/><area shape="rect" id="node42" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="389,1518,544,1544"/><area shape="rect" id="node3" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="421,584,512,611"/><area shape="rect" id="node5" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="393,686,540,728"/><area shape="rect" id="node6" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="393,752,540,793"/><area shape="rect" id="node12" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="420,52,513,79"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="417,919,517,946"/><area shape="rect" id="node17" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="373,970,560,1012"/><area shape="rect" id="node18" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="399,1036,534,1077"/><area shape="rect" id="node20" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="394,1102,539,1128"/><area shape="rect" id="node22" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="397,1153,537,1194"/><area shape="rect" id="node24" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="397,1218,537,1260"/><area shape="rect" id="node26" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="397,1284,537,1325"/><area shape="rect" id="node28" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="401,1350,533,1376"/><area shape="rect" id="node29" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="429,1400,504,1427"/><area shape="rect" id="node30" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7" title="startup_catalog" alt="" coords="411,818,522,844"/><area shape="rect" id="node33" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5" title="startup_mulitple_node\l_environment_of_poc" alt="" coords="392,1452,541,1493"/><area shape="rect" id="node34" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998" title="startup_multiple_node\l_environment" alt="" coords="392,104,541,145"/><area shape="rect" id="node36" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43" title="startup_multiple_node\l_environment_of_stock" alt="" coords="388,169,545,210"/><area shape="rect" id="node37" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523" title="startup_multiple_node\l_environment_of_tpch" alt="" coords="391,234,542,276"/><area shape="rect" id="node39" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc" title="startup_single_node\l_environment_of_tpch" alt="" coords="391,300,542,341"/><area shape="rect" id="node41" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9" title="startup_single_node\l_one_partition_environment\l_of_tpch" alt="" coords="628,860,809,916"/><area shape="rect" id="node43" href="Partitioner__test_8cpp.html#a46457a5aafab8894fb77c1496db92809" title="TableDescriptor_test" alt="" coords="395,366,538,392"/><area shape="rect" id="node44" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="388,416,545,443"/><area shape="rect" id="node45" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="385,467,549,494"/><area shape="rect" id="node46" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="389,518,544,560"/><area shape="rect" id="node47" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="392,635,541,662"/><area shape="rect" id="node4" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="659,584,779,611"/><area shape="rect" id="node7" href="classDMLTestPOC1Partition.html#aa36f70199bd11febc38114bfc3f030ed" title="DMLTestPOC1Partition\l::SetUpTestCase" alt="" coords="639,744,799,785"/><area shape="rect" id="node8" href="set__up__environment_8h.html#abb86496e74986b738530fd97ececb7c1" title="startup_single_node\l_environment_of_poc" alt="" coords="645,678,792,720"/><area shape="rect" id="node9" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="894,366,1015,392"/><area shape="rect" id="node10" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="877,754,1032,796"/><area shape="rect" id="node11" href="sql__parser__test_8h.html#ada81e0e56e70ea035c4047dda18a2a1e" title="sql_parser_test" alt="" coords="899,686,1010,712"/><area shape="rect" id="node13" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="633,52,805,79"/><area shape="rect" id="node14" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="889,52,1020,79"/><area shape="rect" id="node16" href="daemon__test_8h.html#a6618e90ac81a581bdd325929e6bf9752" title="daemon_test" alt="" coords="670,940,767,967"/><area shape="rect" id="node19" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="650,1043,787,1070"/><area shape="rect" id="node21" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="649,1102,788,1128"/><area shape="rect" id="node23" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="647,1160,790,1187"/><area shape="rect" id="node25" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="639,1226,799,1252"/><area shape="rect" id="node27" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="633,1291,805,1318"/><area shape="rect" id="node31" href="hash__table__test_8h.html#a0cea0945e75d1d827b21beeb8b8eb762" title="scalability_test" alt="" coords="664,810,773,836"/><area shape="rect" id="node32" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="877,852,1032,893"/><area shape="rect" id="node35" href="ExpanderFrameTest_8h.html#a03c95c864f1218cff17c62230ef2e77b" title="test_multiple_expanderFramework\l_single_node" alt="" coords="608,104,829,145"/><area shape="rect" id="node38" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="639,242,799,268"/><area shape="rect" id="node40" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="639,307,798,334"/><area shape="rect" id="node49" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="429,1568,504,1595"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a87eb0cc26f2dc7b27c0346bc70d34d0d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TableDescriptor::get_table_name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab01a15fe7003d1641b8ea003c7d94414"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAttribute.html">Attribute</a> TableDescriptor::getAttribute </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>offset</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11">Analyzer::analyse()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a41a6ada18e8799a2e6442781a64d2c86">bulk_test_logical_index_scan()</a>, <a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">Analyzer::computeHistogram()</a>, <a class="el" href="classTableDescriptor.html#ab2b0057061e5dfb9f1f7746b24d1e2a8">createHashPartitionedProjection()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, <a class="el" href="classEstimation.html#a1d5609d93dfee7806fa6c5d695c8c9e9">Estimation::estEqualJoin()</a>, <a class="el" href="classEstimation.html#a32aa7fb39861400279a8c71d01e869d6">Estimation::estEqualOper()</a>, <a class="el" href="classEstimation.html#a5220a43122b33a11a7b645ca32bb3704">Estimation::estRangeOper()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36">claims::stmt_handler::InsertExec::Execute()</a>, <a class="el" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062">get_aggregation_args()</a>, <a class="el" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c">init_single_node_tpc_h_envoriment_ing()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909">InsertData()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#afea1733fd0f066010f97059353cf5a52">claims::stmt_handler::InsertExec::InsertValueToStream()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a30eeb02107153bbdf6556f6844c42e2d">InsertValueToStream()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#aa6d76d0600ceccafdb5ade585b5e2426">lineitem_scan_aggregation()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#aeea25673e80828d67f5f105e3c34150c">lineitem_scan_filter()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#adddfba3d9368a334fc076fb510862ce4">lineitem_scan_self_join()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a4d0ed82757885068cfb5d8ae3a47e191">claims::logical_operator::LogicalScan::LogicalScan()</a>, <a class="el" href="tpc__h__test_8cpp.html#a9ff9f39c3d7781592fe62999a015ef8b">query_1()</a>, <a class="el" href="tpc__h__test_8cpp.html#a07bc95f1b0af847db773f30f63bcc660">query_2()</a>, <a class="el" href="tpc__h__test_8cpp.html#a030b7ed93a40542ea4b9bccc4447772c">query_3()</a>, <a class="el" href="issue27_8cpp.html#ad5683a22f6a8df0ac0a722b1eb2d82c6">query_select_aggregation()</a>, <a class="el" href="issue27ing_8cpp.html#a42b24b0b67b8938d7fa706e8bb96d076">query_select_fzh()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#a24e2ac93f2dd8d9f2aa39a43e992704f">sb_scan_aggregation()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#a2d962c2f12747712511c96a831477acc">sb_scan_filter()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#a1ba5ec4b7b47301cebbe99e8d057f42c">sb_scan_self_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a6290d73f7365353ae5bf85fe5fdd764e">test_complete_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a22460ff4e3bf9a2419852ecba4b69f60">test_complete_repartition_scan_join()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#adc9a0c893349c7bd6364fc052b84d80a">test_index_filter_performance()</a>, <a class="el" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c">test_logical_csb_index_building()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ae40fd23e7905275c39c8fafd190a7dbf">test_logical_index_building()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#af39b080c7be767357b47271e440611a3">test_logical_index_scan()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ad5fc33b647693ab3a8f7138ce33b17aa">test_multiple_complete_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a116ee21cb28d02779d088c75d160af20">test_multiple_complete_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a7295289114a6caba810fb6864c69f729">test_multiple_no_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a8a7840da2d47f67808b7689a7b935a47">test_multiple_no_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ad8251c8745e63e7af57ea9e3a46b6107">test_multiple_scan()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a8efd4205ded5c8af62464ee8b1a94c23">test_multiple_scan_filter_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ae5c80ba8385f5be8a825fc820e6b3c2f">test_multiple_scan_filter_high_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a7ff30bb6bfa76e6801e2870771214f60">test_multiple_scan_filter_low_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a7174fba737e5bc45ee8d0a4c64b710dd">test_multiple_scan_filter_Scalar_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aef79a636a8ffc28a52e820d27781b124">test_no_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a12b92a2894140df14955d05c3323f920">test_no_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a56fe4845d161e11dbe99030657372353">test_scan()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a20ceaeaa29f391e541972713e60bec9f">test_scan_Aggregation_large_Groups()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aec012a9c18b17adf552dd84e2d289edd">test_scan_Aggregation_small_Groups()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a3acdb1abdde67d27dfd32c8a7e32db91">test_scan_filter_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aa63931a6f57eac2fd5fe4d4e62282d22">test_scan_filter_high_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aebdfa81bae65b4bac7f60e587940d726">test_scan_filter_low_selectivity()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a9f85721915e325de710fe4b7f168296b">test_scan_filter_performance()</a>, and <a class="el" href="ExpanderFrameTest_8h.html#ac78568813f8c1156cd91b5c9c14deb43">test_scan_filter_Scalar_Aggregation()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a24413ea116363cf1ebe68ce564849e0a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAttribute.html">Attribute</a> TableDescriptor::getAttribute </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, and <a class="el" href="classTableDescriptor.html#a2305d6fe8739db4f2817ce0b72f1e3b6">tableName</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a25b892d77eea486c3bba7e02d8d4e66b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAttribute.html">Attribute</a> TableDescriptor::getAttribute2 </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>.</p>
+
+<p>Referenced by <a class="el" href="classTableDescriptor.html#adcfb73143054116fa570b84236a56ce7">createHashPartitionedProjectionOnAllAttribute()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a25b892d77eea486c3bba7e02d8d4e66b_icgraph.png" border="0" usemap="#classTableDescriptor_a25b892d77eea486c3bba7e02d8d4e66b_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a25b892d77eea486c3bba7e02d8d4e66b_icgraph" id="classTableDescriptor_a25b892d77eea486c3bba7e02d8d4e66b_icgraph">
+<area shape="rect" id="node2" href="classTableDescriptor.html#adcfb73143054116fa570b84236a56ce7" title="TableDescriptor::createHash\lPartitionedProjectionOnAllAttribute" alt="" coords="251,230,474,271"/><area shape="rect" id="node3" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="546,5,681,46"/><area shape="rect" id="node5" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="543,70,683,111"/><area shape="rect" id="node7" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="543,135,683,177"/><area shape="rect" id="node9" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="543,201,683,242"/><area shape="rect" id="node11" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="537,267,689,293"/><area shape="rect" id="node12" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523" title="startup_multiple_node\l_environment_of_tpch" alt="" coords="538,318,689,359"/><area shape="rect" id="node14" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc" title="startup_single_node\l_environment_of_tpch" alt="" coords="538,383,689,425"/><area shape="rect" id="node16" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9" title="startup_single_node\l_one_partition_environment\l_of_tpch" alt="" coords="523,449,704,505"/><area shape="rect" id="node4" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="770,12,907,39"/><area shape="rect" id="node6" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="767,77,910,104"/><area shape="rect" id="node8" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="759,143,919,169"/><area shape="rect" id="node10" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="753,208,925,235"/><area shape="rect" id="node13" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="759,325,919,352"/><area shape="rect" id="node15" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="759,391,918,417"/><area shape="rect" id="node17" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="761,457,916,498"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a60c455d9e20eb9e341a58af3e79f2663"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="structAttribute.html">Attribute</a>&gt; TableDescriptor::getAttributes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704">add_all_table_column()</a>, <a class="el" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62">add_table_column()</a>, <a class="el" href="classAnalyzer.html#a1f179364dfe6ab271c89ed67dd6b6e44">Analyzer::analyse()</a>, <a class="el" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a">AstSelectStmt::GetLogicalPlanOfProject()</a>, <a class="el" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d">getSchema()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a3ac7f1f3ca4f695b655d03c52c4cbb43">claims::logical_operator::LogicalScan::LogicalScan()</a>, and <a class="el" href="classAstTable.html#aa200307097dd8f2b066a3352c49c0322">AstTable::SemanticAnalisys()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a60c455d9e20eb9e341a58af3e79f2663_icgraph.png" border="0" usemap="#classTableDescriptor_a60c455d9e20eb9e341a58af3e79f2663_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a60c455d9e20eb9e341a58af3e79f2663_icgraph" id="classTableDescriptor_a60c455d9e20eb9e341a58af3e79f2663_icgraph">
+<area shape="rect" id="node2" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="272,68,419,95"/><area shape="rect" id="node15" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="282,119,409,145"/><area shape="rect" id="node16" href="classAnalyzer.html#a1f179364dfe6ab271c89ed67dd6b6e44" title="Analyzer::analyse" alt="" coords="282,169,409,196"/><area shape="rect" id="node17" href="classAstSelectStmt.html#a3f9ee15672604eb321f9a91a203cd94a" title="AstSelectStmt::GetLogical\lPlanOfProject" alt="" coords="257,221,434,262"/><area shape="rect" id="node19" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d" title="TableDescriptor::getSchema" alt="" coords="251,287,439,313"/><area shape="rect" id="node21" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a3ac7f1f3ca4f695b655d03c52c4cbb43" title="claims::logical_operator\l::LogicalScan::LogicalScan" alt="" coords="255,338,435,379"/><area shape="rect" id="node22" href="classAstTable.html#aa200307097dd8f2b066a3352c49c0322" title="AstTable::SemanticAnalisys" alt="" coords="252,404,439,431"/><area shape="rect" id="node3" href="semantic__analysis_8cpp.html#a929a76bf19d7900893b8bff080015297" title="selectlist_analysis" alt="" coords="525,93,654,120"/><area shape="rect" id="node4" href="sql__node__struct_8h.html#a085724a1e59fec19700c5d2fd9a7831c" title="semantic_analysis" alt="" coords="739,93,869,120"/><area shape="rect" id="node5" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1344,5,1464,32"/><area shape="rect" id="node6" href="semantic__analysis_8cpp.html#a7fca031b7cf11a77a85050505859a7b2" title="groupby_analysis" alt="" coords="932,68,1055,95"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="928,119,1059,145"/><area shape="rect" id="node9" href="ExecuteLogicalQueryPlan_8h.html#a7be8c26f64319e2ee8f579a8b85a18b5" title="Query" alt="" coords="965,169,1022,196"/><area shape="rect" id="node13" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="918,220,1069,247"/><area shape="rect" id="node8" href="semantic__analysis_8cpp.html#af74d6a9ab0ec62ba3381a8d54882c39c" title="oncondition_analysis" alt="" coords="1133,93,1275,120"/><area shape="rect" id="node10" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1118,169,1290,196"/><area shape="rect" id="node11" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1343,144,1465,171"/><area shape="rect" id="node12" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="1339,195,1469,221"/><area shape="rect" id="node14" href="semantic__analysis_8cpp.html#ac9330eaf334f4dd2190ac1dcf04f5e2d" title="wherecondition_analysis" alt="" coords="1122,245,1286,272"/><area shape="rect" id="node18" href="classAstSelectStmt.html#a23bae177657e2d463ec912e6947f3ed2" title="AstSelectStmt::GetLogicalPlan" alt="" coords="488,228,691,255"/><area shape="rect" id="node20" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="507,287,671,313"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9abc08c03321d59540b91fb521c1641b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="structAttribute.html">Attribute</a>&gt; TableDescriptor::getAttributes </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; unsigned &gt;&#160;</td>
+          <td class="paramname"><em>index_list</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4ea38169bf4f74708cd1ebdb8f0e8e41"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ids_8h.html#ab4753c39399235e0271ff04dd40a1ba2">ColumnOffset</a> TableDescriptor::getColumnID </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>attrName</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5f66fefbc2b7380d83ff0358c1a78fb9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;string, set&lt;string&gt; &gt; TableDescriptor::getColumnLocations </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>attrName</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a59f1dfdaefb46510c89c2cf4f0d593ab"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int TableDescriptor::getNumberOfAttribute </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36">claims::stmt_handler::InsertExec::Execute()</a>, and <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909">InsertData()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a59f1dfdaefb46510c89c2cf4f0d593ab_icgraph.png" border="0" usemap="#classTableDescriptor_a59f1dfdaefb46510c89c2cf4f0d593ab_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a59f1dfdaefb46510c89c2cf4f0d593ab_icgraph" id="classTableDescriptor_a59f1dfdaefb46510c89c2cf4f0d593ab_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="240,5,389,46"/><area shape="rect" id="node3" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="273,71,356,97"/><area shape="rect" id="node4" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="438,71,610,97"/><area shape="rect" id="node5" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="663,45,785,72"/><area shape="rect" id="node6" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="659,96,789,123"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aea8ac99022d03b520d6a29c423998e40"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned TableDescriptor::getNumberOfProjection </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11">Analyzer::analyse()</a>, <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">HdfsLoader::append()</a>, <a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">Analyzer::computeHistogram()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, <a class="el" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef">Catalog::getPartitionIDList()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6">claims::logical_operator::LogicalScan::GetPlanContext()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">HdfsLoader::insertRecords()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">HdfsLoader::load()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_aea8ac99022d03b520d6a29c423998e40_icgraph.png" border="0" usemap="#classTableDescriptor_aea8ac99022d03b520d6a29c423998e40_icgraph" alt=""/></div>
+<map name="classTableDescriptor_aea8ac99022d03b520d6a29c423998e40_icgraph" id="classTableDescriptor_aea8ac99022d03b520d6a29c423998e40_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11" title="Analyzer::analyse" alt="" coords="278,49,405,76"/><area shape="rect" id="node4" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3" title="HdfsLoader::append" alt="" coords="547,100,685,127"/><area shape="rect" id="node8" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d" title="Analyzer::computeHistogram" alt="" coords="246,303,437,329"/><area shape="rect" id="node10" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6" title="CreateProjection" alt="" coords="557,252,675,279"/><area shape="rect" id="node14" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef" title="Catalog::getPartitionIDList" alt="" coords="253,353,429,380"/><area shape="rect" id="node15" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="240,405,443,446"/><area shape="rect" id="node17" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="259,471,423,497"/><area shape="rect" id="node18" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455" title="HdfsLoader::insertRecords" alt="" coords="252,151,431,177"/><area shape="rect" id="node19" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001" title="HdfsLoader::load" alt="" coords="555,201,677,228"/><area shape="rect" id="node3" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="539,49,693,76"/><area shape="rect" id="node5" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="793,5,943,46"/><area shape="rect" id="node6" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="789,71,947,97"/><area shape="rect" id="node7" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1044,121,1119,148"/><area shape="rect" id="node9" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="509,303,723,329"/><area shape="rect" id="node11" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="995,365,1167,392"/><area shape="rect" id="node12" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1221,340,1342,367"/><area shape="rect" id="node13" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="1216,391,1347,417"/><area shape="rect" id="node16" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="491,405,741,446"/><area shape="rect" id="node20" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="821,121,915,148"/><area shape="rect" id="node21" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="809,172,927,199"/><area shape="rect" id="node22" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="796,223,940,265"/><area shape="rect" id="node23" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="792,289,944,316"/><area shape="rect" id="node24" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="829,340,907,367"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a545c744806947794c34d36444c2854fa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> * TableDescriptor::getProjectoin </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#a57a5e9860b8835979e76d34c54eb4ac2">ProjectionOffset</a>&#160;</td>
+          <td class="paramname"><em>pid</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, and <a class="el" href="classTableDescriptor.html#ae58b130cdee5d229afb2d2f67e550733">projection_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11">Analyzer::analyse()</a>, <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">HdfsLoader::append()</a>, <a class="el" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca">BindingTest()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a41a6ada18e8799a2e6442781a64d2c86">bulk_test_logical_index_scan()</a>, <a class="el" href="classAnalyzer.html#afe5c5c0acaf8cc6fb38ba8f22473ae4b">Analyzer::compute_table_stat()</a>, <a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">Analyzer::computeHistogram()</a>, <a class="el" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2">create_poc_data_four_partitions()</a>, <a class="el" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439">create_poc_data_one_partitions()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, <a class="el" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122">execting_test()</a>, <a class="el" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef">Catalog::getPartitionIDList()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6">claims::logical_operator::LogicalScan::GetPlanContext()</a>, <a class="el" href="classCatalog.html#adc68e91a9cbc5422998847144e73610b">Catalog::getProjection()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, <a class="el" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149">init_multi_node_tpc_h_envoriment_()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89">init_poc_environment()</a>, <a class="el" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c">init_single_node_tpc_h_envoriment_()</a>, <a class="el" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c">init_single_node_tpc_h_envoriment_ing()</a>, <a class="el" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570">init_single_node_tpc_h_envoriment_sort()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1">init_tt_environment()</a>, <a class="el" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155">insert_into_hash_table_from_projection()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#aa6d76d0600ceccafdb5ade585b5e2426">lineitem_scan_aggregation()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#aeea25673e80828d67f5f105e3c34150c">lineitem_scan_filter()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#adddfba3d9368a334fc076fb510862ce4">lineitem_scan_self_join()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">HdfsLoader::load()</a>, <a class="el" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f">loadData()</a>, <a class="el" href="classLogicalCSBIndexBuilding.html#a30532c087e70264faf2cd9b1b94d9a7e">LogicalCSBIndexBuilding::LogicalCSBIndexBuilding()</a>, <a class="el" href="classLogicalIndexScan.html#a49e4d56de40506fbef13fae63ccf3be7">LogicalIndexScan::LogicalIndexScan()</a>, <a class="el" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0">projection_scan()</a>, <a class="el" href="tpc__h__test_8cpp.html#a9ff9f39c3d7781592fe62999a015ef8b">query_1()</a>, <a class="el" href="tpc__h__test_8cpp.html#a07bc95f1b0af847db773f30f63bcc660">query_2()</a>, <a class="el" href="tpc__h__test_8cpp.html#a030b7ed93a40542ea4b9bccc4447772c">query_3()</a>, <a class="el" href="issue27_8cpp.html#ad5683a22f6a8df0ac0a722b1eb2d82c6">query_select_aggregation()</a>, <a class="el" href="issue27ing_8cpp.html#a3cc1e52a49ff95e4e86f43ed63fe512c">query_select_aggregation_ing()</a>, <a class="el" href="issue27ing_8cpp.html#a42b24b0b67b8938d7fa706e8bb96d076">query_select_fzh()</a>, <a class="el" href="issue27__sort_8cpp.html#ae2da92722c176b022c6136cefb607899">query_select_sort()</a>, <a class="el" href="issue27__sort_8cpp.html#a6aa052e11a6154f93fe0440a49fdf6d7">query_select_sort_string()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#a24e2ac93f2dd8d9f2aa39a43e992704f">sb_scan_aggregation()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#a2d962c2f12747712511c96a831477acc">sb_scan_filter()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#a1ba5ec4b7b47301cebbe99e8d057f42c">sb_scan_self_join()</a>, <a class="el" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7">startup_catalog()</a>, <a class="el" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5">startup_mulitple_node_environment_of_poc()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998">startup_multiple_node_environment()</a>, <a class="el" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43">startup_multiple_node_environment_of_stock()</a>, <a class="el" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523">startup_multiple_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc">startup_single_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9">startup_single_node_one_partition_environment_of_tpch()</a>, <a class="el" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57">statistic_manager_test()</a>, <a class="el" href="in__segment__scalability__test_8cpp.html#aec5d76713db05ef4ce0ce4c48a8e361a">test_block_construct()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a6290d73f7365353ae5bf85fe5fdd764e">test_complete_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a22460ff4e3bf9a2419852ecba4b69f60">test_complete_repartition_scan_join()</a>, <a class="el" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9">test_CSBIndexBuilding()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#adc9a0c893349c7bd6364fc052b84d80a">test_index_filter_performance()</a>, <a class="el" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83">test_index_scan_iterator()</a>, <a class="el" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c">test_logical_csb_index_building()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ae40fd23e7905275c39c8fafd190a7dbf">test_logical_index_building()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#af39b080c7be767357b47271e440611a3">test_logical_index_scan()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ad5fc33b647693ab3a8f7138ce33b17aa">test_multiple_complete_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a116ee21cb28d02779d088c75d160af20">test_multiple_complete_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a7295289114a6caba810fb6864c69f729">test_multiple_no_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a8a7840da2d47f67808b7689a7b935a47">test_multiple_no_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ad8251c8745e63e7af57ea9e3a46b6107">test_multiple_scan()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a8efd4205ded5c8af62464ee8b1a94c23">test_multiple_scan_filter_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ae5c80ba8385f5be8a825fc820e6b3c2f">test_multiple_scan_filter_high_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a7ff30bb6bfa76e6801e2870771214f60">test_multiple_scan_filter_low_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a7174fba737e5bc45ee8d0a4c64b710dd">test_multiple_scan_filter_Scalar_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aef79a636a8ffc28a52e820d27781b124">test_no_repartition_filtered_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a12b92a2894140df14955d05c3323f920">test_no_repartition_scan_join()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a56fe4845d161e11dbe99030657372353">test_scan()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a20ceaeaa29f391e541972713e60bec9f">test_scan_Aggregation_large_Groups()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aec012a9c18b17adf552dd84e2d289edd">test_scan_Aggregation_small_Groups()</a>, <a class="el" href="ExpanderFrameTest_8h.html#a3acdb1abdde67d27dfd32c8a7e32db91">test_scan_filter_Aggregation()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aa63931a6f57eac2fd5fe4d4e62282d22">test_scan_filter_high_selectivity()</a>, <a class="el" href="ExpanderFrameTest_8h.html#aebdfa81bae65b4bac7f60e587940d726">test_scan_filter_low_selectivity()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a9f85721915e325de710fe4b7f168296b">test_scan_filter_performance()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ac78568813f8c1156cd91b5c9c14deb43">test_scan_filter_Scalar_Aggregation()</a>, and <a class="el" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9">variable_schema_test()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae942a85aceed60e4c7bd6cde6c76d84d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long TableDescriptor::getRowNumber </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b">append_test()</a>, <a class="el" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e">create_load_test()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, and <a class="el" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed">inmemory_append_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_ae942a85aceed60e4c7bd6cde6c76d84d_icgraph.png" border="0" usemap="#classTableDescriptor_ae942a85aceed60e4c7bd6cde6c76d84d_icgraph" alt=""/></div>
+<map name="classTableDescriptor_ae942a85aceed60e4c7bd6cde6c76d84d_icgraph" id="classTableDescriptor_ae942a85aceed60e4c7bd6cde6c76d84d_icgraph">
+<area shape="rect" id="node2" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="303,5,396,32"/><area shape="rect" id="node4" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="290,56,409,83"/><area shape="rect" id="node5" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="267,107,431,133"/><area shape="rect" id="node6" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="271,157,428,184"/><area shape="rect" id="node3" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="480,56,555,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acd6e310a2ce0b9d5b8b983adf60e402d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSchema.html">Schema</a> * TableDescriptor::getSchema </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>, and <a class="el" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663">getAttributes()</a>.</p>
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_cgraph.png" border="0" usemap="#classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_cgraph" alt=""/></div>
+<map name="classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_cgraph" id="classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_cgraph">
+<area shape="rect" id="node2" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663" title="TableDescriptor::getAttributes" alt="" coords="243,5,439,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_icgraph.png" border="0" usemap="#classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_icgraph" alt=""/></div>
+<map name="classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_icgraph" id="classTableDescriptor_acd6e310a2ce0b9d5b8b983adf60e402d_icgraph">
+<area shape="rect" id="node2" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="243,5,407,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a7a06d7f13791ee2b3c7bc399e9a266d3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TableDescriptor::getTableName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCatalog.html#a5dd611230e1ab94e8608baed5f2f6a3c">Catalog::add_table()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36">claims::stmt_handler::InsertExec::Execute()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909">InsertData()</a>, and <a class="el" href="ExecuteLogicalQueryPlan_8h.html#ada770e822dfa8d7f904ab74bf18ae1cd">ShowTable()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a7a06d7f13791ee2b3c7bc399e9a266d3_icgraph.png" border="0" usemap="#classTableDescriptor_a7a06d7f13791ee2b3c7bc399e9a266d3_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a7a06d7f13791ee2b3c7bc399e9a266d3_icgraph" id="classTableDescriptor_a7a06d7f13791ee2b3c7bc399e9a266d3_icgraph">
+<area shape="rect" id="node2" href="classCatalog.html#a5dd611230e1ab94e8608baed5f2f6a3c" title="Catalog::add_table" alt="" coords="271,744,401,771"/><area shape="rect" id="node48" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="261,796,411,837"/><area shape="rect" id="node49" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="295,123,377,150"/><area shape="rect" id="node50" href="ExecuteLogicalQueryPlan_8h.html#ada770e822dfa8d7f904ab74bf18ae1cd" title="ShowTable" alt="" coords="293,347,379,374"/><area shape="rect" id="node3" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="507,196,597,223"/><area shape="rect" id="node5" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="479,130,625,172"/><area shape="rect" id="node6" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="479,365,625,406"/><area shape="rect" id="node12" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="505,79,599,106"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="502,532,602,559"/><area shape="rect" id="node17" href="classclaims_1_1stmt__handler_1_1CreateTableExec.html#ae8fb8b8e911c7f3149c07e6b700e56d5" title="the concrete operation of creating a table. " alt="" coords="459,584,645,625"/><area shape="rect" id="node18" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="485,649,619,690"/><area shape="rect" id="node20" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="479,715,625,742"/><area shape="rect" id="node22" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="482,766,622,808"/><area shape="rect" id="node24" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="482,832,622,873"/><area shape="rect" id="node26" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="482,897,622,938"/><area shape="rect" id="node28" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="486,963,618,990"/><area shape="rect" id="node29" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="515,1014,589,1040"/><area shape="rect" id="node30" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7" title="startup_catalog" alt="" coords="497,431,607,458"/><area shape="rect" id="node33" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5" title="startup_mulitple_node\l_environment_of_poc" alt="" coords="477,1065,627,1106"/><area shape="rect" id="node34" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998" title="startup_multiple_node\l_environment" alt="" coords="477,1130,627,1172"/><area shape="rect" id="node36" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43" title="startup_multiple_node\l_environment_of_stock" alt="" coords="473,1196,631,1237"/><area shape="rect" id="node37" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523" title="startup_multiple_node\l_environment_of_tpch" alt="" coords="477,1261,627,1302"/><area shape="rect" id="node39" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc" title="startup_single_node\l_environment_of_tpch" alt="" coords="477,1326,627,1368"/><area shape="rect" id="node41" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9" title="startup_single_node\l_one_partition_environment\l_of_tpch" alt="" coords="713,474,895,530"/><area shape="rect" id="node42" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="475,1392,629,1419"/><area shape="rect" id="node43" href="Partitioner__test_8cpp.html#a46457a5aafab8894fb77c1496db92809" title="TableDescriptor_test" alt="" coords="481,1443,623,1470"/><area shape="rect" id="node44" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="473,1494,631,1520"/><area shape="rect" id="node45" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="470,1544,634,1571"/><area shape="rect" id="node46" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="475,248,629,289"/><area shape="rect" id="node47" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="477,314,627,340"/><area shape="rect" id="node4" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="744,196,864,223"/><area shape="rect" id="node7" href="classDMLTestPOC1Partition.html#aa36f70199bd11febc38114bfc3f030ed" title="DMLTestPOC1Partition\l::SetUpTestCase" alt="" coords="724,292,884,333"/><area shape="rect" id="node8" href="set__up__environment_8h.html#abb86496e74986b738530fd97ececb7c1" title="startup_single_node\l_environment_of_poc" alt="" coords="731,357,877,398"/><area shape="rect" id="node9" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="979,206,1101,232"/><area shape="rect" id="node10" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="963,416,1117,457"/><area shape="rect" id="node11" href="sql__parser__test_8h.html#ada81e0e56e70ea035c4047dda18a2a1e" title="sql_parser_test" alt="" coords="985,364,1095,391"/><area shape="rect" id="node13" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="718,54,890,80"/><area shape="rect" id="node14" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="975,54,1105,80"/><area shape="rect" id="node16" href="daemon__test_8h.html#a6618e90ac81a581bdd325929e6bf9752" title="daemon_test" alt="" coords="755,554,853,580"/><area shape="rect" id="node19" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="735,656,873,683"/><area shape="rect" id="node21" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="735,715,873,742"/><area shape="rect" id="node23" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="733,774,875,800"/><area shape="rect" id="node25" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="724,839,884,866"/><area shape="rect" id="node27" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="718,904,890,931"/><area shape="rect" id="node31" href="hash__table__test_8h.html#a0cea0945e75d1d827b21beeb8b8eb762" title="scalability_test" alt="" coords="749,423,859,450"/><area shape="rect" id="node32" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="963,481,1117,522"/><area shape="rect" id="node35" href="ExpanderFrameTest_8h.html#a03c95c864f1218cff17c62230ef2e77b" title="test_multiple_expanderFramework\l_single_node" alt="" coords="693,1130,915,1172"/><area shape="rect" id="node38" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="724,1268,884,1295"/><area shape="rect" id="node40" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="725,1334,883,1360"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aab23733bd6fe5a02250c160f928b942d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long TableDescriptor::isEmpty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1bbc8fb9e16713cf9f4f960a773c5eea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TableDescriptor::isExist </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#acd08287cb8f1035688b76d01c95e4d74">attributes</a>.</p>
+
+<p>Referenced by <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, and <a class="el" href="classCatalog.html#a60d038f3d371a0bc611ede26b1dfbdaa">Catalog::isAttributeExist()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a1bbc8fb9e16713cf9f4f960a773c5eea_icgraph.png" border="0" usemap="#classTableDescriptor_a1bbc8fb9e16713cf9f4f960a773c5eea_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a1bbc8fb9e16713cf9f4f960a773c5eea_icgraph" id="classTableDescriptor_a1bbc8fb9e16713cf9f4f960a773c5eea_icgraph">
+<area shape="rect" id="node2" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6" title="CreateProjection" alt="" coords="434,5,553,32"/><area shape="rect" id="node6" href="classCatalog.html#a60d038f3d371a0bc611ede26b1dfbdaa" title="Catalog::isAttributeExist" alt="" coords="217,132,381,159"/><area shape="rect" id="node3" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1555,183,1727,209"/><area shape="rect" id="node4" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1781,157,1902,184"/><area shape="rect" id="node5" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="1776,208,1907,235"/><area shape="rect" id="node7" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="621,309,752,336"/><area shape="rect" id="node15" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="627,107,747,133"/><area shape="rect" id="node16" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="606,157,767,184"/><area shape="rect" id="node18" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="430,208,557,235"/><area shape="rect" id="node13" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1355,183,1506,209"/><area shape="rect" id="node8" href="semantic__analysis_8cpp.html#af74d6a9ab0ec62ba3381a8d54882c39c" title="oncondition_analysis" alt="" coords="817,309,959,336"/><area shape="rect" id="node9" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1008,309,1128,336"/><area shape="rect" id="node10" href="sql__node__struct_8h.html#a085724a1e59fec19700c5d2fd9a7831c" title="semantic_analysis" alt="" coords="1176,284,1307,311"/><area shape="rect" id="node11" href="semantic__analysis_8cpp.html#a7fca031b7cf11a77a85050505859a7b2" title="groupby_analysis" alt="" coords="1369,335,1492,361"/><area shape="rect" id="node12" href="ExecuteLogicalQueryPlan_8h.html#a7be8c26f64319e2ee8f579a8b85a18b5" title="Query" alt="" coords="1402,233,1459,260"/><area shape="rect" id="node14" href="semantic__analysis_8cpp.html#ac9330eaf334f4dd2190ac1dcf04f5e2d" title="wherecondition_analysis" alt="" coords="1559,233,1723,260"/><area shape="rect" id="node17" href="semantic__analysis_8cpp.html#a929a76bf19d7900893b8bff080015297" title="selectlist_analysis" alt="" coords="823,157,953,184"/><area shape="rect" id="node19" href="semantic__analysis_8cpp.html#ab88acc24e9b95f354816f3b10e51fd25" title="having_analysis" alt="" coords="1011,259,1125,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1e2ca63ee6ec5bc38310d34d773fa4c6"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Archive &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TableDescriptor::serialize </td>
+          <td>(</td>
+          <td class="paramtype">Archive &amp;&#160;</td>
+          <td class="paramname"><em>ar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>version</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0c9d3afa0aa222819cb3558b2862d138"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TableDescriptor::setRowNumber </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>row_number</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">HdfsLoader::append()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">HdfsLoader::load()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableDescriptor_a0c9d3afa0aa222819cb3558b2862d138_icgraph.png" border="0" usemap="#classTableDescriptor_a0c9d3afa0aa222819cb3558b2862d138_icgraph" alt=""/></div>
+<map name="classTableDescriptor_a0c9d3afa0aa222819cb3558b2862d138_icgraph" id="classTableDescriptor_a0c9d3afa0aa222819cb3558b2862d138_icgraph">
+<area shape="rect" id="node2" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3" title="HdfsLoader::append" alt="" coords="267,71,405,97"/><area shape="rect" id="node6" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001" title="HdfsLoader::load" alt="" coords="275,201,397,228"/><area shape="rect" id="node3" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="457,5,607,46"/><area shape="rect" id="node4" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="453,71,611,97"/><area shape="rect" id="node5" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="708,121,783,148"/><area shape="rect" id="node7" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="485,121,579,148"/><area shape="rect" id="node8" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="473,172,591,199"/><area shape="rect" id="node9" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="460,223,604,265"/><area shape="rect" id="node10" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="456,289,608,316"/><area shape="rect" id="node11" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="493,340,571,367"/><area shape="rect" id="node12" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="659,340,831,367"/><area shape="rect" id="node13" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="885,315,1006,341"/><area shape="rect" id="node14" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="880,365,1011,392"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class boost::serialization::access</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="acd08287cb8f1035688b76d01c95e4d74"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="structAttribute.html">Attribute</a>&gt; TableDescriptor::attributes</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classTableDescriptor.html#abbaf70da17c8707fe1ad9a4c4f305a8e">addAttribute()</a>, <a class="el" href="classTableDescriptor.html#abdc128c7a058de8032f93c4bf7aed466">createHashPartitionedProjection()</a>, <a class="el" href="classTableDescriptor.html#adcfb73143054116fa570b84236a56ce7">createHashPartitionedProjectionOnAllAttribute()</a>, <a class="el" href="classTableDescriptor.html#a24413ea116363cf1ebe68ce564849e0a">getAttribute()</a>, <a class="el" href="classTableDescriptor.html#a25b892d77eea486c3bba7e02d8d4e66b">getAttribute2()</a>, <a class="el" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d">getSchema()</a>, and <a class="el" href="classTableDescriptor.html#a1bbc8fb9e16713cf9f4f960a773c5eea">isExist()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae58b130cdee5d229afb2d2f67e550733"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a>*&gt; TableDescriptor::projection_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classTableDescriptor.html#abdc128c7a058de8032f93c4bf7aed466">createHashPartitionedProjection()</a>, <a class="el" href="classTableDescriptor.html#adcfb73143054116fa570b84236a56ce7">createHashPartitionedProjectionOnAllAttribute()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">getNumberOfProjection()</a>, and <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">getProjectoin()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab450e79232543a9abaa1c3c22b9fa014"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long TableDescriptor::row_number_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a020d5a5acdb67667d7e237d1854f400d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> TableDescriptor::table_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classTableDescriptor.html#ae3b20ca9e3a6dc14643b4bc1df58e3a3">addAttribute()</a>, <a class="el" href="classTableDescriptor.html#abdc128c7a058de8032f93c4bf7aed466">createHashPartitionedProjection()</a>, and <a class="el" href="classTableDescriptor.html#adcfb73143054116fa570b84236a56ce7">createHashPartitionedProjectionOnAllAttribute()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2305d6fe8739db4f2817ce0b72f1e3b6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TableDescriptor::tableName</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classTableDescriptor.html#ae3b20ca9e3a6dc14643b4bc1df58e3a3">addAttribute()</a>, and <a class="el" href="classTableDescriptor.html#a24413ea116363cf1ebe68ce564849e0a">getAttribute()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Catalog/<a class="el" href="table_8h_source.html">table.h</a></li>
-<li>Catalog/table.cpp</li>
+<li>Catalog/<a class="el" href="table_8cpp.html">table.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

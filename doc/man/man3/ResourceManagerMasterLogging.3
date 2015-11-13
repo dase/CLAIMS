@@ -1,4 +1,4 @@
-.TH "ResourceManagerMasterLogging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ResourceManagerMasterLogging" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,10 +7,35 @@ ResourceManagerMasterLogging \-
 .br
 .PP
 .PP
+\fC#include <Logging\&.h>\fP
+.PP
 Inherits \fBLogging\fP\&.
-.SS "Additional Inherited Members"
+.SS "Private Member Functions"
 
+.in +1c
+.ti -1c
+.RI "void \fBlog\fP (const char *format,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "void \fBelog\fP (const char *format,\&.\&.\&.)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "void ResourceManagerMasterLogging::elog (const char *format, \&.\&.\&.)\fC [private]\fP, \fC [virtual]\fP"
+print the error information to stderr\&. 
+.PP
+Implements \fBLogging\fP\&.
+.PP
+References RawElog()\&.
+.SS "void ResourceManagerMasterLogging::log (const char *format, \&.\&.\&.)\fC [private]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBLogging\fP\&.
+.PP
+References RawLog()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

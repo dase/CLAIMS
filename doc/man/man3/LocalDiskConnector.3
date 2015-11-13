@@ -1,4 +1,4 @@
-.TH "LocalDiskConnector" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "LocalDiskConnector" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ LocalDiskConnector \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <LocalDiskConnector\&.h>\fP
 .PP
 Inherits \fBConnector\fP\&.
 .SS "Public Member Functions"
@@ -15,7 +17,10 @@ Inherits \fBConnector\fP\&.
 .RI "\fBLocalDiskConnector\fP (vector< vector< string > > hdfs_writepath)"
 .br
 .ti -1c
-.RI "bool \fBopenFiles\fP (open_flag open_flag_)"
+.RI "virtual \fB~LocalDiskConnector\fP ()"
+.br
+.ti -1c
+.RI "bool \fBopenFiles\fP (\fBopen_flag\fP open_flag_)"
 .br
 .ti -1c
 .RI "bool \fBcloseFiles\fP ()"
@@ -31,7 +36,39 @@ Inherits \fBConnector\fP\&.
 .RI "std::vector< std::vector< int > > \fBfile_handles_\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "LocalDiskConnector::LocalDiskConnector (vector< vector< string > >hdfs_writepath)"
+
+.SS "LocalDiskConnector::~LocalDiskConnector ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool LocalDiskConnector::closeFiles ()\fC [virtual]\fP"
+
+.PP
+Implements \fBConnector\fP\&.
+.PP
+References file_handles_, and FileClose()\&.
+.SS "int LocalDiskConnector::flush (unsignedprojection_offset, unsignedpartition_offset, void *source, unsignedlength)\fC [virtual]\fP"
+
+.PP
+Implements \fBConnector\fP\&.
+.PP
+References file_handles_\&.
+.SS "bool LocalDiskConnector::openFiles (\fBopen_flag\fPopen_flag_)\fC [virtual]\fP"
+
+.PP
+Implements \fBConnector\fP\&.
+.PP
+References APPENDD, CREATEE, file_handles_, FileOpen, and Connector::writepath\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<std::vector<int> > LocalDiskConnector::file_handles_\fC [protected]\fP"
+
+.PP
+Referenced by closeFiles(), flush(), and openFiles()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

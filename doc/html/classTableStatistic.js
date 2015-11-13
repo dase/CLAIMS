@@ -6,5 +6,6 @@ var classTableStatistic =
     [ "getAttributeStatistics", "classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3", null ],
     [ "getCardinality", "classTableStatistic.html#a5d87fffc1d2e4f9265b7de95d4fe1630", null ],
     [ "print", "classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94", null ],
+    [ "att_stat_list_", "classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2", null ],
     [ "number_of_tuples_", "classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924", null ]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Catalog/ProjectionBinding.h Source File</title>
+<title>Claims: Catalog/ProjectionBinding.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ProjectionBinding_8h_source.html','');
 <div class="title">ProjectionBinding.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ProjectionBinding_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * ProjectionBinding.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Nov 2, 2013</span></div>
@@ -118,29 +118,34 @@ $(document).ready(function(){initNavTree('ProjectionBinding_8h_source.html','');
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#ifdef DMALLOC</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;Partitioner.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="Partitioner_8h.html">Partitioner.h</a>&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../storage/StorageLevel.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classProjectionBinding.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="classProjectionBinding.html">ProjectionBinding</a> {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classProjectionBinding.html">ProjectionBinding</a>();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classProjectionBinding.html">ProjectionBinding</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classProjectionBinding.html#a6cd3d9ca9db0f53723f40362cdd8f823">ProjectionBinding</a>();</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classProjectionBinding.html#a943f9256077dd192024849777729bcc2">~ProjectionBinding</a>();</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="comment">/*binding an entire projection independently*/</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf">BindingEntireProjection</a>(<a class="code" href="classPartitioner.html">Partitioner</a>*,<span class="keyword">const</span> StorageLevel&amp; desriable_storage_level=MEMORY);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf">BindingEntireProjection</a>(<a class="code" href="classPartitioner.html">Partitioner</a>*,<span class="keyword">const</span> <a class="code" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a>&amp; desriable_storage_level=<a class="code" href="StorageLevel_8h.html#aaf08a63f67339d49d4c4efec7562496f">MEMORY</a>);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720">UnbindingEntireProjection</a>(<a class="code" href="classPartitioner.html">Partitioner</a>* part);</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* PROJECTIONBINDING_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="Partitioner_8h_html"><div class="ttname"><a href="Partitioner_8h.html">Partitioner.h</a></div></div>
+<div class="ttc" id="StorageLevel_8h_html_aecffb9b02dbc48bdeaaef165744d06e4"><div class="ttname"><a href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a></div><div class="ttdeci">unsigned StorageLevel</div><div class="ttdef"><b>Definition:</b> StorageLevel.h:13</div></div>
+<div class="ttc" id="classProjectionBinding_html_a943f9256077dd192024849777729bcc2"><div class="ttname"><a href="classProjectionBinding.html#a943f9256077dd192024849777729bcc2">ProjectionBinding::~ProjectionBinding</a></div><div class="ttdeci">virtual ~ProjectionBinding()</div><div class="ttdef"><b>Definition:</b> ProjectionBinding.cpp:16</div></div>
 <div class="ttc" id="classProjectionBinding_html_a04e1bf2e4b3c179ed411ec5bbac14720"><div class="ttname"><a href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720">ProjectionBinding::UnbindingEntireProjection</a></div><div class="ttdeci">bool UnbindingEntireProjection(Partitioner *part)</div><div class="ttdef"><b>Definition:</b> ProjectionBinding.cpp:116</div></div>
 <div class="ttc" id="classProjectionBinding_html_a256e9a7a0c157f31df1cb7fccb71ffbf"><div class="ttname"><a href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf">ProjectionBinding::BindingEntireProjection</a></div><div class="ttdeci">bool BindingEntireProjection(Partitioner *, const StorageLevel &amp;desriable_storage_level=MEMORY)</div><div class="ttdef"><b>Definition:</b> ProjectionBinding.cpp:20</div></div>
 <div class="ttc" id="classPartitioner_html"><div class="ttname"><a href="classPartitioner.html">Partitioner</a></div><div class="ttdef"><b>Definition:</b> Partitioner.h:229</div></div>
 <div class="ttc" id="classProjectionBinding_html"><div class="ttname"><a href="classProjectionBinding.html">ProjectionBinding</a></div><div class="ttdef"><b>Definition:</b> ProjectionBinding.h:15</div></div>
+<div class="ttc" id="classProjectionBinding_html_a6cd3d9ca9db0f53723f40362cdd8f823"><div class="ttname"><a href="classProjectionBinding.html#a6cd3d9ca9db0f53723f40362cdd8f823">ProjectionBinding::ProjectionBinding</a></div><div class="ttdeci">ProjectionBinding()</div><div class="ttdef"><b>Definition:</b> ProjectionBinding.cpp:11</div></div>
+<div class="ttc" id="StorageLevel_8h_html_aaf08a63f67339d49d4c4efec7562496f"><div class="ttname"><a href="StorageLevel_8h.html#aaf08a63f67339d49d4c4efec7562496f">MEMORY</a></div><div class="ttdeci">#define MEMORY</div><div class="ttdef"><b>Definition:</b> StorageLevel.h:14</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_3bf4fa49c8aa808631e3bc6b141a2264.html">Catalog</a></li><li class="navelem"><b>ProjectionBinding.h</b></li>
+    <li class="navelem"><a class="el" href="dir_3bf4fa49c8aa808631e3bc6b141a2264.html">Catalog</a></li><li class="navelem"><a class="el" href="ProjectionBinding_8h.html">ProjectionBinding.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

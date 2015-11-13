@@ -4,6 +4,7 @@ var classQColcumns =
     [ "QColcumns", "classQColcumns.html#a8489fdb9752177d39745a32a3a500bc7", null ],
     [ "QColcumns", "classQColcumns.html#a7fffea1ff5924c3d1c75fbeb73f229b3", null ],
     [ "~QColcumns", "classQColcumns.html#abd6bed349bc433bc61f2e44b8d5b76dd", null ],
+    [ "serialize", "classQColcumns.html#a87614f99481005d949c4e7a8f9328ebc", null ],
     [ "boost::serialization::access", "classQColcumns.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
     [ "col", "classQColcumns.html#aad5bb3d06f837c31fff60de1f71453e8", null ],
     [ "id", "classQColcumns.html#aafe8c8be92d9aca5eca4b2fb27f748f5", null ],

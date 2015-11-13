@@ -1,4 +1,4 @@
-.TH "AllBlockInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "AllBlockInfo" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ AllBlockInfo \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <AllBlockInfo\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fB~AllBlockInfo\fP ()"
+.br
 .ti -1c
 .RI "bool \fBput\fP (string blockmanagerId, string blockId)"
 .br
@@ -20,7 +25,61 @@ AllBlockInfo \-
 .RI "static \fBAllBlockInfo\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBAllBlockInfo\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "vector< string > \fBvv_\fP"
+.br
+.ti -1c
+.RI "\fBLock\fP \fBlock_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBAllBlockInfo\fP * \fBabi_\fP =0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "AllBlockInfo::~AllBlockInfo ()"
+
+.SS "AllBlockInfo::AllBlockInfo ()\fC [private]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBAllBlockInfo\fP* AllBlockInfo::getInstance ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by BlockManagerMaster::BlockManagerMasterActor::blockStatusReceiver(), and BlockManagerMaster::initialize()\&.
+.SS "bool AllBlockInfo::put (stringblockmanagerId, stringblockId)"
+
+.PP
+References Lock::acquire(), lock_, Lock::release(), and vv_\&.
+.PP
+Referenced by BlockManagerMaster::BlockManagerMasterActor::blockStatusReceiver()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBAllBlockInfo\fP * AllBlockInfo::abi_ =0\fC [static]\fP, \fC [private]\fP"
+
+.SS "\fBLock\fP AllBlockInfo::lock_\fC [private]\fP"
+
+.PP
+Referenced by put()\&.
+.SS "vector<string> AllBlockInfo::vv_\fC [private]\fP"
+
+.PP
+Referenced by put()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

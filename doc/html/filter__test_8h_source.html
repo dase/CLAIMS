@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Test/TestSuit/filter_test.h Source File</title>
+<title>Claims: Test/TestSuit/filter_test.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('filter__test_8h_source.html','');});
 <div class="title">filter_test.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="filter__test_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * filter_test.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Aug 17, 2014</span></div>
@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('filter__test_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keywordtype">int</span> filter_test(){</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="filter__test_8h.html#ab91bbe6dcd0b78c35968bbddfe6b3803">   15</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="filter__test_8h.html#ab91bbe6dcd0b78c35968bbddfe6b3803">filter_test</a>(){</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">//  ColumnDistribution* column = new UniformInt(0,100);</span></div>
@@ -130,38 +130,38 @@ $(document).ready(function(){initNavTree('filter__test_8h_source.html','');});
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">//  columns.push_back(column_metadata(t_int,column));</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classRandomRow.html">RandomRow</a> rr;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    rr.addIntUniformColumn(0,1024*1024*1024,3);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    rr.addIntUniformColumn(0,1024*1024*1024,4);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    rr.<a class="code" href="classRandomRow.html#a4c29d0369a6a77bd44dac592b2c2ff96">addIntUniformColumn</a>(0,1024*1024*1024,3);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    rr.<a class="code" href="classRandomRow.html#a4c29d0369a6a77bd44dac592b2c2ff96">addIntUniformColumn</a>(0,1024*1024*1024,4);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* schema;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> tuple_count=1024*1024;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* dataset=generateBlockStreamBuffer(rr.getColumns(),tuple_count,&amp;schema);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* dataset=<a class="code" href="generator_8h.html#a3f0880f4e7133ae3135ff44dc2f7fba8">generateBlockStreamBuffer</a>(rr.<a class="code" href="classRandomRow.html#af552917e09e76893b0360ef083e67f74">getColumns</a>(),tuple_count,&amp;schema);</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a> it=dataset-&gt;createIterator();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a> it=dataset-&gt;<a class="code" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">createIterator</a>();</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> passed_count=0;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">int</span> va=100;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classAttributeComparator.html">AttributeComparator</a> ac(<a class="code" href="classcolumn__type.html">column_type</a>(t_int), Comparator::EQ,0,&amp;va);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classAttributeComparator.html">AttributeComparator</a> ac(<a class="code" href="classcolumn__type.html">column_type</a>(<a class="code" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7">t_int</a>), <a class="code" href="classComparator.html#a4466f352ad0ff01ae7ac7aba12dd4712a17063e879b41973f43c812c642891a25">Comparator::EQ</a>,0,&amp;va);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* data_block;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    ticks start=curtick();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="rdtsc_8h.html#adb1311ec3cd0a48b4a8f6d480533649d">ticks</a> start=<a class="code" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa">curtick</a>();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">while</span>((data_block=it.nextBlock())!=0){</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html">BlockStreamBase::BlockStreamTraverseIterator</a>* it=data_block-&gt;createIterator();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html">BlockStreamBase::BlockStreamTraverseIterator</a>* it=data_block-&gt;<a class="code" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085">createIterator</a>();</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">void</span> * tuple;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">while</span>((tuple=it-&gt;nextTuple())!=0){</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">while</span>((tuple=it-&gt;<a class="code" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e">nextTuple</a>())!=0){</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">//          if(*(int*)tuple==100){</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">if</span>(ac.filter(tuple)){</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">if</span>(ac.<a class="code" href="classAttributeComparator.html#aaa013cefd94fe5cda615fd79e7b7ca5e">filter</a>(tuple)){</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                passed_count++;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">delete</span> it;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    printf(<span class="stringliteral">&quot;Filter condition avg. cycles: %d\n&quot;</span>,(curtick()-start)/tuple_count);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    printf(<span class="stringliteral">&quot;Filter condition avg. cycles: %d\n&quot;</span>,(<a class="code" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa">curtick</a>()-start)/tuple_count);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">delete</span> schema;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">delete</span> dataset;</div>
@@ -172,17 +172,29 @@ $(document).ready(function(){initNavTree('filter__test_8h_source.html','');});
 <div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a></div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:26</div></div>
 <div class="ttc" id="classAttributeComparator_html"><div class="ttname"><a href="classAttributeComparator.html">AttributeComparator</a></div><div class="ttdef"><b>Definition:</b> AttributeComparator.h:18</div></div>
 <div class="ttc" id="classDynamicBlockBuffer_html"><div class="ttname"><a href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a></div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:24</div></div>
+<div class="ttc" id="rdtsc_8h_html_adb1311ec3cd0a48b4a8f6d480533649d"><div class="ttname"><a href="rdtsc_8h.html#adb1311ec3cd0a48b4a8f6d480533649d">ticks</a></div><div class="ttdeci">unsigned long long int ticks</div><div class="ttdef"><b>Definition:</b> rdtsc.h:26</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
+<div class="ttc" id="generator_8h_html_a3f0880f4e7133ae3135ff44dc2f7fba8"><div class="ttname"><a href="generator_8h.html#a3f0880f4e7133ae3135ff44dc2f7fba8">generateBlockStreamBuffer</a></div><div class="ttdeci">DynamicBlockBuffer * generateBlockStreamBuffer(vector&lt; column_metadata &gt; columns, unsigned long tuple_count, Schema **return_schema=0)</div><div class="ttdef"><b>Definition:</b> generator.h:73</div></div>
+<div class="ttc" id="classRandomRow_html_a4c29d0369a6a77bd44dac592b2c2ff96"><div class="ttname"><a href="classRandomRow.html#a4c29d0369a6a77bd44dac592b2c2ff96">RandomRow::addIntUniformColumn</a></div><div class="ttdeci">void addIntUniformColumn(int min=0, int max=1024 *1024, int seed=0)</div><div class="ttdef"><b>Definition:</b> generator.h:40</div></div>
+<div class="ttc" id="classRandomRow_html_af552917e09e76893b0360ef083e67f74"><div class="ttname"><a href="classRandomRow.html#af552917e09e76893b0360ef083e67f74">RandomRow::getColumns</a></div><div class="ttdeci">std::vector&lt; column_metadata &gt; getColumns()</div><div class="ttdef"><b>Definition:</b> generator.h:51</div></div>
+<div class="ttc" id="classBlockStreamBase_html_ae0b9bd4ef67d1f8841b99d305eef9085"><div class="ttname"><a href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085">BlockStreamBase::createIterator</a></div><div class="ttdeci">BlockStreamTraverseIterator * createIterator()</div><div class="ttdef"><b>Definition:</b> BlockStream.h:113</div></div>
+<div class="ttc" id="rdtsc_8h_html_ab66c2fc2f591c3582b8d145d776d65aa"><div class="ttname"><a href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa">curtick</a></div><div class="ttdeci">static __inline__ unsigned long long curtick()</div><div class="ttdef"><b>Definition:</b> rdtsc.h:37</div></div>
 <div class="ttc" id="classBlockStreamBase_html"><div class="ttname"><a href="classBlockStreamBase.html">BlockStreamBase</a></div><div class="ttdef"><b>Definition:</b> BlockStream.h:21</div></div>
+<div class="ttc" id="classComparator_html_a4466f352ad0ff01ae7ac7aba12dd4712a17063e879b41973f43c812c642891a25"><div class="ttname"><a href="classComparator.html#a4466f352ad0ff01ae7ac7aba12dd4712a17063e879b41973f43c812c642891a25">Comparator::EQ</a></div><div class="ttdef"><b>Definition:</b> Comparator.h:26</div></div>
+<div class="ttc" id="data__type_8h_html_ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7"><div class="ttname"><a href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7">t_int</a></div><div class="ttdef"><b>Definition:</b> data_type.h:35</div></div>
 <div class="ttc" id="classRandomRow_html"><div class="ttname"><a href="classRandomRow.html">RandomRow</a></div><div class="ttdef"><b>Definition:</b> generator.h:35</div></div>
-<div class="ttc" id="classcolumn__type_html"><div class="ttname"><a href="classcolumn__type.html">column_type</a></div><div class="ttdef"><b>Definition:</b> data_type.h:1487</div></div>
+<div class="ttc" id="classcolumn__type_html"><div class="ttname"><a href="classcolumn__type.html">column_type</a></div><div class="ttdef"><b>Definition:</b> data_type.h:1200</div></div>
+<div class="ttc" id="filter__test_8h_html_ab91bbe6dcd0b78c35968bbddfe6b3803"><div class="ttname"><a href="filter__test_8h.html#ab91bbe6dcd0b78c35968bbddfe6b3803">filter_test</a></div><div class="ttdeci">int filter_test()</div><div class="ttdef"><b>Definition:</b> filter_test.h:15</div></div>
+<div class="ttc" id="classAttributeComparator_html_aaa013cefd94fe5cda615fd79e7b7ca5e"><div class="ttname"><a href="classAttributeComparator.html#aaa013cefd94fe5cda615fd79e7b7ca5e">AttributeComparator::filter</a></div><div class="ttdeci">bool filter(void *x) const __attribute__((always_inline))</div><div class="ttdef"><b>Definition:</b> AttributeComparator.h:27</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_ad3fd45b2086e797a3d8130d231571956"><div class="ttname"><a href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">DynamicBlockBuffer::createIterator</a></div><div class="ttdeci">Iterator createIterator() const </div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:72</div></div>
 <div class="ttc" id="classBlockStreamBase_1_1BlockStreamTraverseIterator_html"><div class="ttname"><a href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html">BlockStreamBase::BlockStreamTraverseIterator</a></div><div class="ttdef"><b>Definition:</b> BlockStream.h:24</div></div>
+<div class="ttc" id="classBlockStreamBase_1_1BlockStreamTraverseIterator_html_a6867c94f3866c0d4969adafb4405883e"><div class="ttname"><a href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e">BlockStreamBase::BlockStreamTraverseIterator::nextTuple</a></div><div class="ttdeci">void * nextTuple()</div><div class="ttdef"><b>Definition:</b> BlockStream.h:29</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_37618a71d99bdfed5979e976980d5eec.html">Test</a></li><li class="navelem"><a class="el" href="dir_65896f0c44a1421eed4219004c52af9f.html">TestSuit</a></li><li class="navelem"><b>filter_test.h</b></li>
+    <li class="navelem"><a class="el" href="dir_37618a71d99bdfed5979e976980d5eec.html">Test</a></li><li class="navelem"><a class="el" href="dir_65896f0c44a1421eed4219004c52af9f.html">TestSuit</a></li><li class="navelem"><a class="el" href="filter__test_8h.html">filter_test.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Block/ResultSet.h Source File</title>
+<title>Claims: common/Block/ResultSet.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ResultSet_8h_source.html','');});
 <div class="title">ResultSet.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ResultSet_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * ResultSet.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Jan 20, 2014</span></div>
@@ -118,31 +118,39 @@ $(document).ready(function(){initNavTree('ResultSet_8h_source.html','');});
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#ifdef DMALLOC</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;DynamicBlockBuffer.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="DynamicBlockBuffer_8h.html">DynamicBlockBuffer.h</a>&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classResultSet.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="classResultSet.html">ResultSet</a> :<span class="keyword">public</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>{</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classResultSet.html">ResultSet</a>():<a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>(),schema_(0){};</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classResultSet.html">ResultSet</a>(<span class="keyword">const</span> <a class="code" href="classResultSet.html">ResultSet</a>&amp; r);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classResultSet.html">ResultSet</a>();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span> print()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* schema_;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    std::vector&lt;std::string&gt; column_header_list_;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">double</span> query_time_;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classResultSet.html#a8f7bafcfdf1d261b81e57e2b0dce6611">   17</a></span>&#160;    <a class="code" href="classResultSet.html#a8f7bafcfdf1d261b81e57e2b0dce6611">ResultSet</a>():<a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>(),<a class="code" href="classResultSet.html#a51a51e2496837beb56867a652cc437af">schema_</a>(0){};</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classResultSet.html#a8f7bafcfdf1d261b81e57e2b0dce6611">ResultSet</a>(<span class="keyword">const</span> <a class="code" href="classResultSet.html">ResultSet</a>&amp; r);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classResultSet.html#a905f1a69b25f355dcd2172bb0815847b">~ResultSet</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classResultSet.html#ac910a2d4da1d87d54253d41ffdea060a">print</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classResultSet.html#a51a51e2496837beb56867a652cc437af">   21</a></span>&#160;    <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classResultSet.html#a51a51e2496837beb56867a652cc437af">schema_</a>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classResultSet.html#ac9d26b9492d5aef5209e57cf758aedca">   22</a></span>&#160;    std::vector&lt;std::string&gt; <a class="code" href="classResultSet.html#ac9d26b9492d5aef5209e57cf758aedca">column_header_list_</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classResultSet.html#afa97531165a088b4564e10c603674855">   23</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classResultSet.html#afa97531165a088b4564e10c603674855">query_time_</a>;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> printNChar(<span class="keywordtype">int</span> n, <span class="keywordtype">char</span> c)<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classResultSet.html#a6720fb4416dbf305747833c1fafa5078">printNChar</a>(<span class="keywordtype">int</span> n, <span class="keywordtype">char</span> c)<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;};</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* RESULTSET_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classResultSet_html_ac910a2d4da1d87d54253d41ffdea060a"><div class="ttname"><a href="classResultSet.html#ac910a2d4da1d87d54253d41ffdea060a">ResultSet::print</a></div><div class="ttdeci">void print() const </div><div class="ttdef"><b>Definition:</b> ResultSet.cpp:40</div></div>
+<div class="ttc" id="classResultSet_html_a905f1a69b25f355dcd2172bb0815847b"><div class="ttname"><a href="classResultSet.html#a905f1a69b25f355dcd2172bb0815847b">ResultSet::~ResultSet</a></div><div class="ttdeci">virtual ~ResultSet()</div><div class="ttdef"><b>Definition:</b> ResultSet.cpp:29</div></div>
+<div class="ttc" id="classResultSet_html_afa97531165a088b4564e10c603674855"><div class="ttname"><a href="classResultSet.html#afa97531165a088b4564e10c603674855">ResultSet::query_time_</a></div><div class="ttdeci">double query_time_</div><div class="ttdef"><b>Definition:</b> ResultSet.h:23</div></div>
 <div class="ttc" id="classDynamicBlockBuffer_html"><div class="ttname"><a href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a></div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:24</div></div>
+<div class="ttc" id="classResultSet_html_a6720fb4416dbf305747833c1fafa5078"><div class="ttname"><a href="classResultSet.html#a6720fb4416dbf305747833c1fafa5078">ResultSet::printNChar</a></div><div class="ttdeci">void printNChar(int n, char c) const </div><div class="ttdef"><b>Definition:</b> ResultSet.cpp:133</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
+<div class="ttc" id="DynamicBlockBuffer_8h_html"><div class="ttname"><a href="DynamicBlockBuffer_8h.html">DynamicBlockBuffer.h</a></div></div>
 <div class="ttc" id="classResultSet_html"><div class="ttname"><a href="classResultSet.html">ResultSet</a></div><div class="ttdef"><b>Definition:</b> ResultSet.h:15</div></div>
+<div class="ttc" id="classResultSet_html_ac9d26b9492d5aef5209e57cf758aedca"><div class="ttname"><a href="classResultSet.html#ac9d26b9492d5aef5209e57cf758aedca">ResultSet::column_header_list_</a></div><div class="ttdeci">std::vector&lt; std::string &gt; column_header_list_</div><div class="ttdef"><b>Definition:</b> ResultSet.h:22</div></div>
+<div class="ttc" id="classResultSet_html_a51a51e2496837beb56867a652cc437af"><div class="ttname"><a href="classResultSet.html#a51a51e2496837beb56867a652cc437af">ResultSet::schema_</a></div><div class="ttdeci">Schema * schema_</div><div class="ttdef"><b>Definition:</b> ResultSet.h:21</div></div>
+<div class="ttc" id="classResultSet_html_a8f7bafcfdf1d261b81e57e2b0dce6611"><div class="ttname"><a href="classResultSet.html#a8f7bafcfdf1d261b81e57e2b0dce6611">ResultSet::ResultSet</a></div><div class="ttdeci">ResultSet()</div><div class="ttdef"><b>Definition:</b> ResultSet.h:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><b>ResultSet.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><a class="el" href="ResultSet_8h.html">ResultSet.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

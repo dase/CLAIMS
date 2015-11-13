@@ -1,4 +1,4 @@
-.TH "HdfsBlock" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "HdfsBlock" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ HdfsBlock \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <MemoryStore\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBHdfsBlock\fP (void *add, int length)"
+.RI "\fBHdfsBlock\fP ()"
+.br
+.ti -1c
+.RI "\fBHdfsBlock\fP (void *\fBadd\fP, int \fBlength\fP)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -23,7 +28,23 @@ HdfsBlock \-
 .RI "int \fBlength\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HdfsBlock::HdfsBlock ()\fC [inline]\fP"
+
+.SS "HdfsBlock::HdfsBlock (void *add, intlength)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "void* HdfsBlock::hook"
+
+.PP
+Referenced by ChunkStorage::createChunkReaderIterator(), MemoryChunkStore::returnChunk(), and MemoryChunkStore::tryToPut()\&.
+.SS "int HdfsBlock::length"
+
+.PP
+Referenced by ChunkStorage::createChunkReaderIterator(), MemoryChunkStore::returnChunk(), and MemoryChunkStore::tryToPut()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

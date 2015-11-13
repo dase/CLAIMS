@@ -1,4 +1,4 @@
-.TH "InMemoryChunkReaderItetaor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "InMemoryChunkReaderItetaor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ InMemoryChunkReaderItetaor \-
 .br
 .PP
 .PP
+\fC#include <ChunkStorage\&.h>\fP
+.PP
 Inherits \fBChunkReaderIterator\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBInMemoryChunkReaderItetaor\fP (void *const &start, const unsigned &chunk_size, const unsigned &number_of_blocks, const unsigned &block_size, const \fBChunkID\fP &chunk_id)"
+.RI "\fBInMemoryChunkReaderItetaor\fP (void *const &start, const unsigned &chunk_size, const unsigned &number_of_blocks, const unsigned &\fBblock_size\fP, const \fBChunkID\fP &chunk_id)"
+.br
+.ti -1c
+.RI "virtual \fB~InMemoryChunkReaderItetaor\fP ()"
 .br
 .ti -1c
 .RI "bool \fBnextBlock\fP (\fBBlockStreamBase\fP *&block)"
@@ -21,9 +26,41 @@ Inherits \fBChunkReaderIterator\fP\&.
 .RI "bool \fBgetNextBlockAccessor\fP (\fBblock_accessor\fP *&ba)"
 .br
 .in -1c
-.SS "Additional Inherited Members"
+.SS "Private Attributes"
 
+.in +1c
+.ti -1c
+.RI "void * \fBstart_\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor (void *const &start, const unsigned &chunk_size, const unsigned &number_of_blocks, const unsigned &block_size, const \fBChunkID\fP &chunk_id)"
+
+.SS "InMemoryChunkReaderItetaor::~InMemoryChunkReaderItetaor ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool InMemoryChunkReaderItetaor::getNextBlockAccessor (\fBblock_accessor\fP *&ba)\fC [virtual]\fP"
+
+.PP
+Implements \fBChunkReaderIterator\fP\&.
+.PP
+References Lock::acquire(), ChunkReaderIterator::block_size_, ChunkReaderIterator::cur_block_, ChunkReaderIterator::lock_, ChunkReaderIterator::number_of_blocks_, Lock::release(), ChunkReaderIterator::block_accessor::setBlockSize(), ChunkReaderIterator::InMemeryBlockAccessor::setTargetBlockStartAddress(), and start_\&.
+.SS "bool InMemoryChunkReaderItetaor::nextBlock (\fBBlockStreamBase\fP *&block)\fC [virtual]\fP"
+
+.PP
+Implements \fBChunkReaderIterator\fP\&.
+.PP
+References Lock::acquire(), ChunkReaderIterator::block_size_, BlockStreamBase::constructFromBlock(), ChunkReaderIterator::cur_block_, ChunkReaderIterator::lock_, ChunkReaderIterator::number_of_blocks_, Lock::release(), and start_\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "void* InMemoryChunkReaderItetaor::start_\fC [private]\fP"
+
+.PP
+Referenced by getNextBlockAccessor(), and nextBlock()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

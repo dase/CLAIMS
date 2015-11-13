@@ -1,4 +1,4 @@
-.TH "Select_expr" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Select_expr" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Select_expr \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBascolname\fP"
@@ -19,7 +21,21 @@ Select_expr \-
 .RI "\fBNode\fP * \fBcolname\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Select_expr::ascolname"
+
+.PP
+Referenced by get_all_selectlist_expression_item(), newSelectExpr(), output(), select_where_from2logicalplan(), selectlist_has_column(), solve_insubquery(), and subquery_has_column()\&.
+.SS "\fBNode\fP* Select_expr::colname"
+
+.PP
+Referenced by add_table_column(), CanCancelProject1(), CanCancelProject2(), expr_to_str_for_selectlist(), get_aggregation_args(), get_all_selectlist_expression_item(), get_orderby_column_from_selectlist(), judge_selectlist_agg_has_or_in_expr(), newSelectExpr(), output(), select_where_from2logicalplan(), selectlist_analysis(), selectlist_has_agg(), selectlist_has_column(), and subquery_has_column()\&.
+.SS "\fBnodetype\fP Select_expr::type"
+
+.PP
+Referenced by newSelectExpr()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

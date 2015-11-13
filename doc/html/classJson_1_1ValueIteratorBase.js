@@ -17,5 +17,7 @@ var classJson_1_1ValueIteratorBase =
     [ "memberName", "classJson_1_1ValueIteratorBase.html#a83768d87c608c8d1133de8721eefc31b", null ],
     [ "operator!=", "classJson_1_1ValueIteratorBase.html#a18c2dd42e0bb989ace141bfe9de52792", null ],
     [ "operator-", "classJson_1_1ValueIteratorBase.html#ab786787fcad68ca5e8745aaf520fa17f", null ],
-    [ "operator==", "classJson_1_1ValueIteratorBase.html#afc656672ac28502f640ade32c38c1b56", null ]
+    [ "operator==", "classJson_1_1ValueIteratorBase.html#afc656672ac28502f640ade32c38c1b56", null ],
+    [ "current_", "classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a", null ],
+    [ "isNull_", "classJson_1_1ValueIteratorBase.html#a3e08b114a1aed9bde518c527f94a8c59", null ]
 ];

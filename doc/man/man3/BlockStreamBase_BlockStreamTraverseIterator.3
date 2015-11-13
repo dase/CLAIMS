@@ -1,4 +1,4 @@
-.TH "BlockStreamBase::BlockStreamTraverseIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BlockStreamBase::BlockStreamTraverseIterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ BlockStreamBase::BlockStreamTraverseIterator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <BlockStream\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBBlockStreamTraverseIterator\fP (\fBBlockStreamBase\fP *block_stream_base)"
+.br
+.ti -1c
+.RI "\fB~BlockStreamTraverseIterator\fP ()"
 .br
 .ti -1c
 .RI "void * \fBnextTuple\fP ()"
@@ -34,7 +39,61 @@ BlockStreamBase::BlockStreamTraverseIterator \-
 .RI "void \fBset_cur\fP (unsigned c)"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamBase\fP * \fBblock_stream_base_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBcur\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BlockStreamBase::BlockStreamTraverseIterator::BlockStreamTraverseIterator (\fBBlockStreamBase\fP *block_stream_base)\fC [inline]\fP, \fC [explicit]\fP"
+
+.SS "BlockStreamBase::BlockStreamTraverseIterator::~BlockStreamTraverseIterator ()\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalLimit::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::InOperator::Next(), query_2(), and TEST()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void* BlockStreamBase::BlockStreamTraverseIterator::currentTuple () const\fC [inline]\fP"
+
+.PP
+Referenced by bottomLayerCollecting::Next(), claims::physical_operator::PhysicalLimit::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalFilter::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalProject::Next(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::PhysicalFilter::ProcessInLogic(), claims::physical_operator::PhysicalProject::ProcessInLogic(), TEST_F(), test_multiple_scan_filter_Scalar_Aggregation(), and test_scan_filter_Scalar_Aggregation()\&.
+.SS "unsigned BlockStreamBase::BlockStreamTraverseIterator::get_cur () const\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalFilter::ProcessInLogic()\&.
+.SS "void* BlockStreamBase::BlockStreamTraverseIterator::getTuple (unsignedtuple_off) const\fC [inline]\fP"
+
+.PP
+Referenced by IndexScanIterator::Next()\&.
+.SS "void BlockStreamBase::BlockStreamTraverseIterator::increase_cur_ ()\fC [inline]\fP"
+
+.PP
+Referenced by bottomLayerCollecting::Next(), claims::physical_operator::PhysicalLimit::Next(), claims::physical_operator::PhysicalNestLoopJoin::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::PhysicalFilter::ProcessInLogic(), and claims::physical_operator::PhysicalProject::ProcessInLogic()\&.
+.SS "void* BlockStreamBase::BlockStreamTraverseIterator::nextTuple ()\fC [inline]\fP"
+
+.PP
+Referenced by Analyzer::analyse(), Analyzer::compute_table_stat(), Analyzer::computeHistogram(), filter_test(), Analyzer::getDistinctCardinality(), insert_into_hash_table(), insert_into_hash_table_from_projection(), insert_into_insert_optimized_hash_table(), mainasfasdf22(), claims::physical_operator::PerformanceMonitor::Next(), claims::physical_operator::ResultPrinter::Next(), claims::physical_operator::ExchangeSenderMaterialized::Next(), claims::physical_operator::ExchangeSenderPipeline::Next(), claims::physical_operator::InOperator::Open(), claims::physical_operator::PhysicalSort::Open(), claims::physical_operator::PhysicalHashJoin::Open(), bottomLayerSorting::Open(), ResultSet::print(), query_2(), ClientListener::sendJsonPacket(), TEST(), and TEST_F()\&.
+.SS "void BlockStreamBase::BlockStreamTraverseIterator::reset ()\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::InOperator::Open(), and claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "void BlockStreamBase::BlockStreamTraverseIterator::set_cur (unsignedc)\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalFilter::ProcessInLogic()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBBlockStreamBase\fP* BlockStreamBase::BlockStreamTraverseIterator::block_stream_base_\fC [private]\fP"
+
+.SS "unsigned BlockStreamBase::BlockStreamTraverseIterator::cur\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

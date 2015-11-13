@@ -1,4 +1,4 @@
-.TH "IndexScanIterator::remaining_block" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "IndexScanIterator::remaining_block" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,28 +6,33 @@ IndexScanIterator::remaining_block \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <IndexScanIterator\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBremaining_block\fP (map< index_offset, vector< index_offset > * > *result_set, map< index_offset, vector< index_offset > * >::iterator iter_result_map, vector< index_offset >::iterator iter_result_vector, unsigned short block_off, \fBBlockStreamBase\fP *block, \fBBlockStreamBase::BlockStreamTraverseIterator\fP *iterator)"
+.RI "\fBremaining_block\fP ()"
+.br
+.ti -1c
+.RI "\fBremaining_block\fP (map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * > *\fBresult_set\fP, map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * >::\fBiterator\fP \fBiter_result_map\fP, vector< \fBindex_offset\fP >::\fBiterator\fP \fBiter_result_vector\fP, unsigned short \fBblock_off\fP, \fBBlockStreamBase\fP *\fBblock\fP, \fBBlockStreamBase::BlockStreamTraverseIterator\fP *\fBiterator\fP)"
 .br
 .in -1c
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "map< index_offset, vector
+.RI "map< \fBindex_offset\fP, vector
 .br
-< index_offset > * > * \fBresult_set\fP"
-.br
-.ti -1c
-.RI "map< index_offset, vector
-.br
-< index_offset > * >::iterator \fBiter_result_map\fP"
+< \fBindex_offset\fP > * > * \fBresult_set\fP"
 .br
 .ti -1c
-.RI "vector< index_offset >::iterator \fBiter_result_vector\fP"
+.RI "map< \fBindex_offset\fP, vector
+.br
+< \fBindex_offset\fP > * >::\fBiterator\fP \fBiter_result_map\fP"
+.br
+.ti -1c
+.RI "vector< \fBindex_offset\fP >::\fBiterator\fP \fBiter_result_vector\fP"
 .br
 .ti -1c
 .RI "unsigned short \fBblock_off\fP"
@@ -39,7 +44,41 @@ IndexScanIterator::remaining_block \-
 .RI "\fBBlockStreamBase::BlockStreamTraverseIterator\fP * \fBiterator\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IndexScanIterator::remaining_block::remaining_block ()\fC [inline]\fP"
+
+.PP
+References iter_result_map, and result_set\&.
+.SS "IndexScanIterator::remaining_block::remaining_block (map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * > *result_set, map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * >::\fBiterator\fPiter_result_map, vector< \fBindex_offset\fP >::\fBiterator\fPiter_result_vector, unsigned shortblock_off, \fBBlockStreamBase\fP *block, \fBBlockStreamBase::BlockStreamTraverseIterator\fP *iterator)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBBlockStreamBase\fP* IndexScanIterator::remaining_block::block"
+
+.PP
+Referenced by IndexScanIterator::askForNextBlock(), and IndexScanIterator::Next()\&.
+.SS "unsigned short IndexScanIterator::remaining_block::block_off"
+
+.PP
+Referenced by IndexScanIterator::askForNextBlock(), and IndexScanIterator::Next()\&.
+.SS "map<\fBindex_offset\fP, vector<\fBindex_offset\fP>*>::\fBiterator\fP IndexScanIterator::remaining_block::iter_result_map"
+
+.PP
+Referenced by IndexScanIterator::askForNextBlock(), IndexScanIterator::Next(), and remaining_block()\&.
+.SS "vector<\fBindex_offset\fP>::\fBiterator\fP IndexScanIterator::remaining_block::iter_result_vector"
+
+.PP
+Referenced by IndexScanIterator::askForNextBlock(), and IndexScanIterator::Next()\&.
+.SS "\fBBlockStreamBase::BlockStreamTraverseIterator\fP* IndexScanIterator::remaining_block::iterator"
+
+.PP
+Referenced by IndexScanIterator::Next()\&.
+.SS "map<\fBindex_offset\fP, vector<\fBindex_offset\fP>*>* IndexScanIterator::remaining_block::result_set"
+
+.PP
+Referenced by IndexScanIterator::askForNextBlock(), IndexScanIterator::Next(), and remaining_block()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

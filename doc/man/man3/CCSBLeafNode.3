@@ -1,4 +1,4 @@
-.TH "CCSBLeafNode< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CCSBLeafNode< T >" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,10 +7,18 @@ CCSBLeafNode< T > \-
 .br
 .PP
 .PP
+\fC#include <CSBPlusTree\&.h>\fP
+.PP
 Inherits \fBCCSBNode< T >\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBCCSBLeafNode\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~CCSBLeafNode\fP ()"
+.br
 .ti -1c
 .RI "bool \fBsetUsedKeys\fP (int count)"
 .br
@@ -53,8 +61,77 @@ Inherits \fBCCSBNode< T >\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBCCSBLeafNode\fP< T >::\fBCCSBLeafNode\fP ()"
+
+.PP
+References data_offset< T >::_block_off, data_offset< T >::_key, data_offset< T >::_tuple_off, and INVALID\&.
+.SS "template<typename T > \fBCCSBLeafNode\fP< T >::~\fBCCSBLeafNode\fP ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::Combine (\fBCCSBNode\fP< T > *pNode)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::Delete (Tvalue)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > void \fBCCSBLeafNode\fP< T >::DeleteChildren ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::deserialize (FILE *filename)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+Referenced by CCSBLeafNodeGroup< T >::deserialize()\&.
+.SS "template<typename T > \fBdata_offset\fP<T> \fBCCSBLeafNode\fP< T >::getElement (unsignedi)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References NULL\&.
+.SS "template<typename T > \fBCCSBNodeGroup\fP<T>* \fBCCSBLeafNode\fP< T >::getPointer ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References NULL\&.
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::Insert (\fBdata_offset\fP< T >value)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References data_offset< T >::_key\&.
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::serialize (FILE *filename)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::setElement (unsignedi, \fBdata_offset\fP< T >data)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References data_offset< T >::_block_off, data_offset< T >::_key, and data_offset< T >::_tuple_off\&.
+.SS "template<typename T > bool \fBCCSBLeafNode\fP< T >::setUsedKeys (intcount)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > T \fBCCSBLeafNode\fP< T >::SplitInsert (\fBCCSBNode\fP< T > *pNode, \fBdata_offset\fP< T >data)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References data_offset< T >::_key, CCSBNode< T >::getElement(), CCSBNode< T >::Insert(), INVALID, CCSBNode< T >::setElement(), and CCSBNode< T >::setUsedKeys()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "template<typename T > \fBdata_offset\fP<T>* \fBCCSBLeafNode\fP< T >::node_datas"
 
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

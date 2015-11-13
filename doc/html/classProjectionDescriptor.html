@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ProjectionDescriptor Class Reference</title>
+<title>Claims: ProjectionDescriptor Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,6 +106,8 @@ $(document).ready(function(){initNavTree('classProjectionDescriptor.html','');})
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classProjectionDescriptor-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -114,71 +116,417 @@ $(document).ready(function(){initNavTree('classProjectionDescriptor.html','');})
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="table_8h_source.html">table.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for ProjectionDescriptor:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor__coll__graph.png" border="0" usemap="#ProjectionDescriptor_coll__map" alt="Collaboration graph"/></div>
+<map name="ProjectionDescriptor_coll__map" id="ProjectionDescriptor_coll__map">
+<area shape="rect" id="node2" href="structProjectionID.html" title="ProjectionID" alt="" coords="5,187,99,213"/><area shape="rect" id="node3" href="classPartitioner.html" title="Partitioner" alt="" coords="153,277,233,304"/><area shape="rect" id="node4" href="classPartitionFunction.html" title="PartitionFunction" alt="" coords="139,187,259,213"/><area shape="rect" id="node5" href="structAttribute.html" title="Attribute" alt="" coords="305,187,375,213"/><area shape="rect" id="node6" href="classcolumn__type.html" title="column_type" alt="" coords="292,96,388,123"/><area shape="rect" id="node7" href="classOperate.html" title="Operate" alt="" coords="306,5,373,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a05622cbd71ec1ce85b71313e49940397"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05622cbd71ec1ce85b71313e49940397"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ProjectionDescriptor</b> (<a class="el" href="structProjectionID.html">ProjectionID</a>)</td></tr>
+<tr class="memitem:afd88ac61adb6334225196074066999c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#afd88ac61adb6334225196074066999c9">ProjectionDescriptor</a> ()</td></tr>
+<tr class="separator:afd88ac61adb6334225196074066999c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05622cbd71ec1ce85b71313e49940397"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a05622cbd71ec1ce85b71313e49940397">ProjectionDescriptor</a> (<a class="el" href="structProjectionID.html">ProjectionID</a>)</td></tr>
 <tr class="separator:a05622cbd71ec1ce85b71313e49940397"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77da22a82ca8eea93bed486f89ca3081"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77da22a82ca8eea93bed486f89ca3081"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ProjectionDescriptor</b> (const string &amp;name)</td></tr>
+<tr class="memitem:a77da22a82ca8eea93bed486f89ca3081"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a77da22a82ca8eea93bed486f89ca3081">ProjectionDescriptor</a> (const string &amp;name)</td></tr>
 <tr class="separator:a77da22a82ca8eea93bed486f89ca3081"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5dc27171773ab4ae91dc23dcc52f50f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5dc27171773ab4ae91dc23dcc52f50f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addAttribute</b> (<a class="el" href="structAttribute.html">Attribute</a> attr)</td></tr>
+<tr class="memitem:a71ee1ef20e575d38ea0007a962f7d8fd"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a71ee1ef20e575d38ea0007a962f7d8fd">~ProjectionDescriptor</a> ()</td></tr>
+<tr class="separator:a71ee1ef20e575d38ea0007a962f7d8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5dc27171773ab4ae91dc23dcc52f50f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#aa5dc27171773ab4ae91dc23dcc52f50f">addAttribute</a> (<a class="el" href="structAttribute.html">Attribute</a> attr)</td></tr>
 <tr class="separator:aa5dc27171773ab4ae91dc23dcc52f50f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01507bb38d9c289156d6bc5dac6cd4d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a01507bb38d9c289156d6bc5dac6cd4d7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>hasAttribute</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;attr) const </td></tr>
+<tr class="memitem:a01507bb38d9c289156d6bc5dac6cd4d7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7">hasAttribute</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;attr) const </td></tr>
 <tr class="separator:a01507bb38d9c289156d6bc5dac6cd4d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d8c456d3f482dcd185107f59402f5e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d8c456d3f482dcd185107f59402f5e0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>DefinePartitonier</b> (const unsigned &amp;number_of_partitions, const <a class="el" href="structAttribute.html">Attribute</a> &amp;partition_key, <a class="el" href="classPartitionFunction.html">PartitionFunction</a> *partition_functin)</td></tr>
+<tr class="memitem:a9d8c456d3f482dcd185107f59402f5e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a9d8c456d3f482dcd185107f59402f5e0">DefinePartitonier</a> (const unsigned &amp;number_of_partitions, const <a class="el" href="structAttribute.html">Attribute</a> &amp;partition_key, <a class="el" href="classPartitionFunction.html">PartitionFunction</a> *partition_functin)</td></tr>
 <tr class="separator:a9d8c456d3f482dcd185107f59402f5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a584f3ae5d8dabc3db1d7a60fd58fc62f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a584f3ae5d8dabc3db1d7a60fd58fc62f"></a>
-<a class="el" href="classPartitioner.html">Partitioner</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getPartitioner</b> () const </td></tr>
+<tr class="memitem:a584f3ae5d8dabc3db1d7a60fd58fc62f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPartitioner.html">Partitioner</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f">getPartitioner</a> () const </td></tr>
 <tr class="separator:a584f3ae5d8dabc3db1d7a60fd58fc62f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09710b2823bc7e694cbf0f10eea4e52c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09710b2823bc7e694cbf0f10eea4e52c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isExist</b> (const string &amp;name) const </td></tr>
+<tr class="memitem:a09710b2823bc7e694cbf0f10eea4e52c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a09710b2823bc7e694cbf0f10eea4e52c">isExist</a> (const string &amp;name) const </td></tr>
 <tr class="separator:a09710b2823bc7e694cbf0f10eea4e52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7175ceb04080905e827a546c6caf4966"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7175ceb04080905e827a546c6caf4966"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setProjectionID</b> (const <a class="el" href="structProjectionID.html">ProjectionID</a> &amp;pid)</td></tr>
+<tr class="memitem:a7175ceb04080905e827a546c6caf4966"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a7175ceb04080905e827a546c6caf4966">setProjectionID</a> (const <a class="el" href="structProjectionID.html">ProjectionID</a> &amp;pid)</td></tr>
 <tr class="separator:a7175ceb04080905e827a546c6caf4966"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0a2b4144b507dbfd5f48c9fa80157cd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac0a2b4144b507dbfd5f48c9fa80157cd"></a>
-map&lt; string, set&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getFileLocations</b> () const </td></tr>
+<tr class="memitem:ac0a2b4144b507dbfd5f48c9fa80157cd"><td class="memItemLeft" align="right" valign="top">map&lt; string, set&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#ac0a2b4144b507dbfd5f48c9fa80157cd">getFileLocations</a> () const </td></tr>
 <tr class="separator:ac0a2b4144b507dbfd5f48c9fa80157cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65fb1fcd70c352238e0f0c4d39c4facd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a65fb1fcd70c352238e0f0c4d39c4facd"></a>
-<a class="el" href="structProjectionID.html">ProjectionID</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getProjectionID</b> () const </td></tr>
+<tr class="memitem:a65fb1fcd70c352238e0f0c4d39c4facd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structProjectionID.html">ProjectionID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a65fb1fcd70c352238e0f0c4d39c4facd">getProjectionID</a> () const </td></tr>
 <tr class="separator:a65fb1fcd70c352238e0f0c4d39c4facd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa4bc286ad6470acda5a01d8b0cd9d9e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa4bc286ad6470acda5a01d8b0cd9d9e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>AllPartitionBound</b> () const </td></tr>
+<tr class="memitem:afa4bc286ad6470acda5a01d8b0cd9d9e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#afa4bc286ad6470acda5a01d8b0cd9d9e">AllPartitionBound</a> () const </td></tr>
 <tr class="separator:afa4bc286ad6470acda5a01d8b0cd9d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a816580301fc1645b633667631e828275"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a816580301fc1645b633667631e828275"></a>
-std::vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getAttributeList</b> () const </td></tr>
+<tr class="memitem:a816580301fc1645b633667631e828275"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">getAttributeList</a> () const </td></tr>
 <tr class="separator:a816580301fc1645b633667631e828275"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2622e547dbdbafa8fc3bf3bac1c4606"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606">getSchema</a> () const </td></tr>
 <tr class="separator:ac2622e547dbdbafa8fc3bf3bac1c4606"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c8c8b01ca783f9ae16b5b6eec958d6e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c8c8b01ca783f9ae16b5b6eec958d6e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getAttributeIndex</b> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att) const </td></tr>
+<tr class="memitem:a2c8c8b01ca783f9ae16b5b6eec958d6e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e">getAttributeIndex</a> (const <a class="el" href="structAttribute.html">Attribute</a> &amp;att) const </td></tr>
 <tr class="separator:a2c8c8b01ca783f9ae16b5b6eec958d6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eb9a999c721f5f8ca874ee2293ff1f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9eb9a999c721f5f8ca874ee2293ff1f5"></a>
-int long&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberOfTuplesOnPartition</b> (const unsigned partition_off) const </td></tr>
+<tr class="memitem:a9eb9a999c721f5f8ca874ee2293ff1f5"><td class="memItemLeft" align="right" valign="top">int long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a9eb9a999c721f5f8ca874ee2293ff1f5">getNumberOfTuplesOnPartition</a> (const unsigned partition_off) const </td></tr>
 <tr class="separator:a9eb9a999c721f5f8ca874ee2293ff1f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a664135e20ca7d53183f02cfbe19982"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a8a664135e20ca7d53183f02cfbe19982">getProjectionCost</a> () const </td></tr>
 <tr class="memdesc:a8a664135e20ca7d53183f02cfbe19982"><td class="mdescLeft">&#160;</td><td class="mdescRight">Method description:  <a href="#a8a664135e20ca7d53183f02cfbe19982">More...</a><br/></td></tr>
 <tr class="separator:a8a664135e20ca7d53183f02cfbe19982"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a234b505827ed457d2989a8f559ba040e"><td class="memTemplParams" colspan="2">template&lt;class Archive &gt; </td></tr>
+<tr class="memitem:a234b505827ed457d2989a8f559ba040e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a234b505827ed457d2989a8f559ba040e">serialize</a> (Archive &amp;ar, const unsigned int version)</td></tr>
+<tr class="separator:a234b505827ed457d2989a8f559ba040e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a4fdf73e65efd6050416222510498472c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structProjectionID.html">ProjectionID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a4fdf73e65efd6050416222510498472c">projection_id_</a></td></tr>
+<tr class="separator:a4fdf73e65efd6050416222510498472c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2307cffdd8ff4cae77e53ab559e7d984"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classColumn.html">Column</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984">column_list_</a></td></tr>
+<tr class="separator:a2307cffdd8ff4cae77e53ab559e7d984"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef3878aae5b0e5e9acc47b19f5be860e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPartitioner.html">Partitioner</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#aef3878aae5b0e5e9acc47b19f5be860e">partitioner</a></td></tr>
+<tr class="separator:aef3878aae5b0e5e9acc47b19f5be860e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e4e2fe4034357f39a8d75b09334ffaa"><td class="memItemLeft" align="right" valign="top">map&lt; string, set&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a9e4e2fe4034357f39a8d75b09334ffaa">fileLocations</a></td></tr>
+<tr class="separator:a9e4e2fe4034357f39a8d75b09334ffaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1480f7b70e78e89bc8eea69982d9c45"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#aa1480f7b70e78e89bc8eea69982d9c45">hdfsFilePath</a></td></tr>
+<tr class="separator:aa1480f7b70e78e89bc8eea69982d9c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fc39abbea0943aba0eb861143bd6379"><td class="memItemLeft" align="right" valign="top">map&lt; string, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a7fc39abbea0943aba0eb861143bd6379">blkMemoryLocations</a></td></tr>
+<tr class="separator:a7fc39abbea0943aba0eb861143bd6379"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9d74b12a9d048e7d4542d3a2dbb9bb"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#a7a9d74b12a9d048e7d4542d3a2dbb9bb">Projection_name_</a></td></tr>
+<tr class="separator:a7a9d74b12a9d048e7d4542d3a2dbb9bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ac4e037a921f77d7151fdd687b1d154df"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4e037a921f77d7151fdd687b1d154df"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>TableDescriptor</b></td></tr>
+<tr class="memitem:ac4e037a921f77d7151fdd687b1d154df"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#ac4e037a921f77d7151fdd687b1d154df">TableDescriptor</a></td></tr>
 <tr class="separator:ac4e037a921f77d7151fdd687b1d154df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization::access</b></td></tr>
+<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectionDescriptor.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a></td></tr>
 <tr class="separator:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="structAttribute.html">Attribute</a> describes a column in type, name, position in the table. A projection is a combination of columns that belong to a single table and will be horizontally partitioned among storage instances. <a class="el" href="classProjectionDescriptor.html">ProjectionDescriptor</a> mainly contains two kinds of important information:</p>
 <p>1). how many attributes there are in a projection and what are they.</p>
 <p>2). how the projection is partitioned (e.g., hash partition, range partition). How many storage instances are involved. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="afd88ac61adb6334225196074066999c9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ProjectionDescriptor::ProjectionDescriptor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a05622cbd71ec1ce85b71313e49940397"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ProjectionDescriptor::ProjectionDescriptor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structProjectionID.html">ProjectionID</a>&#160;</td>
+          <td class="paramname"><em>pid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a77da22a82ca8eea93bed486f89ca3081"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ProjectionDescriptor::ProjectionDescriptor </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a71ee1ef20e575d38ea0007a962f7d8fd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ProjectionDescriptor::~ProjectionDescriptor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aa5dc27171773ab4ae91dc23dcc52f50f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ProjectionDescriptor::addAttribute </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAttribute.html">Attribute</a>&#160;</td>
+          <td class="paramname"><em>attr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984">column_list_</a>, and <a class="el" href="classProjectionDescriptor.html#a4fdf73e65efd6050416222510498472c">projection_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afa4bc286ad6470acda5a01d8b0cd9d9e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ProjectionDescriptor::AllPartitionBound </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitioner.html#a1153a680b650ef1de45f2c288a72d9ef">Partitioner::allPartitionBound()</a>, and <a class="el" href="classProjectionDescriptor.html#aef3878aae5b0e5e9acc47b19f5be860e">partitioner</a>.</p>
+
+<p>Referenced by <a class="el" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb">LogicalCSBIndexBuilding::GetPlanContext()</a>, <a class="el" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539">LogicalIndexScan::GetPlanContext()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6">claims::logical_operator::LogicalScan::GetPlanContext()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_cgraph.png" border="0" usemap="#classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_cgraph" alt=""/></div>
+<map name="classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_cgraph" id="classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_cgraph">
+<area shape="rect" id="node2" href="classPartitioner.html#a1153a680b650ef1de45f2c288a72d9ef" title="Partitioner::allPartition\lBound" alt="" coords="195,5,346,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_icgraph.png" border="0" usemap="#classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_icgraph" id="classProjectionDescriptor_afa4bc286ad6470acda5a01d8b0cd9d9e_icgraph">
+<area shape="rect" id="node2" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb" title="LogicalCSBIndexBuilding\l::GetPlanContext" alt="" coords="211,5,381,46"/><area shape="rect" id="node3" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539" title="LogicalIndexScan::GetPlan\lContext" alt="" coords="206,70,386,111"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="195,135,397,177"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="445,135,696,177"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a9d8c456d3f482dcd185107f59402f5e0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ProjectionDescriptor::DefinePartitonier </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>number_of_partitions</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classPartitionFunction.html">PartitionFunction</a> *&#160;</td>
+          <td class="paramname"><em>partition_functin</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#aef3878aae5b0e5e9acc47b19f5be860e">partitioner</a>, and <a class="el" href="classProjectionDescriptor.html#a4fdf73e65efd6050416222510498472c">projection_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2c8c8b01ca783f9ae16b5b6eec958d6e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ProjectionDescriptor::getAttributeIndex </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>att</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">getAttributeList()</a>.</p>
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_cgraph.png" border="0" usemap="#classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_cgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_cgraph" id="classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_cgraph">
+<area shape="rect" id="node2" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275" title="ProjectionDescriptor\l::getAttributeList" alt="" coords="195,5,335,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_icgraph.png" border="0" usemap="#classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_icgraph" id="classProjectionDescriptor_a2c8c8b01ca783f9ae16b5b6eec958d6e_icgraph">
+<area shape="rect" id="node2" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="195,12,359,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a816580301fc1645b633667631e828275"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structAttribute.html">Attribute</a> &gt; ProjectionDescriptor::getAttributeList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984">column_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#a921f4c3c783a763d0ae8254c1025b3a2">Analyzer::analyse_on_project()</a>, <a class="el" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e">getAttributeIndex()</a>, <a class="el" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb">LogicalCSBIndexBuilding::GetPlanContext()</a>, <a class="el" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539">LogicalIndexScan::GetPlanContext()</a>, <a class="el" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606">getSchema()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#ac6203346c046919a20552a9eacf6c302">claims::logical_operator::LogicalScan::LogicalScan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a816580301fc1645b633667631e828275_icgraph.png" border="0" usemap="#classProjectionDescriptor_a816580301fc1645b633667631e828275_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a816580301fc1645b633667631e828275_icgraph" id="classProjectionDescriptor_a816580301fc1645b633667631e828275_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#a921f4c3c783a763d0ae8254c1025b3a2" title="Analyzer::analyse_on\l_project" alt="" coords="212,5,359,46"/><area shape="rect" id="node3" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e" title="ProjectionDescriptor\l::getAttributeIndex" alt="" coords="215,70,355,111"/><area shape="rect" id="node5" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb" title="LogicalCSBIndexBuilding\l::GetPlanContext" alt="" coords="201,135,370,177"/><area shape="rect" id="node6" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539" title="LogicalIndexScan::GetPlan\lContext" alt="" coords="195,201,375,242"/><area shape="rect" id="node7" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606" title="ProjectionDescriptor\l::getSchema" alt="" coords="215,318,355,359"/><area shape="rect" id="node4" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="425,237,589,264"/><area shape="rect" id="node11" href="classclaims_1_1logical__operator_1_1LogicalScan.html#ac6203346c046919a20552a9eacf6c302" title="claims::logical_operator\l::LogicalScan::LogicalScan" alt="" coords="195,383,375,425"/><area shape="rect" id="node8" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="431,289,583,330"/><area shape="rect" id="node9" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="638,325,751,352"/><area shape="rect" id="node10" href="in__segment__scalability__test_8cpp.html#aec5d76713db05ef4ce0ce4c48a8e361a" title="test_block_construct" alt="" coords="435,405,578,432"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac0a2b4144b507dbfd5f48c9fa80157cd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;string, set&lt;string&gt; &gt; ProjectionDescriptor::getFileLocations </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9eb9a999c721f5f8ca874ee2293ff1f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long int ProjectionDescriptor::getNumberOfTuplesOnPartition </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>partition_off</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitioner.html#aec38a5e1457160663103618731286dda">Partitioner::getPartitionCardinality()</a>, and <a class="el" href="classProjectionDescriptor.html#aef3878aae5b0e5e9acc47b19f5be860e">partitioner</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a9eb9a999c721f5f8ca874ee2293ff1f5_cgraph.png" border="0" usemap="#classProjectionDescriptor_a9eb9a999c721f5f8ca874ee2293ff1f5_cgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a9eb9a999c721f5f8ca874ee2293ff1f5_cgraph" id="classProjectionDescriptor_a9eb9a999c721f5f8ca874ee2293ff1f5_cgraph">
+<area shape="rect" id="node2" href="classPartitioner.html#aec38a5e1457160663103618731286dda" title="Partitioner::getPartition\lCardinality" alt="" coords="267,5,421,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a584f3ae5d8dabc3db1d7a60fd58fc62f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPartitioner.html">Partitioner</a> * ProjectionDescriptor::getPartitioner </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#aef3878aae5b0e5e9acc47b19f5be860e">partitioner</a>.</p>
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">HdfsLoader::append()</a>, <a class="el" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca">BindingTest()</a>, <a class="el" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2">create_poc_data_four_partitions()</a>, <a class="el" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439">create_poc_data_one_partitions()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6">CreateProjection()</a>, <a class="el" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122">execting_test()</a>, <a class="el" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef">Catalog::getPartitionIDList()</a>, <a class="el" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539">LogicalIndexScan::GetPlanContext()</a>, <a class="el" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb">LogicalCSBIndexBuilding::GetPlanContext()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6">claims::logical_operator::LogicalScan::GetPlanContext()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, <a class="el" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149">init_multi_node_tpc_h_envoriment_()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89">init_poc_environment()</a>, <a class="el" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c">init_single_node_tpc_h_envoriment_()</a>, <a class="el" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c">init_single_node_tpc_h_envoriment_ing()</a>, <a class="el" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570">init_single_node_tpc_h_envoriment_sort()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1">init_tt_environment()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">HdfsLoader::load()</a>, <a class="el" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f">loadData()</a>, <a class="el" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7">startup_catalog()</a>, <a class="el" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5">startup_mulitple_node_environment_of_poc()</a>, <a class="el" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998">startup_multiple_node_environment()</a>, <a class="el" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43">startup_multiple_node_environment_of_stock()</a>, <a class="el" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523">startup_multiple_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc">startup_single_node_environment_of_tpch()</a>, <a class="el" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9">startup_single_node_one_partition_environment_of_tpch()</a>, <a class="el" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57">statistic_manager_test()</a>, <a class="el" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9">test_CSBIndexBuilding()</a>, <a class="el" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83">test_index_scan_iterator()</a>, <a class="el" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c">test_logical_csb_index_building()</a>, and <a class="el" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9">variable_schema_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a584f3ae5d8dabc3db1d7a60fd58fc62f_icgraph.png" border="0" usemap="#classProjectionDescriptor_a584f3ae5d8dabc3db1d7a60fd58fc62f_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a584f3ae5d8dabc3db1d7a60fd58fc62f_icgraph" id="classProjectionDescriptor_a584f3ae5d8dabc3db1d7a60fd58fc62f_icgraph">
+<area shape="rect" id="node2" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3" title="HdfsLoader::append" alt="" coords="227,71,365,97"/><area shape="rect" id="node5" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="251,121,341,148"/><area shape="rect" id="node7" href="set__up__environment_8h.html#a35f5e773ba22ea71605a60555e661bf2" title="create_poc_data_four\l_partitions" alt="" coords="223,173,369,214"/><area shape="rect" id="node8" href="set__up__environment_8h.html#a06bfb79c78e97f75285be88ca4e8b439" title="create_poc_data_one\l_partitions" alt="" coords="223,238,369,279"/><area shape="rect" id="node11" href="ExecuteLogicalQueryPlan_8h.html#a05a2ff0755acd6476aae2d8c545e48f6" title="CreateProjection" alt="" coords="511,304,630,331"/><area shape="rect" id="node13" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="246,355,346,381"/><area shape="rect" id="node15" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef" title="Catalog::getPartitionIDList" alt="" coords="208,405,384,432"/><area shape="rect" id="node16" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539" title="LogicalIndexScan::GetPlan\lContext" alt="" coords="206,457,386,498"/><area shape="rect" id="node17" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb" title="LogicalCSBIndexBuilding\l::GetPlanContext" alt="" coords="211,522,381,563"/><area shape="rect" id="node18" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="195,587,397,629"/><area shape="rect" id="node20" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="214,653,378,680"/><area shape="rect" id="node21" href="issue27_8cpp.html#a0868ba0da8b4a7832fe60f2da466b149" title="init_multi_node_tpc\l_h_envoriment_" alt="" coords="229,705,363,746"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="223,771,369,797"/><area shape="rect" id="node25" href="issue27_8cpp.html#a491d55470bbaa45bfcbe3cc39a17ff2c" title="init_single_node_tpc\l_h_envoriment_" alt="" coords="226,822,366,863"/><area shape="rect" id="node27" href="issue27ing_8cpp.html#a9e3cd42dcd16fdb4daea9201fad5273c" title="init_single_node_tpc\l_h_envoriment_ing" alt="" coords="226,887,366,929"/><area shape="rect" id="node29" href="issue27__sort_8cpp.html#add563b113af85fb090f8c2cfefb7f570" title="init_single_node_tpc\l_h_envoriment_sort" alt="" coords="226,953,366,994"/><area shape="rect" id="node31" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="230,1019,362,1045"/><area shape="rect" id="node32" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001" title="HdfsLoader::load" alt="" coords="235,1069,357,1096"/><area shape="rect" id="node38" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="259,1120,333,1147"/><area shape="rect" id="node39" href="hash__table__test_8h.html#a73bff322b58e6d518348bfc43e9a36e7" title="startup_catalog" alt="" coords="241,1171,351,1197"/><area shape="rect" id="node40" href="set__up__environment_8h.html#a1e385060b07a5ad9f0778f2b07f981b5" title="startup_mulitple_node\l_environment_of_poc" alt="" coords="221,1222,371,1263"/><area shape="rect" id="node41" href="ExpanderFrameTest_8h.html#ab49021805cfe1aaa49f25f8ddd3fa998" title="startup_multiple_node\l_environment" alt="" coords="221,1287,371,1329"/><area shape="rect" id="node42" href="set__up__environment_8h.html#a8c1ac570a0cdbfe688ed3eada2cd1e43" title="startup_multiple_node\l_environment_of_stock" alt="" coords="217,1353,375,1394"/><area shape="rect" id="node43" href="set__up__environment_8h.html#afc3cdb65d2093ca5556a2202e6082523" title="startup_multiple_node\l_environment_of_tpch" alt="" coords="221,1418,371,1459"/><area shape="rect" id="node44" href="set__up__environment_8h.html#acdbcebc2226cca276a789931ea7856bc" title="startup_single_node\l_environment_of_tpch" alt="" coords="221,1483,371,1525"/><area shape="rect" id="node45" href="set__up__environment_8h.html#a1ad43aa070d5c85f941f5622843d45a9" title="startup_single_node\l_one_partition_environment\l_of_tpch" alt="" coords="205,1549,387,1605"/><area shape="rect" id="node46" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="219,1629,373,1656"/><area shape="rect" id="node47" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="217,1680,375,1707"/><area shape="rect" id="node48" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="214,1731,378,1757"/><area shape="rect" id="node49" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="219,1782,373,1823"/><area shape="rect" id="node50" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="221,1848,371,1875"/><area shape="rect" id="node3" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="496,5,645,46"/><area shape="rect" id="node4" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="492,71,649,97"/><area shape="rect" id="node6" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="511,121,631,148"/><area shape="rect" id="node9" href="classDMLTestPOC1Partition.html#aa36f70199bd11febc38114bfc3f030ed" title="DMLTestPOC1Partition\l::SetUpTestCase" alt="" coords="491,173,651,214"/><area shape="rect" id="node10" href="set__up__environment_8h.html#abb86496e74986b738530fd97ececb7c1" title="startup_single_node\l_environment_of_poc" alt="" coords="497,238,644,279"/><area shape="rect" id="node12" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="745,756,917,783"/><area shape="rect" id="node14" href="daemon__test_8h.html#a6618e90ac81a581bdd325929e6bf9752" title="daemon_test" alt="" coords="522,355,619,381"/><area shape="rect" id="node19" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="445,587,696,629"/><area shape="rect" id="node22" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="502,712,639,739"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="501,771,640,797"/><area shape="rect" id="node26" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="499,829,642,856"/><area shape="rect" id="node28" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="491,888,651,915"/><area shape="rect" id="node30" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="485,939,657,965"/><area shape="rect" id="node33" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="524,989,617,1016"/><area shape="rect" id="node34" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="511,1040,630,1067"/><area shape="rect" id="node35" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="499,1091,643,1133"/><area shape="rect" id="node36" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="495,1157,647,1184"/><area shape="rect" id="node37" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="531,1208,610,1235"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a8a664135e20ca7d53183f02cfbe19982"></a>
 <div class="memitem">
 <div class="memproto">
@@ -195,7 +543,52 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization
 <p>Method description: </p>
 <dl class="section return"><dt>Returns</dt><dd>: the sum of all attribute's length in projection, as this projection's cost </dd></dl>
 
-<p>Referenced by <a class="el" href="classclaims_1_1logical__query__plan_1_1LogicalScan.html#ad5a029bd18cacd363057b7083216306f">claims::logical_operator::LogicalScan::GetPlanContext()</a>.</p>
+<p>References <a class="el" href="classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984">column_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6">claims::logical_operator::LogicalScan::GetPlanContext()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a8a664135e20ca7d53183f02cfbe19982_icgraph.png" border="0" usemap="#classProjectionDescriptor_a8a664135e20ca7d53183f02cfbe19982_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a8a664135e20ca7d53183f02cfbe19982_icgraph" id="classProjectionDescriptor_a8a664135e20ca7d53183f02cfbe19982_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="195,5,397,46"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="445,5,696,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a65fb1fcd70c352238e0f0c4d39c4facd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structProjectionID.html">ProjectionID</a> ProjectionDescriptor::getProjectionID </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="test__IndexManager__serialize_8cpp.html#a41a6ada18e8799a2e6442781a64d2c86">bulk_test_logical_index_scan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f">claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a664c772b444482e1720f42c2de7ba006">claims::logical_operator::LogicalScan::GetPhysicalPlan()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, <a class="el" href="classLogicalCSBIndexBuilding.html#a7da36b40f76ff95df93c9f711a5cd44f">LogicalCSBIndexBuilding::Print()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a566ed86ccb9df5ed1f57ebe63f59e56f">claims::logical_operator::LogicalScan::Print()</a>, <a class="el" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0">projection_scan()</a>, <a class="el" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9">test_CSBIndexBuilding()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#adc9a0c893349c7bd6364fc052b84d80a">test_index_filter_performance()</a>, <a class="el" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83">test_index_scan_iterator()</a>, <a class="el" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c">test_logical_csb_index_building()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#ae40fd23e7905275c39c8fafd190a7dbf">test_logical_index_building()</a>, <a class="el" href="test__IndexManager__serialize_8cpp.html#af39b080c7be767357b47271e440611a3">test_logical_index_scan()</a>, and <a class="el" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9">variable_schema_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a65fb1fcd70c352238e0f0c4d39c4facd_icgraph.png" border="0" usemap="#classProjectionDescriptor_a65fb1fcd70c352238e0f0c4d39c4facd_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a65fb1fcd70c352238e0f0c4d39c4facd_icgraph" id="classProjectionDescriptor_a65fb1fcd70c352238e0f0c4d39c4facd_icgraph">
+<area shape="rect" id="node2" href="test__IndexManager__serialize_8cpp.html#a41a6ada18e8799a2e6442781a64d2c86" title="bulk_test_logical_index_scan" alt="" coords="224,5,416,32"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="195,57,445,98"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a664c772b444482e1720f42c2de7ba006" title="Set the value of class state_ and get instantiation of physical operator to transform logical operato..." alt="" coords="217,122,423,163"/><area shape="rect" id="node6" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="238,188,402,215"/><area shape="rect" id="node7" href="classLogicalCSBIndexBuilding.html#a7da36b40f76ff95df93c9f711a5cd44f" title="LogicalCSBIndexBuilding\l::Print" alt="" coords="235,239,405,281"/><area shape="rect" id="node8" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a566ed86ccb9df5ed1f57ebe63f59e56f" title="claims::logical_operator\l::LogicalScan::Print" alt="" coords="241,305,399,346"/><area shape="rect" id="node9" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="263,371,377,397"/><area shape="rect" id="node10" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="241,421,399,448"/><area shape="rect" id="node11" href="test__IndexManager__serialize_8cpp.html#adc9a0c893349c7bd6364fc052b84d80a" title="test_index_filter_performance" alt="" coords="223,472,417,499"/><area shape="rect" id="node12" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="238,523,402,549"/><area shape="rect" id="node13" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="243,574,397,615"/><area shape="rect" id="node14" href="test__IndexManager__serialize_8cpp.html#ae40fd23e7905275c39c8fafd190a7dbf" title="test_logical_index\l_building" alt="" coords="257,639,383,681"/><area shape="rect" id="node15" href="test__IndexManager__serialize_8cpp.html#af39b080c7be767357b47271e440611a3" title="test_logical_index_scan" alt="" coords="239,705,401,732"/><area shape="rect" id="node16" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="245,756,395,783"/><area shape="rect" id="node3" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="493,560,632,587"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -213,11 +606,339 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization
 </div><div class="memdoc">
 <p>Only fixed schema is supported now. TODO: support other schema.</p>
 
+<p>References <a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">getAttributeList()</a>.</p>
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader::HdfsLoader()</a>, <a class="el" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155">insert_into_hash_table_from_projection()</a>, <a class="el" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0">projection_scan()</a>, and <a class="el" href="in__segment__scalability__test_8cpp.html#aec5d76713db05ef4ce0ce4c48a8e361a">test_block_construct()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_cgraph.png" border="0" usemap="#classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_cgraph" alt=""/></div>
+<map name="classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_cgraph" id="classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_cgraph">
+<area shape="rect" id="node2" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275" title="ProjectionDescriptor\l::getAttributeList" alt="" coords="195,5,335,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_icgraph.png" border="0" usemap="#classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_icgraph" id="classProjectionDescriptor_ac2622e547dbdbafa8fc3bf3bac1c4606_icgraph">
+<area shape="rect" id="node2" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269" title="HdfsLoader::HdfsLoader" alt="" coords="195,5,359,32"/><area shape="rect" id="node3" href="hash__table__test_8h.html#ac7a01f3a64b5d160c378805e8f775155" title="insert_into_hash_table\l_from_projection" alt="" coords="201,57,353,98"/><area shape="rect" id="node4" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="409,93,522,120"/><area shape="rect" id="node5" href="in__segment__scalability__test_8cpp.html#aec5d76713db05ef4ce0ce4c48a8e361a" title="test_block_construct" alt="" coords="206,173,349,200"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a01507bb38d9c289156d6bc5dac6cd4d7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ProjectionDescriptor::hasAttribute </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984">column_list_</a>, and <a class="el" href="structAttribute.html#ad8b084cee376d6cd8e1066e227af0ceb">Attribute::index</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11">Analyzer::analyse()</a>, <a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">Analyzer::computeHistogram()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6">claims::logical_operator::LogicalScan::GetPlanContext()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a01507bb38d9c289156d6bc5dac6cd4d7_icgraph.png" border="0" usemap="#classProjectionDescriptor_a01507bb38d9c289156d6bc5dac6cd4d7_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a01507bb38d9c289156d6bc5dac6cd4d7_icgraph" id="classProjectionDescriptor_a01507bb38d9c289156d6bc5dac6cd4d7_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11" title="Analyzer::analyse" alt="" coords="233,5,359,32"/><area shape="rect" id="node4" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d" title="Analyzer::computeHistogram" alt="" coords="201,56,391,83"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="195,107,397,149"/><area shape="rect" id="node3" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="493,5,648,32"/><area shape="rect" id="node5" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="463,56,678,83"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="445,107,696,149"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a09710b2823bc7e694cbf0f10eea4e52c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ProjectionDescriptor::isExist </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984">column_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef">Catalog::getPartitionIDList()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classProjectionDescriptor_a09710b2823bc7e694cbf0f10eea4e52c_icgraph.png" border="0" usemap="#classProjectionDescriptor_a09710b2823bc7e694cbf0f10eea4e52c_icgraph" alt=""/></div>
+<map name="classProjectionDescriptor_a09710b2823bc7e694cbf0f10eea4e52c_icgraph" id="classProjectionDescriptor_a09710b2823bc7e694cbf0f10eea4e52c_icgraph">
+<area shape="rect" id="node2" href="classCatalog.html#a858629b4e61076f1e806459e82cca5ef" title="Catalog::getPartitionIDList" alt="" coords="195,12,371,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a234b505827ed457d2989a8f559ba040e"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Archive &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ProjectionDescriptor::serialize </td>
+          <td>(</td>
+          <td class="paramtype">Archive &amp;&#160;</td>
+          <td class="paramname"><em>ar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>version</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7175ceb04080905e827a546c6caf4966"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ProjectionDescriptor::setProjectionID </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structProjectionID.html">ProjectionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>pid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class boost::serialization::access</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac4e037a921f77d7151fdd687b1d154df"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classTableDescriptor.html">TableDescriptor</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7fc39abbea0943aba0eb861143bd6379"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;string, string&gt; ProjectionDescriptor::blkMemoryLocations</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2307cffdd8ff4cae77e53ab559e7d984"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="classColumn.html">Column</a>&gt; ProjectionDescriptor::column_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classProjectionDescriptor.html#aa5dc27171773ab4ae91dc23dcc52f50f">addAttribute()</a>, <a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">getAttributeList()</a>, <a class="el" href="classProjectionDescriptor.html#a8a664135e20ca7d53183f02cfbe19982">getProjectionCost()</a>, <a class="el" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7">hasAttribute()</a>, and <a class="el" href="classProjectionDescriptor.html#a09710b2823bc7e694cbf0f10eea4e52c">isExist()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9e4e2fe4034357f39a8d75b09334ffaa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;string, set&lt;string&gt; &gt; ProjectionDescriptor::fileLocations</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa1480f7b70e78e89bc8eea69982d9c45"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string ProjectionDescriptor::hdfsFilePath</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aef3878aae5b0e5e9acc47b19f5be860e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPartitioner.html">Partitioner</a>* ProjectionDescriptor::partitioner</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classProjectionDescriptor.html#afa4bc286ad6470acda5a01d8b0cd9d9e">AllPartitionBound()</a>, <a class="el" href="classProjectionDescriptor.html#a9d8c456d3f482dcd185107f59402f5e0">DefinePartitonier()</a>, <a class="el" href="classProjectionDescriptor.html#a9eb9a999c721f5f8ca874ee2293ff1f5">getNumberOfTuplesOnPartition()</a>, and <a class="el" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f">getPartitioner()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4fdf73e65efd6050416222510498472c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structProjectionID.html">ProjectionID</a> ProjectionDescriptor::projection_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classProjectionDescriptor.html#aa5dc27171773ab4ae91dc23dcc52f50f">addAttribute()</a>, and <a class="el" href="classProjectionDescriptor.html#a9d8c456d3f482dcd185107f59402f5e0">DefinePartitonier()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7a9d74b12a9d048e7d4542d3a2dbb9bb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string ProjectionDescriptor::Projection_name_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Catalog/<a class="el" href="table_8h_source.html">table.h</a></li>
-<li>Catalog/table.cpp</li>
+<li>Catalog/<a class="el" href="table_8cpp.html">table.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

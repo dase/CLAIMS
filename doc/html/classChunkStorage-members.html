@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Member List</title>
+<title>Claims: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,12 +111,18 @@ $(document).ready(function(){initNavTree('classChunkStorage.html','');});
 
 <p>This is the complete list of members for <a class="el" href="classChunkStorage.html">ChunkStorage</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ChunkStorage</b>(const ChunkID &amp;chunk_id, const unsigned &amp;block_size, const StorageLevel &amp;desirable_level) (defined in <a class="el" href="classChunkStorage.html">ChunkStorage</a>)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>createChunkReaderIterator</b>() (defined in <a class="el" href="classChunkStorage.html">ChunkStorage</a>)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getChunkID</b>() (defined in <a class="el" href="classChunkStorage.html">ChunkStorage</a>)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>printCurrentStorageLevel</b>() const  (defined in <a class="el" href="classChunkStorage.html">ChunkStorage</a>)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>setCurrentStorageLevel</b>(const StorageLevel &amp;current_level) (defined in <a class="el" href="classChunkStorage.html">ChunkStorage</a>)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>~ChunkStorage</b>() (defined in <a class="el" href="classChunkStorage.html">ChunkStorage</a>)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classChunkStorage.html#a2ce1bf564b8f12a5c91cd91e08400502">block_size_</a></td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classChunkStorage.html#a37126261d63340232704825a474356dc">chunk_id_</a></td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classChunkStorage.html#a0e52d399cf5116c545c6b19ddb40506f">chunk_size_</a></td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classChunkStorage.html#a59d731802966dcf87a20db9ba690ef82">ChunkStorage</a>(const ChunkID &amp;chunk_id, const unsigned &amp;block_size, const StorageLevel &amp;desirable_level)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1">createChunkReaderIterator</a>()</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classChunkStorage.html#ade8b22afdad6f90c2e4ac588413f4ceb">current_storage_level_</a></td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classChunkStorage.html#a69887330ca9f33b7830e9999b65fe180">desirable_storage_level_</a></td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classChunkStorage.html#af2bab242a0c0893aaa3f99fe28d1628c">getChunkID</a>()</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classChunkStorage.html#ada789465c85454070af1aa7f5475d4a7">lock_</a></td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classChunkStorage.html#a038aa5b4c6694941c6a472475e26018a">printCurrentStorageLevel</a>() const </td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classChunkStorage.html#a94ec84f66ba55d629a734ee91611344d">setCurrentStorageLevel</a>(const StorageLevel &amp;current_level)</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classChunkStorage.html#a8006a9a8725917cd4cfa30ab3773ab3a">~ChunkStorage</a>()</td><td class="entry"><a class="el" href="classChunkStorage.html">ChunkStorage</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -1,4 +1,4 @@
-.TH "TypeCast" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "TypeCast" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,29 @@ TypeCast \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <TypeCast\&.h>\fP
 .SS "Static Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "static TypeCastF \fBtype_cast_func\fP [DATA_TYPE_NUMBER][DATA_TYPE_NUMBER]"
+.RI "static \fBTypeCastF\fP \fBtype_cast_func\fP [\fBDATA_TYPE_NUMBER\fP][\fBDATA_TYPE_NUMBER\fP]"
 .br
 .ti -1c
-.RI "static TypeCastFunction \fBtype_cast_functions\fP [DATA_TYPE_NUMBER][DATA_TYPE_NUMBER]"
+.RI "static \fBTypeCastFunction\fP \fBtype_cast_functions\fP [\fBDATA_TYPE_NUMBER\fP][\fBDATA_TYPE_NUMBER\fP]"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBTypeCastF\fP TypeCast::type_cast_func\fC [static]\fP"
+
+.PP
+Referenced by InitExprAtPhysicalPlan(), and initialize_type_cast_functions()\&.
+.SS "\fBTypeCastFunction\fP TypeCast::type_cast_functions\fC [static]\fP"
+
+.PP
+Referenced by add(), cast(), compare_equal(), compare_great(), compare_great_equal(), compare_less(), compare_less_equal(), compare_not_equal(), initialize_type_cast_functions(), mins(), and mul()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

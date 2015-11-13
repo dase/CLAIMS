@@ -1,4 +1,4 @@
-.TH "Opt_csc" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Opt_csc" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Opt_csc \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBdatatype\fP"
@@ -22,7 +24,25 @@ Opt_csc \-
 .RI "char * \fBs2\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Opt_csc::datatype"
+
+.PP
+Referenced by newOptCsc(), and yyuserAction()\&.
+.SS "char* Opt_csc::s1"
+
+.PP
+Referenced by newOptCsc(), and yyuserAction()\&.
+.SS "char* Opt_csc::s2"
+
+.PP
+Referenced by newOptCsc(), and yyuserAction()\&.
+.SS "\fBnodetype\fP Opt_csc::type"
+
+.PP
+Referenced by newOptCsc()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

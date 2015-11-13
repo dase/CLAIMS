@@ -45,8 +45,9 @@ int TestNewSql() {
     Parser* my_parser = new Parser();
     AstNode* raw_ast = my_parser->GetRawAST();
     if (raw_ast != NULL) {
-      raw_ast->Print();
-      cout << "--------------begin semantic analysis---------------" << endl;
+      //      raw_ast->Print();
+      //      cout << "--------------begin semantic analysis---------------" <<
+      //      endl;
       SemanticContext sem_cnxt;
       ErrorNo ret = raw_ast->SemanticAnalisys(&sem_cnxt);
       if (eOK != ret) {
@@ -65,7 +66,7 @@ int TestNewSql() {
       logic_plan = new LogicalQueryPlanRoot(
           0, logic_plan, LogicalQueryPlanRoot::kResultCollector);
       logic_plan->GetPlanContext();
-      logic_plan->Print();
+      //      logic_plan->Print();
       cout << "--------------begin physical plan -------------------" << endl;
 
       PhysicalOperatorBase* physical_plan =

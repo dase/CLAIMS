@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Member List</title>
+<title>Claims: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,18 +111,25 @@ $(document).ready(function(){initNavTree('classBlockStreamBuffer.html','');});
 
 <p>This is the complete list of members for <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>BlockStreamBuffer</b>(unsigned block_size, unsigned block_count, Schema *schema) (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Empty</b>() (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getBlock</b>(BlockStreamBase &amp;block) (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>getBlockInBuffer</b>() (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getBufferUsage</b>() (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>getReceivedDataSizeInKbytes</b>() (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>inputComplete</b>() const  (defined in <a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a>)</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>insertBlock</b>(BlockStreamBase *block) (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>MonitorableBuffer</b>() (defined in <a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a>)</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>setInputComplete</b>() (defined in <a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a>)</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>~BlockStreamBuffer</b>() (defined in <a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a>)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>~MonitorableBuffer</b>() (defined in <a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a>)</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a3f5a1de9c85f0766914c4935f2b315db">block_size_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#abea39cf0b3506acac6d22bbcf9d3d11e">block_stream_empty_list_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a44104e4a43ac9297af2f1816af1f8395">block_stream_used_list_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a37ad443b416651d49ca9e87792d9d103">BlockStreamBuffer</a>(unsigned block_size, unsigned block_count, Schema *schema)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a0c09df725d869ee98e131d9404d2c7c8">Empty</a>()</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a2c904a7deee4ff0f2d0daaa4a4eb4126">getBlock</a>(BlockStreamBase &amp;block)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a7bafbfbb42565e4cf9d8291c8b4be1c0">getBlockInBuffer</a>()</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#aaa6f0fb0267531b36cc44ceaf6d0bf7b">getBufferUsage</a>()</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#addb5215108ef6e4bbd21d39a9dee81df">getReceivedDataSizeInKbytes</a>()</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7">inputComplete</a>() const </td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a3b48817e660867b1e989bd113f7dbff5">insertBlock</a>(BlockStreamBase *block)</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a353a5b5e1ca7320e71af839763731509">lock_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMonitorableBuffer.html#aa90a8f4287998b8f09690f387cdf0cab">MonitorableBuffer</a>()</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#af434374190795a52c20af6e9a4575954">received_block_count_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#ada5779d04dd3d0b4481cccc767f11354">sema_empty_block_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMonitorableBuffer.html#ac4b944bcc1d2a1efede8ab37d643a709">setInputComplete</a>()</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classBlockStreamBuffer.html#acabe381c7aa950f7639d91af2f3ea22e">total_block_count_</a></td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classBlockStreamBuffer.html#a6051abaae8da0d71ed26e06ec05b0ab6">~BlockStreamBuffer</a>()</td><td class="entry"><a class="el" href="classBlockStreamBuffer.html">BlockStreamBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMonitorableBuffer.html#a528355a5205e10172a1b36ce4da56591">~MonitorableBuffer</a>()</td><td class="entry"><a class="el" href="classMonitorableBuffer.html">MonitorableBuffer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

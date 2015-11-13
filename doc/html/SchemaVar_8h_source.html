@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Schema/SchemaVar.h Source File</title>
+<title>Claims: common/Schema/SchemaVar.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('SchemaVar_8h_source.html','');});
 <div class="title">SchemaVar.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="SchemaVar_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * SchemaVar.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2014-2-17</span></div>
@@ -124,35 +124,35 @@ $(document).ready(function(){initNavTree('SchemaVar_8h_source.html','');});
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#ifdef DMALLOC</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;Schema.h&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="Schema_8h.html">Schema.h</a>&quot;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;../data_type.h&quot;</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classSchemaVar.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classSchemaVar.html">SchemaVar</a>:<span class="keyword">public</span> <a class="code" href="classSchema.html">Schema</a> {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classSchemaVar.html">SchemaVar</a>();</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classSchemaVar.html">SchemaVar</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classSchemaVar.html#ab7c1f8fb3fac2c034f65f2e76875ec40">SchemaVar</a>();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classSchemaVar.html#aa5c58ee4ed25b51bf1cb40eb85d6922b">~SchemaVar</a>();</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classSchemaVar.html">SchemaVar</a>(std::vector&lt;column_type&gt; columns);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classSchemaVar.html#ab7c1f8fb3fac2c034f65f2e76875ec40">SchemaVar</a>(std::vector&lt;column_type&gt; <a class="code" href="classSchema.html#ab7f76432f2a95121d054d0d70e3034db">columns</a>);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> getTupleMaxSize()<span class="keyword">const</span>{<span class="keywordflow">return</span> -1;};</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> getTupleActualSize(<span class="keywordtype">void</span>* tuple) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> copyTuple(<span class="keywordtype">void</span>* src, <span class="keywordtype">void</span>* desc) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">virtual</span> Schema::schema_type getSchemaType()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classSchemaVar.html#a0b6436d8e7b0302730d2f8afcdbd2770">   29</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <a class="code" href="classSchemaVar.html#a0b6436d8e7b0302730d2f8afcdbd2770">getTupleMaxSize</a>()<span class="keyword">const</span>{<span class="keywordflow">return</span> -1;};</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <a class="code" href="classSchemaVar.html#ad6d68784a5e679ff4496275deb3d291c">getTupleActualSize</a>(<span class="keywordtype">void</span>* tuple) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <a class="code" href="classSchemaVar.html#af03d36ea98f962c6342525cdc9868bf1">copyTuple</a>(<span class="keywordtype">void</span>* src, <span class="keywordtype">void</span>* desc) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classSchema.html#aa04140ad5866db86a17517c8e6182c0d">Schema::schema_type</a> <a class="code" href="classSchemaVar.html#ad1b7f88a4119d83673508a6520c988ad">getSchemaType</a>()<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="comment">/*get the pointer of the tuple and get the value of the tuple offset*/</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> getColumnValue(<span class="keywordtype">unsigned</span> index,<span class="keywordtype">void</span>* src, <span class="keywordtype">void</span>* desc){};</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classSchemaVar.html#acc29042306364a200fadb95f5aa0ddb3">   34</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classSchemaVar.html#acc29042306364a200fadb95f5aa0ddb3">getColumnValue</a>(<span class="keywordtype">unsigned</span> index,<span class="keywordtype">void</span>* src, <span class="keywordtype">void</span>* desc){};</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="comment">/* this function should not be called, as has described in the base virtual function.*/</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">int</span> getColumnOffset(<span class="keywordtype">unsigned</span> index)<span class="keyword">const</span>{assert(<span class="keyword">false</span>);};</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classSchemaVar.html#aeade58a3b5a20991135cd92917635e2c">   37</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classSchemaVar.html#aeade58a3b5a20991135cd92917635e2c">getColumnOffset</a>(<span class="keywordtype">unsigned</span> index)<span class="keyword">const</span>{assert(<span class="keyword">false</span>);};</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classSchema.html">Schema</a>* getSubSchema(std::vector&lt;unsigned&gt;)<span class="keyword">const</span>{};</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* duplicateSchema()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span>* getColumnAddess(<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; index,<span class="keyword">const</span> <span class="keywordtype">void</span>* <span class="keyword">const</span> &amp; column_start) <span class="keyword">const</span> __attribute__((always_inline)){</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classSchemaVar.html#a063d43b62bd72e2c84173530ecb53401">   39</a></span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classSchemaVar.html#a063d43b62bd72e2c84173530ecb53401">getSubSchema</a>(std::vector&lt;unsigned&gt;)<span class="keyword">const</span>{};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classSchemaVar.html#a11f4cf1b5db378f3d82f3d1e18f50803">duplicateSchema</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classSchemaVar.html#a2be4d72d671c5d0953d9b6f2ff389108">   41</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span>* <a class="code" href="classSchemaVar.html#a2be4d72d671c5d0953d9b6f2ff389108">getColumnAddess</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; index,<span class="keyword">const</span> <span class="keywordtype">void</span>* <span class="keyword">const</span> &amp; column_start) <span class="keyword">const</span> <a class="code" href="Parsetree_2sql_8tab_8cpp.html#a7542898d5be40c999bec6c243af33f58">__attribute__</a>((always_inline)){</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">unsigned</span> ofs=0;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">unsigned</span> column_off=0;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">char</span> *ret;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">if</span>(index&gt;0){</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;index;i++){</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <span class="keywordflow">if</span>(columns[i].type!=t_string){</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <span class="keywordflow">if</span>(columns[i].type!=<a class="code" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a8246d1915b02da046caa65da7b069675">t_string</a>){</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                    ofs+=columns[i].get_length();</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">else</span>{</div>
@@ -160,33 +160,53 @@ $(document).ready(function(){initNavTree('SchemaVar_8h_source.html','');});
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                    column_off++;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                }</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordflow">return</span> (<span class="keywordtype">char</span> *)column_start+ofs+var_attributes_*4;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordflow">return</span> (<span class="keywordtype">char</span> *)column_start+ofs+<a class="code" href="classSchemaVar.html#a7e061f11aa0d660d319c374637de7388">var_attributes_</a>*4;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        }</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordflow">else</span>{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">return</span> (<span class="keywordtype">char</span> *)column_start+var_attributes_*4;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">return</span> (<span class="keywordtype">char</span> *)column_start+<a class="code" href="classSchemaVar.html#a7e061f11aa0d660d319c374637de7388">var_attributes_</a>*4;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    };</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classSchemaVar.html#a7e061f11aa0d660d319c374637de7388">   60</a></span>&#160;    };</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">unsigned</span> var_attributes_;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">unsigned</span> attributes_;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classSchemaVar.html#a7e061f11aa0d660d319c374637de7388">var_attributes_</a>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classSchemaVar.html#ae80dc91f753f62aaaafb6c4c2aa90468">   64</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classSchemaVar.html#ae80dc91f753f62aaaafb6c4c2aa90468">attributes_</a>;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classSchemaVar.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">   66</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classSchemaVar.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp;ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version){</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classSchemaVar.html#a87d4c1234291468f7b25bb990d068cfb">   68</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classSchemaVar.html#a87d4c1234291468f7b25bb990d068cfb">serialize</a>(Archive &amp;ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version){</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        ar &amp; boost::serialization::base_object&lt;Schema&gt;(*this);</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;};</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SCHEMAVAR_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classSchemaVar_html_a7e061f11aa0d660d319c374637de7388"><div class="ttname"><a href="classSchemaVar.html#a7e061f11aa0d660d319c374637de7388">SchemaVar::var_attributes_</a></div><div class="ttdeci">unsigned var_attributes_</div><div class="ttdef"><b>Definition:</b> SchemaVar.h:60</div></div>
+<div class="ttc" id="classSchemaVar_html_ad6d68784a5e679ff4496275deb3d291c"><div class="ttname"><a href="classSchemaVar.html#ad6d68784a5e679ff4496275deb3d291c">SchemaVar::getTupleActualSize</a></div><div class="ttdeci">virtual unsigned getTupleActualSize(void *tuple) const </div><div class="ttdef"><b>Definition:</b> SchemaVar.cpp:27</div></div>
+<div class="ttc" id="classSchema_html_ab7f76432f2a95121d054d0d70e3034db"><div class="ttname"><a href="classSchema.html#ab7f76432f2a95121d054d0d70e3034db">Schema::columns</a></div><div class="ttdeci">std::vector&lt; column_type &gt; columns</div><div class="ttdef"><b>Definition:</b> Schema.h:53</div></div>
+<div class="ttc" id="classSchemaVar_html_a11f4cf1b5db378f3d82f3d1e18f50803"><div class="ttname"><a href="classSchemaVar.html#a11f4cf1b5db378f3d82f3d1e18f50803">SchemaVar::duplicateSchema</a></div><div class="ttdeci">Schema * duplicateSchema() const </div><div class="ttdef"><b>Definition:</b> SchemaVar.cpp:50</div></div>
+<div class="ttc" id="classSchemaVar_html_ad1b7f88a4119d83673508a6520c988ad"><div class="ttname"><a href="classSchemaVar.html#ad1b7f88a4119d83673508a6520c988ad">SchemaVar::getSchemaType</a></div><div class="ttdeci">virtual Schema::schema_type getSchemaType() const </div><div class="ttdef"><b>Definition:</b> SchemaVar.cpp:47</div></div>
+<div class="ttc" id="classSchemaVar_html_a063d43b62bd72e2c84173530ecb53401"><div class="ttname"><a href="classSchemaVar.html#a063d43b62bd72e2c84173530ecb53401">SchemaVar::getSubSchema</a></div><div class="ttdeci">virtual Schema * getSubSchema(std::vector&lt; unsigned &gt;) const </div><div class="ttdef"><b>Definition:</b> SchemaVar.h:39</div></div>
+<div class="ttc" id="Schema_8h_html"><div class="ttname"><a href="Schema_8h.html">Schema.h</a></div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
+<div class="ttc" id="classSchemaVar_html_ae80dc91f753f62aaaafb6c4c2aa90468"><div class="ttname"><a href="classSchemaVar.html#ae80dc91f753f62aaaafb6c4c2aa90468">SchemaVar::attributes_</a></div><div class="ttdeci">unsigned attributes_</div><div class="ttdef"><b>Definition:</b> SchemaVar.h:64</div></div>
+<div class="ttc" id="classSchemaVar_html_aa5c58ee4ed25b51bf1cb40eb85d6922b"><div class="ttname"><a href="classSchemaVar.html#aa5c58ee4ed25b51bf1cb40eb85d6922b">SchemaVar::~SchemaVar</a></div><div class="ttdeci">virtual ~SchemaVar()</div><div class="ttdef"><b>Definition:</b> SchemaVar.cpp:15</div></div>
+<div class="ttc" id="classSchemaVar_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="classSchemaVar.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">SchemaVar::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> SchemaVar.h:66</div></div>
+<div class="ttc" id="classSchemaVar_html_aeade58a3b5a20991135cd92917635e2c"><div class="ttname"><a href="classSchemaVar.html#aeade58a3b5a20991135cd92917635e2c">SchemaVar::getColumnOffset</a></div><div class="ttdeci">int getColumnOffset(unsigned index) const </div><div class="ttdef"><b>Definition:</b> SchemaVar.h:37</div></div>
+<div class="ttc" id="classSchemaVar_html_a0b6436d8e7b0302730d2f8afcdbd2770"><div class="ttname"><a href="classSchemaVar.html#a0b6436d8e7b0302730d2f8afcdbd2770">SchemaVar::getTupleMaxSize</a></div><div class="ttdeci">virtual unsigned getTupleMaxSize() const </div><div class="ttdef"><b>Definition:</b> SchemaVar.h:29</div></div>
+<div class="ttc" id="classSchemaVar_html_acc29042306364a200fadb95f5aa0ddb3"><div class="ttname"><a href="classSchemaVar.html#acc29042306364a200fadb95f5aa0ddb3">SchemaVar::getColumnValue</a></div><div class="ttdeci">virtual void getColumnValue(unsigned index, void *src, void *desc)</div><div class="ttdef"><b>Definition:</b> SchemaVar.h:34</div></div>
 <div class="ttc" id="classSchemaVar_html"><div class="ttname"><a href="classSchemaVar.html">SchemaVar</a></div><div class="ttdef"><b>Definition:</b> SchemaVar.h:22</div></div>
+<div class="ttc" id="Parsetree_2sql_8tab_8cpp_html_a7542898d5be40c999bec6c243af33f58"><div class="ttname"><a href="Parsetree_2sql_8tab_8cpp.html#a7542898d5be40c999bec6c243af33f58">__attribute__</a></div><div class="ttdeci">#define __attribute__(Spec)</div><div class="ttdef"><b>Definition:</b> sql.tab.cpp:185</div></div>
+<div class="ttc" id="classSchemaVar_html_a87d4c1234291468f7b25bb990d068cfb"><div class="ttname"><a href="classSchemaVar.html#a87d4c1234291468f7b25bb990d068cfb">SchemaVar::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> SchemaVar.h:68</div></div>
+<div class="ttc" id="classSchemaVar_html_ab7c1f8fb3fac2c034f65f2e76875ec40"><div class="ttname"><a href="classSchemaVar.html#ab7c1f8fb3fac2c034f65f2e76875ec40">SchemaVar::SchemaVar</a></div><div class="ttdeci">SchemaVar()</div><div class="ttdef"><b>Definition:</b> SchemaVar.cpp:10</div></div>
+<div class="ttc" id="classSchema_html_aa04140ad5866db86a17517c8e6182c0d"><div class="ttname"><a href="classSchema.html#aa04140ad5866db86a17517c8e6182c0d">Schema::schema_type</a></div><div class="ttdeci">schema_type</div><div class="ttdef"><b>Definition:</b> Schema.h:23</div></div>
+<div class="ttc" id="data__type_8h_html_ac2ad7f431e3446fddcd9b6b9f93c4c14a8246d1915b02da046caa65da7b069675"><div class="ttname"><a href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a8246d1915b02da046caa65da7b069675">t_string</a></div><div class="ttdef"><b>Definition:</b> data_type.h:39</div></div>
+<div class="ttc" id="classSchemaVar_html_af03d36ea98f962c6342525cdc9868bf1"><div class="ttname"><a href="classSchemaVar.html#af03d36ea98f962c6342525cdc9868bf1">SchemaVar::copyTuple</a></div><div class="ttdeci">virtual unsigned copyTuple(void *src, void *desc) const </div><div class="ttdef"><b>Definition:</b> SchemaVar.cpp:43</div></div>
+<div class="ttc" id="classSchemaVar_html_a2be4d72d671c5d0953d9b6f2ff389108"><div class="ttname"><a href="classSchemaVar.html#a2be4d72d671c5d0953d9b6f2ff389108">SchemaVar::getColumnAddess</a></div><div class="ttdeci">virtual void * getColumnAddess(const unsigned &amp;index, const void *const &amp;column_start) const __attribute__((always_inline))</div><div class="ttdef"><b>Definition:</b> SchemaVar.h:41</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_1523ae91887966064d2231b811493f28.html">Schema</a></li><li class="navelem"><b>SchemaVar.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_1523ae91887966064d2231b811493f28.html">Schema</a></li><li class="navelem"><a class="el" href="SchemaVar_8h.html">SchemaVar.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

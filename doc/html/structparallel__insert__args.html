@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: parallel_insert_args Struct Reference</title>
+<title>Claims: parallel_insert_args Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,25 +111,100 @@ $(document).ready(function(){initNavTree('structparallel__insert__args.html','')
 <div class="title">parallel_insert_args Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="insert__optimized__hash__table__test_8h_source.html">insert_optimized_hash_table_test.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for parallel_insert_args:</div>
+<div class="dyncontent">
+<div class="center"><img src="structparallel__insert__args__coll__graph.png" border="0" usemap="#parallel__insert__args_coll__map" alt="Collaboration graph"/></div>
+<map name="parallel__insert__args_coll__map" id="parallel__insert__args_coll__map">
+<area shape="rect" id="node2" href="classDynamicBlockBuffer_1_1Iterator.html" title="DynamicBlockBuffer\l::Iterator" alt="" coords="81,219,223,261"/><area shape="rect" id="node3" href="classDynamicBlockBuffer.html" title="DynamicBlockBuffer" alt="" coords="5,120,147,147"/><area shape="rect" id="node4" href="classLock.html" title="Lock" alt="" coords="127,13,177,40"/><area shape="rect" id="node5" href="classBarrier.html" title="Barrier" alt="" coords="247,227,307,253"/><area shape="rect" id="node6" href="classInsertOptimizedHashTable.html" title="InsertOptimizedHashTable" alt="" coords="331,227,508,253"/><area shape="rect" id="node7" href="structInsertOptimizedHashTable_1_1bucket.html" title="InsertOptimizedHashTable\l::bucket" alt="" coords="570,113,747,154"/><area shape="rect" id="node9" href="structInsertOptimizedHashTable_1_1meta__data.html" title="InsertOptimizedHashTable\l::meta_data" alt="" coords="570,219,747,261"/><area shape="rect" id="node8" href="structInsertOptimizedHashTable_1_1entry.html" title="InsertOptimizedHashTable\l::entry" alt="" coords="570,6,747,47"/><area shape="rect" id="node10" href="classSpineLock.html" title="SpineLock" alt="" coords="416,120,499,147"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a6d5f9216173887d5ac49c3fa435c2802"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d5f9216173887d5ac49c3fa435c2802"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>pid</b></td></tr>
+<tr class="memitem:a6d5f9216173887d5ac49c3fa435c2802"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallel__insert__args.html#a6d5f9216173887d5ac49c3fa435c2802">pid</a></td></tr>
 <tr class="separator:a6d5f9216173887d5ac49c3fa435c2802"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fcf8a67d2b756ed2aa612f8479b2dde"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4fcf8a67d2b756ed2aa612f8479b2dde"></a>
-<a class="el" href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>buffer_it</b></td></tr>
+<tr class="memitem:a4fcf8a67d2b756ed2aa612f8479b2dde"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallel__insert__args.html#a4fcf8a67d2b756ed2aa612f8479b2dde">buffer_it</a></td></tr>
 <tr class="separator:a4fcf8a67d2b756ed2aa612f8479b2dde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add920a80262b0f2be4e4c70b15f3f976"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add920a80262b0f2be4e4c70b15f3f976"></a>
-<a class="el" href="classInsertOptimizedHashTable.html">InsertOptimizedHashTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>hashtable</b></td></tr>
+<tr class="memitem:add920a80262b0f2be4e4c70b15f3f976"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classInsertOptimizedHashTable.html">InsertOptimizedHashTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallel__insert__args.html#add920a80262b0f2be4e4c70b15f3f976">hashtable</a></td></tr>
 <tr class="separator:add920a80262b0f2be4e4c70b15f3f976"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10277e7e627a539b9adb240dd203e7ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10277e7e627a539b9adb240dd203e7ed"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>nbuckets</b></td></tr>
+<tr class="memitem:a10277e7e627a539b9adb240dd203e7ed"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallel__insert__args.html#a10277e7e627a539b9adb240dd203e7ed">nbuckets</a></td></tr>
 <tr class="separator:a10277e7e627a539b9adb240dd203e7ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a219af9adcf36f7b91aed41dc1e694187"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a219af9adcf36f7b91aed41dc1e694187"></a>
-<a class="el" href="classBarrier.html">Barrier</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>barrier</b></td></tr>
+<tr class="memitem:a219af9adcf36f7b91aed41dc1e694187"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBarrier.html">Barrier</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallel__insert__args.html#a219af9adcf36f7b91aed41dc1e694187">barrier</a></td></tr>
 <tr class="separator:a219af9adcf36f7b91aed41dc1e694187"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a219af9adcf36f7b91aed41dc1e694187"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBarrier.html">Barrier</a>* parallel_insert_args::barrier</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="insert__optimized__hash__table__test_8h.html#a9a4bd82de4ade4bd71a0ef2aede39007">insert_into_insert_optimized_hash_table()</a>, and <a class="el" href="insert__optimized__hash__table__test_8h.html#a1fd641e569e0057ad9d218ac708b3bfa">parallel_insert_to_insert_optimized_hash()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4fcf8a67d2b756ed2aa612f8479b2dde"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a>* parallel_insert_args::buffer_it</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="insert__optimized__hash__table__test_8h.html#a9a4bd82de4ade4bd71a0ef2aede39007">insert_into_insert_optimized_hash_table()</a>, and <a class="el" href="insert__optimized__hash__table__test_8h.html#a1fd641e569e0057ad9d218ac708b3bfa">parallel_insert_to_insert_optimized_hash()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="add920a80262b0f2be4e4c70b15f3f976"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classInsertOptimizedHashTable.html">InsertOptimizedHashTable</a>* parallel_insert_args::hashtable</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="insert__optimized__hash__table__test_8h.html#a9a4bd82de4ade4bd71a0ef2aede39007">insert_into_insert_optimized_hash_table()</a>, and <a class="el" href="insert__optimized__hash__table__test_8h.html#a1fd641e569e0057ad9d218ac708b3bfa">parallel_insert_to_insert_optimized_hash()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a10277e7e627a539b9adb240dd203e7ed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned parallel_insert_args::nbuckets</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="insert__optimized__hash__table__test_8h.html#a9a4bd82de4ade4bd71a0ef2aede39007">insert_into_insert_optimized_hash_table()</a>, and <a class="el" href="insert__optimized__hash__table__test_8h.html#a1fd641e569e0057ad9d218ac708b3bfa">parallel_insert_to_insert_optimized_hash()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6d5f9216173887d5ac49c3fa435c2802"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t parallel_insert_args::pid</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="insert__optimized__hash__table__test_8h.html#a9a4bd82de4ade4bd71a0ef2aede39007">insert_into_insert_optimized_hash_table()</a>, and <a class="el" href="insert__optimized__hash__table__test_8h.html#a1fd641e569e0057ad9d218ac708b3bfa">parallel_insert_to_insert_optimized_hash()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>Test/common/<a class="el" href="insert__optimized__hash__table__test_8h_source.html">insert_optimized_hash_table_test.h</a></li>
 </ul>

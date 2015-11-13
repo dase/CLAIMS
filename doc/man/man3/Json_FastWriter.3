@@ -1,4 +1,4 @@
-.TH "Json::FastWriter" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::FastWriter" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,6 +17,12 @@ Inherits \fBJson::Writer\fP\&.
 
 .in +1c
 .ti -1c
+.RI "\fBFastWriter\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~FastWriter\fP ()"
+.br
+.ti -1c
 .RI "void \fBenableYAMLCompatibility\fP ()"
 .br
 .ti -1c
@@ -28,6 +34,29 @@ Inherits \fBJson::Writer\fP\&.
 .br
 .ti -1c
 .RI "virtual std::string \fBwrite\fP (const \fBValue\fP &root)"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBwriteValue\fP (const \fBValue\fP &value)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBdocument_\fP"
+.br
+.ti -1c
+.RI "bool \fByamlCompatiblityEnabled_\fP"
+.br
+.ti -1c
+.RI "bool \fBdropNullPlaceholders_\fP"
+.br
+.ti -1c
+.RI "bool \fBomitEndingLineFeed_\fP"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -42,7 +71,61 @@ The JSON document is written in a single line\&. It is not intended for 'human' 
 .RE
 .PP
 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::FastWriter::FastWriter ()"
+
+.SS "virtual Json::FastWriter::~FastWriter ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void Json::FastWriter::dropNullPlaceholders ()"
+
+.PP
+Drop the 'null' string from the writer's output for nullValues\&. Strictly speaking, this is not valid JSON\&. But when the output is being fed to a browser's Javascript, it makes for smaller output and the browser can handle the output just fine\&. 
+.PP
+References dropNullPlaceholders_\&.
+.SS "void Json::FastWriter::enableYAMLCompatibility ()"
+
+.PP
+References yamlCompatiblityEnabled_\&.
+.SS "void Json::FastWriter::omitEndingLineFeed ()"
+
+.PP
+References omitEndingLineFeed_\&.
+.SS "std::string Json::FastWriter::write (const \fBValue\fP &root)\fC [virtual]\fP"
+
+.PP
+Implements \fBJson::Writer\fP\&.
+.PP
+References document_, omitEndingLineFeed_, and writeValue()\&.
+.PP
+Referenced by ClientListener::sendJsonPacket()\&.
+.SS "void Json::FastWriter::writeValue (const \fBValue\fP &value)\fC [private]\fP"
+
+.PP
+References Json::arrayValue, Json::Value::asBool(), Json::Value::asCString(), Json::Value::asDouble(), Json::Value::asLargestInt(), Json::Value::asLargestUInt(), Json::booleanValue, document_, dropNullPlaceholders_, Json::Value::getMemberNames(), Json::intValue, Json::nullValue, Json::objectValue, Json::realValue, Json::Value::size(), Json::stringValue, Json::Value::type(), Json::uintValue, Json::valueToQuotedString(), Json::valueToString(), and yamlCompatiblityEnabled_\&.
+.PP
+Referenced by write()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string Json::FastWriter::document_\fC [private]\fP"
+
+.PP
+Referenced by write(), and writeValue()\&.
+.SS "bool Json::FastWriter::dropNullPlaceholders_\fC [private]\fP"
+
+.PP
+Referenced by dropNullPlaceholders(), and writeValue()\&.
+.SS "bool Json::FastWriter::omitEndingLineFeed_\fC [private]\fP"
+
+.PP
+Referenced by omitEndingLineFeed(), and write()\&.
+.SS "bool Json::FastWriter::yamlCompatiblityEnabled_\fC [private]\fP"
+
+.PP
+Referenced by enableYAMLCompatibility(), and writeValue()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

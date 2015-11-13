@@ -35,8 +35,10 @@
 #include "../../common/Expression/qnode.h"
 #include "../../logical_operator/logical_operator.h"
 #include "../../common/expression/expr_node.h"
+#include "../../logical_operator/logical_equal_join.h"
 using claims::logical_operator::LogicalOperator;
 using claims::common::ExprNode;
+using claims::logical_operator::LogicalEqualJoin;
 using std::vector;
 using std::pair;
 using std::map;
@@ -208,6 +210,7 @@ class SemanticContext {
   void PrintContext(string flag);
   SQLClauseType clause_type_;
   bool have_agg;
+  bool select_expr_have_agg;
   vector<AstNode*> select_expr_;
 
  private:
@@ -241,13 +244,33 @@ class PushDownConditionContext {
   std::vector<SubExprInfo*> sub_expr_info_;
   set<string> from_tables_;
 };
-
+class SelectAliasSolver {
+ public:
+  SelectAliasSolver(vector<AstNode*>& select_expr)
+      : select_expr_(select_expr), new_node_(NULL), old_node_(NULL) {}
+  void DeleteOldNode() {
+    if (NULL != old_node_) {
+      delete old_node_;
+      old_node_ = NULL;
+    }
+  }
+  void SetNewNode(AstNode*& node) {
+    if (NULL != new_node_) {
+      node = new_node_;
+      new_node_ = NULL;
+    }
+  }
+  vector<AstNode*> select_expr_;
+  AstNode* new_node_;
+  AstNode* old_node_;
+};
 /**
  * @brief The basic data structure of other AST nodes.
  */
 class AstNode {
  public:
   explicit AstNode(AstNodeType ast_node_type);
+  explicit AstNode(AstNode* node);
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
   virtual ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
@@ -274,6 +297,18 @@ class AstNode {
                                  LogicalOperator* child_logic_plan) {
     return eOK;
   }
+  ErrorNo GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
+                           LogicalOperator* args_lplan,
+                           LogicalOperator* next_lplan,
+                           const set<AstNode*>& equal_join_condition);
+  ErrorNo GetFilterCondition(vector<ExprNode*>& condition,
+                             const set<AstNode*>& normal_condition,
+                             LogicalOperator* logic_plan);
+  virtual ErrorNo SolveSelectAlias(
+      SelectAliasSolver* const select_alias_solver) {
+    return eOK;
+  }
+  virtual AstNode* AstNodeCopy() { return NULL; }
   AstNodeType ast_node_type_;
   string expr_str_;
 };

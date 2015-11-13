@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/partition_functions.h Source File</title>
+<title>Claims: common/partition_functions.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('partition__functions_8h_source.html','
 <div class="title">partition_functions.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="partition__functions_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * partition_functions.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Sep 22, 2014</span></div>
@@ -121,47 +121,60 @@ $(document).ready(function(){initNavTree('partition__functions_8h_source.html','
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;boost/serialization/utility.hpp&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structpartition__schema.html">   15</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structpartition__schema.html">partition_schema</a>{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">enum</span> partition_mode{hash,broadcase,range};</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    partition_mode mode;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">unsigned</span> partition_key_index;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">static</span> <a class="code" href="structpartition__schema.html">partition_schema</a> set_hash_partition(<span class="keywordtype">int</span> _partition_key_index=0){</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5ab1c92c358e53e2ebd18707a37d4c2371">   16</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_mode</a>{<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">hash</a>,<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">broadcase</a>,<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5ab1c92c358e53e2ebd18707a37d4c2371">range</a>};</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">   17</a></span>&#160;    <a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_mode</a> <a class="code" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">   18</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a421251c985d2c3af249cc3e3c577aeac">   19</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="structpartition__schema.html">partition_schema</a> <a class="code" href="structpartition__schema.html#a421251c985d2c3af249cc3e3c577aeac">set_hash_partition</a>(<span class="keywordtype">int</span> _partition_key_index=0){</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="structpartition__schema.html">partition_schema</a> ret;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        ret.mode=hash;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        ret.partition_key_index=_partition_key_index;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        ret.<a class="code" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>=<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">hash</a>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        ret.<a class="code" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>=_partition_key_index;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    }</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">static</span> <a class="code" href="structpartition__schema.html">partition_schema</a> set_broadcast_partition(){</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structpartition__schema.html#ab4012c2d23f1eb20671f18d4c33bf293">   25</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="structpartition__schema.html">partition_schema</a> <a class="code" href="structpartition__schema.html#ab4012c2d23f1eb20671f18d4c33bf293">set_broadcast_partition</a>(){</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <a class="code" href="structpartition__schema.html">partition_schema</a> ret;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        ret.mode=broadcase;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        ret.partition_key_index=0;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        ret.<a class="code" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>=<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">broadcase</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        ret.<a class="code" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>=0;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    }</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">static</span> <a class="code" href="structpartition__schema.html">partition_schema</a> set_range_partition(<span class="keywordtype">int</span> _number_of_ranges){</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a9f7db96443c0d3d0e7f3d0dd9c78bd1c">   31</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="structpartition__schema.html">partition_schema</a> <a class="code" href="structpartition__schema.html#a9f7db96443c0d3d0e7f3d0dd9c78bd1c">set_range_partition</a>(<span class="keywordtype">int</span> _number_of_ranges){</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        assert(<span class="keyword">false</span>);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="structpartition__schema.html">partition_schema</a>();</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">bool</span> isHashPartition()<span class="keyword">const</span>{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> mode==hash;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a99b3ef77114b2168b089c2af5ed34f4d">   35</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structpartition__schema.html#a99b3ef77114b2168b089c2af5ed34f4d">isHashPartition</a>()<span class="keyword">const</span>{</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>==<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">hash</a>;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">bool</span> isBoardcastPartition()<span class="keyword">const</span>{</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">return</span> mode==broadcase;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a569175983e00f592b76278d58f34d200">   38</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structpartition__schema.html#a569175983e00f592b76278d58f34d200">isBoardcastPartition</a>()<span class="keyword">const</span>{</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a>==<a class="code" href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">broadcase</a>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span>boost::serialization::access;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structpartition__schema.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">   42</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="structpartition__schema.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">boost::serialization::access</a>;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> serialize(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version){</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        ar &amp; mode &amp; partition_key_index;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structpartition__schema.html#a8ee2f4918b63ab61b2e40d9e891ea568">   44</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="structpartition__schema.html#a8ee2f4918b63ab61b2e40d9e891ea568">serialize</a>(Archive &amp; ar, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> version){</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        ar &amp; <a class="code" href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">mode</a> &amp; <a class="code" href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_key_index</a>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* PARTITION_FUNCTIONS_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="structpartition__schema_html_af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda"><div class="ttname"><a href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5aa57c24e38f3695512388211af7d2dfda">partition_schema::hash</a></div><div class="ttdef"><b>Definition:</b> partition_functions.h:16</div></div>
+<div class="ttc" id="structpartition__schema_html_a8ee2f4918b63ab61b2e40d9e891ea568"><div class="ttname"><a href="structpartition__schema.html#a8ee2f4918b63ab61b2e40d9e891ea568">partition_schema::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;ar, const unsigned int version)</div><div class="ttdef"><b>Definition:</b> partition_functions.h:44</div></div>
+<div class="ttc" id="structpartition__schema_html_ab4012c2d23f1eb20671f18d4c33bf293"><div class="ttname"><a href="structpartition__schema.html#ab4012c2d23f1eb20671f18d4c33bf293">partition_schema::set_broadcast_partition</a></div><div class="ttdeci">static partition_schema set_broadcast_partition()</div><div class="ttdef"><b>Definition:</b> partition_functions.h:25</div></div>
+<div class="ttc" id="structpartition__schema_html_a202631b9d2e6038365d3e63de141f6ed"><div class="ttname"><a href="structpartition__schema.html#a202631b9d2e6038365d3e63de141f6ed">partition_schema::mode</a></div><div class="ttdeci">partition_mode mode</div><div class="ttdef"><b>Definition:</b> partition_functions.h:17</div></div>
 <div class="ttc" id="structpartition__schema_html"><div class="ttname"><a href="structpartition__schema.html">partition_schema</a></div><div class="ttdef"><b>Definition:</b> partition_functions.h:15</div></div>
+<div class="ttc" id="structpartition__schema_html_af600214472b5dbe28a88c40de36decc5"><div class="ttname"><a href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5">partition_schema::partition_mode</a></div><div class="ttdeci">partition_mode</div><div class="ttdef"><b>Definition:</b> partition_functions.h:16</div></div>
+<div class="ttc" id="structpartition__schema_html_a9f7db96443c0d3d0e7f3d0dd9c78bd1c"><div class="ttname"><a href="structpartition__schema.html#a9f7db96443c0d3d0e7f3d0dd9c78bd1c">partition_schema::set_range_partition</a></div><div class="ttdeci">static partition_schema set_range_partition(int _number_of_ranges)</div><div class="ttdef"><b>Definition:</b> partition_functions.h:31</div></div>
+<div class="ttc" id="structpartition__schema_html_a99b3ef77114b2168b089c2af5ed34f4d"><div class="ttname"><a href="structpartition__schema.html#a99b3ef77114b2168b089c2af5ed34f4d">partition_schema::isHashPartition</a></div><div class="ttdeci">bool isHashPartition() const </div><div class="ttdef"><b>Definition:</b> partition_functions.h:35</div></div>
+<div class="ttc" id="structpartition__schema_html_a421251c985d2c3af249cc3e3c577aeac"><div class="ttname"><a href="structpartition__schema.html#a421251c985d2c3af249cc3e3c577aeac">partition_schema::set_hash_partition</a></div><div class="ttdeci">static partition_schema set_hash_partition(int _partition_key_index=0)</div><div class="ttdef"><b>Definition:</b> partition_functions.h:19</div></div>
+<div class="ttc" id="structpartition__schema_html_af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295"><div class="ttname"><a href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5a2c90099e49e0d6bd664957ca6968a295">partition_schema::broadcase</a></div><div class="ttdef"><b>Definition:</b> partition_functions.h:16</div></div>
+<div class="ttc" id="structpartition__schema_html_af600214472b5dbe28a88c40de36decc5ab1c92c358e53e2ebd18707a37d4c2371"><div class="ttname"><a href="structpartition__schema.html#af600214472b5dbe28a88c40de36decc5ab1c92c358e53e2ebd18707a37d4c2371">partition_schema::range</a></div><div class="ttdef"><b>Definition:</b> partition_functions.h:16</div></div>
+<div class="ttc" id="structpartition__schema_html_a569175983e00f592b76278d58f34d200"><div class="ttname"><a href="structpartition__schema.html#a569175983e00f592b76278d58f34d200">partition_schema::isBoardcastPartition</a></div><div class="ttdeci">bool isBoardcastPartition() const </div><div class="ttdef"><b>Definition:</b> partition_functions.h:38</div></div>
+<div class="ttc" id="structpartition__schema_html_a5bec669d65e189c5c5cbc5826e2d2e51"><div class="ttname"><a href="structpartition__schema.html#a5bec669d65e189c5c5cbc5826e2d2e51">partition_schema::partition_key_index</a></div><div class="ttdeci">unsigned partition_key_index</div><div class="ttdef"><b>Definition:</b> partition_functions.h:18</div></div>
+<div class="ttc" id="structpartition__schema_html_ac98d07dd8f7b70e16ccb9a01abf56b9c"><div class="ttname"><a href="structpartition__schema.html#ac98d07dd8f7b70e16ccb9a01abf56b9c">partition_schema::access</a></div><div class="ttdeci">friend class boost::serialization::access</div><div class="ttdef"><b>Definition:</b> partition_functions.h:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><b>partition_functions.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="partition__functions_8h.html">partition_functions.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

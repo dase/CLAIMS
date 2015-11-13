@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/error_no.h Source File</title>
+<title>Claims: common/error_no.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('error__no_8h_source.html','');});
 <div class="title">error_no.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="error__no_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright [2012-2015] DaSE@ECNU</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</span></div>
@@ -136,33 +136,40 @@ $(document).ready(function(){initNavTree('error__no_8h_source.html','');});
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#ifndef COMMON_ERROR_NO_H_</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define COMMON_ERROR_NO_H_</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="error__no_8h.html#a62809723a5232d19dd51d1b86fbe891b">   31</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define COMMON_ERROR_NO_H_</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;./error_define.h&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="error__define_8h.html">./error_define.h</a>&quot;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span>claims {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>common {</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* CStrError(<span class="keywordtype">int</span> errorno);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="namespaceclaims_1_1common.html#a3ad792fe2c438ec6f7212a8a8450ee0a">CStrError</a>(<span class="keywordtype">int</span> errorno);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">static</span> <span class="keyword">struct </span>ErrorInit {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  ErrorInit();</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="structclaims_1_1common_1_1ErrorInit.html">   39</a></span>&#160;<span class="keyword">static</span> <span class="keyword">struct </span><a class="code" href="structclaims_1_1common_1_1ErrorInit.html">ErrorInit</a> {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <a class="code" href="structclaims_1_1common_1_1ErrorInit.html#a9ec5a678dbc78e4a8ba13ffa4d96e581">ErrorInit</a>();</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> DefineErrorAndMessage(<span class="keywordtype">int</span> value, <span class="keyword">const</span> <span class="keywordtype">char</span>* messege) {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    kErrorMessage[-value] = messege;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structclaims_1_1common_1_1ErrorInit.html#aef75c4a96ce48420dbbe397dc8f3d62c">   42</a></span>&#160;  <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="structclaims_1_1common_1_1ErrorInit.html#aef75c4a96ce48420dbbe397dc8f3d62c">DefineErrorAndMessage</a>(<span class="keywordtype">int</span> value, <span class="keyword">const</span> <span class="keywordtype">char</span>* messege) {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="namespaceclaims_1_1common.html#a38b6efb616f1ee8b49740e1aadcd39b3">kErrorMessage</a>[-value] = messege;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}local_init;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}<a class="code" href="namespaceclaims_1_1common.html#a554618b3340faef6f9b2df20c382445b">local_init</a>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}  <span class="comment">// end namespace common</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}  <span class="comment">// end namespace claims</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif  // COMMON_ERROR_NO_H_</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a554618b3340faef6f9b2df20c382445b"><div class="ttname"><a href="namespaceclaims_1_1common.html#a554618b3340faef6f9b2df20c382445b">claims::common::local_init</a></div><div class="ttdeci">static struct claims::common::ErrorInit local_init</div></div>
+<div class="ttc" id="structclaims_1_1common_1_1ErrorInit_html_a9ec5a678dbc78e4a8ba13ffa4d96e581"><div class="ttname"><a href="structclaims_1_1common_1_1ErrorInit.html#a9ec5a678dbc78e4a8ba13ffa4d96e581">claims::common::ErrorInit::ErrorInit</a></div><div class="ttdeci">ErrorInit()</div><div class="ttdef"><b>Definition:</b> error_no.cpp:50</div></div>
+<div class="ttc" id="structclaims_1_1common_1_1ErrorInit_html"><div class="ttname"><a href="structclaims_1_1common_1_1ErrorInit.html">claims::common::ErrorInit</a></div><div class="ttdef"><b>Definition:</b> error_no.h:39</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a3ad792fe2c438ec6f7212a8a8450ee0a"><div class="ttname"><a href="namespaceclaims_1_1common.html#a3ad792fe2c438ec6f7212a8a8450ee0a">claims::common::CStrError</a></div><div class="ttdeci">const char * CStrError(int errorno)</div><div class="ttdef"><b>Definition:</b> error_no.cpp:36</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a38b6efb616f1ee8b49740e1aadcd39b3"><div class="ttname"><a href="namespaceclaims_1_1common.html#a38b6efb616f1ee8b49740e1aadcd39b3">claims::common::kErrorMessage</a></div><div class="ttdeci">static const char * kErrorMessage[kErrorMaxNumber]</div><div class="ttdef"><b>Definition:</b> error_define.h:42</div></div>
+<div class="ttc" id="error__define_8h_html"><div class="ttname"><a href="error__define_8h.html">error_define.h</a></div></div>
+<div class="ttc" id="structclaims_1_1common_1_1ErrorInit_html_aef75c4a96ce48420dbbe397dc8f3d62c"><div class="ttname"><a href="structclaims_1_1common_1_1ErrorInit.html#aef75c4a96ce48420dbbe397dc8f3d62c">claims::common::ErrorInit::DefineErrorAndMessage</a></div><div class="ttdeci">static void DefineErrorAndMessage(int value, const char *messege)</div><div class="ttdef"><b>Definition:</b> error_no.h:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><b>error_no.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="error__no_8h.html">error_no.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

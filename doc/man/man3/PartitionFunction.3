@@ -1,4 +1,4 @@
-.TH "PartitionFunction" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionFunction" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ PartitionFunction \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <hash\&.h>\fP
 .PP
 Inherited by \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBRoundRobinPartitionFunction\fP, and \fBUniformRangePartitionFunction\fP\&.
 .SS "Public Types"
@@ -25,7 +27,10 @@ Inherited by \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashF
 .RI "\fBPartitionFunction\fP (int min, int max, unsigned int k)"
 .br
 .ti -1c
-.RI "virtual PartitionStyle \fBgetPartitionFashion\fP () const =0"
+.RI "virtual \fB~PartitionFunction\fP ()"
+.br
+.ti -1c
+.RI "virtual \fBPartitionStyle\fP \fBgetPartitionFashion\fP () const =0"
 .br
 .ti -1c
 .RI "virtual unsigned int \fBget_partition_value\fP (const int &value) const =0"
@@ -70,6 +75,19 @@ Inherited by \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashF
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBPartitionFunction::PartitionStyle\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIhash_f \fP\fP
+.TP
+\fB\fIrange_f \fP\fP
+.TP
+\fB\fIround_robin_f \fP\fP
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "PartitionFunction::PartitionFunction ()\fC [inline]\fP"
@@ -85,8 +103,20 @@ Creates a new hashing object, rounding the number of buckets \fIk\fP to the next
 .RE
 .PP
 
+.SS "PartitionFunction::PartitionFunction (intmin, intmax, unsigned intk)"
+
+.PP
+References getlogarithm(), and k_\&.
+.SS "virtual PartitionFunction::~PartitionFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
+.SS "bool PartitionFunction::equal (\fBPartitionFunction\fP *function_) const"
+
+.PP
+References getNumberOfPartitions(), and getPartitionFashion()\&.
+.PP
+Referenced by claims::logical_operator::Requirement::requireNetworkTransfer()\&.
 .SS "virtual unsigned int PartitionFunction::get_partition_value (const int &value) const\fC [pure virtual]\fP"
 Returns the bucket number $n\in[0,k)$ for this \fIvalue\fP\&. 
 .PP
@@ -103,13 +133,51 @@ Bucket number\&.
 
 .PP
 Implemented in \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBUniformRangePartitionFunction\fP, and \fBRoundRobinPartitionFunction\fP\&.
+.PP
+Referenced by OperateInt::getPartitionValue(), OperateFloat::getPartitionValue(), OperateDouble::getPartitionValue(), OperateULong::getPartitionValue(), OperateSmallInt::getPartitionValue(), OperateUSmallInt::getPartitionValue(), OperateDecimal::getPartitionValue(), and OperateBool::getPartitionValue()\&.
+.SS "virtual unsigned int PartitionFunction::get_partition_value (const double &value) const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBUniformRangePartitionFunction\fP, and \fBRoundRobinPartitionFunction\fP\&.
+.SS "virtual unsigned int PartitionFunction::get_partition_value (const unsigned long &) const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBUniformRangePartitionFunction\fP, and \fBRoundRobinPartitionFunction\fP\&.
+.SS "virtual unsigned int PartitionFunction::getNumberOfPartitions () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBUniformRangePartitionFunction\fP, and \fBRoundRobinPartitionFunction\fP\&.
+.PP
+Referenced by equal(), Partitioner::getNumberOfPartitions(), claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan(), insert_into_hash_table(), and insert_into_hash_table_from_projection()\&.
+.SS "virtual \fBPartitionStyle\fP PartitionFunction::getPartitionFashion () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBoostHashFunctin\fP, \fBGeneralModuloFunction\fP, \fBModuloHashFunction\fP, \fBUniformRangePartitionFunction\fP, and \fBRoundRobinPartitionFunction\fP\&.
+.PP
+Referenced by equal(), Partitioner::getPartitionFashion(), and claims::logical_operator::PlanPartitioner::GetPartitionStyle()\&.
+.SS "template<class Archive > void PartitionFunction::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+References k_, max_, and min_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
 .SH "Member Data Documentation"
 .PP 
 .SS "unsigned long int PartitionFunction::k_\fC [protected]\fP"
 $ \_k=log_2(k) $, where $k$ is number of buckets 
 .PP
-Referenced by UniformRangePartitionFunction::get_partition_value(), and ModuloHashFunction::get_partition_value()\&.
+Referenced by UniformRangePartitionFunction::get_partition_value(), ModuloHashFunction::get_partition_value(), UniformRangePartitionFunction::getNumberOfPartitions(), ModuloHashFunction::getNumberOfPartitions(), ModuloHashFunction::ModuloHashFunction(), PartitionFunction(), and serialize()\&.
+.SS "int PartitionFunction::max_\fC [protected]\fP"
+
+.PP
+Referenced by UniformRangePartitionFunction::get_partition_value(), and serialize()\&.
+.SS "int PartitionFunction::min_\fC [protected]\fP"
+
+.PP
+Referenced by UniformRangePartitionFunction::get_partition_value(), ModuloHashFunction::get_partition_value(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

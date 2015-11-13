@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/lock.h Source File</title>
+<title>Claims: utility/lock.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('lock_8h_source.html','');});
 <div class="title">lock.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="lock_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * lock.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Feb 20, 2014</span></div>
@@ -125,55 +125,55 @@ $(document).ready(function(){initNavTree('lock_8h_source.html','');});
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classLock.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classLock.html">Lock</a></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    pthread_mutex_t m;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classLock.html#a627a70773938512e9f1882609fba4e95">   20</a></span>&#160;    pthread_mutex_t <a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classLock.html">Lock</a>() {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        pthread_mutex_init(&amp;m, NULL);</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classLock.html#a9944623567d8138b95e74fadc7190adb">   22</a></span>&#160;    <a class="code" href="classLock.html#a9944623567d8138b95e74fadc7190adb">Lock</a>() {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        pthread_mutex_init(&amp;<a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>, <a class="code" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>);</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    }</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    ~<a class="code" href="classLock.html">Lock</a>() {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        pthread_mutex_destroy(&amp;m);</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classLock.html#a7ab6d9485c8665bb3643710432882971">   26</a></span>&#160;    <a class="code" href="classLock.html#a7ab6d9485c8665bb3643710432882971">~Lock</a>() {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        pthread_mutex_destroy(&amp;<a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    }</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> acquire() {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        pthread_mutex_lock(&amp;m);</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">   30</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">acquire</a>() {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        pthread_mutex_lock(&amp;<a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    }</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> try_acquire(){</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">return</span> pthread_mutex_trylock(&amp;m)==0;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classLock.html#a79afa8ec0e2aaccb354d9c73c2232b0d">   34</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classLock.html#a79afa8ec0e2aaccb354d9c73c2232b0d">try_acquire</a>(){</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">return</span> pthread_mutex_trylock(&amp;<a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>)==0;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> release() {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        pthread_mutex_unlock(&amp;m);</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">   37</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">release</a>() {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        pthread_mutex_unlock(&amp;<a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> destroy() {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        pthread_mutex_destroy(&amp;m);</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classLock.html#aa598d78a0ef439e96dd11b6e6dd690a5">   41</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classLock.html#aa598d78a0ef439e96dd11b6e6dd690a5">destroy</a>() {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        pthread_mutex_destroy(&amp;<a class="code" href="classLock.html#a627a70773938512e9f1882609fba4e95">m</a>);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classsemaphore.html">   46</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsemaphore.html">semaphore</a></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    sem_t sem;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">   49</a></span>&#160;    sem_t <a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a>(<span class="keywordtype">int</span> initialValue=0)</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classsemaphore.html#ab400df2bdabcc0a359fe67dc9586691f">   51</a></span>&#160;    <a class="code" href="classsemaphore.html#ab400df2bdabcc0a359fe67dc9586691f">semaphore</a>(<span class="keywordtype">int</span> initialValue=0)</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        sem_init(&amp;sem, 0, initialValue);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        sem_init(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>, 0, initialValue);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> set_value(<span class="keywordtype">int</span> value){</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        sem_init(&amp;sem, 0, value);</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classsemaphore.html#aae7af08f4ea7ef166dee6dca6bca893a">   56</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsemaphore.html#aae7af08f4ea7ef166dee6dca6bca893a">set_value</a>(<span class="keywordtype">int</span> value){</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        sem_init(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>, 0, value);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> post(<span class="keywordtype">int</span> times=1){</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14">   60</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14">post</a>(<span class="keywordtype">int</span> times=1){</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0;i&lt;times;i++){</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            sem_post(&amp;sem);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            sem_post(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>);</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">void</span> wait()</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classsemaphore.html#a4a9497728a40405ad5365f84ff455dba">   66</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsemaphore.html#a4a9497728a40405ad5365f84ff455dba">wait</a>()</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        sem_wait(&amp;sem);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        sem_wait(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="comment">/*</span></div>
@@ -182,120 +182,120 @@ $(document).ready(function(){initNavTree('lock_8h_source.html','');});
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">     * unsuccessful, the state of the lock shall be unchanged and the function shall</span></div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">     * return false.</span></div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">bool</span> timed_wait(<span class="keywordtype">int</span> millisecond){</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classsemaphore.html#abafe7b6a56a0c3664f53fa59a93ccecc">   77</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classsemaphore.html#abafe7b6a56a0c3664f53fa59a93ccecc">timed_wait</a>(<span class="keywordtype">int</span> millisecond){</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        timespec time;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        time.tv_sec=millisecond/1000;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        millisecond=millisecond%(1000);</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        time.tv_nsec=millisecond*(long)1000*1000;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> sem_timedwait(&amp;sem,&amp;time)==0;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> sem_timedwait(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>,&amp;time)==0;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">bool</span> try_wait(){</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> sem_trywait(&amp;sem)==0;<span class="comment">//if trywait() is successful, return 0, otherwise return -1.</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classsemaphore.html#a7d8acb08b6e30aeadd7af897371907bb">   85</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classsemaphore.html#a7d8acb08b6e30aeadd7af897371907bb">try_wait</a>(){</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> sem_trywait(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>)==0;<span class="comment">//if trywait() is successful, return 0, otherwise return -1.</span></div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">void</span> destroy(){</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        sem_destroy(&amp;sem);</div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classsemaphore.html#a72ea11635fea772cf24b8e44bbca4228">   89</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsemaphore.html#a72ea11635fea772cf24b8e44bbca4228">destroy</a>(){</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        sem_destroy(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>);</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    }</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">int</span> get_value() {</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classsemaphore.html#a3ec2918ab24b1313ef5a64cc1d1bfc1f">   92</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classsemaphore.html#a3ec2918ab24b1313ef5a64cc1d1bfc1f">get_value</a>() {</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordtype">int</span> ret;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        sem_getvalue(&amp;sem,&amp;ret);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        sem_getvalue(&amp;<a class="code" href="classsemaphore.html#afd045c9591ac543a49877475327671c3">sem</a>,&amp;ret);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    }</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;};</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
 <div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classBarrier.html">   99</a></span>&#160;<span class="keyword">class </span><a class="code" href="classBarrier.html">Barrier</a> {</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <a class="code" href="classBarrier.html">Barrier</a>(<span class="keywordtype">int</span> nThreads=0){</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        m_nThreads = nThreads;</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classBarrier.html#a3d3b46a8616a6fe56677d2e14965f7b2">  101</a></span>&#160;    <a class="code" href="classBarrier.html#a3d3b46a8616a6fe56677d2e14965f7b2">Barrier</a>(<span class="keywordtype">int</span> nThreads=0){</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a> = nThreads;</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordtype">int</span> ret;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        ret = pthread_mutex_init(&amp;m_l_SyncLock, NULL);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        ret = pthread_mutex_init(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>, <a class="code" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>);</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keywordflow">if</span>(ret!=0)</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            printf(<span class="stringliteral">&quot;pthread_mutex_init failed at barrier creation.\n&quot;</span>);</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">//      printf(&quot;the init of barrier\n&quot;);</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        ret = pthread_cond_init(&amp;m_cv_SyncCV, NULL);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        ret = pthread_cond_init(&amp;<a class="code" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">m_cv_SyncCV</a>, <a class="code" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>);</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordflow">if</span>(ret!=0)</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            printf(<span class="stringliteral">&quot;pthread_cond_init failed at barrier creation.\n&quot;</span>);</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        m_nSyncCount = 0;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a> = 0;</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">void</span> RegisterOneThread(){</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        pthread_mutex_lock(&amp;m_l_SyncLock);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        m_nThreads++;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        pthread_mutex_unlock(&amp;m_l_SyncLock);</div>
+<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="classBarrier.html#a5d9133ad716b3b82f0628795afecf152">  114</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBarrier.html#a5d9133ad716b3b82f0628795afecf152">RegisterOneThread</a>(){</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        pthread_mutex_lock(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>++;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        pthread_mutex_unlock(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">//      printf(&quot;Barrier:: new thread registered!\n\n\n&quot;);</span></div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    }</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">void</span> UnregisterOneThread(){</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        pthread_mutex_lock(&amp;m_l_SyncLock);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        m_nThreads--;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        assert(m_nThreads&gt;=0);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordflow">if</span>(m_nThreads&lt;=m_nSyncCount){</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            pthread_cond_broadcast(&amp;m_cv_SyncCV);</div>
+<div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="classBarrier.html#a5c42864f1aaaf48dcf64aedef2cbb685">  120</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBarrier.html#a5c42864f1aaaf48dcf64aedef2cbb685">UnregisterOneThread</a>(){</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        pthread_mutex_lock(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>--;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        assert(<a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>&gt;=0);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>&lt;=<a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a>){</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            pthread_cond_broadcast(&amp;<a class="code" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">m_cv_SyncCV</a>);</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        }</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        pthread_mutex_unlock(&amp;m_l_SyncLock);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        pthread_mutex_unlock(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    }</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classBarrier.html">Barrier</a>() {</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        pthread_mutex_destroy(&amp;m_l_SyncLock);</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        pthread_cond_destroy(&amp;m_cv_SyncCV);</div>
+<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="classBarrier.html#aa913b6dd26448ae765d581a276749860">  130</a></span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classBarrier.html#aa913b6dd26448ae765d581a276749860">~Barrier</a>() {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        pthread_mutex_destroy(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        pthread_cond_destroy(&amp;<a class="code" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">m_cv_SyncCV</a>);</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    }</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordtype">void</span> setEmpty(){</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        m_nThreads=0;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        m_nSyncCount=0;</div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classBarrier.html#a220b89965fadc55df3e63dfb09984d90">  134</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBarrier.html#a220b89965fadc55df3e63dfb09984d90">setEmpty</a>(){</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>=0;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a>=0;</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    }</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keywordtype">void</span> reset(){</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        m_nSyncCount=0;</div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classBarrier.html#a1cd9f4447e17de7300a3555b61aff0f1">  139</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBarrier.html#a1cd9f4447e17de7300a3555b61aff0f1">reset</a>(){</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a>=0;</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    }</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="comment">/*</span></div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment">     * One must call setEmpty() before the second&#39;s calling of Arrive()</span></div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordtype">void</span> Arrive(){</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        pthread_mutex_lock(&amp;m_l_SyncLock);</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        m_nSyncCount++;</div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classBarrier.html#aaa9589c94e6d633070673eb389f23b20">  145</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBarrier.html#aaa9589c94e6d633070673eb389f23b20">Arrive</a>(){</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        pthread_mutex_lock(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a>++;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">//      printf(&quot;cpu processor test: %d\n&quot;,m_nSyncCount);</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">if</span>(m_nSyncCount &gt;= m_nThreads) {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a> &gt;= <a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>) {</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">//          printf(&quot;arrive the nthreads\n&quot;);</span></div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">//          printf(&quot;arrive the broadcast\n&quot;);</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            pthread_cond_broadcast(&amp;m_cv_SyncCV);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            pthread_cond_broadcast(&amp;<a class="code" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">m_cv_SyncCV</a>);</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        }</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="comment">//          printf(&quot;arrive the wait\n&quot;);</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            pthread_cond_wait(&amp;m_cv_SyncCV, &amp;m_l_SyncLock);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            pthread_cond_wait(&amp;<a class="code" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">m_cv_SyncCV</a>, &amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        }</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        pthread_mutex_unlock(&amp;m_l_SyncLock);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        pthread_mutex_unlock(&amp;<a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>);</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">int</span>             m_nThreads;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    pthread_mutex_t m_l_SyncLock;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    pthread_cond_t  m_cv_SyncCV;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keyword">volatile</span> <span class="keywordtype">int</span>    m_nSyncCount;</div>
+<div class="line"><a name="l00164"></a><span class="lineno"><a class="line" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">  164</a></span>&#160;    <span class="keywordtype">int</span>             <a class="code" href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">m_nThreads</a>;</div>
+<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">  165</a></span>&#160;    pthread_mutex_t <a class="code" href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">m_l_SyncLock</a>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">  166</a></span>&#160;    pthread_cond_t  <a class="code" href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">m_cv_SyncCV</a>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">  167</a></span>&#160;    <span class="keyword">volatile</span> <span class="keywordtype">int</span>    <a class="code" href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">m_nSyncCount</a>;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;};</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;</div>
 <div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="classSpineLock.html">  173</a></span>&#160;<span class="keyword">class </span><a class="code" href="classSpineLock.html">SpineLock</a> {</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <a class="code" href="classSpineLock.html">SpineLock</a>() : _l(0) { }</div>
+<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="classSpineLock.html#a1b7dd38819f7f76b1c2766f7546fdf33">  175</a></span>&#160;    <a class="code" href="classSpineLock.html#a1b7dd38819f7f76b1c2766f7546fdf33">SpineLock</a>() : <a class="code" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">_l</a>(0) { }</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
 <div class="line"><a name="l00178"></a><span class="lineno"><a class="line" href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d">  178</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d">acquire</a>()</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        {</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            <span class="keywordflow">while</span>(tas(&amp;_l)) {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            <span class="keywordflow">while</span>(<a class="code" href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5">tas</a>(&amp;<a class="code" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">_l</a>)) {</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">#if defined(__i386__) || defined(__x86_64__)</span></div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="preprocessor"></span>                __asm__ __volatile__ (<span class="stringliteral">&quot;pause\n&quot;</span>);</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="preprocessor"></span>            }</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        }</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">bool</span> try_lock()</div>
+<div class="line"><a name="l00186"></a><span class="lineno"><a class="line" href="classSpineLock.html#a995cd2d86c5f85de165d8edcede20135">  186</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="classSpineLock.html#a995cd2d86c5f85de165d8edcede20135">try_lock</a>()</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            <span class="keywordflow">return</span> !tas(&amp;_l);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            <span class="keywordflow">return</span> !<a class="code" href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5">tas</a>(&amp;<a class="code" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">_l</a>);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        }</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">int</span> fakelock()</div>
+<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="classSpineLock.html#af0c3add3737009a83eb601623eb47315">  190</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classSpineLock.html#af0c3add3737009a83eb601623eb47315">fakelock</a>()</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        {</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            <span class="keywordflow">return</span> _l==0?0:1;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">_l</a>==0?0:1;</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        }</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">int</span> getvalue()</div>
+<div class="line"><a name="l00194"></a><span class="lineno"><a class="line" href="classSpineLock.html#ae0b422da676eb08e0f7bd63f475ec39a">  194</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classSpineLock.html#ae0b422da676eb08e0f7bd63f475ec39a">getvalue</a>()</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        {</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            <span class="comment">//return _l==0?0:1;</span></div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            <span class="keywordflow">return</span> 0;</div>
@@ -303,11 +303,11 @@ $(document).ready(function(){initNavTree('lock_8h_source.html','');});
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;</div>
 <div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="classSpineLock.html#abef911b1f34767662e4adc11536f7148">  201</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classSpineLock.html#abef911b1f34767662e4adc11536f7148">release</a>()</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        {</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            _l = 0;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            <a class="code" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">_l</a> = 0;</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        }</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">int</span> tas(<span class="keyword">volatile</span> <span class="keywordtype">char</span>* lock)</div>
+<div class="line"><a name="l00207"></a><span class="lineno"><a class="line" href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5">  207</a></span>&#160;        <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5">tas</a>(<span class="keyword">volatile</span> <span class="keywordtype">char</span>* lock)</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        {</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="keyword">register</span> <span class="keywordtype">char</span> res = 1;</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#if defined(__i386__) || defined(__x86_64__)</span></div>
@@ -328,22 +328,56 @@ $(document).ready(function(){initNavTree('lock_8h_source.html','');});
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="preprocessor"></span>            <span class="keywordflow">return</span> res;</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        }</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <span class="keyword">volatile</span> <span class="keywordtype">char</span> _l ;<span class="comment">//__attribute__((aligned(64)))</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">  228</a></span>&#160;        <span class="keyword">volatile</span> <span class="keywordtype">char</span> <a class="code" href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">_l</a> ;<span class="comment">//__attribute__((aligned(64)))</span></div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;};</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LOCK_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classsemaphore_html_a3ec2918ab24b1313ef5a64cc1d1bfc1f"><div class="ttname"><a href="classsemaphore.html#a3ec2918ab24b1313ef5a64cc1d1bfc1f">semaphore::get_value</a></div><div class="ttdeci">int get_value()</div><div class="ttdef"><b>Definition:</b> lock.h:92</div></div>
+<div class="ttc" id="classBarrier_html_a3d3b46a8616a6fe56677d2e14965f7b2"><div class="ttname"><a href="classBarrier.html#a3d3b46a8616a6fe56677d2e14965f7b2">Barrier::Barrier</a></div><div class="ttdeci">Barrier(int nThreads=0)</div><div class="ttdef"><b>Definition:</b> lock.h:101</div></div>
+<div class="ttc" id="classLock_html_a7ab6d9485c8665bb3643710432882971"><div class="ttname"><a href="classLock.html#a7ab6d9485c8665bb3643710432882971">Lock::~Lock</a></div><div class="ttdeci">~Lock()</div><div class="ttdef"><b>Definition:</b> lock.h:26</div></div>
+<div class="ttc" id="classsemaphore_html_a72ea11635fea772cf24b8e44bbca4228"><div class="ttname"><a href="classsemaphore.html#a72ea11635fea772cf24b8e44bbca4228">semaphore::destroy</a></div><div class="ttdeci">void destroy()</div><div class="ttdef"><b>Definition:</b> lock.h:89</div></div>
+<div class="ttc" id="classsemaphore_html_a4a9497728a40405ad5365f84ff455dba"><div class="ttname"><a href="classsemaphore.html#a4a9497728a40405ad5365f84ff455dba">semaphore::wait</a></div><div class="ttdeci">void wait()</div><div class="ttdef"><b>Definition:</b> lock.h:66</div></div>
+<div class="ttc" id="classBarrier_html_a4f41be089d4fde241848b38769f0c042"><div class="ttname"><a href="classBarrier.html#a4f41be089d4fde241848b38769f0c042">Barrier::m_nThreads</a></div><div class="ttdeci">int m_nThreads</div><div class="ttdef"><b>Definition:</b> lock.h:164</div></div>
+<div class="ttc" id="classBarrier_html_a1cd9f4447e17de7300a3555b61aff0f1"><div class="ttname"><a href="classBarrier.html#a1cd9f4447e17de7300a3555b61aff0f1">Barrier::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdef"><b>Definition:</b> lock.h:139</div></div>
+<div class="ttc" id="classSpineLock_html_ae0b422da676eb08e0f7bd63f475ec39a"><div class="ttname"><a href="classSpineLock.html#ae0b422da676eb08e0f7bd63f475ec39a">SpineLock::getvalue</a></div><div class="ttdeci">int getvalue()</div><div class="ttdef"><b>Definition:</b> lock.h:194</div></div>
+<div class="ttc" id="classSpineLock_html_af0c3add3737009a83eb601623eb47315"><div class="ttname"><a href="classSpineLock.html#af0c3add3737009a83eb601623eb47315">SpineLock::fakelock</a></div><div class="ttdeci">int fakelock()</div><div class="ttdef"><b>Definition:</b> lock.h:190</div></div>
+<div class="ttc" id="classSpineLock_html_a931c8522ee240a14ab94ebcab1bd5fd5"><div class="ttname"><a href="classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5">SpineLock::tas</a></div><div class="ttdeci">int tas(volatile char *lock)</div><div class="ttdef"><b>Definition:</b> lock.h:207</div></div>
+<div class="ttc" id="classSpineLock_html_a1b7dd38819f7f76b1c2766f7546fdf33"><div class="ttname"><a href="classSpineLock.html#a1b7dd38819f7f76b1c2766f7546fdf33">SpineLock::SpineLock</a></div><div class="ttdeci">SpineLock()</div><div class="ttdef"><b>Definition:</b> lock.h:175</div></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
+<div class="ttc" id="classsemaphore_html_afd045c9591ac543a49877475327671c3"><div class="ttname"><a href="classsemaphore.html#afd045c9591ac543a49877475327671c3">semaphore::sem</a></div><div class="ttdeci">sem_t sem</div><div class="ttdef"><b>Definition:</b> lock.h:49</div></div>
+<div class="ttc" id="classBarrier_html_abbb28a2dfd2ce0eeb75faeeba04c6bcc"><div class="ttname"><a href="classBarrier.html#abbb28a2dfd2ce0eeb75faeeba04c6bcc">Barrier::m_nSyncCount</a></div><div class="ttdeci">volatile int m_nSyncCount</div><div class="ttdef"><b>Definition:</b> lock.h:167</div></div>
+<div class="ttc" id="classLock_html_a9944623567d8138b95e74fadc7190adb"><div class="ttname"><a href="classLock.html#a9944623567d8138b95e74fadc7190adb">Lock::Lock</a></div><div class="ttdeci">Lock()</div><div class="ttdef"><b>Definition:</b> lock.h:22</div></div>
+<div class="ttc" id="classBarrier_html_a5c42864f1aaaf48dcf64aedef2cbb685"><div class="ttname"><a href="classBarrier.html#a5c42864f1aaaf48dcf64aedef2cbb685">Barrier::UnregisterOneThread</a></div><div class="ttdeci">void UnregisterOneThread()</div><div class="ttdef"><b>Definition:</b> lock.h:120</div></div>
 <div class="ttc" id="classsemaphore_html"><div class="ttname"><a href="classsemaphore.html">semaphore</a></div><div class="ttdef"><b>Definition:</b> lock.h:46</div></div>
+<div class="ttc" id="classSpineLock_html_ab60576577513e3c4595401c0486e3e8a"><div class="ttname"><a href="classSpineLock.html#ab60576577513e3c4595401c0486e3e8a">SpineLock::_l</a></div><div class="ttdeci">volatile char _l</div><div class="ttdef"><b>Definition:</b> lock.h:228</div></div>
+<div class="ttc" id="classBarrier_html_ad23e8db9673bf0f7385fcefe4b4c7cf2"><div class="ttname"><a href="classBarrier.html#ad23e8db9673bf0f7385fcefe4b4c7cf2">Barrier::m_cv_SyncCV</a></div><div class="ttdeci">pthread_cond_t m_cv_SyncCV</div><div class="ttdef"><b>Definition:</b> lock.h:166</div></div>
+<div class="ttc" id="CSBPlusTree_8h_html_a070d2ce7b6bb7e5c05602aa8c308d0c4"><div class="ttname"><a href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a></div><div class="ttdeci">#define NULL</div><div class="ttdef"><b>Definition:</b> CSBPlusTree.h:19</div></div>
+<div class="ttc" id="classBarrier_html_a5d9133ad716b3b82f0628795afecf152"><div class="ttname"><a href="classBarrier.html#a5d9133ad716b3b82f0628795afecf152">Barrier::RegisterOneThread</a></div><div class="ttdeci">void RegisterOneThread()</div><div class="ttdef"><b>Definition:</b> lock.h:114</div></div>
+<div class="ttc" id="classsemaphore_html_a65a32bb3fa9d2575deb3fdabbe8b6b14"><div class="ttname"><a href="classsemaphore.html#a65a32bb3fa9d2575deb3fdabbe8b6b14">semaphore::post</a></div><div class="ttdeci">void post(int times=1)</div><div class="ttdef"><b>Definition:</b> lock.h:60</div></div>
+<div class="ttc" id="classsemaphore_html_ab400df2bdabcc0a359fe67dc9586691f"><div class="ttname"><a href="classsemaphore.html#ab400df2bdabcc0a359fe67dc9586691f">semaphore::semaphore</a></div><div class="ttdeci">semaphore(int initialValue=0)</div><div class="ttdef"><b>Definition:</b> lock.h:51</div></div>
 <div class="ttc" id="classSpineLock_html_abef911b1f34767662e4adc11536f7148"><div class="ttname"><a href="classSpineLock.html#abef911b1f34767662e4adc11536f7148">SpineLock::release</a></div><div class="ttdeci">void release()</div><div class="ttdef"><b>Definition:</b> lock.h:201</div></div>
+<div class="ttc" id="classLock_html_ae987aaa09db9da0a36edce0ed62d4557"><div class="ttname"><a href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire</a></div><div class="ttdeci">void acquire()</div><div class="ttdef"><b>Definition:</b> lock.h:30</div></div>
 <div class="ttc" id="classSpineLock_html"><div class="ttname"><a href="classSpineLock.html">SpineLock</a></div><div class="ttdef"><b>Definition:</b> lock.h:173</div></div>
+<div class="ttc" id="classsemaphore_html_a7d8acb08b6e30aeadd7af897371907bb"><div class="ttname"><a href="classsemaphore.html#a7d8acb08b6e30aeadd7af897371907bb">semaphore::try_wait</a></div><div class="ttdeci">bool try_wait()</div><div class="ttdef"><b>Definition:</b> lock.h:85</div></div>
 <div class="ttc" id="classBarrier_html"><div class="ttname"><a href="classBarrier.html">Barrier</a></div><div class="ttdef"><b>Definition:</b> lock.h:99</div></div>
+<div class="ttc" id="classLock_html_a348af4e7fef29ed09dfba09ece7e4ef1"><div class="ttname"><a href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release</a></div><div class="ttdeci">void release()</div><div class="ttdef"><b>Definition:</b> lock.h:37</div></div>
+<div class="ttc" id="classLock_html_aa598d78a0ef439e96dd11b6e6dd690a5"><div class="ttname"><a href="classLock.html#aa598d78a0ef439e96dd11b6e6dd690a5">Lock::destroy</a></div><div class="ttdeci">void destroy()</div><div class="ttdef"><b>Definition:</b> lock.h:41</div></div>
+<div class="ttc" id="classBarrier_html_aaa9589c94e6d633070673eb389f23b20"><div class="ttname"><a href="classBarrier.html#aaa9589c94e6d633070673eb389f23b20">Barrier::Arrive</a></div><div class="ttdeci">void Arrive()</div><div class="ttdef"><b>Definition:</b> lock.h:145</div></div>
+<div class="ttc" id="classsemaphore_html_abafe7b6a56a0c3664f53fa59a93ccecc"><div class="ttname"><a href="classsemaphore.html#abafe7b6a56a0c3664f53fa59a93ccecc">semaphore::timed_wait</a></div><div class="ttdeci">bool timed_wait(int millisecond)</div><div class="ttdef"><b>Definition:</b> lock.h:77</div></div>
+<div class="ttc" id="classBarrier_html_a220b89965fadc55df3e63dfb09984d90"><div class="ttname"><a href="classBarrier.html#a220b89965fadc55df3e63dfb09984d90">Barrier::setEmpty</a></div><div class="ttdeci">void setEmpty()</div><div class="ttdef"><b>Definition:</b> lock.h:134</div></div>
+<div class="ttc" id="classBarrier_html_aa913b6dd26448ae765d581a276749860"><div class="ttname"><a href="classBarrier.html#aa913b6dd26448ae765d581a276749860">Barrier::~Barrier</a></div><div class="ttdeci">virtual ~Barrier()</div><div class="ttdef"><b>Definition:</b> lock.h:130</div></div>
+<div class="ttc" id="classBarrier_html_acd5bde6688a5cb9d95236bbf4e9ce780"><div class="ttname"><a href="classBarrier.html#acd5bde6688a5cb9d95236bbf4e9ce780">Barrier::m_l_SyncLock</a></div><div class="ttdeci">pthread_mutex_t m_l_SyncLock</div><div class="ttdef"><b>Definition:</b> lock.h:165</div></div>
+<div class="ttc" id="classsemaphore_html_aae7af08f4ea7ef166dee6dca6bca893a"><div class="ttname"><a href="classsemaphore.html#aae7af08f4ea7ef166dee6dca6bca893a">semaphore::set_value</a></div><div class="ttdeci">void set_value(int value)</div><div class="ttdef"><b>Definition:</b> lock.h:56</div></div>
+<div class="ttc" id="classLock_html_a79afa8ec0e2aaccb354d9c73c2232b0d"><div class="ttname"><a href="classLock.html#a79afa8ec0e2aaccb354d9c73c2232b0d">Lock::try_acquire</a></div><div class="ttdeci">bool try_acquire()</div><div class="ttdef"><b>Definition:</b> lock.h:34</div></div>
+<div class="ttc" id="classSpineLock_html_a995cd2d86c5f85de165d8edcede20135"><div class="ttname"><a href="classSpineLock.html#a995cd2d86c5f85de165d8edcede20135">SpineLock::try_lock</a></div><div class="ttdeci">bool try_lock()</div><div class="ttdef"><b>Definition:</b> lock.h:186</div></div>
+<div class="ttc" id="classLock_html_a627a70773938512e9f1882609fba4e95"><div class="ttname"><a href="classLock.html#a627a70773938512e9f1882609fba4e95">Lock::m</a></div><div class="ttdeci">pthread_mutex_t m</div><div class="ttdef"><b>Definition:</b> lock.h:20</div></div>
 <div class="ttc" id="classSpineLock_html_aa73d1645b90567a353ec18e4c481736d"><div class="ttname"><a href="classSpineLock.html#aa73d1645b90567a353ec18e4c481736d">SpineLock::acquire</a></div><div class="ttdeci">void acquire()</div><div class="ttdef"><b>Definition:</b> lock.h:178</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>lock.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="lock_8h.html">lock.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

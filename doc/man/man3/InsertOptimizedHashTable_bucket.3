@@ -1,4 +1,4 @@
-.TH "InsertOptimizedHashTable::bucket" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "InsertOptimizedHashTable::bucket" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ InsertOptimizedHashTable::bucket \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <InsertOptimizedHashTable\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -23,10 +25,34 @@ InsertOptimizedHashTable::bucket \-
 .RI "\fBmeta_data\fP \fBhead\fP"
 .br
 .ti -1c
-.RI "\fBentry\fP \fBentrys\fP [(Bucket_Size-sizeof(head))/sizeof(\fBentry\fP)]"
+.RI "\fBentry\fP \fBentrys\fP [(\fBBucket_Size\fP-sizeof(\fBhead\fP))/sizeof(\fBentry\fP)]"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "bool InsertOptimizedHashTable::bucket::allocate_new_entry (unsigned &new_entry_index)\fC [inline]\fP"
+
+.PP
+References head, and InsertOptimizedHashTable::meta_data::tuple_count\&.
+.PP
+Referenced by InsertOptimizedHashTable::insertEntry()\&.
+.SS "bool InsertOptimizedHashTable::bucket::has_space_for_new_entry ()\fC [inline]\fP"
+
+.PP
+References Bucket_Capacity, head, and InsertOptimizedHashTable::meta_data::tuple_count\&.
+.PP
+Referenced by InsertOptimizedHashTable::insertEntry()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBentry\fP InsertOptimizedHashTable::bucket::entrys[(\fBBucket_Size\fP-sizeof(\fBhead\fP))/sizeof(\fBentry\fP)]"
+
+.PP
+Referenced by InsertOptimizedHashTable::insertEntry(), and InsertOptimizedHashTable::BucketIterator::nextTuple()\&.
+.SS "\fBmeta_data\fP InsertOptimizedHashTable::bucket::head"
+
+.PP
+Referenced by allocate_new_entry(), has_space_for_new_entry(), InsertOptimizedHashTable::insertEntry(), InsertOptimizedHashTable::BucketIterator::nextTuple(), and InsertOptimizedHashTable::~InsertOptimizedHashTable()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

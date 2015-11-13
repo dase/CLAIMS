@@ -1,4 +1,4 @@
-.TH "ttmath::RuntimeError" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ttmath::RuntimeError" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -9,12 +9,15 @@ ttmath::RuntimeError \-
 .PP
 \fC#include <ttmathtypes\&.h>\fP
 .PP
-Inherits runtime_error, and \fBttmath::ExceptionInfo\fP\&.
+Inherits std::runtime_error, and \fBttmath::ExceptionInfo\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBRuntimeError\fP (const char *f, int l)"
+.RI "\fBRuntimeError\fP ()"
+.br
+.ti -1c
+.RI "\fBRuntimeError\fP (const char *\fBf\fP, int l)"
 .br
 .ti -1c
 .RI "std::string \fBWhere\fP () const "
@@ -26,8 +29,20 @@ a small class used for reporting errors
 .PP
 in the library is used macro TTMATH_ASSERT which (if the condition in it is false) throw an exception of this type
 .PP
-if you compile with gcc you can get a small benefit from using method Where() (it returns std::string) with the name and the line of a file where the macro TTMATH_ASSERT was used) 
+if you compile with gcc you can get a small benefit from using method \fBWhere()\fP (it returns std::string) with the name and the line of a file where the macro TTMATH_ASSERT was used) 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ttmath::RuntimeError::RuntimeError ()\fC [inline]\fP"
+
+.SS "ttmath::RuntimeError::RuntimeError (const char *f, intl)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::string ttmath::RuntimeError::Where () const\fC [inline]\fP"
+
+.PP
+References ttmath::ExceptionInfo::Where()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "Json" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -84,10 +84,10 @@ JSON (JavaScript Object Notation)\&.
 .RI "typedef unsigned long long int \fBUInt64\fP"
 .br
 .ti -1c
-.RI "typedef Int64 \fBLargestInt\fP"
+.RI "typedef \fBInt64\fP \fBLargestInt\fP"
 .br
 .ti -1c
-.RI "typedef UInt64 \fBLargestUInt\fP"
+.RI "typedef \fBUInt64\fP \fBLargestUInt\fP"
 .br
 .ti -1c
 .RI "typedef unsigned int \fBArrayIndex\fP"
@@ -114,34 +114,75 @@ JSON (JavaScript Object Notation)\&.
 
 .in +1c
 .ti -1c
-.RI "JSON_API std::istream & \fBoperator>>\fP (std::istream &, \fBValue\fP &)"
+.RI "\fBJSON_API\fP std::istream & \fBoperator>>\fP (std::istream &, \fBValue\fP &)"
 .br
 .RI "\fIRead from 'sin' into 'root'\&. \fP"
 .ti -1c
-.RI "std::string JSON_API \fBvalueToString\fP (Int value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToString\fP (\fBInt\fP value)"
 .br
 .ti -1c
-.RI "std::string JSON_API \fBvalueToString\fP (UInt value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToString\fP (\fBUInt\fP value)"
 .br
 .ti -1c
-.RI "std::string JSON_API \fBvalueToString\fP (LargestInt value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToString\fP (\fBLargestInt\fP value)"
 .br
 .ti -1c
-.RI "std::string JSON_API \fBvalueToString\fP (LargestUInt value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToString\fP (\fBLargestUInt\fP value)"
 .br
 .ti -1c
-.RI "std::string JSON_API \fBvalueToString\fP (double value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToString\fP (double value)"
 .br
 .ti -1c
-.RI "std::string JSON_API \fBvalueToString\fP (bool value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToString\fP (bool value)"
 .br
 .ti -1c
-.RI "std::string JSON_API \fBvalueToQuotedString\fP (const char *value)"
+.RI "std::string \fBJSON_API\fP \fBvalueToQuotedString\fP (const char *value)"
 .br
 .ti -1c
-.RI "JSON_API std::ostream & \fBoperator<<\fP (std::ostream &, const \fBValue\fP &root)"
+.RI "\fBJSON_API\fP std::ostream & \fBoperator<<\fP (std::ostream &, const \fBValue\fP &root)"
 .br
 .RI "\fIOutput using the \fBStyledStreamWriter\fP\&. \fP"
+.ti -1c
+.RI "static std::string \fBcodePointToUTF8\fP (unsigned int cp)"
+.br
+.RI "\fIConverts a unicode code-point to UTF-8\&. \fP"
+.ti -1c
+.RI "static bool \fBisControlCharacter\fP (char ch)"
+.br
+.RI "\fIReturns true if ch is a control character (in range [0,32[)\&. \fP"
+.ti -1c
+.RI "static void \fBuintToString\fP (\fBLargestUInt\fP value, char *&current)"
+.br
+.ti -1c
+.RI "static void \fBfixNumericLocale\fP (char *begin, char *end)"
+.br
+.ti -1c
+.RI "static bool \fBin\fP (\fBReader::Char\fP c, \fBReader::Char\fP c1, \fBReader::Char\fP c2, \fBReader::Char\fP c3, \fBReader::Char\fP c4)"
+.br
+.ti -1c
+.RI "static bool \fBin\fP (\fBReader::Char\fP c, \fBReader::Char\fP c1, \fBReader::Char\fP c2, \fBReader::Char\fP c3, \fBReader::Char\fP c4, \fBReader::Char\fP c5)"
+.br
+.ti -1c
+.RI "static bool \fBcontainsNewLine\fP (\fBReader::Location\fP begin, \fBReader::Location\fP end)"
+.br
+.ti -1c
+.RI "static const unsigned char \fBALIGNAS\fP (8) kNull[sizeof(\fBValue\fP)]"
+.br
+.ti -1c
+.RI "template<typename T , typename U > static bool \fBInRange\fP (double d, T min, U max)"
+.br
+.ti -1c
+.RI "static char * \fBduplicateStringValue\fP (const char *value, unsigned int length=\fBunknown\fP)"
+.br
+.ti -1c
+.RI "static void \fBreleaseStringValue\fP (char *value)"
+.br
+.ti -1c
+.RI "static bool \fBIsIntegral\fP (double d)"
+.br
+.ti -1c
+.RI "static bool \fBcontainsControlCharacter\fP (const char *str)"
+.br
 .in -1c
 .SS "Variables"
 
@@ -149,10 +190,35 @@ JSON (JavaScript Object Notation)\&.
 .ti -1c
 .RI "const unsigned char & \fBkNullRef\fP = kNull[0]"
 .br
+.ti -1c
+.RI "static const double \fBmaxUInt64AsDouble\fP = 18446744073709551615\&.0"
+.br
+.ti -1c
+.RI "static const unsigned int \fBunknown\fP = (unsigned)-1"
+.br
+.RI "\fIUnknown size marker\&. \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
 JSON (JavaScript Object Notation)\&. 
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef unsigned int \fBJson::ArrayIndex\fP"
+
+.SS "typedef int \fBJson::Int\fP"
+
+.SS "typedef long long int \fBJson::Int64\fP"
+
+.SS "typedef \fBInt64\fP \fBJson::LargestInt\fP"
+
+.SS "typedef \fBUInt64\fP \fBJson::LargestUInt\fP"
+
+.SS "typedef unsigned int \fBJson::UInt\fP"
+
+.SS "typedef unsigned long long int \fBJson::UInt64\fP"
+
+.SS "typedef char Json::UIntToStringBuffer[\fBuintToStringBufferSize\fP]"
+
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "anonymous enum"
@@ -213,6 +279,77 @@ array value (ordered list)
 object value (collection of name/value pairs)\&. 
 .SH "Function Documentation"
 .PP 
+.SS "static const unsigned char Json::ALIGNAS (8)\fC [static]\fP"
+
+.SS "static std::string Json::codePointToUTF8 (unsigned intcp)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Converts a unicode code-point to UTF-8\&. 
+.PP
+Referenced by Json::Reader::decodeString()\&.
+.SS "static bool Json::containsControlCharacter (const char *str)\fC [static]\fP"
+
+.PP
+References isControlCharacter()\&.
+.PP
+Referenced by valueToQuotedString()\&.
+.SS "static bool Json::containsNewLine (Reader::Locationbegin, Reader::Locationend)\fC [static]\fP"
+
+.PP
+Referenced by Json::Reader::readComment()\&.
+.SS "static char* Json::duplicateStringValue (const char *value, unsigned intlength = \fCunknown\fP)\fC [inline]\fP, \fC [static]\fP"
+Duplicates the specified string value\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP Pointer to the string to duplicate\&. Must be zero-terminated if length is 'unknown'\&. 
+.br
+\fIlength\fP \fBLength\fP of the value\&. if equals to unknown, then it will be computed using strlen(value)\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Pointer on the duplicate instance of string\&. 
+.RE
+.PP
+
+.PP
+References JSON_ASSERT_MESSAGE, Json::Value::maxInt, and unknown\&.
+.PP
+Referenced by Json::Value::CommentInfo::setComment(), and Json::Value::Value()\&.
+.SS "static void Json::fixNumericLocale (char *begin, char *end)\fC [inline]\fP, \fC [static]\fP"
+Change ',' to '\&.' everywhere in buffer\&.
+.PP
+We had a sophisticated way, but it did not work in WinCE\&. 
+.PP
+\fBSee Also:\fP
+.RS 4
+https://github.com/open-source-parsers/jsoncpp/pull/9 
+.RE
+.PP
+
+.PP
+Referenced by valueToString()\&.
+.SS "static bool Json::in (Reader::Charc, Reader::Charc1, Reader::Charc2, Reader::Charc3, Reader::Charc4)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), Json::Reader::decodeNumber(), Json::Path::Path(), and Json::Reader::readNumber()\&.
+.SS "static bool Json::in (Reader::Charc, Reader::Charc1, Reader::Charc2, Reader::Charc3, Reader::Charc4, Reader::Charc5)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "template<typename T , typename U > static bool Json::InRange (doubled, Tmin, Umax)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by Json::Value::asInt(), Json::Value::asInt64(), Json::Value::asUInt(), Json::Value::asUInt64(), and Json::Value::isConvertibleTo()\&.
+.SS "static bool Json::isControlCharacter (charch)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Returns true if ch is a control character (in range [0,32[)\&. 
+.PP
+Referenced by containsControlCharacter(), and valueToQuotedString()\&.
+.SS "static bool Json::IsIntegral (doubled)\fC [static]\fP"
+
+.PP
+Referenced by Json::Value::isInt(), Json::Value::isInt64(), Json::Value::isUInt(), and Json::Value::isUInt64()\&.
 .SS "std::ostream & Json::operator<< (std::ostream &sout, const Value &root)"
 
 .PP
@@ -267,7 +404,66 @@ cout << root;
 .PP
 
 .PP
-References Json::Reader::getFormattedErrorMessages(), and Json::Reader::parse()\&.
+References Json::Reader::getFormattedErrorMessages(), JSON_FAIL_MESSAGE, and Json::Reader::parse()\&.
+.SS "static void Json::releaseStringValue (char *value)\fC [inline]\fP, \fC [static]\fP"
+Free the string duplicated by \fBduplicateStringValue()\fP\&. 
+.PP
+Referenced by Json::Value::CommentInfo::setComment(), Json::Value::CommentInfo::~CommentInfo(), Json::Value::CZString::~CZString(), and Json::Value::~Value()\&.
+.SS "static void Json::uintToString (LargestUIntvalue, char *&current)\fC [inline]\fP, \fC [static]\fP"
+Converts an unsigned integer to string\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvalue\fP Unsigned interger to convert to string 
+.br
+\fIcurrent\fP Input/Output string buffer\&. Must have at least uintToStringBufferSize chars free\&. 
+.RE
+.PP
+
+.PP
+Referenced by valueToString()\&.
+.SS "std::string Json::valueToQuotedString (const char *value)"
+
+.PP
+References containsControlCharacter(), isControlCharacter(), and NULL\&.
+.PP
+Referenced by Json::FastWriter::writeValue(), Json::StyledWriter::writeValue(), and Json::StyledStreamWriter::writeValue()\&.
+.SS "std::string Json::valueToString (Intvalue)"
+
+.PP
+Referenced by Json::Value::asString(), valueToString(), Json::FastWriter::writeValue(), Json::StyledWriter::writeValue(), and Json::StyledStreamWriter::writeValue()\&.
+.SS "std::string Json::valueToString (UIntvalue)"
+
+.PP
+References valueToString()\&.
+.SS "std::string Json::valueToString (LargestIntvalue)"
+
+.PP
+References uintToString()\&.
+.SS "std::string Json::valueToString (LargestUIntvalue)"
+
+.PP
+References uintToString()\&.
+.SS "std::string Json::valueToString (doublevalue)"
+
+.PP
+References fixNumericLocale()\&.
+.SS "std::string Json::valueToString (boolvalue)"
+
+.SH "Variable Documentation"
+.PP 
+.SS "const unsigned char& Json::kNullRef = kNull[0]"
+
+.SS "const double Json::maxUInt64AsDouble = 18446744073709551615\&.0\fC [static]\fP"
+
+.PP
+Referenced by Json::Value::isUInt64()\&.
+.SS "const unsigned int Json::unknown = (unsigned)-1\fC [static]\fP"
+
+.PP
+Unknown size marker\&. 
+.PP
+Referenced by duplicateStringValue()\&.
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

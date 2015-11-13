@@ -1,4 +1,4 @@
-.TH "CCSBLeafNodeGroup< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CCSBLeafNodeGroup< T >" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,20 @@ CCSBLeafNodeGroup< T > \-
 .br
 .PP
 .PP
+\fC#include <CSBPlusTree\&.h>\fP
+.PP
 Inherits \fBCCSBNodeGroup< T >\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
+.RI "\fBCCSBLeafNodeGroup\fP ()"
+.br
+.ti -1c
 .RI "\fBCCSBLeafNodeGroup\fP (unsigned n)"
+.br
+.ti -1c
+.RI "\fB~CCSBLeafNodeGroup\fP ()"
 .br
 .ti -1c
 .RI "\fBCCSBNodeGroup\fP< T > * \fBgetHeaderNG\fP ()"
@@ -58,7 +66,83 @@ Inherits \fBCCSBNodeGroup< T >\fP\&.
 .RI "\fBCCSBNodeGroup\fP< T > * \fBp_tailer\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T> \fBCCSBLeafNodeGroup\fP< T >::\fBCCSBLeafNodeGroup\fP ()\fC [inline]\fP"
+
+.SS "template<typename T > \fBCCSBLeafNodeGroup\fP< T >::\fBCCSBLeafNodeGroup\fP (unsignedn)"
+
+.PP
+References NULL\&.
+.SS "template<typename T > \fBCCSBLeafNodeGroup\fP< T >::~\fBCCSBLeafNodeGroup\fP ()"
+
+.PP
+References NULL\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > void \fBCCSBLeafNodeGroup\fP< T >::DeleteChildren ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBLeafNodeGroup\fP< T >::deserialize (FILE *filename)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.PP
+References CCSBLeafNode< T >::deserialize()\&.
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCCSBLeafNodeGroup\fP< T >::getHeaderNG ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.SS "template<typename T> \fBCCSBNode\fP<T>* \fBCCSBLeafNodeGroup\fP< T >::getNode (unsignedi)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.PP
+References NULL\&.
+.PP
+Referenced by CSBPlusTree< T >::Insert()\&.
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCCSBLeafNodeGroup\fP< T >::getTailerNG ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBLeafNodeGroup\fP< T >::serialize (FILE *filename)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.PP
+References boost::serialization::serialize()\&.
+.SS "template<typename T> void \fBCCSBLeafNodeGroup\fP< T >::setHeaderNG (\fBCCSBNodeGroup\fP< T > *header)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.PP
+Referenced by CSBPlusTree< T >::Insert()\&.
+.SS "template<typename T> void \fBCCSBLeafNodeGroup\fP< T >::setNode (unsignedi, \fBCCSBNode\fP< T > *node)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.PP
+References CCSBNode< T >::getElement(), CCSBNode< T >::getFather(), and CCSBNode< T >::getUsedKeys()\&.
+.SS "template<typename T> void \fBCCSBLeafNodeGroup\fP< T >::setTailerNG (\fBCCSBNodeGroup\fP< T > *tailer)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.PP
+Referenced by CSBPlusTree< T >::Insert()\&.
+.SS "template<typename T> bool \fBCCSBLeafNodeGroup\fP< T >::setUsedNodes (unsignedn)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNodeGroup< T >\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "template<typename T> \fBCCSBNode\fP<T>** \fBCCSBLeafNodeGroup\fP< T >::leaf_nodes"
+
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCCSBLeafNodeGroup\fP< T >::p_header"
+
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCCSBLeafNodeGroup\fP< T >::p_tailer"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

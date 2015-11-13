@@ -1,4 +1,4 @@
-.TH "Expr_list" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Expr_list" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Expr_list \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "\fBNode\fP * \fBdata\fP"
@@ -19,7 +21,21 @@ Expr_list \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Expr_list::data"
+
+.PP
+Referenced by getwctable(), groupby_analysis(), having_analysis(), LoadData(), newExprList(), oncondition_check(), output(), solve_insubquery(), transformqual(), and wherecondition_check()\&.
+.SS "\fBNode\fP* Expr_list::next"
+
+.PP
+Referenced by getwctable(), groupby_analysis(), having_analysis(), LoadData(), newExprList(), oncondition_check(), solve_insubquery(), transformqual(), and wherecondition_check()\&.
+.SS "\fBnodetype\fP Expr_list::type"
+
+.PP
+Referenced by newExprList()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

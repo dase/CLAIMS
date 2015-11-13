@@ -1,4 +1,4 @@
-.TH "RegisterStorageRespond" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "RegisterStorageRespond" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ RegisterStorageRespond \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -17,10 +19,20 @@ RegisterStorageRespond \-
 
 .in +1c
 .ti -1c
-.RI "char \fBmText\fP [REGISTER_MESSAGE_LEN]"
+.RI "char \fBmText\fP [\fBREGISTER_MESSAGE_LEN\fP]"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "RegisterStorageRespond::RegisterStorageRespond (const char *consttext)\fC [inline]\fP, \fC [explicit]\fP"
+
+.PP
+References REGISTER_MESSAGE_LEN\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "char RegisterStorageRespond::mText[\fBREGISTER_MESSAGE_LEN\fP]"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

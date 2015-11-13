@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Json::StaticString Class Reference</title>
+<title>Claims: Json::StaticString Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,6 +106,7 @@ $(document).ready(function(){initNavTree('classJson_1_1StaticString.html','');})
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classJson_1_1StaticString-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Json::StaticString Class Reference</div>  </div>
@@ -119,26 +120,132 @@ $(document).ready(function(){initNavTree('classJson_1_1StaticString.html','');})
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afb6baf1ec078ce76f0b0f9b39d19437f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb6baf1ec078ce76f0b0f9b39d19437f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>StaticString</b> (const char *czstring)</td></tr>
+<tr class="memitem:afb6baf1ec078ce76f0b0f9b39d19437f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StaticString.html#afb6baf1ec078ce76f0b0f9b39d19437f">StaticString</a> (const char *czstring)</td></tr>
 <tr class="separator:afb6baf1ec078ce76f0b0f9b39d19437f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2b334d46bbea4c0227e508fc66433e9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2b334d46bbea4c0227e508fc66433e9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>operator const char *</b> () const </td></tr>
+<tr class="memitem:ac2b334d46bbea4c0227e508fc66433e9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StaticString.html#ac2b334d46bbea4c0227e508fc66433e9">operator const char *</a> () const </td></tr>
 <tr class="separator:ac2b334d46bbea4c0227e508fc66433e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab86fc6a3183adf12fdba4b370acf1754"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab86fc6a3183adf12fdba4b370acf1754"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>c_str</b> () const </td></tr>
+<tr class="memitem:ab86fc6a3183adf12fdba4b370acf1754"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StaticString.html#ab86fc6a3183adf12fdba4b370acf1754">c_str</a> () const </td></tr>
 <tr class="separator:ab86fc6a3183adf12fdba4b370acf1754"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a6a96838bece80ae83def7dbf5260935c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StaticString.html#a6a96838bece80ae83def7dbf5260935c">str_</a></td></tr>
+<tr class="separator:a6a96838bece80ae83def7dbf5260935c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Lightweight wrapper to tag static string. </p>
 <p><a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a> constructor and objectValue member assignement takes advantage of the <a class="el" href="classJson_1_1StaticString.html" title="Lightweight wrapper to tag static string. ">StaticString</a> and avoid the cost of string duplication when storing the string or the member name.</p>
 <p>Example of usage: </p>
-<div class="fragment"><div class="line">* <a class="code" href="classJson_1_1Value.html">Json::Value</a> aValue( StaticString(<span class="stringliteral">&quot;some text&quot;</span>) );</div>
+<div class="fragment"><div class="line">* <a class="code" href="classJson_1_1Value.html">Json::Value</a> aValue( <a class="code" href="classJson_1_1StaticString.html#afb6baf1ec078ce76f0b0f9b39d19437f">StaticString</a>(<span class="stringliteral">&quot;some text&quot;</span>) );</div>
 <div class="line">* <a class="code" href="classJson_1_1Value.html">Json::Value</a> object;</div>
-<div class="line">* <span class="keyword">static</span> <span class="keyword">const</span> StaticString code(<span class="stringliteral">&quot;code&quot;</span>);</div>
+<div class="line">* <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="classJson_1_1StaticString.html#afb6baf1ec078ce76f0b0f9b39d19437f">StaticString</a> code(<span class="stringliteral">&quot;code&quot;</span>);</div>
 <div class="line">* <span class="keywordtype">object</span>[code] = 1234;</div>
 <div class="line">* </div>
-</div><!-- fragment --> </div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="afb6baf1ec078ce76f0b0f9b39d19437f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::StaticString::StaticString </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>czstring</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab86fc6a3183adf12fdba4b370acf1754"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* Json::StaticString::c_str </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1Value.html#a081830e95f88a37054da7e46c65b0766">Json::Value::Value()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StaticString_ab86fc6a3183adf12fdba4b370acf1754_icgraph.png" border="0" usemap="#classJson_1_1StaticString_ab86fc6a3183adf12fdba4b370acf1754_icgraph" alt=""/></div>
+<map name="classJson_1_1StaticString_ab86fc6a3183adf12fdba4b370acf1754_icgraph" id="classJson_1_1StaticString_ab86fc6a3183adf12fdba4b370acf1754_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value.html#a081830e95f88a37054da7e46c65b0766" title="Constructs a value from a static string. " alt="" coords="182,12,314,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac2b334d46bbea4c0227e508fc66433e9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::StaticString::operator const char * </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a6a96838bece80ae83def7dbf5260935c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* Json::StaticString::str_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>Client/json/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->

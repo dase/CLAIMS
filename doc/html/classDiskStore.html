@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: DiskStore Class Reference</title>
+<title>Claims: DiskStore Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,42 +106,311 @@ $(document).ready(function(){initNavTree('classDiskStore.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classDiskStore-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">DiskStore Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="DiskStore_8h_source.html">DiskStore.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a119db26f13008880c775a0921dfd2b0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a119db26f13008880c775a0921dfd2b0f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DiskStore</b> (string rootDirs)</td></tr>
+<tr class="memitem:a119db26f13008880c775a0921dfd2b0f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a119db26f13008880c775a0921dfd2b0f">DiskStore</a> (string rootDirs)</td></tr>
 <tr class="separator:a119db26f13008880c775a0921dfd2b0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62d2b78239f85f156ddf262f99c59789"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62d2b78239f85f156ddf262f99c59789"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>putValue</b> (string blockId, void *value)</td></tr>
+<tr class="memitem:a0884fc331d706faaa6587f9095e8fa51"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a0884fc331d706faaa6587f9095e8fa51">~DiskStore</a> ()</td></tr>
+<tr class="separator:a0884fc331d706faaa6587f9095e8fa51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62d2b78239f85f156ddf262f99c59789"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789">putValue</a> (string blockId, void *value)</td></tr>
 <tr class="separator:a62d2b78239f85f156ddf262f99c59789"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae64a14e4a3f234bd7f5f8342d6cc4ab0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae64a14e4a3f234bd7f5f8342d6cc4ab0"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>getChunk</b> (string blockId)</td></tr>
+<tr class="memitem:ae64a14e4a3f234bd7f5f8342d6cc4ab0"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#ae64a14e4a3f234bd7f5f8342d6cc4ab0">getChunk</a> (string blockId)</td></tr>
 <tr class="separator:ae64a14e4a3f234bd7f5f8342d6cc4ab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80971afa023d086dfab20145ffa203cf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80971afa023d086dfab20145ffa203cf"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (string blockId)</td></tr>
+<tr class="memitem:a80971afa023d086dfab20145ffa203cf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a80971afa023d086dfab20145ffa203cf">remove</a> (string blockId)</td></tr>
 <tr class="separator:a80971afa023d086dfab20145ffa203cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ed16141456328a12131a7f869760481"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ed16141456328a12131a7f869760481"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>contains</b> (string blockId)</td></tr>
+<tr class="memitem:a5ed16141456328a12131a7f869760481"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a5ed16141456328a12131a7f869760481">contains</a> (string blockId)</td></tr>
 <tr class="separator:a5ed16141456328a12131a7f869760481"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a284ca273466861cb09fbff9707c268f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a284ca273466861cb09fbff9707c268f2"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>getSize</b> (string blockId)</td></tr>
+<tr class="memitem:a284ca273466861cb09fbff9707c268f2"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a284ca273466861cb09fbff9707c268f2">getSize</a> (string blockId)</td></tr>
 <tr class="separator:a284ca273466861cb09fbff9707c268f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa75e0d2419c5a78101e689b3694d3fd4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa75e0d2419c5a78101e689b3694d3fd4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getFile</b> (string blockId)</td></tr>
+<tr class="memitem:aa75e0d2419c5a78101e689b3694d3fd4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#aa75e0d2419c5a78101e689b3694d3fd4">getFile</a> (string blockId)</td></tr>
 <tr class="separator:aa75e0d2419c5a78101e689b3694d3fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a8e4d96bcef2d5584929c79f1acc695"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a8e4d96bcef2d5584929c79f1acc695"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>createDirs</b> (string rootDirs)</td></tr>
+<tr class="memitem:a8a8e4d96bcef2d5584929c79f1acc695"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a8a8e4d96bcef2d5584929c79f1acc695">createDirs</a> (string rootDirs)</td></tr>
 <tr class="separator:a8a8e4d96bcef2d5584929c79f1acc695"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a4eaf7e595840f76af22191df9e74f310"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiskStore.html#a4eaf7e595840f76af22191df9e74f310">rootDirs_</a></td></tr>
+<tr class="separator:a4eaf7e595840f76af22191df9e74f310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a119db26f13008880c775a0921dfd2b0f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DiskStore::DiskStore </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>rootDirs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classDiskStore.html#a8a8e4d96bcef2d5584929c79f1acc695">createDirs()</a>, and <a class="el" href="classDiskStore.html#a4eaf7e595840f76af22191df9e74f310">rootDirs_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classDiskStore_a119db26f13008880c775a0921dfd2b0f_cgraph.png" border="0" usemap="#classDiskStore_a119db26f13008880c775a0921dfd2b0f_cgraph" alt=""/></div>
+<map name="classDiskStore_a119db26f13008880c775a0921dfd2b0f_cgraph" id="classDiskStore_a119db26f13008880c775a0921dfd2b0f_cgraph">
+<area shape="rect" id="node2" href="classDiskStore.html#a8a8e4d96bcef2d5584929c79f1acc695" title="DiskStore::createDirs" alt="" coords="201,5,349,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a0884fc331d706faaa6587f9095e8fa51"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DiskStore::~DiskStore </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a5ed16141456328a12131a7f869760481"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DiskStore::contains </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8a8e4d96bcef2d5584929c79f1acc695"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DiskStore::createDirs </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>rootDirs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classDiskStore.html#a119db26f13008880c775a0921dfd2b0f">DiskStore()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classDiskStore_a8a8e4d96bcef2d5584929c79f1acc695_icgraph.png" border="0" usemap="#classDiskStore_a8a8e4d96bcef2d5584929c79f1acc695_icgraph" alt=""/></div>
+<map name="classDiskStore_a8a8e4d96bcef2d5584929c79f1acc695_icgraph" id="classDiskStore_a8a8e4d96bcef2d5584929c79f1acc695_icgraph">
+<area shape="rect" id="node2" href="classDiskStore.html#a119db26f13008880c775a0921dfd2b0f" title="DiskStore::DiskStore" alt="" coords="203,5,349,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae64a14e4a3f234bd7f5f8342d6cc4ab0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* DiskStore::getChunk </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa75e0d2419c5a78101e689b3694d3fd4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DiskStore::getFile </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a284ca273466861cb09fbff9707c268f2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned DiskStore::getSize </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a62d2b78239f85f156ddf262f99c59789"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DiskStore::putValue </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">BlockManager::put()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classDiskStore_a62d2b78239f85f156ddf262f99c59789_icgraph.png" border="0" usemap="#classDiskStore_a62d2b78239f85f156ddf262f99c59789_icgraph" alt=""/></div>
+<map name="classDiskStore_a62d2b78239f85f156ddf262f99c59789_icgraph" id="classDiskStore_a62d2b78239f85f156ddf262f99c59789_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="192,5,323,32"/><area shape="rect" id="node3" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="371,5,533,32"/><area shape="rect" id="node4" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="581,5,712,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a80971afa023d086dfab20145ffa203cf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DiskStore::remove </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a4eaf7e595840f76af22191df9e74f310"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string DiskStore::rootDirs_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classDiskStore.html#a119db26f13008880c775a0921dfd2b0f">DiskStore()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>storage/<a class="el" href="DiskStore_8h_source.html">DiskStore.h</a></li>
-<li>storage/DiskStore.cpp</li>
+<li>storage/<a class="el" href="DiskStore_8cpp.html">DiskStore.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

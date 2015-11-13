@@ -1,4 +1,4 @@
-.TH "ResourceManagerMaster::ResourceManagerMasterActor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ResourceManagerMaster::ResourceManagerMasterActor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,65 @@ ResourceManagerMaster::ResourceManagerMasterActor \-
 .br
 .PP
 .PP
+\fC#include <ResourceManagerMaster\&.h>\fP
+.PP
 Inherits Actor\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBResourceManagerMasterActor\fP (Theron::Framework *framework, \fBResourceManagerMaster\fP *rmm)"
+.RI "\fBResourceManagerMasterActor\fP (Theron::Framework *\fBframework\fP, \fBResourceManagerMaster\fP *rmm)"
+.br
+.ti -1c
+.RI "\fB~ResourceManagerMasterActor\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBReceiveStorageBudgetReport\fP (const \fBStorageBudgetMessage\fP &message, const Theron::Address from)"
+.br
+.ti -1c
+.RI "void \fBReceiveNewNodeRegister\fP (const \fBNodeRegisterMessage\fP &message, const Theron::Address from)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBResourceManagerMaster\fP * \fBrmm_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ResourceManagerMaster::ResourceManagerMasterActor::ResourceManagerMasterActor (Theron::Framework *framework, \fBResourceManagerMaster\fP *rmm)"
+
+.PP
+References ReceiveNewNodeRegister(), and ReceiveStorageBudgetReport()\&.
+.SS "ResourceManagerMaster::ResourceManagerMasterActor::~ResourceManagerMasterActor ()\fC [inline]\fP"
+
+.PP
+Referenced by ResourceManagerMaster::~ResourceManagerMaster()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveNewNodeRegister (const \fBNodeRegisterMessage\fP &message, const Theron::Addressfrom)\fC [private]\fP"
+
+.PP
+References NodeRegisterMessage::get_ip(), NodeAddress::ip, NodeAddress::port, and NodeRegisterMessage::port\&.
+.PP
+Referenced by ResourceManagerMasterActor()\&.
+.SS "void ResourceManagerMaster::ResourceManagerMasterActor::ReceiveStorageBudgetReport (const \fBStorageBudgetMessage\fP &message, const Theron::Addressfrom)\fC [private]\fP"
+
+.PP
+References StorageBudgetMessage::disk_budget, StorageBudgetMessage::memory_budget, and StorageBudgetMessage::nodeid\&.
+.PP
+Referenced by ResourceManagerMasterActor()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBResourceManagerMaster\fP* ResourceManagerMaster::ResourceManagerMasterActor::rmm_\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

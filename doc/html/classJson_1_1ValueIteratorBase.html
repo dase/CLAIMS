@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Json::ValueIteratorBase Class Reference</title>
+<title>Claims: Json::ValueIteratorBase Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('classJson_1_1ValueIteratorBase.html','
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classJson_1_1ValueIteratorBase-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Json::ValueIteratorBase Class Reference</div>  </div>
@@ -121,77 +122,349 @@ $(document).ready(function(){initNavTree('classJson_1_1ValueIteratorBase.html','
 <div class="dynheader">
 Inheritance diagram for Json::ValueIteratorBase:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classJson_1_1ValueIteratorBase.png" usemap="#Json::ValueIteratorBase_map" alt=""/>
-  <map id="Json::ValueIteratorBase_map" name="Json::ValueIteratorBase_map">
-<area href="classJson_1_1ValueConstIterator.html" title="const iterator for object and array value. " alt="Json::ValueConstIterator" shape="rect" coords="0,56,150,80"/>
-<area href="classJson_1_1ValueIterator.html" title="Iterator for object and array value. " alt="Json::ValueIterator" shape="rect" coords="160,56,310,80"/>
-</map>
- </div></div>
+<div class="center"><img src="classJson_1_1ValueIteratorBase__inherit__graph.png" border="0" usemap="#Json_1_1ValueIteratorBase_inherit__map" alt="Inheritance graph"/></div>
+<map name="Json_1_1ValueIteratorBase_inherit__map" id="Json_1_1ValueIteratorBase_inherit__map">
+<area shape="rect" id="node2" href="classJson_1_1ValueConstIterator.html" title="const iterator for object and array value. " alt="" coords="5,80,171,107"/><area shape="rect" id="node3" href="classJson_1_1ValueIterator.html" title="Iterator for object and array value. " alt="" coords="195,80,327,107"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a02fd11a4fbdc0007da1e8bcf5e6b83c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02fd11a4fbdc0007da1e8bcf5e6b83c3"></a>
-typedef <br class="typebreak"/>
-std::bidirectional_iterator_tag&#160;</td><td class="memItemRight" valign="bottom"><b>iterator_category</b></td></tr>
+<tr class="memitem:a02fd11a4fbdc0007da1e8bcf5e6b83c3"><td class="memItemLeft" align="right" valign="top">typedef <br class="typebreak"/>
+std::bidirectional_iterator_tag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a02fd11a4fbdc0007da1e8bcf5e6b83c3">iterator_category</a></td></tr>
 <tr class="separator:a02fd11a4fbdc0007da1e8bcf5e6b83c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d3a3c7ce5cdefe23cb486239cf07bb5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d3a3c7ce5cdefe23cb486239cf07bb5"></a>
-typedef unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>size_t</b></td></tr>
+<tr class="memitem:a9d3a3c7ce5cdefe23cb486239cf07bb5"><td class="memItemLeft" align="right" valign="top">typedef unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a9d3a3c7ce5cdefe23cb486239cf07bb5">size_t</a></td></tr>
 <tr class="separator:a9d3a3c7ce5cdefe23cb486239cf07bb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e44bf8cbd17ec8d6e2c185904a15ebd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e44bf8cbd17ec8d6e2c185904a15ebd"></a>
-typedef int&#160;</td><td class="memItemRight" valign="bottom"><b>difference_type</b></td></tr>
+<tr class="memitem:a4e44bf8cbd17ec8d6e2c185904a15ebd"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a4e44bf8cbd17ec8d6e2c185904a15ebd">difference_type</a></td></tr>
 <tr class="separator:a4e44bf8cbd17ec8d6e2c185904a15ebd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d2a940d03ea06d20d972f41a89149ee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d2a940d03ea06d20d972f41a89149ee"></a>
-typedef <a class="el" href="classJson_1_1ValueIteratorBase.html">ValueIteratorBase</a>&#160;</td><td class="memItemRight" valign="bottom"><b>SelfType</b></td></tr>
+<tr class="memitem:a9d2a940d03ea06d20d972f41a89149ee"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classJson_1_1ValueIteratorBase.html">ValueIteratorBase</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a></td></tr>
 <tr class="separator:a9d2a940d03ea06d20d972f41a89149ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a640e990e5f03a96fd650122a2906f59d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a640e990e5f03a96fd650122a2906f59d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ValueIteratorBase</b> (const Value::ObjectValues::iterator &amp;current)</td></tr>
+<tr class="memitem:af45b028d9ff9cbd2554a87878b42dd75"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#af45b028d9ff9cbd2554a87878b42dd75">ValueIteratorBase</a> ()</td></tr>
+<tr class="separator:af45b028d9ff9cbd2554a87878b42dd75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a640e990e5f03a96fd650122a2906f59d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a640e990e5f03a96fd650122a2906f59d">ValueIteratorBase</a> (const Value::ObjectValues::iterator &amp;current)</td></tr>
 <tr class="separator:a640e990e5f03a96fd650122a2906f59d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc656672ac28502f640ade32c38c1b56"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc656672ac28502f640ade32c38c1b56"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classJson_1_1ValueIteratorBase.html">SelfType</a> &amp;other) const </td></tr>
+<tr class="memitem:afc656672ac28502f640ade32c38c1b56"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#afc656672ac28502f640ade32c38c1b56">operator==</a> (const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;other) const </td></tr>
 <tr class="separator:afc656672ac28502f640ade32c38c1b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18c2dd42e0bb989ace141bfe9de52792"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a18c2dd42e0bb989ace141bfe9de52792"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="classJson_1_1ValueIteratorBase.html">SelfType</a> &amp;other) const </td></tr>
+<tr class="memitem:a18c2dd42e0bb989ace141bfe9de52792"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a18c2dd42e0bb989ace141bfe9de52792">operator!=</a> (const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;other) const </td></tr>
 <tr class="separator:a18c2dd42e0bb989ace141bfe9de52792"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab786787fcad68ca5e8745aaf520fa17f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab786787fcad68ca5e8745aaf520fa17f"></a>
-difference_type&#160;</td><td class="memItemRight" valign="bottom"><b>operator-</b> (const <a class="el" href="classJson_1_1ValueIteratorBase.html">SelfType</a> &amp;other) const </td></tr>
+<tr class="memitem:ab786787fcad68ca5e8745aaf520fa17f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJson_1_1ValueIteratorBase.html#a4e44bf8cbd17ec8d6e2c185904a15ebd">difference_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#ab786787fcad68ca5e8745aaf520fa17f">operator-</a> (const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;other) const </td></tr>
 <tr class="separator:ab786787fcad68ca5e8745aaf520fa17f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2ff5e79fc96acd4c3cd288e92614fc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJson_1_1Value.html">Value</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#aa2ff5e79fc96acd4c3cd288e92614fc7">key</a> () const </td></tr>
 <tr class="separator:aa2ff5e79fc96acd4c3cd288e92614fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa90591f5f7f8d2f06cc4605816b53738"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa90591f5f7f8d2f06cc4605816b53738"></a>
-UInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#aa90591f5f7f8d2f06cc4605816b53738">index</a> () const </td></tr>
-<tr class="memdesc:aa90591f5f7f8d2f06cc4605816b53738"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the index of the referenced <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a>. -1 if it is not an arrayValue. <br/></td></tr>
+<tr class="memitem:aa90591f5f7f8d2f06cc4605816b53738"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#aa90591f5f7f8d2f06cc4605816b53738">index</a> () const </td></tr>
+<tr class="memdesc:aa90591f5f7f8d2f06cc4605816b53738"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the index of the referenced <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a>. -1 if it is not an arrayValue.  <a href="#aa90591f5f7f8d2f06cc4605816b53738">More...</a><br/></td></tr>
 <tr class="separator:aa90591f5f7f8d2f06cc4605816b53738"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83768d87c608c8d1133de8721eefc31b"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a83768d87c608c8d1133de8721eefc31b">memberName</a> () const </td></tr>
 <tr class="separator:a83768d87c608c8d1133de8721eefc31b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a40a20c65abc423a26e3aae68d9a0525c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a40a20c65abc423a26e3aae68d9a0525c"></a>
-<a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>deref</b> () const </td></tr>
+<tr class="memitem:a40a20c65abc423a26e3aae68d9a0525c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a40a20c65abc423a26e3aae68d9a0525c">deref</a> () const </td></tr>
 <tr class="separator:a40a20c65abc423a26e3aae68d9a0525c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe58f9534e1fd2033419fd9fe244551e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe58f9534e1fd2033419fd9fe244551e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>increment</b> ()</td></tr>
+<tr class="memitem:afe58f9534e1fd2033419fd9fe244551e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#afe58f9534e1fd2033419fd9fe244551e">increment</a> ()</td></tr>
 <tr class="separator:afe58f9534e1fd2033419fd9fe244551e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affc8cf5ff54a9f432cc693362c153fa6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affc8cf5ff54a9f432cc693362c153fa6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>decrement</b> ()</td></tr>
+<tr class="memitem:affc8cf5ff54a9f432cc693362c153fa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#affc8cf5ff54a9f432cc693362c153fa6">decrement</a> ()</td></tr>
 <tr class="separator:affc8cf5ff54a9f432cc693362c153fa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6c553b249e89e3dc9933e100ccbe064"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6c553b249e89e3dc9933e100ccbe064"></a>
-difference_type&#160;</td><td class="memItemRight" valign="bottom"><b>computeDistance</b> (const <a class="el" href="classJson_1_1ValueIteratorBase.html">SelfType</a> &amp;other) const </td></tr>
+<tr class="memitem:ad6c553b249e89e3dc9933e100ccbe064"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJson_1_1ValueIteratorBase.html#a4e44bf8cbd17ec8d6e2c185904a15ebd">difference_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#ad6c553b249e89e3dc9933e100ccbe064">computeDistance</a> (const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;other) const </td></tr>
 <tr class="separator:ad6c553b249e89e3dc9933e100ccbe064"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21820d6ee564e541bd118b21e4741962"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a21820d6ee564e541bd118b21e4741962"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isEqual</b> (const <a class="el" href="classJson_1_1ValueIteratorBase.html">SelfType</a> &amp;other) const </td></tr>
+<tr class="memitem:a21820d6ee564e541bd118b21e4741962"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a21820d6ee564e541bd118b21e4741962">isEqual</a> (const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;other) const </td></tr>
 <tr class="separator:a21820d6ee564e541bd118b21e4741962"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a496e6aba44808433ec5858c178be5719"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a496e6aba44808433ec5858c178be5719"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>copy</b> (const <a class="el" href="classJson_1_1ValueIteratorBase.html">SelfType</a> &amp;other)</td></tr>
+<tr class="memitem:a496e6aba44808433ec5858c178be5719"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a496e6aba44808433ec5858c178be5719">copy</a> (const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;other)</td></tr>
 <tr class="separator:a496e6aba44808433ec5858c178be5719"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ab3138ce8af8301cca3b041ea55cb922a"><td class="memItemLeft" align="right" valign="top">Value::ObjectValues::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a></td></tr>
+<tr class="separator:ab3138ce8af8301cca3b041ea55cb922a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e08b114a1aed9bde518c527f94a8c59"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1ValueIteratorBase.html#a3e08b114a1aed9bde518c527f94a8c59">isNull_</a></td></tr>
+<tr class="separator:a3e08b114a1aed9bde518c527f94a8c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a> iterators. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="a4e44bf8cbd17ec8d6e2c185904a15ebd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef int <a class="el" href="classJson_1_1ValueIteratorBase.html#a4e44bf8cbd17ec8d6e2c185904a15ebd">Json::ValueIteratorBase::difference_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a02fd11a4fbdc0007da1e8bcf5e6b83c3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::bidirectional_iterator_tag <a class="el" href="classJson_1_1ValueIteratorBase.html#a02fd11a4fbdc0007da1e8bcf5e6b83c3">Json::ValueIteratorBase::iterator_category</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9d2a940d03ea06d20d972f41a89149ee"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classJson_1_1ValueIteratorBase.html">ValueIteratorBase</a> <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">Json::ValueIteratorBase::SelfType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9d3a3c7ce5cdefe23cb486239cf07bb5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef unsigned int <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d3a3c7ce5cdefe23cb486239cf07bb5">Json::ValueIteratorBase::size_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="af45b028d9ff9cbd2554a87878b42dd75"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::ValueIteratorBase::ValueIteratorBase </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a640e990e5f03a96fd650122a2906f59d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::ValueIteratorBase::ValueIteratorBase </td>
+          <td>(</td>
+          <td class="paramtype">const Value::ObjectValues::iterator &amp;&#160;</td>
+          <td class="paramname"><em>current</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad6c553b249e89e3dc9933e100ccbe064"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classJson_1_1ValueIteratorBase.html#a4e44bf8cbd17ec8d6e2c185904a15ebd">ValueIteratorBase::difference_type</a> Json::ValueIteratorBase::computeDistance </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a>, and <a class="el" href="classJson_1_1ValueIteratorBase.html#a3e08b114a1aed9bde518c527f94a8c59">isNull_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a496e6aba44808433ec5858c178be5719"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::ValueIteratorBase::copy </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a>, and <a class="el" href="classJson_1_1ValueIteratorBase.html#a3e08b114a1aed9bde518c527f94a8c59">isNull_</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1ValueConstIterator.html#ad1b1c11f8d7fb22d4d3c231915f2b15b">Json::ValueConstIterator::operator=()</a>, and <a class="el" href="classJson_1_1ValueIterator.html#a8e23312b1db874f7e403fd7e76611bdc">Json::ValueIterator::operator=()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1ValueIteratorBase_a496e6aba44808433ec5858c178be5719_icgraph.png" border="0" usemap="#classJson_1_1ValueIteratorBase_a496e6aba44808433ec5858c178be5719_icgraph" alt=""/></div>
+<map name="classJson_1_1ValueIteratorBase_a496e6aba44808433ec5858c178be5719_icgraph" id="classJson_1_1ValueIteratorBase_a496e6aba44808433ec5858c178be5719_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1ValueConstIterator.html#ad1b1c11f8d7fb22d4d3c231915f2b15b" title="Json::ValueConstIterator\l::operator=" alt="" coords="217,5,383,46"/><area shape="rect" id="node3" href="classJson_1_1ValueIterator.html#a8e23312b1db874f7e403fd7e76611bdc" title="Json::ValueIterator\l::operator=" alt="" coords="234,70,366,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="affc8cf5ff54a9f432cc693362c153fa6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::ValueIteratorBase::decrement </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a40a20c65abc423a26e3aae68d9a0525c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classJson_1_1Value.html">Value</a> &amp; Json::ValueIteratorBase::deref </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afe58f9534e1fd2033419fd9fe244551e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::ValueIteratorBase::increment </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa90591f5f7f8d2f06cc4605816b53738"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespaceJson.html#a800fb90eb6ee8d5d62b600c06f87f7d4">UInt</a> Json::ValueIteratorBase::index </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the index of the referenced <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a>. -1 if it is not an arrayValue. </p>
+
+<p>References <a class="el" href="classJson_1_1Value_1_1CZString.html#a53dafbbde83110d4cb53db5482fa6192">Json::Value::CZString::c_str()</a>, and <a class="el" href="classJson_1_1Value_1_1CZString.html#a4e9f305dbc4a4700abd955fde673a01c">Json::Value::CZString::index()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1ValueIteratorBase_aa90591f5f7f8d2f06cc4605816b53738_cgraph.png" border="0" usemap="#classJson_1_1ValueIteratorBase_aa90591f5f7f8d2f06cc4605816b53738_cgraph" alt=""/></div>
+<map name="classJson_1_1ValueIteratorBase_aa90591f5f7f8d2f06cc4605816b53738_cgraph" id="classJson_1_1ValueIteratorBase_aa90591f5f7f8d2f06cc4605816b53738_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value_1_1CZString.html#a53dafbbde83110d4cb53db5482fa6192" title="Json::Value::CZString\l::c_str" alt="" coords="217,5,367,46"/><area shape="rect" id="node3" href="classJson_1_1Value_1_1CZString.html#a4e9f305dbc4a4700abd955fde673a01c" title="Json::Value::CZString\l::index" alt="" coords="217,70,367,111"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a21820d6ee564e541bd118b21e4741962"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::ValueIteratorBase::isEqual </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#ab3138ce8af8301cca3b041ea55cb922a">current_</a>, and <a class="el" href="classJson_1_1ValueIteratorBase.html#a3e08b114a1aed9bde518c527f94a8c59">isNull_</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="aa2ff5e79fc96acd4c3cd288e92614fc7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -206,7 +479,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>copy</b> (const <a cl
 </div><div class="memdoc">
 <p>Return either the index or the member name of the referenced value as a <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a>. </p>
 
-<p>References <a class="el" href="classJson_1_1ValueIteratorBase.html#a83768d87c608c8d1133de8721eefc31b">memberName()</a>.</p>
+<p>References <a class="el" href="classJson_1_1Value_1_1CZString.html#a53dafbbde83110d4cb53db5482fa6192">Json::Value::CZString::c_str()</a>, <a class="el" href="classJson_1_1Value_1_1CZString.html#a4e9f305dbc4a4700abd955fde673a01c">Json::Value::CZString::index()</a>, <a class="el" href="classJson_1_1Value_1_1CZString.html#af3cc02b77c2cd79d4646fcea3575c1fd">Json::Value::CZString::isStaticString()</a>, and <a class="el" href="classJson_1_1ValueIteratorBase.html#a83768d87c608c8d1133de8721eefc31b">memberName()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1ValueIteratorBase_aa2ff5e79fc96acd4c3cd288e92614fc7_cgraph.png" border="0" usemap="#classJson_1_1ValueIteratorBase_aa2ff5e79fc96acd4c3cd288e92614fc7_cgraph" alt=""/></div>
+<map name="classJson_1_1ValueIteratorBase_aa2ff5e79fc96acd4c3cd288e92614fc7_cgraph" id="classJson_1_1ValueIteratorBase_aa2ff5e79fc96acd4c3cd288e92614fc7_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value_1_1CZString.html#a53dafbbde83110d4cb53db5482fa6192" title="Json::Value::CZString\l::c_str" alt="" coords="251,5,402,46"/><area shape="rect" id="node3" href="classJson_1_1Value_1_1CZString.html#a4e9f305dbc4a4700abd955fde673a01c" title="Json::Value::CZString\l::index" alt="" coords="251,70,402,111"/><area shape="rect" id="node4" href="classJson_1_1Value_1_1CZString.html#af3cc02b77c2cd79d4646fcea3575c1fd" title="Json::Value::CZString\l::isStaticString" alt="" coords="251,135,402,177"/><area shape="rect" id="node5" href="classJson_1_1ValueIteratorBase.html#a83768d87c608c8d1133de8721eefc31b" title="Json::ValueIteratorBase\l::memberName" alt="" coords="245,201,408,242"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -226,11 +508,137 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>copy</b> (const <a cl
 
 <p>Referenced by <a class="el" href="classJson_1_1ValueIteratorBase.html#aa2ff5e79fc96acd4c3cd288e92614fc7">key()</a>.</p>
 
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1ValueIteratorBase_a83768d87c608c8d1133de8721eefc31b_icgraph.png" border="0" usemap="#classJson_1_1ValueIteratorBase_a83768d87c608c8d1133de8721eefc31b_icgraph" alt=""/></div>
+<map name="classJson_1_1ValueIteratorBase_a83768d87c608c8d1133de8721eefc31b_icgraph" id="classJson_1_1ValueIteratorBase_a83768d87c608c8d1133de8721eefc31b_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1ValueIteratorBase.html#aa2ff5e79fc96acd4c3cd288e92614fc7" title="Json::ValueIteratorBase::key" alt="" coords="217,12,407,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a18c2dd42e0bb989ace141bfe9de52792"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::ValueIteratorBase::operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab786787fcad68ca5e8745aaf520fa17f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classJson_1_1ValueIteratorBase.html#a4e44bf8cbd17ec8d6e2c185904a15ebd">difference_type</a> Json::ValueIteratorBase::operator- </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afc656672ac28502f640ade32c38c1b56"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::ValueIteratorBase::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1ValueIteratorBase.html#a9d2a940d03ea06d20d972f41a89149ee">SelfType</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab3138ce8af8301cca3b041ea55cb922a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Value::ObjectValues::iterator Json::ValueIteratorBase::current_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1ValueIteratorBase.html#ad6c553b249e89e3dc9933e100ccbe064">computeDistance()</a>, <a class="el" href="classJson_1_1ValueIteratorBase.html#a496e6aba44808433ec5858c178be5719">copy()</a>, <a class="el" href="classJson_1_1ValueIteratorBase.html#affc8cf5ff54a9f432cc693362c153fa6">decrement()</a>, <a class="el" href="classJson_1_1ValueIteratorBase.html#a40a20c65abc423a26e3aae68d9a0525c">deref()</a>, <a class="el" href="classJson_1_1ValueIteratorBase.html#afe58f9534e1fd2033419fd9fe244551e">increment()</a>, and <a class="el" href="classJson_1_1ValueIteratorBase.html#a21820d6ee564e541bd118b21e4741962">isEqual()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3e08b114a1aed9bde518c527f94a8c59"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::ValueIteratorBase::isNull_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1ValueIteratorBase.html#ad6c553b249e89e3dc9933e100ccbe064">computeDistance()</a>, <a class="el" href="classJson_1_1ValueIteratorBase.html#a496e6aba44808433ec5858c178be5719">copy()</a>, and <a class="el" href="classJson_1_1ValueIteratorBase.html#a21820d6ee564e541bd118b21e4741962">isEqual()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Client/json/<a class="el" href="json_8h_source.html">json.h</a></li>
-<li>Client/jsoncpp.cpp</li>
+<li>Client/<a class="el" href="jsoncpp_8cpp.html">jsoncpp.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Client/Client.h Source File</title>
+<title>Claims: Client/Client.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Client_8h_source.html','');});
 <div class="title">Client.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Client_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Client.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Feb 18, 2014</span></div>
@@ -125,40 +125,53 @@ $(document).ready(function(){initNavTree('Client_8h_source.html','');});
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classClient.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classClient.html">Client</a> {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">enum</span> <a class="code" href="structquery__result.html">query_result</a>{result,error,message};</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classClient.html#ad8b473ada036253d0b5206c4d7e62001a023e3013c52913275e890e66e8144158">   20</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="structquery__result.html">query_result</a>{<a class="code" href="classClient.html#ad8b473ada036253d0b5206c4d7e62001a023e3013c52913275e890e66e8144158">result</a>,<a class="code" href="classClient.html#ad8b473ada036253d0b5206c4d7e62001a650cb954f263195a2809a9223065b001">error</a>,<a class="code" href="classClient.html#ad8b473ada036253d0b5206c4d7e62001aacc6c94d16bff5fbf5c49cde55658ee0">message</a>};</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classClient.html">Client</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classClient.html#ae51af7aa6b8f591496a8f6a4a87a14bf">Client</a>();</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> connection(std::string host, <span class="keywordtype">int</span> port);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="structClientResponse.html">ClientResponse</a>* submitQuery(std::string args);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClient.html#a70a781694af830e3419633c1058d0145">connection</a>(std::string host, <span class="keywordtype">int</span> port);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="structClientResponse.html">ClientResponse</a>* <a class="code" href="classClient.html#ac129048b0c86f3d5d5e8f30656b52ca2">submitQuery</a>(std::string args);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="structquery__result.html">query_result</a> submit(std::string command, std::string&amp; message, <a class="code" href="classResultSet.html">ResultSet</a>&amp; rt);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="structquery__result.html">query_result</a> <a class="code" href="classClient.html#a77fa0d2ff840924df6f09eecf55fe4f6">submit</a>(std::string command, std::string&amp; <a class="code" href="classClient.html#ad8b473ada036253d0b5206c4d7e62001aacc6c94d16bff5fbf5c49cde55658ee0">message</a>, <a class="code" href="classResultSet.html">ResultSet</a>&amp; rt);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="structClientResponse.html">ClientResponse</a>* receive();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="structClientResponse.html">ClientResponse</a>* <a class="code" href="classClient.html#aceb6dc63dbe5debfd1602d3c96d8a9a9">receive</a>();</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> shutdown();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classClient.html#a3c1f75dd30ecd5a2817f3b47c2afc458">shutdown</a>();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> connected()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classClient.html#a729a12337862f1f5496ff2f5e99b2ca7">connected</a>()<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classClient.html">Client</a>();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classClient.html#a840e519ca781888cbd54181572ebe3a7">~Client</a>();</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">bool</span> connected_;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">int</span> m_clientFd;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classClient.html#aa8f65b36399d7ce688a18fc0e02da2b1">   39</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classClient.html#aa8f65b36399d7ce688a18fc0e02da2b1">connected_</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classClient.html#ad7431b4c50ff1fb8a6489a422afb7224">   40</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classClient.html#ad7431b4c50ff1fb8a6489a422afb7224">m_clientFd</a>;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* CLIENT_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classClient_html_a70a781694af830e3419633c1058d0145"><div class="ttname"><a href="classClient.html#a70a781694af830e3419633c1058d0145">Client::connection</a></div><div class="ttdeci">void connection(std::string host, int port)</div><div class="ttdef"><b>Definition:</b> Client.cpp:34</div></div>
+<div class="ttc" id="classClient_html_ad8b473ada036253d0b5206c4d7e62001aacc6c94d16bff5fbf5c49cde55658ee0"><div class="ttname"><a href="classClient.html#ad8b473ada036253d0b5206c4d7e62001aacc6c94d16bff5fbf5c49cde55658ee0">Client::message</a></div><div class="ttdef"><b>Definition:</b> Client.h:20</div></div>
 <div class="ttc" id="structClientResponse_html"><div class="ttname"><a href="structClientResponse.html">ClientResponse</a></div><div class="ttdef"><b>Definition:</b> ClientResponse.h:60</div></div>
-<div class="ttc" id="structquery__result_html"><div class="ttname"><a href="structquery__result.html">query_result</a></div><div class="ttdef"><b>Definition:</b> ExecuteLogicalQueryPlan.h:21</div></div>
+<div class="ttc" id="structquery__result_html"><div class="ttname"><a href="structquery__result.html">query_result</a></div><div class="ttdef"><b>Definition:</b> ExecuteLogicalQueryPlan.h:19</div></div>
+<div class="ttc" id="classClient_html_ad7431b4c50ff1fb8a6489a422afb7224"><div class="ttname"><a href="classClient.html#ad7431b4c50ff1fb8a6489a422afb7224">Client::m_clientFd</a></div><div class="ttdeci">int m_clientFd</div><div class="ttdef"><b>Definition:</b> Client.h:40</div></div>
 <div class="ttc" id="classResultSet_html"><div class="ttname"><a href="classResultSet.html">ResultSet</a></div><div class="ttdef"><b>Definition:</b> ResultSet.h:15</div></div>
+<div class="ttc" id="classClient_html_ac129048b0c86f3d5d5e8f30656b52ca2"><div class="ttname"><a href="classClient.html#ac129048b0c86f3d5d5e8f30656b52ca2">Client::submitQuery</a></div><div class="ttdeci">ClientResponse * submitQuery(std::string args)</div><div class="ttdef"><b>Definition:</b> Client.cpp:125</div></div>
+<div class="ttc" id="classClient_html_aa8f65b36399d7ce688a18fc0e02da2b1"><div class="ttname"><a href="classClient.html#aa8f65b36399d7ce688a18fc0e02da2b1">Client::connected_</a></div><div class="ttdeci">bool connected_</div><div class="ttdef"><b>Definition:</b> Client.h:39</div></div>
+<div class="ttc" id="classClient_html_a77fa0d2ff840924df6f09eecf55fe4f6"><div class="ttname"><a href="classClient.html#a77fa0d2ff840924df6f09eecf55fe4f6">Client::submit</a></div><div class="ttdeci">query_result submit(std::string command, std::string &amp;message, ResultSet &amp;rt)</div><div class="ttdef"><b>Definition:</b> Client.cpp:56</div></div>
+<div class="ttc" id="classClient_html_aceb6dc63dbe5debfd1602d3c96d8a9a9"><div class="ttname"><a href="classClient.html#aceb6dc63dbe5debfd1602d3c96d8a9a9">Client::receive</a></div><div class="ttdeci">ClientResponse * receive()</div><div class="ttdef"><b>Definition:</b> Client.cpp:156</div></div>
 <div class="ttc" id="classClient_html"><div class="ttname"><a href="classClient.html">Client</a></div><div class="ttdef"><b>Definition:</b> Client.h:18</div></div>
+<div class="ttc" id="classClient_html_ad8b473ada036253d0b5206c4d7e62001a650cb954f263195a2809a9223065b001"><div class="ttname"><a href="classClient.html#ad8b473ada036253d0b5206c4d7e62001a650cb954f263195a2809a9223065b001">Client::error</a></div><div class="ttdef"><b>Definition:</b> Client.h:20</div></div>
+<div class="ttc" id="classClient_html_ad8b473ada036253d0b5206c4d7e62001a023e3013c52913275e890e66e8144158"><div class="ttname"><a href="classClient.html#ad8b473ada036253d0b5206c4d7e62001a023e3013c52913275e890e66e8144158">Client::result</a></div><div class="ttdef"><b>Definition:</b> Client.h:20</div></div>
+<div class="ttc" id="classClient_html_ae51af7aa6b8f591496a8f6a4a87a14bf"><div class="ttname"><a href="classClient.html#ae51af7aa6b8f591496a8f6a4a87a14bf">Client::Client</a></div><div class="ttdeci">Client()</div><div class="ttdef"><b>Definition:</b> Client.cpp:22</div></div>
+<div class="ttc" id="classClient_html_a840e519ca781888cbd54181572ebe3a7"><div class="ttname"><a href="classClient.html#a840e519ca781888cbd54181572ebe3a7">Client::~Client</a></div><div class="ttdeci">virtual ~Client()</div><div class="ttdef"><b>Definition:</b> Client.cpp:31</div></div>
+<div class="ttc" id="classClient_html_a3c1f75dd30ecd5a2817f3b47c2afc458"><div class="ttname"><a href="classClient.html#a3c1f75dd30ecd5a2817f3b47c2afc458">Client::shutdown</a></div><div class="ttdeci">void shutdown()</div><div class="ttdef"><b>Definition:</b> Client.cpp:189</div></div>
+<div class="ttc" id="classClient_html_a729a12337862f1f5496ff2f5e99b2ca7"><div class="ttname"><a href="classClient.html#a729a12337862f1f5496ff2f5e99b2ca7">Client::connected</a></div><div class="ttdeci">bool connected() const </div><div class="ttdef"><b>Definition:</b> Client.cpp:27</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_922c588100a187620fdc1533bc178f73.html">Client</a></li><li class="navelem"><b>Client.h</b></li>
+    <li class="navelem"><a class="el" href="dir_922c588100a187620fdc1533bc178f73.html">Client</a></li><li class="navelem"><a class="el" href="Client_8h.html">Client.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
