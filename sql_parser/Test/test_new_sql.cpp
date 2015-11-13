@@ -45,20 +45,25 @@ int TestNewSql() {
     Parser* my_parser = new Parser();
     AstNode* raw_ast = my_parser->GetRawAST();
     if (raw_ast != NULL) {
-      //      raw_ast->Print();
-      //      cout << "--------------begin semantic analysis---------------" <<
-      //      endl;
+#ifdef PRINTCONTEXT
+      raw_ast->Print();
+      cout << "--------------begin semantic analysis---------------" << endl;
+#endif
       SemanticContext sem_cnxt;
       ErrorNo ret = raw_ast->SemanticAnalisys(&sem_cnxt);
       if (eOK != ret) {
         cout << "semantic analysis error result= : " << ret << endl;
         continue;
       }
+#ifdef PRINTCONTEXT
       raw_ast->Print();
       cout << "--------------begin push down condition ------------" << endl;
+#endif
       raw_ast->PushDownCondition(NULL);
+#ifdef PRINTCONTEXT
       raw_ast->Print();
       cout << "--------------begin logical plan -------------------" << endl;
+#endif
 
       LogicalOperator* logic_plan = NULL;
       raw_ast->GetLogicalPlan(logic_plan);
@@ -66,15 +71,17 @@ int TestNewSql() {
       logic_plan = new LogicalQueryPlanRoot(
           0, logic_plan, LogicalQueryPlanRoot::kResultCollector);
       logic_plan->GetPlanContext();
-      //      logic_plan->Print();
+#ifdef PRINTCONTEXT
+      logic_plan->Print();
       cout << "--------------begin physical plan -------------------" << endl;
+#endif
 
       PhysicalOperatorBase* physical_plan =
           logic_plan->GetPhysicalPlan(64 * 1024);
-
+#ifdef PRINTCONTEXT
       physical_plan->Print();
-
       cout << "--------------begin output result -------------------" << endl;
+#endif
 
       physical_plan->Open();
       while (physical_plan->Next(NULL)) {

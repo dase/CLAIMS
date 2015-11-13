@@ -206,8 +206,8 @@ class SemanticContext {
   set<string> get_tables();
   void ClearColumn();
   void ClearTable();
-  AstNode* agg_upper_;
   void PrintContext(string flag);
+  AstNode* agg_upper_;
   SQLClauseType clause_type_;
   bool have_agg;
   bool select_expr_have_agg;
@@ -273,6 +273,7 @@ class AstNode {
   explicit AstNode(AstNode* node);
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
+  virtual AstNode* AstNodeCopy() { return NULL; }
   virtual ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   virtual void RecoverExprName(string& name);
   // replace aggregation expression with one single column, and collect it if
@@ -282,17 +283,11 @@ class AstNode {
   AstNodeType ast_node_type();
   virtual void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   virtual void GetRefTable(set<string>& ref_table);
-  virtual void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                             AstNode* joined_root) {}
 
   virtual ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt) {
     return eOK;
   }
   virtual ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan) { return eOK; }
-  virtual ErrorNo GetLogicalPlan(QNode*& logic_expr,
-                                 LogicalOperator* child_logic_plan) {
-    return eOK;
-  }
   virtual ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                                  LogicalOperator* child_logic_plan) {
     return eOK;
@@ -308,7 +303,6 @@ class AstNode {
       SelectAliasSolver* const select_alias_solver) {
     return eOK;
   }
-  virtual AstNode* AstNodeCopy() { return NULL; }
   AstNodeType ast_node_type_;
   string expr_str_;
 };

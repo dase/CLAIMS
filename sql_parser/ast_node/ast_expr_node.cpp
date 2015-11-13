@@ -94,31 +94,7 @@ void AstExprConst::ReplaceAggregation(AstNode*& agg_column,
                                       bool need_collect) {
   agg_column = NULL;
 }
-ErrorNo AstExprConst::GetLogicalPlan(QNode*& logic_expr,
-                                     LogicalOperator* child_logic_plan) {
-  data_type actual_type = t_string;
-  if (expr_type_ == "CONST_INT") {
-    if (atol(data_.c_str()) > INT_MAX) {
-      actual_type = t_u_long;
-    } else {
-      actual_type = t_int;
-    }
-  } else if (expr_type_ == "CONST_BOOL") {
-    actual_type = t_boolean;
-  } else if (expr_type_ == "CONST_STRING") {
-    actual_type = t_string;
-  } else if (expr_type_ == "CONST_DOUBLE") {
-    actual_type = t_double;
-  } else if (expr_type_ == "CONST") {
-    actual_type = t_string;
-  } else {
-    LOG(ERROR) << "no actual_type!" << endl;
-    return eNoDataTypeInConst;
-  }
-  logic_expr = new QExpr(const_cast<char*>(data_.c_str()), actual_type,
-                         const_cast<char*>(data_.c_str()));
-  return eOK;
-}
+
 ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
                                      LogicalOperator* child_logic_plan) {
   data_type actual_type = t_string;
@@ -672,41 +648,7 @@ void AstExprCmpBinary::GetRefTable(set<string>& ref_table) {
     arg1_->GetRefTable(ref_table);
   }
 }
-ErrorNo AstExprCmpBinary::GetLogicalPlan(QNode*& logic_expr,
-                                         LogicalOperator* child_logic_plan) {
-  QNode* left_expr_node = NULL;
-  QNode* right_expr_node = NULL;
-  ErrorNo ret = eOK;
-  ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
-  if (eOK != ret) {
-    return ret;
-  }
-  ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
-  if (eOK != ret) {
-    return ret;
-  }
-  data_type actual_type = TypeConversionMatrix::type_conversion_matrix
-      [left_expr_node->actual_type][right_expr_node->actual_type];
-  oper_type oper = oper_equal;
-  if (expr_type_ == "<") {
-    oper = oper_less;
-  } else if (expr_type_ == ">") {
-    oper = oper_great;
-  } else if (expr_type_ == "=") {
-    oper = oper_equal;
-  } else if (expr_type_ == ">=") {
-    oper = oper_great_equal;
-  } else if (expr_type_ == "<=") {
-    oper = oper_less_equal;
-  } else if (expr_type_ == "!=") {
-    oper = oper_not_equal;
-  } else if (expr_type_ == "<=>") {
-    oper = oper_not_equal;
-  }
-  logic_expr = new QExpr_binary(left_expr_node, right_expr_node, actual_type,
-                                oper, t_qexpr_cmp, expr_str_.c_str());
-  return eOK;
-}
+
 ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
@@ -846,10 +788,7 @@ void AstExprList::GetRefTable(set<string>& ref_table) {
     next_->GetRefTable(ref_table);
   }
 }
-ErrorNo AstExprList::GetLogicalPlan(QNode*& logic_expr,
-                                    LogicalOperator* child_logic_plan) {
-  return eOK;
-}
+
 ErrorNo AstExprList::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != expr_) {
