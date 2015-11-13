@@ -269,15 +269,7 @@ ErrorNo AstFromList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   sem_cnxt->clause_type_ = SemanticContext::kNone;
   return eOK;
 }
-void AstFromList::GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                                AstNode* joined_root) {
-  if (NULL != next_) {
-    next_->GetJoinedRoot(table_joined_root, NULL);
-  }
-  if (NULL != args_) {
-    args_->GetJoinedRoot(table_joined_root, NULL);
-  }
-}
+
 ErrorNo AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
   PushDownConditionContext* cur_pdccnxt = new PushDownConditionContext();
   cur_pdccnxt->sub_expr_info_ = pdccnxt->sub_expr_info_;
@@ -394,15 +386,6 @@ ErrorNo AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
             << endl;
   return eOK;
 }
-void AstTable::GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                             AstNode* joined_root) {
-  assert(table_alias_ != "NULL");
-  if (NULL == joined_root) {
-    table_joined_root[table_alias_] = this;
-  } else {
-    table_joined_root[table_alias_] = joined_root;
-  }
-}
 ErrorNo AstTable::PushDownCondition(PushDownConditionContext* pdccnxt) {
   pdccnxt->from_tables_.insert(table_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
@@ -510,15 +493,6 @@ ErrorNo AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   return sem_cnxt->AddTableColumn(column_to_table);
 }
 
-void AstSubquery::GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                                AstNode* joined_root) {
-  assert(subquery_alias_ != "NULL");
-  if (NULL == joined_root) {
-    table_joined_root[subquery_alias_] = this;
-  } else {
-    table_joined_root[subquery_alias_] = joined_root;
-  }
-}
 ErrorNo AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
   pdccnxt->from_tables_.insert(subquery_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
@@ -662,11 +636,6 @@ ErrorNo AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ret = sem_cnxt->AddTableColumn(join_sem_cnxt.get_column_to_table());
   //  join_sem_cnxt.~SemanticContext();
   return ret;
-}
-void AstJoin::GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                            AstNode* joined_root) {
-  left_table_->GetJoinedRoot(table_joined_root, this);
-  right_table_->GetJoinedRoot(table_joined_root, this);
 }
 ErrorNo AstJoin::PushDownCondition(PushDownConditionContext* pdccnxt) {
   PushDownConditionContext* cur_pdccnxt = new PushDownConditionContext();
@@ -1321,7 +1290,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return ret;
     }
   }
-#ifndef PRINTCONTEXT
+#ifdef PRINTCONTEXT
   sem_cnxt->PrintContext("after scan");
 #endif
   // first recover select attr name
@@ -1336,7 +1305,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       LOG(ERROR) << "select list has error" << endl;
       return ret;
     }
-    // just for collecting aggregation
+    // collecting aggregation and replace a aggregation expression to one column
     AstNode* agg_column = NULL;
     select_list_->ReplaceAggregation(agg_column, agg_attrs_, true);
 
@@ -1357,9 +1326,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     SelectAliasSolver* select_alias_solver =
         new SelectAliasSolver(sem_cnxt->select_expr_);
     groupby_clause_->SolveSelectAlias(select_alias_solver);
-
     ret = groupby_clause_->SemanticAnalisys(sem_cnxt);
-
     if (eOK != ret) {
       LOG(ERROR) << "groupby clause has error" << endl;
       return ret;
@@ -1367,20 +1334,20 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     groupby_attrs_ = sem_cnxt->get_groupby_attrs();
   }
 
-  // rebuild schema result from aggregation
   have_aggeragion_ = (NULL != groupby_clause_ || agg_attrs_.size() > 0);
+
   if (have_aggeragion_) {
+    // rebuild schema result from aggregation
     ErrorNo ret = sem_cnxt->RebuildTableColumn(agg_attrs_);
     if (eOK != ret) {
       LOG(ERROR) << "there are confiction in new schema after agg!" << endl;
       return ret;
     }
-#ifndef PRINTCONTEXT
+#ifdef PRINTCONTEXT
     sem_cnxt->PrintContext("after aggregation");
 #endif
-    // check whether other column except from aggregation funcs and groupby
-    // expressions in select expressions
   }
+  // first replace alias to original expression
   // having clause exist only if have aggregation
   if (NULL != having_clause_) {
     if (!have_aggeragion_) {
@@ -1429,20 +1396,20 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return ret;
     }
   }
-  // for select clause rebuild table column
   if (have_aggeragion_) {
     AstNode* agg_column = NULL;
     select_list_->ReplaceAggregation(agg_column, agg_attrs_, false);
-
+    // check whether other column except from aggregation funcs and groupby
+    // expressions in select expressions
     sem_cnxt->ClearSelectAttrs();
     ret = select_list_->SemanticAnalisys(sem_cnxt);
-
     if (eOK != ret) {
       return eAggSelectExprHaveOtherColumn;
     }
   }
+  // for select clause rebuild table column
   sem_cnxt->RebuildTableColumn();
-#ifndef PRINTCONTEXT
+#ifdef PRINTCONTEXT
   sem_cnxt->PrintContext("after select");
 #endif
 

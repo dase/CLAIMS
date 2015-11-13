@@ -64,7 +64,6 @@ class AstExprConst : public AstNode {
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
 
@@ -163,7 +162,6 @@ class AstExprCmpBinary : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
   ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
@@ -188,7 +186,6 @@ class AstExprList : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* expr_;

@@ -72,12 +72,12 @@ AstStmtList::~AstStmtList() {
 void AstNode::RecoverExprName(string& name) { name = "AstNode"; }
 void AstNode::ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                                  bool is_select) {
-  cout << "this is in ast base node!" << endl;
+  LOG(INFO) << "this is in ast base node!" << endl;
 }
 void AstNode::GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and) {
   is_top_and = false;
   sub_expr.push_back(this);
-  cout << "GetSubExpr ast node type is : " << ast_node_type_ << endl;
+  //  cout << "GetSubExpr ast node type is : " << ast_node_type_ << endl;
 }
 void AstNode::GetRefTable(set<string>& ref_table) { return; }
 void GetJoinedRoot(map<string, AstNode*> table_joined_root,

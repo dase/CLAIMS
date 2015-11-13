@@ -82,9 +82,6 @@ class AstFromList : public AstNode {
   ~AstFromList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
-  void PreProcess();
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -107,8 +104,6 @@ class AstTable : public AstNode {
   ~AstTable();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -132,8 +127,6 @@ class AstSubquery : public AstNode {
   ~AstSubquery();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -167,8 +160,6 @@ class AstJoin : public AstNode {
   ~AstJoin();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
