@@ -36,6 +36,8 @@
 #include <vector>
 #include "./ast_select_stmt.h"
 #include "./ast_expr_node.h"
+#include "../../logical_operator/logical_operator.h"
+using claims::logical_operator::LogicalOperator;
 using std::cout;
 using std::setw;
 using std::endl;
@@ -45,7 +47,8 @@ using std::vector;
 // namespace claims {
 // namespace sql_parser {
 AstNode::AstNode(AstNodeType ast_node_type) : ast_node_type_(ast_node_type) {}
-
+AstNode::AstNode(AstNode* node)
+    : ast_node_type_(node->ast_node_type_), expr_str_(node->expr_str_) {}
 AstNode::~AstNode() {}
 void AstNode::Print(int level) const {
   cout << setw(level * 8) << " "
@@ -81,6 +84,56 @@ void GetJoinedRoot(map<string, AstNode*> table_joined_root,
                    AstNode* joined_root) {
   return;
 }
+ErrorNo AstNode::GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
+                                  LogicalOperator* left_plan,
+                                  LogicalOperator* right_plan,
+                                  const set<AstNode*>& equal_join_condition) {
+  for (auto it = equal_join_condition.begin(); it != equal_join_condition.end();
+       ++it) {
+    AstExprCmpBinary* equal_condi = reinterpret_cast<AstExprCmpBinary*>(*it);
+    AstColumn* left_node = reinterpret_cast<AstColumn*>(equal_condi->arg0_);
+    AstColumn* right_node = reinterpret_cast<AstColumn*>(equal_condi->arg1_);
+    Attribute attr0 = left_plan->GetPlanContext().GetAttribute(
+        left_node->relation_name_ + "." + left_node->column_name_);
+    Attribute attr1 = right_plan->GetPlanContext().GetAttribute(
+        right_node->relation_name_ + "." + right_node->column_name_);
+    if (attr0.attrName != "NULL" && attr1.attrName != "NULL") {
+      join_pair.push_back(LogicalEqualJoin::JoinPair(attr0, attr1));
+      continue;
+    }
+    Attribute attr3 = left_plan->GetPlanContext().GetAttribute(
+        right_node->relation_name_ + "." + right_node->column_name_);
+    Attribute attr4 = right_plan->GetPlanContext().GetAttribute(
+        left_node->relation_name_ + "." + left_node->column_name_);
+    if (attr3.attrName != "NULL" && attr4.attrName != "NULL") {
+      join_pair.push_back(LogicalEqualJoin::JoinPair(attr3, attr4));
+      continue;
+    } else {
+      LOG(ERROR) << "equal condition couldn't match separately!" << endl;
+      assert(false);
+      return eEqualJoinCondiNotMatch;
+    }
+  }
+  return eOK;
+}
+ErrorNo AstNode::GetFilterCondition(vector<ExprNode*>& condition,
+                                    const set<AstNode*>& normal_condition,
+                                    LogicalOperator* logic_plan) {
+  ErrorNo ret = eOK;
+  ExprNode* expr_node = NULL;
+  for (auto it = normal_condition.begin(); it != normal_condition.end(); ++it) {
+    ret = (*it)->GetLogicalPlan(expr_node, logic_plan);
+    if (eOK != ret) {
+      LOG(ERROR) << "get normal condition upon from list, due to [err: " << ret
+                 << " ] !" << endl;
+      return ret;
+    }
+    assert(NULL != expr_node);
+    condition.push_back(expr_node);
+  }
+  return eOK;
+}
+
 void AstStmtList::Print(int level) const {
   cout << setw(level * 8) << " "
        << "|stmt list|" << endl;
@@ -128,6 +181,7 @@ SemanticContext::SemanticContext() {
   agg_upper_ = NULL;
   clause_type_ = kNone;
   have_agg = false;
+  select_expr_have_agg = false;
 }
 
 SemanticContext::~SemanticContext() {}
@@ -294,9 +348,13 @@ ErrorNo SemanticContext::RebuildTableColumn(set<AstNode*>& aggregation) {
   ClearTable();
   ErrorNo ret = eOK;
   ret = AddNewTableColumn(aggregation, true);
-  if (eOK != ret) return ret;
+  if (eOK != ret) {
+    return ret;
+  }
   ret = AddNewTableColumn(groupby_attrs_, false);
-  if (eOK != ret) return ret;
+  if (eOK != ret) {
+    return ret;
+  }
   return eOK;
 }
 ErrorNo SemanticContext::RebuildTableColumn() {
@@ -438,7 +496,8 @@ bool PushDownConditionContext::IsEqualJoinCondition(AstNode* sub_expr) {
   if (sub_expr->ast_node_type() == AST_EXPR_CMP_BINARY) {
     AstExprCmpBinary* cmp_expr = reinterpret_cast<AstExprCmpBinary*>(sub_expr);
     if (cmp_expr->arg0_->ast_node_type() == AST_COLUMN &&
-        cmp_expr->arg1_->ast_node_type() == AST_COLUMN) {
+        cmp_expr->arg1_->ast_node_type() == AST_COLUMN &&
+        cmp_expr->expr_type_ == "=") {
       return true;
     }
   }

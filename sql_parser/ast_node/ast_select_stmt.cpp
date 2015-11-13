@@ -107,7 +107,9 @@ ErrorNo AstSelectList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
   if (NULL != args_) {
     sem_cnxt->clause_type_ = SemanticContext::kSelectClause;
+    sem_cnxt->select_expr_have_agg = false;
     ret = args_->SemanticAnalisys(sem_cnxt);
+    sem_cnxt->select_expr_have_agg = false;
     sem_cnxt->clause_type_ = SemanticContext::kNone;
     if (eOK != ret) {
       return ret;
@@ -136,10 +138,10 @@ void AstSelectList::ReplaceAggregation(AstNode*& agg_column,
                                        set<AstNode*>& agg_node,
                                        bool is_select) {
   if (NULL != args_) {
-    args_->ReplaceAggregation(agg_column, agg_node, true);
+    args_->ReplaceAggregation(agg_column, agg_node, is_select);
   }
   if (NULL != next_) {
-    next_->ReplaceAggregation(agg_column, agg_node, true);
+    next_->ReplaceAggregation(agg_column, agg_node, is_select);
   }
   return;
 }
@@ -151,7 +153,8 @@ AstSelectExpr::AstSelectExpr(AstNodeType ast_node_type, std::string expr_alias,
     : AstNode(ast_node_type),
       expr_alias_(expr_alias),
       expr_(expr),
-      have_agg_func_(false) {}
+      have_agg_func_(false),
+      have_alias_(expr_alias != "NULL") {}
 
 AstSelectExpr::~AstSelectExpr() { delete expr_; }
 
@@ -173,7 +176,14 @@ ErrorNo AstSelectExpr::SemanticAnalisys(SemanticContext* sem_cnxt) {
     if (eOK != ret) {
       return ret;
     }
-    expr_->expr_str_ = expr_alias_;          // transfer the alias to expr
+    // transfer the alias to expr, but if this expr has aggregation, it mustn't
+    // give the expr_alias_ go expr_str_, because aggregation shouldn't be
+    // aliased at this time, but to be aliased after ReplaceAggregation(), at
+    // that time, the aggregation has changed to be one column, the
+    // select_expr_have_agg = false.
+    if (!sem_cnxt->select_expr_have_agg) {
+      expr_->expr_str_ = expr_alias_;
+    }
     ret = sem_cnxt->AddSelectAttrs(expr_);   // collect select expr attr
     sem_cnxt->select_expr_.push_back(this);  // collect select expr node
     if (eOK != ret) {
@@ -198,7 +208,7 @@ void AstSelectExpr::ReplaceAggregation(AstNode*& agg_column,
   if (NULL != expr_) {
     agg_column = NULL;
     int agg_node_num = agg_node.size();
-    expr_->ReplaceAggregation(agg_column, agg_node, true);
+    expr_->ReplaceAggregation(agg_column, agg_node, is_select);
     have_agg_func_ = (agg_node.size() > agg_node_num);
     if (NULL != agg_column) {
       expr_ = agg_column;
@@ -301,35 +311,10 @@ ErrorNo AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (equal_join_condition_.size() > 0) {
       vector<LogicalEqualJoin::JoinPair> join_pair;
       join_pair.clear();
-      // TODO(FZH)
-      for (auto it = equal_join_condition_.begin();
-           it != equal_join_condition_.end(); ++it) {
-        //
-        AstExprCmpBinary* equal_condi =
-            reinterpret_cast<AstExprCmpBinary*>(*it);
-        AstColumn* left_node = reinterpret_cast<AstColumn*>(equal_condi->arg0_);
-        AstColumn* right_node =
-            reinterpret_cast<AstColumn*>(equal_condi->arg1_);
-        Attribute attr0 = args_lplan->GetPlanContext().GetAttribute(
-            left_node->relation_name_ + "." + left_node->column_name_);
-        Attribute attr1 = next_lplan->GetPlanContext().GetAttribute(
-            right_node->relation_name_ + "." + right_node->column_name_);
-        if (attr0.attrName != "NULL" && attr1.attrName != "NULL") {
-          join_pair.push_back(LogicalEqualJoin::JoinPair(attr0, attr1));
-          continue;
-        }
-        Attribute attr3 = args_lplan->GetPlanContext().GetAttribute(
-            right_node->relation_name_ + "." + right_node->column_name_);
-        Attribute attr4 = next_lplan->GetPlanContext().GetAttribute(
-            left_node->relation_name_ + "." + left_node->column_name_);
-        if (attr3.attrName != "NULL" && attr4.attrName != "NULL") {
-          join_pair.push_back(LogicalEqualJoin::JoinPair(attr3, attr4));
-          continue;
-        } else {
-          LOG(ERROR) << "equal condition couldn't match separately!" << endl;
-          assert(false);
-          return eEqualJoinCondiNotMatch;
-        }
+      ret = GetEqualJoinPair(join_pair, args_lplan, next_lplan,
+                             equal_join_condition_);
+      if (eOK != ret) {
+        return ret;
       }
       logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
 
@@ -339,17 +324,9 @@ ErrorNo AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (normal_condition_.size() > 0) {
       vector<ExprNode*> condition;
       condition.clear();
-      ExprNode* qnode = NULL;
-      for (auto it = normal_condition_.begin(); it != normal_condition_.end();
-           ++it) {
-        ret = (*it)->GetLogicalPlan(qnode, logic_plan);
-        if (eOK != ret) {
-          LOG(ERROR) << "get normal condition upon from list, due to [err: "
-                     << ret << " ] !" << endl;
-          return ret;
-        }
-        assert(NULL != qnode);
-        condition.push_back(qnode);
+      ret = GetFilterCondition(condition, normal_condition_, logic_plan);
+      if (eOK != ret) {
+        return ret;
       }
       logic_plan = new LogicalFilter(logic_plan, condition);
     }
@@ -660,7 +637,7 @@ ErrorNo AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
     assert(false);
     return eLeftTableIsNULLInJoin;
   }
-  if (NULL != right_table_) {
+  if (NULL == right_table_) {
     LOG(ERROR) << "right table is null in join!" << endl;
     assert(false);
     return eRightTableIsNULLInJoin;
@@ -721,15 +698,22 @@ ErrorNo AstJoin::PushDownCondition(PushDownConditionContext* pdccnxt) {
 ErrorNo AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
   LogicalOperator* left_plan = NULL;
   LogicalOperator* right_plan = NULL;
-  left_table_->GetLogicalPlan(left_plan);
-  right_table_->GetLogicalPlan(right_plan);
+  ErrorNo ret = eOK;
+  ret = left_table_->GetLogicalPlan(left_plan);
+  if (eOK != ret) {
+    return ret;
+  }
+  ret = right_table_->GetLogicalPlan(right_plan);
+  if (eOK != ret) {
+    return ret;
+  }
   if (equal_join_condition_.size() > 0) {
     vector<LogicalEqualJoin::JoinPair> join_pair;
     join_pair.clear();
-    // TODO(FZH)
-    for (auto it = equal_join_condition_.begin();
-         it != equal_join_condition_.end(); ++it) {
-      //        join_pair.push_back(new LogicalEqualJoin::JoinPair());
+    ret = GetEqualJoinPair(join_pair, left_plan, right_plan,
+                           equal_join_condition_);
+    if (eOK != ret) {
+      return ret;
     }
     logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
 
@@ -737,8 +721,12 @@ ErrorNo AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     logic_plan = new LogicalCrossJoin(left_plan, right_plan);
   }
   if (normal_condition_.size() > 0) {
-    vector<QNode*> condition;
-    // TODO(FZH)
+    vector<ExprNode*> condition;
+    condition.clear();
+    ret = GetFilterCondition(condition, normal_condition_, logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
     logic_plan = new LogicalFilter(logic_plan, condition);
   }
   return eOK;
@@ -822,29 +810,31 @@ void AstGroupByList::RecoverExprName(string& name) {
 }
 // for select a+b as A, count(*) from TB group by A, should to be "select A,
 // count(*) from TB group by a+b as A".
-ErrorNo AstGroupByList::ExchangeSelectAliasWithGroupBy(
-    const vector<AstNode*>& select_expr) {
+ErrorNo AstGroupByList::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
   ErrorNo ret = eOK;
   if (NULL != expr_) {
+    AstSelectExpr* select_expr_i = NULL;
     if (AST_COLUMN == expr_->ast_node_type()) {
       AstColumn* column = reinterpret_cast<AstColumn*>(expr_);
-      for (int i = 0; i < select_expr.size(); ++i) {
-        AstSelectExpr* select_expr_i =
-            reinterpret_cast<AstSelectExpr*>(select_expr[i]);
-        if (!select_expr_i->have_agg_func_ &&
+      for (int i = 0; i < select_alias_solver->select_expr_.size(); ++i) {
+        select_expr_i = reinterpret_cast<AstSelectExpr*>(
+            select_alias_solver->select_expr_[i]);
+        if (select_expr_i->have_alias_ && !select_expr_i->have_agg_func_ &&
             select_expr_i->expr_alias_ == column->column_name_) {
-          select_expr_i->have_agg_func_ = true;  // even through is false;
-          AstNode* temp = select_expr_i->expr_;
-          select_expr_i->expr_ = expr_;
-          expr_ = temp;
+          // even through is false, but for avoiding ignore solve it again
+          select_expr_i->have_agg_func_ = true;
+          // should give alias to expr_str_
+          //          select_expr_i->expr_->expr_str_ =
+          //          select_expr_i->expr_alias_;
+          swap(select_expr_i->expr_, expr_);
           break;
         }
       }
     }
   }
   if (NULL != next_) {
-    ret = reinterpret_cast<AstGroupByList*>(next_)
-              ->ExchangeSelectAliasWithGroupBy(select_expr);
+    ret = next_->SolveSelectAlias(select_alias_solver);
   }
   return ret;
 }
@@ -880,11 +870,10 @@ void AstGroupByClause::RecoverExprName(string& name) {
     groupby_list_->RecoverExprName(name);
   }
 }
-ErrorNo AstGroupByClause::ReplaceSelectAlias(
-    const vector<AstNode*>& select_expr) {
+ErrorNo AstGroupByClause::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
   if (NULL != groupby_list_) {
-    ErrorNo ret = reinterpret_cast<AstGroupByList*>(groupby_list_)
-                      ->ExchangeSelectAliasWithGroupBy(select_expr);
+    ErrorNo ret = groupby_list_->SolveSelectAlias(select_alias_solver);
     if (eOK != ret) {
       return ret;
     }
@@ -954,7 +943,20 @@ void AstOrderByList::ReplaceAggregation(AstNode*& agg_column,
     next_->ReplaceAggregation(agg_column, agg_node, is_select);
   }
 }
-
+ErrorNo AstOrderByList::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != expr_) {
+    expr_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(expr_);
+    select_alias_solver->DeleteOldNode();
+  }
+  if (NULL != next_) {
+    next_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(next_);
+    select_alias_solver->DeleteOldNode();
+  }
+  return eOK;
+}
 AstOrderByClause::AstOrderByClause(AstNodeType ast_node_type,
                                    AstNode* orderby_list)
     : AstNode(ast_node_type),
@@ -1008,6 +1010,13 @@ ErrorNo AstOrderByClause::GetLogicalPlan(LogicalOperator*& logic_plan) {
   logic_plan = new LogicalSort(logic_plan, orderby_expr);
   return eOK;
 }
+ErrorNo AstOrderByClause::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != orderby_list_) {
+    orderby_list_->SolveSelectAlias(select_alias_solver);
+  }
+  return eOK;
+}
 AstHavingClause::AstHavingClause(AstNodeType ast_node_type, AstNode* expr)
     : AstNode(ast_node_type), expr_(expr) {}
 
@@ -1049,6 +1058,15 @@ ErrorNo AstHavingClause::GetLogicalPlan(LogicalOperator*& logic_plan) {
     expr_->GetLogicalPlan(expr, logic_plan);
     having_expr.push_back(expr);
     logic_plan = new LogicalFilter(logic_plan, having_expr);
+  }
+  return eOK;
+}
+ErrorNo AstHavingClause::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != expr_) {
+    expr_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(expr_);
+    select_alias_solver->DeleteOldNode();
   }
   return eOK;
 }
@@ -1105,9 +1123,23 @@ AstColumn::AstColumn(AstNodeType ast_node_type, std::string relation_name,
                      std::string column_name, AstNode* next)
     : AstNode(AST_COLUMN),
       relation_name_(relation_name),
-      column_name_(column_name),
-      next_(next) {}
-
+      column_name_(column_name) {
+  if (NULL != next) {
+    next_ = next->AstNodeCopy();
+  } else {
+    next_ = NULL;
+  }
+}
+AstColumn::AstColumn(AstColumn* node)
+    : AstNode(node),
+      relation_name_(node->relation_name_),
+      column_name_(node->column_name_) {
+  if (NULL != node->next_) {
+    next_ = node->next_->AstNodeCopy();
+  } else {
+    next_ = NULL;
+  }
+}
 AstColumn::~AstColumn() { delete next_; }
 
 void AstColumn::Print(int level) const {
@@ -1187,14 +1219,6 @@ void AstColumn::GetRefTable(set<string>& ref_table) {
 
 ErrorNo AstColumn::GetLogicalPlan(ExprNode*& logic_expr,
                                   LogicalOperator* child_logic_plan) {
-  //  Attribute attr =
-  //  child_logic_plan->GetPlanContext().GetAttribute(expr_str_);
-  //  if (attr.attrName == "NULL") {
-  //    LOG(ERROR) << "AstColumn::GetLogicalPlan get attr shouldn't be NULL"
-  //               << endl;
-  //    cout << "AstColumn::GetLogicalPlan get attr shouldn't be NULL" << endl;
-  //    assert(false);
-  //  }
   logic_expr = new ExprColumn(
       ExprNodeType::t_qcolcumns,
       child_logic_plan->GetPlanContext()
@@ -1203,6 +1227,25 @@ ErrorNo AstColumn::GetLogicalPlan(ExprNode*& logic_expr,
       expr_str_, relation_name_, column_name_);
   return eOK;
 }
+ErrorNo AstColumn::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  ErrorNo ret = eOK;
+  AstSelectExpr* select_expr_i = NULL;
+  for (int i = 0; i < select_alias_solver->select_expr_.size(); ++i) {
+    select_expr_i =
+        reinterpret_cast<AstSelectExpr*>(select_alias_solver->select_expr_[i]);
+    if (select_expr_i->have_alias_ &&
+        select_expr_i->expr_alias_ == column_name_) {
+      select_alias_solver->new_node_ = (select_expr_i->expr_)->AstNodeCopy();
+      assert(select_alias_solver->new_node_ != NULL);
+      select_alias_solver->old_node_ = this;
+      break;
+    }
+  }
+  return eOK;
+}
+AstNode* AstColumn::AstNodeCopy() { return new AstColumn(this); }
+
 AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
                              AstNode* select_list, AstNode* from_list,
                              AstNode* where_clause, AstNode* groupby_clause,
@@ -1278,8 +1321,9 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return ret;
     }
   }
-
+#ifndef PRINTCONTEXT
   sem_cnxt->PrintContext("after scan");
+#endif
   // first recover select attr name
   // collect all aggregation functions
   agg_attrs_.clear();
@@ -1292,7 +1336,7 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       LOG(ERROR) << "select list has error" << endl;
       return ret;
     }
-
+    // just for collecting aggregation
     AstNode* agg_column = NULL;
     select_list_->ReplaceAggregation(agg_column, agg_attrs_, true);
 
@@ -1310,8 +1354,9 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     string name = "";
     groupby_clause_->RecoverExprName(name);
     // mustn't change the order of upper clause and below
-    reinterpret_cast<AstGroupByClause*>(groupby_clause_)
-        ->ReplaceSelectAlias(sem_cnxt->select_expr_);
+    SelectAliasSolver* select_alias_solver =
+        new SelectAliasSolver(sem_cnxt->select_expr_);
+    groupby_clause_->SolveSelectAlias(select_alias_solver);
 
     ret = groupby_clause_->SemanticAnalisys(sem_cnxt);
 
@@ -1330,25 +1375,21 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       LOG(ERROR) << "there are confiction in new schema after agg!" << endl;
       return ret;
     }
+#ifndef PRINTCONTEXT
     sem_cnxt->PrintContext("after aggregation");
-
+#endif
     // check whether other column except from aggregation funcs and groupby
     // expressions in select expressions
-    sem_cnxt->ClearSelectAttrs();
-    ret = select_list_->SemanticAnalisys(sem_cnxt);
-
-    if (eOK != ret) {
-      return eAggSelectExprHaveOtherColumn;
-    }
   }
-  // for select clause rebuild table column
-  sem_cnxt->RebuildTableColumn();
-  sem_cnxt->PrintContext("after select");
   // having clause exist only if have aggregation
   if (NULL != having_clause_) {
     if (!have_aggeragion_) {
       return eHavingNotAgg;
     }
+    SelectAliasSolver* select_alias_solver =
+        new SelectAliasSolver(sem_cnxt->select_expr_);
+    having_clause_->SolveSelectAlias(select_alias_solver);
+
     string name = "";
     having_clause_->RecoverExprName(name);
 
@@ -1364,6 +1405,10 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   if (NULL != orderby_clause_) {
     ErrorNo ret = eOK;
+    SelectAliasSolver* select_alias_solver =
+        new SelectAliasSolver(sem_cnxt->select_expr_);
+    orderby_clause_->SolveSelectAlias(select_alias_solver);
+
     string name = "";
     orderby_clause_->RecoverExprName(name);
 
@@ -1384,6 +1429,22 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       return ret;
     }
   }
+  // for select clause rebuild table column
+  if (have_aggeragion_) {
+    AstNode* agg_column = NULL;
+    select_list_->ReplaceAggregation(agg_column, agg_attrs_, false);
+
+    sem_cnxt->ClearSelectAttrs();
+    ret = select_list_->SemanticAnalisys(sem_cnxt);
+
+    if (eOK != ret) {
+      return eAggSelectExprHaveOtherColumn;
+    }
+  }
+  sem_cnxt->RebuildTableColumn();
+#ifndef PRINTCONTEXT
+  sem_cnxt->PrintContext("after select");
+#endif
 
   return ret;
 }
@@ -1478,7 +1539,7 @@ ErrorNo AstSelectStmt::GetLogicalPlanOfProject(LogicalOperator*& logic_plan) {
   return eOK;
 }
 
-//#define SUPPORT
+// #define SUPPORT
 ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
   ErrorNo ret = eOK;
   if (NULL != from_list_) {
@@ -1493,12 +1554,6 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
-  if (NULL != select_list_) {
-    ret = GetLogicalPlanOfProject(logic_plan);
-    if (eOK != ret) {
-      return ret;
-    }
-  }
   if (NULL != having_clause_) {
     ret = having_clause_->GetLogicalPlan(logic_plan);
     if (eOK != ret) {
@@ -1507,6 +1562,12 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
   }
   if (NULL != orderby_clause_) {
     ret = orderby_clause_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+  if (NULL != select_list_) {
+    ret = GetLogicalPlanOfProject(logic_plan);
     if (eOK != ret) {
       return ret;
     }
