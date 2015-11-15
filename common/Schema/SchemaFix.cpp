@@ -5,9 +5,9 @@
  *      Author: wangli
  */
 
-// this macro decides whether write DLOG message into log file.
-// Open means no DLOG message.
-#define NDEBUG
+//// this macro decides whether write DLOG message into log file.
+//// Open means no DLOG message.
+// #define NDEBUG
 
 #include "SchemaFix.h"
 #include <memory.h>
@@ -118,11 +118,12 @@ bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
         static_cast<char*>(binary_tuple) + accum_offsets[i],
         text_column.c_str());
 
-    DLOG(INFO) << "Original: "
-               << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
-               << "\t Transfer: "
-               << columns[i].operate->toString(binary_tuple + accum_offsets[i])
-               << endl;
+    //    DLOG(INFO) << "Original: "
+    //               << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
+    //               << "\t Transfer: "
+    //               << columns[i].operate->toString(binary_tuple +
+    //               accum_offsets[i])
+    //               << endl;
     prev_pos = pos + 1;
     DataInjector::total_to_value_time_ += GetElapsedTime(to_value_time);
   }

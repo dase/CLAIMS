@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 
+#include "../common/error_define.h"
 #include "../common/rename.h"
 #include "../Config.h"
 #include "../loader/file_connector.h"
@@ -165,26 +166,20 @@ RetCode Catalog::saveCatalog() {
   boost::archive::text_oarchive oa(oss);
   oa << *this;
 
-  FileConnector* connector = NULL;
-  //  if (0 == Config::local_disk_mode)
-  //    connector = new HdfsConnector(catalog_files);
-  //  else
-  //    connector = new LocalDiskConnector(catalog_files);
-  connector = new SingleFileConnector(Config::local_disk_mode ? kDisk : kHdfs,
-                                      Config::catalog_file);
+  int ret = kSuccess;
+  FileConnector* connector = new SingleFileConnector(
+      Config::local_disk_mode ? kDisk : kHdfs, Config::catalog_file);
 
-  if (kSuccess != connector->Open(FileOpenFlag::kCreateFile)) {
-    LOG(ERROR) << "open catalog file failed" << endl;
-  }
+  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kCreateFile),
+                          "catalog file name:" << Config::catalog_file);
 
-  if (kSuccess !=
-      connector->Flush(static_cast<const void*>(oss.str().c_str()),
-                       oss.str().length())) {
-    LOG(ERROR) << "write catalog into file failed. " << endl;
-  }
-  if (kSuccess != connector->Close()) {
-    LOG(ERROR) << "close catalog file failed" << endl;
-  }
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, connector->Flush(static_cast<const void*>(oss.str().c_str()),
+                            oss.str().length()),
+      "catalog file name:" << Config::catalog_file);
+
+  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Close(),
+                          "catalog file name:" << Config::catalog_file);
   return kSuccess;
 }
 
@@ -228,87 +223,19 @@ bool Catalog::IsDataFileExist() {
   }
 }
 
-bool Catalog::CanFileAccessed(string file_name) {
-  if (Config::local_disk_mode) {
-    return 0 == access(file_name.c_str(), 0);
-  } else {
-    hdfsFS hdfsfs =
-        hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
-    return 0 == hdfsExists(hdfsfs, file_name.c_str());
-  }
-}
-
-RetCode Catalog::LoadFileFromHdfs(string file_name, void*& buffer,
-                                  int* read_length) {
-  hdfsFS fs =
-      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
-  hdfsFile readFile = hdfsOpenFile(fs, file_name.c_str(), O_RDONLY, 0, 0, 0);
-  if (NULL == readFile) {
-    PLOG(ERROR) << "Fail to open file [" << file_name << "].Reason:";
-    hdfsDisconnect(fs);
-    return EOpenHdfsFileFail;
-  } else {
-    LOG(INFO) << "file [" << file_name << "] is opened " << endl;
-  }
-  hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs, file_name.c_str());
-  int file_length = hdfsfile->mSize;
-  LOG(INFO) << "The length of file " << file_name << "is " << file_length
-            << endl;
-
-  buffer = new char[file_length];
-  int read_num = hdfsRead(fs, readFile, buffer, file_length);
-  hdfsCloseFile(fs, readFile);
-  hdfsDisconnect(fs);
-  if (read_num != file_length) {
-    LOG(ERROR) << "read file [" << file_name << "] from hdfs failed" << endl;
-    return EReadHdfsFileFail;
-  } else {
-    LOG(INFO) << "read " << read_num << " from hdfs file " << file_name << endl;
-  }
-  *read_length = read_num;
-  return kSuccess;
-}
-
-RetCode Catalog::LoadFileFromDisk(string file_name, void*& buffer,
-                                  int* read_length) {
-  int fd = FileOpen(file_name.c_str(), O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
-  int64_t file_length = lseek(fd, 0, SEEK_END);
-  if (-1 == file_length) {
-    PLOG(ERROR) << "lseek called on fd to set pos to the end of file " << fd
-                << " failed : ";
-    return ELSeekDiskFileFail;
-  }
-  LOG(INFO) << "The length of file " << file_name << "is " << file_length
-            << endl;
-  buffer = new char[file_length];
-  // reset pos to 0
-  if (-1 == lseek(fd, 0, SEEK_SET)) {
-    PLOG(ERROR) << "lseek called on fd to reset pos to the start of file " << fd
-                << " failed : ";
-  }
-  int read_num = read(fd, buffer, file_length);
-  LOG(INFO) << "read " << read_num << " from disk file " << file_name << endl;
-
-  FileClose(fd);
-  if (read_num != file_length) {
-    LOG(ERROR) << "read file [" << file_name
-               << "] from disk failed, expected read " << file_length
-               << " , actually read " << read_num << endl;
-    return EReadDiskFileFail;
-  }
-  *read_length = read_num;
-  return kSuccess;
-}
-
-// 2014-3-20---restore from a file---by Yu
 RetCode Catalog::restoreCatalog() {
+  int ret = kSuccess;
   string catalog_file = Config::catalog_file;
+  SingleFileConnector* connector = new SingleFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      catalog_file);
+
   // check whether there is catalog file if there are data file
-  if (!CanFileAccessed(catalog_file) && IsDataFileExist()) {
+  if (!connector->CanAccess() && IsDataFileExist()) {
     LOG(ERROR) << "The data file are existed while catalog file "
                << catalog_file << " is not existed!" << endl;
     return ECatalogNotFound;
-  } else if (!CanFileAccessed(catalog_file)) {
+  } else if (!connector->CanAccess()) {
     LOG(INFO) << "The catalog file and data file all are not existed" << endl;
     return kSuccess;
   } else if (!IsDataFileExist()) {
@@ -316,23 +243,12 @@ RetCode Catalog::restoreCatalog() {
                     "The catalog file will be overwrite" << endl;
     return kSuccess;
   } else {
-    int file_length = 0;
+    uint64_t file_length = 0;
     void* buffer;
-    if (Config::local_disk_mode) {
-      if (kSuccess != LoadFileFromDisk(catalog_file, buffer, &file_length) ||
-          (buffer == NULL)) {
-        LOG(ERROR) << "load catalog data from " << catalog_file << " failed"
-                   << endl;
-        return ECatalogRestoreInvild;
-      }
-    } else {
-      if (kSuccess != LoadFileFromHdfs(catalog_file, buffer, &file_length) ||
-          (buffer == NULL)) {
-        LOG(ERROR) << "load catalog data from " << catalog_file << " failed"
-                   << endl;
-        return ECatalogRestoreInvild;
-      }
-    }
+    EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(kReadFile),
+                            "catalog file name: " << catalog_file);
+    EXEC_AND_ONLY_LOG_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),
+                            "catalog file name: " << catalog_file);
 
     LOG(INFO) << "Start to deserialize catalog ..." << endl;
     string temp(static_cast<char*>(buffer), file_length);

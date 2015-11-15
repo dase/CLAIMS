@@ -94,9 +94,6 @@ class Catalog {
  private:
   Catalog();  // avoiding generate more instance
   bool IsDataFileExist();
-  bool CanFileAccessed(string file_name);
-  RetCode LoadFileFromHdfs(string file_name, void*& buffer, int* read_length);
-  RetCode LoadFileFromDisk(string file_name, void*& buffer, int* read_length);
 
   TableIDAllocator table_id_allocator;
 

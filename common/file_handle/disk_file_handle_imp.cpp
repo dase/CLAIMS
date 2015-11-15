@@ -26,9 +26,10 @@
  *
  */
 
-// this macro decides whether write DLOG message into log file.
-// Open means no DLOG message.
-#define NDEBUG
+//// this macro decides whether write DLOG message into log file.
+//// Open means no DLOG message.
+//// it will also prohibit assert()
+// #define NDEBUG
 
 #include "./disk_file_handle_imp.h"
 
@@ -92,15 +93,15 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
     }
     total_write_num += write_num;
   }
-  if (length > 100) {
-    DLOG(INFO) << "write " << length << " length data from " << buffer
-               << " into disk file:" << file_name_ << endl;
-  } else {
-    DLOG(INFO) << "write " << length
-               << " length data :" << static_cast<const char*>(buffer)
-               << " from " << buffer << " into  disk file:" << file_name_
-               << endl;
-  }
+  //  if (length > 100) {
+  //    DLOG(INFO) << "write " << length << " length data from " << buffer
+  //               << " into disk file:" << file_name_ << endl;
+  //  } else {
+  //    DLOG(INFO) << "write " << length
+  //               << " length data :" << static_cast<const char*>(buffer)
+  //               << " from " << buffer << " into  disk file:" << file_name_
+  //               << endl;
+  //  }
   return kSuccess;
 }
 

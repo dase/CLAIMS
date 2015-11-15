@@ -26,9 +26,9 @@
  *
  */
 
-// this macro decides whether write DLOG message into log file.
-// Open means no DLOG message.
-#define NDEBUG
+//// this macro decides whether write DLOG message into log file.
+//// Open means no DLOG message.
+// #define NDEBUG
 
 #include "./data_injector.h"
 
@@ -271,7 +271,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     }
 
     // read every line
-    while (getline(input_file, tuple_record, row_separator_[0]) &&
+    while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) &&
            !input_file.eof()) {
       ++row_id_in_file;
       // sample
@@ -283,7 +283,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
           "failed to add row_id column for tuple. ret:" << ret);
       total_add_time += GetElapsedTime(add_time);
 
-      DLOG(INFO) << "after adding row id, tuple is:" << tuple_record << endl;
+      //      DLOG(INFO) << "after adding row id, tuple is:" << tuple_record <<
+      //      endl;
 
       GETCURRENTTIME(start_check_time);
       vector<unsigned> warning_indexs;
@@ -551,8 +552,9 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
                      partition_key_addr,
                      partition_functin_list_[i]->getNumberOfPartitions());
 
-  DLOG(INFO) << "insert tuple into projection: " << i << ", partition: " << part
-             << endl;
+  //  DLOG(INFO) << "insert tuple into projection: " << i << ", partition: " <<
+  //  part
+  //             << endl;
   ++tuples_per_partition[i][part];
 
   // copy tuple to buffer
@@ -612,8 +614,8 @@ inline bool DataInjector::CheckTupleValidity(string tuple_string,
       table_schema_->toValue(tuple_string, tuple_buffer, col_separator_,
                              raw_data_source, warning_indexs);
 
-  DLOG(INFO) << "text : " << tuple_string << endl;
-  DLOG(INFO) << "tuple: ";
+  //  DLOG(INFO) << "text : " << tuple_string << endl;
+  //  DLOG(INFO) << "tuple: ";
   //  table_->getSchema()->displayTuple(tuple_buffer, " | ");
   return success;
 }
