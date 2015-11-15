@@ -63,7 +63,7 @@ class SchemaFix : public Schema {
    * @param warning_columns_index: the index of columns that have warning
    * @return true only if there is no error
    */
-  bool toValue(std::string text_tuple, void* binary_tuple,
+  bool CheckAndToValue(std::string text_tuple, void* binary_tuple,
                const string attr_separator, RawDataSource raw_data_source,
                vector<unsigned>& warning_columns_index);
   inline void showAccum_off() {

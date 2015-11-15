@@ -289,7 +289,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       GETCURRENTTIME(start_check_time);
       vector<unsigned> warning_indexs;
       memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
-      if (!CheckTupleValidity(tuple_record, tuple_buffer, RawDataSource::kFile,
+      if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kFile,
                               warning_indexs)) {
         ostringstream oss;
         oss << "The data in " << file_name << ":" << row_id_in_file
@@ -404,7 +404,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
     vector<unsigned> warning_indexs;
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
     if (tuple_buffer == NULL) return ENoMemory;
-    if (!CheckTupleValidity(tuple_record, tuple_buffer, RawDataSource::kSQL,
+    if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kSQL,
                             warning_indexs)) {
       // eliminate the side effect of AddRowIdColumn() in row_id_
       row_id_ -= correct_tuple_buffer.size();
@@ -602,7 +602,7 @@ RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
  * if called by insert from SQL, return true or false depending on whether there
  * is invalid data value
  */
-inline bool DataInjector::CheckTupleValidity(string tuple_string,
+inline bool DataInjector::CheckAndToValue(string tuple_string,
                                              void* tuple_buffer,
                                              RawDataSource raw_data_source,
                                              vector<unsigned>& warning_indexs) {
@@ -611,7 +611,7 @@ inline bool DataInjector::CheckTupleValidity(string tuple_string,
     return false;
   }
   bool success =
-      table_schema_->toValue(tuple_string, tuple_buffer, col_separator_,
+      table_schema_->CheckAndToValue(tuple_string, tuple_buffer, col_separator_,
                              raw_data_source, warning_indexs);
 
   //  DLOG(INFO) << "text : " << tuple_string << endl;

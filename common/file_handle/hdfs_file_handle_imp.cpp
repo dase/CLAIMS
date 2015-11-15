@@ -62,8 +62,14 @@ HdfsFileHandleImp::~HdfsFileHandleImp() {
 
 RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
   assert(fs_ != NULL && "failed to connect hdfs");
+  int ret = kSuccess;
   open_flag_ = open_flag;
   file_name_ = file_name;
+  if (false == CanAccess(file_name_)) {
+    ret = EAccessHdfsFileFail;
+    ELOG(ret, "File name:" << file_name_);
+    return ret;
+  }
 
   if (kCreateFile == open_flag) {
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);

@@ -37,22 +37,24 @@ using claims::common::CStrError;
 namespace claims {
 namespace common {
 
-#define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info)                              \
-  do {                                                                         \
-    if (kSuccess != (ret = f)) {                                               \
-      LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
-                 << std::endl;                                                 \
-    }                                                                          \
+#define ELOG(ret, err_info)                                                \
+  LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
+             << std::endl;
+
+#define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info) \
+  do {                                            \
+    if (kSuccess != (ret = f)) {                  \
+      ELOG(ret, err_info)                         \
+    }                                             \
   } while (0)
 
-#define EXEC_AND_LOG(ret, f, info, err_info)                                   \
-  do {                                                                         \
-    if (kSuccess == (ret = f)) {                                               \
-      LOG(INFO) << info << std::endl;                                          \
-    } else {                                                                   \
-      LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
-                 << std::endl;                                                 \
-    }                                                                          \
+#define EXEC_AND_LOG(ret, f, info, err_info) \
+  do {                                       \
+    if (kSuccess == (ret = f)) {             \
+      LOG(INFO) << info << std::endl;        \
+    } else {                                 \
+      ELOG(ret, err_info)                    \
+    }                                        \
   } while (0)
 
 #define EXEC_AND_PLOG(ret, f, info, err_info)                       \
@@ -85,6 +87,8 @@ const int ECloseDiskFileFail = -11;
 const int ECloseHdfsFileFail = -12;
 const int EFileEOF = -13;
 const int EParamInvalid = -14;
+const int EAccessDiskFileFail = -15;
+const int EAccessHdfsFileFail = -16;
 
 const int ENoMemory = -15;
 

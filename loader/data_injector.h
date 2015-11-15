@@ -104,7 +104,7 @@ class DataInjector {
    * @param warning_indexs: store the index of columns which have warning
    * @return true if tuple is not valid even though there are some warnings
    */
-  inline bool CheckTupleValidity(string tuple_string, void* tuple_buffer,
+  inline bool CheckAndToValue(string tuple_string, void* tuple_buffer,
                                  RawDataSource raw_data_source,
                                  vector<unsigned>& warning_indexs);
 

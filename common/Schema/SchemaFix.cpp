@@ -78,10 +78,10 @@ int SchemaFix::getColumnOffset(unsigned index) const {
  * int Check(const string& raw_string), 返回0:success, 1: warning, 2: error
  * void SetDefault(string& raw_string) 设置源数据为默认值
  */
-bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
-                        const string attr_separator,
-                        RawDataSource raw_data_source,
-                        vector<unsigned>& warning_columns_index) {
+bool SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
+                                const string attr_separator,
+                                RawDataSource raw_data_source,
+                                vector<unsigned>& warning_columns_index) {
   string::size_type prev_pos = 0;
   string::size_type pos = 0;
   warning_columns_index.clear();
@@ -131,6 +131,14 @@ bool SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
       GetElapsedTime(to_value_func_time_);
   return true;
 }
+
+// TODO(ANYONE): implement this method, which is used when it is sure that the
+// data is correct and needn't check
+/*
+void SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
+                        const char attr_separator) {
+}*/
+
 void SchemaFix::addColumn(column_type ct, unsigned size) {
   accum_offsets.push_back(totalsize);
   columns.push_back(ct);

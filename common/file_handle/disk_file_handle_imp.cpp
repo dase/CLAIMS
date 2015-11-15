@@ -53,6 +53,12 @@ DiskFileHandleImp::~DiskFileHandleImp() {
 
 RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {
   file_name_ = file_name;
+  int ret = kSuccess;
+  if (false == CanAccess(file_name_)) {
+    ret = EAccessDiskFileFail;
+    ELOG(ret, "File name:" << file_name_);
+    return ret;
+  }
   if (kCreateFile == open_flag) {
     fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_TRUNC | O_CREAT,
                    S_IWUSR | S_IRUSR);

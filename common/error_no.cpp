@@ -68,6 +68,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(ECloseDiskFileFail, "failed to close disk file");
   DefineErrorAndMessage(ECloseHdfsFileFail, "failed to close hdfs file");
   DefineErrorAndMessage(EFileEOF, "reached the end of file");
+  DefineErrorAndMessage(EAccessDiskFileFail, "failed to access disk file");
+  DefineErrorAndMessage(EAccessHdfsFileFail, "failed to access hdfs file");
 
   DefineErrorAndMessage(ENoMemory, "failed to allocate memory from system");
 
