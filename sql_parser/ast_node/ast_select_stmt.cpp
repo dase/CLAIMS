@@ -308,17 +308,7 @@ ErrorNo AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
       if (eOK != ret) {
         return ret;
       }
-#ifdef NEWCONDI
-      ExprNode* equal_join_expr = NULL;
-      GetAndExpr(equal_join_condition_)
-          ->GetLogicalPlan(equal_join_expr, logic_plan);
-      logic_plan = new LogicalEqualJoin(join_pair, equal_join_expr, args_lplan,
-                                        next_lplan);
-#else
       logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
-
-#endif
-
     } else {
       logic_plan = new LogicalCrossJoin(args_lplan, next_lplan);
     }
@@ -693,15 +683,7 @@ ErrorNo AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (eOK != ret) {
       return ret;
     }
-#ifdef NEWCONDI
-    ExprNode* equal_join_expr = NULL;
-    AstNode* ast_equal_join_expr = GetAndExpr(equal_join_condition_);
-    ast_equal_join_expr->GetLogicalPlan(equal_join_expr, logic_plan);
-    logic_plan =
-        new LogicalEqualJoin(join_pair, equal_join_expr, left_plan, right_plan);
-#else
     logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
-#endif
   } else {
     logic_plan = new LogicalCrossJoin(left_plan, right_plan);
   }

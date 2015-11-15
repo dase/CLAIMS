@@ -74,8 +74,6 @@ class LogicalEqualJoin : public LogicalOperator {
    */
   LogicalEqualJoin(std::vector<JoinPair>, LogicalOperator* left_input,
                    LogicalOperator* right_input);
-  LogicalEqualJoin(std::vector<JoinPair>, ExprNode* join_expr,
-                   LogicalOperator* left_input, LogicalOperator* right_input);
   virtual ~LogicalEqualJoin();
   /**
    * @brief Method description: Get the child information.
@@ -186,7 +184,6 @@ class LogicalEqualJoin : public LogicalOperator {
   LogicalOperator* right_child_;
   JoinPolicy join_policy_;
   PlanContext* dataflow_;
-  ExprNode* join_expr_;
 };
 }  // namespace logical_operator
 }  // namespace claims

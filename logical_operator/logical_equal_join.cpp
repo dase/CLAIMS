@@ -63,22 +63,6 @@ LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
     right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
   }
 }
-LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
-                                   ExprNode* join_expr,
-                                   LogicalOperator* left_input,
-                                   LogicalOperator* right_input)
-    : LogicalOperator(kLogicalEqualJoin),
-      joinkey_pair_list_(joinpair_list),
-      join_expr_(join_expr),
-      left_child_(left_input),
-      right_child_(right_input),
-      join_policy_(kNull),
-      dataflow_(NULL) {
-  for (unsigned i = 0; i < joinpair_list.size(); ++i) {
-    left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
-    right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
-  }
-}
 LogicalEqualJoin::~LogicalEqualJoin() {
   if (NULL != dataflow_) {
     delete dataflow_;
@@ -91,10 +75,6 @@ LogicalEqualJoin::~LogicalEqualJoin() {
   if (NULL != right_child_) {
     delete right_child_;
     right_child_ = NULL;
-  }
-  if (NULL != join_expr_) {
-    delete join_expr_;
-    join_expr_ = NULL;
   }
 }
 void LogicalEqualJoin::DecideJoinPolicy(const PlanContext& left_dataflow,
@@ -282,11 +262,6 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
       break;
     }
   }
-  // initialize expression
-  map<string, int> column_to_id;
-  GetColumnToId(ret.attribute_list_, column_to_id);
-  join_expr_->InitExprAtLogicalPlan(join_expr_->actual_type_, column_to_id,
-                                    GetSchema(ret.attribute_list_));
 
   dataflow_ = new PlanContext();
   *dataflow_ = ret;
@@ -371,7 +346,6 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
 
   state.payload_left_ = GetLeftPayloadIds();
   state.payload_right_ = GetRightPayloadIds();
-  state.join_expr_ = join_expr_;
   switch (join_policy_) {
     case kNoRepartition: {
       state.child_left_ = child_iterator_left;
