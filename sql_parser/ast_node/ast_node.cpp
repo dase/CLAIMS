@@ -133,7 +133,25 @@ ErrorNo AstNode::GetFilterCondition(vector<ExprNode*>& condition,
   }
   return eOK;
 }
-
+AstNode* AstNode::GetAndExpr(const set<AstNode*>& expression) {
+  if (expression.size() == 0) {
+    return NULL;
+  } else if (expression.size() == 1) {
+    return *expression.begin();
+  } else {
+    auto it = expression.begin();
+    AstExprCmpBinary* cmp_binary =
+        new AstExprCmpBinary(AST_EXPR_CMP_BINARY, "=", *it, *(++it));
+    AstExprCmpBinary* tmp_cmp_binary = NULL;
+    for (++it; it != expression.end(); ++it) {
+      tmp_cmp_binary =
+          new AstExprCmpBinary(AST_EXPR_CMP_BINARY, "=", *it, cmp_binary);
+      cmp_binary = tmp_cmp_binary;
+    }
+    return cmp_binary;
+  }
+  return NULL;
+}
 void AstStmtList::Print(int level) const {
   cout << setw(level * 8) << " "
        << "|stmt list|" << endl;

@@ -88,20 +88,11 @@ class LogicalProject : public LogicalOperator {
    */
   Schema* GetOutputSchema();
 
-  /**
-   * @brief Method description:get the index of column according to the
-   * attribute list of PlanContext
-   * @param PlanContext: constructed PlanContext
-   * @return  : if true, then this operation successes; else, fails
-   */
-  void SetColumnID(PlanContext plan_context);
-
  private:
   PlanContext* plan_context_;
   LogicalOperator* child_;
   std::vector<ExprNode*> expr_list_;
   std::vector<QNode*> expression_tree_;
-  std::map<std::string, int> column_id_;
 };
 
 }  // namespace logical_operator

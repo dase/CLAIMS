@@ -67,13 +67,8 @@ PhysicalFilter::PhysicalFilter()
 
 PhysicalFilter::~PhysicalFilter() {}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
-                             vector<QNode*> qual, map<string, int> column_id,
-                             unsigned block_size)
-    : schema_(schema),
-      child_(child),
-      qual_(qual),
-      column_id_(column_id),
-      block_size_(block_size) {}
+                             vector<QNode*> qual, unsigned block_size)
+    : schema_(schema), child_(child), qual_(qual), block_size_(block_size) {}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
                              std::vector<AttributeComparator> comparator_list,
                              unsigned block_size)

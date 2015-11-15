@@ -31,12 +31,14 @@
  */
 
 #include "../physical_operator/physical_hash_join.h"
-
 #include <glog/logging.h>
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/expression/expr_node.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
 #include "../utility/rdtsc.h"
+
+using claims::common::ExprNode;
 // #define _DEBUG_
 
 namespace claims {
@@ -44,7 +46,7 @@ namespace physical_operator {
 
 PhysicalHashJoin::PhysicalHashJoin(State state)
     : state_(state),
-      hash_(0),
+      hash_func_(0),
       hashtable_(0),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
       eftt_(0),
@@ -55,7 +57,7 @@ PhysicalHashJoin::PhysicalHashJoin(State state)
 }
 
 PhysicalHashJoin::PhysicalHashJoin()
-    : hash_(0),
+    : hash_func_(0),
       hashtable_(0),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
       eftt_(0),
@@ -73,7 +75,8 @@ PhysicalHashJoin::State::State(
     Schema* output_schema, Schema* ht_schema,
     std::vector<unsigned> joinIndex_left, std::vector<unsigned> joinIndex_right,
     std::vector<unsigned> payload_left, std::vector<unsigned> payload_right,
-    unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size)
+    unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size,
+    ExprNode* join_expr)
     : child_left_(child_left),
       child_right_(child_right),
       input_schema_left_(input_schema_left),
@@ -86,7 +89,8 @@ PhysicalHashJoin::State::State(
       payload_right_(payload_right),
       hashtable_bucket_num_(ht_nbuckets),
       hashtable_bucket_size_(ht_bucketsize),
-      block_size_(block_size) {}
+      block_size_(block_size),
+      join_expr_(join_expr) {}
 
 bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
 #ifdef TIME
@@ -101,6 +105,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
     winning_thread = true;
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(), LocalStageEndPoint(stage_desc, "Hash join build", 0));
+#ifdef NEWCONDI
     unsigned output_index = 0;
     for (unsigned i = 0; i < state_.join_index_left_.size(); i++) {
       join_index_left_to_output_[i] = output_index;
@@ -114,8 +119,8 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
       payload_right_to_output_[i] = output_index;
       output_index++;
     }
-
-    hash_ = PartitionFunctionFactory::createBoostHashFunction(
+#endif
+    hash_func_ = PartitionFunctionFactory::createBoostHashFunction(
         state_.hashtable_bucket_num_);
     unsigned long long hash_table_build = curtick();
     hashtable_ = new BasicHashTable(
@@ -124,6 +129,8 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
 #ifdef _DEBUG_
     consumed_tuples_from_left = 0;
 #endif
+
+#ifdef NEWCONDI
     QNode* expr = createEqualJoinExpression(
         state_.hashtable_schema_, state_.input_schema_right_,
         state_.join_index_left_, state_.join_index_right_);
@@ -144,6 +151,12 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
       LOG(INFO) << "Codegen(Join) failed!" << endl;
     }
     delete expr;
+#else
+    // initialize expression at physical plan
+    LOG(ERROR) << "state_.join_expr_ is NULL" << endl;
+    assert(NULL != state_.join_expr_);
+
+#endif
   }
 
   /**
@@ -173,8 +186,8 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
   JoinThreadContext* jtc = CreateOrReuseContext(crm_numa_sensitive);
 
   const Schema* input_schema = state_.input_schema_left_->duplicateSchema();
-  const Operate* op = input_schema->getcolumn(state_.join_index_left_[0])
-                          .operate->duplicateOperator();
+  const Operate* oper = input_schema->getcolumn(state_.join_index_left_[0])
+                            .operate->duplicateOperator();
   const unsigned buckets = state_.hashtable_bucket_num_;
 
   unsigned long long int start = curtick();
@@ -193,20 +206,18 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
 #endif
       const void* key_addr =
           input_schema->getColumnAddess(state_.join_index_left_[0], cur);
-      bn = op->getPartitionValue(key_addr, buckets);
+      bn = oper->getPartitionValue(key_addr, buckets);
       tuple_in_hashtable = hashtable_->atomicAllocate(bn);
-      /* copy join index columns*/
+/* copy join index columns*/
+#ifdef NEWCONDI
       if (memcpy_)
         memcpy_(tuple_in_hashtable, cur);
       else
+#endif
         input_schema->copyTuple(cur, tuple_in_hashtable);
     }
     jtc->l_block_for_asking_->setEmpty();
   }
-
-  //   printf("%d cycles per
-  //   tuple!\n",(curtick()-start)/processed_tuple_count);
-  unsigned tmp = 0;
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
 
@@ -216,34 +227,24 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(1);
-    // printf("<<<<<<<<<<<<<<<<<Join open detected call back
-    // signal!>>>>>>>>>>>>>>>>>\n");
     return true;
   }
 
   BarrierArrive(1);
-  //  if(winning_thread){
-  //  // hashtable->report_status();
-  //  // printf("Hash Table Build time: %4.4f\n",getMilliSecond(timer));
-  //  }
-  //
-  //  hashtable->report_status();
-  //
-  //  printf("join open consume %d tuples\n",consumed_tuples_from_left);
-
   state_.child_right_->Open(partition_offset);
   LOG(INFO) << "join operator finished opening right child" << endl;
   return true;
 }
 
 bool PhysicalHashJoin::Next(BlockStreamBase* block) {
-  void* result_tuple;
+  void* result_tuple = NULL;
   void* tuple_from_right_child;
   void* tuple_in_hashtable;
   void* key_in_input;
   void* key_in_hashtable;
   void* column_in_joined_tuple;
   bool key_exit;
+  int hash_tuple_size = state_.hashtable_schema_->getTupleMaxSize();
 
   JoinThreadContext* jtc = (JoinThreadContext*)GetContext();
 
@@ -272,9 +273,11 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
 
       while (NULL !=
              (tuple_in_hashtable = jtc->hashtable_iterator_.readCurrent())) {
+#ifdef NEWCONDI
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
              state_.join_index_left_, state_.join_index_right_,
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);
+
         if (key_exit) {
           if (NULL != (result_tuple = block->allocateTuple(
                            state_.output_schema_->getTupleMaxSize()))) {
@@ -292,6 +295,24 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
             return true;
           }
         }
+#else
+        // expression calculation
+        if (NULL == result_tuple) {
+          if (NULL == (result_tuple = block->allocateTuple(
+                           state_.output_schema_->getTupleMaxSize()))) {
+            return true;
+          }
+        }
+
+        memcpy(result_tuple, tuple_in_hashtable, hash_tuple_size);
+        memcpy(result_tuple + hash_tuple_size, tuple_from_right_child,
+               state_.input_schema_right_->getTupleMaxSize());
+        key_exit = *((bool*)jtc->join_expr_->ExprEvaluate(
+            result_tuple, state_.output_schema_));
+        if (key_exit) {
+          result_tuple = NULL;
+        }
+#endif
         jtc->hashtable_iterator_.increase_cur_();
       }
       jtc->r_block_stream_iterator_->increase_cur_();
@@ -314,6 +335,12 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
       if (block->Empty() == true) {
         return false;
       } else {
+#ifdef NEWCONDI
+#else
+        if (NULL != result_tuple) {
+          memset(result_tuple, 0, state_.output_schema_->getTupleMaxSize());
+        }
+#endif
         return true;
       }
     }
@@ -395,6 +422,7 @@ PhysicalHashJoin::JoinThreadContext::~JoinThreadContext() {
   delete l_block_stream_iterator_;
   delete r_block_for_asking_;
   delete r_block_stream_iterator_;
+  delete join_expr_;
 }
 
 ThreadContext* PhysicalHashJoin::CreateContext() {
@@ -405,6 +433,11 @@ ThreadContext* PhysicalHashJoin::CreateContext() {
   jtc->r_block_for_asking_ = BlockStreamBase::createBlock(
       state_.input_schema_right_, state_.block_size_);
   jtc->r_block_stream_iterator_ = jtc->r_block_for_asking_->createIterator();
+#ifdef NEWCONDI
+#else
+  jtc->join_expr_ = state_.join_expr_->ExprCopy();
+  jtc->join_expr_->InitExprAtPhysicalPlan();
+#endif
   return jtc;
 }
 

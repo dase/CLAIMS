@@ -1,4 +1,3 @@
-
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -30,6 +29,8 @@
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
+#include <map>
+#include <string>
 #include "../logical_operator/logical_project.h"
 #include "../logical_operator/logical_operator.h"
 #include "../common/ids.h"
@@ -85,8 +86,7 @@ PlanContext LogicalProject::GetPlanContext() {
   std::vector<Attribute> ret_attrs;
   // construct an input schema from attribute list of child
   Schema* input_schema = GetSchema(child_plan_context.attribute_list_);
-  // get the index of attributes in child PlanContext
-  SetColumnID(child_plan_context);
+// get the index of attributes in child PlanContext
 /**
  * if the expression type is compare,then the new column will be boolean
  * type,
@@ -131,9 +131,11 @@ PlanContext LogicalProject::GetPlanContext() {
   }
 #else
   ret_attrs.clear();
+  map<string, int> column_to_id;
+  GetColumnToId(child_plan_context.attribute_list_, column_to_id);
   for (int i = 0; i < expr_list_.size(); ++i) {
     expr_list_[i]->InitExprAtLogicalPlan(expr_list_[i]->actual_type_,
-                                         column_id_, input_schema);
+                                         column_to_id, input_schema);
     ret_attrs.push_back(expr_list_[i]->ExprNodeToAttr(i));
   }
 
@@ -145,16 +147,6 @@ PlanContext LogicalProject::GetPlanContext() {
   *plan_context_ = ret;
   lock_->release();
   return ret;
-}
-
-/**
- * Traverse the attribute_list_，
- * store the attribute name and index into colindex_.
- */
-void LogicalProject::SetColumnID(PlanContext plan_context) {
-  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
-    column_id_[plan_context.attribute_list_[i].attrName] = i;
-  }
 }
 
 // get PlanContext and child physical plan from child ,

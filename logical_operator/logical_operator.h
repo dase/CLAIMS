@@ -28,8 +28,9 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_OPERATOR_H_
 #define LOGICAL_OPERATOR_LOGICAL_OPERATOR_H_
 #include <stdio.h>
+#include <map>
 #include <vector>
-
+#include <string>
 #include "../common/ids.h"
 #include "../common/Schema/SchemaFix.h"
 #include "../logical_operator/plan_context.h"
@@ -120,7 +121,8 @@ class LogicalOperator {
   inline void set_operator_type(OperatorType operator_type) {
     operator_type_ = operator_type;
   }
-
+  void GetColumnToId(const std::vector<Attribute>& attributes,
+                     map<string, int>& column_to_id);
   Lock* lock_;
 
  private:
