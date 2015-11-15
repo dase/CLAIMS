@@ -41,7 +41,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "+") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_add, t_qexpr_cal, calnode->str);
@@ -49,7 +50,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "-") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_minus, t_qexpr_cal, calnode->str);
@@ -57,7 +58,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "*") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_multiply, t_qexpr_cal, calnode->str);
@@ -65,7 +66,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "/") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_divide, t_qexpr_cal, calnode->str);
@@ -73,7 +74,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "%") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
             lnode, rnode, a_type, oper_mod, t_qexpr_cal, calnode->str);
@@ -81,7 +82,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "LIKE") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *likenode = new QExpr_binary(
             lnode, rnode, a_type, oper_like, t_qexpr_cmp, calnode->str);
@@ -89,7 +91,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "NLIKE") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *likenode = new QExpr_binary(
             lnode, rnode, a_type, oper_not_like, t_qexpr_cmp, calnode->str);
@@ -123,7 +125,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         }
         vector<QNode *> cmpnode;
         for (int i = 0; i < lnode.size(); i++) {
-          data_type a_type = TypePromotionMatrix::type_conversion_matrix
+          data_type a_type = TypePromotion::arith_type_promotion_map
               [lnode[i]->actual_type][rnode[0][i]->actual_type];
           QExpr_binary *qcalnode =
               new QExpr_binary(lnode[i], rnode[0][i], a_type, oper_equal,
@@ -164,7 +166,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         for (int i = 0; i < lnode.size();
              i++)  // more comparisons form one list
         {
-          data_type a_type = TypePromotionMatrix::type_conversion_matrix
+          data_type a_type = TypePromotion::arith_type_promotion_map
               [lnode[i]->actual_type][rnode[0][i]->actual_type];
           QExpr_binary *qcalnode =
               new QExpr_binary(lnode[i], rnode[0][i], a_type, oper_equal,
@@ -176,7 +178,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "CMP") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         switch (calnode->cmp) {
           case 1:  //"<"
@@ -379,7 +381,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         QNode *arg = transformqual(funcnode->args, child);
         QNode *param1 = transformqual(funcnode->parameter1, child);
         QNode *param2 = transformqual(funcnode->parameter2, child);
-        data_type a_type = TypePromotionMatrix::type_conversion_matrix
+        data_type a_type = TypePromotion::arith_type_promotion_map
             [arg->actual_type][param1->actual_type];
         QNode *lnext = new QExpr_binary(arg, param1, a_type, oper_great_equal,
                                         t_qexpr_cmp, "arg>=parma1");
@@ -468,7 +470,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
     case t_name_name: {
       Columns *col = (Columns *)node;
       //			data_type
-      //a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+      // a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
       data_type a_type = child->GetPlanContext()
                              .GetAttribute(string(col->parameter2))
                              .attrType->type;
@@ -658,11 +660,11 @@ void InitExprAtPhysicalPlan(QNode *node) {
     {
       QExpr_binary *cmpnode = (QExpr_binary *)(node);
       cmpnode->FuncId = Exec_cmp;
+
       InitExprAtPhysicalPlan(cmpnode->lnext);
       InitExprAtPhysicalPlan(cmpnode->rnext);
       cmpnode->function_call = ExectorFunction::operator_function
           [cmpnode->actual_type][cmpnode->op_type];
-      //			cmpnode->actual_type=t_boolean;//
       cmpnode->type_cast_func =
           TypeCast::type_cast_func[t_boolean][cmpnode->return_type];
       cmpnode->value = memalign(cacheline_size, cmpnode->length);
@@ -744,17 +746,18 @@ void InitExprAtPhysicalPlan(QNode *node) {
     } break;
     case t_qexpr:  // copy the value from conststring to node->value,and the
                    // data type has casted
-    {
-      QExpr *qexpr = (QExpr *)(node);
-      qexpr->FuncId = getConst;
-      qexpr->value = memalign(cacheline_size, qexpr->length);
-      strcpy((char *)qexpr->value,
-             qexpr->const_value.c_str());  // change the storage style from
-                                           // string to char *,so store the
-                                           // value in the return_type[]
-      TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->value,
-                                                             qexpr->value);
-    } break;
+      {
+        QExpr *qexpr = (QExpr *)(node);
+        qexpr->FuncId = getConst;
+        qexpr->value = memalign(cacheline_size, qexpr->length);
+        strcpy((char *)qexpr->value,
+               qexpr->const_value.c_str());  // change the storage style from
+                                             // string to char *,so store the
+                                             // value in the return_type[]
+        TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->value,
+                                                               qexpr->value);
+      }
+      break;
     default: {}
   }
 }

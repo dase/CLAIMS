@@ -36,7 +36,6 @@
 
 #include "../common/expression/expr_node.h"
 #include "../common/Mapping.h"
-#include "../common/ExpressionItem.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/qnode.h"

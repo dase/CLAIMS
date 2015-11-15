@@ -213,7 +213,8 @@ void departwc(struct Node * wherecondition,struct  Node * fromlist)//对wherecon
 			departwc(node->rnext,fromlist);
 			departwc(node->lnext,fromlist);
 		}
-		else if(strcmp(node->sign,"INS")==0)
+		else
+		  if(strcmp(node->sign,"INS")==0)
 		{
 			if(node->rnext->type==t_query_stmt)
 			{

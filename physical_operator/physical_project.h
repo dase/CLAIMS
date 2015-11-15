@@ -35,8 +35,6 @@
 #include <list>
 
 #include "../common/expression/expr_node.h"
-#include "../common/ExpressionCalculator.h"
-#include "../common/ExpressionItem.h"
 #include "../common/Mapping.h"
 #include "../configure.h"
 #include "../common/Expression/qnode.h"

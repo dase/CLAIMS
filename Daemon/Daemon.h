@@ -52,7 +52,7 @@ private:
 	std::list<executed_result> executed_result_queue_;
 	semaphore semaphore_result_queue_;
 
-	Lock lock_;
+	static Lock* lock_;
 };
 
 #endif /* DAEMON_H_ */
