@@ -13,7 +13,6 @@
 #include "../Catalog/Catalog.h"
 #include "../Catalog/table.h"
 #include "../common/Comparator.h"
-#include "../common/ExpressionItem.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include "../common/Logging.h"
@@ -41,8 +40,7 @@
 using namespace claims::logical_operator;
 using claims::physical_operator::PhysicalAggregation;
 static LogicalOperator *parsetree2logicalplan(Node *parsetree);
-static void get_a_expression_item(vector<ExpressionItem> &expr, Node *node,
-                                  LogicalOperator *input);
+
 // because Filter::Condition no longer exists
 /*
 static void getfiltercondition(Node * wcexpr,Filter::Condition

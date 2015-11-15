@@ -61,7 +61,7 @@
 #include "../physical_operator/exchange_sender_materialized.h"
 namespace claims {
 namespace physical_operator {
-#define BUFFER_SIZE_IN_EXCHANGE 1000
+const int kBufferSizeInExchange = 1000;
 ExchangeMerger::ExchangeMerger(State state) : state_(state) {
   InitExpandedStatus();
   assert(state.partition_schema_.partition_key_index < 100);
@@ -95,7 +95,7 @@ bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
     }
     // buffer all deserialized blocks come from every socket
     all_merged_block_buffer_ = new BlockStreamBuffer(
-        state_.block_size_, BUFFER_SIZE_IN_EXCHANGE, state_.schema_);
+        state_.block_size_, kBufferSizeInExchange, state_.schema_);
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(),
         LocalStageEndPoint(stage_src, "Exchange", all_merged_block_buffer_));
@@ -175,7 +175,19 @@ bool ExchangeMerger::Next(BlockStreamBase* block) {
         return true;
       }
     }
-    if (exhausted_lowers == lower_num_) {
+    /*
+     * Fix bug by checking whether the value of sem_new_block_or_eof_ is 0.
+     * There is an extreme case that just after timed_wait(1) returned false
+     * above, receiver thread executed sem_new_block_or_eof_.post() and
+     * nexhausted_lowers++, which leads to nexhausted_lowers = nlowers but
+     * actually at least one block is not handled , then this method return
+     * false without handing the last block even the last few blocks.
+     */
+    if (exhausted_lowers == lower_num_ &&
+        sem_new_block_or_eof_.get_value() == 0) {
+      LOG(INFO) << "the value of sem_new_block_or_eof_ is :"
+                << sem_new_block_or_eof_.get_value() << endl;
+      LOG(INFO) << "now all lower are exhausted~~~~~~~~~~~" << endl;
       return false;
     }
   }

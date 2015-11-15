@@ -44,7 +44,6 @@
 #include "../common/Block/BlockStream.h"
 #include "../utility/lock.h"
 #include "../common/AttributeComparator.h"
-#include "../common/ExpressionItem.h"
 #include "../common/Mapping.h"
 #include "../Catalog/Attribute.h"
 #include "../physical_operator/physical_project.h"
