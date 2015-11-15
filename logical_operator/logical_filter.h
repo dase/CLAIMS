@@ -108,16 +108,9 @@ class LogicalFilter : public LogicalOperator {
    * @return  A float number indicating the coefficient.
    */
   float PredictSelectivity() const;
-  /**
-   * @brief Method description: To save the index of PlanContext.attribute_list_
-   *                            into column_id_.
-   * @param plan_context
-   */
-  void set_column_id(const PlanContext& plan_context);
 
  private:
   LogicalOperator* child_;
-  map<string, int> column_id_;
   vector<QNode*> condi_;
   vector<ExprNode*> condition_;
   PlanContext* plan_context_;

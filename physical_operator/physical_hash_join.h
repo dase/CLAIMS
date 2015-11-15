@@ -43,9 +43,10 @@
 #include "../common/hash.h"
 #include "../common/hashtable.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
-
+using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
 
@@ -63,6 +64,7 @@ class PhysicalHashJoin : public PhysicalOperator {
     BlockStreamBase* r_block_for_asking_;
     BlockStreamBase::BlockStreamTraverseIterator* r_block_stream_iterator_;
     BasicHashTable::Iterator hashtable_iterator_;
+    ExprNode* join_expr_;
   };
 
   class State {
@@ -80,7 +82,7 @@ class PhysicalHashJoin : public PhysicalOperator {
           std::vector<unsigned> joinIndex_right,
           std::vector<unsigned> payload_left,
           std::vector<unsigned> payload_right, unsigned ht_nbuckets,
-          unsigned ht_bucketsize, unsigned block_size);
+          unsigned ht_bucketsize, unsigned block_size, ExprNode* join_expr);
     State(){};
     friend class boost::serialization::access;
     template <class Archive>
@@ -88,7 +90,8 @@ class PhysicalHashJoin : public PhysicalOperator {
       ar& child_left_& child_right_& input_schema_left_& input_schema_right_&
           output_schema_& hashtable_schema_& join_index_left_&
               join_index_right_& payload_left_& payload_right_&
-                  hashtable_bucket_num_& hashtable_bucket_size_& block_size_;
+                  hashtable_bucket_num_& hashtable_bucket_size_& block_size_&
+                      join_expr_;
     }
 
    public:
@@ -106,8 +109,8 @@ class PhysicalHashJoin : public PhysicalOperator {
     // hashtable
     unsigned hashtable_bucket_num_;
     unsigned hashtable_bucket_size_;
-
     unsigned block_size_;
+    ExprNode* join_expr_;
   };
   PhysicalHashJoin(State state);
   PhysicalHashJoin();
@@ -176,7 +179,7 @@ class PhysicalHashJoin : public PhysicalOperator {
   /* payload_right map to the output*/
   std::map<unsigned, unsigned> payload_right_to_output_;
 
-  PartitionFunction* hash_;
+  PartitionFunction* hash_func_;
   BasicHashTable* hashtable_;
   Schema* hashtable_schema_;
 

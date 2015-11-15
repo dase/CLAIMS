@@ -29,6 +29,8 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_EQUAL_JOIN_H_
 #define LOGICAL_OPERATOR_LOGICAL_EQUAL_JOIN_H_
 #include <vector>
+
+#include "../common/expression/expr_node.h"
 #include "../Catalog/Attribute.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_sort.h"
@@ -71,7 +73,9 @@ class LogicalEqualJoin : public LogicalOperator {
    * @param  LogicalOperator* right_input
    */
   LogicalEqualJoin(std::vector<JoinPair>, LogicalOperator* left_input,
-            LogicalOperator* right_input);
+                   LogicalOperator* right_input);
+  LogicalEqualJoin(std::vector<JoinPair>, ExprNode* join_expr,
+                   LogicalOperator* left_input, LogicalOperator* right_input);
   virtual ~LogicalEqualJoin();
   /**
    * @brief Method description: Get the child information.
@@ -118,7 +122,8 @@ class LogicalEqualJoin : public LogicalOperator {
   int GetIdInAttributeList(const std::vector<Attribute>& attributes,
                            const Attribute&) const;
   bool IsHashOnLeftKey(const Partitioner& part, const Attribute& key) const;
-
+  void DecideJoinPolicy(const PlanContext& left_context,
+                        const PlanContext& right_context);
   /**
    * @brief Method description:Check whether the partitioning is based on hash
    * and the hash key is a subset of the join keys such that hash join is
@@ -127,9 +132,8 @@ class LogicalEqualJoin : public LogicalOperator {
    * @param const DataflowPartitioningDescriptor& partitoiner
    * @return bool
    */
-  bool CanOmitHashRepartition(
-      const std::vector<Attribute>& join_key_list,
-      const PlanPartitioner& partitoiner) const;
+  bool CanOmitHashRepartition(const std::vector<Attribute>& join_key_list,
+                              const PlanPartitioner& partitoiner) const;
   /**
    * @brief Method description:Check whether two partition_keys in the same
    * join_pair.
@@ -149,11 +153,13 @@ class LogicalEqualJoin : public LogicalOperator {
    * TODO(admin): Consider not only data size but also other factors, such as
    * parallelism, resource, etc.
    */
-  JoinPolicy DecideLeftOrRightRepartition(const PlanContext& left_dataflow,
-                                          const PlanContext& right_dataflow) const;
+  JoinPolicy DecideLeftOrRightRepartition(
+      const PlanContext& left_dataflow,
+      const PlanContext& right_dataflow) const;
 
   PlanPartitioner DecideOutputDataflowProperty(
-      const PlanContext& left_dataflow, const PlanContext& right_dataflow) const;
+      const PlanContext& left_dataflow,
+      const PlanContext& right_dataflow) const;
   void Print(int level = 0) const;
 
   /**
@@ -180,6 +186,7 @@ class LogicalEqualJoin : public LogicalOperator {
   LogicalOperator* right_child_;
   JoinPolicy join_policy_;
   PlanContext* dataflow_;
+  ExprNode* join_expr_;
 };
 }  // namespace logical_operator
 }  // namespace claims

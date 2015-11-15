@@ -128,14 +128,15 @@ PlanContext LogicalAggregation::GetPlanContext() {
   ChangeAggAttrsForAVG();
   // initialize expression of group_by_attrs and aggregation_attrs
   Schema* input_schema = GetSchema(child_context.attribute_list_);
-  set_column_id(child_context);
+  map<string, int> column_to_id;
+  GetColumnToId(child_context.attribute_list_, column_to_id);
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
     group_by_attrs_[i]->InitExprAtLogicalPlan(group_by_attrs_[i]->actual_type_,
-                                              column_id_, input_schema);
+                                              column_to_id, input_schema);
   }
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
     aggregation_attrs_[i]->InitExprAtLogicalPlan(
-        aggregation_attrs_[i]->actual_type_, column_id_, input_schema);
+        aggregation_attrs_[i]->actual_type_, column_to_id, input_schema);
   }
 
   if (CanOmitHashRepartition(child_context)) {
@@ -232,15 +233,6 @@ bool LogicalAggregation::CanOmitHashRepartition(
     }
   }
   return false;
-}
-void LogicalAggregation::set_column_id(const PlanContext& plan_context) {
-  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
-    /**
-     * Traverse the attribute_list_，store the attribute name and index into
-     * column_id.
-     */
-    column_id_[plan_context.attribute_list_[i].attrName] = i;
-  }
 }
 /** replace each group by output attributes with one column, and change every
  * agg(expr) to agg(column[agg_expr_name]), for example: select sum(c)/2 from

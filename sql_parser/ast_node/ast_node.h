@@ -303,6 +303,7 @@ class AstNode {
       SelectAliasSolver* const select_alias_solver) {
     return eOK;
   }
+  AstNode* GetAndExpr(const set<AstNode*>& expression);
   AstNodeType ast_node_type_;
   string expr_str_;
 };
