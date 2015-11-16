@@ -54,6 +54,13 @@ const int kNotInit = -2;
 const int kNoTableFound = -1001;
 
 /* errorno for Loader -2001 ~ -3000  */
+const int rSuccess      = -2002;
+const int rTooLargeData = -2003;
+const int rTooSmallData = -2004;
+const int rTooLongData = -2005;
+const int rInterruptedData = -2006;  // 123a45 => 123
+const int rIncorrectData = -2007;   // a
+const int rInvaildNullData = -2008;
 
 /* errorno for codegen -3001 ~ -4000 */
 const int kTestError = -3001;
