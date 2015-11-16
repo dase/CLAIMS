@@ -104,6 +104,7 @@ PlanContext LogicalFilter::GetPlanContext() {
     condition_[i]->InitExprAtLogicalPlan(t_boolean, column_id_, input_);
   }
 #endif
+  plan_context_ = new PlanContext();
   *plan_context_ = plan_context;
   lock_->release();
   return plan_context;

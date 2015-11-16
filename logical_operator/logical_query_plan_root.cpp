@@ -19,7 +19,8 @@
  * /Claims/logical_operator/logical_query_plan_root.cpp
  *
  *  Created on: Sep 21, 2015
- *      Author: wangli, yukai
+ *  Modified on: Nov 16, 2015
+ *      Author: wangli, yukai, tonglanxuan
  *		 Email: yukai2014@gmail.com
  *
  * Description:
@@ -52,7 +53,16 @@ using claims::physical_operator::ResultPrinter;
 
 namespace claims {
 namespace logical_operator {
-
+#ifdef NEWLIMIT
+LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
+                                           LogicalOperator* child,
+                                           const OutputStyle& style)
+    : LogicalOperator(kLogicalQueryPlanRoot),
+      collecter_node(collecter),
+      child_(child),
+      style_(style),
+      plan_context_(NULL) {}
+#else
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
                                            LogicalOperator* child,
                                            const OutputStyle& style,
@@ -63,7 +73,7 @@ LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
       style_(style),
       limit_constraint_(limit_constraint),
       plan_context_(NULL) {}
-
+#endif
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
   if (NULL != child_) {
     delete child_;
@@ -134,7 +144,7 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
   PhysicalOperatorBase* expander = new Expander(expander_state);
 
-  PhysicalOperatorBase* middle_tier;
+#ifndef NEWLIMIT
   if (!limit_constraint_.CanBeOmitted()) {
     // we should add a limit operator
     PhysicalLimit::State limit_state(
@@ -142,24 +152,21 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
         limit_constraint_.returned_tuples_, block_size,
         limit_constraint_.start_position_);
     PhysicalOperatorBase* limit = new PhysicalLimit(limit_state);
-    middle_tier = limit;
-  } else {
-    middle_tier = expander;
+    expander = limit;
   }
-
+#endif
   PhysicalOperatorBase* ret;
   switch (style_) {
     case kPrint: {
       ResultPrinter::State print_state(
-          GetSchema(child_plan_context.attribute_list_), middle_tier,
-          block_size, GetAttributeName(child_plan_context));
+          GetSchema(child_plan_context.attribute_list_), expander, block_size,
+          GetAttributeName(child_plan_context));
       ret = new ResultPrinter(print_state);
       break;
     }
     case kPerformance: {
       PerformanceMonitor::State performance_state(
-          GetSchema(child_plan_context.attribute_list_), middle_tier,
-          block_size);
+          GetSchema(child_plan_context.attribute_list_), expander, block_size);
       ret = new PerformanceMonitor(performance_state);
       break;
     }
@@ -170,8 +177,8 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
             child_plan_context.attribute_list_[i].getName());
       }
       physical_operator::ResultCollector::State result_state(
-          GetSchema(child_plan_context.attribute_list_), middle_tier,
-          block_size, column_header);
+          GetSchema(child_plan_context.attribute_list_), expander, block_size,
+          column_header);
       ret = new physical_operator::ResultCollector(result_state);
       break;
     }
@@ -354,11 +361,13 @@ std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(
 }
 void LogicalQueryPlanRoot::Print(int level) const {
   printf("Root\n");
+#ifndef NEWLIMIT
   if (!limit_constraint_.CanBeOmitted()) {
     printf("With limit constaint: %ld, %ld\n",
            limit_constraint_.start_position_,
            limit_constraint_.returned_tuples_);
   }
+#endif
   child_->Print(level + 1);
 }
 

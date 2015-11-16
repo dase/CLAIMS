@@ -19,7 +19,8 @@
  * /Claims/logical_operator/logical_query_plan_root.h
  *
  *  Created on: Nov 13, 2013
- *      Author: wangli, yukai
+ *  Modified on: Nov 16, 2015
+ *      Author: wangli, yukai, tonglanxuan
  *		   Email: yukai2014@gmail.com
  *
  * Description:
@@ -31,7 +32,9 @@
 #include <string>
 #include <vector>
 #include "../common/ids.h"
-#include "../logical_operator/logical_limit.h"
+#ifndef NEWLIMIT
+#include "./logical_limit.h"
+#endif
 #include "../physical_operator/physical_operator_base.h"
 #include "../logical_operator/logical_operator.h"
 
@@ -53,6 +56,19 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    * buffer, then return to client
    */
   enum OutputStyle { kPrint, kPerformance, kResultCollector };
+#ifdef NEWLIMIT
+  /**
+   * @brief Method description:
+   * @param collecter_node_id : specify the id of node that return result to
+   * client, which is called master
+   * @param child : the child logical operator of this operator
+   * @param fashion : decide the top physical operator
+   *                  (BlockStreamPrint,BlockStreamPerformanceMonitorTop,BlockStreamResultCollector)
+   *                  generated from this logical operator
+   */
+  LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
+                       const OutputStyle& fashion = kPerformance);
+#else
   /**
    * @brief Method description:
    * @param collecter_node_id : specify the id of node that return result to
@@ -67,6 +83,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
   LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
                        const OutputStyle& fashion = kPerformance,
                        LimitConstraint limit_constraint = LimitConstraint());
+#endif
   virtual ~LogicalQueryPlanRoot();
   PlanContext GetPlanContext();
   /**
@@ -109,7 +126,9 @@ class LogicalQueryPlanRoot : public LogicalOperator {
   NodeID collecter_node;
   LogicalOperator* child_;
   OutputStyle style_;
+#ifndef NEWLIMIT
   LimitConstraint limit_constraint_;
+#endif
   PlanContext* plan_context_;
 };
 
